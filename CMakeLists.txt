@@ -45,8 +45,10 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
-# By default do not use HDF5, FFTW3
+
+# By default do not use ADIOS2, HDF5, FFTW3
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
+option (USE_ADIOS2 "Build ADIOS2 " NO)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
 option (USE_THREADS "Use Mutex thread synchronization" YES)
@@ -243,6 +245,11 @@ if (NOT (HAVE_PREAD AND HAVE_PWRITE))
         message(FATAL_ERROR "Casacore requires pread and pwrite functionality" )
 endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
 
+# FindADIOS2 uses environment variables, so set it if needed.
+if (ADIOS2_ROOT_DIR)
+    set (ENV{ADIOS2_ROOT} ${ADIOS2_ROOT_DIR})
+endif (ADIOS2_ROOT_DIR)
+
 # FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
     set (ENV{HDF5_ROOT} ${HDF5_ROOT_DIR})
@@ -308,6 +315,11 @@ include (CTest)
 find_package (DL)
 find_package (Readline)
 find_package (SOFA)
+if (USE_ADIOS2)
+    set(USE_MPI ON)
+    message (STATUS "MPI is enabled as required by ADIOS2")
+    find_package (ADIOS2)
+endif (USE_ADIOS2)
 if (USE_HDF5)
     find_package (HDF5 REQUIRED)
 endif (USE_HDF5)
@@ -352,6 +364,14 @@ if (Boost_FOUND)
     include_directories (${Boost_INCLUDE_DIRS})
     add_definitions(-DHAVE_BOOST)
 endif (Boost_FOUND)
+if (USE_ADIOS2)
+if (ADIOS2_FOUND)
+    include_directories (${ADIOS2_INCLUDE_DIRS})
+    add_definitions(-DHAVE_ADIOS2)
+else (ADIOS2_FOUND)
+    message(FATAL_ERROR "Casacore is configured to use ADIOS2 but ADIOS2_ROOT_DIR is not defined.")
+endif (ADIOS2_FOUND)
+endif (USE_ADIOS2)
 if (HDF5_FOUND)
     include_directories (${HDF5_INCLUDE_DIRS})
     add_definitions(-DHAVE_HDF5)
@@ -385,6 +405,8 @@ endif()
 
 if(USE_MPI)
     find_package(MPI COMPONENTS C REQUIRED)
+    set(ENABLE_TABLELOCKING OFF)
+    message (STATUS "ENABLE_TABLELOCKING is turned off as required by MPI")
 endif(USE_MPI)
 
 if(USE_OPENMP)
@@ -523,6 +545,7 @@ message (STATUS "LAPACK library? ....... = ${LAPACK_LIBRARIES}")
 message (STATUS "WCS library? .......... = ${WCSLIB_LIBRARIES}")
 message (STATUS "SOFA library? ......... = ${SOFA_LIBRARIES}")
 message (STATUS "CFitsio library? ...... = ${CFITSIO_LIBRARIES}")
+message (STATUS "ADIOS2 library? ....... = ${ADIOS2_LIBRARIES}")
 message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
@@ -551,6 +574,7 @@ endif (BUILD_PYTHON3)
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
 #  ENABLE_TABLELOCKING           YES
+#  USE_ADIOS2                    NO
 #  USE_HDF5                      NO
 #  USE_FFTW3                     NO
 #  USE_THREADS                   YES
@@ -577,6 +601,7 @@ endif (BUILD_PYTHON3)
 #  HDF5         casa (optional)
 #  BISON        casa,tables,images
 #  FLEX         casa,tables,images
+#  ADIOS2       tables (optional)
 #  LAPACK       scimath
 #  BLAS         scimath
 #  FFTW         scimath (optional)

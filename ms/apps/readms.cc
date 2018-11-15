@@ -280,8 +280,12 @@ void showParms()
   }
   cout << endl;
   cout << " ntime     = " << ntime << endl;
-  ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", True);
-  IPosition dataShape = acc.hypercubeShape(0);
+  IPosition dataShape;
+  if (ms.tableDesc().isColumn("DATA")) {
+    dataShape = ArrayColumn<Complex>(ms, "DATA").shape(0);
+  } else {
+    dataShape = ArrayColumn<Float>(ms, "FLOAT_DATA").shape(0);
+  }
   cout << " nchan     = " << dataShape[1] << endl;
   cout << " startchan = " << myStartChan << endl;
   cout << " chansize  = " << myChanSize << endl;
@@ -291,8 +295,12 @@ void showParms()
   cout << " readfloatdata       = " << myReadFloatData << endl;
   cout << " readflag            = " << myReadFlag << endl;
   cout << " readweightspectrum  = " << myReadWeightSpectrum << endl;
-  cout << " data tileshape      = " << acc.tileShape(0)
-       << "   (tilesize = " << acc.bucketSize(0) << " bytes)" << endl;
+  try {
+    ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", True);
+    cout << " data tileshape      = " << acc.tileShape(0)
+         << "   (tilesize = " << acc.bucketSize(0) << " bytes)" << endl;
+  } catch (const AipsError&) {
+  }
   const StorageOption& opt = ms.storageOption();
   if (opt.option() == StorageOption::MultiFile  ||
       opt.option() == StorageOption::MultiHDF5) {
@@ -308,7 +316,7 @@ void showParms()
   }
   cout << " iteration1 columns  = " << myIterCols1 << endl;
   cout << " iteration2 columns  = " << myIterCols2 << endl;
-  if (mySortCols.size() > 0) {                                                  
+  if (mySortCols.size() > 0) {
     cout << " sort columns        = " << mySortCols << endl;
   }
   ///possibly show ntimes, etc. of selection subset
@@ -574,7 +582,7 @@ void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
                    Int64 row,
                    Int64 nrow)
 {
-  if (myReadRowWise) { 
+  if (myReadRowWise) {
     IPosition shp(hflag->shape());
     shp[2] = 1;
     Array<Complex> data(shp);
@@ -888,6 +896,9 @@ void doAll()
 
 int main (int argc, char* argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(0,0);
+#endif
   try {
     if (readParms (argc, argv)) {
       showParms();
@@ -896,6 +907,9 @@ int main (int argc, char* argv[])
   } catch (const std::exception& x) {
     std::cerr << x.what() << std::endl;
     return 1;
-  } 
+  }
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
