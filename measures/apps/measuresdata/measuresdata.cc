@@ -854,7 +854,7 @@ Bool testu_table(const tableProperties &tprop, inputValues &inVal) {
 	inVal.noup = False;
       } else if (String(inVal.type, 0, 2) == String("DE")) {
 	uInt uyr = MVTime(inVal.lastmjd).year();
-        if (uyr < inVal.derange[1]) {
+        if ((Int)uyr < inVal.derange[1]) {
 	  // this only guarantees there will be /some/ data from derange[1]
 	  // but it looks like the DE ascii files finish in December of
 	  // the expected year so it should be ok.
@@ -1427,7 +1427,7 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   // Test if to update
   if (testu_table(tprop, inVal) && inVal.noup) return True;
  
-  uInt uyr; // value will be set from data file name
+  uInt uyr = 0; // value will be set from data file name
   // Check if header present
   Path hpath(tprop.vinfo[0]);
   if (hpath.isValid() && File(hpath).exists() && File(hpath).isReadable()) {
