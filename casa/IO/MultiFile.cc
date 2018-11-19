@@ -198,7 +198,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         itsNrBlock++;
       } else {
         info.blockNrs[i] = itsFreeBlocks[itsFreeBlocks.size() - 1];
-        itsFreeBlocks.resize (itsFreeBlocks.size() - 1);
+        // Cast to Int to avoid gcc warning (x-1 gives UINT_MAX in case x==0).
+        itsFreeBlocks.resize (Int(itsFreeBlocks.size()) - 1);
       }
     }
   }

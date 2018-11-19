@@ -92,7 +92,7 @@ void fill(const String& name, const String& name2, Int stval)
   ScalarColumn<Complex> acomplex(tab, "acomplex");
   ScalarColumn<DComplex> adcomplex(tab, "adcomplex");
   ScalarColumn<String> astring(tab, "astring");
-  char str[8];
+  char str[16];
   for (Int i=0; i<nrrow; i++) {
     abool.put (i, (stval%2 == 0));
     auchar.put (i, stval);
