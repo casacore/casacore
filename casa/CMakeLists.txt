@@ -349,7 +349,6 @@ Containers/Allocator.h
 Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
-Containers/ContainerIO.h
 Containers/HashMap.h
 Containers/HashMap.tcc
 Containers/HashMapIO.h
@@ -445,10 +444,7 @@ IO/ConversionIO.h
 IO/FilebufIO.h
 IO/FiledesIO.h
 IO/FileLocker.h
-IO/LargeFilebufIO.h
-IO/LargeFiledesIO.h
 IO/LargeIOFuncDef.h
-IO/LargeRegularFileIO.h
 IO/LECanonicalIO.h
 IO/LockFile.h
 IO/MemoryIO.h
