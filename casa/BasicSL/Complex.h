@@ -224,16 +224,8 @@ inline Complex square(const Complex &val) { return val*val; }
 inline DComplex cube(const DComplex &val) { return val*val*val; }
 inline Complex cube(const Complex &val) { return val*val*val; }
 
-// The log10 should be in stl
-// <group>
-#if defined(NEEDS_LOG10_COMPLEX)
-Complex log10(const Complex &val);
-DComplex log10(const DComplex &val);
-#endif
-// </group>
-
-// ArrayMath::pow needs this pow function (on SGI).
-inline Complex pow(const Complex& val, Double p) { return std::pow(val,Float(p)); }
+// ArrayMath::pow needs this pow function.
+///inline Complex pow(const Complex& val, Double p) { return std::pow(val,Float(p)); }
 
 // We have to explicitly implement these for different type operands
 inline DComplex operator+(const DComplex& d, const Complex& c) {

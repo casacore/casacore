@@ -34,22 +34,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Math functions
-/// Should be in stl
-
-#if defined(NEEDS_LOG10_COMPLEX)
-DComplex log10(const DComplex &val)
-{
-  return DComplex(std::log(val)*C::log10e);
-}
-
-/// Should be in stl
-Complex log10(const Complex &val)
-{
-  // Need to make log10e a Float for it to compile
-  // with picky compilers
-  return Complex(std::log(val)*Float(C::log10e));
-}
-#endif
 
 // Near functions
 // Note: max() cannot be used from Math.h until it is derived from <math>

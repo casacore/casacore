@@ -29,19 +29,15 @@
 #define CASA_FSTREAM_H
 
 //# Define the C standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
 #include <fstream>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-using std::fstream;
-using std::ifstream;
-using std::ofstream;
-using std::filebuf;
+  using std::fstream;
+  using std::ifstream;
+  using std::ofstream;
+  using std::filebuf;
 
 } //# NAMESPACE CASACORE - END
 

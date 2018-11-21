@@ -30,6 +30,8 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
+using namespace std;
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSSelectionErrorHandler::MSSelectionErrorHandler()

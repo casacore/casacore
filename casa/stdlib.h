@@ -29,21 +29,7 @@
 #define CASA_STDLIB_H
 
 //# Define the C standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
-
-#if defined(__sgi) || defined(AIPS_SUN_NATIVE)
-#include <stdlib.h>
-#else
 #include <cstdlib>
-#endif
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-
-} //# NAMESPACE CASACORE - END
 
 #endif

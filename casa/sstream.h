@@ -39,9 +39,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-using std::ostringstream;
-using std::istringstream;
-using std::stringstream;
+  using std::ostringstream;
+  using std::istringstream;
+  using std::stringstream;
 
 } //# NAMESPACE CASACORE - END
 

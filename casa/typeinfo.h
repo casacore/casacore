@@ -29,16 +29,7 @@
 #define CASA_TYPEINFO_H
 
 //# Define the C standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
 #include <typeinfo>
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-
-} //# NAMESPACE CASACORE - END
 
 #endif

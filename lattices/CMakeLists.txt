@@ -191,7 +191,6 @@ LEL/LELArrayBase.h
 LEL/LELAttribute.h
 LEL/LELBinary.h
 LEL/LELBinary.tcc
-LEL/LELBinary2.h
 LEL/LELBinaryEnums.h
 LEL/LELCondition.h
 LEL/LELCondition.tcc
@@ -200,7 +199,6 @@ LEL/LELConvert.tcc
 LEL/LELCoordinates.h
 LEL/LELFunction.h
 LEL/LELFunction.tcc
-LEL/LELFunction2.h
 LEL/LELFunctionEnums.h
 LEL/LELInterface.h
 LEL/LELInterface.tcc
@@ -215,7 +213,6 @@ LEL/LELSpectralIndex.h
 LEL/LELSpectralIndex.tcc
 LEL/LELUnary.h
 LEL/LELUnary.tcc
-LEL/LELUnary2.h
 LEL/LELUnaryEnums.h
 DESTINATION include/casacore/lattices/LEL
 )

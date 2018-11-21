@@ -200,7 +200,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (newDir.isEmpty());
     AlwaysAssertExit (newDir.nEntries() == 0);
 
-    // Some erronous constructs.
+    // Some erroneous constructs.
     if (doExcp) {
 	try {
 	    Directory file1("tDirectory_tmp/test1/testLink2");
@@ -248,7 +248,7 @@ void doIt (Bool doExcp)
     test3dir.remove();
     AlwaysAssertExit (!test3dir.exists());
     AlwaysAssertExit (test3.nEntries() == 5);
-    // Do an erronous remove.
+    // Do an erroneous remove.
     if (doExcp) {
 	try {
 	    test3.remove();

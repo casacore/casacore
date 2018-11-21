@@ -62,16 +62,6 @@ extern Bool aips_debug_on;
 #define aips_debug aips_debug_on
 #endif
 
-// With sgi the AIPS_USE_NEW_SGI switch is always set to cater for
-// still existing problems in FFTPack and SquareMatrix. It should be removed
-// at some stage.
-// Note that for the gcc compiler 'std::' is recognised as '::' for now.
-#if defined(__sgi)
-#define AIPS_USE_NEW_SGI
-#define AIPS_SGI
-namespace std {};
-#endif
-
 // HP/UX
 #if defined(__hpux__)
 #define AIPS_HPUX
@@ -87,29 +77,5 @@ namespace std {};
 // Define the macros to stringify a preprocessor variable.
 #define CASACORE_STRINGIFY(x) CASACORE_STRINGIFY_HELPER(x)
 #define CASACORE_STRINGIFY_HELPER(x) #x
-
-// SUN Native compiler has trouble with typedef inside class.
-// PGI compiler (QK_USER) on Cray XT3 needs throw specification in .cc file.
-#if defined(AIPS_SUN_NATIVE)
-#define WHATEVER_SUN_TYPEDEF(X) X::
-#define WHATEVER_TYPENAME
-#define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
-#else
-#define WHATEVER_SUN_TYPEDEF(X)
-#define WHATEVER_TYPENAME typename
-#if defined(AIPS_CRAY_PGI) || defined(AIPS_GCC)
-#define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
-#else
-#define WHATEVER_SUN_EXCEPTSPEC(X)
-#endif
-#endif
-
-#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC) || defined(AIPS_CRAY_PGI)
-#if defined(WHATEVER_VECTOR_FORWARD_DEC)
-#undef WHATEVER_VECTOR_FORWARD_DEC
-#endif
-#else
-#define WHATEVER_VECTOR_FORWARD_DEC template <class T, class U> class vector
-#endif
 
 #endif

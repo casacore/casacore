@@ -29,17 +29,11 @@
 #define CASA_STD_VECTOR_H
 
 //# Define the standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
-
-#if !defined(AIPS_SGI)
 #include <vector>
-using std::vector;
-#else
-#include <vector.h>
-#endif
 
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+  using std::vector;
+}
 
 #endif

@@ -41,11 +41,20 @@
 //# So undefine WHERE first.
 #undef WHERE
 #include <casacore/casa/stdlib.h>
-//# Define register as empty string to avoid warnings in C++11 compilers
-//# because keyword register is not supported anymore.
-#define register
+
+//# Let clang and gcc ignore some warnings in bison/flex code.
+//# Undef YY_NULL because flex can redefine it slightly differently (giving a warning).
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wdeprecated-register"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
 #include "JsonGram.ycc"                  // bison output
+#ifdef YY_NULL
+# undef YY_NULL
+#endif
 #include "JsonGram.lcc"                  // flex output
+#pragma GCC diagnostic pop
 
 
 //# Define extern symbols in JsonGram.cc.

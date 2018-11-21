@@ -30,35 +30,27 @@
 
 // Make sure any special macros are set
 #include <casacore/casa/aips.h>
-
-#if defined(AIPS_SGI)
-#include <complex.h>
-#else
 #include <complex>
-#ifndef AIPS_CRAY_PGI
-#define NEEDS_LOG10_COMPLEX
-#endif
-#endif
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-using std::real;
-using std::imag;
-using std::norm;
-using std::abs;
-using std::arg;
-//using std::conj;
-using std::cos;
-using std::cosh;
-using std::sin;
-using std::sinh;
-using std::tan;
-using std::tanh;
-using std::exp;
-using std::log;
-using std::sqrt;
-using std::polar;
-using std::pow;
+  using std::real;
+  using std::imag;
+  using std::norm;
+  using std::abs;
+  using std::arg;
+  //using std::conj;
+  using std::cos;
+  using std::cosh;
+  using std::sin;
+  using std::sinh;
+  using std::tan;
+  using std::tanh;
+  using std::exp;
+  using std::log;
+  using std::sqrt;
+  using std::polar;
+  using std::pow;
 
 } //# NAMESPACE CASACORE - END
 

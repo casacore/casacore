@@ -29,21 +29,17 @@
 #define CASA_IOMANIP_H
 
 //# Define the C standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
 #include <iomanip>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-using std::setw;
-using std::setfill;
-using std::setprecision;
-using std::setbase;
-using std::resetiosflags;
-using std::setiosflags;
+  using std::setw;
+  using std::setfill;
+  using std::setprecision;
+  using std::setbase;
+  using std::resetiosflags;
+  using std::setiosflags;
 
 } //# NAMESPACE CASACORE - END
 

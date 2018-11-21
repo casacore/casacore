@@ -38,42 +38,42 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-using std::istream;
-using std::ostream;
-using std::iostream;
-using std::cin;
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::flush;
-using std::ws;
+  using std::istream;
+  using std::ostream;
+  using std::iostream;
+  using std::cin;
+  using std::cout;
+  using std::cerr;
+  using std::endl;
+  using std::flush;
+  using std::ws;
 
-using std::ios;
-using std::streampos;
-using std::streamoff;
-using std::streamsize;
-using std::dec;
-using std::hex;
-using std::oct;
+  using std::ios;
+  using std::streampos;
+  using std::streamoff;
+  using std::streamsize;
+  using std::dec;
+  using std::hex;
+  using std::oct;
 
-using std::internal;
-using std::left;
-using std::right;
-using std::fixed;
-using std::scientific;
+  using std::internal;
+  using std::left;
+  using std::right;
+  using std::fixed;
+  using std::scientific;
 
-using std::boolalpha;
-using std::noboolalpha;
-using std::showbase;
-using std::noshowbase;
-using std::showpoint;
-using std::noshowpoint;
-using std::showpos;
-using std::noshowpos;
-using std::skipws;
-using std::noskipws;
-using std::uppercase;
-using std::nouppercase;
+  using std::boolalpha;
+  using std::noboolalpha;
+  using std::showbase;
+  using std::noshowbase;
+  using std::showpoint;
+  using std::noshowpoint;
+  using std::showpos;
+  using std::noshowpos;
+  using std::skipws;
+  using std::noskipws;
+  using std::uppercase;
+  using std::nouppercase;
 
 } //# NAMESPACE CASACORE - END
 

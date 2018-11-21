@@ -36,6 +36,7 @@ int main()
 {
   // Exit with untested if no HDF5 support.
   if (! HDF5Object::hasHDF5Support()) {
+    cout << "OK" << endl;
     return 3;
   }
   try {

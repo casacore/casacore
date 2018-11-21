@@ -426,7 +426,7 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
     int lchan = fchan + chansize;
     for (Int64 row=0; row<tab.nrow(); row+=ntoread) {
       Slicer rowRange(IPosition(1,row),
-                      IPosition(1,min(ntoread, tab.nrow()-row)));
+                      IPosition(1,std::min(ntoread, tab.nrow()-row)));
       if (fchan > 0  ||  lchan < shape[1]  ||  myNPol < shape[0]) {
         AlwaysAssert (fchan < shape[1], AipsError);
         int nchan = std::min(lchan, int(shape[1])) - fchan;

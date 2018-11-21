@@ -314,10 +314,10 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     //Limiting record length
     Int recLength=0;
     const Int maxRecLength=10000; //limiting for speed and size sake
-    set<ArrayKey> allArrayKeys = uniqueArrayKeys(_msmd->getScanKeys());
+    std::set<ArrayKey> allArrayKeys = uniqueArrayKeys(_msmd->getScanKeys());
 
-    set<ArrayKey>::const_iterator iter = allArrayKeys.begin();
-    set<ArrayKey>::const_iterator end = allArrayKeys.end();
+    std::set<ArrayKey>::const_iterator iter = allArrayKeys.begin();
+    std::set<ArrayKey>::const_iterator end = allArrayKeys.end();
     std::shared_ptr<const std::map<ScanKey, std::pair<Double,Double> > > scanToTRMap = _msmd->getScanToTimeRangeMap();
     std::shared_ptr<const std::map<SubScanKey, MSMetaData::SubScanProperties> > ssprops
         = _msmd->getSubScanProperties(True);
@@ -342,18 +342,18 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
             }
             os << "SpwIds   Average Interval(s)    ScanIntent" << endl;
         }
-        set<SubScanKey> subScans = _msmd->getSubScanKeys(*iter);
+        std::set<SubScanKey> subScans = _msmd->getSubScanKeys(*iter);
         os.output().precision(3);
         Double lastday = 0;
-        set<SubScanKey>::const_iterator siter = subScans.begin();
-        set<SubScanKey>::const_iterator send = subScans.end();
+        std::set<SubScanKey>::const_iterator siter = subScans.begin();
+        std::set<SubScanKey>::const_iterator send = subScans.end();
         uInt subsetscan = 0;
         Int lastscan = 0;
         for (; siter != send; ++siter) {
             const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
             Int nrow = props.acRows + props.xcRows;
             Int thisscan = siter->scan;
-            set<uInt> ddIDs = props.ddIDs;
+            std::set<uInt> ddIDs = props.ddIDs;
             std::set<Int> stateIDs = props.stateIDs;
             ScanKey scan;
             scan.arrayID = siter->arrayID;

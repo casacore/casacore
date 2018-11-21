@@ -586,77 +586,77 @@ int main (int argc, char* [])
   try {
     cout << "Testing partialSums ..." << endl;
     if (! doIt (&partialSums, &sum, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMeans ..." << endl;
     if (! doIt (&partialMeans, &mean, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialVariances ..." << endl;
     if (! doIt (&partialVariances, &variance, False)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialStddevs ..." << endl;
     if (! doIt (&partialStddevs, &stddev, False)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialAvdevs ..." << endl;
     if (! doIt (&partialAvdevs, &avdev, False)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialRmsss ..." << endl;
     if (! doIt (&partialRmss, &rms, False)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMins ..." << endl;
     if (! doIt (&partialMins, &min, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMaxs ..." << endl;
     if (! doIt (&partialMaxs, &max, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMedians (takeEvenMean=True) ..." << endl;
     if (! doIt (&myMeanPartialMedians, &myMeanMedian, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMedians (takeEvenMean=False)..." << endl;
     if (! doIt (&myNomeanPartialMedians, &myNomeanMedian, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMadfms (takeEvenMean=True) ..." << endl;
     if (! doIt (&myMeanPartialMadfms, &myMeanMadfm, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialMadfms (takeEvenMean=False)..." << endl;
     if (! doIt (&myNomeanPartialMadfms, &myNomeanMadfm, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialFractiles ..." << endl;
     if (! doIt (&myPartialFractiles, &myFractile, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialHexile ..." << endl;
     if (! doIt (&myPartialHexiles, &myHexile, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialQuartile ..." << endl;
     if (! doIt (&myPartialQuartiles, &myQuartile, True)) {
-      cout << "  erronous" << endl;
+      cout << "  erroneous" << endl;
       errFlag = True;
     }
     if (argc > 1) {
@@ -733,7 +733,7 @@ int main (int argc, char* [])
     return 1;
   }
   if (errFlag) {
-    cout << "  erronous run" << endl;
+    cout << "  erroneous run" << endl;
     return 1;
   }
   cout << "OK" << endl;

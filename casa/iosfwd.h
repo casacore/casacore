@@ -34,22 +34,22 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Define the IO system forward declarations. Note that if fully standard
-// suppliant, the iosfwd will also forward declare the stringstream classes.
-// If strstream classes have to be known, include <aips/aipsiosstrfwd.h>
-// instead.
+  // Define the IO system forward declarations. Note that if fully standard
+  // suppliant, the iosfwd will also forward declare the stringstream classes.
+  // If strstream classes have to be known, include <aips/aipsiosstrfwd.h>
+  // instead.
 
-using std::ios;
-using std::istream;
-using std::ostream;
-using std::iostream;
-using std::streambuf;
-using std::filebuf;
-using std::ifstream;
-using std::ofstream;
-using std::fstream;
-using std::fpos;
-using std::streampos;
+  using std::ios;
+  using std::istream;
+  using std::ostream;
+  using std::iostream;
+  using std::streambuf;
+  using std::filebuf;
+  using std::ifstream;
+  using std::ofstream;
+  using std::fstream;
+  using std::fpos;
+  using std::streampos;
 
 } //# NAMESPACE CASACORE - END
 

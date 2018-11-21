@@ -34,7 +34,6 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <vector>
-using namespace std;
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -77,13 +76,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void reset();
     virtual void handleError(MSSelectionError&);
 
-    const vector<String>& getMessages() const
+    const std::vector<String>& getMessages() const
       { return messageList; }
     Int nMessages() const
       { return messageList.size(); }
 
   protected:
-    vector<String> tokenList, messageList;
+    std::vector<String> tokenList, messageList;
   };
 
   // <synopsis> 

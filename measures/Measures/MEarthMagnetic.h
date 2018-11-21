@@ -177,8 +177,6 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   // Measure table Columns (e.g., MEarthMagnetic::ScalarColumn)
   typedef ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
   typedef ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
-  // Reference enum Types (included originally for gcc 2.95)  
-  typedef WHATEVER_SUN_TYPEDEF(MEarthMagnetic) Types Types;
 
   //# Constructors
   // <note> In the following constructors and other functions, all 

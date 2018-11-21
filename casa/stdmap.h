@@ -29,19 +29,15 @@
 #define CASA_STDMAP_H
 
 //# Define the C standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
-
 #include <map>
 
-
-using std::map;
-using std::multimap;
-using std::pair;
-using std::allocator;
-using std::less;
-
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+  using std::map;
+  using std::multimap;
+  using std::pair;
+  using std::allocator;
+  using std::less;
+}
 
 #endif
