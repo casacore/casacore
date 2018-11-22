@@ -355,10 +355,10 @@ IPosition LatticeApply<T,U>::_chunkShape(
         // can only go row by row
         return chunkShape;
     }
-    uInt x = maxChunkSize;
+    ssize_t x = maxChunkSize;
     for (uInt i=0; i<ndim; ++i) {
         if (i != axis) {
-            chunkShape[i] = min(x, latShape[i]);
+            chunkShape[i] = std::min(x, latShape[i]);
             // integer division
             x /= chunkShape[i];
             if (x == 0) {
