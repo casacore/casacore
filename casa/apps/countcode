@@ -2,6 +2,8 @@
 
 # This script counts the lines of code in various types of source files.
 # It has options to print summaries at various levels.
+#
+# It can be used with python version 2 and 3.
 
 # todo:
 # - possibly specify/override/add files/dirs to be ignored on command line
@@ -21,7 +23,7 @@ import argparse
 #  - A list of matching file names
 #  - The delimiter defining a comment in a single line
 #  - The delimiters defining the start and end of a block comment
-#  - indication if file contains code or other info (1=code, 0=other)
+#  - Indication if file contains code or other info (1=code, 0=other)
 # Similar to cloc there are a few theoretical problems:
 # 1. If a quoted string contains comment delimiters, they are recognized
 #    as comment delimiters. In principle some regexes could be defined to replace
@@ -30,18 +32,19 @@ import argparse
 # 2. A regex like '""".*"""' is greedy, thus a line like """some1"""some2"""
 #    is fully matched. In practice such lines are not used.
 # See cnt.py-new for an attempt solving these issues.
-types = [ ('C++', ['cc', 'tcc', 'hcc', 'cpp', 'cxx'], None, [], '//', '/\*', '\*/', 1),
-          ('C++Hdr', ['h', 'hpp', 'hxx'], None, [], '//', '/\*', '\*/', 1),
-          ('C', ['c'], None, [], '//', '/\*', '\*/', 1),
-          ('Cuda', ['cu'], None, [], '//', '/\*', '\*/', 1),
-          ('OpenCL', ['cl'], None, [], '//', '/\*', '\*/', 1),
+types = [ ('C++', ['cc', 'tcc', 'hcc', 'cpp', 'cxx'], None, [], '//', '/*', '*/', 1),
+          ('C++Hdr', ['h', 'hpp', 'hxx'], None, [], '//', '/*', '*/', 1),
+          ('C', ['c'], None, [], '//', '/*', '*/', 1),
+          ('Cuda', ['cu'], None, [], '//', '/*', '*/', 1),
+          ('OpenCL', ['cl'], None, [], '//', '/*', '*/', 1),
           ('Fortran', ['f', 'for'], None, [], '*', '', '', 1),
           ('Assembly', ['m', 'S'], None, [], '', '', '', 1),
           ('Lisp', ['lisp'], None, [], '', '', '', 1),
           ('SQL', ['sql'], None, [], '--', '', '', 1),
-          ('Flex', ['l', 'll'], None, [], '//', '/\*', '\*/', 1),
-          ('Bison', ['y', 'yy'], None, [], '//', '/\*', '\*/', 1),
-          ('Python', ['py', 'python'], None, [], '#', '"""', '"""', 1),
+          ('TaQL', ['taql'], None, [], '#', '', '', 1),
+          ('Flex', ['l', 'll'], None, [], '//', '/*', '*/', 1),
+          ('Bison', ['y', 'yy'], None, [], '//', '/*', '*/', 1),
+          ('Python', ['py', 'python', 'python3'], None, [], '#', '"""', '"""', 1),
           ('Perl', ['pl', 'perl'], None, [], '#', '', '', 1),
           ('test-run', ['run'], None, [], '','','', 0),
           ('test-in', ['in'], re.compile('in_.*'), [], '','','', 0),
@@ -66,18 +69,18 @@ types = [ ('C++', ['cc', 'tcc', 'hcc', 'cpp', 'cxx'], None, [], '//', '/\*', '\*
 
 def showTypes (verbose):
     for (type,exts,extre,filenms,comm,scomm,ecomm,ctyp) in types:
-        print '%-24s code=%d' % (type,ctyp)
-        print '  file name extensions: ', exts
+        print ('%-24s code=%d' % (type,ctyp))
+        print ('  file name extensions: ', exts)
         if verbose:
             if not extre is None:
-                print '  extension pattern:    ', extre.pattern
+                print ('  extension pattern:    ', extre.pattern)
             if len(filenms) > 0:
-                print '  file names:           ', filenms
+                print ('  file names:           ', filenms)
             if len(comm) > 0:
-                print '  comment marker:       ', comm
+                print ('  comment marker:       ', comm)
             if len(scomm) > 0:
-                print '  start comment block:  ', scomm
-                print '  end   comment block:  ', ecomm
+                print ('  start comment block:  ', scomm)
+                print ('  end   comment block:  ', ecomm)
 
 
 # Define regex for a line containing an alphanumeric character
@@ -96,14 +99,27 @@ def is_textfile(filename):
         CHUNKSIZE = 4096
         while 1:
             chunk = fin.read(CHUNKSIZE)
-            if '\0' in chunk:
-                return False
+            if sys.version_info.major == 2:
+                if '\0' in chunk:
+                    return False
+            else:
+                if 0 in chunk:
+                    return False
             if len(chunk) < CHUNKSIZE:
                 break
     finally:
         fin.close()
     return True
 
+def add_escape(str):
+    ''' Add an escape character for special regex characters'''
+    out = ''
+    for c in str:
+        if c in '.*[]|':
+            out += '\\'
+        out += c
+    return out
+    
     
 # Return tuple with nr of files, nr of lines, nr of code lines,
 # nr of comment lines, nr of blank lines, and nr of header lines.
@@ -122,14 +138,16 @@ def countcodecomm (filename, linecomm, scomm='', ecomm='', basic=False):
     skipHeader = not basic
     blockComm = False
     if len(scomm) > 0:
-        reComm2a = re.compile('\s*' + scomm + '\s*' + ecomm + '\s*')
-        reComm2b = re.compile('\s*' + scomm + '(.*)' + ecomm + '\s*')
-        reSComm = re.compile(scomm)
-        reEComm = re.compile(ecomm)
-        reTillSComm = re.compile('.*' + scomm + '\s*')
-        reTillEComm = re.compile('.*' + ecomm + '\s*')
-        reFromSComm = re.compile('\s*' + scomm + '.*')
-        reFromEComm = re.compile('\s*' + ecomm + '.*')
+        scomm_esc = add_escape(scomm)
+        ecomm_esc = add_escape(scomm)
+        reComm2a = re.compile('\s*' + scomm_esc + '\s*' + ecomm_esc + '\s*')
+        reComm2b = re.compile('\s*' + scomm_esc + '(.*)' + ecomm_esc + '\s*')
+        reSComm = re.compile(scomm_esc)
+        reEComm = re.compile(ecomm_esc)
+        reTillSComm = re.compile('.*' + scomm_esc + '\s*')
+        reTillEComm = re.compile('.*' + ecomm_esc + '\s*')
+        reFromSComm = re.compile('\s*' + scomm_esc + '.*')
+        reFromEComm = re.compile('\s*' + ecomm_esc + '.*')
     # Loop over all lines in the file.
     for line in f:
         nline += 1
@@ -257,7 +275,7 @@ def countother(filename, basic, usecode):
         return ('unknown', 0, (1,0,0,0,0,0))
     return ('unknown', 0, (1,nline,0,0,nblank,0))
 
-def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode, dosum):
+def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode, dosum, warn_unknown):
     sums = [{}, {}]
     for t in types:
         sums[0][t[0]] = [0,0,0,0,0,0]
@@ -279,7 +297,7 @@ def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode
                 # skip symlinks because casacore contains symlink to itself
                 continue
             elif stat.S_ISDIR(mode):
-                cnts = countfiles (ffile, test, basic, ccperc, verbose, printlevel, level+1, usecode, dosum)
+                cnts = countfiles (ffile, test, basic, ccperc, verbose, printlevel, level+1, usecode, dosum, warn_unknown)
                 for j in [0,1]:
                     for t in types:
                         for i in range(len(sums[j][t[0]])):
@@ -308,7 +326,8 @@ def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode
                     for i in range(len(cnt)):
                         sums[inx][type][i] += cnt[i]
                     if type == 'unknown':
-                        sys.stderr.write ('Unknown type: %s\n' % ffile)
+                        if warn_unknown:
+                            sys.stderr.write ('Unknown type: %s\n' % ffile)
                     elif verbose:
                         sys.stderr.write ('** %s\n' % ffile)
                         printCount (sys.stderr, type, cnt, ccperc);
@@ -336,10 +355,10 @@ def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode
     return sums
 
 def testit():
-    print countcodecomm ('/Users/diepen/testcnt1', '#')
-    print countcodecomm ('/Users/diepen/testcnt2', '#', '"""', '"""')
-    print countcodecomm ('/Users/diepen/testcnt1', '#', '', '', False)
-    print countcodecomm ('/Users/diepen/testcnt2', '#', '"""', '"""', False)
+    print (countcodecomm ('/Users/diepen/testcnt1', '#'))
+    print (countcodecomm ('/Users/diepen/testcnt2', '#', '"""', '"""'))
+    print (countcodecomm ('/Users/diepen/testcnt1', '#', '', '', False))
+    print (countcodecomm ('/Users/diepen/testcnt2', '#', '"""', '"""', False))
     
 
 if __name__ == '__main__':
@@ -350,6 +369,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--sum', help='only calculate and print the sum of all file types', action='store_true')
     parser.add_argument('-l', '--limitperc', help='limit to the nr of code and comment lines to determine percentages', action='store_true')
     parser.add_argument('-p', '--printlevel', type=int, default=0, help='first directory level to print (default 0 (=top))')
+    parser.add_argument('-w', '--warn_unknown', help='warn if a file with an unknown type is found', action='store_true')
     parser.add_argument('-d', '--displaytypes', help='display the currently recognized file types (full info with -v)', action='store_true')
     parser.add_argument('-t', '--testinclude', help='do not count test directories separately', action='store_true')
     parser.add_argument('-v', '--verbose', help='print count for each source file', action='store_true')
@@ -358,26 +378,26 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         #print 'Testing the script ...'
         #testit()
-        print ''
-        print 'countcode counts per known source file type the number of source lines in the'
-        print ' files in the given directory and recursively in its subdirectories.'
-        print 'It supports many file types. The type is recognized from the file name extension'
-        print ' or the shebang script type. Use -s to see all supported types.'
-        print 'The following line types are counted:'
-        print '  code:     pure code lines)'
-        print '  comment:  pure comment lines'
-        print '  blank:    empty lines or lines containing whitespace only'
-        print '  header:   the copyright header (leading comment lines)'
-        print '  other:    all other lines  (e.g., single {, /*, etc.)'
-        print 'Unless -b is given, a pure code or comment line has to contain an alphanumeric'
-        print ' character; e.g., a single } does not count as code line.'
-        print 'It calculates the percentage of code and comment lines in the total number of'
-        print ' lines or (if -l is given) in the sum of code and comment lines.'
-        print 'Unless -t is given, files in test directories are counted separately.'
-        print 'Normal output is written on stdout; verbose on stderr.'
-        print 'Files with an unknown type are reported on stderr.'
-        print 'Note that -bt should give about the same results as a tool like cloc.'
-        print ''
+        print ('')
+        print ('countcode counts per known source file type the number of source lines in the')
+        print (' files in the given directory and recursively in its subdirectories.')
+        print ('It supports many file types. The type is recognized from the file name extension')
+        print (' or the shebang script type. Use -s to see all supported types.')
+        print ('The following line types are counted:')
+        print ('  code:     pure code lines)')
+        print ('  comment:  pure comment lines')
+        print ('  blank:    empty lines or lines containing whitespace only')
+        print ('  header:   the copyright header (leading comment lines)')
+        print ('  other:    all other lines  (e.g., single {, /*, etc.)')
+        print ('Unless -b is given, a pure code or comment line has to contain an alphanumeric')
+        print (' character; e.g., a single } does not count as code line.')
+        print ('It calculates the percentage of code and comment lines in the total number of')
+        print (' lines or (if -l is given) in the sum of code and comment lines.')
+        print ('Unless -t is given, files in test directories are counted separately.')
+        print ('Normal output is written on stdout; verbose on stderr.')
+        print ('Files with an unknown type are reported on stderr.')
+        print ('Note that -bt should give about the same results as a tool like cloc.')
+        print ('')
         parser.parse_args(['-h'])
     else:
         values = parser.parse_args(sys.argv[1:])
@@ -391,6 +411,6 @@ if __name__ == '__main__':
                 dirname = dirname[:-1]
             sys.stdout.write ('%s   Count %s  test=%d basic=%d limitperc=%d code=%d\n'%(time.ctime(),dirname,test,values.basic,values.limitperc,values.code))
             printHeader()
-            countfiles (dirname, test, values.basic, values.limitperc, values.verbose, values.printlevel, 0, values.code, values.sum)
+            countfiles (dirname, test, values.basic, values.limitperc, values.verbose, values.printlevel, 0, values.code, values.sum, values.warn_unknown)
             printHeader()
             sys.stdout.write ('%s   Count %s  test=%d basic=%d limitperc=%d code=%d\n'%(time.ctime(),dirname,test,values.basic,values.limitperc,values.code))

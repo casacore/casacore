@@ -3,7 +3,7 @@
 import time
 import string
 import sys
-import commands
+import os
 
 def get_cpumem(pid):
 # http://unix.stackexchange.com/questions/58539/top-and-ps-not-showing-the-same-cpu-result
@@ -11,10 +11,10 @@ def get_cpumem(pid):
       cmd="ps -p "+str(pid)+" -o pid,%cpu,%mem,etime,cputime"
     else:
       cmd="ps -C "+pid+" -o pid,%cpu,%mem,etime,cputime"
-    psoutput=commands.getoutput(cmd).split("\n")
-    if len(psoutput)<2:
+    psoutput=os.popen(cmd).read().split("\n")
+    if len(psoutput) < 2:
       return None
-    elif len(psoutput)>2:
+    elif len(psoutput) > 2  and  len(psoutput[2]) > 0:
       sys.stderr.write("warning: multiple processes called "+str(pid)+", picking first\n")
     d = psoutput[1].split()
 
@@ -65,5 +65,5 @@ if __name__ == '__main__':
                 sys.stdout.flush()
             time.sleep(1)
     except KeyboardInterrupt:
-        print
+        print('')
         exit(0)
