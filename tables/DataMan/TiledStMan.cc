@@ -353,8 +353,8 @@ void TiledStMan::deleteManager()
     DOos::remove (fileName(), False, False);
 }
 
-void TiledStMan::setMaximumCacheSize (uInt nbytes)
-    { maxCacheSize_p = nbytes; }
+void TiledStMan::setMaximumCacheSize (uInt nMiB)
+    { maxCacheSize_p = nMiB; }
 
 
 Bool TiledStMan::canChangeShape() const

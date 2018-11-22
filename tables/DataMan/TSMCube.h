@@ -165,10 +165,11 @@ public:
     // Is the hypercube extensible?
     Bool isExtensible() const;
 
-    // Get the bucket size (which is the length of a tile in external format).
+    // Get the bucket size (bytes).
+    // It is the length of a tile in external format.
     uInt bucketSize() const;
 
-    // Get the length of a tile in local format.
+    // Get the length of a tile (in bytes) in local format.
     uInt localTileLength() const;
 
     // Set the hypercube shape.
@@ -244,7 +245,7 @@ public:
                                const IPosition& windowStart,
                                const IPosition& windowLength,
                                const IPosition& axisPath,
-                               uInt maxCacheSize, uInt bucketSize);
+                               uInt maxCacheSizeMiB, uInt bucketSize);
     // </group>
 
     // Set the cache size for the given slice and access path.
@@ -264,11 +265,12 @@ public:
     virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
 
     // Validate the cache size (in buckets).
-    // This means it will return the given cache size if smaller
-    // than the maximum cache size. Otherwise the maximum is returned.
+    // This means it will return the given cache size (in buckets) if
+    // smaller than the maximum cache size (given in MiB).
+    // Otherwise the maximum is returned.
     // <group>
     uInt validateCacheSize (uInt cacheSize) const;
-    static uInt validateCacheSize (uInt cacheSize, uInt maxSize,
+    static uInt validateCacheSize (uInt cacheSize, uInt maxSizeMiB,
                                    uInt bucketSize);
     // </group>
 
@@ -376,7 +378,7 @@ protected:
     TSMShape        expandedTilesPerDim_p;
     // Number of tiles in all but last dimension (used when extending).
     uInt            nrTilesSubCube_p;
-    // The tilesize in pixels.
+    // The tilesize in bytes.
     uInt            tileSize_p;
     // Pointer to the TSMFile object holding the data.
     TSMFile*        filePtr_p;
