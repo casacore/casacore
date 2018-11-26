@@ -6,6 +6,6 @@ foreach(prog casahdf5support)
 endforeach()
 
 # Scripts
-foreach(prog countcode)
-    install(PROGRAMS ${prog} DESTINATION bin)
-endforeach()
+##foreach(prog countcode)
+##   install(PROGRAMS ${prog} DESTINATION bin)
+##endforeach()
