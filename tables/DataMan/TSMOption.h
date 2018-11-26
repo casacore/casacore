@@ -101,9 +101,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       It defaults to value <src>default</src>.
 //       Note that <src>mmapold</src> is almost the same as <src>default</src>.
 //       Only on 32-bit systems it is different.
-//  <li> <src>table.tsm.maxcachesizemb</src> gives the maximum cache size in MB
-//       for option <src>TSMOption::Cache</src>. A value -1 means that
-//       the system determines the maximum. A value 0 means unlimited.
+//  <li> <src>table.tsm.maxcachesizemb</src> gives the maximum cache size in
+//       MibiByte for option <src>TSMOption::Cache</src>. A value -1 means
+//       that the system determines the maximum. A value 0 means unlimited.
 //       It defaults to -1.
 //       Note it can always be overridden using class ROTiledStManAccessor.
 //  <li> <src>table.tsm.buffersize</src> gives the buffer size for option
@@ -133,6 +133,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Create an option object.
     // The parameter values are described in the synopsis.
     // A size value -2 means reading that size from the aipsrc file.
+    // The buffer size has to be given in bytes.
+    // The maximum cache size has to be given in MibiBytes (1024*1024 bytes).
     TSMOption (Option option=Aipsrc, Int bufferSize=-2,
                Int maxCacheSizeMB=-2);
 
@@ -148,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int bufferSize() const
       { return itsBufferSize; }
 
-    // Get the maximum cache size. -1 means undefined.
+    // Get the maximum cache size (in MibiByte). -1 means undefined.
     Int maxCacheSizeMB() const
       { return itsMaxCacheSize; }
 
