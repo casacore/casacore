@@ -5,7 +5,7 @@ import tarfile
 import shutil
 from ftplib import FTP
 import optparse
-import string
+import socket
 
 def detect_domain():
     choices = ["atnf", "astron", "nrao"]
@@ -30,7 +30,7 @@ parser.add_option('-l', '--location', dest='location', type="choice",
                   choices=["atnf", "astron", "nrao"],
                   default=detect_domain(),
                   help="Select TARGET from: %s [default=%%default]" % \
-                  string.join(["atnf", "astron", "nrao"], ", "))
+                  str.join(", ", ["atnf", "astron", "nrao"]))
 parser.add_option('-v', '--verbose', dest='verbose',
                   action="store_true",
                   help='show helpful status')
@@ -72,14 +72,14 @@ def get_measures_dir():
 
 def vprint(msg):
     if OPTS.verbose:
-        print msg
+        print (msg)
 
 # try to find out where the measures data directories are located
 if len(args) == 1:
     if os.path.exists(args[0]):
         measdir = args[0]
     else:
-        print "Measures data directory doesn't exist. Please create  it first"
+        print ("Measures data directory doesn't exist. Please create  it first")
         sys.exit(1)
 else:
     measdir = get_measures_dir()
@@ -90,19 +90,19 @@ vprint("Using measures data directory '%s'" % measdir)
 # globals
 md5suff = '.md5sum'
 name = 'measures_data.tar.bz2'
-dataservers = { 'ATNF': "ftp.atnf.csiro.au",
-                'ASTRON': 'ftp.astron.nl',
-                'NRAO': 'ftp.nrao.edu' }
-datadirs = {"ATNF": 'pub/software/casacore/measures_data',
-            "ASTRON": 'pub/software/casacore/measures_data',
-            "NRAO": 'pub/software/casacore/measures_data' }
+dataservers = { 'atnf': "ftp.atnf.csiro.au",
+                'astron': 'ftp.astron.nl',
+                'nrao': 'ftp.nrao.edu' }
+datadirs = {"atnf": 'pub/software/casacore/measures_data',
+            "astron": 'pub/software/casacore/measures_data',
+            "nrao": 'pub/software/casacore/measures_data' }
 tmpdata = '/tmp/'+ name
 tmpmd5 = tmpdata+md5suff
 
 vprint("Connecting to server %s" % dataservers[OPTS.location])
 ftp = FTP(dataservers[OPTS.location])   # connect to host, default port
 ftp.login()               # user anonymous, passwd anonymous@
-ftp.cwd(datadir[OPTS.location])
+ftp.cwd(datadirs[OPTS.location])
 
 vprint("Checking if an update is required...")
 
@@ -119,7 +119,7 @@ try:
 except IOError:
     md5old = None
 
-#print md5new, md5old
+#print (md5new, md5old)
 if md5new != md5old:
     vprint("Update required. Downloading measures data archive...")
     ftp.retrbinary('RETR %s' % name, open(tmpdata, 'wb').write)
