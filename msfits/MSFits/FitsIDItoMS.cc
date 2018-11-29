@@ -1756,13 +1756,13 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
 }
 
 // Van Vleck relationship
-static double rho_2(Double r)
+static Double rho_2(Double r)
 {
   return sin((C::pi * r) / 2);
 }
 
 // Fred Schwab's rational approximation for 2-bit sampling with n =
-// 3.336 and optimally chosen v_0.  See VLBA Correlat Memo 75.
+// 3.336 and optimally chosen v_0.  See VLBA Correlator Memo 75.
 static Double rho_4(Double r)
 {
   Double rr = r*r;
@@ -2151,16 +2151,24 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  alfa = 2.0 / C::pi;
 	  gamma = 1.0 * 64.0 / 63.0;
 	  rho = rho_2;
-	} else {
+	} else if ((digiLevels(ant1) == 2 && digiLevels(ant2) == 4) ||
+		   (digiLevels(ant1) == 4 && digiLevels(ant2) == 2)) {
 	  Rm = 5.8784;
 	  alfa = 0.882518;
 	  gamma = 3.335875 * 64.0 / 63.0;
+	} else {
+	  // Unsupported.  Assume a large number of levels (alpha =
+	  // 1.0) and trust the user is going to normalize the
+	  // visibilities (e.g. by running the accor task in CASA).
+	  Rm = 1.0 / (A * H);
+	  alfa = 1.0;
+	  gamma = 1.0;
 	}
 
 	bfactc = (gamma*gamma) / (A * Rm * alfa * H);
 	bfacta = (gamma*gamma) / (A * Rm * H);
 
-	if (ant1 != ant2) {
+	if (ant1 != ant2 || rho == NULL) {
 	  // Cross-correlations
 	  vis *= Complex(bfactc);
 	} else {
@@ -2712,7 +2720,9 @@ void FITSIDItoMS1::fillFeedTable() {
   for (Int inRow=0; inRow<nAnt; inRow++) {
     digiLevels.define(antIdFromNo(anNo(inRow)),digLev(inRow));
     if (itsCorrelat == "DIFX" && digLev(inRow) != 2 && digLev(inRow) != 4) {
-      *itsLog << LogIO::SEVERE << "unsupported number of digitizer levels for ANTENNA_NO " << anNo(inRow) << LogIO::POST;
+      *itsLog << LogIO::SEVERE << "unsupported number of digitizer levels for ANTENNA_NO " << anNo(inRow) << "."
+	      << endl << " Digital corrections and amplitude scaling will not be applied to"
+	      << endl << " baselines involving this antenna." << LogIO::POST;
     }
   }
 
