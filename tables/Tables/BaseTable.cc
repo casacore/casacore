@@ -247,6 +247,7 @@ Bool BaseTable::openedForWrite() const
     MPI_Initialized(&mpi_initialized);
     MPI_Finalized(&mpi_finalized);
     if(mpi_initialized == true && mpi_finalized == false){
+        MPI_Comm_rank(itsMpiComm, &rank);
         if(rank > 0){
             return false;
         }
