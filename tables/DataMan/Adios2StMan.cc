@@ -88,6 +88,9 @@ Adios2StMan::~Adios2StMan()
         itsAdiosEngine->EndStep();
         itsAdiosEngine->Close();
     }
+    for (uInt i=0; i<ncolumn(); ++i) {
+      delete itsColumnPtrBlk[i];
+    }
 }
 
 void Adios2StMan::Adios2StManCommon(

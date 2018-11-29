@@ -67,6 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       colMap_p        (static_cast<ConcatColumn*>(0)),
       changed_p       (True)
   {
+    ///cout<<"cctab1="<<sizeof(*this)<<' '<<this<<' '<<&rows_p<<' '<<&(rows())<<endl;
     noWrite_p = True;
     if (tables.nelements() == 0) {
       throw TableError("ConcatTable: at least one table has to be given");
@@ -76,7 +77,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rows_p.reserve (tables.nelements() + 1);
     for (uInt i=0; i<tables.nelements(); ++i) {
       //# Link to referenced table, otherwise it will be destructed.
-      baseTabPtr_p[i] = tables[i];;
+      baseTabPtr_p[i] = tables[i];
       baseTabPtr_p[i]->link();
       rows_p.add (baseTabPtr_p[i]->nrow());
     }
@@ -98,6 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       colMap_p        (static_cast<ConcatColumn*>(0)),
       changed_p       (True)
   {
+    ///cout<<"cctab1="<<sizeof(*this)<<' '<<this<<' '<<&rows_p<<' '<<&(rows())<<endl;
     noWrite_p = True;
     if (tableNames.nelements() == 0) {
       throw TableError("ConcatTable: at least one table has to be given");
@@ -335,7 +337,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Note that we size the table instead of reserve, because push_back
     // gives the following warning for CountedPtr:
     //  "dereferencing pointer aonymous  does break strict-aliasing rule"
-    vector<CountedPtr<TableDesc> > actualDesc(baseTabPtr_p.nelements());;
+    vector<CountedPtr<TableDesc> > actualDesc(baseTabPtr_p.nelements());
     Bool equalDataTypes;
     for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
       actualDesc[i] = CountedPtr<TableDesc> (new TableDesc
