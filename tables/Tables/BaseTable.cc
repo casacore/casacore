@@ -174,11 +174,16 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
-    int rank = 0;
-    int mpi_initialized, mpi_finalized;
-    MPI_Initialized(&mpi_initialized);
+    int mpi_finalized;
     MPI_Finalized(&mpi_finalized);
-    if(mpi_initialized == true && mpi_finalized == false){
+    if(!mpi_finalized)
+    {
+        int mpi_initialized;
+        MPI_Initialized(&mpi_initialized);
+        if(!mpi_initialized){
+            MPI_Init(0,0);
+        }
+        int rank = 0;
         MPI_Comm_rank(itsMpiComm, &rank);
         if(rank > 0){
             return false;
@@ -242,11 +247,16 @@ Bool BaseTable::makeTableDir()
 Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
-    int rank = 0;
-    int mpi_initialized, mpi_finalized;
-    MPI_Initialized(&mpi_initialized);
+    int mpi_finalized;
     MPI_Finalized(&mpi_finalized);
-    if(mpi_initialized == true && mpi_finalized == false){
+    if(!mpi_finalized)
+    {
+        int mpi_initialized;
+        MPI_Initialized(&mpi_initialized);
+        if(!mpi_initialized){
+            MPI_Init(0,0);
+        }
+        int rank = 0;
         MPI_Comm_rank(itsMpiComm, &rank);
         if(rank > 0){
             return false;

@@ -38,8 +38,7 @@ std::vector<adios2::Params> Adios2StMan::itsAdiosTransportParamsVec;
 MPI_Comm Adios2StMan::itsMpiComm = MPI_COMM_WORLD;
 
 Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
-    : DataManager(),
-    itsAdios(mpiComm, true)
+    : DataManager()
 {
     itsMpiComm = mpiComm;
     std::string engineType;
@@ -52,16 +51,32 @@ Adios2StMan::Adios2StMan(
         MPI_Comm mpiComm, std::string engineType,
         std::map<std::string, std::string> engineParams,
         std::vector<std::map<std::string, std::string>> transportParams)
-    : DataManager(),
-    itsAdios(mpiComm, true)
+    : DataManager()
 {
     itsMpiComm = mpiComm;
     itsAdiosEngineType = engineType;
     itsAdiosEngineParams = engineParams;
     itsAdiosTransportParamsVec = transportParams;
 
-    itsAdiosIO =
-        std::make_shared<adios2::IO>(itsAdios.DeclareIO("Adios2StMan"));
+    int mpi_finalized;
+    MPI_Finalized(&mpi_finalized);
+    if(mpi_finalized)
+    {
+        throw(std::runtime_error("MPI has been finalized when initializing Adios2StMan"));
+    }
+    else
+    {
+        int mpi_initialized;
+        MPI_Initialized(&mpi_initialized);
+        if(!mpi_initialized)
+        {
+            MPI_Init(0,0);
+        }
+    }
+
+    itsAdios = std::make_shared<adios2::ADIOS>(itsMpiComm, true);
+
+    itsAdiosIO = std::make_shared<adios2::IO>(itsAdios->DeclareIO("Adios2StMan"));
 
     if (itsAdiosEngineType.empty() == false)
     {
