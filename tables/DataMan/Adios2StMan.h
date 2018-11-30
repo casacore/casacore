@@ -41,22 +41,13 @@ class Adios2StManColumn;
 class Adios2StMan : public DataManager
 {
 public:
-    Adios2StMan();
-    Adios2StMan(
-        std::string engineType, std::map<std::string, std::string> engineParams,
-        std::vector<std::map<std::string, std::string>> transportParams);
-#ifdef HAVE_MPI
-    Adios2StMan(MPI_Comm mpiComm);
-    Adios2StMan(
-        MPI_Comm mpiComm, std::string engineType,
-        std::map<std::string, std::string> engineParams,
-        std::vector<std::map<std::string, std::string>> transportParams);
-#endif
-    void Adios2StManCommon(
-        const std::string &engineType,
-        const std::map<std::string, std::string> &engineParams,
-        const std::vector<std::map<std::string, std::string>> &transportParams);
+    Adios2StMan(MPI_Comm mpiComm = MPI_COMM_WORLD);
+    Adios2StMan(MPI_Comm mpiComm, std::string engineType,
+            std::map<std::string, std::string> engineParams,
+            std::vector<std::map<std::string, std::string>> transportParams);
+
     virtual ~Adios2StMan();
+
     virtual DataManager *clone() const;
     virtual String dataManagerType() const;
     virtual String dataManagerName() const;
@@ -97,10 +88,7 @@ private:
     static adios2::Params itsAdiosEngineParams;
     static std::vector<adios2::Params> itsAdiosTransportParamsVec;
 
-    static bool itsUsingMpi;
-#ifdef HAVE_MPI
     static MPI_Comm itsMpiComm;
-#endif
 
 }; // end of class Adios2StMan
 
