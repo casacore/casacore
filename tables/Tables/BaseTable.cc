@@ -181,7 +181,18 @@ Bool BaseTable::makeTableDir()
         int mpi_initialized;
         MPI_Initialized(&mpi_initialized);
         if(!mpi_initialized){
+#ifdef USE_THREADS
+            int provided;
+            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
+            if(provided != MPI_THREAD_MULTIPLE)
+            {
+                throw(std::runtime_error(
+                            "Casacore is built with thread and MPI enabled, \
+                            but the MPI installation does not support threads"));
+            }
+#else
             MPI_Init(0,0);
+#endif
         }
         int rank = 0;
         MPI_Comm_rank(itsMpiComm, &rank);
@@ -254,7 +265,18 @@ Bool BaseTable::openedForWrite() const
         int mpi_initialized;
         MPI_Initialized(&mpi_initialized);
         if(!mpi_initialized){
+#ifdef USE_THREADS
+            int provided;
+            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
+            if(provided != MPI_THREAD_MULTIPLE)
+            {
+                throw(std::runtime_error(
+                            "Casacore is built with thread and MPI enabled, \
+                            but the MPI installation does not support threads"));
+            }
+#else
             MPI_Init(0,0);
+#endif
         }
         int rank = 0;
         MPI_Comm_rank(itsMpiComm, &rank);

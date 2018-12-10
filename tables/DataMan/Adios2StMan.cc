@@ -70,7 +70,18 @@ Adios2StMan::Adios2StMan(
         MPI_Initialized(&mpi_initialized);
         if(!mpi_initialized)
         {
+#ifdef USE_THREADS
+            int provided;
+            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
+            if(provided != MPI_THREAD_MULTIPLE)
+            {
+                throw(std::runtime_error(
+                            "Casacore is built with thread and MPI enabled, \
+                            but the MPI installation does not support threads"));
+            }
+#else
             MPI_Init(0,0);
+#endif
         }
     }
 
