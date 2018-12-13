@@ -23,12 +23,14 @@ set(Python_ADDITIONAL_VERSIONS 3.5 3.4)
 find_package(Python REQUIRED)
 
 if (PYTHONINTERP_FOUND)
-    if (APPLE)
-        find_package(Boost REQUIRED COMPONENTS python3)
+    find_package(Boost REQUIRED)
+    if (${Boost_MAJOR_VERSION} STREQUAL 1 AND ${Boost_MINOR_VERSION} STRGREATER 66)
+        # Boost>1.67 Python components require a Python version suffix
+        set(BOOST_PYTHON_SEARCH_VERSION python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
     else ()
-        # NOTE: the name of the python3 version of boost is probably Debian/Ubuntu specific
-        find_package(Boost REQUIRED COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-    endif (APPLE)
+        set(BOOST_PYTHON_SEARCH_VERSION python${PYTHON_VERSION_MAJOR})
+    endif ()
+    find_package(Boost REQUIRED COMPONENTS ${BOOST_PYTHON_SEARCH_VERSION})
 
     find_package (NUMPY REQUIRED)
 
