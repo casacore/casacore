@@ -43,6 +43,8 @@ class Adios2StManColumn : public StManColumn
 public:
     Adios2StManColumn(Adios2StMan *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
 
+    virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
+
     virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
                         char aOpenMode) = 0;
     virtual void setShapeColumn(const IPosition &aShape);
@@ -80,6 +82,30 @@ public:
     virtual void getComplexV(uInt aRowNr, Complex *aDataPtr);
     virtual void getDComplexV(uInt aRowNr, DComplex *aDataPtr);
     virtual void getStringV(uInt aRowNr, String *aDataPtr);
+
+    virtual void putSliceBoolV(uInt rownr, const Slicer& ns, const Array<Bool>* dataPtr);
+    virtual void putSliceuCharV(uInt rownr, const Slicer& ns, const Array<uChar>* dataPtr);
+    virtual void putSliceShortV(uInt rownr, const Slicer& ns, const Array<Short>* dataPtr);
+    virtual void putSliceuShortV(uInt rownr, const Slicer& ns, const Array<uShort>* dataPtr);
+    virtual void putSliceIntV(uInt rownr, const Slicer& ns, const Array<Int>* dataPtr);
+    virtual void putSliceuIntV(uInt rownr, const Slicer& ns, const Array<uInt>* dataPtr);
+    virtual void putSlicefloatV(uInt rownr, const Slicer& ns, const Array<float>* dataPtr);
+    virtual void putSlicedoubleV(uInt rownr, const Slicer& ns, const Array<double>* dataPtr);
+    virtual void putSliceComplexV(uInt rownr, const Slicer& ns, const Array<Complex>* dataPtr);
+    virtual void putSliceDComplexV(uInt rownr, const Slicer& ns, const Array<DComplex>* dataPtr);
+    virtual void putSliceStringV(uInt rownr, const Slicer& ns, const Array<String>* dataPtr);
+
+    virtual void getSliceBoolV(uInt rownr, const Slicer& ns, Array<Bool>* dataPtr);
+    virtual void getSliceuCharV(uInt rownr, const Slicer& ns, Array<uChar>* dataPtr);
+    virtual void getSliceShortV(uInt rownr, const Slicer& ns, Array<Short>* dataPtr);
+    virtual void getSliceuShortV(uInt rownr, const Slicer& ns, Array<uShort>* dataPtr);
+    virtual void getSliceIntV(uInt rownr, const Slicer& ns, Array<Int>* dataPtr);
+    virtual void getSliceuIntV(uInt rownr, const Slicer& ns, Array<uInt>* dataPtr);
+    virtual void getSlicefloatV(uInt rownr, const Slicer& ns, Array<float>* dataPtr);
+    virtual void getSlicedoubleV(uInt rownr, const Slicer& ns, Array<double>* dataPtr);
+    virtual void getSliceComplexV(uInt rownr, const Slicer& ns, Array<Complex>* dataPtr);
+    virtual void getSliceDComplexV(uInt rownr, const Slicer& ns, Array<DComplex>* dataPtr);
+    virtual void getSliceStringV(uInt rownr, const Slicer& ns, Array<String>* dataPtr);
 
 
 protected:
@@ -231,14 +257,31 @@ public:
         itsAdiosCount[0] = 1;
         for (size_t i = 1; i < itsAdiosShape.size(); ++i)
         {
-            itsAdiosStart[i] = ns.start()(i - 1);
-            itsAdiosCount[i] = ns.length()(i - 1);
+            itsAdiosStart[i] = ns.start()(ns.ndim() - i);
+            itsAdiosCount[i] = ns.length()(ns.ndim() - i);
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
         Bool deleteIt;
         T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+    }
+
+    virtual void putSliceV(uInt aRowNr, const Slicer &ns, const void *dataPtr)
+    {
+        itsAdiosStart[0] = aRowNr;
+        itsAdiosCount[0] = 1;
+        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+        {
+            itsAdiosStart[i] = ns.start()(ns.ndim() - i);
+            itsAdiosCount[i] = ns.length()(ns.ndim() - i);
+        }
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        Bool deleteIt;
+        const auto *arrayPtr = reinterpret_cast<const Array<T>*>(dataPtr);
+        const T *data = arrayPtr->getStorage(deleteIt);
+        itsAdiosEngine->Put<T>(itsAdiosVariable, data,adios2::Mode::Sync);
+        arrayPtr->freeStorage (data, deleteIt);
     }
 
     virtual void getArrayColumnV(void *dataPtr)
