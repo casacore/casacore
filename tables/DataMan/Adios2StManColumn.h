@@ -168,10 +168,7 @@ public:
             itsAdiosCount[i] = itsAdiosShape[i];
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Put(itsAdiosVariable, data, adios2::Mode::Sync);
-        (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
+        toAdios(dataPtr);
     }
 
     virtual void getArrayV(uInt rownr, void *dataPtr)
@@ -184,10 +181,7 @@ public:
             itsAdiosCount[i] = itsAdiosShape[i];
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data, adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        fromAdios(dataPtr);
     }
 
     virtual void putScalarV(uInt rownr, const void *dataPtr)
@@ -212,7 +206,8 @@ public:
             rownrs.convert();
         }
         Bool deleteIt;
-        const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        const T *data = arrayPtr->getStorage(deleteIt);
         itsAdiosCount[0] = 1;
         for (size_t i = 1; i < itsAdiosShape.size(); ++i)
         {
@@ -225,7 +220,7 @@ public:
             itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
             itsAdiosEngine->Put(itsAdiosVariable, data + i * itsCasaShape.nelements(), adios2::Mode::Sync);
         }
-        (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
+        arrayPtr->freeStorage(data, deleteIt);
     }
 
     virtual void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
@@ -235,7 +230,8 @@ public:
             rownrs.convert();
         }
         Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        T *data = arrayPtr->getStorage(deleteIt);
         itsAdiosCount[0] = 1;
         for (size_t i = 1; i < itsAdiosShape.size(); ++i)
         {
@@ -248,7 +244,7 @@ public:
             itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
             itsAdiosEngine->Get(itsAdiosVariable, data + i * itsCasaShape.nelements(), adios2::Mode::Sync);
         }
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        arrayPtr->putStorage(data, deleteIt);
     }
 
     virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
@@ -261,10 +257,7 @@ public:
             itsAdiosCount[i] = ns.length()(ns.ndim() - i);
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        fromAdios(dataPtr);
     }
 
     virtual void putSliceV(uInt aRowNr, const Slicer &ns, const void *dataPtr)
@@ -277,11 +270,7 @@ public:
             itsAdiosCount[i] = ns.length()(ns.ndim() - i);
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        const auto *arrayPtr = reinterpret_cast<const Array<T>*>(dataPtr);
-        const T *data = arrayPtr->getStorage(deleteIt);
-        itsAdiosEngine->Put<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        arrayPtr->freeStorage (data, deleteIt);
+        toAdios(dataPtr);
     }
 
     virtual void getArrayColumnV(void *dataPtr)
@@ -290,10 +279,7 @@ public:
             i=0;
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosShape});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        fromAdios(dataPtr);
     }
 
     virtual void getColumnSliceV(const Slicer &ns, void *dataPtr)
@@ -306,15 +292,41 @@ public:
             itsAdiosCount[i] = ns.length()(i - 1);
         }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        fromAdios(dataPtr);
     }
 
 private:
     adios2::Variable<T> itsAdiosVariable;
     const String itsStringArrayBarrier = "ADIOS2BARRIER";
+
+    Array<T> *asArrayPtr(void *dataPtr) const
+    {
+        return reinterpret_cast<Array<T>*>(dataPtr);
+    }
+
+    const Array<T> *asArrayPtr(const void *dataPtr) const
+    {
+        return reinterpret_cast<const Array<T>*>(dataPtr);
+    }
+
+    void toAdios(const void *dataPtr)
+    {
+        Bool deleteIt;
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        const T *data = arrayPtr->getStorage(deleteIt);
+        itsAdiosEngine->Put<T>(itsAdiosVariable, data,adios2::Mode::Sync);
+        arrayPtr->freeStorage (data, deleteIt);
+    }
+
+    void fromAdios(void *dataPtr)
+    {
+        Bool deleteIt;
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        T *data = arrayPtr->getStorage(deleteIt);
+        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
+        arrayPtr->putStorage(data, deleteIt);
+    }
+
 }; // class Adios2StManColumnT
 
 } // namespace casacore
