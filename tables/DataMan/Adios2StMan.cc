@@ -27,6 +27,7 @@
 
 #include "Adios2StManColumn.h"
 #include <casacore/casa/Containers/Record.h>
+#include <casacore/tables/DataMan/DataManError.h>
 
 namespace casacore
 {
@@ -255,6 +256,8 @@ DataManagerColumn *Adios2StMan::makeColumnCommon(const String &name,
         case TpArrayString:
             aColumn = new Adios2StManColumnT<std::string>(this, aDataType, name, itsAdiosIO);
             break;
+        default:
+            throw (DataManInvDT (name));
     }
     itsColumnPtrBlk[ncolumn()] = aColumn;
     return aColumn;
