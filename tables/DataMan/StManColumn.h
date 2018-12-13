@@ -287,12 +287,7 @@ private:
 
     // Throw an "invalid operation" exception for the default
     // implementation of getArray.
-    void throwGetArray() const;
-
-    // Throw an "invalid operation" exception for the default
-    // implementation of putArray.
-    void throwPutArray() const;
-
+    void throwInvalidOp(const String &op) const;
 
 protected:
     // Get the scalar values in the entire column.
