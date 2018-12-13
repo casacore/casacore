@@ -18,7 +18,7 @@ if (PYTHON3_FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs)
 endif()
 
 # Detect the python properties
-set(Python_ADDITIONAL_VERSIONS 3.5 3.4)
+set(Python_ADDITIONAL_VERSIONS 3.7 3.6 3.5 3.4)
 
 find_package(Python REQUIRED)
 
