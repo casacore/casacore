@@ -24,7 +24,7 @@ $casa_checktool ./tTableGramNull 'select from tTableGramNull_tmp.tab where isnul
 $casa_checktool ../../apps/taql 'update tTableGramNull_tmp.tab set cola=iif(rowid()%2==0, nullarray(1), array([1:6],[2,3]))'
 $casa_checktool ./tTableGramNull 'select rowid() from tTableGramNull_tmp.tab where isnull(cola)'
 $casa_checktool ./tTableGramNull 'select sum(cola) from tTableGramNull_tmp.tab'
-$casa_checktool ../../apps/taql 'select cola+1 from tTableGramNull_tmp.tab'
+$casa_checktool ../../apps/taql -ps 'select cola+1 from tTableGramNull_tmp.tab'
 
 # Insert 3 rows.
 $casa_checktool ../../apps/taql 'insert into tTableGramNull_tmp.tab (cola) values (array(5,0)), (nullarray(1)), (array(3,1))'

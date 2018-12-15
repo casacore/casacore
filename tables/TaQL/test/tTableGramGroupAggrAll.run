@@ -25,7 +25,6 @@ if test "$1" = 1; then
   exit 0;
 fi
 
-
 # Create a symlink to achieve that casacore_memcheck (if used) will use
 # that name 
 rm -f tTableGramGroupAggrAll
@@ -38,19 +37,19 @@ ln -s tTableGram tTableGramGroupAggrAll
 # This could be changed in the future.
 echo "*** Testing aggregate functions for all data types ..."
 # Testing numeric ones.
-for COL in ab ag ae arr1 'int(arr1)' 'complex(arr1,0)'
+for COL in ab ag ae arr1 'int(arr1)' 'complex(arr1/10.,rownumber()/100.)'
 do
     # Check gsum against sum, etc.
-  for FUNC in min max sum product sumsqr mean variance stddev rms
+  for FUNC in min max sum product sumsqr mean variance samplevariance stddev samplestddev rms
   do
     ./tTableGramGroupAggrAll "select $FUNC(gaggr($COL)) as A, g$FUNC($COL) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B"
   done
   ./tTableGramGroupAggrAll "select fractile(gaggr($COL), 0.4) as A, gfractile($COL,0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B"
 done
 # Check gsums against sums, etc.
-for COL in arr1 'int(arr1)' 'complex(arr1,0)'
+for COL in arr1 'int(arr1)' 'complex(arr1/10.,rownumber()/100.)'
 do
-  for FUNC in min max sum product sumsqr mean variance stddev rms
+  for FUNC in min max sum product sumsqr mean variance samplevariance stddev samplestddev rms
   do
     ./tTableGramGroupAggrAll "using style python select ${FUNC}s(gaggr($COL),0) as A, g${FUNC}s($COL) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)"
   done

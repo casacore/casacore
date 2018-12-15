@@ -124,10 +124,14 @@ void TableExprFuncNode::fillUnits()
     case arrmeansFUNC:
     case runmeanFUNC:
     case boxmeanFUNC:
-    case arrstddevFUNC:
-    case arrstddevsFUNC:
-    case runstddevFUNC:
-    case boxstddevFUNC:
+    case arrstddev0FUNC:
+    case arrstddevs0FUNC:
+    case runstddev0FUNC:
+    case boxstddev0FUNC:
+    case arrstddev1FUNC:
+    case arrstddevs1FUNC:
+    case runstddev1FUNC:
+    case boxstddev1FUNC:
     case arravdevFUNC:
     case arravdevsFUNC:
     case runavdevFUNC:
@@ -146,6 +150,7 @@ void TableExprFuncNode::fillUnits()
     case boxfractileFUNC:
     case arrayFUNC:
     case transposeFUNC:
+    case areverseFUNC:
     case resizeFUNC:
     case diagonalFUNC:
     case marrayFUNC:
@@ -158,13 +163,15 @@ void TableExprFuncNode::fillUnits()
     case gmaxFUNC:
     case gsumFUNC:
     case gmeanFUNC:
-    case gstddevFUNC:
+    case gstddev0FUNC:
+    case gstddev1FUNC:
     case grmsFUNC:
     case gminsFUNC:
     case gmaxsFUNC:
     case gsumsFUNC:
     case gmeansFUNC:
-    case gstddevsFUNC:
+    case gstddevs0FUNC:
+    case gstddevs1FUNC:
     case grmssFUNC:
     case gaggrFUNC:
     case gmedianFUNC:
@@ -180,12 +187,18 @@ void TableExprFuncNode::fillUnits()
     case boxsumsqrFUNC:
     case gsumsqrFUNC:
     case gsumsqrsFUNC:
-    case arrvarianceFUNC:
-    case arrvariancesFUNC:
-    case runvarianceFUNC:
-    case boxvarianceFUNC: 
-    case gvarianceFUNC:
-    case gvariancesFUNC:
+    case arrvariance0FUNC:
+    case arrvariances0FUNC:
+    case runvariance0FUNC:
+    case boxvariance0FUNC: 
+    case gvariance0FUNC:
+    case gvariances0FUNC:
+    case arrvariance1FUNC:
+    case arrvariances1FUNC:
+    case runvariance1FUNC:
+    case boxvariance1FUNC: 
+    case gvariance1FUNC:
+    case gvariances1FUNC:
      // These functions return the square of their child.
       if (! childUnit.empty()) {
         Quantity q(1., childUnit);
@@ -612,6 +625,8 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     if (dataType() == NTInt) {
 	return TableExprFuncNode::getInt (id);
     }
+    // Delta degrees of freedom for variance/stddev.
+    uInt ddof = 1;
     switch(funcType_p) {
     case piFUNC:
 	return C::pi;
@@ -766,19 +781,32 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	    return mean (operands_p[0]->getArrayDouble (id));
 	}
 	return operands_p[0]->getDouble (id);
-    case arrvarianceFUNC:
+    case arrvariance0FUNC:
+      ddof = 0;     // fall through
+    case arrvariance1FUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return variance (operands_p[0]->getArrayDouble (id));
+          if (operands_p[0]->dataType() == NTComplex) {
+	    return real(variance (operands_p[0]->getArrayDComplex(id), ddof));
+          }
+          return variance (operands_p[0]->getArrayDouble(id), ddof);
 	}
 	return 0;
-    case arrstddevFUNC:
+    case arrstddev0FUNC:
+      ddof = 0;     // fall through
+    case arrstddev1FUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return stddev (operands_p[0]->getArrayDouble (id));
+          if (operands_p[0]->dataType() == NTComplex) {
+	    return real(stddev (operands_p[0]->getArrayDComplex(id), ddof));
+          }
+          return stddev (operands_p[0]->getArrayDouble(id), ddof);
 	}
 	return 0;
     case arravdevFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return avdev (operands_p[0]->getArrayDouble (id));
+          if (operands_p[0]->dataType() == NTComplex) {
+	    return real(avdev (operands_p[0]->getArrayDComplex (id)));
+          }
+          return avdev (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
     case arrrmsFUNC:
@@ -954,6 +982,12 @@ String TableExprFuncNode::getString (const TableExprId& id)
       {
 	String str = operands_p[0]->getString (id);
 	str.capitalize();
+	return str;
+      }
+    case sreverseFUNC:
+      {
+	String str = operands_p[0]->getString (id);
+	str.reverse();
 	return str;
       }
     case trimFUNC:
@@ -1317,9 +1351,13 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrmeanFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
-    case arrvarianceFUNC:
-    case arrstddevFUNC:
+    case arrvariance0FUNC:
+    case arrvariance1FUNC:
+    case arrstddev0FUNC:
+    case arrstddev1FUNC:
     case arravdevFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
     case arrrmsFUNC:
     case arrmedianFUNC:
 	checkNumOfArg (1, 1, nodes);
@@ -1415,8 +1453,10 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrminsFUNC:
     case arrmaxsFUNC:
     case arrmeansFUNC:
-    case arrvariancesFUNC:
-    case arrstddevsFUNC:
+    case arrvariances0FUNC:
+    case arrvariances1FUNC:
+    case arrstddevs0FUNC:
+    case arrstddevs1FUNC:
     case arravdevsFUNC:
     case arrrmssFUNC:
     case arrmediansFUNC:
@@ -1431,8 +1471,10 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case runminFUNC:
     case runmaxFUNC:
     case runmeanFUNC:
-    case runvarianceFUNC:
-    case runstddevFUNC:
+    case runvariance0FUNC:
+    case runvariance1FUNC:
+    case runstddev0FUNC:
+    case runstddev1FUNC:
     case runavdevFUNC:
     case runrmsFUNC:
     case runmedianFUNC:
@@ -1447,8 +1489,10 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxminFUNC:
     case boxmaxFUNC:
     case boxmeanFUNC:
-    case boxvarianceFUNC:
-    case boxstddevFUNC:
+    case boxvariance0FUNC:
+    case boxvariance1FUNC:
+    case boxstddev0FUNC:
+    case boxstddev1FUNC:
     case boxavdevFUNC:
     case boxrmsFUNC:
     case boxmedianFUNC:
@@ -1459,8 +1503,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxnfalseFUNC:
     case arrayFUNC:
     case transposeFUNC:
-    case diagonalFUNC:
+    case areverseFUNC:
     case resizeFUNC:
+    case diagonalFUNC:
       {
         // Most functions can have Int or Double in and result in Double.
         dtin = NTReal;
@@ -1493,6 +1538,23 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             dtin = NTNumeric;
             dtout = NTDouCom;
             break;
+        case arrvariances0FUNC:
+        case arrvariances1FUNC:
+        case arrstddevs0FUNC:
+        case arrstddevs1FUNC:
+        case arravdevsFUNC:
+        case runvariance0FUNC:
+        case runvariance1FUNC:
+        case runstddev0FUNC:
+        case runstddev1FUNC:
+        case runavdevFUNC:
+        case boxvariance0FUNC:
+        case boxvariance1FUNC:
+        case boxstddev0FUNC:
+        case boxstddev1FUNC:
+        case boxavdevFUNC:
+            dtin = NTNumeric;
+            break;
 	case arrfractilesFUNC:
 	case runfractileFUNC:
 	case boxfractileFUNC:
@@ -1519,6 +1581,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             optarg = 1;
 	case arrayFUNC:
         case transposeFUNC:
+        case areverseFUNC:
         case diagonalFUNC:
 	    dtin = dtout = NTAny;
 	    break;
@@ -1595,6 +1658,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case upcaseFUNC:
     case downcaseFUNC:
     case capitalizeFUNC:
+    case sreverseFUNC:
     case trimFUNC:
     case ltrimFUNC:
     case rtrimFUNC:

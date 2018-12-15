@@ -39,30 +39,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  // Aggregation and GROUPBY/HAVING clause are handled as follows:
-  // Possibly support ROLLUP (to generate subtotals); cannot be used with median
-  //  if supported, give such columns the value 0 ("TOTAL" for string).
-  // - an aggregation function is detected in select (GROUPBY not needed)
-  // -    detected by TaQLNode??? Probably not, otherwise cannot use MAX or so.
-  // - thus ExprFuncNode must support gmin, etc and know it is an aggr function.
-  //   maybe have an ExprFuncNode::isAggregate, user defined funcs can be used??
-  //   support of user defined aggr funcs makes life more complicated.
-  // - if GROUPBY or HAVING is given, select must contain an aggr function
-  // - TableParse will know if the SELECT and/or HAVING have an aggregate
-  // - HAVING can refer to columns in select, but can also have its own aggr.
-  // TableParse has map<GroupKeySet,GroupAggr>, fills a GroupKeySet object
-  // from the GROUPBY columns and does:
-  //    for (i=0..nrow) {
-  //      GroupKeySet key = ...
-  //      akey = map.find(key);
-  //      if (akey == map.end()
-  //        akey = map.insert (key, groupaggr);
-  //        akey->second.setRow (row);
-  //      }
-  //      akey.apply (row);
-  //    }
-  // Aggr func is allowed in select,having, not in where,join,orderby,groupby.
-  // Is it allowed at highest level only or also in expressions?
   bool TableExprGroupKey::operator== (const TableExprGroupKey& that) const
   {
     switch (itsDT) {

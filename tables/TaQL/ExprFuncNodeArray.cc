@@ -352,8 +352,10 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::arrminsFUNC:
     case TableExprFuncNode::arrmaxsFUNC:
     case TableExprFuncNode::arrmeansFUNC:
-    case TableExprFuncNode::arrvariancesFUNC:
-    case TableExprFuncNode::arrstddevsFUNC:
+    case TableExprFuncNode::arrvariances0FUNC:
+    case TableExprFuncNode::arrvariances1FUNC:
+    case TableExprFuncNode::arrstddevs0FUNC:
+    case TableExprFuncNode::arrstddevs1FUNC:
     case TableExprFuncNode::arravdevsFUNC:
     case TableExprFuncNode::arrrmssFUNC:
     case TableExprFuncNode::arrmediansFUNC:
@@ -361,6 +363,7 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::arrallsFUNC:
     case TableExprFuncNode::arrntruesFUNC:
     case TableExprFuncNode::arrnfalsesFUNC:
+    case TableExprFuncNode::areverseFUNC:
         if (operands()[axarg]->isConstant()) {
 	    ipos_p = getAxes (0, -1, axarg);
 	    constAxes_p = True;
@@ -506,7 +509,7 @@ IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
   if (order.empty()) {
     // Default is to transpose the full array.
     order.resize (ndim);
-    for (int i=0; i<ndim; ++i) {
+    for (Int i=0; i<ndim; ++i) {
       order[i] = ndim-i-1;
     }
     return order;
@@ -524,6 +527,19 @@ IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
     nord[i] = ndim - ordf[ordf.size()-i-1] - 1;
   }
   return nord;
+}
+
+IPosition TableExprFuncNodeArray::getReverseAxes (const TableExprId& id, uInt ndim)
+{
+  IPosition axes = getAxes(id, ndim);
+  if (axes.empty()) {
+    // Default is to reverse the full array.
+    axes.resize (ndim);
+    for (uInt i=0; i<ndim; ++i) {
+      axes[i] = i;
+    }
+  }
+  return axes;
 }
 
 const IPosition& TableExprFuncNodeArray::getDiagonalArg (const TableExprId& id,
@@ -842,6 +858,11 @@ MArray<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::areverseFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	return reverseArray (arr, getReverseAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::diagonalFUNC:
       {
@@ -1284,6 +1305,11 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::areverseFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return reverseArray (arr, getReverseAxes(id, arr.ndim()));
+      }
     case TableExprFuncNode::diagonalFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
@@ -1334,6 +1360,8 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
     if (dataType() == NTInt) {
 	return TableExprNodeArray::getArrayDouble (id);
     }
+    // Delta degrees of freedom for variance/stddev.
+    uInt ddof = 1;
     switch (funcType()) {
     case TableExprFuncNode::sinFUNC:
 	return sin      (operands()[0]->getArrayDouble(id));
@@ -1562,18 +1590,34 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return partialMeans (arr, getAxes(id, arr.ndim()));
       }
-    case TableExprFuncNode::arrvariancesFUNC:
+    case TableExprFuncNode::arrvariances0FUNC:
+      ddof = 0;    // fall through
+    case TableExprFuncNode::arrvariances1FUNC:
       {
-	MArray<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialVariances (arr, getAxes(id, arr.ndim()));
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(partialVariances (arr, getAxes(id, arr.ndim()), ddof));
+        }
+        MArray<Double> arr (operands()[0]->getArrayDouble(id));
+        return partialVariances (arr, getAxes(id, arr.ndim()), ddof);
       }
-    case TableExprFuncNode::arrstddevsFUNC:
+    case TableExprFuncNode::arrstddevs0FUNC:
+      ddof = 0;    // fall through
+    case TableExprFuncNode::arrstddevs1FUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(partialStddevs (arr, getAxes(id, arr.ndim()), ddof));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialStddevs (arr, getAxes(id, arr.ndim()));
+        return partialStddevs (arr, getAxes(id, arr.ndim()), ddof);
       }
     case TableExprFuncNode::arravdevsFUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(partialAvdevs (arr, getAxes(id, arr.ndim())));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return partialAvdevs (arr, getAxes(id, arr.ndim()));
       }
@@ -1624,18 +1668,34 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return slidingMeans (arr, getArrayShape(id));
       }
-    case TableExprFuncNode::runvarianceFUNC:
+    case TableExprFuncNode::runvariance0FUNC:
+      ddof = 0;    // fall through
+    case TableExprFuncNode::runvariance1FUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(slidingVariances (arr, getArrayShape(id), ddof));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
-	return slidingVariances (arr, getArrayShape(id));
+	return slidingVariances (arr, getArrayShape(id), ddof);
       }
-    case TableExprFuncNode::runstddevFUNC:
+    case TableExprFuncNode::runstddev0FUNC:
+      ddof = 0;    // fall through
+    case TableExprFuncNode::runstddev1FUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(slidingStddevs (arr, getArrayShape(id), ddof));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
-	return slidingStddevs (arr, getArrayShape(id));
+	return slidingStddevs (arr, getArrayShape(id), ddof);
       }
     case TableExprFuncNode::runavdevFUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(slidingAvdevs (arr, getArrayShape(id)));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return slidingAvdevs (arr, getArrayShape(id));
       }
@@ -1685,18 +1745,34 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return boxedMeans (arr, getArrayShape(id));
       }
-    case TableExprFuncNode::boxvarianceFUNC:
+    case TableExprFuncNode::boxvariance0FUNC:
+      ddof = 0;    // fall through
+    case TableExprFuncNode::boxvariance1FUNC:
       {
-	MArray<Double> arr (operands()[0]->getArrayDouble(id));
-	return boxedVariances (arr, getArrayShape(id));
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(boxedVariances (arr, getArrayShape(id), ddof));
+        }
+        MArray<Double> arr (operands()[0]->getArrayDouble(id));
+        return boxedVariances (arr, getArrayShape(id), ddof);
       }
-    case TableExprFuncNode::boxstddevFUNC:
+    case TableExprFuncNode::boxstddev0FUNC:
+      ddof = 0;    // fall through
+    case TableExprFuncNode::boxstddev1FUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(boxedStddevs (arr, getArrayShape(id), ddof));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
-	return boxedStddevs (arr, getArrayShape(id));
+	return boxedStddevs (arr, getArrayShape(id), ddof);
       }
     case TableExprFuncNode::boxavdevFUNC:
       {
+        if (operands()[0]->dataType() == NTComplex) {
+          MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          return real(boxedAvdevs (arr, getArrayShape(id)));
+        }
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return boxedAvdevs (arr, getArrayShape(id));
       }
@@ -1740,6 +1816,11 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::areverseFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return reverseArray (arr, getReverseAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::diagonalFUNC:
       {
@@ -2019,6 +2100,11 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::areverseFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return reverseArray (arr, getReverseAxes(id, arr.ndim()));
+      }
     case TableExprFuncNode::diagonalFUNC:
       {
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
@@ -2099,6 +2185,7 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
     case TableExprFuncNode::upcaseFUNC:
     case TableExprFuncNode::downcaseFUNC:
     case TableExprFuncNode::capitalizeFUNC:
+    case TableExprFuncNode::sreverseFUNC:
     case TableExprFuncNode::trimFUNC:
     case TableExprFuncNode::ltrimFUNC:
     case TableExprFuncNode::rtrimFUNC:
@@ -2127,6 +2214,11 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	case TableExprFuncNode::capitalizeFUNC:
 	    for (i=0; i<n; i++) {
 		str[i].capitalize();
+	    }
+	    break;
+	case TableExprFuncNode::sreverseFUNC:
+	    for (i=0; i<n; i++) {
+		str[i].reverse();
 	    }
 	    break;
 	case TableExprFuncNode::trimFUNC:
@@ -2375,6 +2467,11 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	MArray<String> arr (operands()[0]->getArrayString(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::areverseFUNC:
+      {
+	MArray<String> arr (operands()[0]->getArrayString(id));
+	return reverseArray (arr, getReverseAxes(id, arr.ndim()));
+      }
     case TableExprFuncNode::diagonalFUNC:
       {
 	MArray<String> arr (operands()[0]->getArrayString(id));
@@ -2496,6 +2593,11 @@ MArray<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
       {
 	MArray<MVTime> arr (operands()[0]->getArrayDate(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::areverseFUNC:
+      {
+	MArray<MVTime> arr (operands()[0]->getArrayDate(id));
+	return reverseArray (arr, getReverseAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::diagonalFUNC:
       {

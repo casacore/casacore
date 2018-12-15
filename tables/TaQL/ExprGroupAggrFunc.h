@@ -352,13 +352,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupVarianceDouble: public TableExprGroupFuncDouble
   {
   public:
-    explicit TableExprGroupVarianceDouble (TableExprNodeRep* node);
+    explicit TableExprGroupVarianceDouble (TableExprNodeRep* node, uInt ddof);
     virtual ~TableExprGroupVarianceDouble();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
+    uInt   itsDdof;
     Int64  itsNr;
-    Double itsM2;
+    Double itsCurMean;
   };
 
   // <summary>
@@ -375,7 +376,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevDouble: public TableExprGroupVarianceDouble
   {
   public:
-    explicit TableExprGroupStdDevDouble (TableExprNodeRep* node);
+    explicit TableExprGroupStdDevDouble (TableExprNodeRep* node, uInt ddof);
     virtual ~TableExprGroupStdDevDouble();
     virtual void finish();
   };
@@ -495,6 +496,50 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void finish();
   private:
     Int64 itsNr;
+  };
+
+  // <summary>
+  // Aggregate class determining the variance of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the variance of values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // Note that the result is a Double value (not DComplex).
+  // </synopsis>
+  class TableExprGroupVarianceDComplex: public TableExprGroupFuncDouble
+  {
+  public:
+    explicit TableExprGroupVarianceDComplex (TableExprNodeRep* node, uInt ddof);
+    virtual ~TableExprGroupVarianceDComplex();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  protected:
+    uInt     itsDdof;
+    Int64    itsNr;
+    DComplex itsCurMean;
+  };
+
+  // <summary>
+  // Aggregate class determining the standard deviation of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the standard deviation of values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
+  class TableExprGroupStdDevDComplex: public TableExprGroupVarianceDComplex
+  {
+  public:
+    explicit TableExprGroupStdDevDComplex (TableExprNodeRep* node, uInt ddof);
+    virtual ~TableExprGroupStdDevDComplex();
+    virtual void finish();
   };
 
 

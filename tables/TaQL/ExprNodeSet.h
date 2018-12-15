@@ -507,25 +507,31 @@ inline const TableExprNodeSetElem&
 template<typename T>
 MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
 {
-  // TODO: align possible units
+  /// TODO: align possible units
     DebugAssert (itsBounded, AipsError);
     Int64 n = size();
     if (hasArrays()) {
       // Handle a nested array; this is done recursively.
       MArray<T> marr;
       getArray (marr, castItsElem(0)->start(), id);
-      if (marr.isNull()) return marr;
+      if (marr.isNull()) {
+        return marr;
+      }
       Array<T> result (marr.array());
       Array<Bool> mask (marr.mask());
       IPosition shp = result.shape();
       uInt naxes = shp.size();
       shp.append (IPosition(1,n));
+      IPosition maskShp(shp);
+      maskShp[maskShp.size()-1] = 1;
       result.resize (shp, True);
-      if (! mask.empty()) mask.resize (shp, True);
+      if (! mask.empty()) {
+        mask.resize (shp, True);
+      }
+      // Iterate through the remaining arrays.
       ArrayIterator<T> iter(result, shp.size()-1);
-      IPosition s(shp);
-      IPosition e(shp);
-      s[naxes] = 0;
+      IPosition s(shp.size(), 0);
+      IPosition e(shp-1);
       e[naxes] = 0;
       for (Int64 i=1; i<n; i++) {
         iter.next();
@@ -533,23 +539,28 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
         e[naxes]++;
         MArray<T> marr;
         getArray (marr, castItsElem(i)->start(), id);
-        if (marr.isNull()) return marr;
+        if (marr.isNull()) {
+          return marr;
+        }
         if (! marr.shape().isEqual (iter.array().shape())) {
           throw TableInvExpr("Shapes of nested arrays do not match");
         }
         iter.array() = marr.array();
         if (marr.hasMask()) {
           if (mask.empty()) {
+            // The first time a mask was found, so create the resulting mask.
             mask.resize (shp);
             mask = False;
           }
-          mask(s,e) = marr.mask();
+          mask(s,e) = marr.mask().reform(maskShp);
         } else if (! mask.empty()) {
+          // This array has no mask, so set to False in resulting mask.
           mask(s,e) = False;
         }
       }
       return MArray<T>(result, mask);
     } else {
+      // Combine scalars.
       Int64 n = size();
       Int64 cnt = 0;
       Vector<T> result (n);

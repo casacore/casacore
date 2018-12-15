@@ -206,9 +206,6 @@ uInt partialFuncHelper (Int& nelemCont,
 // If the order does not change, a copy is returned if the
 // <src>alwaysCopy</src> is true. Otherwise a reference of the
 // input array is returned.
-// <p>
-// Reversing axis 0 means that its elements are reversed.
-// Reversing axis 1 means that the 
 // </synopsis>
 
 // <example>
@@ -216,7 +213,6 @@ uInt partialFuncHelper (Int& nelemCont,
 // Reversing axis 1 of a Matrix means that its rows are reversed.
 // Reversing axis 0 of an N-dim array means that the elements of each Vector
 // in that array are reversed.
-// Reversing axis 1 of a Matrix means that its columns are reversed.
 // </example>
 
 // <group name=reverseArray>

@@ -156,177 +156,191 @@ public:
 	arrmeansFUNC,     //# 60
 	runmeanFUNC,      //# 61
 	boxmeanFUNC,      //# 62
-	arrvarianceFUNC,  //# 63
-	arrvariancesFUNC, //# 64
-	runvarianceFUNC,  //# 65
-	boxvarianceFUNC,  //# 66
-	arrstddevFUNC,    //# 67
-	arrstddevsFUNC,   //# 68
-	runstddevFUNC,    //# 69
-	boxstddevFUNC,    //# 70
-	arravdevFUNC,     //# 71
-	arravdevsFUNC,    //# 72
-	runavdevFUNC,     //# 73
-	boxavdevFUNC,     //# 74
-	arrrmsFUNC,       //# 75
-	arrrmssFUNC,      //# 76
-	runrmsFUNC,       //# 77
-	boxrmsFUNC,       //# 78
-	arrmedianFUNC,    //# 79
-	arrmediansFUNC,   //# 80
-	runmedianFUNC,    //# 81
-	boxmedianFUNC,    //# 82
-	arrfractileFUNC,  //# 83
-	arrfractilesFUNC, //# 84
-	runfractileFUNC,  //# 85
-	boxfractileFUNC,  //# 86
+	arrvariance0FUNC, //# 63
+	arrvariances0FUNC,//# 64
+	runvariance0FUNC, //# 65
+	boxvariance0FUNC, //# 66
+	arrvariance1FUNC, //# 67
+	arrvariances1FUNC,//# 68
+	runvariance1FUNC, //# 69
+	boxvariance1FUNC, //# 70
+	arrstddev0FUNC,   //# 71
+	arrstddevs0FUNC,  //# 72
+	runstddev0FUNC,   //# 73
+	boxstddev0FUNC,   //# 74
+	arrstddev1FUNC,   //# 75
+	arrstddevs1FUNC,  //# 76
+	runstddev1FUNC,   //# 77
+	boxstddev1FUNC,   //# 78
+	arravdevFUNC,     //# 79
+	arravdevsFUNC,    //# 80
+	runavdevFUNC,     //# 81
+	boxavdevFUNC,     //# 82
+	arrrmsFUNC,       //# 83
+	arrrmssFUNC,      //# 84
+	runrmsFUNC,       //# 85
+	boxrmsFUNC,       //# 86
+	arrmedianFUNC,    //# 87
+	arrmediansFUNC,   //# 88
+	runmedianFUNC,    //# 89
+	boxmedianFUNC,    //# 90
+	arrfractileFUNC,  //# 91
+	arrfractilesFUNC, //# 92
+	runfractileFUNC,  //# 93
+	boxfractileFUNC,  //# 94
 	    // for Bool array returning Bool
-        arranyFUNC,       //# 87
-        arranysFUNC,      //# 88
-        runanyFUNC,       //# 89
-        boxanyFUNC,       //# 90
-	arrallFUNC,       //# 91
-	arrallsFUNC,      //# 92
-	runallFUNC,       //# 93
-	boxallFUNC,       //# 94
+        arranyFUNC,       //# 95
+        arranysFUNC,      //# 96
+        runanyFUNC,       //# 97
+        boxanyFUNC,       //# 98
+	arrallFUNC,       //# 99
+	arrallsFUNC,      //# 100
+	runallFUNC,       //# 101
+	boxallFUNC,       //# 102
 	    // for Bool array returning Int scalar
-	arrntrueFUNC,     //# 95
-	arrntruesFUNC,    //# 96
-	runntrueFUNC,     //# 97
-	boxntrueFUNC,     //# 98
-	arrnfalseFUNC,    //# 99
-	arrnfalsesFUNC,   //# 100
-	runnfalseFUNC,    //# 101
-	boxnfalseFUNC,    //# 102
+	arrntrueFUNC,     //# 103
+	arrntruesFUNC,    //# 104
+	runntrueFUNC,     //# 105
+	boxntrueFUNC,     //# 106
+	arrnfalseFUNC,    //# 107
+	arrnfalsesFUNC,   //# 108
+	runnfalseFUNC,    //# 109
+	boxnfalseFUNC,    //# 110
 	    // for any type returning array of that type
-	arrayFUNC,        //# 103
-	transposeFUNC,    //# 104
-        resizeFUNC,       //# 105
-	diagonalFUNC,     //# 106
+	arrayFUNC,        //# 111
+	transposeFUNC,    //# 112
+        areverseFUNC,     //# 113
+        resizeFUNC,       //# 114
+	diagonalFUNC,     //# 115
 	    // for Int, Double or DComplex array returning Bool
-	isnanFUNC,        //# 107
-	isinfFUNC,        //# 108
-        isfiniteFUNC,     //# 109
+	isnanFUNC,        //# 116
+	isinfFUNC,        //# 117
+        isfiniteFUNC,     //# 118
 	    // for any array returning Bool scalar
-	isdefFUNC,        //# 110
-        isnullFUNC,       //# 111
-        iscolFUNC,        //# 112
-        iskeyFUNC,        //# 113
+	isdefFUNC,        //# 119
+        isnullFUNC,       //# 120
+        iscolFUNC,        //# 121
+        iskeyFUNC,        //# 122
 	    // for any array returning Int scalar
-	ndimFUNC,         //# 114
-	nelemFUNC,        //# 115
+	ndimFUNC,         //# 123
+	nelemFUNC,        //# 124
 	    // for any array returning Int array
-	shapeFUNC,        //# 116
+	shapeFUNC,        //# 125
             // for String
-	strlengthFUNC,    //# 117          returning Int
-	upcaseFUNC,       //# 118          returning String
-	downcaseFUNC,     //# 119          returning String
-	capitalizeFUNC,   //# 120          returning String
-	trimFUNC,         //# 121          returning String
-	ltrimFUNC,        //# 122          returning String
-	rtrimFUNC,        //# 123          returning String
-	substrFUNC,       //# 124          returning String
-        replaceFUNC,      //# 125          returning String
-	regexFUNC,        //# 126          returning TaqlRegex
-	patternFUNC,      //# 127          returning TaqlRegex
-	sqlpatternFUNC,   //# 128          returning TaqlRegex
+	strlengthFUNC,    //# 126          returning Int
+	upcaseFUNC,       //# 127          returning String
+	downcaseFUNC,     //# 128          returning String
+	capitalizeFUNC,   //# 129          returning String
+        sreverseFUNC,     //# 130
+	trimFUNC,         //# 131          returning String
+	ltrimFUNC,        //# 132          returning String
+	rtrimFUNC,        //# 133          returning String
+	substrFUNC,       //# 134          returning String
+        replaceFUNC,      //# 135          returning String
+	regexFUNC,        //# 136          returning TaqlRegex
+	patternFUNC,      //# 137          returning TaqlRegex
+	sqlpatternFUNC,   //# 138          returning TaqlRegex
             // for Date
-	datetimeFUNC,     //# 129          returning Date
-	mjdtodateFUNC,    //# 130          returning Date
-	mjdFUNC,          //# 131          returning Double
-	dateFUNC,         //# 132          returning Date
-	timeFUNC,         //# 133          returning Double (in radians)
-	yearFUNC,         //# 134          returning Int
-	monthFUNC,        //# 135          returning Int
-	dayFUNC,          //# 136          returning Int
-	cmonthFUNC,       //# 137          returning String
-	weekdayFUNC,      //# 138          returning Int
-	cdowFUNC,         //# 139          returning String
-	weekFUNC,         //# 140          returning Int
-        ctodFUNC,         //# 141          returning String
-        cdateFUNC,        //# 142          returning String
-        ctimeFUNC,        //# 143          returning String
+	datetimeFUNC,     //# 139          returning Date
+	mjdtodateFUNC,    //# 140          returning Date
+	mjdFUNC,          //# 141          returning Double
+	dateFUNC,         //# 142          returning Date
+	timeFUNC,         //# 143          returning Double (in radians)
+	yearFUNC,         //# 144          returning Int
+	monthFUNC,        //# 145          returning Int
+	dayFUNC,          //# 146          returning Int
+	cmonthFUNC,       //# 147          returning String
+	weekdayFUNC,      //# 148          returning Int
+	cdowFUNC,         //# 149          returning String
+	weekFUNC,         //# 150          returning Int
+        ctodFUNC,         //# 151          returning String
+        cdateFUNC,        //# 152          returning String
+        ctimeFUNC,        //# 153          returning String
             // return values as strings
-        stringFUNC,       //# 144
+        stringFUNC,       //# 154
             // return angles as hms strings
-        hmsFUNC,          //# 145
+        hmsFUNC,          //# 155
             // return angles as dms strings
-        dmsFUNC,          //# 146
+        dmsFUNC,          //# 156
             // return angles as hms/dms strings
-        hdmsFUNC,         //# 147
+        hdmsFUNC,         //# 157
 	    // special function returning a random Double number
-	randFUNC,         //# 148
+	randFUNC,         //# 158
             // special function returning Int row number
-	rownrFUNC,        //# 149
+	rownrFUNC,        //# 159
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 150
+	rowidFUNC,        //# 160
             // special function resembling if statement
-	iifFUNC,          //# 151
+	iifFUNC,          //# 161
             // angular distance returning radians
-        angdistFUNC,      //# 152
-        angdistxFUNC,     //# 153
+        angdistFUNC,      //# 162
+        angdistxFUNC,     //# 163
 	    // cone search functions, implemented in derived class
-	conesFUNC,        //# 154
-	cones3FUNC,       //# 155
-	anyconeFUNC,      //# 156
-	anycone3FUNC,     //# 157
-	findconeFUNC,     //# 158
-	findcone3FUNC,    //# 159
+	conesFUNC,        //# 164
+	cones3FUNC,       //# 165
+	anyconeFUNC,      //# 166
+	anycone3FUNC,     //# 167
+	findconeFUNC,     //# 168
+	findcone3FUNC,    //# 169
             // for Int, Double, Complex or String returning Bool
-        boolFUNC,         //# 160
+        boolFUNC,         //# 170
             // masked array functions
-        nullarrayFUNC,    //# 161
-        marrayFUNC,       //# 162
-        arrdataFUNC,      //# 163
-        arrmaskFUNC,      //# 164
-        negatemaskFUNC,   //# 165
-        replmaskedFUNC,   //# 166
-        replunmaskedFUNC, //# 167
-        arrflatFUNC,      //# 168
+        nullarrayFUNC,    //# 171
+        marrayFUNC,       //# 172
+        arrdataFUNC,      //# 173
+        arrmaskFUNC,      //# 174
+        negatemaskFUNC,   //# 175
+        replmaskedFUNC,   //# 176
+        replunmaskedFUNC, //# 178
+        arrflatFUNC,      //# 179
         //# AGGREGATE functions must be the last ones.
-        FirstAggrFunc,    //# 169
+        FirstAggrFunc,    //# 180
         countallFUNC = FirstAggrFunc,
         gcountFUNC,
         gfirstFUNC,
         glastFUNC,
         //# Grouping doing aggregation on the fly; reducing to a scalar per group
-        gminFUNC,         //# 173
+        gminFUNC,         //# 184
         gmaxFUNC,
         gsumFUNC,
         gproductFUNC,
         gsumsqrFUNC,
         gmeanFUNC,
-        gvarianceFUNC,
-        gstddevFUNC,
+        gvariance0FUNC,
+        gvariance1FUNC,
+        gstddev0FUNC,
+        gstddev1FUNC,
         grmsFUNC,
         ganyFUNC,
         gallFUNC,
         gntrueFUNC,
         gnfalseFUNC,
         //# Grouping doing aggregation on the fly; reducing to an array per group
-        FirstAggrArrayFunc,//# 186
+        FirstAggrArrayFunc,//# 199
         gminsFUNC = FirstAggrArrayFunc,
         gmaxsFUNC,
         gsumsFUNC,
         gproductsFUNC,
         gsumsqrsFUNC,
         gmeansFUNC,
-        gvariancesFUNC,
-        gstddevsFUNC,
+        gvariances0FUNC,
+        gvariances1FUNC,
+        gstddevs0FUNC,
+        gstddevs1FUNC,
         grmssFUNC,
         ganysFUNC,
         gallsFUNC,
         gntruesFUNC,
         gnfalsesFUNC,
-        LastAggrArrayFunc,//# 199
+        LastAggrArrayFunc, //# 214
         ghistFUNC = LastAggrArrayFunc,
         //# Grouping requiring aggregation of rows when getting result
-        gaggrFUNC,        //# 200
+        gaggrFUNC,         //# 215
         growidFUNC,
         gmedianFUNC,
         gfractileFUNC,
-        gexpridFUNC,      //# special function (can be inserted by TableParse)
-	NRFUNC            //# 205  should be last
+        gexpridFUNC,       //# special function (can be inserted by TableParse)
+	NRFUNC             //# 220  should be last
 	};
 
     // Constructor

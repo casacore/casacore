@@ -41,6 +41,24 @@
 typedef Array<Double> PartFunc (const Array<Double>&, const IPosition& axes);
 typedef Double FullFunc (const Array<Double>&);
 
+Array<Double> myPartialVariances (const Array<Double>& array,
+				  const IPosition& axes)
+{
+  return partialVariances (array, axes, 1);
+}
+Double myVariance (const Array<Double>& array)
+{
+  return pvariance (array, 1);
+}
+Array<Double> myPartialStddevs (const Array<Double>& array,
+                                const IPosition& axes)
+{
+  return partialStddevs (array, axes, 0);
+}
+Double myStddev (const Array<Double>& array)
+{
+  return pstddev (array, 0);
+}
 Array<Double> myMeanPartialMedians (const Array<Double>& array,
 				    const IPosition& axes)
 {
@@ -595,12 +613,12 @@ int main (int argc, char* [])
       errFlag = True;
     }
     cout << "Testing partialVariances ..." << endl;
-    if (! doIt (&partialVariances, &variance, False)) {
+    if (! doIt (&myPartialVariances, &myVariance, False)) {
       cout << "  erroneous" << endl;
       errFlag = True;
     }
     cout << "Testing partialStddevs ..." << endl;
-    if (! doIt (&partialStddevs, &stddev, False)) {
+    if (! doIt (&myPartialStddevs, &myStddev, False)) {
       cout << "  erroneous" << endl;
       errFlag = True;
     }

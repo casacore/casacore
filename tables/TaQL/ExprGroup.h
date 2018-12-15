@@ -460,7 +460,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a bool scalar.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -489,7 +489,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in an integer scalar.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -516,7 +516,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a double scalar.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -543,7 +543,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a dcomplex scalar.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -570,7 +570,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a date/time scalar.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -597,7 +597,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a string scalar.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -624,7 +624,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a bool array.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -652,7 +652,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in an integer array.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -680,7 +680,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a double array.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -708,7 +708,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a dcomplex array.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -736,7 +736,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a date/time array.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the
@@ -764,7 +764,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <reviewed reviewer="" date="" tests="tExprGroup">
   // </reviewed>
   // <synopsis>
-  // This class is derived from TableExprGroupFuncBase and act as the
+  // This class is derived from TableExprGroupFuncBase and acts as the
   // abstract base class for aggregate functions resulting in a string array.
   // <br>Derived classes can use <src>itsValue</src> to contain the
   // aggregated value. It that case they do not need to implement the

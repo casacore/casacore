@@ -760,21 +760,37 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
   } else if (funcName == "boxedmean"  ||  funcName == "boxedavg") {
     ftype = TableExprFuncNode::boxmeanFUNC;
   } else if (funcName == "variance") {
-    ftype = TableExprFuncNode::arrvarianceFUNC;
+    ftype = TableExprFuncNode::arrvariance0FUNC;
   } else if (funcName == "variances") {
-    ftype = TableExprFuncNode::arrvariancesFUNC;
+    ftype = TableExprFuncNode::arrvariances0FUNC;
   } else if (funcName == "runningvariance") {
-    ftype = TableExprFuncNode::runvarianceFUNC;
+    ftype = TableExprFuncNode::runvariance0FUNC;
   } else if (funcName == "boxedvariance") {
-    ftype = TableExprFuncNode::boxvarianceFUNC;
+    ftype = TableExprFuncNode::boxvariance0FUNC;
+  } else if (funcName == "samplevariance") {
+    ftype = TableExprFuncNode::arrvariance1FUNC;
+  } else if (funcName == "samplevariances") {
+    ftype = TableExprFuncNode::arrvariances1FUNC;
+  } else if (funcName == "runningsamplevariance") {
+    ftype = TableExprFuncNode::runvariance1FUNC;
+  } else if (funcName == "boxedsamplevariance") {
+    ftype = TableExprFuncNode::boxvariance1FUNC;
   } else if (funcName == "stddev") {
-    ftype = TableExprFuncNode::arrstddevFUNC;
+    ftype = TableExprFuncNode::arrstddev0FUNC;
   } else if (funcName == "stddevs") {
-    ftype = TableExprFuncNode::arrstddevsFUNC;
+    ftype = TableExprFuncNode::arrstddevs0FUNC;
   } else if (funcName == "runningstddev") {
-    ftype = TableExprFuncNode::runstddevFUNC;
+    ftype = TableExprFuncNode::runstddev0FUNC;
   } else if (funcName == "boxedstddev") {
-    ftype = TableExprFuncNode::boxstddevFUNC;
+    ftype = TableExprFuncNode::boxstddev0FUNC;
+  } else if (funcName == "samplestddev") {
+    ftype = TableExprFuncNode::arrstddev1FUNC;
+  } else if (funcName == "samplestddevs") {
+    ftype = TableExprFuncNode::arrstddevs1FUNC;
+  } else if (funcName == "runningsamplestddev") {
+    ftype = TableExprFuncNode::runstddev1FUNC;
+  } else if (funcName == "boxedsamplestddev") {
+    ftype = TableExprFuncNode::boxstddev1FUNC;
   } else if (funcName == "avdev") {
     ftype = TableExprFuncNode::arravdevFUNC;
   } else if (funcName == "avdevs") {
@@ -843,6 +859,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrayFUNC;
   } else if (funcName == "transpose") {
     ftype = TableExprFuncNode::transposeFUNC;
+  } else if (funcName == "reversearray"  ||  funcName == "areverse") {
+    ftype = TableExprFuncNode::areverseFUNC;
   } else if (funcName == "diagonal"  ||  funcName == "diagonals") {
     ftype = TableExprFuncNode::diagonalFUNC;
   } else if (funcName == "resize") {
@@ -877,6 +895,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::downcaseFUNC;
   } else if (funcName == "capitalize") {
     ftype = TableExprFuncNode::capitalizeFUNC;
+  } else if (funcName == "reversestring"  ||  funcName == "sreverse") {
+    ftype = TableExprFuncNode::sreverseFUNC;
   } else if (funcName == "trim") {
     ftype = TableExprFuncNode::trimFUNC;
   } else if (funcName == "ltrim") {
@@ -1009,13 +1029,21 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
   } else if (funcName == "gmeans"  ||  funcName == "gavgs") {
     ftype = TableExprFuncNode::gmeansFUNC;
   } else if (funcName == "gvariance") {
-    ftype = TableExprFuncNode::gvarianceFUNC;
+    ftype = TableExprFuncNode::gvariance0FUNC;
   } else if (funcName == "gvariances") {
-    ftype = TableExprFuncNode::gvariancesFUNC;
+    ftype = TableExprFuncNode::gvariances0FUNC;
+  } else if (funcName == "gsamplevariance") {
+    ftype = TableExprFuncNode::gvariance1FUNC;
+  } else if (funcName == "gsamplevariances") {
+    ftype = TableExprFuncNode::gvariances1FUNC;
   } else if (funcName == "gstddev") {
-    ftype = TableExprFuncNode::gstddevFUNC;
+    ftype = TableExprFuncNode::gstddev0FUNC;
   } else if (funcName == "gstddevs") {
-    ftype = TableExprFuncNode::gstddevsFUNC;
+    ftype = TableExprFuncNode::gstddevs0FUNC;
+  } else if (funcName == "gsamplestddev") {
+    ftype = TableExprFuncNode::gstddev1FUNC;
+  } else if (funcName == "gsamplestddevs") {
+    ftype = TableExprFuncNode::gstddevs1FUNC;
   } else if (funcName == "grms") {
     ftype = TableExprFuncNode::grmsFUNC;
   } else if (funcName == "grmss") {
@@ -1156,8 +1184,10 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::arrminsFUNC:
     case TableExprFuncNode::arrmaxsFUNC:
     case TableExprFuncNode::arrmeansFUNC:
-    case TableExprFuncNode::arrvariancesFUNC:
-    case TableExprFuncNode::arrstddevsFUNC:
+    case TableExprFuncNode::arrvariances0FUNC:
+    case TableExprFuncNode::arrvariances1FUNC:
+    case TableExprFuncNode::arrstddevs0FUNC:
+    case TableExprFuncNode::arrstddevs1FUNC:
     case TableExprFuncNode::arravdevsFUNC:
     case TableExprFuncNode::arrrmssFUNC:
     case TableExprFuncNode::arrmediansFUNC:
@@ -1171,8 +1201,10 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::runminFUNC:
     case TableExprFuncNode::runmaxFUNC:
     case TableExprFuncNode::runmeanFUNC:
-    case TableExprFuncNode::runvarianceFUNC:
-    case TableExprFuncNode::runstddevFUNC:
+    case TableExprFuncNode::runvariance0FUNC:
+    case TableExprFuncNode::runvariance1FUNC:
+    case TableExprFuncNode::runstddev0FUNC:
+    case TableExprFuncNode::runstddev1FUNC:
     case TableExprFuncNode::runavdevFUNC:
     case TableExprFuncNode::runrmsFUNC:
     case TableExprFuncNode::runmedianFUNC:
@@ -1186,8 +1218,10 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::boxminFUNC:
     case TableExprFuncNode::boxmaxFUNC:
     case TableExprFuncNode::boxmeanFUNC:
-    case TableExprFuncNode::boxvarianceFUNC:
-    case TableExprFuncNode::boxstddevFUNC:
+    case TableExprFuncNode::boxvariance0FUNC:
+    case TableExprFuncNode::boxvariance1FUNC:
+    case TableExprFuncNode::boxstddev0FUNC:
+    case TableExprFuncNode::boxstddev1FUNC:
     case TableExprFuncNode::boxavdevFUNC:
     case TableExprFuncNode::boxrmsFUNC:
     case TableExprFuncNode::boxmedianFUNC:
@@ -1197,6 +1231,7 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::boxnfalseFUNC:
     case TableExprFuncNode::arrayFUNC:
     case TableExprFuncNode::transposeFUNC:
+    case TableExprFuncNode::areverseFUNC:
     case TableExprFuncNode::diagonalFUNC:
       if (arguments.size() >= axarg) {
         TableExprNodeSet parms;
@@ -1208,11 +1243,12 @@ TableExprNode TableParseSelect::makeFuncNode
         // They can be given as a set or as individual scalar values.
         Bool axesIsArray = False;
         if (arguments.size() == axarg) {
-          // No axes given. Add default one for transpose.
+          // No axes given. Add default one for transpose, etc..
           axesIsArray = True;
           if (ftype == TableExprFuncNode::transposeFUNC  ||
+              ftype == TableExprFuncNode::areverseFUNC   ||
               ftype == TableExprFuncNode::diagonalFUNC) {
-            // Add an empty vector if no transpose arguments given.
+            // Add an empty vector if no arguments given.
             TableExprNodeSetElem arg((TableExprNode(Vector<Int>())));
             parms.add (arg);
           }

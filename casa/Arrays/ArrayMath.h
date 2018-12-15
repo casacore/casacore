@@ -608,23 +608,24 @@ template<class T> T product(const Array<T> &a);
 // of elements of "a".
 template<class T> T mean(const Array<T> &a);
 
-// 
-// The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - 1).
-// N.B. N-1, not N in the denominator).
+// The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - ddof).
+// Similar to numpy the argument ddof (delta degrees of freedom) tells if the
+// population variance (ddof=0) or the sample variance (ddof=1) is taken.
+// The variance functions proper use ddof=1.
+// <br>Note that for a complex valued T the absolute values are used; in that way
+// the variance is equal to the sum of the variances of the real and imaginary parts.
+// Hence the imaginary part in the return value is 0.
 template<class T> T variance(const Array<T> &a);
-// 
-// The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - 1).
-// N.B. N-1, not N in the denominator).
+template<class T> T pvariance(const Array<T> &a, uInt ddof=0);
 // Rather than using a computed mean, use the supplied value.
 template<class T> T variance(const Array<T> &a, T mean);
+template<class T> T pvariance(const Array<T> &a, T mean, uInt ddof=0);
 
-// 
 // The standard deviation of "a" is the square root of its variance.
 template<class T> T stddev(const Array<T> &a);
-// 
-// The standard deviation of "a" is the square root of its variance.
-// Rather than using a computed mean, use the supplied value.
+template<class T> T pstddev(const Array<T> &a, uInt ddof=0);
 template<class T> T stddev(const Array<T> &a, T mean);
+template<class T> T pstddev(const Array<T> &a, T mean, uInt ddof=0);
 
 // 
 // The average deviation of "a" is the sum of abs(a(i) - mean(a))/N. (N.B.

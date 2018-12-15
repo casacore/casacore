@@ -242,10 +242,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node)
+  TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node, uInt ddof)
     : TableExprGroupFuncDouble (node),
-      itsNr (0),
-      itsM2 (0)
+      itsDdof    (ddof),
+      itsNr      (0),
+      itsCurMean (0)
   {}
   TableExprGroupVarianceDouble::~TableExprGroupVarianceDouble()
   {}
@@ -256,21 +257,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
     itsNr++;
     Double v = itsOperand->getDouble(id);
-    Double delta = v - itsValue;   // itsValue contains the mean
-    itsValue += delta/itsNr;
-    itsM2    += delta*(v-itsValue);
+    Double delta = v - itsCurMean;
+    itsCurMean += delta/itsNr;
+    itsValue   += delta*(v-itsCurMean);   // itsValue contains the M2 value
   }
   void TableExprGroupVarianceDouble::finish()
   {
-    if (itsNr > 1) {
-      itsValue = itsM2 / (itsNr-1);
+    if (itsNr > itsDdof) {
+      itsValue /= itsNr-itsDdof;
     } else {
       itsValue = 0;
     }
   }
 
-  TableExprGroupStdDevDouble::TableExprGroupStdDevDouble(TableExprNodeRep* node)
-    : TableExprGroupVarianceDouble (node)
+  TableExprGroupStdDevDouble::TableExprGroupStdDevDouble(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupVarianceDouble (node, ddof)
   {}
   TableExprGroupStdDevDouble::~TableExprGroupStdDevDouble()
   {}
@@ -375,6 +376,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (itsNr > 0) {
       itsValue /= double(itsNr);
     }
+  }
+
+  TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupFuncDouble (node),
+      itsDdof (ddof),
+      itsNr   (0)
+  {}
+  TableExprGroupVarianceDComplex::~TableExprGroupVarianceDComplex()
+  {}
+  void TableExprGroupVarianceDComplex::apply (const TableExprId& id)
+  {
+    // Calculate mean and variance in a running way using a
+    // numerically stable algorithm
+    // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+    itsNr++;
+    DComplex v = itsOperand->getDComplex(id);
+    DComplex delta = v - itsCurMean;
+    itsCurMean += delta / Double(itsNr);
+    DComplex d = v - itsCurMean;
+    itsValue += real(delta)*real(d) + imag(delta)*imag(d);
+  }
+  void TableExprGroupVarianceDComplex::finish()
+  {
+    if (itsNr > itsDdof) {
+      itsValue /= (itsNr-itsDdof);
+    } else {
+      itsValue = 0;
+    }
+  }
+
+  TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupVarianceDComplex (node, ddof)
+  {}
+  TableExprGroupStdDevDComplex::~TableExprGroupStdDevDComplex()
+  {}
+  void TableExprGroupStdDevDComplex::finish()
+  {
+    TableExprGroupVarianceDComplex::finish();
+    itsValue = sqrt(itsValue);
   }
 
 

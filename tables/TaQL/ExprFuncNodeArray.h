@@ -141,6 +141,9 @@ private:
     // Get the transpose order of the array axes.
     IPosition getOrder (const TableExprId& id, Int ndim);
 
+    // Get the axes for the reverse function.
+    IPosition getReverseAxes (const TableExprId& id, uInt ndim);
+
     // Get the arguments for the diagonals function.
     // They are checked and if needed adapted if the shape is not empty.
     const IPosition& getDiagonalArg (const TableExprId& id,

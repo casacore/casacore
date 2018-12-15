@@ -646,10 +646,9 @@ private:
   // Find the function code belonging to a function name.
   // Functions to be ignored can be given (as function type values).
   // If the function name is unknown, NRFUNC is returned.
-  static TableExprFuncNode::FunctionType findFunc
-                                   (const String& name,
-				    uInt narguments,
-				    const Vector<Int>& ignoreFuncs);
+  static TableExprFuncNode::FunctionType findFunc (const String& name,
+                                                   uInt narguments,
+                                                   const Vector<Int>& ignoreFuncs);
 
   // Do the update step.
   // Rows 0,1,2,.. in UpdTable are updated from the expression result

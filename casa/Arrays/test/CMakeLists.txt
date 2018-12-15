@@ -10,11 +10,11 @@ tArrayIter1
 tArrayIteratorSTL
 tArrayIter
 tArrayLogical
-tArrayMath2
 tArrayMath
 tArrayMathPerf
 tArrayMathTransform
 tArrayOpsDiffShapes
+tArrayPartMath
 tArrayPosIter
 tArrayUtil
 tArrayUtilPerf

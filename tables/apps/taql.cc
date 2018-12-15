@@ -58,11 +58,67 @@ using namespace casacore;
 using namespace std;
 
 // <summary>
-// Execute table commands from user interface
+// Execute any TaQL command from the shell.
+// If a command is given at the taql command, only that command is executed.
+// It is possible to execute command from a file using the -f option.
+// If no command is given, an interactive session is started where options and/or
+// commands can be given. In there the -f option can be used as well.
+// -h or --help gives help info for the taql program.
+// The command show or help gives help about the TaQL syntax and functionality.
 // </summary>
+
+//# The following functions are used (possibly recursively):
+//# - main calls 'executeArgs'
+//# - 'executeArgs' parses options and calls 'execCommand' if a command is given, calls
+//#     'execFileCommands' if -f is given or calls 'askCommands' if no command given,
+//#     but only if called from main
+//# - 'execCommand' handles t=command and calls 'taqlComand' if a command is given
+//# - 'execFileCommands' executes commands given in a file; splits and calls 'executeArgs'
+//# - 'askCommands' ask commands, splits and calls 'executeArgs'
+//# - 'taqlCommand' executes a TaQL command
+//#
+//# Options can be given at the start of any command line. If only options are given, they are
+//# persistent. If a command is given as well, the options are only valid for that command.
+//# The options set at a lower level, are not used at higher levels.
+//#
+//# The tableMap (mapping of name to Table object) is global, thus can be used at any level.
+
 
 // Define the type for the map of name to (resulttable,command).
 typedef map<String, pair<Table,String> > TableMap;
+
+struct Options
+{
+  Bool printSelect;
+  Bool printMeasure;
+  Bool printHeader;
+  Bool printCommand;
+  Bool printNRows;
+  String separator;
+  String fname;
+  String style;
+
+  Options()
+    : printSelect (False),    // default do not print select result (calc result is printed)
+      printMeasure(True),     // default print as measures when printing result
+      printHeader (True),     // default print column header when printing result
+      printCommand(False),    // default print command
+      printNRows  (True),     // default print nr of rows handled
+      separator   ('\t'),     // default separator between printed columns
+      style       ("python")
+  {}
+};
+
+//# Forward declare.
+// Parse and execute the arguments given. <src>topLevel</src> tells if this is the top level.
+// If so, an interactive session is started if no TaQL command is given. It also tells if
+// possible quotes are removed from option values.
+// The TableMap holds a map of name to temporary table.
+// It returns False if exit (or quit) is given.
+Bool executeArgs (const vector<String> args, Bool topLevel,
+                  TableMap& tableMap, Options& options);
+
+
 
 void removeCR (String& line)
 {
@@ -98,10 +154,10 @@ uInt skipQuoted (const String& str, uInt st, uInt end)
                    + String::toString(st) + " in " + str);
 }
 
-// Split a line using ; as separator.
+// Split a line using ; as delimiter.
 // Skip comments indicated by #.
 // Ignore those characters if in a quoted string.
-// An empty string is added where a separator is used.
+// An empty string is added where a delimiter is used.
 // In this way it is clear if the first part of the next line
 // has to be added to the last part of this line.
 vector<String> splitLine (const String& line)
@@ -122,7 +178,7 @@ vector<String> splitLine (const String& line)
         uInt endcmd = rskipws(line, stcmd, st);
         if (stcmd < endcmd) {
           parts.push_back (line.substr(stcmd, endcmd-stcmd));
-          parts.push_back (string());
+          parts.push_back (String());
         }
         st = lskipws (line, st+1, end);
         stcmd = st;
@@ -141,19 +197,57 @@ vector<String> splitLine (const String& line)
   return parts;
 }
 
+// Split a line on whitespace (except in quoted parts).
+vector<String> splitWS (const String& str)
+{
+  vector<String> parts;
+  String part;
+  int qpos = -1;
+  for (uInt i=0; i<str.size(); ++i) {
+    if (qpos < 0) {
+      // Not in quoted string.
+      if (str[i] == '"'  ||  str[i] == '\'') {
+        // Start of quoted string.
+        qpos = i;
+      } else if (isspace(str[i])) {
+        // Split at whitespace. Only store if not empty.
+        if (part.size() > 0) {
+          parts.push_back (part);
+          part = String();
+        }
+        continue;
+      }
+    } else if (str[i] == str[qpos]) {
+      // End of quoted string.
+      qpos = -1;
+    }
+    part += str[i];
+  }
+  if (qpos >= 0) {
+    throw AipsError ("Unbalanced quoted string at position " +
+                     String::toString(qpos) + " in " + str);
+  }
+  if (part.size() > 0) {
+    parts.push_back (part);    // last part
+  }
+  return parts;
+}
 
+
+// Read a line, if possible using the readline library to make command
+// editing and history possible.
 #ifdef HAVE_READLINE
-bool readLine (String& line, const string& prompt)
+Bool readLine (String& line, const String& prompt)
 {
   char* str = readline(prompt.c_str());
-  if (!str) return false;
-  line = string(str);
+  if (!str) return False;
+  line = String(str);
   removeCR (line);
   free(str);
-  return true;
+  return True;
 }
 #else
-bool readLine (String& line, const String& prompt)
+Bool readLine (String& line, const String& prompt)
 {
   if (!prompt.empty()) cerr << prompt;
   getline (cin, line);
@@ -162,9 +256,10 @@ bool readLine (String& line, const String& prompt)
 }
 #endif
 
-bool readLineSkip (String& line, const String& prompt)
+// Read a line until a non-empty line is read. 
+Bool readLineSkip (String& line, const String& prompt)
 {
-  bool fnd = false;
+  Bool fnd = False;
   while (!fnd  &&  readLine (line, prompt)) {
     fnd = !line.empty();
   }
@@ -210,6 +305,7 @@ void showTime (const Array<double>& times, const String& unit)
   cout << ']';
 }
 
+// Show values representing MPositions.
 void showPos (const Array<double>& pos, const Vector<String>& units)
 {
   AlwaysAssert (pos.size() % units.size() == 0, AipsError);
@@ -240,6 +336,7 @@ void showPos (const Array<double>& pos, const Vector<String>& units)
   }
 }
 
+// Show values representing MDirections.
 void showDir (const Array<double>& dir, const Vector<String>& units)
 {
   AlwaysAssert (dir.size() % units.size() == 0, AipsError);
@@ -265,21 +362,21 @@ void showDir (const Array<double>& dir, const Vector<String>& units)
       if (i == 0)  {
         ostringstream ostr;
         angle.print (ostr, MVAngle::Format(MVAngle::TIME, 9));
-        string str(ostr.str());
-        string::size_type pos = str.find(':');
-        if (pos != string::npos) str[pos] = 'h';
+        String str(ostr.str());
+        String::size_type pos = str.find(':');
+        if (pos != String::npos) str[pos] = 'h';
         pos = str.find(':');
-        if (pos != string::npos) str[pos] = 'm';
+        if (pos != String::npos) str[pos] = 'm';
         cout << str;
       } else {
         cout << ", ";
         ostringstream ostr;
         angle.print (ostr, MVAngle::Format(MVAngle::ANGLE, 9));
-        string str(ostr.str());
-        string::size_type pos = str.find('.');
-        if (pos != string::npos) str[pos] = 'd';
+        String str(ostr.str());
+        String::size_type pos = str.find('.');
+        if (pos != String::npos) str[pos] = 'd';
         pos = str.find('.');
-        if (pos != string::npos) str[pos] = 'm';
+        if (pos != String::npos) str[pos] = 'm';
         cout << str;
       }
       iter++;
@@ -323,10 +420,10 @@ template<> void showArray (const Array<MVTime>& arr)
   }
 }
 
-// Show the required columns.
+// Show the required columns of the table.
 // First test if they exist and contain scalars or arrays.
 void showTable (const Table& tab, const Vector<String>& colnam,
-                bool printMeas, const String& delim)
+                Bool printMeasure, const String& separator)
 {
   uInt nrcol = 0;
   PtrBlock<TableColumn*> tableColumns(colnam.nelements());
@@ -360,7 +457,7 @@ void showTable (const Table& tab, const Vector<String>& colnam,
           }
         }
         // If needed, see if it is a Measure type we know of.
-        if (printMeas) {
+        if (printMeasure) {
           if (keys.isDefined ("MEASINFO")) {
             const TableRecord& meas = keys.subRecord("MEASINFO");
             if (meas.isDefined ("type")) {
@@ -387,7 +484,7 @@ void showTable (const Table& tab, const Vector<String>& colnam,
     cout << "Unit: ";
     for (uInt j=0; j<nrcol; j++) {
       if (j > 0) {
-        cout << delim;
+        cout << separator;
       }
       cout << colUnits[j];
     }
@@ -398,7 +495,7 @@ void showTable (const Table& tab, const Vector<String>& colnam,
   for (i=0; i<tab.nrow(); i++) {
     for (uInt j=0; j<nrcol; j++) {
       if (j > 0) {
-        cout << delim;
+        cout << separator;
       }
       if (! tableColumns[j]->isDefined (i)) {
         cout << " no_array";
@@ -430,6 +527,7 @@ void showTable (const Table& tab, const Vector<String>& colnam,
   }
 }
 
+// Show the value of an expression which can be a scalar or array (part).
 void showExpr(const TableExprNode& expr)
 {
   // Print the array index if possible.
@@ -544,7 +642,7 @@ void showExpr(const TableExprNode& expr)
 
 void showParseError (const TableParseError& x)
 {
-  // Try to highlight parse error on a tty. A color init
+  // Try to highlight a parse error on a tty. A color init
   //# string consists of one or more of the following numeric codes:
   //# Attribute codes:
   //# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
@@ -574,25 +672,28 @@ void showParseError (const TableParseError& x)
 }
 
 
-// Sort and select data.
-Table doCommand (bool printCommand, bool printSelect, bool printMeas,
-                 bool printRows, bool printHeader, const String& delim,
-                 const String& varName, const String& prefix, const String& str,
-                 const vector<const Table*>& tempTables)
+// Execute a TaQL command.
+Table taqlCommand (const Options& options, const String& varName,
+                   const String& command,
+                   const vector<const Table*>& tempTables)
 {
   // If no command is given, assume it is SELECT.
   // Only show results for SELECT, COUNT and CALC.
-  String::size_type spos = str.find_first_not_of (' ');
   Bool addComm = False;
   Bool showHelp = False;
   Bool doCount = False;
-  Bool showResult = False;
+  Bool printSelect  = options.printSelect;
+  Bool printMeasure = options.printMeasure;
+  Bool printCommand = options.printCommand;
+  Bool printNRows   = options.printNRows;
+  Bool printHeader  = options.printHeader;
+  String::size_type spos = command.find_first_not_of (' ');
   if (spos != String::npos) {
-    String::size_type epos = str.find (' ', spos);
+    String::size_type epos = command.find (' ', spos);
     if (epos == String::npos) {
-      epos = str.size();
+      epos = command.size();
     }
-    String s = str.substr(spos, epos-spos);
+    String s = command.substr(spos, epos-spos);
     s.downcase();
     showHelp = (s=="show" || s=="help");
     addComm = !(s=="with" || s=="select" || s=="update" || s=="insert" ||
@@ -601,27 +702,26 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
                 s=="alter" || s=="altertable" ||
                 s=="using"  || s=="usingstyle"  || s=="time" ||
                 showHelp);
-    showResult = (s=="select");
     if (s=="count") {
       doCount    = True;
-      showResult = True;
     }
   }
-  String strc(str);
+  String strc(command);
   if (addComm) {
-    strc = "SELECT " + str;
-    printCommand = False;
-    printRows = False;
-    showResult = True;
+    strc = "SELECT " + command;
+    printSelect = True;
     printHeader = False;
+    printCommand = False;
+    printNRows = False;
   }
-  strc = prefix + strc;
-  Table tabp;
-  uInt i;
+  String style(options.style);
+  if (style.empty()) {
+    style = "glish";
+  }
+  strc = "using style " + style + ' ' + strc;
   Vector<String> colNames;
   String cmd;
-  TaQLResult result;
-  result = tableCommand (strc, tempTables, colNames, cmd);
+  TaQLResult result = tableCommand (strc, tempTables, colNames, cmd);
   // Show result of COUNT as well.
   if (doCount) {
     colNames.resize (colNames.size() + 1, True);
@@ -634,23 +734,26 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
     cout << strc << endl;
     cout << "    has been executed" << endl;
   }
+  Table tabp;
   if (result.isTable()) {
     tabp = result.table();
-    if (printRows) {
+    if (printNRows) {
       cout << "    " << cmd << " result of " << tabp.nrow()
            << " rows" << endl;
     }
+    cmd.downcase();
+    Bool showResult = (cmd == "select"  ||  cmd == "count");
     if (printSelect && showResult && colNames.size() > 0) {
       if (printHeader) {
         // Show the selected column names.
         cout << colNames.nelements() << " selected columns: ";
-        for (i=0; i<colNames.nelements(); i++) {
+        for (uInt i=0; i<colNames.nelements(); i++) {
           cout << " " << colNames(i);
         }
         cout << endl;
       }
       // Show the contents of the columns.
-      showTable (tabp, colNames, printMeas, delim);
+      showTable (tabp, colNames, printMeasure, options.separator);
     }
   } else {
     showExpr (result.node());
@@ -672,10 +775,10 @@ void showHelp()
   cerr << "  http://casacore.github.io/casacore-notes/199.html" << endl;
   cerr << "taql can be started with multiple arguments containing options and" << endl;
   cerr << "an optional TaQL command as the last argument(s)." << endl;
-  cerr << "Using the -f option commands are taken from a file. The commands can be" << endl;
-  cerr << "split over multiple lines. Therefore a ; has to be used to delimite a command" << endl;
+  cerr << "Using the -f option commands are taken from a file where commands can be" << endl;
+  cerr << "split over multiple lines and a ; has to be used to delimit a command" << endl;
   cerr << "After a # a line can contain comments." << endl;
-  cerr << "It will run interactively if command nor file is given. If possible," << endl;
+  cerr << "taql will run interactively if no command nor file is given. If possible," << endl;
   cerr << "interactive commands are kept in $HOME/.taql_history for later reuse." << endl;
   cerr << "Use q, quit, exit, or ^D to exit." << endl;
   cerr << endl;
@@ -690,8 +793,7 @@ void showHelp()
   cerr << "It is possible to save the table resulting from a selection" << endl;
   cerr << "by assigning it like:" << endl;
   cerr << "   var = taqlcommand" << endl;
-  cerr << "Thereafter $var can be used as a table in another TaQL command like:"
-       << endl;
+  cerr << "Thereafter $var can be used as a table in another TaQL command like:" << endl;
   cerr << "   t1 = select from my.ms where ANTENNA1=1" << endl;
   cerr << "   t2 = select from $t1 where ANTENNA2=2" << endl;
   cerr << "A variable name followed by zero or more question marks gives info about" << endl;
@@ -700,25 +802,43 @@ void showHelp()
   cerr << "clears 'var' (removes it from the saved selections)." << endl;
   cerr << "Use command ? to show all saved selections." << endl;
   cerr << endl;
-  cerr << "The 'show' command shows some information." << endl;
-  cerr << "   show units           show the possible units and prefixes" << endl;
-  cerr << "   show meastypes       show the possible measure types" << endl;
+  cerr << "The 'show' command gives TaQL help; subcommands give more detailed help." << endl;
   cerr << endl;
   cerr << "taql can be started with a few options:" << endl;
   cerr << " -s or --style defines the TaQL style." << endl;
   cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
-  cerr << " -h  or --help          show this help and exit." << endl;
-  cerr << " -v  or --version       show the taql version and exit." << endl;
-  cerr << " -f filename            name of file containing TaQL commands." << endl;
-  cerr << " -d delim               delimiter used between column values." << endl;
-  cerr << " -ps or --printselect   show the values of selected columns." << endl;
+  cerr << " -h  or --help          show this help and exit" << endl;
+  cerr << " -v  or --version       show the taql version and exit" << endl;
+  cerr << " -f filename            name of file containing TaQL commands to execute" << endl;
+  cerr << " -d separator           separator used between printed values (default a tab (\t))" << endl;
+  cerr << " -ps or --printselect   show the values of selected columns" << endl;
   cerr << " -pm or --printmeasure  if possible, show values as formatted measures" << endl;
-  cerr << " -pc or --printcommand  show the (expanded) TaQL command." << endl;
-  cerr << " -pr or --printrows     show the number of rows selected, updated, etc." << endl;
   cerr << " -ph or --printheader   show the header of names of the selected columns" << endl;
-  cerr << "The default for -pc is on for interactive mode, otherwise off." << endl;
-  cerr << "The default for -pr, -ph, -ps, and -pm is on." << endl;
+  cerr << " -pc or --printcommand  show the (expanded) TaQL command" << endl;
+  cerr << " -pr or --printnrows    show the number of rows selected, updated, etc." << endl;
+  cerr << " -p  or --printall      sets all 5 print options " << endl; 
+  cerr << "A print option can be turned off by giving, for example, -nops or --noprintall" << endl;
+  cerr << "The default is -nops, -pm, -ph, -nopc, -pr" << endl;
+  cerr << "Note that the result of CALC and an impicit SELECT is always printed" << endl;
+  cerr << "";
+  cerr << "These options can also be given before any TaQL command. If followed by a command," << endl;
+  cerr << "the setting is used for that command only, otherwise it is permanent." << endl;
   cerr << endl;
+}
+
+void showOptions (const Options& options)
+{
+  const char* opts[] = {"--no", "--"};
+  cout << endl;
+  cout << "Options settings:" << endl;
+  cout << ' ' << opts[options.printSelect]  << "printselect" << endl;
+  cout << ' ' << opts[options.printMeasure] << "printmeasure" << endl;
+  cout << ' ' << opts[options.printHeader]  << "printheader" << endl;
+  cout << ' ' << opts[options.printCommand] << "printcommand" << endl;
+  cout << ' ' << opts[options.printNRows]   << "printnrows" << endl;
+  cout << " -d " << "'" << options.separator << "'   (separator between printed columns)" << endl;
+  cout << " --style " << "'" << options.style << "'" << endl;
+  cout << endl;
 }
 
 void showTableInfo (const String& name, const Table& tab,
@@ -787,18 +907,18 @@ void showTableMap (const TableMap& tables)
 }
 
 // Substitute possible table variables given like $var.
-String substituteName (const String& name, const TableMap& tables,
+String substituteName (const String& name, const TableMap& tableMap,
                        vector<const Table*>& tabs)
 {
-  TableMap::const_iterator fnd = tables.find(name);
-  if (fnd == tables.end()) {
-    return name;
+  TableMap::const_iterator fnd = tableMap.find(name);
+  if (fnd == tableMap.end()) {
+    return name;    // not found
   }
   tabs.push_back (&(fnd->second.first));
-  return String::toString (tabs.size());
+  return String::toString (tabs.size());    // return seqnr as string
 }
 
-vector<const Table*> replaceVars (String& str, const TableMap& tables)
+vector<const Table*> replaceVars (String& str, const TableMap& tableMap)
 {
   vector<const Table*> tabs;
   // Initialize some variables.
@@ -825,7 +945,7 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
       } else {
         // End of name found. Try to substitute.
         dollar = False;
-        out += substituteName(name, tables, tabs);
+        out += substituteName(name, tableMap, tabs);
       }
     }
     // Handle possible single or double quotes.
@@ -850,119 +970,92 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
   // Substitute a possible last name.
   // Insert a possible incomplete eval string as such.
   if (dollar) {
-    out += substituteName(name, tables, tabs);
+    out += substituteName(name, tableMap, tabs);
   }
   str = out;
   return tabs;
 }
 
-// Ask and execute commands till quit or ^D is given.
-void askCommands (bool printCommand, bool printSelect, bool printMeas,
-                  bool printRows, bool printHeader, const String& delim,
-                  const String& prefix, const vector<String>& commands)
+
+Bool execCommand (const String& command, TableMap& tableMap,
+                  const Options& options)
 {
-#ifdef HAVE_READLINE
-  string histFile;
-  if (commands.empty()) {
-    String homeDir = EnvironmentVariable::get("HOME");
-    if (! homeDir.empty()) {
-      histFile = homeDir + "/.taql_history";
-      read_history(histFile.c_str());
-    }
-  }
-#endif
   Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
   Regex assRE("[ \t]*=");
   Regex lwhiteRE("^[ \t]*");
   Regex rwhiteRE("[ \t]*$");
-  TableMap tables;
-  uInt inx=0;
-  while (True) {
-    try {
-      String str;
-      if (commands.empty()) {
-        if (! readLineSkip (str, "TaQL> ")) {
-          cerr << endl;
-          break;
+  try {
+    String strc(command);
+    if (strc == "h") {
+      showHelp();
+    } else if (strc == "v") {
+      showVersion();
+    } else if (strc == "o") {
+      showOptions (options);
+    } else if (strc == "?") {
+      showTableMap (tableMap);
+    } else if (strc == "exit"  ||  strc == "quit"  ||  strc == "q") {
+      return False;
+    } else {
+      String varName;
+      String::size_type assLen = varassRE.match (strc.c_str(), strc.size());
+      if (assLen != String::npos) {
+        // Assignment to variable; get its name and remove from command.
+        varName = strc.before(assLen);
+        strc = strc.from(assLen);
+        varName.del (assRE);
+        if (varName.empty()) {
+          throw AipsError ("Variable name before =command is empty");
         }
-      } else {
-        if (inx >= commands.size()) {
-          break;
-        }
-        str = commands[inx++];
       }
-      if (str == "h"  ||  str == "-h"  ||  str == "--help") {
-        showHelp();
-      } else if (str == "?") {
-        showTableMap (tables);
-      } else if (str == "exit"  ||  str == "quit"  ||  str == "q") {
-        break;
+      strc.del (lwhiteRE);
+      if (strc.empty()) {
+        // No command means that the variable will be removed.
+        tableMap.erase (varName);
       } else {
-        String varName;
-        String::size_type assLen = varassRE.match (str.c_str(), str.size());
-        if (assLen != String::npos) {
-          // Assignment to variable; get its name and remove from command.
-          varName = str.before(assLen);
-          str = str.from(assLen);
-          varName.del (assRE);
-          if (varName.empty()) {
-            throw AipsError ("Variable name before =command is empty");
-          }
+        // No assignment, so it is a name or a command.
+        // First try it as a name.
+        // A name can be followed by question marks giving the level of
+        // info to be printed.
+        Int sz = strc.size();
+        while (sz > 0  &&  strc[sz-1] == '?') {
+          --sz;
         }
-        str.del (lwhiteRE);
-        if (str.empty()) {
-          // No command means that the variable will be removed.
-          tables.erase (varName);
+        Int level = strc.size() - sz;
+        String name = strc.substr(0, sz);
+        name.del (rwhiteRE);
+        TableMap::const_iterator it = tableMap.find (name);
+        if (it != tableMap.end()) {
+          // It exists, so it must be a name.
+          showTableInfo (name, it->second.first, it->second.second, level);
         } else {
-          // No assignment, so it is a name or a command.
-          // First try it as a name.
-          // A name can be followed by question marks giving the level of
-          // info to be printed.
-          Int sz = str.size();
-          while (sz > 0  &&  str[sz-1] == '?') {
-            --sz;
-          }
-          Int level = str.size() - sz;
-          String name = str.substr(0, sz);
-          name.del (rwhiteRE);
-          TableMap::const_iterator it = tables.find (name);
-          if (it != tables.end()) {
-            // It exists, so it must be a name.
-            showTableInfo (name, it->second.first, it->second.second, level);
-          } else {
-            // No name, so it must be a command.
-            String command(str);
-            vector<const Table*> tabs = replaceVars (str, tables);
-            Table tab = doCommand (printCommand, printSelect, printMeas,
-                                   printRows, printHeader, delim,
-                                   varName, prefix, str, tabs);
-            if (!varName.empty()  &&  !tab.isNull()) {
-              // Keep the resulting table if a variable was given.
-              tables[varName] = make_pair(tab, command);
-            }
+          // No name, so it must be a command.
+          vector<const Table*> tabs = replaceVars (strc, tableMap);
+          Table tab = taqlCommand (options, varName, strc, tabs);
+          if (!varName.empty()  &&  !tab.isNull()) {
+            // Keep the resulting table if a variable was given.
+            tableMap[varName] = make_pair(tab, command);
           }
         }
       }
-    } catch (const TableParseError& x) {
-      showParseError (x);
-    } catch (const AipsError& x) {
-      cerr << x.getMesg() << endl;
     }
+  } catch (const TableParseError& x) {
+    showParseError (x);
+  } catch (const AipsError& x) {
+    cerr << x.getMesg() << endl;
   }
-#ifdef HAVE_READLINE
-  if (! histFile.empty()) {
-    write_history(histFile.c_str());
-  }
-#endif
+  return True;
 }
 
-vector<String> fileCommands (const string& fname)
+void execFileCommands (TableMap& tableMap, const Options& options)
 {
+  // Reads all commands from the file and split them at ;.
+  // A command can be continued on the next line.
   vector<String> commands;
-  bool appendLast = false;
-  std::ifstream ifs(fname.c_str());
+  Bool appendLast = False;
+  std::ifstream ifs(options.fname.c_str());
   if (! ifs.good()) {
-    throw AipsError("Cannot open file " + fname);
+    throw AipsError("Cannot open file " + options.fname);
   }
   String line;
   getline (ifs, line);
@@ -973,7 +1066,7 @@ vector<String> fileCommands (const string& fname)
       if (! parts[i].empty()) {
         if (appendLast) {
           commands[commands.size() - 1].append (' '+ parts[i]);
-          appendLast = false;
+          appendLast = False;
         } else {
           commands.push_back (parts[i]);
         }
@@ -982,112 +1075,187 @@ vector<String> fileCommands (const string& fname)
     appendLast = !parts.empty()  &&  !parts[parts.size()-1].empty();
     getline (ifs, line);
   }
-  return commands;
+  // Execute all commands.
+  // Use a new scope for the options.
+  Options localOptions(options);
+  for (auto command : commands) {
+    if (! executeArgs (splitWS(command), False, tableMap, localOptions)) {
+      break;         // exit given
+    }
+  }
 }
 
+
+// Ask and execute commands till quit or ^D is given.
+void askCommands (TableMap& tableMap, Options& options)
+{
+  // Read back history if available.
+#ifdef HAVE_READLINE
+  String histFile;
+  String homeDir = EnvironmentVariable::get("HOME");
+  if (! homeDir.empty()) {
+    histFile = homeDir + "/.taql_history";
+    read_history (histFile.c_str());
+  }
+#endif
+  while (True) {
+    String str;
+    // Read and execute until ^D or quit is given.
+    if (! (readLineSkip (str, "TaQL> ")  &&
+           executeArgs (splitWS(str), False, tableMap, options))) {
+      cerr << endl;
+      break;
+    }
+  }
+#ifdef HAVE_READLINE
+  if (! histFile.empty()) {
+    write_history (histFile.c_str());
+  }
+#endif
+}
+
+// Remove quotes if necessary.
+// Note that it should not be done for options given in a shell command,
+// but has to be done for options given at the TaQL prompt.
+String removeQuotes (const String& s, Bool removeQuote)
+{
+  if (removeQuote  &&  s.size() >= 2) {
+    if ((s[0] == '"'  ||  s[0] == '\'')  &&  s[0] == s[s.size()-1]) {
+      return s.substr (1, s.size()-2);
+    }
+  }
+  return s;
+}
+
+// Parse the given options and set flags accordingly.
+// Stop at first non-option (indicated by st).
+Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool removeQuote)
+{
+  options.fname = String();
+  for (st=0; st<args.size(); ++st) {
+    String arg(args[st]);
+    if (arg == "-s"  ||  arg == "--style") {
+      options.style = String();
+      if (st+1 < args.size()) {
+        options.style = removeQuotes (args[st+1], removeQuote);
+        if (options.style.size() > 0  &&  options.style[0] == '-') {
+          // no style value, thus ignore.
+          options.style = String();
+        } else {
+          // use style value.
+          st++;
+        }
+      }
+    } else if (arg == "-d") {
+      if (st < args.size()-1) {
+        st++;
+        options.separator = removeQuotes (args[st], removeQuote);
+      } else {
+        throw AipsError("No file name given after -d");
+      }
+    } else if (arg == "-f") {
+      if (st < args.size()-1) {
+        st++;
+        options.fname = removeQuotes (args[st], removeQuote);
+      } else {
+        throw AipsError("No file name given after -f");
+      }
+    } else if (arg == "-p"  ||  arg == "--printall") {
+      options.printCommand = True;
+      options.printSelect  = True;
+      options.printMeasure = True;
+      options.printNRows   = True;
+      options.printHeader  = True;
+    } else if (arg == "-nop"  ||  arg == "--noprintall") {
+      options.printCommand = False;
+      options.printSelect  = False;
+      options.printMeasure = False;
+      options.printNRows   = False;
+      options.printHeader  = False;
+    } else if (arg == "-pc"  ||  arg == "--printcommand") {
+      options.printCommand = True;
+    } else if (arg == "-ps"  ||  arg == "--printselect") {
+      options.printSelect = True;
+    } else if (arg == "-pm"  ||  arg == "--printmeasure") {
+      options.printMeasure = True;
+    } else if (arg == "-pr"  ||  arg == "--printnrows") {
+      options.printNRows = True;
+    } else if (arg == "-ph"  ||  arg == "--printheader") {
+      options.printHeader = True;
+    } else if (arg == "-nopc"  ||  arg == "--noprintcommand") {
+      options.printCommand = False;
+    } else if (arg == "-nops"  ||  arg == "--noprintselect") {
+      options.printSelect = False;
+    } else if (arg == "-nopm"  ||  arg == "--noprintmeasure") {
+      options.printMeasure = False;
+    } else if (arg == "-nopr"  ||  arg == "--noprintnrows") {
+      options.printNRows = False;
+    } else if (arg == "-noph"  ||  arg == "--noprintheader") {
+      options.printHeader = False;
+    } else if (arg == "-v"  ||  arg == "--version") {
+      showVersion();
+      return False;
+    } else if (arg == "-h"  ||  arg == "--help") {
+      showHelp();
+      return False;
+    } else if (arg == "--") {
+      break;      // -- signifies end of options
+    } else if (arg[0] == '-') {
+      cerr << arg << " is an invalid option; it will be tried as a command" << endl;
+      cerr << "  Note that -- indicates the end of options (e.g., use -- " << arg << ')' << endl;
+      return True;
+    } else {
+      break;
+    }
+  }
+  return True;
+}
+
+// Execute a given command.
+// Ask for commands if interactive and empty command.
+Bool executeArgs (const vector<String> args, Bool topLevel,
+                  TableMap& tableMap, Options& options)
+{
+  // Parse the options as given.
+  Options localOptions(options);
+  uInt st = 0;
+  if (! parseArgs (args, st, localOptions, !topLevel)) {
+    return True;
+  }
+  // Execute the command file if given.
+  if (! localOptions.fname.empty()) {
+    execFileCommands (tableMap, localOptions);
+  } else if (st < args.size()) {
+    // A command can be given as multiple parameters to make tab-completion
+    // easier. Thus combine it all.
+    String command(args[st]);
+    while (++st < args.size()) {
+      command += ' ' + String(args[st]);
+    }
+    // Execute the given command.
+    return execCommand (command, tableMap, localOptions);
+  } else if (topLevel) {
+    // Ask the user for commands.
+    cout << "Using default TaQL style " << options.style << endl;
+    askCommands (tableMap, localOptions);
+  } else {
+    // Make the options persistent.
+    options = localOptions;
+  }
+  return True;
+}
 
 int main (int argc, const char* argv[])
 {
   try {
-    string style = "python";
-    string fname;
-    int printCommand = -1;
-    int printSelect  = 1;
-    int printMeas    = 1;
-    int printRows    = 1;
-    int printHeader  = 1;
-    String delim('\t');
-    int st;
-    for (st=1; st<argc; ++st) {
-      string arg(argv[st]);
-      if (arg == "-s"  ||  arg == "--style") {
-        style = string();
-        if (st+1 < argc) {
-          style = argv[st+1];
-          if (style.size() > 0  &&  style[0] == '-') {
-            // no style value, thus ignore.
-            style = string();
-          } else {
-            // use style value.
-            st++;
-          }
-        }
-      } else if (arg == "-d") {
-        if (st+1 < argc) {
-          delim = argv[st+1];
-          st++;
-        }
-      } else if (arg == "-pc"  ||  arg == "--printcommand") {
-        printCommand = 1;
-      } else if (arg == "-ps"  ||  arg == "--printselect") {
-        printSelect = 1;
-      } else if (arg == "-pm"  ||  arg == "--printmeasure") {
-        printMeas = 1;
-      } else if (arg == "-pr"  ||  arg == "--printrows") {
-        printRows = 1;
-      } else if (arg == "-ph"  ||  arg == "--printheader") {
-        printHeader = 1;
-      } else if (arg == "-nopc"  ||  arg == "--noprintcommand") {
-        printCommand = 0;
-      } else if (arg == "-nops"  ||  arg == "--noprintselect") {
-        printSelect = 0;
-      } else if (arg == "-nopm"  ||  arg == "--noprintmeasure") {
-        printMeas = 0;
-      } else if (arg == "-nopr"  ||  arg == "--noprintrows") {
-        printRows = 0;
-      } else if (arg == "-noph"  ||  arg == "--noprintheader") {
-        printHeader = 0;;
-      } else if (arg == "-f") {
-        if (st < argc-1) {
-          st++;
-          fname = argv[st];
-        } else {
-          throw AipsError("No file name given after -f");
-        }
-      } else if (arg == "-v"  ||  arg == "--version") {
-        showVersion();
-        return 0;
-      } else if (arg == "-h"  ||  arg == "--help") {
-        showHelp();
-        return 0;
-      } else if (arg[0] == '-') {
-        cerr << arg << " is an invalid option" << endl;
-        return 1;
-      } else {
-        break;
-      }
+    // Set default state options.
+    TableMap tableMap;
+    Options options;
+    vector<String> args;
+    for (int i=1; i<argc; ++i) {
+      args.push_back (argv[i]);
     }
-    string prefix;
-    if (style.empty()) {
-      style = "glish";
-    }
-    prefix = "using style " + style + ' ';
-    if (! fname.empty()) {
-      vector<String> commands = fileCommands (fname);
-      if (! commands.empty()) {
-        askCommands (printCommand!=0, printSelect!=0, printMeas!=0,
-                     printRows!=0, printHeader!=0, delim, prefix, commands);
-      }
-    } else if (st < argc) {
-      // A command can be given as multiple parameters to make tab-completion
-      // easier. Thus combine it all.
-      String command(argv[st]);
-      while (++st < argc) {
-        command += ' ' + String(argv[st]);
-      }
-      // Execute the given command.
-      doCommand (printCommand==1, printSelect==1, printMeas==1,
-                 printRows==1, printHeader==1,
-                 delim, String(), prefix, command, vector<const Table*>());
-    } else {
-    // Ask the user for commands.
-      cout << "Using default TaQL style " << style << endl;
-      askCommands (printCommand!=0, printSelect!=0, printMeas!=0,
-                   printRows!=0, printHeader!=0,
-                   delim, prefix, vector<String>());
-    }
-  } catch (const TableParseError& x) {
-    showParseError (x);
+    executeArgs (args, True, tableMap, options);
   } catch (const AipsError& x) {
     cerr << "\nCaught an exception: " << x.getMesg() << endl;
     return 1;

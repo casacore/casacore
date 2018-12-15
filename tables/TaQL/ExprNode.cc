@@ -241,7 +241,7 @@ TableExprNode operator&& (const TableExprNode& left,
 {
     if (left.isNull()) return right;
     if (right.isNull()) return left;
-    return left.newAND (right.node_p);
+    return left.newAND (right.getRep());
 }
 
 TableExprNode operator|| (const TableExprNode& left,
@@ -249,7 +249,7 @@ TableExprNode operator|| (const TableExprNode& left,
 {
     if (left.isNull()) return right;
     if (right.isNull()) return left;
-    return left.newOR (right.node_p);
+    return left.newOR (right.getRep());
 }
 
 TableExprNode TableExprNode::in (const TableExprNodeSet& set,

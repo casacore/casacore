@@ -945,7 +945,7 @@ void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,
             "void ::minMax("
             "T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,"
             " const MaskedArray<T> &marray)"
-                         " - MaskedArray must have at least 1 element"));
+                         " - Need at least 1 unmasked element"));
     }
 
     while (ntotal--) {
@@ -1025,7 +1025,7 @@ template<class T> T FUNC (const MaskedArray<T> &left) \
         left.freeMaskStorage(leftmaskStorage, leftmaskDelete); \
 \
         throw (ArrayError("T ::" STRFUNC "(const MaskedArray<T> &left) - " \
-                         "MaskedArray must have at least 1 element")); \
+                         "Need at least 1 unmasked element")); \
     } \
 \
     while (ntotal--) { \
@@ -1335,7 +1335,7 @@ template<class T> T sum(const MaskedArray<T> &left)
 {
     if (left.nelementsValid() < 1) {
         throw (ArrayError("T ::sum(const MaskedArray<T> &left) - "
-                         "MaskedArray must have at least 1 element"));
+                         "Need at least 1 unmasked element"));
     }
 
     Bool leftarrDelete;
@@ -1367,7 +1367,7 @@ template<class T> T sumsquares(const MaskedArray<T> &left)
 {
     if (left.nelementsValid() < 1) {
         throw (ArrayError("T ::sumsquares(const MaskedArray<T> &left) - "
-                         "MaskedArray must have at least 1 element"));
+                         "Need at least 1 unmasked element"));
     }
 
     Bool leftarrDelete;
@@ -1399,7 +1399,7 @@ template<class T> T product(const MaskedArray<T> &left)
 {
     if (left.nelementsValid() < 1) {
         throw (ArrayError("T ::product(const MaskedArray<T> &left) - "
-                          "MaskedArray must have at least 1 element"));
+                          "Need at least 1 unmasked element"));
     }
 
     Bool leftarrDelete;
@@ -1431,36 +1431,66 @@ template<class T> T mean(const MaskedArray<T> &left)
 {
     if (left.nelementsValid() < 1) {
         throw (ArrayError("T ::mean(const MaskedArray<T> &left) - "
-                          "MaskedArray must have at least 1 element"));
+                          "Need at least 1 unmasked element"));
     }
-    return sum(left)/left.nelementsValid();
+    return sum(left)/T(left.nelementsValid());
 }
 
-template<class T> T variance(const MaskedArray<T> &left, T mean)
+// <thrown>
+//    </item> ArrayError
+// </thrown>
+// Similar to numpy the ddof argument can be used to get the population
+// variance (ddof=0) or the sample variance (ddof=1).
+template<class T> T pvariance(const MaskedArray<T> &a, T mean, uInt ddof)
 {
-    if (left.nelementsValid() < 2) {
-        throw (ArrayError("T ::variance(const MaskedArray<T> &, T) - "
-                          "MaskedArray must have at least 2 elements"));
-    }
-    MaskedArray<T> deviations (left - mean);
-    deviations *= deviations;
-    return sum(deviations)/(left.nelementsValid() - 1);
+  size_t nr = a.nelementsValid();
+  if (nr < ddof+1) {
+    throw(ArrayError("::variance(const MaskedArray<T> &) - Need at least " +
+                     String::toString(ddof+1) + 
+                     " unmasked elements"));
+  }
+  MaskedArray<T> deviations (abs(a - mean));    // abs is needed for Complex
+  deviations *= deviations;
+  return sum(deviations) / T(nr - ddof);
+}
+template<class T> T variance(const MaskedArray<T> &a, T mean)
+{
+  return pvariance (a, mean, 1);
+}
+template<class T> T pvariance(const MaskedArray<T> &a, uInt ddof)
+{
+  return pvariance(a, mean(a), ddof);
+}
+template<class T> T variance(const MaskedArray<T> &a)
+{
+  return pvariance(a, mean(a), 1);
 }
 
-template<class T> T variance(const MaskedArray<T> &left)
+// <thrown>
+//    </item> ArrayError
+// </thrown>
+template<class T> T pstddev(const MaskedArray<T> &a, T mean, uInt ddof)
 {
-    return variance(left, mean(left));
+  if (a.nelements() < ddof+1) {
+    throw(ArrayError("::stddev(const Array<T> &) - Need at least " +
+                     String::toString(ddof+1) + 
+                     " unmasked elements"));
+  }
+  return sqrt(pvariance(a, mean, ddof));
+}
+template<class T> T stddev(const MaskedArray<T> &a, T mean)
+{
+  return pstddev (a, mean, 1);
+}
+template<class T> T pstddev(const MaskedArray<T> &a, uInt ddof)
+{
+  return pstddev (a, mean(a), ddof);
+}
+template<class T> T stddev(const MaskedArray<T> &a)
+{
+  return pstddev (a, mean(a), 1);
 }
 
-template<class T> T stddev(const MaskedArray<T> &left)
-{
-    return sqrt(variance(left));
-}
-
-template<class T> T stddev(const MaskedArray<T> &left, T mean)
-{
-    return sqrt(variance(left, mean));
-}
 
 template<class T> T avdev(const MaskedArray<T> &left)
 {
@@ -1471,17 +1501,17 @@ template<class T> T avdev(const MaskedArray<T> &left, T mean)
 {
     if (left.nelementsValid() < 1) {
         throw (ArrayError("T ::avdev(const MaskedArray<T> &, T) - "
-                          "MaskedArray must have at least 1 element"));
+                          "Need at least 1 unmasked element"));
     }
     MaskedArray<T> avdeviations (abs(left - mean));
-    return sum(avdeviations)/left.nelementsValid();
+    return sum(avdeviations)/T(left.nelementsValid());
 }
 
 template<class T> T rms(const MaskedArray<T> &left)
 {
     if (left.nelementsValid() < 1) {
         throw (ArrayError("T ::rms(const MaskedArray<T> &left) - "
-                          "MaskedArray must have at least 1 element"));
+                          "Need at least 1 unmasked element"));
     }
     return T(sqrt(sumsquares(left)/(1.0*left.nelementsValid())));
 }
@@ -1492,7 +1522,7 @@ template<class T> T median(const MaskedArray<T> &left, Bool sorted,
     uInt nelem = left.nelementsValid();
     if (nelem < 1) {
         throw (ArrayError("T ::median(const MaskedArray<T> &) - "
-                          "MaskedArray must have at least 1 element"));
+                          "Need at least 1 unmasked element"));
     }
     //# Mean does not have to be taken for odd number of elements.
     if (nelem%2 != 0) {

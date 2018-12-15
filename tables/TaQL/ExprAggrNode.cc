@@ -118,12 +118,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case gmeanFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
-    case gvariancesFUNC:
-    case gstddevsFUNC:
+    case gvariances0FUNC:
+    case gvariances1FUNC:
+    case gstddevs0FUNC:
+    case gstddevs1FUNC:
+      resVT = VTArray;
+    case gvariance0FUNC:
+    case gvariance1FUNC:
+    case gstddev0FUNC:
+    case gstddev1FUNC:
+      checkNumOfArg (1, 1, nodes);
+      return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
     case grmssFUNC:
       resVT = VTArray;
-    case gvarianceFUNC:
-    case gstddevFUNC:
     case grmsFUNC:
     case gmedianFUNC:
       checkNumOfArg (1, 1, nodes);
@@ -245,10 +252,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           return new TableExprGroupSumSqrDouble(this);
         case gmeanFUNC:
           return new TableExprGroupMeanDouble(this);
-        case gvarianceFUNC:
-          return new TableExprGroupVarianceDouble(this);
-        case gstddevFUNC:
-          return new TableExprGroupStdDevDouble(this);
+        case gvariance0FUNC:
+          return new TableExprGroupVarianceDouble(this, 0);
+        case gvariance1FUNC:
+          return new TableExprGroupVarianceDouble(this, 1);
+        case gstddev0FUNC:
+          return new TableExprGroupStdDevDouble(this, 0);
+        case gstddev1FUNC:
+          return new TableExprGroupStdDevDouble(this, 1);
         case grmsFUNC:
           return new TableExprGroupRmsDouble(this);
         case gmedianFUNC:
@@ -277,6 +288,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           return new TableExprGroupSumSqrDComplex(this);
         case gmeanFUNC:
           return new TableExprGroupMeanDComplex(this);
+        case gvariance0FUNC:
+          return new TableExprGroupVarianceDComplex(this, 0);
+        case gvariance1FUNC:
+          return new TableExprGroupVarianceDComplex(this, 1);
+        case gstddev0FUNC:
+          return new TableExprGroupStdDevDComplex(this, 0);
+        case gstddev1FUNC:
+          return new TableExprGroupStdDevDComplex(this, 1);
         default:
           throw TableInvExpr ("Aggregate function " +
                               String::toString(funcType()) +
@@ -337,10 +356,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return new TableExprGroupSumSqrArrayDouble(this);
       case gmeanFUNC:
         return new TableExprGroupMeanArrayDouble(this);
-      case gvarianceFUNC:
-        return new TableExprGroupVarianceArrayDouble(this);
-      case gstddevFUNC:
-        return new TableExprGroupStdDevArrayDouble(this);
+      case gvariance0FUNC:
+        return new TableExprGroupVarianceArrayDouble(this, 0);
+      case gvariance1FUNC:
+        return new TableExprGroupVarianceArrayDouble(this, 1);
+      case gstddev0FUNC:
+        return new TableExprGroupStdDevArrayDouble(this, 0);
+      case gstddev1FUNC:
+        return new TableExprGroupStdDevArrayDouble(this, 1);
       case grmsFUNC:
         return new TableExprGroupRmsArrayDouble(this);
       case gmedianFUNC:
@@ -363,6 +386,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return new TableExprGroupSumSqrArrayDComplex(this);
       case gmeanFUNC:
         return new TableExprGroupMeanArrayDComplex(this);
+      case gvariance0FUNC:
+        return new TableExprGroupVarianceArrayDComplex(this, 0);
+      case gvariance1FUNC:
+        return new TableExprGroupVarianceArrayDComplex(this, 1);
+      case gstddev0FUNC:
+        return new TableExprGroupStdDevArrayDComplex(this, 0);
+      case gstddev1FUNC:
+        return new TableExprGroupStdDevArrayDComplex(this, 1);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
