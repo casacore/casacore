@@ -31,77 +31,63 @@
 namespace casacore
 {
 
-bool Adios2StMan::itsUsingMpi;
 std::string Adios2StMan::itsAdiosEngineType;
 adios2::Params Adios2StMan::itsAdiosEngineParams;
 std::vector<adios2::Params> Adios2StMan::itsAdiosTransportParamsVec;
 
-#ifdef HAVE_MPI
 MPI_Comm Adios2StMan::itsMpiComm = MPI_COMM_WORLD;
 
 Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
-    : DataManager(),
-    itsAdios(mpiComm, true)
+    : DataManager()
 {
-    itsUsingMpi = true;
     itsMpiComm = mpiComm;
     std::string engineType;
     adios2::Params engineParams;
     std::vector<adios2::Params> transportParams;
-    Adios2StManCommon(engineType, engineParams, transportParams);
+    Adios2StMan(mpiComm, engineType, engineParams, transportParams);
 }
 
 Adios2StMan::Adios2StMan(
-    MPI_Comm mpiComm, std::string engineType,
-    std::map<std::string, std::string> engineParams,
-    std::vector<std::map<std::string, std::string>> transportParams)
-: DataManager()
+        MPI_Comm mpiComm, std::string engineType,
+        std::map<std::string, std::string> engineParams,
+        std::vector<std::map<std::string, std::string>> transportParams)
+    : DataManager()
 {
-    itsUsingMpi = true;
     itsMpiComm = mpiComm;
-    Adios2StManCommon(engineType, engineParams, transportParams);
-}
-#endif
-
-Adios2StMan::Adios2StMan() : DataManager()
-{
-    itsUsingMpi = false;
-    std::string engineType;
-    adios2::Params engineParams;
-    std::vector<adios2::Params> transportParams;
-    Adios2StManCommon(engineType, engineParams, transportParams);
-}
-
-Adios2StMan::Adios2StMan(
-    std::string engineType, std::map<std::string, std::string> engineParams,
-    std::vector<std::map<std::string, std::string>> transportParams)
-: DataManager()
-{
-    itsUsingMpi = false;
-    Adios2StManCommon(engineType, engineParams, transportParams);
-}
-
-Adios2StMan::~Adios2StMan()
-{
-    if (itsAdiosEngine)
-    {
-        itsAdiosEngine->EndStep();
-        itsAdiosEngine->Close();
-    }
-}
-
-void Adios2StMan::Adios2StManCommon(
-    const std::string &engineType,
-    const std::map<std::string, std::string> &engineParams,
-    const std::vector<std::map<std::string, std::string>> &transportParams)
-{
-
     itsAdiosEngineType = engineType;
     itsAdiosEngineParams = engineParams;
     itsAdiosTransportParamsVec = transportParams;
 
-    itsAdiosIO =
-        std::make_shared<adios2::IO>(itsAdios.DeclareIO("Adios2StMan"));
+    int mpi_finalized;
+    MPI_Finalized(&mpi_finalized);
+    if(mpi_finalized)
+    {
+        throw(std::runtime_error("MPI has been finalized when initializing Adios2StMan"));
+    }
+    else
+    {
+        int mpi_initialized;
+        MPI_Initialized(&mpi_initialized);
+        if(!mpi_initialized)
+        {
+#ifdef USE_THREADS
+            int provided;
+            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
+            if(provided != MPI_THREAD_MULTIPLE)
+            {
+                throw(std::runtime_error(
+                            "Casacore is built with thread and MPI enabled, \
+                            but the MPI installation does not support threads"));
+            }
+#else
+            MPI_Init(0,0);
+#endif
+        }
+    }
+
+    itsAdios = std::make_shared<adios2::ADIOS>(itsMpiComm, true);
+
+    itsAdiosIO = std::make_shared<adios2::IO>(itsAdios->DeclareIO("Adios2StMan"));
 
     if (itsAdiosEngineType.empty() == false)
     {
@@ -123,33 +109,26 @@ void Adios2StMan::Adios2StManCommon(
     }
 }
 
+Adios2StMan::~Adios2StMan()
+{
+    if (itsAdiosEngine)
+    {
+        itsAdiosEngine->EndStep();
+        itsAdiosEngine->Close();
+    }
+}
+
 DataManager *Adios2StMan::makeObject(const String &/*aDataManType*/,
                                      const Record &/*spec*/)
 {
-    if (Adios2StMan::itsUsingMpi)
-    {
-#ifdef HAVE_MPI
         return new Adios2StMan(itsMpiComm, itsAdiosEngineType,
                                itsAdiosEngineParams,
                                itsAdiosTransportParamsVec);
-#else
-        throw(std::runtime_error("Adios2StMan using MPI but HAVE_MPI is not "
-                                 "defined. This should never happen"));
-        return new Adios2StMan(itsAdiosEngineType, itsAdiosEngineParams,
-                               itsAdiosTransportParamsVec);
-#endif
-    }
-    else
-    {
-        return new Adios2StMan(itsAdiosEngineType, itsAdiosEngineParams,
-                               itsAdiosTransportParamsVec);
-    }
 }
 
 DataManager *Adios2StMan::clone() const
 {
-    Record tmp;
-    return makeObject(itsDataManName, tmp);
+    return makeObject(itsDataManName, Record());
 }
 
 String Adios2StMan::dataManagerType() const { return itsDataManName; }

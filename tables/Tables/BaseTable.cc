@@ -174,11 +174,27 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
-    int rank = 0;
-    int mpi_initialized, mpi_finalized;
-    MPI_Initialized(&mpi_initialized);
+    int mpi_finalized;
     MPI_Finalized(&mpi_finalized);
-    if(mpi_initialized == true && mpi_finalized == false){
+    if(!mpi_finalized)
+    {
+        int mpi_initialized;
+        MPI_Initialized(&mpi_initialized);
+        if(!mpi_initialized){
+#ifdef USE_THREADS
+            int provided;
+            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
+            if(provided != MPI_THREAD_MULTIPLE)
+            {
+                throw(std::runtime_error(
+                            "Casacore is built with thread and MPI enabled, \
+                            but the MPI installation does not support threads"));
+            }
+#else
+            MPI_Init(0,0);
+#endif
+        }
+        int rank = 0;
         MPI_Comm_rank(itsMpiComm, &rank);
         if(rank > 0){
             return false;
@@ -242,11 +258,28 @@ Bool BaseTable::makeTableDir()
 Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
-    int rank = 0;
-    int mpi_initialized, mpi_finalized;
-    MPI_Initialized(&mpi_initialized);
+    int mpi_finalized;
     MPI_Finalized(&mpi_finalized);
-    if(mpi_initialized == true && mpi_finalized == false){
+    if(!mpi_finalized)
+    {
+        int mpi_initialized;
+        MPI_Initialized(&mpi_initialized);
+        if(!mpi_initialized){
+#ifdef USE_THREADS
+            int provided;
+            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
+            if(provided != MPI_THREAD_MULTIPLE)
+            {
+                throw(std::runtime_error(
+                            "Casacore is built with thread and MPI enabled, \
+                            but the MPI installation does not support threads"));
+            }
+#else
+            MPI_Init(0,0);
+#endif
+        }
+        int rank = 0;
+        MPI_Comm_rank(itsMpiComm, &rank);
         if(rank > 0){
             return false;
         }
