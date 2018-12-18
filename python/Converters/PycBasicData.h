@@ -100,7 +100,7 @@ namespace casacore { namespace python {
       boost::python::converter::rvalue_from_python_stage1_data* data)
     {
 #ifdef IS_PY3K
-    PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "ASCII", "strict"); // Owned reference
+    PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "UTF-8", "strict"); // Owned reference
     char* value;
     if (temp_bytes != NULL) {
         value = PyBytes_AS_STRING(temp_bytes); // Borrowed pointer
