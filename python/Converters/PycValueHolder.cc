@@ -99,32 +99,31 @@ namespace casacore { namespace python {
   {
     if (! (PyBool_Check(obj_ptr)
 #ifndef IS_PY3K
-       || PyInt_Check(obj_ptr)
-       || PyString_Check(obj_ptr)
+      || PyInt_Check(obj_ptr)
+      || PyString_Check(obj_ptr)
 #endif
-       || PyLong_Check(obj_ptr)
-       || PyFloat_Check(obj_ptr)
-       || PyComplex_Check(obj_ptr)
-       || PyUnicode_Check(obj_ptr)
-       || PyDict_Check(obj_ptr)
-       || PyList_Check(obj_ptr)
-       || PyTuple_Check(obj_ptr)
-       || PyIter_Check(obj_ptr)
-       || PyRange_Check(obj_ptr)
-       || PySequence_Check(obj_ptr)
-       || PycArrayCheck(obj_ptr)
-       || PycArrayScalarCheck(obj_ptr)  )) {
-      // An empty numarray is Py_None, so accept that.
-      if (obj_ptr != Py_None) {
-    return 0;
-      }
+      || PyLong_Check(obj_ptr)
+      || PyFloat_Check(obj_ptr)
+      || PyComplex_Check(obj_ptr)
+      || PyUnicode_Check(obj_ptr)
+      || PyDict_Check(obj_ptr)
+      || PyList_Check(obj_ptr)
+      || PyTuple_Check(obj_ptr)
+      || PyIter_Check(obj_ptr)
+      || PyRange_Check(obj_ptr)
+      || PySequence_Check(obj_ptr)
+      || PycArrayCheck(obj_ptr)
+      || PycArrayScalarCheck(obj_ptr)  )) {
+        // An empty numarray is Py_None, so accept that.
+        if (obj_ptr != Py_None) {
+          return 0;
+        }
     }
     return obj_ptr;
   }
 
-  void casa_value_from_python::construct
-  (PyObject* obj_ptr,
-   boost::python::converter::rvalue_from_python_stage1_data* data)
+  void casa_value_from_python::construct (PyObject* obj_ptr,
+        boost::python::converter::rvalue_from_python_stage1_data* data)
   {
     using namespace boost::python;
     using boost::python::converter::rvalue_from_python_storage; // dito
@@ -153,12 +152,13 @@ namespace casacore { namespace python {
       return ValueHolder(extract<bool>(obj_ptr)());
 #ifdef IS_PY3K
     } else if (PyLong_Check(obj_ptr)) {
+      return ValueHolder(extract<int>(obj_ptr)());
 #else
     } else if (PyInt_Check(obj_ptr)) {
-#endif
       return ValueHolder(extract<int>(obj_ptr)());
     } else if (PyLong_Check(obj_ptr)) {
       return ValueHolder(extract<Int64>(obj_ptr)());
+#endif
     } else if (PyFloat_Check(obj_ptr)) {
       return ValueHolder(extract<double>(obj_ptr)());
     } else if (PyComplex_Check(obj_ptr)) {
@@ -245,46 +245,45 @@ namespace casacore { namespace python {
     dt = TpBool;
 #ifdef IS_PY3K
       } else if (PyLong_Check (py_elem_obj.ptr())) {
+        dt = TpInt;
 #else
       } else if (PyInt_Check (py_elem_obj.ptr())) {
-#endif
-
-    dt = TpInt;
+        dt = TpInt;
       } else if (PyLong_Check (py_elem_obj.ptr())) {
-    dt = TpInt64;
+        dt = TpInt64;
+#endif
       } else if (PyFloat_Check (py_elem_obj.ptr())) {
-    dt = TpDouble;
+        dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
-    dt = TpDComplex;
+        dt = TpDComplex;
 #ifdef IS_PY3K
       } else if (PyUnicode_Check (py_elem_obj.ptr())) {
 #else
-      } else if (PyString_Check (py_elem_obj.ptr()) or PyUnicode_Check (py_elem_obj.ptr()) {
+      } else if (PyString_Check(py_elem_obj.ptr()) or PyUnicode_Check(py_elem_obj.ptr())) {
 #endif
-    dt = TpString;
+        dt = TpString;
       } else {
         throw AipsError ("PycValueHolder: unknown python data type");
       }
       if (result == TpOther) {
-    result = dt;         // first time
+        result = dt;         // first time
       } else if (dt != result) {
         // bool, string, and numeric cannot be mixed.
-    if (result == TpBool  ||  result == TpString
-        || dt == TpBool  ||  dt == TpString) {
-      throw AipsError ("PycValueHolder: incompatible types in sequence");
-    }
-        // Use the 'highest' type.
-    if (result != TpDComplex) {
-      if (dt == TpDComplex) {
-        result = dt;
-      } else if (result != TpDouble) {
+        if (result == TpBool  ||  result == TpString || dt == TpBool  ||  dt == TpString) {
+          throw AipsError ("PycValueHolder: incompatible types in sequence");
+        }
+            // Use the 'highest' type.
+        if (result != TpDComplex) {
+          if (dt == TpDComplex) {
+            result = dt;
+          } else if (result != TpDouble) {
             if (dt == TpDouble) {
               result = dt;
             } else if (result != TpInt64) {
               result = dt;
             }
-      }
-    }
+          }
+        }
       }
     }
     return result;
