@@ -152,7 +152,7 @@ namespace casacore { namespace python {
       return ValueHolder(extract<bool>(obj_ptr)());
 #ifdef IS_PY3K
     } else if (PyLong_Check(obj_ptr)) {
-      return ValueHolder(extract<int>(obj_ptr)());
+      return ValueHolder(extract<Int>(obj_ptr)()); // gijs: maybe should be Int64? But only Int seems to work
 #else
     } else if (PyInt_Check(obj_ptr)) {
       return ValueHolder(extract<int>(obj_ptr)());
@@ -242,23 +242,20 @@ namespace casacore { namespace python {
       if (PycArrayScalarCheck (py_elem_obj.ptr())) {
         dt = PycArrayScalarType (py_elem_obj.ptr());
       } else if (PyBool_Check (py_elem_obj.ptr())) {
-    dt = TpBool;
-#ifdef IS_PY3K
-      } else if (PyLong_Check (py_elem_obj.ptr())) {
-        dt = TpInt;
-#else
-      } else if (PyInt_Check (py_elem_obj.ptr())) {
-        dt = TpInt;
-      } else if (PyLong_Check (py_elem_obj.ptr())) {
-        dt = TpInt64;
-#endif
+        dt = TpBool;
       } else if (PyFloat_Check (py_elem_obj.ptr())) {
         dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
         dt = TpDComplex;
 #ifdef IS_PY3K
+      } else if (PyLong_Check (py_elem_obj.ptr())) {
+        dt = TpInt;   // gijs: maybe should be TpInt64? But only Int seems to work
       } else if (PyUnicode_Check (py_elem_obj.ptr())) {
 #else
+      } else if (PyInt_Check (py_elem_obj.ptr())) {
+          dt = TpInt;
+      } else if (PyLong_Check (py_elem_obj.ptr())) {
+          dt = TpInt64;
       } else if (PyString_Check(py_elem_obj.ptr()) or PyUnicode_Check(py_elem_obj.ptr())) {
 #endif
         dt = TpString;
