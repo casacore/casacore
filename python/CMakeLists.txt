@@ -64,6 +64,15 @@ Converters/PycExcp.cc
 Converters/PycImport.cc
 Converters/PycRecord.cc
 Converters/PycValueHolder.cc
+Converters/PycArray.h
+Converters/PycArrayComCC.h
+Converters/PycArrayComH.h
+Converters/PycArrayNP.h
+Converters/PycBasicData.h
+Converters/PycExcp.h
+Converters/PycRecord.h
+Converters/PycValueHolder.h
+Converters/PycArray.tcc
 )
 
 target_link_libraries (casa_python casa_casa ${PYTHON2_Boost_LIBRARIES} ${PYTHON2_LIBRARIES} ${CASACORE_ARCH_LIBS})

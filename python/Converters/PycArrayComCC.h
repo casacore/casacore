@@ -22,8 +22,10 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycArrayComCC.h,v 1.3 2006/11/20 23:58:17 gvandiep Exp $
+
+
+#include <boost/python.hpp>
+#include <numpy/arrayobject.h>
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K

@@ -61,6 +61,8 @@ namespace casacore { namespace python {
       {cout << "DComplex " << in << endl; return in;}
     String teststring (const String& in)
       {cout << "String " << in << endl; String out=in; return out;}
+    String testunicode (const String& in)
+      {cout << "Unicode " << in << endl; String out=in; return out;}
     Record testrecord (const Record& in)
       {cout << "Record "; in.print(cout); cout << endl; return in;}
     ValueHolder testvh (const ValueHolder& in)
@@ -101,6 +103,7 @@ namespace casacore { namespace python {
       .def ("testcomplex",    &TConvert::testcomplex)
       .def ("testdcomplex",   &TConvert::testdcomplex)
       .def ("teststring",     &TConvert::teststring)
+      .def ("testunicode",     &TConvert::testunicode)
       .def ("testrecord",     &TConvert::testrecord)
       .def ("testvh",         &TConvert::testvh)
       .def ("testvecbool",    &TConvert::testvecbool)
