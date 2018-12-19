@@ -90,7 +90,7 @@ namespace casacore { namespace python {
 #ifdef IS_PY3K
     if (!PyUnicode_Check(obj_ptr)) return 0;
 #else
-    if (!PyString_Check(obj_ptr) and !PyUnicode_Check(obj_ptr)) return 0;
+    if (!PyString_Check(obj_ptr) && !PyUnicode_Check(obj_ptr)) return 0;
 #endif
       return obj_ptr;
     }
@@ -99,19 +99,24 @@ namespace casacore { namespace python {
       PyObject* obj_ptr,
       boost::python::converter::rvalue_from_python_stage1_data* data)
     {
-#ifdef IS_PY3K
-    PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "UTF-8", "strict"); // Owned reference
-    char* value;
-    if (temp_bytes != NULL) {
-        value = PyBytes_AS_STRING(temp_bytes); // Borrowed pointer
-        value = strdup(value);
-        Py_DECREF(temp_bytes);
+    char* value = 0;
+    if (PyUnicode_Check(obj_ptr)) {
+        PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "UTF-8", "strict"); // Owned reference
+
+        if (temp_bytes != NULL) {
+            value = PyBytes_AS_STRING(temp_bytes); // Borrowed pointer
+            value = strdup(value);
+            Py_DECREF(temp_bytes);
+        } else {
+          boost::python::throw_error_already_set();
+        }
+#ifndef IS_PY3K
+    } else if (PyString_Check(obj_ptr)) {
+        value = PyString_AsString(obj_ptr);
+#endif
     } else {
-      boost::python::throw_error_already_set();
+        boost::python::throw_error_already_set();
     }
-#else
-    const char* value = PyString_AsString(obj_ptr);
-#endif
       if (value == 0) boost::python::throw_error_already_set();
       void* storage = (
         (boost::python::converter::rvalue_from_python_storage<String>*)
@@ -120,41 +125,6 @@ namespace casacore { namespace python {
       data->convertible = storage;
     }
   };
-
-
-  #ifndef IS_PY3K
-  // Convert a Unicode object from python.
-  struct casa_string_from_python_unicode
-  {
-    casa_string_from_python_unicode()
-    {
-      boost::python::converter::registry::push_back(
-        &convertible,
-        &construct,
-        boost::python::type_id<String>());
-    }
-
-    static void* convertible(PyObject* obj_ptr)
-    {
-
-    if (!PyUnicode_Check(obj_ptr)) return 0;
-      return obj_ptr;
-    }
-
-    static void construct(
-      PyObject* obj_ptr,
-      boost::python::converter::rvalue_from_python_stage1_data* data)
-    {
-    const char* value = PyString_AsString(PyUnicode_AsUTF8String(obj_ptr));
-      if (value == 0) boost::python::throw_error_already_set();
-      void* storage = (
-        (boost::python::converter::rvalue_from_python_storage<String>*)
-          data)->storage.bytes;
-      new (storage) String(value);
-      data->convertible = storage;
-    }
-  };
-  #endif
 
 
   // Default operations on all containers for conversion from Python

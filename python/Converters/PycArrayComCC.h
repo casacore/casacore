@@ -247,11 +247,7 @@
   {
     PyObject** dst = static_cast<PyObject**>(to);
     for (uInt i=0; i<nr; i++) {
-#ifdef IS_PY3K
       dst[i] = PyUnicode_FromString(from[i].chars());
-#else
-      dst[i] = PyString_FromString(from[i].chars());
-#endif
     }
   }
   void ArrayCopy<String>::fromPy (String* to, const void* from, uInt nr)

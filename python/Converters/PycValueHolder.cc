@@ -166,7 +166,7 @@ namespace casacore { namespace python {
 #ifdef IS_PY3K
     } else if (PyUnicode_Check(obj_ptr)) {
 #else
-    } else if (PyString_Check(obj_ptr) or PyUnicode_Check(obj_ptr)) {
+    } else if (PyString_Check(obj_ptr) || PyUnicode_Check(obj_ptr)) {
 #endif
       return ValueHolder(String(extract<std::string>(obj_ptr)()));
     } else if (PyDict_Check(obj_ptr)) {
@@ -256,7 +256,7 @@ namespace casacore { namespace python {
           dt = TpInt;
       } else if (PyLong_Check (py_elem_obj.ptr())) {
           dt = TpInt64;
-      } else if (PyString_Check(py_elem_obj.ptr()) or PyUnicode_Check(py_elem_obj.ptr())) {
+      } else if (PyString_Check(py_elem_obj.ptr()) || PyUnicode_Check(py_elem_obj.ptr())) {
 #endif
         dt = TpString;
       } else {
