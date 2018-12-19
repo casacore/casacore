@@ -218,6 +218,10 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     ios >> format;
     bigEndian_p = (format==0);
     ios >> tp;
+    // If locking is not used, nrrow_p might be 0. Use nrrow in that case.
+    if (nrrow_p == 0) {
+      nrrow_p = nrrow;
+    }
 #if defined(TABLEREPAIR)
     cerr << "tableRepair: found " << nrrow << " rows; give new number: ";
     cin >> nrrow_p;

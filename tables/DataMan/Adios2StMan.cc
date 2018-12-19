@@ -116,6 +116,9 @@ Adios2StMan::~Adios2StMan()
         itsAdiosEngine->EndStep();
         itsAdiosEngine->Close();
     }
+    for (uInt i=0; i<ncolumn(); ++i) {
+      delete itsColumnPtrBlk[i];
+    }
 }
 
 DataManager *Adios2StMan::makeObject(const String &/*aDataManType*/,
