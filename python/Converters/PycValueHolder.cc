@@ -98,30 +98,25 @@ namespace casacore { namespace python {
   void* casa_value_from_python::convertible(PyObject* obj_ptr)
   {
     if (! (PyBool_Check(obj_ptr)
-#ifdef IS_PY3K
-	   || PyLong_Check(obj_ptr)
-#else
+#ifndef IS_PY3K
        || PyInt_Check(obj_ptr)
-#endif
-	   || PyLong_Check(obj_ptr)
-	   || PyFloat_Check(obj_ptr)
-	   || PyComplex_Check(obj_ptr)
-#ifdef IS_PY3K
-	   || PyUnicode_Check(obj_ptr)
-#else
        || PyString_Check(obj_ptr)
 #endif
-	   || PyDict_Check(obj_ptr)
-	   || PyList_Check(obj_ptr)
-	   || PyTuple_Check(obj_ptr)
-	   || PyIter_Check(obj_ptr)
-	   || PyRange_Check(obj_ptr)
-	   || PySequence_Check(obj_ptr)
-	   || PycArrayCheck(obj_ptr)
-	   || PycArrayScalarCheck(obj_ptr)  )) {
+       || PyLong_Check(obj_ptr)
+       || PyFloat_Check(obj_ptr)
+       || PyComplex_Check(obj_ptr)
+       || PyUnicode_Check(obj_ptr)
+       || PyDict_Check(obj_ptr)
+       || PyList_Check(obj_ptr)
+       || PyTuple_Check(obj_ptr)
+       || PyIter_Check(obj_ptr)
+       || PyRange_Check(obj_ptr)
+       || PySequence_Check(obj_ptr)
+       || PycArrayCheck(obj_ptr)
+       || PycArrayScalarCheck(obj_ptr)  )) {
       // An empty numarray is Py_None, so accept that.
       if (obj_ptr != Py_None) {
-	return 0;
+    return 0;
       }
     }
     return obj_ptr;
@@ -135,7 +130,7 @@ namespace casacore { namespace python {
     using boost::python::converter::rvalue_from_python_storage; // dito
     using boost::python::throw_error_already_set; // dito
     void* storage = ((rvalue_from_python_storage<ValueHolder>*)
-		     data)->storage.bytes;
+             data)->storage.bytes;
     new (storage) ValueHolder();
     data->convertible = storage;
     ValueHolder& result = *((ValueHolder*)storage);
@@ -171,13 +166,13 @@ namespace casacore { namespace python {
 #ifdef IS_PY3K
     } else if (PyUnicode_Check(obj_ptr)) {
 #else
-    } else if (PyString_Check(obj_ptr)) {
+    } else if (PyString_Check(obj_ptr) or PyUnicode_Check(obj_ptr)) {
 #endif
       return ValueHolder(String(extract<std::string>(obj_ptr)()));
     } else if (PyDict_Check(obj_ptr)) {
       dict d = extract<dict>(obj_ptr)();
       if (d.has_key("shape") && d.has_key("array")) {
-	return casa_array_from_python::makeArrayFromDict(obj_ptr);
+    return casa_array_from_python::makeArrayFromDict(obj_ptr);
       }
       return ValueHolder(casa_record_from_python::makeRecord (obj_ptr));
     } else if (PycArrayCheck(obj_ptr)) {
@@ -222,10 +217,10 @@ namespace casacore { namespace python {
     // Restriction to list, tuple, iter, xrange until
     // Boost.Python overload resolution is enhanced.
     if (!(PyList_Check(obj_ptr)
-	  || PyTuple_Check(obj_ptr)
-	  || PyIter_Check(obj_ptr)
-	  || PyRange_Check(obj_ptr)
-	  || PySequence_Check(obj_ptr) )) {
+      || PyTuple_Check(obj_ptr)
+      || PyIter_Check(obj_ptr)
+      || PyRange_Check(obj_ptr)
+      || PySequence_Check(obj_ptr) )) {
       return TpOther;
     }
     handle<> obj_iter(allow_null(PyObject_GetIter(obj_ptr)));
@@ -238,8 +233,8 @@ namespace casacore { namespace python {
     for (;;i++) {
       handle<> py_elem_hdl(allow_null(PyIter_Next(obj_iter.get())));
       if (PyErr_Occurred()) {
-	PyErr_Clear();
-	return TpOther;
+    PyErr_Clear();
+    return TpOther;
       }
       if (!py_elem_hdl.get()) break;         // end of iteration
       object py_elem_obj(py_elem_hdl);
@@ -247,49 +242,49 @@ namespace casacore { namespace python {
       if (PycArrayScalarCheck (py_elem_obj.ptr())) {
         dt = PycArrayScalarType (py_elem_obj.ptr());
       } else if (PyBool_Check (py_elem_obj.ptr())) {
-	dt = TpBool;
+    dt = TpBool;
 #ifdef IS_PY3K
       } else if (PyLong_Check (py_elem_obj.ptr())) {
 #else
       } else if (PyInt_Check (py_elem_obj.ptr())) {
 #endif
 
-	dt = TpInt;
+    dt = TpInt;
       } else if (PyLong_Check (py_elem_obj.ptr())) {
-	dt = TpInt64;
+    dt = TpInt64;
       } else if (PyFloat_Check (py_elem_obj.ptr())) {
-	dt = TpDouble;
+    dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
-	dt = TpDComplex;
+    dt = TpDComplex;
 #ifdef IS_PY3K
       } else if (PyUnicode_Check (py_elem_obj.ptr())) {
 #else
-      } else if (PyString_Check (py_elem_obj.ptr())) {
+      } else if (PyString_Check (py_elem_obj.ptr()) or PyUnicode_Check (py_elem_obj.ptr()) {
 #endif
-	dt = TpString;
+    dt = TpString;
       } else {
         throw AipsError ("PycValueHolder: unknown python data type");
       }
       if (result == TpOther) {
-	result = dt;         // first time
+    result = dt;         // first time
       } else if (dt != result) {
         // bool, string, and numeric cannot be mixed.
-	if (result == TpBool  ||  result == TpString
-	    || dt == TpBool  ||  dt == TpString) {
-	  throw AipsError ("PycValueHolder: incompatible types in sequence");
-	}
+    if (result == TpBool  ||  result == TpString
+        || dt == TpBool  ||  dt == TpString) {
+      throw AipsError ("PycValueHolder: incompatible types in sequence");
+    }
         // Use the 'highest' type.
-	if (result != TpDComplex) {
-	  if (dt == TpDComplex) {
-	    result = dt;
-	  } else if (result != TpDouble) {
+    if (result != TpDComplex) {
+      if (dt == TpDComplex) {
+        result = dt;
+      } else if (result != TpDouble) {
             if (dt == TpDouble) {
               result = dt;
             } else if (result != TpInt64) {
               result = dt;
             }
-	  }
-	}
+      }
+    }
       }
     }
     return result;

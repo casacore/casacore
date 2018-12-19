@@ -90,7 +90,7 @@ namespace casacore { namespace python {
 #ifdef IS_PY3K
     if (!PyUnicode_Check(obj_ptr)) return 0;
 #else
-    if (!PyString_Check(obj_ptr)) return 0;
+    if (!PyString_Check(obj_ptr) and !PyUnicode_Check(obj_ptr)) return 0;
 #endif
       return obj_ptr;
     }
@@ -273,7 +273,7 @@ namespace casacore { namespace python {
       typename ContainerType::const_iterator i = c.begin();
       typename ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-	result.append(*i);
+    result.append(*i);
       }
       return result;
     }
@@ -292,7 +292,7 @@ namespace casacore { namespace python {
       // Reverse IPosition values.
       boost::python::list result;
       for (int i=c.size()-1; i>=0; --i) {
-	result.append(c[i]);
+    result.append(c[i]);
       }
       return result;
     }
@@ -318,7 +318,7 @@ namespace casacore { namespace python {
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
         bool b = *i;
-	result.append(b);
+    result.append(b);
       }
       return result;
     }
@@ -337,7 +337,7 @@ namespace casacore { namespace python {
       ContainerType::const_iterator i = c.begin();
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-	result.append((std::string const&)(*i));
+    result.append((std::string const&)(*i));
       }
       return result;
     }
@@ -356,7 +356,7 @@ namespace casacore { namespace python {
       ContainerType::const_iterator i = c.begin();
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-	result.append((std::string const&)(*i));
+    result.append((std::string const&)(*i));
       }
       return result;
     }
@@ -375,7 +375,7 @@ namespace casacore { namespace python {
       ContainerType::const_iterator i = c.begin();
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-	result.append((std::string const&)(*i));
+    result.append((std::string const&)(*i));
       }
       return result;
     }
@@ -399,7 +399,7 @@ namespace casacore { namespace python {
     std_vector_to_list ()
     {
       boost::python::to_python_converter < std::vector < T >, 
-	                         to_list < std::vector < T > >  > ();
+                             to_list < std::vector < T > >  > ();
     }
   };
   template < typename T >
@@ -408,7 +408,7 @@ namespace casacore { namespace python {
     casa_array_to_list ()
     {
       boost::python::to_python_converter < casacore::Array < T >, 
-	                         to_list < casacore::Array < T > >  > ();
+                             to_list < casacore::Array < T > >  > ();
     }
   };
   template < typename T >
@@ -417,7 +417,7 @@ namespace casacore { namespace python {
     casa_vector_to_list ()
     {
       boost::python::to_python_converter < casacore::Vector < T >, 
-	                         to_list < casacore::Vector < T > >  > ();
+                             to_list < casacore::Vector < T > >  > ();
     }
   };
   struct casa_iposition_to_list 
@@ -425,7 +425,7 @@ namespace casacore { namespace python {
     casa_iposition_to_list ()
     {
       boost::python::to_python_converter < casacore::IPosition, 
-	                         to_list < casacore::IPosition >  > ();
+                             to_list < casacore::IPosition >  > ();
     }
   };
 
@@ -459,50 +459,44 @@ namespace casacore { namespace python {
       using namespace boost::python;
       handle<> py_hdl(obj_ptr);
       if (PyErr_Occurred()) {
-	PyErr_Clear();
-	return 0;
+    PyErr_Clear();
+    return 0;
       }
       object py_obj(py_hdl);
       incref(obj_ptr);        // incr refcount, because ~object decrements it
       // Accept single values.
       if (PyBool_Check(obj_ptr)
-#ifdef IS_PY3K
-	  || PyLong_Check(obj_ptr)
-#else
-      || PyInt_Check(obj_ptr)
+        || PyLong_Check(obj_ptr)
+        || PyFloat_Check(obj_ptr)
+        || PyComplex_Check(obj_ptr)
+#ifndef IS_PY3K
+        || PyInt_Check(obj_ptr)
+        || PyString_Check(obj_ptr)
 #endif
-	  || PyLong_Check(obj_ptr)
-	  || PyFloat_Check(obj_ptr)
-	  || PyComplex_Check(obj_ptr)
-#ifdef IS_PY3K
-	  || PyUnicode_Check(obj_ptr)) {
-#else
-      || PyString_Check(obj_ptr)) {
-#endif
-
-	extract<container_element_type> elem_proxy(py_obj);
-	if (!elem_proxy.check()) return 0;
-	return obj_ptr;
-      }
+        || PyUnicode_Check(obj_ptr)) {
+          extract<container_element_type> elem_proxy(py_obj);
+          if (!elem_proxy.check()) return 0;
+          return obj_ptr;
+         }
       // An array scalar is accepted.
       if (PycArrayScalarCheck(obj_ptr)) {
-	return obj_ptr;
+        return obj_ptr;
       }
       // Get the sequence object.
       // It can be a numarray/numpy scalar in which case
       // it fills py_obj with a flattened array.
       if (! getSeqObject (py_obj)) {
-	return 0;
+        return 0;
       }
       // Check the sequence.
       // It must be convertible to an iterator.
       handle<> obj_iter(allow_null(PyObject_GetIter(py_obj.ptr())));
       if (!obj_iter.get()) {
-	PyErr_Clear();
-	return 0;
+        PyErr_Clear();
+        return 0;
       }
       if (!check_convertibility (py_obj.ptr())) {
-	return 0;
+        return 0;
       }
       return obj_ptr;
     }
@@ -521,32 +515,28 @@ namespace casacore { namespace python {
       data->convertible = storage;
       ContainerType& result = *((ContainerType*)storage);
       if (PyBool_Check(obj_ptr)
+        || PyLong_Check(obj_ptr)
+        || PyFloat_Check(obj_ptr)
+        || PyComplex_Check(obj_ptr)
+        || PyUnicode_Check(obj_ptr)
 #ifndef IS_PY3K
-	  || PyInt_Check(obj_ptr)
+        || PyString_Check(obj_ptr)
+        || PyInt_Check(obj_ptr)
 #endif
-	  || PyLong_Check(obj_ptr)
-	  || PyFloat_Check(obj_ptr)
-	  || PyComplex_Check(obj_ptr)
-#ifdef IS_PY3K
-	  || PyUnicode_Check(obj_ptr)
-#else
-      || PyString_Check(obj_ptr)
-      || PyUnicode_Check(obj_ptr)
-#endif
-	  || PycArrayScalarCheck(obj_ptr)) {
-	extract<container_element_type> elem_proxy(obj_ptr);
-	ConversionPolicy::reserve(result, 1);
-        ConversionPolicy::set_value(result, 0, elem_proxy());
-	return;
+        || PycArrayScalarCheck(obj_ptr)) {
+          extract<container_element_type> elem_proxy(obj_ptr);
+          ConversionPolicy::reserve(result, 1);
+          ConversionPolicy::set_value(result, 0, elem_proxy());
+          return;
       }
       handle<> py_hdl(obj_ptr);
       object py_obj = object(py_hdl);
       incref(obj_ptr);      // incr refcount, because ~object decrements it
       assert (getSeqObject (py_obj));
       fill_container (result, py_obj.ptr());
-      //	ConversionPolicy::reserve(result, 1);
-      //	ConversionPolicy::set_value(result, 0, 
-      //	    extract<container_element_type>(py_flat.attr("__getitem__")(0)));
+      //    ConversionPolicy::reserve(result, 1);
+      //    ConversionPolicy::set_value(result, 0, 
+      //        extract<container_element_type>(py_flat.attr("__getitem__")(0)));
     }
 
     // Constructs a C++ container from a Python sequence.
@@ -586,18 +576,18 @@ namespace casacore { namespace python {
       }
       int obj_size = PyObject_Length(obj_ptr);
       if (obj_size < 0) {        // must be a measurable sequence
-	PyErr_Clear();
-	return false;
+    PyErr_Clear();
+    return false;
       }
       if (ConversionPolicy::check_convertibility_per_element()) {
         if (!ConversionPolicy::check_size(
           boost::type<ContainerType>(), obj_size)) return false;
-	// All elements in a range and array have the same type, so
-	// need to check the first element only.
+    // All elements in a range and array have the same type, so
+    // need to check the first element only.
         bool is_same = PyRange_Check(obj_ptr) ||
-	              (PySequence_Check(obj_ptr)
-		       && !PyTuple_Check(obj_ptr) && !PyList_Check(obj_ptr));
-	int i = 0;
+                  (PySequence_Check(obj_ptr)
+               && !PyTuple_Check(obj_ptr) && !PyList_Check(obj_ptr));
+    int i = 0;
         for (;;i++) {
           handle<> py_elem_hdl(allow_null(PyIter_Next(obj_iter.get())));
           if (PyErr_Occurred()) {
@@ -640,10 +630,10 @@ namespace casacore { namespace python {
     {
       std::string tname(typeid(std::vector<T>).name());
       if (! pyregistry::get (tname)) {
-	pyregistry::set (tname);
-	std_vector_to_list < T > ();
-	from_python_sequence < std::vector < T >,
-	                       stl_variable_capacity_policy > ();
+    pyregistry::set (tname);
+    std_vector_to_list < T > ();
+    from_python_sequence < std::vector < T >,
+                           stl_variable_capacity_policy > ();
       }
     }
   };
@@ -659,11 +649,11 @@ namespace casacore { namespace python {
     {
       std::string tname(typeid(casacore::Vector<T>).name());
       if (! pyregistry::get (tname)) {
-	pyregistry::set (tname);
-	casa_array_to_list < T > ();
-	casa_vector_to_list < T > ();
-	from_python_sequence < casacore::Vector < T >,
-	                       casa_variable_capacity_policy > ();
+    pyregistry::set (tname);
+    casa_array_to_list < T > ();
+    casa_vector_to_list < T > ();
+    from_python_sequence < casacore::Vector < T >,
+                           casa_variable_capacity_policy > ();
       }
     }
   };
