@@ -6,12 +6,26 @@ env:
     - CCACHE_COMPRESS=1
     - CCACHE_CPP2=yes
 
+
+
 matrix:
   include:
     - os: linux
-      compiler: gcc
+      env: DIST=ubuntu1604 COMPILER=gcc
+      services: [docker]
+      sudo: true
     - os: linux
-      compiler: clang
+      env: DIST=ubuntu1604 COMPILER=clang
+      services: [docker]
+      sudo: true
+    - os: linux
+      env: DIST=ubuntu1804 COMPILER=gcc
+      services: [docker]
+      sudo: true
+    - os: linux
+      env: DIST=ubuntu1804 COMPILER=clang
+      services: [docker]
+      sudo: true
     - os: osx
       compiler: clang
       env: PYTHONVERSION=2.7
@@ -27,40 +41,11 @@ sudo: false
 install:
   - ./.travis/install.sh
 
-addons:
-  apt:
-    packages:
-    - ccache
-    - cmake
-    - flex
-    - bison
-    - libblas-dev
-    - liblapack-dev
-    - libcfitsio3-dev
-    - wcslib-dev
-    - libfftw3-dev
-    - gfortran
-    - libncurses5-dev
-    - libreadline6-dev
-    - libhdf5-serial-dev
-    - libboost-dev
-    - libboost-python-dev
-    - python-numpy
-    - python3-numpy
-
 before_script:
   - ./.travis/before_script.sh
 
 script:
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - ccache -s
-  - ccache -z
-  - make -j2
-  - if [ "$TRAVIS_OS_NAME" = osx ]; then TESTS_TO_SKIP="tConvert$"; else TESTS_TO_SKIP=""; fi
-    # Skip tConvert on OSX; boost-python can't be found on non-standard location
-  - env CTEST_OUTPUT_ON_FAILURE=1 ctest -E ${TESTS_TO_SKIP}
-  - make install
-  - ccache -s
+  - ./.travis/script.sh
 
 notifications:
   webhooks:
