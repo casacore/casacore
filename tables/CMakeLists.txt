@@ -192,7 +192,7 @@ target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
 if(MPI_FOUND)
     add_definitions(-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX)
     target_compile_definitions(casa_tables PRIVATE HAVE_MPI)
-    target_link_libraries(casa_tables MPI::MPI_C)
+    target_link_libraries(casa_tables ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES})
     if(ADIOS2_FOUND)
         target_sources(casa_tables PRIVATE
             DataMan/Adios2StMan.cc
@@ -200,7 +200,7 @@ if(MPI_FOUND)
             )
         target_compile_definitions(casa_tables PRIVATE HAVE_ADIOS2)
         target_include_directories(casa_tables PRIVATE ${ADIOS2_INCLUDE_DIRS})
-        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES} MPI::MPI_C)
+        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES})
         install (FILES
             DataMan/Adios2StMan.h
             DataMan/Adios2StManColumn.h
