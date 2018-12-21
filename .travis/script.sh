@@ -10,5 +10,5 @@ if [[ "$TRAVIS_OS_NAME" = osx ]]; do
     make install
     ccache -s
 else
-    docker run casacore/${BLA} make test
+    docker run casacore/${DIST}_${CC} make test
 fi

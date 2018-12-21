@@ -11,19 +11,23 @@ env:
 matrix:
   include:
     - os: linux
-      env: DIST=ubuntu1604 COMPILER=gcc
+      compiler: gcc
+      env: DIST=ubuntu1604
       services: [docker]
       sudo: true
     - os: linux
-      env: DIST=ubuntu1604 COMPILER=clang
+      compiler: clang
+      env: DIST=ubuntu1604
       services: [docker]
       sudo: true
     - os: linux
-      env: DIST=ubuntu1804 COMPILER=gcc
+      compiler: gcc
+      env: DIST=ubuntu1804
       services: [docker]
       sudo: true
     - os: linux
-      env: DIST=ubuntu1804 COMPILER=clang
+      compiler: clang
+      env: DIST=ubuntu1804
       services: [docker]
       sudo: true
     - os: osx

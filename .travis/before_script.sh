@@ -50,5 +50,5 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DSOFA_ROOT_DIR=$HOME \
         -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 else
-    docker build . -f .travis/${BLA}.docker -t casacore/${BLA}
+    docker build . -f .travis/${DIST}_${CC}.docker -t casacore/${DIST}_${CC}
 fi
