@@ -399,10 +399,11 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 	    if (dataType == TpChar   ||  dataType == TpArrayChar
 	    ||  dataType == TpUChar  ||  dataType == TpArrayUChar
 	    ||  dataType == TpShort  ||  dataType == TpArrayShort
-	    ||  dataType == TpUShort ||  dataType == TpArrayUShort) {
+	    ||  dataType == TpUShort ||  dataType == TpArrayUShort
+	    ||  dataType == TpInt64  ||  dataType == TpArrayInt64) {
 		throwHypercolumn (hypercolumnName, "coordColumn " +
 				  coordColumnNames(i) +
-				  ": (u)Char and (u)Short not supported");
+				  ": (u)Char, (u)Short and Int64 not supported");
 	    }
 	    if (desc.isArray()) {
 		if (desc.ndim() != 1) {
@@ -486,9 +487,10 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 			      idColumnNames(i) + " has no standard data type");
 	}
 	if (dataType == TpChar   ||  dataType == TpUChar
-	||  dataType == TpShort  ||  dataType == TpUShort) {
+        ||  dataType == TpShort  ||  dataType == TpUShort
+        ||  dataType == TpInt64) {
 	    throwHypercolumn (hypercolumnName, "idColumn " + idColumnNames(i) +
-			      ": (u)Char and (u)Short not supported");
+			      ": (u)Char, (u)Short and Int64 not supported");
 	}
     }
     // Check if all names are used only once.

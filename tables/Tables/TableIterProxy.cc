@@ -104,6 +104,7 @@ void TableIterProxy::makeStepIter (const Table& tab,
       case TpUShort:
       case TpInt:
       case TpUInt:
+      case TpInt64:
       case TpFloat:
       case TpDouble:
         break;
@@ -154,6 +155,12 @@ void TableIterProxy::makeStepIter (const Table& tab,
         {
           uInt start = ScalarColumn<uInt>(sortab, columns[i])(0);
           comps[i] = new CompareIntervalInt<uInt>(iterSteps[i], start);
+        }
+        break;
+      case TpInt64:
+        {
+          Int64 start = ScalarColumn<Int64>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<Int64>(iterSteps[i], start);
         }
         break;
       case TpFloat:

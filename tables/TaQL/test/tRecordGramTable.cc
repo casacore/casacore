@@ -71,6 +71,9 @@ void doIt (const String& str)
     case TpUInt:
       cout << expr.getColumnuInt (rownrs);
       break;
+    case TpInt64:
+      cout << expr.getColumnInt64 (rownrs);
+      break;
     case TpFloat:
       cout << expr.getColumnFloat (rownrs);
       break;

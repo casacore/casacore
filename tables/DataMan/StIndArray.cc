@@ -126,6 +126,9 @@ Bool StIndArray::setShape (StManArrayFile& ios, int dataType,
     case TpUInt:
 	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<uInt*>(0));
 	break;
+    case TpInt64:
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<Int64*>(0));
+	break;
     case TpFloat:
 	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<float*>(0));
 	break;
@@ -185,6 +188,11 @@ void StIndArray::copyData (StManArrayFile& ios, int dataType,
 	ios.copyArrayuInt (fileOffset_p + arrOffset_p,
 			   other.fileOffset_p + other.arrOffset_p,
 			   shape_p.product());
+	break;
+    case TpInt64:
+	ios.copyArrayInt64 (fileOffset_p + arrOffset_p,
+                            other.fileOffset_p + other.arrOffset_p,
+                            shape_p.product());
 	break;
     case TpFloat:
 	ios.copyArrayFloat (fileOffset_p + arrOffset_p,
@@ -441,6 +449,7 @@ STINDARRAY_GETPUT(Short,ShortV)
 STINDARRAY_GETPUT(uShort,uShortV)
 STINDARRAY_GETPUT(Int,IntV)
 STINDARRAY_GETPUT(uInt,uIntV)
+STINDARRAY_GETPUT(Int64,Int64V)
 //#//STINDARRAY_GETPUT(float,floatV)
 STINDARRAY_GETPUT(double,doubleV)
 STINDARRAY_GETPUT(Complex,ComplexV)

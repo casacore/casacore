@@ -274,6 +274,7 @@ public:
     uShort   asuShort   (uInt rownr) const;
     Int      asInt      (uInt rownr) const;
     uInt     asuInt     (uInt rownr) const;
+    Int64    asInt64    (uInt rownr) const;
     float    asfloat    (uInt rownr) const;
     double   asdouble   (uInt rownr) const;
     Complex  asComplex  (uInt rownr) const;
@@ -297,6 +298,8 @@ public:
     void getScalarValue (uInt rownr, Int* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
     void getScalarValue (uInt rownr, uInt* value, const String&) const
+        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
+    void getScalarValue (uInt rownr, Int64* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
     void getScalarValue (uInt rownr, float* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
@@ -354,6 +357,8 @@ public:
     void putScalar (uInt rownr, const Int& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
     void putScalar (uInt rownr, const uInt& value)
+	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
+    void putScalar (uInt rownr, const Int64& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
     void putScalar (uInt rownr, const float& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }

@@ -615,6 +615,8 @@ int TiledStMan::arrayDataType (int dataType) const
 	return TpArrayInt;
     case TpUInt:
 	return TpArrayUInt;
+    case TpInt64:
+	return TpArrayInt64;
     case TpFloat:
 	return TpArrayFloat;
     case TpDouble:

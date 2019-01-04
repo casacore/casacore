@@ -271,6 +271,11 @@ Array<uInt>     TableExprNodeColumn::getColumnuInt (const Vector<uInt>& rownrs)
     ScalarColumn<uInt> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
+Array<Int64>    TableExprNodeColumn::getColumnInt64 (const Vector<uInt>& rownrs)
+{
+    ScalarColumn<Int64> col (tabCol_p);
+    return col.getColumnCells (rownrs);
+}
 Array<Float>    TableExprNodeColumn::getColumnFloat (const Vector<uInt>& rownrs)
 {
     ScalarColumn<Float> col (tabCol_p);

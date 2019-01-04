@@ -407,6 +407,7 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
 		       uInt bucketStartRow, uInt bucketNrrow,
 		       uInt colnr, uInt rownr, uInt lengToAdd)
 {
+    AlwaysAssert (bucketNrrow > 1, AipsError);
     uInt nrcol = stmanPtr_p->ncolumn();
     duplicated.resize (nrcol);
     left  = new ISMBucket (stmanPtr_p, 0);

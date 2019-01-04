@@ -118,6 +118,7 @@ public:
     // <group>
     void getIntV      (uInt rownr, Int* dataPtr);
     void getuIntV     (uInt rownr, uInt* dataPtr);
+    void getInt64V    (uInt rownr, Int64* dataPtr);
     void getfloatV    (uInt rownr, float* dataPtr);
     void getdoubleV   (uInt rownr, double* dataPtr);
     void getComplexV  (uInt rownr, Complex* dataPtr);
@@ -130,6 +131,7 @@ public:
     // <group>
     void putIntV      (uInt rownr, const Int* dataPtr);
     void putuIntV     (uInt rownr, const uInt* dataPtr);
+    void putInt64V    (uInt rownr, const Int64* dataPtr);
     void putfloatV    (uInt rownr, const float* dataPtr);
     void putdoubleV   (uInt rownr, const double* dataPtr);
     void putComplexV  (uInt rownr, const Complex* dataPtr);
@@ -143,6 +145,7 @@ public:
     // <group>
     void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
     void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
+    void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
     void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
     void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
     void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
@@ -156,6 +159,7 @@ public:
     // <group>
     void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
     void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
+    void putArrayInt64V    (uInt rownr, const Array<Int64>* dataPtr);
     void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
     void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
     void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);

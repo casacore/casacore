@@ -98,6 +98,7 @@ public:
   virtual void getArrayuShortV   (uInt rownr, Array<uShort>* dataPtr);
   virtual void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
   virtual void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
+  virtual void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
   virtual void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
   virtual void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
   virtual void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
@@ -113,6 +114,7 @@ public:
   virtual void putArrayuShortV   (uInt rownr, const Array<uShort>* dataPtr);
   virtual void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
   virtual void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
+  virtual void putArrayInt64V    (uInt rownr, const Array<Int64>* dataPtr);
   virtual void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
   virtual void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
   virtual void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);

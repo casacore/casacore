@@ -83,6 +83,9 @@ void ISMColumn::clear()
     case TpUInt:
 	delete [] (uInt*)lastValue_p;
 	break;
+    case TpInt64:
+	delete [] (Int64*)lastValue_p;
+	break;
     case TpFloat:
 	delete [] (float*)lastValue_p;
 	break;
@@ -214,6 +217,13 @@ void ISMColumn::getuIntV (uInt rownr, uInt* value)
     }
     *value = *(uInt*)lastValue_p;
 }
+void ISMColumn::getInt64V (uInt rownr, Int64* value)
+{
+    if (isLastValueInvalid (rownr)) {
+	getValue (rownr, lastValue_p, True);
+    }
+    *value = *(Int64*)lastValue_p;
+}
 void ISMColumn::getfloatV (uInt rownr, float* value)
 {
     if (isLastValueInvalid (rownr)) {
@@ -313,6 +323,17 @@ void ISMColumn::getScalarColumnuIntV (Vector<uInt>* dataPtr)
 	getuIntV (rownr, &((*dataPtr)(rownr)));
 	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(uInt*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnInt64V (Vector<Int64>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getInt64V (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(Int64*)lastValue_p;
 	}
     }
 }
@@ -438,6 +459,7 @@ ISMCOLUMN_GET(Short,ShortV)
 ISMCOLUMN_GET(uShort,uShortV)
 ISMCOLUMN_GET(Int,IntV)
 ISMCOLUMN_GET(uInt,uIntV)
+ISMCOLUMN_GET(Int64,Int64V)
 ISMCOLUMN_GET(float,floatV)
 ISMCOLUMN_GET(double,doubleV)
 ISMCOLUMN_GET(Complex,ComplexV)
@@ -481,6 +503,10 @@ void ISMColumn::putuShortV (uInt rownr, const uShort* value)
     putValue (rownr, value);
 }
 void ISMColumn::putIntV (uInt rownr, const Int* value)
+{
+    putValue (rownr, value);
+}
+void ISMColumn::putInt64V (uInt rownr, const Int64* value)
 {
     putValue (rownr, value);
 }
@@ -545,6 +571,13 @@ void ISMColumn::putScalarColumnIntV (const Vector<Int>* dataPtr)
     }
 }
 void ISMColumn::putScalarColumnuIntV (const Vector<uInt>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnInt64V (const Vector<Int64>* dataPtr)
 {
     uInt nrrow = dataPtr->nelements();
     for (uInt i=0; i<nrrow; i++) {
@@ -674,6 +707,21 @@ void ISMColumn::putArrayuIntV (uInt rownr, const Array<uInt>* value)
 {
     Bool deleteIt;
     const uInt* data = value->getStorage (deleteIt);
+    putValue (rownr, data);
+    value->freeStorage (data, deleteIt);
+}
+void ISMColumn::getArrayInt64V (uInt rownr, Array<Int64>* value)
+{
+    if (isLastValueInvalid (rownr)) {
+	getValue (rownr, lastValue_p, False);
+    }
+    *value = Array<Int64> (shape_p, (Int64*)lastValue_p, SHARE);
+}
+
+void ISMColumn::putArrayInt64V (uInt rownr, const Array<Int64>* value)
+{
+    Bool deleteIt;
+    const Int64* data = value->getStorage (deleteIt);
     putValue (rownr, data);
     value->freeStorage (data, deleteIt);
 }
@@ -1224,6 +1272,14 @@ void ISMColumn::init()
 	    lastValue_p   = new uInt [nrelem_p];
 	    uInt undef = 0;
 	    objset ((uInt*)lastValue_p, undef, nrelem_p);
+	}
+	break;
+    case TpInt64:
+	{
+	    compareFunc_p = ObjCompare<Int64>::compare;
+	    lastValue_p   = new Int64 [nrelem_p];
+	    Int64 undef = 0;
+	    objset ((Int64*)lastValue_p, undef, nrelem_p);
 	}
 	break;
     case TpFloat:

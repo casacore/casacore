@@ -578,6 +578,9 @@ void showExpr(const TableExprNode& expr, ostream& os)
     case TpUInt:
       showArray (expr.getColumnuInt (rownrs), os);
       break;
+    case TpInt64:
+      showArray (expr.getColumnInt64 (rownrs), os);
+      break;
     case TpFloat:
       showArray (expr.getColumnFloat (rownrs), os);
       break;
@@ -620,7 +623,7 @@ void showExpr(const TableExprNode& expr, ostream& os)
       case TpBool:
         showArray (expr.getArrayBool(i), os);
         break;
-      case TpInt:
+      case TpInt64:
         showArray (expr.getArrayInt(i), os);
         break;
       case TpDouble:

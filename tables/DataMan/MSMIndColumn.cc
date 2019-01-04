@@ -197,6 +197,7 @@ MSMINDCOLUMN_GETPUT(Short,ShortV)
 MSMINDCOLUMN_GETPUT(uShort,uShortV)
 MSMINDCOLUMN_GETPUT(Int,IntV)
 MSMINDCOLUMN_GETPUT(uInt,uIntV)
+MSMINDCOLUMN_GETPUT(Int64,Int64V)
 //#//MSMINDCOLUMN_GETPUT(float,floatV)
 MSMINDCOLUMN_GETPUT(double,doubleV)
 MSMINDCOLUMN_GETPUT(Complex,ComplexV)
@@ -250,6 +251,9 @@ MSMIndColumn::Data::Data (const IPosition& shape, int dtype)
   case TpUInt:
     data_p = new uInt[nelem];
     break;
+  case TpInt64:
+    data_p = new Int64[nelem];
+    break;
   case TpFloat:
     data_p = new Float[nelem];
     break;
@@ -301,6 +305,9 @@ void MSMIndColumn::Data::clear (int dtype)
     break;
   case TpUInt:
     delete [] static_cast<uInt*>(data_p);
+    break;
+  case TpInt64:
+    delete [] static_cast<Int64*>(data_p);
     break;
   case TpFloat:
     delete [] static_cast<Float*>(data_p);

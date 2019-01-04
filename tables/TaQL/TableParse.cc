@@ -2062,6 +2062,10 @@ TableExprNode TableParseSelect::getColSet()
       tsnptr = new TableExprNodeArrayConstInt
         (ScalarColumn<uInt>(tabcol).getColumn());
       break;
+    case TpInt64:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ScalarColumn<Int64>(tabcol).getColumn());
+      break;
     case TpFloat:
       tsnptr = new TableExprNodeArrayConstDouble
         (ScalarColumn<Float>(tabcol).getColumn());
@@ -2111,6 +2115,10 @@ TableExprNode TableParseSelect::getColSet()
     case TpUInt:
       tsnptr = new TableExprNodeArrayConstInt
         (ArrayColumn<uInt>(tabcol).getColumn());
+      break;
+    case TpInt64:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ArrayColumn<Int64>(tabcol).getColumn());
       break;
     case TpFloat:
       tsnptr = new TableExprNodeArrayConstDouble
@@ -2444,6 +2452,9 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
         case TpUInt:
           updateValue<uInt,Int64> (row, rowid, isSca, node, mask.array(), key.maskFirst(), col, slicerPtr, maskCols[i]);
            break;
+        case TpInt64:
+          updateValue<Int64,Int64> (row, rowid, isSca, node, mask.array(), key.maskFirst(), col, slicerPtr, maskCols[i]);
+           break;
         case TpFloat:
           updateValue<Float,Int64> (row, rowid, isSca, node, mask.array(), key.maskFirst(), col, slicerPtr, maskCols[i]);
            break;
@@ -2480,6 +2491,9 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
            break;
         case TpUInt:
           updateValue<uInt,Double> (row, rowid, isSca, node, mask.array(), key.maskFirst(), col, slicerPtr, maskCols[i]);
+           break;
+        case TpInt64:
+          updateValue<Int64,Double> (row, rowid, isSca, node, mask.array(), key.maskFirst(), col, slicerPtr, maskCols[i]);
            break;
         case TpFloat:
           updateValue<Float,Double> (row, rowid, isSca, node, mask.array(), key.maskFirst(), col, slicerPtr, maskCols[i]);
@@ -3191,6 +3205,16 @@ void TableParseSelect::doSort (Bool showTimings)
         array->freeStorage (data, deleteIt);
       }
       break;
+    case TpInt64:
+      {
+        Array<Int64>* array = new Array<Int64>
+          (key.node().getColumnInt64(rownrs_p));
+        arrays[i] = array;
+        const Int64* data = array->getStorage (deleteIt);
+        sort.sortKey (data, TpInt64, 0, getOrder(key));
+        array->freeStorage (data, deleteIt);
+      }
+      break;
     case TpFloat:
       {
         Array<Float>* array = new Array<Float>
@@ -3272,6 +3296,9 @@ void TableParseSelect::doSort (Bool showTimings)
       break;
     case TpUInt:
       delete (Array<uInt>*)arrays[i];
+      break;
+    case TpInt64:
+      delete (Array<Int64>*)arrays[i];
       break;
     case TpFloat:
       delete (Array<Float>*)arrays[i];
@@ -3474,6 +3501,8 @@ DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
       return TpInt;
     } else if (dtstr == "U4") {
       return TpUInt;
+    } else if (dtstr == "I8") {
+      return TpInt64;
     } else if (dtstr == "R4") {
       return TpFloat;
     } else if (dtstr == "R8") {
@@ -3528,6 +3557,10 @@ void TableParseSelect::addColumnDesc (TableDesc& td,
     case TpUInt:
       td.addColumn (ScalarColumnDesc<uInt> (colName, comment,
                                             dmType, dmGroup, 0, options));
+      break;
+    case TpInt64:
+      td.addColumn (ScalarColumnDesc<Int64> (colName, comment,
+                                             dmType, dmGroup, 0, options));
       break;
     case TpFloat:
       td.addColumn (ScalarColumnDesc<Float> (colName, comment,
@@ -3588,6 +3621,11 @@ void TableParseSelect::addColumnDesc (TableDesc& td,
       td.addColumn (ArrayColumnDesc<uInt> (colName, comment,
                                            dmType, dmGroup,
                                            shape, options, ndim));
+      break;
+    case TpInt64:
+      td.addColumn (ArrayColumnDesc<Int64> (colName, comment,
+                                            dmType, dmGroup,
+                                            shape, options, ndim));
       break;
     case TpFloat:
       td.addColumn (ArrayColumnDesc<Float> (colName, comment,

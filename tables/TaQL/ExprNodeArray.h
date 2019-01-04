@@ -164,6 +164,8 @@ public:
                                                    const Slicer&);
     virtual Array<uInt>     getElemColumnuInt     (const Vector<uInt>& rownrs,
                                                    const Slicer&);
+    virtual Array<Int64>    getElemColumnInt64    (const Vector<uInt>& rownrs,
+                                                   const Slicer&);
     virtual Array<Float>    getElemColumnFloat    (const Vector<uInt>& rownrs,
                                                    const Slicer&);
     virtual Array<Double>   getElemColumnDouble   (const Vector<uInt>& rownrs,
@@ -476,6 +478,45 @@ public:
                                              const Slicer&);
 protected:
     ArrayColumn<uInt> col_p;
+};
+
+
+// <summary>
+// Int64 array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
+
+class TableExprNodeArrayColumnInt64 : public TableExprNodeArrayColumn
+{
+public:
+    TableExprNodeArrayColumnInt64 (const TableColumn&,
+                                   const Table&);
+    ~TableExprNodeArrayColumnInt64();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
+    virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Int64> getSliceInt (const TableExprId& id,
+                                       const Slicer&);
+    virtual Array<Int64>  getElemColumnInt64 (const Vector<uInt>& rownrs,
+                                              const Slicer&);
+protected:
+    ArrayColumn<Int64> col_p;
 };
 
 
@@ -818,6 +859,7 @@ public:
     virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
     virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
     virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    virtual Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
     virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
     virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
     virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);

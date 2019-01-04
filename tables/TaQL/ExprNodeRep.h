@@ -364,6 +364,7 @@ public:
     virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
     virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
     virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    virtual Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
     virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
     virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
     virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);

@@ -71,7 +71,7 @@ class ColumnSet;
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
-//  Bool, uChar, Short, uShort, Int, uInt, float, double,
+//  Bool, uChar, Short, uShort, Int, uInt, Int64, float, double,
 //  Complex, DComplex and String.
 // <p>
 // At table creation time (when a table gets created from a table
@@ -252,6 +252,7 @@ private:
   extern template class ScalarColumnDesc<uShort>;
   extern template class ScalarColumnDesc<Int>;
   extern template class ScalarColumnDesc<uInt>;
+  extern template class ScalarColumnDesc<Int64>;
   extern template class ScalarColumnDesc<Float>;
   extern template class ScalarColumnDesc<Double>;
   extern template class ScalarColumnDesc<Complex>;

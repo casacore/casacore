@@ -144,6 +144,10 @@ TableExprNode::TableExprNode (const Array<uInt>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
 }
+TableExprNode::TableExprNode (const Array<Int64>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+}
 TableExprNode::TableExprNode (const Array<Float>& val)
 {
     node_p = new TableExprNodeArrayConstDouble (val);
@@ -190,6 +194,10 @@ TableExprNode::TableExprNode (const MArray<Int>& val)
     node_p = new TableExprNodeArrayConstInt (val);
 }
 TableExprNode::TableExprNode (const MArray<uInt>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+}
+TableExprNode::TableExprNode (const MArray<Int64>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
 }
@@ -1029,6 +1037,9 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
         case TpUInt:
             tsnptr = new TableExprNodeArrayColumnuInt (col, table);
             break;
+        case TpInt64:
+            tsnptr = new TableExprNodeArrayColumnInt64 (col, table);
+            break;
         case TpFloat:
             tsnptr = new TableExprNodeArrayColumnFloat (col, table);
             break;
@@ -1121,14 +1132,13 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
         tsnptr = new TableExprNodeConstDouble (ks->asDouble (name));
         break;
     case TpChar:
-    case TpShort:
-    case TpInt:
-        tsnptr = new TableExprNodeConstInt (ks->asInt (name));
-        break;
     case TpUChar:
+    case TpShort:
     case TpUShort:
+    case TpInt:
     case TpUInt:
-        tsnptr = new TableExprNodeConstInt (ks->asuInt (name));
+    case TpInt64:
+        tsnptr = new TableExprNodeConstInt (ks->asInt64 (name));
         break;
     case TpArrayBool:
         tsnptr = new TableExprNodeArrayConstBool (ks->asArrayBool (name));
@@ -1160,6 +1170,10 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     case TpArrayUInt:
         tsnptr = new TableExprNodeArrayConstInt
                                                (ks->asArrayuInt (name));
+        break;
+    case TpArrayInt64:
+        tsnptr = new TableExprNodeArrayConstInt
+                                               (ks->asArrayInt64 (name));
         break;
     case TpArrayFloat:
         tsnptr = new TableExprNodeArrayConstDouble
@@ -1450,7 +1464,7 @@ DataType TableExprNode::dataType() const
         case TableExprNodeRep::NTBool:
             return TpBool;
         case TableExprNodeRep::NTInt:
-            return TpInt;
+            return TpInt64;
         case TableExprNodeRep::NTDouble:
             return TpDouble;
         case TableExprNodeRep::NTComplex:
