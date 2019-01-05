@@ -306,7 +306,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       throw TableInvExpr ("Aggregate function " +
                           String::toString(funcType()) +
-                          " is unknown for scalar data type " + 
+                          " is unknown for scalar data type " +
                           String::toString(operands()[0]->dataType()));
     }
     // The operand is an array.
@@ -404,7 +404,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     throw TableInvExpr ("Aggregate function " +
                         String::toString(funcType()) +
-                        " is unknown for array data type " + 
+                        " is unknown for array data type " +
                         String::toString(operands()[0]->dataType()));
   }
 

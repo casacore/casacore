@@ -90,22 +90,30 @@ typedef map<String, pair<Table,String> > TableMap;
 struct Options
 {
   Bool printSelect;
+  Bool printAuto;
   Bool printMeasure;
   Bool printHeader;
   Bool printCommand;
   Bool printNRows;
+  uInt maxNRows;
   String separator;
   String fname;
   String style;
+  String outName;
+  CountedPtr<ostream> stream;
 
   Options()
-    : printSelect (False),    // default do not print select result (calc result is printed)
-      printMeasure(True),     // default print as measures when printing result
-      printHeader (True),     // default print column header when printing result
-      printCommand(False),    // default print command
-      printNRows  (True),     // default print nr of rows handled
-      separator   ('\t'),     // default separator between printed columns
-      style       ("python")
+    : printSelect  (False),   // print explicitly select result?
+      printAuto    (True),    // print automatically if printSelect=False?
+      printMeasure (True),    // print as measures when printing result?
+      printHeader  (True),    // print column header when printing result?
+      printCommand (False),   // print command?
+      printNRows   (True),    // print nr of rows handled?
+      maxNRows     (50),      // max #rows to print for auto print
+      separator    ('\t'),    // default separator between printed columns
+      style        ("python"),
+      outName      ("stdout"),
+      stream       (CountedPtr<ostream>(&cout, False))  // default stdout
   {}
 };
 
@@ -270,23 +278,23 @@ Bool readLineSkip (String& line, const String& prompt)
 }
 
 // Show a date/time. Do not show time part if 0.
-void showTime (const MVTime& time)
+void showTime (const MVTime& time, ostream& os)
 {
   Double val = time.day();
   if (val == floor(val)) {
-    time.print (cout, MVTime::Format
+    time.print (os, MVTime::Format
                 (MVTime::formatTypes(MVTime::DMY | MVTime::NO_TIME)));
   } else {
-    time.print (cout, MVTime::Format(MVTime::DMY, 9));
+    time.print (os, MVTime::Format(MVTime::DMY, 9));
   }
 }
 
-void showTime (double time, const String& unit)
+void showTime (double time, const String& unit, ostream& os)
 {
-  showTime (MVTime (Quantity(time, unit)));
+  showTime (MVTime (Quantity(time, unit)), os);
 }
 
-void showTime (const Array<double>& times, const String& unit)
+void showTime (const Array<double>& times, const String& unit, ostream& os)
 {
   Quantity q(0., unit);
   Bool firstTime = True;
@@ -295,18 +303,18 @@ void showTime (const Array<double>& times, const String& unit)
   for (Array<double>::const_iterator iter= times.begin();
        iter != endIter; ++iter) {
     if (!firstTime) {
-      cout << ", ";
+      os << ", ";
     } else {
       firstTime = False;
     }
     q.setValue (*iter);
-    showTime (q);
+    showTime (q, os);
   }
-  cout << ']';
+  os << ']';
 }
 
 // Show values representing MPositions.
-void showPos (const Array<double>& pos, const Vector<String>& units)
+void showPos (const Array<double>& pos, const Vector<String>& units, ostream& os)
 {
   AlwaysAssert (pos.size() % units.size() == 0, AipsError);
   Vector<Quantity> q(units.size());
@@ -315,12 +323,12 @@ void showPos (const Array<double>& pos, const Vector<String>& units)
   }
   Bool firstTime = True;
   if (pos.size() != units.size()) {
-    cout << '[';
+    os << '[';
   }
   Array<double>::const_iterator endIter = pos.end();
   for (Array<double>::const_iterator iter= pos.begin(); iter != endIter;) {
     if (!firstTime) {
-      cout << ", ";
+      os << ", ";
     } else {
       firstTime = False;
     }
@@ -329,15 +337,15 @@ void showPos (const Array<double>& pos, const Vector<String>& units)
       iter++;
     }
     MVPosition pos(q);
-    cout << q;
+    os << q;
   }
   if (pos.size() != units.size()) {
-    cout << ']';
+    os << ']';
   }
 }
 
 // Show values representing MDirections.
-void showDir (const Array<double>& dir, const Vector<String>& units)
+void showDir (const Array<double>& dir, const Vector<String>& units, ostream& os)
 {
   AlwaysAssert (dir.size() % units.size() == 0, AipsError);
   Vector<Quantity> q(units.size());
@@ -346,16 +354,16 @@ void showDir (const Array<double>& dir, const Vector<String>& units)
   }
   Bool firstTime = True;
   if (dir.size() != units.size()) {
-    cout << '[';
+    os << '[';
   }
   Array<double>::const_iterator endIter = dir.end();
   for (Array<double>::const_iterator iter= dir.begin(); iter != endIter;) {
     if (!firstTime) {
-      cout << ", ";
+      os << ", ";
     } else {
       firstTime = False;
     }
-    cout << '[';
+    os << '[';
     for (uInt i=0; i<units.size(); ++i) {
       q[i].setValue (*iter);
       MVAngle angle(q[i]);
@@ -367,9 +375,9 @@ void showDir (const Array<double>& dir, const Vector<String>& units)
         if (pos != String::npos) str[pos] = 'h';
         pos = str.find(':');
         if (pos != String::npos) str[pos] = 'm';
-        cout << str;
+        os << str;
       } else {
-        cout << ", ";
+        os << ", ";
         ostringstream ostr;
         angle.print (ostr, MVAngle::Format(MVAngle::ANGLE, 9));
         String str(ostr.str());
@@ -377,53 +385,53 @@ void showDir (const Array<double>& dir, const Vector<String>& units)
         if (pos != String::npos) str[pos] = 'd';
         pos = str.find('.');
         if (pos != String::npos) str[pos] = 'm';
-        cout << str;
+        os << str;
       }
       iter++;
     }
-    cout << ']';
+    os << ']';
   }
   if (dir.size() != units.size()) {
-    cout << ']';
+    os << ']';
   }
 }
 
 // Show an array of values enclosed in square brackets.
 // Omit square brackets if only one value.
 template<typename T>
-void showArray (const Array<T>& arr)
+void showArray (const Array<T>& arr, ostream& os)
 {
   if (arr.size() == 1) {
-    cout << arr.data()[0];
+    os << arr.data()[0];
   } else {
-    cout << arr;
+    os << arr;
   }
 }
-template<> void showArray (const Array<MVTime>& arr)
+template<> void showArray (const Array<MVTime>& arr, ostream& os)
 {
   if (arr.size() == 1) {
-    showTime (arr.data()[0]);
+    showTime (arr.data()[0], os);
   } else {
     Bool firstTime = True;
-    cout << '[';
+    os << '[';
     Array<MVTime>::const_iterator endIter = arr.end();
     for (Array<MVTime>::const_iterator iter= arr.begin();
          iter != endIter; ++iter) {
       if (!firstTime) {
-        cout << ", ";
+        os << ", ";
       } else {
         firstTime = False;
       }
-      showTime (*iter);
+      showTime (*iter, os);
     }
-    cout << ']';
+    os << ']';
   }
 }
 
 // Show the required columns of the table.
 // First test if they exist and contain scalars or arrays.
 void showTable (const Table& tab, const Vector<String>& colnam,
-                Bool printMeasure, const String& separator)
+                Bool printMeasure, const String& separator, ostream& os)
 {
   uInt nrcol = 0;
   PtrBlock<TableColumn*> tableColumns(colnam.nelements());
@@ -435,14 +443,13 @@ void showTable (const Table& tab, const Vector<String>& colnam,
   uInt i;
   for (i=0; i<colnam.nelements(); i++) {
     if (! tab.tableDesc().isColumn (colnam(i))) {
-      cout << "Column " << colnam(i) << " does not exist" << endl;
+      os << "Column " << colnam(i) << " does not exist" << endl;
     }else{
       tableColumns[nrcol] = new TableColumn (tab, colnam(i));
       if (! tableColumns[nrcol]->columnDesc().isScalar()
       &&  ! tableColumns[nrcol]->columnDesc().isArray()) {
-	cout << "Column " << colnam(i)
-	     << " contains scalars nor arrays"
-	     << endl;
+	os << "Column " << colnam(i)
+           << " contains neither scalars nor arrays" << endl;
 	delete tableColumns[nrcol];
         tableColumns[nrcol] = 0;
       }else{
@@ -481,45 +488,45 @@ void showTable (const Table& tab, const Vector<String>& colnam,
   }
   // Show possible units.
   if (hasUnits) {
-    cout << "Unit: ";
+    os << "Unit: ";
     for (uInt j=0; j<nrcol; j++) {
       if (j > 0) {
-        cout << separator;
+        os << separator;
       }
-      cout << colUnits[j];
+      os << colUnits[j];
     }
-    cout << endl;
+    os << endl;
   }
   // Use TableProxy, so we can be type-agnostic.
   TableProxy proxy(tab);
   for (i=0; i<tab.nrow(); i++) {
     for (uInt j=0; j<nrcol; j++) {
       if (j > 0) {
-        cout << separator;
+        os << separator;
       }
       if (! tableColumns[j]->isDefined (i)) {
-        cout << " no_array";
+        os << " no_array";
       } else {
         ValueHolder vh(proxy.getCell (tableColumns[j]->columnDesc().name(), i));
         if (! timeUnit[j].empty()) {
           if (tableColumns[j]->columnDesc().isScalar()) {
-            showTime (vh.asDouble(), timeUnit[j][0]);
+            showTime (vh.asDouble(), timeUnit[j][0], os);
           } else {
-            showTime (vh.asArrayDouble(), timeUnit[j][0]);
+            showTime (vh.asArrayDouble(), timeUnit[j][0], os);
           }
         } else if (! posUnit[j].empty()) {
-          showPos (vh.asArrayDouble(), posUnit[j]);
+          showPos (vh.asArrayDouble(), posUnit[j], os);
         } else if (! dirUnit[j].empty()) {
-          showDir (vh.asArrayDouble(), dirUnit[j]);
+          showDir (vh.asArrayDouble(), dirUnit[j], os);
         } else if (vh.dataType() == TpBool) {
           // std::boolalpha seems to persist.
-          cout << (vh.asBool() ? "true" : "false");
+          os << (vh.asBool() ? "true" : "false");
         } else {
-          cout << vh;
+          os << vh;
         }
       }
     }
-    cout << endl;
+    os << endl;
   }
   
   for (i=0; i<nrcol; i++) {
@@ -528,7 +535,7 @@ void showTable (const Table& tab, const Vector<String>& colnam,
 }
 
 // Show the value of an expression which can be a scalar or array (part).
-void showExpr(const TableExprNode& expr)
+void showExpr(const TableExprNode& expr, ostream& os)
 {
   // Print the array index if possible.
   // Get internal node.
@@ -542,100 +549,100 @@ void showExpr(const TableExprNode& expr)
     if (inxNode->isConstant()  &&  inxNode->isSingle()) {
       const Slicer& indices = inxNode->getConstantSlicer();
       // Extract the index from it.
-      cout << "Index: " << indices.start() << endl;
+      os << "Index: " << indices.start() << endl;
     }
   }
   const Unit& unit = expr.unit();
   if (! unit.empty()) {
-    cout << "Unit: " << unit.getName() << endl;
+    os << "Unit: " << unit.getName() << endl;
   }
   Vector<uInt> rownrs (expr.nrow());
   indgen (rownrs);
   if (expr.isScalar()) {
     switch (expr.getColumnDataType()) {
     case TpBool:
-      showArray (expr.getColumnBool (rownrs));
+      showArray (expr.getColumnBool (rownrs), os);
       break;
     case TpUChar:
-      showArray (expr.getColumnuChar (rownrs));
+      showArray (expr.getColumnuChar (rownrs), os);
       break;
     case TpShort:
-      showArray (expr.getColumnShort (rownrs));
+      showArray (expr.getColumnShort (rownrs), os);
       break;
     case TpUShort:
-      showArray (expr.getColumnuShort (rownrs));
+      showArray (expr.getColumnuShort (rownrs), os);
       break;
     case TpInt:
-      showArray (expr.getColumnInt (rownrs));
+      showArray (expr.getColumnInt (rownrs), os);
       break;
     case TpUInt:
-      showArray (expr.getColumnuInt (rownrs));
+      showArray (expr.getColumnuInt (rownrs), os);
       break;
     case TpFloat:
-      showArray (expr.getColumnFloat (rownrs));
+      showArray (expr.getColumnFloat (rownrs), os);
       break;
     case TpDouble:
-      showArray (expr.getColumnDouble (rownrs));
+      showArray (expr.getColumnDouble (rownrs), os);
       break;
     case TpComplex:
-      showArray (expr.getColumnComplex (rownrs));
+      showArray (expr.getColumnComplex (rownrs), os);
       break;
     case TpDComplex:
-      showArray (expr.getColumnDComplex (rownrs));
+      showArray (expr.getColumnDComplex (rownrs), os);
       break;
     case TpString:
-      showArray (expr.getColumnString (rownrs));
+      showArray (expr.getColumnString (rownrs), os);
       break;
     case TpQuantity:
       {
         AlwaysAssert (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate,
                       AipsError);
         MVTime time;
-        if (expr.nrow() != 1) cout << '[';
+        if (expr.nrow() != 1) os << '[';
         for (uInt i=0; i<expr.nrow(); i++) {
-          if (i > 0) cout << ", ";
+          if (i > 0) os << ", ";
           expr.get (i, time);
-          showTime (time);
+          showTime (time, os);
         }
-        if (expr.nrow() != 1) cout << ']';
+        if (expr.nrow() != 1) os << ']';
       }
       break;
     default:
-      cout << "Unknown expression scalar type " << expr.getColumnDataType();
+      os << "Unknown expression scalar type " << expr.getColumnDataType();
     }
-    cout << endl;
+    os << endl;
   } else {
     for (uInt i=0; i<expr.nrow(); i++) {
       if (expr.nrow() > 1) {
-        cout << "  row " << i << ":  ";
+        os << "  row " << i << ":  ";
       }
       switch (expr.dataType()) {
       case TpBool:
-        showArray (expr.getArrayBool(i));
+        showArray (expr.getArrayBool(i), os);
         break;
       case TpInt:
-        showArray (expr.getArrayInt(i));
+        showArray (expr.getArrayInt(i), os);
         break;
       case TpDouble:
-        showArray (expr.getArrayDouble(i));
+        showArray (expr.getArrayDouble(i), os);
         break;
       case TpDComplex:
-        showArray (expr.getArrayDComplex(i));
+        showArray (expr.getArrayDComplex(i), os);
         break;
       case TpString:
-        showArray (expr.getArrayString(i));
+        showArray (expr.getArrayString(i), os);
         break;
       case TpQuantity:
         {
           AlwaysAssert (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate,
                         AipsError);
-          showArray (expr.getArrayDate(i));
+          showArray (expr.getArrayDate(i), os);
         }
         break;
       default:
-          cout << "Unknown expression array type " << expr.dataType();
+          os << "Unknown expression array type " << expr.dataType();
       }
-      cout << endl;
+      os << endl;
     }
   }
 }
@@ -681,12 +688,14 @@ Table taqlCommand (const Options& options, const String& varName,
   // Only show results for SELECT, COUNT and CALC.
   Bool addComm = False;
   Bool showHelp = False;
-  Bool doCount = False;
   Bool printSelect  = options.printSelect;
+  Bool printAuto    = options.printAuto;
   Bool printMeasure = options.printMeasure;
   Bool printCommand = options.printCommand;
   Bool printNRows   = options.printNRows;
   Bool printHeader  = options.printHeader;
+  uInt maxNRows     = options.maxNRows;
+  ostream& os = *(options.stream);
   String::size_type spos = command.find_first_not_of (' ');
   if (spos != String::npos) {
     String::size_type epos = command.find (' ', spos);
@@ -702,9 +711,6 @@ Table taqlCommand (const Options& options, const String& varName,
                 s=="alter" || s=="altertable" ||
                 s=="using"  || s=="usingstyle"  || s=="time" ||
                 showHelp);
-    if (s=="count") {
-      doCount    = True;
-    }
   }
   String strc(command);
   if (addComm) {
@@ -722,41 +728,57 @@ Table taqlCommand (const Options& options, const String& varName,
   Vector<String> colNames;
   String cmd;
   TaQLResult result = tableCommand (strc, tempTables, colNames, cmd);
+  cmd.downcase();
   // Show result of COUNT as well.
-  if (doCount) {
+  if (cmd == "count") {
     colNames.resize (colNames.size() + 1, True);
     colNames[colNames.size() - 1] = "_COUNT_";
   }
   if (printCommand && !showHelp) {
     if (!varName.empty()) {
-      cout << varName << " = ";
+      os << varName << " = ";
     }
-    cout << strc << endl;
-    cout << "    has been executed" << endl;
+    os << strc << endl;
+    os << "    has been executed" << endl;
   }
   Table tabp;
   if (result.isTable()) {
     tabp = result.table();
     if (printNRows) {
-      cout << "    " << cmd << " result of " << tabp.nrow()
-           << " rows" << endl;
+      os << "    " << cmd << " result of " << tabp.nrow()
+         << " rows" << endl;
     }
-    cmd.downcase();
-    Bool showResult = (cmd == "select"  ||  cmd == "count");
-    if (printSelect && showResult && colNames.size() > 0) {
-      if (printHeader) {
-        // Show the selected column names.
-        cout << colNames.nelements() << " selected columns: ";
-        for (uInt i=0; i<colNames.nelements(); i++) {
-          cout << " " << colNames(i);
+    // Only show the selected table columns for SELECT and COUNT.
+    if ((cmd == "select"  ||  cmd == "count")  &&  colNames.size() > 0) {
+      // Only show if explicit print or possibly if auto.
+      if (printSelect || (printAuto && maxNRows>0)) {
+        if (printHeader) {
+          // Show the selected column names.
+          os << colNames.nelements() << " selected columns: ";
+          for (uInt i=0; i<colNames.nelements(); i++) {
+            os << " " << colNames(i);
+          }
+          os << endl;
         }
-        cout << endl;
+        // Show the contents of the columns.
+        // When printing automatically, only maxNRows are shown.
+        Table tabc(tabp);
+        Bool showSubset = False;
+        if (!printSelect && printAuto && tabp.nrow() > maxNRows) {
+          showSubset = True;
+          Vector<uInt> rownrs(maxNRows);
+          indgen (rownrs);
+          tabc = tabp(rownrs);
+        }
+        showTable (tabc, colNames, printMeasure, options.separator, os);
+        if (showSubset) {
+          os << "  Note: only the first " << maxNRows << " rows are shown (out of "
+             << tabp.nrow() << ')' << endl;
+        }
       }
-      // Show the contents of the columns.
-      showTable (tabp, colNames, printMeasure, options.separator);
     }
   } else {
-    showExpr (result.node());
+    showExpr (result.node(), os);
   }
   return tabp;
 }
@@ -811,15 +833,18 @@ void showHelp()
   cerr << " -v  or --version       show the taql version and exit" << endl;
   cerr << " -f filename            name of file containing TaQL commands to execute" << endl;
   cerr << " -d separator           separator used between printed values (default a tab (\t))" << endl;
-  cerr << " -ps or --printselect   show the values of selected columns" << endl;
+  cerr << " -o outputfile          name of output file (or stdout or stderr)" << endl;
+  cerr << " -ps or --printselect   always show the values of selected columns" << endl;
+  cerr << " -pa or --printauto     automatically show values (up to maxNRows)" << endl;
   cerr << " -pm or --printmeasure  if possible, show values as formatted measures" << endl;
   cerr << " -ph or --printheader   show the header of names of the selected columns" << endl;
   cerr << " -pc or --printcommand  show the (expanded) TaQL command" << endl;
   cerr << " -pr or --printnrows    show the number of rows selected, updated, etc." << endl;
-  cerr << " -p  or --printall      sets all 5 print options " << endl; 
+  cerr << " -p  or --printall      sets -ps, -pm, -ph, -pc and -pr" << endl;
+  cerr << " -m maxNRows            max nr of rows to print automatically (default 50)" << endl;
   cerr << "A print option can be turned off by giving, for example, -nops or --noprintall" << endl;
-  cerr << "The default is -nops, -pm, -ph, -nopc, -pr" << endl;
-  cerr << "Note that the result of CALC and an impicit SELECT is always printed" << endl;
+  cerr << "The default is -nops, -pa, -pm, -ph, -nopc, -pr, -m 50, -o stdout" << endl;
+  cerr << "Note that the result of CALC and an implicit SELECT is always printed" << endl;
   cerr << "";
   cerr << "These options can also be given before any TaQL command. If followed by a command," << endl;
   cerr << "the setting is used for that command only, otherwise it is permanent." << endl;
@@ -829,35 +854,38 @@ void showHelp()
 void showOptions (const Options& options)
 {
   const char* opts[] = {"--no", "--"};
-  cout << endl;
-  cout << "Options settings:" << endl;
-  cout << ' ' << opts[options.printSelect]  << "printselect" << endl;
-  cout << ' ' << opts[options.printMeasure] << "printmeasure" << endl;
-  cout << ' ' << opts[options.printHeader]  << "printheader" << endl;
-  cout << ' ' << opts[options.printCommand] << "printcommand" << endl;
-  cout << ' ' << opts[options.printNRows]   << "printnrows" << endl;
-  cout << " -d " << "'" << options.separator << "'   (separator between printed columns)" << endl;
-  cout << " --style " << "'" << options.style << "'" << endl;
-  cout << endl;
+  cerr << endl;
+  cerr << "Options settings:" << endl;
+  cerr << ' ' << opts[options.printSelect]   << "printselect" << endl;
+  cerr << ' ' << opts[options.printAuto]     << "printauto" << endl;
+  cerr << ' ' << opts[options.printMeasure]  << "printmeasure" << endl;
+  cerr << ' ' << opts[options.printHeader]   << "printheader" << endl;
+  cerr << ' ' << opts[options.printCommand]  << "printcommand" << endl;
+  cerr << ' ' << opts[options.printNRows]    << "printnrows" << endl;
+  cerr << " -m " << options.maxNRows << "   (max nr of rows to print automatically)" << endl;
+  cerr << " -d " << "'" << options.separator << "'   (separator between printed columns)" << endl;
+  cerr << " -o " << "'" << options.outName << "'   (output filename)" << endl;
+  cerr << " --style " << "'" << options.style << "'" << endl;
+  cerr << endl;
 }
 
 void showTableInfo (const String& name, const Table& tab,
-                    const String& command, Int level)
+                    const String& command, Int level, ostream& os)
 {
   TableDesc tdesc(tab.actualTableDesc());
-  cout << "  " << name << " resulted from:";
+  os << "  " << name << " resulted from:";
   if (level >= 0) {
-    cout << endl;
-    cout << "   ";
+    os << endl;
+    os << "   ";
   }
-  cout << ' ' << command << endl;
+  os << ' ' << command << endl;
   if (level >= 0) {
-    cout << "  " << tab.nrow() << " rows, "
+    os << "  " << tab.nrow() << " rows, "
          << tdesc.ncolumn() << " columns" << endl;
   }
   if (level > 0) {
     Vector<String> colNames = tdesc.columnNames();
-    cout << "    " << colNames << endl;
+    os << "    " << colNames << endl;
     if (level > 1) {
       genSort (colNames);
       uInt maxLen = 0;
@@ -868,40 +896,40 @@ void showTableInfo (const String& name, const Table& tab,
       }
       for (uInt i=0; i<colNames.size(); ++i) {
         const ColumnDesc& cdesc = tdesc[colNames[i]];
-        cout << "    " << colNames[i];
+        os << "    " << colNames[i];
         for (uInt j=colNames[i].size(); j<maxLen; ++j) {
-          cout << ' ';
+          os << ' ';
         }
-        cout << ' ' << ValType::getTypeStr(cdesc.dataType());
+        os << ' ' << ValType::getTypeStr(cdesc.dataType());
         if (cdesc.isScalar()) {
-          cout << " scalar";
+          os << " scalar";
         } else if (cdesc.isArray()) {
-          cout << " array";
+          os << " array";
           if (cdesc.ndim() > 0) {
-            cout << " ndim=" << cdesc.ndim();
+            os << " ndim=" << cdesc.ndim();
           }
           if (! cdesc.shape().empty()) {
-            cout << " shape=" << cdesc.shape();
+            os << " shape=" << cdesc.shape();
           }
         }
         if (cdesc.comment().empty()) {
-          cout << "  " << cdesc.comment();
+          os << "  " << cdesc.comment();
         }
-        cout << endl;
+        os << endl;
       }
     }
   }
 }
 
 // Show the variable names and tables associated to them.
-void showTableMap (const TableMap& tables)
+void showTableMap (const TableMap& tables, ostream& os)
 {
   if (tables.empty()) {
-    cout << "  no saved selections;    note: use h to get help info" << endl;
+    os << "  no saved selections;    note: use h to get help info" << endl;
       } else {
     for (TableMap::const_iterator iter = tables.begin();
          iter != tables.end(); ++iter) {
-      showTableInfo (iter->first, iter->second.first, iter->second.second, -1);
+      showTableInfo (iter->first, iter->second.first, iter->second.second, -1, os);
     }
   }
 }
@@ -985,6 +1013,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
   Regex lwhiteRE("^[ \t]*");
   Regex rwhiteRE("[ \t]*$");
   try {
+    ostream& os = *(options.stream);
     String strc(command);
     if (strc == "h") {
       showHelp();
@@ -993,7 +1022,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
     } else if (strc == "o") {
       showOptions (options);
     } else if (strc == "?") {
-      showTableMap (tableMap);
+      showTableMap (tableMap, os);
     } else if (strc == "exit"  ||  strc == "quit"  ||  strc == "q") {
       return False;
     } else {
@@ -1027,7 +1056,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
         TableMap::const_iterator it = tableMap.find (name);
         if (it != tableMap.end()) {
           // It exists, so it must be a name.
-          showTableInfo (name, it->second.first, it->second.second, level);
+          showTableInfo (name, it->second.first, it->second.second, level, os);
         } else {
           // No name, so it must be a command.
           vector<const Table*> tabs = replaceVars (strc, tableMap);
@@ -1151,7 +1180,14 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
         st++;
         options.separator = removeQuotes (args[st], removeQuote);
       } else {
-        throw AipsError("No file name given after -d");
+        throw AipsError("No separator given after -d");
+      }
+    } else if (arg == "-m") {
+      if (st < args.size()-1) {
+        st++;
+        options.maxNRows = atoi(args[st].c_str());
+      } else {
+        throw AipsError("No value given after -m");
       }
     } else if (arg == "-f") {
       if (st < args.size()-1) {
@@ -1160,6 +1196,31 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
       } else {
         throw AipsError("No file name given after -f");
       }
+    } else if (arg == "-o") {
+      if (st < args.size()-1) {
+        st++;
+        String fname = removeQuotes (args[st], removeQuote);
+        String outname(fname);
+        outname.downcase();
+        if (outname == "stdout") {
+          options.stream  = CountedPtr<ostream>(&cout, False);
+          options.outName = "stdout";
+        } else if (outname == "stderr") {
+          options.stream = CountedPtr<ostream>(&cerr, False);
+          options.outName = "stderr";
+        } else {
+          try {
+            options.stream = new ofstream(fname);
+            options.outName = fname;
+          } catch (std::exception& x) {
+            cerr << "Could not create output file " << fname << endl;
+            cerr << "    " << x.what() << endl;
+          }
+        }
+      } else {
+        throw AipsError("No output file name given after -o");
+      }
+      
     } else if (arg == "-p"  ||  arg == "--printall") {
       options.printCommand = True;
       options.printSelect  = True;
@@ -1176,6 +1237,9 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
       options.printCommand = True;
     } else if (arg == "-ps"  ||  arg == "--printselect") {
       options.printSelect = True;
+    } else if (arg == "-pa"  ||  arg == "--printauto") {
+      options.printAuto   = True;
+      options.printSelect = False;
     } else if (arg == "-pm"  ||  arg == "--printmeasure") {
       options.printMeasure = True;
     } else if (arg == "-pr"  ||  arg == "--printnrows") {
@@ -1186,6 +1250,8 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
       options.printCommand = False;
     } else if (arg == "-nops"  ||  arg == "--noprintselect") {
       options.printSelect = False;
+    } else if (arg == "-nopa"  ||  arg == "--noprintauto") {
+      options.printAuto = False;
     } else if (arg == "-nopm"  ||  arg == "--noprintmeasure") {
       options.printMeasure = False;
     } else if (arg == "-nopr"  ||  arg == "--noprintnrows") {
@@ -1236,7 +1302,7 @@ Bool executeArgs (const vector<String> args, Bool topLevel,
     return execCommand (command, tableMap, localOptions);
   } else if (topLevel) {
     // Ask the user for commands.
-    cout << "Using default TaQL style " << options.style << endl;
+    cerr << "Using default TaQL style " << options.style << endl;
     askCommands (tableMap, localOptions);
   } else {
     // Make the options persistent.

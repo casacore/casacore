@@ -45,17 +45,17 @@ TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype)
     ndim_p = -1;
 }
 TableExprNodeArray::TableExprNodeArray (const TableExprNodeRep& node,
-					NodeDataType dtype, OperType otype)
+                                        NodeDataType dtype, OperType otype)
 : TableExprNodeBinary (dtype, node, otype)
 {}
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype,
-					const IPosition& shape)
+                                        const IPosition& shape)
 : TableExprNodeBinary (dtype, VTArray, otype, Table())
 {
     shape_p = shape;
     ndim_p  = shape.size();
     if (ndim_p == 0) {
-	ndim_p = -1;
+        ndim_p = -1;
     }
 }
 
@@ -142,25 +142,25 @@ const IPosition& TableExprNodeArray::getShape (const TableExprId& id)
     varShape_p.resize (0);
     switch (dataType()) {
     case NTBool:
-	varShape_p = getArrayBool(id).shape();
-	break;
+        varShape_p = getArrayBool(id).shape();
+        break;
     case NTInt:
-	varShape_p = getArrayInt(id).shape();
-	break;
+        varShape_p = getArrayInt(id).shape();
+        break;
     case NTDouble:
-	varShape_p = getArrayDouble(id).shape();
-	break;
+        varShape_p = getArrayDouble(id).shape();
+        break;
     case NTComplex:
-	varShape_p = getArrayDComplex(id).shape();
-	break;
+        varShape_p = getArrayDComplex(id).shape();
+        break;
     case NTString:
-	varShape_p = getArrayString(id).shape();
-	break;
+        varShape_p = getArrayString(id).shape();
+        break;
     case NTDate:
-	varShape_p = getArrayDate(id).shape();
-	break;
+        varShape_p = getArrayDate(id).shape();
+        break;
     default:
-	TableExprNode::throwInvDT ("TableExprNodeArray::getShape");
+        TableExprNode::throwInvDT ("TableExprNodeArray::getShape");
     }
     return varShape_p;
 }
@@ -194,17 +194,17 @@ Bool TableExprNodeArray::hasDouble   (const TableExprId& id, Double value)
     return anyEQ (value, getArrayDouble (id));
 }
 Bool TableExprNodeArray::hasDComplex (const TableExprId& id,
-				      const DComplex& value)
+                                      const DComplex& value)
 {
     return anyEQ (value, getArrayDComplex (id));
 }
 Bool TableExprNodeArray::hasString   (const TableExprId& id,
-				      const String& value)
+                                      const String& value)
 {
     return anyEQ (value, getArrayString (id));
 }
 Bool TableExprNodeArray::hasDate     (const TableExprId& id,
-				      const MVTime& value)
+                                      const MVTime& value)
 {
     return anyEQ (value, getArrayDate (id));
 }
@@ -219,7 +219,7 @@ MArray<Bool> TableExprNodeArray::hasArrayBool (const TableExprId& id,
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.size();
     for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
+        out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
@@ -235,7 +235,7 @@ MArray<Bool> TableExprNodeArray::hasArrayInt (const TableExprId& id,
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.size();
     for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
+        out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
@@ -251,7 +251,7 @@ MArray<Bool> TableExprNodeArray::hasArrayDouble (const TableExprId& id,
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.size();
     for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
+        out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
@@ -267,7 +267,7 @@ MArray<Bool> TableExprNodeArray::hasArrayDComplex (const TableExprId& id,
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.size();
     for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
+        out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
@@ -283,7 +283,7 @@ MArray<Bool> TableExprNodeArray::hasArrayString (const TableExprId& id,
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.size();
     for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
+        out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
@@ -299,7 +299,7 @@ MArray<Bool> TableExprNodeArray::hasArrayDate (const TableExprId& id,
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.size();
     for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
+        out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
@@ -307,7 +307,7 @@ MArray<Bool> TableExprNodeArray::hasArrayDate (const TableExprId& id,
 }
 
 Bool TableExprNodeArray::getElemBool (const TableExprId& id,
-				      const Slicer& slicer)
+                                      const Slicer& slicer)
 {
     MArray<Bool> arr = getArrayBool (id);
     return arr.array()(validateIndex(slicer.start(), arr.array()));
@@ -319,25 +319,25 @@ Int64 TableExprNodeArray::getElemInt (const TableExprId& id,
     return arr.array()(validateIndex(slicer.start(), arr.array()));
 }
 Double TableExprNodeArray::getElemDouble (const TableExprId& id,
-					  const Slicer& slicer)
+                                          const Slicer& slicer)
 {
     MArray<Double> arr = getArrayDouble (id);
     return arr.array()(validateIndex(slicer.start(), arr.array()));
 }
 DComplex TableExprNodeArray::getElemDComplex (const TableExprId& id,
-					      const Slicer& slicer)
+                                              const Slicer& slicer)
 {
     MArray<DComplex> arr = getArrayDComplex (id);
     return arr.array()(validateIndex(slicer.start(), arr.array()));
 }
 String TableExprNodeArray::getElemString (const TableExprId& id,
-					  const Slicer& slicer)
+                                          const Slicer& slicer)
 {
     MArray<String> arr = getArrayString (id);
     return arr.array()(validateIndex(slicer.start(), arr.array()));
 }
 MVTime TableExprNodeArray::getElemDate (const TableExprId& id,
-					const Slicer& slicer)
+                                        const Slicer& slicer)
 {
     MArray<MVTime> arr = getArrayDate (id);
     return arr.array()(validateIndex(slicer.start(), arr.array()));
@@ -496,14 +496,14 @@ MArray<Int64> TableExprNodeArray::makeArray (const IPosition& shape,
     return MArray<Int64>(arr);
 }
 MArray<Double> TableExprNodeArray::makeArray (const IPosition& shape,
-					     Double value)
+                                             Double value)
 {
     Array<Double> arr(shape);
     arr.set (value);
     return MArray<Double>(arr);
 }
 MArray<DComplex> TableExprNodeArray::makeArray (const IPosition& shape,
-					       const DComplex& value)
+                                               const DComplex& value)
 {
     Array<DComplex> arr(shape);
     arr.set (value);
@@ -518,7 +518,7 @@ MArray<DComplex> TableExprNodeArray::makeArray (const IPosition& shape,
 
 TableExprNodeArrayColumn::TableExprNodeArrayColumn
                                            (const TableColumn& tablecol,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArray (NTNumeric, OtColumn),
   selTable_p         (table),
   tabCol_p           (tablecol),
@@ -527,37 +527,37 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
     //# Fill in the real data type and the base table pointer.
     switch (tabCol_p.columnDesc().dataType()) {
     case TpBool:
-	dtype_p = NTBool;
-	break;
+        dtype_p = NTBool;
+        break;
     case TpString:
-	dtype_p = NTString;
-	break;
+        dtype_p = NTString;
+        break;
     case TpComplex:
     case TpDComplex:
-	dtype_p = NTComplex;
-	break;
+        dtype_p = NTComplex;
+        break;
     case TpChar:
     case TpUChar:
     case TpShort:
     case TpUShort:
     case TpInt:
     case TpUInt:
-	dtype_p = NTInt;
+        dtype_p = NTInt;
         break;
     case TpFloat:
     case TpDouble:
-	dtype_p = NTDouble;
-	break;
+        dtype_p = NTDouble;
+        break;
     default:
-	throw (TableInvExpr (tabCol_p.columnDesc().name(),
-			     "unknown data type"));
+        throw (TableInvExpr (tabCol_p.columnDesc().name(),
+                             "unknown data type"));
     }
     table_p = table;
     exprtype_p = Variable;
     // Set the fixed shape and dimensionality (if known).
     ndim_p = tabCol_p.ndimColumn();
     if (ndim_p == 0) {
-	ndim_p = -1;                         // unknown dimensionality
+        ndim_p = -1;                         // unknown dimensionality
     }
     shape_p = tabCol_p.shapeColumn();
     setUnit (TableExprNodeColumn::getColumnUnit(tabCol_p));
@@ -614,7 +614,7 @@ Bool TableExprNodeArrayColumn::getColumnDataType (DataType& dt) const
 
 TableExprNodeArrayColumnBool::TableExprNodeArrayColumnBool
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -628,7 +628,7 @@ void TableExprNodeArrayColumnBool::applySelection (const Vector<uInt>& rownrs)
 }
 
 Bool TableExprNodeArrayColumnBool::getElemBool (const TableExprId& id,
-						const Slicer& index)
+                                                const Slicer& index)
 {
     Array<Bool> arr = col_p.getSlice (id.rownr(), index);
     return *arr.data();
@@ -656,7 +656,7 @@ Array<Bool> TableExprNodeArrayColumnBool::getElemColumnBool
 
 TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -688,7 +688,7 @@ MArray<Int64> TableExprNodeArrayColumnuChar::getArrayInt
 }
 MArray<Int64> TableExprNodeArrayColumnuChar::getSliceInt
                                                     (const TableExprId& id,
-						     const Slicer& index)
+                                                     const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<uChar> arr = col_p.getSlice (id.rownr(), index);
@@ -706,7 +706,7 @@ Array<uChar> TableExprNodeArrayColumnuChar::getElemColumnuChar
 
 TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -738,7 +738,7 @@ MArray<Int64> TableExprNodeArrayColumnShort::getArrayInt
 }
 MArray<Int64> TableExprNodeArrayColumnShort::getSliceInt
                                                     (const TableExprId& id,
-						     const Slicer& index)
+                                                     const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<Short> arr = col_p.getSlice (id.rownr(), index);
@@ -756,7 +756,7 @@ Array<Short> TableExprNodeArrayColumnShort::getElemColumnShort
 
 TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -788,7 +788,7 @@ MArray<Int64> TableExprNodeArrayColumnuShort::getArrayInt
 }
 MArray<Int64> TableExprNodeArrayColumnuShort::getSliceInt
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<uShort> arr = col_p.getSlice (id.rownr(), index);
@@ -806,7 +806,7 @@ Array<uShort> TableExprNodeArrayColumnuShort::getElemColumnuShort
 
 TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -838,7 +838,7 @@ MArray<Int64> TableExprNodeArrayColumnInt::getArrayInt
 }
 MArray<Int64> TableExprNodeArrayColumnInt::getSliceInt
                                                   (const TableExprId& id,
-						   const Slicer& index)
+                                                   const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<Int> arr = col_p.getSlice (id.rownr(), index);
@@ -856,7 +856,7 @@ Array<Int> TableExprNodeArrayColumnInt::getElemColumnInt
 
 TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -888,7 +888,7 @@ MArray<Int64> TableExprNodeArrayColumnuInt::getArrayInt
 }
 MArray<Int64> TableExprNodeArrayColumnuInt::getSliceInt
                                                    (const TableExprId& id,
-						    const Slicer& index)
+                                                    const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<uInt> arr = col_p.getSlice (id.rownr(), index);
@@ -906,7 +906,7 @@ Array<uInt> TableExprNodeArrayColumnuInt::getElemColumnuInt
 
 TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -920,7 +920,7 @@ void TableExprNodeArrayColumnFloat::applySelection (const Vector<uInt>& rownrs)
 }
 
 Double TableExprNodeArrayColumnFloat::getElemDouble (const TableExprId& id,
-						     const Slicer& index)
+                                                     const Slicer& index)
 {
     Array<Float> arr = col_p.getSlice (id.rownr(), index);
     return *arr.data();
@@ -938,7 +938,7 @@ MArray<Double> TableExprNodeArrayColumnFloat::getArrayDouble
 }
 MArray<Double> TableExprNodeArrayColumnFloat::getSliceDouble
                                                     (const TableExprId& id,
-						     const Slicer& index)
+                                                     const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<Float> arr = col_p.getSlice (id.rownr(), index);
@@ -956,7 +956,7 @@ Array<Float> TableExprNodeArrayColumnFloat::getElemColumnFloat
 
 TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -970,7 +970,7 @@ void TableExprNodeArrayColumnDouble::applySelection (const Vector<uInt>& rownrs)
 }
 
 Double TableExprNodeArrayColumnDouble::getElemDouble (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
     Array<Double> arr = col_p.getSlice (id.rownr(), index);
     return *arr.data();
@@ -985,7 +985,7 @@ MArray<Double> TableExprNodeArrayColumnDouble::getArrayDouble
 }
 MArray<Double> TableExprNodeArrayColumnDouble::getSliceDouble
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     return MArray<Double> (col_p.getSlice (id.rownr(), index));
@@ -1000,7 +1000,7 @@ Array<Double> TableExprNodeArrayColumnDouble::getElemColumnDouble
 
 TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -1015,7 +1015,7 @@ void TableExprNodeArrayColumnComplex::applySelection (const Vector<uInt>& rownrs
 
 DComplex TableExprNodeArrayColumnComplex::getElemDComplex
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
     Array<Complex> arr = col_p.getSlice (id.rownr(), index);
     return *arr.data();
@@ -1033,7 +1033,7 @@ MArray<DComplex> TableExprNodeArrayColumnComplex::getArrayDComplex
 }
 MArray<DComplex> TableExprNodeArrayColumnComplex::getSliceDComplex
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     Array<Complex> arr = col_p.getSlice (id.rownr(), index);
@@ -1051,7 +1051,7 @@ Array<Complex> TableExprNodeArrayColumnComplex::getElemColumnComplex
 
 TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -1066,7 +1066,7 @@ void TableExprNodeArrayColumnDComplex::applySelection (const Vector<uInt>& rownr
 
 DComplex TableExprNodeArrayColumnDComplex::getElemDComplex
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
     Array<DComplex> arr = col_p.getSlice (id.rownr(), index);
     return *arr.data();
@@ -1081,7 +1081,7 @@ MArray<DComplex> TableExprNodeArrayColumnDComplex::getArrayDComplex
 }
 MArray<DComplex> TableExprNodeArrayColumnDComplex::getSliceDComplex
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     return MArray<DComplex> (col_p.getSlice (id.rownr(), index));
@@ -1096,7 +1096,7 @@ Array<DComplex> TableExprNodeArrayColumnDComplex::getElemColumnDComplex
 
 TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
                                            (const TableColumn& col,
-					    const Table& table)
+                                            const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
@@ -1110,7 +1110,7 @@ void TableExprNodeArrayColumnString::applySelection (const Vector<uInt>& rownrs)
 }
 
 String TableExprNodeArrayColumnString::getElemString (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
     Array<String> arr = col_p.getSlice (id.rownr(), index);
     return *arr.data();
@@ -1125,7 +1125,7 @@ MArray<String> TableExprNodeArrayColumnString::getArrayString
 }
 MArray<String> TableExprNodeArrayColumnString::getSliceString
                                                      (const TableExprId& id,
-						      const Slicer& index)
+                                                      const Slicer& index)
 {
   if (tabCol_p.isDefined (id.rownr())) {
     return MArray<String> (col_p.getSlice (id.rownr(), index));
@@ -1146,7 +1146,7 @@ Array<String> TableExprNodeArrayColumnString::getElemColumnString
 // ----------------------------
 
 TableExprNodeIndex::TableExprNodeIndex (const TableExprNodeSet& indices,
-					const TaQLStyle& style)
+                                        const TaQLStyle& style)
 : TableExprNodeMulti (NTInt, VTIndex, OtColumn, indices),
   origin_p           (style.origin()),
   endMinus_p         (0),
@@ -1167,31 +1167,31 @@ void TableExprNodeIndex::checkIndexValues (const TENShPtr& arrayNode)
     uInt n = start_p.size();
     // Check against dimensionality (if fixed).
     if (ndim >= 0  &&  ndim != Int(n)) {
-	throw (TableInvExpr ("#indices mismatches array dimensionality"));
+        throw (TableInvExpr ("#indices mismatches array dimensionality"));
     }
     // Check start and increment values.
     for (i=0; i<n; i++) {
-	if (!varIndex_p[3*i + 2]) {
-	    if (incr_p(i) < 0) {
-		throw (TableInvExpr ("index increment value is negative"));
-	    }
-	}
+        if (!varIndex_p[3*i + 2]) {
+            if (incr_p(i) < 0) {
+                throw (TableInvExpr ("index increment value is negative"));
+            }
+        }
     }
     // Check against array shape (if fixed).
     IPosition shape = arrayNode->shape();
     if (shape.size() > 0) {
-	for (i=0; i<n; i++) {
-	    if (!varIndex_p[3*i]) {
-		if (start_p(i) >= shape(i)) {
-		    throw (TableInvExpr("index value exceeds array shape"));
-		}
-	    }
-	    if (!varIndex_p[3*i + 1]) {
-		if (end_p(i) >= shape(i)) {
-		    throw (TableInvExpr("index end value exceeds array shape"));
-		}
-	    }
-	}
+        for (i=0; i<n; i++) {
+            if (!varIndex_p[3*i]) {
+                if (start_p(i) >= shape(i)) {
+                    throw (TableInvExpr("index value exceeds array shape"));
+                }
+            }
+            if (!varIndex_p[3*i + 1]) {
+                if (end_p(i) >= shape(i)) {
+                    throw (TableInvExpr("index end value exceeds array shape"));
+                }
+            }
+        }
     }
 }
 
@@ -1201,33 +1201,33 @@ void TableExprNodeIndex::fillSlicer (const TableExprId& id)
     uInt i = 0;
     uInt j = 0;
     while (j < n) {
-	if (varIndex_p[j]) {
+        if (varIndex_p[j]) {
             Int64 val = operands_p[j]->getInt (id);
             if (val < 0) {
                 start_p(i) = val;
             }else{
                 start_p(i) = val - origin_p;
             }
-	}
-	j++;
-	if (varIndex_p[j]) {
-	    if (operands_p[j] == 0) {
-		end_p(i) = start_p(i);
-	    }else{
-		Int64 val = operands_p[j]->getInt (id);
-		if (val < 0) {
+        }
+        j++;
+        if (varIndex_p[j]) {
+            if (operands_p[j] == 0) {
+                end_p(i) = start_p(i);
+            }else{
+                Int64 val = operands_p[j]->getInt (id);
+                if (val < 0) {
                     end_p(i) = val - endMinus_p;
-		}else{
-		    end_p(i) = val - origin_p - endMinus_p;
-		}
-	    }
-	}
-	j++;
-	if (varIndex_p[j]) {
-	    incr_p(i) = operands_p[j]->getInt(id);
-	}
-	j++;
-	i++;
+                }else{
+                    end_p(i) = val - origin_p - endMinus_p;
+                }
+            }
+        }
+        j++;
+        if (varIndex_p[j]) {
+            incr_p(i) = operands_p[j]->getInt(id);
+        }
+        j++;
+        i++;
     }
     slicer_p = Slicer (start_p, end_p, incr_p, Slicer::endIsLast);
 }
@@ -1240,7 +1240,7 @@ void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
     indices.checkEqualDataTypes();
     // Check that the set contains discrete values.
     if (! indices.isDiscrete()) {
-	throw (TableInvExpr ("Index values must be discrete (with possible :"));
+        throw (TableInvExpr ("Index values must be discrete (with possible :"));
     }
     TENShPtr rep;
     // Copy block of start, end, and increment.
@@ -1252,40 +1252,40 @@ void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
     uInt j = 0;
     for (uInt i=0; i<n; i++) {
         uInt inx = (isCOrder_p  ?  n-i-1 : i);
-	rep = indices[inx].start();
-	if (rep) {
-	    operands_p[j] = rep;
-	}else{
-	    isSingle_p = False;
-	}
-	j++;
-	rep = indices[inx].end();
-	if (rep) {
-	    operands_p[j] = rep;
-	    isSingle_p = False;
-	}
-	j++;
-	rep = indices[inx].increment();
-	if (rep) {
-	    operands_p[j] = rep;
-	    isSingle_p = False;
-	}
-	j++;
+        rep = indices[inx].start();
+        if (rep) {
+            operands_p[j] = rep;
+        }else{
+            isSingle_p = False;
+        }
+        j++;
+        rep = indices[inx].end();
+        if (rep) {
+            operands_p[j] = rep;
+            isSingle_p = False;
+        }
+        j++;
+        rep = indices[inx].increment();
+        if (rep) {
+            operands_p[j] = rep;
+            isSingle_p = False;
+        }
+        j++;
     }
     // Check if all indices have data type Int, are scalars, and don't
     // use aggregate functions.
     for (uInt i=0; i<j; i++) {
-	if (operands_p[i] != 0) {
-	    if (operands_p[i]->dataType()  != NTInt
-	    ||  operands_p[i]->valueType() != VTScalar) {
-		throw (TableInvExpr ("Index value must be an integer scalar"));
-	    }
+        if (operands_p[i] != 0) {
+            if (operands_p[i]->dataType()  != NTInt
+            ||  operands_p[i]->valueType() != VTScalar) {
+                throw (TableInvExpr ("Index value must be an integer scalar"));
+            }
             operands_p[i]->TableExprNodeRep::checkAggrFuncs();
-	}
+        }
     }
     convertConstIndex();
     if (isConstant()) {
-	slicer_p = Slicer (start_p, end_p, incr_p, Slicer::endIsLast);
+        slicer_p = Slicer (start_p, end_p, incr_p, Slicer::endIsLast);
     }
 }
 
@@ -1300,59 +1300,59 @@ void TableExprNodeIndex::convertConstIndex()
     varIndex_p.set (False);
     uInt j = 0;
     for (uInt i=0; i<n; i++) {
-	// If no start value is given, it is 0.
-	rep = operands_p[j];
-	start_p(i) = 0;
-	if (rep != 0) {
-	    if (rep->isConstant()) {
+        // If no start value is given, it is 0.
+        rep = operands_p[j];
+        start_p(i) = 0;
+        if (rep != 0) {
+            if (rep->isConstant()) {
                 Int64 val = rep->getInt(0);
                 if (val < 0) {
                     start_p(i) = val;
                 }else{
                     start_p(i) = val - origin_p;
                 }
-	    }else{
-		varIndex_p[j] = True;
-	    }
-	}
-	j++;
-	// If no end value is given, it is initially set to the end.
-	// If a start is given, it is set to start.
-	// A negative end means till the end.
-	rep = operands_p[j];
-	end_p(i) = Slicer::MimicSource;
-	if (rep != 0) {
-	    if (rep->isConstant()) {
-		Int64 val = rep->getInt(0);
-		if (val != Slicer::MimicSource) {
+            }else{
+                varIndex_p[j] = True;
+            }
+        }
+        j++;
+        // If no end value is given, it is initially set to the end.
+        // If a start is given, it is set to start.
+        // A negative end means till the end.
+        rep = operands_p[j];
+        end_p(i) = Slicer::MimicSource;
+        if (rep != 0) {
+            if (rep->isConstant()) {
+                Int64 val = rep->getInt(0);
+                if (val != Slicer::MimicSource) {
                     if (val < 0) {
                         end_p(i) = val - endMinus_p;
                     }else{
                         end_p(i) = val - origin_p - endMinus_p;
                     }
-		}
-	    }else{
-		varIndex_p[j] = True;
-	    }
-	}else{
-	    if (operands_p[j-1] != 0) {
-		end_p(i) = start_p(i);
-		varIndex_p[j] = varIndex_p[j-1];
-	    }
-	}
-	    
-	j++;
-	// If no increment value is given, it is 1.
-	rep = operands_p[j];
-	incr_p(i) = 1;
-	if (rep != 0) {
-	    if (rep->isConstant()) {
+                }
+            }else{
+                varIndex_p[j] = True;
+            }
+        }else{
+            if (operands_p[j-1] != 0) {
+                end_p(i) = start_p(i);
+                varIndex_p[j] = varIndex_p[j-1];
+            }
+        }
+            
+        j++;
+        // If no increment value is given, it is 1.
+        rep = operands_p[j];
+        incr_p(i) = 1;
+        if (rep != 0) {
+            if (rep->isConstant()) {
               incr_p(i) = rep->getInt(0);
-	    }else{
-		varIndex_p[j] = True;
-	    }
-	}
-	j++;
+            }else{
+                varIndex_p[j] = True;
+            }
+        }
+        j++;
     }
 }
 
@@ -1382,30 +1382,30 @@ TableExprNodeArrayPart::TableExprNodeArrayPart (const TENShPtr& arrayNode,
     fillExprType  (arrayNode);
     // If indexing a single element, the result is a scalar.
     if (inxNode_p->isSingle()) {
-	vtype_p = VTScalar;
-	ndim_p  = 0;
+        vtype_p = VTScalar;
+        ndim_p  = 0;
     } else if (inxNode_p->isConstant()) {
-	// Otherwise if the index node is constant, it may be possible
-	// to determine the resulting shape.
-	const Slicer& slicer = inxNode_p->getSlicer(0);
-	// If all slicer lengths are defined, that is the resulting shape.
-	if (slicer.isFixed()) {
-	    shape_p = slicer.length();
-	    ndim_p  = shape_p.size();
-	}else{
-	    // If some are depending on array shape, the resulting
-	    // shape can be determined if the array shape is fixed.
-	    IPosition arrshp = arrayNode->shape();
-	    if (arrshp.size() > 0) {
-		IPosition blc,trc,inc;
-		shape_p = slicer.inferShapeFromSource (arrshp, blc, trc, inc);
-		ndim_p  = shape_p.size();
-	    }
-	}
+        // Otherwise if the index node is constant, it may be possible
+        // to determine the resulting shape.
+        const Slicer& slicer = inxNode_p->getSlicer(0);
+        // If all slicer lengths are defined, that is the resulting shape.
+        if (slicer.isFixed()) {
+            shape_p = slicer.length();
+            ndim_p  = shape_p.size();
+        }else{
+            // If some are depending on array shape, the resulting
+            // shape can be determined if the array shape is fixed.
+            IPosition arrshp = arrayNode->shape();
+            if (arrshp.size() > 0) {
+                IPosition blc,trc,inc;
+                shape_p = slicer.inferShapeFromSource (arrshp, blc, trc, inc);
+                ndim_p  = shape_p.size();
+            }
+        }
     }
     if (inxNode_p->isConstant()) {
-	// If the constant child is an ArrayColumn, things can be
-	// improved in getColumnXXX.
+        // If the constant child is an ArrayColumn, things can be
+        // improved in getColumnXXX.
         colNode_p = dynamic_cast<TableExprNodeArrayColumn*>(arrayNode.get());
     }
     setUnit (arrayNode->unit());
@@ -1428,7 +1428,7 @@ Bool TableExprNodeArrayPart::getColumnDataType (DataType& dt) const
 {
     //# Return data type of column if constant index.
     if (inxNode_p->isConstant()) {
-	return arrNode_p->getColumnDataType (dt);
+        return arrNode_p->getColumnDataType (dt);
     }
     return False;
 }
@@ -1499,77 +1499,77 @@ MArray<MVTime> TableExprNodeArrayPart::getArrayDate (const TableExprId& id)
 Array<Bool> TableExprNodeArrayPart::getColumnBool (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnBool (rownrs);
+        return TableExprNodeRep::getColumnBool (rownrs);
     }
     return colNode_p->getElemColumnBool (rownrs, inxNode_p->getSlicer(0));
 }
 Array<uChar>    TableExprNodeArrayPart::getColumnuChar (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnuChar (rownrs);
+        return TableExprNodeRep::getColumnuChar (rownrs);
     }
     return colNode_p->getElemColumnuChar (rownrs, inxNode_p->getSlicer(0));
 }
 Array<Short>    TableExprNodeArrayPart::getColumnShort (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnShort (rownrs);
+        return TableExprNodeRep::getColumnShort (rownrs);
     }
     return colNode_p->getElemColumnShort (rownrs, inxNode_p->getSlicer(0));
 }
 Array<uShort>   TableExprNodeArrayPart::getColumnuShort (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnuShort (rownrs);
+        return TableExprNodeRep::getColumnuShort (rownrs);
     }
     return colNode_p->getElemColumnuShort (rownrs, inxNode_p->getSlicer(0));
 }
 Array<Int>      TableExprNodeArrayPart::getColumnInt (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnInt (rownrs);
+        return TableExprNodeRep::getColumnInt (rownrs);
     }
     return colNode_p->getElemColumnInt (rownrs, inxNode_p->getSlicer(0));
 }
 Array<uInt>     TableExprNodeArrayPart::getColumnuInt (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnuInt (rownrs);
+        return TableExprNodeRep::getColumnuInt (rownrs);
     }
     return colNode_p->getElemColumnuInt (rownrs, inxNode_p->getSlicer(0));
 }
 Array<Float>    TableExprNodeArrayPart::getColumnFloat (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnFloat (rownrs);
+        return TableExprNodeRep::getColumnFloat (rownrs);
     }
     return colNode_p->getElemColumnFloat (rownrs, inxNode_p->getSlicer(0));
 }
 Array<Double>   TableExprNodeArrayPart::getColumnDouble (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnDouble (rownrs);
+        return TableExprNodeRep::getColumnDouble (rownrs);
     }
     return colNode_p->getElemColumnDouble (rownrs, inxNode_p->getSlicer(0));
 }
 Array<Complex>  TableExprNodeArrayPart::getColumnComplex (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnComplex (rownrs);
+        return TableExprNodeRep::getColumnComplex (rownrs);
     }
     return colNode_p->getElemColumnComplex (rownrs, inxNode_p->getSlicer(0));
 }
 Array<DComplex> TableExprNodeArrayPart::getColumnDComplex (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnDComplex (rownrs);
+        return TableExprNodeRep::getColumnDComplex (rownrs);
     }
     return colNode_p->getElemColumnDComplex (rownrs, inxNode_p->getSlicer(0));
 }
 Array<String>   TableExprNodeArrayPart::getColumnString (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnString (rownrs);
+        return TableExprNodeRep::getColumnString (rownrs);
     }
     return colNode_p->getElemColumnString (rownrs, inxNode_p->getSlicer(0));
 }

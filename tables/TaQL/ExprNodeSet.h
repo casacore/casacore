@@ -103,14 +103,14 @@ public:
     // Optionally the end is inclusive (C++ and Glish style) or exclusive
     // (Python style).
     TableExprNodeSetElem (const TableExprNode* start,
-			  const TableExprNode* end,
-			  const TableExprNode* incr,
-			  Bool isEndExcl = False);
+                          const TableExprNode* end,
+                          const TableExprNode* incr,
+                          Bool isEndExcl = False);
 
     // Create the object for a continuous bounded interval. It can be
     // open or closed on either side.
     TableExprNodeSetElem (Bool isLeftClosed, const TableExprNode& start,
-			  const TableExprNode& end, Bool isRightClosed);
+                          const TableExprNode& end, Bool isRightClosed);
 
     // Create the object for a continuous left-bounded interval.
     TableExprNodeSetElem (Bool isLeftClosed, const TableExprNode& start);
@@ -165,11 +165,11 @@ public:
     void fillVector (Vector<Double>& vec, Int64& cnt,
                      const TableExprId& id) const;
     void fillVector (Vector<DComplex>& vec, Int64& cnt,
-		     const TableExprId& id) const;
+                     const TableExprId& id) const;
     void fillVector (Vector<String>& vec, Int64& cnt,
-		     const TableExprId& id) const;
+                     const TableExprId& id) const;
     void fillVector (Vector<MVTime>& vec, Int64& cnt,
-		     const TableExprId& id) const;
+                     const TableExprId& id) const;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
@@ -179,17 +179,17 @@ public:
     // are initialized that way.
     // <group>
     void matchBool     (Bool* match, const Bool* value, uInt nval,
-			const TableExprId& id) const;
+                        const TableExprId& id) const;
     void matchInt      (Bool* match, const Int64* value, uInt nval,
-			const TableExprId& id) const;
+                        const TableExprId& id) const;
     void matchDouble   (Bool* match, const Double* value, uInt nval,
-			const TableExprId& id) const;
+                        const TableExprId& id) const;
     void matchDComplex (Bool* match, const DComplex* value, uInt nval,
-			const TableExprId& id) const;
+                        const TableExprId& id) const;
     void matchString   (Bool* match, const String* value, uInt nval,
-			const TableExprId& id) const;
+                        const TableExprId& id) const;
     void matchDate     (Bool* match, const MVTime* value, uInt nval,
-			const TableExprId& id) const;
+                        const TableExprId& id) const;
     // </group>
 
     // Evaluate the element for the given row and construct a new
@@ -210,12 +210,12 @@ private:
     // Construct an element from the given parts and take over their pointers.
     // It is used by evaluate to construct an element in a rather cheap way.
     TableExprNodeSetElem (const TableExprNodeSetElem& that,
-			  const TENShPtr& start, const TENShPtr& end,
-			  const TENShPtr& incr);
+                          const TENShPtr& start, const TENShPtr& end,
+                          const TENShPtr& incr);
 
     // Setup the object for a continuous interval.
     void setup (Bool isLeftClosed, const TableExprNode* start,
-		const TableExprNode* end, Bool isRightClosed);
+                const TableExprNode* end, Bool isRightClosed);
 
 
     TENShPtr itsStart;

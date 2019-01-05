@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       itsNValid = -1;
       if (! itsShape.isEqual (itsMask.shape())) {
         std::ostringstream os;
-        os << "MArrayBase - array shape " << itsShape 
+        os << "MArrayBase - array shape " << itsShape
            << " and mask shape " << itsMask.shape() << " mismatch";
         throw ArrayError (os.str());
       }

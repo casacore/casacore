@@ -100,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (operands()[0]->valueType() == VTScalar) {
       throw TableInvExpr ("Aggregate function " +
                           String::toString(funcType()) +
-                          " is unknown for scalar data type " + 
+                          " is unknown for scalar data type " +
                           String::toString(operands()[0]->dataType()));
     }
     // The operand is an array.

@@ -103,10 +103,10 @@ int tableGramInput (char* buf, int max_size)
 {
     int nr=0;
     while (*strpTableGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpTableGram++;
+        if (nr >= max_size) {
+            break;                         // get max. max_size char.
+        }
+        buf[nr++] = *strpTableGram++;
     }
     return nr;
 }
@@ -121,10 +121,10 @@ String tableGramRemoveEscapes (const String& in)
     String out;
     int leng = in.length();
     for (int i=0; i<leng; i++) {
-	if (in[i] == '\\') {
-	    i++;
-	}
-	out += in[i];
+        if (in[i] == '\\') {
+            i++;
+        }
+        out += in[i];
     }
     return out;
 }
@@ -138,13 +138,13 @@ String tableGramRemoveQuotes (const String& in)
     int leng = str.length();
     int pos = 0;
     while (pos < leng) {
-	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
-	    throw (TableError ("ill-formed quoted string: " + str));
-	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
-	pos = inx+1;
+        //# Find next occurrence of leading ' or ""
+        int inx = str.index (str[pos], pos+1);
+        if (inx < 0) {
+            throw (TableError ("ill-formed quoted string: " + str));
+        }
+        out += str.at (pos+1, inx-pos-1);             // add substring
+        pos = inx+1;
     }
     return out;
 }

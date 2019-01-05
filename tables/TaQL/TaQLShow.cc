@@ -525,7 +525,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  string     enclose in single or double quotes; concatenation like 'ab'\"cd\"",
     "  datetime   date/time like 3Mar16/12:14:23.3 or 2016-03-02/1:4:23",
     "               - or space can be used instead of /",
-    "  regex      p/globpattern/ or f/regex/ or m/regex/ (same as f/.*regex.*/)", 
+    "  regex      p/globpattern/ or f/regex/ or m/regex/ (same as f/.*regex.*/)",
     "               used with operator ~ or !~",
     "               % or @ can also be used as regex delimiter",
     "",
@@ -556,7 +556,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "      R4   FLT   FLOAT",
     "      R8   DBL   DOUBLE",
     "      C4   FC    FCOMPLEX   COMPLEX",
-    "      C8   DC    DCOMPLEX", 
+    "      C8   DC    DCOMPLEX",
     "      S          STRING",
     "      EPOCH",
     "",
@@ -1141,7 +1141,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return getHelp (countHelp);
     }
     throw AipsError (cmd +
-                     " is an unknown command for 'show command <command>'\n" 
+                     " is an unknown command for 'show command <command>'\n"
                      "   use select, calc, update, insert, delete, create,"
                      " alter or count\n");
   }

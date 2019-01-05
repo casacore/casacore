@@ -45,8 +45,8 @@ class RecordInterface;
 //# fields in a record select expression.
 //#
 //# Data types Bool, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, uInt and float are converted 
-//# to Double, and Complex to DComplex.
+//# Char, uChar, Short, uShort, Int and uInt are converted to Int64,
+//# float to Double, and Complex to DComplex.
 //# Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 //# Also &&, ||, parentheses and unary +, - and ! are recognized.
 
@@ -77,7 +77,7 @@ class TableExprNodeRecordField : public TableExprNodeBinary
 {
 public:
     TableExprNodeRecordField (DataType dtype,
-			      const Block<Int>& fieldNumbers);
+                              const Block<Int>& fieldNumbers);
     ~TableExprNodeRecordField();
 
     virtual const IPosition& getShape (const TableExprId& id);
@@ -125,7 +125,7 @@ class TableExprNodeRecordFieldArray : public TableExprNodeArray
 {
 public:
     TableExprNodeRecordFieldArray (DataType dtype,
-				   const Block<Int>& fieldNumbers);
+                                   const Block<Int>& fieldNumbers);
     ~TableExprNodeRecordFieldArray();
 
     virtual Bool isDefined (const TableExprId& id);

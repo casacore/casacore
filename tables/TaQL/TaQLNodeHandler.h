@@ -100,7 +100,7 @@ public:
   // Handle and process the raw parse tree.
   // The result contains a Table or TableExprNode object.
   TaQLNodeResult handleTree (const TaQLNode& tree,
-			     const std::vector<const Table*>&);
+                             const std::vector<const Table*>&);
 
   // Define the functions to visit each node type.
   // <group>

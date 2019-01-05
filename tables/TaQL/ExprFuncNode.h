@@ -79,180 +79,180 @@ public:
     //# Define the function types.
     enum FunctionType {
         piFUNC,           //# 0
-	eFUNC,            //# 1
+        eFUNC,            //# 1
         cFUNC,            //# 2
-	    // for Int, or Double or Complex returning Bool
-	    // (2 is with default tolerance)
-	near2FUNC,        //# 3
-	near3FUNC,        //# 4
-	nearabs2FUNC,     //# 5
-	nearabs3FUNC,     //# 6
+            // for Int, or Double or Complex returning Bool
+            // (2 is with default tolerance)
+        near2FUNC,        //# 3
+        near3FUNC,        //# 4
+        nearabs2FUNC,     //# 5
+        nearabs3FUNC,     //# 6
             // for Int, Double or DComplex returning Double or Complex
-	sinFUNC,          //# 7
-	sinhFUNC,         //# 8
-	cosFUNC,          //# 9
-	coshFUNC,         //# 10
-	expFUNC,          //# 11
-	logFUNC,          //# 12
-	log10FUNC,        //# 13
-	sqrtFUNC,         //# 14
-	powFUNC,          //# 15
-	conjFUNC,         //# 16
+        sinFUNC,          //# 7
+        sinhFUNC,         //# 8
+        cosFUNC,          //# 9
+        coshFUNC,         //# 10
+        expFUNC,          //# 11
+        logFUNC,          //# 12
+        log10FUNC,        //# 13
+        sqrtFUNC,         //# 14
+        powFUNC,          //# 15
+        conjFUNC,         //# 16
             // for Int, Double or DComplex returning Int, Double or Complex
-	squareFUNC,       //# 17
-	cubeFUNC,         //# 18
-	minFUNC,          //# 19
-	maxFUNC,          //# 20
+        squareFUNC,       //# 17
+        cubeFUNC,         //# 18
+        minFUNC,          //# 19
+        maxFUNC,          //# 20
             // for Int, Double or DComplex returning Int or Double
-	normFUNC,         //# 21
-	absFUNC,          //# 22
+        normFUNC,         //# 21
+        absFUNC,          //# 22
             // for Int, Double or DComplex returning Double
-	argFUNC,          //# 23
+        argFUNC,          //# 23
             // for Int, Double, DComplex, Bool or String returning Double
-	realFUNC,         //# 24
+        realFUNC,         //# 24
             // for Double or DComplex returning Double
-	imagFUNC,         //# 25
+        imagFUNC,         //# 25
             // for Int, Double, Bool or String returning Int (using floor)
         intFUNC,          //# 26
             // for Int, Double or Complex returning Double or Complex
-	asinFUNC,         //# 27
-	acosFUNC,         //# 28
-	atanFUNC,         //# 29
-	atan2FUNC,        //# 30
-	tanFUNC,          //# 31
-	tanhFUNC,         //# 32
+        asinFUNC,         //# 27
+        acosFUNC,         //# 28
+        atanFUNC,         //# 29
+        atan2FUNC,        //# 30
+        tanFUNC,          //# 31
+        tanhFUNC,         //# 32
             // for Int or Double returning Int or Double
-	signFUNC,         //# 33
-	roundFUNC,        //# 34
-	floorFUNC,        //# 35
-	ceilFUNC,         //# 36
-	fmodFUNC,         //# 37
+        signFUNC,         //# 33
+        roundFUNC,        //# 34
+        floorFUNC,        //# 35
+        ceilFUNC,         //# 36
+        fmodFUNC,         //# 37
             // for DComplex or String returning DComplex
-	complexFUNC,      //# 38
-	    // for Int, Double or Complex array returning the same
-	arrsumFUNC,       //# 39
-	arrsumsFUNC,      //# 40
+        complexFUNC,      //# 38
+            // for Int, Double or Complex array returning the same
+        arrsumFUNC,       //# 39
+        arrsumsFUNC,      //# 40
         runsumFUNC,       //# 41
         boxsumFUNC,       //# 42
-	arrproductFUNC,   //# 43
-	arrproductsFUNC,  //# 44
+        arrproductFUNC,   //# 43
+        arrproductsFUNC,  //# 44
         runproductFUNC,   //# 45
         boxproductFUNC,   //# 46
-	arrsumsqrFUNC,    //# 47
-	arrsumsqrsFUNC,   //# 48
+        arrsumsqrFUNC,    //# 47
+        arrsumsqrsFUNC,   //# 48
         runsumsqrFUNC,    //# 49
         boxsumsqrFUNC,    //# 50
-	    // for Int or Double array returning Int or Double
-	arrminFUNC,       //# 51
-	arrminsFUNC,      //# 52
-	runminFUNC,       //# 53
-	boxminFUNC,       //# 54
-	arrmaxFUNC,       //# 55
-	arrmaxsFUNC,      //# 56
-	runmaxFUNC,       //# 57
-	boxmaxFUNC,       //# 58
-	    // for Int or Double array returning Double
-	arrmeanFUNC,      //# 59
-	arrmeansFUNC,     //# 60
-	runmeanFUNC,      //# 61
-	boxmeanFUNC,      //# 62
-	arrvariance0FUNC, //# 63
-	arrvariances0FUNC,//# 64
-	runvariance0FUNC, //# 65
-	boxvariance0FUNC, //# 66
-	arrvariance1FUNC, //# 67
-	arrvariances1FUNC,//# 68
-	runvariance1FUNC, //# 69
-	boxvariance1FUNC, //# 70
-	arrstddev0FUNC,   //# 71
-	arrstddevs0FUNC,  //# 72
-	runstddev0FUNC,   //# 73
-	boxstddev0FUNC,   //# 74
-	arrstddev1FUNC,   //# 75
-	arrstddevs1FUNC,  //# 76
-	runstddev1FUNC,   //# 77
-	boxstddev1FUNC,   //# 78
-	arravdevFUNC,     //# 79
-	arravdevsFUNC,    //# 80
-	runavdevFUNC,     //# 81
-	boxavdevFUNC,     //# 82
-	arrrmsFUNC,       //# 83
-	arrrmssFUNC,      //# 84
-	runrmsFUNC,       //# 85
-	boxrmsFUNC,       //# 86
-	arrmedianFUNC,    //# 87
-	arrmediansFUNC,   //# 88
-	runmedianFUNC,    //# 89
-	boxmedianFUNC,    //# 90
-	arrfractileFUNC,  //# 91
-	arrfractilesFUNC, //# 92
-	runfractileFUNC,  //# 93
-	boxfractileFUNC,  //# 94
-	    // for Bool array returning Bool
+            // for Int or Double array returning Int or Double
+        arrminFUNC,       //# 51
+        arrminsFUNC,      //# 52
+        runminFUNC,       //# 53
+        boxminFUNC,       //# 54
+        arrmaxFUNC,       //# 55
+        arrmaxsFUNC,      //# 56
+        runmaxFUNC,       //# 57
+        boxmaxFUNC,       //# 58
+            // for Int or Double array returning Double
+        arrmeanFUNC,      //# 59
+        arrmeansFUNC,     //# 60
+        runmeanFUNC,      //# 61
+        boxmeanFUNC,      //# 62
+        arrvariance0FUNC, //# 63
+        arrvariances0FUNC,//# 64
+        runvariance0FUNC, //# 65
+        boxvariance0FUNC, //# 66
+        arrvariance1FUNC, //# 67
+        arrvariances1FUNC,//# 68
+        runvariance1FUNC, //# 69
+        boxvariance1FUNC, //# 70
+        arrstddev0FUNC,   //# 71
+        arrstddevs0FUNC,  //# 72
+        runstddev0FUNC,   //# 73
+        boxstddev0FUNC,   //# 74
+        arrstddev1FUNC,   //# 75
+        arrstddevs1FUNC,  //# 76
+        runstddev1FUNC,   //# 77
+        boxstddev1FUNC,   //# 78
+        arravdevFUNC,     //# 79
+        arravdevsFUNC,    //# 80
+        runavdevFUNC,     //# 81
+        boxavdevFUNC,     //# 82
+        arrrmsFUNC,       //# 83
+        arrrmssFUNC,      //# 84
+        runrmsFUNC,       //# 85
+        boxrmsFUNC,       //# 86
+        arrmedianFUNC,    //# 87
+        arrmediansFUNC,   //# 88
+        runmedianFUNC,    //# 89
+        boxmedianFUNC,    //# 90
+        arrfractileFUNC,  //# 91
+        arrfractilesFUNC, //# 92
+        runfractileFUNC,  //# 93
+        boxfractileFUNC,  //# 94
+            // for Bool array returning Bool
         arranyFUNC,       //# 95
         arranysFUNC,      //# 96
         runanyFUNC,       //# 97
         boxanyFUNC,       //# 98
-	arrallFUNC,       //# 99
-	arrallsFUNC,      //# 100
-	runallFUNC,       //# 101
-	boxallFUNC,       //# 102
-	    // for Bool array returning Int scalar
-	arrntrueFUNC,     //# 103
-	arrntruesFUNC,    //# 104
-	runntrueFUNC,     //# 105
-	boxntrueFUNC,     //# 106
-	arrnfalseFUNC,    //# 107
-	arrnfalsesFUNC,   //# 108
-	runnfalseFUNC,    //# 109
-	boxnfalseFUNC,    //# 110
-	    // for any type returning array of that type
-	arrayFUNC,        //# 111
-	transposeFUNC,    //# 112
+        arrallFUNC,       //# 99
+        arrallsFUNC,      //# 100
+        runallFUNC,       //# 101
+        boxallFUNC,       //# 102
+            // for Bool array returning Int scalar
+        arrntrueFUNC,     //# 103
+        arrntruesFUNC,    //# 104
+        runntrueFUNC,     //# 105
+        boxntrueFUNC,     //# 106
+        arrnfalseFUNC,    //# 107
+        arrnfalsesFUNC,   //# 108
+        runnfalseFUNC,    //# 109
+        boxnfalseFUNC,    //# 110
+            // for any type returning array of that type
+        arrayFUNC,        //# 111
+        transposeFUNC,    //# 112
         areverseFUNC,     //# 113
         resizeFUNC,       //# 114
-	diagonalFUNC,     //# 115
-	    // for Int, Double or DComplex array returning Bool
-	isnanFUNC,        //# 116
-	isinfFUNC,        //# 117
+        diagonalFUNC,     //# 115
+            // for Int, Double or DComplex array returning Bool
+        isnanFUNC,        //# 116
+        isinfFUNC,        //# 117
         isfiniteFUNC,     //# 118
-	    // for any array returning Bool scalar
-	isdefFUNC,        //# 119
+            // for any array returning Bool scalar
+        isdefFUNC,        //# 119
         isnullFUNC,       //# 120
         iscolFUNC,        //# 121
         iskeyFUNC,        //# 122
-	    // for any array returning Int scalar
-	ndimFUNC,         //# 123
-	nelemFUNC,        //# 124
-	    // for any array returning Int array
-	shapeFUNC,        //# 125
+            // for any array returning Int scalar
+        ndimFUNC,         //# 123
+        nelemFUNC,        //# 124
+            // for any array returning Int array
+        shapeFUNC,        //# 125
             // for String
-	strlengthFUNC,    //# 126          returning Int
-	upcaseFUNC,       //# 127          returning String
-	downcaseFUNC,     //# 128          returning String
-	capitalizeFUNC,   //# 129          returning String
+        strlengthFUNC,    //# 126          returning Int
+        upcaseFUNC,       //# 127          returning String
+        downcaseFUNC,     //# 128          returning String
+        capitalizeFUNC,   //# 129          returning String
         sreverseFUNC,     //# 130
-	trimFUNC,         //# 131          returning String
-	ltrimFUNC,        //# 132          returning String
-	rtrimFUNC,        //# 133          returning String
-	substrFUNC,       //# 134          returning String
+        trimFUNC,         //# 131          returning String
+        ltrimFUNC,        //# 132          returning String
+        rtrimFUNC,        //# 133          returning String
+        substrFUNC,       //# 134          returning String
         replaceFUNC,      //# 135          returning String
-	regexFUNC,        //# 136          returning TaqlRegex
-	patternFUNC,      //# 137          returning TaqlRegex
-	sqlpatternFUNC,   //# 138          returning TaqlRegex
+        regexFUNC,        //# 136          returning TaqlRegex
+        patternFUNC,      //# 137          returning TaqlRegex
+        sqlpatternFUNC,   //# 138          returning TaqlRegex
             // for Date
-	datetimeFUNC,     //# 139          returning Date
-	mjdtodateFUNC,    //# 140          returning Date
-	mjdFUNC,          //# 141          returning Double
-	dateFUNC,         //# 142          returning Date
-	timeFUNC,         //# 143          returning Double (in radians)
-	yearFUNC,         //# 144          returning Int
-	monthFUNC,        //# 145          returning Int
-	dayFUNC,          //# 146          returning Int
-	cmonthFUNC,       //# 147          returning String
-	weekdayFUNC,      //# 148          returning Int
-	cdowFUNC,         //# 149          returning String
-	weekFUNC,         //# 150          returning Int
+        datetimeFUNC,     //# 139          returning Date
+        mjdtodateFUNC,    //# 140          returning Date
+        mjdFUNC,          //# 141          returning Double
+        dateFUNC,         //# 142          returning Date
+        timeFUNC,         //# 143          returning Double (in radians)
+        yearFUNC,         //# 144          returning Int
+        monthFUNC,        //# 145          returning Int
+        dayFUNC,          //# 146          returning Int
+        cmonthFUNC,       //# 147          returning String
+        weekdayFUNC,      //# 148          returning Int
+        cdowFUNC,         //# 149          returning String
+        weekFUNC,         //# 150          returning Int
         ctodFUNC,         //# 151          returning String
         cdateFUNC,        //# 152          returning String
         ctimeFUNC,        //# 153          returning String
@@ -264,24 +264,24 @@ public:
         dmsFUNC,          //# 156
             // return angles as hms/dms strings
         hdmsFUNC,         //# 157
-	    // special function returning a random Double number
-	randFUNC,         //# 158
+            // special function returning a random Double number
+        randFUNC,         //# 158
             // special function returning Int row number
-	rownrFUNC,        //# 159
+        rownrFUNC,        //# 159
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 160
+        rowidFUNC,        //# 160
             // special function resembling if statement
-	iifFUNC,          //# 161
+        iifFUNC,          //# 161
             // angular distance returning radians
         angdistFUNC,      //# 162
         angdistxFUNC,     //# 163
-	    // cone search functions, implemented in derived class
-	conesFUNC,        //# 164
-	cones3FUNC,       //# 165
-	anyconeFUNC,      //# 166
-	anycone3FUNC,     //# 167
-	findconeFUNC,     //# 168
-	findcone3FUNC,    //# 169
+            // cone search functions, implemented in derived class
+        conesFUNC,        //# 164
+        cones3FUNC,       //# 165
+        anyconeFUNC,      //# 166
+        anycone3FUNC,     //# 167
+        findconeFUNC,     //# 168
+        findcone3FUNC,    //# 169
             // for Int, Double, Complex or String returning Bool
         boolFUNC,         //# 170
             // masked array functions
@@ -340,12 +340,12 @@ public:
         gmedianFUNC,
         gfractileFUNC,
         gexpridFUNC,       //# special function (can be inserted by TableParse)
-	NRFUNC             //# 220  should be last
-	};
+        NRFUNC             //# 220  should be last
+        };
 
     // Constructor
     TableExprFuncNode (FunctionType, NodeDataType, ValueType,
-		       const TableExprNodeSet& source,
+                       const TableExprNodeSet& source,
                        const vector<TENShPtr>& nodes,
                        const Block<Int>& dtypeOper,
                        const Table& = Table());
@@ -369,10 +369,10 @@ public:
     // Set the value type of the function result and returns
     // the data type of the function result.
     static NodeDataType checkOperands (Block<Int>& dtypeOper,
-				       ValueType& resVT,
-				       Block<Int>& vtypeOper,
-				       FunctionType,
-				       std::vector<TENShPtr>&);
+                                       ValueType& resVT,
+                                       Block<Int>& vtypeOper,
+                                       FunctionType,
+                                       std::vector<TENShPtr>&);
 
     // Fill the result unit in the node.
     // Adapt the children nodes if their units need to be converted.
@@ -462,7 +462,7 @@ private:
     // Make the units of nodes from <src>starg</src> till <src>endarg</src>
     // equal. Return the unit found.
     static const Unit& makeEqualUnits (std::vector<TENShPtr>& nodes,
-				       uInt starg, uInt endarg);
+                                       uInt starg, uInt endarg);
 
     //# Data members.
     FunctionType funcType_p;        // which function

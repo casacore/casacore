@@ -329,7 +329,7 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
           resVT = VTArray;
         }
         return checkDT (dtypeOper, NTReal, NTInt, nodes);
-      }    
+      }
       // cones returns an array if there is more than one cone or radius.
       if (fType == conesFUNC) {
         if (nvalCone != 3) {

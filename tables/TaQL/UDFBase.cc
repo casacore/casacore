@@ -235,7 +235,7 @@ namespace casacore {
       unk = " (=" + fname + ')';
     }
     throw TableInvExpr ("TaQL function " + sfname + unk +
-                        " is unknown" + 
+                        " is unknown" +
                         "\n  Library " + libname + " was successfully loaded; "
                         "taql 'show func " + libname + "' shows its functions"
                         "\n  Maybe check if (DY)LD_LIBRARY_PATH and "

@@ -72,11 +72,11 @@ class TableExprFuncNodeArray : public TableExprNodeArray
 public:
     // Constructor
     TableExprFuncNodeArray (TableExprFuncNode::FunctionType,
-			    NodeDataType, ValueType,
-			    const TableExprNodeSet& source,
+                            NodeDataType, ValueType,
+                            const TableExprNodeSet& source,
                             const vector<TENShPtr>& nodes,
                             const Block<Int>& dtypeOper,
-			    const TaQLStyle&);
+                            const TaQLStyle&);
 
     // Destructor
     ~TableExprFuncNodeArray();

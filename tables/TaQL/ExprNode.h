@@ -99,9 +99,9 @@ template<class T> class MArray;
 // appropriate TableExprNodeConst object.
 // <p>
 // The derived classes also reflect the data type of the node.
-// Data types Bool, Double, DComplex and String are used.
-// Char, uChar, Short, uShort, Int, uInt and float are converted 
-// to Double and Complex to DComplex.
+// Data types Bool, Int64, Double, DComplex and String are used.
+// Char, uChar, Short, uShort, Int and uInt are converted to Int64,
+// float to Double, and Complex to DComplex.
 // Binary operators +, -, *, /, %, &, }, ^, ==, >=, >, <, <= and != are
 // recognized. Also &&, ||, parentheses and unary +, -, ~ and ! are recognized.
 // For strings the binary operator + can also be used.
@@ -322,7 +322,7 @@ public:
     Bool     getBool     (const TableExprId& id) const;
     Int64    getInt      (const TableExprId& id) const;
     Double   getDouble   (const TableExprId& id) const;
-    DComplex getDComplex (const TableExprId& id) const; 
+    DComplex getDComplex (const TableExprId& id) const;
     MVTime   getDate     (const TableExprId& id) const;
     String   getString   (const TableExprId& id) const;
     Array<Bool>     getArrayBool     (const TableExprId& id) const;
@@ -396,13 +396,13 @@ public:
     // For builtin data types another type of node is created than
     // for other data types.
     static TableExprNode newColumnNode (const Table& tab,
-					const String& name,
-					const Vector<String>& fieldNames);
+                                        const String& name,
+                                        const Vector<String>& fieldNames);
 
     // Create a TableExprNodeConst for a table keyword
     // (which is handled as a constant).
     static TableExprNode newKeyConst (const TableRecord&,
-				      const Vector<String>& fieldNames);
+                                      const Vector<String>& fieldNames);
 
     // Handle all field names except the last one. ALl of them must
     // be records. The last record is returned.
@@ -417,25 +417,25 @@ public:
     // Create function node of the given type with the given arguments.
     // <group>
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  const TableExprNodeSet& set,
-					  const Table& table,
-					  const TaQLStyle& = TaQLStyle(0));
+                                          const TableExprNodeSet& set,
+                                          const Table& table,
+                                          const TaQLStyle& = TaQLStyle(0));
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  const TableExprNode& node);
+                                          const TableExprNode& node);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  const TableExprNode& node1,
-					  const TableExprNode& node2);
+                                          const TableExprNode& node1,
+                                          const TableExprNode& node2);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  const TableExprNode& node1,
-					  const TableExprNode& node2,
-					  const TableExprNode& node3);
+                                          const TableExprNode& node1,
+                                          const TableExprNode& node2,
+                                          const TableExprNode& node3);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  const TableExprNode& array,
-					  const TableExprNodeSet& axes);
+                                          const TableExprNode& array,
+                                          const TableExprNodeSet& axes);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  const TableExprNode& array,
-					  const TableExprNode& node,
-					  const TableExprNodeSet& axes);
+                                          const TableExprNode& array,
+                                          const TableExprNode& node,
+                                          const TableExprNodeSet& axes);
     // </group>
 
     // Create a user defined function node.
@@ -447,15 +447,15 @@ public:
     // Create cone function node of the given type with the given arguments.
     // <group>
     static TableExprNode newConeNode (TableExprFuncNode::FunctionType,
-				      const TableExprNodeSet& set,
-				      uInt origin = 0);
+                                      const TableExprNodeSet& set,
+                                      uInt origin = 0);
     static TableExprNode newConeNode (TableExprFuncNode::FunctionType,
-				      const TableExprNode& node1,
-				      const TableExprNode& node2);
+                                      const TableExprNode& node1,
+                                      const TableExprNode& node2);
     static TableExprNode newConeNode (TableExprFuncNode::FunctionType,
-				      const TableExprNode& node1,
-				      const TableExprNode& node2,
-				      const TableExprNode& node3);
+                                      const TableExprNode& node1,
+                                      const TableExprNode& node2,
+                                      const TableExprNode& node3);
     // </group>
 
     // Create rownumber() function node.
@@ -473,8 +473,8 @@ public:
     // Create ArrayElement node for the given array with the given index.
     // The origin is 0 for C++ and 1 for TaQL.
     static TableExprNode newArrayPartNode (const TableExprNode& arrayNode,
-					   const TableExprNodeSet& indices,
-					   const TaQLStyle& = TaQLStyle(0));
+                                           const TableExprNodeSet& indices,
+                                           const TaQLStyle& = TaQLStyle(0));
  
     // returns const pointer to the underlying TableExprNodeRep object.
     const TENShPtr& getRep() const;
@@ -541,40 +541,40 @@ inline void TableExprNode::get (const TableExprId& id, TaqlRegex& value) const
 inline void TableExprNode::get (const TableExprId& id, MVTime& value) const
     { value = node_p->getDate (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				MArray<Bool>& value) const
+                                MArray<Bool>& value) const
     { value = node_p->getArrayBool (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				MArray<Int64>& value) const
+                                MArray<Int64>& value) const
     { value = node_p->getArrayInt (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				MArray<Double>& value) const
+                                MArray<Double>& value) const
     { value = node_p->getArrayDouble (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				MArray<DComplex>& value) const
+                                MArray<DComplex>& value) const
     { value = node_p->getArrayDComplex (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				MArray<String>& value) const
+                                MArray<String>& value) const
     { value = node_p->getArrayString (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				MArray<MVTime>& value) const
+                                MArray<MVTime>& value) const
     { value = node_p->getArrayDate (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<Bool>& value) const
+                                Array<Bool>& value) const
     { value = node_p->getArrayBool (id).array(); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<Int64>& value) const
+                                Array<Int64>& value) const
     { value = node_p->getArrayInt (id).array(); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<Double>& value) const
+                                Array<Double>& value) const
     { value = node_p->getArrayDouble (id).array(); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<DComplex>& value) const
+                                Array<DComplex>& value) const
     { value = node_p->getArrayDComplex (id).array(); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<String>& value) const
+                                Array<String>& value) const
     { value = node_p->getArrayString (id).array(); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<MVTime>& value) const
+                                Array<MVTime>& value) const
     { value = node_p->getArrayDate (id).array(); }
 inline Bool TableExprNode::getBool (const TableExprId& id) const
     { return node_p->getBool (id); }
@@ -660,39 +660,39 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // <group>
     // + is also defined for strings (means concatenation).
     TableExprNode operator+ (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator- (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator* (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator/ (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator% (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator& (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator| (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
     TableExprNode operator^ (const TableExprNode& left,
-			     const TableExprNode& right);
+                             const TableExprNode& right);
   // </group>
 
   // Comparison operators.
   // <group>
     TableExprNode operator== (const TableExprNode& left,
-			      const TableExprNode& right);
+                              const TableExprNode& right);
     TableExprNode operator!= (const TableExprNode& left,
-			      const TableExprNode& right);
+                              const TableExprNode& right);
     // Not defined for Bool.
     // <group>
     TableExprNode operator>= (const TableExprNode& left,
-			      const TableExprNode& right);
+                              const TableExprNode& right);
     TableExprNode operator>  (const TableExprNode& left,
-			      const TableExprNode& right);
-    TableExprNode operator<= (const TableExprNode& left, 
-			      const TableExprNode& right);
+                              const TableExprNode& right);
+    TableExprNode operator<= (const TableExprNode& left,
+                              const TableExprNode& right);
     TableExprNode operator<  (const TableExprNode& left,
-			      const TableExprNode& right);
+                              const TableExprNode& right);
     // </group>
   // </group>
 
@@ -701,13 +701,13 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // build up a full expression gradually.
   // <group>
     TableExprNode operator&& (const TableExprNode& left,
-			      const TableExprNode& right);
+                              const TableExprNode& right);
     TableExprNode operator|| (const TableExprNode& left,
-			      const TableExprNode& right);
+                              const TableExprNode& right);
   // </group>
 
   // Functions to return whether a value is "relatively" near another.
-  // Returns <src> tol > abs(val2 - val1)/max(abs(val1),(val2))</src>. 
+  // Returns <src> tol > abs(val2 - val1)/max(abs(val1),(val2))</src>.
   // If tol <= 0, returns val1 == val2. If either val is 0.0, takes
   // care of area around the minimum number that can be represented.
   // <br>The nearAbs functions return whether a value is "absolutely" near
@@ -716,15 +716,15 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // They operate on scalars and arrays.
   // <group>
     TableExprNode near    (const TableExprNode& left,
-			   const TableExprNode& right);
+                           const TableExprNode& right);
     TableExprNode near    (const TableExprNode& left,
-			   const TableExprNode& right,
-			   const TableExprNode& tolerance);
+                           const TableExprNode& right,
+                           const TableExprNode& tolerance);
     TableExprNode nearAbs (const TableExprNode& left,
-			   const TableExprNode& right);
+                           const TableExprNode& right);
     TableExprNode nearAbs (const TableExprNode& left,
-			   const TableExprNode& right,
-			   const TableExprNode& tolerance);
+                           const TableExprNode& right,
+                           const TableExprNode& tolerance);
   // </group>
 
   // Angular distance between positions.
@@ -752,17 +752,17 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
     // The result is a bool array telling for each cone if it contains the
     // source. If there is only one cone, the result is a scalar.
     TableExprNode cones (const TableExprNode& sourcePos,
-			 const TableExprNode& cones);
+                         const TableExprNode& cones);
     // The result is always a Bool scalar telling if any cone contains
     // the source.
     TableExprNode anyCone (const TableExprNode& sourcePos,
-			   const TableExprNode& cones);
+                           const TableExprNode& cones);
     // The sourcePos can contain multiple sources.
     // The result is a double array giving the index of the first
     // cone containing the corresponding source.
     // If there is one source, the result is a double scalar.
     TableExprNode findCone (const TableExprNode& sourcePos,
-			    const TableExprNode& cones);
+                            const TableExprNode& cones);
   // </group>
 
   // Cone search as above.
@@ -771,14 +771,14 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // position/radius is formed.
   // <group>
     TableExprNode cones (const TableExprNode& sourcePos,
-			 const TableExprNode& conePos,
-			 const TableExprNode& radii);
+                         const TableExprNode& conePos,
+                         const TableExprNode& radii);
     TableExprNode anyCone (const TableExprNode& sourcePos,
-			   const TableExprNode& conePos,
-			   const TableExprNode& radii);
+                           const TableExprNode& conePos,
+                           const TableExprNode& radii);
     TableExprNode findCone (const TableExprNode& sourcePos,
-			    const TableExprNode& conePos,
-			    const TableExprNode& radii);
+                            const TableExprNode& conePos,
+                            const TableExprNode& radii);
   // </group>
 
   // Transcendental functions that can be applied to essentially all numeric
@@ -806,7 +806,7 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
     TableExprNode acos  (const TableExprNode& node);
     TableExprNode atan  (const TableExprNode& node);
     TableExprNode atan2 (const TableExprNode& y,
-			 const TableExprNode& x);
+                         const TableExprNode& x);
     TableExprNode tan   (const TableExprNode& node);
     TableExprNode tanh  (const TableExprNode& node);
     TableExprNode sign  (const TableExprNode& node);
@@ -815,7 +815,7 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
     TableExprNode abs   (const TableExprNode& node);
     TableExprNode floor (const TableExprNode& node);
     TableExprNode fmod  (const TableExprNode& x,
-			 const TableExprNode& y);
+                         const TableExprNode& y);
   // </group>
 
   // String functions on scalars or arrays.
@@ -839,7 +839,7 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
                              const TableExprNode& repl);
   // </group>
 
-  // Functions for regular expression matching and 
+  // Functions for regular expression matching and
   // pattern matching. Defined for scalars and arrays.
   // <br><src>pattern</src> is for a file name like pattern.
   // <br><src>sqlpattern</src> is for an SQL like pattern.
@@ -866,7 +866,7 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
     TableExprNode ctodt     (const TableExprNode& node);
     TableExprNode cdate     (const TableExprNode& node);
     TableExprNode ctime     (const TableExprNode& node);
-    TableExprNode week	    (const TableExprNode& node);
+    TableExprNode week            (const TableExprNode& node);
     TableExprNode time      (const TableExprNode& node);
   // </group>
 
@@ -938,7 +938,7 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // Form a complex number from two Doubles.
   // One or both arguments can be scalar or array.
     TableExprNode formComplex (const TableExprNode& real,
-			       const TableExprNode& imag);
+                               const TableExprNode& imag);
   // Form a complex number from a string.
   // Defined for scalars and arrays.
     TableExprNode formComplex (const TableExprNode& node);
@@ -963,7 +963,7 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
     TableExprNode rms (const TableExprNode& array);
     TableExprNode median (const TableExprNode& array);
     TableExprNode fractile (const TableExprNode& array,
-			    const TableExprNode& fraction);
+                            const TableExprNode& fraction);
   // </group>
 
   // <group>
@@ -979,69 +979,69 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // The axes must be 0-relative.
   // <group>
     TableExprNode sums (const TableExprNode& array,
-			const TableExprNodeSet& collapseAxes);
+                        const TableExprNodeSet& collapseAxes);
     TableExprNode products (const TableExprNode& array,
-			    const TableExprNodeSet& collapseAxes);
+                            const TableExprNodeSet& collapseAxes);
     TableExprNode sumSquares (const TableExprNode& array,
-			      const TableExprNodeSet& collapseAxes);
+                              const TableExprNodeSet& collapseAxes);
     TableExprNode mins (const TableExprNode& array,
-			const TableExprNodeSet& collapseAxes);
+                        const TableExprNodeSet& collapseAxes);
     TableExprNode maxs (const TableExprNode& array,
-			const TableExprNodeSet& collapseAxes);
+                        const TableExprNodeSet& collapseAxes);
     TableExprNode means (const TableExprNode& array,
-			 const TableExprNodeSet& collapseAxes);
+                         const TableExprNodeSet& collapseAxes);
     TableExprNode variances (const TableExprNode& array,
-			     const TableExprNodeSet& collapseAxes);
+                             const TableExprNodeSet& collapseAxes);
     TableExprNode stddevs (const TableExprNode& array,
-			   const TableExprNodeSet& collapseAxes);
+                           const TableExprNodeSet& collapseAxes);
     TableExprNode avdevs (const TableExprNode& array,
-			  const TableExprNodeSet& collapseAxes);
+                          const TableExprNodeSet& collapseAxes);
     TableExprNode rmss (const TableExprNode& array,
-			const TableExprNodeSet& collapseAxes);
+                        const TableExprNodeSet& collapseAxes);
     TableExprNode medians (const TableExprNode& array,
-			   const TableExprNodeSet& collapseAxes);
+                           const TableExprNodeSet& collapseAxes);
     TableExprNode fractiles (const TableExprNode& array,
-			     const TableExprNode& fraction,
-			     const TableExprNodeSet& collapseAxes);
+                             const TableExprNode& fraction,
+                             const TableExprNodeSet& collapseAxes);
     TableExprNode anys (const TableExprNode& array,
-			const TableExprNodeSet& collapseAxes);
+                        const TableExprNodeSet& collapseAxes);
     TableExprNode alls (const TableExprNode& array,
-			const TableExprNodeSet& collapseAxes);
+                        const TableExprNodeSet& collapseAxes);
     TableExprNode ntrues (const TableExprNode& array,
-			  const TableExprNodeSet& collapseAxes);
+                          const TableExprNodeSet& collapseAxes);
     TableExprNode nfalses (const TableExprNode& array,
-			   const TableExprNodeSet& collapseAxes);
+                           const TableExprNodeSet& collapseAxes);
   // </group>
 
   // Functions operating for each element on a box around that element.
   // The elements at the edges (where no full box can be made) are set to 0.
   // <group>
     TableExprNode runningMin (const TableExprNode& array,
-			      const TableExprNodeSet& halfBoxWidth);
+                              const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningMax (const TableExprNode& array,
-			      const TableExprNodeSet& halfBoxWidth);
+                              const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningMean (const TableExprNode& array,
-			       const TableExprNodeSet& halfBoxWidth);
+                               const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningVariance (const TableExprNode& array,
-				   const TableExprNodeSet& halfBoxWidth);
+                                   const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningStddev (const TableExprNode& array,
-				 const TableExprNodeSet& halfBoxWidth);
+                                 const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningAvdev (const TableExprNode& array,
-				const TableExprNodeSet& halfBoxWidth);
+                                const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningRms (const TableExprNode& array,
-			      const TableExprNodeSet& halfBoxWidth);
+                              const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningMedian (const TableExprNode& array,
-				 const TableExprNodeSet& halfBoxWidth);
+                                 const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningAny (const TableExprNode& array,
-			      const TableExprNodeSet& halfBoxWidth);
+                              const TableExprNodeSet& halfBoxWidth);
     TableExprNode runningAll (const TableExprNode& array,
-			      const TableExprNodeSet& halfBoxWidth);
+                              const TableExprNodeSet& halfBoxWidth);
   // </group>
 
   // Create an array of the given shape and fill it with the values.
   // The <src>values</src> array is rewound as needed.
     TableExprNode array (const TableExprNode& values,
-			 const TableExprNodeSet& shape);
+                         const TableExprNodeSet& shape);
 
   // Form a masked array.
     TableExprNode marray (const TableExprNode& array,
@@ -1099,79 +1099,79 @@ inline const TableExprNodeRep* TableExprNode::getNodeRep() const
   // "arg1" is taken, otherwise it is taken from "arg2".
   // The arguments can be scalars or array or any combination.
     TableExprNode iif (const TableExprNode& condition,
-		       const TableExprNode& arg1,
-		       const TableExprNode& arg2);
+                       const TableExprNode& arg1,
+                       const TableExprNode& arg2);
 // </group>
 
 
 
 inline TableExprNode operator+ (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newPlus (right.getRep());
 }
 inline TableExprNode operator- (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newMinus (right.getRep());
 }
 inline TableExprNode operator* (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newTimes (right.getRep());
 }
 inline TableExprNode operator/ (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newDivide (right.getRep());
 }
 inline TableExprNode operator% (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newModulo (right.getRep());
 }
 inline TableExprNode operator& (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newBitAnd (right.getRep());
 }
 inline TableExprNode operator| (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newBitOr (right.getRep());
 }
 inline TableExprNode operator^ (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newBitXor (right.getRep());
 }
 inline TableExprNode operator== (const TableExprNode& left,
-				 const TableExprNode& right)
+                                 const TableExprNode& right)
 {
     return left.newEQ (right.getRep());
 }
 inline TableExprNode operator!= (const TableExprNode& left,
-				 const TableExprNode& right)
+                                 const TableExprNode& right)
 {
     return left.newNE (right.getRep());
 }
 inline TableExprNode operator> (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return left.newGT (right.getRep());
 }
 inline TableExprNode operator>= (const TableExprNode& left,
-				 const TableExprNode& right)
+                                 const TableExprNode& right)
 {
     return left.newGE (right.getRep());
 }
 inline TableExprNode operator<= (const TableExprNode& left,
-				 const TableExprNode& right)
+                                 const TableExprNode& right)
 {
     return right.newGE (left.getRep());
 }
 inline TableExprNode operator< (const TableExprNode& left,
-				const TableExprNode& right)
+                                const TableExprNode& right)
 {
     return right.newGT (left.getRep());
 }
@@ -1187,81 +1187,81 @@ inline TableExprNode TableExprNode::operator() (const TableExprNodeSet& indices)
 }
 
 inline TableExprNode near (const TableExprNode& left,
-			   const TableExprNode& right)
+                           const TableExprNode& right)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::near2FUNC,
-					   left, right);
+                                           left, right);
 }
 inline TableExprNode near (const TableExprNode& left,
-			   const TableExprNode& right,
-			   const TableExprNode& tolerance)
+                           const TableExprNode& right,
+                           const TableExprNode& tolerance)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::near3FUNC,
-					   left, right, tolerance);
+                                           left, right, tolerance);
 }
 inline TableExprNode nearAbs (const TableExprNode& left,
-			      const TableExprNode& right)
+                              const TableExprNode& right)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::nearabs2FUNC,
-					   left, right);
+                                           left, right);
 }
 inline TableExprNode nearAbs (const TableExprNode& left,
-			      const TableExprNode& right,
-			      const TableExprNode& tolerance)
+                              const TableExprNode& right,
+                              const TableExprNode& tolerance)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::nearabs3FUNC,
-					   left, right, tolerance);
+                                           left, right, tolerance);
 }
 inline TableExprNode angdist (const TableExprNode& pos1,
                               const TableExprNode& pos2)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::angdistFUNC,
-					   pos1, pos2);
+                                           pos1, pos2);
 }
 inline TableExprNode angdistx (const TableExprNode& pos1,
                                const TableExprNode& pos2)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::angdistxFUNC,
-					   pos1, pos2);
+                                           pos1, pos2);
 }
 inline TableExprNode cones (const TableExprNode& sourcePos,
-			    const TableExprNode& cones)
+                            const TableExprNode& cones)
 {
     return TableExprNode::newConeNode (TableExprFuncNode::conesFUNC,
-				       sourcePos, cones);
+                                       sourcePos, cones);
 }
 inline TableExprNode anyCone (const TableExprNode& sourcePos,
-			      const TableExprNode& cones)
+                              const TableExprNode& cones)
 {
     return TableExprNode::newConeNode (TableExprFuncNode::anyconeFUNC,
-				       sourcePos, cones);
+                                       sourcePos, cones);
 }
 inline TableExprNode findCone (const TableExprNode& sourcePos,
-			       const TableExprNode& cones)
+                               const TableExprNode& cones)
 {
     return TableExprNode::newConeNode (TableExprFuncNode::findconeFUNC,
-				       sourcePos, cones);
+                                       sourcePos, cones);
 }
 inline TableExprNode cones (const TableExprNode& sourcePos,
-			    const TableExprNode& conePos,
-			    const TableExprNode& radii)
+                            const TableExprNode& conePos,
+                            const TableExprNode& radii)
 {
     return TableExprNode::newConeNode (TableExprFuncNode::cones3FUNC,
-				       sourcePos, conePos, radii);
+                                       sourcePos, conePos, radii);
 }
 inline TableExprNode anyCone (const TableExprNode& sourcePos,
-			      const TableExprNode& conePos,
-			      const TableExprNode& radii)
+                              const TableExprNode& conePos,
+                              const TableExprNode& radii)
 {
     return TableExprNode::newConeNode (TableExprFuncNode::anycone3FUNC,
-				       sourcePos, conePos, radii);
+                                       sourcePos, conePos, radii);
 }
 inline TableExprNode findCone (const TableExprNode& sourcePos,
-			       const TableExprNode& conePos,
-			       const TableExprNode& radii)
+                               const TableExprNode& conePos,
+                               const TableExprNode& radii)
 {
     return TableExprNode::newConeNode (TableExprFuncNode::findcone3FUNC,
-				       sourcePos, conePos, radii);
+                                       sourcePos, conePos, radii);
 }
 inline TableExprNode cos (const TableExprNode& node)
 {
@@ -1298,12 +1298,12 @@ inline TableExprNode sinh (const TableExprNode& node)
 inline TableExprNode square (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::squareFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode cube (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::cubeFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode sqrt (const TableExprNode& node)
 {
@@ -1402,10 +1402,10 @@ inline TableExprNode phase (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::argFUNC, node);
 }
 inline TableExprNode formComplex (const TableExprNode& real,
-				  const TableExprNode& imag)
+                                  const TableExprNode& imag)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::complexFUNC,
-					   real, imag);
+                                           real, imag);
 }
 inline TableExprNode formComplex (const TableExprNode& node)
 {
@@ -1415,22 +1415,22 @@ inline TableExprNode formComplex (const TableExprNode& node)
 inline TableExprNode strlength (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::strlengthFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode upcase (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::upcaseFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode downcase (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::downcaseFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode capitalize (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::capitalizeFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode regex (const TableExprNode& node)
 {
@@ -1439,22 +1439,22 @@ inline TableExprNode regex (const TableExprNode& node)
 inline TableExprNode pattern (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::patternFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode sqlpattern (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::sqlpatternFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode datetime (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::datetimeFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode mjdtodate (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::mjdtodateFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode mjd (const TableExprNode& node)
 {
@@ -1479,12 +1479,12 @@ inline TableExprNode day (const TableExprNode& node)
 inline TableExprNode cmonth (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::cmonthFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode weekday (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::weekdayFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode cdow (const TableExprNode& node)
 {
@@ -1587,63 +1587,63 @@ inline TableExprNode isFinite (const TableExprNode& node)
 inline TableExprNode min (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrminFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode max (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmaxFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode sum (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode product (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrproductFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode sumSquare (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumsqrFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode mean (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmeanFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode variance (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrvariance1FUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode stddev (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrstddev1FUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode avdev (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arravdevFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode rms (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrrmsFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode median (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmedianFUNC,
-					   node);
+                                           node);
 }
 inline TableExprNode fractile (const TableExprNode& node,
-			       const TableExprNode& fraction)
+                               const TableExprNode& fraction)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrfractileFUNC,
-					   node, fraction);
+                                           node, fraction);
 }
 inline TableExprNode any (const TableExprNode& node)
 {
@@ -1662,248 +1662,248 @@ inline TableExprNode nfalse (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrnfalseFUNC, node);
 }
 inline TableExprNode sums (const TableExprNode& array,
-			   const TableExprNodeSet& axes)
+                           const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode products (const TableExprNode& array,
-			       const TableExprNodeSet& axes)
+                               const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrproductsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode sumSquares (const TableExprNode& array,
-				 const TableExprNodeSet& axes)
+                                 const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumsqrsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode mins (const TableExprNode& array,
-			   const TableExprNodeSet& axes)
+                           const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrminsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode maxs (const TableExprNode& array,
-			   const TableExprNodeSet& axes)
+                           const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmaxsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode means (const TableExprNode& array,
-			    const TableExprNodeSet& axes)
+                            const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmeansFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode variances (const TableExprNode& array,
-				const TableExprNodeSet& axes)
+                                const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrvariances1FUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode stddevs (const TableExprNode& array,
-			      const TableExprNodeSet& axes)
+                              const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrstddevs1FUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode avdevs (const TableExprNode& array,
-			     const TableExprNodeSet& axes)
+                             const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arravdevsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode rmss (const TableExprNode& array,
-			   const TableExprNodeSet& axes)
+                           const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrrmssFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode medians (const TableExprNode& array,
-			      const TableExprNodeSet& axes)
+                              const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmediansFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode fractiles (const TableExprNode& array,
-				const TableExprNode& fraction,
-				const TableExprNodeSet& axes)
+                                const TableExprNode& fraction,
+                                const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrfractilesFUNC,
-					   array, fraction, axes);
+                                           array, fraction, axes);
 }
 inline TableExprNode anys (const TableExprNode& array,
-			   const TableExprNodeSet& axes)
+                           const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arranysFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode alls (const TableExprNode& array,
-			   const TableExprNodeSet& axes)
+                           const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrallsFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode ntrues (const TableExprNode& array,
-			     const TableExprNodeSet& axes)
+                             const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrntruesFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode nfalses (const TableExprNode& array,
-			      const TableExprNodeSet& axes)
+                              const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrnfalsesFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode runningMin (const TableExprNode& node,
-				 const TableExprNodeSet& halfBoxWidth)
+                                 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runminFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningMax (const TableExprNode& node,
-				 const TableExprNodeSet& halfBoxWidth)
+                                 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runmaxFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningMean (const TableExprNode& node,
-				  const TableExprNodeSet& halfBoxWidth)
+                                  const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runmeanFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningVariance (const TableExprNode& node,
-				      const TableExprNodeSet& halfBoxWidth)
+                                      const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runvariance1FUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningStddev (const TableExprNode& node,
-				    const TableExprNodeSet& halfBoxWidth)
+                                    const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runstddev1FUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningAvdev (const TableExprNode& node,
-				   const TableExprNodeSet& halfBoxWidth)
+                                   const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runavdevFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningRms (const TableExprNode& node,
-				 const TableExprNodeSet& halfBoxWidth)
+                                 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runrmsFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningMedian (const TableExprNode& node,
-				    const TableExprNodeSet& halfBoxWidth)
+                                    const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runmedianFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningAny (const TableExprNode& node,
-				 const TableExprNodeSet& halfBoxWidth)
+                                 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runanyFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode runningAll (const TableExprNode& node,
-				 const TableExprNodeSet& halfBoxWidth)
+                                 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runallFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedMin (const TableExprNode& node,
-			       const TableExprNodeSet& halfBoxWidth)
+                               const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxminFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedMax (const TableExprNode& node,
-			       const TableExprNodeSet& halfBoxWidth)
+                               const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxmaxFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedMean (const TableExprNode& node,
-				const TableExprNodeSet& halfBoxWidth)
+                                const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxmeanFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedVariance (const TableExprNode& node,
-				    const TableExprNodeSet& halfBoxWidth)
+                                    const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxvariance1FUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedStddev (const TableExprNode& node,
-				  const TableExprNodeSet& halfBoxWidth)
+                                  const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxstddev1FUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedAvdev (const TableExprNode& node,
-				 const TableExprNodeSet& halfBoxWidth)
+                                 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxavdevFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedRms (const TableExprNode& node,
-			       const TableExprNodeSet& halfBoxWidth)
+                               const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxrmsFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedMedian (const TableExprNode& node,
-				  const TableExprNodeSet& halfBoxWidth)
+                                  const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxmedianFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedAny (const TableExprNode& node,
-			       const TableExprNodeSet& halfBoxWidth)
+                               const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxanyFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode boxedAll (const TableExprNode& node,
-			       const TableExprNodeSet& halfBoxWidth)
+                               const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::boxallFUNC,
-					   node, halfBoxWidth);
+                                           node, halfBoxWidth);
 }
 inline TableExprNode array (const TableExprNode& values,
-			    const TableExprNodeSet& shape)
+                            const TableExprNodeSet& shape)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrayFUNC,
-					   values, shape);
+                                           values, shape);
 }
 inline TableExprNode marray (const TableExprNode& array,
                              const TableExprNode& mask)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::marrayFUNC,
-					   array, mask);
+                                           array, mask);
 }
 inline TableExprNode arrayData (const TableExprNode& array)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrdataFUNC,
-					   array);
+                                           array);
 }
 inline TableExprNode arrayMask (const TableExprNode& array)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmaskFUNC,
-					   array);
+                                           array);
 }
 inline TableExprNode arrayFlatten (const TableExprNode& array)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrflatFUNC,
-					   array);
+                                           array);
 }
 inline TableExprNode transpose (const TableExprNode& array)
 {
@@ -1916,12 +1916,12 @@ inline TableExprNode transpose (const TableExprNode& array,
                                 const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::transposeFUNC,
-					   array, axes);
+                                           array, axes);
 }
 inline TableExprNode diagonal (const TableExprNode& array)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
-					   array,
+                                           array,
                                            TableExprNode(Vector<Int>()));
 }
 inline TableExprNode isdefined (const TableExprNode& node)
@@ -1941,11 +1941,11 @@ inline TableExprNode shape (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::shapeFUNC, node);
 }
 inline TableExprNode iif (const TableExprNode& condition,
-			  const TableExprNode& arg1,
-			  const TableExprNode& arg2)
+                          const TableExprNode& arg1,
+                          const TableExprNode& arg2)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::iifFUNC,
-					   condition, arg1, arg2);
+                                           condition, arg1, arg2);
 }
 
 
