@@ -1032,12 +1032,27 @@ std::set<String> MSMetaData::getIntentsForField(Int fieldID) {
     if (! _hasFieldID(fieldID)) {
         return std::set<String>();
     }
-    vector<std::set<String> > fieldToIntentsMap;
-    std::map<String, std::set<Int> > intentToFieldsMap;
-    _getFieldsAndIntentsMaps(
-        fieldToIntentsMap, intentToFieldsMap
-    );
+    vector<std::set<String>> fieldToIntentsMap;
+    std::map<String, std::set<Int>> intentToFieldsMap;
+    _getFieldsAndIntentsMaps(fieldToIntentsMap, intentToFieldsMap);
     return fieldToIntentsMap[fieldID];
+}
+
+std::set<String> MSMetaData::getIntentsForField(String field) {
+    vector<std::set<String>> fieldToIntentsMap;
+    std::map<String, std::set<Int>> intentToFieldsMap;
+    _getFieldsAndIntentsMaps(fieldToIntentsMap, intentToFieldsMap);
+    const auto fieldNames = getFieldNames();
+    std::set<String> intents;
+    uInt i = 0;
+    for (const auto& name: fieldNames) {
+        if (name == field) {
+            const auto myIntents = fieldToIntentsMap[i];
+            intents.insert(myIntents.begin(), myIntents.end());
+        }
+        ++i;
+    }
+    return intents;
 }
 
 uInt MSMetaData::nFields() const {
