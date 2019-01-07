@@ -97,9 +97,19 @@ Test variance (MaskedArray<Double>)
  result = variance (df ((df > 2.5) && (df < 6.5)));
 1.66667
 
+Test pvariance (MaskedArray<Double>)
+
+ result = pvariance (df ((df > 2.5) && (df < 6.5)), 1);
+1.66667
+
 Test stddev (MaskedArray<Double>)
 
  result = stddev (df ((df > 2.5) && (df < 6.5)));
+1.29099
+
+Test pstddev (MaskedArray<Double>)
+
+ result = pstddev (df ((df > 2.5) && (df < 6.5)), 1);
 1.29099
 
 Test avdev (MaskedArray<Double>)

@@ -72,11 +72,11 @@ class TableExprFuncNodeArray : public TableExprNodeArray
 public:
     // Constructor
     TableExprFuncNodeArray (TableExprFuncNode::FunctionType,
-			    NodeDataType, ValueType,
-			    const TableExprNodeSet& source,
+                            NodeDataType, ValueType,
+                            const TableExprNodeSet& source,
                             const vector<TENShPtr>& nodes,
                             const Block<Int>& dtypeOper,
-			    const TaQLStyle&);
+                            const TaQLStyle&);
 
     // Destructor
     ~TableExprFuncNodeArray();
@@ -140,6 +140,9 @@ private:
 
     // Get the transpose order of the array axes.
     IPosition getOrder (const TableExprId& id, Int ndim);
+
+    // Get the axes for the reverse function.
+    IPosition getReverseAxes (const TableExprId& id, uInt ndim);
 
     // Get the arguments for the diagonals function.
     // They are checked and if needed adapted if the shape is not empty.

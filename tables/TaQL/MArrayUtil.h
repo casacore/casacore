@@ -41,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>
 
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayUtil2.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMArrayUtil.cc">
 
 // <synopsis>
 // This function makes it possible to reorder the axes of an MArray.
@@ -85,6 +85,49 @@ MArray<T> reorderArray (const MArray<T>& array,
            MArray<T> (reorderArray(array.array(), newAxisOrder, alwaysCopy))));
 }
 // </group>
+
+
+// <summary>
+// Reverse the order of one or more axes of an MArray.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMArrayUtil.cc">
+
+// <synopsis>
+// This function makes it possible to reverse one or more axes of an MArray by
+// swapping around the elements of each axis.
+// Both the data and the optional mask are reversed.
+// The resulting array is a copy of the input array with its data
+// moved around according to the new order.
+// If the order does not change, a copy is returned if the
+// <src>alwaysCopy</src> is true. Otherwise a reference of the
+// input array is returned.
+// </synopsis>
+
+// <example>
+// Reversing axis 0 of a Vector means that the Vector is reversed.
+// Reversing axis 1 of a Matrix means that its rows are reversed.
+// Reversing axis 0 of an N-dim array means that the elements of each Vector
+// in that array are reversed.
+// </example>
+
+// <group name=reverseMArray>
+template<class T>
+MArray<T> reverseArray (const MArray<T>& array,
+                        const IPosition& reversedAxes,
+                        Bool alwaysCopy = True)
+{
+  return (array.isNull()  ?
+          MArray<T>() :
+          (array.hasMask()  ?
+           MArray<T> (reverseArray(array.array(), reversedAxes, alwaysCopy),
+                      reverseArray(array.mask(),  reversedAxes, alwaysCopy)) :
+           MArray<T> (reverseArray(array.array(), reversedAxes, alwaysCopy))));
+}
+// </group>
+
 
 } //# NAMESPACE CASACORE - END
 

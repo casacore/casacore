@@ -80,7 +80,7 @@ Bool ALLFUNC (const MaskedArray<T> &left, const Array<T> &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRALLFUNC "(const MaskedArray<T> &, const Array<T> &)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -133,7 +133,7 @@ Bool ALLFUNC (const Array<T> &left, const MaskedArray<T> &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRALLFUNC "(const Array<T> &, const MaskedArray<T> &)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -276,7 +276,7 @@ Bool ANYFUNC (const MaskedArray<T> &left, const Array<T> &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRANYFUNC "(const MaskedArray<T> &, const Array<T> &)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -329,7 +329,7 @@ Bool ANYFUNC (const Array<T> &left, const MaskedArray<T> &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRANYFUNC "(const Array<T> &, const MaskedArray<T> &)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -688,7 +688,7 @@ Bool ALLFUNC (const MaskedArray<T> &left, const T &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRALLFUNC "(const MaskedArray<T> &, const T)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -729,7 +729,7 @@ Bool ALLFUNC (const T &left, const MaskedArray<T> &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRALLFUNC "(const T, const MaskedArray<T> &)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -787,7 +787,7 @@ Bool allAND (const MaskedArray<T> &marray, const T &val)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::allAND(const MaskedArray<T> &, const T)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -832,7 +832,7 @@ Bool allAND (const T &val, const MaskedArray<T> &marray)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::allAND(const T, const MaskedArray<T> &)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -877,7 +877,7 @@ Bool allOR (const MaskedArray<T> &marray, const T &val)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::allOR(const MaskedArray<T> &, const T)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -922,7 +922,7 @@ Bool allOR (const T &val, const MaskedArray<T> &marray)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::allOR(const T, const MaskedArray<T> &)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -964,7 +964,7 @@ Bool ANYFUNC (const MaskedArray<T> &left, const T &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRANYFUNC "(const MaskedArray<T> &, const T)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -1005,7 +1005,7 @@ Bool ANYFUNC (const T &left, const MaskedArray<T> &right) \
     if (!foundOne) { \
         throw (ArrayError( \
           "Bool ::" STRANYFUNC "(const T, const MaskedArray<T> &)" \
-          " - MaskedArray must have at least 1 element")); \
+          " - Need at least 1 unmasked element")); \
     } \
 \
     return retval; \
@@ -1063,7 +1063,7 @@ Bool anyAND (const MaskedArray<T> &marray, const T &val)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::anyAND(const MaskedArray<T> &, const T)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -1108,7 +1108,7 @@ Bool anyAND (const T &val, const MaskedArray<T> &marray)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::anyAND(const T, const MaskedArray<T> &)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -1153,7 +1153,7 @@ Bool anyOR (const MaskedArray<T> &marray, const T &val)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::anyOR(const MaskedArray<T> &, const T)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;
@@ -1198,7 +1198,7 @@ Bool anyOR (const T &val, const MaskedArray<T> &marray)
         if (!foundOne) {
             throw (ArrayError(
               "Bool ::anyOR(const T, const MaskedArray<T> &)"
-              " - MaskedArray must have at least 1 element"));
+              " - Need at least 1 unmasked element"));
         }
 
         return retval;

@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeUnit::TableExprNodeUnit (const TENShPtr& child,
-				      const Unit& unit)
+                                      const Unit& unit)
 : TableExprNodeBinary (child->dataType(), *child, OtUndef)
 {
     // Units imply conversion, thus result cannot be integer.
@@ -50,8 +50,8 @@ TableExprNodeUnit::~TableExprNodeUnit()
 {}
 
 Double TableExprNodeUnit::set (TableExprNodeRep& parent,
-			       const TENShPtr& child,
-			       const Unit& unit)
+                               const TENShPtr& child,
+                               const Unit& unit)
 {
   Double factor = 1;
   if (unit.empty()) {
@@ -62,11 +62,11 @@ Double TableExprNodeUnit::set (TableExprNodeRep& parent,
       // and between time/angle.
       UnitVal type1 = unit.getValue();
       UnitVal type2 = child->unit().getValue();
-      if (! (type1 == type2  
+      if (! (type1 == type2
              || (type1 == UnitVal::ANGLE  &&  type2 == UnitVal::TIME)
              || (type2 == UnitVal::ANGLE  &&  type1 == UnitVal::TIME))) {
-	throw TableInvExpr ("Units " + unit.getName() + " and " +
-			    child->unit().getName() + " do not conform");
+        throw TableInvExpr ("Units " + unit.getName() + " and " +
+                            child->unit().getName() + " do not conform");
       }
       // Get conversion factor.
       Quantity q(1., child->unit());
@@ -107,7 +107,7 @@ TENShPtr TableExprNodeUnit::useUnit (const TENShPtr& node,
 }
 
 void TableExprNodeUnit::adaptUnit (TENShPtr& node,
-				   const Unit& unit)
+                                   const Unit& unit)
 {
   // See if a conversion is needed.
   // If so, adapt the reference counts and replace it.
@@ -115,8 +115,8 @@ void TableExprNodeUnit::adaptUnit (TENShPtr& node,
 }
 
 Unit TableExprNodeUnit::adaptUnits (TENShPtr& node1,
-				    TENShPtr& node2,
-				    TENShPtr& node3)
+                                    TENShPtr& node2,
+                                    TENShPtr& node3)
 {
   // Find unit to be used.
   Unit unit;
@@ -146,7 +146,7 @@ DComplex TableExprNodeUnit::getDComplex (const TableExprId& id)
 
 
 TableExprNodeArrayUnit::TableExprNodeArrayUnit (const TENShPtr& child,
-						const Unit& unit)
+                                                const Unit& unit)
 : TableExprNodeArray (*child, child->dataType(), OtUndef)
 {
   // Units imply conversion, thus result cannot be integer.
@@ -164,7 +164,7 @@ Double TableExprNodeArrayUnit::getUnitFactor() const
   { return factor_p; }
 
 MArray<Double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
-{ 
+{
   MArray<Double> arr = lnode_p->getArrayDouble(id);
   return MArray<Double> (factor_p * arr.array(), arr.mask());
 }

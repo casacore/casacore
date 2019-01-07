@@ -246,6 +246,19 @@ template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left,const M
 template<class T> MaskedArray<T> pow(const MaskedArray<T> &left, const Double &right);
 // </group>
 
+
+// Extracts the real part of a complex array into an array of floats.
+template<class T>
+MaskedArray<T> real(const MaskedArray<std::complex<T>> &carray)
+  { return MaskedArray<T> (real(carray.getArray()), carray.getMask()); }
+
+// 
+// Extracts the imaginary part of a complex array into an array of floats.
+template<class T>
+MaskedArray<T>  imag(const MaskedArray<std::complex<T>> &carray)
+  { return MaskedArray<T> (imag(carray.getArray()), carray.getMask()); }
+
+
 // 
 // Find the minimum and maximum values of a MaskedArray.
 // Also find the IPositions of the minimum and maximum values.
@@ -368,24 +381,24 @@ template<class T> T product(const MaskedArray<T> &a);
 template<class T> T mean(const MaskedArray<T> &a);
 
 // 
-// The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - 1).
-// N.B. N-1, not N in the denominator).
+// The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - ddof).
+// Similar to numpy the argument ddof tells if the population variance (ddof=0)
+// or the sample variance (ddof=1) is taken.
+// The variance functions proper use ddof=1.
+// <br>Note that for a complex valued T the absolute values are used; in that way
+// the variance is equal to the sum of the variances of the real and imaginary parts.
+// Hence the imaginary part in the return value is 0.
 template<class T> T variance(const MaskedArray<T> &a);
-
-// 
-// The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - 1).
-// N.B. N-1, not N in the denominator).
+template<class T> T pvariance(const MaskedArray<T> &a, uInt ddof=0);
 // Rather than using a computed mean, use the supplied value.
 template<class T> T variance(const MaskedArray<T> &a, T mean);
+template<class T> T pvariance(const MaskedArray<T> &a, T mean, uInt ddof=0);
 
-// 
-// The standard deviation of "a" is the sqare root of its variance.
+// The standard deviation of "a" is the square root of its variance.
 template<class T> T stddev(const MaskedArray<T> &a);
-
-// 
-// The standard deviation of "a" is the sqare root of its variance.
-// Rather than using a computed mean, use the supplied value.
+template<class T> T pstddev(const MaskedArray<T> &a, uInt ddof=0);
 template<class T> T stddev(const MaskedArray<T> &a, T mean);
+template<class T> T pstddev(const MaskedArray<T> &a, T mean, uInt ddof=0);
 
 // 
 // The average deviation of "a" is the sum of abs(a(i) - mean(a))/N. (N.B.

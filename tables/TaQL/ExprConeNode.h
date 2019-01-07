@@ -70,7 +70,7 @@ class TableExprConeNode : public TableExprFuncNode
 public:
   // Constructor
   TableExprConeNode (FunctionType, NodeDataType,
-		     const TableExprNodeSet& source,
+                     const TableExprNodeSet& source,
                      const vector<TENShPtr>& nodes,
                      const Block<Int>& dtypeOper,
                      uInt origin);
@@ -89,10 +89,10 @@ public:
   // Set the value type of the function result and returns
   // the data type of the function result.
   static NodeDataType checkOperands (Block<Int>& dtypeOper,
-				     ValueType& resVT,
-				     Block<Int>& vtypeOper,
-				     FunctionType,
-				     const std::vector<TENShPtr>&);
+                                     ValueType& resVT,
+                                     Block<Int>& vtypeOper,
+                                     FunctionType,
+                                     const std::vector<TENShPtr>&);
 
 private:
   // Find the number of elements in an argument.

@@ -364,7 +364,7 @@ protected:
 // This class represents the rownumber() function in a table
 // select expression tree.
 // The origin is stored to indicate whether the first rownumber
-// should be zero (in C++)  or an other value (1 in TaQL) 
+// should be zero (in C++)  or another value (1 in TaQL).
 // </synopsis> 
 
 class TableExprNodeRownr : public TableExprNodeBinary

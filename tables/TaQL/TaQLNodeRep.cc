@@ -52,12 +52,12 @@ String TaQLNodeRep::checkDataType (const String& dtype)
     } else if (dtstr == "I2"  ||  dtstr == "SHORT"  ||  dtstr == "SMALLINT") {
       dtstr = "I2";
     } else if (dtstr == "U2"  ||  dtstr == "UI2"
-	   ||  dtstr == "USHORT"  ||  dtstr == "USMALLINT") {
+           ||  dtstr == "USHORT"  ||  dtstr == "USMALLINT") {
       dtstr = "U2";
     } else if (dtstr == "I4"  ||  dtstr == "INT"  ||  dtstr == "INTEGER") {
       dtstr = "I4";
     } else if (dtstr == "U4" ||  dtstr == "UI4"
-	   ||  dtstr == "UINT"  ||  dtstr == "UINTEGER") {
+           ||  dtstr == "UINT"  ||  dtstr == "UINTEGER") {
       dtstr = "U4";
     } else if (dtstr == "I8"  ||  dtstr == "INT8") {
       dtstr = "I8";

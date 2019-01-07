@@ -40,7 +40,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNode makeRecordExpr (const RecordDesc& desc,
-			      Int fieldNumber)
+                              Int fieldNumber)
 {
   if (fieldNumber < 0  ||  fieldNumber >= Int(desc.nfields())) {
     throw (AipsError ("makeRecordExpr: invalid field number given"));
@@ -48,27 +48,27 @@ TableExprNode makeRecordExpr (const RecordDesc& desc,
   Block<Int> fieldNrs (1, fieldNumber);
   if (desc.isArray (fieldNumber)) {
     return new TableExprNodeRecordFieldArray (desc.type(fieldNumber),
-					      fieldNrs);
+                                              fieldNrs);
   }
   return new TableExprNodeRecordField (desc.type(fieldNumber),
-				       fieldNrs);
+                                       fieldNrs);
 }
 
 
 TableExprNode makeRecordExpr (const RecordDesc& desc,
-			      const String& fieldName)
+                              const String& fieldName)
 {
   Int fld = desc.fieldNumber (fieldName);
   if (fld < 0) {
     throw (AipsError ("makeRecordExpr: field name " + fieldName +
-		      " is unknown"));
+                      " is unknown"));
   }
   return makeRecordExpr (desc, fld);
 }
 
 
 TableExprNode makeRecordExpr (const RecordInterface& record,
-			      const String& fieldName)
+                              const String& fieldName)
 {
   Vector<String> names (stringToVector (fieldName, '.'));
   if (names.nelements() == 0) {
@@ -91,11 +91,11 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
     
     if (i < names.nelements()-1) {
       if (! desc.isSubRecord(fld)) {
-	throw (AipsError ("makeRecordExpr: field name " + name +
-			  " is not a subrecord"));
+        throw (AipsError ("makeRecordExpr: field name " + name +
+                          " is not a subrecord"));
       } else {
-	recPtr = &(recPtr->asRecord(fld));
-	desc = recPtr->description();
+        recPtr = &(recPtr->asRecord(fld));
+        desc = recPtr->description();
       }
     }
     fieldNrs[i] = fld;

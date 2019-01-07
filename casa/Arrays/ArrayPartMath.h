@@ -117,28 +117,39 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
 template<class T> Array<T> partialMeans (const Array<T>& array,
 					 const IPosition& collapseAxes);
 template<class T> inline Array<T> partialVariances (const Array<T>& array,
-					     const IPosition& collapseAxes)
+                                                    const IPosition& collapseAxes,
+                                                    uInt ddof=1)
 {
     return partialVariances (array, collapseAxes,
-			     partialMeans (array, collapseAxes));
+			     partialMeans (array, collapseAxes), ddof);
 }
 template<class T> Array<T> partialVariances (const Array<T>& array,
 					     const IPosition& collapseAxes,
 					     const Array<T>& means);
+template<class T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes,
+					     const Array<T>& means,
+                                             uInt ddof);
+template<class T> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
+                                                           const IPosition& collapseAxes,
+                                                           const Array<std::complex<T>>& means,
+                                                           uInt ddof);
 template<class T> inline Array<T> partialStddevs (const Array<T>& array,
-					   const IPosition& collapseAxes)
+                                                  const IPosition& collapseAxes,
+                                                  uInt ddof=1)
 {
     return sqrt (partialVariances (array, collapseAxes,
-				   partialMeans (array, collapseAxes)));
+				   partialMeans (array, collapseAxes), ddof));
 }
 template<class T> inline Array<T> partialStddevs (const Array<T>& array,
-					   const IPosition& collapseAxes,
-					   const Array<T>& means)
+                                                  const IPosition& collapseAxes,
+                                                  const Array<T>& means,
+                                                  uInt ddof=1)
 {
-    return sqrt (partialVariances (array, collapseAxes, means));
+  return sqrt (partialVariances (array, collapseAxes, means, ddof));
 }
 template<class T> inline Array<T> partialAvdevs (const Array<T>& array,
-					  const IPosition& collapseAxes)
+                                                 const IPosition& collapseAxes)
 {
     return partialAvdevs (array, collapseAxes,
 			  partialMeans (array, collapseAxes));
@@ -211,13 +222,21 @@ template<class T> Array<T> partialInterQuartileRanges (const Array<T>& array,
   };
   template<typename T> class VarianceFunc : public ArrayFunctorBase<T> {
   public:
+    explicit VarianceFunc (uInt ddof)
+      : itsDdof(ddof) {}
     virtual ~VarianceFunc() {}
-    virtual T operator() (const Array<T>& arr) const { return variance(arr); }
+    virtual T operator() (const Array<T>& arr) const { return pvariance(arr, itsDdof); }
+  private:
+    uInt itsDdof;
   };
   template<typename T> class StddevFunc : public ArrayFunctorBase<T> {
   public:
+    explicit StddevFunc (uInt ddof)
+      : itsDdof(ddof) {}
     virtual ~StddevFunc() {}
-    virtual T operator() (const Array<T>& arr) const { return stddev(arr); }
+    virtual T operator() (const Array<T>& arr) const { return pstddev(arr, itsDdof); }
+  private:
+    uInt itsDdof;
   };
   template<typename T> class AvdevFunc : public ArrayFunctorBase<T> {
   public:

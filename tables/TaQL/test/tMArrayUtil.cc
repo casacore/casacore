@@ -34,7 +34,7 @@
 using namespace casacore;
 using namespace std;
 
-int main()
+void testReorder()
 {
   // Create and fill an array and mask.
   Array<Int> arr(IPosition(4,2,3,4,5));
@@ -83,9 +83,72 @@ int main()
   AlwaysAssertExit (res4.hasMask());
   AlwaysAssertExit (arr.data() != res4.array().data());
   AlwaysAssertExit (mask.data() != res4.mask().data());
+  AlwaysAssertExit (allEQ(res4.array(), arr));
+  AlwaysAssertExit (allEQ(res4.mask(), mask));
 
   // Check if a reordered null array is null.
   AlwaysAssertExit (reorderArray (MArray<Int>(), IPosition()).isNull());
+}
 
+void testReverse()
+{
+  // Create and fill an array and mask.
+  Array<Int> arr(IPosition(4,2,3,4,5));
+  indgen(arr);
+  Array<Bool> mask(arr.shape());
+  mask = True;
+  mask(arr%7==0) = False;
+  // Create an unmasked array from it, reverse it, and check the result.
+  MArray<Int> marr1(arr);
+  MArray<Int> res1 = reverseArray (marr1, IPosition(2,1,3));
+  AlwaysAssertExit (! res1.hasMask());
+  for (int i4=0; i4<5; ++i4) {
+    for (int i3=0; i3<4; ++i3) {
+      for (int i2=0; i2<3; ++i2) {
+        for (int i1=0; i1<2; ++i1) {
+          Int v = res1.array()(IPosition(4,i1,2-i2,i3,4-i4));
+          AlwaysAssertExit (v == arr(IPosition(4,i1,i2,i3,i4)));
+        }
+      }
+    }
+  }
+  // Create a masked array from it, reverse it, and check the result.
+  MArray<Int> marr2(arr, mask);
+  MArray<Int> res2 = reverseArray (marr2, IPosition(2,3,1));
+  AlwaysAssertExit (res2.hasMask());
+  for (int i4=0; i4<5; ++i4) {
+    for (int i3=0; i3<4; ++i3) {
+      for (int i2=0; i2<3; ++i2) {
+        for (int i1=0; i1<2; ++i1) {
+          Int v = res2.array()(IPosition(4,i1,2-i2,i3,4-i4));
+          AlwaysAssertExit (v == arr(IPosition(4,i1,i2,i3,i4)));
+          Bool m = res2.mask()(IPosition(4,i1,2-i2,i3,4-i4));
+          AlwaysAssertExit (m == mask(IPosition(4,i1,i2,i3,i4)));
+        }
+      }
+    }
+  }
+  // Now reverse without actually changing the order.
+  // Check that no copy is made if told so.
+  MArray<Int> res3 = reverseArray (marr2, IPosition(), False);
+  AlwaysAssertExit (res3.hasMask());
+  AlwaysAssertExit (arr.data() == res3.array().data());
+  AlwaysAssertExit (mask.data() == res3.mask().data());
+  // The same but, now with a copy.
+  MArray<Int> res4 = reverseArray (marr2, IPosition(), True);
+  AlwaysAssertExit (res4.hasMask());
+  AlwaysAssertExit (arr.data() != res4.array().data());
+  AlwaysAssertExit (mask.data() != res4.mask().data());
+  AlwaysAssertExit (allEQ(res4.array(), arr));
+  AlwaysAssertExit (allEQ(res4.mask(), mask));
+
+  // Check if a reverseed null array is null.
+  AlwaysAssertExit (reverseArray (MArray<Int>(), IPosition()).isNull());
+}
+
+int main()
+{
+  testReorder();
+  testReverse();
   return 0;
 }

@@ -121,11 +121,11 @@ Caught an ArrayConformanceError:
 
 Test insufficient elements, ::minMax (T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos, const MaskedArray &)
 Caught an ArrayError:
-void ::minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos, const MaskedArray<T> &marray) - MaskedArray must have at least 1 element
+void ::minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos, const MaskedArray<T> &marray) - Need at least 1 unmasked element
 
 Test insufficient elements, ::min (MaskedArray)
 Caught an ArrayError:
-T ::min(const MaskedArray<T> &left) - MaskedArray must have at least 1 element
+T ::min(const MaskedArray<T> &left) - Need at least 1 unmasked element
 
 Test conformance, ::min (MaskedArray, Array)
 Caught an ArrayConformanceError:
@@ -149,31 +149,31 @@ ArrayMath/Logical function min: array shapes [10] and [11] differ
 
 Test insufficient elements, ::sum (const MaskedArray &)
 Caught an ArrayError:
-T ::sum(const MaskedArray<T> &left) - MaskedArray must have at least 1 element
+T ::sum(const MaskedArray<T> &left) - Need at least 1 unmasked element
 
 Test insufficient elements, ::sumsquares (const MaskedArray &)
 Caught an ArrayError:
-T ::sumsquares(const MaskedArray<T> &left) - MaskedArray must have at least 1 element
+T ::sumsquares(const MaskedArray<T> &left) - Need at least 1 unmasked element
 
 Test insufficient elements, ::product (const MaskedArray &)
 Caught an ArrayError:
-T ::product(const MaskedArray<T> &left) - MaskedArray must have at least 1 element
+T ::product(const MaskedArray<T> &left) - Need at least 1 unmasked element
 
 Test insufficient elements, ::mean (const MaskedArray &)
 Caught an ArrayError:
-T ::mean(const MaskedArray<T> &left) - MaskedArray must have at least 1 element
+T ::mean(const MaskedArray<T> &left) - Need at least 1 unmasked element
 
 Test insufficient elements, ::variance (const MaskedArray &, T)
 Caught an ArrayError:
-T ::variance(const MaskedArray<T> &, T) - MaskedArray must have at least 2 elements
+::variance(const MaskedArray<T> &) - Need at least 2 unmasked elements
 
 Test insufficient elements, ::avdev (const MaskedArray &, T)
 Caught an ArrayError:
-T ::avdev(const MaskedArray<T> &, T) - MaskedArray must have at least 1 element
+T ::avdev(const MaskedArray<T> &, T) - Need at least 1 unmasked element
 
 Test insufficient elements, ::median (const MaskedArray &, Bool)
 Caught an ArrayError:
-T ::median(const MaskedArray<T> &) - MaskedArray must have at least 1 element
+T ::median(const MaskedArray<T> &) - Need at least 1 unmasked element
 
 
 
@@ -185,7 +185,7 @@ Bool ::allLE(const MaskedArray<T> &, const Array<T> &) - arrays do not conform
 
 Test insufficient elements, ::allLE (MaskedArray, Array)
 Caught an ArrayError:
-Bool ::allLE(const MaskedArray<T> &, const Array<T> &) - MaskedArray must have at least 1 element
+Bool ::allLE(const MaskedArray<T> &, const Array<T> &) - Need at least 1 unmasked element
 
 Test conformance, ::allLE (Array, MaskedArray)
 Caught an ArrayConformanceError:
@@ -193,7 +193,7 @@ Bool ::allLE(Array<T> &, const MaskedArray<T> &) - arrays do not conform
 
 Test insuficient elements, ::allLE (Array, MaskedArray)
 Caught an ArrayError:
-Bool ::allLE(const Array<T> &, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::allLE(const Array<T> &, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test conformance, ::allLE (MaskedArray, MaskedArray)
 Caught an ArrayConformanceError:
@@ -209,7 +209,7 @@ Bool ::anyAND(const MaskedArray<T> &, const Array<T> &) - arrays do not conform
 
 Test insufficient elements, ::anyAND (MaskedArray, Array)
 Caught an ArrayError:
-Bool ::anyAND(const MaskedArray<T> &, const Array<T> &) - MaskedArray must have at least 1 element
+Bool ::anyAND(const MaskedArray<T> &, const Array<T> &) - Need at least 1 unmasked element
 
 Test conformance, ::anyAND (Array, MaskedArray)
 Caught an ArrayConformanceError:
@@ -217,7 +217,7 @@ Bool ::anyAND(Array<T> &, const MaskedArray<T> &) - arrays do not conform
 
 Test insufficient elements, ::anyAND (Array, MaskedArray)
 Caught an ArrayError:
-Bool ::anyAND(const Array<T> &, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::anyAND(const Array<T> &, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test conformance, ::anyAND (MaskedArray, MaskedArray)
 Caught an ArrayConformanceError:
@@ -233,7 +233,7 @@ Bool ::anyOR(const MaskedArray<T> &, const Array<T> &) - arrays do not conform
 
 Test insufficient elements, ::anyOR (MaskedArray, Array)
 Caught an ArrayError:
-Bool ::anyOR(const MaskedArray<T> &, const Array<T> &) - MaskedArray must have at least 1 element
+Bool ::anyOR(const MaskedArray<T> &, const Array<T> &) - Need at least 1 unmasked element
 
 Test conformance, ::anyOR (Array, MaskedArray)
 Caught an ArrayConformanceError:
@@ -241,7 +241,7 @@ Bool ::anyOR(Array<T> &, const MaskedArray<T> &) - arrays do not conform
 
 Test insufficient elements, ::anyOR (Array, MaskedArray)
 Caught an ArrayError:
-Bool ::anyOR(const Array<T> &, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::anyOR(const Array<T> &, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test conformance, ::anyOR (MaskedArray, MaskedArray)
 Caught an ArrayConformanceError:
@@ -265,42 +265,42 @@ MaskLogicalArray ::<=(const MaskedArray<T> &, const MaskedArray<T> &) - arrays d
 
 Test insufficient elements, ::allAND (MaskedArray, scalar)
 Caught an ArrayError:
-Bool ::allAND(const MaskedArray<T> &, const T) - MaskedArray must have at least 1 element
+Bool ::allAND(const MaskedArray<T> &, const T) - Need at least 1 unmasked element
 
 Test insufficient elements, ::allAND (scalar, MaskedArray)
 Caught an ArrayError:
-Bool ::allAND(const T, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::allAND(const T, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test insufficient elements, ::allOR (MaskedArray, scalar)
 Caught an ArrayError:
-Bool ::allOR(const MaskedArray<T> &, const T) - MaskedArray must have at least 1 element
+Bool ::allOR(const MaskedArray<T> &, const T) - Need at least 1 unmasked element
 
 Test insufficient elements, ::allOR (scalar, MaskedArray)
 Caught an ArrayError:
-Bool ::allOR(const T, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::allOR(const T, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test insufficient elements, ::allLE (MaskedArray, scalar)
 Caught an ArrayError:
-Bool ::allLE(const MaskedArray<T> &, const T) - MaskedArray must have at least 1 element
+Bool ::allLE(const MaskedArray<T> &, const T) - Need at least 1 unmasked element
 
 Test insuficient elements, ::allLE (scalar, MaskedArray)
 Caught an ArrayError:
-Bool ::allLE(const T, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::allLE(const T, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test insufficient elements, ::anyAND (MaskedArray, scalar)
 Caught an ArrayError:
-Bool ::anyAND(const MaskedArray<T> &, const T) - MaskedArray must have at least 1 element
+Bool ::anyAND(const MaskedArray<T> &, const T) - Need at least 1 unmasked element
 
 Test insufficient elements, ::anyAND (scalar, MaskedArray)
 Caught an ArrayError:
-Bool ::anyAND(const T, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::anyAND(const T, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 Test insufficient elements, ::anyOR (MaskedArray, scalar)
 Caught an ArrayError:
-Bool ::anyOR(const MaskedArray<T> &, const T) - MaskedArray must have at least 1 element
+Bool ::anyOR(const MaskedArray<T> &, const T) - Need at least 1 unmasked element
 
 Test insufficient elements, ::anyOR (scalar, MaskedArray)
 Caught an ArrayError:
-Bool ::anyOR(const T, const MaskedArray<T> &) - MaskedArray must have at least 1 element
+Bool ::anyOR(const T, const MaskedArray<T> &) - Need at least 1 unmasked element
 
 OK

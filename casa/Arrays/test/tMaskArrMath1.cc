@@ -278,12 +278,36 @@ int main()
 
             {
                 cout << endl
+                     << "Test pvariance (MaskedArray<Double>)"
+                     << endl;
+                Double result (-1.0);
+                result = pvariance (df ((df > 2.5) && (df < 6.5)), 1);
+                cout << endl
+                     << " result = pvariance (df ((df > 2.5) && (df < 6.5)), 1);"
+                     << endl;
+                cout << result << endl;
+            }
+
+            {
+                cout << endl
                      << "Test stddev (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
                 result = stddev (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = stddev (df ((df > 2.5) && (df < 6.5)));"
+                     << endl;
+                cout << result << endl;
+            }
+
+            {
+                cout << endl
+                     << "Test pstddev (MaskedArray<Double>)"
+                     << endl;
+                Double result (-1.0);
+                result = pstddev (df ((df > 2.5) && (df < 6.5)), 1);
+                cout << endl
+                     << " result = pstddev (df ((df > 2.5) && (df < 6.5)), 1);"
                      << endl;
                 cout << result << endl;
             }
@@ -410,6 +434,16 @@ int main()
 
             }
 
+            {
+              // Test Complex variance.
+              Vector<Complex> vecc(10);
+              indgen (vecc, Complex(1.5,-3.3));
+              Vector<Bool> vecb(10, False);
+              vecb[2] = vecb[5] = True;
+              AlwaysAssertExit (near (pvariance(vecc(vecb)), (pvariance(real(vecc(vecb))) +
+                                                              pvariance(imag(vecc(vecb))))));
+            }
+            
 // End Math
 
             cout << endl << "OK" << endl;

@@ -104,7 +104,7 @@ namespace casacore {
     {
       size_t n = 0;
       for (; abegin!=aend; ++abegin, ++mbegin) {
-	if (!*mbegin  &&  *abegin == value) ++n;
+        if (!*mbegin  &&  *abegin == value) ++n;
       }
       return n;
     }
@@ -117,7 +117,7 @@ namespace casacore {
     {
       size_t n = 0;
       for (; abegin!=aend; ++abegin, ++mbegin) {
-	if (!*mbegin  &&  *abegin != value) ++n;
+        if (!*mbegin  &&  *abegin != value) ++n;
       }
       return n;
     }
@@ -130,7 +130,7 @@ namespace casacore {
   template<typename InputIterator1, typename InputIterator2,
            typename MaskIterator, typename CompareOperator>
   inline bool compareAllMasked (InputIterator1 first1, InputIterator1 last1,
-                                InputIterator2 first2, 
+                                InputIterator2 first2,
                                 MaskIterator mask1, MaskIterator mask2,
                                 CompareOperator op)
   {
@@ -144,7 +144,7 @@ namespace casacore {
   template<typename InputIterator1, typename InputIterator2,
            typename MaskIterator, typename CompareOperator>
   inline bool compareAllMasked (InputIterator1 first1, InputIterator1 last1,
-                                InputIterator2 first2, 
+                                InputIterator2 first2,
                                 MaskIterator mask1,
                                 CompareOperator op)
   {
@@ -197,7 +197,7 @@ namespace casacore {
   template<typename InputIterator1, typename InputIterator2,
            typename MaskIterator, typename CompareOperator>
   inline bool compareAnyMasked (InputIterator1 first1, InputIterator1 last1,
-                                InputIterator2 first2, 
+                                InputIterator2 first2,
                                 MaskIterator mask1, MaskIterator mask2,
                                 CompareOperator op)
   {
@@ -211,7 +211,7 @@ namespace casacore {
   template<typename InputIterator1, typename InputIterator2,
            typename MaskIterator, typename CompareOperator>
   inline bool compareAnyMasked (InputIterator1 first1, InputIterator1 last1,
-                                InputIterator2 first2, 
+                                InputIterator2 first2,
                                 MaskIterator mask1,
                                 CompareOperator op)
   {

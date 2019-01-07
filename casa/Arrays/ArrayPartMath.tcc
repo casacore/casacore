@@ -425,6 +425,14 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
 					     const IPosition& collapseAxes,
 					     const Array<T>& means)
 {
+  return partialVariances (array, collapseAxes, means, 1);
+}
+
+template<class T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes,
+					     const Array<T>& means,
+                                             uInt ddof)
+{
   const IPosition& shape = array.shape();
   uInt ndim = shape.nelements();
   if (ndim == 0) {
@@ -441,8 +449,8 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
   Array<T> result (resShape);
   result = 0;
   uInt nr = result.nelements();
-  uInt factor = array.nelements() / nr - 1;
-  if (factor == 0) {
+  Int factor = Int(array.nelements() / nr) - ddof;
+  if (factor <= 0) {
     return result;
   }
   Bool deleteData, deleteRes, deleteMean;
@@ -480,6 +488,93 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
       for (uInt i=0; i<n0; i++) {
 	T var = *data++ - *mean;
 	*res += var*var;
+	res += incr0;
+	mean += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      mean += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  res = resData;
+  for (uInt i=0; i<nr; i++) {
+    res[i] /= 1.0 * factor;
+  }
+  array.freeStorage (arrData, deleteData);
+  means.freeStorage (meanData, deleteMean);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
+                                                           const IPosition& collapseAxes,
+                                                           const Array<std::complex<T>>& means,
+                                                           uInt ddof)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<std::complex<T>>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  if (! resShape.isEqual (means.shape())) {
+    throw AipsError ("partialVariances: shape of means array mismatches "
+		     "shape of result array");
+  }
+  Array<std::complex<T>> result (resShape);
+  result = 0;
+  uInt nr = result.nelements();
+  Int factor = Int(array.nelements() / nr) - ddof;
+  if (factor <= 0) {
+    return result;
+  }
+  Bool deleteData, deleteRes, deleteMean;
+  const std::complex<T>* arrData = array.getStorage (deleteData);
+  const std::complex<T>* data = arrData;
+  const std::complex<T>* meanData = means.getStorage (deleteMean);
+  const std::complex<T>* mean = meanData;
+  std::complex<T>* resData = result.getStorage (deleteRes);
+  std::complex<T>* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // n0 gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      std::complex<T> tmp = *res;
+      std::complex<T> tmpm = *mean;
+      for (uInt i=0; i<n0; i++) {
+        std::complex<T> var = *data++ - tmpm;
+	tmp += var.real()*var.real() + var.imag()*var.imag();
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+        std::complex<T> var = *data++ - *mean;
+	*res += var.real()*var.real() + var.imag()*var.imag();
 	res += incr0;
 	mean += incr0;
       }
