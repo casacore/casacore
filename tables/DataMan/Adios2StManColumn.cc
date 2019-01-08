@@ -31,7 +31,7 @@ namespace casacore
 {
 
 Adios2StManColumn::Adios2StManColumn(
-        Adios2StMan *aParent,
+        Adios2StMan::impl *aParent,
         int aDataType,
         String aColName,
         std::shared_ptr<adios2::IO> aAdiosIO)

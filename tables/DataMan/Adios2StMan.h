@@ -28,7 +28,13 @@
 #ifndef ADIOS2STMAN_H
 #define ADIOS2STMAN_H
 
-#include <adios2.h>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <mpi.h>
+
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/tables/Tables/Table.h>
@@ -36,10 +42,10 @@
 namespace casacore
 {
 
-class Adios2StManColumn;
-
 class Adios2StMan : public DataManager
 {
+    friend class Adios2StManColumn;
+    template<typename T> friend class Adios2StManColumnT;
 public:
     Adios2StMan(MPI_Comm mpiComm = MPI_COMM_WORLD);
     Adios2StMan(MPI_Comm mpiComm, std::string engineType,
@@ -52,11 +58,9 @@ public:
     virtual String dataManagerType() const;
     virtual String dataManagerName() const;
     virtual void create(uInt aNrRows);
-    virtual void open(uInt aRowNr, AipsIO &);
+    virtual void open(uInt aRowNr, AipsIO &ios);
     virtual void resync(uInt aRowNr);
     virtual Bool flush(AipsIO &, Bool doFsync);
-    DataManagerColumn *makeColumnCommon(const String &aName, int aDataType,
-                                        const String &aDataTypeID);
     virtual DataManagerColumn *makeScalarColumn(const String &aName,
                                                 int aDataType,
                                                 const String &aDataTypeID);
@@ -73,23 +77,8 @@ public:
     uInt getNrRows();
 
 private:
-    String itsDataManName = "Adios2StMan";
-    uInt itsRows;
-    int itsStManColumnType;
-    PtrBlock<Adios2StManColumn *> itsColumnPtrBlk;
-
-    std::shared_ptr<adios2::ADIOS> itsAdios;
-    std::shared_ptr<adios2::IO> itsAdiosIO;
-    std::shared_ptr<adios2::Engine> itsAdiosEngine;
-
-    char itsOpenMode;
-
-    static std::string itsAdiosEngineType;
-    static adios2::Params itsAdiosEngineParams;
-    static std::vector<adios2::Params> itsAdiosTransportParamsVec;
-
-    static MPI_Comm itsMpiComm;
-
+	 class impl;
+	 std::unique_ptr<impl> pimpl;
 }; // end of class Adios2StMan
 
 extern "C" void register_adios2stman();

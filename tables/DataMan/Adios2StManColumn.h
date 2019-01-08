@@ -28,12 +28,13 @@
 #ifndef ADIOS2STMANCOLUMN_H
 #define ADIOS2STMANCOLUMN_H
 
-#include "Adios2StMan.h"
-
 #include <unordered_map>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/tables/DataMan/StManColumn.h>
 #include <casacore/tables/Tables/RefRows.h>
+
+#include "Adios2StManImpl.h"
+
 
 namespace casacore
 {
@@ -41,7 +42,7 @@ namespace casacore
 class Adios2StManColumn : public StManColumn
 {
 public:
-    Adios2StManColumn(Adios2StMan *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
+    Adios2StManColumn(Adios2StMan::impl *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
 
     virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
 
@@ -112,7 +113,7 @@ protected:
     void getArrayWrapper(uint64_t rowStart, uint64_t nrRows, const Slicer &ns,
                          void *dataPtr);
 
-    Adios2StMan *itsStManPtr;
+    Adios2StMan::impl *itsStManPtr;
 
     String itsColumnName;
     IPosition itsCasaShape;
@@ -135,7 +136,7 @@ class Adios2StManColumnT : public Adios2StManColumn
 public:
 
     Adios2StManColumnT(
-            Adios2StMan *aParent,
+            Adios2StMan::impl *aParent,
             int aDataType,
             String aColName,
             std::shared_ptr<adios2::IO> aAdiosIO)
