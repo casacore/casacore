@@ -363,7 +363,7 @@ void Matrix<T>::doNonDegenerate (const Array<T> &other,
 {
     Array<T> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);
-    if (tmp.ndim() != 1) {
+    if (tmp.ndim() != 2) {
 	throw (ArrayError ("Matrix::nonDegenerate (other, ignoreAxes) - "
 			   "removing degenerate axes from other "
 			   "does not result in matrix"));
