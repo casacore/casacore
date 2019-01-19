@@ -195,6 +195,7 @@ public:
     void getArrayuShortV   (StManArrayFile&, Array<uShort>* dataPtr);
     void getArrayIntV      (StManArrayFile&, Array<Int>* dataPtr);
     void getArrayuIntV     (StManArrayFile&, Array<uInt>* dataPtr);
+    void getArrayInt64V    (StManArrayFile&, Array<Int64>* dataPtr);
     void getArrayfloatV    (StManArrayFile&, Array<float>* dataPtr);
     void getArraydoubleV   (StManArrayFile&, Array<double>* dataPtr);
     void getArrayComplexV  (StManArrayFile&, Array<Complex>* dataPtr);
@@ -212,6 +213,7 @@ public:
     void putArrayuShortV   (StManArrayFile&, const Array<uShort>* dataPtr);
     void putArrayIntV      (StManArrayFile&, const Array<Int>* dataPtr);
     void putArrayuIntV     (StManArrayFile&, const Array<uInt>* dataPtr);
+    void putArrayInt64V    (StManArrayFile&, const Array<Int64>* dataPtr);
     void putArrayfloatV    (StManArrayFile&, const Array<float>* dataPtr);
     void putArraydoubleV   (StManArrayFile&, const Array<double>* dataPtr);
     void putArrayComplexV  (StManArrayFile&, const Array<Complex>* dataPtr);
@@ -236,6 +238,8 @@ public:
 			    Array<Int>* dataPtr);
     void getSliceuIntV     (StManArrayFile&, const Slicer&,
 			    Array<uInt>* dataPtr);
+    void getSliceInt64V    (StManArrayFile&, const Slicer&,
+			    Array<Int64>* dataPtr);
     void getSlicefloatV    (StManArrayFile&, const Slicer&,
 			    Array<float>* dataPtr);
     void getSlicedoubleV   (StManArrayFile&, const Slicer&,
@@ -265,6 +269,8 @@ public:
                             const Array<Int>* dataPtr);
     void putSliceuIntV     (StManArrayFile&, const Slicer&,
                             const Array<uInt>* dataPtr);
+    void putSliceInt64V    (StManArrayFile&, const Slicer&,
+                            const Array<Int64>* dataPtr);
     void putSlicefloatV    (StManArrayFile&, const Slicer&,
                             const Array<float>* dataPtr);
     void putSlicedoubleV   (StManArrayFile&, const Slicer&,
@@ -319,6 +325,10 @@ private:
 				 uInt length, uInt increment,
 				 uInt valueIndex, void* value);
     static void getVecuIntV     (StManArrayFile&,
+				 Int64 fileOffset, uInt arrayStart,
+				 uInt length, uInt increment,
+				 uInt valueIndex, void* value);
+    static void getVecInt64V    (StManArrayFile&,
 				 Int64 fileOffset, uInt arrayStart,
 				 uInt length, uInt increment,
 				 uInt valueIndex, void* value);
@@ -380,6 +390,10 @@ private:
 				 uInt length, uInt increment,
 				 uInt valueIndex, const void* value);
     static void putVecuIntV     (StManArrayFile&,
+				 Int64 fileOffset, uInt arrayStart,
+				 uInt length, uInt increment,
+				 uInt valueIndex, const void* value);
+    static void putVecInt64V    (StManArrayFile&,
 				 Int64 fileOffset, uInt arrayStart,
 				 uInt length, uInt increment,
 				 uInt valueIndex, const void* value);

@@ -329,6 +329,7 @@ public:
     Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
     Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
     Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
     Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
     Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
     Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);

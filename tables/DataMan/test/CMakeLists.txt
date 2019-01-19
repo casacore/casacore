@@ -19,6 +19,7 @@ tStandardStMan
 tStArrayFile
 tStMan
 tStMan1
+tStManAll
 tTiledBool
 tTiledCellStM_1
 tTiledCellStMan

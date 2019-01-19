@@ -235,6 +235,10 @@ DataManagerColumn *Adios2StMan::makeColumnCommon(const String &name,
         case TpArrayUInt:
             aColumn = new Adios2StManColumnT<unsigned int>(this, aDataType, name, itsAdiosIO);
             break;
+        case TpInt64:
+        case TpArrayInt64:
+            aColumn = new Adios2StManColumnT<Int64>(this, aDataType, name, itsAdiosIO);
+            break;
         case TpFloat:
         case TpArrayFloat:
             aColumn = new Adios2StManColumnT<float>(this, aDataType, name, itsAdiosIO);

@@ -63,6 +63,7 @@ public:
     virtual void putuShortV(uInt aRowNr, const uShort *aDataPtr);
     virtual void putIntV(uInt aRowNr, const Int *aDataPtr);
     virtual void putuIntV(uInt aRowNr, const uInt *aDataPtr);
+    virtual void putInt64V(uInt aRowNr, const Int64 *aDataPtr);
     virtual void putfloatV(uInt aRowNr, const Float *aDataPtr);
     virtual void putdoubleV(uInt aRowNr, const Double *aDataPtr);
     virtual void putComplexV(uInt aRowNr, const Complex *aDataPtr);
@@ -75,6 +76,7 @@ public:
     virtual void getuShortV(uInt aRowNr, uShort *aDataPtr);
     virtual void getIntV(uInt aRowNr, Int *aDataPtr);
     virtual void getuIntV(uInt aRowNr, uInt *aDataPtr);
+    virtual void getInt64V(uInt aRowNr, Int64 *aDataPtr);
     virtual void getfloatV(uInt aRowNr, Float *aDataPtr);
     virtual void getdoubleV(uInt aRowNr, Double *aDataPtr);
     virtual void getComplexV(uInt aRowNr, Complex *aDataPtr);

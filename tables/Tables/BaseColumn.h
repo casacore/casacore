@@ -285,6 +285,7 @@ public:
     void putScalar (uInt rownr, const uShort& value);
     void putScalar (uInt rownr, const Int& value);
     void putScalar (uInt rownr, const uInt& value);
+    void putScalar (uInt rownr, const Int64& value);
     void putScalar (uInt rownr, const float& value);
     void putScalar (uInt rownr, const double& value);
     void putScalar (uInt rownr, const Complex& value);

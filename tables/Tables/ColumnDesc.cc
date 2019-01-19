@@ -143,6 +143,8 @@ DataType ColumnDesc::trueDataType() const
 	return TpArrayInt;
     case TpUInt:
 	return TpArrayUInt;
+    case TpInt64:
+	return TpArrayInt64;
     case TpFloat:
 	return TpArrayFloat;
     case TpDouble:
@@ -279,6 +281,8 @@ SimpleOrderedMap<String, ColumnDesc::ColumnDescCtor> ColumnDesc::initRegisterMap
   regMap.define(scdi.className(), scdi.makeDesc);
   ScalarColumnDesc<uInt>     scdui("x");
   regMap.define(scdui.className(), scdui.makeDesc);
+  ScalarColumnDesc<Int64>    scdi64("x");
+  regMap.define(scdi64.className(), scdi64.makeDesc);
   ScalarColumnDesc<float>    scdf("x");
   regMap.define(scdf.className(), scdf.makeDesc);
   ScalarColumnDesc<double>   scdd("x");
@@ -305,6 +309,8 @@ SimpleOrderedMap<String, ColumnDesc::ColumnDescCtor> ColumnDesc::initRegisterMap
   regMap.define(acdi.className(), acdi.makeDesc);
   ArrayColumnDesc<uInt>     acdui("x");
   regMap.define(acdui.className(), acdui.makeDesc);
+  ArrayColumnDesc<Int64>    acdi64("x");
+  regMap.define(acdi64.className(), acdi64.makeDesc);
   ArrayColumnDesc<float>    acdf("x");
   regMap.define(acdf.className(), acdf.makeDesc);
   ArrayColumnDesc<double>   acdd("x");

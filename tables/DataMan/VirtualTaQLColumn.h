@@ -176,6 +176,7 @@ private:
   virtual void getuShortV   (uInt rownr, uShort* dataPtr);
   virtual void getIntV      (uInt rownr, Int* dataPtr);
   virtual void getuIntV     (uInt rownr, uInt* dataPtr);
+  virtual void getInt64V    (uInt rownr, Int64* dataPtr);
   virtual void getfloatV    (uInt rownr, float* dataPtr);
   virtual void getdoubleV   (uInt rownr, double* dataPtr);
   virtual void getComplexV  (uInt rownr, Complex* dataPtr);
@@ -191,8 +192,11 @@ private:
   // The default implementation throws an "invalid operation" exception.
   virtual void getArrayV (uInt rownr, void* dataPtr);
 
-  // Get the result.
-  IPosition getResult (uInt rownr, void* dataPtr);
+  // Get the array result into itsCurResult.
+  IPosition getResult (uInt rownr);
+
+  // Make the result cache.
+  void makeCurResult();
 
   // Clear the result cache.
   void clearCurResult();

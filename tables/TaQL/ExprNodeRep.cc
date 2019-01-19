@@ -452,18 +452,18 @@ Array<uInt>     TableExprNodeRep::getColumnuInt
     TableExprNode::throwInvDT ("(getColumnuInt not implemented)");
     return Array<uInt>();
 }
-// Array<Int64>    TableExprNodeRep::getColumnInt64
-// (const Vector<uInt>& rownrs)
-// {
-//     TableExprId id;
-//     uInt nrrow = rownrs.size();
-//     Vector<Int64> vec (nrrow);
-//     for (uInt i=0; i<nrrow; i++) {
-//       id.setRownr   (rownrs[i]);
-//       vec[i] = getInt (id);
-//     }
-//     return vec;
-// }
+Array<Int64>    TableExprNodeRep::getColumnInt64
+(const Vector<uInt>& rownrs)
+{
+    TableExprId id;
+    uInt nrrow = rownrs.size();
+    Vector<Int64> vec (nrrow);
+    for (uInt i=0; i<nrrow; i++) {
+      id.setRownr   (rownrs[i]);
+      vec[i] = getInt (id);
+    }
+    return vec;
+}
 Array<Float>    TableExprNodeRep::getColumnFloat
 (const Vector<uInt>&)
 {

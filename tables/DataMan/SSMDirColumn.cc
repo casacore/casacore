@@ -138,6 +138,15 @@ void SSMDirColumn::getArrayuIntV     (uInt aRowNr,
     aDataPtr->putStorage (data, deleteIt);
 }
 
+void SSMDirColumn::getArrayInt64V    (uInt aRowNr,
+				      Array<Int64>* aDataPtr)
+{
+    Bool deleteIt;
+    Int64* data = aDataPtr->getStorage (deleteIt);
+    getValue (aRowNr, data);
+    aDataPtr->putStorage (data, deleteIt);
+}
+
 void SSMDirColumn::getArrayfloatV    (uInt aRowNr,
 				      Array<float>* aDataPtr)
 {
@@ -254,6 +263,15 @@ void SSMDirColumn::putArrayuIntV     (uInt aRowNr,
 {
     Bool deleteIt;
     const uInt* data = aDataPtr->getStorage (deleteIt);
+    putValue (aRowNr, data);
+    aDataPtr->freeStorage (data, deleteIt);
+}
+
+void SSMDirColumn::putArrayInt64V    (uInt aRowNr,
+				      const Array<Int64>* aDataPtr)
+{
+    Bool deleteIt;
+    const Int64* data = aDataPtr->getStorage (deleteIt);
     putValue (aRowNr, data);
     aDataPtr->freeStorage (data, deleteIt);
 }

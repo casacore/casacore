@@ -247,6 +247,7 @@ MSMCOLUMN_GETPUT(Short,ShortV)
 MSMCOLUMN_GETPUT(uShort,uShortV)
 MSMCOLUMN_GETPUT(Int,IntV)
 MSMCOLUMN_GETPUT(uInt,uIntV)
+MSMCOLUMN_GETPUT(Int64,Int64V)
 MSMCOLUMN_GETPUT(float,floatV)
 MSMCOLUMN_GETPUT(double,doubleV)
 MSMCOLUMN_GETPUT(Complex,ComplexV)
@@ -346,6 +347,9 @@ void MSMColumn::deleteData (void* datap, Bool byPtr)
     case TpUInt:
       delete [] (uInt*)datap;
       break;
+    case TpInt64:
+      delete [] (Int64*)datap;
+      break;
     case TpFloat:
       delete [] (float*)datap;
       break;
@@ -400,6 +404,9 @@ void* MSMColumn::allocData (uInt nrval, Bool byPtr)
     case TpUInt:
       datap = new uInt[nrval];
       break;
+    case TpInt64:
+      datap = new Int64[nrval];
+      break;
     case TpFloat:
       datap = new float[nrval];
       break;
@@ -451,6 +458,9 @@ void MSMColumn::removeData (void* dp, uInt inx, uInt nrvalAfter)
   case TpUInt:
     objmove (((uInt*)dp) + inx,   ((uInt*)dp) + inx+1,  nrvalAfter-inx);
     break;
+  case TpInt64:
+    objmove (((Int64*)dp) + inx,  ((Int64*)dp) + inx+1, nrvalAfter-inx);
+    break;
   case TpFloat:
     objmove (((float*)dp) + inx,  ((float*)dp) + inx+1, nrvalAfter-inx);
     break;
@@ -494,6 +504,9 @@ void MSMColumn::initData (void* datap, uInt nrval)
       break;
     case TpUInt:
       objset ((uInt*)datap, uInt(0), nrval);
+      break;
+    case TpInt64:
+      objset ((Int64*)datap, Int64(0), nrval);
       break;
     case TpFloat:
       objset ((Float*)datap, Float(0), nrval);

@@ -261,6 +261,9 @@ void showExpr(const TableExprNode& expr)
     case TpUInt:
       cout << expr.getColumnuInt (rownrs);
       break;
+    case TpInt64:
+      cout << expr.getColumnInt64 (rownrs);
+      break;
     case TpFloat:
       cout << expr.getColumnFloat (rownrs);
       break;
@@ -291,7 +294,7 @@ void showExpr(const TableExprNode& expr)
 	  cout << arr.array();
 	  break;
 	}
-      case TpInt:
+      case TpInt64:
 	{
 	  MArray<Int64> arr;
 	  expr.get (i, arr);

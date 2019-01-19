@@ -452,6 +452,13 @@ Array<uInt>     TableExprNodeArray::getElemColumnuInt (const Vector<uInt>&,
                        ("(getElemColumnuInt(Slicer) not implemented)");
     return Array<uInt>();
 }
+Array<Int64>    TableExprNodeArray::getElemColumnInt64 (const Vector<uInt>&,
+                                                        const Slicer&)
+{
+    TableExprNode::throwInvDT
+                       ("(getElemColumnInt64(Slicer) not implemented)");
+    return Array<Int64>();
+}
 Array<Float>    TableExprNodeArray::getElemColumnFloat (const Vector<uInt>&,
                                                         const Slicer&)
 {
@@ -542,6 +549,7 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
     case TpUShort:
     case TpInt:
     case TpUInt:
+    case TpInt64:
         dtype_p = NTInt;
         break;
     case TpFloat:
@@ -899,6 +907,50 @@ MArray<Int64> TableExprNodeArrayColumnuInt::getSliceInt
   return MArray<Int64>();
 }
 Array<uInt> TableExprNodeArrayColumnuInt::getElemColumnuInt
+(const Vector<uInt>& rownrs, const Slicer& index)
+{
+    return col_p.getColumnCells (rownrs, index);
+}
+
+TableExprNodeArrayColumnInt64::TableExprNodeArrayColumnInt64
+                                           (const TableColumn& col,
+                                            const Table& table)
+: TableExprNodeArrayColumn (col, table),
+  col_p                    (col)
+{}
+TableExprNodeArrayColumnInt64::~TableExprNodeArrayColumnInt64()
+{}
+
+void TableExprNodeArrayColumnInt64::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArrayColumn::applySelection (rownrs);
+    col_p = ArrayColumn<Int64>(tabCol_p);
+}
+
+Int64 TableExprNodeArrayColumnInt64::getElemInt (const TableExprId& id,
+                                                 const Slicer& index)
+{
+    Array<Int64> arr = col_p.getSlice (id.rownr(), index);
+    return *arr.data();
+}
+MArray<Int64> TableExprNodeArrayColumnInt64::getArrayInt
+                                                    (const TableExprId& id)
+{
+  if (tabCol_p.isDefined (id.rownr())) {
+    return MArray<Int64> (col_p (id.rownr()));
+  }
+  return MArray<Int64>();
+}
+MArray<Int64> TableExprNodeArrayColumnInt64::getSliceInt
+                                                    (const TableExprId& id,
+                                                     const Slicer& index)
+{
+  if (tabCol_p.isDefined (id.rownr())) {
+    return MArray<Int64> (col_p.getSlice (id.rownr(), index));
+  }
+  return MArray<Int64>();
+}
+Array<Int64> TableExprNodeArrayColumnInt64::getElemColumnInt64
 (const Vector<uInt>& rownrs, const Slicer& index)
 {
     return col_p.getColumnCells (rownrs, index);
@@ -1537,6 +1589,13 @@ Array<uInt>     TableExprNodeArrayPart::getColumnuInt (const Vector<uInt>& rownr
         return TableExprNodeRep::getColumnuInt (rownrs);
     }
     return colNode_p->getElemColumnuInt (rownrs, inxNode_p->getSlicer(0));
+}
+Array<Int64>    TableExprNodeArrayPart::getColumnInt64 (const Vector<uInt>& rownrs)
+{
+    if (colNode_p == 0) {
+        return TableExprNodeRep::getColumnInt64 (rownrs);
+    }
+    return colNode_p->getElemColumnInt64 (rownrs, inxNode_p->getSlicer(0));
 }
 Array<Float>    TableExprNodeArrayPart::getColumnFloat (const Vector<uInt>& rownrs)
 {

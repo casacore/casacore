@@ -140,6 +140,7 @@ public:
   virtual void getArrayuShortV   (uInt aRowNr, Array<uShort>* aDataPtr);
   virtual void getArrayIntV      (uInt aRowNr, Array<Int>* aDataPtr);
   virtual void getArrayuIntV     (uInt aRowNr, Array<uInt>* aDataPtr);
+  virtual void getArrayInt64V    (uInt aRowNr, Array<Int64>* aDataPtr);
   virtual void getArrayfloatV    (uInt aRowNr, Array<float>* aDataPtr);
   virtual void getArraydoubleV   (uInt aRowNr, Array<double>* aDataPtr);
   virtual void getArrayComplexV  (uInt aRowNr, Array<Complex>* aDataPtr);
@@ -163,6 +164,8 @@ public:
 				  const Array<Int>* aDataPtr);
   virtual void putArrayuIntV     (uInt aRowNr,
 				  const Array<uInt>* aDataPtr);
+  virtual void putArrayInt64V    (uInt aRowNr,
+				  const Array<Int64>* aDataPtr);
   virtual void putArrayfloatV    (uInt aRowNr,
 				  const Array<float>* aDataPtr);
   virtual void putArraydoubleV   (uInt aRowNr,
@@ -191,6 +194,8 @@ public:
 				  Array<Int>* aDataPtr);
   virtual void getSliceuIntV     (uInt aRowNr, const Slicer&,
 				  Array<uInt>* aDataPtr);
+  virtual void getSliceInt64V    (uInt aRowNr, const Slicer&,
+				  Array<Int64>* aDataPtr);
   virtual void getSlicefloatV    (uInt aRowNr, const Slicer&,
 				  Array<float>* aDataPtr);
   virtual void getSlicedoubleV   (uInt aRowNr, const Slicer&,
@@ -219,6 +224,8 @@ public:
 				  const Array<Int>* aDataPtr);
   virtual void putSliceuIntV     (uInt aRowNr, const Slicer&,
 				  const Array<uInt>* aDataPtr);
+  virtual void putSliceInt64V    (uInt aRowNr, const Slicer&,
+				  const Array<Int64>* aDataPtr);
   virtual void putSlicefloatV    (uInt aRowNr, const Slicer&,
 				  const Array<float>* aDataPtr);
   virtual void putSlicedoubleV   (uInt aRowNr, const Slicer&,

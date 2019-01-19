@@ -159,6 +159,7 @@ public:
     virtual void getuShortV   (uInt rownr, uShort* dataPtr);
     virtual void getIntV      (uInt rownr, Int* dataPtr);
     virtual void getuIntV     (uInt rownr, uInt* dataPtr);
+    virtual void getInt64V    (uInt rownr, Int64* dataPtr);
     virtual void getfloatV    (uInt rownr, float* dataPtr);
     virtual void getdoubleV   (uInt rownr, double* dataPtr);
     virtual void getComplexV  (uInt rownr, Complex* dataPtr);
@@ -174,6 +175,7 @@ public:
     virtual void putuShortV   (uInt rownr, const uShort* dataPtr);
     virtual void putIntV      (uInt rownr, const Int* dataPtr);
     virtual void putuIntV     (uInt rownr, const uInt* dataPtr);
+    virtual void putInt64V    (uInt rownr, const Int64* dataPtr);
     virtual void putfloatV    (uInt rownr, const float* dataPtr);
     virtual void putdoubleV   (uInt rownr, const double* dataPtr);
     virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
@@ -191,6 +193,7 @@ public:
     virtual void getScalarColumnuShortV   (Vector<uShort>* dataPtr);
     virtual void getScalarColumnIntV      (Vector<Int>* dataPtr);
     virtual void getScalarColumnuIntV     (Vector<uInt>* dataPtr);
+    virtual void getScalarColumnInt64V    (Vector<Int64>* dataPtr);
     virtual void getScalarColumnfloatV    (Vector<float>* dataPtr);
     virtual void getScalarColumndoubleV   (Vector<double>* dataPtr);
     virtual void getScalarColumnComplexV  (Vector<Complex>* dataPtr);
@@ -208,6 +211,7 @@ public:
     virtual void putScalarColumnuShortV   (const Vector<uShort>* dataPtr);
     virtual void putScalarColumnIntV      (const Vector<Int>* dataPtr);
     virtual void putScalarColumnuIntV     (const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnInt64V    (const Vector<Int64>* dataPtr);
     virtual void putScalarColumnfloatV    (const Vector<float>* dataPtr);
     virtual void putScalarColumndoubleV   (const Vector<double>* dataPtr);
     virtual void putScalarColumnComplexV  (const Vector<Complex>* dataPtr);
@@ -232,6 +236,8 @@ public:
 						Vector<Int>* dataPtr);
     virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
 						Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsInt64V    (const RefRows& rownrs,
+						Vector<Int64>* dataPtr);
     virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
 						Vector<float>* dataPtr);
     virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,
@@ -252,6 +258,7 @@ public:
     virtual void getArrayuShortV   (uInt rownr, Array<uShort>* dataPtr);
     virtual void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
     virtual void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
+    virtual void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
     virtual void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
     virtual void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
     virtual void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
@@ -267,6 +274,7 @@ public:
     virtual void putArrayuShortV   (uInt rownr, const Array<uShort>* dataPtr);
     virtual void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
     virtual void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
+    virtual void putArrayInt64V    (uInt rownr, const Array<Int64>* dataPtr);
     virtual void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
     virtual void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
     virtual void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);

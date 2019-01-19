@@ -313,10 +313,20 @@ void BaseColumn::getScalar (uInt rownr, Int& value) const
         throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
+    case TpUChar:
+	uChar valuc;
+	get (rownr, &valuc);
+	value = valuc;
+	return;
     case TpShort:
 	Short vals;
 	get (rownr, &vals);
 	value = vals;
+	return;
+    case TpUShort:
+	uShort valus;
+	get (rownr, &valus);
+	value = valus;
 	return;
     case TpInt:
 	get (rownr, &value);
@@ -381,6 +391,9 @@ void BaseColumn::getScalar (uInt rownr, Int64& value) const
 	get (rownr, &valui);
         value = valui;
 	return;
+    case TpInt64:
+	get (rownr, &value);
+	return;
     default:
         throwGetType("Int64");
     }
@@ -416,6 +429,11 @@ void BaseColumn::getScalar (uInt rownr, float& value) const
 	uInt valui;
 	get (rownr, &valui);
 	value = valui;
+	return;
+    case TpInt64:
+	Int64 vali64;
+	get (rownr, &vali64);
+	value = vali64;
 	return;
     case TpFloat:
 	get (rownr, &value);
@@ -461,6 +479,11 @@ void BaseColumn::getScalar (uInt rownr, double& value) const
 	get (rownr, &valui);
 	value = valui;
 	return;
+    case TpInt64:
+	Int64 vali64;
+	get (rownr, &vali64);
+	value = vali64;
+	return;
     case TpFloat:
 	float valf;
 	get (rownr, &valf);
@@ -504,6 +527,11 @@ void BaseColumn::getScalar (uInt rownr, Complex& value) const
 	uInt valui;
 	get (rownr, &valui);
 	value = Complex ((float) valui);
+	return;
+    case TpInt64:
+	Int64 vali64;
+	get (rownr, &vali64);
+	value = vali64;
 	return;
     case TpFloat:
 	float valf;
@@ -559,6 +587,11 @@ void BaseColumn::getScalar (uInt rownr, DComplex& value) const
 	uInt valui;
 	get (rownr, &valui);
 	value = DComplex ((double) valui);
+	return;
+    case TpInt64:
+	Int64 vali64;
+	get (rownr, &vali64);
+	value = vali64;
 	return;
     case TpFloat:
 	float valf;
@@ -648,15 +681,30 @@ void BaseColumn::putScalar (uInt rownr, const uChar& value)
     case TpUChar:
 	put (rownr, &value);
 	return;
+    case TpShort:
+	Short vals;
+	vals = value;
+	put (rownr, &vals);
+	return;
     case TpUShort:
 	uShort valus;
 	valus = value;
 	put (rownr, &valus);
 	return;
+    case TpInt:
+	Int vali;
+	vali = value;
+	put (rownr, &vali);
+	return;
     case TpUInt:
 	uInt valui;
 	valui = value;
 	put (rownr, &valui);
+	return;
+    case TpInt64:
+	Int64 vali64;
+	vali64 = value;
+	put (rownr, &vali64);
 	return;
     case TpFloat:
 	float valf;
@@ -691,9 +739,14 @@ void BaseColumn::putScalar (uInt rownr, const Short& value)
 	put (rownr, &value);
 	return;
     case TpInt:
-	Int valui;
-	valui = value;
-	put (rownr, &valui);
+	Int vali;
+	vali = value;
+	put (rownr, &vali);
+	return;
+    case TpInt64:
+	Int64 vali64;
+	vali64 = value;
+	put (rownr, &vali64);
 	return;
     case TpFloat:
 	float valf;
@@ -727,10 +780,20 @@ void BaseColumn::putScalar (uInt rownr, const uShort& value)
     case TpUShort:
 	put (rownr, &value);
 	return;
+    case TpInt:
+	Int vali;
+	vali = value;
+	put (rownr, &vali);
+	return;
     case TpUInt:
 	uInt valui;
 	valui = value;
 	put (rownr, &valui);
+	return;
+    case TpInt64:
+	Int64 vali64;
+	vali64 = value;
+	put (rownr, &vali64);
 	return;
     case TpFloat:
 	float valf;
@@ -764,6 +827,11 @@ void BaseColumn::putScalar (uInt rownr, const Int& value)
     case TpInt:
 	put (rownr, &value);
 	return;
+    case TpInt64:
+	Int64 vali64;
+	vali64 = value;
+	put (rownr, &vali64);
+	return;
     case TpFloat:
 	float valf;
 	valf = value;
@@ -796,6 +864,11 @@ void BaseColumn::putScalar (uInt rownr, const uInt& value)
     case TpUInt:
 	put (rownr, &value);
 	return;
+    case TpInt64:
+	Int64 vali64;
+	vali64 = value;
+	put (rownr, &vali64);
+	return;
     case TpFloat:
 	float valf;
 	valf = value;
@@ -816,6 +889,38 @@ void BaseColumn::putScalar (uInt rownr, const uInt& value)
 	return;
     default:
         throwPutType("uInt");
+    }
+}
+
+void BaseColumn::putScalar (uInt rownr, const Int64& value)
+{
+    if (!colDescPtr_p->isScalar()) {
+        throwPutScalar();
+    }
+    switch (colDescPtr_p->dataType()) {
+    case TpInt64:
+	put (rownr, &value);
+	return;
+    case TpFloat:
+	float valf;
+	valf = value;
+	put (rownr, &valf);
+	return;
+    case TpDouble:
+	double vald;
+	vald = value;
+	put (rownr, &vald);
+	return;
+    case TpComplex:
+	{ Complex valc(value);
+	  put (rownr, &valc); }
+	return;
+    case TpDComplex:
+	{ DComplex valdc(value);
+	  put (rownr, &valdc); }
+	return;
+    default:
+        throwPutType("Int64");
     }
 }
 

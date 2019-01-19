@@ -728,7 +728,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             vh = ValueHolder(expr.getArrayBool(0));
           }
           break;
-        case TpInt:
+        case TpInt64:
           if (expr.isScalar()) {
             vh = ValueHolder(expr.getInt (0));
           } else {

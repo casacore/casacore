@@ -84,7 +84,7 @@ int checkScaInt (const String& func, const String& arg, Int expResult)
   try {
     TaQLResult result = tableCommand (comm);
     TableExprNode node = result.node();
-    if (node.dataType() != TpInt) {
+    if (node.dataType() != TpInt64) {
       cout << "Int error in evaluating: " + comm << endl;
       cout << " expected data type Int, found "
            << ValType::getTypeStr(node.dataType()) << endl;
@@ -259,7 +259,7 @@ int checkArrInt (const String& func, const String& arg, const String& expResult)
     TableExprNode node1 = result1.node();
     TaQLResult result2 = tableCommand (comm2);
     TableExprNode node2 = result2.node();
-    if (node1.dataType() != TpInt) {
+    if (node1.dataType() != TpInt64) {
       cout << "Int Array error in evaluating: " + comm1 << endl;
       cout << " expected data type Int, found "
            << ValType::getTypeStr(node1.dataType()) << endl;

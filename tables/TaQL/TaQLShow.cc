@@ -552,6 +552,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "      I2         SHORT      SMALLINT",
     "      U2   UI2   USHORT     USMALLINT",
     "      I4         INT        INTEGER",
+    "      I8         INT64      INTEGER64",
     "      U4   UI4   UINT       UINTEGER",
     "      R4   FLT   FLOAT",
     "      R8   DBL   DOUBLE",

@@ -80,8 +80,8 @@ template<class T> class MArray;
 
 // <synopsis> 
 // TableExprNode is the class to store a table select expression,
-// which allows to select rows from the table. The selected rows form
-// a table which is a view of the original table.
+// making it possible to select rows from the table. The selected
+// rows form a table which is a view of the original table.
 // <p>
 // TableExprNode is a handle class for the counted referenced class
 // TableExprNodeRep.
@@ -106,7 +106,7 @@ template<class T> class MArray;
 // recognized. Also &&, ||, parentheses and unary +, -, ~ and ! are recognized.
 // For strings the binary operator + can also be used.
 // The operators have the normal C++ precedence.
-// Furthermore functions (like sin, max, ceil) can be used in an expression.
+// Furthermore functions (such as sin, max, ceil) can be used in an expression.
 // <br>Operator() can be used to take a slice from an array.
 // <p>
 // The Table function col has to be used to create a TableExprNode
@@ -220,6 +220,7 @@ public:
     TableExprNode (const Array<uShort>& value);
     TableExprNode (const Array<Int>& value);
     TableExprNode (const Array<uInt>& value);
+    TableExprNode (const Array<Int64>& value);
     TableExprNode (const Array<Float>& value);
     TableExprNode (const Array<Double>& value);
     TableExprNode (const Array<Complex>& value);
@@ -232,6 +233,7 @@ public:
     TableExprNode (const MArray<uShort>& value);
     TableExprNode (const MArray<Int>& value);
     TableExprNode (const MArray<uInt>& value);
+    TableExprNode (const MArray<Int64>& value);
     TableExprNode (const MArray<Float>& value);
     TableExprNode (const MArray<Double>& value);
     TableExprNode (const MArray<Complex>& value);
@@ -361,6 +363,7 @@ public:
     Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs) const;
     Array<Int>      getColumnInt (const Vector<uInt>& rownrs) const;
     Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const;
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const;
     Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const;
     Array<Double>   getColumnDouble (const Vector<uInt>& rownrs) const;
     Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs) const;
@@ -625,6 +628,8 @@ inline Array<Int>       TableExprNode::getColumnInt (const Vector<uInt>& rownrs)
     { return node_p->getColumnInt (rownrs); }
 inline Array<uInt>      TableExprNode::getColumnuInt (const Vector<uInt>& rownrs) const
     { return node_p->getColumnuInt (rownrs); }
+inline Array<Int64>     TableExprNode::getColumnInt64 (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnInt64 (rownrs); }
 inline Array<Float>     TableExprNode::getColumnFloat (const Vector<uInt>& rownrs) const
     { return node_p->getColumnFloat (rownrs); }
 inline Array<Double>    TableExprNode::getColumnDouble (const Vector<uInt>& rownrs) const

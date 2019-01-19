@@ -56,6 +56,8 @@ String TaQLNodeRep::checkDataType (const String& dtype)
       dtstr = "U2";
     } else if (dtstr == "I4"  ||  dtstr == "INT"  ||  dtstr == "INTEGER") {
       dtstr = "I4";
+    } else if (dtstr == "I8"  ||  dtstr == "INT64"  ||  dtstr == "INTEGER64") {
+      dtstr = "I8";
     } else if (dtstr == "U4" ||  dtstr == "UI4"
            ||  dtstr == "UINT"  ||  dtstr == "UINTEGER") {
       dtstr = "U4";

@@ -121,6 +121,10 @@ void Adios2StManColumn::putuIntV(uInt rownr, const uInt *dataPtr)
 {
     putScalarV(rownr, dataPtr);
 }
+void Adios2StManColumn::putInt64V(uInt rownr, const Int64 *dataPtr)
+{
+    putScalarV(rownr, dataPtr);
+}
 void Adios2StManColumn::putfloatV(uInt rownr, const Float *dataPtr)
 {
     putScalarV(rownr, dataPtr);
@@ -159,6 +163,10 @@ void Adios2StManColumn::getIntV(uInt rownr, Int *dataPtr)
     getScalarV(rownr, dataPtr);
 }
 void Adios2StManColumn::getuIntV(uInt rownr, uInt *dataPtr)
+{
+    getScalarV(rownr, dataPtr);
+}
+void Adios2StManColumn::getInt64V(uInt rownr, Int64 *dataPtr)
 {
     getScalarV(rownr, dataPtr);
 }

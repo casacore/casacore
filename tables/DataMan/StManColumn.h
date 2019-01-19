@@ -306,6 +306,7 @@ protected:
     virtual void getScalarColumnuShortV   (Vector<uShort>* dataPtr);
     virtual void getScalarColumnIntV      (Vector<Int>* dataPtr);
     virtual void getScalarColumnuIntV     (Vector<uInt>* dataPtr);
+    virtual void getScalarColumnInt64V    (Vector<Int64>* dataPtr);
     virtual void getScalarColumnfloatV    (Vector<float>* dataPtr);
     virtual void getScalarColumndoubleV   (Vector<double>* dataPtr);
     virtual void getScalarColumnComplexV  (Vector<Complex>* dataPtr);
@@ -324,6 +325,7 @@ protected:
     virtual void putScalarColumnuShortV   (const Vector<uShort>* dataPtr);
     virtual void putScalarColumnIntV      (const Vector<Int>* dataPtr);
     virtual void putScalarColumnuIntV     (const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnInt64V    (const Vector<Int64>* dataPtr);
     virtual void putScalarColumnfloatV    (const Vector<float>* dataPtr);
     virtual void putScalarColumndoubleV   (const Vector<double>* dataPtr);
     virtual void putScalarColumnComplexV  (const Vector<Complex>* dataPtr);
@@ -348,6 +350,8 @@ protected:
 						Vector<Int>* dataPtr);
     virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
 						Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsInt64V    (const RefRows& rownrs,
+						Vector<Int64>* dataPtr);
     virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
 						Vector<float>* dataPtr);
     virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,
@@ -377,6 +381,8 @@ protected:
 						const Vector<Int>* dataPtr);
     virtual void putScalarColumnCellsuIntV     (const RefRows& rownrs,
 						const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnCellsInt64V    (const RefRows& rownrs,
+						const Vector<Int64>* dataPtr);
     virtual void putScalarColumnCellsfloatV    (const RefRows& rownrs,
 						const Vector<float>* dataPtr);
     virtual void putScalarColumnCellsdoubleV   (const RefRows& rownrs,
@@ -408,6 +414,8 @@ protected:
 				    Int* dataPtr);
     virtual uInt getBlockuIntV     (uInt rownr, uInt nrmax,
 				    uInt* dataPtr);
+    virtual uInt getBlockInt64V    (uInt rownr, uInt nrmax,
+				    Int64* dataPtr);
     virtual uInt getBlockfloatV    (uInt rownr, uInt nrmax,
 				    float* dataPtr);
     virtual uInt getBlockdoubleV   (uInt rownr, uInt nrmax,
@@ -438,6 +446,8 @@ protected:
 				    const Int* dataPtr);
     virtual void putBlockuIntV     (uInt rownr, uInt nrmax,
 				    const uInt* dataPtr);
+    virtual void putBlockInt64V    (uInt rownr, uInt nrmax,
+				    const Int64* dataPtr);
     virtual void putBlockfloatV    (uInt rownr, uInt nrmax,
 				    const float* dataPtr);
     virtual void putBlockdoubleV   (uInt rownr, uInt nrmax,
@@ -461,6 +471,7 @@ protected:
     virtual void getArrayuShortV   (uInt rownr, Array<uShort>* dataPtr);
     virtual void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
     virtual void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
+    virtual void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
     virtual void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
     virtual void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
     virtual void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
@@ -485,6 +496,8 @@ protected:
 				    const Array<Int>* dataPtr);
     virtual void putArrayuIntV     (uInt rownr,
 				    const Array<uInt>* dataPtr);
+    virtual void putArrayInt64V    (uInt rownr,
+				    const Array<Int64>* dataPtr);
     virtual void putArrayfloatV    (uInt rownr,
 				    const Array<float>* dataPtr);
     virtual void putArraydoubleV   (uInt rownr,
@@ -508,6 +521,7 @@ protected:
     virtual void getArrayColumnuShortV   (Array<uShort>* dataPtr);
     virtual void getArrayColumnIntV      (Array<Int>* dataPtr);
     virtual void getArrayColumnuIntV     (Array<uInt>* dataPtr);
+    virtual void getArrayColumnInt64V    (Array<Int64>* dataPtr);
     virtual void getArrayColumnfloatV    (Array<float>* dataPtr);
     virtual void getArrayColumndoubleV   (Array<double>* dataPtr);
     virtual void getArrayColumnComplexV  (Array<Complex>* dataPtr);
@@ -526,6 +540,7 @@ protected:
     virtual void putArrayColumnuShortV   (const Array<uShort>* dataPtr);
     virtual void putArrayColumnIntV      (const Array<Int>* dataPtr);
     virtual void putArrayColumnuIntV     (const Array<uInt>* dataPtr);
+    virtual void putArrayColumnInt64V    (const Array<Int64>* dataPtr);
     virtual void putArrayColumnfloatV    (const Array<float>* dataPtr);
     virtual void putArrayColumndoubleV   (const Array<double>* dataPtr);
     virtual void putArrayColumnComplexV  (const Array<Complex>* dataPtr);
@@ -550,6 +565,8 @@ protected:
 					       Array<Int>* dataPtr);
     virtual void getArrayColumnCellsuIntV     (const RefRows& rownrs,
 					       Array<uInt>* dataPtr);
+    virtual void getArrayColumnCellsInt64V    (const RefRows& rownrs,
+					       Array<Int64>* dataPtr);
     virtual void getArrayColumnCellsfloatV    (const RefRows& rownrs,
 					       Array<float>* dataPtr);
     virtual void getArrayColumnCellsdoubleV   (const RefRows& rownrs,
@@ -579,6 +596,8 @@ protected:
 					       const Array<Int>* dataPtr);
     virtual void putArrayColumnCellsuIntV     (const RefRows& rownrs,
 					       const Array<uInt>* dataPtr);
+    virtual void putArrayColumnCellsInt64V    (const RefRows& rownrs,
+					       const Array<Int64>* dataPtr);
     virtual void putArrayColumnCellsfloatV    (const RefRows& rownrs,
 					       const Array<float>* dataPtr);
     virtual void putArrayColumnCellsdoubleV   (const RefRows& rownrs,
@@ -608,6 +627,8 @@ protected:
 				    Array<Int>* dataPtr);
     virtual void getSliceuIntV     (uInt rownr, const Slicer& ns,
 				    Array<uInt>* dataPtr);
+    virtual void getSliceInt64V    (uInt rownr, const Slicer& ns,
+				    Array<Int64>* dataPtr);
     virtual void getSlicefloatV    (uInt rownr, const Slicer& ns,
 				    Array<float>* dataPtr);
     virtual void getSlicedoubleV   (uInt rownr, const Slicer& ns,
@@ -637,6 +658,8 @@ protected:
 				    const Array<Int>* dataPtr);
     virtual void putSliceuIntV     (uInt rownr, const Slicer& ns,
 				    const Array<uInt>* dataPtr);
+    virtual void putSliceInt64V    (uInt rownr, const Slicer& ns,
+				    const Array<Int64>* dataPtr);
     virtual void putSlicefloatV    (uInt rownr, const Slicer& ns,
 				    const Array<float>* dataPtr);
     virtual void putSlicedoubleV   (uInt rownr, const Slicer& ns,
@@ -666,6 +689,8 @@ protected:
 					  Array<Int>* dataPtr);
     virtual void getColumnSliceuIntV     (const Slicer& ns,
 					  Array<uInt>* dataPtr);
+    virtual void getColumnSliceInt64V    (const Slicer& ns,
+					  Array<Int64>* dataPtr);
     virtual void getColumnSlicefloatV    (const Slicer& ns,
 					  Array<float>* dataPtr);
     virtual void getColumnSlicedoubleV   (const Slicer& ns,
@@ -695,6 +720,8 @@ protected:
 					  const Array<Int>* dataPtr);
     virtual void putColumnSliceuIntV     (const Slicer& ns,
 					  const Array<uInt>* dataPtr);
+    virtual void putColumnSliceInt64V    (const Slicer& ns,
+					  const Array<Int64>* dataPtr);
     virtual void putColumnSlicefloatV    (const Slicer& ns,
 					  const Array<float>* dataPtr);
     virtual void putColumnSlicedoubleV   (const Slicer& ns,
@@ -730,6 +757,9 @@ protected:
     virtual void getColumnSliceCellsuIntV     (const RefRows& rownrs,
 					       const Slicer& ns,
 					       Array<uInt>* dataPtr);
+    virtual void getColumnSliceCellsInt64V    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<Int64>* dataPtr);
     virtual void getColumnSliceCellsfloatV    (const RefRows& rownrs,
 					       const Slicer& ns,
 					       Array<float>* dataPtr);
@@ -770,6 +800,9 @@ protected:
     virtual void putColumnSliceCellsuIntV     (const RefRows& rownrs,
 					       const Slicer& ns,
 					       const Array<uInt>* dataPtr);
+    virtual void putColumnSliceCellsInt64V    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<Int64>* dataPtr);
     virtual void putColumnSliceCellsfloatV    (const RefRows& rownrs,
 					       const Slicer& ns,
 					       const Array<float>* dataPtr);

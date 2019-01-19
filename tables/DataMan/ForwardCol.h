@@ -195,6 +195,7 @@ private:
     void getuShortV   (uInt rownr, uShort* dataPtr);
     void getIntV      (uInt rownr, Int* dataPtr);
     void getuIntV     (uInt rownr, uInt* dataPtr);
+    void getInt64V    (uInt rownr, Int64* dataPtr);
     void getfloatV    (uInt rownr, float* dataPtr);
     void getdoubleV   (uInt rownr, double* dataPtr);
     void getComplexV  (uInt rownr, Complex* dataPtr);
@@ -213,6 +214,7 @@ private:
     void putuShortV   (uInt rownr, const uShort* dataPtr);
     void putIntV      (uInt rownr, const Int* dataPtr);
     void putuIntV     (uInt rownr, const uInt* dataPtr);
+    void putInt64V    (uInt rownr, const Int64* dataPtr);
     void putfloatV    (uInt rownr, const float* dataPtr);
     void putdoubleV   (uInt rownr, const double* dataPtr);
     void putComplexV  (uInt rownr, const Complex* dataPtr);
