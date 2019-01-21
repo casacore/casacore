@@ -110,8 +110,9 @@ public:
 
 
 protected:
-    void getArrayWrapper(uint64_t rowStart, uint64_t nrRows, const Slicer &ns,
-                         void *dataPtr);
+    void scalarVToSelection(uInt rownr);
+    void arrayVToSelection(uInt rownr);
+    void sliceVToSelection(uInt rownr, const Slicer &ns);
 
     Adios2StMan::impl *itsStManPtr;
 
@@ -161,39 +162,25 @@ public:
 
     virtual void putArrayV(uInt rownr, const void *dataPtr)
     {
-        itsAdiosStart[0] = rownr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = 0;
-            itsAdiosCount[i] = itsAdiosShape[i];
-        }
+        arrayVToSelection(rownr);
         toAdios(dataPtr);
     }
 
     virtual void getArrayV(uInt rownr, void *dataPtr)
     {
-        itsAdiosStart[0] = rownr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = 0;
-            itsAdiosCount[i] = itsAdiosShape[i];
-        }
+        arrayVToSelection(rownr);
         fromAdios(dataPtr);
     }
 
     virtual void putScalarV(uInt rownr, const void *dataPtr)
     {
-        itsAdiosStart[0] = rownr;
-        itsAdiosCount[0] = 1;
+        scalarVToSelection(rownr);
         toAdios(reinterpret_cast<const T *>(dataPtr));
     }
 
     virtual void getScalarV(uInt aRowNr, void *data)
     {
-        itsAdiosStart[0] = aRowNr;
-        itsAdiosCount[0] = 1;
+        scalarVToSelection(aRowNr);
         fromAdios(reinterpret_cast<T *>(data));
     }
 
@@ -245,25 +232,13 @@ public:
 
     virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
     {
-        itsAdiosStart[0] = aRowNr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = ns.start()(ns.ndim() - i);
-            itsAdiosCount[i] = ns.length()(ns.ndim() - i);
-        }
+        sliceVToSelection(aRowNr, ns);
         fromAdios(dataPtr);
     }
 
     virtual void putSliceV(uInt aRowNr, const Slicer &ns, const void *dataPtr)
     {
-        itsAdiosStart[0] = aRowNr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = ns.start()(ns.ndim() - i);
-            itsAdiosCount[i] = ns.length()(ns.ndim() - i);
-        }
+        sliceVToSelection(aRowNr, ns);
         toAdios(dataPtr);
     }
 
