@@ -186,6 +186,7 @@ public:
     virtual void putScalarV(uInt rownr, const void *dataPtr)
     {
         itsAdiosStart[0] = rownr;
+        itsAdiosCount[0] = 1;
         toAdios(reinterpret_cast<const T *>(dataPtr));
     }
 
