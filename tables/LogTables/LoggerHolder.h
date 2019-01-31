@@ -317,7 +317,7 @@ public:
   //    cout << iter.message() << endl;
   //  }
   // </srcblock>
-  // <group name=STL-iterator>
+  // <group name=STL-iterator-rep>
   // STL-style typedefs.
   typedef LoggerHolderIterator const_iterator;
   // Get the begin and end iterator object.

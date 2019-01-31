@@ -73,7 +73,7 @@ class AipsIO;
 
 // <example>
 // See the example in the description of the 
-// <linkto class="Record:example">Record</linkto> class.
+// <linkto class="Record:example1">Record</linkto> class.
 // </example>
 
 // <motivation>
