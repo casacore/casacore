@@ -1818,7 +1818,7 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather,
   Bool itsWeatherNull = (itsMS.weather().isNull() || (itsMS.weather().nrow() == 0));
   Bool otherWeatherNull = (otherWeather.isNull() || (otherWeather.nrow() == 0));
 
-  if(itsWeatherNull && otherWeatherNull){ // neither of the two MSs do have valid syscal tables
+  if(itsWeatherNull && otherWeatherNull){ // neither of the two MSs do have valid weather tables
     os << LogIO::NORMAL << "No valid weather tables present. Result won't have one either." << LogIO::POST;
     return True;
   }
@@ -1841,7 +1841,7 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather,
     weatherRow.put(actualRow, otherWeatherRow.get(k, True));
   }
 
-  //Now reassigning antennas to the new indices of the ANTENNA table
+  //Reassign antennas to the new indices of the ANTENNA table
 
   if(rowToBeAdded > 0){
     MSWeatherColumns weatherCol(weather);
@@ -1850,23 +1850,32 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather,
     Bool idsOK = True;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
-      if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
+      if(antennaIDs[k] < -1 || antennaIDs[k] > maxID){
+	os << LogIO::WARN 
+	   << "Found invalid antenna id " << antennaIDs[k] << " in the WEATHER table; the WEATHER table will be emptied as it is inconsistent" 
+	   << LogIO::POST;
 	idsOK = False;
 	break;
       }
+      //// the following could be commented in if a warning about undefined antenna ids was deemed useful
+      // else if(antennaIDs[k] == -1){
+      // 	os << LogIO::WARN 
+      // 	   << "Found undefined antenna ids (value -1) in the WEATHER table; these will not be reindexed." 
+      // 	   << LogIO::POST;
+      // 	break;
+      // }
     }
     if(!idsOK){
-      os << LogIO::WARN 
-	 << "Found invalid antenna ids in the WEATHER table; the WEATHER table will be emptied as it is inconsistent" 
-	 << LogIO::POST;
-      Vector<uInt> rowtodel(weather.nrow());
-      indgen(rowtodel);
-      weather.removeRow(rowtodel);
+      Vector<uInt> rowstodel(weather.nrow());
+      indgen(rowstodel);
+      weather.removeRow(rowstodel);
       return False;
     }
 
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
-      weatherCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+      if(antennaIDs[k]>-1){
+	weatherCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+      }
     }
   }
 
