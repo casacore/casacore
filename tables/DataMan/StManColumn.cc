@@ -913,11 +913,8 @@ void StManColumn::putColumnSliceCellsV (const RefRows& rownrs,
 }
 
 
-void StManColumn::throwGetArray() const
-    { throw (DataManInvOper ("StManColumn::getArray not possible"
-                             " for column " + columnName())); }
-void StManColumn::throwPutArray() const
-    { throw (DataManInvOper ("StManColumn::putArray not possible"
+void StManColumn::throwInvalidOp(const String &op) const
+    { throw (DataManInvOper ("StManColumn::" + op + " not possible"
                              " for column " + columnName())); }
 
 
@@ -965,21 +962,21 @@ void StManColumn::aips_name2(putBlock,NM) \
     } \
 } \
 void StManColumn::aips_name2(getArray,NM) (uInt, Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getArray" #NM); } \
 void StManColumn::aips_name2(putArray,NM) (uInt, const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putArray" #NM); } \
 void StManColumn::aips_name2(getSlice,NM) (uInt, const Slicer&, Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getSlice" #NM); } \
 void StManColumn::aips_name2(putSlice,NM) (uInt, const Slicer&, const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putSlice" #NM); } \
 void StManColumn::aips_name2(getArrayColumn,NM) (Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getArrayColumn" #NM); } \
 void StManColumn::aips_name2(putArrayColumn,NM) (const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putArrayColumn" #NM); } \
 void StManColumn::aips_name2(getColumnSlice,NM) (const Slicer&, Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getColumnSlice" #NM); } \
 void StManColumn::aips_name2(putColumnSlice,NM) (const Slicer&, const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putColumnSlice" #NM); } \
 void StManColumn::aips_name2(getScalarColumnCells,NM) \
                                              (const RefRows& rownrs, \
 					      Vector<T>* values) \
