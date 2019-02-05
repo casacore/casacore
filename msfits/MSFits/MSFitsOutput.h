@@ -58,10 +58,10 @@ public:
         const String& column
     );
 
-    //  @param startchan     1st channel
+    //  @param startChan     1st channel
     //  @param nchan         # of channels
-    //  @param stepchan      # of channels to stride by
-    //  @param avgchan       average every N channels
+    //  @param stepChan      # of channels to stride by
+    //  @param avgChan       average every N channels
     void setChannelInfo(
         Int startChan, Int nchan, Int stepChan, Int avgChan
     );
@@ -114,6 +114,7 @@ public:
     //                       as needed to fit the IF structure.  Does not yet
     //                       support spws with different shapes.
     //  @param avgchan       average every N channels
+    //  @param fieldNumber   field number
     //  @param overwrite     overwrite existing file?
     static Bool writeFitsFile(
         const String& fitsfile, const MeasurementSet& ms,
@@ -141,21 +142,12 @@ private:
     //    @param refFreq
     //    @param chanbw
     //    @param outFITSFile
-    //    @param rawms
-    //    @param column         data column to write
     //    @param spwidMap       spwidMap[inp_spw] = output_spw, if inp_spw is selected
     //                                              -1 otherwise.
     //    @param nrspw          # of selected spws.
-    //    @param startchan      First channel
-    //    @param nchan          # of channels
-    //    @param stepchan       channel stride
     //    @param fieldidMap     fieldidMap[inp_fld] = output_fld, if inp_fld is selected
     //                                                -1 otherwise.
     //    @param asMultiSource  If true, write a multisource UVFITS file.
-    //    @param combineSpw     If true, export the spectral window(s) as IF(s).
-    //    @param padWithFlags   If true && combineSpw==true, pad the spws with
-    //                          flags as necessary to fit the IF structure.
-    //    @param avgchan        average every N channels
     FitsOutput* _writeMain(
         Int& refPixelFreq, Double& refFreq,
         Double& chanbw, const String& outFITSFile,

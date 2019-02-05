@@ -135,11 +135,11 @@ sub handleLinkto
   if ($linkstr =~ m|<linkto\s+class\s*=\s*([^:#]*?)\s*>|i) {
     # A link to a class.
     $linkstr =~ s|<linkto\s+class\s*=\s*['"]?(.*?)['"]?\s*>| \\link casacore::$1 |i;
-    $endlink = " \\endlink";
+    $endlink = "\\endlink";
   } elsif ($linkstr =~ m%<linkto\s+module\s*=\s*([^:#]*?)\s*>%i) {
     # A link to a module.
     $linkstr =~ s%<linkto\s+module\s*=\s*['"]?(.*?)['"]?\s*>% \\ref $1_module_anchor "%i;
-    $endlink = "\"";
+    $endlink = '"';
   } else {
     # A link to an anchor in a group or file.
     if ($linkstr =~ m%<linkto\s+(group|file)\s*=\s*(.*?)[:#](.*?)\s*>%i) {
@@ -159,7 +159,7 @@ sub handleLinkto
       my $classnm = $1;
       my $funcnm = $2;
       $linkstr =~ s%<linkto(.*?)>% \\link ${classnm}::$funcnm() %i;
-      $endlink = ' \\endlink';
+      $endlink = '\\endlink';
     } elsif ($linkstr =~ m%<linkto\s+(class|module)\s*=\s*(.*?)[:#](.*?)\s*>%) {
       # A link to a class or module anchor.
       my $grpnm = $2;
@@ -233,6 +233,7 @@ sub change_comment_style
   $extraline = "";
   $grouplevel = 0;
   $namedgrouplevel = 0;
+  $nexamples = 0;
   $code = 0;           # no <src> block found
   $link = 0;           # no <linkto> block found
   $linkfr = 0;         # no <linkfrom> found
@@ -365,13 +366,14 @@ sub change_comment_style
 	# Replace it by a doxygen \anchor tag and an <a name=> tag.
 	# Prepend the doxygen name with the header name.
 	# The latter one is used for internal <a href=> references.
-	if ( $comment =~ m|<anchor\s+name\s*=\s*(.*)\s*>|i ) {
+	if ( $comment =~ m|<anchor\s+name\s*=\s*(.*?)\s*>|i ) {
 	  my $nm = $1;
+          my $rem = $2;
 	  my $dnm = $nm;
 	  $dnm =~ s|\s*['".]\s*||g;
 	  $dnm =~ s|\s+|_|g;
 	  $dnm =~ s|:|_|g;
-	  $comment =~ s|<anchor\s+name\s*=\s*(.*)\s*>| \\anchor $dnm <a name=$nm>|i;
+	  $comment =~ s|<anchor\s+name\s*=\s*(.*?)\s*>| \\anchor $dnm <a name=$nm>|i;
 	}
 	$comment =~ s|</anchor>||ig;
 
@@ -428,7 +430,10 @@ sub change_comment_style
 	$comment =~ s|</motivation>||ig;
 	$comment =~ s|<synopsis>|<h3>Synopsis</h3>|ig;
 	$comment =~ s|</synopsis>||ig;
-	$comment =~ s|<example>|<h3>Example</h3> \\anchor ${hdrnm}_example|ig;
+	if ( $comment =~ m|<example>|i ) {
+          $nexamples += 1;
+          $comment =~ s|<example>|<h3>Example</h3> \\anchor ${hdrnm}_example${nexamples}|ig;
+        }
 	$comment =~ s|</example>||ig;
 	$comment =~ s|<etymology>|<h3>Etymology</h3>|ig;
 	$comment =~ s|</etymology>||ig;
@@ -641,9 +646,8 @@ sub change_comment_style
         $line = "//$comment\n";
         $newstate = $NON_COMMENT_BLOCK;
       }
-    }
-    # A blank line does not change anything.
-    elsif ($line =~ /^\s*$/) {
+    } elsif ($line =~ /^\s*$/) {
+      # A blank line does not change anything.
       $newstate = $state;
       if ($nadded > 0) {
 	$nadded -= 1;
@@ -653,6 +657,11 @@ sub change_comment_style
     } else {
       $keephash = 0;
     }
+    # Remove stray spaces left before ) or after ( . and ,.
+    $comment =~ s/\(\s+/(/g;
+    $comment =~ s/\s+\)/)/g;
+    $comment =~ s/\s+\././g;
+    $comment =~ s/\s+,/,/g;
 
     # Act depending on new and old state.
     if ($skip == 0) {
