@@ -123,57 +123,59 @@ MSHistory& MSHistory::operator=(const MSHistory &other)
     return *this;
 }
 
-void MSHistory::init()
+void MSHistory::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-      // the PredefinedColumns
-      // APPLICATION
-      colMapDef(APPLICATION,"APPLICATION",TpString,
-		"Application name","","");
-      // APP_PARAMS
-      colMapDef(APP_PARAMS,"APP_PARAMS",TpArrayString,
-		"Application parameters","","");
-      // CLI_COMMAND
-      colMapDef(CLI_COMMAND,"CLI_COMMAND",TpArrayString,
-		"CLI command sequence","","");
-      // MESSAGE
-      colMapDef(MESSAGE,"MESSAGE",TpString,
-		"Log message","","");
-      // OBJECT_ID
-      colMapDef(OBJECT_ID,"OBJECT_ID",TpInt,
-		"Originating ObjectID","","");
-      // OBSERVATION_ID
-      colMapDef(OBSERVATION_ID, "OBSERVATION_ID", TpInt,
-		"Observation id (index in OBSERVATION table)","","");
-      // ORIGIN
-      colMapDef(ORIGIN,"ORIGIN",TpString,
-		"(Source code) origin from which message originated","","");
-      // PRIORITY
-      colMapDef(PRIORITY,"PRIORITY",TpString,
-		"Message priority","","");
-      // TIME
-      colMapDef(TIME,"TIME",TpDouble,
-		"Timestamp of message","s","Epoch");
-      // PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // APPLICATION
+  colMapDef(APPLICATION,"APPLICATION",TpString,
+            "Application name","","");
+  // APP_PARAMS
+  colMapDef(APP_PARAMS,"APP_PARAMS",TpArrayString,
+            "Application parameters","","");
+  // CLI_COMMAND
+  colMapDef(CLI_COMMAND,"CLI_COMMAND",TpArrayString,
+            "CLI command sequence","","");
+  // MESSAGE
+  colMapDef(MESSAGE,"MESSAGE",TpString,
+            "Log message","","");
+  // OBJECT_ID
+  colMapDef(OBJECT_ID,"OBJECT_ID",TpInt,
+            "Originating ObjectID","","");
+  // OBSERVATION_ID
+  colMapDef(OBSERVATION_ID, "OBSERVATION_ID", TpInt,
+            "Observation id (index in OBSERVATION table)","","");
+  // ORIGIN
+  colMapDef(ORIGIN,"ORIGIN",TpString,
+            "(Source code) origin from which message originated","","");
+  // PRIORITY
+  colMapDef(PRIORITY,"PRIORITY",TpString,
+            "Message priority","","");
+  // TIME
+  colMapDef(TIME,"TIME",TpDouble,
+            "Timestamp of message","s","Epoch");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	// define the columns with known dimensionality
-	addColumnToDesc(requiredTD, APP_PARAMS, 1);
-	addColumnToDesc(requiredTD, CLI_COMMAND, 1);
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSHistory::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  // define the columns with known dimensionality
+  addColumnToDesc(requiredTD, APP_PARAMS, 1);
+  addColumnToDesc(requiredTD, CLI_COMMAND, 1);
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

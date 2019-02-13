@@ -40,6 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class MUString;
 class UnitMap;
+class UMaps;
 
 // 
 // <summary>
@@ -188,7 +189,7 @@ class UnitVal {
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  UnitVal(Double factor, const String &s);
+  UnitVal(Double factor, const String &s, UMaps* = 0);
   
   // Construct a value with a single unit at position specified
   UnitVal(Double factor, Int pos) { init(factor, pos); }
@@ -278,8 +279,8 @@ class UnitVal {
   
   // Convert (and check) a unit string to an SI value representation
   // <group>
-  static Bool create(const String &s, UnitVal &res);
-  static Bool create(MUString &str, UnitVal &res);
+  static Bool create(const String &s, UnitVal &res, UMaps* = 0);
+  static Bool create(MUString &str, UnitVal &res, UMaps* = 0);
   // </group>
   
   // Determine sign of unit power (i.e. if '.' or '/')
@@ -289,7 +290,7 @@ class UnitVal {
   static Int power(MUString &str);
   
   // Determine symbol name in unit string
-  static Bool field(MUString &str, UnitVal &res);
+  static Bool field(MUString &str, UnitVal &res, UMaps*);
   
 };
 

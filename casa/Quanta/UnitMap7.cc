@@ -32,132 +32,133 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
-void UnitMap::initUMCust3() {
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+void UnitMap::initUMCust3 (UMaps& maps) {
+  map<String, UnitName>& mapCust = maps.mapCust;
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("fl_oz", 	UnitName("fl_oz",
-						 UnitVal(277.4193*2.54*2.54*2.54/5/4/2/4,"cm3"),
+						 UnitVal(277.4193*2.54*2.54*2.54/5/4/2/4, "cm3", &maps),
 						 "fluid ounce (Imp)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("USfl_oz", 	UnitName("USfl_oz",
-						 UnitVal(231*2.54*2.54*2.54/4/4/2/4,"cm3"),
+						 UnitVal(231*2.54*2.54*2.54/4/4/2/4, "cm3", &maps),
 						 "fluid ounce (US)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("ft",   	UnitName("ft",
-						 UnitVal(12*2.54e-2,"m"),
+						 UnitVal(12*2.54e-2, "m", &maps),
 						 "foot")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("fur",   	UnitName("fur",
-						 UnitVal(220*3*12*2.54,"cm"),
+						 UnitVal(220*3*12*2.54, "cm", &maps),
 						 "furlong")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Gal",   	UnitName("Gal",
-						 UnitVal(1.,"cm/s2"),
+						 UnitVal(1., "cm/s2", &maps),
 						 "gal")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("gal",   	UnitName("gal",
-						 UnitVal(277.4193*2.54*2.54*2.54,"cm3"),
+						 UnitVal(277.4193*2.54*2.54*2.54, "cm3", &maps),
 						 "gallon (Imp)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("USgal", 	UnitName("USgal",
-						 UnitVal(231*2.54*2.54*2.54,"cm3"),
+						 UnitVal(231*2.54*2.54*2.54, "cm3", &maps),
 						 "gallon (US)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("G",   	UnitName("G",
-						 UnitVal(1.0e-4,"T"),
+						 UnitVal(1.0e-4, "T", &maps),
 						 "gauss")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Gb",   	UnitName("Gb",
-						 UnitVal(10.0/(4.0 * C::pi),"A"),
+						 UnitVal(10.0/(4.0 * C::pi), "A", &maps),
 						 "gilbert")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("ha",   	UnitName("ha",
-						 UnitVal(1.,"hm2"),
+						 UnitVal(1.,"hm2", &maps),
 						 "hectare")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("hp",   	UnitName("hp",
-						 UnitVal(745.7,"W"),
+						 UnitVal(745.7, "W", &maps),
 						 "horsepower")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("cwt",   	UnitName("cwt",
-						 UnitVal(4*2*14*0.45359237,"kg"),
+						 UnitVal(4*2*14*0.45359237, "kg", &maps),
 						 "hundredweight")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("in",   	UnitName("in",
-						 UnitVal(2.54,"cm"),
+						 UnitVal(2.54, "cm", &maps),
 						 "inch")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("kn",   	UnitName("kn",
-						 UnitVal(6080*12*2.54,"cm/h"),
+						 UnitVal(6080*12*2.54, "cm/h", &maps),
 						 "knot (Imp)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("ly",   	UnitName("ly",
-						 UnitVal(9.46073047e+15,"m"),
+						 UnitVal(9.46073047e+15, "m", &maps),
 						 "light year")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Mx",   	UnitName("Mx",
-						 UnitVal(1.0e-8,"Wb"),
+						 UnitVal(1.0e-8, "Wb", &maps),
 						 "maxwell")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("mile",  	UnitName("mile",
-						 UnitVal(5280*12*2.54e-2,"m"),
+						 UnitVal(5280*12*2.54e-2, "m", &maps),
 						 "mile")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("n_mile", 	UnitName("n_mile",
-						 UnitVal(6080*12*2.54,"cm"),
+						 UnitVal(6080*12*2.54, "cm", &maps),
 						 "nautical mile (Imp)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Oe",   	UnitName("Oe",
-						 UnitVal(1000.0/(4.0*C::pi),"A/m"),
+						 UnitVal(1000.0/(4.0*C::pi), "A/m", &maps),
 						 "oersted")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("oz",   	UnitName("oz",
-						 UnitVal(1./16.*0.45359237,"kg"),
+						 UnitVal(1./16.*0.45359237, "kg", &maps),
 						 "ounce (avoirdupois)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("lb",   	UnitName("lb",
-						 UnitVal(0.45359237,"kg"),
+						 UnitVal(0.45359237, "kg", &maps),
 						 "pound (avoirdupois)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("R",   	UnitName("R",
-						 UnitVal(2.58e-4,"C/kg"),
+						 UnitVal(2.58e-4, "C/kg", &maps),
 						 "mile")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("sb",   	UnitName("sb",
-						 UnitVal(1e4,"cd/m2"),
+						 UnitVal(1e4, "cd/m2", &maps),
 						 "stilb")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("St",   	UnitName("St",
-						 UnitVal(1.,"cm2/s"),
+						 UnitVal(1., "cm2/s", &maps),
 						 "stokes")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Torr",  	UnitName("Torr",
-						 UnitVal((1.0/760.0)*1.01325e+5,"Pa"),
+						 UnitVal((1.0/760.0)*1.01325e+5, "Pa", &maps),
 						 "torr")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("yd",   	UnitName("yd",
-						 UnitVal(3*12*2.54,"cm"),
+						 UnitVal(3*12*2.54, "cm", &maps),
 						 "yard")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("yr",   	UnitName("yr",
-						 UnitVal(24.*3600.*365.25,"s"),
+						 UnitVal(24.*3600.*365.25, "s", &maps),
 						 "year")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("adu",	UnitName("adu",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "dimensionless ADC unit")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("beam",	UnitName("beam",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "undefined beam area")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
                            ("count", 	UnitName("count",
                                                  UnitVal(1.,UnitDim::Dnon),
                                                  "count")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("pixel",	UnitName("pixel",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "pixel")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("lambda",	UnitName("lambda",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "lambda")));

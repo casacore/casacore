@@ -125,7 +125,8 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void init();
+    static void initMap();
+    static void initDesc();
 
 private:
     // temporary function to add the VELDEF

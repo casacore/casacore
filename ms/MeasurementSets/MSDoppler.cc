@@ -152,40 +152,42 @@ MSDoppler& MSDoppler::operator=(const MSDoppler &other)
     return *this;
 }
 
-void MSDoppler::init()
+void MSDoppler::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-        // the PredefinedColumns
-        // 
-	colMapDef(DOPPLER_ID,"DOPPLER_ID", TpInt,
-		  "Doppler tracking id","","");
-	// SOURCE_ID
-	colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
-		  "Pointer to SOURCE table","","");
-	// TRANSITION_ID
-	colMapDef(TRANSITION_ID,"TRANSITION_ID",TpInt,
-		  "Pointer to list of transitions in SOURCE table","","");
-	// VELDEF
-	colMapDef(VELDEF, "VELDEF", TpDouble, 
-		  "Velocity Definition for Doppler shift","m/s","Doppler");
-	// PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // 
+  colMapDef(DOPPLER_ID,"DOPPLER_ID", TpInt,
+            "Doppler tracking id","","");
+  // SOURCE_ID
+  colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
+            "Pointer to SOURCE table","","");
+  // TRANSITION_ID
+  colMapDef(TRANSITION_ID,"TRANSITION_ID",TpInt,
+            "Pointer to list of transitions in SOURCE table","","");
+  // VELDEF
+  colMapDef(VELDEF, "VELDEF", TpDouble, 
+            "Velocity Definition for Doppler shift","m/s","Doppler");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSDoppler::initDesc()
+{    
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

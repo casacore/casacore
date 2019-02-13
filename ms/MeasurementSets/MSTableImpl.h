@@ -33,11 +33,12 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/Tables/Table.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/Mutex.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -83,7 +84,7 @@ class MSTableImpl
 {
 public:
     // Convert a name to a ColEnum, 
-    static Int mapType(const SimpleOrderedMap<Int,String>& map,
+    static Int mapType(const std::map<Int,String>& map,
 		       const String &name);
 
     // add a column to a TableDesc
@@ -126,11 +127,11 @@ public:
     static SetupNewTable& setupCompression (SetupNewTable&);
 
     // Define an entry in the column maps
-    static void colMapDef(SimpleOrderedMap<Int,String>& colMap,
-			  SimpleOrderedMap<Int,Int>& colDTypeMap,
-			  SimpleOrderedMap<Int,String>& colCommentMap,
-			  SimpleOrderedMap<Int,String>& colUnitMap,
-			  SimpleOrderedMap<Int,String>& colMeasureTypeMap,
+    static void colMapDef(std::map<Int,String>& colMap,
+			  std::map<Int,Int>& colDTypeMap,
+			  std::map<Int,String>& colCommentMap,
+			  std::map<Int,String>& colUnitMap,
+			  std::map<Int,String>& colMeasureTypeMap,
 			  Int col,
 			  const String& colName,
 			  Int colType,
@@ -139,9 +140,9 @@ public:
 			  const String& colMeasureType);
 
     // Define an entry in the keyword maps
-    static void keyMapDef(SimpleOrderedMap<Int,String>& keyMap,
-			  SimpleOrderedMap<Int,Int>& keyDTypeMap,
-			  SimpleOrderedMap<Int,String>& keyCommentMap,
+    static void keyMapDef(std::map<Int,String>& keyMap,
+			  std::map<Int,Int>& keyDTypeMap,
+			  std::map<Int,String>& keyCommentMap,
 			  Int key,
 			  const String& keyName,
 			  Int keyType,
@@ -165,7 +166,15 @@ public:
     static Table referenceCopy(const Table& tab, const String& newTableName, 
 			       const Block<String>& writableColumns);
     // Initialize all MeasurementSet static mappings
+    static void initMap();
     static void init();
+
+private:
+    static void doInitMap();
+    static void doInitDesc();
+
+    static CallOnce0 onceInitMap_p;
+    static CallOnce0 onceInitDesc_p;
 };
 
 

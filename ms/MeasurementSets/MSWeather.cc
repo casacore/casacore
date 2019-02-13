@@ -123,88 +123,90 @@ MSWeather& MSWeather::operator=(const MSWeather &other)
     return *this;
 }
 
-void MSWeather::init()
+void MSWeather::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA_ID
-	colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
-		  "Antenna number","","");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Interval over which data is relevant","s","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "An MEpoch specifying the midpoint of the time for"
-		  "which data is relevant","s","Epoch");
-	// DEW_POINT
-	colMapDef(DEW_POINT, "DEW_POINT", TpFloat,
-		  "Dew point","K","");
-	// DEW_POINT_FLAG
-	colMapDef(DEW_POINT_FLAG, "DEW_POINT_FLAG", TpBool,
-		  "Flag for dew point","","");
-	// H2O 
-	colMapDef(H2O, "H2O", TpFloat,
-		  "Average column density of water-vapor","m-2","");
-	// H2O_FLAG
-	colMapDef(H2O_FLAG, "H2O_FLAG", TpBool,
-		  "Flag for average column density of water-vapor","","");
-	// IONOS_ELECTRON
-	colMapDef(IONOS_ELECTRON, "IONOS_ELECTRON", TpFloat,
-		  "Average column density of electrons","m-2","");
-	// IONOS_ELECTRON_FLAG
-	colMapDef(IONOS_ELECTRON_FLAG, "IONOS_ELECTRON_FLAG", TpBool,
-		  "Flag for average column density of electrons","","");
-	// PRESSURE
-	colMapDef(PRESSURE, "PRESSURE", TpFloat,
-		  "Ambient atmospheric pressure","hPa","");
-	// PRESSURE_FLAG
-	colMapDef(PRESSURE_FLAG, "PRESSURE_FLAG", TpBool,
-		  "Flag for ambient atmospheric pressure","","");
-	// REL_HUMIDITY
-	colMapDef(REL_HUMIDITY, "REL_HUMIDITY", TpFloat,
-		  "Ambient relative humidity","%","");
-	// REL_HUMIDITY_FLAG
-	colMapDef(REL_HUMIDITY_FLAG, "REL_HUMIDITY_FLAG", TpBool,
-		  "Flag for ambient relative humidity","","");
-	// TEMPERATURE
-	colMapDef(TEMPERATURE, "TEMPERATURE", TpFloat,
-		  "Ambient Air Temperature for an antenna","K","");
-	// TEMPERATURE_FLAG
-	colMapDef(TEMPERATURE_FLAG, "TEMPERATURE_FLAG", TpBool,
-		  "Flag for ambient Air Temperature for an antenna","","");
-	// WIND_DIRECTION
-	colMapDef(WIND_DIRECTION, "WIND_DIRECTION", TpFloat,
-		  "Average wind direction","rad","");
-	// WIND_DIRECTION_FLAG
-	colMapDef(WIND_DIRECTION_FLAG, "WIND_DIRECTION_FLAG", TpBool,
-		  "Flag for wind direction","","");
-	// WIND_SPEED
-	colMapDef(WIND_SPEED, "WIND_SPEED", TpFloat,
-		  "Average wind speed","m/s","");
-	// WIND_SPEED_FLAG
-	colMapDef(WIND_SPEED_FLAG, "WIND_SPEED_FLAG", TpBool,
-		  "Flag for wind speed","","");
-	// PredefinedKeywords
-
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // ANTENNA_ID
+  colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
+            "Antenna number","","");
+  // INTERVAL
+  colMapDef(INTERVAL, "INTERVAL", TpDouble,
+            "Interval over which data is relevant","s","");
+  // TIME
+  colMapDef(TIME, "TIME", TpDouble,
+            "An MEpoch specifying the midpoint of the time for"
+            "which data is relevant","s","Epoch");
+  // DEW_POINT
+  colMapDef(DEW_POINT, "DEW_POINT", TpFloat,
+            "Dew point","K","");
+  // DEW_POINT_FLAG
+  colMapDef(DEW_POINT_FLAG, "DEW_POINT_FLAG", TpBool,
+            "Flag for dew point","","");
+  // H2O 
+  colMapDef(H2O, "H2O", TpFloat,
+            "Average column density of water-vapor","m-2","");
+  // H2O_FLAG
+  colMapDef(H2O_FLAG, "H2O_FLAG", TpBool,
+            "Flag for average column density of water-vapor","","");
+  // IONOS_ELECTRON
+  colMapDef(IONOS_ELECTRON, "IONOS_ELECTRON", TpFloat,
+            "Average column density of electrons","m-2","");
+  // IONOS_ELECTRON_FLAG
+  colMapDef(IONOS_ELECTRON_FLAG, "IONOS_ELECTRON_FLAG", TpBool,
+            "Flag for average column density of electrons","","");
+  // PRESSURE
+  colMapDef(PRESSURE, "PRESSURE", TpFloat,
+            "Ambient atmospheric pressure","hPa","");
+  // PRESSURE_FLAG
+  colMapDef(PRESSURE_FLAG, "PRESSURE_FLAG", TpBool,
+            "Flag for ambient atmospheric pressure","","");
+  // REL_HUMIDITY
+  colMapDef(REL_HUMIDITY, "REL_HUMIDITY", TpFloat,
+            "Ambient relative humidity","%","");
+  // REL_HUMIDITY_FLAG
+  colMapDef(REL_HUMIDITY_FLAG, "REL_HUMIDITY_FLAG", TpBool,
+            "Flag for ambient relative humidity","","");
+  // TEMPERATURE
+  colMapDef(TEMPERATURE, "TEMPERATURE", TpFloat,
+            "Ambient Air Temperature for an antenna","K","");
+  // TEMPERATURE_FLAG
+  colMapDef(TEMPERATURE_FLAG, "TEMPERATURE_FLAG", TpBool,
+            "Flag for ambient Air Temperature for an antenna","","");
+  // WIND_DIRECTION
+  colMapDef(WIND_DIRECTION, "WIND_DIRECTION", TpFloat,
+            "Average wind direction","rad","");
+  // WIND_DIRECTION_FLAG
+  colMapDef(WIND_DIRECTION_FLAG, "WIND_DIRECTION_FLAG", TpBool,
+            "Flag for wind direction","","");
+  // WIND_SPEED
+  colMapDef(WIND_SPEED, "WIND_SPEED", TpFloat,
+            "Average wind speed","m/s","");
+  // WIND_SPEED_FLAG
+  colMapDef(WIND_SPEED_FLAG, "WIND_SPEED_FLAG", TpBool,
+            "Flag for wind speed","","");
+  // PredefinedKeywords
 }
-	
+
+void MSWeather::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
+}
+
 MSWeather MSWeather::referenceCopy(const String& newTableName, 
 				   const Block<String>& writableColumns) const
 {

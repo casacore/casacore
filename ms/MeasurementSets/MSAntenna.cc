@@ -124,70 +124,72 @@ MSAntenna& MSAntenna::operator=(const MSAntenna &other)
     return *this;
 }
 
-void MSAntenna::init()
+void MSAntenna::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// DISH_DIAMETER
-	colMapDef(DISH_DIAMETER, "DISH_DIAMETER", TpDouble,
-		  "Physical diameter of dish","m","");
-	// FLAG_ROW
-	colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
-		  "Flag for this row","","");
-	// MOUNT
-	colMapDef(MOUNT,"MOUNT",TpString,
-		  "Mount type e.g. alt-az, equatorial, etc.","","");
-	// NAME
-	colMapDef(NAME,"NAME",TpString,
-		  "Antenna name, e.g. VLA22, CA03","","");
-	// OFFSET
-	colMapDef(OFFSET,"OFFSET",TpArrayDouble,
-		  "Axes offset of mount to FEED REFERENCE point",
-		  "m","Position");
-	// POSITION
-	colMapDef(POSITION,"POSITION",TpArrayDouble,
-		  "Antenna X,Y,Z phase reference position","m","Position");
-	// STATION
-	colMapDef(STATION,"STATION",TpString,
-		  "Station (antenna pad) name","","");
-	// TYPE
-	colMapDef(TYPE,"TYPE", TpString,
-		  "Antenna type (e.g. SPACE-BASED)","","");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // DISH_DIAMETER
+  colMapDef(DISH_DIAMETER, "DISH_DIAMETER", TpDouble,
+            "Physical diameter of dish","m","");
+  // FLAG_ROW
+  colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
+            "Flag for this row","","");
+  // MOUNT
+  colMapDef(MOUNT,"MOUNT",TpString,
+            "Mount type e.g. alt-az, equatorial, etc.","","");
+  // NAME
+  colMapDef(NAME,"NAME",TpString,
+            "Antenna name, e.g. VLA22, CA03","","");
+  // OFFSET
+  colMapDef(OFFSET,"OFFSET",TpArrayDouble,
+            "Axes offset of mount to FEED REFERENCE point",
+            "m","Position");
+  // POSITION
+  colMapDef(POSITION,"POSITION",TpArrayDouble,
+            "Antenna X,Y,Z phase reference position","m","Position");
+  // STATION
+  colMapDef(STATION,"STATION",TpString,
+            "Station (antenna pad) name","","");
+  // TYPE
+  colMapDef(TYPE,"TYPE", TpString,
+            "Antenna type (e.g. SPACE-BASED)","","");
 
-	// Optional columns follow 
-	// MEAN_ORBIT
-	colMapDef(MEAN_ORBIT,"MEAN_ORBIT",TpArrayDouble,
-		  "Mean Keplerian elements","","");
-	// ORBIT_ID
-	colMapDef(ORBIT_ID,"ORBIT_ID",TpInt,
-		  "index into ORBIT table (ignore if<0)","","");
-	// PHASED_ARRAY_ID
-	colMapDef(PHASED_ARRAY_ID,"PHASED_ARRAY_ID",TpInt,
-		  "index into PHASED_ARRAY table","","");
-	// PredefinedKeywords
+  // Optional columns follow 
+  // MEAN_ORBIT
+  colMapDef(MEAN_ORBIT,"MEAN_ORBIT",TpArrayDouble,
+            "Mean Keplerian elements","","");
+  // ORBIT_ID
+  colMapDef(ORBIT_ID,"ORBIT_ID",TpInt,
+            "index into ORBIT table (ignore if<0)","","");
+  // PHASED_ARRAY_ID
+  colMapDef(PHASED_ARRAY_ID,"PHASED_ARRAY_ID",TpInt,
+            "index into PHASED_ARRAY table","","");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// First define the columns with fixed size arrays
-	IPosition shape(1,3);
-	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, OFFSET, shape, option);
-	addColumnToDesc(requiredTD, POSITION, shape, option);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSAntenna::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  // First define the columns with fixed size arrays
+  IPosition shape(1,3);
+  ColumnDesc::Option option=ColumnDesc::Direct;
+  addColumnToDesc(requiredTD, OFFSET, shape, option);
+  addColumnToDesc(requiredTD, POSITION, shape, option);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

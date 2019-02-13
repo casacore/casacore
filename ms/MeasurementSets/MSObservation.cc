@@ -123,61 +123,63 @@ MSObservation& MSObservation::operator=(const MSObservation &other)
     return *this;
 }
 
-void MSObservation::init()
+void MSObservation::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// FLAG_ROW
-	colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
-		  "Row flag","","");
-	// LOG
-	colMapDef(LOG,"LOG",TpArrayString,
-		  "Observing log","","");
-	// OBSERVER
-	colMapDef(OBSERVER, "OBSERVER", TpString,
-		  "Name of observer(s)","","");
-	// PROJECT
-	colMapDef(PROJECT,"PROJECT",TpString,
-		  "Project identification string","","");
-	// RELEASE_DATE
-	colMapDef(RELEASE_DATE,"RELEASE_DATE",TpDouble,
-		  "Release date when data becomes public","s","Epoch");
-	// SCHEDULE
-	colMapDef(SCHEDULE,"SCHEDULE",TpArrayString,
-		  "Observing schedule","","");
-	// SCHEDULE_TYPE
-	colMapDef(SCHEDULE_TYPE,"SCHEDULE_TYPE",TpString,
-		  "Observing schedule type","","");
-	// TELESCOPE_NAME
-	colMapDef(TELESCOPE_NAME,"TELESCOPE_NAME",TpString,
-		  "Telescope Name (e.g. WSRT, VLBA)");
-	// TIME_RANGE
-	colMapDef(TIME_RANGE,"TIME_RANGE",TpArrayDouble,
-		  "Start and end of observation","s","Epoch");
-	// PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // FLAG_ROW
+  colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
+            "Row flag","","");
+  // LOG
+  colMapDef(LOG,"LOG",TpArrayString,
+            "Observing log","","");
+  // OBSERVER
+  colMapDef(OBSERVER, "OBSERVER", TpString,
+            "Name of observer(s)","","");
+  // PROJECT
+  colMapDef(PROJECT,"PROJECT",TpString,
+            "Project identification string","","");
+  // RELEASE_DATE
+  colMapDef(RELEASE_DATE,"RELEASE_DATE",TpDouble,
+            "Release date when data becomes public","s","Epoch");
+  // SCHEDULE
+  colMapDef(SCHEDULE,"SCHEDULE",TpArrayString,
+            "Observing schedule","","");
+  // SCHEDULE_TYPE
+  colMapDef(SCHEDULE_TYPE,"SCHEDULE_TYPE",TpString,
+            "Observing schedule type","","");
+  // TELESCOPE_NAME
+  colMapDef(TELESCOPE_NAME,"TELESCOPE_NAME",TpString,
+            "Telescope Name (e.g. WSRT, VLBA)");
+  // TIME_RANGE
+  colMapDef(TIME_RANGE,"TIME_RANGE",TpArrayDouble,
+            "Start and end of observation","s","Epoch");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-        // Define the columns with fixed size arrays
-        IPosition shape(1,2);
-        ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, TIME_RANGE, shape, option);
-	// Define the columns with known dimensionality
-	addColumnToDesc(requiredTD, LOG, 1);
-	addColumnToDesc(requiredTD, SCHEDULE, 1);
-	for (Int i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	for (Int i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSObservation::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  // Define the columns with fixed size arrays
+  IPosition shape(1,2);
+  ColumnDesc::Option option=ColumnDesc::Direct;
+  addColumnToDesc(requiredTD, TIME_RANGE, shape, option);
+  // Define the columns with known dimensionality
+  addColumnToDesc(requiredTD, LOG, 1);
+  addColumnToDesc(requiredTD, SCHEDULE, 1);
+  for (Int i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  for (Int i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

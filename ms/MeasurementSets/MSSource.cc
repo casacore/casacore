@@ -123,86 +123,88 @@ MSSource& MSSource::operator=(const MSSource &other)
     return *this;
 }
 
-void MSSource::init()
+void MSSource::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// CALIBRATION_GROUP 
-	colMapDef(CALIBRATION_GROUP, "CALIBRATION_GROUP", TpInt,
-		  "Number of grouping for calibration purpose.","","");
-	// CODE
-	colMapDef(CODE, "CODE", TpString,
-		  "Special characteristics of source, "
-		  "e.g. Bandpass calibrator","","");
-	// DIRECTION 
-	colMapDef(DIRECTION, "DIRECTION", TpArrayDouble,
-		  "Direction (e.g. RA, DEC).","rad","Direction");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Interval of time for which this set of parameters "
-		  "is accurate","s","");
-	// NAME
-	colMapDef(NAME, "NAME", TpString,
-		  "Name of source as given during observations","","");
-	// NUM_LINES
-	colMapDef(NUM_LINES, "NUM_LINES", TpInt,
-		  "Number of spectral lines","","");
-	// POSITION
-	colMapDef(POSITION, "POSITION", TpArrayDouble,
-		  "Position (e.g. for solar system objects",
-		  "m","Position");
-	// PROPER_MOTION
-	colMapDef(PROPER_MOTION, "PROPER_MOTION", TpArrayDouble,
-		  "Proper motion","rad/s","");
-	// PULSAR_ID
-	colMapDef(PULSAR_ID, "PULSAR_ID", TpInt,
-		  "Pulsar Id, pointer to pulsar table","","");
-	// REST_FREQUENCY
-	colMapDef(REST_FREQUENCY, "REST_FREQUENCY", TpArrayDouble,
-		  "Line rest frequency","Hz","Frequency");
-	// SOURCE_ID
-	colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
-		  "Source id","","");
-	// SOURCE_MODEL
-	colMapDef(SOURCE_MODEL, "SOURCE_MODEL", TpRecord,
-		  "Component Source Model","","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
-		  "ID for this spectral window setup","","");
-	// SYSVEL
-	colMapDef(SYSVEL, "SYSVEL", TpArrayDouble,
-		  "Systemic velocity at reference","m/s","Radialvelocity");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Midpoint of time for which this set of parameters "
-		  "is accurate.","s","Epoch");
-	// TRANSITION
-	colMapDef(TRANSITION, "TRANSITION", TpArrayString,
-		  "Line Transition name","","");
-	// PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // CALIBRATION_GROUP 
+  colMapDef(CALIBRATION_GROUP, "CALIBRATION_GROUP", TpInt,
+            "Number of grouping for calibration purpose.","","");
+  // CODE
+  colMapDef(CODE, "CODE", TpString,
+            "Special characteristics of source, "
+            "e.g. Bandpass calibrator","","");
+  // DIRECTION 
+  colMapDef(DIRECTION, "DIRECTION", TpArrayDouble,
+            "Direction (e.g. RA, DEC).","rad","Direction");
+  // INTERVAL
+  colMapDef(INTERVAL, "INTERVAL", TpDouble,
+            "Interval of time for which this set of parameters "
+            "is accurate","s","");
+  // NAME
+  colMapDef(NAME, "NAME", TpString,
+            "Name of source as given during observations","","");
+  // NUM_LINES
+  colMapDef(NUM_LINES, "NUM_LINES", TpInt,
+            "Number of spectral lines","","");
+  // POSITION
+  colMapDef(POSITION, "POSITION", TpArrayDouble,
+            "Position (e.g. for solar system objects",
+            "m","Position");
+  // PROPER_MOTION
+  colMapDef(PROPER_MOTION, "PROPER_MOTION", TpArrayDouble,
+            "Proper motion","rad/s","");
+  // PULSAR_ID
+  colMapDef(PULSAR_ID, "PULSAR_ID", TpInt,
+            "Pulsar Id, pointer to pulsar table","","");
+  // REST_FREQUENCY
+  colMapDef(REST_FREQUENCY, "REST_FREQUENCY", TpArrayDouble,
+            "Line rest frequency","Hz","Frequency");
+  // SOURCE_ID
+  colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
+            "Source id","","");
+  // SOURCE_MODEL
+  colMapDef(SOURCE_MODEL, "SOURCE_MODEL", TpRecord,
+            "Component Source Model","","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
+            "ID for this spectral window setup","","");
+  // SYSVEL
+  colMapDef(SYSVEL, "SYSVEL", TpArrayDouble,
+            "Systemic velocity at reference","m/s","Radialvelocity");
+  // TIME
+  colMapDef(TIME, "TIME", TpDouble,
+            "Midpoint of time for which this set of parameters "
+            "is accurate.","s","Epoch");
+  // TRANSITION
+  colMapDef(TRANSITION, "TRANSITION", TpArrayString,
+            "Line Transition name","","");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
+void MSSource::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
 	
-	// all required columns 
-	// First define the columns with fixed size arrays
-	IPosition shape(1,2);
-	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, DIRECTION, shape, option);
-	addColumnToDesc(requiredTD, PROPER_MOTION, shape, option);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // all required columns 
+  // First define the columns with fixed size arrays
+  IPosition shape(1,2);
+  ColumnDesc::Option option=ColumnDesc::Direct;
+  addColumnToDesc(requiredTD, DIRECTION, shape, option);
+  addColumnToDesc(requiredTD, PROPER_MOTION, shape, option);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

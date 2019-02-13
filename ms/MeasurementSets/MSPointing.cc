@@ -123,79 +123,81 @@ MSPointing& MSPointing::operator=(const MSPointing &other)
     return *this;
 }
 
-void MSPointing::init()
+void MSPointing::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA_ID
-	colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
-		  "Antenna Id","","");
-	// DIRECTION
-	colMapDef(DIRECTION, "DIRECTION", TpArrayDouble,
-		  "Antenna pointing direction as polynomial in time","rad"
-		  ,"Direction");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Time interval","s","");
-	// NAME
-	colMapDef(NAME, "NAME", TpString,
-		  "Pointing position name","","");
-	// NUM_POLY
-	colMapDef(NUM_POLY, "NUM_POLY", TpInt,
-		  "Series order","","");
-	// TARGET
-	colMapDef(TARGET, "TARGET", TpArrayDouble,
-		  "target direction as polynomial in time","rad"
-		  ,"Direction");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Time interval midpoint","s","Epoch");
-	// TIME_ORIGIN
-	colMapDef(TIME_ORIGIN, "TIME_ORIGIN", TpDouble,
-		  "Time origin for direction","s","Epoch");
-	// TRACKING
-	colMapDef(TRACKING, "TRACKING", TpBool,
-		  "Tracking flag - True if on position","","");
-	// ENCODER
-	colMapDef(ENCODER, "ENCODER", TpArrayDouble,
-		  "Encoder values","rad","Direction");
-	// ON_SOURCE
-	colMapDef(ON_SOURCE, "ON_SOURCE", TpBool,
-		  "On source flag","","");
-	// OVER_THE_TOP
-	colMapDef(OVER_THE_TOP, "OVER_THE_TOP", TpBool,
-		  "Antenna over the top","","");
-	// POINTING_MODEL_ID
-	colMapDef(POINTING_MODEL_ID,"POINTING_MODEL_ID",TpInt,
-		  "Pointing model id","","");
-	// POINTING_OFFSET
-	colMapDef(POINTING_OFFSET, "POINTING_OFFSET", TpArrayDouble,
-		  "A priori pointing correction as polynomial in time",
-		  "rad","Direction");
-	// SOURCE_OFFSET
-	colMapDef(SOURCE_OFFSET, "SOURCE_OFFSET", TpArrayDouble,
-		  "Offset from source as polynomial in time","rad","Direction");
-	// PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // ANTENNA_ID
+  colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
+            "Antenna Id","","");
+  // DIRECTION
+  colMapDef(DIRECTION, "DIRECTION", TpArrayDouble,
+            "Antenna pointing direction as polynomial in time","rad"
+            ,"Direction");
+  // INTERVAL
+  colMapDef(INTERVAL, "INTERVAL", TpDouble,
+            "Time interval","s","");
+  // NAME
+  colMapDef(NAME, "NAME", TpString,
+            "Pointing position name","","");
+  // NUM_POLY
+  colMapDef(NUM_POLY, "NUM_POLY", TpInt,
+            "Series order","","");
+  // TARGET
+  colMapDef(TARGET, "TARGET", TpArrayDouble,
+            "target direction as polynomial in time","rad"
+            ,"Direction");
+  // TIME
+  colMapDef(TIME, "TIME", TpDouble,
+            "Time interval midpoint","s","Epoch");
+  // TIME_ORIGIN
+  colMapDef(TIME_ORIGIN, "TIME_ORIGIN", TpDouble,
+            "Time origin for direction","s","Epoch");
+  // TRACKING
+  colMapDef(TRACKING, "TRACKING", TpBool,
+            "Tracking flag - True if on position","","");
+  // ENCODER
+  colMapDef(ENCODER, "ENCODER", TpArrayDouble,
+            "Encoder values","rad","Direction");
+  // ON_SOURCE
+  colMapDef(ON_SOURCE, "ON_SOURCE", TpBool,
+            "On source flag","","");
+  // OVER_THE_TOP
+  colMapDef(OVER_THE_TOP, "OVER_THE_TOP", TpBool,
+            "Antenna over the top","","");
+  // POINTING_MODEL_ID
+  colMapDef(POINTING_MODEL_ID,"POINTING_MODEL_ID",TpInt,
+            "Pointing model id","","");
+  // POINTING_OFFSET
+  colMapDef(POINTING_OFFSET, "POINTING_OFFSET", TpArrayDouble,
+            "A priori pointing correction as polynomial in time",
+            "rad","Direction");
+  // SOURCE_OFFSET
+  colMapDef(SOURCE_OFFSET, "SOURCE_OFFSET", TpArrayDouble,
+            "Offset from source as polynomial in time","rad","Direction");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	// First define the columns with known dimensionality
-	addColumnToDesc(requiredTD, DIRECTION, 2);
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSPointing::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  // First define the columns with known dimensionality
+  addColumnToDesc(requiredTD, DIRECTION, 2);
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

@@ -125,40 +125,42 @@ MSDataDescription& MSDataDescription::operator=(const MSDataDescription &other)
     return *this;
 }
 
-void MSDataDescription::init()
+void MSDataDescription::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-        // FLAG_ROW
-	colMapDef(FLAG_ROW,"FLAG_ROW", TpBool,
-		  "Flag this row","","");
-	// LAG_ID
-	colMapDef(LAG_ID,"LAG_ID",TpInt,"The lag index","","");
-	// POLARIZATION_ID
-	colMapDef(POLARIZATION_ID,"POLARIZATION_ID",TpInt,
-		  "Pointer to polarization table","","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
-		  "Pointer to spectralwindow table","","");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // FLAG_ROW
+  colMapDef(FLAG_ROW,"FLAG_ROW", TpBool,
+            "Flag this row","","");
+  // LAG_ID
+  colMapDef(LAG_ID,"LAG_ID",TpInt,"The lag index","","");
+  // POLARIZATION_ID
+  colMapDef(POLARIZATION_ID,"POLARIZATION_ID",TpInt,
+            "Pointer to polarization table","","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
+            "Pointer to spectralwindow table","","");
 
-	// PredefinedKeywords
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSDataDescription::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

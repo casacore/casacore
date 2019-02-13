@@ -123,86 +123,88 @@ MSFeed& MSFeed::operator=(const MSFeed &other)
     return *this;
 }
 
-void MSFeed::init()
+void MSFeed::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA_ID
-	colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
-		  "ID of antenna in this array","","");
-	// BEAM_ID
-	colMapDef(BEAM_ID,"BEAM_ID",TpInt,
-		  "Id for BEAM model","","");
-	// BEAM_OFFSET
-	colMapDef(BEAM_OFFSET,"BEAM_OFFSET",TpArrayDouble,
-		  "Beam position offset (on sky but in antenna"
-		  "reference frame)","rad","Direction");
-	// FEED_ID
-	colMapDef(FEED_ID,"FEED_ID",TpInt,
-		  "Feed id","","");
-	// FOCUS_LENGTH
-	colMapDef(FOCUS_LENGTH,"FOCUS_LENGTH",TpDouble,
-		  "Focus length","m","");
-	// INTERVAL
-	colMapDef(INTERVAL,"INTERVAL",TpDouble,
-		  "Interval for which this set of parameters is accurate",
-		  "s","");
-	// NUM_RECEPTORS
-	colMapDef(NUM_RECEPTORS,"NUM_RECEPTORS",TpInt,
-		  "Number of receptors on this feed (probably 1 or 2)","","");
-	// PHASED_FEED_ID
-	colMapDef(PHASED_FEED_ID,"PHASED_FEED_ID",TpInt,
-		  "index into PHASED_FEED table (ignore if<0)","","");
-	// POL_RESPONSE
-	colMapDef(POL_RESPONSE,"POL_RESPONSE",TpArrayComplex,
-		  "D-matrix i.e. leakage between two receptors","","");
-	// POLARIZATION_TYPE
-	colMapDef(POLARIZATION_TYPE,"POLARIZATION_TYPE",TpArrayString,
-		  "Type of polarization to which a given RECEPTOR responds",
-		  "","");
-	// POSITION
-	colMapDef(POSITION,"POSITION",TpArrayDouble,
-		  "Position of feed relative to feed reference position",
-		  "m","Position");
-	// RECEPTOR_ANGLE
-	colMapDef(RECEPTOR_ANGLE,"RECEPTOR_ANGLE",TpArrayDouble,
-		  "The reference angle for polarization","rad","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
-		  "ID for this spectral window setup","","");
-	// TIME
-	colMapDef(TIME,"TIME",TpDouble,
-		  "Midpoint of time for which this set of "
-		  "parameters is accurate","s","Epoch");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // ANTENNA_ID
+  colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
+            "ID of antenna in this array","","");
+  // BEAM_ID
+  colMapDef(BEAM_ID,"BEAM_ID",TpInt,
+            "Id for BEAM model","","");
+  // BEAM_OFFSET
+  colMapDef(BEAM_OFFSET,"BEAM_OFFSET",TpArrayDouble,
+            "Beam position offset (on sky but in antenna"
+            "reference frame)","rad","Direction");
+  // FEED_ID
+  colMapDef(FEED_ID,"FEED_ID",TpInt,
+            "Feed id","","");
+  // FOCUS_LENGTH
+  colMapDef(FOCUS_LENGTH,"FOCUS_LENGTH",TpDouble,
+            "Focus length","m","");
+  // INTERVAL
+  colMapDef(INTERVAL,"INTERVAL",TpDouble,
+            "Interval for which this set of parameters is accurate",
+            "s","");
+  // NUM_RECEPTORS
+  colMapDef(NUM_RECEPTORS,"NUM_RECEPTORS",TpInt,
+            "Number of receptors on this feed (probably 1 or 2)","","");
+  // PHASED_FEED_ID
+  colMapDef(PHASED_FEED_ID,"PHASED_FEED_ID",TpInt,
+            "index into PHASED_FEED table (ignore if<0)","","");
+  // POL_RESPONSE
+  colMapDef(POL_RESPONSE,"POL_RESPONSE",TpArrayComplex,
+            "D-matrix i.e. leakage between two receptors","","");
+  // POLARIZATION_TYPE
+  colMapDef(POLARIZATION_TYPE,"POLARIZATION_TYPE",TpArrayString,
+            "Type of polarization to which a given RECEPTOR responds",
+            "","");
+  // POSITION
+  colMapDef(POSITION,"POSITION",TpArrayDouble,
+            "Position of feed relative to feed reference position",
+            "m","Position");
+  // RECEPTOR_ANGLE
+  colMapDef(RECEPTOR_ANGLE,"RECEPTOR_ANGLE",TpArrayDouble,
+            "The reference angle for polarization","rad","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
+            "ID for this spectral window setup","","");
+  // TIME
+  colMapDef(TIME,"TIME",TpDouble,
+            "Midpoint of time for which this set of "
+            "parameters is accurate","s","Epoch");
+  
+  // PredefinedKeywords
+}
 
-	// PredefinedKeywords
-
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// First define the columns with fixed size arrays
-	IPosition shape(1,3);
-	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, POSITION, shape, option);
-	// define the columns with known dimensionality
-	addColumnToDesc(requiredTD, BEAM_OFFSET, 2);
-	addColumnToDesc(requiredTD, POLARIZATION_TYPE, 1);
-	addColumnToDesc(requiredTD, POL_RESPONSE, 2);
-	addColumnToDesc(requiredTD, RECEPTOR_ANGLE, 1);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSFeed::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  // First define the columns with fixed size arrays
+  IPosition shape(1,3);
+  ColumnDesc::Option option=ColumnDesc::Direct;
+  addColumnToDesc(requiredTD, POSITION, shape, option);
+  // define the columns with known dimensionality
+  addColumnToDesc(requiredTD, BEAM_OFFSET, 2);
+  addColumnToDesc(requiredTD, POLARIZATION_TYPE, 1);
+  addColumnToDesc(requiredTD, POL_RESPONSE, 2);
+  addColumnToDesc(requiredTD, RECEPTOR_ANGLE, 1);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 MSFeed MSFeed::referenceCopy(const String& newTableName, 

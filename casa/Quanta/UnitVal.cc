@@ -70,12 +70,12 @@ UnitVal::UnitVal(const UnitVal &other) :
   kindFactor(other.kindFactor),
   kindDim(other.kindDim) {}
 
-UnitVal::UnitVal(Double factor, const String& s) :
+UnitVal::UnitVal(Double factor, const String& s, UMaps* maps) :
   kindFactor(1.),
   kindDim() {
   if (UnitMap::getCache(s,*this)) {
     kindFactor *= factor;
-  } else if (UnitVal::create(s,*this)) {
+  } else if (UnitVal::create(s, *this, maps)) {
     UnitMap::putCache(s,*this);
     kindFactor *= factor;
   } else {
@@ -180,12 +180,12 @@ Bool UnitVal::check(const String &s, UnitVal &loc) {
   return True;
 }
 
-Bool UnitVal::create(const String &s, UnitVal &res) {
+Bool UnitVal::create(const String &s, UnitVal &res, UMaps* maps) {
   MUString str(s);			// non-const copy
-  return create(str, res);
+  return create(str, res, maps);
 }
 
-Bool UnitVal::create(MUString &str, UnitVal &res) {
+Bool UnitVal::create(MUString &str, UnitVal &res, UMaps* maps) {
   UnitVal kind;
   Int ptr = str.getPtr();
   if (str.eos()) return True;
@@ -193,14 +193,14 @@ Bool UnitVal::create(MUString &str, UnitVal &res) {
   if (str.eos()) return True;
   if (str.testChar('(')) {
     if (!str.matchPair(')')) return False;
-    if (!UnitVal::create(str.lastGet(), kind)) return False;
+    if (!UnitVal::create(str.lastGet(), kind, maps)) return False;
   } else {
-    if (!UnitVal::field(str, kind)) return False;
+    if (!UnitVal::field(str, kind, maps)) return False;
   }
   ps *= UnitVal::power(str);			// full power
   if (str.getPtr() == ptr) return False;	// must have been error
   res *= kind.pow(ps);
-  return UnitVal::create(str,res) ;		// add next part
+  return UnitVal::create(str, res, maps);       // add next part
 }
 
 Int UnitVal::psign(MUString& str) {
@@ -221,7 +221,7 @@ Int UnitVal::power(MUString &str) {
   return (lp == 0 ? lc : lc * lp);
 }
 
-Bool UnitVal::field(MUString &str, UnitVal &res) {
+Bool UnitVal::field(MUString &str, UnitVal &res, UMaps* maps) {
   static const Regex un1("[a-zA-Z_\"'$:%]");
   static const Regex un2("[a-zA-Z_0\"'$:%]");
   UnitName loc;
@@ -235,13 +235,13 @@ Bool UnitVal::field(MUString &str, UnitVal &res) {
   String key = str.get(wh, str.getPtr());
   if (key.length() == 0) { res = loc.getVal(); return True;}
   if (UnitMap::getCache(key,res)) return True;
-  if (UnitMap::getUnit(key,loc)) { res = loc.getVal(); return True;}
-  if (key.length() > 1 && UnitMap::getPref(key(0,1), loc)) {
+  if (UnitMap::getUnit(key,loc,maps)) { res = loc.getVal(); return True;}
+  if (key.length() > 1 && UnitMap::getPref(key(0,1), loc, maps)) {
     UnitName loc1 = UnitName();
-    if (UnitMap::getUnit(key.from(1), loc1)) {
+    if (UnitMap::getUnit(key.from(1), loc1, maps)) {
       res = (loc.getVal() * loc1.getVal()); return True;
     } else if ( key.length() > 2 && UnitMap::getPref(key(0,2),loc)) {
-      if (UnitMap::getUnit(key.from(2), loc1)) {
+      if (UnitMap::getUnit(key.from(2), loc1, maps)) {
 	res = (loc.getVal() * loc1.getVal()); return True;
       }
     }

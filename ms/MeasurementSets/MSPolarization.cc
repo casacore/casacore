@@ -123,45 +123,47 @@ MSPolarization& MSPolarization::operator=(const MSPolarization &other)
     return *this;
 }
 
-void MSPolarization::init()
+void MSPolarization::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// CORR_PRODUCT
-	colMapDef(CORR_PRODUCT, "CORR_PRODUCT", TpArrayInt,
-		  "Indices describing receptors of feed going into correlation","","");
-	// CORR_TYPE
-	colMapDef(CORR_TYPE, "CORR_TYPE", TpArrayInt,
-		  "The polarization type for each correlation product,"
-		  " as a Stokes enum.","","");
-	// FLAG_ROW
-	colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
-		  "Row flag","","");
-	// NUM_CORR
-	colMapDef(NUM_CORR, "NUM_CORR", TpInt,
-		  "Number of correlation products","","");
-	// PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // CORR_PRODUCT
+  colMapDef(CORR_PRODUCT, "CORR_PRODUCT", TpArrayInt,
+            "Indices describing receptors of feed going into correlation","","");
+  // CORR_TYPE
+  colMapDef(CORR_TYPE, "CORR_TYPE", TpArrayInt,
+            "The polarization type for each correlation product,"
+            " as a Stokes enum.","","");
+  // FLAG_ROW
+  colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
+            "Row flag","","");
+  // NUM_CORR
+  colMapDef(NUM_CORR, "NUM_CORR", TpInt,
+            "Number of correlation products","","");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
+void MSPolarization::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
 	
-	// all required columns 
-	// First define the columns with known dimensionality
-	addColumnToDesc(requiredTD, CORR_TYPE, 1);
-	addColumnToDesc(requiredTD, CORR_PRODUCT, 2);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // all required columns 
+  // First define the columns with known dimensionality
+  addColumnToDesc(requiredTD, CORR_TYPE, 1);
+  addColumnToDesc(requiredTD, CORR_PRODUCT, 2);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

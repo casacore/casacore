@@ -123,51 +123,53 @@ MSFreqOffset& MSFreqOffset::operator=(const MSFreqOffset &other)
     return *this;
 }
 
-void MSFreqOffset::init()
+void MSFreqOffset::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA1
-	colMapDef(ANTENNA1, "ANTENNA1", TpInt,
-		  "Antenna1 id","","");
-	// ANTENNA2
-	colMapDef(ANTENNA2, "ANTENNA2", TpInt,
-		  "Antenna2 id","","");
-	// FEED_ID
-	colMapDef(FEED_ID, "FEED_ID", TpInt,
-		  "Feed id","","");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Time interval","s","");
-	// OFFSET
-	colMapDef(OFFSET, "OFFSET", TpDouble,
-		  "Frequency offset - antenna based","Hz","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
-		  "Spectral window id","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Midpoint of interval","s","Epoch");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // ANTENNA1
+  colMapDef(ANTENNA1, "ANTENNA1", TpInt,
+            "Antenna1 id","","");
+  // ANTENNA2
+  colMapDef(ANTENNA2, "ANTENNA2", TpInt,
+            "Antenna2 id","","");
+  // FEED_ID
+  colMapDef(FEED_ID, "FEED_ID", TpInt,
+            "Feed id","","");
+  // INTERVAL
+  colMapDef(INTERVAL, "INTERVAL", TpDouble,
+            "Time interval","s","");
+  // OFFSET
+  colMapDef(OFFSET, "OFFSET", TpDouble,
+            "Frequency offset - antenna based","Hz","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
+            "Spectral window id","","");
+  // TIME
+  colMapDef(TIME, "TIME", TpDouble,
+            "Midpoint of interval","s","Epoch");
+  
+  // PredefinedKeywords
+}
 
-	// PredefinedKeywords
-
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSFreqOffset::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

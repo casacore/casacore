@@ -60,10 +60,14 @@
 #include <casacore/measures/Measures/MEarthMagnetic.h>
 
 #include <casacore/casa/iostream.h>
-#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+// Initialize statics.
+CallOnce0 MSTableImpl::onceInitMap_p;
+CallOnce0 MSTableImpl::onceInitDesc_p;
+
+  
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {
   String meas = measure;
@@ -110,15 +114,15 @@ void MSTableImpl::addMeasColumn(TableDesc& td, const String& column,
   }
 }
 
-Int MSTableImpl::mapType(const SimpleOrderedMap<Int,String>& columnMap,
+Int MSTableImpl::mapType(const std::map<Int,String>& columnMap,
 			 const String &name)
 {
     // find first occurrance of name in the map (must be only occurrance)
  
     Int type = 0; //# 0=UNDEFINED_COLUMN for all enums
-    for (uInt i=0; i<columnMap.ndefined(); i++) {
-        if (columnMap.getVal(i) == name) {
-            type = columnMap.getKey(i);
+    for (auto kv : columnMap) {
+        if (kv.second == name) {
+          type = kv.first;
             break;
         }
     }
@@ -434,11 +438,11 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
   return newtab;
 }
 
-void MSTableImpl::colMapDef(SimpleOrderedMap<Int,String>& columnMap,
-			    SimpleOrderedMap<Int,Int>& colDTypeMap,
-			    SimpleOrderedMap<Int,String>& colCommentMap,
-			    SimpleOrderedMap<Int,String>& colUnitMap,
-			    SimpleOrderedMap<Int,String>& colMeasureTypeMap,
+void MSTableImpl::colMapDef(std::map<Int,String>& columnMap,
+			    std::map<Int,Int>& colDTypeMap,
+			    std::map<Int,String>& colCommentMap,
+			    std::map<Int,String>& colUnitMap,
+			    std::map<Int,String>& colMeasureTypeMap,
 			    Int col,
 			    const String& colName,
 			    Int colType,
@@ -446,26 +450,26 @@ void MSTableImpl::colMapDef(SimpleOrderedMap<Int,String>& columnMap,
 			    const String& colUnit,
 			    const String& colMeasureType)
 {
-    columnMap.define(col, colName);
-    colDTypeMap.define(col, colType);
-    colCommentMap.define(col, colComment);
+    columnMap[col] = colName;
+    colDTypeMap[col] = colType;
+    colCommentMap[col] = colComment;
     // no need to define these unless they are different from the
     // default, which is an empty string
-    if (colUnit != "") colUnitMap.define(col, colUnit);
-    if (colMeasureType != "") colMeasureTypeMap.define(col, colMeasureType);
+    if (colUnit != "") colUnitMap[col] = colUnit;
+    if (colMeasureType != "") colMeasureTypeMap[col] = colMeasureType;
 }
 
-void MSTableImpl::keyMapDef(SimpleOrderedMap<Int,String>& keywordMap,
-			    SimpleOrderedMap<Int,Int>& keyDTypeMap,
-			    SimpleOrderedMap<Int,String>& keyCommentMap,
+void MSTableImpl::keyMapDef(std::map<Int,String>& keywordMap,
+			    std::map<Int,Int>& keyDTypeMap,
+			    std::map<Int,String>& keyCommentMap,
 			    Int key,
 			    const String& keyName,
 			    Int keyType,
 			    const String& keyComment)
 {
-    keywordMap.define(key, keyName);
-    keyDTypeMap.define(key, keyType);
-    keyCommentMap.define(key, keyComment);
+    keywordMap[key] = keyName;
+    keyDTypeMap[key] = keyType;
+    keyCommentMap[key] = keyComment;
 }
 
 Bool MSTableImpl::validate(const TableDesc& tabDesc, 
@@ -564,55 +568,61 @@ Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName,
   return msTab;
 }
 
+void MSTableImpl::initMap()
+{
+  onceInitMap_p(doInitMap);
+}
+
 void MSTableImpl::init()
 {
-  // Recursive mutex for recursive map inits. Always locks in pre-C++11 builds.
-  // Need C++11 or later to implement double checked locking correctly.
-#if defined(USE_THREADS)
-  static std::recursive_mutex umMutex;
-  static std::atomic<int> initialized;
-  // Cannot use call_once() (recursion), so distinguish between init states.
-  const int INITING = 1;
-  const int INITIALIZED = 2;
+  onceInitMap_p(doInitMap);
+  onceInitDesc_p(doInitDesc);
+}
 
-  int init = initialized.load(std::memory_order_acquire);
-  if (init < INITIALIZED) {
-    std::lock_guard<std::recursive_mutex> lock(umMutex);
-    init = initialized.load(std::memory_order_relaxed);
-    if (init < INITING) {
-      // Set initialized, because the init() calls below recurse into this init().
-      // Note: lacks exception safety.
-      initialized.store(INITING, std::memory_order_relaxed);
-#else // !USE_THREADS
-    static bool initialized = false;
+void MSTableImpl::doInitMap()
+{
+  // Initialize column/keyword maps
+  MeasurementSet::initMap();
+  MSAntenna::initMap();
+  MSDataDescription::initMap();
+  MSDoppler::initMap();
+  MSFeed::initMap();
+  MSField::initMap();
+  MSFlagCmd::initMap();
+  MSFreqOffset::initMap();
+  MSHistory::initMap();
+  MSObservation::initMap();
+  MSPointing::initMap();
+  MSPolarization::initMap();
+  MSProcessor::initMap();
+  MSSource::initMap();
+  MSSpectralWindow::initMap();
+  MSState::initMap();
+  MSSysCal::initMap();
+  MSWeather::initMap();
+}
 
-    if (!initialized) {
-      initialized = true;
-#endif
-      // Initialize (sub)tables
-      MeasurementSet::init();
-      MSAntenna::init();
-      MSDataDescription::init();
-      MSDoppler::init();
-      MSFeed::init();
-      MSField::init();
-      MSFlagCmd::init();
-      MSFreqOffset::init();
-      MSHistory::init();
-      MSObservation::init();
-      MSPointing::init();
-      MSPolarization::init();
-      MSProcessor::init();
-      MSSource::init();
-      MSSpectralWindow::init();
-      MSState::init();
-      MSSysCal::init();
-      MSWeather::init();
-#if defined(USE_THREADS)
-      initialized.store(INITIALIZED, std::memory_order_release);
-    }
-#endif
-  }
+void MSTableImpl::doInitDesc()
+{
+  // Initialize (sub)table descriptions
+  MeasurementSet::initDesc();
+  MSAntenna::initDesc();
+  MSDataDescription::initDesc();
+  MSDoppler::initDesc();
+  MSFeed::initDesc();
+  MSField::initDesc();
+  MSFlagCmd::initDesc();
+  MSFreqOffset::initDesc();
+  MSHistory::initDesc();
+  MSObservation::initDesc();
+  MSPointing::initDesc();
+  MSPolarization::initDesc();
+  MSProcessor::initDesc();
+  MSSource::initDesc();
+  MSSpectralWindow::initDesc();
+  MSState::initDesc();
+  MSSysCal::initDesc();
+  MSWeather::initDesc();
 }
 
 

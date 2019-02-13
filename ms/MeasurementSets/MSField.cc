@@ -125,68 +125,70 @@ MSField& MSField::operator=(const MSField &other)
     return *this;
 }
 
-void MSField::init()
+void MSField::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// CODE
-	colMapDef(CODE, "CODE", TpString,
-		  "Special characteristics of field, "
-		  "e.g. Bandpass calibrator","","");
-	// DELAY_DIR
-	colMapDef(DELAY_DIR, "DELAY_DIR", TpArrayDouble,
-		  "Direction of delay center (e.g. RA, DEC)" 
-		  "as polynomial in time.","rad","Direction");
-	// EPHEMERIS_ID
-	colMapDef(EPHEMERIS_ID,"EPHEMERIS_ID", TpInt,
-		  "Ephemeris id, pointer to EPHEMERIS table","","");
-	// FLAG_ROW
-	colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
-		  "Row Flag","","");
-	// NAME
-	colMapDef(NAME, "NAME", TpString,
-		  "Name of this field","","");
-	// NUM_POLY
-	colMapDef(NUM_POLY, "NUM_POLY", TpInt,
-		  "Polynomial order of _DIR columns","","");
-	// PHASE_DIR 
-	colMapDef(PHASE_DIR, "PHASE_DIR", TpArrayDouble,
-		  "Direction of phase center (e.g. RA, DEC).",
-		  "rad","Direction");
-	// REFERENCE_DIR 
-	colMapDef(REFERENCE_DIR, "REFERENCE_DIR", TpArrayDouble,
-		  "Direction of REFERENCE center (e.g. RA, DEC)."
-		  "as polynomial in time.","rad","Direction");
-	// SOURCE_ID
-	colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
-		  "Source id","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Time origin for direction and rate","s","Epoch");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // CODE
+  colMapDef(CODE, "CODE", TpString,
+            "Special characteristics of field, "
+            "e.g. Bandpass calibrator","","");
+  // DELAY_DIR
+  colMapDef(DELAY_DIR, "DELAY_DIR", TpArrayDouble,
+            "Direction of delay center (e.g. RA, DEC)" 
+            "as polynomial in time.","rad","Direction");
+  // EPHEMERIS_ID
+  colMapDef(EPHEMERIS_ID,"EPHEMERIS_ID", TpInt,
+            "Ephemeris id, pointer to EPHEMERIS table","","");
+  // FLAG_ROW
+  colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
+            "Row Flag","","");
+  // NAME
+  colMapDef(NAME, "NAME", TpString,
+            "Name of this field","","");
+  // NUM_POLY
+  colMapDef(NUM_POLY, "NUM_POLY", TpInt,
+            "Polynomial order of _DIR columns","","");
+  // PHASE_DIR 
+  colMapDef(PHASE_DIR, "PHASE_DIR", TpArrayDouble,
+            "Direction of phase center (e.g. RA, DEC).",
+            "rad","Direction");
+  // REFERENCE_DIR 
+  colMapDef(REFERENCE_DIR, "REFERENCE_DIR", TpArrayDouble,
+            "Direction of REFERENCE center (e.g. RA, DEC)."
+            "as polynomial in time.","rad","Direction");
+  // SOURCE_ID
+  colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
+            "Source id","","");
+  // TIME
+  colMapDef(TIME, "TIME", TpDouble,
+            "Time origin for direction and rate","s","Epoch");
+  
+  // PredefinedKeywords
+}
 
-	// PredefinedKeywords
-
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// First define the columns with known dimensionality
-	addColumnToDesc(requiredTD, DELAY_DIR, 2);
-	addColumnToDesc(requiredTD, PHASE_DIR, 2);
-	addColumnToDesc(requiredTD, REFERENCE_DIR, 2);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSField::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  // First define the columns with known dimensionality
+  addColumnToDesc(requiredTD, DELAY_DIR, 2);
+  addColumnToDesc(requiredTD, PHASE_DIR, 2);
+  addColumnToDesc(requiredTD, REFERENCE_DIR, 2);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

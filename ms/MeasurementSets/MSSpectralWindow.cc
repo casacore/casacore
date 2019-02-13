@@ -124,106 +124,106 @@ MSSpectralWindow& MSSpectralWindow::operator=(const MSSpectralWindow &other)
     return *this;
 }
 
-void MSSpectralWindow::init()
+void MSSpectralWindow::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-      // the PredefinedColumns
-      // 
-      // ASSOC_NATURE
-      colMapDef(ASSOC_NATURE,"ASSOC_NATURE", TpArrayString,
-		"Nature of association with other spectral window","","");
-      // ASSOC_SPW_ID
-      colMapDef(ASSOC_SPW_ID,"ASSOC_SPW_ID",TpArrayInt,
-		"Associated spectral window id","","");
-      // BBC_NO
-      colMapDef(BBC_NO,"BBC_NO",TpInt,
-		"Baseband converter number","","");
-      // BBC_SIDEBAND
-      colMapDef(BBC_SIDEBAND,"BBC_SIDEBAND",TpInt,
-		"BBC sideband","","");
-      // CHAN_FREQ
-      colMapDef(CHAN_FREQ,"CHAN_FREQ", TpArrayDouble,
-		"Center frequencies for each channel in the data matrix",
-		"Hz","Frequency");
-      // CHAN_WIDTH
-      colMapDef(CHAN_WIDTH,"CHAN_WIDTH",TpArrayDouble,
-		"Channel width for each channel","Hz","");
-      // DOPPLER_ID
-      colMapDef(DOPPLER_ID,"DOPPLER_ID",TpInt,
-		"Doppler Id, points to DOPPLER table","","");
-      // EFFECTIVE_BW
-      colMapDef(EFFECTIVE_BW,"EFFECTIVE_BW",TpArrayDouble,
-		"Effective noise bandwidth of each channel","Hz","");
-      // FLAG_ROW
-      colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
-		"Row flag","","");
-      // FREQ_GROUP
-      colMapDef(FREQ_GROUP,"FREQ_GROUP",TpInt,
-		"Frequency group","","");
-      // FREQ_GROUP_NAME
-      colMapDef(FREQ_GROUP_NAME,"FREQ_GROUP_NAME",TpString,
-		"Frequency group name","","");
-      // IF_CONV_CHAIN
-      colMapDef(IF_CONV_CHAIN, "IF_CONV_CHAIN", TpInt,
-		"The IF conversion chain number","","");
-      // MEAS_FREQ_REF
-      colMapDef(MEAS_FREQ_REF,"MEAS_FREQ_REF",TpInt,
-		"Frequency Measure reference","","");
-      // NAME
-      colMapDef(NAME,"NAME",TpString,
-		"Spectral window name","","");
-      // NET_SIDEBAND
-      colMapDef(NET_SIDEBAND,"NET_SIDEBAND",TpInt,
-		"Net sideband","","");
-      // NUM_CHAN
-      colMapDef(NUM_CHAN, "NUM_CHAN", TpInt,
-		"Number of spectral channels","","");
-      // RECEIVER_ID
-      colMapDef(RECEIVER_ID,"RECEIVER_ID",TpInt,
-		"Receiver Id for this spectral window","","");
-      // REF_FREQUENCY
-      colMapDef(REF_FREQUENCY, "REF_FREQUENCY", TpDouble,
-		"The reference frequency",
-		"Hz","Frequency");
-      // RESOLUTION
-      colMapDef(RESOLUTION, "RESOLUTION", TpArrayDouble,
-		"The effective noise bandwidth for each channel",
-		"Hz","");
-      // TOTAL_BANDWIDTH
-      colMapDef(TOTAL_BANDWIDTH, "TOTAL_BANDWIDTH", TpDouble,
-		"The total bandwidth for this window","Hz","");
-      // PredefinedKeywords
-      
-      // init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // 
+  // ASSOC_NATURE
+  colMapDef(ASSOC_NATURE,"ASSOC_NATURE", TpArrayString,
+            "Nature of association with other spectral window","","");
+  // ASSOC_SPW_ID
+  colMapDef(ASSOC_SPW_ID,"ASSOC_SPW_ID",TpArrayInt,
+            "Associated spectral window id","","");
+  // BBC_NO
+  colMapDef(BBC_NO,"BBC_NO",TpInt,
+            "Baseband converter number","","");
+  // BBC_SIDEBAND
+  colMapDef(BBC_SIDEBAND,"BBC_SIDEBAND",TpInt,
+            "BBC sideband","","");
+  // CHAN_FREQ
+  colMapDef(CHAN_FREQ,"CHAN_FREQ", TpArrayDouble,
+            "Center frequencies for each channel in the data matrix",
+            "Hz","Frequency");
+  // CHAN_WIDTH
+  colMapDef(CHAN_WIDTH,"CHAN_WIDTH",TpArrayDouble,
+            "Channel width for each channel","Hz","");
+  // DOPPLER_ID
+  colMapDef(DOPPLER_ID,"DOPPLER_ID",TpInt,
+            "Doppler Id, points to DOPPLER table","","");
+  // EFFECTIVE_BW
+  colMapDef(EFFECTIVE_BW,"EFFECTIVE_BW",TpArrayDouble,
+            "Effective noise bandwidth of each channel","Hz","");
+  // FLAG_ROW
+  colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
+            "Row flag","","");
+  // FREQ_GROUP
+  colMapDef(FREQ_GROUP,"FREQ_GROUP",TpInt,
+            "Frequency group","","");
+  // FREQ_GROUP_NAME
+  colMapDef(FREQ_GROUP_NAME,"FREQ_GROUP_NAME",TpString,
+            "Frequency group name","","");
+  // IF_CONV_CHAIN
+  colMapDef(IF_CONV_CHAIN, "IF_CONV_CHAIN", TpInt,
+            "The IF conversion chain number","","");
+  // MEAS_FREQ_REF
+  colMapDef(MEAS_FREQ_REF,"MEAS_FREQ_REF",TpInt,
+            "Frequency Measure reference","","");
+  // NAME
+  colMapDef(NAME,"NAME",TpString,
+            "Spectral window name","","");
+  // NET_SIDEBAND
+  colMapDef(NET_SIDEBAND,"NET_SIDEBAND",TpInt,
+            "Net sideband","","");
+  // NUM_CHAN
+  colMapDef(NUM_CHAN, "NUM_CHAN", TpInt,
+            "Number of spectral channels","","");
+  // RECEIVER_ID
+  colMapDef(RECEIVER_ID,"RECEIVER_ID",TpInt,
+            "Receiver Id for this spectral window","","");
+  // REF_FREQUENCY
+  colMapDef(REF_FREQUENCY, "REF_FREQUENCY", TpDouble,
+            "The reference frequency",
+            "Hz","Frequency");
+  // RESOLUTION
+  colMapDef(RESOLUTION, "RESOLUTION", TpArrayDouble,
+            "The effective noise bandwidth for each channel",
+            "Hz","");
+  // TOTAL_BANDWIDTH
+  colMapDef(TOTAL_BANDWIDTH, "TOTAL_BANDWIDTH", TpDouble,
+            "The total bandwidth for this window","Hz","");
+  // PredefinedKeywords
+}
+
+void MSSpectralWindow::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
 	
-	// all required columns 
+  // all required columns 
 
-	// set up the TableMeasure columns with variable reference
-	// first add the variable ref column
-	addColumnToDesc(requiredTD, MEAS_FREQ_REF);
-	addColumnToDesc(requiredTD, CHAN_FREQ,1,"MEAS_FREQ_REF");
-	addColumnToDesc(requiredTD, REF_FREQUENCY,-1,"MEAS_FREQ_REF");
+  // set up the TableMeasure columns with variable reference
+  // first add the variable ref column
+  addColumnToDesc(requiredTD, MEAS_FREQ_REF);
+  addColumnToDesc(requiredTD, CHAN_FREQ,1,"MEAS_FREQ_REF");
+  addColumnToDesc(requiredTD, REF_FREQUENCY,-1,"MEAS_FREQ_REF");
 
-	// define columns with known dimensionality
-	addColumnToDesc(requiredTD, CHAN_WIDTH,1);
-	addColumnToDesc(requiredTD, EFFECTIVE_BW,1);
-	addColumnToDesc(requiredTD, RESOLUTION,1);
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
+  // define columns with known dimensionality
+  addColumnToDesc(requiredTD, CHAN_WIDTH,1);
+  addColumnToDesc(requiredTD, EFFECTIVE_BW,1);
+  addColumnToDesc(requiredTD, RESOLUTION,1);
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
 
-
-	requiredTD_p=new TableDesc(requiredTD);
-	
-    }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

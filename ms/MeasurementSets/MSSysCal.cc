@@ -124,109 +124,111 @@ MSSysCal& MSSysCal::operator=(const MSSysCal &other)
     return *this;
 }
 
-void MSSysCal::init()
+void MSSysCal::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA_ID
-	colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
-		  "ID of antenna in this array","","");
-	// FEED_ID
-	colMapDef(FEED_ID,"FEED_ID",TpInt,
-		  "Feed id","","");
-	// INTERVAL
-	colMapDef(INTERVAL,"INTERVAL",TpDouble,
-		  "Interval for which this set of parameters is accurate",
-		  "s","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
-		  "ID for this spectral window setup","","");
-	// TIME
-	colMapDef(TIME,"TIME",TpDouble,
-		  "Midpoint of time for which this set of "
-		  "parameters is accurate","s","Epoch");
-	// PHASE_DIFF
-	colMapDef(PHASE_DIFF,"PHASE_DIFF",TpFloat,
-		  "Phase difference between receptor 2 and receptor 1",
-		  "rad","");
-	// PHASE_DIFF_FLAG
-	colMapDef(PHASE_DIFF_FLAG,"PHASE_DIFF_FLAG",TpBool,
-		  "Flag for PHASE_DIFF","","");
-	// TANT
-	colMapDef(TANT,"TANT",TpArrayFloat,
-		  "Antenna temperature for each receptor","K","");
-	// TANT_FLAG
-	colMapDef(TANT_FLAG,"TANT_FLAG",TpBool,
-		  "Flag for TANT","","");
-	// TANT_SPECTRUM
-	colMapDef(TANT_SPECTRUM,"TANT_SPECTRUM",TpArrayFloat,
-		  "Antenna temperature for each channel and receptor","K","");
-	// TANT_TSYS
-	colMapDef(TANT_TSYS,"TANT_TSYS",TpArrayFloat,
-		  "Ratio of Antenna & system temperature for each receptor",
-		  "","");
-	// TANT_TSYS_FLAG
-	colMapDef(TANT_TSYS_FLAG,"TANT_TSYS_FLAG",TpBool,
-		  "Flag for TANT_TSYS","","");
-	// TANT_TSYS_SPECTRUM
-	colMapDef(TANT_TSYS_SPECTRUM,"TANT_TSYS_SPECTRUM",TpArrayFloat,
-		  "Ratio of Antenna & system temperature for each channel "
-		  "and receptor","","");
-	// TCAL
-	colMapDef(TCAL,"TCAL",TpArrayFloat,
-		  "Calibration temperature for each receptor","K","");
-	// TCAL_FLAG
-	colMapDef(TCAL_FLAG,"TCAL_FLAG",TpBool,
-		  "Flag for TCAL","","");
-	// TCAL_SPECTRUM
-	colMapDef(TCAL_SPECTRUM,"TCAL_SPECTRUM",TpArrayFloat,
-		  "Calibration temperature for each channel and receptor","K","");
-	// TRX 
-	colMapDef(TRX,"TRX",TpArrayFloat,
-		  "Receiver temperature for each of the two receptors","K","");
-	// TRX_FLAG
-	colMapDef(TRX_FLAG,"TRX_FLAG",TpBool,
-		  "Flag for TRX","","");
-	// TRX_SPECTRUM
-	colMapDef(TRX_SPECTRUM,"TRX_SPECTRUM",TpArrayFloat,
-		  "Receiver temperature for each channel and receptor","K","");
-	// TSKY 
-	colMapDef(TSKY,"TSKY",TpArrayFloat,
-		  "Sky temperature for each of the two receptors","K","");
-	// TSKY_FLAG
-	colMapDef(TSKY_FLAG,"TSKY_FLAG",TpBool,
-		  "Flag for TSKY","","");
-	// TSKY_SPECTRUM
-	colMapDef(TSKY_SPECTRUM,"TSKY_SPECTRUM",TpArrayFloat,
-		  "Sky temperature for each channel and receptor","K","");
-	// TSYS
-	colMapDef(TSYS,"TSYS",TpArrayFloat,
-		  "System temp. for each of the two receptors","K","");
-	// TSYS_FLAG
-	colMapDef(TSYS_FLAG,"TSYS_FLAG",TpBool,
-		  "Flag for TSYS","","");
-	// TSYS_SPECTRUM
-	colMapDef(TSYS_SPECTRUM,"TSYS_SPECTRUM",TpArrayFloat,
-		  "System temperature for each channel and receptor","K","");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // ANTENNA_ID
+  colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
+            "ID of antenna in this array","","");
+  // FEED_ID
+  colMapDef(FEED_ID,"FEED_ID",TpInt,
+            "Feed id","","");
+  // INTERVAL
+  colMapDef(INTERVAL,"INTERVAL",TpDouble,
+            "Interval for which this set of parameters is accurate",
+            "s","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
+            "ID for this spectral window setup","","");
+  // TIME
+  colMapDef(TIME,"TIME",TpDouble,
+            "Midpoint of time for which this set of "
+            "parameters is accurate","s","Epoch");
+  // PHASE_DIFF
+  colMapDef(PHASE_DIFF,"PHASE_DIFF",TpFloat,
+            "Phase difference between receptor 2 and receptor 1",
+            "rad","");
+  // PHASE_DIFF_FLAG
+  colMapDef(PHASE_DIFF_FLAG,"PHASE_DIFF_FLAG",TpBool,
+            "Flag for PHASE_DIFF","","");
+  // TANT
+  colMapDef(TANT,"TANT",TpArrayFloat,
+            "Antenna temperature for each receptor","K","");
+  // TANT_FLAG
+  colMapDef(TANT_FLAG,"TANT_FLAG",TpBool,
+            "Flag for TANT","","");
+  // TANT_SPECTRUM
+  colMapDef(TANT_SPECTRUM,"TANT_SPECTRUM",TpArrayFloat,
+            "Antenna temperature for each channel and receptor","K","");
+  // TANT_TSYS
+  colMapDef(TANT_TSYS,"TANT_TSYS",TpArrayFloat,
+            "Ratio of Antenna & system temperature for each receptor",
+            "","");
+  // TANT_TSYS_FLAG
+  colMapDef(TANT_TSYS_FLAG,"TANT_TSYS_FLAG",TpBool,
+            "Flag for TANT_TSYS","","");
+  // TANT_TSYS_SPECTRUM
+  colMapDef(TANT_TSYS_SPECTRUM,"TANT_TSYS_SPECTRUM",TpArrayFloat,
+            "Ratio of Antenna & system temperature for each channel "
+            "and receptor","","");
+  // TCAL
+  colMapDef(TCAL,"TCAL",TpArrayFloat,
+            "Calibration temperature for each receptor","K","");
+  // TCAL_FLAG
+  colMapDef(TCAL_FLAG,"TCAL_FLAG",TpBool,
+            "Flag for TCAL","","");
+  // TCAL_SPECTRUM
+  colMapDef(TCAL_SPECTRUM,"TCAL_SPECTRUM",TpArrayFloat,
+            "Calibration temperature for each channel and receptor","K","");
+  // TRX 
+  colMapDef(TRX,"TRX",TpArrayFloat,
+            "Receiver temperature for each of the two receptors","K","");
+  // TRX_FLAG
+  colMapDef(TRX_FLAG,"TRX_FLAG",TpBool,
+            "Flag for TRX","","");
+  // TRX_SPECTRUM
+  colMapDef(TRX_SPECTRUM,"TRX_SPECTRUM",TpArrayFloat,
+            "Receiver temperature for each channel and receptor","K","");
+  // TSKY 
+  colMapDef(TSKY,"TSKY",TpArrayFloat,
+            "Sky temperature for each of the two receptors","K","");
+  // TSKY_FLAG
+  colMapDef(TSKY_FLAG,"TSKY_FLAG",TpBool,
+            "Flag for TSKY","","");
+  // TSKY_SPECTRUM
+  colMapDef(TSKY_SPECTRUM,"TSKY_SPECTRUM",TpArrayFloat,
+            "Sky temperature for each channel and receptor","K","");
+  // TSYS
+  colMapDef(TSYS,"TSYS",TpArrayFloat,
+            "System temp. for each of the two receptors","K","");
+  // TSYS_FLAG
+  colMapDef(TSYS_FLAG,"TSYS_FLAG",TpBool,
+            "Flag for TSYS","","");
+  // TSYS_SPECTRUM
+  colMapDef(TSYS_SPECTRUM,"TSYS_SPECTRUM",TpArrayFloat,
+            "System temperature for each channel and receptor","K","");
+  
+  // PredefinedKeywords
+}
 
-	// PredefinedKeywords
-
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSSysCal::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 MSSysCal MSSysCal::referenceCopy(const String& newTableName, 

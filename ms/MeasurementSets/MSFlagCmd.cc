@@ -123,55 +123,57 @@ MSFlagCmd& MSFlagCmd::operator=(const MSFlagCmd &other)
     return *this;
 }
 
-void MSFlagCmd::init()
+void MSFlagCmd::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// APPLIED
-	colMapDef(APPLIED, "APPLIED", TpBool,
-		  "True if flag has been applied to main table","","");
-	// COMMAND
-	colMapDef(COMMAND, "COMMAND", TpString,
-		  "Flagging command","","");
-	// INTERVAL
-	colMapDef(INTERVAL,"INTERVAL", TpDouble,
-		  "Time interval for which this flag is valid","s","");
-	// LEVEL
-	colMapDef(LEVEL, "LEVEL", TpInt,
-		  "Flag level - revision level ","","");
-	// REASON
-	colMapDef(REASON, "REASON", TpString,
-		  "Flag reason","","");
-	// SEVERITY
-	colMapDef(SEVERITY, "SEVERITY", TpInt,
-		  "Severity code (0-10) ","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Midpoint of interval for which this flag is valid",
-		  "s","Epoch");
-	// TYPE
-	colMapDef(TYPE, "TYPE", TpString,
-		  "Type of flag (FLAG or UNFLAG)","","");
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // APPLIED
+  colMapDef(APPLIED, "APPLIED", TpBool,
+            "True if flag has been applied to main table","","");
+  // COMMAND
+  colMapDef(COMMAND, "COMMAND", TpString,
+            "Flagging command","","");
+  // INTERVAL
+  colMapDef(INTERVAL,"INTERVAL", TpDouble,
+            "Time interval for which this flag is valid","s","");
+  // LEVEL
+  colMapDef(LEVEL, "LEVEL", TpInt,
+            "Flag level - revision level ","","");
+  // REASON
+  colMapDef(REASON, "REASON", TpString,
+            "Flag reason","","");
+  // SEVERITY
+  colMapDef(SEVERITY, "SEVERITY", TpInt,
+            "Severity code (0-10) ","","");
+  // TIME
+  colMapDef(TIME, "TIME", TpDouble,
+            "Midpoint of interval for which this flag is valid",
+            "s","Epoch");
+  // TYPE
+  colMapDef(TYPE, "TYPE", TpString,
+            "Type of flag (FLAG or UNFLAG)","","");
+  
+  // PredefinedKeywords
+}
 
-	// PredefinedKeywords
-
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+void MSFlagCmd::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
+  
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	

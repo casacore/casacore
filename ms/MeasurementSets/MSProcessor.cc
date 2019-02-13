@@ -123,47 +123,49 @@ MSProcessor& MSProcessor::operator=(const MSProcessor &other)
     return *this;
 }
 
-void MSProcessor::init()
+void MSProcessor::initMap()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// FLAG_ROW
-	colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
-		  "Row flag","","");
-	// 
-	colMapDef(MODE_ID, "MODE_ID", TpInt,
-		  "Processor mode id","","");
-	// PASS_ID
-	colMapDef(PASS_ID, "PASS_ID", TpInt,
-		  "Processor pass number","","");
-	// TYPE
-	colMapDef(TYPE, "TYPE", TpString,
-		  "Processor type","","");
-	// TYPE_ID
-	colMapDef(TYPE_ID, "TYPE_ID", TpInt,
-		  "Processor type id","","");
-	// SUB_TYPE
-	colMapDef(SUB_TYPE, "SUB_TYPE", TpString,
-		  "Processor sub type","","");
-	// PredefinedKeywords
+  AlwaysAssert (columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // FLAG_ROW
+  colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
+            "Row flag","","");
+  // 
+  colMapDef(MODE_ID, "MODE_ID", TpInt,
+            "Processor mode id","","");
+  // PASS_ID
+  colMapDef(PASS_ID, "PASS_ID", TpInt,
+            "Processor pass number","","");
+  // TYPE
+  colMapDef(TYPE, "TYPE", TpString,
+            "Processor type","","");
+  // TYPE_ID
+  colMapDef(TYPE_ID, "TYPE_ID", TpInt,
+            "Processor type id","","");
+  // SUB_TYPE
+  colMapDef(SUB_TYPE, "SUB_TYPE", TpString,
+            "Processor sub type","","");
+  // PredefinedKeywords
+}
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
+void MSProcessor::initDesc()
+{
+  // init requiredTableDesc
+  TableDesc requiredTD;
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+  }
 	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(requiredTD, PredefinedColumns(i));
+  }
+  requiredTD_p=new TableDesc(requiredTD);
 }
 
 	
