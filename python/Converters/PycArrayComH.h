@@ -47,39 +47,39 @@
   // <group>
   template <typename T> struct ArrayCopy
   {
-    static void toPy (void* to, const T* from, uInt nr);
-    static void fromPy (T* to, const void* from, uInt nr);
+    static void toPy (void* to, const T* from, size_t nr);
+    static void fromPy (T* to, const void* from, size_t nr);
     static Array<T> toArray (const IPosition& shape,
 			     void* data, bool copy);
   };
 
   template <> struct ArrayCopy<Complex>
   {
-    static void toPy (void* to, const Complex* from, uInt nr);
-    static void fromPy (Complex* to, const void* from, uInt nr);
+    static void toPy (void* to, const Complex* from, size_t nr);
+    static void fromPy (Complex* to, const void* from, size_t nr);
     static Array<Complex> toArray (const IPosition& shape,
 				   void* data, bool copy);
   };
 
   template <> struct ArrayCopy<DComplex>
   {
-    static void toPy (void* to, const DComplex* from, uInt nr);
-    static void fromPy (DComplex* to, const void* from, uInt nr);
+    static void toPy (void* to, const DComplex* from, size_t nr);
+    static void fromPy (DComplex* to, const void* from, size_t nr);
     static Array<DComplex> toArray (const IPosition& shape,
 				    void* data, bool copy);
   };
 
   template <> struct ArrayCopy<String>
   {
-    static void toPy (void* to, const String* from, uInt nr);
-    static void fromPy (String* to, const void* from, uInt nr);
+    static void toPy (void* to, const String* from, size_t nr);
+    static void fromPy (String* to, const void* from, size_t nr);
     static Array<String> toArray (const IPosition& shape,
 				  void* data, bool copy);
   };
   // </group>
 
   Array<String> ArrayCopyStr_toArray (const IPosition& shape,
-				      void* data, uInt slen);
+				      void* data, size_t slen);
 
   // Convert a Casacore array to a Python array object.
   template <typename T>
