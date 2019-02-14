@@ -39,6 +39,7 @@
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/Path.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -1195,7 +1196,8 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
     } else if (arg == "-f") {
       if (st < args.size()-1) {
         st++;
-        options.fname = removeQuotes (args[st], removeQuote);
+        // Expand possible ~ and env.vars in file name.
+        options.fname = Path(removeQuotes (args[st], removeQuote)).absoluteName();
       } else {
         throw AipsError("No file name given after -f");
       }
@@ -1213,8 +1215,9 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
           options.outName = "stderr";
         } else {
           try {
-            options.stream = new ofstream(fname);
-            options.outName = fname;
+            outname = Path(fname).absoluteName();
+            options.stream = new ofstream(outname);
+            options.outName = outname;
           } catch (std::exception& x) {
             cerr << "Could not create output file " << fname << endl;
             cerr << "    " << x.what() << endl;
