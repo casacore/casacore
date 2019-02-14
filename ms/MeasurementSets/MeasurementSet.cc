@@ -230,6 +230,41 @@ MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherM
     initRefs();
 }
 
+#ifdef HAVE_MPI
+MeasurementSet::MeasurementSet (MPI_Comm comm,
+			       SetupNewTable &newTab, uInt nrrow,
+			       Bool initialize)
+    : MSTable<PredefinedColumns,
+      PredefinedKeywords>(comm, newTab, nrrow, initialize),
+      doNotLockSubtables_p (False),
+      hasBeenDestroyed_p(False)
+{
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
+    // verify that the now opened table is valid
+    addCat();
+    if (! validate(this->tableDesc()))
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
+}
+
+MeasurementSet::MeasurementSet (MPI_Comm comm,
+			       SetupNewTable &newTab,
+			       const TableLock& lockOptions, uInt nrrow,
+			       Bool initialize)
+    : MSTable<PredefinedColumns,
+      PredefinedKeywords>(comm, newTab, lockOptions, nrrow, initialize),
+      doNotLockSubtables_p (False),
+      hasBeenDestroyed_p(False)
+{
+  mainLock_p=lockOptions;
+    // verify that the now opened table is valid
+    addCat();
+    if (! validate(this->tableDesc()))
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
+}
+#endif // HAVE_MPI
+
 MeasurementSet::MeasurementSet(const MeasurementSet &other)
 : MSTable<PredefinedColumns,
   PredefinedKeywords>(other),

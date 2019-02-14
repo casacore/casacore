@@ -275,6 +275,14 @@ public:
   MeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
 		  uInt nrrow = 0, Bool initialize = False);
   MeasurementSet (const Table &table, const MeasurementSet * otherMs = NULL);
+
+#ifdef HAVE_MPI
+  MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, uInt nrrow = 0,
+		  Bool initialize = False);
+  MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions,
+		  uInt nrrow = 0, Bool initialize = False);
+#endif // HAVE_MPI
+
   MeasurementSet (const MeasurementSet &other);
   // </group>
 
