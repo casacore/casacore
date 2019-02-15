@@ -387,6 +387,9 @@ public:
   // often have more things specified, like dimensions of arrays and
   // storage managers for the various columns.
   void createDefaultSubtables(Table::TableOption option=Table::Scratch);
+#ifdef HAVE_MPI
+  void createDefaultSubtables(MPI_Comm comm, Table::TableOption option=Table::Scratch);
+#endif // HAVE_MPI
 
   // Initialize the statics appropriately. This does not need to be
   // called by users, it is called by the implementation class
@@ -449,6 +452,11 @@ private:
 
   // check that the MS is the latest version (2.0)
   void checkVersion();
+
+  // Creates subtables using an explicit MPI communicator (if MPI support
+  // is enabled)
+  template<typename T>
+  void createDefaultSubtables_impl(Table::TableOption option, T comm);
 
   // Opens a single subtable as memory resident (if permitted).
   template <typename Subtable>
