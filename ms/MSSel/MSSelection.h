@@ -317,6 +317,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // selected DDIDs would be an intersection of the DDIDs selected
     // from polarization and SPW expressions parsing (see
     // getSPWDDIDList() below).
+    // Note that there is no guarantee that returned vector
+    // is inmight not be in sorted order.
     inline Vector<Int> getDDIDList(const MeasurementSet* ms=NULL) 
     {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p;}
 
