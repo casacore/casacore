@@ -39,7 +39,7 @@ To compile casacore you need to meet the following requirements:
 On Debian / Ubuntu you can install these with:
  ``` 
 $ sudo apt-get install build-essential cmake gfortran g++ libncurses5-dev \
-    libreadline-dev flex bison libblas-dev liblapacke-dev libcfitsio3-dev \
+    libreadline-dev flex bison libblas-dev liblapacke-dev libcfitsio-dev \
     wcslib-dev 
 ```
 
