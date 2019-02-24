@@ -125,7 +125,7 @@ MSProcessor& MSProcessor::operator=(const MSProcessor &other)
 
 void MSProcessor::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
 	// the PredefinedColumns
 	// FLAG_ROW
 	colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
@@ -147,22 +147,19 @@ void MSProcessor::init()
 		  "Processor sub type","","");
 	// PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 	// Now define all other columns (duplicates are skipped)
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 

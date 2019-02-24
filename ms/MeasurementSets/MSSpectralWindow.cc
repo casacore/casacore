@@ -126,7 +126,7 @@ MSSpectralWindow& MSSpectralWindow::operator=(const MSSpectralWindow &other)
 
 void MSSpectralWindow::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
       // the PredefinedColumns
       // 
       // ASSOC_NATURE
@@ -194,35 +194,30 @@ void MSSpectralWindow::init()
 		"The total bandwidth for this window","Hz","");
       // PredefinedKeywords
       
-      // init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 
 	// set up the TableMeasure columns with variable reference
 	// first add the variable ref column
-	addColumnToDesc(requiredTD, MEAS_FREQ_REF);
-	addColumnToDesc(requiredTD, CHAN_FREQ,1,"MEAS_FREQ_REF");
-	addColumnToDesc(requiredTD, REF_FREQUENCY,-1,"MEAS_FREQ_REF");
+	addColumnToDesc(requiredTD_p(), MEAS_FREQ_REF);
+	addColumnToDesc(requiredTD_p(), CHAN_FREQ,1,"MEAS_FREQ_REF");
+	addColumnToDesc(requiredTD_p(), REF_FREQUENCY,-1,"MEAS_FREQ_REF");
 
 	// define columns with known dimensionality
-	addColumnToDesc(requiredTD, CHAN_WIDTH,1);
-	addColumnToDesc(requiredTD, EFFECTIVE_BW,1);
-	addColumnToDesc(requiredTD, RESOLUTION,1);
+	addColumnToDesc(requiredTD_p(), CHAN_WIDTH,1);
+	addColumnToDesc(requiredTD_p(), EFFECTIVE_BW,1);
+	addColumnToDesc(requiredTD_p(), RESOLUTION,1);
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
 
-
-	requiredTD_p=new TableDesc(requiredTD);
-	
     }
 }
 

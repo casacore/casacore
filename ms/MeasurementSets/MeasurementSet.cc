@@ -338,7 +338,7 @@ MeasurementSet::getMrsEligibility () const {
 
 void MeasurementSet::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
 	// the PredefinedColumns
 	// ANTENNA1
 	colMapDef(ANTENNA1, "ANTENNA1", TpInt,
@@ -528,37 +528,34 @@ void MeasurementSet::init()
 		  "Weather subtable. Weather info for each antenna.");
 
 	// define required keywords and columns
-	TableDesc requiredTD;
 	// all required keywords 
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_REQUIRED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	// Set MS_VERSION number
-	requiredTD.rwKeywordSet().define("MS_VERSION",Float(2.0));
+	requiredTD_p().rwKeywordSet().define("MS_VERSION",Float(2.0));
 	
 	// all required columns 
 	// First define the columns with fixed size arrays
 	IPosition shape(1,3);
 	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, UVW, shape, option);
+	addColumnToDesc(requiredTD_p(), UVW, shape, option);
 	// Also define columns with Arrays with their correct dimensionality
-	addColumnToDesc(requiredTD, FLAG, 2);
-	addColumnToDesc(requiredTD, FLAG_CATEGORY, 3);
-	addColumnToDesc(requiredTD, WEIGHT, 1);
-	addColumnToDesc(requiredTD, SIGMA, 1);
+	addColumnToDesc(requiredTD_p(), FLAG, 2);
+	addColumnToDesc(requiredTD_p(), FLAG_CATEGORY, 3);
+	addColumnToDesc(requiredTD_p(), WEIGHT, 1);
+	addColumnToDesc(requiredTD_p(), SIGMA, 1);
 	// Now define all other columns (duplicates are skipped)
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
         // Add the column keyword for the FLAG_CATEGORY column
-        requiredTD.rwColumnDesc("FLAG_CATEGORY").rwKeywordSet().
+        requiredTD_p().rwColumnDesc("FLAG_CATEGORY").rwKeywordSet().
 	  define("CATEGORY",Vector<String>(0));
 
-	// init counted pointer to requiredTableDesc 
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 	

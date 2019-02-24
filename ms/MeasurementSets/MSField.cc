@@ -127,7 +127,7 @@ MSField& MSField::operator=(const MSField &other)
 
 void MSField::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
 	// the PredefinedColumns
 	// CODE
 	colMapDef(CODE, "CODE", TpString,
@@ -166,26 +166,23 @@ void MSField::init()
 
 	// PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 	// First define the columns with known dimensionality
-	addColumnToDesc(requiredTD, DELAY_DIR, 2);
-	addColumnToDesc(requiredTD, PHASE_DIR, 2);
-	addColumnToDesc(requiredTD, REFERENCE_DIR, 2);
+	addColumnToDesc(requiredTD_p(), DELAY_DIR, 2);
+	addColumnToDesc(requiredTD_p(), PHASE_DIR, 2);
+	addColumnToDesc(requiredTD_p(), REFERENCE_DIR, 2);
 	// Now define all other columns (duplicates are skipped)
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 

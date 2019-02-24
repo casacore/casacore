@@ -154,7 +154,7 @@ MSDoppler& MSDoppler::operator=(const MSDoppler &other)
 
 void MSDoppler::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
         // the PredefinedColumns
         // 
 	colMapDef(DOPPLER_ID,"DOPPLER_ID", TpInt,
@@ -170,21 +170,18 @@ void MSDoppler::init()
 		  "Velocity Definition for Doppler shift","m/s","Doppler");
 	// PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 

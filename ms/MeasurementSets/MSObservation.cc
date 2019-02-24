@@ -125,7 +125,7 @@ MSObservation& MSObservation::operator=(const MSObservation &other)
 
 void MSObservation::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
 	// the PredefinedColumns
 	// FLAG_ROW
 	colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
@@ -156,27 +156,24 @@ void MSObservation::init()
 		  "Start and end of observation","s","Epoch");
 	// PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
         // Define the columns with fixed size arrays
         IPosition shape(1,2);
         ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, TIME_RANGE, shape, option);
+	addColumnToDesc(requiredTD_p(), TIME_RANGE, shape, option);
 	// Define the columns with known dimensionality
-	addColumnToDesc(requiredTD, LOG, 1);
-	addColumnToDesc(requiredTD, SCHEDULE, 1);
+	addColumnToDesc(requiredTD_p(), LOG, 1);
+	addColumnToDesc(requiredTD_p(), SCHEDULE, 1);
 	for (Int i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 	for (Int i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 

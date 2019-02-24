@@ -127,7 +127,7 @@ MSDataDescription& MSDataDescription::operator=(const MSDataDescription &other)
 
 void MSDataDescription::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
 	// the PredefinedColumns
         // FLAG_ROW
 	colMapDef(FLAG_ROW,"FLAG_ROW", TpBool,
@@ -143,21 +143,18 @@ void MSDataDescription::init()
 
 	// PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 

@@ -125,7 +125,7 @@ MSFeed& MSFeed::operator=(const MSFeed &other)
 
 void MSFeed::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
 	// the PredefinedColumns
 	// ANTENNA_ID
 	colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
@@ -177,31 +177,28 @@ void MSFeed::init()
 
 	// PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	
 	// all required columns 
 	// First define the columns with fixed size arrays
 	IPosition shape(1,3);
 	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, POSITION, shape, option);
+	addColumnToDesc(requiredTD_p(), POSITION, shape, option);
 	// define the columns with known dimensionality
-	addColumnToDesc(requiredTD, BEAM_OFFSET, 2);
-	addColumnToDesc(requiredTD, POLARIZATION_TYPE, 1);
-	addColumnToDesc(requiredTD, POL_RESPONSE, 2);
-	addColumnToDesc(requiredTD, RECEPTOR_ANGLE, 1);
+	addColumnToDesc(requiredTD_p(), BEAM_OFFSET, 2);
+	addColumnToDesc(requiredTD_p(), POLARIZATION_TYPE, 1);
+	addColumnToDesc(requiredTD_p(), POL_RESPONSE, 2);
+	addColumnToDesc(requiredTD_p(), RECEPTOR_ANGLE, 1);
 	// Now define all other columns (duplicates are skipped)
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 

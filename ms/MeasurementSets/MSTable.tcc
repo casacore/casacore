@@ -34,30 +34,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# These statics cannot be compiled with egcs 1.0.3a.
-#if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91)) || defined(AIPS_GCC)
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p("");
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther);
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colCommentMap_p("");
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colUnitMap_p("");
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colMeasureTypeMap_p("");
-
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keywordMap_p("");
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther);
-template <class ColEnum, class KeyEnum> 
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keyCommentMap_p("");
-template <class ColEnum, class KeyEnum> 
-CountedPtr<TableDesc> MSTable<ColEnum,KeyEnum>::requiredTD_p;
-#endif
-
-
 template <class ColEnum, class KeyEnum> 
 MSTable<ColEnum,KeyEnum>::MSTable() {}
 
@@ -130,44 +106,44 @@ operator=(const MSTable<ColEnum,KeyEnum>& other)
 template <class ColEnum, class KeyEnum> 
 const String& MSTable<ColEnum,KeyEnum>::columnName(ColEnum which)
 { 
-    MSTableImpl::init(); return columnMap_p(which); 
+    MSTableImpl::init(); return columnMap_p( )(which); 
 }
 
 template <class ColEnum, class KeyEnum> 
 ColEnum MSTable<ColEnum,KeyEnum>::columnType(const String &name)
-{ MSTableImpl::init(); return ColEnum(MSTableImpl::mapType(columnMap_p,name)); }
+{ MSTableImpl::init(); return ColEnum(MSTableImpl::mapType(columnMap_p( ),name)); }
 
 template <class ColEnum, class KeyEnum> 
 DataType MSTable<ColEnum,KeyEnum>::columnDataType(ColEnum which)
-{ MSTableImpl::init(); return DataType(colDTypeMap_p(which)); }
+{ MSTableImpl::init(); return DataType(colDTypeMap_p( )(which)); }
 
 template <class ColEnum, class KeyEnum> 
 const String& MSTable<ColEnum,KeyEnum>::columnStandardComment(ColEnum which)
-{ MSTableImpl::init(); return colCommentMap_p(which); }
+{ MSTableImpl::init(); return colCommentMap_p( )(which); }
 template <class ColEnum, class KeyEnum> 
 
 const String& MSTable<ColEnum,KeyEnum>::columnUnit(ColEnum which)
-{ MSTableImpl::init(); return colUnitMap_p(which); }
+{ MSTableImpl::init(); return colUnitMap_p( )(which); }
 
 template <class ColEnum, class KeyEnum> 
 const String& MSTable<ColEnum,KeyEnum>::columnMeasureType(ColEnum which)
-{ MSTableImpl::init(); return colMeasureTypeMap_p(which); }
+{ MSTableImpl::init(); return colMeasureTypeMap_p( )(which); }
 
 template <class ColEnum, class KeyEnum> 
 const String& MSTable<ColEnum,KeyEnum>::keywordName(KeyEnum which)
-{ MSTableImpl::init(); return keywordMap_p(which); }
+{ MSTableImpl::init(); return keywordMap_p( )(which); }
 
 template <class ColEnum, class KeyEnum> 
 KeyEnum MSTable<ColEnum,KeyEnum>::keywordType(const String &name)
-{ MSTableImpl::init(); return KeyEnum(MSTableImpl::mapType(keywordMap_p,name)); }
+{ MSTableImpl::init(); return KeyEnum(MSTableImpl::mapType(keywordMap_p( ),name)); }
 
 template <class ColEnum, class KeyEnum> 
 DataType MSTable<ColEnum,KeyEnum>::keywordDataType(KeyEnum which)
-{ MSTableImpl::init(); return DataType(keyDTypeMap_p(which)); }
+{ MSTableImpl::init(); return DataType(keyDTypeMap_p( )(which)); }
 
 template <class ColEnum, class KeyEnum> 
 const String& MSTable<ColEnum,KeyEnum>::keywordStandardComment(KeyEnum which)
-{ MSTableImpl::init(); return keyCommentMap_p(which); }
+{ MSTableImpl::init(); return keyCommentMap_p( )(which); }
 
 template <class ColEnum, class KeyEnum> 
 Bool MSTable<ColEnum,KeyEnum>::isColumn(ColEnum which) const
@@ -242,8 +218,8 @@ void MSTable<ColEnum,KeyEnum>::colMapDef(ColEnum col,
 					 const String& colUnit,
 					 const String& colMeasureType)
 {
-    MSTableImpl::colMapDef(columnMap_p,colDTypeMap_p,colCommentMap_p,
-			   colUnitMap_p,colMeasureTypeMap_p,col,colName,
+    MSTableImpl::colMapDef(columnMap_p( ),colDTypeMap_p( ),colCommentMap_p( ),
+			   colUnitMap_p( ),colMeasureTypeMap_p( ),col,colName,
 			   colType,colComment,colUnit,colMeasureType);
 }
 
@@ -253,26 +229,26 @@ void MSTable<ColEnum,KeyEnum>::keyMapDef(KeyEnum key,
 					 DataType keyType,
 					 const String& keyComment)
 {
-    MSTableImpl::keyMapDef(keywordMap_p,keyDTypeMap_p,keyCommentMap_p,
+    MSTableImpl::keyMapDef(keywordMap_p( ),keyDTypeMap_p( ),keyCommentMap_p( ),
 			   key,keyName,keyType,keyComment);
 }
 
 template <class ColEnum, class KeyEnum> 
 Bool MSTable<ColEnum,KeyEnum>::validate(const TableDesc& tabDesc)
 {
-    MSTableImpl::init(); return MSTableImpl::validate(tabDesc,*requiredTD_p);
+    MSTableImpl::init(); return MSTableImpl::validate(tabDesc,requiredTD_p());
 }
  
 template <class ColEnum, class KeyEnum> 
 Bool MSTable<ColEnum,KeyEnum>::validate(const TableRecord& tabKeySet)
 {
-    MSTableImpl::init(); return MSTableImpl::validate(tabKeySet,*requiredTD_p);
+    MSTableImpl::init(); return MSTableImpl::validate(tabKeySet,requiredTD_p());
 }
 
 template <class ColEnum, class KeyEnum> 
 const TableDesc& MSTable<ColEnum,KeyEnum>::requiredTableDesc()
 {
-    MSTableImpl::init(); return *requiredTD_p;
+    MSTableImpl::init(); return requiredTD_p();
 }
 
 template <class ColEnum, class KeyEnum> 

@@ -244,29 +244,53 @@ protected:
  
     // These are the static ordered maps which contain the above info
     // ColEnum -> name
-    static SimpleOrderedMap<Int, String> columnMap_p;
+    static SimpleOrderedMap<Int, String> &columnMap_p( ) {
+        static SimpleOrderedMap<Int, String> map("");
+        return map;
+    }
     // ColEnum -> DataType
-    static SimpleOrderedMap<Int, Int> colDTypeMap_p;
+    static SimpleOrderedMap<Int, Int> &colDTypeMap_p( ) {
+        static SimpleOrderedMap<Int, Int> map(TpOther);
+        return map;
+    }
     // ColEnum -> comment string
-    static SimpleOrderedMap<Int, String> colCommentMap_p;
+    static SimpleOrderedMap<Int, String> &colCommentMap_p( ) {
+        static SimpleOrderedMap<Int, String> map("");
+        return map;
+    }
     // ColEnum -> UNIT string
-    static SimpleOrderedMap<Int, String> colUnitMap_p;
+    static SimpleOrderedMap<Int, String> &colUnitMap_p( ) {
+        static SimpleOrderedMap<Int, String> map("");
+        return map;
+    }
     // ColEnum -> MEASURE_TYPE string
-    static SimpleOrderedMap<Int, String> colMeasureTypeMap_p;
- 
-
-    // KeyEnum -> name
-    static SimpleOrderedMap<Int, String> keywordMap_p;
+    static SimpleOrderedMap<Int, String> &colMeasureTypeMap_p( ) {
+        static SimpleOrderedMap<Int, String> map("");
+        return map;
+    }
+    
+     // KeyEnum -> name
+    static SimpleOrderedMap<Int, String> &keywordMap_p( ) {
+        static SimpleOrderedMap<Int, String> map("");
+        return map;
+    }
     // KeyEnum -> DataType
-    static SimpleOrderedMap<Int, Int> keyDTypeMap_p;
+    static SimpleOrderedMap<Int, Int> &keyDTypeMap_p( ) {
+        static SimpleOrderedMap<Int, Int> map(TpOther);
+        return map;
+    }
     // KeyEnum -> comment string
-    static SimpleOrderedMap<Int, String> keyCommentMap_p;
+    static SimpleOrderedMap<Int, String> &keyCommentMap_p( ) {
+        static SimpleOrderedMap<Int, String> map("");
+        return map;
+    }
 
     // The required TableDesc
-    //# following fails in static initialization (segm. fault).
-    //    static TableDesc requiredTD_p;
-    static CountedPtr<TableDesc> requiredTD_p;
- 
+    static TableDesc &requiredTD_p( ) {
+        static TableDesc desc;
+        return desc;
+    }
+    
     // Define an entry in the column maps
     static void colMapDef(ColEnum col,
 			  const String& colName,

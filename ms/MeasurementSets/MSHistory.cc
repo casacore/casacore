@@ -125,7 +125,7 @@ MSHistory& MSHistory::operator=(const MSHistory &other)
 
 void MSHistory::init()
 {
-    if (! columnMap_p.ndefined()) {
+    if (! columnMap_p().ndefined()) {
       // the PredefinedColumns
       // APPLICATION
       colMapDef(APPLICATION,"APPLICATION",TpString,
@@ -156,23 +156,20 @@ void MSHistory::init()
 		"Timestamp of message","s","Epoch");
       // PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
 	// all required keywords
 	uInt i;
 	for (i = UNDEFINED_KEYWORD+1;
 	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+	    addKeyToDesc(requiredTD_p(), PredefinedKeywords(i));
 	}
 	// define the columns with known dimensionality
-	addColumnToDesc(requiredTD, APP_PARAMS, 1);
-	addColumnToDesc(requiredTD, CLI_COMMAND, 1);
+	addColumnToDesc(requiredTD_p(), APP_PARAMS, 1);
+	addColumnToDesc(requiredTD_p(), CLI_COMMAND, 1);
 	// all required columns 
 	for (i = UNDEFINED_COLUMN+1; 
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
+	    addColumnToDesc(requiredTD_p(), PredefinedColumns(i));
 	}
-	requiredTD_p=new TableDesc(requiredTD);
     }
 }
 
