@@ -238,8 +238,7 @@ typedef MeasurementSet MS;
 //      be necessary to modify referenceCopy().
 // </todo>
 
-class MeasurementSet : public MSTable<MSMainEnums::PredefinedColumns,
-                                      MSMainEnums::PredefinedKeywords>,
+class MeasurementSet : public MSTable<MSMainEnums>,
 		       public MSMainEnums
 {
 
@@ -383,8 +382,7 @@ public:
   // Initialize the statics appropriately. This does not need to be
   // called by users, it is called by the implementation class
   // MSTableImpl.
-  static void initMap();
-  static void initDesc();
+  static MSTableMaps initMaps();
 
   // Create DATA column from existing FLOAT_DATA column. Noop if DATA already
   // exists or neither exists (returns False in that case).

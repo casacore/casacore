@@ -77,8 +77,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 class MSDoppler:public MSDopplerEnums,
-                public MSTable<MSDopplerEnums::PredefinedColumns,
-		               MSDopplerEnums::PredefinedKeywords>
+                public MSTable<MSDopplerEnums>
 {
 public:
     // This constructs an empty MSDoppler
@@ -125,8 +124,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void initMap();
-    static void initDesc();
+    static MSTableMaps initMaps();
 
 private:
     // temporary function to add the VELDEF

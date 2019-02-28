@@ -46,8 +46,7 @@ MSDoppler::MSDoppler():hasBeenDestroyed_p(True) { }
 
 MSDoppler::MSDoppler(const String &tableName, 
 				     TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSDopplerEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     addVelDef();
@@ -79,8 +78,7 @@ void MSDoppler::addVelDef()
 
 MSDoppler::MSDoppler(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSDopplerEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -92,8 +90,7 @@ MSDoppler::MSDoppler(const String& tableName, const String &tableDescName,
 
 MSDoppler::MSDoppler(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSDopplerEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -104,8 +101,7 @@ MSDoppler::MSDoppler(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSDoppler::MSDoppler(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSDopplerEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     addVelDef();
@@ -115,8 +111,7 @@ MSDoppler::MSDoppler(const Table &table)
 }
 
 MSDoppler::MSDoppler(const MSDoppler &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSDopplerEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -145,56 +140,51 @@ MSDoppler::~MSDoppler()
 MSDoppler& MSDoppler::operator=(const MSDoppler &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSDopplerEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSDoppler::initMap()
+MSTableMaps MSDoppler::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
   // the PredefinedColumns
   // 
-  colMapDef(DOPPLER_ID,"DOPPLER_ID", TpInt,
+  colMapDef(maps, DOPPLER_ID,"DOPPLER_ID", TpInt,
             "Doppler tracking id","","");
   // SOURCE_ID
-  colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
+  colMapDef(maps, SOURCE_ID, "SOURCE_ID", TpInt,
             "Pointer to SOURCE table","","");
   // TRANSITION_ID
-  colMapDef(TRANSITION_ID,"TRANSITION_ID",TpInt,
+  colMapDef(maps, TRANSITION_ID,"TRANSITION_ID",TpInt,
             "Pointer to list of transitions in SOURCE table","","");
   // VELDEF
-  colMapDef(VELDEF, "VELDEF", TpDouble, 
+  colMapDef(maps, VELDEF, "VELDEF", TpDouble, 
             "Velocity Definition for Doppler shift","m/s","Doppler");
   // PredefinedKeywords
-}
 
-void MSDoppler::initDesc()
-{    
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   uInt i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-  
   // all required columns 
   for (i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 	
 MSDoppler MSDoppler::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return MSDoppler(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSDoppler(MSTable<MSDopplerEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

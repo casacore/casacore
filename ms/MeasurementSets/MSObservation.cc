@@ -43,8 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSObservation::MSObservation():hasBeenDestroyed_p(True) { }
 
 MSObservation::MSObservation(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSObservationEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +53,7 @@ MSObservation::MSObservation(const String &tableName, TableOption option)
 
 MSObservation::MSObservation(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSObservationEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +64,7 @@ MSObservation::MSObservation(const String& tableName, const String &tableDescNam
 
 MSObservation::MSObservation(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSObservationEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +74,7 @@ MSObservation::MSObservation(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSObservation::MSObservation(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSObservationEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +83,7 @@ MSObservation::MSObservation(const Table &table)
 }
 
 MSObservation::MSObservation(const MSObservation &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSObservationEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,77 +111,72 @@ MSObservation::~MSObservation()
 MSObservation& MSObservation::operator=(const MSObservation &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSObservationEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSObservation::initMap()
+MSTableMaps MSObservation::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
   // the PredefinedColumns
   // FLAG_ROW
-  colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
+  colMapDef(maps, FLAG_ROW,"FLAG_ROW",TpBool,
             "Row flag","","");
   // LOG
-  colMapDef(LOG,"LOG",TpArrayString,
+  colMapDef(maps, LOG,"LOG",TpArrayString,
             "Observing log","","");
   // OBSERVER
-  colMapDef(OBSERVER, "OBSERVER", TpString,
+  colMapDef(maps, OBSERVER, "OBSERVER", TpString,
             "Name of observer(s)","","");
   // PROJECT
-  colMapDef(PROJECT,"PROJECT",TpString,
+  colMapDef(maps, PROJECT,"PROJECT",TpString,
             "Project identification string","","");
   // RELEASE_DATE
-  colMapDef(RELEASE_DATE,"RELEASE_DATE",TpDouble,
+  colMapDef(maps, RELEASE_DATE,"RELEASE_DATE",TpDouble,
             "Release date when data becomes public","s","Epoch");
   // SCHEDULE
-  colMapDef(SCHEDULE,"SCHEDULE",TpArrayString,
+  colMapDef(maps, SCHEDULE,"SCHEDULE",TpArrayString,
             "Observing schedule","","");
   // SCHEDULE_TYPE
-  colMapDef(SCHEDULE_TYPE,"SCHEDULE_TYPE",TpString,
+  colMapDef(maps, SCHEDULE_TYPE,"SCHEDULE_TYPE",TpString,
             "Observing schedule type","","");
   // TELESCOPE_NAME
-  colMapDef(TELESCOPE_NAME,"TELESCOPE_NAME",TpString,
+  colMapDef(maps, TELESCOPE_NAME,"TELESCOPE_NAME",TpString,
             "Telescope Name (e.g. WSRT, VLBA)");
   // TIME_RANGE
-  colMapDef(TIME_RANGE,"TIME_RANGE",TpArrayDouble,
+  colMapDef(maps, TIME_RANGE,"TIME_RANGE",TpArrayDouble,
             "Start and end of observation","s","Epoch");
   // PredefinedKeywords
-}
 
-void MSObservation::initDesc()
-{
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   // Define the columns with fixed size arrays
   IPosition shape(1,2);
   ColumnDesc::Option option=ColumnDesc::Direct;
-  addColumnToDesc(requiredTD, TIME_RANGE, shape, option);
+  addColumnToDesc(maps, TIME_RANGE, shape, option);
   // Define the columns with known dimensionality
-  addColumnToDesc(requiredTD, LOG, 1);
-  addColumnToDesc(requiredTD, SCHEDULE, 1);
+  addColumnToDesc(maps, LOG, 1);
+  addColumnToDesc(maps, SCHEDULE, 1);
   for (Int i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-  
   // all required columns 
   for (Int i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 	
 MSObservation MSObservation::referenceCopy(const String& newTableName, 
 				    const Block<String>& writableColumns) const
 {
-  return MSObservation(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
+  return MSObservation(MSTable<MSObservationEnums>::referenceCopy
 		 (newTableName,writableColumns));
 }
 

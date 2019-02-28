@@ -77,8 +77,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 class MSState:public MSStateEnums,
-                public MSTable<MSStateEnums::PredefinedColumns,
-		               MSStateEnums::PredefinedKeywords>
+              public MSTable<MSStateEnums>
 {
 public:
     // This constructs an empty MSState
@@ -125,8 +124,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void initMap();
-    static void initDesc();
+    static MSTableMaps initMaps();
 
 private:
 

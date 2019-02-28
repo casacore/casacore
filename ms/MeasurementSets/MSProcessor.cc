@@ -43,8 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSProcessor::MSProcessor():hasBeenDestroyed_p(True) { }
 
 MSProcessor::MSProcessor(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSProcessorEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +53,7 @@ MSProcessor::MSProcessor(const String &tableName, TableOption option)
 
 MSProcessor::MSProcessor(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSProcessorEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +64,7 @@ MSProcessor::MSProcessor(const String& tableName, const String &tableDescName,
 
 MSProcessor::MSProcessor(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSProcessorEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +74,7 @@ MSProcessor::MSProcessor(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSProcessor::MSProcessor(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSProcessorEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +83,7 @@ MSProcessor::MSProcessor(const Table &table)
 }
 
 MSProcessor::MSProcessor(const MSProcessor &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSProcessorEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,63 +111,59 @@ MSProcessor::~MSProcessor()
 MSProcessor& MSProcessor::operator=(const MSProcessor &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSProcessorEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSProcessor::initMap()
+MSTableMaps MSProcessor::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
   // the PredefinedColumns
   // FLAG_ROW
-  colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
+  colMapDef(maps, FLAG_ROW, "FLAG_ROW", TpBool,
             "Row flag","","");
   // 
-  colMapDef(MODE_ID, "MODE_ID", TpInt,
+  colMapDef(maps, MODE_ID, "MODE_ID", TpInt,
             "Processor mode id","","");
   // PASS_ID
-  colMapDef(PASS_ID, "PASS_ID", TpInt,
+  colMapDef(maps, PASS_ID, "PASS_ID", TpInt,
             "Processor pass number","","");
   // TYPE
-  colMapDef(TYPE, "TYPE", TpString,
+  colMapDef(maps, TYPE, "TYPE", TpString,
             "Processor type","","");
   // TYPE_ID
-  colMapDef(TYPE_ID, "TYPE_ID", TpInt,
+  colMapDef(maps, TYPE_ID, "TYPE_ID", TpInt,
             "Processor type id","","");
   // SUB_TYPE
-  colMapDef(SUB_TYPE, "SUB_TYPE", TpString,
+  colMapDef(maps, SUB_TYPE, "SUB_TYPE", TpString,
             "Processor sub type","","");
-  // PredefinedKeywords
-}
 
-void MSProcessor::initDesc()
-{
+  // PredefinedKeywords
+
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   uInt i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-	
   // all required columns 
   // Now define all other columns (duplicates are skipped)
   for (i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 	
 MSProcessor MSProcessor::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MSProcessor(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSProcessor(MSTable<MSProcessorEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

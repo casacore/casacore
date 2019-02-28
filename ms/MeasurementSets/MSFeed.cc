@@ -43,8 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSFeed::MSFeed():hasBeenDestroyed_p(True) { }
 
 MSFeed::MSFeed(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSFeedEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +53,7 @@ MSFeed::MSFeed(const String &tableName, TableOption option)
 
 MSFeed::MSFeed(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSFeedEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +64,7 @@ MSFeed::MSFeed(const String& tableName, const String &tableDescName,
 
 MSFeed::MSFeed(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSFeedEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +74,7 @@ MSFeed::MSFeed(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSFeed::MSFeed(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSFeedEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +83,7 @@ MSFeed::MSFeed(const Table &table)
 }
 
 MSFeed::MSFeed(const MSFeed &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSFeedEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,101 +111,97 @@ MSFeed::~MSFeed()
 MSFeed& MSFeed::operator=(const MSFeed &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSFeedEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSFeed::initMap()
+MSTableMaps MSFeed::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
+  AlwaysAssert (maps.columnMap_p.empty(), AipsError);
   // the PredefinedColumns
   // ANTENNA_ID
-  colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
+  colMapDef(maps, ANTENNA_ID, "ANTENNA_ID", TpInt,
             "ID of antenna in this array","","");
   // BEAM_ID
-  colMapDef(BEAM_ID,"BEAM_ID",TpInt,
+  colMapDef(maps, BEAM_ID,"BEAM_ID",TpInt,
             "Id for BEAM model","","");
   // BEAM_OFFSET
-  colMapDef(BEAM_OFFSET,"BEAM_OFFSET",TpArrayDouble,
+  colMapDef(maps, BEAM_OFFSET,"BEAM_OFFSET",TpArrayDouble,
             "Beam position offset (on sky but in antenna"
             "reference frame)","rad","Direction");
   // FEED_ID
-  colMapDef(FEED_ID,"FEED_ID",TpInt,
+  colMapDef(maps, FEED_ID,"FEED_ID",TpInt,
             "Feed id","","");
   // FOCUS_LENGTH
-  colMapDef(FOCUS_LENGTH,"FOCUS_LENGTH",TpDouble,
+  colMapDef(maps, FOCUS_LENGTH,"FOCUS_LENGTH",TpDouble,
             "Focus length","m","");
   // INTERVAL
-  colMapDef(INTERVAL,"INTERVAL",TpDouble,
+  colMapDef(maps, INTERVAL,"INTERVAL",TpDouble,
             "Interval for which this set of parameters is accurate",
             "s","");
   // NUM_RECEPTORS
-  colMapDef(NUM_RECEPTORS,"NUM_RECEPTORS",TpInt,
+  colMapDef(maps, NUM_RECEPTORS,"NUM_RECEPTORS",TpInt,
             "Number of receptors on this feed (probably 1 or 2)","","");
   // PHASED_FEED_ID
-  colMapDef(PHASED_FEED_ID,"PHASED_FEED_ID",TpInt,
+  colMapDef(maps, PHASED_FEED_ID,"PHASED_FEED_ID",TpInt,
             "index into PHASED_FEED table (ignore if<0)","","");
   // POL_RESPONSE
-  colMapDef(POL_RESPONSE,"POL_RESPONSE",TpArrayComplex,
+  colMapDef(maps, POL_RESPONSE,"POL_RESPONSE",TpArrayComplex,
             "D-matrix i.e. leakage between two receptors","","");
   // POLARIZATION_TYPE
-  colMapDef(POLARIZATION_TYPE,"POLARIZATION_TYPE",TpArrayString,
+  colMapDef(maps, POLARIZATION_TYPE,"POLARIZATION_TYPE",TpArrayString,
             "Type of polarization to which a given RECEPTOR responds",
             "","");
   // POSITION
-  colMapDef(POSITION,"POSITION",TpArrayDouble,
+  colMapDef(maps, POSITION,"POSITION",TpArrayDouble,
             "Position of feed relative to feed reference position",
             "m","Position");
   // RECEPTOR_ANGLE
-  colMapDef(RECEPTOR_ANGLE,"RECEPTOR_ANGLE",TpArrayDouble,
+  colMapDef(maps, RECEPTOR_ANGLE,"RECEPTOR_ANGLE",TpArrayDouble,
             "The reference angle for polarization","rad","");
   // SPECTRAL_WINDOW_ID
-  colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
+  colMapDef(maps, SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
             "ID for this spectral window setup","","");
   // TIME
-  colMapDef(TIME,"TIME",TpDouble,
+  colMapDef(maps, TIME,"TIME",TpDouble,
             "Midpoint of time for which this set of "
             "parameters is accurate","s","Epoch");
   
   // PredefinedKeywords
-}
 
-void MSFeed::initDesc()
-{
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   uInt i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-  
   // all required columns 
   // First define the columns with fixed size arrays
   IPosition shape(1,3);
   ColumnDesc::Option option=ColumnDesc::Direct;
-  addColumnToDesc(requiredTD, POSITION, shape, option);
+  addColumnToDesc(maps, POSITION, shape, option);
   // define the columns with known dimensionality
-  addColumnToDesc(requiredTD, BEAM_OFFSET, 2);
-  addColumnToDesc(requiredTD, POLARIZATION_TYPE, 1);
-  addColumnToDesc(requiredTD, POL_RESPONSE, 2);
-  addColumnToDesc(requiredTD, RECEPTOR_ANGLE, 1);
+  addColumnToDesc(maps, BEAM_OFFSET, 2);
+  addColumnToDesc(maps, POLARIZATION_TYPE, 1);
+  addColumnToDesc(maps, POL_RESPONSE, 2);
+  addColumnToDesc(maps, RECEPTOR_ANGLE, 1);
   // Now define all other columns (duplicates are skipped)
   for (i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 MSFeed MSFeed::referenceCopy(const String& newTableName, 
 			     const Block<String>& writableColumns) const
 {
-    return MSFeed(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
+    return MSFeed(MSTable<MSFeedEnums>::referenceCopy
 		  (newTableName,writableColumns));
 }
 

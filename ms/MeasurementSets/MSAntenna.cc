@@ -44,8 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSAntenna::MSAntenna():hasBeenDestroyed_p(True) { }
 
 MSAntenna::MSAntenna(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSAntennaEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -55,8 +54,7 @@ MSAntenna::MSAntenna(const String &tableName, TableOption option)
 
 MSAntenna::MSAntenna(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSAntennaEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -67,8 +65,7 @@ MSAntenna::MSAntenna(const String& tableName, const String &tableDescName,
 
 MSAntenna::MSAntenna(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSAntennaEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -78,8 +75,7 @@ MSAntenna::MSAntenna(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSAntenna::MSAntenna(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSAntennaEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -88,8 +84,7 @@ MSAntenna::MSAntenna(const Table &table)
 }
 
 MSAntenna::MSAntenna(const MSAntenna &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSAntennaEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -117,86 +112,82 @@ MSAntenna::~MSAntenna()
 MSAntenna& MSAntenna::operator=(const MSAntenna &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSAntennaEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSAntenna::initMap()
+MSTableMaps MSAntenna::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
   // the PredefinedColumns
   // DISH_DIAMETER
-  colMapDef(DISH_DIAMETER, "DISH_DIAMETER", TpDouble,
+  colMapDef(maps, DISH_DIAMETER, "DISH_DIAMETER", TpDouble,
             "Physical diameter of dish","m","");
   // FLAG_ROW
-  colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
+  colMapDef(maps, FLAG_ROW,"FLAG_ROW",TpBool,
             "Flag for this row","","");
   // MOUNT
-  colMapDef(MOUNT,"MOUNT",TpString,
+  colMapDef(maps, MOUNT,"MOUNT",TpString,
             "Mount type e.g. alt-az, equatorial, etc.","","");
   // NAME
-  colMapDef(NAME,"NAME",TpString,
+  colMapDef(maps, NAME,"NAME",TpString,
             "Antenna name, e.g. VLA22, CA03","","");
   // OFFSET
-  colMapDef(OFFSET,"OFFSET",TpArrayDouble,
+  colMapDef(maps, OFFSET,"OFFSET",TpArrayDouble,
             "Axes offset of mount to FEED REFERENCE point",
             "m","Position");
   // POSITION
-  colMapDef(POSITION,"POSITION",TpArrayDouble,
+  colMapDef(maps, POSITION,"POSITION",TpArrayDouble,
             "Antenna X,Y,Z phase reference position","m","Position");
   // STATION
-  colMapDef(STATION,"STATION",TpString,
+  colMapDef(maps, STATION,"STATION",TpString,
             "Station (antenna pad) name","","");
   // TYPE
-  colMapDef(TYPE,"TYPE", TpString,
+  colMapDef(maps, TYPE,"TYPE", TpString,
             "Antenna type (e.g. SPACE-BASED)","","");
 
   // Optional columns follow 
   // MEAN_ORBIT
-  colMapDef(MEAN_ORBIT,"MEAN_ORBIT",TpArrayDouble,
+  colMapDef(maps, MEAN_ORBIT,"MEAN_ORBIT",TpArrayDouble,
             "Mean Keplerian elements","","");
   // ORBIT_ID
-  colMapDef(ORBIT_ID,"ORBIT_ID",TpInt,
+  colMapDef(maps, ORBIT_ID,"ORBIT_ID",TpInt,
             "index into ORBIT table (ignore if<0)","","");
   // PHASED_ARRAY_ID
-  colMapDef(PHASED_ARRAY_ID,"PHASED_ARRAY_ID",TpInt,
+  colMapDef(maps, PHASED_ARRAY_ID,"PHASED_ARRAY_ID",TpInt,
             "index into PHASED_ARRAY table","","");
-  // PredefinedKeywords
-}
 
-void MSAntenna::initDesc()
-{
+  // PredefinedKeywords
+
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   uInt i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-  
   // all required columns 
   // First define the columns with fixed size arrays
   IPosition shape(1,3);
   ColumnDesc::Option option=ColumnDesc::Direct;
-  addColumnToDesc(requiredTD, OFFSET, shape, option);
-  addColumnToDesc(requiredTD, POSITION, shape, option);
+  addColumnToDesc(maps, OFFSET, shape, option);
+  addColumnToDesc(maps, POSITION, shape, option);
   // Now define all other columns (duplicates are skipped)
   for (i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 	
 MSAntenna MSAntenna::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return MSAntenna(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSAntenna(MSTable<MSAntennaEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

@@ -43,8 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSPolarization::MSPolarization():hasBeenDestroyed_p(True) { }
 
 MSPolarization::MSPolarization(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSPolarizationEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +53,7 @@ MSPolarization::MSPolarization(const String &tableName, TableOption option)
 
 MSPolarization::MSPolarization(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSPolarizationEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +64,7 @@ MSPolarization::MSPolarization(const String& tableName, const String &tableDescN
 
 MSPolarization::MSPolarization(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSPolarizationEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +74,7 @@ MSPolarization::MSPolarization(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSPolarization::MSPolarization(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSPolarizationEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +83,7 @@ MSPolarization::MSPolarization(const Table &table)
 }
 
 MSPolarization::MSPolarization(const MSPolarization &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSPolarizationEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,61 +111,57 @@ MSPolarization::~MSPolarization()
 MSPolarization& MSPolarization::operator=(const MSPolarization &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSPolarizationEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSPolarization::initMap()
+MSTableMaps MSPolarization::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
   // the PredefinedColumns
   // CORR_PRODUCT
-  colMapDef(CORR_PRODUCT, "CORR_PRODUCT", TpArrayInt,
+  colMapDef(maps, CORR_PRODUCT, "CORR_PRODUCT", TpArrayInt,
             "Indices describing receptors of feed going into correlation","","");
   // CORR_TYPE
-  colMapDef(CORR_TYPE, "CORR_TYPE", TpArrayInt,
+  colMapDef(maps, CORR_TYPE, "CORR_TYPE", TpArrayInt,
             "The polarization type for each correlation product,"
             " as a Stokes enum.","","");
   // FLAG_ROW
-  colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
+  colMapDef(maps, FLAG_ROW, "FLAG_ROW", TpBool,
             "Row flag","","");
   // NUM_CORR
-  colMapDef(NUM_CORR, "NUM_CORR", TpInt,
+  colMapDef(maps, NUM_CORR, "NUM_CORR", TpInt,
             "Number of correlation products","","");
-  // PredefinedKeywords
-}
 
-void MSPolarization::initDesc()
-{
+  // PredefinedKeywords
+
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   uInt i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-	
   // all required columns 
   // First define the columns with known dimensionality
-  addColumnToDesc(requiredTD, CORR_TYPE, 1);
-  addColumnToDesc(requiredTD, CORR_PRODUCT, 2);
+  addColumnToDesc(maps, CORR_TYPE, 1);
+  addColumnToDesc(maps, CORR_PRODUCT, 2);
   // Now define all other columns (duplicates are skipped)
   for (i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 	
 MSPolarization MSPolarization::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MSPolarization(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSPolarization(MSTable<MSPolarizationEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

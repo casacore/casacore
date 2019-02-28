@@ -31,13 +31,12 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/TableDesc.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/OS/Mutex.h>
 #include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -83,10 +82,6 @@ class SetupNewTable;
 class MSTableImpl 
 {
 public:
-    // Convert a name to a ColEnum, 
-    static Int mapType(const std::map<Int,String>& map,
-		       const String &name);
-
     // add a column to a TableDesc
     // An exception is thrown for an invalid data type.  This indicates a 
     // programming error in this class when this occurs.
@@ -165,16 +160,28 @@ public:
     // those given in writableColumns, those are empty and writable.
     static Table referenceCopy(const Table& tab, const String& newTableName, 
 			       const Block<String>& writableColumns);
-    // Initialize all MeasurementSet static mappings
-    static void initMap();
-    static void init();
 
-private:
-    static void doInitMap();
-    static void doInitDesc();
-
-    static CallOnce0 onceInitMap_p;
-    static CallOnce0 onceInitDesc_p;
+    // Define the initialization function for each MS table type.
+    // <group>
+    static MSTableMaps initMaps(MSMainEnums*);
+    static MSTableMaps initMaps(MSAntennaEnums*);
+    static MSTableMaps initMaps(MSDataDescriptionEnums*);
+    static MSTableMaps initMaps(MSDopplerEnums*);
+    static MSTableMaps initMaps(MSFeedEnums*);
+    static MSTableMaps initMaps(MSFieldEnums*);
+    static MSTableMaps initMaps(MSFlagCmdEnums*);
+    static MSTableMaps initMaps(MSFreqOffsetEnums*);
+    static MSTableMaps initMaps(MSHistoryEnums*);
+    static MSTableMaps initMaps(MSObservationEnums*);
+    static MSTableMaps initMaps(MSPointingEnums*);
+    static MSTableMaps initMaps(MSPolarizationEnums*);
+    static MSTableMaps initMaps(MSProcessorEnums*);
+    static MSTableMaps initMaps(MSSourceEnums*);
+    static MSTableMaps initMaps(MSSpectralWindowEnums*);
+    static MSTableMaps initMaps(MSStateEnums*);
+    static MSTableMaps initMaps(MSSysCalEnums*);
+    static MSTableMaps initMaps(MSWeatherEnums*);
+    // </group>
 };
 
 

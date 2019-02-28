@@ -76,8 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MSFlagCmd:public MSFlagCmdEnums,
-                public MSTable<MSFlagCmdEnums::PredefinedColumns,
-		               MSFlagCmdEnums::PredefinedKeywords>
+                public MSTable<MSFlagCmdEnums>
 {
 public:
 
@@ -125,8 +124,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void initMap();
-    static void initDesc();
+    static MSTableMaps initMaps();
 
 private:
 

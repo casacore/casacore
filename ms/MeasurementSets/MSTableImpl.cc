@@ -43,7 +43,6 @@
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
 #include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
 #include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
@@ -62,10 +61,6 @@
 #include <casacore/casa/iostream.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-// Initialize statics.
-CallOnce0 MSTableImpl::onceInitMap_p;
-CallOnce0 MSTableImpl::onceInitDesc_p;
 
   
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
@@ -112,21 +107,6 @@ void MSTableImpl::addMeasColumn(TableDesc& td, const String& column,
     TableMeasDesc<MEarthMagnetic> measCol(measVal, measRef);
     measCol.write(td);
   }
-}
-
-Int MSTableImpl::mapType(const std::map<Int,String>& columnMap,
-			 const String &name)
-{
-    // find first occurrance of name in the map (must be only occurrance)
- 
-    Int type = 0; //# 0=UNDEFINED_COLUMN for all enums
-    for (auto kv : columnMap) {
-        if (kv.second == name) {
-          type = kv.first;
-            break;
-        }
-    }
-    return type;
 }
 
 void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
@@ -453,10 +433,8 @@ void MSTableImpl::colMapDef(std::map<Int,String>& columnMap,
     columnMap[col] = colName;
     colDTypeMap[col] = colType;
     colCommentMap[col] = colComment;
-    // no need to define these unless they are different from the
-    // default, which is an empty string
-    if (colUnit != "") colUnitMap[col] = colUnit;
-    if (colMeasureType != "") colMeasureTypeMap[col] = colMeasureType;
+    colUnitMap[col] = colUnit;
+    colMeasureTypeMap[col] = colMeasureType;
 }
 
 void MSTableImpl::keyMapDef(std::map<Int,String>& keywordMap,
@@ -568,66 +546,44 @@ Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName,
   return msTab;
 }
 
-void MSTableImpl::initMap()
-{
-  onceInitMap_p(doInitMap);
-}
 
-void MSTableImpl::init()
-{
-  onceInitMap_p(doInitMap);
-  onceInitDesc_p(doInitDesc);
-}
-
-void MSTableImpl::doInitMap()
-{
-  // Initialize column/keyword maps
-  MeasurementSet::initMap();
-  MSAntenna::initMap();
-  MSDataDescription::initMap();
-  MSDoppler::initMap();
-  MSFeed::initMap();
-  MSField::initMap();
-  MSFlagCmd::initMap();
-  MSFreqOffset::initMap();
-  MSHistory::initMap();
-  MSObservation::initMap();
-  MSPointing::initMap();
-  MSPolarization::initMap();
-  MSProcessor::initMap();
-  MSSource::initMap();
-  MSSpectralWindow::initMap();
-  MSState::initMap();
-  MSSysCal::initMap();
-  MSWeather::initMap();
-}
-
-void MSTableImpl::doInitDesc()
-{
-  // Initialize (sub)table descriptions
-  MeasurementSet::initDesc();
-  MSAntenna::initDesc();
-  MSDataDescription::initDesc();
-  MSDoppler::initDesc();
-  MSFeed::initDesc();
-  MSField::initDesc();
-  MSFlagCmd::initDesc();
-  MSFreqOffset::initDesc();
-  MSHistory::initDesc();
-  MSObservation::initDesc();
-  MSPointing::initDesc();
-  MSPolarization::initDesc();
-  MSProcessor::initDesc();
-  MSSource::initDesc();
-  MSSpectralWindow::initDesc();
-  MSState::initDesc();
-  MSSysCal::initDesc();
-  MSWeather::initDesc();
-}
-
-
-
-
+MSTableMaps MSTableImpl::initMaps(MSMainEnums*)
+  { return MeasurementSet::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSAntennaEnums*)
+  { return MSAntenna::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSDataDescriptionEnums*)
+  { return MSDataDescription::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSDopplerEnums*)
+  { return MSDoppler::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSFeedEnums*)
+  { return MSFeed::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSFieldEnums*)
+  { return MSField::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSFlagCmdEnums*)
+  { return MSFlagCmd::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSFreqOffsetEnums*)
+  { return MSFreqOffset::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSHistoryEnums*)
+  { return MSHistory::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSObservationEnums*)
+  { return MSObservation::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSPointingEnums*)
+  { return MSPointing::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSPolarizationEnums*)
+  { return MSPolarization::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSProcessorEnums*)
+  { return MSProcessor::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSSourceEnums*)
+  { return MSSource::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSSpectralWindowEnums*)
+  { return MSSpectralWindow::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSStateEnums*)
+  { return MSState::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSSysCalEnums*)
+  { return MSSysCal::initMaps(); }
+MSTableMaps MSTableImpl::initMaps(MSWeatherEnums*)
+  { return MSWeather::initMaps(); }
 
 } //# NAMESPACE CASACORE - END
+
 

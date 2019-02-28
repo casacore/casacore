@@ -44,8 +44,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSSysCal::MSSysCal():hasBeenDestroyed_p(True) { }
 
 MSSysCal::MSSysCal(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+  : MSTable<MSSysCalEnums>(tableName, option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -55,8 +55,7 @@ MSSysCal::MSSysCal(const String &tableName, TableOption option)
 
 MSSysCal::MSSysCal(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSSysCalEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -67,8 +66,7 @@ MSSysCal::MSSysCal(const String& tableName, const String &tableDescName,
 
 MSSysCal::MSSysCal(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSSysCalEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -78,8 +76,7 @@ MSSysCal::MSSysCal(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSSysCal::MSSysCal(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSSysCalEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -88,8 +85,7 @@ MSSysCal::MSSysCal(const Table &table)
 }
 
 MSSysCal::MSSysCal(const MSSysCal &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSSysCalEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -117,124 +113,120 @@ MSSysCal::~MSSysCal()
 MSSysCal& MSSysCal::operator=(const MSSysCal &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSSysCalEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSSysCal::initMap()
+MSTableMaps MSSysCal::initMaps()
 {
-  AlwaysAssert (columnMap_p.empty(), AipsError);
+  MSTableMaps maps;
+  AlwaysAssert (maps.columnMap_p.empty(), AipsError);
   // the PredefinedColumns
   // ANTENNA_ID
-  colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
+  colMapDef(maps, ANTENNA_ID, "ANTENNA_ID", TpInt,
             "ID of antenna in this array","","");
   // FEED_ID
-  colMapDef(FEED_ID,"FEED_ID",TpInt,
+  colMapDef(maps, FEED_ID,"FEED_ID",TpInt,
             "Feed id","","");
   // INTERVAL
-  colMapDef(INTERVAL,"INTERVAL",TpDouble,
+  colMapDef(maps, INTERVAL,"INTERVAL",TpDouble,
             "Interval for which this set of parameters is accurate",
             "s","");
   // SPECTRAL_WINDOW_ID
-  colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
+  colMapDef(maps, SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
             "ID for this spectral window setup","","");
   // TIME
-  colMapDef(TIME,"TIME",TpDouble,
+  colMapDef(maps, TIME,"TIME",TpDouble,
             "Midpoint of time for which this set of "
             "parameters is accurate","s","Epoch");
   // PHASE_DIFF
-  colMapDef(PHASE_DIFF,"PHASE_DIFF",TpFloat,
+  colMapDef(maps, PHASE_DIFF,"PHASE_DIFF",TpFloat,
             "Phase difference between receptor 2 and receptor 1",
             "rad","");
   // PHASE_DIFF_FLAG
-  colMapDef(PHASE_DIFF_FLAG,"PHASE_DIFF_FLAG",TpBool,
+  colMapDef(maps, PHASE_DIFF_FLAG,"PHASE_DIFF_FLAG",TpBool,
             "Flag for PHASE_DIFF","","");
   // TANT
-  colMapDef(TANT,"TANT",TpArrayFloat,
+  colMapDef(maps, TANT,"TANT",TpArrayFloat,
             "Antenna temperature for each receptor","K","");
   // TANT_FLAG
-  colMapDef(TANT_FLAG,"TANT_FLAG",TpBool,
+  colMapDef(maps, TANT_FLAG,"TANT_FLAG",TpBool,
             "Flag for TANT","","");
   // TANT_SPECTRUM
-  colMapDef(TANT_SPECTRUM,"TANT_SPECTRUM",TpArrayFloat,
+  colMapDef(maps, TANT_SPECTRUM,"TANT_SPECTRUM",TpArrayFloat,
             "Antenna temperature for each channel and receptor","K","");
   // TANT_TSYS
-  colMapDef(TANT_TSYS,"TANT_TSYS",TpArrayFloat,
+  colMapDef(maps, TANT_TSYS,"TANT_TSYS",TpArrayFloat,
             "Ratio of Antenna & system temperature for each receptor",
             "","");
   // TANT_TSYS_FLAG
-  colMapDef(TANT_TSYS_FLAG,"TANT_TSYS_FLAG",TpBool,
+  colMapDef(maps, TANT_TSYS_FLAG,"TANT_TSYS_FLAG",TpBool,
             "Flag for TANT_TSYS","","");
   // TANT_TSYS_SPECTRUM
-  colMapDef(TANT_TSYS_SPECTRUM,"TANT_TSYS_SPECTRUM",TpArrayFloat,
+  colMapDef(maps, TANT_TSYS_SPECTRUM,"TANT_TSYS_SPECTRUM",TpArrayFloat,
             "Ratio of Antenna & system temperature for each channel "
             "and receptor","","");
   // TCAL
-  colMapDef(TCAL,"TCAL",TpArrayFloat,
+  colMapDef(maps, TCAL,"TCAL",TpArrayFloat,
             "Calibration temperature for each receptor","K","");
   // TCAL_FLAG
-  colMapDef(TCAL_FLAG,"TCAL_FLAG",TpBool,
+  colMapDef(maps, TCAL_FLAG,"TCAL_FLAG",TpBool,
             "Flag for TCAL","","");
   // TCAL_SPECTRUM
-  colMapDef(TCAL_SPECTRUM,"TCAL_SPECTRUM",TpArrayFloat,
+  colMapDef(maps, TCAL_SPECTRUM,"TCAL_SPECTRUM",TpArrayFloat,
             "Calibration temperature for each channel and receptor","K","");
   // TRX 
-  colMapDef(TRX,"TRX",TpArrayFloat,
+  colMapDef(maps, TRX,"TRX",TpArrayFloat,
             "Receiver temperature for each of the two receptors","K","");
   // TRX_FLAG
-  colMapDef(TRX_FLAG,"TRX_FLAG",TpBool,
+  colMapDef(maps, TRX_FLAG,"TRX_FLAG",TpBool,
             "Flag for TRX","","");
   // TRX_SPECTRUM
-  colMapDef(TRX_SPECTRUM,"TRX_SPECTRUM",TpArrayFloat,
+  colMapDef(maps, TRX_SPECTRUM,"TRX_SPECTRUM",TpArrayFloat,
             "Receiver temperature for each channel and receptor","K","");
   // TSKY 
-  colMapDef(TSKY,"TSKY",TpArrayFloat,
+  colMapDef(maps, TSKY,"TSKY",TpArrayFloat,
             "Sky temperature for each of the two receptors","K","");
   // TSKY_FLAG
-  colMapDef(TSKY_FLAG,"TSKY_FLAG",TpBool,
+  colMapDef(maps, TSKY_FLAG,"TSKY_FLAG",TpBool,
             "Flag for TSKY","","");
   // TSKY_SPECTRUM
-  colMapDef(TSKY_SPECTRUM,"TSKY_SPECTRUM",TpArrayFloat,
+  colMapDef(maps, TSKY_SPECTRUM,"TSKY_SPECTRUM",TpArrayFloat,
             "Sky temperature for each channel and receptor","K","");
   // TSYS
-  colMapDef(TSYS,"TSYS",TpArrayFloat,
+  colMapDef(maps, TSYS,"TSYS",TpArrayFloat,
             "System temp. for each of the two receptors","K","");
   // TSYS_FLAG
-  colMapDef(TSYS_FLAG,"TSYS_FLAG",TpBool,
+  colMapDef(maps, TSYS_FLAG,"TSYS_FLAG",TpBool,
             "Flag for TSYS","","");
   // TSYS_SPECTRUM
-  colMapDef(TSYS_SPECTRUM,"TSYS_SPECTRUM",TpArrayFloat,
+  colMapDef(maps, TSYS_SPECTRUM,"TSYS_SPECTRUM",TpArrayFloat,
             "System temperature for each channel and receptor","K","");
   
   // PredefinedKeywords
-}
 
-void MSSysCal::initDesc()
-{
   // init requiredTableDesc
-  TableDesc requiredTD;
   // all required keywords
   uInt i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-    addKeyToDesc(requiredTD, PredefinedKeywords(i));
+    addKeyToDesc(maps, PredefinedKeywords(i));
   }
-  
   // all required columns 
   for (i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
-    addColumnToDesc(requiredTD, PredefinedColumns(i));
+    addColumnToDesc(maps, PredefinedColumns(i));
   }
-  requiredTD_p=new TableDesc(requiredTD);
+
+  return maps;
 }
 
 MSSysCal MSSysCal::referenceCopy(const String& newTableName, 
 				 const Block<String>& writableColumns) const
 {
-    return MSSysCal(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
+    return MSSysCal(MSTable<MSSysCalEnums>::referenceCopy
 		    (newTableName,writableColumns));
 }
 
