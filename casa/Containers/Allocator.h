@@ -310,21 +310,8 @@ class Allocator_private {
   };
   template<typename Allocator>
   static BulkAllocatorImpl<Allocator> *get_allocator_raw() {
-    static union {
-      void *dummy;
-      char alloc_obj[sizeof(BulkAllocatorImpl<Allocator> )];
-    } u;
-    static BulkAllocatorImpl<Allocator> *ptr = 0;
-    // Probably this method is called from BulkAllocatorInitializer<Allocator> first
-    // while static initialization
-    // and other threads are not started yet.
-    if (ptr == 0) {
-      // Use construct below to avoid https://gcc.gnu.org/bugzilla/show_bug.cgi?id=42032 
-      ::new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(u.alloc_obj)) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
-      //      ::new (u.alloc_obj) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
-      ptr = reinterpret_cast<BulkAllocatorImpl<Allocator> *>(u.alloc_obj);
-    }
-    return ptr;
+    static BulkAllocatorImpl<Allocator> allocator;
+    return &allocator;
   }
 
   // <summary>Allocator specifier</summary>
