@@ -32,78 +32,79 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
-void UnitMap::initUMCust1() {
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+void UnitMap::initUMCust1 (UMaps& maps) {
+  map<String, UnitName>& mapCust = maps.mapCust;
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("sq_deg", 	UnitName("sq_deg",
-						 UnitVal(C::square_degree,"sr"),
+						 UnitVal(C::square_degree, "sr", &maps),
 						 "square degree")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("sq_arcmin", UnitName("sq_arcmin",
-						  UnitVal(C::square_arcmin,"sr"),
+						  UnitVal(C::square_arcmin, "sr", &maps),
 						  "square arcmin")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("sq_arcsec", UnitName("sq_arcsec",
-						  UnitVal(C::square_arcsec,"sr"),
+						  UnitVal(C::square_arcsec, "sr", &maps),
 						  "square arcsec")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("deg_2",  	UnitName("deg_2",
-						 UnitVal(C::square_degree,"sr"),
+						 UnitVal(C::square_degree, "sr", &maps),
 						 "square degree")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("arcmin_2",  UnitName("arcmin_2",
-						  UnitVal(C::square_arcmin,"sr"),
+						  UnitVal(C::square_arcmin,"sr", &maps),
 						  "square arcmin")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("arcsec_2",  UnitName("arcsec_2",
-						  UnitVal(C::square_arcsec,"sr"),
+						  UnitVal(C::square_arcsec, "sr", &maps),
 						  "square arcsec")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("'",   	UnitName("'",
-						 UnitVal(C::arcmin,"rad"),
+						 UnitVal(C::arcmin, "rad", &maps),
 						 "arcmin")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("''",   	UnitName("''",
-						 UnitVal(C::arcsec,"rad"),
+						 UnitVal(C::arcsec, "rad", &maps),
 						 "arcsec")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("\"",   	UnitName("\"",
-						 UnitVal(C::arcsec,"rad"),
+						 UnitVal(C::arcsec, "rad", &maps),
 						 "arcsec")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("'_2",  	UnitName("'_2",
-						 UnitVal(C::square_arcmin,"sr"),
+						 UnitVal(C::square_arcmin, "sr", &maps),
 						 "square arcmin")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("''_2",  	UnitName("''_2",
-						 UnitVal(C::square_arcsec,"sr"),
+						 UnitVal(C::square_arcsec, "sr", &maps),
 						 "square arcsec")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("\"_2",  	UnitName("\"_2",
-						 UnitVal(C::square_arcsec,"sr"),
+						 UnitVal(C::square_arcsec, "sr", &maps),
 						 "square arcsec")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   (":",   	UnitName(":",
-						 UnitVal(1.,"h"),
+						 UnitVal(1., "h", &maps),
 						 "hour")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("::",   	UnitName("::",
-						 UnitVal(1.,"min"),
+						 UnitVal(1., "min", &maps),
 						 "minute")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   (":::",   	UnitName(":::",
-						 UnitVal(1.,"s"),
+						 UnitVal(1., "s", &maps),
 						 "second")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("FU",   	UnitName("FU",
-						 UnitVal(1.,"Jy"),
+						 UnitVal(1., "Jy", &maps),
 						 "flux unit")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("fu",   	UnitName("fu",
-						 UnitVal(1.,"FU"),
+						 UnitVal(1., "FU", &maps),
 						 "flux unit")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("WU",   	UnitName("WU",
-						 UnitVal(5.,"mJy"),
+						 UnitVal(5., "mJy", &maps),
 						 "WSRT flux unit")));
 }
 

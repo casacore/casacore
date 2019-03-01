@@ -43,8 +43,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSFlagCmd::MSFlagCmd():hasBeenDestroyed_p(True) { }
 
 MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+  : MSTable<MSFlagCmdEnums>(tableName, option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +54,7 @@ MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option)
 
 MSFlagCmd::MSFlagCmd(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSFlagCmdEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +65,7 @@ MSFlagCmd::MSFlagCmd(const String& tableName, const String &tableDescName,
 
 MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSFlagCmdEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +75,7 @@ MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSFlagCmd::MSFlagCmd(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSFlagCmdEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +84,7 @@ MSFlagCmd::MSFlagCmd(const Table &table)
 }
 
 MSFlagCmd::MSFlagCmd(const MSFlagCmd &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSFlagCmdEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,69 +112,66 @@ MSFlagCmd::~MSFlagCmd()
 MSFlagCmd& MSFlagCmd::operator=(const MSFlagCmd &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSFlagCmdEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSFlagCmd::init()
+MSTableMaps MSFlagCmd::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// APPLIED
-	colMapDef(APPLIED, "APPLIED", TpBool,
-		  "True if flag has been applied to main table","","");
-	// COMMAND
-	colMapDef(COMMAND, "COMMAND", TpString,
-		  "Flagging command","","");
-	// INTERVAL
-	colMapDef(INTERVAL,"INTERVAL", TpDouble,
-		  "Time interval for which this flag is valid","s","");
-	// LEVEL
-	colMapDef(LEVEL, "LEVEL", TpInt,
-		  "Flag level - revision level ","","");
-	// REASON
-	colMapDef(REASON, "REASON", TpString,
-		  "Flag reason","","");
-	// SEVERITY
-	colMapDef(SEVERITY, "SEVERITY", TpInt,
-		  "Severity code (0-10) ","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Midpoint of interval for which this flag is valid",
-		  "s","Epoch");
-	// TYPE
-	colMapDef(TYPE, "TYPE", TpString,
-		  "Type of flag (FLAG or UNFLAG)","","");
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // APPLIED
+  colMapDef(maps, APPLIED, "APPLIED", TpBool,
+            "True if flag has been applied to main table","","");
+  // COMMAND
+  colMapDef(maps, COMMAND, "COMMAND", TpString,
+            "Flagging command","","");
+  // INTERVAL
+  colMapDef(maps, INTERVAL,"INTERVAL", TpDouble,
+            "Time interval for which this flag is valid","s","");
+  // LEVEL
+  colMapDef(maps, LEVEL, "LEVEL", TpInt,
+            "Flag level - revision level ","","");
+  // REASON
+  colMapDef(maps, REASON, "REASON", TpString,
+            "Flag reason","","");
+  // SEVERITY
+  colMapDef(maps, SEVERITY, "SEVERITY", TpInt,
+            "Severity code (0-10) ","","");
+  // TIME
+  colMapDef(maps, TIME, "TIME", TpDouble,
+            "Midpoint of interval for which this flag is valid",
+            "s","Epoch");
+  // TYPE
+  colMapDef(maps, TYPE, "TYPE", TpString,
+            "Type of flag (FLAG or UNFLAG)","","");
+  
+  // PredefinedKeywords
 
-	// PredefinedKeywords
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  return maps;
 }
 
 	
 MSFlagCmd MSFlagCmd::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MSFlagCmd(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSFlagCmd(MSTable<MSFlagCmdEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

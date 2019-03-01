@@ -25,64 +25,44 @@
 //#
 //# $Id$
 
-#include <casacore/ms/MeasurementSets/MSTable.h>
-#include <casacore/ms/MeasurementSets/MSAntennaEnums.h>
-#include <casacore/ms/MeasurementSets/MSDataDescEnums.h>
-#include <casacore/ms/MeasurementSets/MSDopplerEnums.h>
-#include <casacore/ms/MeasurementSets/MSFeedEnums.h>
-#include <casacore/ms/MeasurementSets/MSFieldEnums.h>
-#include <casacore/ms/MeasurementSets/MSFlagCmdEnums.h>
-#include <casacore/ms/MeasurementSets/MSFreqOffEnums.h>
-#include <casacore/ms/MeasurementSets/MSHistoryEnums.h>
-#include <casacore/ms/MeasurementSets/MSMainEnums.h>
-#include <casacore/ms/MeasurementSets/MSObsEnums.h>
-#include <casacore/ms/MeasurementSets/MSPointingEnums.h>
-#include <casacore/ms/MeasurementSets/MSPolEnums.h>
-#include <casacore/ms/MeasurementSets/MSProcessorEnums.h>
-#include <casacore/ms/MeasurementSets/MSSourceEnums.h>
-#include <casacore/ms/MeasurementSets/MSSpWindowEnums.h>
-#include <casacore/ms/MeasurementSets/MSStateEnums.h>
-#include <casacore/ms/MeasurementSets/MSSysCalEnums.h>
-#include <casacore/ms/MeasurementSets/MSWeatherEnums.h>
+#include <casacore/ms/MeasurementSets/MSTable.tcc>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  template class MSTable<MSAntennaEnums::PredefinedColumns,
-                         MSAntennaEnums::PredefinedKeywords> ;
-  template class MSTable<MSDataDescriptionEnums::PredefinedColumns,
-                         MSDataDescriptionEnums::PredefinedKeywords> ;
-  template class MSTable<MSDopplerEnums::PredefinedColumns,
-                         MSDopplerEnums::PredefinedKeywords> ;
-  template class MSTable<MSFeedEnums::PredefinedColumns,
-                         MSFeedEnums::PredefinedKeywords> ;
-  template class MSTable<MSFieldEnums::PredefinedColumns,
-                         MSFieldEnums::PredefinedKeywords> ;
-  template class MSTable<MSFlagCmdEnums::PredefinedColumns,
-                         MSFlagCmdEnums::PredefinedKeywords> ;
-  template class MSTable<MSFreqOffsetEnums::PredefinedColumns,
-                         MSFreqOffsetEnums::PredefinedKeywords> ;
-  template class MSTable<MSHistoryEnums::PredefinedColumns,
-                         MSHistoryEnums::PredefinedKeywords> ;
-  template class MSTable<MSMainEnums::PredefinedColumns,
-                         MSMainEnums::PredefinedKeywords> ;
-  template class MSTable<MSObservationEnums::PredefinedColumns,
-                         MSObservationEnums::PredefinedKeywords> ;
-  template class MSTable<MSPointingEnums::PredefinedColumns,
-                         MSPointingEnums::PredefinedKeywords> ;
-  template class MSTable<MSPolarizationEnums::PredefinedColumns,
-                         MSPolarizationEnums::PredefinedKeywords> ;
-  template class MSTable<MSProcessorEnums::PredefinedColumns,
-                         MSProcessorEnums::PredefinedKeywords> ;
-  template class MSTable<MSSourceEnums::PredefinedColumns,
-                         MSSourceEnums::PredefinedKeywords> ;
-  template class MSTable<MSSpectralWindowEnums::PredefinedColumns,
-                         MSSpectralWindowEnums::PredefinedKeywords> ;
-  template class MSTable<MSStateEnums::PredefinedColumns,
-                         MSStateEnums::PredefinedKeywords> ;
-  template class MSTable<MSSysCalEnums::PredefinedColumns,
-                         MSSysCalEnums::PredefinedKeywords> ;
-  template class MSTable<MSWeatherEnums::PredefinedColumns,
-                         MSWeatherEnums::PredefinedKeywords> ;
+  Int MSTableMaps::mapType (const std::map<Int,String>& nameMap, const String& name) const
+  {
+    // find first occurrence of name in the map (should be only occurrence)
+    Int type = 0; //# 0=UNDEFINED_COLUMN for all enums
+    for (auto kv : nameMap) {
+      if (kv.second == name) {
+        type = kv.first;
+        break;
+      }
+    }
+    return type;
+  }
+
+
+  // Instantiate the templates.
+  template class MSTable<MSMainEnums>;
+
+  template class MSTable<MSAntennaEnums>;
+  template class MSTable<MSDataDescriptionEnums>;
+  template class MSTable<MSDopplerEnums>;
+  template class MSTable<MSFeedEnums>;
+  template class MSTable<MSFieldEnums>;
+  template class MSTable<MSFlagCmdEnums>;
+  template class MSTable<MSFreqOffsetEnums>;
+  template class MSTable<MSHistoryEnums>;
+  template class MSTable<MSObservationEnums>;
+  template class MSTable<MSPointingEnums>;
+  template class MSTable<MSPolarizationEnums>;
+  template class MSTable<MSProcessorEnums>;
+  template class MSTable<MSSourceEnums>;
+  template class MSTable<MSSpectralWindowEnums>;
+  template class MSTable<MSStateEnums>;
+  template class MSTable<MSSysCalEnums>;
+  template class MSTable<MSWeatherEnums>;
 
 } //# NAMESPACE CASACORE - END
 

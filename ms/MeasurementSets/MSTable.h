@@ -32,10 +32,10 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/Tables/Table.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -43,6 +43,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# static classes 
 class TableRecord;
 template <class T> class Block;
+
+
+// <summary> 
+// A struct holding the maps used in MSTable.
+// </summary>
+struct MSTableMaps
+{
+  // ColEnum -> name
+  std::map<Int, String> columnMap_p;
+  // ColEnum -> DataType
+  std::map<Int, Int> colDTypeMap_p;
+  // ColEnum -> comment string
+  std::map<Int, String> colCommentMap_p;
+  // ColEnum -> UNIT string
+  std::map<Int, String> colUnitMap_p;
+  // ColEnum -> MEASURE_TYPE string
+  std::map<Int, String> colMeasureTypeMap_p;
+  // KeyEnum -> name
+  std::map<Int, String> keywordMap_p;
+  // KeyEnum -> DataType
+  std::map<Int, Int> keyDTypeMap_p;
+  // KeyEnum -> comment string
+  std::map<Int, String> keyCommentMap_p;
+  // The required TableDesc
+  TableDesc requiredTD_p;
+
+  // Convert a name to a ColEnum or KeyEnum.
+  Int columnType (const String& name) const
+    { return mapType (columnMap_p, name); }
+  Int keywordType (const String& name) const
+    { return mapType (keywordMap_p, name); }
+  Int mapType (const std::map<Int,String>&, const String& name) const;
+};
+
 
 // <summary> 
 // A Table intended to hold astronomical data
@@ -109,9 +143,13 @@ template <class T> class Block;
 //      be necessary to modify referenceCopy().
 // </todo>
 
-template <class ColEnum, class KeyEnum> class MSTable : public Table 
+template <class MSEnum> class MSTable : public Table 
 {
 public:
+    // Define the column and keyword enuym types.
+    typedef typename MSEnum::PredefinedColumns ColEnum;
+    typedef typename MSEnum::PredefinedKeywords KeyEnum;
+  
     // ColEnum convenience functions
     // <group name=columns>
     // check to see if a column exists
@@ -166,7 +204,15 @@ public:
     // the ColumnDesc option (Fixed, Undefined, Direct) 
     // For Measure columns you can define a variable reference column.
     static void addColumnToDesc(TableDesc & tabDesc, ColEnum which,
-			  const IPosition& shape, ColumnDesc::Option option,
+                                const IPosition& shape, ColumnDesc::Option option,
+				const String& refCol="");
+    static void addColumnToDesc(MSTableMaps&, ColEnum which,
+				Int ndim=-1,const String& refCol="");
+    // add a column to a TableDesc, defining the shape and setting
+    // the ColumnDesc option (Fixed, Undefined, Direct) 
+    // For Measure columns you can define a variable reference column.
+    static void addColumnToDesc(MSTableMaps&, ColEnum which,
+                                const IPosition& shape, ColumnDesc::Option option,
 				const String& refCol="");
 
     // </group>
@@ -187,7 +233,8 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    static void addKeyToDesc(TableDesc & tabDesc, KeyEnum key);
+    static void addKeyToDesc(TableDesc&, KeyEnum key);
+    static void addKeyToDesc(MSTableMaps&, KeyEnum key);
 
     // </group>
 
@@ -235,40 +282,19 @@ protected:
     MSTable (SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
 	     Bool initialize);
     MSTable (const Table &table);
-    MSTable (const MSTable<ColEnum,KeyEnum> &other);
+    MSTable (const MSTable<MSEnum> &other);
     // </group>
     ~MSTable();
 
     //  Assignment operator, reference semantics
-    MSTable& operator=(const MSTable<ColEnum,KeyEnum>&);
- 
-    // These are the static ordered maps which contain the above info
-    // ColEnum -> name
-    static SimpleOrderedMap<Int, String> columnMap_p;
-    // ColEnum -> DataType
-    static SimpleOrderedMap<Int, Int> colDTypeMap_p;
-    // ColEnum -> comment string
-    static SimpleOrderedMap<Int, String> colCommentMap_p;
-    // ColEnum -> UNIT string
-    static SimpleOrderedMap<Int, String> colUnitMap_p;
-    // ColEnum -> MEASURE_TYPE string
-    static SimpleOrderedMap<Int, String> colMeasureTypeMap_p;
- 
+    MSTable& operator=(const MSTable<MSEnum>&);
 
-    // KeyEnum -> name
-    static SimpleOrderedMap<Int, String> keywordMap_p;
-    // KeyEnum -> DataType
-    static SimpleOrderedMap<Int, Int> keyDTypeMap_p;
-    // KeyEnum -> comment string
-    static SimpleOrderedMap<Int, String> keyCommentMap_p;
+    // Get the static struct containing all column and keyword mappings.
+    static MSTableMaps& getMaps();
 
-    // The required TableDesc
-    //# following fails in static initialization (segm. fault).
-    //    static TableDesc requiredTD_p;
-    static CountedPtr<TableDesc> requiredTD_p;
- 
     // Define an entry in the column maps
-    static void colMapDef(ColEnum col,
+    static void colMapDef(MSTableMaps& maps,
+                          ColEnum col,
 			  const String& colName,
 			  DataType colType,
 			  const String& colComment,
@@ -276,7 +302,8 @@ protected:
 			  const String& colMeasureType="");
 
     // Define an entry in the keyword maps
-    static void keyMapDef(KeyEnum key,
+    static void keyMapDef(MSTableMaps& maps,
+                          KeyEnum key,
 			  const String& keyName,
 			  DataType keyType,
 			  const String& keyComment);
@@ -286,26 +313,57 @@ protected:
     Table referenceCopy(const String& newTableName, 
 			const Block<String>& writableColumns) const;
 
+  // Convert a ColEnum to the actual column name.
+  inline static
+  const String& columnName(const MSTableMaps& maps,
+                           ColEnum which)
+    { return maps.columnMap_p.at(which); }
+
+  inline static
+  DataType columnDataType(const MSTableMaps& maps,
+                          ColEnum which)
+    { return DataType(maps.colDTypeMap_p.at(which)); }
+
+  inline static
+  const String& columnStandardComment(const MSTableMaps& maps,
+                                      ColEnum which)
+    { return maps.colCommentMap_p.at(which); }
+  
+  inline static
+  const String& columnUnit(const MSTableMaps& maps,
+                           ColEnum which)
+    { return maps.colUnitMap_p.at(which); }
+
+  inline static
+  const String& columnMeasureType(const MSTableMaps& maps,
+                                  ColEnum which)
+    { return maps.colMeasureTypeMap_p.at(which); }
+
+  inline static
+  const String& keywordName(const MSTableMaps& maps,
+                            KeyEnum which)
+    { return maps.keywordMap_p.at(which); }
+
+  inline static
+  DataType keywordDataType(const MSTableMaps& maps,
+                           KeyEnum which)
+    { return DataType(maps.keyDTypeMap_p.at(which)); }
+
+  inline static
+  const String& keywordStandardComment(const MSTableMaps& maps,
+                                       KeyEnum which)
+    { return maps.keyCommentMap_p.at(which); }
+
 };
 
 
 } //# NAMESPACE CASACORE - END
 
-// The CASACORE_NO_AUTO_TEMPLATES block had been commented out, and it's not clear
-// why it was since this is the standard pattern used in practically every other
-// case like this. Furthermore, when it was commented out, the CLANG compiler
-// produced copious warnings of the form:
-// /Users/dmehring/casa/casa-git/casacore/ms/MeasurementSets/MSFreqOffset.cc:128:11: warning: instantiation of variable 'casacore::MSTable<casacore::MSFreqOffsetEnums::PredefinedColumns, casacore::MSFreqOffsetEnums::PredefinedKeywords>::columnMap_p' required here, but no definition is available [-Wundefined-var-template]
-//    if (! columnMap_p.ndefined()) {
-//                  ^
-//                      /Users/dmehring/casa/casa-git/casacore/casacore/ms/MeasurementSets/MSTable.h:272:42: note: forward declaration of template entity is here 
-//                          static SimpleOrderedMap<Int, String> columnMap_p;
-//                                                           ^
-//                                                               /Users/dmehring/casa/casa-git/casacore/ms/MeasurementSets/MSFreqOffset.cc:128:11: note: add an explicit instantiation declaration to suppress this warning if 'casacore::MSTable<casacore::MSFreqOffsetEnums::PredefinedColumns, casacore::MSFreqOffsetEnums::PredefinedKeywords>::columnMap_p' is explicitly instantiated in another translation unit
-//                                                                   if (! columnMap_p.ndefined()) {
-//
-// which are no longer emitted when this standard template include block is present
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/ms/MeasurementSets/MSTable.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+
+//# Do not instantiate the templates automatically, because it means that the static
+//# in function getMaps() might be instantiated in many compilation units.
+//# The templates are instantiated in MSTable.cc.
+//#ifndef CASACORE_NO_AUTO_TEMPLATES
+//#include <casacore/ms/MeasurementSets/MSTable.tcc>
+//#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -76,8 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MSField:public MSFieldEnums,
-                public MSTable<MSFieldEnums::PredefinedColumns,
-		               MSFieldEnums::PredefinedKeywords>
+              public MSTable<MSFieldEnums>
 {
 public:
 
@@ -139,7 +138,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void init();
+    static MSTableMaps initMaps();
 
 private:
 
