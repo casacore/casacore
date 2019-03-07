@@ -194,7 +194,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsGroup; }
 
 	// Returns the current HDF5DataSet object
-	const CountedPtr<HDF5DataSet> array() const
+	const CountedPtr<HDF5DataSet>& array() const
 	{ return itsDataSet; }
 
     // Returns the name of this HDF5Lattice.
