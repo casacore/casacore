@@ -42,7 +42,7 @@ String Y = "world";
 String N = "123";
 String c;
 const Char*  s = ",";
-Regex  r = String("e[a-z]*o");
+Regex  r ("e[a-z]*o");
 
 void decltest() {
   String x;

@@ -35,7 +35,6 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicSL/IComplex.h>
-#include <casacore/casa/BasicSL/RegexBase.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/BasicSL/STLMath.h>
@@ -69,10 +68,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> Value <linkto class=Dummy_Constants_class:description>
 //       Constants</linkto>
 //       to offer mathematical and numerical constants.
-//  <li> Class <linkto class=RegexBase:description>
-//       RegexBase</linkto>
-//       to offer abstract interface to regular expressions for
-//       <linkto class=String>String</linkto>.
 //  <li> Class <linkto class=String:description>
 //       String</linkto>
 //       for handling character strings.

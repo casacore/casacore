@@ -121,7 +121,7 @@ Vector<String> DOos::fileNames (const String& directoryName,
   uInt n = 0;
   DirectoryIterator iter (dir);
   if (! fileNamePattern.empty()) {
-    iter = DirectoryIterator (dir, Regex::fromPattern (fileNamePattern));
+    iter = DirectoryIterator (dir, Regex(Regex::fromPattern (fileNamePattern)));
   }
   // Iterate through the directory and add matching name to result.
   // Skip names starting with . if all is False.

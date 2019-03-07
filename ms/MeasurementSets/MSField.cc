@@ -235,7 +235,7 @@ Bool MSField::removeEphemeris(const uInt id){
   Directory fieldDir(Path(this->tableName()).absoluteName());
   stringstream ss;
   ss << "EPHEM" << id << "_*.tab";
-  Regex ephemTableRegex = Regex::fromPattern(ss.str());
+  Regex ephemTableRegex (Regex::fromPattern(ss.str()));
   Vector<String> candidates = fieldDir.find(ephemTableRegex, True, False); // followSymLinks=True, recursive=False
   for(uInt i=0; i<candidates.size(); i++){
     Table tTab(fieldDir.path().absoluteName()+"/"+candidates(i));

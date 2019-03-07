@@ -1095,11 +1095,13 @@ TaqlRegex TableExprFuncNode::getRegex (const TableExprId& id)
 {
     switch (funcType_p) {
     case regexFUNC:
-      return TaqlRegex(Regex(operands_p[0]->getString (id)));
+      return TaqlRegex(Regex(operands_p[0]->getString (id), True));
     case patternFUNC:
-      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString (id))));
+      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString (id)),
+                             True));
     case sqlpatternFUNC:
-      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString (id))));
+      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString (id)),
+                             True));
     case iifFUNC:
       return operands_p[0]->getBool(id)  ?
         operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
