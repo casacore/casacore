@@ -33,10 +33,12 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-#include <memory>
-#include <typeinfo>
-
 #include <cstdlib>
+#include <memory>
+#include <new>
+#include <typeinfo>
+#include <type_traits>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASA_DEFAULT_ALIGNMENT
@@ -301,17 +303,13 @@ class Allocator_private {
   static BulkAllocator<typename Allocator::value_type> *get_allocator() {
     return get_allocator_raw<Allocator>();
   }
-  template<typename Allocator>
-  class BulkAllocatorInitializer {
-    BulkAllocatorInitializer() {
-      get_allocator_raw<Allocator>();
-    }
-    static BulkAllocatorInitializer<Allocator> instance;
-  };
+
   template<typename Allocator>
   static BulkAllocatorImpl<Allocator> *get_allocator_raw() {
-    static BulkAllocatorImpl<Allocator> allocator;
-    return &allocator;
+    static typename std::aligned_storage<sizeof(BulkAllocatorImpl<Allocator>), alignof(BulkAllocatorImpl<Allocator>)>::type storage;
+    static BulkAllocatorImpl<Allocator> *ptr =
+      new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(&storage)) BulkAllocatorImpl<Allocator>();
+    return ptr;
   }
 
   // <summary>Allocator specifier</summary>
@@ -328,8 +326,8 @@ class Allocator_private {
 template<typename Allocator>
 Allocator Allocator_private::BulkAllocatorImpl<Allocator>::allocator;
 
-template<typename Allocator>
-Allocator_private::BulkAllocatorInitializer<Allocator> Allocator_private::BulkAllocatorInitializer<Allocator>::instance;
+//template<typename Allocator>
+//Allocator_private::BulkAllocatorInitializer<Allocator> Allocator_private::BulkAllocatorInitializer<Allocator>::instance;
 
 template<typename T>
 class AbstractAllocator {
