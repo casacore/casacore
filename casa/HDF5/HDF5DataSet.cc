@@ -275,11 +275,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (itsPLid.getHid() < 0) {
       throw HDF5Error("Data set array " + name + " does not have properties");
     }
-    // Get tile shape and check if its rank matches.
-    if (H5Pget_chunk(itsPLid, rank, shp.storage()) != rank) {
-      throw HDF5Error("Data set array " + name + " tile shape error");
+    H5D_layout_t layout = H5Pget_layout(itsPLid);
+    if (layout != H5D_CONTIGUOUS) {
+      // Get tile shape and check if its rank matches.
+      if (H5Pget_chunk(itsPLid, rank, shp.storage()) != rank) {
+        throw HDF5Error("Data set array " + name + " tile shape error");
+      }
+      itsTileShape = HDF5DataType::toShape(shp);
     }
-    itsTileShape = HDF5DataType::toShape(shp);
   }
 
   void HDF5DataSet::closeDataSet()

@@ -54,7 +54,7 @@ uInt tColumnStatics()
     // ensure that the conversions are consistent
     uInt errCount = 0;
 
-    for (Int i=0;i<MS::NUMBER_PREDEFINED_COLUMNS;i++) {
+    for (Int i=1;i<MS::NUMBER_PREDEFINED_COLUMNS;i++) {
 	MS::PredefinedColumns pdcol = MS::PredefinedColumns(i);
 	MS::columnDataType(pdcol);
 	String pdname = MS::columnName(pdcol);
@@ -94,7 +94,7 @@ uInt tKeywordStatics()
 
     // MS::PredefinedKeywords
 
-    for (uInt i=0;i<MS::NUMBER_PREDEFINED_KEYWORDS;i++) {
+    for (uInt i=1;i<MS::NUMBER_PREDEFINED_KEYWORDS;i++) {
 	MS::PredefinedKeywords pdkey = MS::PredefinedKeywords(i);
 	String pdname = MS::keywordName(pdkey);
 	MS::PredefinedKeywords pdtype = MS::keywordType(pdname);

@@ -40,11 +40,13 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSHistory::MSHistory():hasBeenDestroyed_p(True) { }
+MSHistory::MSHistory()
+  : hasBeenDestroyed_p(True)
+{}
 
 MSHistory::MSHistory(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+  : MSTable<MSHistoryEnums>(tableName, option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,9 +56,8 @@ MSHistory::MSHistory(const String &tableName, TableOption option)
 
 MSHistory::MSHistory(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+  : MSTable<MSHistoryEnums>(tableName, tableDescName,option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -66,8 +67,7 @@ MSHistory::MSHistory(const String& tableName, const String &tableDescName,
 
 MSHistory::MSHistory(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSHistoryEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +77,7 @@ MSHistory::MSHistory(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSHistory::MSHistory(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSHistoryEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +86,7 @@ MSHistory::MSHistory(const Table &table)
 }
 
 MSHistory::MSHistory(const MSHistory &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSHistoryEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,72 +114,70 @@ MSHistory::~MSHistory()
 MSHistory& MSHistory::operator=(const MSHistory &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSHistoryEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSHistory::init()
+MSTableMaps MSHistory::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-      // the PredefinedColumns
-      // APPLICATION
-      colMapDef(APPLICATION,"APPLICATION",TpString,
-		"Application name","","");
-      // APP_PARAMS
-      colMapDef(APP_PARAMS,"APP_PARAMS",TpArrayString,
-		"Application parameters","","");
-      // CLI_COMMAND
-      colMapDef(CLI_COMMAND,"CLI_COMMAND",TpArrayString,
-		"CLI command sequence","","");
-      // MESSAGE
-      colMapDef(MESSAGE,"MESSAGE",TpString,
-		"Log message","","");
-      // OBJECT_ID
-      colMapDef(OBJECT_ID,"OBJECT_ID",TpInt,
-		"Originating ObjectID","","");
-      // OBSERVATION_ID
-      colMapDef(OBSERVATION_ID, "OBSERVATION_ID", TpInt,
-		"Observation id (index in OBSERVATION table)","","");
-      // ORIGIN
-      colMapDef(ORIGIN,"ORIGIN",TpString,
-		"(Source code) origin from which message originated","","");
-      // PRIORITY
-      colMapDef(PRIORITY,"PRIORITY",TpString,
-		"Message priority","","");
-      // TIME
-      colMapDef(TIME,"TIME",TpDouble,
-		"Timestamp of message","s","Epoch");
-      // PredefinedKeywords
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // APPLICATION
+  colMapDef(maps, APPLICATION,"APPLICATION",TpString,
+            "Application name","","");
+  // APP_PARAMS
+  colMapDef(maps, APP_PARAMS,"APP_PARAMS",TpArrayString,
+            "Application parameters","","");
+  // CLI_COMMAND
+  colMapDef(maps, CLI_COMMAND,"CLI_COMMAND",TpArrayString,
+            "CLI command sequence","","");
+  // MESSAGE
+  colMapDef(maps, MESSAGE,"MESSAGE",TpString,
+            "Log message","","");
+  // OBJECT_ID
+  colMapDef(maps, OBJECT_ID,"OBJECT_ID",TpInt,
+            "Originating ObjectID","","");
+  // OBSERVATION_ID
+  colMapDef(maps, OBSERVATION_ID, "OBSERVATION_ID", TpInt,
+            "Observation id (index in OBSERVATION table)","","");
+  // ORIGIN
+  colMapDef(maps, ORIGIN,"ORIGIN",TpString,
+            "(Source code) origin from which message originated","","");
+  // PRIORITY
+  colMapDef(maps, PRIORITY,"PRIORITY",TpString,
+            "Message priority","","");
+  // TIME
+  colMapDef(maps, TIME,"TIME",TpDouble,
+            "Timestamp of message","s","Epoch");
+  // PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	// define the columns with known dimensionality
-	addColumnToDesc(requiredTD, APP_PARAMS, 1);
-	addColumnToDesc(requiredTD, CLI_COMMAND, 1);
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // define the columns with known dimensionality
+  addColumnToDesc(maps, APP_PARAMS, 1);
+  addColumnToDesc(maps, CLI_COMMAND, 1);
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
+
+  return maps;
 }
 
 	
 MSHistory MSHistory::referenceCopy(const String& newTableName, 
 				   const Block<String>& writableColumns) const
 {
-  return MSHistory(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
-		 (newTableName,writableColumns));
+  return MSHistory(MSTable<MSHistoryEnums>::referenceCopy
+                   (newTableName,writableColumns));
 }
 
 } //# NAMESPACE CASACORE - END

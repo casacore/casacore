@@ -45,8 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSField::MSField():hasBeenDestroyed_p(True) { }
 
 MSField::MSField(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSFieldEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -56,8 +55,7 @@ MSField::MSField(const String &tableName, TableOption option)
 
 MSField::MSField(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSFieldEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -68,8 +66,7 @@ MSField::MSField(const String& tableName, const String &tableDescName,
 
 MSField::MSField(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSFieldEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -79,8 +76,7 @@ MSField::MSField(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSField::MSField(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSFieldEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -89,8 +85,7 @@ MSField::MSField(const Table &table)
 }
 
 MSField::MSField(const MSField &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSFieldEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -118,82 +113,79 @@ MSField::~MSField()
 MSField& MSField::operator=(const MSField &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSFieldEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSField::init()
+MSTableMaps MSField::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// CODE
-	colMapDef(CODE, "CODE", TpString,
-		  "Special characteristics of field, "
-		  "e.g. Bandpass calibrator","","");
-	// DELAY_DIR
-	colMapDef(DELAY_DIR, "DELAY_DIR", TpArrayDouble,
-		  "Direction of delay center (e.g. RA, DEC)" 
-		  "as polynomial in time.","rad","Direction");
-	// EPHEMERIS_ID
-	colMapDef(EPHEMERIS_ID,"EPHEMERIS_ID", TpInt,
-		  "Ephemeris id, pointer to EPHEMERIS table","","");
-	// FLAG_ROW
-	colMapDef(FLAG_ROW, "FLAG_ROW", TpBool,
-		  "Row Flag","","");
-	// NAME
-	colMapDef(NAME, "NAME", TpString,
-		  "Name of this field","","");
-	// NUM_POLY
-	colMapDef(NUM_POLY, "NUM_POLY", TpInt,
-		  "Polynomial order of _DIR columns","","");
-	// PHASE_DIR 
-	colMapDef(PHASE_DIR, "PHASE_DIR", TpArrayDouble,
-		  "Direction of phase center (e.g. RA, DEC).",
-		  "rad","Direction");
-	// REFERENCE_DIR 
-	colMapDef(REFERENCE_DIR, "REFERENCE_DIR", TpArrayDouble,
-		  "Direction of REFERENCE center (e.g. RA, DEC)."
-		  "as polynomial in time.","rad","Direction");
-	// SOURCE_ID
-	colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
-		  "Source id","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Time origin for direction and rate","s","Epoch");
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // CODE
+  colMapDef(maps, CODE, "CODE", TpString,
+            "Special characteristics of field, "
+            "e.g. Bandpass calibrator","","");
+  // DELAY_DIR
+  colMapDef(maps, DELAY_DIR, "DELAY_DIR", TpArrayDouble,
+            "Direction of delay center (e.g. RA, DEC)" 
+            "as polynomial in time.","rad","Direction");
+  // EPHEMERIS_ID
+  colMapDef(maps, EPHEMERIS_ID,"EPHEMERIS_ID", TpInt,
+            "Ephemeris id, pointer to EPHEMERIS table","","");
+  // FLAG_ROW
+  colMapDef(maps, FLAG_ROW, "FLAG_ROW", TpBool,
+            "Row Flag","","");
+  // NAME
+  colMapDef(maps, NAME, "NAME", TpString,
+            "Name of this field","","");
+  // NUM_POLY
+  colMapDef(maps, NUM_POLY, "NUM_POLY", TpInt,
+            "Polynomial order of _DIR columns","","");
+  // PHASE_DIR 
+  colMapDef(maps, PHASE_DIR, "PHASE_DIR", TpArrayDouble,
+            "Direction of phase center (e.g. RA, DEC).",
+            "rad","Direction");
+  // REFERENCE_DIR 
+  colMapDef(maps, REFERENCE_DIR, "REFERENCE_DIR", TpArrayDouble,
+            "Direction of REFERENCE center (e.g. RA, DEC)."
+            "as polynomial in time.","rad","Direction");
+  // SOURCE_ID
+  colMapDef(maps, SOURCE_ID, "SOURCE_ID", TpInt,
+            "Source id","","");
+  // TIME
+  colMapDef(maps, TIME, "TIME", TpDouble,
+            "Time origin for direction and rate","s","Epoch");
+  
+  // PredefinedKeywords
 
-	// PredefinedKeywords
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
+  // First define the columns with known dimensionality
+  addColumnToDesc(maps, DELAY_DIR, 2);
+  addColumnToDesc(maps, PHASE_DIR, 2);
+  addColumnToDesc(maps, REFERENCE_DIR, 2);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// First define the columns with known dimensionality
-	addColumnToDesc(requiredTD, DELAY_DIR, 2);
-	addColumnToDesc(requiredTD, PHASE_DIR, 2);
-	addColumnToDesc(requiredTD, REFERENCE_DIR, 2);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  return maps;
 }
 
 	
 MSField MSField::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MSField(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSField(MSTable<MSFieldEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

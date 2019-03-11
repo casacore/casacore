@@ -41,7 +41,6 @@
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

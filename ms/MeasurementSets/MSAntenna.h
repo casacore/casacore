@@ -77,8 +77,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 class MSAntenna:public MSAntennaEnums,
-                public MSTable<MSAntennaEnums::PredefinedColumns,
-		               MSAntennaEnums::PredefinedKeywords>
+                public MSTable<MSAntennaEnums>
 {
 public:
     // This constructs an empty MSAntenna
@@ -125,7 +124,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void init();
+    static MSTableMaps initMaps();
 
 private:
 

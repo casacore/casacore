@@ -75,8 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MSProcessor:public MSProcessorEnums,
-		  public MSTable<MSProcessorEnums::PredefinedColumns,
-		                 MSProcessorEnums::PredefinedKeywords>
+		  public MSTable<MSProcessorEnums>
 {
 public:
 
@@ -124,7 +123,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void init();
+    static MSTableMaps initMaps();
 
 private:
 

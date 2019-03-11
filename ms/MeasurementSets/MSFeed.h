@@ -76,8 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MSFeed:public MSFeedEnums,
-                public MSTable<MSFeedEnums::PredefinedColumns,
-		               MSFeedEnums::PredefinedKeywords>
+             public MSTable<MSFeedEnums>
 {
 public:
 
@@ -125,7 +124,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void init();
+    static MSTableMaps initMaps();
 
 private:
 

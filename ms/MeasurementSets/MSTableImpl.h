@@ -31,13 +31,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/Tables/Table.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/TableDesc.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -82,10 +82,6 @@ class SetupNewTable;
 class MSTableImpl 
 {
 public:
-    // Convert a name to a ColEnum, 
-    static Int mapType(const SimpleOrderedMap<Int,String>& map,
-		       const String &name);
-
     // add a column to a TableDesc
     // An exception is thrown for an invalid data type.  This indicates a 
     // programming error in this class when this occurs.
@@ -126,11 +122,11 @@ public:
     static SetupNewTable& setupCompression (SetupNewTable&);
 
     // Define an entry in the column maps
-    static void colMapDef(SimpleOrderedMap<Int,String>& colMap,
-			  SimpleOrderedMap<Int,Int>& colDTypeMap,
-			  SimpleOrderedMap<Int,String>& colCommentMap,
-			  SimpleOrderedMap<Int,String>& colUnitMap,
-			  SimpleOrderedMap<Int,String>& colMeasureTypeMap,
+    static void colMapDef(std::map<Int,String>& colMap,
+			  std::map<Int,Int>& colDTypeMap,
+			  std::map<Int,String>& colCommentMap,
+			  std::map<Int,String>& colUnitMap,
+			  std::map<Int,String>& colMeasureTypeMap,
 			  Int col,
 			  const String& colName,
 			  Int colType,
@@ -139,9 +135,9 @@ public:
 			  const String& colMeasureType);
 
     // Define an entry in the keyword maps
-    static void keyMapDef(SimpleOrderedMap<Int,String>& keyMap,
-			  SimpleOrderedMap<Int,Int>& keyDTypeMap,
-			  SimpleOrderedMap<Int,String>& keyCommentMap,
+    static void keyMapDef(std::map<Int,String>& keyMap,
+			  std::map<Int,Int>& keyDTypeMap,
+			  std::map<Int,String>& keyCommentMap,
 			  Int key,
 			  const String& keyName,
 			  Int keyType,
@@ -164,8 +160,28 @@ public:
     // those given in writableColumns, those are empty and writable.
     static Table referenceCopy(const Table& tab, const String& newTableName, 
 			       const Block<String>& writableColumns);
-    // Initialize all MeasurementSet static mappings
-    static void init();
+
+    // Define the initialization function for each MS table type.
+    // <group>
+    static MSTableMaps initMaps(MSMainEnums*);
+    static MSTableMaps initMaps(MSAntennaEnums*);
+    static MSTableMaps initMaps(MSDataDescriptionEnums*);
+    static MSTableMaps initMaps(MSDopplerEnums*);
+    static MSTableMaps initMaps(MSFeedEnums*);
+    static MSTableMaps initMaps(MSFieldEnums*);
+    static MSTableMaps initMaps(MSFlagCmdEnums*);
+    static MSTableMaps initMaps(MSFreqOffsetEnums*);
+    static MSTableMaps initMaps(MSHistoryEnums*);
+    static MSTableMaps initMaps(MSObservationEnums*);
+    static MSTableMaps initMaps(MSPointingEnums*);
+    static MSTableMaps initMaps(MSPolarizationEnums*);
+    static MSTableMaps initMaps(MSProcessorEnums*);
+    static MSTableMaps initMaps(MSSourceEnums*);
+    static MSTableMaps initMaps(MSSpectralWindowEnums*);
+    static MSTableMaps initMaps(MSStateEnums*);
+    static MSTableMaps initMaps(MSSysCalEnums*);
+    static MSTableMaps initMaps(MSWeatherEnums*);
+    // </group>
 };
 
 

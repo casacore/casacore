@@ -32,118 +32,119 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
-void UnitMap::initUMCust2() {
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+void UnitMap::initUMCust2 (UMaps& maps) {
+  map<String, UnitName>& mapCust = maps.mapCust;
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("abA",   	UnitName("abA",
-						 UnitVal(10.0,"A"),
+						 UnitVal(10.0, "A", &maps),
 						 "abampere")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("abC",   	UnitName("abC",
-						 UnitVal(10.0,"C"),
+						 UnitVal(10.0, "C", &maps),
 						 "abcoulomb")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("abF",   	UnitName("abF",
-						 UnitVal(1.0e+9,"F"),
+						 UnitVal(1.0e+9, "F", &maps),
 						 "abfarad")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("abH",   	UnitName("abH",
-						 UnitVal(1.0e-9,"H"),
+						 UnitVal(1.0e-9, "H", &maps),
 						 "abhenry")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("abOhm", 	UnitName("abOhm",
-						 UnitVal(1.0e-9,"Ohm"),
+						 UnitVal(1.0e-9, "Ohm", &maps),
 						 "abohm")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("abV",   	UnitName("abV",
-						 UnitVal(1.0e-8,"V"),
+						 UnitVal(1.0e-8, "V", &maps),
 						 "abvolt")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("statA", 	UnitName("statA",
-						 UnitVal((0.1/C::c),"A"),
+						 UnitVal((0.1/C::c), "A", &maps),
 						 "statampere")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("statC", 	UnitName("statC",
-						 UnitVal((0.1/C::c),"C"),
+						 UnitVal((0.1/C::c), "C", &maps),
 						 "statcoulomb")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("statF", 	UnitName("statF",
-						 UnitVal(1.0/(3.0e+3*C::c),"F"),
+						 UnitVal(1.0/(3.0e+3*C::c), "F", &maps),
 						 "statfarad")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("statH", 	UnitName("statH",
-						 UnitVal((3.0e+3*C::c),"H"),
+						 UnitVal((3.0e+3*C::c), "H", &maps),
 						 "stathenry")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("statOhm", 	UnitName("statOhm",
-						 UnitVal((3.0e+3*C::c),"Ohm"),
+						 UnitVal((3.0e+3*C::c), "Ohm", &maps),
 						 "statohm")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("statV",   	UnitName("statV",
-						 UnitVal((C::c*1.0e-6),"V"),
+						 UnitVal((C::c*1.0e-6), "V", &maps),
 						 "statvolt")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("debye", UnitName("debye",
-						 UnitVal(10e-18, "statC.cm"),
+						 UnitVal(10e-18, "statC.cm", &maps),
 						 "statvolt")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("ac",   	UnitName("ac",
-						 UnitVal(4.0*40*16.5*12*2.54e-2*16.5*12*2.54e-2,"m2"),
+						 UnitVal(4.0*40*16.5*12*2.54e-2*16.5*12*2.54e-2, "m2", &maps),
 						 "acre")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Ah",   	UnitName("Ah",
-						 UnitVal(1.,"A.h"),
+						 UnitVal(1., "A.h", &maps),
 						 "ampere hour")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Angstrom", 	UnitName("Angstrom",
-							 UnitVal(1.0e-10,"m"),
+							 UnitVal(1.0e-10, "m", &maps),
 							 "angstrom")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("atm",   	UnitName("atm",
-						 UnitVal(1.01325e+5,"Pa"),
+						 UnitVal(1.01325e+5, "Pa", &maps),
 						 "standard atmosphere")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("ata",   	UnitName("ata",
-						 UnitVal(9.80665,"N.cm-2"),
+						 UnitVal(9.80665, "N.cm-2", &maps),
 						 "technical atmosphere")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("u",   	UnitName("u",
-						 UnitVal(1.661e-27,"kg"),
+						 UnitVal(1.661e-27, "kg", &maps),
 						 "atomic mass unit")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("bar",   	UnitName("bar",
-						 UnitVal(1.0e+5,"Pa"),
+						 UnitVal(1.0e+5, "Pa", &maps),
 						 "bar")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Btu",   	UnitName("Btu",
-						 UnitVal(1055.056,"J"),
+						 UnitVal(1055.056, "J", &maps),
 						 "British thermal unit (Int)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("cal",   	UnitName("cal",
-						 UnitVal(4.1868,"J"),
+						 UnitVal(4.1868, "J", &maps),
 						 "calorie (Int)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("Cal",   	UnitName("Cal",
-						 UnitVal(1.,"kcal"),
+						 UnitVal(1., "kcal", &maps),
 						 "large calorie (Int)")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("CM",   	UnitName("CM",
-						 UnitVal((1e-3/5.0),"kg"),
+						 UnitVal((1e-3/5.0), "kg", &maps),
 						 "metric carat")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("mHg",   	UnitName("mHg",
-						 UnitVal(13.5951*9.80665,"kPa"),
+						 UnitVal(13.5951*9.80665, "kPa", &maps),
 						 "metre of mercury")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("dyn",   	UnitName("dyn",
-						 UnitVal(1.0e-5,"N"),
+						 UnitVal(1.0e-5, "N", &maps),
 						 "dyne")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("eV",   	UnitName("eV",
-						 UnitVal(1.60217733e-19,"J"),
+						 UnitVal(1.60217733e-19, "J", &maps),
 						 "electron volt")));
-  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+  mapCust.insert(map<String, UnitName>::value_type
 			   ("erg",   	UnitName("erg",
-						 UnitVal(1.0e-7,"J"),
+						 UnitVal(1.0e-7, "J", &maps),
 						 "erg")));
 }
 
