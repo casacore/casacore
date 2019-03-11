@@ -497,7 +497,7 @@ Bool read(istream &s, Array<T> &x,
     try {
       x.resize (tx.shape());
       x = tx;
-    } catch (AipsError) {
+    } catch (AipsError&) {
       IPosition first;
       IPosition last;
       if (x.ndim() >= tx.ndim()) {

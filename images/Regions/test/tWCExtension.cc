@@ -369,7 +369,7 @@ int main ()
   try {
     doIt();
     testAll();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

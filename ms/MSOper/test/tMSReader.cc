@@ -70,7 +70,7 @@ int main(int argc, const char* argv[])
 	}
 	timer.show("read to end : ");
 	cout << "done" << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cerr << "Exception : " << x.getMesg() << endl;
     } 
  

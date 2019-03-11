@@ -249,7 +249,7 @@ try {
       try {
          LCRegion* pLCRegion = box3.toLCRegion(cSys2, shape2);
          if (pLCRegion != 0) delete pLCRegion;
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
 //         cout << "aipserror: caught error " << x.getMesg() << endl;
          ok = True;
       } 
@@ -279,7 +279,7 @@ try {
       try {
          pLCRegion =  box.toLCRegion(cSys2, shape);
          if (pLCRegion != 0) delete pLCRegion;
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
 //         cout << "aipserror: caught error " << x.getMesg() << endl;
          ok = True;
       } 
@@ -374,7 +374,7 @@ try {
       try {
          pLCRegion = box1.toLCRegion(cSys2, shape2);
          if (pLCRegion != 0) delete pLCRegion;
-       } catch (AipsError x) {
+       } catch (AipsError& x) {
 //          cout << "aipserror: caught error " << x.getMesg() << endl;
           ok = True;
        } 
@@ -401,7 +401,7 @@ try {
 //         cout << "toLCRegion called with shape = " << shape2 << endl;
          pLCRegion = box1.toLCRegion(cSys2, shape2);
          if (pLCRegion != 0) delete pLCRegion;
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
 //         cout << "aipserror: caught expected error " << x.getMesg() << endl;
          ok = True;
       } 
@@ -450,7 +450,7 @@ try {
 //   cout << endl;
 
 
-} catch (AipsError x) {
+} catch (AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       cout << "not ok" << endl; 
       return 1;

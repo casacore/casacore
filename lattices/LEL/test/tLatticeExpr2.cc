@@ -270,7 +270,7 @@ int main(int argc, const char* argv[])
       timer.show ("as lattice");
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     return 1;
   } 

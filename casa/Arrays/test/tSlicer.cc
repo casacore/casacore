@@ -44,7 +44,7 @@ int main()
 {
     try {
 	a();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -168,32 +168,32 @@ void a()
     // Do some erroneous constructions.
     try {
 	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0));
-    }catch (AipsError x) {                   // different lengths
+    }catch (AipsError& x) {                   // different lengths
 	cout << x.getMesg() << endl;
     } 
     try {
 	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0), Slicer::endIsLast);
-    }catch (AipsError x) {                   // different lengths
+    }catch (AipsError& x) {                   // different lengths
 	cout << x.getMesg() << endl;
     } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,0,0), Slicer::endIsLast);
-    }catch (AipsError x) {                   // trc < blc
+    }catch (AipsError& x) {                   // trc < blc
 	cout << x.getMesg() << endl;
     } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,0,-1), Slicer::endIsLength);
-    }catch (AipsError x) {                   // length < 0
+    }catch (AipsError& x) {                   // length < 0
 	cout << x.getMesg() << endl;
     } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,-1,0));
-    }catch (AipsError x) {                   // inc < 0
+    }catch (AipsError& x) {                   // inc < 0
 	cout << x.getMesg() << endl;
     } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,0,0));
-    }catch (AipsError x) {                   // inc < 0
+    }catch (AipsError& x) {                   // inc < 0
 	cout << x.getMesg() << endl;
     } 
 
@@ -206,7 +206,7 @@ void a()
     // Do some erroneous infers.
     try {
 	ns90.inferShapeFromSource (shape, blc, trc, inc);
-    }catch (AipsError x) {                   // shape length invalid
+    }catch (AipsError& x) {                   // shape length invalid
 	cout << x.getMesg() << endl;
     } 
     

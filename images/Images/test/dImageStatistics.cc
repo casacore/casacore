@@ -453,7 +453,7 @@ try {
 	 << " not yet supported" << LogIO::POST;
       return 1;
    }
-} catch (AipsError x) {
+} catch (AipsError& x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      return 1;
   }

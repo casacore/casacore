@@ -206,7 +206,7 @@ int main (int argc, const char*[])
 	a( (argc<2));
 	b();
 	c();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

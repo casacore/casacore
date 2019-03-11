@@ -265,7 +265,7 @@ int main()
                                 useCachedX, method, extrapolate),AipsError); // Recompute
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
       }
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
    }

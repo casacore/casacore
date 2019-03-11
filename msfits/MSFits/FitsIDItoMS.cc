@@ -2625,7 +2625,7 @@ void FITSIDItoMS1::fillFeedTable() {
   try{
     timeint.attach(anTab, "TIME_INTERVAL");
   }
-  catch(AipsError){
+  catch(AipsError&){
     timeintd.attach(anTab, "TIME_INTERVAL");
     *itsLog << LogIO::NORMAL << "Note: this ANTENNA table uses double precision for TIME_INTERVAL. Convention is single."
 	    << LogIO::POST;
@@ -2648,7 +2648,7 @@ void FITSIDItoMS1::fillFeedTable() {
     polaa.attach(anTab, "POLAA");
     polab.attach(anTab, "POLAB");
   }
-  catch(AipsError x){
+  catch(AipsError& x){
     polaaS.attach(anTab, "POLAA");
     polabS.attach(anTab, "POLAB");
     POLAisScalar = True;
@@ -2962,14 +2962,14 @@ void FITSIDItoMS1::fillFieldTable()
     try{
       foffset.attach(suTab,"FREQOFF"); // fq. offset  
     }
-    catch(AipsError x){
+    catch(AipsError& x){
       foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
       *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
   }
-  catch(AipsError x){
+  catch(AipsError& x){
     ifluxS.attach(suTab,"IFLUX"); // I (Jy)
     qfluxS.attach(suTab,"QFLUX"); // Q 
     ufluxS.attach(suTab,"UFLUX"); // U 
@@ -3165,7 +3165,7 @@ Bool FITSIDItoMS1::fillSysCalTable()
       dualPol=True;
     }
   }
-  catch(AipsError){
+  catch(AipsError&){
     tsys_1S.attach(tyTab, "TSYS_1");
     if(tyTab.tableDesc().isColumn("TSYS_2")) {
       tsys_2S.attach(tyTab, "TSYS_2"); // this column is optional
@@ -3255,7 +3255,7 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
   try {
     bands.attach(flagTab, "BANDS");
   }
-  catch(AipsError x){
+  catch(AipsError& x){
     bandsS.attach(flagTab, "BANDS");
     BANDSisScalar = True;
   }

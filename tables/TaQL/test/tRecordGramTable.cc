@@ -158,7 +158,7 @@ int main (int argc, const char* argv[])
   }
   try {
     doIt(argv[1]);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   } catch (...) {

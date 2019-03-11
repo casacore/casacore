@@ -92,7 +92,7 @@ int main(int argc, const char* argv[])
 	cout << "selected table has rows " << mssel->nrow() << endl;
       delete mssel;
     } 
-  catch (AipsError x) 
+  catch (AipsError& x) 
     {
       cout << "ERROR: " << x.getMesg() << endl;
       return 1;

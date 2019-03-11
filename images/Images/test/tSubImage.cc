@@ -373,7 +373,7 @@ int main ()
     // test per plane beams
     testBeams();
   }
-  catch (AipsError x) {
+  catch (AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

@@ -275,7 +275,7 @@ int main()
 	Vector<String> colname(1);
 	colname(0) = "Garbage";
 	RowCopier rc(partialtab, maintab, colname, colname);
-    } catch (TableError x) {
+    } catch (TableError& x) {
 	caught = True;
     } 
     if (caught) {
@@ -293,7 +293,7 @@ int main()
 	Vector<String> inname(1), outname(1);
 	inname(0) = "FCol"; outname(0) = "DCol";
 	RowCopier rc(maintab, maintab, inname, outname);
-    } catch (TableError x) {
+    } catch (TableError& x) {
 	caught = True;
     } 
     if (caught) {
@@ -310,7 +310,7 @@ int main()
 	Vector<String> inname(1), outname(1);
 	inname(0) = "ICol1"; outname(0) = "IACol";
 	RowCopier rc(maintab, maintab, inname, outname);
-    } catch (TableError x) {
+    } catch (TableError& x) {
 	caught = True;
     } 
     if (caught) {
@@ -327,7 +327,7 @@ int main()
 	Vector<String> inname(1), outname(2);
 	inname(0) = "IACol"; outname(0) = "IACol"; outname(1) = "DCol";
 	RowCopier rc(maintab, maintab, inname, outname);
-    } catch (TableError x) {
+    } catch (TableError& x) {
 	caught = True;
     } 
     if (caught) {

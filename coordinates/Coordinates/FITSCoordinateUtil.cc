@@ -878,7 +878,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
-		} catch (AipsError x) {
+		} catch (AipsError& x) {
 		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
 		    ok = False;
 		}
@@ -932,7 +932,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
-		} catch (AipsError x) {
+		} catch (AipsError& x) {
 		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
 		    ok = False;
 		}
@@ -1098,7 +1098,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 		try {
 		    cSys.addCoordinate(c);
-		} catch (AipsError x) {
+		} catch (AipsError& x) {
 		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
 		    ok = False;
 		}     
@@ -1159,7 +1159,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		
 		try {
 		    cSys.addCoordinate(c);
-		} catch (AipsError x) {
+		} catch (AipsError& x) {
 		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
 		    ok = False;
 		}     
@@ -1237,7 +1237,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			
 			fixCoordinate (c, os);
 			cSys.addCoordinate(c);
-		    } catch (AipsError x) {
+		    } catch (AipsError& x) {
 			os << LogIO::WARN << x.getMesg() << LogIO::POST;
 			ok = False;
 		    }     
@@ -1598,7 +1598,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	try {
 	    coord = StokesCoordinate(stokes);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    errMsg = x.getMesg();
 	    return False;
 	} 

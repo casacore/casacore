@@ -72,7 +72,7 @@ int main()
     try {
 	a();
 	b();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

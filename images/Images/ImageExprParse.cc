@@ -228,7 +228,7 @@ LatticeExprNode ImageExprParse::command
 	if (imageExprGramParseCommand(command) != 0) {
 	    throw (AipsError("Parse error in image expression " + str));
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	message = x.getMesg();
 	error = True;
     } 

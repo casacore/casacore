@@ -376,7 +376,7 @@ OFF_T PrimaryArray<TYPE>::set_next(OFF_T ne) {
 	   delete [] array;
 		try{
          array = new TYPE [ne];
-      }catch( std::bad_alloc ){ // out of storage exception.
+      }catch( std::bad_alloc& ){ // out of storage exception.
         cerr << "\narray is too big to fit into memory."<< endl;
 		  errmsg(BADOPER,"Error allocating Array.");
 		  alloc_elems = 0;

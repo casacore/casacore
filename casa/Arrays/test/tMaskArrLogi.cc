@@ -523,7 +523,7 @@ int main()
                  << anyOR (True, b(y<3)) << endl;
         }
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << "\nCaught an exception: " << x.getMesg() << endl;
     } 
 

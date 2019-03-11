@@ -346,7 +346,7 @@ int main() {
       cout << onePd.getRight() << " ";
       onePd++;
     }
-  } catch (IterError xx) {
+  } catch (IterError& xx) {
     cout << endl << "IterError: " << xx.getMesg() << endl;
   } 
 
@@ -356,7 +356,7 @@ int main() {
       cout << onePd.getRight() << " ";
       onePd--;
     }
-  } catch (IterError xx) {
+  } catch (IterError& xx) {
     cout << endl << "IterError: " << xx.getMesg() << endl;
   } 
 
@@ -382,7 +382,7 @@ int main() {
       cout << onePd.getRight() << " ";
       onePd++;
     }
-  } catch (IterError xx) {
+  } catch (IterError& xx) {
     cout << endl << ">>> Instance-specific assertion error message:" << endl
          << "#X# IterError: " << xx.getMesg() << endl
          << "<<< End of assertion error message." << endl;
@@ -403,7 +403,7 @@ int main() {
     cout << ">>> Instance-specific assertion error message:" << endl;
     t4 = &onePd;
     show(t4);
-  } catch (IterError xx) {
+  } catch (IterError& xx) {
     cout << endl
          << "#X# IterError: " << xx.getMesg() << endl
          << "<<< End of assertion error message." << endl;

@@ -592,7 +592,7 @@ void WCEllipsoid::_checkUnits() const {
 	try {
 		checkAxes(_pixelAxes, _csys, units);
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 		throw AipsError(
 			x.getMesg() + " Checking radii units"
 		);
@@ -603,7 +603,7 @@ void WCEllipsoid::_checkUnits() const {
 	try {
 		checkAxes(_pixelAxes, _csys, units);
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 		throw AipsError(
 			x.getMesg() + " Checking center units"
 		);

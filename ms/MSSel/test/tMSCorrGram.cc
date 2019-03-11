@@ -94,7 +94,7 @@ int main(int argc, const char* argv[])
     else {
       cout << "failed to parse expression" << endl;
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "ERROR: " << x.getMesg() << endl;
     return 1;
   } 

@@ -383,7 +383,7 @@ void doit4(StokesCoordinate& lc)
    Coordinate* pC = 0;
    try {
       pC = lc.makeFourierCoordinate (axes, shape);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      failed = True;
    } 
    if (!failed) {

@@ -97,9 +97,9 @@ int main() {
     while(1) {
       two.push(one.popVal());
     }
-  } catch (EmptyStackError x) {
+  } catch (EmptyStackError& x) {
     cout << "EmptyStackError: " << x.getMesg() << endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "AipsError: " << x.getMesg() << endl;
   } 
 
@@ -108,17 +108,17 @@ int main() {
     while(1) {
       two.pop();
     }
-  } catch (EmptyStackError x) {
+  } catch (EmptyStackError& x) {
     cout << "EmptyStackError: " <<  x.getMesg() << endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "AipsError: " << x.getMesg() << endl;
   } 
 
   try {
     one.top();
-  } catch (EmptyStackError x) {
+  } catch (EmptyStackError& x) {
     cout << "EmptyStackError: " << x.getMesg() << endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "AipsError: " << x.getMesg() << endl;
   } 
 

@@ -366,7 +366,7 @@ void testLogSink()
     Bool caught = False;
     try {
         sink5.postThenThrow(message, AipsError());
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         caught = True;
 	AlwaysAssertExit(x.getMesg().contains("test"));
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 7);
@@ -377,7 +377,7 @@ void testLogSink()
     caught = False;
     try {
         sink5.postGloballyThenThrow(message);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         caught = True;
 	AlwaysAssertExit(x.getMesg().contains("test"));
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 8);
@@ -458,7 +458,7 @@ void testLogIO()
 	try {
 	    //     void postThenThrow();
 	    os << "This SHOULD post" << LogIO::EXCEPTION;
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssert(caught, AipsError);
@@ -540,7 +540,7 @@ int main()
 	testLogIO();
 	testLogMemory();
 	testLogTable();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << "Caught an exception : " << x.getMesg() << endl;
 	exit(1);
     } 

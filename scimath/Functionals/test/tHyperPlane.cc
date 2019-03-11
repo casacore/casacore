@@ -127,7 +127,7 @@ int main() {
 		     near(y61(0), y51[0]) &&
 		     near(y61(1), y51[1]) &&
 		     near(y61(2), y51[2]));
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Exception : " << x.getMesg() << endl;
   } 
 

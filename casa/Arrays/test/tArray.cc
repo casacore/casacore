@@ -1369,7 +1369,7 @@ int main()
 		caught = False;                  // check for leaks
 		try {
 		    seeIfWeMakeMemoryLeak();
-		} catch (ArrayError x) {
+		} catch (ArrayError& x) {
 		    caught = True;
 		} 
 		AlwaysAssertExit(caught);
@@ -1530,7 +1530,7 @@ int main()
 	  Bool exc = False;
 	  try {
 	    mi.assign (ai);
-	  } catch (AipsError) {
+	  } catch (AipsError&) {
 	    exc = True;
 	  }
 	  AlwaysAssertExit (exc);

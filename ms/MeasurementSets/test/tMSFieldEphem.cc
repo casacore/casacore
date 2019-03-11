@@ -340,7 +340,7 @@ int main() {
 
 	try{
 	  MDirection xDir = msfc.delayDirMeas(row, 12345.); // time outside validity range
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	  //cout <<  x.getMesg() <<endl;
 	  didThrow = True;
 	}
@@ -349,7 +349,7 @@ int main() {
 	didThrow = False;
 	try{
 	  MRadialVelocity xmradvel = msfc.radVelMeas(row, 12345.); // time outside validity range
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	  //cout <<  x.getMesg() <<endl;
 	  didThrow = True;
 	}
@@ -358,7 +358,7 @@ int main() {
 	didThrow = False;
 	try{
 	  MRadialVelocity xrho = msfc.rho(row, 12345.); // time outside validity range
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	  //cout <<  x.getMesg() <<endl;
 	  didThrow = True;
 	}
@@ -384,7 +384,7 @@ int main() {
       ms.markForDelete();
     }
     return 0;  
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() <<endl;
     return 1;
   } 

@@ -2341,7 +2341,7 @@ int main (int argc, const char* argv[])
     cout << endl << "ok" << endl;
   }
 
- } catch (AipsError x) {
+ } catch (AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     return 1;
  } 
@@ -2384,7 +2384,7 @@ Bool checkFloat (LELInterface<Float>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
         if (!suppress) cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     } else {
@@ -2404,7 +2404,7 @@ Bool checkFloat (LELInterface<Float>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     }
@@ -2449,7 +2449,7 @@ Bool checkDouble (LELInterface<Double>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     } else {
@@ -2469,7 +2469,7 @@ Bool checkDouble (LELInterface<Double>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     }
@@ -2514,7 +2514,7 @@ Bool checkComplex (LELInterface<Complex>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     } else {
@@ -2534,7 +2534,7 @@ Bool checkComplex (LELInterface<Complex>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     }
@@ -2579,7 +2579,7 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     } else {
@@ -2599,7 +2599,7 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     }
@@ -2645,7 +2645,7 @@ Bool checkBool (LELInterface<Bool>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     } else {
@@ -2672,7 +2672,7 @@ Bool checkBool (LELInterface<Bool>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
       } 
     }

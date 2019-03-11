@@ -123,7 +123,7 @@ int main () {
 	  testit(x, y, expected);
 
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
     return 1;
   } 

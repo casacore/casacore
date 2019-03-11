@@ -42,7 +42,7 @@ int main()
     AlwaysAssertExit (ImageExprParse::setAddDir("", "/a/b") == "/a/b");
     AlwaysAssertExit (ImageExprParse::setAddDir("", "$HOME") == "$HOME");
     cout<< "ok"<< endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
     return 1;
   } 

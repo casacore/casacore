@@ -120,7 +120,7 @@ int main()
 	}
       }
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Exception: "<< x.getMesg() <<endl;
   } 
   if (err==0) cout<<"OK"<<endl;

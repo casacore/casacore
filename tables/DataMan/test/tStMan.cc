@@ -682,7 +682,7 @@ int main (int argc, const char* argv[])
     doTest (nrrow, st2);
     IncrementalStMan st3(max(bucketSize,1000u), False);
     doTest (nrrow, st3);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   }

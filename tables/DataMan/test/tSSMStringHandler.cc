@@ -109,7 +109,7 @@ int main (int argc, const char* argv[])
 	addSmallColumn     ();
 	deleteColumn       ("Col-1");
 	addEmptyColumn     ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

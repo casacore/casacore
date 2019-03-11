@@ -187,7 +187,7 @@ int main() {
       ms.markForDelete();
     }
     return 0;  
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() <<endl;
     return 1;
   } 

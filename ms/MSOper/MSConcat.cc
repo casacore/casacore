@@ -2273,7 +2273,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
       phaseDir = otherFieldCols.phaseDirMeas(f);
       refDir = otherFieldCols.referenceDirMeas(f);
     }
-    catch(AipsError x){
+    catch(AipsError& x){
       if(!ephPath.empty()){
 	LogIO os(LogOrigin("MSConcat", "copyField"));
 	os << LogIO::SEVERE << "Field " << f << " (" << otherFieldCols.name()(f) << ", to be appended)"
@@ -2308,7 +2308,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
 	    try{
 	      MDirection tMDir = fieldCols.phaseDirMeas(newFld, validityRange(i));
 	    }
-	    catch(AipsError x){
+	    catch(AipsError& x){
 	      canUseThisEntry = False;
 	      ss << validityRange(i) << ", ";
 	    }	  
@@ -2771,7 +2771,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       try {
 	areEquivalent = areEQ(sourceCol.position(), rowi, rowj);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
 	// row has invalid data
 	areEquivalent = True;
       }
@@ -2781,7 +2781,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       try {
 	areEquivalent = areEQ(sourceCol.pulsarId(), rowi, rowj);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
 	// row has invalid data
 	areEquivalent = True;
       }
@@ -2791,7 +2791,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       try {
 	areEquivalent = areEQ(sourceCol.restFrequency(), rowi, rowj);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
 	// row has invalid data
 	areEquivalent = True;
       }
@@ -2801,7 +2801,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       try {
 	areEquivalent = areEQ(sourceCol.sysvel(), rowi, rowj);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
 	// row has invalid data
 	areEquivalent = True;
       }
@@ -2811,7 +2811,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       try {
 	areEquivalent = areEQ(sourceCol.transition(), rowi, rowj);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
 	// row has invalid data
 	areEquivalent = True;
       }

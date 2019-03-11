@@ -69,7 +69,7 @@ int main ()
 	cout << "\nTest conformance, MaskedArray (Array, LogicalArray)";
 	MaskedArray<Int> ma (a,b);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -89,7 +89,7 @@ int main ()
 	     << " LogicalArray)";
 	MaskedArray<Int> ma (mab,b);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -107,7 +107,7 @@ int main ()
 	cout << "\nTest conformance, MaskedArray::operator= (Array)";
 	ba(b) = a;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -128,7 +128,7 @@ int main ()
 	cout << "\nTest conformance, MaskedArray::operator= (MaskedArray)";
 	a(ab) = mbab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -147,7 +147,7 @@ int main ()
 	cout << "\nTest conformance, Array::operator= (MaskedArray)";
 	a = mbab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -164,7 +164,7 @@ int main ()
 	MaskedArray<Int> ma (a,b,True);
 	ma = 1;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -182,7 +182,7 @@ int main ()
 	MaskedArray<Int> ma (a,b,True);
 	a(b) = a;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -201,7 +201,7 @@ int main ()
 	ma.setReadOnly();
 	ma = mma;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -218,7 +218,7 @@ int main ()
 	MaskedArray<Int> ma (a,b,True);
 	Vector<Int> aa (ma.getRWArray());
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -236,7 +236,7 @@ int main ()
 	Bool deleteIt;
 	ma.getRWArrayStorage(deleteIt);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -256,7 +256,7 @@ int main ()
 	Int *arrRWS ((Int *) arrS);
 	ma.putArrayStorage (arrRWS, deleteIt);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -275,7 +275,7 @@ int main ()
 	IPosition shape (2,2,5);
 	Matrix<Int> c (ma.getCompressedArray(shape));
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -295,7 +295,7 @@ int main ()
 	Matrix<Int> c (IPosition (2,2,5));
 	ma.getCompressedArray(c);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -315,13 +315,13 @@ int main ()
 	c = 1;
 	ma.setCompressedArray(c);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "\nERROR.  Caught an uncaught exception:\n";
     cout << x.getMesg() << "\n";
   } 
@@ -343,7 +343,7 @@ int main ()
 	cout << "\nTest conformance, ::operator+= (MaskedArray, Array)";
 	ba(b) += a;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -362,7 +362,7 @@ int main ()
 	MaskedArray<Int> bab (ba,b,True);
 	bab += a;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -381,7 +381,7 @@ int main ()
 	cout << "\nTest conformance, ::operator+= (Array, MaskedArray)";
 	a += mbab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -403,7 +403,7 @@ int main ()
 	     << " MaskedArray)";
 	a(ab) += mbab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -422,7 +422,7 @@ int main ()
 	MaskedArray<Int> bab (ba,b,True);
 	bab += bab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -443,7 +443,7 @@ int main ()
 	cout << "\nTest conformance, ::operator+ (MaskedArray, Array)";
 	c = mbab + a;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -464,7 +464,7 @@ int main ()
 	cout << "\nTest conformance, ::operator+ (Array, MaskedArray)";
 	c = a + mbab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -489,7 +489,7 @@ int main ()
 	     << " MaskedArray)";
 	c = maab + mbab;
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -510,7 +510,7 @@ int main ()
 	cout << "\nTest conformance, ::pow (MaskedArray, Array)";
 	c = pow (mbab, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -531,7 +531,7 @@ int main ()
 	cout << "\nTest conformance, ::pow (Array, MaskedArray)";
 	c = pow (a, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -556,7 +556,7 @@ int main ()
 	     << " MaskedArray)";
 	c = pow (maab, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -577,7 +577,7 @@ int main ()
 	cout << "\nTest conformance, ::atan2 (MaskedArray, Array)";
 	c = atan2 (mbab, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -598,7 +598,7 @@ int main ()
 	cout << "\nTest conformance, ::atan2 (Array, MaskedArray)";
 	c = atan2 (a, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -623,7 +623,7 @@ int main ()
 	     << " MaskedArray)";
 	c = atan2 (maab, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -645,7 +645,7 @@ int main ()
 	     << " const MaskedArray &)";
 	minMax (minVal, maxVal, minPos, maxPos, ma);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -662,7 +662,7 @@ int main ()
 	cout << "\nTest insufficient elements, ::min (MaskedArray)";
 	min (mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -684,7 +684,7 @@ int main ()
 	     << " ::min (MaskedArray, Array)";
 	c = min (mbab, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -705,7 +705,7 @@ int main ()
 	cout << "\nTest conformance, ::min (Array, MaskedArray)";
 	c = min (a, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -730,7 +730,7 @@ int main ()
 	     << " MaskedArray)";
 	c = min (maab, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -751,7 +751,7 @@ int main ()
 	     << " MaskedArray)";
 	::min (a, ba, c);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -772,7 +772,7 @@ int main ()
 	     << " MaskedArray)";
 	::min (ba, a, c);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -790,7 +790,7 @@ int main ()
 	     << " ::sum (const MaskedArray &)";
         sum (ma);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -808,7 +808,7 @@ int main ()
 	     << " ::sumsquares (const MaskedArray &)";
 	sumsquares (ma);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -826,7 +826,7 @@ int main ()
 	     << " ::product (const MaskedArray &)";
 	product (ma);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -844,7 +844,7 @@ int main ()
 	     << " ::mean (const MaskedArray &)";
 	mean (ma);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -864,7 +864,7 @@ int main ()
 	     << " ::variance (const MaskedArray &, T)";
 	variance (ma, mean);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -883,7 +883,7 @@ int main ()
 	     << " ::avdev (const MaskedArray &, T)";
 	avdev (ma, mean);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -901,13 +901,13 @@ int main ()
 	     << " ::median (const MaskedArray &, Bool)";
         median (ma, False);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "\nERROR.  Caught an uncaught exception:\n";
     cout << x.getMesg() << "\n";
   }
@@ -930,7 +930,7 @@ int main ()
 	cout << "\nTest conformance, ::allLE (MaskedArray, Array)";
 	allLE (mbab, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -950,7 +950,7 @@ int main ()
 	  " ::allLE (MaskedArray, Array)";
 	allLE (mbab, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -969,7 +969,7 @@ int main ()
 	cout << "\nTest conformance, ::allLE (Array, MaskedArray)";
         allLE (a, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -989,7 +989,7 @@ int main ()
 	  " ::allLE (Array, MaskedArray)";
 	allLE (a, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1012,7 +1012,7 @@ int main ()
 	     << " MaskedArray)";
 	allLE (maab, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1035,7 +1035,7 @@ int main ()
 	  " ::allLE (MaskedArray, MaskedArray)";
 	allLE (maab, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1054,7 +1054,7 @@ int main ()
 	cout << "\nTest conformance, ::anyAND (MaskedArray, Array)";
 	anyAND (mcb, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1074,7 +1074,7 @@ int main ()
 	  " ::anyAND (MaskedArray, Array)";
 	anyAND (mcb, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1093,7 +1093,7 @@ int main ()
 	cout << "\nTest conformance, ::anyAND (Array, MaskedArray)";
 	anyAND (a, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1113,7 +1113,7 @@ int main ()
 	  " ::anyAND (Array, MaskedArray)";
 	anyAND (a, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1136,7 +1136,7 @@ int main ()
 	     << " MaskedArray)";
 	anyAND (maab, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1159,7 +1159,7 @@ int main ()
 	  " ::anyAND (MaskedArray, MaskedArray)";
 	anyAND (maab, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1178,7 +1178,7 @@ int main ()
 	cout << "\nTest conformance, ::anyOR (MaskedArray, Array)";
         anyOR (mcb, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1198,7 +1198,7 @@ int main ()
 	  " ::anyOR (MaskedArray, Array)";
         anyOR (mcb, a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1217,7 +1217,7 @@ int main ()
 	cout << "\nTest conformance, ::anyOR (Array, MaskedArray)";
 	anyOR (a, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1237,7 +1237,7 @@ int main ()
 	  " ::anyOR (Array, MaskedArray)";
 	anyOR (a, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1260,7 +1260,7 @@ int main ()
 	     << " MaskedArray)";
 	anyOR (maab, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1283,7 +1283,7 @@ int main ()
 	  " ::anyOR (MaskedArray, MaskedArray)";
 	anyOR (maab, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1304,7 +1304,7 @@ int main ()
 	cout << "\nTest conformance, ::operator<= (MaskedArray, Array)";
 	cb = (mbab <= a);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1325,7 +1325,7 @@ int main ()
 	cout << "\nTest conformance, ::operator<= (Array, MaskedArray)";
 	cb = (a <= mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1350,7 +1350,7 @@ int main ()
 	     << " MaskedArray)";
 	cb = (maab <= mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayConformanceError e) {
+      } catch (ArrayConformanceError& e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1370,7 +1370,7 @@ int main ()
 	  " ::allAND (MaskedArray, scalar)";
         allAND (mcb, True);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1390,7 +1390,7 @@ int main ()
 	  " ::allAND (scalar, MaskedArray)";
 	allAND (True, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1410,7 +1410,7 @@ int main ()
 	  " ::allOR (MaskedArray, scalar)";
         allOR (mcb, False);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1430,7 +1430,7 @@ int main ()
 	  " ::allOR (scalar, MaskedArray)";
         allOR (False, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1450,7 +1450,7 @@ int main ()
 	  " ::allLE (MaskedArray, scalar)";
         allLE (mbab, 7);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1470,7 +1470,7 @@ int main ()
 	  " ::allLE (scalar, MaskedArray)";
         allLE (7, mbab);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError &e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1490,7 +1490,7 @@ int main ()
 	  " ::anyAND (MaskedArray, scalar)";
         anyAND (mcb, True);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1510,7 +1510,7 @@ int main ()
 	  " ::anyAND (scalar, MaskedArray)";
         anyAND (True, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1530,7 +1530,7 @@ int main ()
 	  " ::anyOR (MaskedArray, scalar)";
         anyOR (mcb, False);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
@@ -1550,13 +1550,13 @@ int main ()
 	  " ::anyOR (scalar, MaskedArray)";
         anyOR (False, mcb);
 	cout << "\nFAILED" << endl;
-      } catch (ArrayError e) {
+      } catch (ArrayError& e) {
 	cout << "\nCaught an ArrayError:\n";
 	cout << e.getMesg() << "\n";
       } 
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "\nERROR.  Caught an uncaught exception:\n";
     cout << x.getMesg() << "\n";
   } 

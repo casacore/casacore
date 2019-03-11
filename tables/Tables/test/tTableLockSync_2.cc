@@ -343,7 +343,7 @@ int main (int argc, const char* argv[])
 	}else{
 	    c (lockMode, var[2], var[4], show);
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

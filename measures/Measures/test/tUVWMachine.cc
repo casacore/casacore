@@ -209,7 +209,7 @@ int main() {
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 
@@ -302,7 +302,7 @@ int main() {
 
     cout << "---------------------------------------" << endl;
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 

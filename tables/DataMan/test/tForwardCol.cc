@@ -74,7 +74,7 @@ int main ()
 	check("tForwardCol_tmp.data1", 0, 10);
 	check("tForwardCol_tmp.data2", 10, 10);
 	check("tForwardCol_tmp.data3", 10, 10);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

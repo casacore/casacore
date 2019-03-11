@@ -45,7 +45,7 @@ void doit();
 int main () {
     try {
        doit();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
     } 
@@ -99,7 +99,7 @@ void doit()
     name.rename (30,36);
     try {
 	name.rename (30,36);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     AlwaysAssert(name.ok(),AipsError);

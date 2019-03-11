@@ -120,7 +120,7 @@ TableDesc makeDesc (Bool ask)
       } else {
 	break;
       }
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     }
   }
@@ -303,7 +303,7 @@ void doTable (Bool ask, const TableDesc& td)
       } else {
 	break;
       }
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << removeDir(x.getMesg()) << endl;
     }
   }
@@ -316,7 +316,7 @@ int main (int argc, const char*[])
     cout << "-----------------------------------------------" << endl;
     Bool ask = argc < 2;
     doTable (ask, makeDesc(ask));
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 

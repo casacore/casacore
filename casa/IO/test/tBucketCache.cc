@@ -54,7 +54,7 @@ int main (int argc, const char*[])
 //	d (1024);
 //	d (32768);
 //	d (327680);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

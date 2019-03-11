@@ -199,14 +199,14 @@ uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
                                     inIter.cursorShape(), True);
          try {
             sol.assign(fitter.fit(x, data, inSigma, &inMask));
-         } catch (AipsError x) {
+         } catch (AipsError& x) {
             ok = False;
          }
 
       } else {
          try {
             sol.assign(fitter.fit(x, data, &inMask));
-         } catch (AipsError x) {
+         } catch (AipsError& x) {
             ok = False;
          }
       }

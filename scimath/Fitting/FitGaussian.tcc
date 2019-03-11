@@ -386,7 +386,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
     
     try {
        solution = fitter.fit(pos, f, sigma);
-    } catch (AipsError fittererror) {
+    } catch (AipsError& fittererror) {
       string errormessage;
       errormessage = fittererror.getMesg();
       os << LogIO::DEBUG1 << "Unsuccessful - Error during fitting." << LogIO::POST;

@@ -74,7 +74,7 @@ int main (int argc, const char* argv[])
 	    c (False, off1, off2, off3, off4);
 	    c (False, offc1, offc2, offc3, offc4);
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

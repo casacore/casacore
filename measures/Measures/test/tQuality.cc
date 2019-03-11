@@ -102,7 +102,7 @@ int main() {
 
 		cout << "ok" << endl;
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 		cout << "fail "<< x.getMesg()<<endl;
 		return 1;
 	}

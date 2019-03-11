@@ -95,7 +95,7 @@ int main ()
 
       AlwaysAssertExit (mask1 != mask2);
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     return 1;
   } 

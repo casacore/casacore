@@ -42,7 +42,7 @@ int main ()
     AlwaysAssertExit (EnvironmentVariable::isDefined ("crazyHOMExyz"));
     AlwaysAssertExit (EnvironmentVariable::get("crazyHOMExyz").length() != 0);
     AlwaysAssertExit (EnvironmentVariable::get("crazyHOMExyz") == "abc");
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   } 
