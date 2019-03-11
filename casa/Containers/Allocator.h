@@ -239,14 +239,14 @@ class Allocator_private {
     typedef typename Allocator::pointer pointer;
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::value_type value_type;
-    virtual pointer allocate(size_type elements, const void *ptr = 0) {
+    virtual pointer allocate(size_type elements, const void *ptr = 0) override {
       return allocator.allocate(elements, ptr);
     }
-    virtual void deallocate(pointer ptr, size_type size) {
+    virtual void deallocate(pointer ptr, size_type size) override {
       allocator.deallocate(ptr, size);
     }
 
-    virtual void construct(pointer ptr, size_type n, const_pointer src) {
+    virtual void construct(pointer ptr, size_type n, const_pointer src) override {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -258,7 +258,7 @@ class Allocator_private {
       }
     }
     virtual void construct(pointer ptr, size_type n,
-        value_type const &initial_value) {
+        value_type const &initial_value) override {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -269,7 +269,7 @@ class Allocator_private {
         throw;
       }
     }
-    virtual void construct(pointer ptr, size_type n) {
+    virtual void construct(pointer ptr, size_type n) override {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -280,7 +280,7 @@ class Allocator_private {
         throw;
       }
     }
-    virtual void destroy(pointer ptr, size_type n) {
+    virtual void destroy(pointer ptr, size_type n) override {
       for (size_type i = n; i > 0;) {
         --i;
         try {
@@ -290,10 +290,10 @@ class Allocator_private {
         }
       }
     }
-    virtual std::type_info const &allocator_typeid() const {
+    virtual std::type_info const &allocator_typeid() const override {
       return typeid(Allocator);
     }
-    virtual ~BulkAllocatorImpl() {}
+    virtual ~BulkAllocatorImpl() override {}
 
   private:
     static Allocator allocator;
@@ -306,8 +306,11 @@ class Allocator_private {
 
   template<typename Allocator>
   static BulkAllocatorImpl<Allocator> *get_allocator_raw() {
+    // Because this function gets called from destructors of statically allocated objects that get destructed
+    // after the program finishes, the allocator is constructed in a static storage space and is never
+    // destructed.
     static typename std::aligned_storage<sizeof(BulkAllocatorImpl<Allocator>), alignof(BulkAllocatorImpl<Allocator>)>::type storage;
-    static BulkAllocatorImpl<Allocator> *ptr =
+    static BulkAllocatorImpl<Allocator>* ptr =
       new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(&storage)) BulkAllocatorImpl<Allocator>();
     return ptr;
   }
@@ -325,9 +328,6 @@ class Allocator_private {
 
 template<typename Allocator>
 Allocator Allocator_private::BulkAllocatorImpl<Allocator>::allocator;
-
-//template<typename Allocator>
-//Allocator_private::BulkAllocatorInitializer<Allocator> Allocator_private::BulkAllocatorInitializer<Allocator>::instance;
 
 template<typename T>
 class AbstractAllocator {
@@ -351,7 +351,7 @@ public:
 protected:
   BaseAllocator() {}
 
-  virtual typename Allocator_private::BulkAllocator<T> *getAllocator() const {
+  virtual typename Allocator_private::BulkAllocator<T> *getAllocator() const override {
     return Allocator_private::get_allocator<typename facade_type::type>();
   }
 };
