@@ -82,6 +82,25 @@ MSTable<MSEnum>::MSTable(SetupNewTable &newTab,
 	    lockOptions, nrrow, initialize)
 {}
 
+#ifdef HAVE_MPI
+template <class MSEnum>
+MSTable<MSENum>::MSTable(MPI_Comm comm,
+				  SetupNewTable &newTab, uInt nrrow,
+				  Bool initialize)
+    : Table(comm, MSTableImpl::setupCompression(newTab),
+	    nrrow, initialize)
+{}
+
+template <class MSEnum>
+MSTable<MSEnum>::MSTable(MPI_Comm comm,
+				  SetupNewTable &newTab,
+				  const TableLock& lockOptions,
+				  uInt nrrow,  Bool initialize)
+    : Table(comm, MSTableImpl::setupCompression(newTab),
+	    lockOptions, nrrow, initialize)
+{}
+#endif // HAVE_MPI
+
 template <class MSEnum> 
 MSTable<MSEnum>::MSTable(const Table &table)
     : Table(table)

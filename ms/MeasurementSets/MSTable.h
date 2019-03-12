@@ -281,6 +281,12 @@ protected:
 	     Bool initialize);
     MSTable (SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
 	     Bool initialize);
+#ifdef HAVE_MPI
+    MSTable (MPI_Comm comm, SetupNewTable &newTab, uInt nrrow,
+	     Bool initialize);
+    MSTable (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
+	     Bool initialize);
+#endif // HAVE_MPI
     MSTable (const Table &table);
     MSTable (const MSTable<MSEnum> &other);
     // </group>

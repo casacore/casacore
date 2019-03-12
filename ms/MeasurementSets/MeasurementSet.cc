@@ -223,6 +223,41 @@ MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherM
     initRefs();
 }
 
+#ifdef HAVE_MPI
+MeasurementSet::MeasurementSet (MPI_Comm comm,
+			       SetupNewTable &newTab, uInt nrrow,
+			       Bool initialize)
+    : MSTable<PredefinedColumns,
+      PredefinedKeywords>(comm, newTab, nrrow, initialize),
+      doNotLockSubtables_p (False),
+      hasBeenDestroyed_p(False)
+{
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
+    // verify that the now opened table is valid
+    addCat();
+    if (! validate(this->tableDesc()))
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
+}
+
+MeasurementSet::MeasurementSet (MPI_Comm comm,
+			       SetupNewTable &newTab,
+			       const TableLock& lockOptions, uInt nrrow,
+			       Bool initialize)
+    : MSTable<PredefinedColumns,
+      PredefinedKeywords>(comm, newTab, lockOptions, nrrow, initialize),
+      doNotLockSubtables_p (False),
+      hasBeenDestroyed_p(False)
+{
+  mainLock_p=lockOptions;
+    // verify that the now opened table is valid
+    addCat();
+    if (! validate(this->tableDesc()))
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
+}
+#endif // HAVE_MPI
+
 MeasurementSet::MeasurementSet(const MeasurementSet &other)
 : MSTable<MSMainEnums>(other),
   hasBeenDestroyed_p(False)
@@ -852,35 +887,61 @@ void MeasurementSet::initRefs(Bool clear)
   }
 }
 
+template<typename T>
+static Table create_table(SetupNewTable &tableSetup, T /*comm*/)
+{
+    return Table(tableSetup);
+}
 
 void MeasurementSet::createDefaultSubtables(Table::TableOption option)
+{
+    createDefaultSubtables_impl(option, 0);
+}
+
+#ifdef HAVE_MPI
+template<>
+Table create_table<MPI_Comm>(SetupNewTable &tableSetup, MPI_Comm comm)
+{
+    return Table(comm, tableSetup);
+}
+
+void MeasurementSet::createDefaultSubtables(MPI_Comm comm, Table::TableOption option)
+{
+    createDefaultSubtables_impl(option, comm);
+}
+#endif // HAVE_MPI
+
+template<typename T>
+void MeasurementSet::createDefaultSubtables_impl(Table::TableOption option, T comm)
 {
     SetupNewTable antennaSetup(antennaTableName(),
 			       MSAntenna::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::ANTENNA),
-			       Table(antennaSetup));
+			       create_table(antennaSetup, comm));
     SetupNewTable dataDescSetup(dataDescriptionTableName(),
 			       MSDataDescription::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::DATA_DESCRIPTION), 
-			       Table(dataDescSetup));
+			       create_table(dataDescSetup, comm));
     SetupNewTable feedSetup(feedTableName(),
 			       MSFeed::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(MS::keywordName(MS::FEED), Table(feedSetup));
+    rwKeywordSet().defineTable(MS::keywordName(MS::FEED),
+			       create_table(feedSetup, comm));
     SetupNewTable flagCmdSetup(flagCmdTableName(),
 			       MSFlagCmd::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::FLAG_CMD), 
-			       Table(flagCmdSetup));
+			       create_table(flagCmdSetup, comm));
     SetupNewTable fieldSetup(fieldTableName(),
 			       MSField::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(MS::keywordName(MS::FIELD), Table(fieldSetup));
+    rwKeywordSet().defineTable(MS::keywordName(MS::FIELD),
+			       create_table(fieldSetup, comm));
     SetupNewTable historySetup(historyTableName(),
 			       MSHistory::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::HISTORY), 
-			       Table(historySetup));
+			       create_table(historySetup, comm));
     SetupNewTable observationSetup(observationTableName(),
 			       MSObservation::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::OBSERVATION), 
-			       Table(observationSetup));
+			       create_table(observationSetup, comm));
     SetupNewTable pointingSetup(pointingTableName(),
 			       MSPointing::requiredTableDesc(),option);
     // Pointing table can be large, set some sensible defaults for storageMgrs
@@ -890,23 +951,23 @@ void MeasurementSet::createDefaultSubtables(Table::TableOption option)
     pointingSetup.bindColumn(MSPointing::columnName(MSPointing::ANTENNA_ID),
 			     ssmPointing);
     rwKeywordSet().defineTable(MS::keywordName(MS::POINTING),
-			       Table(pointingSetup));
+			       create_table(pointingSetup, comm));
     SetupNewTable polarizationSetup(polarizationTableName(),
 			       MSPolarization::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::POLARIZATION),
-			       Table(polarizationSetup));
+			       create_table(polarizationSetup, comm));
     SetupNewTable processorSetup(processorTableName(),
 			       MSProcessor::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::PROCESSOR),
-			       Table(processorSetup));
+			       create_table(processorSetup, comm));
     SetupNewTable spectralWindowSetup(spectralWindowTableName(),
 			       MSSpectralWindow::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::SPECTRAL_WINDOW),  
-			       Table(spectralWindowSetup));
+			       create_table(spectralWindowSetup, comm));
     SetupNewTable stateSetup(stateTableName(),
 			       MSState::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::STATE),  
-			       Table(stateSetup));
+			       create_table(stateSetup, comm));
     initRefs();
 }
 
