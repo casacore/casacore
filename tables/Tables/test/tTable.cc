@@ -89,7 +89,7 @@ Table::EndianFormat theEndianFormat = Table::BigEndian;
 
 
 // First build a description.
-void a (Bool doExcp)
+void a (const StorageOption& stopt, Bool doExcp)
 {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
@@ -105,7 +105,7 @@ void a (Bool doExcp)
     // Now create a new table from the description.
     // Use copy constructor to test if it works fine.
     // (newtab and newtabcp have the same underlying object).
-    SetupNewTable newtab("tTable_tmp.data", td, Table::New);
+    SetupNewTable newtab("tTable_tmp.data", td, Table::New, stopt);
     SetupNewTable newtabcp(newtab);
     // Create a storage manager for it.
     StManAipsIO sm1;
@@ -578,7 +578,7 @@ void b (Bool doExcp)
 }
 
 //# Test deletion of rows, array of Strings, and some more.
-void c (Bool doExcp)
+void c (const StorageOption& stopt, Bool doExcp)
 {
     TableDesc td("", "1", TableDesc::Scratch);
     td.addColumn (ScalarColumnDesc<Int>("ab","Comment for column ab"));
@@ -592,7 +592,7 @@ void c (Bool doExcp)
     td.addColumn (ArrayColumnDesc<String>("arr3",0,ColumnDesc::Direct));
 
     // Now create a new table from the description.
-    SetupNewTable newtab("tTable_tmp.data1", td, Table::New);
+    SetupNewTable newtab("tTable_tmp.data1", td, Table::New, stopt);
     // Create a storage manager for it.
     StManAipsIO sm1;
     StManAipsIO sm2;
@@ -751,7 +751,7 @@ void c (Bool doExcp)
 }
 
 
-void d()
+void d (const StorageOption& stopt)
 {
     Vector<Complex> arrf2(100);
     indgen (arrf2);
@@ -766,7 +766,7 @@ void d()
 	td.addColumn (ArrayColumnDesc<Int>    ("arr3",0,ColumnDesc::Direct));
 	
 	// Now create a new table from the description.
-	SetupNewTable newtab("tTable_tmp.data3", td, Table::New);
+	SetupNewTable newtab("tTable_tmp.data3", td, Table::New, stopt);
 	// Create a storage manager for it.
 	StManAipsIO sm1;
 	newtab.bindAll (sm1);
@@ -913,10 +913,18 @@ int main (int argc,const char*[])
 {
     try {
 	Table::setScratchCallback (cbFunc);
-	a ( (argc<2));
+        StorageOption stopt;
+	a ( stopt, (argc<2));
 	b ( (argc<2));
-	c ( (argc<2));
-        d ();
+	c ( stopt, (argc<2));
+        d ( stopt);
+        // Also test with MultiFile (with O_DIRECT if supported).
+        cout<<endl<<endl<<"Test with MultiFile:"<<endl<<endl;
+        stopt = StorageOption (StorageOption::MultiFile, 4096, True);
+	a ( stopt, (argc<2));
+	b ( (argc<2));
+	c ( stopt, (argc<2));
+        d ( stopt);
     } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;

@@ -31,9 +31,10 @@
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/OS/File.h>     // for fileFSTAT
+#include <casacore/casa/OS/File.h>     // for fileSTAT
 #include <sys/stat.h>                  // needed for stat or stat64
 #include <string.h>
+#include <stdlib.h>                    // for posix_memalign
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -46,12 +47,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { ios >> info.name >> info.blockNrs >> info.fsize; }
 
 
-  MultiFileBase::MultiFileBase (const String& name, Int blockSize)
+  MultiFileBase::MultiFileBase (const String& name, Int blockSize, Bool useODirect)
     : itsBlockSize  (blockSize),
       itsNrBlock    (0),
       itsHdrCounter (0),
+      itsUseODirect (useODirect),
+      itsWritable   (False),         // usually reset by derived class
       itsChanged    (False)
   {
+    // Unset itsUseODirect if the OS does not support it.
+#ifndef HAVE_O_DIRECT
+    itsUseODirect = False;
+#endif
     itsName = Path(name).expandedName();
   }
 
@@ -111,6 +118,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     char* buffer = static_cast<char*>(buf);
     MultiFileInfo& info = itsInfo[fileId];
+    char* infoBuffer = info.buffer->data;
     // Determine the logical block to read and the start offset in that block.
     Int64 nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
     Int64 blknr = offset/itsBlockSize;
@@ -123,19 +131,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       Int64 todo = std::min(szdo-done, itsBlockSize-start);
       // If already in buffer, copy from there.
       if (blknr == info.curBlock) {
-        memcpy (buffer, &(info.buffer[start]), todo);
+        memcpy (buffer, infoBuffer+start, todo);
       } else {
-        // Read directly into buffer if it fits exactly.
-        if (todo == itsBlockSize) {
+        // Read directly into buffer if it fits exactly and no O_DIRECT.
+        if (todo == itsBlockSize  &&  !itsUseODirect) {
           readBlock (info, blknr, buffer);
         } else {
           if (info.dirty) {
             writeDirty (info);
           }
           // Read into file buffer and copy correct part.
-          readBlock (info, blknr, &(info.buffer[0]));
+          readBlock (info, blknr, infoBuffer);
           info.curBlock = blknr;
-          memcpy (buffer, &(info.buffer[start]), todo);
+          memcpy (buffer, infoBuffer+start, todo);
         }
       }
       // Increment counters.
@@ -156,6 +164,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const char* buffer = static_cast<const char*>(buf);
     AlwaysAssert (itsWritable, AipsError);
     MultiFileInfo& info = itsInfo[fileId];
+    char* infoBuffer = info.buffer->data;
     // Determine the logical block to write and the start offset in that block.
     Int64 blknr = offset/itsBlockSize;
     Int64 start = offset - blknr*itsBlockSize;
@@ -172,13 +181,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       Int64 todo = std::min(size-done, itsBlockSize-start);
       // Favor sequential writing, thus write current buffer first.
       if (blknr == info.curBlock) {
-        memcpy (&(info.buffer[start]), buffer, todo);
+        memcpy (infoBuffer+start, buffer, todo);
         info.dirty = True;
         if (done+todo > size) {
           writeDirty (info);
         }
-      } else if (todo == itsBlockSize) {
-        // Write directly from buffer if it fits exactly.
+      } else if (todo == itsBlockSize  &&  !itsUseODirect) {
+        // Write directly from buffer if it fits exactly and no O_DIRECT.
         writeBlock (info, blknr, buffer);
       } else {
         // Write into temporary buffer and copy correct part.
@@ -187,12 +196,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           writeDirty (info);
         }
         if (blknr >= curnrb) {
-          memset (&(info.buffer[0]), 0, itsBlockSize);
+          memset (infoBuffer, 0, itsBlockSize);
         } else {
-          readBlock (info, blknr, &(info.buffer[0]));
+          readBlock (info, blknr, infoBuffer);
         }
         info.curBlock = blknr;
-        memcpy (&(info.buffer[start]), buffer, todo);
+        memcpy (infoBuffer+start, buffer, todo);
         info.dirty = True;
       }
       done += todo;
@@ -242,7 +251,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (inx == itsInfo.size()) {
       itsInfo.resize (inx+1);
     }
-    itsInfo[inx] = MultiFileInfo(itsBlockSize);
+    size_t align = (itsUseODirect ? 4096 : 0);
+    itsInfo[inx] = MultiFileInfo(itsBlockSize, align);
     itsInfo[inx].name = bname;
     doAddFile (itsInfo[inx]);
     itsChanged = True;
@@ -278,13 +288,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
-
-  MultiFileInfo::MultiFileInfo (Int64 bufSize)
+  MultiFileInfo::MultiFileInfo (Int64 bufSize, Bool useODirect)
     : curBlock (-1),
       fsize    (0),
-      dirty    (False)
+      dirty    (False),
+      buffer   (new MultiFileBuffer (bufSize, useODirect))
+  {}
+
+  
+  MultiFileBuffer::MultiFileBuffer (size_t bufSize, Bool useODirect)
+    : data (0)
   {
-    buffer.resize (bufSize);
+    const size_t align = 4096;
+    // Free buffer (in case used).
+    if (data) {
+      free (data);
+      data = 0;
+    }
+    if (bufSize > 0) {
+      if (useODirect  &&  bufSize%align != 0) {
+        throw AipsError("MultiFile bufsize " + String::toString(bufSize) +
+                        " must be a multiple of 4096 when using O_DIRECT");
+      }
+      // Note that the error messages do a malloc as well, but small
+      // compared to the requested malloc, so they'll probably succeed.
+      void* ptr;
+      if (useODirect) {
+        if (posix_memalign (&ptr, align, bufSize) != 0) {
+          throw AllocError("MultiFileBuffer: failed to allocate aligned buffer",
+                           bufSize);
+        }
+      } else {
+        ptr = malloc (bufSize);
+        if (!ptr) {
+          throw AllocError("MultiFileBuffer: failed to allocate buffer", bufSize);
+        }
+      }
+      data = static_cast<char*>(ptr);
+    }
   }
 
 

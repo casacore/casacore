@@ -52,12 +52,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // reduce the number of open files (especially when concatenating tables).
   // <br>A secondary goal is offering the ability to use an IO buffer size
   // that matches the file system well (large buffer size for e.g. ZFS).
+  // <br>A third goal is offering the ability to use O_DIRECT (if supported by OS)
+  // to tell the OS kernel to bypass its file cache. It makes the I/O behaviour
+  // more predictable which a real-time system might need.
   //
   // The SetupNewTable constructor has a StorageOption argument to define
   // if a MultiFile has to be used and if so, the buffer size to use.
   // It is also possible to specify that through aipsrc variables.
   //
-
   // A virtual file is spread over multiple (fixed size) data blocks in the
   // MultiFile. A data block is never shared by multiple files.
   // For each virtual file MultiFile keeps a MultiFileInfo object telling
@@ -111,7 +113,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a MultiFile with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0);
+    // If useODirect=True, the O_DIRECT flag in used (if supported). It tells the
+    // kernel to bypass its file cache to have more predictable I/O behaviour.
+    MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0,
+               Bool useODirect=False);
 
     // The destructor flushes and closes the file.
     virtual ~MultiFile();

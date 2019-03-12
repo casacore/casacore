@@ -48,9 +48,9 @@ void showMultiFile (MultiFile& mfile)
        << mfile.freeBlocks() << endl;
 }
 
-void makeFile (Int64 blockSize)
+void makeFile (Int64 blockSize, Bool useODirect)
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, blockSize);
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, blockSize, useODirect);
   AlwaysAssertExit (mfile.isWritable());
   showMultiFile(mfile);
 }
@@ -254,10 +254,10 @@ void timeMove3()
   timer.show ("move3 ");
 }
 
-void doTest (Int64 blockSize)
+void doTest (Int64 blockSize, Bool useODirect=False)
 {
   cout << "MultiFile test with blockSize=" << blockSize << endl;
-  makeFile (blockSize);
+  makeFile (blockSize, useODirect);
   readFile();
   addFiles();
   readFile();
@@ -274,8 +274,9 @@ void doTest (Int64 blockSize)
 int main()
 {
   try {
-    doTest (128);     // requires extra header file
-    doTest (1024);    // no extra header file
+    doTest (128);           // requires extra header file
+    doTest (1024);          // no extra header file
+    doTest (4096, True);    // with O_DIRECT (if possible)
     timeExact();
     timeDouble();
     timePartly();

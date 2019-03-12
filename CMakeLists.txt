@@ -7,6 +7,7 @@ cmake_minimum_required (VERSION 2.6.0)
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
+include(CheckCXXSourceCompiles)
 
 # fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
 if (POLICY CMP0048)
@@ -50,6 +51,15 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
+# Check if O_DIRECT is available.
+# Note this does not work well with check_c_source_compiles.
+check_cxx_source_compiles("
+  #include <fcntl.h>
+  main() { int i = O_DIRECT; }
+  " HAVE_O_DIRECT)
+if (HAVE_O_DIRECT)
+    add_definitions(-DHAVE_O_DIRECT)
+endif()
 
 # By default do not use ADIOS2, HDF5, FFTW3
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
@@ -537,6 +547,7 @@ message (STATUS "USE_THREADS ........... = ${USE_THREADS}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_MPI ............... = ${USE_MPI}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
+message (STATUS "HAVE_O_DIRECT ......... = ${HAVE_O_DIRECT}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
 message (STATUS "DATA directory ........ = ${DATA_DIR}")
