@@ -104,7 +104,7 @@ int main() {
       cout << "To error: " << error << endl;
     };
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 
@@ -130,7 +130,7 @@ int main() {
     cout << "As epoch:      ";
     cout << q00.asMEpoch() << endl;
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 
@@ -237,7 +237,7 @@ int main() {
       cout << "As RadialVelocity:      " << q00.asMRadialVelocity() << endl;
     }      
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 
@@ -288,7 +288,7 @@ int main() {
       cout << "To error: " << error << endl;
     };
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 

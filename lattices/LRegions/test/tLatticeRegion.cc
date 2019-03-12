@@ -74,7 +74,7 @@ int main()
 	doIt (IPosition (2,11,20),
 	      IPosition (2,3,4), IPosition (2,7,8),
 	      IPosition (2,5,10), 5);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	return 1;
     } 

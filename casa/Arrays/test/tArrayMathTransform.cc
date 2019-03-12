@@ -137,7 +137,7 @@ int main()
 {
   try {
     doIt();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   }

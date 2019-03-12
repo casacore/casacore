@@ -95,7 +95,7 @@ int main (int argc, const char* argv[])
 	b3 (dir, IPosition(2,3,5));
 	b3 (dir, IPosition(2,0,5));
 	erroneous();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

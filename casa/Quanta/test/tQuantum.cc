@@ -188,7 +188,7 @@ try {
     Quantum<Int> ll5(5,Quantum<Double>(7.,"mm/s"));
     cout << "Mixed Quantity/Quantum<Int>  " << ll5 << endl;
     
-} catch (AipsError x) {
+} catch (AipsError& x) {
   cout << x.getMesg() << endl;
 } 
     
@@ -197,13 +197,13 @@ try {
     
     try {
 	Quantity loc(5,"KpH");
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
     try {
 	Quantity loc(A+D);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
@@ -211,37 +211,37 @@ try {
         // put in conditional so result is used,
         // so compiler won't emit warning of unused result
         if(A<D) {}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
     try {
 	l4=pow(A,200);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
     try {
 	A.convert("JY");
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
     try {
 	l4 = sin(A);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
     try {
 	l4 = log(A);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     
     try {
 	l4 = sqrt(A);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     

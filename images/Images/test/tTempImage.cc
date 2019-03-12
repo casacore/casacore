@@ -262,7 +262,7 @@ int main()
     	try {
     		temp.setImageInfo(info);
     	}
-    	catch (AipsError x) {
+    	catch (AipsError& x) {
     		cout << "Exception thrown as expected: "
     			<< x.getMesg() << endl;
     	}
@@ -270,7 +270,7 @@ int main()
     	try {
     		temp.setImageInfo(info);
     	}
-    	catch (AipsError x) {}
+    	catch (AipsError& x) {}
     	for (uInt i=0; i<4; i++) {
     		for (uInt j=0; j<16; j++) {
     			info.setBeam(j, i, maj, min, pa);

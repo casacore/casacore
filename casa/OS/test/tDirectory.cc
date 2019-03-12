@@ -187,7 +187,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    newDir.create();
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // not writable
 	} 
     }
@@ -204,12 +204,12 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    Directory file1("tDirectory_tmp/test1/testLink2");
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // symlink, no directory
 	} 
 	try {
 	    Directory file1("tDirectory_tmp/test1/testFile2");
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // symlink, no directory
 	} 
     }
@@ -217,7 +217,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    Directory file1("tDirectory_tmp/something");
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // not writable
 	} 
     }
@@ -252,7 +252,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test3.remove();
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // not empty
 	} 
     }
@@ -294,7 +294,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test6.create (False);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // already existing
 	} 
     }
@@ -307,7 +307,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test7.create (False);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // already existing
 	} 
     }
@@ -341,7 +341,7 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

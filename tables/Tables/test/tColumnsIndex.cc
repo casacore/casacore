@@ -162,7 +162,7 @@ void b()
     *abool = True;
     try {
         colInx0.getRowNumber(found);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << x.getMesg() << endl;       // values are not unique
     } 
     rows = colInx0.getRowNumbers();
@@ -332,7 +332,7 @@ int main()
 	b();
 	c();
 	d();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << "Exception caught: " << x.getMesg() << endl;
 	return 1;
     } 

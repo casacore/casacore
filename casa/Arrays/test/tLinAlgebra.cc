@@ -394,7 +394,7 @@ int main()
     AlwaysAssertExit(allEQ(Rz, Rot3D(2,alpha)));
 
 
-  } catch(AipsError x) {
+  } catch(AipsError& x) {
     cout << "Caught exception : " << x.getMesg() << endl;
     return 1;
   } 

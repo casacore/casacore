@@ -177,7 +177,7 @@ int main ()
   Bool ok = True;
   try {
     ok = doIt();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     ok = False;
   } 

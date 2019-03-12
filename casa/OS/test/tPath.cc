@@ -138,7 +138,7 @@ void doIt (Bool doExcp, Bool& success)
       Bool ok = True;
 	try {
             Path("/a/b").resolvedName();
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
             cout << ">>> " << x.getMesg() << endl << "<<<" << endl;
             ok = False;
 	}
@@ -171,7 +171,7 @@ void doIt (Bool doExcp, Bool& success)
     if (doExcp) {
 	try {
 	    test1.expandedName ();
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg () << endl;
 	} 
     }
@@ -262,7 +262,7 @@ int main (int argc, const char*[])
     Bool success = True;
     try {
 	doIt ( (argc<2), success);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

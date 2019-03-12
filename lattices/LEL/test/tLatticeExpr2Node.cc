@@ -815,7 +815,7 @@ int main() {
 	if (!doIt(SubLattice<Float>(aF,mask2), SubLattice<Float>(bF,mask1))) {
 	    ok = False;
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	ok = False;
     } 

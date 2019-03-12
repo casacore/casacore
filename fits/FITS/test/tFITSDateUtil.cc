@@ -125,7 +125,7 @@ int main()
 	if (FITSDateUtil::findPrecision("2001-06-01T05:30:20.25") != 8) {
 	    throw(AipsError("FITSDateUtil::findPrecision - didn't return 8 as expected"));
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     }

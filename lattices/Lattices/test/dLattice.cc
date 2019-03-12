@@ -118,7 +118,7 @@ int main() {
     AlwaysAssert(near(latMean(xfr), 
 		      Complex(1.0)/Float(psfShape(2)*psfShape(3)), 1E-6), 
 		 AipsError);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl << "FAIL" << endl;		
     return 1;
   } 

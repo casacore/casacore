@@ -60,14 +60,14 @@ int main()
     Bool caught = False;
     try {
 	Foo(fi4);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	caught = True;
     } 
     AlwaysAssertExit(caught);
     caught = False;
     try {
         fi5.value();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	caught = True;
     } 
     AlwaysAssertExit(caught);

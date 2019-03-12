@@ -133,7 +133,7 @@ int main(int argc, const char* argv[])
 	    }
 	}
 	cout << "At end of file" << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Unexpected exception: " << x.getMesg() << endl;
 	return 1;
     } 

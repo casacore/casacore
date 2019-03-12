@@ -2050,7 +2050,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
       colIFFreq.getColumn(ifFreq);
       colChWidth.getColumn(chWidth);
       colTotalBandwidth.getColumn(totalBandwidth);
-    }catch(AipsError x) {
+    }catch(AipsError& x) {
       _log << LogOrigin("MSFitsInput", "fillSpectralWindowTable")
              << LogIO::DEBUG1 << x.getMesg() << LogIO::POST;
     }
@@ -3615,7 +3615,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
       restfreq.getColumn(_restFreq);
       sysvel.getColumn(_sysVel);
     }
-    catch (std::exception x) {
+    catch (std::exception& x) {
       if(noif>1){
 	_log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
 	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl

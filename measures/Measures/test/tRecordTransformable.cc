@@ -71,7 +71,7 @@ int main() {
       AlwaysAssert(md.getRef().getType() == MDirection::B1950, AipsError);
     }
   }
-  catch (AipsError x) {
+  catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

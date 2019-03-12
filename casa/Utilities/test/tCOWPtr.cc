@@ -230,7 +230,7 @@ int main()
 
     cout << "OK" << endl;
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg () << endl;
   } 
   

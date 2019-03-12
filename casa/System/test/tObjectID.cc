@@ -65,7 +65,7 @@ int main()
     AlwaysAssertExit(ID1 == ID1copy);
     ID1.toString(copied);
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     return 1;
   } 

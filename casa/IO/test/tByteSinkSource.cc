@@ -189,7 +189,7 @@ int main ()
 	    RegularFileIO regularFileIO (Path("tByteSinkSource_tmp.dat"),
 					 ByteIO::NewNoReplace);
 	} 
-	catch (AipsError x)  {
+	catch (AipsError& x)  {
 	    cout << x.getMesg () << endl;
 	} 
     }

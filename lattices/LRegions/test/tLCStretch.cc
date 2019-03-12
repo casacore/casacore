@@ -116,7 +116,7 @@ void doIt (const LCRegion& region,
         LCStretch prism2 (ext2, axes, LCBox(blc-1, trc, latticeShape));
         AlwaysAssertExit (prism2 != prism);
       }
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 }
@@ -130,7 +130,7 @@ void doItError (const LCRegion& region,
 {
     try {
 	LCStretch prism (region, axes, LCBox(blc, trc, latticeShape));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 }
@@ -175,7 +175,7 @@ int main()
 	// Error; stretched axis has not length 1
 	doItError (polygon, IPosition(1,0), IPosition(1,2), IPosition(1,3),
 		   IPosition(1,20));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	return 1;
     } 

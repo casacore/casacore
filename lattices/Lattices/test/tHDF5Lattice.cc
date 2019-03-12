@@ -193,7 +193,7 @@ int main()
       indgen(arr);
       AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     return 1;
   } 

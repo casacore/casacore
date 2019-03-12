@@ -290,7 +290,7 @@ int main() {
       return 0;
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "Failed" << endl;
     return 1;

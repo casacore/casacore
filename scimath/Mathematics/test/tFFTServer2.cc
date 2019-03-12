@@ -1286,7 +1286,7 @@ int main() {
 			      5*FLT_EPSILON), AipsError);
     }
   }
-  catch (AipsError x) {
+  catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

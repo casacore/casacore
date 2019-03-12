@@ -84,7 +84,7 @@ int main ()
          if (type!=Random::GEOMETRIC &&
              type!=Random::UNKNOWN) test1Complex (type);
       }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

@@ -197,12 +197,12 @@ void b (Bool doExcp)
     if (doExcp) {
 	try {
 	    TableRow row (tab);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;             // not writable
 	} 
 	try {
 	    ROTableRow row (tab, stringToVector("ab,abb"));
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;             // abb not exists
 	} 
     }
@@ -356,7 +356,7 @@ int main (int argc, const char* argv[])
 	a ( (argc<2));
 	b ( (argc<2));
 	c (nr);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

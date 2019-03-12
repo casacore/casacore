@@ -182,14 +182,14 @@ int main()
 	cout << "Length in dam:        " << pdc3.getLength("dam") << endl;
 
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
     try {
 	cout << "Euler(10 deg, 20 m): ";
 	cout << Euler(Quantity(10,"deg"), Quantity(20,"m")) << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -199,7 +199,7 @@ int main()
 	MVDirection dc10(Quantity(10,"deg"),Quantity(20,"deg"));
 	cout << "Rotate (10,20 deg) over 0,0,30 deg: " 
 	    << (rot10*dc10).getAngle("deg") << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -335,7 +335,7 @@ int main()
 		mypcd << endl;
 	}
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -346,7 +346,7 @@ int main()
 	cout << "5.3 + 10.9: " << MVEpoch(5.3)+MVEpoch(10.9) << endl;
 	cout << "1.123 years: " << MVEpoch(Quantity(1.123,"a")) << endl;
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -366,7 +366,7 @@ int main()
       cout << "Near 0.01 \" (0.1,0.2) and (0.1000001, 0.2): " <<
 	dc1.near(dc3, Quantity(0.01, "arcsec")) << endl;
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 

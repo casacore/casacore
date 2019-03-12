@@ -124,7 +124,7 @@ int main() {
       cout << expr(3.5) << ", " << expr(0.0) << endl;
       cout << "----------------------------------------------------" << endl;
     }
-  }  catch (AipsError x) {
+  }  catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

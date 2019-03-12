@@ -167,7 +167,7 @@ int main()
 	radii(1) = 8;
 	center(1) = 10;
 	doIt (IPosition (2,11,20), center, radii);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	return 1;
     } 

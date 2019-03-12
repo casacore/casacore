@@ -173,7 +173,7 @@ int main (int argc, const char* argv[])
     delete gauss;
 
     cout << "---------------------------------------------------" << endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   }
   

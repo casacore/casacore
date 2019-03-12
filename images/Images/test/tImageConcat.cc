@@ -386,7 +386,7 @@ int main() {
          try {
             lc.setImage(im1, True);
             ok = False;
-         } catch (AipsError x) {
+         } catch (AipsError& x) {
          } 
          if (!ok) {
             throw (AipsError("set forced failure did not work - this was unexpected"));  
@@ -398,7 +398,7 @@ int main() {
                                "tImageConcat_tmp3.img");
             lc.setImage(ml4, True);
             ok = False;
-         } catch (AipsError x) {;} 
+         } catch (AipsError& x) {;} 
          if (!ok) {
             throw (AipsError("set forced failure did not work - this was unexpected"));  
          }

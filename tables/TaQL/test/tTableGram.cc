@@ -134,7 +134,7 @@ int main (int argc, const char* argv[])
     // Do some interactive tests.
       docomm();
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "\nCaught an exception: " << x.getMesg() << endl;
     return 1;
   } 
@@ -154,7 +154,7 @@ void docomm()
       break;
     try {
       seltab (str);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
   }

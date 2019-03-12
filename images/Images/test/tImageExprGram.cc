@@ -168,27 +168,27 @@ int main (int argc, const char* argv[])
     cout << endl;
     try {
       doExpr ("xxx", Record());
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/a1"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("a1/b"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/b*"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("min(b,b,b)"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
   }
@@ -688,7 +688,7 @@ int main (int argc, const char* argv[])
 
   cout << endl;
 
- } catch (AipsError x) {
+ } catch (AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     foundError = True;
  } 

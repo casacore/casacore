@@ -109,7 +109,7 @@ void b (Bool noReadLocking, Bool permLocking)
     Table tab("tTableLockSync_tmp.tab", lt, Table::Update);
     try {
 	TableLocker lock1 (tab, FileLocker::Write, 1);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "table is write-locked" << endl;
     } 
     ScalarColumn<Int> col1 (tab, "col1");
@@ -171,7 +171,7 @@ void b (Bool noReadLocking, Bool permLocking)
 		if (opt == 9) {
 		    col1.put (0, val);
 		}
-	    } catch (AipsError x) {
+	    } catch (AipsError& x) {
 	        cout << x.getMesg() << endl;
 		err = True;
 	    } 
@@ -226,7 +226,7 @@ void b (Bool noReadLocking, Bool permLocking)
 		if (opt == 11) {
 		    tab.rwKeywordSet().define ("k0", val);
 		}
-	    } catch (AipsError x) {
+	    } catch (AipsError& x) {
 	        cout << x.getMesg() << endl;
 		err = True;
 	    } 
@@ -279,7 +279,7 @@ int main (int argc, const char* argv[])
 		a();
 	    }
 	    b (noReadLocking, permLocking);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << "Caught an exception: " << x.getMesg() << endl;
 	    return 1;
 	} 

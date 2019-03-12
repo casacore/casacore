@@ -251,7 +251,7 @@ try{
    delete p1;
    delete p2;
 
- } catch(AipsError x) {
+ } catch(AipsError& x) {
    cout << "Unexpected exception: " << x.getMesg() << endl;
    return 1;
   } 

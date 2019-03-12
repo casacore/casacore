@@ -64,17 +64,17 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    RegularFile rf ("tRegularFile_tmp/a/b");         // not creatable
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
 	try {
 	    RegularFile rf ("tRegularFile_tmp");             // directory
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
 	try {
 	    RegularFile rf ("tRegularFile_tmp/isLink2");     // symlink to dir
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
     }
@@ -91,7 +91,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    risFile.create (False);                         // already exists
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
     }
@@ -117,12 +117,12 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    risFile1.copy (Path("tRegularFile_tmp/aa/bb/cc"));
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;         // non-writable directory
 	} 
 	try {
 	    risFile1.copy (Path("tRegularFile_tmp/isFile"), False);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;         // already exists
 	} 
     }
@@ -130,7 +130,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    risFile1.copy (Path("tRegularFile_tmp/moveto/isFile1"));
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;         // exists, non-writable
 	} 
     }
@@ -144,7 +144,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    file2.move ("tRegularFile_tmp/moveto/isFile1", False);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;         // already exists
 	} 
     }
@@ -179,7 +179,7 @@ int main (int argc,const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

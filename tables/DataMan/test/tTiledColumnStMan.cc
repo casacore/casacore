@@ -68,7 +68,7 @@ int main () {
 	readTable(TSMOption::Buffer, False);
         writeFixed(TSMOption::Buffer);
 	readTable(TSMOption::Cache, False);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     }
