@@ -197,7 +197,7 @@ target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
 if(MPI_FOUND)
     target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
     if(ADIOS2_FOUND)
-        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES})
+        target_link_libraries(casa_tables adios2::adios2)
     endif(ADIOS2_FOUND)
 endif(MPI_FOUND)
 
