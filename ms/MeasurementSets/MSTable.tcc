@@ -84,7 +84,7 @@ MSTable<MSEnum>::MSTable(SetupNewTable &newTab,
 
 #ifdef HAVE_MPI
 template <class MSEnum>
-MSTable<MSENum>::MSTable(MPI_Comm comm,
+MSTable<MSEnum>::MSTable(MPI_Comm comm,
 				  SetupNewTable &newTab, uInt nrrow,
 				  Bool initialize)
     : Table(comm, MSTableImpl::setupCompression(newTab),

@@ -227,8 +227,7 @@ MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherM
 MeasurementSet::MeasurementSet (MPI_Comm comm,
 			       SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(comm, newTab, nrrow, initialize),
+    : MSTable<MSMainEnums>(comm, newTab, nrrow, initialize),
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -244,8 +243,7 @@ MeasurementSet::MeasurementSet (MPI_Comm comm,
 			       SetupNewTable &newTab,
 			       const TableLock& lockOptions, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(comm, newTab, lockOptions, nrrow, initialize),
+    : MSTable<MSMainEnums>(comm, newTab, lockOptions, nrrow, initialize),
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
