@@ -63,6 +63,7 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
     bufsize = tlen;
   buf->allocated = bufsize;
   buf->buffer = (Char *) malloc(buf->allocated);
+  /*
   Int orig = a2_re_set_syntax(RE_NO_BK_PARENS+     // use () for grouping
 			    RE_NO_BK_VBAR+         // use | for OR
 			    RE_INTERVALS+          // intervals are possible
@@ -71,8 +72,9 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
 			    RE_NO_EMPTY_BK_REF+    // backreferences possible
 			    RE_NO_EMPTY_RANGES+    // e.g. [z-a] is empty set
 			    RE_CONTEXTUAL_INVALID_OPS);
+  */
   const char* msg = a2_re_compile_pattern((Char*)(exp.chars()), tlen, buf);
-  a2_re_set_syntax(orig);
+  ///a2_re_set_syntax(orig);
   if (msg != 0) {
     throw(invalid_argument("Regex: invalid regular expression " + exp +
 			   " given (" + String(msg) + ')'));
