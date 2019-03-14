@@ -251,8 +251,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (inx == itsInfo.size()) {
       itsInfo.resize (inx+1);
     }
-    size_t align = (itsUseODirect ? 4096 : 0);
-    itsInfo[inx] = MultiFileInfo(itsBlockSize, align);
+    itsInfo[inx] = MultiFileInfo(itsBlockSize, itsUseODirect);
     itsInfo[inx].name = bname;
     doAddFile (itsInfo[inx]);
     itsChanged = True;
