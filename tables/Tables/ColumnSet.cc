@@ -191,7 +191,8 @@ void ColumnSet::openMultiFile (uInt from, const Table& tab,
     if (! multiFile_p) {
       if (storageOpt_p.option() == StorageOption::MultiFile) {
         multiFile_p = new MultiFile (tab.tableName() + "/table.mf",
-                                     opt, storageOpt_p.blockSize());
+                                     opt, storageOpt_p.blockSize(),
+                                     storageOpt_p.useODirect());
       } else {
         multiFile_p = new MultiHDF5 (tab.tableName() + "/table.mfh5",
                                      opt, storageOpt_p.blockSize());
