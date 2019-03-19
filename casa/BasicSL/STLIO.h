@@ -42,6 +42,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Forward Declarations
   class AipsIO;
 
+  template <typename T, typename U>
+  inline ostream& operator<< (ostream& os, const std::pair<T,U>& p);
+
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::vector<T>& v);
+
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::set<T>& v);
+
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::list<T>& v);
+
+  template<typename T, typename U>
+  inline ostream& operator<<(ostream& os, const std::map<T,U>& m);
+
   // <summary>
   //    Input/output operators for STL-like containers.
   // </summary>
