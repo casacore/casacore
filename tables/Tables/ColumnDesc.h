@@ -348,13 +348,13 @@ public:
 
 
     // Define the type of a XXColumnDesc construction function.
-    typedef BaseColumnDesc* (*ColumnDescCtor) (const String& className);
+    typedef BaseColumnDesc* ColumnDescCtor (const String& className);
 
     // Get a construction function for a XXColumnDesc object (thread-safe).
-    static ColumnDescCtor getCtor (const String& name);
+    static ColumnDescCtor* getCtor (const String& name);
 
     // Register a "XXColumnDesc" constructor (thread-safe).
-    static void registerCtor (const String& name, ColumnDescCtor func);
+    static void registerCtor (const String& name, ColumnDescCtor* func);
 
 private:
     // A mutex for additions to the constructor map.
@@ -368,10 +368,10 @@ private:
     // The map is filled with the main XXColumnDesc construction functions
     // by the function registerColumnDesc upon the first call of
     // <src>ColumnDesc::getFile</src>.
-    static std::map<String, ColumnDescCtor>& getRegisterMap();
+    static std::map<String, ColumnDescCtor*>& getRegisterMap();
 
     // Register the main data managers.
-    static std::map<String, ColumnDescCtor> initRegisterMap();
+    static std::map<String, ColumnDescCtor*> initRegisterMap();
 
     // Construct from a pointer (for class BaseColumn).
     ColumnDesc (BaseColumnDesc*);
