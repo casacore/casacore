@@ -31,9 +31,11 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/iosfwd.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -106,11 +108,11 @@ public:
 
     // Get nr of columns in this set.
     uInt ncolumn() const
-	{ return cols_p.ndefined(); }
+	{ return cols_p.size(); }
 
     // Test if a column is defined in this set.
     Bool isDefined (const String& name) const
-	{ return  (cols_p.isDefined (name)); }
+        { return (cols_p.find(name) != cols_p.end()); }
 
     // Test if this set equals another one.
     // It is equal if the number of columns is equal and all field names in
@@ -189,7 +191,7 @@ private:
 
 
     // The set of all columns.
-    SimpleOrderedMap<String,ColumnDesc> cols_p;
+    std::map<String,CountedPtr<ColumnDesc>> cols_p;
     // The order of addition of column descriptions.
     //# This is in fact a Block<ColumnDesc*>, but a void* is used
     //# to reduce the number of template instantiations.

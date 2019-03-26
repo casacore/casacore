@@ -44,8 +44,7 @@ RecordDescRep::RecordDescRep()
   shapes_p(0),
   is_array_p(0),
   tableDescNames_p(0),
-  comments_p(0),
-  name_map_p(-1, 64)
+  comments_p(0)
 {
     // Nothing
 }
@@ -58,8 +57,7 @@ RecordDescRep::RecordDescRep (const RecordDescRep& other)
   shapes_p(0),
   is_array_p(0),
   tableDescNames_p(0),
-  comments_p(0),
-  name_map_p(-1, 64)
+  comments_p(0)
 {
     copy_other (other);
 }
@@ -92,7 +90,7 @@ void RecordDescRep::addFieldName (const String& fieldName, DataType type)
     uInt n = n_p - 1;
     types_p[n] = type;
     names_p[n] = fieldName;
-    name_map_p.define (fieldName, n);
+    name_map_p.insert (std::make_pair(fieldName, n));
     sub_records_p[n] = 0;
     is_array_p[n] = False;
     shapes_p[n].resize(1);
@@ -327,12 +325,11 @@ uInt RecordDescRep::removeField (Int whichField)
     n_p--;
     // Remove the field from the name map.
     // Decrement the field number of all fields following it.
-    name_map_p.remove (names_p[whichField]);
-    for (uInt i=0; i<n_p; i++) {
-	Int& inx = name_map_p.getVal (i);
-	if (inx > whichField) {
-	    inx--;
-	}
+    name_map_p.erase (names_p[whichField]);
+    for (auto& x : name_map_p) {
+        if (x.second > whichField) {
+            x.second -= 1;
+        }
     }
     types_p.remove (whichField);
     names_p.remove (whichField);
@@ -347,7 +344,9 @@ uInt RecordDescRep::removeField (Int whichField)
 void RecordDescRep::renameField (const String& newName, Int whichField)
 {
     AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
-    name_map_p.rename (newName, names_p[whichField]);
+    Int inx = name_map_p[names_p[whichField]];
+    name_map_p.erase (names_p[whichField]);
+    name_map_p.insert (std::make_pair(newName, inx));
     names_p[whichField] = newName;
 }
 
@@ -360,8 +359,8 @@ void RecordDescRep::setShape (const IPosition& shape, Int whichField)
 
 Int RecordDescRep::fieldNumber (const String& fieldName) const
 {
-    const Int* inx = name_map_p.isDefined (fieldName);
-    return (inx == 0  ?  -1 : *inx);
+    std::map<String,Int>::const_iterator iter = name_map_p.find (fieldName);
+    return (iter == name_map_p.end()  ?  -1 : iter->second);
 }
 
 String RecordDescRep::makeName (Int whichField) const

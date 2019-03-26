@@ -31,8 +31,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/FileLocker.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/OS/Mutex.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -158,7 +158,7 @@ private:
     //# void* iso. PlainTable* is used in the map declaration
     //# to reduce the number of template instantiations.
     //# The .cc file will use (fully safe) casts.
-    SimpleOrderedMap<String,void*> tableMap_p;
+    std::map<String,void*> tableMap_p;
     //# A mutex to synchronize access to the cache.
     mutable Mutex itsMutex;
 };

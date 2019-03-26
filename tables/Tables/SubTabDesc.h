@@ -31,7 +31,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

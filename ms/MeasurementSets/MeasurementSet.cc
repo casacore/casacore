@@ -1098,8 +1098,8 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   Matrix<Int> baselinelist=thisSelection.getBaselineList();
   Vector<Int> ddIDList=thisSelection.getDDIDList();
   Vector<Int> spwDDIDList=thisSelection.getSPWDDIDList();
-  OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
-  OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
+  std::map<Int, Vector<Int > > polMap=thisSelection.getPolMap();
+  std::map<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
   Vector<Int> allDDIDList;
   if (ddIDList.nelements() == 0) allDDIDList = spwDDIDList;
   else if (spwDDIDList.nelements() == 0) allDDIDList = ddIDList;

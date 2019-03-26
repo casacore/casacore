@@ -139,13 +139,13 @@ private:
   Float itsWeightScale;
   Bool itsRespectForFieldName;
   Vector<Bool> itsChanReversed;
-  SimpleOrderedMap <Int, Int> newSourceIndex_p;
-  SimpleOrderedMap <Int, Int> newSourceIndex2_p;
-  SimpleOrderedMap <Int, Int> newSPWIndex_p;
-  SimpleOrderedMap <Int, Int> newObsIndexA_p;
-  SimpleOrderedMap <Int, Int> newObsIndexB_p;
-  SimpleOrderedMap <Int, Int> otherObsIdsWithCounterpart_p;
-  SimpleOrderedMap <Int, Int> solSystObjects_p;
+  std::map <Int, Int> newSourceIndex_p;
+  std::map <Int, Int> newSourceIndex2_p;
+  std::map <Int, Int> newSPWIndex_p;
+  std::map <Int, Int> newObsIndexA_p;
+  std::map <Int, Int> newObsIndexB_p;
+  std::map <Int, Int> otherObsIdsWithCounterpart_p;
+  std::map <Int, Int> solSystObjects_p;
 
   Bool doSource_p;
   Bool doSource2_p;
@@ -182,7 +182,12 @@ Bool areEQ(const ROArrayColumn<T>& col, uInt row_i, uInt row_j)
   return rval;
 }
 
-
+inline Int getMapValue (const std::map<Int,Int>& m, Int k)
+{
+  auto iter = m.find(k);
+  return (iter == m.end()  ?  -1 : iter->second);
+}
+  
 
 } //# NAMESPACE CASACORE - END
 

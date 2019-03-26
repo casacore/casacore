@@ -284,7 +284,7 @@ void DataManager::removeColumn (DataManagerColumn*)
 //# Initialize the static map of "constructors".
 // Use a recursive mutex, because loading from a shared library can cause
 // a nested lock.
-SimpleOrderedMap<String,DataManagerCtor>
+std::map<String,DataManagerCtor>
         DataManager::theirRegisterMap(initRegisterMap());
 Mutex DataManager::theirMutex(Mutex::Recursive);
 
@@ -292,24 +292,25 @@ Mutex DataManager::theirMutex(Mutex::Recursive);
 void DataManager::registerCtor (const String& type, DataManagerCtor func)
 {
     ScopedMutexLock lock(theirMutex);
-    theirRegisterMap.define(type, func);
+    theirRegisterMap.insert (std::make_pair(type, func));
 }
 
 //# Test if the data manager is registered.
 Bool DataManager::isRegistered (const String& type)
 {
     ScopedMutexLock lock(theirMutex);
-    return theirRegisterMap.isDefined(type);
+    return theirRegisterMap.find(type) != theirRegisterMap.end();
 }
 
 //# Get a data manager constructor.
-//# Return default function if the data manager is undefined.
+//# Return default function if the data manager is undefined
+//# after having tried to load it from a shared library.
 DataManagerCtor DataManager::getCtor (const String& type)
 {
     ScopedMutexLock lock(theirMutex);
-    DataManagerCtor* fp = theirRegisterMap.isDefined (type);
-    if (fp) {
-        return *fp;
+    std::map<String,DataManagerCtor>::const_iterator iter = theirRegisterMap.find (type);
+    if (iter != theirRegisterMap.end()) {
+        return iter->second;
     }
     // Try to load the data manager from a dynamic library with that name
     // (in lowercase without possible template extension).
@@ -327,9 +328,9 @@ DataManagerCtor DataManager::getCtor (const String& type)
               "register_"+libname, False);
     if (dl.getHandle()) {
         // See if registered now.
-        fp = theirRegisterMap.isDefined (type);
-        if (fp) {
-            return *fp;
+        iter = theirRegisterMap.find (type);
+        if (iter != theirRegisterMap.end()) {
+            return iter->second;
         }
     }
     return unknownDataManager;
@@ -853,41 +854,41 @@ void DataManagerColumn::putColumnSliceCellsBase (const RefRows& rows,
 //# DataManager to a static function calling the default constructor.
 //# The class name is the name as returned by the function dataManagerType.
 // No locking since private and only called by ctor of static member init.
-SimpleOrderedMap<String,DataManagerCtor> DataManager::initRegisterMap()
+std::map<String,DataManagerCtor> DataManager::initRegisterMap()
 {
-  SimpleOrderedMap<String,DataManagerCtor> regMap(DataManager::unknownDataManager);
+  std::map<String,DataManagerCtor> regMap;
 
-  theirRegisterMap.define("StManAipsIO",      StManAipsIO::makeObject);
-  theirRegisterMap.define("StandardStMan",    StandardStMan::makeObject);
-  theirRegisterMap.define("IncrementalStMan", IncrementalStMan::makeObject);
-  theirRegisterMap.define("TiledDataStMan",   TiledDataStMan::makeObject);
-  theirRegisterMap.define("TiledCellStMan",   TiledCellStMan::makeObject);
-  theirRegisterMap.define("TiledColumnStMan", TiledColumnStMan::makeObject);
-  theirRegisterMap.define("TiledShapeStMan",  TiledShapeStMan::makeObject);
-  theirRegisterMap.define("MemoryStMan",      MemoryStMan::makeObject);
+  theirRegisterMap.insert (std::make_pair("StManAipsIO",      StManAipsIO::makeObject));
+  theirRegisterMap.insert (std::make_pair("StandardStMan",    StandardStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("IncrementalStMan", IncrementalStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("TiledDataStMan",   TiledDataStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("TiledCellStMan",   TiledCellStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("TiledColumnStMan", TiledColumnStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("TiledShapeStMan",  TiledShapeStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("MemoryStMan",      MemoryStMan::makeObject));
 #ifdef HAVE_MPI
 #ifdef HAVE_ADIOS2
-  theirRegisterMap.define("Adios2StMan",      Adios2StMan::makeObject);
+  theirRegisterMap.insert (std::make_pair("Adios2StMan",      Adios2StMan::makeObject));
 #endif
 #endif
-  theirRegisterMap.define(CompressFloat::className(),
-                          CompressFloat::makeObject);
-  theirRegisterMap.define(CompressComplex::className(),
-                          CompressComplex::makeObject);
-  theirRegisterMap.define(CompressComplexSD::className(),
-                          CompressComplexSD::makeObject);
-  theirRegisterMap.define(MappedArrayEngine<Complex,DComplex>::className(),
-                          MappedArrayEngine<Complex,DComplex>::makeObject);
-  theirRegisterMap.define(ForwardColumnEngine::className(),
-                          ForwardColumnEngine::makeObject);
-  theirRegisterMap.define(VirtualTaQLColumn::className(),
-                          VirtualTaQLColumn::makeObject);
-  theirRegisterMap.define(BitFlagsEngine<uChar>::className(),
-                          BitFlagsEngine<uChar>::makeObject);
-  theirRegisterMap.define(BitFlagsEngine<Short>::className(),
-                          BitFlagsEngine<Short>::makeObject);
-  theirRegisterMap.define(BitFlagsEngine<Int>::className(),
-                          BitFlagsEngine<Int>::makeObject);
+  theirRegisterMap.insert (std::make_pair(CompressFloat::className(),
+                                          CompressFloat::makeObject));
+  theirRegisterMap.insert (std::make_pair(CompressComplex::className(),
+                                          CompressComplex::makeObject));
+  theirRegisterMap.insert (std::make_pair(CompressComplexSD::className(),
+                                          CompressComplexSD::makeObject));
+  theirRegisterMap.insert (std::make_pair(MappedArrayEngine<Complex,DComplex>::className(),
+                                          MappedArrayEngine<Complex,DComplex>::makeObject));
+  theirRegisterMap.insert (std::make_pair(ForwardColumnEngine::className(),
+                                          ForwardColumnEngine::makeObject));
+  theirRegisterMap.insert (std::make_pair(VirtualTaQLColumn::className(),
+                                          VirtualTaQLColumn::makeObject));
+  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<uChar>::className(),
+                                          BitFlagsEngine<uChar>::makeObject));
+  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<Short>::className(),
+                                          BitFlagsEngine<Short>::makeObject));
+  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<Int>::className(),
+                                          BitFlagsEngine<Int>::makeObject));
 
   return regMap;
 }

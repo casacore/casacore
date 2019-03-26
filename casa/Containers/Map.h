@@ -28,6 +28,9 @@
 #ifndef CASA_MAP_H
 #define CASA_MAP_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "Map.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
 
 //# Includes
 #include <casacore/casa/aips.h>

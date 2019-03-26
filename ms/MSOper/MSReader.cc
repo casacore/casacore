@@ -40,7 +40,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSReader::MSReader(const MeasurementSet &ms)
-    : itsMS(ms), itsMSCols(ms), itsSecUnit("s"), itsIds(ms), itsTabId(-1),
+    : itsMS(ms), itsMSCols(ms), itsSecUnit("s"), itsIds(ms),
       itsMainId(-1), itsAnt1Id(-1), itsAnt2Id(-1), itsDDId(-1), itsDopplerId(-1),
       itsFeed1Id(-1), itsFeed2Id(-1), itsFieldId(-1), itsFlagCmdId(-1),
       itsFreqOffsetId(-1), itsObsId(-1), itsPointing1Id(-1), itsPointing2Id(-1), 
@@ -52,7 +52,7 @@ MSReader::MSReader(const MeasurementSet &ms)
     uInt idCount = 0;
     for (uInt i=0;i<kwSet.nfields();i++) {
 	if (kwSet.type(i) == TpTable) {
-	    itsTabId.define(kwSet.name(i),idCount);
+            itsTabId[kwSet.name(i)] = idCount;
 	    idCount++;
 	} // ignore all other keywords
     }
@@ -61,55 +61,55 @@ MSReader::MSReader(const MeasurementSet &ms)
 
     // ANTENNA1 == ANTENNA
     // ANTENNA is required
-    itsAnt1Id = itsTabId("ANTENNA");
+    itsAnt1Id = itsTabId.at("ANTENNA");
     DebugAssert(itsAnt1Id>=0, AipsError);
-    itsTabId.define("ANTENNA1", itsAnt1Id);
+    itsTabId["ANTENNA1"] = itsAnt1Id;
     // ANTENNA2 gets a new number
-    itsTabId.define("ANTENNA2", idCount++);
-    itsAnt2Id = itsTabId("ANTENNA2");
+    itsAnt2Id = idCount++;
+    itsTabId["ANTENNA2"] = itsAnt2Id;
     
     // FEED1 == FEED
     // FEED is required
-    itsFeed1Id = itsTabId("FEED");
+    itsFeed1Id = itsTabId.at("FEED");
     DebugAssert(itsFeed1Id>=0, AipsError);
-    itsTabId.define("FEED1", itsFeed1Id);
+    itsTabId["FEED1"] = itsFeed1Id;
     // FEED2 gets a new number
-    itsTabId.define("FEED2", idCount++);
-    itsFeed2Id = itsTabId("FEED2");
+    itsFeed2Id = idCount++;
+    itsTabId["FEED2"] = itsFeed2Id;
 
     // there are two POINTING lookups, one for each possible antenna
     // POINTING is a required table
-    itsPointing1Id = itsTabId("POINTING");
+    itsPointing1Id = itsTabId.at("POINTING");
     DebugAssert(itsPointing1Id>=0, AipsError);
-    itsTabId.define("POINTING1", itsPointing1Id);
+    itsTabId["POINTING1"] = itsPointing1Id;
 
     // POINTING2 gets a new number
-    itsTabId.define("POINTING2", idCount++);
-    itsPointing2Id = itsTabId("POINTING2");
+    itsPointing2Id = idCount++;
+    itsTabId["POINTING2"] = itsPointing2Id;
 
     // there are two SYSCAL lookups, one for each possible antenna
     // SYSCAL is an optional table
-    itsSyscal1Id = itsTabId("SYSCAL");
+    itsSyscal1Id = itsTabId.at("SYSCAL");
     if (itsSyscal1Id >= 0) {
-	itsTabId.define("SYSCAL1", itsSyscal1Id);
+	itsTabId["SYSCAL1"] = itsSyscal1Id;
 	// SYSCAL2 gets a new number
-	itsTabId.define("SYSCAL2", idCount++);
-	itsSyscal2Id = itsTabId("SYSCAL2");
+	itsSyscal2Id = idCount++;
+	itsTabId["SYSCAL2"] = itsSyscal2Id;
     }
 
     // there are two WEATHER lookups, one for each possible antenna
     // WEATHER is an optional table
-    itsWeather1Id = itsTabId("WEATHER");
+    itsWeather1Id = itsTabId.at("WEATHER");
     if (itsWeather1Id >= 0) {
-	itsTabId.define("WEATHER1", itsWeather1Id);
+	itsTabId["WEATHER1"] = itsWeather1Id;
 	// WEATHER2 gets a new number
-	itsTabId.define("WEATHER2", idCount++);
-	itsWeather2Id = itsTabId("WEATHER2");
+	itsWeather2Id = idCount++;
+	itsTabId["WEATHER2"] = itsWeather2Id;
     }
 
     // And the MAIN table needs a presence in the various blocks
-    itsTabId.define("MAIN", idCount++);
-    itsMainId = itsTabId("MAIN");
+    itsMainId = idCount++;
+    itsTabId["MAIN"] = itsMainId;
 
     // at this point, we know the size of the things we need == idCount
     Vector<Bool> handledTab(idCount, False);
@@ -134,13 +134,13 @@ MSReader::MSReader(const MeasurementSet &ms)
 
     // DATA_DESCRIPTION - no index, indexed simply via DATA_DESC_ID value
     // This table is required.
-    itsDDId = itsTabId("DATA_DESCRIPTION");
+    itsDDId = itsTabId.at("DATA_DESCRIPTION");
     DebugAssert(itsDDId>=0, AipsError);
     itsTabRows[itsDDId] = ROTableRow(itsMS.dataDescription());
     handledTab(itsDDId) = True;
 
     // DOPPLER - has a special index.  This table is OPTIONAL
-    itsDopplerId = itsTabId("DOPPLER");
+    itsDopplerId = itsTabId.at("DOPPLER");
     if (itsDopplerId >= 0) {
 	itsDopplerIndex.attach(itsMS.doppler());
 	itsTabRows[itsDopplerId] = ROTableRow(itsMS.doppler());
@@ -160,14 +160,14 @@ MSReader::MSReader(const MeasurementSet &ms)
 
     // FIELD - no index, indexed simply via FIELD_ID value
     // This table is required.
-    itsFieldId = itsTabId("FIELD");
+    itsFieldId = itsTabId.at("FIELD");
     DebugAssert(itsFieldId>=0, AipsError);
     itsTabRows[itsFieldId] = ROTableRow(itsMS.field());
     handledTab(itsFieldId) = True;
 
     // FLAG_CMD, simple time and interval MSTableIndex
     // This table is required
-    itsFlagCmdId = itsTabId("FLAG_CMD");
+    itsFlagCmdId = itsTabId.at("FLAG_CMD");
     DebugAssert(itsFlagCmdId>=0, AipsError);
     itsIndexes[itsFlagCmdId] = MSTableIndex(itsMS.flagCmd(),Vector<String>());
     itsTabRows[itsFlagCmdId] = ROTableRow(itsMS.flagCmd());
@@ -175,7 +175,7 @@ MSReader::MSReader(const MeasurementSet &ms)
 
     // FREQ_OFFSET - indexed
     // This table is optional
-    itsFreqOffsetId = itsTabId("FREQ_OFFSET");
+    itsFreqOffsetId = itsTabId.at("FREQ_OFFSET");
     if (itsFreqOffsetId >= 0) {
 	itsFreqOffIndex.attach(itsMS.freqOffset());
 	itsTabRows[itsFreqOffsetId] = ROTableRow(itsMS.freqOffset());
@@ -184,14 +184,14 @@ MSReader::MSReader(const MeasurementSet &ms)
 
     // HISTORY - not handled here, this is a required table
     // make sure its marked as undefined in the ID map and mark it as handled here
-    Int histId = itsTabId("HISTORY");
+    Int histId = itsTabId.at("HISTORY");
     if (histId >= 0) {
-	itsTabId.define("HISTORY",-1);
+	itsTabId["HISTORY"] = -1;
 	handledTab(histId) = True;
     }
 
     // OBSERVATION - not indexed, this is a required table
-    itsObsId = itsTabId("OBSERVATION");
+    itsObsId = itsTabId.at("OBSERVATION");
     DebugAssert(itsObsId>=0, AipsError);
     itsTabRows[itsObsId] = ROTableRow(itsMS.observation());
     handledTab(itsObsId) = True;
@@ -206,19 +206,19 @@ MSReader::MSReader(const MeasurementSet &ms)
     handledTab(itsPointing2Id) = True;
 
     // POLARIZATION - not indexed, this is a required table
-    itsPolId = itsTabId("POLARIZATION");
+    itsPolId = itsTabId.at("POLARIZATION");
     DebugAssert(itsPolId>=0, AipsError);
     itsTabRows[itsPolId] = ROTableRow(itsMS.polarization());
     handledTab(itsPolId) = True;
 
     // PROCESSOR - not indexed, this is a required table
-    itsProcId = itsTabId("PROCESSOR");
+    itsProcId = itsTabId.at("PROCESSOR");
     DebugAssert(itsProcId>=0, AipsError);
     itsTabRows[itsProcId] = ROTableRow(itsMS.processor());
     handledTab(itsProcId) = True;
 
     // SOURCE - indexed, this is an optional table
-    itsSourceId = itsTabId("SOURCE");
+    itsSourceId = itsTabId.at("SOURCE");
     if (itsSourceId >= 0) {
 	itsSourceIndex.attach(itsMS.source());
 	itsTabRows[itsSourceId] = ROTableRow(itsMS.source());
@@ -226,13 +226,13 @@ MSReader::MSReader(const MeasurementSet &ms)
     }
 
     // SPECTRAL_WINDOW - not indexed, this is a required table
-    itsSpwId = itsTabId("SPECTRAL_WINDOW");
+    itsSpwId = itsTabId.at("SPECTRAL_WINDOW");
     DebugAssert(itsSpwId>=0, AipsError);
     itsTabRows[itsSpwId] = ROTableRow(itsMS.spectralWindow());
     handledTab(itsSpwId) = True;
 
     // STATE - not indexed, this is an optional table
-    itsStateId = itsTabId("STATE");
+    itsStateId = itsTabId.at("STATE");
     if (itsStateId >= 0) {
 	itsTabRows[itsStateId] = ROTableRow(itsMS.state());
 	handledTab(itsStateId) = True;
@@ -264,10 +264,10 @@ MSReader::MSReader(const MeasurementSet &ms)
 
     // and now, for everything not handled above, also fill in itsTableNames
     Vector<String> tableNames(idCount);
-    for (uInt i=0; i<itsTabId.ndefined(); i++) {
-	Int tabId = itsTabId.getVal(i);
+    for (const auto& x : itsTabId) {
+        Int tabId = x.second;
 	if (tabId >= 0) {
-	    String tabName = itsTabId.getKey(i);
+	    String tabName = x.first;
 	    tableNames(tabId) = tabName;
 	    if (!handledTab(tabId)) {
 		itsIndexes[tabId].attach(kwSet.asTable(tabName), Vector<String>());
@@ -519,23 +519,23 @@ void MSReader::gotoRow(uInt which)
 
 const RecordInterface &MSReader::tableRow(const String &name) const
 {
-    if (!itsTabId.isDefined(name)) return emptyRecord;
-    Int tabId = itsTabId(name);
+    if (itsTabId.find(name) == itsTabId.end()) return emptyRecord;
+    Int tabId = itsTabId.at(name);
     return itsTabRows[tabId].record();
 }
 
 Int MSReader::rowNumber(const String &name) const
 {
-    if (!itsTabId.isDefined(name)) return -1;
-    Int tabId = itsTabId(name);
+    if (itsTabId.find(name) == itsTabId.end()) return -1;
+    Int tabId = itsTabId.at(name);
     return itsRowNumbers[tabId];
 }
 
 // Return a reference to the named subtable
 const Table &MSReader::table(const String &name) const
 {
-    if (!itsTabId.isDefined(name)) return emptyTable;
-    Int tabId = itsTabId(name);
+    if (itsTabId.find(name) == itsTabId.end()) return emptyTable;
+    Int tabId = itsTabId.at(name);
     return itsTabRows[tabId].table();
 }
 

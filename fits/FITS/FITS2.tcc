@@ -49,7 +49,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 	      Vector<Float> *refPixel,
 	      Vector<Float> *refLocation,
 	      Vector<Float> *delta,
-	      Map<String, Double> *keywords,
+              std::map<String, Double> *keywords,
 	      String *objectName)
 {
 
@@ -120,9 +120,9 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 		continue;
 	    }
 	    switch (next->type()) {
-	    case  FITS::DOUBLE:  (*keywords)(kwname) = next->asDouble(); break;
-	    case FITS::FLOAT:    (*keywords)(kwname) = next->asFloat(); break;
-            case FITS::LONG:     (*keywords)(kwname) = next->asInt(); break;
+	    case  FITS::DOUBLE:  (*keywords)[kwname] = next->asDouble(); break;
+	    case FITS::FLOAT:    (*keywords)[kwname] = next->asFloat(); break;
+            case FITS::LONG:     (*keywords)[kwname] = next->asInt(); break;
             default:             break;
 			     }
 	    next = kwl.next();

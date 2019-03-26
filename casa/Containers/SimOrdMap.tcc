@@ -167,7 +167,7 @@ const V &SimpleOrderedMap<K,V>::operator()(const K &ky) const
 template<class K, class V>
 V &SimpleOrderedMap<K,V>::define (const K& k, const V& v)
 {
-    //  Locate the key. Error if the key already exists.
+    //  Locate the key. Replace if the key already exists.
     Bool defined;
     uInt inx = findKey (k, defined);
     if (defined) {

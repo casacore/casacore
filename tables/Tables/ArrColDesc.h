@@ -31,7 +31,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
 

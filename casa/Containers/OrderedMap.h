@@ -28,6 +28,10 @@
 #ifndef CASA_ORDEREDMAP_H
 #define CASA_ORDEREDMAP_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "OrderedMap.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Containers/Block.h>

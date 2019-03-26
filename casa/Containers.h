@@ -31,27 +31,11 @@
 #include <casacore/casa/aips.h>
 
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Containers/Link.h>
-#include <casacore/casa/Containers/List.h>
-#include <casacore/casa/Containers/ListMap.h>
-#include <casacore/casa/Containers/Map.h>
-#include <casacore/casa/Containers/OrderedPair.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordField.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
-#include <casacore/casa/Containers/OrderedMap.h>
-#include <casacore/casa/Containers/Queue.h>
-#include <casacore/casa/Containers/Stack.h>
 
 #include <casacore/casa/Containers/BlockIO.h>
-#include <casacore/casa/Containers/ListIO.h>
-#include <casacore/casa/Containers/ListMapIO.h>
-#include <casacore/casa/Containers/OrdPairIO.h>
-#include <casacore/casa/Containers/OrdMapIO.h>
-#include <casacore/casa/Containers/SimOrdMapIO.h>
-#include <casacore/casa/Containers/MapIO.h>
 
-#include <casacore/casa/Containers/StackError.h>
 #include <casacore/casa/Containers/IterError.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -67,13 +51,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 //    This module provides non-mathematical containers. These containers are the
-//    prototypical computer science types of containers -- <linkto
-//    class=Queue>queues</linkto>, <linkto class=Stack>stacks</linkto>, <linkto
-//    class=List>lists</linkto>, <linkto class=Map>associative arrays</linkto>,
+//    prototypical computer science types of containers -- 
 //    <linkto class="Record">records</linkto> and <linkto class=Block>simple
 //    arrays</linkto>. These classes are useful for all of the various types of low
 //    level data management. In general, these classes will have familiar semantics
 //    and an unsurprising interface.
+//    Note that Casacore used to have classes such as Map and List, but they
+//    became obsolete when the Standard C++ Library was introduced. Therefore these
+//    classes have been removed.
 //
 //    Most of the important classes in this module also have IO shift operators,
 //    e.g. for <linkto file=BlockIO.h#BlockIO>writing out a Block</linkto> (simple

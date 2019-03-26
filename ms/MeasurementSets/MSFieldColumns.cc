@@ -48,7 +48,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ROMSFieldColumns::ROMSFieldColumns(const MSField& msField):
   measCometsPath_p(),
   measCometsV_p(),
-  ephIdToMeasComet_p(-1),
   name_p(msField, MSField::columnName(MSField::NAME)),
   code_p(msField, MSField::columnName(MSField::CODE)),
   time_p(msField, MSField::columnName(MSField::TIME)),
@@ -221,8 +220,8 @@ Int ROMSFieldColumns::measCometIndex(Int row) const
   Int rval = -1;
   if( measCometsV_p.size()>0 ){
     Int ephId = ephemerisId()(row);
-    if(ephId>=0 && ephIdToMeasComet_p.isDefined(ephId)){
-      rval = ephIdToMeasComet_p(ephId);
+    if(ephId>=0 && ephIdToMeasComet_p.find(ephId) != ephIdToMeasComet_p.end()){
+      rval = ephIdToMeasComet_p.at(ephId);
     }
   }
   return rval;
@@ -359,7 +358,6 @@ Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
 ROMSFieldColumns::ROMSFieldColumns():
   measCometsPath_p(),
   measCometsV_p(),
-  ephIdToMeasComet_p(-1),
   name_p(),
   code_p(),
   time_p(),
@@ -430,7 +428,7 @@ void ROMSFieldColumns::updateMeasComets()
     Int theEphId = ephId(i);
     //cout << "updateMeasComet: processing row " << i << ", found eph id " << theEphId << endl;
     if(theEphId>=0 
-       && !ephIdToMeasComet_p.isDefined(theEphId)){
+       && ephIdToMeasComet_p.find(theEphId) == ephIdToMeasComet_p.end()){
       // the id is not yet in use, need to create a new MeasComet object
       
       // find the table belonging to this id
@@ -452,7 +450,7 @@ void ROMSFieldColumns::updateMeasComets()
       measCometsV_p.resize(nMeasCom+1, True);
       measCometsV_p(nMeasCom) = mC;
       // remember the connection ephId to the measCometsV_p index
-      ephIdToMeasComet_p.define(theEphId, nMeasCom); 
+      ephIdToMeasComet_p.insert(std::make_pair(theEphId, nMeasCom)); 
       //cout << "Found and successfully opened ephemeris table " << ephemTablePath << endl;
     }
   }

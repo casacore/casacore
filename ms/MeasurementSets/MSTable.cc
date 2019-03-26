@@ -33,7 +33,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // find first occurrence of name in the map (should be only occurrence)
     Int type = 0; //# 0=UNDEFINED_COLUMN for all enums
-    for (auto kv : nameMap) {
+    for (const auto& kv : nameMap) {
       if (kv.second == name) {
         type = kv.first;
         break;

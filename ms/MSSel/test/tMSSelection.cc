@@ -24,15 +24,16 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <ms/MSSel/MSSelection.h>
-#include <ms/MSSel/MSSelectionError.h>
-#include <ms/MSSel/MSSelectionTools.h>
-#include <ms/MSSel/MSSelectableTable.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableCache.h>
-#include <tables/Tables/PlainTable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MSSel/MSSelection.h>
+#include <casacore/ms/MSSel/MSSelectionError.h>
+#include <casacore/ms/MSSel/MSSelectionTools.h>
+#include <casacore/ms/MSSel/MSSelectableTable.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableCache.h>
+#include <casacore/tables/Tables/PlainTable.h>
 #include <casacore/casa/Inputs.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 
 using namespace std;
 using namespace casacore;

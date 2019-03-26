@@ -39,7 +39,6 @@
 #include <casacore/ms/MSSel/MSSpwGram.h>
 #include <casacore/ms/MSSel/MSPolnParse.h>
 #include <casacore/measures/Measures/Stokes.h>
-#include <casacore/casa/Containers/MapIO.h>
 
 // Define the yywrap function for flex.
 int MSPolnGramwrap()
@@ -66,8 +65,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			      const String& command,
 			      TableExprNode& node,
 			      Vector<Int>& selectedDDIDs,
-			      OrderedMap<Int, Vector<Int> >& selectedPolnMap,
-			      OrderedMap<Int, Vector<Vector<Int> > >& selectedSetupMap) 
+			      std::map<Int, Vector<Int> >& selectedPolnMap,
+			      std::map<Int, Vector<Vector<Int> > >& selectedSetupMap) 
   {
     try 
       {

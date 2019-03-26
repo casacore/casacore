@@ -32,6 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

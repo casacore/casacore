@@ -35,28 +35,17 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RegionHandlerMemory::RegionHandlerMemory()
-{
-  itsMaps[0] = 0;
-  itsMaps[1] = 0;
-  itsMaps[0] = new SimpleOrderedMap<String, void*> (0);
-  itsMaps[1] = new SimpleOrderedMap<String, void*> (0);
-}
+{}
 
 RegionHandlerMemory::RegionHandlerMemory (const RegionHandlerMemory& that)
  : RegionHandler(that)
 {
-  itsMaps[0] = 0;
-  itsMaps[1] = 0;
-  itsMaps[0] = new SimpleOrderedMap<String, void*> (0);
-  itsMaps[1] = new SimpleOrderedMap<String, void*> (0);
   operator= (that);
 }
 
 RegionHandlerMemory::~RegionHandlerMemory()
 {
   clear();
-  delete itsMaps[0];
-  delete itsMaps[1];
 }
 
 RegionHandlerMemory& RegionHandlerMemory::operator=
@@ -65,15 +54,13 @@ RegionHandlerMemory& RegionHandlerMemory::operator=
   if (this != &that) {
     clear();
     itsDefaultName = that.itsDefaultName;
-    *(itsMaps[0]) = *(that.itsMaps[0]);
-    *(itsMaps[1]) = *(that.itsMaps[1]);
-    for (uInt i=0; i<itsMaps[0]->ndefined(); i++) {
-      void*& valref = itsMaps[0]->getVal(i);
-      valref = static_cast<ImageRegion*>(valref)->clone();
+    itsMaps[0] = that.itsMaps[0];
+    itsMaps[1] = that.itsMaps[1];
+    for (auto& x : itsMaps[0]) {
+      x.second = static_cast<ImageRegion*>(x.second)->clone();
     }
-    for (uInt i=0; i<itsMaps[1]->ndefined(); i++) {
-      void*& valref = itsMaps[1]->getVal(i);
-      valref = static_cast<ImageRegion*>(valref)->clone();
+    for (auto& x : itsMaps[1]) {
+      x.second = static_cast<ImageRegion*>(x.second)->clone();
     }
   }
   return *this;
@@ -81,11 +68,13 @@ RegionHandlerMemory& RegionHandlerMemory::operator=
 
 void RegionHandlerMemory::clear()
 {
-  for (uInt i=0; i<itsMaps[0]->ndefined(); i++) {
-    delete static_cast<ImageRegion*>(itsMaps[0]->getVal(i));
+  for (auto& x : itsMaps[0]) {
+    delete static_cast<ImageRegion*>(x.second);
+    x.second = 0;
   }
-  for (uInt i=0; i<itsMaps[1]->ndefined(); i++) {
-    delete static_cast<ImageRegion*>(itsMaps[1]->getVal(i));
+  for (auto& x : itsMaps[1]) {
+    delete static_cast<ImageRegion*>(x.second);
+    x.second = 0;
   }
 }
 
@@ -123,7 +112,7 @@ Bool RegionHandlerMemory::defineRegion (const String& name,
 			" a region or mask with name " + name +
 			" already exists"));
     }
-    itsMaps[groupField]->remove (name);
+    itsMaps[groupField].erase (name);
   }
   // Okay, we can define the region now.
   groupField = 0;
@@ -131,7 +120,7 @@ Bool RegionHandlerMemory::defineRegion (const String& name,
     groupField = 1;
   }
   // Now define the region in the group.
-  itsMaps[groupField]->define (name, region.clone());
+  itsMaps[groupField][name] = region.clone();
   return True;
 }
 
@@ -163,7 +152,7 @@ Bool RegionHandlerMemory::renameRegion (const String& newName,
 			" a region or mask with name " + newName +
 			" already exists"));
     }
-    itsMaps[groupField]->remove (newName);
+    itsMaps[groupField].erase (newName);
   }
   // Get the old region.
   ImageRegion* regPtr = findRegion (oldName, type, True);
@@ -175,8 +164,10 @@ Bool RegionHandlerMemory::renameRegion (const String& newName,
     lcPtr->handleRename (newName, overwrite);
     delete lcPtr;
   }
-  // Rename the keyword itself.
-  itsMaps[oldGroupField]->rename (newName, oldName);
+  // Rename the keyword itself (remove and insert).
+  void* value = itsMaps[oldGroupField].at (oldName);
+  itsMaps[oldGroupField].erase (oldName);
+  itsMaps[oldGroupField][newName] = value;
   // Rename the default mask name if that is the renamed region.
   if (itsDefaultName == oldName) {
     setDefaultMask (newName);
@@ -212,7 +203,7 @@ Bool RegionHandlerMemory::removeRegion (const String& name,
     }
     // Delete the region object and remove from the map.
     delete regPtr;
-    itsMaps[groupField]->remove (name);
+    itsMaps[groupField].erase (name);
   }
   // Clear the default mask name if that is the removed region.
   if (itsDefaultName == name) {
@@ -227,18 +218,22 @@ Vector<String> RegionHandlerMemory::regionNames
   uInt nreg = 0;
   uInt nmask = 0;
   if (type != RegionHandler::Masks) {
-    nreg = itsMaps[0]->ndefined();
+    nreg = itsMaps[0].size();
   }
   if (type != RegionHandler::Regions) {
-    nmask = itsMaps[1]->ndefined();
+    nmask = itsMaps[1].size();
   }
   Vector<String> names(nreg + nmask);
-  uInt i;
-  for (i=0; i<nreg; i++) {
-    names(i) = itsMaps[0]->getKey(i);
+  uInt i=0;
+  if (nreg > 0) {
+    for (const auto& x : itsMaps[0]) {
+      names[i++] = x.first;
+    }
   }
-  for (i=0; i<nmask; i++) {
-    names(i+nreg) = itsMaps[1]->getKey(i);
+  if (nmask > 0) {
+    for (const auto& x : itsMaps[1]) {
+      names[i++] = x.first;
+    }
   }
   return names;
 }
@@ -260,8 +255,7 @@ ImageRegion* RegionHandlerMemory::findRegion (const String& name,
 {
   Int groupField = findRegionGroup (name, type, throwIfUnknown);
   if (groupField >= 0) {
-    void* regPtr = (*itsMaps[groupField])(name);
-    return static_cast<ImageRegion*>(regPtr);
+    return static_cast<ImageRegion*>(itsMaps[groupField].at(name));
   }
   return 0;
 }
@@ -273,14 +267,12 @@ Int RegionHandlerMemory::findRegionGroup (const String& regionName,
   // Check if the region is defined in "regions" or "masks".
   // If so, return its number.
   if (type != RegionHandler::Masks) {
-    void* field = itsMaps[0]->isDefined (regionName);
-    if (field != 0) {
+    if (itsMaps[0].find (regionName) != itsMaps[0].end()) {
       return 0;
     }
   }
   if (type != RegionHandler::Regions) {
-    void* field = itsMaps[1]->isDefined (regionName);
-    if (field != 0) {
+    if (itsMaps[1].find (regionName) != itsMaps[1].end()) {
       return 1;
     }
   }

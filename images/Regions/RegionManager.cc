@@ -31,7 +31,6 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Containers/HashMap.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Logging/LogFilter.h>

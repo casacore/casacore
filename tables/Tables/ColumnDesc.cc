@@ -44,6 +44,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+// Initialize the statics.
+Mutex ColumnDesc::theirMutex;
+
+  
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)
 : colPtr_p   (cold.clone()),
   allocated_p(True)
@@ -200,15 +204,10 @@ void ColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
     if (allocated_p) {
 	delete colPtr_p;
     }
-    allocated_p = True;
-
     // If tp is not in the map, (tp, unknownColumnDesc) is added and called (throws).
-    ColumnDesc::ColumnDescCtor cdFunc;
-    {
-        ScopedMutexLock lock(theirMutex);
-        cdFunc = theirRegisterMap(tp);
-    }
+    ColumnDesc::ColumnDescCtor cdFunc = getCtor(tp);
     colPtr_p = (*cdFunc)(tp);
+    allocated_p = True;
     colPtr_p->getFile (ios, parentAttr);
 }
 
@@ -235,95 +234,94 @@ void ColumnDesc::show (ostream& os) const
     }
 }
 
-//# Initialize the static variables for the class registration.
-SimpleOrderedMap<String, ColumnDesc::ColumnDescCtor>
-        ColumnDesc::theirRegisterMap(initRegisterMap());
-Mutex ColumnDesc::theirMutex;
-
-//# The default "ctor" function for unknown types.
-BaseColumnDesc* ColumnDesc::unknownColumnDesc (const String& name)
-{
-    throw (TableUnknownDesc(name));
-    return 0;
-}
 
 //# Register a mapping.
 void ColumnDesc::registerCtor (const String& name,
                                ColumnDesc::ColumnDescCtor func)
 {
     ScopedMutexLock lock(theirMutex);
-    theirRegisterMap.define(name, func);
+    getRegisterMap().insert (std::make_pair(name, func));
 }
 
 //# Get a ColumnDesc constructor.
 //# Return default function if undefined.
 ColumnDesc::ColumnDescCtor ColumnDesc::getCtor (const String& name)
 {
-    ScopedMutexLock lock(theirMutex);
-    return *(theirRegisterMap.isDefined (name));
+  std::map<String, ColumnDesc::ColumnDescCtor>& regMap = getRegisterMap();
+  std::map<String, ColumnDesc::ColumnDescCtor>::iterator iter = regMap.find (name);
+  if (iter == regMap.end()) {
+    throw;
+  }
+  return iter->second;
+}
+
+std::map<String, ColumnDesc::ColumnDescCtor>& ColumnDesc::getRegisterMap()
+{
+  static std::map<String, ColumnDesc::ColumnDescCtor> regMap(initRegisterMap());
+  return regMap;
 }
 
 //# Register the main "static constructors" of all XColumnDesc classes.
 // No locking since private and only called by ctor of static member init.
-SimpleOrderedMap<String, ColumnDesc::ColumnDescCtor> ColumnDesc::initRegisterMap()
+std::map<String, ColumnDesc::ColumnDescCtor> ColumnDesc::initRegisterMap()
 {
-  SimpleOrderedMap<String, ColumnDesc::ColumnDescCtor> regMap(ColumnDesc::unknownColumnDesc);
+  std::map<String, ColumnDesc::ColumnDescCtor> regMap;
 
   ScalarColumnDesc<Bool>     scdb("x");
-  regMap.define(scdb.className(), scdb.makeDesc);
+  regMap.insert (std::make_pair(scdb.className(), scdb.makeDesc));
   ScalarColumnDesc<uChar>    scduc("x");
-  regMap.define(scduc.className(), scduc.makeDesc);
+  regMap.insert (std::make_pair(scduc.className(), scduc.makeDesc));
   ScalarColumnDesc<Short>    scds("x");
-  regMap.define(scds.className(), scds.makeDesc);
+  regMap.insert (std::make_pair(scds.className(), scds.makeDesc));
   ScalarColumnDesc<uShort>   scdus("x");
-  regMap.define(scdus.className(), scdus.makeDesc);
+  regMap.insert (std::make_pair(scdus.className(), scdus.makeDesc));
   ScalarColumnDesc<Int>      scdi("x");
-  regMap.define(scdi.className(), scdi.makeDesc);
+  regMap.insert (std::make_pair(scdi.className(), scdi.makeDesc));
   ScalarColumnDesc<uInt>     scdui("x");
-  regMap.define(scdui.className(), scdui.makeDesc);
+  regMap.insert (std::make_pair(scdui.className(), scdui.makeDesc));
   ScalarColumnDesc<Int64>    scdi64("x");
-  regMap.define(scdi64.className(), scdi64.makeDesc);
+  regMap.insert (std::make_pair(scdi64.className(), scdi64.makeDesc));
   ScalarColumnDesc<float>    scdf("x");
-  regMap.define(scdf.className(), scdf.makeDesc);
+  regMap.insert (std::make_pair(scdf.className(), scdf.makeDesc));
   ScalarColumnDesc<double>   scdd("x");
-  regMap.define(scdd.className(), scdd.makeDesc);
+  regMap.insert (std::make_pair(scdd.className(), scdd.makeDesc));
   ScalarColumnDesc<Complex>  scdcx("x");
-  regMap.define(scdcx.className(), scdcx.makeDesc);
+  regMap.insert (std::make_pair(scdcx.className(), scdcx.makeDesc));
   ScalarColumnDesc<DComplex> scddx("x");
-  regMap.define(scddx.className(), scddx.makeDesc);
+  regMap.insert (std::make_pair(scddx.className(), scddx.makeDesc));
   ScalarColumnDesc<String>   scdst("x");
-  regMap.define(scdst.className(), scdst.makeDesc);
+  regMap.insert (std::make_pair(scdst.className(), scdst.makeDesc));
 
   ScalarRecordColumnDesc     srcd ("x");
-  regMap.define(srcd.className(), srcd.makeDesc);
+  regMap.insert (std::make_pair(srcd.className(), srcd.makeDesc));
 
   ArrayColumnDesc<Bool>     acdb("x");
-  regMap.define(acdb.className(), acdb.makeDesc);
+  regMap.insert (std::make_pair(acdb.className(), acdb.makeDesc));
   ArrayColumnDesc<uChar>    acduc("x");
-  regMap.define(acduc.className(), acduc.makeDesc);
+  regMap.insert (std::make_pair(acduc.className(), acduc.makeDesc));
   ArrayColumnDesc<Short>    acds("x");
-  regMap.define(acds.className(), acds.makeDesc);
+  regMap.insert (std::make_pair(acds.className(), acds.makeDesc));
   ArrayColumnDesc<uShort>   acdus("x");
-  regMap.define(acdus.className(), acdus.makeDesc);
+  regMap.insert (std::make_pair(acdus.className(), acdus.makeDesc));
   ArrayColumnDesc<Int>      acdi("x");
-  regMap.define(acdi.className(), acdi.makeDesc);
+  regMap.insert (std::make_pair(acdi.className(), acdi.makeDesc));
   ArrayColumnDesc<uInt>     acdui("x");
-  regMap.define(acdui.className(), acdui.makeDesc);
+  regMap.insert (std::make_pair(acdui.className(), acdui.makeDesc));
   ArrayColumnDesc<Int64>    acdi64("x");
-  regMap.define(acdi64.className(), acdi64.makeDesc);
+  regMap.insert (std::make_pair(acdi64.className(), acdi64.makeDesc));
   ArrayColumnDesc<float>    acdf("x");
-  regMap.define(acdf.className(), acdf.makeDesc);
+  regMap.insert (std::make_pair(acdf.className(), acdf.makeDesc));
   ArrayColumnDesc<double>   acdd("x");
-  regMap.define(acdd.className(), acdd.makeDesc);
+  regMap.insert (std::make_pair(acdd.className(), acdd.makeDesc));
   ArrayColumnDesc<Complex>  acdcx("x");
-  regMap.define(acdcx.className(), acdcx.makeDesc);
+  regMap.insert (std::make_pair(acdcx.className(), acdcx.makeDesc));
   ArrayColumnDesc<DComplex> acddx("x");
-  regMap.define(acddx.className(), acddx.makeDesc);
+  regMap.insert (std::make_pair(acddx.className(), acddx.makeDesc));
   ArrayColumnDesc<String>   acdst("x");
-  regMap.define(acdst.className(), acdst.makeDesc);
+  regMap.insert (std::make_pair(acdst.className(), acdst.makeDesc));
 
   SubTableDesc std("x", "", TableDesc());
-  regMap.define(std.className(), std.makeDesc);
+  regMap.insert (std::make_pair(std.className(), std.makeDesc));
 
   return regMap;
 }

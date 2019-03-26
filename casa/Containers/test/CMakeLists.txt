@@ -1,20 +1,25 @@
 set (tests
 tBlock
 tBlockTrace
-tHashMap
-tHashMapIO
-tHashMapIter
-tList
 tObjectStack
-tOrdMap2
-tOrdMap
-tQueue
 tRecord
 tRecordDesc
-tSimOrdMap
-tStack
 tValueHolder
 )
+
+if (BUILD_DEPRECATED)
+   list (APPEND tests
+       tHashMap
+       tHashMapIO
+       tHashMapIter
+       tList
+       tOrdMap2
+       tOrdMap
+       tQueue
+       tSimOrdMap
+       tStack
+   )
+endif ()
 
 foreach (test ${tests})
     add_executable (${test} ${test}.cc)

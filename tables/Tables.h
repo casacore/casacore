@@ -929,7 +929,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // #include <casacore/tables/Tables/TableDesc.h>
 // #include <casacore/tables/Tables/ScaColDesc.h>
 // #include <casacore/tables/Tables/ArrColDesc.h>
-// #include <aips/Tables/ScaRecordTabDesc.h>
+// #include <casacore/tables/Tables/ScaRecordTabDesc.h>
 // #include <casacore/tables/Tables/TableRecord.h>
 // #include <casacore/casa/Arrays/IPosition.h>
 // #include <casacore/casa/Arrays/Vector.h>

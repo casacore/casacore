@@ -36,7 +36,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableCache::TableCache()
-: tableMap_p(static_cast<void*>(0))
 {}
 
 TableCache::~TableCache()
@@ -50,17 +49,17 @@ PlainTable* TableCache::operator() (const String& tableName) const
 
 PlainTable* TableCache::getTable (const String& tableName) const
 {
-    PlainTable** ptr = (PlainTable**)(tableMap_p.isDefined (tableName));
-    if (ptr) {
-	return *ptr;
+    std::map<String,void*>::const_iterator iter = tableMap_p.find (tableName);
+    if (iter == tableMap_p.end()) {
+        return 0;
     }
-    return 0;
+    return static_cast<PlainTable*>(iter->second);
 }
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
     ScopedMutexLock sc(itsMutex);
-    tableMap_p.define (tableName, tab);
+    tableMap_p.insert (std::make_pair(tableName, tab));
 }
 
 void TableCache::remove (const String& tableName)
@@ -70,10 +69,10 @@ void TableCache::remove (const String& tableName)
     // Therefore do not delete if the map is already empty
     // (otherwise an exception is thrown).
     ScopedMutexLock sc(itsMutex);
-    if (tableMap_p.ndefined() > 0) {
+    if (tableMap_p.size() > 0) {
       try {
-	tableMap_p.remove (tableName);
-      } catch (AipsError&) {
+        tableMap_p.erase (tableName);
+      } catch (std::exception&) {
 	// Something strange has happened.
 	// Throwing an exception causes an immediate crash (probably by
 	// Table destructors).
@@ -87,8 +86,10 @@ void TableCache::remove (const String& tableName)
 void TableCache::rename (const String& newName, const String& oldName)
 {
     ScopedMutexLock sc(itsMutex);
-    if (tableMap_p.isDefined (oldName)) {
-	tableMap_p.rename (newName, oldName);
+    if (tableMap_p.find (oldName) != tableMap_p.end()) {
+        void* ptr = tableMap_p.at(oldName);
+        tableMap_p.erase (oldName);
+        tableMap_p.insert (std::make_pair(newName, ptr));
     }
 }
 
@@ -96,9 +97,8 @@ uInt TableCache::nAutoLocks()
 {
     ScopedMutexLock sc(itsMutex);
     uInt n=0;
-    uInt ntab = tableMap_p.ndefined();
-    for (uInt i=0; i<ntab; i++) {
-	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+    for (const auto& x : tableMap_p) {
+	PlainTable& table = *static_cast<PlainTable*>(x.second);
 	if (table.lockOptions().option() == TableLock::AutoLocking) {
 	    //# Having a read lock is enough.
 	    if (table.hasLock (FileLocker::Read)) {
@@ -112,9 +112,8 @@ uInt TableCache::nAutoLocks()
 void TableCache::relinquishAutoLocks (Bool all)
 {
     ScopedMutexLock sc(itsMutex);
-    uInt ntab = tableMap_p.ndefined();
-    for (uInt i=0; i<ntab; i++) {
-	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+    for (const auto& x : tableMap_p) {
+	PlainTable& table = *static_cast<PlainTable*>(x.second);
 	if (table.lockOptions().option() == TableLock::AutoLocking) {
 	    //# Having a read lock is enough.
 	    if (table.hasLock (FileLocker::Read)) {
@@ -131,11 +130,12 @@ void TableCache::relinquishAutoLocks (Bool all)
 Vector<String> TableCache::getTableNames() const
 {
     ScopedMutexLock sc(itsMutex);
-    uInt ntab = tableMap_p.ndefined();
+    uInt ntab = tableMap_p.size();
     Vector<String> names(ntab);
-    for (uInt i=0; i<ntab; i++) {
-	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
-        names[i] = table.tableName();
+    ntab = 0;
+    for (const auto& x : tableMap_p) {
+	PlainTable& table = *static_cast<PlainTable*>(x.second);
+        names[ntab++] = table.tableName();
     }
     return names;
 }
@@ -145,9 +145,8 @@ Vector<String> TableCache::getLockedTables (FileLocker::LockType lockType,
 {
     ScopedMutexLock sc(itsMutex);
     vector<String> names;
-    uInt ntab = tableMap_p.ndefined();
-    for (uInt i=0; i<ntab; i++) {
-	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+    for (const auto& x : tableMap_p) {
+	PlainTable& table = *static_cast<PlainTable*>(x.second);
 	if (lockOption < 0  ||  table.lockOptions().option() == lockOption) {
 	    if (table.hasLock (lockType)) {
                 names.push_back (table.tableName());

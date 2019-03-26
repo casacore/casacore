@@ -41,8 +41,8 @@
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 #include <casacore/ms/MSSel/MSSelectableTable.h>
-#include <casacore/casa/Containers/OrderedMap.h>
-#include <casacore/casa/Containers/MapIO.h>
+#include <map>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
@@ -344,7 +344,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // what the user intended (i.e., e.g. not all DD IDs due to user
     // POL expression might be selected due to SPW expressions).
     //
-    inline OrderedMap<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
+    inline std::map<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedPolMap_p;};
 
     //
@@ -420,7 +420,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // o To get a list of POLARIZATION IDs selected (rows of the POLARIZATION
     //   table), make a list of all the keys of this map.
-    inline OrderedMap<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
+    inline std::map<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedSetupMap_p;};
 
     // Methods to convert the maps return by getChanList and
@@ -631,8 +631,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Matrix<Double> selectedTimesList_p;
     Matrix<Double> selectedUVRange_p;
     Vector<Bool> selectedUVUnits_p;
-    OrderedMap<Int, Vector<Int> > selectedPolMap_p;
-    OrderedMap<Int, Vector<Vector<Int> > > selectedSetupMap_p;
+    std::map<Int, Vector<Int> > selectedPolMap_p;
+    std::map<Int, Vector<Vector<Int> > > selectedSetupMap_p;
     Int maxScans_p, maxObs_p, maxArray_p;
     Bool isMS_p,toTENCalled_p;
   };

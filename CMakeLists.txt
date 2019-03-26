@@ -45,10 +45,10 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 # By default build only Python2 bindings
 option (BUILD_PYTHON "Build the python bindings" YES)
 option (BUILD_PYTHON3 "Build the python3 bindings" NO)
+option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
-
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
 # Check if O_DIRECT is available.
@@ -485,6 +485,10 @@ endif (NOT DATA_DIR)
 set (DATA_DIR "${DATA_DIR}" CACHE PATH "Measures tables root")
 
 
+# Set compiler flag if deprecated Casacore header files are allowed.
+if (BUILD_DEPRECATED)
+    add_definitions(-DAIPS_USE_DEPRECATED)
+endif ()
 # Set compiler flag if no table locking.
 if (NOT ENABLE_TABLELOCKING)
     add_definitions(-DAIPS_TABLE_NOLOCKING)
@@ -563,6 +567,7 @@ message (STATUS "ADIOS2 library? ....... = ${ADIOS2_LIBRARIES}")
 message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
+message (STATUS "BUILD_DEPRECATED ...... = ${BUILD_DEPRECATED}")
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
 message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
@@ -585,6 +590,7 @@ endif (BUILD_PYTHON3)
 # List of build variables and defaults.
 #  BUILD_PYTHON                  YES
 #  BUILD_PYTHON3                 NO
+#  BUILD_DEPRECATED            NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
 #  ENABLE_TABLELOCKING           YES

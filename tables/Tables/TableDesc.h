@@ -34,6 +34,7 @@
 #include <casacore/tables/Tables/ColDescSet.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/iosfwd.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -457,7 +458,7 @@ public:
     // <src>keepUnknown==False</src>.
     // If all data columns of a hypercolumn are removed, the entire
     // hypercolumn is removed.
-    void adjustHypercolumns (const SimpleOrderedMap<String,String>& old2new,
+    void adjustHypercolumns (const std::map<String,String>& old2new,
 			     Bool keepUnknownData = False,
 			     Bool keepUnknownCoord = False,
 			     Bool keppUnknownId = False);
