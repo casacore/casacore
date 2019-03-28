@@ -398,8 +398,8 @@ if (BUILD_DEPRECATED)
          Containers/OrderedMap.tcc
          Containers/OrdMapIO.h
          Containers/OrdMapIO.tcc
-         Containers/OrdPair.h
-         Containers/OrdPair.tcc
+         Containers/OrderedPair.h
+         Containers/OrderedPair.tcc
          Containers/OrdPairIO.h
          Containers/OrdPairIO.tcc
          Containers/Queue.h
