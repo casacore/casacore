@@ -130,10 +130,10 @@ RowCopier::RowCopier(Table &out, const Table &in)
     columns_p = new ColumnHolder(out,in);
     for (uInt i=0; i < out.tableDesc().ncolumn(); i++) {
 	TableColumn outCol(out, i);
-	if (in.tableDesc().isColumn(outCol.columnDesc().name())) {
-	    TableColumn inCol(in, outCol.columnDesc().name());
-	    columns_p->attach(outCol.columnDesc().name(),
-			      inCol.columnDesc().name());
+        String name (outCol.columnDesc().name());
+	if (in.tableDesc().isColumn(name)) {
+	    TableColumn inCol(in, name);
+	    columns_p->attach(name, inCol.columnDesc().name());
 	}
     }
 }

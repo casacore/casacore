@@ -499,7 +499,7 @@ public:
   TableRecord& findKeyword (const String& name, String& keyName);
 
   // Add an update object.
-  void addUpdate (TableParseUpdate* upd);
+  void addUpdate (const CountedPtr<TableParseUpdate>& upd);
 
   // Set the insert expressions for all rows.
   void setInsertExprs (const std::vector<TableExprNode> exprs)
@@ -922,7 +922,7 @@ private:
   //# The possible stride in offset:endrow:stride.
   Int64 stride_p;
   //# The update and insert list.
-  std::vector<TableParseUpdate*> update_p;
+  std::vector<CountedPtr<TableParseUpdate>> update_p;
   //# The insert expressions (possibly for multiple rows).
   std::vector<TableExprNode> insertExprs_p;
   //# The table selection to be inserted.
@@ -998,7 +998,7 @@ inline const Block<String>& TableParseSelect::getColumnNames() const
 inline const Table& TableParseSelect::getTable() const
   { return table_p; }
 
-inline void TableParseSelect::addUpdate (TableParseUpdate* upd)
+inline void TableParseSelect::addUpdate (const CountedPtr<TableParseUpdate>& upd)
   { update_p.push_back (upd); }
 
 inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
