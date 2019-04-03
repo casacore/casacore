@@ -208,6 +208,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   IPosition HDF5Lattice<T>::tileShape() const
   {
+    if (itsDataSet->tileShape().empty()) {
+        TiledShape tiledShape(itsDataSet->shape());
+        return tiledShape.tileShape();
+    }
     return itsDataSet->tileShape();
   }
 
@@ -240,7 +244,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                              const IPosition& axisPath)
   {
     itsDataSet->setCacheSize (TSMCube::calcCacheSize (itsDataSet->shape(),
-                                                      itsDataSet->tileShape(),
+                                                      tileShape(),
                                                       False,
                                                       sliceShape, windowStart,
                                                       windowLength, axisPath,
