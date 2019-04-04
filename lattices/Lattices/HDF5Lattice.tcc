@@ -210,7 +210,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   IPosition HDF5Lattice<T>::tileShape() const
   {
     if (itsDataSet->tileShape().empty()) {
-	  return TiledFileAccess::makeTileShape(itsDataSet->shape());
+      return TiledFileAccess::makeTileShape(itsDataSet->shape());
     }
     return itsDataSet->tileShape();
   }
