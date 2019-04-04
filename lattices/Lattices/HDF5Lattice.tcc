@@ -33,6 +33,7 @@
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 #include <casacore/tables/DataMan/TSMCube.h>
+#include <casacore/tables/DataMan/TiledFileAccess.h>>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
@@ -209,8 +210,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   IPosition HDF5Lattice<T>::tileShape() const
   {
     if (itsDataSet->tileShape().empty()) {
-      TiledShape tiledShape(itsDataSet->shape());
-      return tiledShape.tileShape();
+	  return TiledFileAccess::makeTileShape(itsDataSet->shape());
     }
     return itsDataSet->tileShape();
   }
