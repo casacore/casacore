@@ -266,6 +266,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     CountedPtr<HDF5File>    itsFile;
     CountedPtr<HDF5Group>   itsGroup;
     CountedPtr<HDF5DataSet> itsDataSet;
+    IPosition               itsTileShape;
   };
 
 
