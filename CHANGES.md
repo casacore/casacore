@@ -1,3 +1,27 @@
+# 3.1
+
+## General
+- Removed many warnings issued by newer compiler versions (#798, #809, #819, #820, #866, #883)
+- Further improved thread-safety (#817, #869, #877, #886)
+- Added variance and standard deviation of complex numbers (#851)
+
+## Tables
+- Improved parallel storage manager based on ADIOS2
+- Support of Int64 table columns (#859)
+- Added O_DIRECT support when using MultiFile (#885)
+- TaQL improvements (#813, #851, #867)
+- Small CTDS fixes (#840, #868)
+
+## Measurement Set
+- Small improvements (#858, #864, #872)
+- Better handling of FITS-IDI data bit sampling (#836)
+
+## Images
+- Support for non-chunked HDF5 data sets (#879, #880)
+- Fixed count overflow on very large images (#849)
+
+
+
 # 3.0
 
 ## General
