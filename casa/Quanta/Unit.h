@@ -31,7 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/BasicSL/String.h>
+#include <string>
 #include <casacore/casa/Quanta/UnitVal.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -221,15 +221,15 @@ class Unit {
 // Get the unit value
     const UnitVal &getValue() const;
 // Get the unit name
-    const String &getName() const;
+    const std::string &getName() const;
 // Set the unit value
     void setValue(const UnitVal &in);
 // Set the unit name
-    void setName(const String &in);
+    void setName(const std::string &in);
 
 private:
 //# Data
-    String uName;
+    std::string uName;
     UnitVal uVal;
 
 //# Member functions

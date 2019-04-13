@@ -38,6 +38,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/OS/Mutex.h>
 #include <map>
+#include <string>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -205,7 +206,7 @@ public:
     static Bool     expr2Bool    (const String& expr, const Record& vars=Record());
     static Int64    expr2Int     (const String& expr, const Record& vars=Record());
     static double   expr2Double  (const String& expr, const Record& vars=Record(),
-                                  const String& unit=String());
+                                  const std::string& unit=std::string());
     static DComplex expr2Complex (const String& expr, const Record& vars=Record());
     static String   expr2String  (const String& expr, const Record& vars=Record());
     static MVTime   expr2Date    (const String& expr, const Record& vars=Record());
@@ -215,7 +216,7 @@ public:
                                               const Record& vars=Record());
     static Array<double>   expr2ArrayDouble  (const String& expr,
                                               const Record& vars=Record(),
-                                              const String& unit=String());
+                                              const string& unit=std::string());
     static Array<DComplex> expr2ArrayComplex (const String& expr,
                                               const Record& vars=Record());
     static Array<String>   expr2ArrayString  (const String& expr,

@@ -25,7 +25,7 @@
 //# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #include <casacore/casa/Quanta/QVector.h>
-
+#include <string>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
 #include <casacore/casa/namespace.h>
@@ -36,7 +36,7 @@ int main () {
 
 		Vector<Double> vy(2);
 		vy.set(4.0);
-		String unit = "g";
+                std::string unit = "g";
 		QVector<Double> y(vy, unit);
 		AlwaysAssert(y.size() == vy.size(), AipsError);
 		AlwaysAssert(y[0].getValue() == vy[0], AipsError);

@@ -32,6 +32,8 @@
 
 #include <casacore/casa/namespace.h>
 
+#include <string>
+
 // <summary>
 // Test program for unit handling in selection expressions.
 // </summary>
@@ -72,7 +74,7 @@ void checkScaInt (const String& str, const TableExprId& exprid,
 void checkScaDouble (const String& str, const TableExprId& exprid,
 		     const TableExprNode& expr,
 		     const Double& value,
-                     const String& unit)
+                     const std::string& unit)
 {
   cout << "checkScaDouble " << str << ' ' << expr.unit().getName() << endl;
   AlwaysAssertExit (expr.dataType() == TpDouble);

@@ -38,6 +38,7 @@
 #include <casacore/casa/OS/Mutex.h>
 #include <casacore/casa/stdmap.h>
 
+#include <string>
 
 namespace casacore {
 
@@ -265,7 +266,7 @@ namespace casacore {
     // </group>
 
     // Get the unit.
-    const String& getUnit() const
+    const std::string& getUnit() const
       { return itsUnit; }
 
     // Get the attributes.
@@ -375,7 +376,7 @@ namespace casacore {
     TableExprNodeRep::NodeDataType itsDataType;
     Int                            itsNDim;
     IPosition                      itsShape;
-    String                         itsUnit;
+    std::string                    itsUnit;
     Record                         itsAttributes;
     Bool                           itsIsConstant;
     Bool                           itsIsAggregate;

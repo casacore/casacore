@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <string>
 #include <casacore/casa/Quanta/Unit.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -105,7 +106,7 @@ public:
   // Get units of QBase
   // <group name="get">
   // Return the string representation of the current units attached to QBase
-  const String &getUnit() const;
+  const std::string &getUnit() const;
   // </group>
   
   // Re-specify parts of a QBase

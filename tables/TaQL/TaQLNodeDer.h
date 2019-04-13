@@ -38,6 +38,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <vector>
 #include <iostream>
+#include <string>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -80,7 +81,7 @@ public:
   void setIsTableName()
     { itsIsTableName = True; }
   const String& getString() const;
-  const String& getUnit() const
+  const std::string& getUnit() const
     { return itsUnit; }
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void show (std::ostream& os) const;
@@ -95,7 +96,7 @@ public:
   DComplex itsCValue;
   String   itsSValue;
   MVTime   itsTValue;
-  String   itsUnit;
+  std::string itsUnit;
 };
 
 

@@ -162,8 +162,8 @@ Quantum<Qtype> &Quantum<Qtype>::operator/=(const Quantum<Qtype> &other) {
     qVal /= (other.qVal);
     if (!(other.qUnit.getName().empty())) {
 	if (qUnit.getName().empty()) {
-	    qUnit = Unit(String("(") + other.qUnit.getName() +
-			 String(")-1"));
+	    qUnit = Unit(std::string("(") + other.qUnit.getName() +
+			 std::string(")-1"));
 	} else {
 	    qUnit = Unit(qUnit.getName() +
 			 ("/(" + other.qUnit.getName() + ")"));

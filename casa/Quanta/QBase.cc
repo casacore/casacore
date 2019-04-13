@@ -45,7 +45,7 @@ QBase::~QBase() {}
 
 //# QBase general member functions
 
-const String &QBase::getUnit() const {
+const std::string &QBase::getUnit() const {
     return qUnit.getName();
 }
 

@@ -50,7 +50,7 @@
 // It ask for commands until a "q" is given.
 // When columns are selected, it will show their contents.
 
-void testUnit (const String& comm, double expResult, const String& expUnit)
+void testUnit (const std::string& comm, double expResult, const std::string& expUnit)
 {
   TaQLResult result = tableCommand (comm);
   AlwaysAssert (!result.isTable(), AipsError);

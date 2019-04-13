@@ -61,7 +61,7 @@ Unit::Unit(const  char *other, Int len)
 }
 
 Unit::Unit(char other) 
-: uName(other), uVal() {
+: uName(std::string(1, other)), uVal() {
     check();
 }
 
@@ -92,7 +92,7 @@ const UnitVal &Unit::getValue() const {
     return uVal;
 }
 
-const String &Unit::getName() const {
+const std::string &Unit::getName() const {
     return uName;
 }
 
@@ -100,7 +100,7 @@ void Unit::setValue(const UnitVal &in) {
     uVal = in;
 }
 
-void Unit::setName(const String &in) {
+void Unit::setName(const std::string &in) {
     uName = in;
 }
 

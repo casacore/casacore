@@ -36,6 +36,8 @@
 
 #include <casacore/casa/namespace.h>
 
+#include <string>
+
 // <summary>
 // Test program for all TaQL functions.
 // They are tested in two ways:
@@ -106,7 +108,7 @@ int checkScaInt (const String& func, const String& arg, Int expResult)
 }
 
 int checkScaDouble (const String& func, const String& arg, Double expResult,
-                    const String& unit = String(), double tol=1e-5)
+                    const std::string& unit = "", double tol=1e-5)
 {
   ntest++;
   String comm = "using style python calc " + func + '(' + arg + ')';
