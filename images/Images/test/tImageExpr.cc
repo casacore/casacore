@@ -59,7 +59,7 @@ void testExpr()
   }
   {
     // Form an expression and save it.
-    String expr("tImageExpr_tmp.img1 + tImageExpr_tmp.img2 + 5");
+    String expr("'tImageExpr_tmp\\.img1' + tImageExpr_tmp.img2 + 5");
     LatticeExprNode node(ImageExprParse::command(expr));
     ImageExpr<Float> img (node, expr);
     AlwaysAssertExit (allEQ(img.get(), arr+arr));
@@ -89,26 +89,58 @@ void testExpr()
   {
     // Do a recursive test.
     // Form an expression and save it.
-    String expr("tImageExpr_tmp.img1 + tImageExpr_tmp.imgexpr");
+    String expr("tImageExpr_tmp.imgexpr + tImageExpr_tmp.img1");
     LatticeExprNode node(ImageExprParse::command(expr));
     ImageExpr<Float> img (node, expr);
     AlwaysAssertExit (allEQ(img.get(), arr+arr+arr));
     AlwaysAssertExit (! img.isPersistent());
-    img.save ("tImageExpr_tmp.imgexpr2");
+    img.save ("tImageExpr_tmp:imgexpr2");
     AlwaysAssertExit (img.isPersistent());
   }
   {
     // Reopen the 2nd expression from the file.
-    LatticeBase* latt = ImageOpener::openImageExpr ("tImageExpr_tmp.imgexpr2");
+    LatticeBase* latt = ImageOpener::openImageExpr ("tImageExpr_tmp:imgexpr2");
     ImageExpr<Float>* img = dynamic_cast<ImageExpr<Float>*>(latt);
     AlwaysAssertExit (img != 0);
     AlwaysAssertExit (allEQ(img->get(), arr+arr+arr));
     AlwaysAssertExit (img->isPersistent());
     delete img;
     AlwaysAssertExit (ImageExprParse::getImageNames().size() == 2  &&
-                      ImageExprParse::getImageNames()[0] == "tImageExpr_tmp.img1" &&
-                      ImageExprParse::getImageNames()[1] == "tImageExpr_tmp.imgexpr");
+                      ImageExprParse::getImageNames()[0] == "tImageExpr_tmp.imgexpr" &&
+                      ImageExprParse::getImageNames()[1] == "tImageExpr_tmp.img1");
   }
+  Block<LatticeExprNode> nodes;
+  {
+    cout<<"try as expr"<<endl;
+    // Reopen as an expression from the file. Escape the colon.
+    LatticeBase* latt = ImageOpener::openExpr ("float('tImageExpr_tmp\\:imgexpr2')", nodes);
+    ImageExpr<Float>* img = dynamic_cast<ImageExpr<Float>*>(latt);
+    AlwaysAssertExit (img != 0);
+    AlwaysAssertExit (allEQ(img->get(), arr+arr+arr));
+    AlwaysAssertExit (! img->isPersistent());
+    delete img;
+    cout<<"done try as expr"<<endl;
+  }
+  // Try to open it as an expression without escaping the colon (also as unquoted).
+  // It should give an exception 'unknown image'.
+  Bool exc = False;
+  try {
+    cout<<"try as expr2"<<endl;
+    ImageOpener::openExpr ("float('tImageExpr_tmp:imgexpr2' + 1)", nodes);
+  } catch (const AipsError& x) {
+    cout << "Expected exception: " << x.what() << endl;
+    exc = True;
+  }
+  AlwaysAssertExit (exc);
+  exc = False;
+  try {
+    cout<<"try as expr3"<<endl;
+    ImageOpener::openExpr ("float(tImageExpr_tmp:imgexpr2)", nodes);
+  } catch (const AipsError& x) {
+    cout << "Expected exception: " << x.what() << endl;
+    exc = True;
+  }
+  AlwaysAssertExit (exc);
 }
 
 
