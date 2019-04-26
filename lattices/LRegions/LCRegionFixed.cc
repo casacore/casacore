@@ -69,7 +69,7 @@ void LCRegionFixed::setMask (const Array<Bool>& mask)
     setMaskPtr (itsMask);
 }
 
-ArrayLattice<Bool> getMask()
+ArrayLattice<Bool> LCRegionFixed::getMask()
 {
     return itsMask;
 }
