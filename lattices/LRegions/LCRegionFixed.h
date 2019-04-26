@@ -96,6 +96,9 @@ public:
     // LCRegionSingle::masksEqual function as well if 
     // you want to check the masks
     virtual Bool operator== (const LCRegion& other) const;
+    
+    // Return the mask
+    ArrayLattice<Bool> getMask();
 
  protected:
     // Assignment (copy semantics) is only useful for derived classes.

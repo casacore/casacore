@@ -69,5 +69,10 @@ void LCRegionFixed::setMask (const Array<Bool>& mask)
     setMaskPtr (itsMask);
 }
 
+ArrayLattice<Bool> getMask()
+{
+    return itsMask;
+}
+
 } //# NAMESPACE CASACORE - END
 
