@@ -33,7 +33,7 @@
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward 

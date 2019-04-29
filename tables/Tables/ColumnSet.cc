@@ -43,9 +43,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-#define BLOCKDATAMANVAL(I) ((DataManager*)(blockDataMan_p[I]))
-#define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
-#define COLMAPNAME(NAME)   ((PlainColumn*)(colMap_p(NAME)))
+#define BLOCKDATAMANVAL(I) (static_cast<DataManager*>(blockDataMan_p[I]))
+#define COLMAPNAME(NAME)   (static_cast<PlainColumn*>(colMap_p.at(NAME)))
+#define COLMAPCAST(PTR)    (static_cast<PlainColumn*>(PTR))
 
 
 ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
@@ -54,7 +54,6 @@ ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
   multiFile_p     (0),
   baseTablePtr_p  (0),
   lockPtr_p       (0),
-  colMap_p        (static_cast<void *>(0), tdesc->ncolumn()),
   seqCount_p      (0),
   blockDataMan_p  (0)
 {
@@ -62,7 +61,7 @@ ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
     //# a column out of them.
     for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
 	const ColumnDesc& cd = tdescPtr_p->columnDesc(i);
-	colMap_p.define (cd.name(), cd.makeColumn(this));
+	colMap_p.insert (std::make_pair(cd.name(), cd.makeColumn(this)));
     }
 }
 
@@ -70,8 +69,8 @@ ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
 ColumnSet::~ColumnSet()
 {
     uInt i;
-    for (i=0; i<colMap_p.ndefined(); i++) {
-	delete COLMAPVAL(i);
+    for (auto& x : colMap_p) {
+        delete COLMAPCAST(x.second);
     }
     for (i=0; i<blockDataMan_p.nelements(); i++) {
 	delete BLOCKDATAMANVAL(i);
@@ -86,9 +85,7 @@ PlainColumn* ColumnSet::getColumn (const String& columnName) const
     return COLMAPNAME(columnName);
 }
 
-//# We cannot simply return COLMAPVAL(columnIndex), because the order of
-//# the columns in the description is important. So first get the column
-//# name and use that as key.
+//# First get the column name and use that as key.
 PlainColumn* ColumnSet::getColumn (uInt columnIndex) const
 {
     const String& name = tdescPtr_p->columnDesc(columnIndex).name();
@@ -120,8 +117,8 @@ void ColumnSet::initDataManagers (uInt nrrow, Bool bigEndian,
 	BLOCKDATAMANVAL(i)->setEndian (bigEndian);
 	BLOCKDATAMANVAL(i)->setTsmOption (tsmOption);
     }
-    for (i=0; i<colMap_p.ndefined(); i++) {
-	getColumn(i)->createDataManagerColumn();
+    for (i=0; i<colMap_p.size(); ++i) {
+        getColumn(i)->createDataManagerColumn();
     }
     //# Delete data managers without columns.
     uInt nr = 0;
@@ -161,7 +158,7 @@ void ColumnSet::prepareSomeDataManagers (uInt from)
     uInt i, j;
     for (i=from; i<blockDataMan_p.nelements(); i++) {
 	if (BLOCKDATAMANVAL(i)->canReallocateColumns()) {
-	    for (j=0; j<colMap_p.ndefined(); j++) {
+	    for (j=0; j<colMap_p.size(); j++) {
 		DataManagerColumn*& column = getColumn(j)->dataManagerColumn();
 		column = BLOCKDATAMANVAL(i)->reallocateColumn (column);
 	    }
@@ -228,8 +225,8 @@ uInt ColumnSet::resync (uInt nrrow, Bool forceSync)
 
 void ColumnSet::invalidateColumnCaches()
 {
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
-	COLMAPVAL(i)->columnCache().invalidate();
+    for (auto& x : colMap_p) {
+	COLMAPCAST(x.second)->columnCache().invalidate();
     }
 }
 
@@ -392,7 +389,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
     const String& name = columnDesc.name();
     ColumnDesc& cd = tdescPtr_p->addColumn (columnDesc);
     PlainColumn* col = cd.makeColumn (this);
-    colMap_p.define (name, col);
+    colMap_p.insert (std::make_pair(name, col));
     col->bind (dataManPtr);
     //# The creation of a column may fail as well as adding the
     //# column to the storage manager.
@@ -421,7 +418,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 	}
 	//# Delete the PlainColumn, remove from map and delete its description.
 	delete col;
-	colMap_p.remove (name);
+	colMap_p.erase (name);
 	tdescPtr_p->removeColumn (name);
     } 
     // Rethrow if there was an exception.
@@ -469,7 +466,7 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 	for (uInt i=0; i<tableDesc.ncolumn(); i++) {
 	    const ColumnDesc& cd = tdescPtr_p->columnDesc(tableDesc[i].name());
 	    PlainColumn* col = cd.makeColumn (this);
-	    colMap_p.define (cd.name(), col);
+	    colMap_p.insert (std::make_pair(cd.name(), col));
 	    col->bind (dmptr);
 	    col->createDataManagerColumn();
 	}
@@ -480,9 +477,9 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 	msg = x.getMesg();
 	for (uInt i=0; i<tableDesc.ncolumn(); i++) {
 	    const String& name = tableDesc[i].name();
-	    if (colMap_p.isDefined (name)) {
+	    if (colMap_p.find(name) != colMap_p.end()) {
 		delete COLMAPNAME(name);
-		colMap_p.remove (name);
+		colMap_p.erase (name);
 	    }
 	    tdescPtr_p->removeColumn (name);
 	}
@@ -499,13 +496,13 @@ void ColumnSet::removeColumn (const Vector<String>& columnNames)
 {
     // Check if the columns can be removed.
     // Also find out about the data managers.
-    SimpleOrderedMap<void*,Int> dmCounts = checkRemoveColumn (columnNames);
+    std::map<void*,Int> dmCounts = checkRemoveColumn (columnNames);
     // Write lock table.
     checkWriteLock (True);
     // Remove all data managers possible.
-    for (uInt i=0; i<dmCounts.ndefined(); i++) {
-        if (dmCounts.getVal(i) < 0) {
-	    DataManager* dmPtr = static_cast<DataManager *>(const_cast<void *>(dmCounts.getKey(i)));
+    for (auto& x : dmCounts) {
+        if (x.second < 0) {
+	    DataManager* dmPtr = static_cast<DataManager *>(const_cast<void *>(x.first));
 	    dmPtr->deleteManager();
 	    Bool found = False;
 	    for (uInt j=0; j<blockDataMan_p.nelements(); j++) {
@@ -539,31 +536,37 @@ void ColumnSet::removeColumn (const Vector<String>& columnNames)
 	tdescPtr_p->removeColumn (name);
 	PlainColumn* colPtr = COLMAPNAME(name);
 	DataManager* dmPtr = colPtr->dataManager();
-	if (dmCounts(dmPtr) >= 0) {
+	if (dmCounts.at(dmPtr) >= 0) {
 	    DataManagerColumn* dmcolPtr = colPtr->dataManagerColumn();
 	    dmPtr->removeColumn (dmcolPtr);
 	}
 	delete colPtr;
-	colMap_p.remove (name);
+	colMap_p.erase (name);
     }
     autoReleaseLock();
 }
 
-SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn 
+std::map<void*,Int> ColumnSet::checkRemoveColumn 
 					(const Vector<String>& columnNames)
 {
     // Check if the column names are valid.
     baseTablePtr_p->checkRemoveColumn (columnNames, True);
     // Count how many columns in each data manager are to be deleted.
-    SimpleOrderedMap<void*,Int> dmCounts(0, 16);
+    std::map<void*,Int> dmCounts;
     for (uInt i=0; i<columnNames.nelements(); i++) {
-        dmCounts(COLMAPNAME(columnNames(i))->dataManager())++;
+        void* dmPtr = COLMAPNAME(columnNames[i])->dataManager();
+        std::map<void*,Int>::iterator iter = dmCounts.find(dmPtr);
+        if (iter == dmCounts.end()) {
+            dmCounts.insert (std::make_pair(dmPtr, 1));
+        } else {
+            iter->second++;
+        }
     }
     // If all columns in a data manager are to be deleted, set count to -1.
-    for (uInt i=0; i<dmCounts.ndefined(); i++) {
-        DataManager* dmPtr = static_cast<DataManager*>(const_cast<void*>(dmCounts.getKey(i)));
-	if (dmCounts.getVal(i) == Int(dmPtr->ncolumn())) {
-	    dmCounts.getVal(i) = -1;
+    for (auto& iter : dmCounts) {
+        DataManager* dmPtr = static_cast<DataManager*>(const_cast<void*>(iter.first));
+	if (iter.second == Int(dmPtr->ncolumn())) {
+	    iter.second = -1;
 	}
     }
     // Now we have to check if a column can be deleted.
@@ -573,7 +576,7 @@ SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn
     // cannot be deleted, thus the column has to be deleted explicitly.
     for (uInt i=0; i<columnNames.nelements(); i++) {
         DataManager* dmPtr = COLMAPNAME(columnNames(i))->dataManager();
-        if (dmCounts(dmPtr) >= 0  &&  ! dmPtr->canRemoveColumn()) {
+        if (dmCounts.at(dmPtr) >= 0  &&  ! dmPtr->canRemoveColumn()) {
 	    throw TableInvOper ("Table::removeColumn - column " +
 				columnNames(i) + " cannot be removed from table " +
 				baseTablePtr_p->tableName());
@@ -596,7 +599,9 @@ void ColumnSet::renameColumn (const String& newName, const String& oldName)
     }
     checkWriteLock (True);
     tdescPtr_p->renameColumn (newName, oldName);
-    colMap_p.rename (newName, oldName);
+    void* ptr = colMap_p.at(oldName);
+    colMap_p.erase (oldName);
+    colMap_p.insert (std::make_pair(newName, ptr));
     autoReleaseLock();
 }
 
@@ -694,12 +699,12 @@ Record ColumnSet::dataManagerInfo (Bool virtualOnly) const
             dmPtr->dataManagerInfo (subrec);
 	    // Loop through all columns with this data manager and add
 	    // its name to the vector.
-	    uInt ncol = colMap_p.ndefined();
+	    uInt ncol = colMap_p.size();
 	    Vector<String> columns(ncol);
 	    uInt nc=0;
-	    for (uInt j=0; j<ncol; j++) {
-	        if (COLMAPVAL(j)->dataManager() == dmPtr) {
-	            columns(nc++) = colMap_p.getKey(j);
+            for (auto& x : colMap_p) {
+	        if (COLMAPCAST(x.second)->dataManager() == dmPtr) {
+                    columns(nc++) = x.first;
 		}
 	    }
 	    if (nc > 0) {
@@ -717,8 +722,8 @@ Record ColumnSet::dataManagerInfo (Bool virtualOnly) const
 //# Initialize rows.
 void ColumnSet::initialize (uInt startRow, uInt endRow)
 {
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
-	getColumn(i)->initialize (startRow, endRow);
+    for (uInt i=0; i<colMap_p.size(); i++) {
+        getColumn(i)->initialize (startRow, endRow);
     }
 }
 
@@ -733,21 +738,21 @@ void ColumnSet::reopenRW()
 	BLOCKDATAMANVAL(i)->reopenRW();
     }
     // Reopen tables in all column keyword sets.
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
+    for (uInt i=0; i<colMap_p.size(); i++) {
 	getColumn(i)->keywordSet().reopenRW();
     }
 }
 
 void ColumnSet::renameTables (const String& newName, const String& oldName)
 {
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
+    for (uInt i=0; i<colMap_p.size(); i++) {
 	getColumn(i)->rwKeywordSet().renameTables (newName, oldName);
     }
 }
 
 Bool ColumnSet::areTablesMultiUsed() const
 {
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
+    for (uInt i=0; i<colMap_p.size(); i++) {
         if (getColumn(i)->keywordSet().areTablesMultiUsed()) {
 	    return True;
 	}
@@ -798,7 +803,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	    }
 	}
 	//# Now write all columns.
-	for (i=0; i<colMap_p.ndefined(); i++) {
+	for (i=0; i<colMap_p.size(); i++) {
 	    getColumn(i)->putFile (ios, attr);
 	}
     }
@@ -879,11 +884,13 @@ uInt ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian,
     //# In the first version the columns were written in order of
     //# name. In the newer versions they are written in order of addition
     //# (which was needed to support addColumn properly and is better anyway).
-    for (i=0; i<colMap_p.ndefined(); i++) {
-	if (version == 1) {
-	    COLMAPVAL(i)->getFile (ios, *this, TableAttr(tab));
-	}else{
-	    getColumn(i)->getFile (ios, *this, TableAttr(tab));
+    if (version == 1) {
+        for (auto& x : colMap_p) {
+            COLMAPCAST(x.second)->getFile (ios, *this, TableAttr(tab));
+        }
+    }else{
+        for (i=0; i<colMap_p.size(); i++) {
+            getColumn(i)->getFile (ios, *this, TableAttr(tab));
 	}
     }
     //# Link the data managers to the table.
@@ -959,8 +966,8 @@ void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 void ColumnSet::syncColumns (const ColumnSet& other,
 			     const TableAttr& defaultAttr)
 {
-    uInt ncol = colMap_p.ndefined();
-    if (other.colMap_p.ndefined() != ncol) {
+    uInt ncol = colMap_p.size();
+    if (other.colMap_p.size() != ncol) {
 	throw (TableError ("ColumnSet::syncColumns; another process "
 			   "changed the number of columns of table " +
 			   baseTablePtr_p->tableName()));

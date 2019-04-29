@@ -27,7 +27,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/namespace.h>
-// #include <trial/MeasurementSets/MSMainBuffer.h>
+// #include <casacore/ms/MeasurementSets/MSMainBuffer.h>
 // #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 // #include <casacore/casa/Arrays/ArrayLogical.h>
 // #include <casacore/casa/Arrays/Vector.h>
@@ -36,7 +36,7 @@
 // #include <casacore/casa/Exceptions/Error.h>
 // #include <casacore/casa/BasicSL/Constants.h>
 // #include <casacore/casa/BasicMath/Math.h>
-// #include <aips/Exceptions/Excp.h>
+// #include <casacore/casa/Exceptions/Excp.h>
 // #include <casacore/tables/Tables/Table.h>
 // #include <casacore/casa/Utilities/Assert.h>
 // #include <casacore/casa/BasicSL/String.h>

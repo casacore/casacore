@@ -35,11 +35,11 @@
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/OS/Mutex.h>
 #include<iosfwd>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -516,7 +516,7 @@ private:
 
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
-    static SimpleOrderedMap<String,DataManagerCtor> theirRegisterMap;
+    static std::map<String,DataManagerCtor> theirRegisterMap;
     static Mutex theirMutex;
 
 public:
@@ -548,7 +548,7 @@ public:
 
 private:
     // Register the main data managers.
-    static SimpleOrderedMap<String,DataManagerCtor> initRegisterMap();
+    static std::map<String,DataManagerCtor> initRegisterMap();
 };
 
 

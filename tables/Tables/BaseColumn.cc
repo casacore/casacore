@@ -33,10 +33,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseColumn::BaseColumn (const BaseColumnDesc* cdp)
-: colDescPtr_p(cdp),
-    // The following cast is safe, because this class uses colDesc_p
-    // only to give a const ColumnDesc&.
-  colDesc_p   ((BaseColumnDesc*)cdp)
+: colDescPtr_p(cdp)
 {}
 
 BaseColumn::~BaseColumn()
@@ -48,47 +45,47 @@ BaseColumn::~BaseColumn()
 
 void BaseColumn::setShape (uInt, const IPosition&)
 {
-  throw (TableInvOper ("invalid setShape() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid setShape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
 }
 
 void BaseColumn::setShape (uInt, const IPosition&, const IPosition&)
 {
-  throw (TableInvOper ("invalid setShape() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid setShape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
 }
 
 uInt BaseColumn::ndimColumn() const
 {
-  throw (TableInvOper ("invalid ndimColumn() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid ndimColumn() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
   return 0;
 }
 
 IPosition BaseColumn::shapeColumn() const
 {
-  throw (TableInvOper ("invalid shapeColumn() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid shapeColumn() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
   return IPosition(0);
 }
 
 uInt BaseColumn::ndim (uInt) const
 {
-  throw (TableInvOper ("invalid ndim() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid ndim() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
   return 0;
 }
 
 IPosition BaseColumn::shape (uInt) const
 {
-  throw (TableInvOper ("invalid shape() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid shape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
   return IPosition(0);
 }
 
 IPosition BaseColumn::tileShape (uInt) const
 {
-  throw (TableInvOper ("invalid tileShape() for column " + colDesc_p.name() +
+  throw (TableInvOper ("invalid tileShape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
 }
 
@@ -133,115 +130,115 @@ Bool BaseColumn::canAccessColumnSlice (Bool& reask) const
 void BaseColumn::getSlice (uInt, const Slicer&, void*) const
 {
   throw (TableInvOper ("getSlice() not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::getScalarColumn (void*) const
 {
   throw (TableInvOper ("getScalarColumn() not implemented for column " +
-                       colDesc_p.name() + "; only valid for a scalar"));
+                       colDescPtr_p->name() + "; only valid for a scalar"));
 }
 
 void BaseColumn::getArrayColumn (void*) const
 {
   throw (TableInvOper ("getArrayColumn() not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::getScalarColumnCells (const RefRows&, void*) const
 {
   throw (TableInvOper ("getScalarColumnCells() not implemented for column " +
-                       colDesc_p.name() + "; only valid for a scalar"));
+                       colDescPtr_p->name() + "; only valid for a scalar"));
 }
 
 void BaseColumn::getArrayColumnCells (const RefRows&, void*) const
 {
   throw (TableInvOper ("getArrayColumnCells() not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::getColumnSliceCells (const RefRows&,
 				      const Slicer&, void*) const
 {
   throw (TableInvOper ("getColumnCells(Slicer&) not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::getColumnSlice (const Slicer&, void*) const
 {
   throw (TableInvOper ("getColumn(Slicer&) not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::putSlice (uInt, const Slicer&, const void*)
 {
   throw (TableInvOper ("putSlice() not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::putScalarColumn (const void*)
 {
   throw (TableInvOper ("putScalarColumn() not implemented for column " +
-                       colDesc_p.name() + "; only valid for a scalar"));
+                       colDescPtr_p->name() + "; only valid for a scalar"));
 }
 
 void BaseColumn::putArrayColumn (const void*)
 {
   throw (TableInvOper ("putArrayColumn() not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::putScalarColumnCells (const RefRows&, const void*)
 {
   throw (TableInvOper ("putScalarColumnCells() not implemented for column " +
-                       colDesc_p.name() + "; only valid for a scalar"));
+                       colDescPtr_p->name() + "; only valid for a scalar"));
 }
 
 void BaseColumn::putArrayColumnCells (const RefRows&, const void*)
 {
   throw (TableInvOper ("putArrayColumnCells() not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::putColumnSlice (const Slicer&, const void*)
 {
   throw (TableInvOper ("putColumn(Slicer&) not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 void BaseColumn::putColumnSliceCells (const RefRows&,
 				      const Slicer&, const void*)
 {
   throw (TableInvOper ("putColumnCells(Slicer&) not implemented for column " +
-                       colDesc_p.name() + "; only valid for an array"));
+                       colDescPtr_p->name() + "; only valid for an array"));
 }
 
 
 void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
                               const void*&)
 {
-  throw (TableInvOper ("makeSortKey() for column " + colDesc_p.name() +
+  throw (TableInvOper ("makeSortKey() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
 void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
 				 const Vector<uInt>&, const void*&)
 {
-  throw (TableInvOper ("makeSortKey(rownrs) for column " + colDesc_p.name() +
+  throw (TableInvOper ("makeSortKey(rownrs) for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
 void BaseColumn::freeSortKey (const void*&)
 {
-  throw (TableInvOper ("freeSortKey() for column " + colDesc_p.name() +
+  throw (TableInvOper ("freeSortKey() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
 void BaseColumn::allocIterBuf (void*&, void*&, CountedPtr<BaseCompare>&)
 {
-  throw (TableInvOper ("allocIterBuf() for column " + colDesc_p.name() +
+  throw (TableInvOper ("allocIterBuf() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
 void BaseColumn::freeIterBuf (void*&, void*&)
 {
-  throw (TableInvOper ("freeIterBuf() for column " + colDesc_p.name() +
+  throw (TableInvOper ("freeIterBuf() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
 
@@ -1044,28 +1041,34 @@ void BaseColumn::putScalar (uInt rownr, const TableRecord& value)
 
 void BaseColumn::throwGetScalar() const
 {
-    throw (TableInvOper ("invalid getScalar() for column " + colDesc_p.name() +
+    throw (TableInvOper ("invalid getScalar() for column " + colDescPtr_p->name() +
                          "; only possible for a scalar"));
 }
 
 void BaseColumn::throwPutScalar() const
 {
-    throw (TableInvOper ("invalid putScalar() for column " + colDesc_p.name() +
+    throw (TableInvOper ("invalid putScalar() for column " + colDescPtr_p->name() +
                          "; only possible for a scalar"));
 }
 
 void BaseColumn::throwGetType (const String& type) const
 {
     throw (TableInvDT ("invalid type promotion in getScalar(" + type +
-                       ") for column " + colDesc_p.name() + " with type "
-                       + ValType::getTypeStr(colDesc_p.dataType())));
+                       ") for column " + colDescPtr_p->name() + " with type "
+                       + ValType::getTypeStr(colDescPtr_p->dataType())));
 }
 
 void BaseColumn::throwPutType (const String& type) const
 {
     throw (TableInvDT ("invalid type promotion in putScalar(" + type +
-                       ") for column " + colDesc_p.name() + " with type "
-                       + ValType::getTypeStr(colDesc_p.dataType())));
+                       ") for column " + colDescPtr_p->name() + " with type "
+                       + ValType::getTypeStr(colDescPtr_p->dataType())));
+}
+
+const ColumnDesc& BaseColumn::columnDesc() const
+{
+  colDesc_p = ColumnDesc(const_cast<BaseColumnDesc*>(colDescPtr_p));
+  return colDesc_p;
 }
 
 } //# NAMESPACE CASACORE - END

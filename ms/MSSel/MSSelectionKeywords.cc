@@ -26,117 +26,124 @@
 //#
 //# $Id$
 #include <casacore/ms/MSSel/MSSelectionKeywords.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+std::map<String,Int>& MSSelectionKeywords::getMap()
+{
+  static std::map<String,Int> fieldMap(initMap());
+  return fieldMap;
+}
+
+Block<String>& MSSelectionKeywords::getReverseMap()
+{
+  static Block<String> reverseMap(initReverseMap());
+  return reverseMap;
+}
+
 MSSelectionKeywords::Field MSSelectionKeywords::field(const String& itemName)
 {
-  // static map with enum to string mapping for fields
-  static SimpleOrderedMap<String,Int>* fieldMap(0);
-  static Block<Int>* reverseMap(0);
-
-  if (!fieldMap) initMap(fieldMap,reverseMap);
- 
-  const Int* p=fieldMap->isDefined(itemName);
-  return p ? Field(*p) : UNDEFINED;
+  std::map<String,Int>& fieldMap = getMap();
+  std::map<String,Int>::iterator iter = fieldMap.find(itemName);
+  return iter==fieldMap.end() ?  UNDEFINED : Field(iter->second);
 }
 
 const String& MSSelectionKeywords::keyword(Field fld) 
 {
-  static SimpleOrderedMap<String,Int>* fieldMap(0);
-  static Block<Int>* reverseMap(0);
-
-  if (!reverseMap) initMap(fieldMap,reverseMap);
-
-  return fieldMap->getKey((*reverseMap)[fld]);
+  Block<String>& reverseMap = getReverseMap();
+  return reverseMap[fld];
 }
 
 
-void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
-				  Block<Int>*& reverseMap)
+std::map<String,Int> MSSelectionKeywords::initMap()
 {
-  static Bool initialized(False);
-  static SimpleOrderedMap<String, Int> map(UNDEFINED,NUMBER_KEYWORDS);
-  static Block<Int> revMap(NUMBER_KEYWORDS);
+  std::map<String,Int> fieldMap;
+  fieldMap.insert (std::make_pair("undefined",UNDEFINED));
+  fieldMap.insert (std::make_pair("amplitude",AMPLITUDE));
+  fieldMap.insert (std::make_pair("corrected_amplitude",CORRECTED_AMPLITUDE));
+  fieldMap.insert (std::make_pair("model_amplitude",MODEL_AMPLITUDE));
+  fieldMap.insert (std::make_pair("ratio_amplitude",RATIO_AMPLITUDE));
+  fieldMap.insert (std::make_pair("residual_amplitude",RESIDUAL_AMPLITUDE));
+  fieldMap.insert (std::make_pair("obs_residual_amplitude",OBS_RESIDUAL_AMPLITUDE));
+  fieldMap.insert (std::make_pair("antenna1",ANTENNA1));
+  fieldMap.insert (std::make_pair("antenna2",ANTENNA2));
+  fieldMap.insert (std::make_pair("antennas",ANTENNAS));
+  fieldMap.insert (std::make_pair("array_id",ARRAY_ID));
+  fieldMap.insert (std::make_pair("axis_info",AXIS_INFO));
+  fieldMap.insert (std::make_pair("chan_freq",CHAN_FREQ));
+  fieldMap.insert (std::make_pair("corr_names",CORR_NAMES));
+  fieldMap.insert (std::make_pair("corr_types",CORR_TYPES));
+  fieldMap.insert (std::make_pair("data",DATA));
+  fieldMap.insert (std::make_pair("corrected_data",CORRECTED_DATA));
+  fieldMap.insert (std::make_pair("model_data",MODEL_DATA));
+  fieldMap.insert (std::make_pair("ratio_data",RATIO_DATA));
+  fieldMap.insert (std::make_pair("residual_data",RESIDUAL_DATA));
+  fieldMap.insert (std::make_pair("obs_residual_data",OBS_RESIDUAL_DATA));
+  fieldMap.insert (std::make_pair("data_desc_id",DATA_DESC_ID));
+  fieldMap.insert (std::make_pair("feed1",FEED1));
+  fieldMap.insert (std::make_pair("feed2",FEED2));
+  fieldMap.insert (std::make_pair("field_id",FIELD_ID));
+  fieldMap.insert (std::make_pair("fields",FIELDS));
+  fieldMap.insert (std::make_pair("flag",FLAG));
+  fieldMap.insert (std::make_pair("flag_row",FLAG_ROW));
+  fieldMap.insert (std::make_pair("flag_sum",FLAG_SUM));
+  fieldMap.insert (std::make_pair("float_data",FLOAT_DATA));
+  fieldMap.insert (std::make_pair("ha",HA));
+  fieldMap.insert (std::make_pair("ifr_number",IFR_NUMBER));
+  fieldMap.insert (std::make_pair("imaginary",IMAGINARY));
+  fieldMap.insert (std::make_pair("corrected_imaginary",CORRECTED_IMAGINARY));
+  fieldMap.insert (std::make_pair("model_imaginary",MODEL_IMAGINARY));
+  fieldMap.insert (std::make_pair("ratio_imaginary",RATIO_IMAGINARY));
+  fieldMap.insert (std::make_pair("residual_imaginary",RESIDUAL_IMAGINARY));
+  fieldMap.insert (std::make_pair("obs_residual_imaginary",OBS_RESIDUAL_IMAGINARY));
+  fieldMap.insert (std::make_pair("last",LAST));
+  fieldMap.insert (std::make_pair("num_corr",NUM_CORR));
+  fieldMap.insert (std::make_pair("num_chan",NUM_CHAN));
+  fieldMap.insert (std::make_pair("phase",PHASE));
+  fieldMap.insert (std::make_pair("corrected_phase",CORRECTED_PHASE));
+  fieldMap.insert (std::make_pair("model_phase",MODEL_PHASE));
+  fieldMap.insert (std::make_pair("ratio_phase",RATIO_PHASE));
+  fieldMap.insert (std::make_pair("residual_phase",RESIDUAL_PHASE));
+  fieldMap.insert (std::make_pair("obs_residual_phase",OBS_RESIDUAL_PHASE));
+  fieldMap.insert (std::make_pair("phase_dir",PHASE_DIR));
+  fieldMap.insert (std::make_pair("real",REAL));
+  fieldMap.insert (std::make_pair("corrected_real",CORRECTED_REAL));
+  fieldMap.insert (std::make_pair("model_real",MODEL_REAL));
+  fieldMap.insert (std::make_pair("ratio_real",RATIO_REAL));
+  fieldMap.insert (std::make_pair("residual_real",RESIDUAL_REAL));
+  fieldMap.insert (std::make_pair("obs_residual_real",OBS_RESIDUAL_REAL));
+  fieldMap.insert (std::make_pair("ref_frequency",REF_FREQUENCY));
+  fieldMap.insert (std::make_pair("rows",ROWS));
+  fieldMap.insert (std::make_pair("scan_number",SCAN_NUMBER));
+  fieldMap.insert (std::make_pair("sigma",SIGMA));
+  fieldMap.insert (std::make_pair("time",TIME));
+  fieldMap.insert (std::make_pair("times",TIMES));
+  fieldMap.insert (std::make_pair("u",U));
+  fieldMap.insert (std::make_pair("v",V));
+  fieldMap.insert (std::make_pair("w",W));
+  fieldMap.insert (std::make_pair("ut",UT));
+  fieldMap.insert (std::make_pair("uvw",UVW));
+  fieldMap.insert (std::make_pair("uvdist",UVDIST));
+  fieldMap.insert (std::make_pair("weight",WEIGHT));
+  // Assure all fields are defined.
+  AlwaysAssert (fieldMap.size() == NUMBER_KEYWORDS, AipsError);
+  return fieldMap;
+}
 
-  if (!initialized) {
-    map.define("undefined",UNDEFINED);
-    map.define("amplitude",AMPLITUDE);
-    map.define("corrected_amplitude",CORRECTED_AMPLITUDE);
-    map.define("model_amplitude",MODEL_AMPLITUDE);
-    map.define("ratio_amplitude",RATIO_AMPLITUDE);
-    map.define("residual_amplitude",RESIDUAL_AMPLITUDE);
-    map.define("obs_residual_amplitude",OBS_RESIDUAL_AMPLITUDE);
-    map.define("antenna1",ANTENNA1);
-    map.define("antenna2",ANTENNA2);
-    map.define("antennas",ANTENNAS);
-    map.define("array_id",ARRAY_ID);
-    map.define("axis_info",AXIS_INFO);
-    map.define("chan_freq",CHAN_FREQ);
-    map.define("corr_names",CORR_NAMES);
-    map.define("corr_types",CORR_TYPES);
-    map.define("data",DATA);
-    map.define("corrected_data",CORRECTED_DATA);
-    map.define("model_data",MODEL_DATA);
-    map.define("ratio_data",RATIO_DATA);
-    map.define("residual_data",RESIDUAL_DATA);
-    map.define("obs_residual_data",OBS_RESIDUAL_DATA);
-    map.define("data_desc_id",DATA_DESC_ID);
-    map.define("feed1",FEED1);
-    map.define("feed2",FEED2);
-    map.define("field_id",FIELD_ID);
-    map.define("fields",FIELDS);
-    map.define("flag",FLAG);
-    map.define("flag_row",FLAG_ROW);
-    map.define("flag_sum",FLAG_SUM);
-    map.define("float_data",FLOAT_DATA);
-    map.define("ha",HA);
-    map.define("ifr_number",IFR_NUMBER);
-    map.define("imaginary",IMAGINARY);
-    map.define("corrected_imaginary",CORRECTED_IMAGINARY);
-    map.define("model_imaginary",MODEL_IMAGINARY);
-    map.define("ratio_imaginary",RATIO_IMAGINARY);
-    map.define("residual_imaginary",RESIDUAL_IMAGINARY);
-    map.define("obs_residual_imaginary",OBS_RESIDUAL_IMAGINARY);
-    map.define("last",LAST);
-    map.define("num_corr",NUM_CORR);
-    map.define("num_chan",NUM_CHAN);
-    map.define("phase",PHASE);
-    map.define("corrected_phase",CORRECTED_PHASE);
-    map.define("model_phase",MODEL_PHASE);
-    map.define("ratio_phase",RATIO_PHASE);
-    map.define("residual_phase",RESIDUAL_PHASE);
-    map.define("obs_residual_phase",OBS_RESIDUAL_PHASE);
-    map.define("phase_dir",PHASE_DIR);
-    map.define("real",REAL);
-    map.define("corrected_real",CORRECTED_REAL);
-    map.define("model_real",MODEL_REAL);
-    map.define("ratio_real",RATIO_REAL);
-    map.define("residual_real",RESIDUAL_REAL);
-    map.define("obs_residual_real",OBS_RESIDUAL_REAL);
-    map.define("ref_frequency",REF_FREQUENCY);
-    map.define("rows",ROWS);
-    map.define("scan_number",SCAN_NUMBER);
-    map.define("sigma",SIGMA);
-    map.define("time",TIME);
-    map.define("times",TIMES);
-    map.define("u",U);
-    map.define("v",V);
-    map.define("w",W);
-    map.define("ut",UT);
-    map.define("uvw",UVW);
-    map.define("uvdist",UVDIST);
-    map.define("weight",WEIGHT);
-
-    for (uInt i=0; i<NUMBER_KEYWORDS; i++) {
-      revMap[map.getVal(i)]=i;
-    }
-    initialized=True;
+Block<String> MSSelectionKeywords::initReverseMap()
+{
+  std::map<String,Int>& fieldMap = getMap();
+  Block<String> reverseMap(NUMBER_KEYWORDS);
+  for (const auto& x : fieldMap) {
+    AlwaysAssert (x.second < NUMBER_KEYWORDS, AipsError);
+    reverseMap[x.second] = x.first;
   }
-  fieldMap=&map;
-  reverseMap=&revMap;
+  return reverseMap;
 }
 
 } //# NAMESPACE CASACORE - END

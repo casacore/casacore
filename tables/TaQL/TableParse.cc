@@ -237,9 +237,6 @@ TableParseSelect::~TableParseSelect()
   // Note that insSel_p is simply a pointer to another object,
   // so no delete should be done.
   delete resultSet_p;
-  for (uInt i=0; i<update_p.size(); ++i) {
-    delete update_p[i];
-  }
 }
 
 

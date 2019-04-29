@@ -31,8 +31,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MSSel/MSParse.h>
-#include <casacore/casa/Containers/OrderedMap.h>
-#include <casacore/casa/Containers/MapIO.h>
 #include <casacore/ms/MeasurementSets/MSPolarization.h>
 #include <casacore/ms/MeasurementSets/MSPolColumns.h>
 #include <casacore/ms/MSSel/MSPolIndex.h>
@@ -108,15 +106,15 @@ public:
   Int theParser(const String& command); 
 		// Vector<Int>& selectedDDIDs, 
 		// Matrix<Int>& selectedSpwPolnMap);
-  OrderedMap<Int, Vector<Int> > selectedPolnMap()           {return polMap_p;}
-  OrderedMap<Int, Vector<Vector<Int> > > selectedSetupMap() {return setupMap_p;}
+  std::map<Int, Vector<Int> > selectedPolnMap()             {return polMap_p;}
+  std::map<Int, Vector<Vector<Int> > > selectedSetupMap()   {return setupMap_p;}
   Vector<Int> selectedDDIDs()                               {return ddIDList_p;}
 private:
   Vector<Int> getMapToDDIDs(MSDataDescIndex& msDDNdx, MSPolarizationIndex& msPolNdx,
 			    const Vector<Int>& spwIDs, Vector<Int>& polnIDs,
 			    Vector<Int>& polIndices);
   Vector<Int> matchPolIDsToPolTableRow(const Vector<Int>& polIds,
-				       OrderedMap<Int, Vector<Int> >& polIndexMap,
+				       std::map<Int, Vector<Int> >& polIndexMap,
 				       Vector<Int>& polIndices,
 				       Bool addToMap=False);
   Vector<Int> getPolnIDs(const String& polSpec, Vector<Int>& polIndices);
@@ -130,8 +128,8 @@ private:
 			      Vector<Int>& polnIndices);
   TableExprNode node_p;
   Vector<Int> ddIDList_p;
-  OrderedMap<Int, Vector<Int> > polMap_p;
-  OrderedMap<Int, Vector<Vector<Int> > > setupMap_p;
+  std::map<Int, Vector<Int> > polMap_p;
+  std::map<Int, Vector<Vector<Int> > > setupMap_p;
 
   void setIDLists(const Int key, const Int ndx, Vector<Int>& val);
 };

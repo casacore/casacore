@@ -41,11 +41,11 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/measures/Measures/Stokes.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/tables/Tables/TableDesc.h>
 
 #include <casacore/casa/sstream.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -390,7 +390,7 @@ void SDFeedHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 
 void SDFeedHandler::stokesToPolType(const Vector<Int> &stokes, Vector<String> &polType)
 {
-    SimpleOrderedMap<String, Int> polTypeMap(-1);
+    std::map<String, Int> polTypeMap;
     for (uInt i=0;i<stokes.nelements();i++) {
 	String type1, type2;
 	switch (Stokes::type(stokes(i))) {
@@ -480,16 +480,17 @@ void SDFeedHandler::stokesToPolType(const Vector<Int> &stokes, Vector<String> &p
 	    break;
 	}
 
-	if (!polTypeMap.isDefined(type1)) {
-	    polTypeMap.define(type1, polTypeMap.ndefined());
+	if (polTypeMap.find(type1) == polTypeMap.end()) {
+	    polTypeMap[type1] = polTypeMap.size();
 	}
-	if (!polTypeMap.isDefined(type2)) {
-	    polTypeMap.define(type2, polTypeMap.ndefined());
+	if (polTypeMap.find(type2) == polTypeMap.end()) {
+	    polTypeMap[type2] = polTypeMap.size();
 	}
     }
-    polType.resize(polTypeMap.ndefined());
-    for (uInt i=0;i<polTypeMap.ndefined();i++) {
-	polType(i) = polTypeMap.getKey(i);
+    polType.resize(polTypeMap.size());
+    int i=0;
+    for (const auto& elem : polTypeMap) {
+      polType[i++] = elem.first;
     }
 }
 

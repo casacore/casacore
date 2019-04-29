@@ -35,7 +35,7 @@
 #include <casacore/fits/FITS/hdu.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRecord.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -165,7 +165,7 @@ private:
     // The number of elements for each column of the BinaryTableExtension
     Int *nelem;
     // This is a map from column number to column name
-    SimpleOrderedMap<Int, String> *colNames;
+    std::map<Int, String> *colNames;
 
     TableRecord kwSet;
 

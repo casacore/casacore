@@ -28,7 +28,6 @@
 
 #include<casacore/casa/aips.h>
 #include <casacore/images/Images/PagedImage.h>
-///#include <trial/ImgCrdSys/ImageCoordinate.h>
 
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Cube.h>

@@ -28,6 +28,10 @@
 #ifndef CASA_ORDPAIRIO_H
 #define CASA_ORDPAIRIO_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "OrdPairIO.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/OrderedPair.h>
 #include <casacore/casa/iosfwd.h>

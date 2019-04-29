@@ -34,7 +34,6 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/RecordInterface.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/fits/FITS/fits.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Logging/LogOrigin.h>
@@ -48,6 +47,7 @@
 #include <casacore/casa/iomanip.h>
 #include <ctype.h>
 #include <casacore/casa/stdlib.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -523,8 +523,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     // by the CoordinateSystem methods according to rules coded there.
 
     
-    SimpleOrderedMap<String, Int> min1D(99999), max1D(0), min2Drow(99999), 
-	min2Dcol(99999), max2Drow(0), max2Dcol(0);
+    std::map<String, Int> min1D, max1D, min2Drow, min2Dcol, max2Drow, max2Dcol;
 
     // this may be a bug in fits that it isn't in.curr()
     const FitsKeyword *key = in.next();
@@ -563,10 +562,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		os << LogIO::SEVERE << "Illegal matrix keyword " << name << 
 		    LogIO::EXCEPTION;
 	    }
-	    if (nrow < min2Drow(base)) {min2Drow(base) = nrow;}
-	    if (nrow > max2Drow(base)) {max2Drow(base) = nrow;}
-	    if (ncol < min2Dcol(base)) {min2Dcol(base) = ncol;}
-	    if (ncol > max2Dcol(base)) {max2Dcol(base) = ncol;}
+            if (min2Drow.find(base) == min2Drow.end()) min2Drow[base] = 99999;
+            if (min2Dcol.find(base) == min2Dcol.end()) min2Dcol[base] = 99999;
+	    if (nrow < min2Drow[base]) {min2Drow[base] = nrow;}
+	    if (nrow > max2Drow[base]) {max2Drow[base] = nrow;}
+	    if (ncol < min2Dcol[base]) {min2Dcol[base] = ncol;}
+	    if (ncol > max2Dcol[base]) {max2Dcol[base] = ncol;}
         } 
 	else if ((key->isindexed() || name.contains(kw1D)) && !name.contains(cd)) {
 	    String base;
@@ -577,8 +578,9 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    } else {
 		splitKW1D(base, num, name);
 	    }
-	    if (num < min1D(base)) {min1D(base) = num;}
-	    if (num > max1D(base)) {max1D(base) = num;}
+            if (min1D.find(base) == min1D.end()) min1D[base] = 99999;
+	    if (num < min1D[base]) {min1D[base] = num;}
+	    if (num > max1D[base]) {max1D[base] = num;}
 	}  
 	key = in.next();
     }
@@ -588,12 +590,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    os << LogIO::SEVERE << "Failed to decode naxis keyword" << LogIO::EXCEPTION;
 	}
 	if (maxis==-1) {
-	  min1D(baseCROTA) = 1;
-	  max1D(baseCROTA) = naxis;
+	  min1D[baseCROTA] = 1;
+	  max1D[baseCROTA] = naxis;
 	}
 	else{ // apparently a FITS-IDI file
-	  min1D(baseCROTA) = 1;
-	  max1D(baseCROTA) = maxis;
+	  min1D[baseCROTA] = 1;
+	  max1D[baseCROTA] = maxis;
 	}
 
     }
@@ -618,11 +620,11 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    Int thisRow, thisCol;
 	    String base;
 	    splitKW2D(base, thisRow, thisCol, fullName);
-	    thisRow -= min2Drow(base);
-	    thisCol -= min2Dcol(base);
+	    thisRow -= min2Drow[base];
+	    thisCol -= min2Dcol[base];
 	    Int fnum = out.fieldNumber(base);
-	    Int nrow = max2Drow(base)-min2Drow(base)+1;
-	    Int ncol = max2Dcol(base)-min2Dcol(base)+1;
+	    Int nrow = max2Drow[base]-min2Drow[base]+1;
+	    Int ncol = max2Dcol[base]-min2Dcol[base]+1;
 	    switch (key->type()) {
 	    case FITS::LOGICAL:
 		{
@@ -777,7 +779,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		splitKW1D(base, num, fullName);
 	    }
 	    
-	    Int offset = num - min1D(base);
+	    Int offset = num - min1D[base];
 	    Int nelm = 0;
 	    Int fnum = out.fieldNumber(base);
 	    switch (key->type()) {
@@ -789,7 +791,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Bool> vec(max1D(base) - min1D(base) + 1);
+		    Vector<Bool> vec(max1D[base] - min1D[base] + 1);
 		    vec = False;
 		    vec(offset) = key->asBool();
  		    out.define(base, vec);
@@ -823,7 +825,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    // at any rate, we need to remove them
 		    tmp.gsub(trailing, empty);
 		    if (! out.isDefined(base)) {
-			Vector<String> vec(max1D(base) - min1D(base) + 1);
+			Vector<String> vec(max1D[base] - min1D[base] + 1);
 			vec = "";
 			vec(offset) = tmp;
 			out.define(base, vec);
@@ -851,7 +853,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Double> vec(max1D(base) - min1D(base) + 1);
+		    Vector<Double> vec(max1D[base] - min1D[base] + 1);
 		    vec = 0.0;
 		    vec(offset) = key->asFloat();
 		    out.define(base, vec);
@@ -878,7 +880,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Double> vec(max1D(base) - min1D(base) + 1);
+		    Vector<Double> vec(max1D[base] - min1D[base] + 1);
 		    vec = 0.0;
 		    vec(offset) = key->asDouble();
 		    out.define(base, vec);
@@ -905,7 +907,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Int> vec(max1D(base) - min1D(base) + 1);
+		    Vector<Int> vec(max1D[base] - min1D[base] + 1);
 		    vec = 0;
 		    vec(offset) = key->asInt();
 		    out.define(base, vec);
@@ -932,7 +934,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Complex> vec(max1D(base) - min1D(base) + 1);
+		    Vector<Complex> vec(max1D[base] - min1D[base] + 1);
 		    vec = Complex(0,0);
 		    vec(offset) = key->asComplex();
 		    out.define(base, vec);
@@ -959,7 +961,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<DComplex> vec(max1D(base) - min1D(base) + 1);
+		    Vector<DComplex> vec(max1D[base] - min1D[base] + 1);
 		    vec = DComplex(0,0);
 		    vec(offset) = key->asDComplex();
 		    out.define(base, vec);

@@ -123,7 +123,7 @@ void Input::createPar (Int system, const String& key, const String& value,
   }
   
   int i = getParam(key);
-  if (i!=0) {
+  if (i>=0) {
     String msg = "Input:cCreatePar: " + key + ": Parameters already exists.";
     throw (AipsError(msg));
   } 
@@ -145,12 +145,7 @@ void Input::createPar (Int system, const String& key, const String& value,
   } else {
     tmp.setIndex(++p_count);
   }
-  ListIter<Param> parlist(parList_p);           
-  parlist.toStart();
-  while (!parlist.atEnd()) {
-    ++parlist;
-  } 
-  parlist.addRight(tmp);
+  parList_p.push_back (tmp);
 }
 
 void Input::close() 
@@ -163,12 +158,8 @@ void Input::close()
   }
   if (debug(1)) {       // Display Param as: 'key=val: help'
     cout << "INPUT> Closing parameter creation: \n";
-    cout << "INPUT> ----------------------------------------------------\n"; 
-    ListIter<Param> parlist(parList_p);       
-    parlist.toStart();
-    Int n=count();
-    for (Int i=0; i<n; i++, ++parlist) { 
-      Param& x = parlist.getRight();
+    cout << "INPUT> ----------------------------------------------------\n";
+    for (const auto& x : parList_p) {
       cout << "INPUT> " << x.keyVal() << ": " << x.getHelp() << "\n";
     }
     cout << "INPUT>-----------------------------------------------------\n"
@@ -180,15 +171,11 @@ void Input::close()
 Double Input::getDouble (const String& key)
 {
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg ="Input::GetDouble: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
-  
+  Param& x = parList_p[i];
   if (do_prompt && !x.isSystem()) {
     prompt(x);
   }
@@ -198,15 +185,11 @@ Double Input::getDouble (const String& key)
 Block<Double> Input::getDoubleArray (const String& key)
 {
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg ="Input::GetDoubleArray: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
-  
+  Param& x = parList_p[i];
   if (do_prompt && !x.isSystem()) {
     prompt(x);
   }
@@ -216,15 +199,11 @@ Block<Double> Input::getDoubleArray (const String& key)
 int Input::getInt (const String& key)
 {
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg ="Input::GetInt: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
-
+  Param& x = parList_p[i];
   if (do_prompt && !x.isSystem()) {
     prompt(x);
   }
@@ -234,15 +213,11 @@ int Input::getInt (const String& key)
 Block<Int> Input::getIntArray (const String& key)
 {
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg ="Input::GetIntArray: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
-  
+  Param& x = parList_p[i];
   if (do_prompt && !x.isSystem()) {
     prompt(x);
   }
@@ -252,15 +227,11 @@ Block<Int> Input::getIntArray (const String& key)
 String Input::getString (const String& key)
 {
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg ="Input::GetString: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
-  
+  Param& x = parList_p[i];
   if (do_prompt && !x.isSystem()) {
     prompt(x);
   }
@@ -270,15 +241,11 @@ String Input::getString (const String& key)
 Bool Input::getBool (const String& key)
 {
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg ="Input::GetBool: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
-  
+  Param& x = parList_p[i];
   if (do_prompt && !x.isSystem()) {
     prompt(x);
   }
@@ -294,14 +261,11 @@ Bool Input::put (const String& key, const String& value)
     cout << "PUT> " << key << "=" << value << "\n";
   }
   Int i = getParam(key);
-  if (i==0) {
+  if (i<0) {
     String msg = "Input::Put: parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
-  ListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  parlist.step(i-1);
-  Param& x = parlist.getRight();
+  Param& x = parList_p[i];
   x.put(value);
   return True;
 }
@@ -319,8 +283,7 @@ Bool Input::put (const String& key)
 
 Int Input::count() const
 {
-  ConstListIter<Param> parlist(parList_p);       
-  return parlist.len();
+  return parList_p.size();
 }
 
 void Input::version (const String& a_version)
@@ -332,11 +295,7 @@ void Input::announce()
 {
   if (debug(5)) {
     cout << getString("argv0") << " ";
-    ConstListIter<Param> parlist(parList_p);       
-    parlist.toStart();
-    Int n=count();
-    for (Int i=0; i<n; i++, ++parlist) { 
-      const Param& x = parlist.getRight();
+    for (const auto& x : parList_p) {
       if (x.getIndex() > 0) {
 	cout << x << " ";
       }
@@ -346,11 +305,6 @@ void Input::announce()
   
   if (help_mode.contains("prompt")) {
     do_prompt = True;
-  }
-
-  if (help_mode.contains("pane")) {
-    pane();
-    exit(0);
   }
   if (help_mode.contains("keys")) {
     keys();
@@ -372,19 +326,12 @@ void Input::announce()
 //
 Int Input::getParam (const String& name) const
 {
-  Int n = count();
-  if (n <= 0) {
-    return n;
-  }
-  ConstListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  for (Int i=0; i<n; i++, ++parlist) {            // loop over all parameters
-    const Param& x = parlist.getRight();
-    if (x.getKey() == name) {
-      return i+1;                                 // Force full match here
+  for (uInt i=0; i<parList_p.size(); ++i) {
+    if (parList_p[i].getKey() == name) {
+      return i;
     }
   }
-  return 0;
+  return -1;
 }
 
 void Input::prompt (Param& x) const
@@ -418,75 +365,13 @@ void Input::envCreate (const Char *env, const String& key, const String& def)
   createPar (1, key, s, "-", "", "", "");
 }
 
-//      Create a pane file for Khoros
-void Input::pane()
-{
-  Int n = count();
-  Int opt = 1;
-  Int vcount=2;
-  String p = getString("argv0");
-  String value, type;
-
-  cout << "-F 4.2 1 0 170x7+10+20 +35+1 'CANTATA for KHOROS' cantata\n";
-  cout << "-M 1 0 100x40+10+20 +23+1 'A Casacore program' casacore\n";
-  
-  ConstListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  for (Int i=0; i<n; i++, ++parlist) {       // loop over all Params
-    const Param& x = parlist.getRight();
-    if (x.isSystem()) {
-      continue;
-    }
-    value = x.get();
-    if (value == "???") {
-      opt = 0;
-      value = " ";
-    }
-    if (value.length()==0) {
-      value=" ";
-    }
-    type = x.getType();
-    if (type.contains ("File")) {
-      if (type == "InFile") {
-	cout << "-I ";
-      } else if (type == "OutFile") {
-	cout << "-O ";
-      } else {
-	cout << "-I ";
-      }
-      cout << "1 0 " << opt << " 1 0 1 50x1+2+" << vcount
-	   << " +0+0 '" << value << "' '"
-	   << x.getKey() << "' '"
-	   << x.getHelp() << "' "
-	   << x.getKey() << "\n";
-    } else { 
-      cout << "-s 1 0 " << opt << " 1 0 50x1+2+" << vcount
-	   << " +0+0 '" << value << "' '"
-	   << x.getKey() << "' '"
-	   << x.getHelp() << "' "
-	   << x.getKey() << "\n";
-    }
-    vcount += 2;
-  }
-  cout << "-H 1 13x2+1+" << vcount
-       << " 'Help' 'Help for " << p << "' aips.help\n";
-  cout << "-R 1 0 1 13x2+39+" << vcount
-       << " 'Run' 'RunMe' " << p << "\n";
-  cout << "-E\n-E\n-E\n";
-  
-}
-
 //      Show current key=val pairs, with program name
 void Input::keys()
 {
-  Int n = count();
   String p = getString("argv0");
   cout << p;
 
-  ConstListIter<Param> parlist(parList_p);       
-  parlist.toStart();
-  for (Int i=0; i<n; i++, ++parlist) {       // loop over all Params
-    const Param& x = parlist.getRight();
+  for (const auto& x : parList_p) {
     if (! x.isSystem()) {
       cout << " " << x;
     }
@@ -515,9 +400,7 @@ void Input::readArguments (int ac, char const* const* av)
   // Show parameters on screen if -h or --help given.
   if (av[1] && (String(av[1]) == "-h"  ||  String(av[1]) == "--help")) {
     cerr << av[0] << "  version " << version_id << endl;
-    ConstListIter<Param> parlist(parList_p);       
-    for (parlist.toStart(); ! parlist.atEnd(); parlist++) {
-      const Param& x = parlist.getRight();
+    for (const auto& x : parList_p) {
       if (x.getIndex() > 0) {
 	cerr << x.getKey() << ", " << x.getType() << ", ";
 	if (String(x.get()) != "") {
@@ -532,7 +415,7 @@ void Input::readArguments (int ac, char const* const* av)
     exit (1);
   }
 
-  // Turn khoros style command inputs into keyword=value inputs
+  // Turn command line style inputs into keyword=value inputs
   //     ' -channels 64'  becomes  'channels=64'
   String thisarg;
   String keyandval;

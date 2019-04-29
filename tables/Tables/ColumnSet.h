@@ -34,8 +34,8 @@
 #include <casacore/tables/Tables/TableLockData.h>
 #include <casacore/tables/Tables/BaseTable.h>
 #include <casacore/tables/Tables/StorageOption.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -303,8 +303,7 @@ private:
     // a data manager have to be removed. A count of -1 means that all
     // columns have to be removed. For such columns the flag in the
     // returned Block is False, otherwise True.
-    SimpleOrderedMap<void*,Int> checkRemoveColumn
-					  (const Vector<String>& columnNames);
+    std::map<void*,Int> checkRemoveColumn (const Vector<String>& columnNames);
 
     // Check if the table is locked for read or write.
     // If manual or permanent locking is in effect, it checks if the
@@ -314,17 +313,17 @@ private:
 
 
     //# Declare the variables.
-    TableDesc*                      tdescPtr_p;
-    StorageOption                   storageOpt_p;
-    MultiFileBase*                  multiFile_p;
-    Int64                           nrrow_p;        //# #rows
-    BaseTable*                      baseTablePtr_p;
-    TableLockData*                  lockPtr_p;      //# lock object
-    SimpleOrderedMap<String,void*>  colMap_p;       //# list of PlainColumns
-    uInt                            seqCount_p;     //# sequence number count
-    //#                                                 (used for unique seqnr)
-    Block<void*>                    blockDataMan_p; //# list of data managers
-    Block<Bool>                     dataManChanged_p; //# data has changed
+    TableDesc*              tdescPtr_p;
+    StorageOption           storageOpt_p;
+    MultiFileBase*          multiFile_p;
+    Int64                   nrrow_p;          //# #rows
+    BaseTable*              baseTablePtr_p;
+    TableLockData*          lockPtr_p;        //# lock object
+    std::map<String,void*>  colMap_p;         //# list of PlainColumns
+    uInt                    seqCount_p;       //# sequence number count
+    //#                                           (used for unique seqnr)
+    Block<void*>            blockDataMan_p;   //# list of data managers
+    Block<Bool>             dataManChanged_p; //# data has changed
 };
 
 

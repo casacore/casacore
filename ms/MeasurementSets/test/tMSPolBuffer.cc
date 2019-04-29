@@ -28,12 +28,12 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/namespace.h>
 // #include <casacore/casa/Exceptions/Error.h>
-// #include <aips/Exceptions/Excp.h>
+// #include <casacore/casa/Exceptions/Excp.h>
 // #include <casacore/casa/Utilities/Assert.h>
 // #include <casacore/casa/BasicSL/String.h>
 // #include <casacore/casa/iostream.h>
 
-// #include <trial/MeasurementSets/MSPolBuffer.h>
+// #include <casacore/ms/MeasurementSets/MSPolBuffer.h>
 // #include <casacore/casa/Arrays/ArrayLogical.h>
 // #include <casacore/casa/Arrays/IPosition.h>
 // #include <casacore/casa/Arrays/Matrix.h>

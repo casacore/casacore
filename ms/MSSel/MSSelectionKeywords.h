@@ -30,11 +30,12 @@
 #define MS_MSSELECTIONKEYWORDS_H
 
 #include <casacore/casa/aips.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class K, class V> class SimpleOrderedMap;
 template <class T> class Block;
+
 // forward declare the class so we can typedef it
 class MSSelectionKeywords;
 class String;
@@ -241,15 +242,23 @@ public:
   // convert an enum value to the corresponding keyword string
   static const String& keyword(Field field);
 
-protected:
+private:
   // This class is purely static, no instances are allowed.
   MSSelectionKeywords();
   MSSelectionKeywords(const MSSelectionKeywords& other);
   MSSelectionKeywords& operator=(const MSSelectionKeywords& other);
-  
-  // initialization function for the string to enum mapping
-  static void initMap(SimpleOrderedMap<String,Int>*& fieldMap,
-		      Block<Int>*& reverseMap);
+
+  // Get the static map.
+  static std::map<String,Int>& getMap();
+
+  // Get the static reverse map.
+  static Block<String>& getReverseMap();
+
+  // Create an initialized map.
+  static std::map<String,Int> initMap();
+
+    // Create an initialized reverse map.
+  static Block<String> initReverseMap();
 };
 
 

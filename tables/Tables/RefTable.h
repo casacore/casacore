@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/BaseTable.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -329,12 +329,12 @@ public:
     static uInt* getStorage (Vector<uInt>& rownrs);
 
 private:
-    BaseTable*   baseTabPtr_p;                 //# pointer to parent table
-    Bool         rowOrd_p;                     //# True = table is in row order
-    Vector<uInt> rowStorage_p;                 //# row numbers in parent table
-    uInt*        rows_p;                       //# Pointer to rowStorage_p
-    SimpleOrderedMap<String,String> nameMap_p; //# map to column name in parent
-    SimpleOrderedMap<String,RefColumn*> colMap_p; //# map name to column
+    BaseTable*   baseTabPtr_p;              //# pointer to parent table
+    Bool         rowOrd_p;                  //# True = table is in row order
+    Vector<uInt> rowStorage_p;              //# row numbers in parent table
+    uInt*        rows_p;                    //# Pointer to rowStorage_p
+    std::map<String,String> nameMap_p;      //# map to column name in parent
+    std::map<String,RefColumn*> colMap_p;   //# map name to column
     Bool         changed_p;                 //# True = changed since last write
 
     // Copy constructor is forbidden, because copying a table requires
@@ -355,7 +355,7 @@ private:
 
     // Make a table description for the given columns.
     static void makeDesc (TableDesc& desc, const TableDesc& rootDesc,
-			  SimpleOrderedMap<String,String>& nameMap,
+			  std::map<String,String>& nameMap,
 			  Vector<String>& names);
 
     // Setup the main parts of the object.

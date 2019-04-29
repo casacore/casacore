@@ -28,6 +28,10 @@
 #ifndef CASA_QUEUE_H
 #define CASA_QUEUE_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "Queue.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
 

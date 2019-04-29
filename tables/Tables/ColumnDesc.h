@@ -32,10 +32,10 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/OS/Mutex.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -348,15 +348,18 @@ public:
 
 
     // Define the type of a XXColumnDesc construction function.
-    typedef BaseColumnDesc* (*ColumnDescCtor) (const String& className);
+    typedef BaseColumnDesc* ColumnDescCtor (const String& className);
 
     // Get a construction function for a XXColumnDesc object (thread-safe).
-    static ColumnDescCtor getCtor (const String& name);
+    static ColumnDescCtor* getCtor (const String& name);
 
     // Register a "XXColumnDesc" constructor (thread-safe).
-    static void registerCtor (const String& name, ColumnDescCtor func);
+    static void registerCtor (const String& name, ColumnDescCtor* func);
 
 private:
+    // A mutex for additions to the constructor map.
+    static Mutex theirMutex;
+  
     // Define a map which maps the name of the various XXColumnDesc
     // classes to a static function constructing them.
     // This is used when reading a column description back; it in fact
@@ -365,20 +368,11 @@ private:
     // The map is filled with the main XXColumnDesc construction functions
     // by the function registerColumnDesc upon the first call of
     // <src>ColumnDesc::getFile</src>.
-    static SimpleOrderedMap<String, ColumnDescCtor> theirRegisterMap;
-    static Mutex theirMutex;
-
-    // Serve as default function for theirRegisterMap.
-    // which catches all unknown XXColumnDesc class names.
-    // <thrown>
-    //   <li> TableUnknownDesc
-    // </thrown>
-    static BaseColumnDesc* unknownColumnDesc (const String& name);
+    static std::map<String, ColumnDescCtor*>& getRegisterMap();
 
     // Register the main data managers.
-    static SimpleOrderedMap<String, ColumnDescCtor> initRegisterMap();
+    static std::map<String, ColumnDescCtor*> initRegisterMap();
 
-private:
     // Construct from a pointer (for class BaseColumn).
     ColumnDesc (BaseColumnDesc*);
 

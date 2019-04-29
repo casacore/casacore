@@ -117,8 +117,7 @@ public:
     // </group>
 
     // Get const access to the column description.
-    const ColumnDesc& columnDesc() const
-	{ return colDesc_p; }
+    const ColumnDesc& columnDesc() const;
 
     // Get nr of rows in the column.
     virtual uInt nrow() const = 0;
@@ -339,9 +338,11 @@ protected:
 
     //# Data members
     const BaseColumnDesc*  colDescPtr_p;
+
+private:
     //# This ColumnDesc object is created to be able to return 
     //# a const ColumnDesc& by function columnDesc().
-    ColumnDesc             colDesc_p;
+    mutable ColumnDesc     colDesc_p;
 };
 
 

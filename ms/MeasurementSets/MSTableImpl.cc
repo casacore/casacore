@@ -40,7 +40,6 @@
 #include <casacore/tables/DataMan/CompressComplex.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
@@ -410,8 +409,8 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
     // If the column is used in a hypercolumn definition, change it
     // to contain the compressed column.
     if (! cname.empty()) {
-      SimpleOrderedMap<String,String> old2new("");
-      old2new.define (cdesc.name(), cname);
+      std::map<String,String> old2new;
+      old2new.insert (std::make_pair(cdesc.name(), cname));
       newtab.adjustHypercolumns (old2new, True);
     }
   }

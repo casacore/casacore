@@ -71,6 +71,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return ios;
   }
 
+  template<typename K, typename V>
+  AipsIO& operator>> (AipsIO& ios, std::map<K,V>& m)
+  {
+    K key;
+    V val;
+    // Start reading the object.
+    // Delete the current keys and values.
+    ios.getstart ("SimpleOrderedMap");
+    m.clear();
+    // Now read in the values and store them into the map.
+    ios >> val;    // old default value; ignored
+    uInt nr,ni;
+    ios >> nr;
+    ios >> ni;     // old incr; ignored
+    for (uInt i=0; i<nr; i++) {
+      ios >> key;
+      ios >> val;
+      m.insert (std::make_pair(key,val));
+    }
+    ios.getend();
+    return ios;
+  }
+  
+  template<typename K, typename V>
+  AipsIO& operator<< (AipsIO& ios, const std::map<K,V>& m)
+  {
+    ios.putstart ("SimpleOrderedMap", 1);
+    ios << V();       // old default value; ignored
+    ios << uInt(m.size());
+    ios << uInt(1);   // old incr; ignored
+    for (const auto& x : m) {
+      ios << x.first;
+      ios << x.second;
+    }
+    ios.putend();
+    return ios;
+  }
+
 } //# NAMESPACE CASACORE - END
 
 #endif

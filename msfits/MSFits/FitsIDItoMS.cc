@@ -157,8 +157,8 @@ Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSys
 Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWeather
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
-SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class variable antIdFromNo
-SimpleOrderedMap<Int,Int> FITSIDItoMS1::digiLevels(0); // initialize the class variable digiLevels
+std::map<Int,Int> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
+std::map<Int,Int> FITSIDItoMS1::digiLevels; // initialize the class variable digiLevels
 Vector<Double> FITSIDItoMS1::effChBw;
 
 //	
@@ -2009,15 +2009,15 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     Int array = Int(100.0*(baseline - Int(baseline)+0.001));
     Int ant1 = Int(baseline)/256; 
     Int ant2 = Int(baseline) - ant1*256; 
-    if(antIdFromNo.isDefined(ant1)){
-    	ant1 = antIdFromNo(ant1);
+    if(antIdFromNo.find(ant1) != antIdFromNo.end()){
+    	ant1 = antIdFromNo[ant1];
     }
     else{
     	*itsLog << LogIO::SEVERE << "Inconsistent input dataset: unknown ANTENNA_NO "
     			<< ant1 << " in baseline used in UV_DATA table." << LogIO::EXCEPTION;
     }
-    if(antIdFromNo.isDefined(ant2)){
-    	ant2 = antIdFromNo(ant2);
+    if(antIdFromNo.find(ant2) != antIdFromNo.end()){
+    	ant2 = antIdFromNo[ant2];
     }
     else{
     	*itsLog << LogIO::SEVERE << "Inconsistent input dataset: unknown ANTENNA_NO "
@@ -2141,18 +2141,18 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	Double Rm, gamma, alfa;
 	Double (*rho)(Double) = NULL;
 
-	if (digiLevels(ant1) == 4 && digiLevels(ant2) == 4) {
+	if (digiLevels[ant1] == 4 && digiLevels[ant2] == 4) {
 	  Rm = 4.3048;
 	  alfa = 0.882518;
 	  gamma = 3.335875 * 64.0 / 63.0;
 	  rho = rho_4;
-	} else if (digiLevels(ant1) == 2 && digiLevels(ant2) == 2) {
+	} else if (digiLevels[ant1] == 2 && digiLevels[ant2] == 2) {
 	  Rm = 1.0;
 	  alfa = 2.0 / C::pi;
 	  gamma = 1.0 * 64.0 / 63.0;
 	  rho = rho_2;
-	} else if ((digiLevels(ant1) == 2 && digiLevels(ant2) == 4) ||
-		   (digiLevels(ant1) == 4 && digiLevels(ant2) == 2)) {
+	} else if ((digiLevels[ant1] == 2 && digiLevels[ant2] == 4) ||
+		   (digiLevels[ant1] == 4 && digiLevels[ant2] == 2)) {
 	  Rm = 5.8784;
 	  alfa = 0.882518;
 	  gamma = 3.335875 * 64.0 / 63.0;
@@ -2513,9 +2513,10 @@ void FITSIDItoMS1::fillAntennaTable()
    // continue definition of antenna number to antenna id mapping 
    for (Int inRow=0; inRow<nAnt; inRow++) {
      Int ii = anNo(inRow);
-     if(!antIdFromNo.isDefined(ii)){
-       antIdFromNo.define(ii, antIdFromNo.ndefined()); // append assuming uniqueness
-       *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo(ii) << endl;
+     if(antIdFromNo.find(ii) == antIdFromNo.end()){
+       Int sz = antIdFromNo.size();
+       antIdFromNo[ii] = sz; // append assuming uniqueness
+       *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo[ii] << endl;
      }
    }
 
@@ -2523,13 +2524,13 @@ void FITSIDItoMS1::fillAntennaTable()
    ant.setPositionRef(MPosition::ITRF);
 
    // take into account that the ANTENNA table may already contain rows 
-   Int newRows = antIdFromNo.ndefined() - ms_p.antenna().nrow();
+   Int newRows = antIdFromNo.size() - ms_p.antenna().nrow();
    ms_p.antenna().addRow(newRows);
 
    Int row=0;
    for (Int i=0; i<newRows; i++) {
      
-     row = antIdFromNo(anNo(i));
+     row = antIdFromNo[anNo(i)];
 
      if(diam.isNull()){ // no DIAMETER column available
        ant.dishDiameter().put(row,diameter);
@@ -2710,15 +2711,16 @@ void FITSIDItoMS1::fillFeedTable() {
   // start/continue definition of antenna number to ID mapping in case this table is read before the MS Antenna table is filled
   for (Int inRow=0; inRow<nAnt; inRow++) {
     Int ii = anNo(inRow);
-    if(!antIdFromNo.isDefined(ii)){
-      antIdFromNo.define(ii, antIdFromNo.ndefined()); // append assuming uniqueness
-       *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo(ii) << endl;
+    if(antIdFromNo.find(ii) == antIdFromNo.end()){
+      Int sz = antIdFromNo.size();
+      antIdFromNo[ii] = sz; // append assuming uniqueness
+       *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo[ii] << endl;
     }
   }
 
   // record number of digitizer levels for each antenna
   for (Int inRow=0; inRow<nAnt; inRow++) {
-    digiLevels.define(antIdFromNo(anNo(inRow)),digLev(inRow));
+    digiLevels[antIdFromNo[anNo(inRow)]] = digLev(inRow);
     if (itsCorrelat == "DIFX" && digLev(inRow) != 2 && digLev(inRow) != 4) {
       *itsLog << LogIO::SEVERE << "unsupported number of digitizer levels for ANTENNA_NO " << anNo(inRow) << "."
 	      << endl << " Digital corrections and amplitude scaling will not be applied to"
@@ -2732,8 +2734,8 @@ void FITSIDItoMS1::fillFeedTable() {
     for (Int inIF=0; inIF<nIF; inIF++) { 
       Int k = inRow*nIF + inIF;
       ms_p.feed().addRow(); outRow++;
-      if(antIdFromNo.isDefined(anNo(inRow))){
-    	msfc.antennaId().put(outRow,antIdFromNo(anNo(inRow)));
+      if(antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()){
+    	msfc.antennaId().put(outRow,antIdFromNo[anNo(inRow)]);
       }
       else{
     	*itsLog << LogIO::SEVERE << "Internal error: no mapping for ANTENNA_NO "
@@ -3181,8 +3183,8 @@ Bool FITSIDItoMS1::fillSysCalTable()
   for (Int inRow=0; inRow<nVal; inRow++) {
     for (Int inIF=0; inIF<nIF; inIF++) {
       ms_p.sysCal().addRow(); outRow++;
-      if (antIdFromNo.isDefined(anNo(inRow))) {
-	msSysCal.antennaId().put(outRow, antIdFromNo(anNo(inRow)));
+      if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
+	msSysCal.antennaId().put(outRow, antIdFromNo[anNo(inRow)]);
       } else {
     	*itsLog << LogIO::SEVERE << "Internal error: no mapping for ANTENNA_NO "
 				<< anNo(inRow) << LogIO::EXCEPTION;
@@ -3277,11 +3279,11 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     // Check antenna numbers; fail if there are inconsistencies.
     Int ant1 = ants(inRow)(IPosition(1, 0));
     Int ant2 = ants(inRow)(IPosition(1, 1));
-    if (ant1 != 0 && !antIdFromNo.isDefined(ant1)) {
+    if (ant1 != 0 && antIdFromNo.find(ant1) == antIdFromNo.end()) {
     	*itsLog << LogIO::SEVERE << "No mapping for antenna "
 				<< ant1 << LogIO::EXCEPTION;
     }
-    if (ant2 != 0 && !antIdFromNo.isDefined(ant2)) {
+    if (ant2 != 0 && antIdFromNo.find(ant2) == antIdFromNo.end()) {
     	*itsLog << LogIO::SEVERE << "No mapping for antenna "
 				<< ant2 << LogIO::EXCEPTION;
     }
@@ -3309,8 +3311,8 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     ostringstream cmd;
 
     // antenna selection
-    ant1 = (ant1 == 0) ? -1 : antIdFromNo(ant1);
-    ant2 = (ant2 == 0) ? -1 : antIdFromNo(ant2);
+    ant1 = (ant1 == 0) ? -1 : antIdFromNo[ant1];
+    ant2 = (ant2 == 0) ? -1 : antIdFromNo[ant2];
     if (ant1 != -1) {
       cmd << "antenna='" << ant1;
       if (ant2 != -1)
@@ -3405,8 +3407,8 @@ Bool FITSIDItoMS1::fillWeatherTable()
   Int outRow=-1;
   for (Int inRow=0; inRow<nVal; inRow++) {
       ms_p.weather().addRow(); outRow++;
-      if (antIdFromNo.isDefined(anNo(inRow))) {
-	msWeather.antennaId().put(outRow, antIdFromNo(anNo(inRow)));
+      if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
+	msWeather.antennaId().put(outRow, antIdFromNo[anNo(inRow)]);
       } else {
     	*itsLog << LogIO::SEVERE << "Internal error: no mapping for ANTENNA_NO "
 				<< anNo(inRow) << LogIO::EXCEPTION;

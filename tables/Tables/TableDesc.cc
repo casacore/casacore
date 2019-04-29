@@ -325,13 +325,13 @@ void TableDesc::renameColumn (const String& newname,
   // First rename the column itself.
   col_p.rename (newname, oldname);
   // Now adjust the hypercolumn descriptions.
-  SimpleOrderedMap<String,String> old2new("", 1);
+  std::map<String,String> old2new;
   // First fill the map with all columns and replace it for the new name.
   for (uInt i=0; i<ncolumn(); i++) {
-    const String& nm = columnDesc(i).name();
-    old2new.define (nm, nm);
+    const String nm = columnDesc(i).name();
+    old2new.insert (std::make_pair(nm, nm));
   }
-  old2new.define (oldname, newname);
+  old2new[oldname] = newname;
   adjustHypercolumns (old2new);
 }
 
@@ -594,7 +594,7 @@ uInt TableDesc::hypercolumnDesc (const String& name,
 }
 
 void TableDesc::adjustHypercolumns
-                        (const SimpleOrderedMap<String, String>& old2new,
+                        (const std::map<String, String>& old2new,
 			 Bool keepUnknownData, Bool keepUnknownCoord,
 			 Bool keepUnknownId)
 {
@@ -607,9 +607,9 @@ void TableDesc::adjustHypercolumns
     // Rename/remove columns in the hypercolumn description.
     uInt nr = 0;
     for (uInt j=0; j<dataNames.nelements(); j++) {
-      const String* newName = old2new.isDefined (dataNames(j));
-      if (newName) {
-	dataNames(nr++) = *newName;
+      std::map<String,String>::const_iterator iter = old2new.find (dataNames(j));
+      if (iter != old2new.end()) {
+	dataNames(nr++) = iter->second;
       } else if (keepUnknownData) {
 	nr++;
       }
@@ -619,9 +619,9 @@ void TableDesc::adjustHypercolumns
       dataNames.resize (nr, True);
       nr = 0;
       for (uInt j=0; j<coordNames.nelements(); j++) {
-	const String* newName = old2new.isDefined (coordNames(j));
-	if (newName) {
-	  coordNames(nr++) = *newName;
+        std::map<String,String>::const_iterator iter = old2new.find (dataNames(j));
+        if (iter != old2new.end()) {
+          coordNames(nr++) = iter->second;
 	} else if (keepUnknownCoord) {
 	  nr++;
 	}
@@ -637,9 +637,9 @@ void TableDesc::adjustHypercolumns
       }
       nr = 0;
       for (uInt j=0; j<idNames.nelements(); j++) {
-	const String* newName = old2new.isDefined (idNames(j));
-	if (newName) {
-	  idNames(nr++) = *newName;
+        std::map<String,String>::const_iterator iter = old2new.find (dataNames(j));
+        if (iter != old2new.end()) {
+          idNames(nr++) = iter->second;
 	} else if (keepUnknownId) {
 	  nr++;
 	}

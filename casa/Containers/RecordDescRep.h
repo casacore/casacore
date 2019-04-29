@@ -34,9 +34,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/iosfwd.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -291,7 +291,7 @@ private:
     // Comments for each field.
     Block<String> comments_p;
     // Mapping of field name to field number.
-    SimpleOrderedMap<String,Int> name_map_p;
+    std::map<String,Int> name_map_p;
 };
 
 inline uInt RecordDescRep::nfields() const

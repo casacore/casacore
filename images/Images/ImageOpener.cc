@@ -49,20 +49,15 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Initialize registry with the unknown as the default open function.
-SimpleOrderedMap<ImageOpener::ImageTypes,ImageOpener::OpenImageFunction*>
-     ImageOpener::theirOpenFuncMap(&ImageOpener::unknownImageOpen);
+// Initialize registry.
+std::map<ImageOpener::ImageTypes,ImageOpener::OpenImageFunction*>
+     ImageOpener::theirOpenFuncMap;
 
-LatticeBase* ImageOpener::unknownImageOpen (const String&,
-					    const MaskSpecifier&)
-{
-  return 0;
-}
 
 void ImageOpener::registerOpenImageFunction (ImageTypes type,
 					     OpenImageFunction* func)
 {
-  theirOpenFuncMap.define (type, func);
+  theirOpenFuncMap[type] = func;
 }
 
 ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
@@ -271,7 +266,10 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
    FITSImage::registerOpenFunction();
    MIRIADImage::registerOpenFunction();
    // Try to open a foreign image.
-   return theirOpenFuncMap(type) (fileName, spec);
+   if (theirOpenFuncMap.find(type) == theirOpenFuncMap.end()) {
+     return 0;
+   }
+   return theirOpenFuncMap[type] (fileName, spec);
 }
 
 
