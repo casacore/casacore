@@ -98,7 +98,7 @@ public:
     virtual Bool operator== (const LCRegion& other) const;
     
     // Return the mask
-    ArrayLattice<Bool> getMask();
+    const ArrayLattice<Bool>& getMask() const;
 
  protected:
     // Assignment (copy semantics) is only useful for derived classes.
