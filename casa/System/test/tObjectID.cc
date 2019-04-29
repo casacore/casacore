@@ -34,6 +34,14 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
+
+void assert_hash(const ObjectID &id)
+{
+	if (!id.isNull()) {
+		AlwaysAssertExit(hashFunc(id) == 1);
+	}
+}
+
 int main()
 {
   try{
@@ -41,6 +49,8 @@ int main()
     // default ctor
     ObjectID ID1; 
     ObjectID ID2; 
+    assert_hash(ID1);
+    assert_hash(ID2);
 
     // inequality operator
     AlwaysAssertExit(ID1!=ID2);
@@ -49,10 +59,13 @@ int main()
     ID1 = ID2;
     // equality operator, too!
     AlwaysAssertExit(ID1 == ID2);
+    assert_hash(ID1);
+    assert_hash(ID2);
 
     // copy ctor
     ObjectID ID1copy(ID1);
     AlwaysAssertExit(ID1 == ID1copy);
+    assert_hash(ID1copy);
 
     ObjectID null(True);
     AlwaysAssertExit(null.isNull());
@@ -63,6 +76,7 @@ int main()
     String error;
     AlwaysAssertExit(ID1.fromString(error, copied));
     AlwaysAssertExit(ID1 == ID1copy);
+    assert_hash(ID1);
     ID1.toString(copied);
 
   } catch (AipsError& x) {
