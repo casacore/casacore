@@ -909,15 +909,14 @@ void TableProxy::setProperties (const String& name, const Record& properties,
 Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
 {
   // Get the table description.
-  const TableDesc* tableDescPtr;
+  std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr = new TableDesc(table_p.actualTableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr = new TableDesc(table_p.tableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
   }
   Record rec = getTableDesc(*tableDescPtr, cOrder);
 
-  delete tableDescPtr;
   return rec;
 }
 
@@ -952,18 +951,16 @@ Record TableProxy::getColumnDescription (const String& columnName,
 					 Bool actual, Bool cOrder)
 {
   // Get the table description.
-  const TableDesc* tableDescPtr;
+  std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr = new TableDesc(table_p.actualTableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr = new TableDesc(table_p.tableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
   }
   // Return the column description as a record.
   const ColumnDesc& columnDescription = (*tableDescPtr) [columnName];
-  Record rec(recordColumnDesc(columnDescription, cOrder));
 
-  delete tableDescPtr;
-  return rec;
+  return recordColumnDesc (columnDescription, cOrder);
 }
 
 String TableProxy::tableName()
