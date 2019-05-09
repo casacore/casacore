@@ -952,7 +952,7 @@ Record TableProxy::getColumnDescription (const String& columnName,
 					 Bool actual, Bool cOrder)
 {
   // Get the table description.
-  TableDesc* tableDescPtr;
+  const TableDesc* tableDescPtr;
   if (actual) {
     tableDescPtr = new TableDesc(table_p.actualTableDesc());
   } else {
@@ -960,7 +960,10 @@ Record TableProxy::getColumnDescription (const String& columnName,
   }
   // Return the column description as a record.
   const ColumnDesc& columnDescription = (*tableDescPtr) [columnName];
-  return recordColumnDesc (columnDescription, cOrder);
+  Record rec(recordColumnDesc(columnDescription, cOrder));
+
+  delete tableDescPtr;
+  return rec;
 }
 
 String TableProxy::tableName()
