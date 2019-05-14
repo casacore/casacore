@@ -212,29 +212,29 @@ void ArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
     checkShape (shp, arr, resize, "ArrayColumn::getSlice");
     //# Ask if we can access the slice (if that is not known yet).
     if (reaskAccessSlice_p) {
-        canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
+      canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
     }
     //# Access the slice if possible.
     //# Otherwise get the entire array and slice it.
     if (canAccessSlice_p) {
-        //# Creating a Slicer is somewhat expensive, so use the slicer
-        //# itself if it contains no undefined values.
-        if (arraySection.isFixed()) {
-            baseColPtr_p->getSlice (rownr,
-                                    arraySection,
-                                    &arr);
-        } else {
-            baseColPtr_p->getSlice (rownr,
-                                    Slicer(blc, trc, inc,
-                                           Slicer::endIsLast),
-                                           &arr);
-        }
+      //# Creating a Slicer is somewhat expensive, so use the slicer
+      //# itself if it contains no undefined values.
+      if (arraySection.isFixed()) {
+        baseColPtr_p->getSlice (rownr,
+                                arraySection,
+                                &arr);
+      } else {
+        baseColPtr_p->getSlice (rownr,
+                                Slicer(blc, trc, inc,
+                                       Slicer::endIsLast),
+                                &arr);
+      }
     }else{
-        Array<T> array(arrayShape);
-        baseColPtr_p->get (rownr, &array);
-        arr = array(blc, trc, inc);
+      Array<T> array(arrayShape);
+      baseColPtr_p->get (rownr, &array);
+      arr = array(blc, trc, inc);
     }
-                               }
+}
 
 
 template<class T>
@@ -307,6 +307,11 @@ ArrayColumn<T>::getColumnCells (const RefRows & rows,
    uInt nSlicers = dataSlicers.size();
    uInt nRows = rows.nrows();
 
+   //# Ask if we can access the slice (if that is not known yet).
+   if (reaskAccessSlice_p) {
+     canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
+   }
+   
    for (uInt i = 0; i < nRows; i++){
 
        // Create a section of the destination array that will hold the
@@ -317,7 +322,11 @@ ArrayColumn<T>::getColumnCells (const RefRows & rows,
        for (uInt j = 0; j < nSlicers; j++){
 
            Array<T> destinationRowSection = destinationRow (* destinationSlicers[j]);
-           baseColPtr_p->getSlice (row, * dataSlicers[j], & destinationRowSection);
+           if (canAccessSlice_p) {
+             baseColPtr_p->getSlice (row, * dataSlicers[j], & destinationRowSection);
+           } else {
+             getSlice (row, * dataSlicers[j], destinationRowSection);
+           }
        }
 
        row = useRowSlicing ? row + increment
@@ -865,6 +874,11 @@ ArrayColumn<T>::putColumnCells (const RefRows& rows,
    uInt nSlicers = bufferSlicers.size();
    uInt nRows = rows.nrows();
 
+   //# Ask if we can access the slice (if that is not known yet).
+   if (reaskAccessSlice_p) {
+     canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
+   }
+   
    for (uInt i = 0; i < nRows; i++){
 
        // Create a section of the source array that will hold the
@@ -875,7 +889,11 @@ ArrayColumn<T>::putColumnCells (const RefRows& rows,
        for (uInt j = 0; j < nSlicers; j++){
 
            Array<T> sourceRowSection = sourceRow (* arraySlicers[j]);
-           baseColPtr_p->putSlice (row, * bufferSlicers[j], & sourceRowSection);
+           if (canAccessSlice_p) {
+             baseColPtr_p->putSlice (row, * bufferSlicers[j], & sourceRowSection);
+           } else {
+             putSlice (row, * bufferSlicers[j], sourceRowSection);
+           }
        }
 
        row = useRowSlicing ? row + increment
