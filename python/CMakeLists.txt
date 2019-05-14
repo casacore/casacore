@@ -22,7 +22,23 @@ set(Python_FIND_VERSION 2)
 set(PythonInterp_FIND_VERSION_MAJOR 2)
 find_package(Python REQUIRED)
 if (PYTHONINTERP_FOUND)
-    find_package(Boost REQUIRED COMPONENTS python)
+    find_package(Boost REQUIRED)
+    if (${Boost_MAJOR_VERSION} STREQUAL 1 AND ${Boost_MINOR_VERSION} STRGREATER 66)
+        # Boost>=1.67 Python components require a Python version suffix
+	set(BOOST_PYTHON_LIBRARY_NAME
+		python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
+		CACHE
+		FILEPATH
+	       	"The name of the boost python library to search for")
+    else ()
+	set(BOOST_PYTHON_LIBRARY_NAME
+		python
+		CACHE
+		FILEPATH
+		"The name of the boost python library to search for")
+    endif ()
+    find_package(Boost REQUIRED COMPONENTS ${BOOST_PYTHON_LIBRARY_NAME})
+
     find_package (NUMPY REQUIRED)
 
     # copy the variables to their final destination
