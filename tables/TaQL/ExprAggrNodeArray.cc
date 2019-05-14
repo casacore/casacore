@@ -100,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (operands()[0]->valueType() == VTScalar) {
       throw TableInvExpr ("Aggregate function " +
                           String::toString(funcType()) +
-                          " is unknown for scalar data type " + 
+                          " is unknown for scalar data type " +
                           String::toString(operands()[0]->dataType()));
     }
     // The operand is an array.
@@ -150,10 +150,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return new TableExprGroupSumSqrsArrayDouble(this);
       case TableExprFuncNode::gmeansFUNC:
         return new TableExprGroupMeansArrayDouble(this);
-      case TableExprFuncNode::gvariancesFUNC:
-        return new TableExprGroupVariancesArrayDouble(this);
-      case TableExprFuncNode::gstddevsFUNC:
-        return new TableExprGroupStdDevsArrayDouble(this);
+      case TableExprFuncNode::gvariances0FUNC:
+        return new TableExprGroupVariancesArrayDouble(this, 0);
+      case TableExprFuncNode::gvariances1FUNC:
+        return new TableExprGroupVariancesArrayDouble(this, 1);
+      case TableExprFuncNode::gstddevs0FUNC:
+        return new TableExprGroupStdDevsArrayDouble(this, 0);
+      case TableExprFuncNode::gstddevs1FUNC:
+        return new TableExprGroupStdDevsArrayDouble(this, 1);
       case TableExprFuncNode::grmssFUNC:
         return new TableExprGroupRmssArrayDouble(this);
       default:
@@ -171,6 +175,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return new TableExprGroupSumSqrsArrayDComplex(this);
       case TableExprFuncNode::gmeansFUNC:
         return new TableExprGroupMeansArrayDComplex(this);
+      case TableExprFuncNode::gvariances0FUNC:
+        return new TableExprGroupVariancesArrayDComplex(this, 0);
+      case TableExprFuncNode::gvariances1FUNC:
+        return new TableExprGroupVariancesArrayDComplex(this, 1);
+      case TableExprFuncNode::gstddevs0FUNC:
+        return new TableExprGroupStdDevsArrayDComplex(this, 0);
+      case TableExprFuncNode::gstddevs1FUNC:
+        return new TableExprGroupStdDevsArrayDComplex(this, 1);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +

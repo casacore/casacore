@@ -109,8 +109,6 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   // Measure table Columns (e.g., MPosition::ScalarColumn)
   typedef ScalarMeasColumn<MPosition> ScalarColumn;
   typedef ArrayMeasColumn<MPosition> ArrayColumn;
-  // Reference enum Types (included originally for gcc 2.95)  
-  typedef WHATEVER_SUN_TYPEDEF(MPosition) Types Types;
 
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

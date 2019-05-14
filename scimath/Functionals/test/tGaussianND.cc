@@ -425,7 +425,7 @@ int main(){
     return 0;
   }
 
-  catch (AipsError x) {
+  catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

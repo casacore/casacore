@@ -128,7 +128,6 @@ Images/SubImage.h
 Images/SubImage.tcc
 Images/TempImage.h
 Images/TempImage.tcc
-Images/WCBox.h
 DESTINATION include/casacore/images/Images
 )
 
@@ -154,12 +153,6 @@ Regions/WCPolygon.h
 Regions/WCRegion.h
 Regions/WCUnion.h
 DESTINATION include/casacore/images/Regions
-)
-
-# Temporary hack until all packages use scimath/GaussianBeam
-install (FILES
-Images/GaussianBeam.h
-DESTINATION include/casacore/components/ComponentModels
 )
 
 install (FILES

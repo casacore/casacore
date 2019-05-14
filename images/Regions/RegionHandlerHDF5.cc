@@ -202,7 +202,7 @@ Bool RegionHandlerHDF5::removeRegion (const String& name,
       Bool error = False;
       try {
 	lcPtr->handleDelete();
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
 	error = True;
 	msg = x.getMesg();
       }

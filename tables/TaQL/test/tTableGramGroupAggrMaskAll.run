@@ -41,7 +41,7 @@ echo "*** Testing aggregate functions for all data types ..."
 for COL in 'arr1[arr1%3!=0]' 'int(arr1[arr1%2=0])' 'complex(arr1[arr1%100=50],0)'
 do
   # Check gsum against sum, etc.
-  for FUNC in min max sum product sumsqr mean variance stddev rms
+  for FUNC in min max sum product sumsqr mean variance samplevariance stddev samplestddev rms
   do
     ./tTableGramGroupAggrMaskAll "select $FUNC(gaggr($COL)) as A, g$FUNC($COL) as B from tTableGramGroupAggrMaskAll_tmp.tab having A!~=B"
   done
@@ -50,7 +50,7 @@ done
 # Check gsums against sums, etc.
 for COL in 'arr1[arr1%3!=0]' 'int(arr1[arr1%2=0])' 'complex(arr1[arr1%100=50],0)'
 do
-  for FUNC in min max sum product sumsqr mean variance stddev rms
+  for FUNC in min max sum product sumsqr mean variance samplevariance stddev samplestddev rms
   do
     ./tTableGramGroupAggrMaskAll "using style python select ${FUNC}s(gaggr($COL),0) as A, g${FUNC}s($COL) as B from tTableGramGroupAggrMaskAll_tmp.tab having not all(A~=B)"
   done

@@ -142,7 +142,7 @@ int main()
 	test_binOpExpanders(1 + i, 2 + j, 4);
       }
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Error: " << x.getMesg() << endl;
     return 1;
   } catch (...) {

@@ -114,6 +114,11 @@ void ColumnsIndexArray::deleteObjects()
     delete (RecordFieldPtr<uInt>*)(itsUpperField);
     delete (Vector<uInt>*)(itsDataVector);
     break;
+  case TpInt64:
+    delete (RecordFieldPtr<Int64>*)(itsLowerField);
+    delete (RecordFieldPtr<Int64>*)(itsUpperField);
+    delete (Vector<Int64>*)(itsDataVector);
+    break;
   case TpString:
     delete (RecordFieldPtr<String>*)(itsLowerField);
     delete (RecordFieldPtr<String>*)(itsUpperField);
@@ -190,6 +195,13 @@ void ColumnsIndexArray::makeObjects (const RecordDesc& description)
       itsDataVector = new Vector<uInt>;
       break;
     }
+  case TpInt64:
+    {
+      itsLowerField = new RecordFieldPtr<Int64>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<Int64>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<Int64>;
+      break;
+    }
   case TpString:
     {
       itsLowerField = new RecordFieldPtr<String>(*itsLowerKeyPtr, 0);
@@ -246,6 +258,14 @@ void ColumnsIndexArray::readData()
   case TpUInt:
     {
       Vector<uInt>* vecptr = (Vector<uInt>*)itsDataVector;
+      getArray (*vecptr, name);
+      itsData = vecptr->getStorage (deleteIt);
+      sort.sortKey (itsData, desc.type(0));
+      break;
+    }
+  case TpInt64:
+    {
+      Vector<Int64>* vecptr = (Vector<Int64>*)itsDataVector;
       getArray (*vecptr, name);
       itsData = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData, desc.type(0));
@@ -339,6 +359,17 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
     {
       const uInt left = *(*(RecordFieldPtr<uInt>*)(fieldPtr));
       const uInt right = ((const uInt*)(dataPtr))[index];
+      if (left < right) {
+	return -1;
+      } else if (left > right) {
+	return 1;
+      }
+      break;
+    }
+  case TpInt64:
+    {
+      const Int64 left = *(*(RecordFieldPtr<Int64>*)(fieldPtr));
+      const Int64 right = ((const Int64*)(dataPtr))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -595,6 +626,38 @@ void ColumnsIndexArray::getArray (Vector<uInt>& result, const String& name)
     for (uInt i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<uInt> arr = arrCol(i);
+	uInt n = arr.nelements();
+	nrel[i] = n;
+	if (npts+n > result.nelements()) {
+	  result.resize (npts+n, True);
+	}
+	data = result.getStorage(deleteIt) + npts;
+	objmove (data, arr.getStorage(deleteIt), n);
+	npts += n;
+      }
+    }
+    result.resize (npts, True);
+    fillRownrs (npts, nrel);
+  }
+}
+
+void ColumnsIndexArray::getArray (Vector<Int64>& result, const String& name)
+{
+  ArrayColumn<Int64> arrCol (itsTable, name);
+  uInt nrrow = arrCol.nrow();
+  if (nrrow > 0) {
+    Block<uInt> nrel(nrrow, uInt(0));
+    Array<Int64> arr = arrCol(0);
+    uInt npts = arr.nelements();
+    nrel[0] = npts;
+    result.resize (nrrow*npts);
+    Bool deleteIt;
+    Int64* data = result.getStorage(deleteIt);
+    objmove (data, arr.getStorage(deleteIt), npts);
+    data += npts;
+    for (uInt i=1; i<nrrow; i++) {
+      if (arrCol.isDefined(i)) {
+	Array<Int64> arr = arrCol(i);
 	uInt n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {

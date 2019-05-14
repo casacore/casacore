@@ -164,7 +164,7 @@ int main (int argc, const char* argv[])
       }
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     foundError = True;
   } 

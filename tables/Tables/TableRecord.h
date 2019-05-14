@@ -71,7 +71,7 @@ class TableLock;
 // The fields in TableRecord may be of scalar type, array type, a Table
 // or a TableRecord.
 // The types are chosen to be compatible with the native
-// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Float,
+// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Int64, Float,
 // Double, Complex, DComplex, String.
 // Arrays of all these types are also available.
 // Note that a TableRecord is not a space-efficient way of storing
@@ -259,7 +259,7 @@ public:
 
     // Fill the TableRecord from the given Record.
     // The fields are appended to the TableRecord.
-    // It is the opposite of toRecord, so a String containg 'Table: '
+    // It is the opposite of toRecord, so a String containing 'Table: '
     // is handled as a Table (if it exists).
     void fromRecord (const Record& rec);
 

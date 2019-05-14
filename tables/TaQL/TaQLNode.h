@@ -97,7 +97,7 @@ public:
   // Assignment (reference semantics).
   TaQLNode& operator= (const TaQLNode& that)
     { if (this != &that) {
-	itsRep = that.itsRep;
+        itsRep = that.itsRep;
       }
       return *this;
     }

@@ -159,8 +159,6 @@ public:
   // Measure table Columns (e.g., MEpoch::ScalarColumn)
   typedef ScalarMeasColumn<MEpoch> ScalarColumn;
   typedef ArrayMeasColumn<MEpoch> ArrayColumn;
-  // Reference enum Types (included originally for gcc 2.95)  
-  typedef WHATEVER_SUN_TYPEDEF(MEpoch) Types Types;
     
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

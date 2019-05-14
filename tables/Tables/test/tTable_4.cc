@@ -47,6 +47,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
+#include <map>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -120,26 +121,30 @@ TableDesc makeDesc (Bool ask)
       } else {
 	break;
       }
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     }
   }
   // Create the hypercolumn descriptions for all tiled columns.
-  SimpleOrderedMap<String,String> map("");
+  std::map<String,String> hcmap;
   for (uInt i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cd = td.columnDesc(i);
     if (cd.dataManagerType() == "TiledShapeStMan") {
-      map(cd.dataManagerGroup()) += ("," + cd.name());
+      std::map<String,String>::iterator iter = hcmap.find(cd.dataManagerGroup());
+      if (iter == hcmap.end()) {
+        hcmap.insert (make_pair(cd.dataManagerGroup(), cd.name()));
+      } else {
+        iter->second += ("," + cd.name());
+      }
     }
   }
-  for (uInt i=0; i<map.ndefined(); i++) {
-    String cols = map.getVal(i);
-    Vector<String> vec = stringToVector(cols.from(1));
+  for (auto& x : hcmap) {
+    Vector<String> vec = stringToVector(x.second);
     uInt ndim = 2;
     if (td.columnDesc(vec(0)).isScalar()) {
       ndim = 1;
     }
-    td.defineHypercolumn (map.getKey(i), ndim, vec);
+    td.defineHypercolumn (x.first, ndim, vec);
   }
   td.show (cout);
   return td;
@@ -303,7 +308,7 @@ void doTable (Bool ask, const TableDesc& td)
       } else {
 	break;
       }
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << removeDir(x.getMesg()) << endl;
     }
   }
@@ -316,7 +321,7 @@ int main (int argc, const char*[])
     cout << "-----------------------------------------------" << endl;
     Bool ask = argc < 2;
     doTable (ask, makeDesc(ask));
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 

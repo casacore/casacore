@@ -23,6 +23,11 @@ foreach (src DataMan/DataManager.cc TaQL/UDFBase.cc)
                  PROPERTIES COMPILE_FLAGS -DSOVERSION=${LIB_SOVERSION})
 endforeach (src)
 
+if (ADIOS2_FOUND)
+  set(ADIOS2_SOURCES DataMan/Adios2StMan.cc DataMan/Adios2StManColumn.cc)
+  set(ADIOS2_HEADERS DataMan/Adios2StMan.h DataMan/Adios2StManColumn.h)
+endif (ADIOS2_FOUND)
+
 add_library (casa_tables
 Tables/ArrayColumn_tmpl.cc
 Tables/ArrColDesc_tmpl.cc
@@ -185,17 +190,16 @@ ${BISON_RecordGram_OUTPUTS}
 ${FLEX_RecordGram_OUTPUTS}
 ${BISON_TableGram_OUTPUTS}
 ${FLEX_TableGram_OUTPUTS}
+${ADIOS2_SOURCES}
 )
 
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
 if(MPI_FOUND)
-    add_definitions(-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX)
-    target_compile_definitions(casa_tables PRIVATE HAVE_MPI)
-    target_link_libraries(casa_tables casa_casa ${CASACORE_ARCH_LIBS} MPI::MPI_C)
-else()
-    target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
-endif()
-
-
+    target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
+    if(ADIOS2_FOUND)
+        target_link_libraries(casa_tables adios2::adios2)
+    endif(ADIOS2_FOUND)
+endif(MPI_FOUND)
 
 add_subdirectory (apps)
 
@@ -370,6 +374,7 @@ DataMan/VirtColEng.h
 DataMan/VirtScaCol.h
 DataMan/VirtScaCol.tcc
 DataMan/VirtualTaQLColumn.h
+${ADIOS2_HEADERS}
 DESTINATION include/casacore/tables/DataMan
 )
 
@@ -438,39 +443,6 @@ LogTables.h
 Tables.h
 TaQL.h
 DESTINATION include/casacore/tables
-)
-
-# Temporary install of stub header files.
-install (FILES
-Tables/BitFlagsEngine.h
-Tables/CompressComplex.h
-Tables/CompressFloat.h
-Tables/DataManAccessor.h
-Tables/DataManError.h
-Tables/DataManager.h
-Tables/ExprNode.h
-Tables/ExprNodeSet.h
-Tables/ForwardCol.h
-Tables/ForwardColRow.h
-Tables/IncrStManAccessor.h
-Tables/IncrementalStMan.h
-Tables/RecordGram.h
-Tables/ScaledArrayEngine.h
-Tables/ScaledComplexData.h
-Tables/StManAipsIO.h
-Tables/StandardStMan.h
-Tables/StandardStManAccessor.h
-Tables/TSMOption.h
-Tables/TableExprId.h
-Tables/TableParse.h
-Tables/TiledCellStMan.h
-Tables/TiledColumnStMan.h
-Tables/TiledDataStMan.h
-Tables/TiledDataStManAccessor.h
-Tables/TiledShapeStMan.h
-Tables/TiledStManAccessor.h
-Tables/UDFBase.h
-DESTINATION include/casacore/tables/Tables
 )
 
 add_subdirectory (Tables/test ${EXCL_ALL})

@@ -225,7 +225,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
    //		get some things to remember
    Int nfield = (Int ) tfields();
    nelem = new Int[nfield];
-   colNames = new SimpleOrderedMap<Int, String>("");
+   colNames = new std::map<Int, String>();
 
    AlwaysAssert(nelem, AipsError);
    //		loop over the number of fields in the FITS table
@@ -252,7 +252,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	   td.rwKeywordSet().renameField(newname, colname);
        }
        //		enter the name in the colNames map
-       colNames->define(i, colname);
+       colNames->insert(std::make_pair(i, colname));
        //		get a shorthand Bool for array versus scalar
        //               NOTE: VADESC are always assumed to be array columns
        //               but that fact is ignored by isArray - but thats ok,
@@ -486,7 +486,7 @@ void BinaryTable::fillRow()
     //		loop over each field
     for (Int j=0;j<tfields(); j++) {
 	//		and switch on the FITS type
-	TableColumn tabcol(*currRowTab, (*colNames)(j));
+	TableColumn tabcol(*currRowTab, (*colNames)[j]);
 	switch (field(j).fieldtype()) {
 	case FITS::LOGICAL:
             {

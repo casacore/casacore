@@ -125,7 +125,7 @@ MVTime TableExprNodeConstDate::getDate (const TableExprId&)
 //# First use a "dummy" data type and fill it in later.
 //# Similarly for the value type.
 TableExprNodeColumn::TableExprNodeColumn (const Table& table,
-					  const String& name)
+                                          const String& name)
   : TableExprNodeBinary (NTNumeric, VTScalar, OtColumn, table),
     selTable_p       (table),
     tabCol_p         (table, name),
@@ -133,26 +133,26 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
 {
     //# Check if the column is a scalar.
     if (! tabCol_p.columnDesc().isScalar()) {
-	throw (TableInvExpr (name, " is no scalar column"));
+        throw (TableInvExpr (name, " is no scalar column"));
     }
     //# Fill in the real data type and the base table pointer.
     switch (tabCol_p.columnDesc().dataType()) {
     case TpBool:
-	dtype_p = NTBool;
-	break;
+        dtype_p = NTBool;
+        break;
     case TpString:
-	dtype_p = NTString;
-	break;
+        dtype_p = NTString;
+        break;
     case TpComplex:
     case TpDComplex:
-	dtype_p = NTComplex;
-	break;
+        dtype_p = NTComplex;
+        break;
     case TpFloat:
     case TpDouble:
-	dtype_p = NTDouble;
-	break;
+        dtype_p = NTDouble;
+        break;
     default:
-	dtype_p = NTInt;
+        dtype_p = NTInt;
     }
     setUnit (getColumnUnit(tabCol_p));
 }
@@ -164,9 +164,9 @@ Unit TableExprNodeColumn::getColumnUnit (const TableColumn& tabcol)
     const TableRecord& keyset = tabcol.keywordSet();
     if (keyset.isDefined ("QuantumUnits")) {
         const Array<String>& units = keyset.asArrayString("QuantumUnits");
-	if (units.size() > 0) {
-	    unit = *(units.data());
-	}
+        if (units.size() > 0) {
+            unit = *(units.data());
+        }
     } else if (keyset.isDefined ("UNIT")) {
         unit = keyset.asString("UNIT");
     }
@@ -271,6 +271,11 @@ Array<uInt>     TableExprNodeColumn::getColumnuInt (const Vector<uInt>& rownrs)
     ScalarColumn<uInt> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
+Array<Int64>    TableExprNodeColumn::getColumnInt64 (const Vector<uInt>& rownrs)
+{
+    ScalarColumn<Int64> col (tabCol_p);
+    return col.getColumnCells (rownrs);
+}
 Array<Float>    TableExprNodeColumn::getColumnFloat (const Vector<uInt>& rownrs)
 {
     ScalarColumn<Float> col (tabCol_p);
@@ -354,7 +359,7 @@ Int64 TableExprNodeRowid::getInt (const TableExprId& id)
 TableExprNodeRandom::TableExprNodeRandom (const Table& table)
 : TableExprNodeBinary (NTDouble, VTScalar, OtRandom, table),
   generator_p         (Int (fmod (Time().modifiedJulianDay(), 1.) * 86400000),
-		       Int (Time().modifiedJulianDay())),
+                       Int (Time().modifiedJulianDay())),
   random_p            (&generator_p, 0, 1)
 {}
 TableExprNodeRandom::~TableExprNodeRandom ()

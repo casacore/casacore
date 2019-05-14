@@ -37,6 +37,7 @@
 #include <casacore/casa/namespace.h>
 //# Forward Declarations
 
+void testParallel();
 void a();
 void b();
 
@@ -49,9 +50,11 @@ void b();
 
 int main () {
   try {
+    // Test parallel first to ensure initialization works fine.
+    testParallel();
     a();
     b();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
     return 1;
   } 
@@ -155,4 +158,16 @@ void b() {
     cout << exp5.regexp() << endl;
 
     cout << "end of b" << endl;
+}
+
+// Test a Regex in parallel.
+void testParallel()
+{
+#ifdef HAVE_OPENMP
+#pragma omp parallel
+#endif
+  for (int i=0; i<32; ++i) {
+    Regex rx(".*");
+    AlwaysAssert (String("ab").matches(rx), AipsError);
+  }
 }

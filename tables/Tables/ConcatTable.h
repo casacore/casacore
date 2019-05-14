@@ -37,7 +37,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -362,8 +362,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members
     Block<String>     subTableNames_p;
     String            subDirName_p;
-    Block<BaseTable*> baseTabPtr_p;        //# pointers to parent tables
-    SimpleOrderedMap<String,ConcatColumn*> colMap_p; //# map name to column
+    Block<BaseTable*> baseTabPtr_p;           //# pointers to parent tables
+    std::map<String,ConcatColumn*> colMap_p;  //# map name to column
     TableRecord       keywordSet_p;
     Bool              changed_p;           //# True = changed since last write
     ConcatRows        rows_p;

@@ -47,7 +47,7 @@ int main (int argc, const char*[])
 {
     try {
 	doit ( (argc<2));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
     } 

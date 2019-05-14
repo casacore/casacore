@@ -32,15 +32,13 @@
 #include <casacore/ms/MSSel/MSSpwGram.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
-#include <casacore/casa/Containers/MapIO.h>
-#include <casacore/casa/Containers/OrderedMap.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //  MSPolnParse* MSPolnParse::thisMSSParser = 0x0; // Global pointer to the parser object
   // TableExprNode* MSPolnParse::node_p = 0x0;
   // Vector<Int> MSPolnParse::ddIDList;
-  // OrderedMap<Int, Vector<Int> > MSPolnParse::polList(Vector<Int>(0)); 
+  // std::map<Int, Vector<Int> > MSPolnParse::polList(Vector<Int>(0)); 
   //# Constructor
   //------------------------------------------------------------------------------
   //  
@@ -48,9 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSPolnParse::MSPolnParse ()
     : MSParse(),
       node_p(),			      //      node_p(0x0), 
-      ddIDList_p(), 
-      polMap_p(Vector<Int>(0)),
-      setupMap_p(Vector<Vector<Int> >(0))
+      ddIDList_p()
   {
     // if (MSPolnParse::node_p!=0x0) delete MSPolnParse::node_p;
     // MSPolnParse::node_p=0x0;
@@ -62,9 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSPolnParse::MSPolnParse (const MeasurementSet* ms)
     : MSParse(ms, "Pol"),
       node_p(),			      //     node_p(0x0), 
-      ddIDList_p(), 
-      polMap_p(Vector<Int>(0)),
-      setupMap_p(Vector<Vector<Int> >(0))
+      ddIDList_p()
   {
     ddIDList_p.resize(0);
     // if(MSPolnParse::node_p) delete MSPolnParse::node_p;
@@ -193,8 +187,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		thisDDList.resize((n=thisDDList.nelements())+1,True);
 		thisDDList[n]=tmp[0];
 		setIDLists((Int)polnIDs[p],0,polnIndices);
-		polMap_p(polnIDs[p]).resize(0);
-		polMap_p(polnIDs[p])=polnIndices;
+		polMap_p[polnIDs[p]].resize(0);
+		polMap_p[polnIDs[p]]=polnIndices;
 		//		cout << "DDIDs for SPW = " << spwIDs[s] << " = " << tmp[0] << endl;
 	      }
 	  }
@@ -229,7 +223,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //  i.e. "RR", "LL" etc.
   //
   Vector<Int> MSPolnParse::matchPolIDsToPolTableRow(const Vector<Int>& polIds,
-						    OrderedMap<Int, Vector<Int> >& /*polIndexMap*/,
+						    std::map<Int, Vector<Int> >& /*polIndexMap*/,
 						    Vector<Int>& polIndices,
 						    Bool addToMap)
   {
@@ -459,11 +453,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //
       // Remove entries which did not map to any DD ID(s)
       //
-      MapIter<Int, Vector<Vector<Int> > > omi(setupMap_p);
-      for(omi.toStart(); !omi.atEnd(); omi++)
-	if (omi.getVal()[1].nelements() == 0)
-	  omi.remove(omi.getKey());
-	  //	  setupMap_p.remove(omi.getKey());
+      for (const auto& x : setupMap_p) {
+	if (x.second[1].nelements() == 0) {
+          setupMap_p.erase(x.first);
+        }
+      }
     }
     return ret;
   }
@@ -476,22 +470,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (ndx>1)
       throw(MSSelectionError("Internal error in MSPolnParse::setIDLists(): Index > 1"));
 
-    if (setupMap_p(key).nelements() !=2) setupMap_p(key).resize(2, True);
+    if (setupMap_p[key].nelements() !=2) setupMap_p[key].resize(2, True);
     if (val.nelements() > 0)
       {
 	Vector<Int> v0=val;
-	if (setupMap_p.isDefined(key))
+	auto elem = setupMap_p.find(key);
+        if (elem != setupMap_p.end())
 	  {
 	    Vector<Int> t0;
 	    v0.resize(0);
-	    v0 = setupMap_p(key)[ndx];
+	    v0 = elem->second[ndx];
 	    t0=set_union(val,v0);
 	    v0.resize(0);
 	    v0 = t0;
 	  }
 
-	if (setupMap_p(key)[ndx].nelements() > 0) setupMap_p(key)[ndx].resize(0);
-	setupMap_p(key)[ndx]=v0;
+	if (setupMap_p[key][ndx].nelements() > 0) setupMap_p[key][ndx].resize(0);
+	setupMap_p[key][ndx]=v0;
       }
   }
   //

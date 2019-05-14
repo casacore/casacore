@@ -200,7 +200,7 @@ private:
     // Concatenate <src>nr</src> arrays of strings.
     // The increment is 0 for a scalar value. Otherwise it is 1.
     void concString (String* to, const String* left, Int incrLeft,
-		     const String* right, Int incrRight, uInt nr) const;
+                     const String* right, Int incrRight, uInt nr) const;
 };
 
 

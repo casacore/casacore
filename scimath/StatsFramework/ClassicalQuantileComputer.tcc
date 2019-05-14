@@ -854,7 +854,9 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
     const std::vector<LimitPair>& binLimits,
     const std::vector<IndexSet>& dataIndices, uInt nBins
 ) {
-    uInt64 totalPts = std::accumulate(binNpts.begin(), binNpts.end(), 0);
+    // The uInt64 specification is required or else 0 will be interpreted as a
+    // uInt and there will be overflow issues for totalNpts > (2**32)-1
+    auto totalPts = std::accumulate(binNpts.begin(), binNpts.end(), uInt64(0));
     if (totalPts <= maxArraySize) {
         // contents of bin is small enough to be sorted in memory, so
         // get the bin limits and stuff the good points within those limits

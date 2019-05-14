@@ -123,7 +123,7 @@ int main (int argc, const char* argv[])
 {
     try {
 	testClass();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -142,7 +142,7 @@ int main (int argc, const char* argv[])
 	istringstream istr1(argv[1]);
 	istr1 >> tileSize;
 	testTiling (tileSize);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

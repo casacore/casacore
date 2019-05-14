@@ -72,8 +72,7 @@ MeasurementSet::MeasurementSet()
 
 MeasurementSet::MeasurementSet(const String &tableName,
 			       TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option), 
+    : MSTable<MSMainEnums>(tableName, option), 
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -105,8 +104,7 @@ void MeasurementSet::addCat()
 
 MeasurementSet::MeasurementSet (const String &tableName, const TableLock& lockOptions,
                                 bool doNotLockSubtables, TableOption option)
-: MSTable<PredefinedColumns,
-  PredefinedKeywords>(tableName, lockOptions, option),
+: MSTable<MSMainEnums>(tableName, lockOptions, option),
   doNotLockSubtables_p (doNotLockSubtables),
   hasBeenDestroyed_p(False)
 {
@@ -126,8 +124,7 @@ MeasurementSet::MeasurementSet (const String &tableName, const TableLock& lockOp
 MeasurementSet::MeasurementSet(const String &tableName,
 			       const TableLock& lockOptions,
 			       TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, lockOptions, option), 
+    : MSTable<MSMainEnums>(tableName, lockOptions, option), 
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -144,8 +141,7 @@ MeasurementSet::MeasurementSet(const String &tableName,
 
 MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName, option),
+    : MSTable<MSMainEnums>(tableName, tableDescName, option),
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -161,8 +157,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
 
 MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
 			       const TableLock& lockOptions, TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName, lockOptions, option),
+    : MSTable<MSMainEnums>(tableName, tableDescName, lockOptions, option),
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -178,8 +173,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
 
 MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSMainEnums>(newTab, nrrow, initialize), 
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -194,8 +188,7 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
 MeasurementSet::MeasurementSet(SetupNewTable &newTab,
 			       const TableLock& lockOptions, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, lockOptions, nrrow, initialize), 
+    : MSTable<MSMainEnums>(newTab, lockOptions, nrrow, initialize), 
       doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
@@ -208,7 +201,7 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
 }
 
 MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherMs)
-: MSTable<PredefinedColumns, PredefinedKeywords>(table),
+: MSTable<MSMainEnums>(table),
   doNotLockSubtables_p (False),
   hasBeenDestroyed_p(False)
 {
@@ -230,9 +223,41 @@ MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherM
     initRefs();
 }
 
+#ifdef HAVE_MPI
+MeasurementSet::MeasurementSet (MPI_Comm comm,
+			       SetupNewTable &newTab, uInt nrrow,
+			       Bool initialize)
+    : MSTable<MSMainEnums>(comm, newTab, nrrow, initialize),
+      doNotLockSubtables_p (False),
+      hasBeenDestroyed_p(False)
+{
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
+    // verify that the now opened table is valid
+    addCat();
+    if (! validate(this->tableDesc()))
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
+}
+
+MeasurementSet::MeasurementSet (MPI_Comm comm,
+			       SetupNewTable &newTab,
+			       const TableLock& lockOptions, uInt nrrow,
+			       Bool initialize)
+    : MSTable<MSMainEnums>(comm, newTab, lockOptions, nrrow, initialize),
+      doNotLockSubtables_p (False),
+      hasBeenDestroyed_p(False)
+{
+  mainLock_p=lockOptions;
+    // verify that the now opened table is valid
+    addCat();
+    if (! validate(this->tableDesc()))
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
+}
+#endif // HAVE_MPI
+
 MeasurementSet::MeasurementSet(const MeasurementSet &other)
-: MSTable<PredefinedColumns,
-  PredefinedKeywords>(other),
+: MSTable<MSMainEnums>(other),
   hasBeenDestroyed_p(False)
 {
   doNotLockSubtables_p = other.doNotLockSubtables_p;
@@ -275,7 +300,7 @@ MeasurementSet::operator=(const MeasurementSet &other)
 
         clearSubtables ();  // Make all subtables refer to null tables
 
-	MSTable<PredefinedColumns,PredefinedKeywords>::operator=(other);
+	MSTable<MSMainEnums>::operator=(other);
 
 	// MRS related components
 
@@ -336,236 +361,236 @@ MeasurementSet::getMrsEligibility () const {
 }
 
 
-void MeasurementSet::init()
+MSTableMaps MeasurementSet::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA1
-	colMapDef(ANTENNA1, "ANTENNA1", TpInt,
-		"ID of first antenna in interferometer","","");
-	// ANTENNA2
-	colMapDef(ANTENNA2, "ANTENNA2", TpInt,
-		  "ID of second antenna in interferometer","","");
-	// ANTENNA3
-	colMapDef(ANTENNA3, "ANTENNA3", TpInt,
-		  "ID of third antenna in interferometer","","");
-	// ARRAY_ID
-	colMapDef(ARRAY_ID, "ARRAY_ID", TpInt, 
-		  "ID of array or subarray","","");
-	// BASELINE_REF
-	colMapDef(BASELINE_REF,"BASELINE_REF",TpBool,
-		  "Reference antenna for this baseline, True for ANTENNA1","",
-		  "");
-	// the CORRECTED_DATA column,
-	colMapDef(CORRECTED_DATA,"CORRECTED_DATA",TpArrayComplex,
-		  "The corrected data column","","");
-	// the DATA columns,
-	colMapDef(DATA,"DATA",TpArrayComplex,"The data column","","");
-	// the DATA_DESC_ID
-	colMapDef(DATA_DESC_ID,"DATA_DESC_ID",TpInt,
-		  "The data description table index","","");
-	// EXPOSURE
-	colMapDef(EXPOSURE, "EXPOSURE", TpDouble,
-		  "The effective integration time","s","");
-	// FEED1
-	colMapDef(FEED1, "FEED1", TpInt, "The feed index for ANTENNA1","","");
-	// FEED2
-	colMapDef(FEED2, "FEED2", TpInt, "The feed index for ANTENNA2","","");
-	// FEED3
-	colMapDef(FEED3, "FEED3", TpInt, "The feed index for ANTENNA3","","");
-	// FIELD_ID
-	colMapDef(FIELD_ID,"FIELD_ID", TpInt, "Unique id for this pointing","","");
-	// FLAG
-	colMapDef(FLAG,"FLAG", TpArrayBool, 
-		  "The data flags, array of bools with same shape as data","","");
-	// FLAG_CATEGORY
-	colMapDef(FLAG_CATEGORY,"FLAG_CATEGORY", TpArrayBool, 
-		  "The flag category, NUM_CAT flags for each datum","","");
-	// FLAG_ROW
-	colMapDef(FLAG_ROW,"FLAG_ROW", TpBool,
-		  "Row flag - flag all data in this row if True","","");
-	// FLOAT_DATA
-	colMapDef(FLOAT_DATA,"FLOAT_DATA",TpArrayFloat,
-		  "Floating point data - for single dish","","");
-        // IMAGING_WEIGHT
-        colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
-                  "Weight set by imaging task (e.g. uniform weighting)","","");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble, 
-		  "The sampling interval","s","");
-	// the LAG_DATA column,
-	colMapDef(LAG_DATA,"LAG_DATA",TpArrayComplex,
-		  "The lag data column","","");
-	// the MODEL_DATA column,
-	colMapDef(MODEL_DATA,"MODEL_DATA",TpArrayComplex,
-		  "The model data column","","");
-	// OBSERVATION_ID
-	colMapDef(OBSERVATION_ID, "OBSERVATION_ID", TpInt,
-		  "ID for this observation, index in OBSERVATION table","",""); 
-	// PHASE_ID
-	colMapDef(PHASE_ID,"PHASE_ID",TpInt,
-		  "Id for phase switching","","");
-	// PROCESSOR_ID
-	colMapDef(PROCESSOR_ID,"PROCESSOR_ID",TpInt,
-		  "Id for backend processor, index in PROCESSOR table","","");
-	// PULSAR_BIN
-	colMapDef(PULSAR_BIN, "PULSAR_BIN", TpInt,
-		  "Pulsar pulse-phase bin for this DATA","",""); 
-	// PULSAR_GATE_ID
-	colMapDef(PULSAR_GATE_ID, "PULSAR_GATE_ID", TpInt,
-		  "ID for this gate, index into PULSAR_GATE table","","");
-	// SCAN_NUMBER
-	colMapDef(SCAN_NUMBER, "SCAN_NUMBER", TpInt,
-		  "Sequential scan number from on-line system","","");
-	// STATE_ID
-	colMapDef(STATE_ID,"STATE_ID",TpInt,
-		  "ID for this observing state","","");
-	// SIGMA
-	colMapDef(SIGMA, "SIGMA", TpArrayFloat,
-		  "Estimated rms noise for channel with unity bandpass response","","");
-	// SIGMA_SPECTRUM
-	colMapDef(SIGMA_SPECTRUM, "SIGMA_SPECTRUM", TpArrayFloat,
-		  "Estimated rms noise for each data point","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble, "Modified Julian Day","s","Epoch");
-	// TIME_CENTROID
-	colMapDef(TIME_CENTROID, "TIME_CENTROID", TpDouble, 
-		  "Modified Julian Day","s","Epoch");
-	// TIME_EXTRA_PREC
-	colMapDef(TIME_EXTRA_PREC, "TIME_EXTRA_PREC", TpDouble,
-		  "Additional precision for TIME","s","");
-	// UVW
-	colMapDef(UVW, "UVW", TpArrayDouble, 
-		  "Vector with uvw coordinates (in meters)","m","uvw");
-	// UVW2
-	colMapDef(UVW2,"UVW2",TpArrayDouble,
-		  "uvw coordinates for second pair of triple corr product",
-		  "m","uvw");
-	// VIDEO_POINT
-	colMapDef(VIDEO_POINT,"VIDEO_POINT",TpArrayComplex,
-		  "zero frequency point, needed for transform to lag","","");
-	// WEIGHT
-	colMapDef(WEIGHT, "WEIGHT", TpArrayFloat,
-		  "Weight for each polarization spectrum","","");
-	// WEIGHT_SPECTRUM
-	colMapDef(WEIGHT_SPECTRUM, "WEIGHT_SPECTRUM", TpArrayFloat,
-		  "Weight for each data point","","");
-	// CORRECTED_WEIGHT_SPECTRUM
-	colMapDef(CORRECTED_WEIGHT_SPECTRUM, "CORRECTED_WEIGHT_SPECTRUM", TpArrayFloat,
-		  "Weight for each corrected data point","","");
+  // This function is called once (by MSTableImpl::doInitMap),
+  // so the map should be empty.
+  MSTableMaps maps;
+  AlwaysAssert (maps.columnMap_p.empty(), AipsError);
+  // the PredefinedColumns
+  // ANTENNA1
+  colMapDef(maps, ANTENNA1, "ANTENNA1", TpInt,
+            "ID of first antenna in interferometer","","");
+  // ANTENNA2
+  colMapDef(maps, ANTENNA2, "ANTENNA2", TpInt,
+            "ID of second antenna in interferometer","","");
+  // ANTENNA3
+  colMapDef(maps, ANTENNA3, "ANTENNA3", TpInt,
+            "ID of third antenna in interferometer","","");
+  // ARRAY_ID
+  colMapDef(maps, ARRAY_ID, "ARRAY_ID", TpInt, 
+            "ID of array or subarray","","");
+  // BASELINE_REF
+  colMapDef(maps, BASELINE_REF,"BASELINE_REF",TpBool,
+            "Reference antenna for this baseline, True for ANTENNA1","",
+            "");
+  // the CORRECTED_DATA column,
+  colMapDef(maps, CORRECTED_DATA,"CORRECTED_DATA",TpArrayComplex,
+            "The corrected data column","","");
+  // the DATA columns,
+  colMapDef(maps, DATA,"DATA",TpArrayComplex,"The data column","","");
+  // the DATA_DESC_ID
+  colMapDef(maps, DATA_DESC_ID,"DATA_DESC_ID",TpInt,
+            "The data description table index","","");
+  // EXPOSURE
+  colMapDef(maps, EXPOSURE, "EXPOSURE", TpDouble,
+            "The effective integration time","s","");
+  // FEED1
+  colMapDef(maps, FEED1, "FEED1", TpInt, "The feed index for ANTENNA1","","");
+  // FEED2
+  colMapDef(maps, FEED2, "FEED2", TpInt, "The feed index for ANTENNA2","","");
+  // FEED3
+  colMapDef(maps, FEED3, "FEED3", TpInt, "The feed index for ANTENNA3","","");
+  // FIELD_ID
+  colMapDef(maps, FIELD_ID,"FIELD_ID", TpInt, "Unique id for this pointing","","");
+  // FLAG
+  colMapDef(maps, FLAG,"FLAG", TpArrayBool, 
+            "The data flags, array of bools with same shape as data","","");
+  // FLAG_CATEGORY
+  colMapDef(maps, FLAG_CATEGORY,"FLAG_CATEGORY", TpArrayBool, 
+            "The flag category, NUM_CAT flags for each datum","","");
+  // FLAG_ROW
+  colMapDef(maps, FLAG_ROW,"FLAG_ROW", TpBool,
+            "Row flag - flag all data in this row if True","","");
+  // FLOAT_DATA
+  colMapDef(maps, FLOAT_DATA,"FLOAT_DATA",TpArrayFloat,
+            "Floating point data - for single dish","","");
+  // IMAGING_WEIGHT
+  colMapDef(maps, IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
+            "Weight set by imaging task (e.g. uniform weighting)","","");
+  // INTERVAL
+  colMapDef(maps, INTERVAL, "INTERVAL", TpDouble, 
+            "The sampling interval","s","");
+  // the LAG_DATA column,
+  colMapDef(maps, LAG_DATA,"LAG_DATA",TpArrayComplex,
+            "The lag data column","","");
+  // the MODEL_DATA column,
+  colMapDef(maps, MODEL_DATA,"MODEL_DATA",TpArrayComplex,
+            "The model data column","","");
+  // OBSERVATION_ID
+  colMapDef(maps, OBSERVATION_ID, "OBSERVATION_ID", TpInt,
+            "ID for this observation, index in OBSERVATION table","",""); 
+  // PHASE_ID
+  colMapDef(maps, PHASE_ID,"PHASE_ID",TpInt,
+            "Id for phase switching","","");
+  // PROCESSOR_ID
+  colMapDef(maps, PROCESSOR_ID,"PROCESSOR_ID",TpInt,
+            "Id for backend processor, index in PROCESSOR table","","");
+  // PULSAR_BIN
+  colMapDef(maps, PULSAR_BIN, "PULSAR_BIN", TpInt,
+            "Pulsar pulse-phase bin for this DATA","",""); 
+  // PULSAR_GATE_ID
+  colMapDef(maps, PULSAR_GATE_ID, "PULSAR_GATE_ID", TpInt,
+            "ID for this gate, index into PULSAR_GATE table","","");
+  // SCAN_NUMBER
+  colMapDef(maps, SCAN_NUMBER, "SCAN_NUMBER", TpInt,
+            "Sequential scan number from on-line system","","");
+  // STATE_ID
+  colMapDef(maps, STATE_ID,"STATE_ID",TpInt,
+            "ID for this observing state","","");
+  // SIGMA
+  colMapDef(maps, SIGMA, "SIGMA", TpArrayFloat,
+            "Estimated rms noise for channel with unity bandpass response","","");
+  // SIGMA_SPECTRUM
+  colMapDef(maps, SIGMA_SPECTRUM, "SIGMA_SPECTRUM", TpArrayFloat,
+            "Estimated rms noise for each data point","","");
+  // TIME
+  colMapDef(maps, TIME, "TIME", TpDouble, "Modified Julian Day","s","Epoch");
+  // TIME_CENTROID
+  colMapDef(maps, TIME_CENTROID, "TIME_CENTROID", TpDouble, 
+            "Modified Julian Day","s","Epoch");
+  // TIME_EXTRA_PREC
+  colMapDef(maps, TIME_EXTRA_PREC, "TIME_EXTRA_PREC", TpDouble,
+            "Additional precision for TIME","s","");
+  // UVW
+  colMapDef(maps, UVW, "UVW", TpArrayDouble, 
+            "Vector with uvw coordinates (in meters)","m","uvw");
+  // UVW2
+  colMapDef(maps, UVW2,"UVW2",TpArrayDouble,
+            "uvw coordinates for second pair of triple corr product",
+            "m","uvw");
+  // VIDEO_POINT
+  colMapDef(maps, VIDEO_POINT,"VIDEO_POINT",TpArrayComplex,
+            "zero frequency point, needed for transform to lag","","");
+  // WEIGHT
+  colMapDef(maps, WEIGHT, "WEIGHT", TpArrayFloat,
+            "Weight for each polarization spectrum","","");
+  // WEIGHT_SPECTRUM
+  colMapDef(maps, WEIGHT_SPECTRUM, "WEIGHT_SPECTRUM", TpArrayFloat,
+            "Weight for each data point","","");
+  // CORRECTED_WEIGHT_SPECTRUM
+  colMapDef(maps, CORRECTED_WEIGHT_SPECTRUM, "CORRECTED_WEIGHT_SPECTRUM", TpArrayFloat,
+            "Weight for each corrected data point","","");
 
 
-	// PredefinedKeywords
+  // PredefinedKeywords
+  // ANTENNA
+  keyMapDef(maps, ANTENNA,"ANTENNA", TpTable,
+            "Antenna subtable. Antenna positions, mount-types etc.");
+  // DATA_DESCRIPTION
+  keyMapDef(maps, DATA_DESCRIPTION,"DATA_DESCRIPTION", TpTable,
+            "DATA_DESCRIPTION subtable. Points to freq and pol layout"
+            "in subtables");
+  // FEED
+  keyMapDef(maps, FEED,"FEED", TpTable,
+            "Feed subtable. Responses, offsets, beams etc.");
+  // FIELD
+  keyMapDef(maps, FIELD,"FIELD",TpTable,
+            "Field subtable. Position etc. for each pointing.");
+  // FLAG_CMD
+  keyMapDef(maps, FLAG_CMD,"FLAG_CMD",TpTable,
+            "Flag command subtable. Stores global flagging commands");
+  // HISTORY
+  keyMapDef(maps, HISTORY,"HISTORY",TpTable,
+            "Observation and processing history");
+  // MS_VERSION
+  keyMapDef(maps, MS_VERSION,"MS_VERSION",TpFloat,
+            "MS version number, i.e., 2.0");
+  // OBSERVATION
+  keyMapDef(maps, OBSERVATION,"OBSERVATION",TpTable,
+            "Observation subtable. Project, observer, schedule.");
+  // POINTING
+  keyMapDef(maps, POINTING,"POINTING",TpTable,
+            "Pointing subtable. Antenna pointing info.");
+  // POLARIZATION
+  keyMapDef(maps, POLARIZATION,"POLARIZATION",TpTable,
+            "Polarization set up subtable");
+  // PROCESSOR
+  keyMapDef(maps, PROCESSOR,"PROCESSOR",TpTable,
+            "Backend Processor information subtable");
+  // SPECTRAL_WINDOW
+  keyMapDef(maps, SPECTRAL_WINDOW,"SPECTRAL_WINDOW",TpTable,
+            "Spectral window subtable. Frequencies, bandwidths,"
+            " polarizations");
+  // STATE
+  keyMapDef(maps, STATE,"STATE",TpTable,
+            "State subtable. State information (cal, ref etc.)");
+  // CAL_TABLES
+  keyMapDef(maps, CAL_TABLES,"CAL_TABLES",TpTable,
+            "Associated calibration tables, one per row");
+  // DOPPLER
+  keyMapDef(maps, DOPPLER,"DOPPLER",TpTable,
+            "Doppler tracking info");
+  // FREQ_OFFSET
+  keyMapDef(maps, FREQ_OFFSET,"FREQ_OFFSET",TpTable,
+            "Frequency offset information");
+  // SORT_COLUMNS
+  keyMapDef(maps, SORT_COLUMNS,"SORT_COLUMNS",TpArrayString,
+            "Listing of sort columns for each sorted table");
+  // SORT_ORDER
+  keyMapDef(maps, SORT_ORDER,"SORT_ORDER",TpArrayString,
+            "Listing of sort orders for each sorted table");
+  // SORTED_TABLES
+  keyMapDef(maps, SORTED_TABLES,"SORTED_TABLES",TpTable,
+            "Sorted reference tables of the main table, first one is"
+            " main table");
+  // SOURCE
+  keyMapDef(maps, SOURCE,"SOURCE",TpTable,
+            "Source subtable. Positions etc. for each source.");
+  // SYSCAL
+  keyMapDef(maps, SYSCAL,"SYSCAL",TpTable,
+            "SysCal subtable. System calibration data (Tsys etc.).");
+  // WEATHER
+  keyMapDef(maps, WEATHER,"WEATHER",TpTable,
+            "Weather subtable. Weather info for each antenna.");
 
-	// ANTENNA
-	keyMapDef(ANTENNA,"ANTENNA", TpTable,
-		  "Antenna subtable. Antenna positions, mount-types etc.");
-        // DATA_DESCRIPTION
-	keyMapDef(DATA_DESCRIPTION,"DATA_DESCRIPTION", TpTable,
-		  "DATA_DESCRIPTION subtable. Points to freq and pol layout"
-		  "in subtables");
-	// FEED
-	keyMapDef(FEED,"FEED", TpTable,
-		  "Feed subtable. Responses, offsets, beams etc.");
-	// FIELD
-	keyMapDef(FIELD,"FIELD",TpTable,
-		  "Field subtable. Position etc. for each pointing.");
-	// FLAG_CMD
-	keyMapDef(FLAG_CMD,"FLAG_CMD",TpTable,
-		  "Flag command subtable. Stores global flagging commands");
-	// HISTORY
-	keyMapDef(HISTORY,"HISTORY",TpTable,
-		  "Observation and processing history");
-	// MS_VERSION
-	keyMapDef(MS_VERSION,"MS_VERSION",TpFloat,
-		  "MS version number, i.e., 2.0");
-	// OBSERVATION
-	keyMapDef(OBSERVATION,"OBSERVATION",TpTable,
-		  "Observation subtable. Project, observer, schedule.");
-	// POINTING
-	keyMapDef(POINTING,"POINTING",TpTable,
-		  "Pointing subtable. Antenna pointing info.");
-	// POLARIZATION
-	keyMapDef(POLARIZATION,"POLARIZATION",TpTable,
-		  "Polarization set up subtable");
-	// PROCESSOR
-	keyMapDef(PROCESSOR,"PROCESSOR",TpTable,
-		  "Backend Processor information subtable");
-	// SPECTRAL_WINDOW
-	keyMapDef(SPECTRAL_WINDOW,"SPECTRAL_WINDOW",TpTable,
-		  "Spectral window subtable. Frequencies, bandwidths,"
-		  " polarizations");
-	// STATE
-	keyMapDef(STATE,"STATE",TpTable,
-		  "State subtable. State information (cal, ref etc.)");
-	// CAL_TABLES
-	keyMapDef(CAL_TABLES,"CAL_TABLES",TpTable,
-		  "Associated calibration tables, one per row");
-	// DOPPLER
-	keyMapDef(DOPPLER,"DOPPLER",TpTable,
-		  "Doppler tracking info");
-	// FREQ_OFFSET
-	keyMapDef(FREQ_OFFSET,"FREQ_OFFSET",TpTable,
-		  "Frequency offset information");
-	// SORT_COLUMNS
-	keyMapDef(SORT_COLUMNS,"SORT_COLUMNS",TpArrayString,
-		  "Listing of sort columns for each sorted table");
-	// SORT_ORDER
-	keyMapDef(SORT_ORDER,"SORT_ORDER",TpArrayString,
-		  "Listing of sort orders for each sorted table");
-	// SORTED_TABLES
-	keyMapDef(SORTED_TABLES,"SORTED_TABLES",TpTable,
-		  "Sorted reference tables of the main table, first one is"
-		  " main table");
-	// SOURCE
-	keyMapDef(SOURCE,"SOURCE",TpTable,
-		  "Source subtable. Positions etc. for each source.");
-	// SYSCAL
-	keyMapDef(SYSCAL,"SYSCAL",TpTable,
-		  "SysCal subtable. System calibration data (Tsys etc.).");
-	// WEATHER
-	keyMapDef(WEATHER,"WEATHER",TpTable,
-		  "Weather subtable. Weather info for each antenna.");
+  // define required keywords and columns
+  TableDesc& requiredTD = maps.requiredTD_p;
+  // all required keywords 
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_REQUIRED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // Set MS_VERSION number
+  requiredTD.rwKeywordSet().define("MS_VERSION",Float(2.0));
+  
+  // all required columns 
+  // First define the columns with fixed size arrays
+  IPosition shape(1,3);
+  ColumnDesc::Option option=ColumnDesc::Direct;
+  addColumnToDesc(maps, UVW, shape, option);
+  // Also define columns with Arrays with their correct dimensionality
+  addColumnToDesc(maps, FLAG, 2);
+  addColumnToDesc(maps, FLAG_CATEGORY, 3);
+  addColumnToDesc(maps, WEIGHT, 1);
+  addColumnToDesc(maps, SIGMA, 1);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
+  // Add the column keyword for the FLAG_CATEGORY column
+  requiredTD.rwColumnDesc("FLAG_CATEGORY").rwKeywordSet().
+    define("CATEGORY",Vector<String>(0));
 
-	// define required keywords and columns
-	TableDesc requiredTD;
-	// all required keywords 
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_REQUIRED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	// Set MS_VERSION number
-	requiredTD.rwKeywordSet().define("MS_VERSION",Float(2.0));
-	
-	// all required columns 
-	// First define the columns with fixed size arrays
-	IPosition shape(1,3);
-	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, UVW, shape, option);
-	// Also define columns with Arrays with their correct dimensionality
-	addColumnToDesc(requiredTD, FLAG, 2);
-	addColumnToDesc(requiredTD, FLAG_CATEGORY, 3);
-	addColumnToDesc(requiredTD, WEIGHT, 1);
-	addColumnToDesc(requiredTD, SIGMA, 1);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-        // Add the column keyword for the FLAG_CATEGORY column
-        requiredTD.rwColumnDesc("FLAG_CATEGORY").rwKeywordSet().
-	  define("CATEGORY",Vector<String>(0));
-
-	// init counted pointer to requiredTableDesc 
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  return maps;
 }
 	
 MeasurementSet MeasurementSet::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MeasurementSet(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MeasurementSet(MSTable<MSMainEnums>::
 			  referenceCopy(newTableName,writableColumns));
 }
 
@@ -860,35 +885,61 @@ void MeasurementSet::initRefs(Bool clear)
   }
 }
 
+template<typename T>
+static Table create_table(SetupNewTable &tableSetup, T /*comm*/)
+{
+    return Table(tableSetup);
+}
 
 void MeasurementSet::createDefaultSubtables(Table::TableOption option)
+{
+    createDefaultSubtables_impl(option, 0);
+}
+
+#ifdef HAVE_MPI
+template<>
+Table create_table<MPI_Comm>(SetupNewTable &tableSetup, MPI_Comm comm)
+{
+    return Table(comm, tableSetup);
+}
+
+void MeasurementSet::createDefaultSubtables(MPI_Comm comm, Table::TableOption option)
+{
+    createDefaultSubtables_impl(option, comm);
+}
+#endif // HAVE_MPI
+
+template<typename T>
+void MeasurementSet::createDefaultSubtables_impl(Table::TableOption option, T comm)
 {
     SetupNewTable antennaSetup(antennaTableName(),
 			       MSAntenna::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::ANTENNA),
-			       Table(antennaSetup));
+			       create_table(antennaSetup, comm));
     SetupNewTable dataDescSetup(dataDescriptionTableName(),
 			       MSDataDescription::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::DATA_DESCRIPTION), 
-			       Table(dataDescSetup));
+			       create_table(dataDescSetup, comm));
     SetupNewTable feedSetup(feedTableName(),
 			       MSFeed::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(MS::keywordName(MS::FEED), Table(feedSetup));
+    rwKeywordSet().defineTable(MS::keywordName(MS::FEED),
+			       create_table(feedSetup, comm));
     SetupNewTable flagCmdSetup(flagCmdTableName(),
 			       MSFlagCmd::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::FLAG_CMD), 
-			       Table(flagCmdSetup));
+			       create_table(flagCmdSetup, comm));
     SetupNewTable fieldSetup(fieldTableName(),
 			       MSField::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(MS::keywordName(MS::FIELD), Table(fieldSetup));
+    rwKeywordSet().defineTable(MS::keywordName(MS::FIELD),
+			       create_table(fieldSetup, comm));
     SetupNewTable historySetup(historyTableName(),
 			       MSHistory::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::HISTORY), 
-			       Table(historySetup));
+			       create_table(historySetup, comm));
     SetupNewTable observationSetup(observationTableName(),
 			       MSObservation::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::OBSERVATION), 
-			       Table(observationSetup));
+			       create_table(observationSetup, comm));
     SetupNewTable pointingSetup(pointingTableName(),
 			       MSPointing::requiredTableDesc(),option);
     // Pointing table can be large, set some sensible defaults for storageMgrs
@@ -898,23 +949,23 @@ void MeasurementSet::createDefaultSubtables(Table::TableOption option)
     pointingSetup.bindColumn(MSPointing::columnName(MSPointing::ANTENNA_ID),
 			     ssmPointing);
     rwKeywordSet().defineTable(MS::keywordName(MS::POINTING),
-			       Table(pointingSetup));
+			       create_table(pointingSetup, comm));
     SetupNewTable polarizationSetup(polarizationTableName(),
 			       MSPolarization::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::POLARIZATION),
-			       Table(polarizationSetup));
+			       create_table(polarizationSetup, comm));
     SetupNewTable processorSetup(processorTableName(),
 			       MSProcessor::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::PROCESSOR),
-			       Table(processorSetup));
+			       create_table(processorSetup, comm));
     SetupNewTable spectralWindowSetup(spectralWindowTableName(),
 			       MSSpectralWindow::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::SPECTRAL_WINDOW),  
-			       Table(spectralWindowSetup));
+			       create_table(spectralWindowSetup, comm));
     SetupNewTable stateSetup(stateTableName(),
 			       MSState::requiredTableDesc(),option);
     rwKeywordSet().defineTable(MS::keywordName(MS::STATE),  
-			       Table(stateSetup));
+			       create_table(stateSetup, comm));
     initRefs();
 }
 
@@ -987,7 +1038,7 @@ Bool MeasurementSet::validateMeasureRefs()
 }
 
 void MeasurementSet::flush(Bool sync) {
-  MSTable<MSMainEnums::PredefinedColumns, MSMainEnums::PredefinedKeywords>::flush(sync);
+  MSTable<MSMainEnums>::flush(sync);
   antenna_p.flush(sync);
   dataDesc_p.flush(sync);
   if (!doppler_p.isNull()) doppler_p.flush(sync);
@@ -1047,8 +1098,8 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   Matrix<Int> baselinelist=thisSelection.getBaselineList();
   Vector<Int> ddIDList=thisSelection.getDDIDList();
   Vector<Int> spwDDIDList=thisSelection.getSPWDDIDList();
-  OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
-  OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
+  std::map<Int, Vector<Int > > polMap=thisSelection.getPolMap();
+  std::map<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
   Vector<Int> allDDIDList;
   if (ddIDList.nelements() == 0) allDDIDList = spwDDIDList;
   else if (spwDDIDList.nelements() == 0) allDDIDList = ddIDList;

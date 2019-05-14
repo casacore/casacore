@@ -28,6 +28,10 @@
 #ifndef CASA_HASHMAP_H
 #define CASA_HASHMAP_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "HashMap.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>

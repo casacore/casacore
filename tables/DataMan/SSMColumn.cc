@@ -223,6 +223,11 @@ void SSMColumn::getuIntV (uInt aRowNr, uInt* aValue)
   getValue(aRowNr);
   *aValue = static_cast<uInt*>(itsData)[aRowNr-columnCache().start()];
 }
+void SSMColumn::getInt64V (uInt aRowNr, Int64* aValue)
+{
+  getValue(aRowNr);
+  *aValue = static_cast<Int64*>(itsData)[aRowNr-columnCache().start()];
+}
 void SSMColumn::getfloatV (uInt aRowNr, float* aValue)
 {
   getValue(aRowNr);
@@ -373,6 +378,14 @@ void SSMColumn::putuIntV (uInt aRowNr, const uInt* aValue)
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
     static_cast<uInt*>(itsData)[aRowNr-columnCache().start()] = 
+      *aValue;
+  }
+}
+void SSMColumn::putInt64V (uInt aRowNr, const Int64* aValue)
+{
+  putValue(aRowNr,aValue);
+  if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
+    static_cast<Int64*>(itsData)[aRowNr-columnCache().start()] = 
       *aValue;
   }
 }
@@ -528,6 +541,14 @@ void SSMColumn::getScalarColumnuIntV     (Vector<uInt>* aDataPtr)
   aDataPtr->putStorage(anArray,deleteIt);
 }
 
+void SSMColumn::getScalarColumnInt64V    (Vector<Int64>* aDataPtr)
+{
+  Bool deleteIt;
+  Int64* anArray=aDataPtr->getStorage(deleteIt);
+  getColumnValue(anArray,aDataPtr->nelements());
+  aDataPtr->putStorage(anArray,deleteIt);
+}
+
 void SSMColumn::getScalarColumnfloatV    (Vector<float>* aDataPtr)
 {
   Bool deleteIt;
@@ -631,6 +652,14 @@ void SSMColumn::putScalarColumnuIntV     (const Vector<uInt>* aDataPtr)
 {
   Bool deleteIt;
   const uInt* anArray=aDataPtr->getStorage(deleteIt);
+  putColumnValue(anArray,aDataPtr->nelements());
+  aDataPtr->freeStorage(anArray,deleteIt);
+}
+
+void SSMColumn::putScalarColumnInt64V    (const Vector<Int64>* aDataPtr)
+{
+  Bool deleteIt;
+  const Int64* anArray=aDataPtr->getStorage(deleteIt);
   putColumnValue(anArray,aDataPtr->nelements());
   aDataPtr->freeStorage(anArray,deleteIt);
 }

@@ -156,7 +156,7 @@ try {
    }
     delete pIm;
 
-} catch (AipsError x) {
+} catch (AipsError& x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      cout << "FAIL" << endl;
      return 1;

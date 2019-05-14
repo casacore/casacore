@@ -253,6 +253,7 @@ STMANCOLUMNAIPSIO_GETPUT(Short,ShortV)
 STMANCOLUMNAIPSIO_GETPUT(uShort,uShortV)
 STMANCOLUMNAIPSIO_GETPUT(Int,IntV)
 STMANCOLUMNAIPSIO_GETPUT(uInt,uIntV)
+STMANCOLUMNAIPSIO_GETPUT(Int64,Int64V)
 STMANCOLUMNAIPSIO_GETPUT(float,floatV)
 STMANCOLUMNAIPSIO_GETPUT(double,doubleV)
 STMANCOLUMNAIPSIO_GETPUT(Complex,ComplexV)
@@ -352,6 +353,9 @@ void StManColumnAipsIO::deleteData (void* datap, Bool byPtr)
 	case TpUInt:
 	    delete [] (uInt*)datap;
 	    break;
+	case TpInt64:
+	    delete [] (Int64*)datap;
+	    break;
 	case TpFloat:
 	    delete [] (float*)datap;
 	    break;
@@ -406,6 +410,9 @@ void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
 	case TpUInt:
 	    datap = new uInt[nrval];
 	    break;
+	case TpInt64:
+	    datap = new Int64[nrval];
+	    break;
 	case TpFloat:
 	    datap = new float[nrval];
 	    break;
@@ -456,6 +463,9 @@ void StManColumnAipsIO::removeData (void* dp, uInt inx, uInt nrvalAfter)
 	break;
     case TpUInt:
 	objmove (((uInt*)dp) + inx,   ((uInt*)dp) + inx+1,  nrvalAfter-inx);
+	break;
+    case TpInt64:
+	objmove (((Int64*)dp) + inx,  ((Int64*)dp) + inx+1, nrvalAfter-inx);
 	break;
     case TpFloat:
 	objmove (((float*)dp) + inx,  ((float*)dp) + inx+1, nrvalAfter-inx);
@@ -518,6 +528,9 @@ void StManColumnAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 	break;
     case TpUInt:
 	ios.put (nrval, (uInt*)dp);
+	break;
+    case TpInt64:
+	ios.put (nrval, (Int64*)dp);
 	break;
     case TpFloat:
 	ios.put (nrval, (float*)dp);
@@ -594,6 +607,9 @@ void StManColumnAipsIO::getData (void* datap, uInt inx, uInt nrval,
 	break;
     case TpUInt:
 	ios.get (nrval, (uInt*)datap + inx);
+	break;
+    case TpInt64:
+	ios.get (nrval, (Int64*)datap + inx);
 	break;
     case TpFloat:
 	ios.get (nrval, (float*)datap + inx);

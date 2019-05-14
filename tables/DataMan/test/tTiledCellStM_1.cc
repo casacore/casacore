@@ -105,7 +105,7 @@ int main (int argc, const char* argv[])
 #ifdef PABLO_IO
         closePablo();
 #endif
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

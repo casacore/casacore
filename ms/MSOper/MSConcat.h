@@ -57,9 +57,6 @@ template <class T> class Block;
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
 // </prerequisite>
 //
 // <etymology>
@@ -74,20 +71,7 @@ template <class T> class Block;
 // <motivation>
 // </motivation>
 //
-// <templating arg=T>
-//    <li>
-//    <li>
-// </templating>
-//
-// <thrown>
-//    <li>
-//    <li>
-// </thrown>
-//
 // <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
 // </todo>
 
 class MSConcat: public MSColumns
@@ -100,16 +84,16 @@ public:
 		     const String& obsidAndScanTableName="");
 
   void concatenate(const MeasurementSet& otherMS,
-		   const uInt handling=0,   // 0 (default): complete concat of all tables
-                                            // 1 : don't concatenate the MAIN table
-                                            // 2 : don't concatenate the POINTING table
-                                            // 3 : neither concat MAIN nor POINTING table
-                   const String& destMSName=""); // support for virtual concat
+		   const uInt handling=0,   //# 0 (default): complete concat of all tables
+                                            //# 1 : don't concatenate the MAIN table
+                                            //# 2 : don't concatenate the POINTING table
+                                            //# 3 : neither concat MAIN nor POINTING table
+                   const String& destMSName=""); //# support for virtual concat
 
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
   void setWeightScale(const Float weightScale); 
-  void setRespectForFieldName(const Bool respectFieldName); // If True, fields of same direction are not merged
-                                                            // if their name is different
+  void setRespectForFieldName(const Bool respectFieldName); //# If True, fields of same direction are not merged
+                                                            //# if their name is different
 
 private:
   MSConcat();
@@ -126,7 +110,7 @@ private:
   Bool copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAndIndices);
   Bool copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAndIndices);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
-                             // by default remove redundant observation table rows
+                             //# by default remove redundant observation table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
   Block<uInt> copyState(const MSState& otherState);
@@ -155,13 +139,13 @@ private:
   Float itsWeightScale;
   Bool itsRespectForFieldName;
   Vector<Bool> itsChanReversed;
-  SimpleOrderedMap <Int, Int> newSourceIndex_p;
-  SimpleOrderedMap <Int, Int> newSourceIndex2_p;
-  SimpleOrderedMap <Int, Int> newSPWIndex_p;
-  SimpleOrderedMap <Int, Int> newObsIndexA_p;
-  SimpleOrderedMap <Int, Int> newObsIndexB_p;
-  SimpleOrderedMap <Int, Int> otherObsIdsWithCounterpart_p;
-  SimpleOrderedMap <Int, Int> solSystObjects_p;
+  std::map <Int, Int> newSourceIndex_p;
+  std::map <Int, Int> newSourceIndex2_p;
+  std::map <Int, Int> newSPWIndex_p;
+  std::map <Int, Int> newObsIndexA_p;
+  std::map <Int, Int> newObsIndexB_p;
+  std::map <Int, Int> otherObsIdsWithCounterpart_p;
+  std::map <Int, Int> solSystObjects_p;
 
   Bool doSource_p;
   Bool doSource2_p;
@@ -198,7 +182,12 @@ Bool areEQ(const ROArrayColumn<T>& col, uInt row_i, uInt row_j)
   return rval;
 }
 
-
+inline Int getMapValue (const std::map<Int,Int>& m, Int k)
+{
+  auto iter = m.find(k);
+  return (iter == m.end()  ?  -1 : iter->second);
+}
+  
 
 } //# NAMESPACE CASACORE - END
 

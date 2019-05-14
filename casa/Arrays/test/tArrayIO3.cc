@@ -82,7 +82,7 @@ int main()
 	cout << "--------------------------------------" << endl;
 	ins >> as;
 	cout << as << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
     } 

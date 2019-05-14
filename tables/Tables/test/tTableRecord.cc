@@ -103,12 +103,12 @@ void doDefineAssign (const TableRecord& inrecord)
 			     stringToVector ("abc,dghij,klmn")));
     try {
 	*rfstr2 = stringToVector ("abc");
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;           // incorrect shape
     } 
     try {
 	*rfstr3 = stringToVector ("abc");
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;           // incorrect shape
     } 
     record.get (record.fieldNumber ("TpArrayString2"), vec);
@@ -120,12 +120,12 @@ void doDefineAssign (const TableRecord& inrecord)
 
     try {
 	*rfstr2 = stringToVector ("abc");
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;           // incorrect shape
     } 
     try {
 	*rfstr3 = stringToVector ("abc");
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;           // incorrect shape
     } 
     record.get (record.fieldNumber ("TpArrayString2"), vec);
@@ -137,7 +137,7 @@ void doDefineAssign (const TableRecord& inrecord)
 
     try {
 	rfstr2.define (stringToVector ("abc"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;           // incorrect shape
     } 
     rfstr3.define (stringToVector ("a"));
@@ -171,7 +171,7 @@ void doDefineAssign (const TableRecord& inrecord)
 
     try {
         record.define ("TpBool", Vector<Bool>(2, False));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << x.getMesg() << endl;
     } 
 }
@@ -217,7 +217,7 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
     if (doExcp) {
 	try {
 	    record1 = record;
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << ">>> Instance-specific assertion error message:" << endl;
 	    cout << x.getMesg() << endl;           // not conforming
 	    cout << "<<<" << endl;
@@ -290,24 +290,24 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record.define ("", (Int)0);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // empty name
 	} 
 	try {
 	    record.define ("aB", (Int)0);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // first no uppercase
 	} 
 	extraArgument = 10;
 	try {
 	    record.define ("A", (Int)0);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // extra argument = 10
 	} 
 	extraArgument = 0;
 	try {
 	    record.define ("TpShort", (Int)0);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // invalid type
 	} 
     }
@@ -379,7 +379,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record2a.restructure(subDesc);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;  // fixed, not empty ->impossible
 	} 
     }
@@ -389,7 +389,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record2a = record2b;
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << ">>> Instance-specific assertion error message:" << endl;
 	    cout << x.getMesg() << endl;  // fixed; non-conforming
 	    cout << "<<<" << endl;
@@ -463,7 +463,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    RecordFieldPtr<Record> fld(record, "SubRecord");
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // invalid type
 	} 
     }
@@ -774,12 +774,12 @@ void testTable (Bool doExcp)
     if (doExcp) {
 	try {
 	    rec1.defineTable (rec1.fieldNumber("tab1"), tab2);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // non-conforming
 	} 
 	try {
 	    RecordFieldPtr<Table> fld1 (rec1, "tab1");
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;           // invalid type
 	} 
     }    
@@ -916,7 +916,7 @@ int main (int argc, const char*[])
 	doIt ( (argc<2));
 	testTable ( (argc<2));
 	testTable2 ( (argc<2));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

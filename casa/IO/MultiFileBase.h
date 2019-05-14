@@ -46,17 +46,47 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // <summary>
-  // Helper class for MultiFileBase containing info per internal file
+  // Helper class for MultiFileInfo holding a data buffer
   // </summary>
+  // <synopsis>
+  // The buffer can be allocated with posix_memalign (for O_DIRECT support).
+  // Hence the memory must be freed using free, which makes it impossible
+  // to use a shared_ptr to that memory. Hence it is encapsulated in this class.
+  // </synopsis>
+  struct MultiFileBuffer {
+    MultiFileBuffer (size_t bufSize, Bool useODirect);
+    ~MultiFileBuffer()
+      { if (data) free (data); }
+    // Data member
+    char* data;
+  private:
+    MultiFileBuffer (const MultiFileBuffer&);
+    MultiFileBuffer& operator= (const MultiFileBuffer&);
+  };
+
+  // <summary>
+  // Helper class for MultiFileBase containing info per internal file.
+  // </summary>
+  // <synopsis>
+  // This struct defines the various fields describing a logical file in a
+  // class derived from MultiFileBase (such as MultiFile or MultiHDF5).
+  // </synopsis>
   // <use visibility=local>
   struct MultiFileInfo {
-    explicit MultiFileInfo (Int64 bufSize=0);
+    // Initialize the object and create the buffer with the proper size.
+    // If align>1 (for use of O_DIRECT), the buffer is properly aligned and it
+    // is ensured that its size is a multiple of the alignment.
+    explicit MultiFileInfo (Int64 bufSize=0, Bool useODirect=False);
+    // Allocate the buffer.
+    void allocBuffer (Int64 bufSize, Bool useODirect=False)
+      { buffer = std::shared_ptr<MultiFileBuffer> (new MultiFileBuffer(bufSize, useODirect)); }
+    //# Data members.
     vector<Int64> blockNrs;     // physical blocknrs for this logical file
-    vector<char>  buffer;       // buffer holding a data block
     Int64         curBlock;     // the data block held in buffer (<0 is none)
     Int64         fsize;        // file size (in bytes)
     String        name;         // the virtual file name
     Bool          dirty;        // has data in buffer been changed?
+    std::shared_ptr<MultiFileBuffer> buffer;       // buffer holding a data block
     CountedPtr<HDF5Group> group;
     CountedPtr<HDF5DataSet> dataSet;
   };
@@ -137,7 +167,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a MultiFileBase with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    MultiFileBase (const String& name, Int blockSize=0);
+    // If useODIrect=True, it means that O_DIRECT is used. If the OS does not
+    // support it, the flag will always be False. If True, the data buffers will
+    // have a proper alignment and size (as needed by O_DIRECT).
+    MultiFileBase (const String& name, Int blockSize, Bool useODirect);
 
     // The destructor flushes and closes the file.
     virtual ~MultiFileBase();
@@ -185,6 +218,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool isWritable() const
       { return itsWritable; }
 
+    // Will O_DIRECT be used?
+    Bool useODirect() const
+      { return itsUseODirect; }
+    
     // Get the block size used.
     Int64 blockSize() const
       { return itsBlockSize; }
@@ -207,7 +244,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   private:
     void writeDirty (MultiFileInfo& info)
     {
-      writeBlock (info, info.curBlock, &(info.buffer[0]));
+      writeBlock (info, info.curBlock, info.buffer->data);
       info.dirty = False;
     }
 
@@ -243,8 +280,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int64  itsNrBlock;    // The total nr of blocks actually used
     Int64  itsHdrCounter; // Counter of header changes
     vector<MultiFileInfo> itsInfo;
-    Bool                  itsWritable; // Is the file writable?
-    Bool                  itsChanged; // Has header info changed since last flush?
+    std::shared_ptr<MultiFileBuffer> itsBuffer;  
+    Bool                  itsUseODirect; // use O_DIRECT?
+    Bool                  itsWritable;   // Is the file writable?
+    Bool                  itsChanged;    // Has header info changed since last flush?
     vector<Int64>         itsFreeBlocks;
   };
 

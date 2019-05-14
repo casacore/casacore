@@ -28,7 +28,7 @@
 #include <casacore/tables/DataMan/SSMBase.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Containers/BlockIO.h>
-#include <casacore/casa/Containers/SimOrdMapIO.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/Utilities/BinarySearch.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -42,7 +42,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 
 : itsSSMPtr           (aSSMPtr),
   itsNUsed            (0),
-  itsFreeSpace        (0),
   itsRowsPerBucket    (rowsPerBucket),
   itsNrColumns        (0)
 {  
@@ -89,10 +88,12 @@ void SSMIndex::showStatistics (ostream& anOs) const
 	   << " - LastRow["<<i<<"]   : " << itsLastRow[i] << endl;
     }
 
-    anOs << "Freespace entries: " << itsFreeSpace.ndefined() << endl;
-    for (uInt i=0;i < itsFreeSpace.ndefined(); i++) {
-      anOs << "Offset["<<i<<"]: " << itsFreeSpace.getKey(i) <<
-	"  -  nrBytes["<<i<<"]: " << itsFreeSpace.getVal(i) << endl;
+    anOs << "Freespace entries: " << itsFreeSpace.size() << endl;
+    Int i=0;
+    for (const auto& x : itsFreeSpace) {
+      anOs << "Offset["<<i<<"]: " << x.first <<
+	"  -  nrBytes["<<i<<"]: " << x.second << endl;
+      i++;
     }
   }
   anOs << endl;
@@ -104,7 +105,7 @@ void SSMIndex::setNrColumns (Int aNrColumns, uInt aSizeUsed)
   // Determine if there is some free space left at the end of the bucket.
   Int nfree = itsSSMPtr->getBucketSize()-aSizeUsed;
   if (nfree > 0) {
-    itsFreeSpace.define (aSizeUsed, nfree);
+    itsFreeSpace.insert (std::make_pair(aSizeUsed, nfree));
   }
 }
 
@@ -228,23 +229,30 @@ Int SSMIndex::removeColumn (Int anOffset, uInt nbits)
 {
   // set freespace (total in bytes).
   uInt aLength = (itsRowsPerBucket * nbits + 7) / 8;
-  itsFreeSpace.define(anOffset,aLength);
+  itsFreeSpace.insert (std::make_pair(anOffset,aLength));
  
   itsNrColumns--;
   AlwaysAssert (itsNrColumns > -1, AipsError);
   
-  uInt i=0;
-  while (i < itsFreeSpace.ndefined()-1) {
-    // See if space can be combined
-    // That is possible if this and the next entry are adjacent.
-    Int aK = itsFreeSpace.getKey(i);
-    Int aV = itsFreeSpace.getVal(i);
-    if (aK+aV == itsFreeSpace.getKey(i+1) ) {
-      aV += itsFreeSpace.getVal(i+1);
-      itsFreeSpace.remove(itsFreeSpace.getKey(i+1));
-      itsFreeSpace.define(aK,aV);
+  // See if space can be combined
+  // That is possible if two or more entries are adjacent.
+  std::map<Int,Int>::iterator next = itsFreeSpace.begin();
+  std::map<Int,Int>::iterator curr = next;
+  next++;
+  while (next != itsFreeSpace.end()) {
+    Int aK = curr->first;
+    Int aV = curr->second;
+    if (aK+aV == next->first) {
+      // Adjacent; combine current with next by adding its free space.
+      curr->second += next->second;
+      // Remove next such that the iterator is still valid.
+      // Thus first increment, then erase.
+      std::map<Int,Int>::iterator nextsav = next;
+      ++next;
+      itsFreeSpace.erase (nextsav);
     } else {
-      i++;
+      curr = next;
+      ++next;
     }
   }
   return (itsNrColumns);
@@ -269,17 +277,16 @@ Int SSMIndex::getFree (Int& anOffset, uInt nbits) const
   Int bestLength = -1;
   
   // try to find if there's a place to (best) fit data with a given length
-  for (uInt i=0; i < itsFreeSpace.ndefined(); i++) {
-    
-    Int aV = itsFreeSpace.getVal(i);
+  for (const auto& x : itsFreeSpace) {
+    Int aV = x.second;
     if (aV == aLength) {
-      anOffset = itsFreeSpace.getKey(i);
+      anOffset = x.first;
       //Perfect fit found, don't need to continue
       return(0);
     }
     if (aV >= aLength  &&  (aV < bestLength  ||  bestLength == -1)) {
       bestLength = aV;
-      anOffset = itsFreeSpace.getKey(i);
+      anOffset = x.first;
     }
   }
   if (bestLength == -1) {
@@ -292,15 +299,15 @@ Int SSMIndex::getFree (Int& anOffset, uInt nbits) const
 void SSMIndex::addColumn (Int anOffset, uInt nbits)
 {
   Int aLength = (itsRowsPerBucket * nbits + 7) / 8;
-  Int aV = itsFreeSpace(anOffset);
+  Int aV = itsFreeSpace.at(anOffset);
   itsNrColumns++;
-  itsFreeSpace.remove(anOffset);
+  itsFreeSpace.erase(anOffset);
   if (aLength != aV) {
     DebugAssert (aLength < aV, AipsError);
     // more space then needed, remap extra space
     Int anO = anOffset + aLength;
     aV -= aLength;
-    itsFreeSpace.define(anO, aV);
+    itsFreeSpace.insert (std::make_pair(anO, aV));
   }
 }
 

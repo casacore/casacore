@@ -97,8 +97,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   storageOpt_p(storageOpt),
   delete_p    (False),
   tdescPtr_p  (0),
-  colSetPtr_p (0),
-  dataManMap_p(static_cast<void*>(0))
+  colSetPtr_p (0)
 {
     //# Copy the table description.
     tdescPtr_p = new TableDesc(tableDescName);
@@ -116,8 +115,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   storageOpt_p(storageOpt),
   delete_p    (False),
   tdescPtr_p  (0),
-  colSetPtr_p (0),
-  dataManMap_p(static_cast<void*>(0))
+  colSetPtr_p (0)
 {
     //# Read the table description.
     tdescPtr_p = new TableDesc(tableDesc, "", "", TableDesc::Scratch);
@@ -178,14 +176,18 @@ DataManager* SetupNewTableRep::getDataManager (const DataManager& dataMan)
     //# However, it is possible that the original was a temporary and
     //# that another original is allocated at the same address.
     //# So also test if the original is indeed cloned.
-    DataManager* dmp = (DataManager*) (dataManMap_p((void*)&dataMan));
+    DataManager* dmp = 0;
+    std::map<void*,void*>::iterator iter = dataManMap_p.find((void*)&dataMan);
+    if (iter != dataManMap_p.end()) {
+        dmp = static_cast<DataManager*>(iter->second);
+    }
     if (dmp == 0  ||  dataMan.getClone() == 0) {
 	//# Not cloned yet, so clone it.
 	//# Add it to the map in the ColumnSet object.
 	//# Tell the original object that it has been cloned.
 	dmp = dataMan.clone();
 	colSetPtr_p->addDataManager (dmp);
-	dataManMap_p((void*)&dataMan) = dmp;
+	dataManMap_p[(void*)&dataMan] = dmp;
 	dataMan.setClone (dmp);
     }
     return dmp;

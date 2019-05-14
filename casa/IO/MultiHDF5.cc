@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiHDF5::MultiHDF5 (const String& name, ByteIO::OpenOption option,
                         Int blockSize)
-    : MultiFileBase (name, blockSize),
+    : MultiFileBase (name, blockSize, False),     //# no O_DIRECT in HDF5
       itsFile       (itsName, option)
   {
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {

@@ -58,7 +58,7 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     if len(argv) < 3:
-        print sys.stderr, 'run as:   floatcheck.py file1 file2 [tolerance]'
+        sys.stderr.write ('run as:   floatcheck.py file1 file2 [tolerance]\n')
         return 1
     tol = 1e-5;
     if len(argv) > 3:

@@ -200,6 +200,9 @@ public:
     // get a set of intents corresponding to a specified field
     std::set<String> getIntentsForField(Int fieldID);
 
+    // get a set of intents corresponding to a specified field name
+    std::set<String> getIntentsForField(String field);
+
     // get a set of intents corresponding to the specified spectral window
     std::set<String> getIntentsForSpw(const uInt spw);
 
@@ -414,7 +417,8 @@ public:
     // get the field IDs for the specified field name. Case insensitive.
     std::set<Int> getFieldIDsForField(const String& field) const;
     
-    // get a list of the field names in the order in which they appear in the FIELD table.
+    // get a list of the field names in the order in which they appear in the
+    // FIELD table.
     vector<String> getFieldNames() const;
 
     // get field IDs associated with the specified scan number.

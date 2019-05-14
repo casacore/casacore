@@ -44,7 +44,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 		      Vector<Float> *refPixel,
 		      Vector<Float> *refLocation,
 		      Vector<Float> *delta,
-		      Map<String, Double> *keywords,
+		      std::map<String, Double> *keywords,
                       String *objectName)
 {
     Array<Float> data;
@@ -115,7 +115,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
 	       const Vector<Float> *refPixel,
 	       const Vector<Float> *refLocation,
 	       const Vector<Float> *delta,
-	       const Map<String, double> *keywords,
+	       const std::map<String, double> *keywords,
                const char *objectName,
 	       Int BITPIX, Float minPix, Float maxPix)
 {
@@ -196,19 +196,15 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
 	}
     }
     if (keywords) {
-	ConstMapIter<String, Double> keyiter(keywords);
-	String key;
-	Double val;
-	while (! keyiter.atEnd()) {
-	    key = keyiter.getKey();
-	    val = keyiter.getVal();
+        for (const auto& elem : *keywords) {
+            String key (elem.first);
+	    Double val (elem.second);
 	    // FITS requires upper case, length=8 (or less) keywords
 	    key.upcase();
 	    if (key.length() > 8) {
 		key = key.at(0,8);
 	    }
 	    kw.mk(key.chars(), val);
-	    ++keyiter;
 	}
     }
     if (objectName) {

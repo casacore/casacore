@@ -129,6 +129,11 @@ void ColumnsIndex::deleteObjects()
       delete (RecordFieldPtr<uInt>*)(itsUpperFields[i]);
       delete (Vector<uInt>*)(itsDataVectors[i]);
       break;
+    case TpInt64:
+      delete (RecordFieldPtr<Int64>*)(itsLowerFields[i]);
+      delete (RecordFieldPtr<Int64>*)(itsUpperFields[i]);
+      delete (Vector<Int64>*)(itsDataVectors[i]);
+      break;
     case TpFloat:
       delete (RecordFieldPtr<Float>*)(itsLowerFields[i]);
       delete (RecordFieldPtr<Float>*)(itsUpperFields[i]);
@@ -261,6 +266,13 @@ void ColumnsIndex::makeObjects (const RecordDesc& description)
       itsDataVectors[i] = new Vector<uInt>;
       break;
     }
+    case TpInt64:
+    {
+      itsLowerFields[i] = new RecordFieldPtr<Int64>(*itsLowerKeyPtr, i);
+      itsUpperFields[i] = new RecordFieldPtr<Int64>(*itsUpperKeyPtr, i);
+      itsDataVectors[i] = new Vector<Int64>;
+      break;
+    }
     case TpFloat:
     {
       itsLowerFields[i] = new RecordFieldPtr<Float>(*itsLowerKeyPtr, i);
@@ -367,6 +379,16 @@ void ColumnsIndex::readData()
       Vector<uInt>* vecptr = (Vector<uInt>*)itsDataVectors[i];
       if (itsColumnChanged[i]) {
 	ScalarColumn<uInt>(itsTable, name).getColumn (*vecptr, True);
+      }
+      itsData[i] = vecptr->getStorage (deleteIt);
+      sort.sortKey (itsData[i], desc.type(i));
+      break;
+    }
+    case TpInt64:
+    {
+      Vector<Int64>* vecptr = (Vector<Int64>*)itsDataVectors[i];
+      if (itsColumnChanged[i]) {
+	ScalarColumn<Int64>(itsTable, name).getColumn (*vecptr, True);
       }
       itsData[i] = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData[i], desc.type(i));
@@ -522,6 +544,17 @@ Int ColumnsIndex::compare (const Block<void*>& fieldPtrs,
     {
       const uInt left = *(*(RecordFieldPtr<uInt>*)(fieldPtrs[i]));
       const uInt right = ((const uInt*)(dataPtrs[i]))[index];
+      if (left < right) {
+	return -1;
+      } else if (left > right) {
+	return 1;
+      }
+      break;
+    }
+    case TpInt64:
+    {
+      const Int64 left = *(*(RecordFieldPtr<Int64>*)(fieldPtrs[i]));
+      const Int64 right = ((const Int64*)(dataPtrs[i]))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -721,6 +754,9 @@ void ColumnsIndex::copyKeyField (void* fieldPtr, int dtype, const Record& key)
       break;
     case TpUInt:
       copyKeyField(*(RecordFieldPtr<uInt>*)(fieldPtr), key);
+      break;
+    case TpInt64:
+      copyKeyField(*(RecordFieldPtr<Int64>*)(fieldPtr), key);
       break;
     case TpFloat:
       copyKeyField(*(RecordFieldPtr<Float>*)(fieldPtr), key);

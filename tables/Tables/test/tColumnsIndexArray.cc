@@ -122,7 +122,7 @@ void b()
   // Test a not unique index in an erroneous way.
   try {
     colInx9.getRowNumber(found);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;       // values are not unique
   } 
   // Test a range.
@@ -176,7 +176,7 @@ int main()
     a();
     b();
     c();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Exception caught: " << x.getMesg() << endl;
     return 1;
   } 

@@ -36,6 +36,7 @@ namespace casacore {
   template class ArrayColumnDesc<uShort>;
   template class ArrayColumnDesc<Int>;
   template class ArrayColumnDesc<uInt>;
+  template class ArrayColumnDesc<Int64>;
   template class ArrayColumnDesc<Float>;
   template class ArrayColumnDesc<Double>;
   template class ArrayColumnDesc<Complex>;

@@ -228,7 +228,7 @@ LatticeExprNode ImageExprParse::command
 	if (imageExprGramParseCommand(command) != 0) {
 	    throw (AipsError("Parse error in image expression " + str));
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	message = x.getMesg();
 	error = True;
     } 
@@ -596,7 +596,7 @@ LatticeExprNode ImageExprParse::makeIndexinNode (const LatticeExprNode& axis,
 
 LatticeExprNode ImageExprParse::makeLRNode() const
 {
-    // When the name is numeric, we have a temporary lattice number.
+    // If the name is numeric, we have a temporary lattice number.
     // Find it in the block of temporary lattices.
     if (itsType == TpInt) {
         Int latnr = itsIval-1;
@@ -608,13 +608,30 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     }
     // A true name has been given.
     // Split it using : as separator (:: is full separator).
-    // Test if it is a region.
-    Vector<String> names = stringToVector (itsSval, ':');
-    if (names.nelements() != 1) {
-	if ((names.nelements() == 2  &&  names(1).empty())
-	||  (names.nelements() == 3  &&  !names(1).empty()
-         &&  names(2).empty())
-	|| names.nelements() > 3) {
+    // However, ignore if : is escaped with a backslash.
+    std::vector<String> names;
+    int leng = itsSval.length();
+    String part;
+    for (int i=0; i<leng; ++i) {
+	if (itsSval[i] == ':') {
+            // Split at :
+            names.push_back (part);
+            part.clear();
+        } else {
+            if (itsSval[i] == '\\') {
+                i++;
+            }
+            if (i < leng) {
+                part += itsSval[i];
+            }
+        }
+    }
+    // Store last part.
+    names.push_back (part);
+    if (names.size() != 1) {
+	if ((names.size() == 2  &&  names[1].empty())
+	||  (names.size() == 3  &&  !names[1].empty()  &&  names[2].empty())
+	|| names.size() > 3) {
 	    throw (AipsError ("ImageExprParse: '" + itsSval +
 			      "' is an invalid lattice, image, "
 			      "or region name"));
@@ -622,35 +639,35 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     }
     // If 1 element is given, try if it is a lattice or image.
     // If that does not succeed, it'll be tried later as a region.
-    if (names.nelements() == 1) {
+    if (names.size() == 1) {
 	LatticeExprNode node;
-	if (tryLatticeNode (node, addDir(names(0)))) {
-            theirNames.push_back (names(0));
+	if (tryLatticeNode (node, addDir(names[0]))) {
+            theirNames.push_back (names[0]);
 	    return node;
 	}
     }
     // If 2 elements given, it should be an image with a mask name.
-    if (names.nelements() == 2) {
-        theirNames.push_back (names(0));
-        return makeImageNode (addDir(names(0)), names(1));
+    if (names.size() == 2) {
+        theirNames.push_back (names[0]);
+        return makeImageNode (addDir(names[0]), names[1]);
     }
     // One or three elements have been given.
     // If the first one is empty, a table must have been used already.
-    if (names.nelements() == 1) {
+    if (names.size() == 1) {
         if (imageExprParse_hasNoLast()) {
 	    throw (AipsError ("ImageExprParse: '" + itsSval +
 			      "' is an unknown lattice or image "
 			      "or it is an unqualified region"));
 	}
-    } else if (names(0).empty()) {
+    } else if (names[0].empty()) {
         if (imageExprParse_hasNoLast()) {
 	    throw (AipsError ("ImageExprParse: unqualified region '" + itsSval +
 			      "' is used before any table is used"));
 	}
     } else {
 	// The first name is given; see if it is a readable table or HDF5 file.
-        String fileName = addDir(names(0));
-        theirNames.push_back (names(0));
+        String fileName = addDir(names[0]);
+        theirNames.push_back (names[0]);
 	if (Table::isReadable (fileName)) {
 	  Table table (fileName);
 	  theLastTable = table;
@@ -664,14 +681,14 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     }
     // Now try to find the region in the file.
     ImageRegion* regPtr = 0;
-    int index = (names.nelements() == 1  ?  0 : 2);
+    int index = (names.size() == 1  ?  0 : 2);
     if (! theLastTable.isNull()) {
       RegionHandlerTable regHand(getRegionTable, 0);
-      regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
+      regPtr = regHand.getRegion (names[index], RegionHandler::Any, False);
     }
     if (! theLastHDF5.null()) {
       RegionHandlerHDF5 regHand(getRegionHDF5, 0);
-      regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
+      regPtr = regHand.getRegion (names[index], RegionHandler::Any, False);
     }
     if (regPtr == 0) {
       if (index == 0) {
@@ -891,12 +908,13 @@ LatticeExprNode ImageExprParse::makeLitLRNode() const
     // instead of      image.file * pi()
     // However, it forbids the use of pi, e, etc. as a lattice name and
     // may make things unclear. Therefore it is not supported (yet?).
+    // This could be solved by enclosing such a name in quotes, e.g., 'pi'.
 ///    if (itsSval == "pi") {
 ///	return LatticeExprNode (C::pi);
 ///    } else if (itsSval == "e") {
 ///	return LatticeExprNode (C::e);
 ///    }
-    // It is a the name of a constant, so it must be a lattice name.
+    // It is not the name of a constant, so it must be a lattice name.
     return makeLRNode();
 }
 

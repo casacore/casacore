@@ -175,7 +175,7 @@ void doReplicate ()
       try {
          LatticeUtilities::replicate (lat, slice, arr);
          throw(AipsError("replicate unexpectedly did not fail"));
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
          cerr << "Expected error = " << x.getMesg() << endl;
       }
    }

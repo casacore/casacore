@@ -98,7 +98,7 @@ int main ()
             cout << endl;
         }
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << "\nCaught an exception: " << x.getMesg() << endl;
     } 
 

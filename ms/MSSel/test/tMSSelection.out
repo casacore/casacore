@@ -24,8 +24,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -59,8 +59,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -95,8 +95,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -130,8 +130,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -166,8 +166,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -202,8 +202,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -237,8 +237,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -273,8 +273,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -308,8 +308,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -343,8 +343,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -379,8 +379,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -415,8 +415,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -451,8 +451,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -486,8 +486,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -521,8 +521,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -556,8 +556,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -597,8 +597,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -637,8 +637,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -677,8 +677,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -717,8 +717,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -761,8 +761,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -800,8 +800,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -845,8 +845,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -900,8 +900,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -943,8 +943,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -986,8 +986,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1029,8 +1029,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1076,8 +1076,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1126,8 +1126,8 @@ UVE: UVRange Expr=>1000m
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1176,8 +1176,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1222,8 +1222,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX
-	PE: PolMap       = (0,[0])(1,[0])
-	PE: CorrMap      = (0,[[0], [1, 2]])(1,[[0], [0]])
+	PE: PolMap       = {<0,[0]>, <1,[0]>}
+	PE: CorrMap      = {<0,[[0], [1, 2]]>, <1,[[0], [0]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2, 0]
@@ -1268,8 +1268,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1320,8 +1320,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1366,8 +1366,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1412,8 +1412,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1458,8 +1458,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1507,8 +1507,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1553,8 +1553,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1599,8 +1599,8 @@ UVE: UVRange Expr=>1000m:50%
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=XX,YX
-	PE: PolMap       = (0,[0, 2])
-	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+	PE: PolMap       = {<0,[0, 2]>}
+	PE: CorrMap      = {<0,[[0, 2], [1, 2]]>}
 
 ===========================================================
 DDIDs(Poln)  = [1, 2]
@@ -1647,8 +1647,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1690,8 +1690,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []
@@ -1733,8 +1733,8 @@ UVE: UVRange Expr=
 OE: Observation Expr=
 	OE: ObservationIDList    = []
 PE: Poln Expr=
-	PE: PolMap       = 
-	PE: CorrMap      = 
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
 
 ===========================================================
 DDIDs(Poln)  = []

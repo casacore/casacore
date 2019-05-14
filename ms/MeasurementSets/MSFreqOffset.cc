@@ -43,8 +43,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSFreqOffset::MSFreqOffset():hasBeenDestroyed_p(True) { }
 
 MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+  : MSTable<MSFreqOffsetEnums>(tableName, option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,9 +54,8 @@ MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option)
 
 MSFreqOffset::MSFreqOffset(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+  : MSTable<MSFreqOffsetEnums>(tableName, tableDescName, option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -66,9 +65,8 @@ MSFreqOffset::MSFreqOffset(const String& tableName, const String &tableDescName,
 
 MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+  : MSTable<MSFreqOffsetEnums>(newTab, nrrow, initialize),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -77,8 +75,8 @@ MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSFreqOffset::MSFreqOffset(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+  : MSTable<MSFreqOffsetEnums>(table),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,9 +85,8 @@ MSFreqOffset::MSFreqOffset(const Table &table)
 }
 
 MSFreqOffset::MSFreqOffset(const MSFreqOffset &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
-      hasBeenDestroyed_p(False)
+  : MSTable<MSFreqOffsetEnums>(other),
+    hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
@@ -116,66 +113,63 @@ MSFreqOffset::~MSFreqOffset()
 MSFreqOffset& MSFreqOffset::operator=(const MSFreqOffset &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
-	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
+      MSTable<MSFreqOffsetEnums>::operator=(other);
+      hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSFreqOffset::init()
+MSTableMaps MSFreqOffset::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA1
-	colMapDef(ANTENNA1, "ANTENNA1", TpInt,
-		  "Antenna1 id","","");
-	// ANTENNA2
-	colMapDef(ANTENNA2, "ANTENNA2", TpInt,
-		  "Antenna2 id","","");
-	// FEED_ID
-	colMapDef(FEED_ID, "FEED_ID", TpInt,
-		  "Feed id","","");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Time interval","s","");
-	// OFFSET
-	colMapDef(OFFSET, "OFFSET", TpDouble,
-		  "Frequency offset - antenna based","Hz","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
-		  "Spectral window id","","");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Midpoint of interval","s","Epoch");
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // ANTENNA1
+  colMapDef(maps, ANTENNA1, "ANTENNA1", TpInt,
+            "Antenna1 id","","");
+  // ANTENNA2
+  colMapDef(maps, ANTENNA2, "ANTENNA2", TpInt,
+            "Antenna2 id","","");
+  // FEED_ID
+  colMapDef(maps, FEED_ID, "FEED_ID", TpInt,
+            "Feed id","","");
+  // INTERVAL
+  colMapDef(maps, INTERVAL, "INTERVAL", TpDouble,
+            "Time interval","s","");
+  // OFFSET
+  colMapDef(maps, OFFSET, "OFFSET", TpDouble,
+            "Frequency offset - antenna based","Hz","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(maps, SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
+            "Spectral window id","","");
+  // TIME
+  colMapDef(maps, TIME, "TIME", TpDouble,
+            "Midpoint of interval","s","Epoch");
+  
+  // PredefinedKeywords
 
-	// PredefinedKeywords
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  return maps;
 }
 
 	
 MSFreqOffset MSFreqOffset::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MSFreqOffset(MSTable<PredefinedColumns,PredefinedKeywords>::
-		     referenceCopy(newTableName,writableColumns));
+  return MSFreqOffset(MSTable<MSFreqOffsetEnums>::
+                      referenceCopy(newTableName,writableColumns));
 }
 
 

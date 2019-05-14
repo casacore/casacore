@@ -81,7 +81,7 @@ int main (int argc, const char* argv[])
 	e (20);
 	a (nr, 0);
 	f();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -491,12 +491,12 @@ void f()
     //# Try to change some arrays (which cannot be done).
     try {
 	arr1.put (0, vecf);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;         // shape cannot change
     } 
     try {
 	arr7.put (0, vecb);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;         // shape cannot change
     } 
     Vector<Bool> removedRows(20);

@@ -28,6 +28,9 @@
 #ifndef CASA_LIST_H
 #define CASA_LIST_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "List.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
 
 //# Includes
 #include <casacore/casa/aips.h>

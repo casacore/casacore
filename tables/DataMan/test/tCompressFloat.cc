@@ -339,7 +339,7 @@ int main ()
     writeData (True);
     if (! checkData (True)) sts=1;
     testSpeed();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 

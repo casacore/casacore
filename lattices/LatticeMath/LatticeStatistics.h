@@ -636,7 +636,7 @@ private:
        CountedPtr<LattStatsProgress> progressMeter, uInt nsets
    );
 
-   IPosition _cursorShapeForArrayMethod(uInt setSize) const;
+   IPosition _cursorShapeForArrayMethod(uInt64 setSize) const;
 
    void _doComputationUsingArrays(
        std::vector<

@@ -224,9 +224,13 @@ void doInt()
          recs, sum(veci*veci), "sumsqrInt");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gmeanFUNC, expr),
          recs, mean(vecd), "meanInt");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvarianceFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance0FUNC, expr),
+         recs, pvariance(vecd), "varianceInt");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance1FUNC, expr),
          recs, variance(vecd), "varianceInt");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddevFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev0FUNC, expr),
+         recs, pstddev(vecd), "stddevInt");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev1FUNC, expr),
          recs, stddev(vecd), "stddevInt");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::grmsFUNC, expr),
          recs, rms(vecd), "rmsInt");
@@ -263,9 +267,13 @@ void doDouble()
          recs, sum(vecd*vecd), "sumsqrDouble");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gmeanFUNC, expr),
          recs, mean(vecd), "meanDouble");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvarianceFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance0FUNC, expr),
+         recs, pvariance(vecd), "varianceDouble");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance1FUNC, expr),
          recs, variance(vecd), "varianceDouble");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddevFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev0FUNC, expr),
+         recs, pstddev(vecd), "stddevDouble");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev1FUNC, expr),
          recs, stddev(vecd), "stddevDouble");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::grmsFUNC, expr),
          recs, rms(vecd), "rmsDouble");
@@ -359,9 +367,13 @@ void doIntArr()
          recs, sum(veci*veci), "sumsqrInt");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gmeanFUNC, expr),
          recs, mean(vecd), "meanInt");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvarianceFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance0FUNC, expr),
+         recs, pvariance(vecd), "varianceInt");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance1FUNC, expr),
          recs, variance(vecd), "varianceInt");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddevFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev0FUNC, expr),
+         recs, pstddev(vecd), "stddevInt");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev1FUNC, expr),
          recs, stddev(vecd), "stddevInt");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::grmsFUNC, expr),
          recs, rms(vecd), "rmsInt");
@@ -403,9 +415,13 @@ void doDoubleArr()
          recs, sum(vecd*vecd), "sumsqrDouble");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gmeanFUNC, expr),
          recs, mean(vecd), "meanDouble");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvarianceFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance0FUNC, expr),
+         recs, pvariance(vecd), "varianceDouble");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance1FUNC, expr),
          recs, variance(vecd), "varianceDouble");
-  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddevFUNC, expr),
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev0FUNC, expr),
+         recs, pstddev(vecd), "stddevDouble");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev1FUNC, expr),
          recs, stddev(vecd), "stddevDouble");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::grmsFUNC, expr),
          recs, rms(vecd), "rmsDouble");
@@ -442,6 +458,14 @@ void doDComplexArr()
          recs, sum(vecd*vecd), "sumsqrDComplex");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gmeanFUNC, expr),
          recs, mean(vecd), "meanDComplex");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance0FUNC, expr),
+         recs, real(pvariance(vecd)), "varianceDComplex");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gvariance1FUNC, expr),
+         recs, real(variance(vecd)), "varianceDComplex");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev0FUNC, expr),
+         recs, real(pstddev(vecd)), "stddevDComplex");
+  check (TableExprNode::newFunctionNode(TableExprFuncNode::gstddev1FUNC, expr),
+         recs, real(stddev(vecd)), "stddevDComplex");
 }
 
 

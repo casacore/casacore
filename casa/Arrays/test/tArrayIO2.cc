@@ -51,7 +51,7 @@ int main (int argc, const char*[])
 	doBin ( (argc<2));
 	doMat();
 	doVec();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
     } 

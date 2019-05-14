@@ -165,7 +165,7 @@ int main()
       RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
       doIt (reghdf5);
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   } 

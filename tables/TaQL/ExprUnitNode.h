@@ -69,8 +69,8 @@ public:
   // Calculate the conversion factor and return it.
   // It is static to be useful for TableExprNodeArrayFunc as well.
   static Double set (TableExprNodeRep& parent,
-		     const TENShPtr& child,
-		     const Unit& unit);
+                     const TENShPtr& child,
+                     const Unit& unit);
 
   // Create a new node if unit conversion is needed.
   // Otherwise return the current node.
@@ -83,8 +83,8 @@ public:
 
   // Find the unit to be used and adapt the nodes to it.
   static Unit adaptUnits (TENShPtr& node1,
-			  TENShPtr& node2,
-			  TENShPtr& node3);
+                          TENShPtr& node2,
+                          TENShPtr& node3);
 
   // Get the unit factor.
   virtual Double getUnitFactor() const;

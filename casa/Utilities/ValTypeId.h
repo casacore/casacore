@@ -71,6 +71,8 @@ inline String valDataTypeId (const Int* obj)
     { return ValType::getTypeStr (obj); }
 inline String valDataTypeId (const uInt* obj)
     { return ValType::getTypeStr (obj); }
+inline String valDataTypeId (const Int64* obj)
+    { return ValType::getTypeStr (obj); }
 inline String valDataTypeId (const float* obj)
     { return ValType::getTypeStr (obj); }
 inline String valDataTypeId (const double* obj)

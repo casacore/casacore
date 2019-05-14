@@ -71,6 +71,9 @@ void doIt (const String& str)
     case TpUInt:
       cout << expr.getColumnuInt (rownrs);
       break;
+    case TpInt64:
+      cout << expr.getColumnInt64 (rownrs);
+      break;
     case TpFloat:
       cout << expr.getColumnFloat (rownrs);
       break;
@@ -155,7 +158,7 @@ int main (int argc, const char* argv[])
   }
   try {
     doIt(argv[1]);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   } catch (...) {

@@ -31,8 +31,8 @@
 #include <casacore/casa/aips.h>
 //# Would like to forward declare
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Containers/Map.h>
 #include <casacore/fits/FITS/hdu.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -57,7 +57,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 	      Vector<Float> *refPixel,
 	      Vector<Float> *refLocation,
 	      Vector<Float> *delta,
-	      Map<String, Double> *keywords,
+              std::map<String, Double> *keywords,
               String *objectName);
 //</group>
 

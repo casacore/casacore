@@ -656,7 +656,7 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
 //
     // special treatment for SFL projection (see Calabretta & Greisen 2002)
     if(projection_p.type() == Projection::SFL){
-      if (wcs_p.cdelt[1] != 0. && (!wcs_p.altlin&4 || wcs_p.crota[1]==0.) ){
+      if (wcs_p.cdelt[1] != 0. && (!(wcs_p.altlin&4) || wcs_p.crota[1]==0.) ){
 	// Force reference point to lat = 0 if CROTA is not set or is zero
         // to avoid "wcsset_error: Ill-conditioned coordinate transformation parameters"
 	wcs_p.crpix[1] -= tmp[1]/wcs_p.cdelt[1];

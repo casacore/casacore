@@ -33,7 +33,6 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <casacore/ms/MSSel/MSDopplerIndex.h>
@@ -48,6 +47,7 @@
 #include <casacore/tables/Tables/TableRow.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -101,7 +101,7 @@ private:
     MSValidIds itsIds;
 
     // this maps table name to an index used throughout this class
-    SimpleOrderedMap<String, Int> itsTabId;
+    std::map<String, Int> itsTabId;
 
     // the indexes for the NS subtables
     Block<MSTableIndex> itsIndexes;

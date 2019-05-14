@@ -21,7 +21,8 @@ endforeach (src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 
-add_library (casa_casa
+# Define the bfiles to build.
+set (buildfiles
 Arrays/ArrayBase.cc
 Arrays/ArrayError.cc
 Arrays/ArrayOpsDiffShapes.cc
@@ -54,10 +55,7 @@ BasicSL/String.cc
 Containers/Allocator.cc
 Containers/Block.cc
 Containers/Block_tmpl.cc
-Containers/HashMap2.cc
 Containers/IterError.cc
-Containers/List2.cc
-Containers/Map2.cc
 Containers/Record.cc
 Containers/RecordDesc.cc
 Containers/RecordDescRep.cc
@@ -67,8 +65,6 @@ Containers/RecordInterface.cc
 Containers/RecordRep.cc
 Containers/Record2.cc
 Containers/Record2Interface.cc
-Containers/StackError.cc
-Containers/Stack2.cc
 Containers/ValueHolder.cc
 Containers/ValueHolderRep.cc
 Exceptions/Error2.cc
@@ -234,6 +230,19 @@ ${BISON_JsonGram_OUTPUTS}
 ${FLEX_JsonGram_OUTPUTS}
 )
 
+if (BUILD_DEPRECATED)
+    list (APPEND buildfiles
+         Containers/HashMap2.cc
+         Containers/List2.cc
+         Containers/Map2.cc
+         Containers/Stack2.cc
+         Containers/StackError.cc
+    )
+endif ()
+
+add_library (casa_casa ${buildfiles})
+
+
 if (HDF5_FOUND)
     list (APPEND de_libraries ${HDF5_LIBRARIES})
 endif (HDF5_FOUND)
@@ -349,36 +358,11 @@ Containers/Allocator.h
 Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
-Containers/ContainerIO.h
-Containers/HashMap.h
-Containers/HashMap.tcc
-Containers/HashMapIO.h
-Containers/HashMapIO.tcc
-Containers/HashMapIter.h
-Containers/HashMapIter.tcc
 Containers/IterError.h
 Containers/Link.h
 Containers/Link.tcc
-Containers/List.h
-Containers/List.tcc
-Containers/ListIO.h
-Containers/ListIO.tcc
-Containers/Map.h
-Containers/Map.tcc
-Containers/MapIO.h
-Containers/MapIO.tcc
 Containers/ObjectStack.h
 Containers/ObjectStack.tcc
-Containers/OrderedMap.h
-Containers/OrderedMap.tcc
-Containers/OrderedPair.h
-Containers/OrderedPair.tcc
-Containers/OrdMapIO.h
-Containers/OrdMapIO.tcc
-Containers/OrdPairIO.h
-Containers/OrdPairIO.tcc
-Containers/Queue.h
-Containers/Queue.tcc
 Containers/RecordDesc.h
 Containers/RecordDescRep.h
 Containers/RecordField.h
@@ -389,17 +373,47 @@ Containers/RecordFieldWriter.tcc
 Containers/Record.h
 Containers/RecordInterface.h
 Containers/RecordRep.h
-Containers/SimOrdMap.h
-Containers/SimOrdMap.tcc
-Containers/SimOrdMapIO.h
-Containers/SimOrdMapIO.tcc
-Containers/StackError.h
-Containers/Stack.h
-Containers/Stack.tcc
 Containers/ValueHolder.h
 Containers/ValueHolderRep.h
 DESTINATION include/casacore/casa/Containers
 )
+
+if (BUILD_DEPRECATED)
+    install (FILES
+         Containers/HashMap.h
+         Containers/HashMap.tcc
+         Containers/HashMapIO.h
+         Containers/HashMapIO.tcc
+         Containers/HashMapIter.h
+         Containers/HashMapIter.tcc
+         Containers/List.h
+         Containers/List.tcc
+         Containers/ListIO.h
+         Containers/ListIO.tcc
+         Containers/Map.h
+         Containers/Map.tcc
+         Containers/MapIO.h
+         Containers/MapIO.tcc
+         Containers/OrderedMap.h
+         Containers/OrderedMap.tcc
+         Containers/OrdMapIO.h
+         Containers/OrdMapIO.tcc
+         Containers/OrderedPair.h
+         Containers/OrderedPair.tcc
+         Containers/OrdPairIO.h
+         Containers/OrdPairIO.tcc
+         Containers/Queue.h
+         Containers/Queue.tcc
+         Containers/SimOrdMap.h
+         Containers/SimOrdMap.tcc
+         Containers/SimOrdMapIO.h
+         Containers/SimOrdMapIO.tcc
+         Containers/Stack.h
+         Containers/Stack.tcc
+         Containers/StackError.h
+    DESTINATION include/casacore/casa/Containers
+    )
+endif ()
 
 install (FILES
 Exceptions/CasaErrorTools.h
@@ -445,10 +459,7 @@ IO/ConversionIO.h
 IO/FilebufIO.h
 IO/FiledesIO.h
 IO/FileLocker.h
-IO/LargeFilebufIO.h
-IO/LargeFiledesIO.h
 IO/LargeIOFuncDef.h
-IO/LargeRegularFileIO.h
 IO/LECanonicalIO.h
 IO/LockFile.h
 IO/MemoryIO.h

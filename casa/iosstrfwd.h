@@ -33,16 +33,15 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Define the IO system forward declarations for strings (strstream) as well
-// After changeover to sstream, iosfwd takes care of it all.
-// If no strstream classes have to be declared, use <aips/aipsiosfwd.h>
-// instead.
+  // Define the IO system forward declarations for strings (strstream) as well
+  // After changeover to sstream, iosfwd takes care of it all.
+  // If no strstream classes have to be declared, use <aips/aipsiosfwd.h>
+  // instead.
 
-using std::istringstream;
-using std::ostringstream;
+  using std::istringstream;
+  using std::ostringstream;
 
 } //# NAMESPACE CASACORE - END
 

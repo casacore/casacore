@@ -127,7 +127,7 @@ void b(MultiFile* mfile)
 
 void c(MultiFile* mfile)
 {
-    // Do some erronous calls.
+    // Do some erroneous calls.
     Bool flag = False;
     BucketFile file1 ("tBucketFile_tmp.data1", False, 0, False, mfile);
     try {

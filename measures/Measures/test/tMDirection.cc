@@ -114,7 +114,7 @@ int main() {
 		}
 	}
 
-	catch (AipsError x) {
+	catch (AipsError& x) {
 		cout << "tMDirection failed: " << x.getMesg() << endl;
 		return 1;
 	}

@@ -98,7 +98,7 @@ MeasConvert<M>::MeasConvert(const M &ep, typename M::Types mr) :
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(ep);
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -108,7 +108,7 @@ MeasConvert<M>::MeasConvert(const Measure &ep, typename M::Types mr) :
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = ep.clone();
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -130,7 +130,7 @@ MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(typename M::MVType(), mrin);
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -152,7 +152,7 @@ MeasConvert<M>::MeasConvert(typename M::Types mrin,
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(typename M::MVType(), typename M::Ref(mrin));
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -174,7 +174,7 @@ MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M( typename M::MVType(), mrin);
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -196,7 +196,7 @@ MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M( typename M::MVType(), typename M::Ref(mrin));
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -215,31 +215,31 @@ const M &MeasConvert<M>::operator()() {
 template<class M>
 const M &MeasConvert<M>::operator()(Double val) {
   if (unit.empty()) {
-    *locres = WHATEVER_TYPENAME M::MVType(val);
+    *locres = typename M::MVType(val);
   } else {
-    *locres = WHATEVER_TYPENAME M::MVType(Quantity(val,unit));
+    *locres = typename M::MVType(Quantity(val,unit));
   }
   return operator()(*locres);
 }
 
 template<class M>
 const M &MeasConvert<M>::operator()(const Vector<Double> &val) {
-  if (unit.empty()) *locres = WHATEVER_TYPENAME M::MVType(val);
-  else *locres = WHATEVER_TYPENAME M::MVType(Quantum<Vector<Double> >(val,unit));
+  if (unit.empty()) *locres = typename M::MVType(val);
+  else *locres = typename M::MVType(Quantum<Vector<Double> >(val,unit));
   return operator()(*locres);
 }
 
 template<class M>
 const M &MeasConvert<M>::operator()(const Quantum<Double> &val) {
   unit = val.getUnit();
-  *locres = WHATEVER_TYPENAME M::MVType(val);
+  *locres = typename M::MVType(val);
   return operator()(*locres);
 }
 
 template<class M>
 const M &MeasConvert<M>::operator()(const Quantum<Vector<Double> > &val) {
   unit = val.getUnit();
-  *locres = WHATEVER_TYPENAME M::MVType(val);
+  *locres = typename M::MVType(val);
   return operator()(*locres);
 }
 
@@ -299,7 +299,7 @@ template<class M>
 void MeasConvert<M>::clear() {
   delete model; model = 0;
   unit = Unit();
-  outref = WHATEVER_TYPENAME M::Ref();
+  outref = typename M::Ref();
   crout.resize(0, True);
   crtype = 0;
   cvdat->clearConvert();
@@ -354,7 +354,7 @@ void MeasConvert<M>::create() {
     typename M::Types tptmp = static_cast<typename M::Types>(rptmp->getType());
     MeasFrame mftmp = rptmp->getFrame();
     typename M::Ref rtmp(tptmp, mftmp);
-    typename M::Ref mrtmp(*(WHATEVER_TYPENAME M::Ref*)(model->getRefPtr()->
+    typename M::Ref mrtmp(*(typename M::Ref*)(model->getRefPtr()->
 					      offset()->getRefPtr()));
     if (!mrtmp.empty()) {
       M mtmp(*ptmp, mrtmp);
@@ -368,7 +368,7 @@ void MeasConvert<M>::create() {
     typename M::MVType *ptmp =
       (typename M::MVType *)(outref.offset()->getData());
     typename M::Ref rtmp(outref.getType(), outref.getFrame());
-    typename M::Ref mrtmp(*(WHATEVER_TYPENAME M::Ref *)(outref.offset()->getRefPtr()));
+    typename M::Ref mrtmp(*(typename M::Ref *)(outref.offset()->getRefPtr()));
     if (!mrtmp.empty()) {
       M mtmp(*ptmp, mrtmp);
       offout = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
@@ -383,7 +383,7 @@ void MeasConvert<M>::create() {
     ((MeasBase<typename M::MVType, typename M::Ref > *)model)
       ->set(typename M::Ref(M::DEFAULT));
   }
-  if (outref.empty()) outref = WHATEVER_TYPENAME M::Ref(M::DEFAULT);
+  if (outref.empty()) outref = typename M::Ref(M::DEFAULT);
   if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
@@ -433,7 +433,7 @@ void MeasConvert<M>::setOut(const typename M::Ref &mr) {
 
 template<class M>
 void MeasConvert<M>::setOut(typename M::Types mr) {
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
@@ -451,7 +451,7 @@ void MeasConvert<M>::set(const M &val, typename M::Types mr) {
   delete model; model = 0;
   model = new M(val);
   unit = val.unit;
-  outref = WHATEVER_TYPENAME M::Ref(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 

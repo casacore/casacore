@@ -398,7 +398,7 @@ int main()
 	
     };	
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -412,7 +412,7 @@ int main()
         MeasFrame mftbm(tbm);
 	cout << mftbm << endl;
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -819,7 +819,7 @@ int main()
       };
     }
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << x.getMesg() << endl;
     } 
 

@@ -75,7 +75,7 @@ int main ()
 	check (tab2, True);
       }
       testSelect();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

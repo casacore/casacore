@@ -198,13 +198,13 @@ Bool testConcatenateArray (Bool doExcp)
 	    concatenateArray (matrix1, matrix3);
 	    ok = False;             // should not get here
 	    cout << "1st concatenateArray exception not thrown" << endl;
-	} catch (ArrayConformanceError x) {
+	} catch (ArrayConformanceError& x) {
 	} 
 	try {
 	    concatenateArray (matrix1, vector1);
 	    ok = False;             // should not get here
 	    cout << "2nd concatenateArray exception not thrown" << endl;
-	} catch (ArrayConformanceError x) {
+	} catch (ArrayConformanceError& x) {
 	} 
     }
 
@@ -337,13 +337,13 @@ Bool testReorderArray (Bool doExcp)
       reorderArray (Array<Int>(IPosition(2,3,4)), IPosition(2,1,1));
       ok = False;        // should not get here
       cout << "1st reorderArray exception not thrown" << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
     } 
     try {
       reorderArray (Array<Int>(IPosition(2,3,4)), IPosition(2,1,2));
       ok = False;        // should not get here
       cout << "2nd reorderArray exception not thrown" << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
     } 
   }
   return ok;
@@ -490,7 +490,7 @@ int main (int argc, const char*[])
     if (! testReverseArray()) {
     	ok = False;
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     ok = False;
   } 

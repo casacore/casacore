@@ -29,20 +29,12 @@
 #define CASA_ISTREAM_H
 
 //# Define the C standard C++ include file. 
-//# This is an interim solution to cater for the SGI non-existence of
-//# them (e.g. <cstring>)
-
-//# Make sure any special macros are set
 #include <casacore/casa/aips.h>
-//# gcc has no <istream> yet. Change later
-#if defined(__GNUG__)
-#include <casacore/casa/iostream.h>
-#else
 #include <istream>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-using std::istream;
-using std::ws;
+  using std::istream;
+  using std::ws;
 } //# NAMESPACE CASACORE - END
-#endif
 
 #endif

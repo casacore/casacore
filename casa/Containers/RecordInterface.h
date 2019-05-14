@@ -69,7 +69,7 @@ class IPosition;
 // </etymology>
 
 // <synopsis>
-// A Record is an inhomogeneous, hierarchical, collection of named fields. The
+// A Record is an heterogeneous, hierarchical, collection of named fields. The
 // fields may be of scalar type, array type, a Table or a Record. This latter
 // feature is what makes the Record a (potentially) hierarchical type.
 // <p>
@@ -208,7 +208,7 @@ public:
 
     // Destruct the record.
     // All attached RecordFieldPtr objects are notified to detach themselves.
-    ~RecordInterface();
+    virtual ~RecordInterface();
 
     // Make a copy of this object.
     virtual RecordInterface* clone() const = 0;

@@ -126,6 +126,7 @@ public:
     void getArrayuShortV   (uInt rownr, Array<uShort>* dataPtr);
     void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
     void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
+    void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
     void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
     void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
     void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
@@ -143,6 +144,7 @@ public:
     void putArrayuShortV   (uInt rownr, const Array<uShort>* dataPtr);
     void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
     void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
+    void putArrayInt64V    (uInt rownr, const Array<Int64>* dataPtr);
     void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
     void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
     void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);
@@ -160,6 +162,7 @@ public:
     void getSliceuShortV   (uInt rownr, const Slicer&, Array<uShort>* dataPtr);
     void getSliceIntV      (uInt rownr, const Slicer&, Array<Int>* dataPtr);
     void getSliceuIntV     (uInt rownr, const Slicer&, Array<uInt>* dataPtr);
+    void getSliceInt64V    (uInt rownr, const Slicer&, Array<Int64>* dataPtr);
     void getSlicefloatV    (uInt rownr, const Slicer&, Array<float>* dataPtr);
     void getSlicedoubleV   (uInt rownr, const Slicer&, Array<double>* dataPtr);
     void getSliceComplexV  (uInt rownr, const Slicer&, Array<Complex>* dataPtr);
@@ -183,6 +186,8 @@ public:
                             const Array<Int>* dataPtr);
     void putSliceuIntV     (uInt rownr, const Slicer&,
                             const Array<uInt>* dataPtr);
+    void putSliceInt64V    (uInt rownr, const Slicer&,
+                            const Array<Int64>* dataPtr);
     void putSlicefloatV    (uInt rownr, const Slicer&,
                             const Array<float>* dataPtr);
     void putSlicedoubleV   (uInt rownr, const Slicer&,
@@ -205,6 +210,7 @@ public:
     void getArrayColumnuShortV   (Array<uShort>* dataPtr);
     void getArrayColumnIntV      (Array<Int>* dataPtr);
     void getArrayColumnuIntV     (Array<uInt>* dataPtr);
+    void getArrayColumnInt64V    (Array<Int64>* dataPtr);
     void getArrayColumnfloatV    (Array<float>* dataPtr);
     void getArrayColumndoubleV   (Array<double>* dataPtr);
     void getArrayColumnComplexV  (Array<Complex>* dataPtr);
@@ -222,6 +228,7 @@ public:
     void putArrayColumnuShortV   (const Array<uShort>* dataPtr);
     void putArrayColumnIntV      (const Array<Int>* dataPtr);
     void putArrayColumnuIntV     (const Array<uInt>* dataPtr);
+    void putArrayColumnInt64V    (const Array<Int64>* dataPtr);
     void putArrayColumnfloatV    (const Array<float>* dataPtr);
     void putArrayColumndoubleV   (const Array<double>* dataPtr);
     void putArrayColumnComplexV  (const Array<Complex>* dataPtr);

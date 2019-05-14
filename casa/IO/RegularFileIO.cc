@@ -61,7 +61,8 @@ RegularFileIO::~RegularFileIO()
 }
 
 int RegularFileIO::openCreate (const RegularFile& file,
-                               ByteIO::OpenOption option)
+                               ByteIO::OpenOption option,
+                               Bool useODirect)
 {
     const String& name = file.path().expandedName();
     Bool create = False;
@@ -90,16 +91,31 @@ int RegularFileIO::openCreate (const RegularFile& file,
     default:
 	throw (AipsError ("RegularFileIO: unknown open option"));
     }
-    // Open the file.
+    Int stropt_orig = stropt;
+#ifdef HAVE_O_DIRECT
+    if (useODirect) {
+      stropt |= O_DIRECT;
+    }
+#else
+    useODirect = False;
+#endif
+    // Open the file. Try it twice in case O_DIRECT fails.
     int fd;
-    if (create) {
-      fd = trace3OPEN ((char*)name.chars(), stropt, 0666);
-    } else {
-      fd = trace2OPEN ((char*)name.chars(), stropt);
+    for (int i=0; i<2; ++i) {
+      if (create) {
+        fd = trace3OPEN ((char*)name.chars(), stropt, 0666);
+      } else {
+        fd = trace2OPEN ((char*)name.chars(), stropt);
+      }
+      if (fd < 0  &&  useODirect) {
+        stropt = stropt_orig;
+      } else {
+        break;
+      }
     }
     if (fd < 0) {
-	throw (AipsError ("RegularFileIO: error in open or create of file " +
-			  name + ": " + strerror(errno)));
+      throw (AipsError ("RegularFileIO: error in open or create of file " +
+                        name + ": " + strerror(errno)));
     }
     return fd;
 }

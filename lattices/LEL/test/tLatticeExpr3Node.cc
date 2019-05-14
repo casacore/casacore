@@ -154,7 +154,7 @@ int main()
 	if (!doIt(sublat, box2, cir2)) {
 	    ok = False;
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	ok = False;
     } 

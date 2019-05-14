@@ -80,6 +80,7 @@ Bool StManColumn::isNativeDataType (int dtype)
     case TpUShort:
     case TpInt:
     case TpUInt:
+    case TpInt64:
     case TpFloat:
     case TpDouble:
     case TpComplex:
@@ -91,6 +92,7 @@ Bool StManColumn::isNativeDataType (int dtype)
     case TpArrayUShort:
     case TpArrayInt:
     case TpArrayUInt:
+    case TpArrayInt64:
     case TpArrayFloat:
     case TpArrayDouble:
     case TpArrayComplex:
@@ -123,6 +125,9 @@ void StManColumn::getScalarColumnV (void* dataPtr)
 	break;
     case TpUInt:
 	getScalarColumnuIntV ((Vector<uInt>*)dataPtr);
+	break;
+    case TpInt64:
+	getScalarColumnInt64V ((Vector<Int64>*)dataPtr);
 	break;
     case TpFloat:
 	getScalarColumnfloatV ((Vector<float>*)dataPtr);
@@ -165,6 +170,9 @@ void StManColumn::putScalarColumnV (const void* dataPtr)
 	break;
     case TpUInt:
 	putScalarColumnuIntV ((const Vector<uInt>*)dataPtr);
+	break;
+    case TpInt64:
+	putScalarColumnInt64V ((const Vector<Int64>*)dataPtr);
 	break;
     case TpFloat:
 	putScalarColumnfloatV ((const Vector<float>*)dataPtr);
@@ -209,6 +217,9 @@ void StManColumn::getScalarColumnCellsV (const RefRows& rownrs,
     case TpUInt:
 	getScalarColumnCellsuIntV (rownrs, (Vector<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getScalarColumnCellsInt64V (rownrs, (Vector<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getScalarColumnCellsfloatV (rownrs, (Vector<float>*)dataPtr);
 	break;
@@ -252,6 +263,9 @@ void StManColumn::putScalarColumnCellsV (const RefRows& rownrs,
     case TpUInt:
 	putScalarColumnCellsuIntV (rownrs, (const Vector<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	putScalarColumnCellsInt64V (rownrs, (const Vector<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	putScalarColumnCellsfloatV (rownrs, (const Vector<float>*)dataPtr);
 	break;
@@ -288,6 +302,8 @@ uInt StManColumn::getBlockV (uInt rownr, uInt nrmax, void* dataPtr)
 	return getBlockIntV (rownr, nrmax, (Int*)dataPtr);
     case TpUInt:
 	return getBlockuIntV (rownr, nrmax, (uInt*)dataPtr);
+    case TpInt64:
+	return getBlockInt64V (rownr, nrmax, (Int64*)dataPtr);
     case TpFloat:
 	return getBlockfloatV (rownr, nrmax, (float*)dataPtr);
     case TpDouble:
@@ -326,6 +342,9 @@ void StManColumn::putBlockV (uInt rownr, uInt nrmax, const void* dataPtr)
 	break;
     case TpUInt:
 	putBlockuIntV (rownr, nrmax, (const uInt*)dataPtr);
+	break;
+    case TpInt64:
+	putBlockInt64V (rownr, nrmax, (const Int64*)dataPtr);
 	break;
     case TpFloat:
 	putBlockfloatV (rownr, nrmax, (const float*)dataPtr);
@@ -369,6 +388,9 @@ void StManColumn::getArrayV (uInt rownr, void* dataPtr)
     case TpUInt:
 	getArrayuIntV (rownr, (Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getArrayInt64V (rownr, (Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getArrayfloatV (rownr, (Array<float>*)dataPtr);
 	break;
@@ -410,6 +432,9 @@ void StManColumn::putArrayV (uInt rownr, const void* dataPtr)
 	break;
     case TpUInt:
 	putArrayuIntV (rownr, (const Array<uInt>*)dataPtr);
+	break;
+    case TpInt64:
+	putArrayInt64V (rownr, (const Array<Int64>*)dataPtr);
 	break;
     case TpFloat:
 	putArrayfloatV (rownr, (const Array<float>*)dataPtr);
@@ -453,6 +478,9 @@ void StManColumn::getSliceV (uInt rownr, const Slicer& ns, void* dataPtr)
     case TpUInt:
 	getSliceuIntV (rownr, ns, (Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getSliceInt64V (rownr, ns, (Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getSlicefloatV (rownr, ns, (Array<float>*)dataPtr);
 	break;
@@ -494,6 +522,9 @@ void StManColumn::putSliceV (uInt rownr, const Slicer& ns, const void* dataPtr)
 	break;
     case TpUInt:
 	putSliceuIntV (rownr, ns, (const Array<uInt>*)dataPtr);
+	break;
+    case TpInt64:
+	putSliceInt64V (rownr, ns, (const Array<Int64>*)dataPtr);
 	break;
     case TpFloat:
 	putSlicefloatV (rownr, ns, (const Array<float>*)dataPtr);
@@ -537,6 +568,9 @@ void StManColumn::getArrayColumnV (void* dataPtr)
     case TpUInt:
 	getArrayColumnuIntV ((Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getArrayColumnInt64V ((Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getArrayColumnfloatV ((Array<float>*)dataPtr);
 	break;
@@ -578,6 +612,9 @@ void StManColumn::putArrayColumnV (const void* dataPtr)
 	break;
     case TpUInt:
 	putArrayColumnuIntV ((const Array<uInt>*)dataPtr);
+	break;
+    case TpInt64:
+	putArrayColumnInt64V ((const Array<Int64>*)dataPtr);
 	break;
     case TpFloat:
 	putArrayColumnfloatV ((const Array<float>*)dataPtr);
@@ -622,6 +659,9 @@ void StManColumn::getArrayColumnCellsV (const RefRows& rownrs,
     case TpUInt:
 	getArrayColumnCellsuIntV (rownrs, (Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getArrayColumnCellsInt64V (rownrs, (Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getArrayColumnCellsfloatV (rownrs, (Array<float>*)dataPtr);
 	break;
@@ -665,6 +705,9 @@ void StManColumn::putArrayColumnCellsV (const RefRows& rownrs,
     case TpUInt:
 	putArrayColumnCellsuIntV (rownrs, (const Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	putArrayColumnCellsInt64V (rownrs, (const Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	putArrayColumnCellsfloatV (rownrs, (const Array<float>*)dataPtr);
 	break;
@@ -707,6 +750,9 @@ void StManColumn::getColumnSliceV (const Slicer& ns, void* dataPtr)
     case TpUInt:
 	getColumnSliceuIntV (ns, (Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getColumnSliceInt64V (ns, (Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getColumnSlicefloatV (ns, (Array<float>*)dataPtr);
 	break;
@@ -748,6 +794,9 @@ void StManColumn::putColumnSliceV (const Slicer& ns, const void* dataPtr)
 	break;
     case TpUInt:
 	putColumnSliceuIntV (ns, (const Array<uInt>*)dataPtr);
+	break;
+    case TpInt64:
+	putColumnSliceInt64V (ns, (const Array<Int64>*)dataPtr);
 	break;
     case TpFloat:
 	putColumnSlicefloatV (ns, (const Array<float>*)dataPtr);
@@ -792,6 +841,9 @@ void StManColumn::getColumnSliceCellsV (const RefRows& rownrs,
     case TpUInt:
 	getColumnSliceCellsuIntV (rownrs, ns, (Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	getColumnSliceCellsInt64V (rownrs, ns, (Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	getColumnSliceCellsfloatV (rownrs, ns, (Array<float>*)dataPtr);
 	break;
@@ -835,6 +887,9 @@ void StManColumn::putColumnSliceCellsV (const RefRows& rownrs,
     case TpUInt:
 	putColumnSliceCellsuIntV (rownrs, ns, (const Array<uInt>*)dataPtr);
 	break;
+    case TpInt64:
+	putColumnSliceCellsInt64V (rownrs, ns, (const Array<Int64>*)dataPtr);
+	break;
     case TpFloat:
 	putColumnSliceCellsfloatV (rownrs, ns, (const Array<float>*)dataPtr);
 	break;
@@ -858,11 +913,8 @@ void StManColumn::putColumnSliceCellsV (const RefRows& rownrs,
 }
 
 
-void StManColumn::throwGetArray() const
-    { throw (DataManInvOper ("StManColumn::getArray not possible"
-                             " for column " + columnName())); }
-void StManColumn::throwPutArray() const
-    { throw (DataManInvOper ("StManColumn::putArray not possible"
+void StManColumn::throwInvalidOp(const String &op) const
+    { throw (DataManInvOper ("StManColumn::" + op + " not possible"
                              " for column " + columnName())); }
 
 
@@ -910,21 +962,21 @@ void StManColumn::aips_name2(putBlock,NM) \
     } \
 } \
 void StManColumn::aips_name2(getArray,NM) (uInt, Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getArray" #NM); } \
 void StManColumn::aips_name2(putArray,NM) (uInt, const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putArray" #NM); } \
 void StManColumn::aips_name2(getSlice,NM) (uInt, const Slicer&, Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getSlice" #NM); } \
 void StManColumn::aips_name2(putSlice,NM) (uInt, const Slicer&, const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putSlice" #NM); } \
 void StManColumn::aips_name2(getArrayColumn,NM) (Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getArrayColumn" #NM); } \
 void StManColumn::aips_name2(putArrayColumn,NM) (const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putArrayColumn" #NM); } \
 void StManColumn::aips_name2(getColumnSlice,NM) (const Slicer&, Array<T>*) \
-    { throwGetArray(); } \
+    { throwInvalidOp("getColumnSlice" #NM); } \
 void StManColumn::aips_name2(putColumnSlice,NM) (const Slicer&, const Array<T>*) \
-    { throwPutArray(); } \
+    { throwInvalidOp("putColumnSlice" #NM); } \
 void StManColumn::aips_name2(getScalarColumnCells,NM) \
                                              (const RefRows& rownrs, \
 					      Vector<T>* values) \
@@ -1052,6 +1104,7 @@ STMANCOLUMN_GETPUT(Short,ShortV)
 STMANCOLUMN_GETPUT(uShort,uShortV)
 STMANCOLUMN_GETPUT(Int,IntV)
 STMANCOLUMN_GETPUT(uInt,uIntV)
+STMANCOLUMN_GETPUT(Int64,Int64V)
 STMANCOLUMN_GETPUT(float,floatV)
 STMANCOLUMN_GETPUT(double,doubleV)
 STMANCOLUMN_GETPUT(Complex,ComplexV)

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#ifndef FITS_BasicFITS_H
-#define FITS_BasicFITS_H
+#ifndef FITS_BASICFITS_H
+#define FITS_BASICFITS_H
 
 #include <casacore/casa/aips.h>
 //# Would like to forward declare
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Containers/Map.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -91,7 +91,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 		      Vector<Float> *refPixel = 0,
 		      Vector<Float> *refLocation = 0,
 		      Vector<Float> *delta = 0,
-		      Map<String, Double> *keywords = 0,
+		      std::map<String, Double> *keywords = 0,
                       String *objectName = 0);
 //</group>
 
@@ -137,7 +137,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
 	       const Vector<Float> *refPixel = 0,
 	       const Vector<Float> *refLocation = 0,
 	       const Vector<Float> *delta = 0,
-	       const Map<String, Double> *keywords = 0,
+	       const std::map<String, Double> *keywords = 0,
 	       const char *objectName = 0,
 	       Int BITPIX=-32,
 	       Float minPix = 1.0, Float maxPix = -1.0);

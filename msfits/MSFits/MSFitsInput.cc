@@ -96,6 +96,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/OS/Directory.h>
+#include <map>
 
 using std::make_pair;
 
@@ -2050,7 +2051,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
       colIFFreq.getColumn(ifFreq);
       colChWidth.getColumn(chWidth);
       colTotalBandwidth.getColumn(totalBandwidth);
-    }catch(AipsError x) {
+    }catch(AipsError& x) {
       _log << LogOrigin("MSFitsInput", "fillSpectralWindowTable")
              << LogIO::DEBUG1 << x.getMesg() << LogIO::POST;
     }
@@ -2467,7 +2468,7 @@ void MSFitsInput::fillExtraTables() {
       ddId = _msc->dataDescId().getColumn();
     }
 
-    SimpleOrderedMap <pair<Int,Int>, Int> sourceFieldIndex(-1); // for the case we need to write the source table
+    std::map<pair<Int,Int>, Int> sourceFieldIndex; // for the case we need to write the source table
 
     ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied",
                 "", "", True, nrow / 100);
@@ -2522,9 +2523,9 @@ void MSFitsInput::fillExtraTables() {
                 // now check if we've seen this field for this spectral window
                 // Use indexed access to the SOURCE sub-table
 		pair<Int, Int> myfldspw = make_pair(lastFieldId, spwId);
-		if(!sourceFieldIndex.isDefined(myfldspw)){
+		if(sourceFieldIndex.find(myfldspw) == sourceFieldIndex.end()){
 
-		    sourceFieldIndex.define(myfldspw, 1); 
+                    sourceFieldIndex.insert(std::make_pair(myfldspw, 1)); 
 
                     _ms.source().addRow();
                     Int j = _ms.source().nrow() - 1;
@@ -3615,7 +3616,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
       restfreq.getColumn(_restFreq);
       sysvel.getColumn(_sysVel);
     }
-    catch (std::exception x) {
+    catch (std::exception& x) {
       if(noif>1){
 	_log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
 	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl

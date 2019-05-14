@@ -95,7 +95,7 @@ int main()
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       radius[2] = Quantity(50, "MHz");
@@ -103,7 +103,7 @@ int main()
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       center[2] = Quantity(1415, "GHz");
@@ -112,7 +112,7 @@ int main()
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       pixelAxes = IPosition(3, 0, 0, 1);
@@ -120,7 +120,7 @@ int main()
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       pixelAxes = IPosition(3, 0, 1, 2);
@@ -129,7 +129,7 @@ int main()
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
       }
-      catch (AipsError x) {
+      catch (AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
 
@@ -254,7 +254,7 @@ int main()
                            );
         AlwaysAssert(False, AipsError);
       }
-      catch(AipsError x) {
+      catch(AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       pixelAxes.resize(2, True);
@@ -289,7 +289,7 @@ int main()
                             );
         AlwaysAssert(False, AipsError);
       }
-      catch(AipsError x) {
+      catch(AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       try {
@@ -301,7 +301,7 @@ int main()
                             );
         AlwaysAssert(False, AipsError);
       }
-      catch(AipsError x) {
+      catch(AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       radius[0].setValue(2);
@@ -331,7 +331,7 @@ int main()
                               );
         AlwaysAssert(False, AipsError);
       }
-      catch(AipsError x) {
+      catch(AipsError& x) {
         cout << "Caught as expected " << x.getMesg() << endl;
       }
       ellipse = WCEllipsoid(
@@ -350,7 +350,7 @@ int main()
       delete ellipse3;
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught exception: " << x.getMesg() << endl;
     return 1;
   } 

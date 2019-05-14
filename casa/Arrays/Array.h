@@ -39,11 +39,8 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/ostream.h>
 #include <iterator>
-#if defined(WHATEVER_VECTOR_FORWARD_DEC)
-WHATEVER_VECTOR_FORWARD_DEC;
-#else
 #include <casacore/casa/stdvector.h>
-#endif
+
 
 namespace casacore { //#Begin casa namespace
 //# Forward Declarations
@@ -223,7 +220,7 @@ public:
     // Otherwise, <src>allocator</src> is ignored.
     // It is strongly recommended to allocate and initialize <src>storage</src> with <src>DefaultAllocator<T></src>
     // rather than new[] or <src>NewDelAllocator<T></src> because new[] can't decouple allocation and initialization.
-    // <src>DefaultAllocator<T>::type</src> is a subclass of std::allocator. You can allocate <src>storage</src> via
+    // <src>DefaultAllocator<T></src> is a subclass of std::allocator. You can allocate <src>storage</src> via
     // the allocator as below.
     // <srcblock>
     //   FILE *fp = ...;
@@ -782,7 +779,7 @@ public:
   class ConstIteratorSTL: public BaseIteratorSTL
     {
     public:
-      // <group name=STL-iterator-typedefs>
+      // <group name=STL-const-iterator-typedefs>
       typedef T                 value_type;
       typedef const value_type* pointer;
       typedef const value_type& reference;
@@ -845,7 +842,7 @@ public:
     // If the array is contiguous, it is possible to use the
     // <src>cbegin</src> and <src>cend</src> functions which are
     // about 10% faster.
-    // <group name=STL-iterator>
+    // <group name=iterator-typedefs>
     // STL-style typedefs.
     // <group>
     typedef T                value_type;

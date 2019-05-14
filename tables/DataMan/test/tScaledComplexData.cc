@@ -60,7 +60,7 @@ int main () {
     try {
 	a();
 	b();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -151,7 +151,7 @@ void a()
         newtab2.bindColumn ("source2", engine1);
         try {
     	Table tab2(newtab2, 10);                // bound to incorrect column
-        } catch (AipsError x) {
+        } catch (AipsError& x) {
     	cout << x.getMesg() << endl;
         } 
     }

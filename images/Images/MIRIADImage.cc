@@ -671,7 +671,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
     try {
       projn = Projection(ptype, projp);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       os << LogIO::SEVERE << "Error forming projection, maybe the "
 	"wrong number of parameters\n(" << x.getMesg() << ")" << 
 	LogIO::POST;
@@ -1022,7 +1022,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       try {
 	StokesCoordinate sc(stokes);
 	cSys.addCoordinate(sc);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
 	os << LogIO::SEVERE << "Error forming stokes axis : " << x.getMesg() << LogIO::POST;
 	//return False;
       } 

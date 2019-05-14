@@ -8,7 +8,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
   wget https://repo.continuum.io/miniconda/Miniconda${MAJORPYTHONVERSION}-latest-MacOSX-x86_64.sh -O miniconda.sh;
 
   brew update >/dev/null
-  brew cask uninstall oclint
+  brew cask uninstall oclint | true
   brew install fftw hdf5 ccache
 
   bash miniconda.sh -b -p $HOME/miniconda

@@ -139,7 +139,7 @@ public:
   TaQLNodeResult& operator= (const TaQLNodeResult& that)
     { if (this != &that) {
         TaQLNodeResultRep::unlink (itsRep);
-	itsRep = TaQLNodeResultRep::link (that.itsRep);
+        itsRep = TaQLNodeResultRep::link (that.itsRep);
       }
     return *this;
     }

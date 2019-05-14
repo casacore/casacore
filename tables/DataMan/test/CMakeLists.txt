@@ -19,6 +19,7 @@ tStandardStMan
 tStArrayFile
 tStMan
 tStMan1
+tStManAll
 tTiledBool
 tTiledCellStM_1
 tTiledCellStMan
@@ -36,6 +37,10 @@ tVirtualTaQLColumn
 tVSCEngine
 )
 
+set (tests_mpi
+    tAdios2StMan
+)
+
 # Some test sources include a test .h file.
 include_directories ( . )
 
@@ -45,3 +50,16 @@ foreach (test ${tests})
     add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
     add_dependencies(check ${test})
 endforeach (test)
+
+if(MPI_FOUND)
+    if(ADIOS2_FOUND)
+        foreach (test ${tests_mpi})
+            add_executable (${test} ${test}.cc)
+            target_link_libraries (${test} casa_tables)
+            target_compile_definitions(${test} PRIVATE HAVE_MPI)
+            target_compile_definitions(${test} PRIVATE HAVE_ADIOS2)
+            add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
+            add_dependencies(check ${test})
+        endforeach (test)
+    endif(ADIOS2_FOUND)
+endif(MPI_FOUND)

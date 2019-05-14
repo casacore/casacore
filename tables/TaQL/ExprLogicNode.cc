@@ -397,21 +397,21 @@ void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
     if (lnode_p->operType()  == TableExprNodeRep::OtColumn
     &&  lnode_p->valueType() == TableExprNodeRep::VTScalar
     &&  rnode_p->operType()  == TableExprNodeRep::OtLiteral) {
-	tsncol = lnode_p;
-	dval = rnode_p->getDouble (0);
+        tsncol = lnode_p;
+        dval = rnode_p->getDouble (0);
     }else{
-	if (rnode_p->operType()  == TableExprNodeRep::OtColumn
-	&&  rnode_p->valueType() == TableExprNodeRep::VTScalar
+        if (rnode_p->operType()  == TableExprNodeRep::OtColumn
+        &&  rnode_p->valueType() == TableExprNodeRep::VTScalar
         &&  lnode_p->operType()  == TableExprNodeRep::OtLiteral) {
-	    tsncol = rnode_p;
-	    dval = lnode_p->getDouble (0);
-	}
+            tsncol = rnode_p;
+            dval = lnode_p->getDouble (0);
+        }
     }
     //# Now create a range (if possible).
     //# The cast is harmless, since it is surely that object type.
     TableExprNodeRep::createRange (blrange,
-				   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
-				   dval, dval);
+                                   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
+                                   dval, dval);
 }
 
 void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
@@ -424,23 +424,23 @@ void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
     if (lnode_p->operType()  == TableExprNodeRep::OtColumn
     &&  lnode_p->valueType() == TableExprNodeRep::VTScalar
     &&  rnode_p->operType()  == TableExprNodeRep::OtLiteral) {
-	tsncol = lnode_p;
-	st = rnode_p->getDouble (0);
-	end = DBL_MAX;
+        tsncol = lnode_p;
+        st = rnode_p->getDouble (0);
+        end = DBL_MAX;
     }else{
-	if (rnode_p->operType()  == TableExprNodeRep::OtColumn
-	&&  rnode_p->valueType() == TableExprNodeRep::VTScalar
+        if (rnode_p->operType()  == TableExprNodeRep::OtColumn
+        &&  rnode_p->valueType() == TableExprNodeRep::VTScalar
         &&  lnode_p->operType()  == TableExprNodeRep::OtLiteral) {
-	    tsncol = rnode_p;
-	    end = lnode_p->getDouble (0);
-	    st = -DBL_MAX;
-	}
+            tsncol = rnode_p;
+            end = lnode_p->getDouble (0);
+            st = -DBL_MAX;
+        }
     }
     //# Now create a range (if possible).
     //# The cast is harmless, since it is surely that object type.
     TableExprNodeRep::createRange (blrange,
-				   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
-				   st, end);
+                                   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
+                                   st, end);
 }
 
 void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
@@ -453,23 +453,23 @@ void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
     if (lnode_p->operType()  == TableExprNodeRep::OtColumn
     &&  lnode_p->valueType() == TableExprNodeRep::VTScalar
     &&  rnode_p->operType()  == TableExprNodeRep::OtLiteral) {
-	tsncol = lnode_p;
-	st = rnode_p->getDouble (0);
-	end = DBL_MAX;
+        tsncol = lnode_p;
+        st = rnode_p->getDouble (0);
+        end = DBL_MAX;
     }else{
-	if (rnode_p->operType()  == TableExprNodeRep::OtColumn
+        if (rnode_p->operType()  == TableExprNodeRep::OtColumn
         &&  lnode_p->valueType() == TableExprNodeRep::VTScalar
         &&  lnode_p->operType()  == TableExprNodeRep::OtLiteral) {
-	    tsncol = rnode_p;
-	    end = lnode_p->getDouble (0);
-	    st = -DBL_MAX;
-	}
+            tsncol = rnode_p;
+            end = lnode_p->getDouble (0);
+            st = -DBL_MAX;
+        }
     }
     //# Now create a range (if possible).
     //# The cast is harmless, since it is surely that object type.
     TableExprNodeRep::createRange (blrange,
-				   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
-				   st, end);
+                                   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
+                                   st, end);
 }
 
 
@@ -488,15 +488,15 @@ void TableExprNodeOR::ranges (Block<TableExprRange>& blrange)
     uInt nr=0;
     uInt i,j;
     for (i=0; i<left.nelements(); i++) {
-	for (j=0; j<right.nelements(); j++) {
-	    if (right[j].getColumn().columnDesc().name() ==
-		                left[i].getColumn().columnDesc().name()) {
-		blrange.resize(nr+1, True);
-		blrange[nr] = left[i];
-		blrange[nr].mixOr (right[j]);
-		nr++;
-	    }
-	}
+        for (j=0; j<right.nelements(); j++) {
+            if (right[j].getColumn().columnDesc().name() ==
+                                left[i].getColumn().columnDesc().name()) {
+                blrange.resize(nr+1, True);
+                blrange[nr] = left[i];
+                blrange[nr].mixOr (right[j]);
+                nr++;
+            }
+        }
     }
 }
 
@@ -510,11 +510,11 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     rnode_p->ranges (other);
     //# If one of them is empty (which means all), return the other.
     if (other.nelements() == 0) {
-	return;
+        return;
     }
     if (blrange.nelements() == 0) {
-	blrange = other;
-	return;
+        blrange = other;
+        return;
     }
     //# Now and the ranges.
     //# First handle one and intersect its ranges with matching
@@ -524,21 +524,21 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     vec = 0;
     uInt i,j;
     for (i=0; i<blrange.nelements(); i++) {
-	for (j=0; j<other.nelements(); j++) {
-	    if (other[j].getColumn().columnDesc().name() ==
-		                blrange[i].getColumn().columnDesc().name()) {
-		blrange[i].mixAnd (other[j]);
-		vec(j) = 1;
-	    }
-	}
+        for (j=0; j<other.nelements(); j++) {
+            if (other[j].getColumn().columnDesc().name() ==
+                                blrange[i].getColumn().columnDesc().name()) {
+                blrange[i].mixAnd (other[j]);
+                vec(j) = 1;
+            }
+        }
     }
     //# Now add the non-processed other ones to the result.
     uInt nr = blrange.nelements();
     for (i=0; i<other.nelements(); i++) {
-	if (vec(i) == 0) {
-	    blrange.resize(nr+1, True);
-	    blrange[nr++] = other[i];
-	}
+        if (vec(i) == 0) {
+            blrange.resize(nr+1, True);
+            blrange[nr++] = other[i];
+        }
     }
 }
 

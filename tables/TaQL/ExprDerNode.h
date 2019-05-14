@@ -329,6 +329,7 @@ public:
     Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
     Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
     Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
     Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
     Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
     Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
@@ -364,7 +365,7 @@ protected:
 // This class represents the rownumber() function in a table
 // select expression tree.
 // The origin is stored to indicate whether the first rownumber
-// should be zero (in C++)  or an other value (1 in TaQL) 
+// should be zero (in C++)  or another value (1 in TaQL).
 // </synopsis> 
 
 class TableExprNodeRownr : public TableExprNodeBinary

@@ -853,7 +853,7 @@ Bool testu_table(const tableProperties &tprop, inputValues &inVal) {
 	inVal.forcedel = True;
 	inVal.noup = False;
       } else if (String(inVal.type, 0, 2) == String("DE")) {
-	uInt uyr = MVTime(inVal.lastmjd).year();
+	Int uyr = MVTime(inVal.lastmjd).year();
         if (uyr < inVal.derange[1]) {
 	  // this only guarantees there will be /some/ data from derange[1]
 	  // but it looks like the DE ascii files finish in December of
@@ -1427,7 +1427,7 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   // Test if to update
   if (testu_table(tprop, inVal) && inVal.noup) return True;
  
-  uInt uyr; // value will be set from data file name
+  Int uyr = 0; // value will be set from data file name
   // Check if header present
   Path hpath(tprop.vinfo[0]);
   if (hpath.isValid() && File(hpath).exists() && File(hpath).isReadable()) {
@@ -1809,7 +1809,7 @@ int main (int argc, const char** argv) {
     // Create the full properties
     makeProperties();
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
     exit(1);
   } 
@@ -1854,7 +1854,7 @@ int main (int argc, const char** argv) {
 // Finish
 //*************************************************************************//
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
     exit(1);
   } 

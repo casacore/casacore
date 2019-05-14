@@ -271,6 +271,7 @@ protected:
   extern template class ScalarColumn<uShort>;
   extern template class ScalarColumn<Int>;
   extern template class ScalarColumn<uInt>;
+  extern template class ScalarColumn<Int64>;
   extern template class ScalarColumn<Float>;
   extern template class ScalarColumn<Double>;
   extern template class ScalarColumn<Complex>;

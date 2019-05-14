@@ -31,7 +31,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Inputs/Param.h>
-#include <casacore/casa/Containers/List.h>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -78,8 +78,7 @@ template<class T> class Vector;
 // on prompting for parameter values not specified on the command-line.  In
 // such an instance, the optional String arguments to Input::create become 
 // important.  The argument "help=keys" will print to standard output a list 
-// of all the parameters.  Finally, "help=pane" prints to standard output a
-// pane file usable as a graphic user interface within Khoros Cantata.
+// of all the parameters.
 // 
 // The default existance of the debug parameter allows the user to specify
 // levels of debugging, where 0 implies none and higher integers means more.
@@ -165,9 +164,6 @@ template<class T> class Vector;
 //  // Create a parameter with a help String which will be displayed when in
 //  // the prompted entry mode.
 //  inp.create("ubound", "1000", "The number of iterations to clean.");
-//  // Create a parameter with a type.  This is utilized to create the correct
-//  // labels on a Khoros pane.  You could do type checking yourself, as well.
-//  inp.create("baseline", "451", "The number of baselines.", "Int");
 //  // Create a parameter with a range of acceptable values.  Note: checking
 //  // must be done by the user as this isn't coded in.
 //  inp.create("gainstride", "0.5", "The factor by which the Clean strides.",
@@ -200,17 +196,8 @@ template<class T> class Vector;
 // <motivation>
 // In the earliest days of the old AIPS++ project, the desire to start coding 
 // right away led to the need for a user interface.  The preexistant C language
-// method of argc/argv was enclosed in an object for easier use.  This also
-// provided a means to output a pane file.  Pane files are used by the 
-// Cantata desktop within the Khoros system to build quick graphic user 
-// interfaces.  The Casacore code has moved on to greater heights and left the
-// Input class mostly unchanged.
+// method of argc/argv was enclosed in an object for easier use.
 // </motivation>
-//
-// <todo asof="Thu 1995/04/06 21:26:43 GMT">
-//   <li> major cleanup needed - this is the oldest code in Casacore.
-//   <li> replace List<Param> with keywords
-// </todo>
 
 
 class Input {
@@ -312,8 +299,8 @@ public:
 
 
 private:
-  // Get the index of the named parameter (0 if unknown key).
-  // Anywhere from 1.. if a key is found.
+  // Get the index of the named parameter (-1 if unknown key).
+  // Anywhere from 0.. if a key is found.
   Int getParam (const String& key) const;
 
   // Prompt the user for a value for the parameter.
@@ -327,15 +314,12 @@ private:
   void createPar (Int, const String&, const String&, const String&,
 		  const String&, const String&, const String&);
 
-  // output to stdout a Khoros Cantata pane.
-  void pane();
-
   // output to stdout a listing of all "key=value" pairs.
   void keys();
 
 
-  // linked list container of parameters
-  List<Param> parList_p;
+  // container of parameters
+  std::vector<Param> parList_p;
 
   // version id         
   String version_id;    
@@ -349,7 +333,7 @@ private:
   // threshold value for debug output
   Int debug_level;              
 
-  // "prompt", "keys", or "pane" indicates the various types of help.
+  // "prompt" or "keys" indicates the various types of help.
   String help_mode;     
 
   // count of program parameters

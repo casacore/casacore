@@ -169,6 +169,13 @@ uInt TableColumn::asuInt (uInt rownr) const
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
+Int64 TableColumn::asInt64 (uInt rownr) const
+{
+    TABLECOLUMNCHECKROW(rownr); 
+    Int64 value;
+    baseColPtr_p->getScalar (rownr, value);
+    return value;
+}
 float TableColumn::asfloat (uInt rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
@@ -230,6 +237,9 @@ void TableColumn::put (uInt thisRownr, const TableColumn& that,
       break;
     case TpUInt:
       putScalar (thisRownr, that.asuInt (thatRownr));
+      break;
+    case TpInt64:
+      putScalar (thisRownr, that.asInt64 (thatRownr));
       break;
     case TpFloat:
       putScalar (thisRownr, that.asfloat (thatRownr));
@@ -317,6 +327,13 @@ void TableColumn::put (uInt thisRownr, const TableColumn& that,
           vh = ValueHolder (array);
         }
         break;
+      case TpInt64:
+        {
+          Array<Int64> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
       case TpFloat:
         {
           Array<float> array(shape);
@@ -389,6 +406,12 @@ void TableColumn::put (uInt thisRownr, const TableColumn& that,
       case TpUInt:
         {
           Array<uInt> arr (vh.asArrayuInt());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpInt64:
+        {
+          Array<Int64> arr (vh.asArrayInt64());
           baseColPtr_p->put (thisRownr, &arr);
         }
         break;

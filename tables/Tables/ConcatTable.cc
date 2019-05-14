@@ -46,7 +46,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			    int option, const TableLock& lockOptions,
                             const TSMOption& tsmOption)
     : BaseTable (name, option, nrrow),
-      colMap_p  (static_cast<ConcatColumn*>(0)),
       changed_p (False)
   {
     //# Read the file in.
@@ -64,9 +63,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : BaseTable       ("", Table::Scratch, 0),
       subTableNames_p (subTables),
       subDirName_p    (subDirName),
-      colMap_p        (static_cast<ConcatColumn*>(0)),
       changed_p       (True)
   {
+    ///cout<<"cctab1="<<sizeof(*this)<<' '<<this<<' '<<&rows_p<<' '<<&(rows())<<endl;
     noWrite_p = True;
     if (tables.nelements() == 0) {
       throw TableError("ConcatTable: at least one table has to be given");
@@ -76,7 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rows_p.reserve (tables.nelements() + 1);
     for (uInt i=0; i<tables.nelements(); ++i) {
       //# Link to referenced table, otherwise it will be destructed.
-      baseTabPtr_p[i] = tables[i];;
+      baseTabPtr_p[i] = tables[i];
       baseTabPtr_p[i]->link();
       rows_p.add (baseTabPtr_p[i]->nrow());
     }
@@ -95,9 +94,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : BaseTable       ("", Table::Scratch, 0),
       subTableNames_p (subTables),
       subDirName_p    (subDirName),
-      colMap_p        (static_cast<ConcatColumn*>(0)),
       changed_p       (True)
   {
+    ///cout<<"cctab1="<<sizeof(*this)<<' '<<this<<' '<<&rows_p<<' '<<&(rows())<<endl;
     noWrite_p = True;
     if (tableNames.nelements() == 0) {
       throw TableError("ConcatTable: at least one table has to be given");
@@ -117,8 +116,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     //# Delete all ConcatColumn objects.
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
-      delete colMap_p.getVal(i);
+    for (const auto& x : colMap_p ) {
+      delete x.second;
     }
     //# Unlink from root.
     for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
@@ -335,7 +334,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Note that we size the table instead of reserve, because push_back
     // gives the following warning for CountedPtr:
     //  "dereferencing pointer aonymous  does break strict-aliasing rule"
-    vector<CountedPtr<TableDesc> > actualDesc(baseTabPtr_p.nelements());;
+    vector<CountedPtr<TableDesc> > actualDesc(baseTabPtr_p.nelements());
     Bool equalDataTypes;
     for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
       actualDesc[i] = CountedPtr<TableDesc> (new TableDesc
@@ -417,7 +416,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
       const ColumnDesc& cd = tdescPtr_p->columnDesc(i);
-      colMap_p.define (cd.name(), cd.makeConcatColumn (this));
+      colMap_p.insert (std::make_pair(cd.name(), cd.makeConcatColumn (this)));
     }
   }
 
@@ -491,21 +490,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   BaseColumn* ConcatTable::getColumn (const String& columnName) const
   {
     tdescPtr_p->columnDesc(columnName);             // check if column exists
-    return colMap_p(columnName);
+    return colMap_p.at(columnName);
   }
-  //# We cannot simply return colMap_p.getVal(columnIndex), because the order of
-  //# the columns in the description is important. So first get the column
-  //# name and use that as key.
   BaseColumn* ConcatTable::getColumn (uInt columnIndex) const
   { 
     const String& name = tdescPtr_p->columnDesc(columnIndex).name();
-    return colMap_p(name);
+    return colMap_p.at(name);
   }
 
   void ConcatTable::addConcatCol (const ColumnDesc& columnDesc)
   {
     ColumnDesc& cd = tdescPtr_p->addColumn(columnDesc);
-    colMap_p.define(cd.name(), cd.makeConcatColumn(this));
+    colMap_p.insert (std::make_pair(cd.name(), cd.makeConcatColumn(this)));
     changed_p = True;
   }
 

@@ -235,7 +235,7 @@ public:
     Record& operator= (const Record& other);
     
     // Release resources associated with this object.
-    ~Record();
+    virtual ~Record();
 
     // Make a copy of this object.
     virtual RecordInterface* clone() const;

@@ -37,7 +37,6 @@
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/tables/DataMan/DataManInfo.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Utilities/LinearSearch.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/OS/Path.h>

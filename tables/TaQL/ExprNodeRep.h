@@ -159,60 +159,60 @@ class TableExprNodeRep
 public:
     // Define the data types of a node.
     enum NodeDataType {
-	NTBool,
+        NTBool,
         NTInt,
-	NTDouble,
-	NTComplex,
-	NTString,
-	NTRegex,
-	NTDate,
+        NTDouble,
+        NTComplex,
+        NTString,
+        NTRegex,
+        NTDate,
         NTReal,                //# NTInt or NTDouble
         NTDouCom,              //# NTDouble or NTComplex
-	NTNumeric,             //# NTInt, NTDouble, or NTComplex
-	NTAny                  //# Any data type
+        NTNumeric,             //# NTInt, NTDouble, or NTComplex
+        NTAny                  //# Any data type
     };
 
     // Define the value types.
     enum ValueType {
-	VTScalar,
-	VTArray,
-	VTRecord,
-	VTSetElem,
-	VTSet,
-	VTIndex
+        VTScalar,
+        VTArray,
+        VTRecord,
+        VTSetElem,
+        VTSet,
+        VTIndex
     };
 
     // Define the operator types.
     // LE and LT are handled as GE and GT with swapped operands.
     enum OperType {OtPlus, OtMinus, OtTimes, OtDivide, OtModulo,
                    OtBitAnd, OtBitOr, OtBitXor, OtBitNegate,
-		   OtEQ, OtGE, OtGT, OtNE, OtIN,
-		   OtAND, OtOR, OtNOT, OtMIN,
-		   OtColumn, OtField, OtLiteral, OtFunc, OtSlice, OtUndef,
-	           OtRownr, OtRandom
+                   OtEQ, OtGE, OtGT, OtNE, OtIN,
+                   OtAND, OtOR, OtNOT, OtMIN,
+                   OtColumn, OtField, OtLiteral, OtFunc, OtSlice, OtUndef,
+                   OtRownr, OtRandom
     };
 
     // Define the value types of the 2 arguments when arrays are involved.
     enum ArgType {
-	NoArr, ArrArr, ArrSca, ScaArr
+        NoArr, ArrArr, ArrSca, ScaArr
     };
 
     // Define (sub-)expression type
     enum ExprType {
-	// A constant subexpression which can be evaluated immediately.
-	Constant,
-	// A variable (i.e. row dependent) subexpression which
-	// has to be evaluated for each table row.
-	Variable
-	// An expensive constant subexpression which should only be
-	// evaluated when needed (e.g. a subquery).
-//	Lazy
+        // A constant subexpression which can be evaluated immediately.
+        Constant,
+        // A variable (i.e. row dependent) subexpression which
+        // has to be evaluated for each table row.
+        Variable
+        // An expensive constant subexpression which should only be
+        // evaluated when needed (e.g. a subquery).
+//        Lazy
     };
 
     // Construct a node.
     TableExprNodeRep (NodeDataType, ValueType, OperType, ArgType, ExprType,
-		      Int ndim, const IPosition& shape,
-		      const Table& table);
+                      Int ndim, const IPosition& shape,
+                      const Table& table);
 
     // This constructor is called from the derived TableExprNodeRep.
     TableExprNodeRep (NodeDataType, ValueType, OperType, const Table&);
@@ -364,6 +364,7 @@ public:
     virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
     virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
     virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    virtual Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
     virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
     virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
     virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
@@ -455,7 +456,7 @@ public:
 
     // Create a range object from a column and an interval.
     static void createRange (Block<TableExprRange>&,
-			     TableExprNodeColumn*, Double start, Double end);
+                             TableExprNodeColumn*, Double start, Double end);
 
     // Create a empty range object.
     static void createRange (Block<TableExprRange>&);
@@ -575,8 +576,8 @@ public:
   
     // Check the data types and get the common one.
     static NodeDataType getDT (NodeDataType leftDtype,
-			       NodeDataType rightDype,
-			       OperType operType);
+                               NodeDataType rightDype,
+                               OperType operType);
 
     // Check the data and value types and get the common one.
     static TableExprNodeRep getCommonTypes (const TENShPtr& left,
@@ -610,7 +611,7 @@ protected:
     // Make the units equal.
     // Replace the right node if needed.
     static const Unit& makeEqualUnits (const TENShPtr& left,
-				       TENShPtr& right);
+                                       TENShPtr& right);
 
     TENShPtr lnode_p;     //# left operand
     TENShPtr rnode_p;     //# right operand
@@ -661,7 +662,7 @@ class TableExprNodeMulti : public TableExprNodeRep
 public:
     // Constructor
     TableExprNodeMulti (NodeDataType, ValueType, OperType,
-			const TableExprNodeRep& source);
+                        const TableExprNodeRep& source);
 
     // Destructor
     virtual ~TableExprNodeMulti();
@@ -679,7 +680,7 @@ public:
     // low <= number_of_args <= high
     // It throws an exception if wrong number of arguments.
     static uInt checkNumOfArg (uInt low, uInt high,
-			       const std::vector<TENShPtr>& nodes);
+                               const std::vector<TENShPtr>& nodes);
     
     // Get the child nodes.
     const std::vector<TENShPtr>& getChildren() const
@@ -689,8 +690,8 @@ public:
     // It also sets the expected data type of the operands (from dtIn).
     // Conversion of Int,Double.String to Date is by default possible.
     static NodeDataType checkDT (Block<Int>& dtypeOper,
-				 NodeDataType dtIn, NodeDataType dtOut,
-				 const std::vector<TENShPtr>& nodes,
+                                 NodeDataType dtIn, NodeDataType dtOut,
+                                 const std::vector<TENShPtr>& nodes,
                                  Bool dateConv=True);
 
 protected:

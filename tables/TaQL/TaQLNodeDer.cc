@@ -60,7 +60,7 @@ TaQLConstNodeRep::TaQLConstNodeRep (Int64 value)
     itsIsTableName (False),
     itsIValue      (value),
     itsRValue      (value),
-    itsCValue      (value, 0.) 
+    itsCValue      (value, 0.)
 {}
 TaQLConstNodeRep::TaQLConstNodeRep (Double value)
   : TaQLNodeRep (TaQLNode_Const),
@@ -86,7 +86,7 @@ TaQLConstNodeRep::TaQLConstNodeRep (DComplex value)
 TaQLConstNodeRep::TaQLConstNodeRep (const String& value,
                                     Bool isTableName)
   : TaQLNodeRep (TaQLNode_Const),
-    itsType        (CTString), 
+    itsType        (CTString),
     itsIsTableName (isTableName),
     itsSValue      (value)
 {}
@@ -399,7 +399,7 @@ TaQLBinaryNodeRep::TaQLBinaryNodeRep (Type type, const TaQLNode& left,
 TaQLBinaryNodeRep::~TaQLBinaryNodeRep()
 {}
 TaQLBinaryNodeRep* TaQLBinaryNodeRep::handleRegex (const TaQLNode& left,
-						   const TaQLRegexNode& right)
+                                                   const TaQLRegexNode& right)
 {
   Type oper;
   if (right.negate()) {
@@ -407,7 +407,7 @@ TaQLBinaryNodeRep* TaQLBinaryNodeRep::handleRegex (const TaQLNode& left,
   } else {
     oper = B_EQREGEX;
   }
-  return new TaQLBinaryNodeRep (oper, left, right); 
+  return new TaQLBinaryNodeRep (oper, left, right);
 }
 TaQLNodeResult TaQLBinaryNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -689,7 +689,7 @@ void TaQLIndexNodeRep::show (std::ostream& os) const
   if (itsIncr.isValid()) {
     os << ':';
     itsIncr.show (os);
-  }    
+  }
 }
 void TaQLIndexNodeRep::save (AipsIO& aio) const
 {
@@ -840,7 +840,7 @@ TaQLColNodeRep* TaQLColNodeRep::restore (AipsIO& aio)
   String name, nameMask, dtype;
   aio >> name >> nameMask >> dtype;
   TaQLColNodeRep* node = new TaQLColNodeRep (TaQLNode::restoreNode(aio),
-					     name, nameMask, dtype);
+                                             name, nameMask, dtype);
   return node;
 }
 
@@ -1177,7 +1177,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
     itsWhere(where), itsGroupby(groupby), itsHaving(having),
     itsSort(sort), itsLimitOff(limitoff), itsGiving(giving),
     itsDMInfo(dminfo)
-{} 
+{}
 TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
                                       const TaQLMultiNode& with,
                                       const TaQLMultiNode& tables,
@@ -1263,8 +1263,8 @@ TaQLSelectNodeRep* TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
   TaQLSelectNodeRep* node = new TaQLSelectNodeRep (columns, with,
                                                    tables, join,
-						   where, groupby, having,
-						   sort, limitoff, giving,
+                                                   where, groupby, having,
+                                                   sort, limitoff, giving,
                                                    dminfo);
   node->restoreSuper (aio);
   return node;

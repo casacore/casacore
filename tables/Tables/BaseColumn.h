@@ -117,8 +117,7 @@ public:
     // </group>
 
     // Get const access to the column description.
-    const ColumnDesc& columnDesc() const
-	{ return colDesc_p; }
+    const ColumnDesc& columnDesc() const;
 
     // Get nr of rows in the column.
     virtual uInt nrow() const = 0;
@@ -285,6 +284,7 @@ public:
     void putScalar (uInt rownr, const uShort& value);
     void putScalar (uInt rownr, const Int& value);
     void putScalar (uInt rownr, const uInt& value);
+    void putScalar (uInt rownr, const Int64& value);
     void putScalar (uInt rownr, const float& value);
     void putScalar (uInt rownr, const double& value);
     void putScalar (uInt rownr, const Complex& value);
@@ -338,9 +338,11 @@ protected:
 
     //# Data members
     const BaseColumnDesc*  colDescPtr_p;
+
+private:
     //# This ColumnDesc object is created to be able to return 
     //# a const ColumnDesc& by function columnDesc().
-    ColumnDesc             colDesc_p;
+    mutable ColumnDesc     colDesc_p;
 };
 
 

@@ -128,7 +128,7 @@ public:
     virtual Record getProperties() const;
 
     // Modify data manager properties.
-    // Only ActualCacheSize can be used. It is similar to function setCacheSize
+    // Only MaxCacheSize can be used. It is similar to function setCacheSize
     // with <src>canExceedNrBuckets=False</src>.
     virtual void setProperties (const Record& spec);
 

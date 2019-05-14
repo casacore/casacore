@@ -33,10 +33,12 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-#include <memory>
-#include <typeinfo>
-
 #include <cstdlib>
+#include <memory>
+#include <new>
+#include <typeinfo>
+#include <type_traits>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASA_DEFAULT_ALIGNMENT
@@ -237,14 +239,14 @@ class Allocator_private {
     typedef typename Allocator::pointer pointer;
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::value_type value_type;
-    virtual pointer allocate(size_type elements, const void *ptr = 0) {
+    virtual pointer allocate(size_type elements, const void *ptr = 0) override {
       return allocator.allocate(elements, ptr);
     }
-    virtual void deallocate(pointer ptr, size_type size) {
+    virtual void deallocate(pointer ptr, size_type size) override {
       allocator.deallocate(ptr, size);
     }
 
-    virtual void construct(pointer ptr, size_type n, const_pointer src) {
+    virtual void construct(pointer ptr, size_type n, const_pointer src) override {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -256,7 +258,7 @@ class Allocator_private {
       }
     }
     virtual void construct(pointer ptr, size_type n,
-        value_type const &initial_value) {
+        value_type const &initial_value) override {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -267,7 +269,7 @@ class Allocator_private {
         throw;
       }
     }
-    virtual void construct(pointer ptr, size_type n) {
+    virtual void construct(pointer ptr, size_type n) override {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -278,7 +280,7 @@ class Allocator_private {
         throw;
       }
     }
-    virtual void destroy(pointer ptr, size_type n) {
+    virtual void destroy(pointer ptr, size_type n) override {
       for (size_type i = n; i > 0;) {
         --i;
         try {
@@ -288,10 +290,10 @@ class Allocator_private {
         }
       }
     }
-    virtual std::type_info const &allocator_typeid() const {
+    virtual std::type_info const &allocator_typeid() const override {
       return typeid(Allocator);
     }
-    virtual ~BulkAllocatorImpl() {}
+    virtual ~BulkAllocatorImpl() override {}
 
   private:
     static Allocator allocator;
@@ -301,29 +303,15 @@ class Allocator_private {
   static BulkAllocator<typename Allocator::value_type> *get_allocator() {
     return get_allocator_raw<Allocator>();
   }
-  template<typename Allocator>
-  class BulkAllocatorInitializer {
-    BulkAllocatorInitializer() {
-      get_allocator_raw<Allocator>();
-    }
-    static BulkAllocatorInitializer<Allocator> instance;
-  };
+
   template<typename Allocator>
   static BulkAllocatorImpl<Allocator> *get_allocator_raw() {
-    static union {
-      void *dummy;
-      char alloc_obj[sizeof(BulkAllocatorImpl<Allocator> )];
-    } u;
-    static BulkAllocatorImpl<Allocator> *ptr = 0;
-    // Probably this method is called from BulkAllocatorInitializer<Allocator> first
-    // while static initialization
-    // and other threads are not started yet.
-    if (ptr == 0) {
-      // Use construct below to avoid https://gcc.gnu.org/bugzilla/show_bug.cgi?id=42032 
-      ::new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(u.alloc_obj)) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
-      //      ::new (u.alloc_obj) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
-      ptr = reinterpret_cast<BulkAllocatorImpl<Allocator> *>(u.alloc_obj);
-    }
+    // Because this function gets called from destructors of statically allocated objects that get destructed
+    // after the program finishes, the allocator is constructed in a static storage space and is never
+    // destructed.
+    static typename std::aligned_storage<sizeof(BulkAllocatorImpl<Allocator>), alignof(BulkAllocatorImpl<Allocator>)>::type storage;
+    static BulkAllocatorImpl<Allocator>* ptr =
+      new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(&storage)) BulkAllocatorImpl<Allocator>();
     return ptr;
   }
 
@@ -340,9 +328,6 @@ class Allocator_private {
 
 template<typename Allocator>
 Allocator Allocator_private::BulkAllocatorImpl<Allocator>::allocator;
-
-template<typename Allocator>
-Allocator_private::BulkAllocatorInitializer<Allocator> Allocator_private::BulkAllocatorInitializer<Allocator>::instance;
 
 template<typename T>
 class AbstractAllocator {
@@ -366,7 +351,7 @@ public:
 protected:
   BaseAllocator() {}
 
-  virtual typename Allocator_private::BulkAllocator<T> *getAllocator() const {
+  virtual typename Allocator_private::BulkAllocator<T> *getAllocator() const override {
     return Allocator_private::get_allocator<typename facade_type::type>();
   }
 };

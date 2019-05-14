@@ -237,7 +237,7 @@ int main (int argc, const char* argv[])
      cout << "ok" << endl;
   }
 
- } catch (AipsError x) {
+ } catch (AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     return 1;
  } 
@@ -270,12 +270,12 @@ Bool checkFloat(Lattice<Float>& expr,
 
    try {
      expr.putSlice(outArr, origin, stride);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
    try {
      expr.putSlice(outArr, origin);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
 
@@ -355,12 +355,12 @@ Bool checkDouble(Lattice<Double>& expr,
 
    try {
      expr.putSlice(outArr, origin, stride);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
    try {
      expr.putSlice(outArr, origin);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
 
@@ -440,12 +440,12 @@ Bool checkComplex(Lattice<Complex>& expr,
 
    try {
      expr.putSlice(outArr, origin, stride);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
    try {
      expr.putSlice(outArr, origin);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
 
@@ -526,12 +526,12 @@ Bool checkDComplex(Lattice<DComplex>& expr,
 
    try {
      expr.putSlice(outArr, origin, stride);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
    try {
      expr.putSlice(outArr, origin);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
 
@@ -613,12 +613,12 @@ Bool checkBool(Lattice<Bool>& expr,
 
    try {
      expr.putSlice(outArr, origin, stride);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
    try {
      expr.putSlice(outArr, origin);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
      if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
    } 
 

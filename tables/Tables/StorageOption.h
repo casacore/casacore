@@ -54,7 +54,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       <br>The block size to be used in a MultiFile can be defined in
 //           this class. Default is 4 MByte.
 //  <li> Using MultiHDF5 which behaves similar to MultiFile but uses an
-//       HDF5 file instead of a regular file.
+//       HDF5 file instead of a regular file. Note that it requires that
+//       support for HDF5 has been used in the build system.
 // </ol>
 // It is possible to specify the storage type and block size using aipsrc.
 // The aipsrc variables are:
@@ -64,6 +65,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       Another value means the old way (separate files).
 //  <li> <src>table.storage.blocksize</src> gives the default blocksize to be
 //       used for the multifile and multihdf5 option.
+// <li> <src>table.storage.odirect</src> can be true or false. It tells if the
+//       O_DIRECT option has to be used to let the kernel bypass its filecache
+//       for more predictable I/O behaviour. It's only used for MultiFile and
+//       only if the OS supports O_DIRECT.
 // </ul>
 // </synopsis>
 
@@ -79,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       MultiHDF5,
       // Let storage managers use separate files.
       SepFile,
-      // Use default (currently MultiFile).
+      // Use default (currently SepFile).
       Default,
       // Use as defined in the aipsrc file.
       Aipsrc
@@ -90,7 +95,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The blocksize has to be given in bytes.
     // A size value -2 means reading that size from the aipsrc file.
     // A size value -1 means use the default of 4*1024*1024.
-    StorageOption (Option option=Aipsrc, Int blockSize=-2);
+    // <br>useODirect<0 means reading the option from the aipsrc file.
+    // It is only set if the OS supports O_DIRECT.
+    StorageOption (Option option=Aipsrc, Int blockSize=-2, Int useODirect=-3);
 
     // Fill the option in case Aipsrc or Default was given.
     // It is done as explained in the synopsis.
@@ -112,9 +119,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void setBlockSize (Int blockSize)
       { itsBlockSize = blockSize; }
 
+    // Get the O_DIRECT option.
+    Bool useODirect() const
+      { return itsUseODirect; }
+
+    // Set the O_DIRECT option.
+    // It is only set if the OS supports O_DIRECT.
+    void setUseODirect (Bool useODirect);
+
   private:
     Option itsOption;
     Int    itsBlockSize;
+    Bool   itsUseODirect;
+    Bool   itsUseAipsrcODirect;
   };
 
 } //# NAMESPACE CASACORE - END
