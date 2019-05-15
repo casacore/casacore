@@ -7,5 +7,5 @@ var searchData=
   ['xtension_5fx',['xtension_x',['../classcasacore_1_1ImageExtension.html#a45847bccc7d559e14b3211424ff9dd4d',1,'casacore::ImageExtension::xtension_x()'],['../classcasacore_1_1ExtensionHeaderDataUnit.html#a0cdce6dc88ab7ac98707df2f02837acb',1,'casacore::ExtensionHeaderDataUnit::xtension_x()']]],
   ['xvalues',['xValues',['../classcasacore_1_1Interpolate1D.html#a5c8c39cdd36a9acb65a5e17d4a7d45a9',1,'casacore::Interpolate1D']]],
   ['xvector',['XVector',['../classcasacore_1_1MatrixSolver.html#a388711b82af8827dc89c599f79215090',1,'casacore::MatrixSolver']]],
-  ['xyz',['xyz',['../classcasacore_1_1MVPosition.html#a2c71c431e9970d9d1bf4fa42025a81b2',1,'casacore::MVPosition']]]
+  ['xyz',['xyz',['../classcasacore_1_1MVPosition.html#a551dd71b35743a75bf63ecf8acc1941f',1,'casacore::MVPosition']]]
 ];

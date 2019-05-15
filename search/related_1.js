@@ -6,7 +6,6 @@ var searchData=
   ['binarytableextension',['BinaryTableExtension',['../classcasacore_1_1FitsBase.html#a7172c9a394d9b7a0fe4849e12f5a7a88',1,'casacore::FitsBase']]],
   ['bitvector',['BitVector',['../classcasacore_1_1BitVectorHelper.html#a36e8ce805d9208092c1351bd2d513e2d',1,'casacore::BitVectorHelper']]],
   ['bitvectorhelper',['BitVectorHelper',['../classcasacore_1_1BitVector.html#af5773c97552fbf55103fbac57bf2d97c',1,'casacore::BitVector']]],
-  ['block',['Block',['../classcasacore_1_1Allocator__private.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Allocator_private::Block()'],['../classcasacore_1_1Block__internal__IsFundamental.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Block_internal_IsFundamental::Block()'],['../classcasacore_1_1Block__internal__IsPointer.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Block_internal_IsPointer::Block()'],['../classcasacore_1_1Block__internal__IsPointer_3_01T_01_5_01_4.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Block_internal_IsPointer&lt; T * &gt;::Block()']]],
-  ['block_3c_20t_20_3e',['Block&lt; T &gt;',['../classcasacore_1_1AbstractAllocator.html#a3776902d1f66c822d745977032356e12',1,'casacore::AbstractAllocator']]],
-  ['boolean',['boolean',['../classcasacore_1_1TableExprNode.html#a0e9b77ea8b1780407024b5900a0735ff',1,'casacore::TableExprNode']]]
+  ['block',['Block',['../classcasacore_1_1Allocator__private.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Allocator_private::Block()'],['../classcasacore_1_1Block__internal__IsFundamental.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Block_internal_IsFundamental::Block()'],['../classcasacore_1_1Block__internal__IsPointer.html#a9e85191e43337d07867aa6d6ce2a34dd',1,'casacore::Block_internal_IsPointer::Block()']]],
+  ['block_3c_20t_20_3e',['Block&lt; T &gt;',['../classcasacore_1_1AbstractAllocator.html#a3776902d1f66c822d745977032356e12',1,'casacore::AbstractAllocator']]]
 ];

@@ -16,6 +16,7 @@ var searchData=
   ['hdf5object_2eh',['HDF5Object.h',['../HDF5Object_8h.html',1,'']]],
   ['hdf5record_2eh',['HDF5Record.h',['../HDF5Record_8h.html',1,'']]],
   ['hdu_2eh',['hdu.h',['../hdu_8h.html',1,'']]],
+  ['hingesfencesquantilecomputer_2eh',['HingesFencesQuantileComputer.h',['../HingesFencesQuantileComputer_8h.html',1,'']]],
   ['hingesfencesstatistics_2eh',['HingesFencesStatistics.h',['../HingesFencesStatistics_8h.html',1,'']]],
   ['histacc_2eh',['HistAcc.h',['../HistAcc_8h.html',1,'']]],
   ['hostinfo_2eh',['HostInfo.h',['../HostInfo_8h.html',1,'']]],

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['latticestatsalgorithm',['LatticeStatsAlgorithm',['../classcasacore_1_1LatticeStatistics.html#a5be00483dd3affe15b0882a21a965615',1,'casacore::LatticeStatistics']]],
   ['lengthorlast',['LengthOrLast',['../classcasacore_1_1Slicer.html#ace71c7757c3178383092f96abb130dff',1,'casacore::Slicer']]],
   ['lock_5fmode',['lock_mode',['../classcasacore_1_1Casarc.html#abf7b4ab4fbd697103902584bd2cf29af',1,'casacore::Casarc']]],
   ['lockoption',['LockOption',['../classcasacore_1_1TableLock.html#a318708fb4ef30014bba5289e7075b9a1',1,'casacore::TableLock']]],

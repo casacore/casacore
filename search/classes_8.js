@@ -34,8 +34,10 @@ var searchData=
   ['imagestatistics',['ImageStatistics',['../classcasacore_1_1ImageStatistics.html',1,'casacore']]],
   ['imagesummary',['ImageSummary',['../classcasacore_1_1ImageSummary.html',1,'casacore']]],
   ['imageutilities',['ImageUtilities',['../classcasacore_1_1ImageUtilities.html',1,'casacore']]],
+  ['impl',['impl',['../classcasacore_1_1Adios2StMan_1_1impl.html',1,'casacore::Adios2StMan']]],
   ['incrementalstman',['IncrementalStMan',['../classcasacore_1_1IncrementalStMan.html',1,'casacore']]],
   ['indexerror',['IndexError',['../classcasacore_1_1IndexError.html',1,'casacore::IndexError'],['../classcasacore_1_1indexError.html',1,'casacore::indexError&lt; t &gt;']]],
+  ['initerror',['InitError',['../classcasacore_1_1InitError.html',1,'casacore']]],
   ['input',['Input',['../classcasacore_1_1Input.html',1,'casacore']]],
   ['interfractilerangefunc',['InterFractileRangeFunc',['../classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1InterFractileRangeFunc.html',1,'casacore::ArrayPartMath_global_functions_Array_partial_operations']]],
   ['interhexilerangefunc',['InterHexileRangeFunc',['../classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1InterHexileRangeFunc.html',1,'casacore::ArrayPartMath_global_functions_Array_partial_operations']]],
@@ -50,6 +52,7 @@ var searchData=
   ['iposition_5fglobal_5ffunctions_5fiposition_5farithmetic',['IPosition_global_functions_IPosition_Arithmetic',['../structcasacore_1_1IPosition__global__functions__IPosition__Arithmetic.html',1,'casacore']]],
   ['iposition_5fglobal_5ffunctions_5fiposition_5findexing',['IPosition_global_functions_IPosition_Indexing',['../structcasacore_1_1IPosition__global__functions__IPosition__Indexing.html',1,'casacore']]],
   ['iposition_5fglobal_5ffunctions_5fiposition_5flogical',['IPosition_global_functions_IPosition_Logical',['../structcasacore_1_1IPosition__global__functions__IPosition__Logical.html',1,'casacore']]],
+  ['ipositioncomparator',['IPositionComparator',['../classcasacore_1_1IPositionComparator.html',1,'casacore']]],
   ['isfinite',['IsFinite',['../structcasacore_1_1IsFinite.html',1,'casacore']]],
   ['isinf',['IsInf',['../structcasacore_1_1IsInf.html',1,'casacore']]],
   ['ismbase',['ISMBase',['../classcasacore_1_1ISMBase.html',1,'casacore']]],
@@ -61,5 +64,6 @@ var searchData=
   ['iteratorstl',['IteratorSTL',['../classcasacore_1_1Array_1_1IteratorSTL.html',1,'casacore::Array']]],
   ['iterboundaryerror',['IterBoundaryError',['../classcasacore_1_1IterBoundaryError.html',1,'casacore']]],
   ['itererror',['IterError',['../classcasacore_1_1IterError.html',1,'casacore']]],
-  ['iteriniterror',['IterInitError',['../classcasacore_1_1IterInitError.html',1,'casacore']]]
+  ['iteriniterror',['IterInitError',['../classcasacore_1_1IterInitError.html',1,'casacore']]],
+  ['itrfcolumn',['ItrfColumn',['../classcasacore_1_1ItrfColumn.html',1,'casacore']]]
 ];

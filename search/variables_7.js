@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['g',['G',['../classcasacore_1_1QC.html#ab8fc9fed58dba34ec5a7f3a4894180cd',1,'casacore::QC']]],
   ['g1',['g1',['../classcasacore_1_1MeasMath.html#af630421cd221a91f46006f93ab017bb5',1,'casacore::MeasMath']]],
   ['g2',['g2',['../classcasacore_1_1MeasMath.html#a883ac4a49968ad6e77c979833a5c4b58',1,'casacore::MeasMath']]],
   ['g3',['g3',['../classcasacore_1_1MeasMath.html#a1ff5f7693c32c69b667eee6348be5635',1,'casacore::MeasMath']]],
@@ -15,7 +14,7 @@ var searchData=
   ['global_5fsink_5fp',['global_sink_p',['../classcasacore_1_1LogSink.html#ac637aa43047c72610d27bc3edeb7a2b1',1,'casacore::LogSink']]],
   ['goodparameterstatus_5fp',['goodParameterStatus_p',['../classcasacore_1_1LatticeHistograms.html#aa9dffbf7bb24c1031e9a84a8a02a6f0c',1,'casacore::LatticeHistograms::goodParameterStatus_p()'],['../classcasacore_1_1LatticeStatistics.html#a01865a2e3bcfd408381cef0110f3bcb5',1,'casacore::LatticeStatistics::goodParameterStatus_p()']]],
   ['gr',['gr',['../classcasacore_1_1SerialHelper.html#aba99a44133b4472a3970f739545f62e3',1,'casacore::SerialHelper']]],
-  ['grad_5fp',['grad_p',['../classcasacore_1_1AutoDiffRep.html#a57e204de6142ef8211967c248e65def4',1,'casacore::AutoDiffRep::grad_p()'],['../classcasacore_1_1SparseDiffRep.html#a461610c953734a98baffa2b263c4e156',1,'casacore::SparseDiffRep::grad_p()']]],
+  ['grad_5fp',['grad_p',['../classcasacore_1_1AutoDiff.html#a066c5e9a970c581044e022d01817cebe',1,'casacore::AutoDiff::grad_p()'],['../classcasacore_1_1SparseDiffRep.html#a461610c953734a98baffa2b263c4e156',1,'casacore::SparseDiffRep::grad_p()']]],
   ['group',['group',['../structcasacore_1_1MultiFileInfo.html#a655dcb2a81c264f883713cfb882e013c',1,'casacore::MultiFileInfo']]],
   ['group_5fp',['group_p',['../classcasacore_1_1FITSGroupWriter.html#a5e69d3c105702cc8b87d209d22fc15cb',1,'casacore::FITSGroupWriter']]],
   ['group_5fparm',['group_parm',['../classcasacore_1_1PrimaryGroup.html#a4ab75e31fe540dc98f01c1fc7e423a45',1,'casacore::PrimaryGroup']]],

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['dataarray',['DataArray',['../StatisticsTypes_8h.html#a558ae6f427d9dd80e5bc5fe74011773e',1,'StatisticsTypes.h']]],
   ['dataranges',['DataRanges',['../StatisticsTypes_8h.html#a48956db75a460c450d26b925c2dac12b',1,'StatisticsTypes.h']]],
   ['debugassert',['DebugAssert',['../Assert_8h.html#a3a2841df3d3b6a6443634cdb5d39513d',1,'Assert.h']]],
   ['debugassertexit',['DebugAssertExit',['../Assert_8h.html#ace87d0c78b051a1739b3814f77d16f79',1,'Assert.h']]],

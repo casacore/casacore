@@ -1,12 +1,8 @@
 var searchData=
 [
-  ['need_5ffortran_5funderscores',['NEED_FORTRAN_UNDERSCORES',['../MatrixMathLA_8h.html#a4b844f9574fef94dca10fb3bcf279dba',1,'MatrixMathLA.h']]],
-  ['needs_5flog10_5fcomplex',['NEEDS_LOG10_COMPLEX',['../complex_8h.html#a7f41a96ebfbb16b85bac9147006ab359',1,'complex.h']]],
-  ['needs_5fpowfloatfloat',['NEEDS_POWFLOATFLOAT',['../math_8h.html#add60bfd9a44047bf3ccb34bdfd42a8e3',1,'math.h']]],
-  ['no_5fmallinfo',['NO_MALLINFO',['../malloc_8h.html#abdaef093c0ac7f4ffca5df2d2b2f0560',1,'malloc.h']]],
-  ['noexcept',['noexcept',['../Allocator_8h.html#a189faadd7f99f6c354db09acbb2aafcd',1,'Allocator.h']]],
-  ['numerictraits_5fc',['NumericTraits_C',['../NumericTraits_8h.html#a7daef289f3ec384840fb22e5a85f35df',1,'NumericTraits.h']]],
-  ['numerictraits_5fd',['NumericTraits_D',['../NumericTraits_8h.html#ac9d3de259b96a7dad1d2f04d61e688a1',1,'NumericTraits.h']]],
-  ['numerictraits_5fdc',['NumericTraits_DC',['../NumericTraits_8h.html#a8d3002be9ef837ef08bc7505381b0362',1,'NumericTraits.h']]],
-  ['numerictraits_5ff',['NumericTraits_F',['../NumericTraits_8h.html#a3eafb7b46e1772de14ff480f5f1f7c5c',1,'NumericTraits.h']]]
+  ['m_5fgranularity',['M_GRANULARITY',['../malloc_8h.html#a1ff5e3f74801d4cbb5e97ab2d3b8f2e3',1,'malloc.h']]],
+  ['m_5fmmap_5fthreshold',['M_MMAP_THRESHOLD',['../malloc_8h.html#a0dd09b97e3eb71f8256b8bd441828175',1,'malloc.h']]],
+  ['m_5ftrim_5fthreshold',['M_TRIM_THRESHOLD',['../malloc_8h.html#ae5e96ee9e20ef7cfcbbb690877fc9fb2',1,'malloc.h']]],
+  ['mallinfo_5ffield_5ftype',['MALLINFO_FIELD_TYPE',['../malloc_8h.html#a53688562ed3d2eda132ae91de874cd98',1,'malloc.h']]],
+  ['malloc_5f280_5fh',['MALLOC_280_H',['../malloc_8h.html#a04d74d43f06e684ac211304659402c7a',1,'malloc.h']]]
 ];

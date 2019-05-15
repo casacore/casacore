@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['quanta_5fmodule',['Quanta_module',['../group__Quanta__module.html',1,'']]],
-  ['quanta_5fmodule_5finternal_5fclasses',['Quanta_module_internal_classes',['../group__Quanta__module__internal__classes.html',1,'']]]
+  ['python_20package_20_28libcasa_5fpython_29',['python package (libcasa_python)',['../group__python.html',1,'']]]
 ];

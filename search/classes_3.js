@@ -30,6 +30,8 @@ var searchData=
   ['discreteuniform',['DiscreteUniform',['../classcasacore_1_1DiscreteUniform.html',1,'casacore']]],
   ['divides',['Divides',['../structcasacore_1_1Divides.html',1,'casacore']]],
   ['doos',['DOos',['../classcasacore_1_1DOos.html',1,'casacore']]],
+  ['dopplerengine',['DopplerEngine',['../classcasacore_1_1DopplerEngine.html',1,'casacore']]],
+  ['dopplerudf',['DopplerUDF',['../classcasacore_1_1DopplerUDF.html',1,'casacore']]],
   ['downcase',['Downcase',['../structcasacore_1_1Downcase.html',1,'casacore']]],
   ['dummy_5fconstants_5fclass',['Dummy_Constants_class',['../classcasacore_1_1Dummy__Constants__class.html',1,'casacore']]],
   ['duplerror',['DuplError',['../classcasacore_1_1DuplError.html',1,'casacore::DuplError'],['../classcasacore_1_1duplError.html',1,'casacore::duplError&lt; t &gt;']]],

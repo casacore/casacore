@@ -2,12 +2,9 @@ var searchData=
 [
   ['dataconversion_2eh',['DataConversion.h',['../DataConversion_8h.html',1,'']]],
   ['dataman_2eh',['DataMan.h',['../DataMan_8h.html',1,'']]],
-  ['datamanaccessor_2eh',['DataManAccessor.h',['../DataMan_2DataManAccessor_8h.html',1,'']]],
-  ['datamanaccessor_2eh',['DataManAccessor.h',['../Tables_2DataManAccessor_8h.html',1,'']]],
-  ['datamanager_2eh',['DataManager.h',['../DataMan_2DataManager_8h.html',1,'']]],
-  ['datamanager_2eh',['DataManager.h',['../Tables_2DataManager_8h.html',1,'']]],
-  ['datamanerror_2eh',['DataManError.h',['../DataMan_2DataManError_8h.html',1,'']]],
-  ['datamanerror_2eh',['DataManError.h',['../Tables_2DataManError_8h.html',1,'']]],
+  ['datamanaccessor_2eh',['DataManAccessor.h',['../DataManAccessor_8h.html',1,'']]],
+  ['datamanager_2eh',['DataManager.h',['../DataManager_8h.html',1,'']]],
+  ['datamanerror_2eh',['DataManError.h',['../DataManError_8h.html',1,'']]],
   ['datamaninfo_2eh',['DataManInfo.h',['../DataManInfo_8h.html',1,'']]],
   ['datatype_2eh',['DataType.h',['../DataType_8h.html',1,'']]],
   ['defaultvalue_2eh',['DefaultValue.h',['../DefaultValue_8h.html',1,'']]],
@@ -24,6 +21,8 @@ var searchData=
   ['directory_2eh',['Directory.h',['../Directory_8h.html',1,'']]],
   ['directoryiterator_2eh',['DirectoryIterator.h',['../DirectoryIterator_8h.html',1,'']]],
   ['doos_2eh',['DOos.h',['../DOos_8h.html',1,'']]],
+  ['dopplerengine_2eh',['DopplerEngine.h',['../DopplerEngine_8h.html',1,'']]],
+  ['dopplerudf_2eh',['DopplerUDF.h',['../DopplerUDF_8h.html',1,'']]],
   ['dynbuffer_2eh',['DynBuffer.h',['../DynBuffer_8h.html',1,'']]],
   ['dynlib_2eh',['DynLib.h',['../DynLib_8h.html',1,'']]]
 ];

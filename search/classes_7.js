@@ -25,6 +25,7 @@ var searchData=
   ['headerdataunit',['HeaderDataUnit',['../classcasacore_1_1HeaderDataUnit.html',1,'casacore']]],
   ['helpmeasudf',['HelpMeasUDF',['../classcasacore_1_1HelpMeasUDF.html',1,'casacore']]],
   ['helpmscaludf',['HelpMsCalUDF',['../classcasacore_1_1HelpMsCalUDF.html',1,'casacore']]],
+  ['hingesfencesquantilecomputer',['HingesFencesQuantileComputer',['../classcasacore_1_1HingesFencesQuantileComputer.html',1,'casacore']]],
   ['hingesfencesstatistics',['HingesFencesStatistics',['../classcasacore_1_1HingesFencesStatistics.html',1,'casacore']]],
   ['histacc',['HistAcc',['../classcasacore_1_1HistAcc.html',1,'casacore']]],
   ['histtiledcollapser',['HistTiledCollapser',['../classcasacore_1_1HistTiledCollapser.html',1,'casacore']]],

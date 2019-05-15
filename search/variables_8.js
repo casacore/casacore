@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['h',['h',['../classcasacore_1_1QC.html#af669daf4ebdcc970c3ec974674d01d6f',1,'casacore::QC']]],
   ['h2o_5fp',['H2O_p',['../classcasacore_1_1ROMSWeatherColumns.html#a5aef7d97b0b87551e3e675cbbdf734b2',1,'casacore::ROMSWeatherColumns::H2O_p()'],['../classcasacore_1_1MSWeatherColumns.html#a958d1c71a8949cf9c4187032edc471b9',1,'casacore::MSWeatherColumns::H2O_p()']]],
   ['h2ofield_5fp',['H2OField_p',['../classcasacore_1_1SDWeatherHandler.html#aa35ffde9cbd40cbcdcc808247670a4f4',1,'casacore::SDWeatherHandler']]],
   ['h2oflag_5fp',['H2OFlag_p',['../classcasacore_1_1ROMSWeatherColumns.html#ad4d66183fcbcff521fcec421f77c6959',1,'casacore::ROMSWeatherColumns::H2OFlag_p()'],['../classcasacore_1_1MSWeatherColumns.html#a9f16dbf62e7947f5c8643620cd0e66d3',1,'casacore::MSWeatherColumns::H2OFlag_p()']]],
@@ -20,6 +19,7 @@ var searchData=
   ['hasmessage',['hasMessage',['../classcasacore_1_1MSSelectionError.html#a7c05037178b76acfd2781613422c518e',1,'casacore::MSSelectionError']]],
   ['hasms_5fp',['hasMS_p',['../classcasacore_1_1MSDerivedValues.html#a717b3c23ffa821b3e5c6d4d0b2b18d7d',1,'casacore::MSDerivedValues']]],
   ['hasposition_5fp',['hasPosition_p',['../classcasacore_1_1SDSourceHandler.html#a40c9f70ce265d4b053dece667b6ea501',1,'casacore::SDSourceHandler']]],
+  ['hasposrefsys_5fp',['hasPosrefsys_p',['../classcasacore_1_1MeasComet.html#a8e7a09c1fdea808381fc3312cd44c50e',1,'casacore::MeasComet']]],
   ['hasput_5fp',['hasPut_p',['../classcasacore_1_1StManArrayFile.html#aa335292d47063a747d4ef4feb64d83e0',1,'casacore::StManArrayFile::hasPut_p()'],['../classcasacore_1_1StManAipsIO.html#a4ece70eb3065ed7302679935673ea527',1,'casacore::StManAipsIO::hasPut_p()']]],
   ['hasrestfreq_5fp',['hasRestFreq_p',['../classcasacore_1_1SDSourceHandler.html#ae0bc22eebc240133b6213c211a4aa863',1,'casacore::SDSourceHandler']]],
   ['hassource_5fp',['hasSource_p',['../classcasacore_1_1MSValidIds.html#a5f83ff57c6b3232b02588ff259dd62f6',1,'casacore::MSValidIds']]],
@@ -45,9 +45,7 @@ var searchData=
   ['hecto',['hecto',['../namespacecasacore_1_1C.html#a44c9ce78f15ed6e52c738c3ce831c3da',1,'casacore::C']]],
   ['help',['help',['../classcasacore_1_1Param.html#ada49b1876e91ffd8a6b629104d2f11e0',1,'casacore::Param']]],
   ['help_5fmode',['help_mode',['../classcasacore_1_1Input.html#af9a0cff8381177b620ffe07608767828',1,'casacore::Input']]],
-  ['hf',['hf',['../structcasacore_1_1LatticeStatistics_1_1AlgConf.html#a44abb18da61e99f97872f851095b2a63',1,'casacore::LatticeStatistics::AlgConf']]],
   ['hgt_5fp',['hgt_p',['../classcasacore_1_1EarthMagneticMachine.html#a546cc91eefb27caf70f14dea8bff6740',1,'casacore::EarthMagneticMachine']]],
-  ['hi',['HI',['../classcasacore_1_1QC.html#a79939ec36a35f342d59b6d241795eda6',1,'casacore::QC']]],
   ['hilimit',['hiLimit',['../classcasacore_1_1MVPosition.html#a3c8062b428e9a9ab2d8010cdbd79dde6',1,'casacore::MVPosition']]],
   ['history_5fitem',['history_item',['../classcasacore_1_1ReservedFitsKeywordCollection.html#a7a0c46d36f7ac2f618dc3ae64e9ba9c3',1,'casacore::ReservedFitsKeywordCollection']]],
   ['history_5fp',['history_p',['../classcasacore_1_1MeasurementSet.html#a57a9c83bcf765702d26b3b20fa1c20db',1,'casacore::MeasurementSet::history_p()'],['../classcasacore_1_1ROMSColumns.html#a2c501d227854a9a95a63f2e7118cda10',1,'casacore::ROMSColumns::history_p()'],['../classcasacore_1_1MSColumns.html#a90e1323ca3dd73ac1997249844115484',1,'casacore::MSColumns::history_p()']]],
@@ -60,7 +58,6 @@ var searchData=
   ['hour',['hour',['../structcasacore_1_1TimeFields.html#aa0200b352a0984d9a91de15664862227',1,'casacore::TimeFields::hour()'],['../namespacecasacore_1_1C.html#a02a93c22f2b085d8a40e350606a3b5b9',1,'casacore::C::hour()']]],
   ['hourangledefined_5fp',['hourAngleDefined_p',['../classcasacore_1_1NewMSSimulator.html#af6648e5acd9549458981c9669ffdf065',1,'casacore::NewMSSimulator']]],
   ['how_5fpast_5fend_5fp',['how_past_end_p',['../classcasacore_1_1FITSTimedTable.html#ae00754a90c5be4e93a76ae81f2795cb7',1,'casacore::FITSTimedTable']]],
-  ['hturn',['hTurn',['../classcasacore_1_1QC.html#a15020ae49f5d17eb52427360b8f30c62',1,'casacore::QC']]],
   ['humidityfield_5fp',['humidityField_p',['../classcasacore_1_1SDWeatherHandler.html#a580c4ad0c36c4cdfb2660925dd7c70be',1,'casacore::SDWeatherHandler']]],
   ['humidityid_5fp',['humidityId_p',['../classcasacore_1_1SDWeatherHandler.html#ad812c0d5c312f69457d571ed4ab0cc42',1,'casacore::SDWeatherHandler']]],
   ['hypercolumnname_5fp',['hypercolumnName_p',['../classcasacore_1_1TiledStMan.html#a410671f13af9658c6ee4306e15ad96cf',1,'casacore::TiledStMan']]],

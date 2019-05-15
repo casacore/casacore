@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['python_20package_20_28libcasa_5fpython_29',['python package (libcasa_python)',['../group__python.html',1,'']]]
+  ['os_5fmodule',['OS_module',['../group__OS__module.html',1,'']]],
+  ['os_5fmodule_5finternal_5fclasses',['OS_module_internal_classes',['../group__OS__module__internal__classes.html',1,'']]]
 ];

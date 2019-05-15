@@ -1,22 +1,14 @@
 var searchData=
 [
   ['setupnewtable',['SetupNewTable',['../classcasacore_1_1DataManager.html#aa05e371d2353716eaaca37b2da594ef5',1,'casacore::DataManager']]],
-  ['shape',['shape',['../classcasacore_1_1TableExprNode.html#aec40ccd610c24facbb0c6256758f6bd3',1,'casacore::TableExprNode']]],
-  ['sign',['sign',['../classcasacore_1_1LatticeExprNode.html#a588e4aeca94d9030f8c8124a53a42dc2',1,'casacore::LatticeExprNode::sign()'],['../classcasacore_1_1TableExprNode.html#a29e7df9e42df60990e9b2a71718abd7a',1,'casacore::TableExprNode::sign()']]],
-  ['sin',['sin',['../classcasacore_1_1LatticeExprNode.html#ab069e95df9f117cc6d32b2b12a60058f',1,'casacore::LatticeExprNode::sin()'],['../classcasacore_1_1TableExprNode.html#a08ec443f6874d367275bd29eececbb4e',1,'casacore::TableExprNode::sin()']]],
-  ['sinh',['sinh',['../classcasacore_1_1LatticeExprNode.html#acf73604438692572604d5abe61c10eb1',1,'casacore::LatticeExprNode::sinh()'],['../classcasacore_1_1TableExprNode.html#a60282634cf99ed6e04431fa94f672c24',1,'casacore::TableExprNode::sinh()']]],
+  ['sign',['sign',['../classcasacore_1_1LatticeExprNode.html#a588e4aeca94d9030f8c8124a53a42dc2',1,'casacore::LatticeExprNode']]],
+  ['sin',['sin',['../classcasacore_1_1LatticeExprNode.html#ab069e95df9f117cc6d32b2b12a60058f',1,'casacore::LatticeExprNode']]],
+  ['sinh',['sinh',['../classcasacore_1_1LatticeExprNode.html#acf73604438692572604d5abe61c10eb1',1,'casacore::LatticeExprNode']]],
   ['sort',['Sort',['../classcasacore_1_1SortKey.html#a02c4c2761b46c3472609d6f179114d23',1,'casacore::SortKey']]],
   ['spectralindex',['spectralindex',['../classcasacore_1_1LatticeExprNode.html#ad7bd853eb3f7ba8422f107da76efa0ea',1,'casacore::LatticeExprNode']]],
-  ['sqlpattern',['sqlpattern',['../classcasacore_1_1TableExprNode.html#a9f908a36281c28209a4765c1042d6f54',1,'casacore::TableExprNode']]],
-  ['sqrt',['sqrt',['../classcasacore_1_1LatticeExprNode.html#ae48a05bf69b7d9d28c7e0a3c072e3b99',1,'casacore::LatticeExprNode::sqrt()'],['../classcasacore_1_1TableExprNode.html#afeb3c40ec10663371d99b99590c77a10',1,'casacore::TableExprNode::sqrt()']]],
-  ['square',['square',['../classcasacore_1_1TableExprNode.html#a5a355dd2cfdb486a59fff0dcce2a6ac1',1,'casacore::TableExprNode']]],
-  ['stddev',['stddev',['../classcasacore_1_1LatticeExprNode.html#a698e592f2efcc80d4a8df6c6d044f7cb',1,'casacore::LatticeExprNode::stddev()'],['../classcasacore_1_1TableExprNode.html#ac59c85d1a8c79b735665813416ec3ebb',1,'casacore::TableExprNode::stddev()']]],
-  ['stddevs',['stddevs',['../classcasacore_1_1TableExprNode.html#a0204a96a4dde63a1f6864d0b4f6471ba',1,'casacore::TableExprNode']]],
+  ['sqrt',['sqrt',['../classcasacore_1_1LatticeExprNode.html#ae48a05bf69b7d9d28c7e0a3c072e3b99',1,'casacore::LatticeExprNode']]],
+  ['statisticsalgorithmfactory',['StatisticsAlgorithmFactory',['../classcasacore_1_1StatisticsAlgorithmFactory.html#a4e8cbbf20f279d261a343286c5600a81',1,'casacore::StatisticsAlgorithmFactory']]],
+  ['stddev',['stddev',['../classcasacore_1_1LatticeExprNode.html#a698e592f2efcc80d4a8df6c6d044f7cb',1,'casacore::LatticeExprNode']]],
   ['string',['String',['../classcasacore_1_1SubString.html#a7fb804f7dc96dd9f705c84095f37f1ca',1,'casacore::SubString']]],
-  ['strlength',['strlength',['../classcasacore_1_1TableExprNode.html#aaa7466227ff74e825f79368b3d1060a4',1,'casacore::TableExprNode']]],
-  ['substr',['substr',['../classcasacore_1_1TableExprNode.html#ae2263b0ceda8671a2cc8d63c6443423c',1,'casacore::TableExprNode::substr()'],['../classcasacore_1_1TableExprNode.html#a6d20db997db0dd5c61a7cdbeaa71423f',1,'casacore::TableExprNode::substr()']]],
-  ['sum',['sum',['../classcasacore_1_1LatticeExprNode.html#ad1d5f931e6db784761329d50c0f4a44d',1,'casacore::LatticeExprNode::sum()'],['../classcasacore_1_1TableExprNode.html#ab58c33dc294abdceb656c04420882c43',1,'casacore::TableExprNode::sum()']]],
-  ['sums',['sums',['../classcasacore_1_1TableExprNode.html#a4a81c02f88b5d7938b87730a71d0173d',1,'casacore::TableExprNode']]],
-  ['sumsquare',['sumSquare',['../classcasacore_1_1TableExprNode.html#a55ed076f142a1f058f33db7ae2491737',1,'casacore::TableExprNode']]],
-  ['sumsquares',['sumSquares',['../classcasacore_1_1TableExprNode.html#add64b00535398d56dfbedf6642d291e3',1,'casacore::TableExprNode']]]
+  ['sum',['sum',['../classcasacore_1_1LatticeExprNode.html#ad1d5f931e6db784761329d50c0f4a44d',1,'casacore::LatticeExprNode']]]
 ];

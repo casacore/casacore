@@ -1,7 +1,9 @@
 var searchData=
 [
   ['earthfield',['EarthField',['../classcasacore_1_1EarthField.html',1,'casacore']]],
+  ['earthmagneticengine',['EarthMagneticEngine',['../classcasacore_1_1EarthMagneticEngine.html',1,'casacore']]],
   ['earthmagneticmachine',['EarthMagneticMachine',['../classcasacore_1_1EarthMagneticMachine.html',1,'casacore']]],
+  ['earthmagneticudf',['EarthMagneticUDF',['../classcasacore_1_1EarthMagneticUDF.html',1,'casacore']]],
   ['eclecticfunctionfactory',['EclecticFunctionFactory',['../classcasacore_1_1EclecticFunctionFactory.html',1,'casacore']]],
   ['emptystackerror',['EmptyStackError',['../classcasacore_1_1EmptyStackError.html',1,'casacore']]],
   ['environmentvariable',['EnvironmentVariable',['../classcasacore_1_1EnvironmentVariable.html',1,'casacore']]],

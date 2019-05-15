@@ -1,26 +1,12 @@
 var searchData=
 [
-  ['real',['real',['../classcasacore_1_1LatticeExprNode.html#a4a7d289e2cfb1c5e696302d3fa681763',1,'casacore::LatticeExprNode::real()'],['../classcasacore_1_1TableExprNode.html#a0966c108a6d832fe96301dd19fba082a',1,'casacore::TableExprNode::real()']]],
+  ['real',['real',['../classcasacore_1_1LatticeExprNode.html#a4a7d289e2cfb1c5e696302d3fa681763',1,'casacore::LatticeExprNode']]],
   ['rebin',['rebin',['../classcasacore_1_1LatticeExprNode.html#a40a96afc5ce19208094ddafbcf458790',1,'casacore::LatticeExprNode']]],
   ['recordrep',['RecordRep',['../classcasacore_1_1Record.html#a921b34d1fe2724a898c84b3d47bf4f85',1,'casacore::Record']]],
   ['reftable',['RefTable',['../classcasacore_1_1Table.html#a1f64838ab36a74be4e6c78d203bf4a4e',1,'casacore::Table']]],
-  ['regex',['regex',['../classcasacore_1_1TableExprNode.html#a8604b544cc79efb3c32b9ebc3ac0eb0f',1,'casacore::TableExprNode']]],
-  ['replace',['replace',['../classcasacore_1_1LatticeExprNode.html#a9b1533d279f79bedce194275751c5782',1,'casacore::LatticeExprNode::replace()'],['../classcasacore_1_1TableExprNode.html#a802e32d8e427c4c760262c83822b4c18',1,'casacore::TableExprNode::replace()'],['../classcasacore_1_1TableExprNode.html#a280f15f4e6f0afafaa9fc43bfbeed902',1,'casacore::TableExprNode::replace()']]],
+  ['replace',['replace',['../classcasacore_1_1LatticeExprNode.html#a9b1533d279f79bedce194275751c5782',1,'casacore::LatticeExprNode']]],
   ['rigidvector_3c_20t_2c_20n_20_3e',['RigidVector&lt; T, n &gt;',['../classcasacore_1_1SquareMatrix.html#a46b2bc42ec311b006a447e4f4ff35056',1,'casacore::SquareMatrix']]],
-  ['rms',['rms',['../classcasacore_1_1TableExprNode.html#a571ee123985008b8c087613f87e1a841',1,'casacore::TableExprNode']]],
-  ['rmss',['rmss',['../classcasacore_1_1TableExprNode.html#a0ba9a60ed9014df1080f3d89d1509f46',1,'casacore::TableExprNode']]],
   ['ro_5flatticeiterator_3c_20t_20_3e',['RO_LatticeIterator&lt; T &gt;',['../classcasacore_1_1LatticeIterInterface.html#a151cff213576f18713020a6d846523d5',1,'casacore::LatticeIterInterface']]],
   ['rodatamanaccessor',['RODataManAccessor',['../classcasacore_1_1Table.html#aaf6085d802cb2d0f019ac50e2e1d1840',1,'casacore::Table']]],
-  ['round',['round',['../classcasacore_1_1LatticeExprNode.html#a0967b00cb39efe66f8bcda70f95e5c7d',1,'casacore::LatticeExprNode::round()'],['../classcasacore_1_1TableExprNode.html#a21e65304776a26b2ca022829e0705c52',1,'casacore::TableExprNode::round()']]],
-  ['rtrim',['rtrim',['../classcasacore_1_1TableExprNode.html#a0bbffe7a8c27f99a36addc9f1dcd2d3d',1,'casacore::TableExprNode']]],
-  ['runningall',['runningAll',['../classcasacore_1_1TableExprNode.html#ab83e0224191afc5c8a56b6f0049dc4a1',1,'casacore::TableExprNode']]],
-  ['runningany',['runningAny',['../classcasacore_1_1TableExprNode.html#afd1f7b788d2780e7c51df455feefaf97',1,'casacore::TableExprNode']]],
-  ['runningavdev',['runningAvdev',['../classcasacore_1_1TableExprNode.html#a290caa0c2c7880902c43d9743cfdaba7',1,'casacore::TableExprNode']]],
-  ['runningmax',['runningMax',['../classcasacore_1_1TableExprNode.html#acf95d05aacdc6d22ebb82b6afa9e85bc',1,'casacore::TableExprNode']]],
-  ['runningmean',['runningMean',['../classcasacore_1_1TableExprNode.html#a8d205c17498ff4eed4c50742891057f1',1,'casacore::TableExprNode']]],
-  ['runningmedian',['runningMedian',['../classcasacore_1_1TableExprNode.html#a0714aad3161a0817cf3c80189f2de2cf',1,'casacore::TableExprNode']]],
-  ['runningmin',['runningMin',['../classcasacore_1_1TableExprNode.html#a63a663f98d2591d02549225335f5c7a6',1,'casacore::TableExprNode']]],
-  ['runningrms',['runningRms',['../classcasacore_1_1TableExprNode.html#a1399c95fd4bfa8ff606e749f07ee11e4',1,'casacore::TableExprNode']]],
-  ['runningstddev',['runningStddev',['../classcasacore_1_1TableExprNode.html#ad92e7787b737d0339198335cab5b9d2c',1,'casacore::TableExprNode']]],
-  ['runningvariance',['runningVariance',['../classcasacore_1_1TableExprNode.html#a8d2a4db64b36d532e43e89a84dfbedf8',1,'casacore::TableExprNode']]]
+  ['round',['round',['../classcasacore_1_1LatticeExprNode.html#a0967b00cb39efe66f8bcda70f95e5c7d',1,'casacore::LatticeExprNode']]]
 ];

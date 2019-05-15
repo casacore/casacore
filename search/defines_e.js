@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['poissonfunction_5fps',['PoissonFunction_PS',['../PoissonFunction_8h.html#a95c10b842fab3050014caa34a18da728',1,'PoissonFunction.h']]],
-  ['polynomial_5fps',['Polynomial_PS',['../Polynomial_8h.html#a699e66127dcc9940df1882858e6f8e49',1,'Polynomial.h']]],
-  ['powerlogarithmicpolynomial_5fps',['PowerLogarithmicPolynomial_PS',['../PowerLogarithmicPolynomial_8h.html#ae599d31e3893e392996a0da57a7ee594',1,'PowerLogarithmicPolynomial.h']]],
-  ['pyc_5fuse_5fpyarray',['PYC_USE_PYARRAY',['../PycArrayNP_8h.html#a0de75ba4c86d6c4f5838407fd1e4dda7',1,'PycArrayNP.h']]]
+  ['oddpolynomial_5fps',['OddPolynomial_PS',['../OddPolynomial_8h.html#a8a04c0626d4b840b7bce38599c6d23bc',1,'OddPolynomial.h']]],
+  ['only_5fmspaces',['ONLY_MSPACES',['../malloc_8h.html#aeb595638a14befbd356f77f8ec2a5c0d',1,'malloc.h']]]
 ];

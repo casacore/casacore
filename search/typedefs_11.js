@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['uchar',['uChar',['../namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9',1,'casacore::uChar()'],['../namespacecasacore_1_1casacore.html#afa03e3520d5ff7d11ef1819693fb2023',1,'casacore::casacore::uChar()']]],
-  ['uint',['uInt',['../namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a',1,'casacore::uInt()'],['../namespacecasacore_1_1casacore.html#a07bf6ce50be4fcb82f070dea94ee57ef',1,'casacore::casacore::uInt()']]],
-  ['uint64',['uInt64',['../namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f',1,'casacore::uInt64()'],['../namespacecasacore_1_1casacore.html#a1f606c961c08fd75133a5b59178ad7bd',1,'casacore::casacore::uInt64()']]],
-  ['ulong',['uLong',['../namespacecasacore.html#a2c44acc8a1ccc720c5d3010bf5125db0',1,'casacore::uLong()'],['../namespacecasacore_1_1casacore.html#af4c374fb703691be141c150fdc8d6184',1,'casacore::casacore::uLong()']]],
-  ['ushort',['uShort',['../namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad',1,'casacore::uShort()'],['../namespacecasacore_1_1casacore.html#ab5ed8b1d86c73142773ed4476c56d033',1,'casacore::casacore::uShort()']]]
+  ['tenshptr',['TENShPtr',['../namespacecasacore.html#a96de37e9f61b7ffb08623f76bfebe944',1,'casacore']]],
+  ['timefields',['TimeFields',['../namespacecasacore.html#a0306a4c4230afa30f2846443b24d249d',1,'casacore']]],
+  ['traits_5ftype',['traits_type',['../classcasacore_1_1String.html#ac2ffe20c2401cb806e0e178172bc656d',1,'casacore::String']]],
+  ['type',['type',['../classcasacore_1_1NewDelAllocator.html#a28d222f924e11778e79bb0b009133456',1,'casacore::NewDelAllocator::type()'],['../classcasacore_1_1AlignedAllocator.html#ad454dd298f4ba2aa404470c4193edefc',1,'casacore::AlignedAllocator::type()'],['../classcasacore_1_1DefaultAllocator.html#af9ea537eb9176c70301f4f8e0ba910c9',1,'casacore::DefaultAllocator::type()'],['../structcasacore_1_1AllocSpec.html#ae58aa47116bb956a1778ed68f72d4aea',1,'casacore::AllocSpec::type()'],['../classcasacore_1_1FunctionTraits.html#a8c72ce46e77d19290d75a8a74874f400',1,'casacore::FunctionTraits::Type()'],['../classcasacore_1_1FunctionTraits__P_3_01AutoDiff_3_01T_01_4_01_4.html#a2d96e973fb2fba942465f9707b6f04c6',1,'casacore::FunctionTraits_P&lt; AutoDiff&lt; T &gt; &gt;::Type()'],['../classcasacore_1_1FunctionTraits__PA_3_01AutoDiffA_3_01T_01_4_01_4.html#add40b119f87877cc99c654a37c0eda86',1,'casacore::FunctionTraits_PA&lt; AutoDiffA&lt; T &gt; &gt;::Type()'],['../classcasacore_1_1FunctionTraits__PX_3_01AutoDiffX_3_01T_01_4_01_4.html#a31bd3440200f0960eefa000ef29f42d0',1,'casacore::FunctionTraits_PX&lt; AutoDiffX&lt; T &gt; &gt;::Type()']]],
+  ['typesfunc',['TypesFunc',['../classcasacore_1_1TableMeasRefDesc.html#af842e4bb0d1a994b59e6ee8be7397d51',1,'casacore::TableMeasRefDesc']]]
 ];
