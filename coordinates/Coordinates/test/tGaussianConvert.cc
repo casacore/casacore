@@ -127,7 +127,7 @@ int main()
          Vector<Double> pixel(cSys.referencePixel().copy());
          doit2 (pixel, cSys, worldAxes);
       }
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return 1;
    }

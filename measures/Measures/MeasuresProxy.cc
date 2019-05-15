@@ -85,7 +85,7 @@ Bool MeasuresProxy::doFrame(const String &in) {
       return False;
     }
     frame_p.set(*pcomet_p);
-  } catch (AipsError(x)) {
+  } catch (AipsError& x) {
     return False;
   } 
   return True;
@@ -342,7 +342,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
       error += "No measure created; probably unknow measure type\n";
       return False;
     }
-  } catch (AipsError (x)) {
+  } catch (AipsError& x) {
     error += "Cannot convert due to missing frame information\n";
     return False;
   }
@@ -397,7 +397,7 @@ Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out,
       dot[j] *= C::pi/180/240./1.002737909350795;
     }
 
-  } catch (AipsError(x)) {
+  } catch (AipsError& x) {
     error += "Cannot convert baseline to uvw: frame "
       "information missing";
     return False;

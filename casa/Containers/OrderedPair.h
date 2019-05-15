@@ -28,6 +28,9 @@
 #ifndef CASA_ORDEREDPAIR_H
 #define CASA_ORDEREDPAIR_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "OrderedPair.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
 
 //# Includes
 #include <casacore/casa/aips.h>

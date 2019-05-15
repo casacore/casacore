@@ -539,7 +539,7 @@ public:
   Bool isScalarColumn (const String& columnName);
 
   // Return the data type of the column as:
-  //  Bool, UChar, Short, UShort, Int, UInt, 
+  //  Bool, UChar, Short, UShort, Int, UInt, Int64,
   //  Float, Double, Complex, DComplex, String, Table, or unknown.
   String columnDataType (const String& columnName);
 

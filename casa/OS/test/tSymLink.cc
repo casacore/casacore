@@ -56,13 +56,13 @@ void doIt (Bool doExcp)
 	try {
 	    SymLink symLink1(Path("tSymLink_tmp/isFile"));
 	}
-	catch (AipsError x) {                                   // regular file
+	catch (AipsError& x) {                                   // regular file
 	    cout << x.getMesg () << endl;
 	} 
 	try {
 	    SymLink symLink1(Path("tSymLink_tmp/isDir"));
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 	    cout << x.getMesg () << endl;                       // directory
 	} 
     }
@@ -77,13 +77,13 @@ void doIt (Bool doExcp)
 	try {
 	    SymLink symLink1(Path("tSymLink_tmp/isDir/newB"));
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 	    cout << x.getMesg () << endl;                    // cannot create
 	} 
 	try {
 	    newLink2.create("a");
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 	    cout << x.getMesg () << endl;                    // cannot create
 	} 
     }
@@ -118,7 +118,7 @@ void doIt (Bool doExcp)
 	try {
 	    linkA.followSymLink();
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 	    cout << x.getMesg () << endl;                       // endless loop
 	} 
     }
@@ -133,7 +133,7 @@ void doIt (Bool doExcp)
 	try {
 	    linkI.followSymLink();
 	}
-	catch (AipsError x) {
+	catch (AipsError& x) {
 	    cout << x.getMesg () << endl;                       // endless loop
 	} 
     }
@@ -178,7 +178,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test6.create ("a", False);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // already existing
 	} 
     }
@@ -188,7 +188,7 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test7.create ("a");
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;               // already existing
 	} 
     }
@@ -204,7 +204,7 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

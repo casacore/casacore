@@ -7,14 +7,20 @@ cmake_minimum_required (VERSION 2.6.0)
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
+include(CheckCXXSourceCompiles)
 
 # fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
 if (POLICY CMP0048)
     cmake_policy (SET CMP0048 OLD)
 endif()
 
+# Enable <packageName>_ROOT variables for recent versions of CMake
+if (POLICY CMP0074)
+    cmake_policy (SET CMP0074 NEW)
+endif()
+
 set(PROJECT_VERSION_MAJOR 3)
-set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_MINOR 1)
 set(PROJECT_VERSION_PATCH 0)
 set(PROJECT_VERSION 
   "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
@@ -39,12 +45,21 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 # By default build only Python2 bindings
 option (BUILD_PYTHON "Build the python bindings" YES)
 option (BUILD_PYTHON3 "Build the python3 bindings" NO)
+option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
-
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
+# Check if O_DIRECT is available.
+# Note this does not work well with check_c_source_compiles.
+check_cxx_source_compiles("
+  #include <fcntl.h>
+  main() { int i = O_DIRECT; }
+  " HAVE_O_DIRECT)
+if (HAVE_O_DIRECT)
+    add_definitions(-DHAVE_O_DIRECT)
+endif()
 
 # By default do not use ADIOS2, HDF5, FFTW3
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
@@ -245,11 +260,6 @@ if (NOT (HAVE_PREAD AND HAVE_PWRITE))
         message(FATAL_ERROR "Casacore requires pread and pwrite functionality" )
 endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
 
-# FindADIOS2 uses environment variables, so set it if needed.
-if (ADIOS2_ROOT_DIR)
-    set (ENV{ADIOS2_ROOT} ${ADIOS2_ROOT_DIR})
-endif (ADIOS2_ROOT_DIR)
-
 # FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
     set (ENV{HDF5_ROOT} ${HDF5_ROOT_DIR})
@@ -318,7 +328,10 @@ find_package (SOFA)
 if (USE_ADIOS2)
     set(USE_MPI ON)
     message (STATUS "MPI is enabled as required by ADIOS2")
-    find_package (ADIOS2)
+    find_package (ADIOS2 CONFIG REQUIRED)
+    if (NOT ADIOS2_HAVE_MPI)
+        message (FATAL_ERROR "ADIOS2 found without MPI support.")
+    endif (NOT ADIOS2_HAVE_MPI)
 endif (USE_ADIOS2)
 if (USE_HDF5)
     find_package (HDF5 REQUIRED)
@@ -364,14 +377,10 @@ if (Boost_FOUND)
     include_directories (${Boost_INCLUDE_DIRS})
     add_definitions(-DHAVE_BOOST)
 endif (Boost_FOUND)
-if (USE_ADIOS2)
 if (ADIOS2_FOUND)
     include_directories (${ADIOS2_INCLUDE_DIRS})
     add_definitions(-DHAVE_ADIOS2)
-else (ADIOS2_FOUND)
-    message(FATAL_ERROR "Casacore is configured to use ADIOS2 but ADIOS2_ROOT_DIR is not defined.")
 endif (ADIOS2_FOUND)
-endif (USE_ADIOS2)
 if (HDF5_FOUND)
     include_directories (${HDF5_INCLUDE_DIRS})
     add_definitions(-DHAVE_HDF5)
@@ -404,8 +413,11 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 endif()
 
 if(USE_MPI)
-    find_package(MPI COMPONENTS C CXX REQUIRED)
-    include_directories (${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
+    find_package(MPI COMPONENTS C REQUIRED)
+    include_directories (${MPI_C_INCLUDE_PATH})
+    add_definitions(-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX)
+    add_definitions(-DHAVE_MPI)
+
     set(ENABLE_TABLELOCKING OFF)
     message (STATUS "ENABLE_TABLELOCKING is turned off as required by MPI")
 endif(USE_MPI)
@@ -473,6 +485,10 @@ endif (NOT DATA_DIR)
 set (DATA_DIR "${DATA_DIR}" CACHE PATH "Measures tables root")
 
 
+# Set compiler flag if deprecated Casacore header files are allowed.
+if (BUILD_DEPRECATED)
+    add_definitions(-DAIPS_USE_DEPRECATED)
+endif ()
 # Set compiler flag if no table locking.
 if (NOT ENABLE_TABLELOCKING)
     add_definitions(-DAIPS_TABLE_NOLOCKING)
@@ -535,6 +551,7 @@ message (STATUS "USE_THREADS ........... = ${USE_THREADS}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_MPI ............... = ${USE_MPI}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
+message (STATUS "HAVE_O_DIRECT ......... = ${HAVE_O_DIRECT}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
 message (STATUS "DATA directory ........ = ${DATA_DIR}")
@@ -550,6 +567,7 @@ message (STATUS "ADIOS2 library? ....... = ${ADIOS2_LIBRARIES}")
 message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
+message (STATUS "BUILD_DEPRECATED ...... = ${BUILD_DEPRECATED}")
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
 message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
@@ -572,6 +590,7 @@ endif (BUILD_PYTHON3)
 # List of build variables and defaults.
 #  BUILD_PYTHON                  YES
 #  BUILD_PYTHON3                 NO
+#  BUILD_DEPRECATED            NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
 #  ENABLE_TABLELOCKING           YES

@@ -28,6 +28,10 @@
 #ifndef CASA_ORDMAPIO_H
 #define CASA_ORDMAPIO_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "OrdMapIO.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 // <summary>
 // Input/output operators for OrderedMaps.
 // </summary>

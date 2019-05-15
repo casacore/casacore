@@ -28,6 +28,9 @@
 #ifndef CASA_HASHMAPIO_H
 #define CASA_HASHMAPIO_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "HashMapIO.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/HashMapIter.h>

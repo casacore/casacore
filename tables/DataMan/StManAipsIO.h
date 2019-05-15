@@ -124,6 +124,7 @@ public:
     void getuShortV   (uInt rownr, uShort* dataPtr);
     void getIntV      (uInt rownr, Int* dataPtr);
     void getuIntV     (uInt rownr, uInt* dataPtr);
+    void getInt64V    (uInt rownr, Int64* dataPtr);
     void getfloatV    (uInt rownr, float* dataPtr);
     void getdoubleV   (uInt rownr, double* dataPtr);
     void getComplexV  (uInt rownr, Complex* dataPtr);
@@ -141,6 +142,7 @@ public:
     void putuShortV   (uInt rownr, const uShort* dataPtr);
     void putIntV      (uInt rownr, const Int* dataPtr);
     void putuIntV     (uInt rownr, const uInt* dataPtr);
+    void putInt64V    (uInt rownr, const Int64* dataPtr);
     void putfloatV    (uInt rownr, const float* dataPtr);
     void putdoubleV   (uInt rownr, const double* dataPtr);
     void putComplexV  (uInt rownr, const Complex* dataPtr);
@@ -160,6 +162,7 @@ public:
     uInt getBlockuShortV   (uInt rownr, uInt nrmax, uShort* dataPtr);
     uInt getBlockIntV      (uInt rownr, uInt nrmax, Int* dataPtr);
     uInt getBlockuIntV     (uInt rownr, uInt nrmax, uInt* dataPtr);
+    uInt getBlockInt64V    (uInt rownr, uInt nrmax, Int64* dataPtr);
     uInt getBlockfloatV    (uInt rownr, uInt nrmax, float* dataPtr);
     uInt getBlockdoubleV   (uInt rownr, uInt nrmax, double* dataPtr);
     uInt getBlockComplexV  (uInt rownr, uInt nrmax, Complex* dataPtr);
@@ -179,6 +182,7 @@ public:
     void putBlockuShortV   (uInt rownr, uInt nrmax, const uShort* dataPtr);
     void putBlockIntV      (uInt rownr, uInt nrmax, const Int* dataPtr);
     void putBlockuIntV     (uInt rownr, uInt nrmax, const uInt* dataPtr);
+    void putBlockInt64V    (uInt rownr, uInt nrmax, const Int64* dataPtr);
     void putBlockfloatV    (uInt rownr, uInt nrmax, const float* dataPtr);
     void putBlockdoubleV   (uInt rownr, uInt nrmax, const double* dataPtr);
     void putBlockComplexV  (uInt rownr, uInt nrmax, const Complex* dataPtr);
@@ -203,6 +207,8 @@ public:
 						Vector<Int>* dataPtr);
     virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
 						Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsInt64V    (const RefRows& rownrs,
+						Vector<Int64>* dataPtr);
     virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
 						Vector<float>* dataPtr);
     virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,

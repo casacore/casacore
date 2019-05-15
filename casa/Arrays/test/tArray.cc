@@ -1369,7 +1369,7 @@ int main()
 		caught = False;                  // check for leaks
 		try {
 		    seeIfWeMakeMemoryLeak();
-		} catch (ArrayError x) {
+		} catch (ArrayError& x) {
 		    caught = True;
 		} 
 		AlwaysAssertExit(caught);
@@ -1446,6 +1446,29 @@ int main()
 	  AlwaysAssertExit(a4.shape() == IPosition(3,1,2,3));
 	  AlwaysAssertExit(a4(IPosition(3,0,0,0)) == 0);
 	  AlwaysAssertExit(a4(IPosition(3,0,1,2)) == 99);
+          // Test if a non-degerate Cube throws an exception.
+          Bool caught = False;
+          Cube<Int> c1(IPosition(3,1,2,3));
+          Cube<Int> cr;
+          try {
+            cr.nonDegenerate(c1);
+          } catch (const std::exception&) {
+            caught = True;
+          }
+          AlwaysAssertExit (caught);
+          cr.nonDegenerate(c1, 1);
+          AlwaysAssertExit (cr.shape() == IPosition(3,1,2,3));
+          // Test if a non-degerate Matrix throws an exception.
+          Matrix<Int> m1(IPosition(2,1,2));
+          Matrix<Int> mr;
+          try {
+            mr.nonDegenerate(m1);
+          } catch (const std::exception&) {
+            caught = True;
+          }
+          AlwaysAssertExit (caught);
+          mr.nonDegenerate(m1, 1);
+          AlwaysAssertExit (mr.shape() == IPosition(2,1,2));
  	}
   	{
  	  // Test the addDegenerate() function
@@ -1507,7 +1530,7 @@ int main()
 	  Bool exc = False;
 	  try {
 	    mi.assign (ai);
-	  } catch (AipsError) {
+	  } catch (AipsError&) {
 	    exc = True;
 	  }
 	  AlwaysAssertExit (exc);

@@ -415,6 +415,7 @@ Bool TableProxy::getColInfo (const String& colName, Bool useBrackets,
       break;
     case TpInt:
     case TpUInt:
+    case TpInt64:
       oss << "I";
       break;
     case TpFloat:
@@ -789,9 +790,9 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       rec.define ("values", vi);
       break;
     }
-    ///    case TpInt64:
-    ///      rec.define ("values", expr.getColumnInt (rownrs));
-    ///      break;
+    case TpInt64:
+      rec.define ("values", expr.getColumnInt64 (rownrs));
+      break;
     case TpFloat:
       rec.define ("values", expr.getColumnFloat (rownrs));
       break;
@@ -908,15 +909,14 @@ void TableProxy::setProperties (const String& name, const Record& properties,
 Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
 {
   // Get the table description.
-  const TableDesc* tableDescPtr;
+  std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr = new TableDesc(table_p.actualTableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr = new TableDesc(table_p.tableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
   }
   Record rec = getTableDesc(*tableDescPtr, cOrder);
 
-  delete tableDescPtr;
   return rec;
 }
 
@@ -951,14 +951,15 @@ Record TableProxy::getColumnDescription (const String& columnName,
 					 Bool actual, Bool cOrder)
 {
   // Get the table description.
-  TableDesc* tableDescPtr;
+  std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr = new TableDesc(table_p.actualTableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr = new TableDesc(table_p.tableDesc());
+    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
   }
   // Return the column description as a record.
   const ColumnDesc& columnDescription = (*tableDescPtr) [columnName];
+
   return recordColumnDesc (columnDescription, cOrder);
 }
 
@@ -1785,6 +1786,9 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
             } else if (valtype == "uint") {
                 tabdesc.addColumn (ScalarColumnDesc<uInt>
                                    (name, comment, dmtype, dmgrp, 0, option));
+            } else if (valtype == "int64") {
+                tabdesc.addColumn (ScalarColumnDesc<Int64>
+                                   (name, comment, dmtype, dmgrp, 0, option));
             } else if (valtype == "float") {
                 tabdesc.addColumn (ScalarColumnDesc<Float>
                                    (name, comment, dmtype, dmgrp, option));
@@ -1906,6 +1910,14 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
       tabdesc.addColumn (ArrayColumnDesc<uInt>
 			 (name, comment, dmtype, dmgrp, ndim, option));
     }
+  } else if (valtype == "int64") {
+    if (shp.nelements() > 0) {
+      tabdesc.addColumn (ArrayColumnDesc<Int64>
+			 (name, comment, dmtype, dmgrp, shp, option));
+    }else{
+      tabdesc.addColumn (ArrayColumnDesc<Int64>
+			 (name, comment, dmtype, dmgrp, ndim, option));
+    }
   } else if (valtype == "float") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<float>
@@ -1965,8 +1977,12 @@ String TableProxy::getTypeStr (DataType dtype)
     return "short";
   case TpUShort:
     return "ushort";
+  case TpInt:
+    return "int";
   case TpUInt:
     return "uint";
+  case TpInt64:
+    return "int64";
   case TpFloat:
     return "float";
   case TpDouble:
@@ -2109,6 +2125,8 @@ ValueHolder TableProxy::makeEmptyArray (DataType dtype)
     return ValueHolder(Array<Int>(shape));
   case TpUInt:
     return ValueHolder(Array<uInt>(shape));
+  case TpInt64:
+    return ValueHolder(Array<Int64>(shape));
   case TpFloat:
     return ValueHolder(Array<Float>(shape));
   case TpDouble:
@@ -2194,6 +2212,16 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
+	  return ValueHolder (ac.getColumnRange(Slice(rownr, nrow, incr)));
+	}
+      }
+      break;
+    case TpInt64:
+      {
+	ScalarColumn<Int64> ac(table_p,colName); 
+	if (isCell) {
+	  return ValueHolder (ac(rownr));
+	}else{ 
 	  return ValueHolder (ac.getColumnRange(Slice(rownr, nrow, incr)));
 	}
       }
@@ -2318,6 +2346,16 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
     case TpUInt:
       {
 	ArrayColumn<uInt> ac(table_p,colName);
+	if (isCell) {
+	  return ValueHolder (ac(rownr));
+	}else{
+	  return ValueHolder (ac.getColumnRange(Slice(rownr, nrow, incr)));
+	}
+      }
+      break;
+    case TpInt64:
+      {
+	ArrayColumn<Int64> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2613,6 +2651,16 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
       }
     }
     break;
+  case TpInt64:
+    {
+      ArrayColumn<Int64> ac(table_p,colName);
+      if (isCell) {
+	return ValueHolder (ac.getSlice(rownr, slicer));
+      }else{
+	return ValueHolder (ac.getColumnRange(Slice(rownr, nrow, incr),
+					      slicer));
+      }
+    }
   case TpFloat:
     {
       ArrayColumn<Float> ac(table_p,colName);
@@ -2878,6 +2926,17 @@ void TableProxy::putValueInTable (const String& colName,
 	}
       }
       break;
+    case TpInt64:
+      {
+	ScalarColumn<Int64> col(table_p, colName);
+	if (isCell) {
+	  col.put (rownr, value.asInt64());
+	}else{
+	  col.putColumnRange (Slice(rownr, nrow, incr),
+			      value.asArrayInt64());
+	}
+      }
+      break;
     case TpFloat:
       {
 	ScalarColumn<Float> col(table_p, colName);
@@ -3018,6 +3077,17 @@ void TableProxy::putValueInTable (const String& colName,
 	}
       }
       break;
+    case TpInt64:
+      {
+	ArrayColumn<Int64> col(table_p, colName);
+	if (isCell) {
+	  col.put (rownr, value.asArrayInt64());
+	}else{
+	  col.putColumnRange (Slice(rownr, nrow, incr),
+			      value.asArrayInt64());
+	}
+      }
+      break;
     case TpFloat:
       {
 	ArrayColumn<Float> col(table_p, colName);
@@ -3152,6 +3222,17 @@ void TableProxy::putValueSliceInTable (const String& colName,
       }else{
 	col.putColumnRange (Slice(rownr, nrow, incr), slicer,
 			    value.asArrayuInt());
+      }
+    }
+    break;
+  case TpInt64:
+    {
+      ArrayColumn<Int64> col(table_p, colName);
+      if (isCell) {
+	col.putSlice (rownr, slicer, value.asArrayInt64());
+      }else{
+	col.putColumnRange (Slice(rownr, nrow, incr), slicer,
+			    value.asArrayInt64());
       }
     }
     break;

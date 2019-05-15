@@ -105,8 +105,13 @@ public:
 
     // Convenience function to open or create a file.
     // Optionally it is checked if the file does not exist yet.
+    // If useODirect=True and if supported by the OS, the file will be opened
+    // with O_DIRECT which bypasses the kernel's file cache for more predictable
+    // I/O behaviour. It requires the size and the alignment of the data to be
+    // read/written to be a multiple of the the disk's logival block size.
     // It returns the file descriptor.
-    static int openCreate (const RegularFile& file, ByteIO::OpenOption);
+    static int openCreate (const RegularFile& file, ByteIO::OpenOption,
+                           Bool useODirect=False);
 
 private:
     OpenOption  itsOption;

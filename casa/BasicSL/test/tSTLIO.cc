@@ -83,6 +83,16 @@ int main()
     AlwaysAssertExit (oss.str() == "[4,4,4]");
   }
 
+  // Test a map of integers to list of ints
+  std::map<Int, std::list<Int>> map2;
+  map2[0] = {1, 2};
+  map2[3] = {-1, -2};
+  {
+    ostringstream oss;
+    oss << map2;
+    AlwaysAssertExit (oss.str() == "{<0,[1,2]>, <3,[-1,-2]>}");
+  }
+
   cout << "OK\n";
   return 0;
 }

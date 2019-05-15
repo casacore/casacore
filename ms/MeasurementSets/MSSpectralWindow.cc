@@ -44,8 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSSpectralWindow::MSSpectralWindow():hasBeenDestroyed_p(True) { }
 
 MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSSpectralWindowEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -55,8 +54,7 @@ MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option)
 
 MSSpectralWindow::MSSpectralWindow(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSSpectralWindowEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -67,8 +65,7 @@ MSSpectralWindow::MSSpectralWindow(const String& tableName, const String &tableD
 
 MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSSpectralWindowEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -78,8 +75,7 @@ MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSSpectralWindow::MSSpectralWindow(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSSpectralWindowEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -88,8 +84,7 @@ MSSpectralWindow::MSSpectralWindow(const Table &table)
 }
 
 MSSpectralWindow::MSSpectralWindow(const MSSpectralWindow &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSSpectralWindowEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -117,120 +112,115 @@ MSSpectralWindow::~MSSpectralWindow()
 MSSpectralWindow& MSSpectralWindow::operator=(const MSSpectralWindow &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSSpectralWindowEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSSpectralWindow::init()
+MSTableMaps MSSpectralWindow::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-      // the PredefinedColumns
-      // 
-      // ASSOC_NATURE
-      colMapDef(ASSOC_NATURE,"ASSOC_NATURE", TpArrayString,
-		"Nature of association with other spectral window","","");
-      // ASSOC_SPW_ID
-      colMapDef(ASSOC_SPW_ID,"ASSOC_SPW_ID",TpArrayInt,
-		"Associated spectral window id","","");
-      // BBC_NO
-      colMapDef(BBC_NO,"BBC_NO",TpInt,
-		"Baseband converter number","","");
-      // BBC_SIDEBAND
-      colMapDef(BBC_SIDEBAND,"BBC_SIDEBAND",TpInt,
-		"BBC sideband","","");
-      // CHAN_FREQ
-      colMapDef(CHAN_FREQ,"CHAN_FREQ", TpArrayDouble,
-		"Center frequencies for each channel in the data matrix",
-		"Hz","Frequency");
-      // CHAN_WIDTH
-      colMapDef(CHAN_WIDTH,"CHAN_WIDTH",TpArrayDouble,
-		"Channel width for each channel","Hz","");
-      // DOPPLER_ID
-      colMapDef(DOPPLER_ID,"DOPPLER_ID",TpInt,
-		"Doppler Id, points to DOPPLER table","","");
-      // EFFECTIVE_BW
-      colMapDef(EFFECTIVE_BW,"EFFECTIVE_BW",TpArrayDouble,
-		"Effective noise bandwidth of each channel","Hz","");
-      // FLAG_ROW
-      colMapDef(FLAG_ROW,"FLAG_ROW",TpBool,
-		"Row flag","","");
-      // FREQ_GROUP
-      colMapDef(FREQ_GROUP,"FREQ_GROUP",TpInt,
-		"Frequency group","","");
-      // FREQ_GROUP_NAME
-      colMapDef(FREQ_GROUP_NAME,"FREQ_GROUP_NAME",TpString,
-		"Frequency group name","","");
-      // IF_CONV_CHAIN
-      colMapDef(IF_CONV_CHAIN, "IF_CONV_CHAIN", TpInt,
-		"The IF conversion chain number","","");
-      // MEAS_FREQ_REF
-      colMapDef(MEAS_FREQ_REF,"MEAS_FREQ_REF",TpInt,
-		"Frequency Measure reference","","");
-      // NAME
-      colMapDef(NAME,"NAME",TpString,
-		"Spectral window name","","");
-      // NET_SIDEBAND
-      colMapDef(NET_SIDEBAND,"NET_SIDEBAND",TpInt,
-		"Net sideband","","");
-      // NUM_CHAN
-      colMapDef(NUM_CHAN, "NUM_CHAN", TpInt,
-		"Number of spectral channels","","");
-      // RECEIVER_ID
-      colMapDef(RECEIVER_ID,"RECEIVER_ID",TpInt,
-		"Receiver Id for this spectral window","","");
-      // REF_FREQUENCY
-      colMapDef(REF_FREQUENCY, "REF_FREQUENCY", TpDouble,
-		"The reference frequency",
-		"Hz","Frequency");
-      // RESOLUTION
-      colMapDef(RESOLUTION, "RESOLUTION", TpArrayDouble,
-		"The effective noise bandwidth for each channel",
-		"Hz","");
-      // TOTAL_BANDWIDTH
-      colMapDef(TOTAL_BANDWIDTH, "TOTAL_BANDWIDTH", TpDouble,
-		"The total bandwidth for this window","Hz","");
-      // PredefinedKeywords
-      
-      // init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // 
+  // ASSOC_NATURE
+  colMapDef(maps, ASSOC_NATURE,"ASSOC_NATURE", TpArrayString,
+            "Nature of association with other spectral window","","");
+  // ASSOC_SPW_ID
+  colMapDef(maps, ASSOC_SPW_ID,"ASSOC_SPW_ID",TpArrayInt,
+            "Associated spectral window id","","");
+  // BBC_NO
+  colMapDef(maps, BBC_NO,"BBC_NO",TpInt,
+            "Baseband converter number","","");
+  // BBC_SIDEBAND
+  colMapDef(maps, BBC_SIDEBAND,"BBC_SIDEBAND",TpInt,
+            "BBC sideband","","");
+  // CHAN_FREQ
+  colMapDef(maps, CHAN_FREQ,"CHAN_FREQ", TpArrayDouble,
+            "Center frequencies for each channel in the data matrix",
+            "Hz","Frequency");
+  // CHAN_WIDTH
+  colMapDef(maps, CHAN_WIDTH,"CHAN_WIDTH",TpArrayDouble,
+            "Channel width for each channel","Hz","");
+  // DOPPLER_ID
+  colMapDef(maps, DOPPLER_ID,"DOPPLER_ID",TpInt,
+            "Doppler Id, points to DOPPLER table","","");
+  // EFFECTIVE_BW
+  colMapDef(maps, EFFECTIVE_BW,"EFFECTIVE_BW",TpArrayDouble,
+            "Effective noise bandwidth of each channel","Hz","");
+  // FLAG_ROW
+  colMapDef(maps, FLAG_ROW,"FLAG_ROW",TpBool,
+            "Row flag","","");
+  // FREQ_GROUP
+  colMapDef(maps, FREQ_GROUP,"FREQ_GROUP",TpInt,
+            "Frequency group","","");
+  // FREQ_GROUP_NAME
+  colMapDef(maps, FREQ_GROUP_NAME,"FREQ_GROUP_NAME",TpString,
+            "Frequency group name","","");
+  // IF_CONV_CHAIN
+  colMapDef(maps, IF_CONV_CHAIN, "IF_CONV_CHAIN", TpInt,
+            "The IF conversion chain number","","");
+  // MEAS_FREQ_REF
+  colMapDef(maps, MEAS_FREQ_REF,"MEAS_FREQ_REF",TpInt,
+            "Frequency Measure reference","","");
+  // NAME
+  colMapDef(maps, NAME,"NAME",TpString,
+            "Spectral window name","","");
+  // NET_SIDEBAND
+  colMapDef(maps, NET_SIDEBAND,"NET_SIDEBAND",TpInt,
+            "Net sideband","","");
+  // NUM_CHAN
+  colMapDef(maps, NUM_CHAN, "NUM_CHAN", TpInt,
+            "Number of spectral channels","","");
+  // RECEIVER_ID
+  colMapDef(maps, RECEIVER_ID,"RECEIVER_ID",TpInt,
+            "Receiver Id for this spectral window","","");
+  // REF_FREQUENCY
+  colMapDef(maps, REF_FREQUENCY, "REF_FREQUENCY", TpDouble,
+            "The reference frequency",
+            "Hz","Frequency");
+  // RESOLUTION
+  colMapDef(maps, RESOLUTION, "RESOLUTION", TpArrayDouble,
+            "The effective noise bandwidth for each channel",
+            "Hz","");
+  // TOTAL_BANDWIDTH
+  colMapDef(maps, TOTAL_BANDWIDTH, "TOTAL_BANDWIDTH", TpDouble,
+            "The total bandwidth for this window","Hz","");
 
-	// set up the TableMeasure columns with variable reference
-	// first add the variable ref column
-	addColumnToDesc(requiredTD, MEAS_FREQ_REF);
-	addColumnToDesc(requiredTD, CHAN_FREQ,1,"MEAS_FREQ_REF");
-	addColumnToDesc(requiredTD, REF_FREQUENCY,-1,"MEAS_FREQ_REF");
+  // PredefinedKeywords
 
-	// define columns with known dimensionality
-	addColumnToDesc(requiredTD, CHAN_WIDTH,1);
-	addColumnToDesc(requiredTD, EFFECTIVE_BW,1);
-	addColumnToDesc(requiredTD, RESOLUTION,1);
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
 
+  // set up the TableMeasure columns with variable reference
+  // first add the variable ref column
+  addColumnToDesc(maps, MEAS_FREQ_REF);
+  addColumnToDesc(maps, CHAN_FREQ,1,"MEAS_FREQ_REF");
+  addColumnToDesc(maps, REF_FREQUENCY,-1,"MEAS_FREQ_REF");
 
-	requiredTD_p=new TableDesc(requiredTD);
-	
-    }
+  // define columns with known dimensionality
+  addColumnToDesc(maps, CHAN_WIDTH,1);
+  addColumnToDesc(maps, EFFECTIVE_BW,1);
+  addColumnToDesc(maps, RESOLUTION,1);
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
+
+  return maps;
 }
 
 	
 MSSpectralWindow MSSpectralWindow::referenceCopy(const String& newTableName, 
 				     const Block<String>& writableColumns) const
 {
-    return MSSpectralWindow(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSSpectralWindow(MSTable<MSSpectralWindowEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

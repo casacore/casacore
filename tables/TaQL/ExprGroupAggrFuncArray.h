@@ -315,13 +315,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupVarianceArrayDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupVarianceArrayDouble (TableExprNodeRep* node);
+    TableExprGroupVarianceArrayDouble (TableExprNodeRep* node, uInt ddof);
     virtual ~TableExprGroupVarianceArrayDouble();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
+    uInt   itsDdof;
     Int64  itsNr;
-    Double itsM2;
+    Double itsCurMean;
   };
 
   // <summary>
@@ -339,7 +340,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevArrayDouble: public TableExprGroupVarianceArrayDouble
   {
   public:
-    TableExprGroupStdDevArrayDouble (TableExprNodeRep* node);
+    TableExprGroupStdDevArrayDouble (TableExprNodeRep* node, uInt ddof);
     virtual ~TableExprGroupStdDevArrayDouble();
     virtual void finish();
   };
@@ -461,6 +462,51 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void finish();
   private:
     Int64 itsNr;
+  };
+
+  // <summary>
+  // Aggregate class determining the variance of array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the variance of array values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // Note that the result is a Double value (not DComplex).
+  // </synopsis>
+  class TableExprGroupVarianceArrayDComplex: public TableExprGroupFuncDouble
+  {
+  public:
+    TableExprGroupVarianceArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    virtual ~TableExprGroupVarianceArrayDComplex();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  protected:
+    uInt     itsDdof;
+    Int64    itsNr;
+    DComplex itsCurMean;
+  };
+
+  // <summary>
+  // Aggregate class determining the standard devation of array values
+  // in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the standard deviation of array values
+  // in a group. It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
+  class TableExprGroupStdDevArrayDComplex: public TableExprGroupVarianceArrayDComplex
+  {
+  public:
+    TableExprGroupStdDevArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    virtual ~TableExprGroupStdDevArrayDComplex();
+    virtual void finish();
   };
 
   // <summary>
@@ -745,13 +791,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupVariancesArrayDouble: public TableExprGroupFuncArrayDouble
   {
   public:
-    TableExprGroupVariancesArrayDouble (TableExprNodeRep* node);
+    TableExprGroupVariancesArrayDouble (TableExprNodeRep* node, uInt ddof);
     virtual ~TableExprGroupVariancesArrayDouble();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
+    uInt          itsDdof;
     Array<Int64>  itsNr;
-    Array<Double> itsMean;
+    Array<Double> itsCurMean;
   };
 
   // <summary>
@@ -769,7 +816,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevsArrayDouble: public TableExprGroupVariancesArrayDouble
   {
   public:
-    TableExprGroupStdDevsArrayDouble (TableExprNodeRep* node);
+    TableExprGroupStdDevsArrayDouble (TableExprNodeRep* node, uInt ddof);
     virtual ~TableExprGroupStdDevsArrayDouble();
     virtual void finish();
   };
@@ -867,6 +914,51 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void finish();
   private:
     Array<Int64> itsNr;
+  };
+
+  // <summary>
+  // Aggregate class determining the variance of array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the variance of array values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // Note that result is a Double value (npot DComplex).
+  // </synopsis>
+  class TableExprGroupVariancesArrayDComplex: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupVariancesArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    virtual ~TableExprGroupVariancesArrayDComplex();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  protected:
+    uInt            itsDdof;
+    Array<Int64>    itsNr;
+    Array<DComplex> itsCurMean;
+  };
+
+  // <summary>
+  // Aggregate class determining the standard devation of array values
+  // in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the standard deviation of array values
+  // in a group. It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
+  class TableExprGroupStdDevsArrayDComplex: public TableExprGroupVariancesArrayDComplex
+  {
+  public:
+    TableExprGroupStdDevsArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    virtual ~TableExprGroupStdDevsArrayDComplex();
+    virtual void finish();
   };
 
 

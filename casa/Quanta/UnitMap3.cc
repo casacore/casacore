@@ -34,111 +34,113 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# constants
 
 // Initialise the maps
-void UnitMap::initUMSI1() {
+void UnitMap::initUMSI1(UMaps& maps) {
+  map<String, UnitName>& mapDef = maps.mapDef;
+  map<String, UnitName>& mapSI  = maps.mapSI;
   for (Int i=0; i<UnitDim::Dnumber; i++) {
-    UnitMap::mapDef->insert(map<String, UnitName>::value_type
+    mapDef.insert(map<String, UnitName>::value_type
 			    (UnitDim::dimName(i),
 			     UnitName(UnitDim::dimName(i),
-				      UnitVal(1.0,i),
+				      UnitVal(1.0, i),
 				      UnitDim::dimFull(i))));
     
     // SI units
     if (i != UnitDim::Dkg) {
-      UnitMap::mapSI->insert(map<String, UnitName>::value_type
+      mapSI.insert(map<String, UnitName>::value_type
 			     (UnitDim::dimName(i),
 			      UnitName(UnitDim::dimName(i),
-				       UnitVal(1.0,i),
+				       UnitVal(1.0, i),
 				       UnitDim::dimFull(i))));
     }
   }
   
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("$",	UnitName("$",
-					 UnitVal(1.,UnitDim::Dnon),
+					 UnitVal(1., UnitDim::Dnon),
 					 "currency")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("%",	UnitName("%",
 					 UnitVal(0.01),
 					 "percent")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("%%",	UnitName("%%",
 					 UnitVal(0.001),
 					 "permille")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("g",	UnitName("g",
-					 UnitVal(0.001,UnitDim::Dkg),
+					 UnitVal(0.001, UnitDim::Dkg),
 					 "gram")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Bq",  UnitName("Bq",
-					  UnitVal(1.,"s-1"),
+					  UnitVal(1., "s-1", &maps),
 					  "becquerel")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Hz",  UnitName("Hz",
-					  UnitVal(1.,"s-1"),
+					  UnitVal(1., "s-1", &maps),
 					  "hertz")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("C",   UnitName("C",
-					  UnitVal(1.,"A.s"),
+					  UnitVal(1.,"A.s", &maps),
 					  "coulomb")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("lm",  UnitName("lm",
-					  UnitVal(1.,"cd.sr"),
+					  UnitVal(1., "cd.sr", &maps),
 					  "lumen")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("N",	UnitName("N",
-					 UnitVal(1.,"kg.m.s-2"),
+					 UnitVal(1., "kg.m.s-2", &maps),
 					 "newton")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("J",   UnitName("J",
-					  UnitVal(1.,"N.m"),
+					  UnitVal(1., "N.m", &maps),
 					  "joule")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("W",   UnitName("W",
-					  UnitVal(1.,"J.s-1"),
+					  UnitVal(1., "J.s-1", &maps),
 					  "watt")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("V",   UnitName("V",
-					  UnitVal(1.,"W.A-1"),
+					  UnitVal(1., "W.A-1", &maps),
 					  "volt")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("F",   UnitName("F",
-					  UnitVal(1.,"C.V-1"),
+					  UnitVal(1., "C.V-1", &maps),
 					  "farad")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Gy",  UnitName("Gy",
-					  UnitVal(1.,"J.kg-1"),
+					  UnitVal(1., "J.kg-1", &maps),
 					  "gray")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("lx",  UnitName("lx",
-					  UnitVal(1.,"lm.m-2"),
+					  UnitVal(1., "lm.m-2", &maps),
 					  "lux")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Ohm", UnitName("Ohm",
-					  UnitVal(1.,"V.A-1"),
+					  UnitVal(1., "V.A-1", &maps),
 					  "ohm")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Pa",  UnitName("Pa",
-					  UnitVal(1.,"N.m-2"),
+					  UnitVal(1., "N.m-2", &maps),
 					  "pascal")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("S",   UnitName("S",
-					  UnitVal(1.,"Ohm-1"),
+					  UnitVal(1., "Ohm-1", &maps),
 					  "siemens")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Sv",  UnitName("Sv",
-					  UnitVal(1.,"J.kg-1"),
+					  UnitVal(1., "J.kg-1", &maps),
 					  "sievert")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("Wb",  UnitName("Wb",
-					  UnitVal(1.,"V.s"),
+					  UnitVal(1., "V.s", &maps),
 					  "weber")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("H",   UnitName("H",
-					  UnitVal(1.,"Wb.A-1"),
+					  UnitVal(1., "Wb.A-1", &maps),
 					  "henry")));
-  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+  mapSI.insert(map<String, UnitName>::value_type
 			 ("T",   UnitName("T",
-					  UnitVal(1.,"Wb.m-2"),
+					  UnitVal(1., "Wb.m-2", &maps),
 					  "tesla")));
 }  
 

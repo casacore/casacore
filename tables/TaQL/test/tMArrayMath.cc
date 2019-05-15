@@ -235,10 +235,10 @@ void doTestReduce()
   MArray<Double> ma(v, m);
   Double mn = mean(ma);
   AlwaysAssertExit (near(mean(ma), mean(v)));
-  AlwaysAssertExit (near(variance(ma), variance(v)));
-  AlwaysAssertExit (near(variance(ma, mn), variance(v, mn)));
-  AlwaysAssertExit (near(stddev(ma), stddev(v)));
-  AlwaysAssertExit (near(stddev(ma, mn), stddev(v, mn)));
+  AlwaysAssertExit (near(variance(ma, 1), variance(v)));
+  AlwaysAssertExit (near(variance(ma, mn, 1), variance(v, mn)));
+  AlwaysAssertExit (near(stddev(ma, 1), stddev(v)));
+  AlwaysAssertExit (near(stddev(ma, mn, 1), stddev(v, mn)));
   AlwaysAssertExit (near(avdev(ma), avdev(v)));
   AlwaysAssertExit (near(avdev(ma, mn), avdev(v, mn)));
   AlwaysAssertExit (near(rms(ma), rms(v)));
@@ -253,10 +253,10 @@ void doTestReduce()
   v1[17] = 19;
   mn = mean(ma);
   AlwaysAssertExit (near(mean(ma), mean(v1)));
-  AlwaysAssertExit (near(variance(ma), variance(v1)));
-  AlwaysAssertExit (near(variance(ma, mn), variance(v1, mn)));
-  AlwaysAssertExit (near(stddev(ma), stddev(v1)));
-  AlwaysAssertExit (near(stddev(ma, mn), stddev(v1, mn)));
+  AlwaysAssertExit (near(variance(ma, 1), variance(v1)));
+  AlwaysAssertExit (near(variance(ma, mn, 1), variance(v1, mn)));
+  AlwaysAssertExit (near(stddev(ma, 1), stddev(v1)));
+  AlwaysAssertExit (near(stddev(ma, mn, 1), stddev(v1, mn)));
   AlwaysAssertExit (near(avdev(ma), avdev(v1)));
   AlwaysAssertExit (near(avdev(ma, mn), avdev(v1, mn)));
   AlwaysAssertExit (near(rms(ma), rms(v1)));
@@ -313,11 +313,11 @@ void doTestPartial()
                                        IPosition(1,1)).array(),
                           partialMeans (arr, IPosition(1,1))));
   AlwaysAssertExit (allEQ(partialVariances(MArray<Int>(arr),
-                                           IPosition(1,1)).array(),
+                                           IPosition(1,1), 1).array(),
                           partialVariances (arr, IPosition(1,1))));
   AlwaysAssertExit (allEQ(partialStddevs(MArray<Int>(arr),
-                                         IPosition(1,1)).array(),
-                          partialStddevs (arr, IPosition(1,1))));
+                                         IPosition(1,1), 1).array(),
+                          partialStddevs (arr, IPosition(1,1), 1)));
   AlwaysAssertExit (allEQ(partialAvdevs(MArray<Int>(arr),
                                         IPosition(1,1)).array(),
                           partialAvdevs (arr, IPosition(1,1))));
@@ -363,10 +363,10 @@ void doTestPartial()
   MArray<double> mad;
   aresd = 0.;
   aresd(1,1) = 5000.;
-  mad = partialVariances(MArray<double>(arrd,mask), IPosition(1,0));
+  mad = partialVariances(MArray<double>(arrd,mask), IPosition(1,0), 1);
   AlwaysAssertExit (allNear(mad.array(), aresd, 1e-5) && allEQ(mad.mask(), mres));
   aresd(1,1) = 70.7107;
-  mad = partialStddevs(MArray<double>(arrd,mask), IPosition(1,0));
+  mad = partialStddevs(MArray<double>(arrd,mask), IPosition(1,0), 1);
   AlwaysAssertExit (allNear(mad.array(), aresd, 1e-5) && allEQ(mad.mask(), mres));
   aresd(1,1) = 50.;
   mad = partialAvdevs(MArray<double>(arrd,mask), IPosition(1,0));
@@ -417,13 +417,13 @@ void doTestBoxed()
                           boxedArrayMath (arr, IPosition(2,2,2,2),
                                           MeanFunc<Int>())));
   AlwaysAssertExit (allEQ(boxedVariances(MArray<Int>(arr),
-                                         IPosition(2,2,2,2)).array(),
+                                         IPosition(2,2,2,2), 1).array(),
                           boxedArrayMath (arr, IPosition(2,2,2,2),
-                                          VarianceFunc<Int>())));
+                                          VarianceFunc<Int>(1))));
   AlwaysAssertExit (allEQ(boxedStddevs(MArray<Int>(arr),
-                                       IPosition(2,2,2,2)).array(),
+                                       IPosition(2,2,2,2), 1).array(),
                           boxedArrayMath (arr, IPosition(2,2,2,2),
-                                          StddevFunc<Int>())));
+                                          StddevFunc<Int>(1))));
   AlwaysAssertExit (allEQ(boxedAvdevs(MArray<Int>(arr),
                                       IPosition(2,2,2,2)).array(),
                           boxedArrayMath (arr, IPosition(2,2,2,2),
@@ -482,11 +482,11 @@ void doTestBoxed()
   aresd = 0.;
   aresd(0,1,1) = 5000.;
 
-  mad = boxedVariances(MArray<double>(arrd,mask), IPosition(1,2));
+  mad = boxedVariances(MArray<double>(arrd,mask), IPosition(1,2), 1);
   AlwaysAssertExit (allNear(mad.array(), aresd, 1e-5) && allEQ(mad.mask(), mres));
   aresd(0,1,1) = 70.7107;
 
-  mad = boxedStddevs(MArray<double>(arrd,mask), IPosition(1,2));
+  mad = boxedStddevs(MArray<double>(arrd,mask), IPosition(1,2), 1);
   AlwaysAssertExit (allNear(mad.array(), aresd, 1e-5) && allEQ(mad.mask(), mres));
   aresd(0,1,1) = 50.;
 
@@ -601,24 +601,24 @@ void doTestSliding()
   Cube<double> aresd(2,5,6);
   MArray<double> mad;
   aresd = slidingArrayMath(arrd, IPosition(1,1),
-                           VarianceFunc<double>(), False);
+                           VarianceFunc<double>(1), False);
   AlwaysAssertExit (allNear(slidingVariances(MArray<double>(arrd), IPosition(1,1),
-                                           False).array(),
+                                             1, False).array(),
                           aresd, 1e-5));
   aresd(0,2,3) = 0; aresd(1,2,3) = 0;
   aresd(0,1,2) = 2; aresd(1,1,2) = 0.5;
-  mad = slidingVariances(MArray<double>(arrd,mask), IPosition(1,1), False);
+  mad = slidingVariances(MArray<double>(arrd,mask), IPosition(1,1), 1, False);
   AlwaysAssertExit (allNear(mad.array(), aresd, 1e-5)  &&
                     allEQ(mad.mask(), mres));
 
   aresd = slidingArrayMath(arrd, IPosition(1,1),
-                           StddevFunc<double>(), False);
+                           StddevFunc<double>(1), False);
   AlwaysAssertExit (allNear(slidingStddevs(MArray<double>(arrd), IPosition(1,1),
-                                          False).array(),
+                                           1, False).array(),
                             aresd, 1e-5));
   aresd(0,2,3) = 0; aresd(1,2,3) = 0;
   aresd(0,1,2) = sqrt(2.); aresd(1,1,2) = sqrt(0.5);
-  mad = slidingStddevs(MArray<double>(arrd,mask), IPosition(1,1), False);
+  mad = slidingStddevs(MArray<double>(arrd,mask), IPosition(1,1), 1, False);
   AlwaysAssertExit (allNear(mad.array(), aresd, 1e-5)  &&
                     allEQ(mad.mask(), mres));
 

@@ -540,7 +540,7 @@ int main() {
       cout << "thresh(9,zerolag) : " << vv.thresh(9,zerolag) << endl;
     }
     
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

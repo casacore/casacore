@@ -43,8 +43,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSSource::MSSource():hasBeenDestroyed_p(True) { }
 
 MSSource::MSSource(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+  : MSTable<MSSourceEnums>(tableName, option),
+    hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +54,7 @@ MSSource::MSSource(const String &tableName, TableOption option)
 
 MSSource::MSSource(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSSourceEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +65,7 @@ MSSource::MSSource(const String& tableName, const String &tableDescName,
 
 MSSource::MSSource(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSSourceEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +75,7 @@ MSSource::MSSource(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSSource::MSSource(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSSourceEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +84,7 @@ MSSource::MSSource(const Table &table)
 }
 
 MSSource::MSSource(const MSSource &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSSourceEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,100 +112,97 @@ MSSource::~MSSource()
 MSSource& MSSource::operator=(const MSSource &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSSourceEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSSource::init()
+MSTableMaps MSSource::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// CALIBRATION_GROUP 
-	colMapDef(CALIBRATION_GROUP, "CALIBRATION_GROUP", TpInt,
-		  "Number of grouping for calibration purpose.","","");
-	// CODE
-	colMapDef(CODE, "CODE", TpString,
-		  "Special characteristics of source, "
-		  "e.g. Bandpass calibrator","","");
-	// DIRECTION 
-	colMapDef(DIRECTION, "DIRECTION", TpArrayDouble,
-		  "Direction (e.g. RA, DEC).","rad","Direction");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Interval of time for which this set of parameters "
-		  "is accurate","s","");
-	// NAME
-	colMapDef(NAME, "NAME", TpString,
-		  "Name of source as given during observations","","");
-	// NUM_LINES
-	colMapDef(NUM_LINES, "NUM_LINES", TpInt,
-		  "Number of spectral lines","","");
-	// POSITION
-	colMapDef(POSITION, "POSITION", TpArrayDouble,
-		  "Position (e.g. for solar system objects",
-		  "m","Position");
-	// PROPER_MOTION
-	colMapDef(PROPER_MOTION, "PROPER_MOTION", TpArrayDouble,
-		  "Proper motion","rad/s","");
-	// PULSAR_ID
-	colMapDef(PULSAR_ID, "PULSAR_ID", TpInt,
-		  "Pulsar Id, pointer to pulsar table","","");
-	// REST_FREQUENCY
-	colMapDef(REST_FREQUENCY, "REST_FREQUENCY", TpArrayDouble,
-		  "Line rest frequency","Hz","Frequency");
-	// SOURCE_ID
-	colMapDef(SOURCE_ID, "SOURCE_ID", TpInt,
-		  "Source id","","");
-	// SOURCE_MODEL
-	colMapDef(SOURCE_MODEL, "SOURCE_MODEL", TpRecord,
-		  "Component Source Model","","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
-		  "ID for this spectral window setup","","");
-	// SYSVEL
-	colMapDef(SYSVEL, "SYSVEL", TpArrayDouble,
-		  "Systemic velocity at reference","m/s","Radialvelocity");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Midpoint of time for which this set of parameters "
-		  "is accurate.","s","Epoch");
-	// TRANSITION
-	colMapDef(TRANSITION, "TRANSITION", TpArrayString,
-		  "Line Transition name","","");
-	// PredefinedKeywords
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // CALIBRATION_GROUP 
+  colMapDef(maps, CALIBRATION_GROUP, "CALIBRATION_GROUP", TpInt,
+            "Number of grouping for calibration purpose.","","");
+  // CODE
+  colMapDef(maps, CODE, "CODE", TpString,
+            "Special characteristics of source, "
+            "e.g. Bandpass calibrator","","");
+  // DIRECTION 
+  colMapDef(maps, DIRECTION, "DIRECTION", TpArrayDouble,
+            "Direction (e.g. RA, DEC).","rad","Direction");
+  // INTERVAL
+  colMapDef(maps, INTERVAL, "INTERVAL", TpDouble,
+            "Interval of time for which this set of parameters "
+            "is accurate","s","");
+  // NAME
+  colMapDef(maps, NAME, "NAME", TpString,
+            "Name of source as given during observations","","");
+  // NUM_LINES
+  colMapDef(maps, NUM_LINES, "NUM_LINES", TpInt,
+            "Number of spectral lines","","");
+  // POSITION
+  colMapDef(maps, POSITION, "POSITION", TpArrayDouble,
+            "Position (e.g. for solar system objects",
+            "m","Position");
+  // PROPER_MOTION
+  colMapDef(maps, PROPER_MOTION, "PROPER_MOTION", TpArrayDouble,
+            "Proper motion","rad/s","");
+  // PULSAR_ID
+  colMapDef(maps, PULSAR_ID, "PULSAR_ID", TpInt,
+            "Pulsar Id, pointer to pulsar table","","");
+  // REST_FREQUENCY
+  colMapDef(maps, REST_FREQUENCY, "REST_FREQUENCY", TpArrayDouble,
+            "Line rest frequency","Hz","Frequency");
+  // SOURCE_ID
+  colMapDef(maps, SOURCE_ID, "SOURCE_ID", TpInt,
+            "Source id","","");
+  // SOURCE_MODEL
+  colMapDef(maps, SOURCE_MODEL, "SOURCE_MODEL", TpRecord,
+            "Component Source Model","","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(maps, SPECTRAL_WINDOW_ID,"SPECTRAL_WINDOW_ID",TpInt,
+            "ID for this spectral window setup","","");
+  // SYSVEL
+  colMapDef(maps, SYSVEL, "SYSVEL", TpArrayDouble,
+            "Systemic velocity at reference","m/s","Radialvelocity");
+  // TIME
+  colMapDef(maps, TIME, "TIME", TpDouble,
+            "Midpoint of time for which this set of parameters "
+            "is accurate.","s","Epoch");
+  // TRANSITION
+  colMapDef(maps, TRANSITION, "TRANSITION", TpArrayString,
+            "Line Transition name","","");
+  // PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// First define the columns with fixed size arrays
-	IPosition shape(1,2);
-	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, DIRECTION, shape, option);
-	addColumnToDesc(requiredTD, PROPER_MOTION, shape, option);
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
+  // First define the columns with fixed size arrays
+  IPosition shape(1,2);
+  ColumnDesc::Option option=ColumnDesc::Direct;
+  addColumnToDesc(maps, DIRECTION, shape, option);
+  addColumnToDesc(maps, PROPER_MOTION, shape, option);
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
+
+  return maps;
 }
 
 	
 MSSource MSSource::referenceCopy(const String& newTableName, 
 				 const Block<String>& writableColumns) const
 {
-    return MSSource(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSSource(MSTable<MSSourceEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

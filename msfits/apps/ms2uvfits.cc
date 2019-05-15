@@ -123,7 +123,7 @@ int main (int argc, const char* argv[])
 				    column, -1, -1, -1,
 				    writeSyscal, multisource,
 				    combinespw, writestation, sensitivity);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
 	return 1;
     } 

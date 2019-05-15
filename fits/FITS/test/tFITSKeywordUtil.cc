@@ -313,7 +313,7 @@ int main()
 						      ignore));
 	AlwaysAssertExit(myNewKeywords.nfields()==0);
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cerr << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     }

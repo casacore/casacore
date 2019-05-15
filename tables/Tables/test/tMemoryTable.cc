@@ -167,7 +167,7 @@ int main ()
 	deleteRows      (aNewNrRows, tab);
 
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

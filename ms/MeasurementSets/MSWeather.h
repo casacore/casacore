@@ -76,8 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MSWeather:public MSWeatherEnums,
-                public MSTable<MSWeatherEnums::PredefinedColumns,
-		               MSWeatherEnums::PredefinedKeywords>
+                public MSTable<MSWeatherEnums>
 {
 public:
 
@@ -125,7 +124,7 @@ public:
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
     // MSTableImpl.
-    static void init();
+    static MSTableMaps initMaps();
 
 private:
 
@@ -137,8 +136,3 @@ private:
 } //# NAMESPACE CASACORE - END
 
 #endif
-
-
-
-
-

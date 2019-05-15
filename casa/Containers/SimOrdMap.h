@@ -28,6 +28,10 @@
 #ifndef CASA_SIMORDMAP_H
 #define CASA_SIMORDMAP_H
 
+#ifndef AIPS_USE_DEPRECATED
+#error "SimOrdMap.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/OrderedPair.h>
 #include <casacore/casa/Containers/Block.h>
@@ -87,6 +91,7 @@ public:
     SimpleOrderedMap<K,V>& operator= (const SimpleOrderedMap<K,V>&);
 
     // Defines a mapping (ie. create a key value mapping)
+    // The value is replaced if the key already exists.
     V &define (const K&, const V&);
 
     // This is the mapping function which maps keys to values. If the
@@ -115,7 +120,7 @@ public:
     //-grp
 
     // These functions check to see if a mapping is defined between
-    // the specified key and some value. If one is, a pointer to
+    // the specified key and some value. If defined, a pointer to
     // the value is returned, otherwise 0 is returned.
     //+grp
     V *isDefined(const K&);

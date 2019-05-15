@@ -68,6 +68,20 @@
    fun:???
    fun:_ZN8casacore9FilebufIO11writeBufferExPKcx
 }
+{
+   Casacore-write-not-fully-initialized-buffer-FiledesIO-dbg8
+   Memcheck:Param
+   pwrite64(buf)
+   fun:__pwrite_nocancel
+   fun:_ZN8casacore9FiledesIO6pwriteExxPKv
+}
+{
+   Casacore-write-not-fully-initialized-buffer-FiledesIO-opt8
+   Memcheck:Param
+   pwrite64(buf)
+   fun:???
+   fun:_ZN8casacore9FiledesIO6pwriteExxPKv
+}
 
 # The function strlen is optimized by testing multiple byte simultaneously.
 # This gives an uninitialized condition error for the bytes beyond the end.

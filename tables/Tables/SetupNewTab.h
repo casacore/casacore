@@ -33,8 +33,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/StorageOption.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -206,7 +206,7 @@ private:
     Bool          delete_p;
     TableDesc*    tdescPtr_p;
     ColumnSet*    colSetPtr_p;      //# 0 = object is already used by a Table
-    SimpleOrderedMap<void*,void*> dataManMap_p;
+    std::map<void*,void*> dataManMap_p;
 
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
@@ -388,7 +388,7 @@ public:
 
     // Adjust the hypercolumn definitions.
     // It renames and/or removes columns as necessary.
-    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new,
+    void adjustHypercolumns (const std::map<String, String>& old2new,
 			     Bool keepUnknown)
       { newTable_p->tableDescPtr()->adjustHypercolumns(old2new,keepUnknown); }
 

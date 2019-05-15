@@ -28,12 +28,13 @@
 #ifndef ADIOS2STMANCOLUMN_H
 #define ADIOS2STMANCOLUMN_H
 
-#include "Adios2StMan.h"
-
 #include <unordered_map>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/tables/DataMan/StManColumn.h>
 #include <casacore/tables/Tables/RefRows.h>
+
+#include "Adios2StManImpl.h"
+
 
 namespace casacore
 {
@@ -41,7 +42,9 @@ namespace casacore
 class Adios2StManColumn : public StManColumn
 {
 public:
-    Adios2StManColumn(Adios2StMan *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
+    Adios2StManColumn(Adios2StMan::impl *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
+
+    virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
 
     virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
                         char aOpenMode) = 0;
@@ -63,6 +66,7 @@ public:
     virtual void putuShortV(uInt aRowNr, const uShort *aDataPtr);
     virtual void putIntV(uInt aRowNr, const Int *aDataPtr);
     virtual void putuIntV(uInt aRowNr, const uInt *aDataPtr);
+    virtual void putInt64V(uInt aRowNr, const Int64 *aDataPtr);
     virtual void putfloatV(uInt aRowNr, const Float *aDataPtr);
     virtual void putdoubleV(uInt aRowNr, const Double *aDataPtr);
     virtual void putComplexV(uInt aRowNr, const Complex *aDataPtr);
@@ -75,18 +79,44 @@ public:
     virtual void getuShortV(uInt aRowNr, uShort *aDataPtr);
     virtual void getIntV(uInt aRowNr, Int *aDataPtr);
     virtual void getuIntV(uInt aRowNr, uInt *aDataPtr);
+    virtual void getInt64V(uInt aRowNr, Int64 *aDataPtr);
     virtual void getfloatV(uInt aRowNr, Float *aDataPtr);
     virtual void getdoubleV(uInt aRowNr, Double *aDataPtr);
     virtual void getComplexV(uInt aRowNr, Complex *aDataPtr);
     virtual void getDComplexV(uInt aRowNr, DComplex *aDataPtr);
     virtual void getStringV(uInt aRowNr, String *aDataPtr);
 
+    virtual void putSliceBoolV(uInt rownr, const Slicer& ns, const Array<Bool>* dataPtr);
+    virtual void putSliceuCharV(uInt rownr, const Slicer& ns, const Array<uChar>* dataPtr);
+    virtual void putSliceShortV(uInt rownr, const Slicer& ns, const Array<Short>* dataPtr);
+    virtual void putSliceuShortV(uInt rownr, const Slicer& ns, const Array<uShort>* dataPtr);
+    virtual void putSliceIntV(uInt rownr, const Slicer& ns, const Array<Int>* dataPtr);
+    virtual void putSliceuIntV(uInt rownr, const Slicer& ns, const Array<uInt>* dataPtr);
+    virtual void putSlicefloatV(uInt rownr, const Slicer& ns, const Array<float>* dataPtr);
+    virtual void putSlicedoubleV(uInt rownr, const Slicer& ns, const Array<double>* dataPtr);
+    virtual void putSliceComplexV(uInt rownr, const Slicer& ns, const Array<Complex>* dataPtr);
+    virtual void putSliceDComplexV(uInt rownr, const Slicer& ns, const Array<DComplex>* dataPtr);
+    virtual void putSliceStringV(uInt rownr, const Slicer& ns, const Array<String>* dataPtr);
+
+    virtual void getSliceBoolV(uInt rownr, const Slicer& ns, Array<Bool>* dataPtr);
+    virtual void getSliceuCharV(uInt rownr, const Slicer& ns, Array<uChar>* dataPtr);
+    virtual void getSliceShortV(uInt rownr, const Slicer& ns, Array<Short>* dataPtr);
+    virtual void getSliceuShortV(uInt rownr, const Slicer& ns, Array<uShort>* dataPtr);
+    virtual void getSliceIntV(uInt rownr, const Slicer& ns, Array<Int>* dataPtr);
+    virtual void getSliceuIntV(uInt rownr, const Slicer& ns, Array<uInt>* dataPtr);
+    virtual void getSlicefloatV(uInt rownr, const Slicer& ns, Array<float>* dataPtr);
+    virtual void getSlicedoubleV(uInt rownr, const Slicer& ns, Array<double>* dataPtr);
+    virtual void getSliceComplexV(uInt rownr, const Slicer& ns, Array<Complex>* dataPtr);
+    virtual void getSliceDComplexV(uInt rownr, const Slicer& ns, Array<DComplex>* dataPtr);
+    virtual void getSliceStringV(uInt rownr, const Slicer& ns, Array<String>* dataPtr);
+
 
 protected:
-    void getArrayWrapper(uint64_t rowStart, uint64_t nrRows, const Slicer &ns,
-                         void *dataPtr);
+    void scalarVToSelection(uInt rownr);
+    void arrayVToSelection(uInt rownr);
+    void sliceVToSelection(uInt rownr, const Slicer &ns);
 
-    Adios2StMan *itsStManPtr;
+    Adios2StMan::impl *itsStManPtr;
 
     String itsColumnName;
     IPosition itsCasaShape;
@@ -109,7 +139,7 @@ class Adios2StManColumnT : public Adios2StManColumn
 public:
 
     Adios2StManColumnT(
-            Adios2StMan *aParent,
+            Adios2StMan::impl *aParent,
             int aDataType,
             String aColName,
             std::shared_ptr<adios2::IO> aAdiosIO)
@@ -134,49 +164,26 @@ public:
 
     virtual void putArrayV(uInt rownr, const void *dataPtr)
     {
-        itsAdiosStart[0] = rownr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = 0;
-            itsAdiosCount[i] = itsAdiosShape[i];
-        }
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Put(itsAdiosVariable, data, adios2::Mode::Sync);
-        (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
+        arrayVToSelection(rownr);
+        toAdios(dataPtr);
     }
 
     virtual void getArrayV(uInt rownr, void *dataPtr)
     {
-        itsAdiosStart[0] = rownr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = 0;
-            itsAdiosCount[i] = itsAdiosShape[i];
-        }
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data, adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        arrayVToSelection(rownr);
+        fromAdios(dataPtr);
     }
 
     virtual void putScalarV(uInt rownr, const void *dataPtr)
     {
-        itsAdiosStart[0] = rownr;
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Put(itsAdiosVariable, reinterpret_cast<const T *>(dataPtr), adios2::Mode::Sync);
+        scalarVToSelection(rownr);
+        toAdios(reinterpret_cast<const T *>(dataPtr));
     }
 
     virtual void getScalarV(uInt aRowNr, void *data)
     {
-        itsAdiosStart[0] = aRowNr;
-        itsAdiosCount[0] = 1;
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Get<T>(itsAdiosVariable, reinterpret_cast<T *>(data), adios2::Mode::Sync);
+        scalarVToSelection(aRowNr);
+        fromAdios(reinterpret_cast<T *>(data));
     }
 
     virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
@@ -186,7 +193,8 @@ public:
             rownrs.convert();
         }
         Bool deleteIt;
-        const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        const T *data = arrayPtr->getStorage(deleteIt);
         itsAdiosCount[0] = 1;
         for (size_t i = 1; i < itsAdiosShape.size(); ++i)
         {
@@ -196,10 +204,9 @@ public:
         for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
         {
             itsAdiosStart[0] = rownrs.rowVector()[i];
-            itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-            itsAdiosEngine->Put(itsAdiosVariable, data + i * itsCasaShape.nelements(), adios2::Mode::Sync);
+            toAdios(data + i * itsCasaShape.nelements());
         }
-        (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
+        arrayPtr->freeStorage(data, deleteIt);
     }
 
     virtual void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
@@ -209,7 +216,8 @@ public:
             rownrs.convert();
         }
         Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        T *data = arrayPtr->getStorage(deleteIt);
         itsAdiosCount[0] = 1;
         for (size_t i = 1; i < itsAdiosShape.size(); ++i)
         {
@@ -219,26 +227,21 @@ public:
         for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
         {
             itsAdiosStart[0] = rownrs.rowVector()[i];
-            itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-            itsAdiosEngine->Get(itsAdiosVariable, data + i * itsCasaShape.nelements(), adios2::Mode::Sync);
+            fromAdios(data + i * itsCasaShape.nelements());
         }
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        arrayPtr->putStorage(data, deleteIt);
     }
 
     virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
     {
-        itsAdiosStart[0] = aRowNr;
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = ns.start()(i - 1);
-            itsAdiosCount[i] = ns.length()(i - 1);
-        }
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        sliceVToSelection(aRowNr, ns);
+        fromAdios(dataPtr);
+    }
+
+    virtual void putSliceV(uInt aRowNr, const Slicer &ns, const void *dataPtr)
+    {
+        sliceVToSelection(aRowNr, ns);
+        toAdios(dataPtr);
     }
 
     virtual void getArrayColumnV(void *dataPtr)
@@ -246,11 +249,7 @@ public:
         for(auto &i:itsAdiosStart){
             i=0;
         }
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosShape});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        fromAdios(dataPtr);
     }
 
     virtual void getColumnSliceV(const Slicer &ns, void *dataPtr)
@@ -262,16 +261,53 @@ public:
             itsAdiosStart[i] = ns.start()(i - 1);
             itsAdiosCount[i] = ns.length()(i - 1);
         }
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        Bool deleteIt;
-        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
-        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+        fromAdios(dataPtr);
     }
 
 private:
     adios2::Variable<T> itsAdiosVariable;
     const String itsStringArrayBarrier = "ADIOS2BARRIER";
+
+    Array<T> *asArrayPtr(void *dataPtr) const
+    {
+        return reinterpret_cast<Array<T>*>(dataPtr);
+    }
+
+    const Array<T> *asArrayPtr(const void *dataPtr) const
+    {
+        return reinterpret_cast<const Array<T>*>(dataPtr);
+    }
+
+    void toAdios(const T *data)
+    {
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        itsAdiosEngine->Put<T>(itsAdiosVariable, data, adios2::Mode::Sync);
+    }
+
+    void fromAdios(T *data)
+    {
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        itsAdiosEngine->Get<T>(itsAdiosVariable, data, adios2::Mode::Sync);
+    }
+
+    void toAdios(const void *dataPtr)
+    {
+        Bool deleteIt;
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        const T *data = arrayPtr->getStorage(deleteIt);
+        toAdios(data);
+        arrayPtr->freeStorage (data, deleteIt);
+    }
+
+    void fromAdios(void *dataPtr)
+    {
+        Bool deleteIt;
+        auto *arrayPtr = asArrayPtr(dataPtr);
+        T *data = arrayPtr->getStorage(deleteIt);
+        fromAdios(data);
+        arrayPtr->putStorage(data, deleteIt);
+    }
+
 }; // class Adios2StManColumnT
 
 } // namespace casacore

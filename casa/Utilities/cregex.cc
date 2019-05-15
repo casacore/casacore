@@ -57,7 +57,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Define some global variables; before they were externs in the .h file.
 
 /* Set by a2_re_set_syntax to the current regexp syntax to recognize.  */
-int obscure_syntax = 0;
+///int obscure_syntax = 0;
+int obscure_syntax = (RE_NO_BK_PARENS+       // use () for grouping
+                      RE_NO_BK_VBAR+         // use | for OR
+                      RE_INTERVALS+          // intervals are possible
+                      RE_NO_BK_CURLY_BRACES+ // use {} for interval
+                      RE_CHAR_CLASSES+       // [:upper:], etc. possible
+                      RE_NO_EMPTY_BK_REF+    // backreferences possible
+                      RE_NO_EMPTY_RANGES+    // e.g. [z-a] is empty set
+                      RE_CONTEXTUAL_INVALID_OPS);
 
 char re_syntax_table[256];
 
@@ -114,16 +122,24 @@ char *cregex_allocator::operator()(int nbytes)
 #define Sword 1
 #endif
 
-#define SYNTAX(c) re_syntax_table[c]
 
-static void
-init_syntax_once ()
+// Use a function static for the re_syntax_table.
+struct SyntaxTable {
+  SyntaxTable() {init();}
+  char re_syntax_table[256];
+private:
+  void init();
+};
+
+static const SyntaxTable&
+get_syntax_table()
 {
-   int c;
-   static int done = 0;
+  static SyntaxTable syntab;
+  return syntab;
+}
 
-   if (done)
-     return;
+void SyntaxTable::init() {
+   int c;
 
    memset (re_syntax_table, 0, sizeof re_syntax_table);
 
@@ -135,9 +151,14 @@ init_syntax_once ()
 
    for (c = '0'; c <= '9'; c++)
      re_syntax_table[c] = Sword;
-
-   done = 1;
 }
+
+// Define a macro to access the syntax table which resides
+// in the function get_syntax_table and is referenced here.
+static const SyntaxTable& refSyntaxTable = get_syntax_table();
+#define SYNTAX(c) refSyntaxTable.re_syntax_table[c]
+
+
 
 #ifndef isgraph
 #define isgraph(c) (isprint((c)) && !isspace((c)))
@@ -270,6 +291,7 @@ enum regexpcode
    The argument SYNTAX is a bit-mask comprised of the various bits
    defined in regex.h.  */
 
+/*
 int
 a2_re_set_syntax (int syntax)
 {
@@ -279,7 +301,7 @@ a2_re_set_syntax (int syntax)
   obscure_syntax = syntax;
   return ret;
 }
-
+*/
 
 
 /* Macros for a2_re_compile_pattern, which is found below these definitions.  */
@@ -455,9 +477,6 @@ a2_re_compile_pattern (char *pattern, int size,
   int regnum = 1;
 
   bufp->fastmap_accurate = 0;
-
-  /* Initialize the syntax table.  */
-   init_syntax_once();
 
   if (bufp->allocated == 0)
     {

@@ -41,10 +41,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiFile::MultiFile (const String& name, ByteIO::OpenOption option,
-                        Int blockSize)
-    : MultiFileBase (name, blockSize)
+                        Int blockSize, Bool useODirect)
+    : MultiFileBase (name, blockSize, useODirect)
   {
-    itsFD = RegularFileIO::openCreate (itsName, option);
+    itsFD = RegularFileIO::openCreate (itsName, option, itsUseODirect);
     itsIO.attach (itsFD, itsName);
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
       // New file; first block is for administration.
@@ -78,7 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return;
     }
     // First try if the file can be opened as read/write.
-    int fd = RegularFileIO::openCreate (itsName, ByteIO::Update);
+    int fd = RegularFileIO::openCreate (itsName, ByteIO::Update, itsUseODirect);
     // Now close the readonly file and reset fd.
     FiledesIO::close (itsFD);
     itsIO.detach();
@@ -112,8 +112,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uChar* buf = const_cast<uChar*>(mio.getBuffer());
     CanonicalConversion::fromLocal (buf, todo);       // header size
     // Write the first part of the buffer at the beginning of the file.
+    // Use an aligned buffer for possible O_DIRECT alignment.
     itsIO.seek (0);
-    itsIO.write (itsBlockSize, buf);
+    if (itsUseODirect) {
+      MultiFileBuffer mfbuf(itsBlockSize, itsUseODirect);
+      memcpy (mfbuf.data, buf, itsBlockSize);
+      itsIO.pwrite (itsBlockSize, 0, mfbuf.data);
+    } else {
+      itsIO.pwrite (itsBlockSize, 0, buf);
+    }
     todo -= itsBlockSize;
     if (todo > 0) {
       // The rest is written in another file. If the header info was written
@@ -168,7 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
          iter!=itsInfo.end(); ++iter) {
       iter->curBlock = -1;
       iter->dirty    = False;
-      iter->buffer.resize (itsBlockSize);
+      iter->allocBuffer (itsBlockSize, itsUseODirect);
     }
   }
 
@@ -207,8 +214,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiFile::readBlock (MultiFileInfo& info, Int64 blknr,
                              void* buffer)
   {
-    itsIO.pread (itsBlockSize, info.blockNrs[blknr] *
-                 itsBlockSize, buffer);
+    itsIO.pread (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
   }
 
   void MultiFile::writeBlock (MultiFileInfo& info, Int64 blknr,

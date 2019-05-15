@@ -613,6 +613,7 @@ private:
   extern template class ArrayColumn<uShort>;
   extern template class ArrayColumn<Int>;
   extern template class ArrayColumn<uInt>;
+  extern template class ArrayColumn<Int64>;
   extern template class ArrayColumn<Float>;
   extern template class ArrayColumn<Double>;
   extern template class ArrayColumn<Complex>;

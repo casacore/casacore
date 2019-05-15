@@ -865,7 +865,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     // Set the storage lattice tile shape to the tile shape of the
     // axes of the parent lattice from which it is created.
     // For the statistics axis, set the tile shape to NACCUM (small).
-
     IPosition tileShape(storeLatticeShape.nelements(),1);
     for (uInt i=0; i<tileShape.nelements()-1; i++) {
        tileShape(i) = pInLattice_p->niceCursorShape()(displayAxes_p(i));
@@ -969,8 +968,8 @@ void LatticeStatistics<T>::_doStatsLoop(
 ) {
     maxPos_p.resize(0);
     minPos_p.resize(0);
-    const uInt nCursorAxes = cursorAxes_p.size();
-    const IPosition latticeShape(pInLattice_p->shape());
+    const auto nCursorAxes = cursorAxes_p.size();
+    const auto latticeShape(pInLattice_p->shape());
     IPosition cursorShape(pInLattice_p->ndim(),1);
     for (uInt i=0; i<nCursorAxes; ++i) {
         cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
@@ -985,27 +984,27 @@ void LatticeStatistics<T>::_doStatsLoop(
     slicer.setStart(stepper.position());
     slicer.setEnd(stepper.endPosition());
     subLat.setRegion(slicer);
-    uInt setSize = subLat.size();
-    uInt nMaxThreads = OMP::nMaxThreads();
-    uInt nDPMaxThreads = min(
+    const auto setSize = subLat.size();
+    const auto nMaxThreads = OMP::nMaxThreads();
+    const auto nDPMaxThreads = min(
         nMaxThreads, setSize/ClassicalStatisticsData::BLOCK_SIZE + 1
     );
-    uInt nArrMaxThreads = min(nMaxThreads, nsets);
-    Bool computed = False;
-    Bool forceUsingArrays = _latticeStatsAlgortihm
+    const auto nArrMaxThreads = min(nMaxThreads, nsets);
+    auto computed = False;
+    const auto forceUsingArrays = _latticeStatsAlgortihm
         && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
     if (nArrMaxThreads >= nDPMaxThreads || forceUsingArrays) {
         if (forceUsingArrays && haveLogger_p) {
             os_p << LogIO::NORMAL
                 << "Forcing use of Stats Framework using Arrays method" << LogIO::POST;
         }
-        IPosition subCursorShape = _cursorShapeForArrayMethod(setSize);
+        const auto subCursorShape = _cursorShapeForArrayMethod(setSize);
         if (subCursorShape.product() >= nDPMaxThreads || forceUsingArrays) {
             _computeStatsUsingArrays(subLat, progressMeter, subCursorShape);
             computed = True;
         }
     }
-    Bool forceUsingDP = _latticeStatsAlgortihm
+    const auto forceUsingDP = _latticeStatsAlgortihm
         && *_latticeStatsAlgortihm == STATS_FRAMEWORK_DATA_PROVIDERS;
     if (! computed || forceUsingDP) {
         if (forceUsingDP && haveLogger_p) {
@@ -1020,8 +1019,8 @@ void LatticeStatistics<T>::_doStatsLoop(
         // zero out the quantile stats since they will not be computed.
         // For the old TiledApply method, this is done by zeroing out
         // the array prior to computing the stats
-        uInt ndim = pStoreLattice_p->ndim();
-        IPosition arrShape = pStoreLattice_p->shape().removeAxes(
+        const auto ndim = pStoreLattice_p->ndim();
+        const auto arrShape = pStoreLattice_p->shape().removeAxes(
             IPosition(1, ndim - 1)
         );
         Array<AccumType> zeros(arrShape, AccumType(0));
@@ -1040,37 +1039,37 @@ void LatticeStatistics<T>::_doStatsLoop(
 }
 
 template <class T>
-IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt setSize) const {
-    uInt ndim = pInLattice_p->ndim();
+IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const {
+    const uInt ndim = pInLattice_p->ndim();
     IPosition cursorShape(ndim, 1);
-    const Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
+    const auto isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
     // arbitrary, but reasonable, max memory limit in bytes for storing arrays in bytes
-    static const uInt limit = 2e7;
+    static const uInt64 limit = 2e7;
     static const uInt sizeT = sizeof(T);
     static const uInt sizeBool = sizeof(Bool);
     static const uInt sizeInt = sizeof(Int);
     static const uInt sizeStats = sizeof(StatsData<AccumType>);
     const uInt posSize = sizeof(Int) * ndim;
     uInt chunkMult = pInLattice_p->isMasked() ? sizeT + sizeBool : sizeT;
-    uInt chunkSize = chunkMult*setSize + sizeStats + posSize;
+    uInt64 chunkSize = chunkMult*setSize + sizeStats + posSize;
     if (isChauv) {
         chunkSize += sizeInt;
     }
-    const uInt nIterToAccum = limit/chunkSize;
+    const uInt64 nIterToAccum = limit/chunkSize;
     if (nIterToAccum == 0) {
         // chunk size is too big, we cannot use this method
         return IPosition(0);
     }
-    IPosition latShape = pInLattice_p->shape();
-    const uInt nCursorAxes = cursorAxes_p.size();
+    auto latShape = pInLattice_p->shape();
+    const auto nCursorAxes = cursorAxes_p.size();
     for (uInt i=0; i<nCursorAxes; ++i) {
-        uInt curAx = cursorAxes_p[i];
+        const auto curAx = cursorAxes_p[i];
         cursorShape[curAx] = latShape[curAx];
     }
-    uInt x = nIterToAccum;
-    uInt nDisplayAxes = displayAxes_p.size();
+    uInt64 x = nIterToAccum;
+    const auto nDisplayAxes = displayAxes_p.size();
     for (uInt i=0; i<nDisplayAxes; ++i) {
-        cursorShape[displayAxes_p[i]] = min(x, latShape[displayAxes_p[i]]);
+        cursorShape[displayAxes_p[i]] = min(x, (uInt64)latShape[displayAxes_p[i]]);
         x /= cursorShape[displayAxes_p[i]];
         if (x == 0) {
             break;

@@ -31,7 +31,6 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/TableTrace.h>
-#include <casacore/casa/Containers/SimOrdMapIO.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
@@ -40,7 +39,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Assert.h>
-
+#include <casacore/casa/BasicSL/STLIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -48,8 +47,6 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 		    const TableLock& lockOptions, const TSMOption& tsmOption)
 : BaseTable    (name, opt, nrrow),
   rowStorage_p (0),              // initially empty vector of rownrs
-  nameMap_p    (""),
-  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (False)
 {
     //# Read the file in.
@@ -68,8 +65,6 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
   baseTabPtr_p (btp->root()),
   rowOrd_p     (order),
   rowStorage_p (nrall),       // allocate vector of rownrs
-  nameMap_p    (""),
-  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     rows_p = getStorage (rowStorage_p);
@@ -87,8 +82,6 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
   baseTabPtr_p (btp->root()),
   rowOrd_p     (True),
   rowStorage_p (0),
-  nameMap_p    (""),
-  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
@@ -115,8 +108,6 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
   baseTabPtr_p (btp->root()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),              // initially empty vector of rownrs
-  nameMap_p    (""),
-  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
@@ -141,8 +132,6 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
   baseTabPtr_p (btp->root()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),
-  nameMap_p    (""),
-  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     //# Create table description by copying the selected columns.
@@ -174,8 +163,8 @@ RefTable::~RefTable()
     }
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'c');
     //# Delete all RefColumn objects.
-    for (uInt i=0; i<colMap_p.ndefined(); i++) {
-	delete colMap_p.getVal(i);
+    for (auto& x : colMap_p) {
+        delete x.second;
     }
     //# Unlink from root.
     BaseTable::unlink (baseTabPtr_p);
@@ -389,7 +378,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
 void RefTable::getLayout (TableDesc& desc, AipsIO& ios)
 {
     String rootName;
-    SimpleOrderedMap<String,String> nameMap("");
+    std::map<String,String> nameMap;
     Int version = ios.getstart ("RefTable");
     ios >> rootName;
     ios >> nameMap;
@@ -404,17 +393,17 @@ void RefTable::getLayout (TableDesc& desc, AipsIO& ios)
 }
 
 void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
-			 SimpleOrderedMap<String,String>& nameMap,
+			 std::map<String,String>& nameMap,
 			 Vector<String>& names)
 {
     //# The names block contains the column names in order of appearance.
     //# For older versions it can be empty. If so, fill it with the
     //# names from the map.
-    uInt i;
     if (names.nelements() == 0) {
-        names.resize (nameMap.ndefined());
-	for (i=0; i<names.nelements(); i++) {
-	    names(i) = nameMap.getKey(i);
+        names.resize (nameMap.size());
+        uInt i = 0;
+        for (auto& x : nameMap) {
+            names[i++] = x.first;
 	}
     }
     //# Build up the table description.
@@ -422,23 +411,22 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
     //# Remember these columns, so they are removed later from the map.
     //# The nameMap maps column names in this table to the names in the
     //# root table, so a rename is needed if names are different.
-    SimpleOrderedMap<String,void*> unknownCol (static_cast<RefColumn*>(0));
-    for (i=0; i<names.nelements(); i++) {
+    std::map<String,void*> unknownCol;
+    for (uInt i=0; i<names.nelements(); i++) {
         const String& name = names(i);
-	const String* mapValPtr = nameMap.isDefined (name);
-	AlwaysAssert (mapValPtr != 0, AipsError);
-	if (rootDesc.isColumn (*mapValPtr)) {
-	    desc.addColumn (rootDesc.columnDesc (*mapValPtr));
-	    if (name != *mapValPtr) {
-		desc.renameColumn (name, *mapValPtr);
+	const String mapVal = nameMap.at (name);
+	if (rootDesc.isColumn (mapVal)) {
+	    desc.addColumn (rootDesc.columnDesc (mapVal));
+	    if (name != mapVal) {
+		desc.renameColumn (name, mapVal);
 	    }
 	}else{
-	    unknownCol.define (name, static_cast<void*>(0));
+          unknownCol.insert (std::make_pair(name, static_cast<void*>(0)));
 	}
     }
-    //# Remove the unknown ones.
-    for (i=0; i<unknownCol.ndefined(); i++) {
-	nameMap.remove (unknownCol.getKey(i));
+    //# Remove the unknown columns from the map.
+    for (const auto& x : unknownCol) {
+        nameMap.erase (x.first);
     }
 }
 
@@ -456,16 +444,16 @@ void RefTable::setup (BaseTable* btp, const Vector<String>& columnNames)
 	  // Some columns are selected, so copy those only.
 	  // Make the map const, so operator() throws an exception
 	  // if the key does not exist.
-	  const SimpleOrderedMap<String,String>& nm = rtp->nameMap_p;
+	  const std::map<String,String>& nm = rtp->nameMap_p;
 	    for (uInt i=0; i<columnNames.nelements(); i++) {
-	        nameMap_p.define (columnNames[i], nm(columnNames[i]));
+              nameMap_p.insert (std::make_pair(columnNames[i], nm.at(columnNames[i])));
 	    }
 	}
     } else {
         // Otherwise create it from the TableDesc.
         for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
-	    nameMap_p.define (tdescPtr_p->columnDesc(i).name(),
-			      tdescPtr_p->columnDesc(i).name());
+          nameMap_p.insert (std::make_pair(tdescPtr_p->columnDesc(i).name(),
+                                           tdescPtr_p->columnDesc(i).name()));
 	}
     }
     makeRefCol();
@@ -479,8 +467,8 @@ void RefTable::makeRefCol()
 {
     for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
 	const ColumnDesc& cd = tdescPtr_p->columnDesc(i);
-	colMap_p.define (cd.name(), cd.makeRefColumn
-	     (this, baseTabPtr_p->getColumn(nameMap_p(cd.name()))));
+	colMap_p.insert (std::make_pair(cd.name(), cd.makeRefColumn
+                           (this, baseTabPtr_p->getColumn(nameMap_p.at(cd.name())))));
     }
 }
 
@@ -488,11 +476,11 @@ void RefTable::makeRefCol()
 void RefTable::addRefCol (const ColumnDesc& columnDesc)
 {
     ColumnDesc& cd = tdescPtr_p->addColumn (columnDesc);
-    nameMap_p.define (cd.name(), cd.name());
+    nameMap_p.insert (std::make_pair(cd.name(), cd.name()));
     // Use cd (and not columnDesc) because underneath a pointer to its
-    // BaseColumnDesc which is disastrous for the temporary columnDesc.
-    colMap_p.define (cd.name(), cd.makeRefColumn
-                     (this, baseTabPtr_p->getColumn(nameMap_p(cd.name()))));
+    // BaseColumnDesc is kept which is disastrous for the temporary columnDesc.
+    colMap_p.insert (std::make_pair(cd.name(), cd.makeRefColumn
+                       (this, baseTabPtr_p->getColumn(nameMap_p.at(cd.name())))));
     changed_p = True;
 }
 void RefTable::addRefCol (const TableDesc& tdesc)
@@ -592,18 +580,18 @@ TableDesc RefTable::actualTableDesc() const
     // can have renamed columns).
     for (uInt i=0; i<refDesc.ncolumn(); i++) {
 	const String& newName = refDesc.columnDesc(i).name();
-	const String& oldName = nameMap_p(newName);
+	const String& oldName = nameMap_p.at(newName);
 	ColumnDesc cdesc = rootDesc.columnDesc (oldName);
 	cdesc.setName (newName);
 	actualDesc.addColumn (cdesc);
     }
     // Invert the map to get map of old to new name
     // and use it to adjust the possible hypercolumn definitions.
-    SimpleOrderedMap<String,String> map("", nameMap_p.ndefined());
-    for (uInt i=0; i<nameMap_p.ndefined(); i++) {
-        map.define (nameMap_p.getVal(i), nameMap_p.getKey(i));
+    std::map<String,String> nmap;
+    for (const auto& x : nameMap_p) {
+        nmap.insert (std::make_pair(x.second, x.first));
     }
-    actualDesc.adjustHypercolumns (map);
+    actualDesc.adjustHypercolumns (nmap);
     return actualDesc;
 }
 
@@ -613,9 +601,9 @@ Record RefTable::dataManagerInfo() const
     // We only have to have this info for the columns in this table.
     Record dmi = baseTabPtr_p->dataManagerInfo();
     // Invert the map to get map of old to new name.
-    SimpleOrderedMap<String,String> map("", nameMap_p.ndefined());
-    for (uInt i=0; i<nameMap_p.ndefined(); i++) {
-        map.define (nameMap_p.getVal(i), nameMap_p.getKey(i));
+    std::map<String,String> nmap;
+    for (const auto& x : nameMap_p) {
+        nmap.insert (std::make_pair(x.second, x.first));
     }
     // Now remove all columns not part of it.
     // Use the new name.
@@ -628,9 +616,9 @@ Record RefTable::dataManagerInfo() const
 	Vector<String> newVec(vec.nelements());
 	uInt nc=0;
 	for (uInt j=0; j<vec.nelements(); j++) {
-	    const String* val = map.isDefined (vec(j));
-	    if (val != 0) {
-	        newVec(nc++) = *val;
+            std::map<String,String>::iterator iter = nmap.find (vec(j));
+            if (iter != nmap.end()) {
+	        newVec(nc++) = iter->second;
 	    }
 	}
 	// Remove field if no columns are left.
@@ -662,7 +650,7 @@ TableRecord& RefTable::rwKeywordSet()
 BaseColumn* RefTable::getColumn (const String& columnName) const
 {
     tdescPtr_p->columnDesc(columnName);             // check if column exists
-    return colMap_p(columnName);
+    return colMap_p.at(columnName);
 }
 //# We cannot simply return colMap_p.getVal(columnIndex), because the order of
 //# the columns in the description is important. So first get the column
@@ -670,7 +658,7 @@ BaseColumn* RefTable::getColumn (const String& columnName) const
 BaseColumn* RefTable::getColumn (uInt columnIndex) const
 { 
     const String& name = tdescPtr_p->columnDesc(columnIndex).name();
-    return colMap_p(name);
+    return colMap_p.at(name);
 }
     
 
@@ -796,9 +784,9 @@ void RefTable::removeColumn (const Vector<String>& columnNames)
     for (uInt i=0; i<columnNames.nelements(); i++) {
         const String& name = columnNames(i);
         tdescPtr_p->removeColumn (name);
-	nameMap_p.remove (name);
-	delete colMap_p(name);
-	colMap_p.remove (name);
+	nameMap_p.erase (name);
+	delete colMap_p.at(name);
+	colMap_p.erase (name);
     }
     changed_p = True;
 }
@@ -806,8 +794,12 @@ void RefTable::removeColumn (const Vector<String>& columnNames)
 void RefTable::renameColumn (const String& newName, const String& oldName)
 {
     tdescPtr_p->renameColumn (newName, oldName);
-    colMap_p.rename (newName, oldName);
-    nameMap_p.rename (newName, oldName);
+    RefColumn* colval = colMap_p.at(oldName);
+    colMap_p.erase (oldName);
+    colMap_p.insert (std::make_pair(newName, colval));
+    const String nmval = nameMap_p.at(oldName);
+    nameMap_p.erase (oldName);
+    nameMap_p.insert (std::make_pair(newName, nmval));
     changed_p = True;
 }
 
@@ -823,7 +815,7 @@ DataManager* RefTable::findDataManager (const String& name, Bool byColumn) const
     String origName(name);
     if (byColumn) {
         // A column can be renamed, so use the original name.
-        origName = nameMap_p(name);
+        origName = nameMap_p.at(name);
     }
     return baseTabPtr_p->findDataManager (origName, byColumn);
 }

@@ -380,7 +380,7 @@ int main (int argc, const char* argv[])
       delete tempRegs[i];
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     foundError = True;
   } 

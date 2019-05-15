@@ -62,7 +62,7 @@ int main()
     defaultValue(foo3);
     AlwaysAssert(foo3 == String("defaultval"), AipsError);
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << "\nCaught an exception: " << x.getMesg() << endl;
     } 
  

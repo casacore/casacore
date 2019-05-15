@@ -47,7 +47,7 @@ namespace casacore { namespace python { namespace numpy {
   }
 
   Array<String> ArrayCopyStr_toArray (const IPosition& shape,
-				      void* data, uInt slen)
+				      void* data, size_t slen)
   {
     // This code converts from a numpy String array.
     // The longest string determines the length of each value.
@@ -55,8 +55,8 @@ namespace casacore { namespace python { namespace numpy {
     Array<String> arr(shape);
     String* to = arr.data();
     const char* src = static_cast<const char*>(data);
-    uInt nr = arr.size();
-    for (uInt i=0; i<nr; ++i) {
+    size_t nr = arr.size();
+    for (size_t i=0; i<nr; ++i) {
       if (src[slen-1] == 0) {
 	to[i] = String(src);
       } else {

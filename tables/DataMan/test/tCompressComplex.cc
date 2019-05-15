@@ -487,7 +487,7 @@ int main ()
     writeData (True, True);
     if (!checkDataSD (True)) sts=1;
     testSpeed();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 

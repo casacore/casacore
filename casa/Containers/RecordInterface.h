@@ -208,7 +208,7 @@ public:
 
     // Destruct the record.
     // All attached RecordFieldPtr objects are notified to detach themselves.
-    ~RecordInterface();
+    virtual ~RecordInterface();
 
     // Make a copy of this object.
     virtual RecordInterface* clone() const = 0;

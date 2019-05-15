@@ -83,7 +83,7 @@ int main() {
 	ObjectStack<vector<Double> >::stack().put(list[9-j]);
       }
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
     ok = False;
   }

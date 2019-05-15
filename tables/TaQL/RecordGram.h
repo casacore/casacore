@@ -106,7 +106,7 @@ inline String recordGramRemoveQuotes (const String& in)
 
 
 // <summary>
-// Helper class for values in RecordGram 
+// Helper class for values in RecordGram
 // </summary>
 
 // <use visibility=local>
@@ -186,14 +186,14 @@ public:
     //# The record will be put into the static variable to be used by
     //# the other functions.
     static TableExprNode parse (const RecordInterface& record,
-				const String& expression);
+                                const String& expression);
 
     // Convert an expression string to an expression tree.
     // The expression will operate on the given table.
     //# The record will be put into the static variable to be used by
     //# the other functions.
     static TableExprNode parse (const Table& table,
-				const String& expression);
+                                const String& expression);
 
     // Evaluate an expression to the given type.
     // The expression can contain variables; their names and values must be
@@ -234,7 +234,7 @@ public:
     // Handle a function.
     // To be called only by the yy parser (under theirMutex).
     static TableExprNode handleFunc (const String& name,
-				     const TableExprNodeSet& arguments);
+                                     const TableExprNodeSet& arguments);
 
     // Handle a regex.
     static TableExprNode handleRegex (const TableExprNode& left,

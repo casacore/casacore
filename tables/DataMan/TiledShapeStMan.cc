@@ -179,7 +179,7 @@ void TiledShapeStMan::setupCheck (const TableDesc& tableDesc,
 	    throw (TSMError ("TiledShapeStMan cannot handle scalar column " +
 			     dataNames(i)));
 	}
-	if (ndim != columnDesc.ndim()) {
+	if (columnDesc.ndim() != ndim  &&  columnDesc.ndim() > 0) {
 	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
 			     " should be one less than hypercolumn"
 			     " definition when used in TiledShapeStMan"));

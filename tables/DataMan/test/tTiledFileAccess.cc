@@ -76,7 +76,7 @@ int main()
 							 shape))));
       tfa.showCacheStatistics (cout);
       cout << tfa.cacheSize() << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
@@ -117,7 +117,7 @@ int main()
 							 shape))));
       tfa.showCacheStatistics (cout);
       cout << tfa.cacheSize() << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
@@ -156,7 +156,7 @@ int main()
       AlwaysAssertExit (allEQ (arr, tfal.getDComplex (slicer)));
       tfac.put (tfac.getDComplex(slicer) + DComplex(1,2), slicer);
       tfal.put (tfal.getDComplex(slicer) + DComplex(3,5), slicer);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
@@ -181,7 +181,7 @@ int main()
 				 tfal.getDComplex (Slicer(st,leng))));
       }
       cout << end << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
@@ -215,7 +215,7 @@ int main()
 						    uChar(255))));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,10,5));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
@@ -249,7 +249,7 @@ int main()
 						    short(-32768))));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,4));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
@@ -264,7 +264,7 @@ int main()
       cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 33) << endl;
       cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 15) << endl;
       cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 3) << endl;
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }

@@ -32,46 +32,47 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
-void UnitMap::initUMPrefix() {
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+void UnitMap::initUMPrefix (UMaps& maps) {
+  map<String, UnitName>& mapPref = maps.mapPref;
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("Y", UnitName("Y", C::yotta, "yotta")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("Z", UnitName("Z", C::zetta, "zetta")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("E", UnitName("E", C::exa,   "exa")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("P", UnitName("P", C::peta,  "peta")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("T", UnitName("T", C::tera,  "tera")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("G", UnitName("G", C::giga,  "giga")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("M", UnitName("M", C::mega,  "mega")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("k", UnitName("k", C::kilo,  "kilo")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("h", UnitName("h", C::hecto, "hecto")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("da",UnitName("da",C::deka,  "deka")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("d", UnitName("d", C::deci,  "deci")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("c", UnitName("c", C::centi, "centi")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("m", UnitName("m", C::milli, "milli")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("u", UnitName("u", C::micro, "micro")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("n", UnitName("n", C::nano,  "nano")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("p", UnitName("p", C::pico,  "pico")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("f", UnitName("f", C::femto, "femto")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("a", UnitName("a", C::atto,  "atto")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("z", UnitName("z", C::zepto, "zepto")));
-  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("y", UnitName("y", C::yocto, "yocto")));
 }
 

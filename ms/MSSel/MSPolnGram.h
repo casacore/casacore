@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/ms/MSSel/MSDataDescIndex.h>
 #include <casacore/ms/MSSel/MSPolIndex.h>
-#include <casacore/casa/Containers/OrderedMap.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
@@ -74,8 +74,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   int msPolnGramParseCommand (const MeasurementSet *ms, const String& command,
 			      TableExprNode& node,
 			      Vector<Int>& selectedDDIDs, 
-			      OrderedMap<Int, Vector<Int> >& selectedPolnMap,
-			      OrderedMap<Int, Vector<Vector<Int> > >& selectedSetupMap
+			      std::map<Int, Vector<Int> >& selectedPolnMap,
+			      std::map<Int, Vector<Vector<Int> > >& selectedSetupMap
 			      );
   
   // The error handler.

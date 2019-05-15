@@ -61,7 +61,7 @@ void b()
 		try {
 		    latlock[nrll] = new LatticeLocker (pa, FileLocker::Read, 1);
 		    nrll++;
-		} catch (AipsError x) {
+		} catch (AipsError& x) {
 		    cout << x.getMesg() << endl;
 		} 
 	    }
@@ -72,7 +72,7 @@ void b()
 		try {
 		    latlock[nrll] = new LatticeLocker (pa, FileLocker::Write,1);
 		    nrll++;
-		} catch (AipsError x) {
+		} catch (AipsError& x) {
 		    cout << x.getMesg() << endl;
 		} 
 	    }
@@ -125,7 +125,7 @@ int main (int argc, const char* argv[])
 		PagedArray<Int> pa(IPosition(2,4,4), "tLatticeLocker_tmp.data");
 	    }
 	    b();
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << "Caught an exception: " << x.getMesg() << endl;
 	    return 1;
 	} 

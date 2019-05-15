@@ -88,7 +88,7 @@ int main()
     tConvertEQ<Short,Int> (shape1);
     tConvertNear<Float,Int> (shape2);
     tConvertNear<Complex,Float> (shape2);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   }

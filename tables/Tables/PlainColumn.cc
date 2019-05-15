@@ -46,7 +46,7 @@ PlainColumn::PlainColumn (const BaseColumnDesc* cdp, ColumnSet* csp)
   colSetPtr_p   (csp),
   originalName_p(cdp->name())
 {
-  int trace = TableTrace::traceColumn (colDesc_p);
+  int trace = TableTrace::traceColumn (columnDesc());
   rtraceColumn_p = (trace&TableTrace::READ)  != 0;
   wtraceColumn_p = (trace&TableTrace::WRITE) != 0;
 }
@@ -63,7 +63,7 @@ TableRecord& PlainColumn::rwKeywordSet()
 {
     Bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, True);
     checkWriteLock (True);
-    TableRecord& rec = colDesc_p.rwKeywordSet();
+    TableRecord& rec = const_cast<BaseColumnDesc*>(colDescPtr_p)->rwKeywordSet();
     colSetPtr_p->setTableChanged();
     colSetPtr_p->userUnlock (hasLocked);
     return rec;
@@ -72,7 +72,7 @@ TableRecord& PlainColumn::keywordSet()
 {
     Bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, True);
     checkReadLock (True);
-    TableRecord& rec = colDesc_p.rwKeywordSet();
+    TableRecord& rec = const_cast<BaseColumnDesc*>(colDescPtr_p)->rwKeywordSet();
     colSetPtr_p->userUnlock (hasLocked);
     return rec;
 }
@@ -81,7 +81,7 @@ TableRecord& PlainColumn::keywordSet()
 //# By default defining the array shape is invalid.
 void PlainColumn::setShapeColumn (const IPosition&)
     { throw (TableInvOper ("setShapeColumn not allowed for column " +
-			   columnDesc().name())); }
+			   colDescPtr_p->name())); }
 
 
 Bool PlainColumn::isBound() const
@@ -132,7 +132,7 @@ void PlainColumn::getFile (AipsIO& ios, const ColumnSet& colset,
 
 void PlainColumn::checkValueLength (const String* value) const
 {
-    uInt maxlen = columnDesc().maxLength();
+    uInt maxlen = colDescPtr_p->maxLength();
     if (maxlen > 0  &&  value->length() > maxlen) {
 	throw (TableError ("ScalarColumn::put: string value '" +
 			   *value + "' exceeds maximum length"));
@@ -140,7 +140,7 @@ void PlainColumn::checkValueLength (const String* value) const
 }
 void PlainColumn::checkValueLength (const Array<String>* value) const
 {
-    uInt maxlen = columnDesc().maxLength();
+    uInt maxlen = colDescPtr_p->maxLength();
     if (maxlen == 0) {
 	return;
     }

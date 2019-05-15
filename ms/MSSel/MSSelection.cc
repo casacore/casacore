@@ -64,7 +64,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
@@ -77,7 +77,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fieldIDs_p(), spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(),
     feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
-    selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0)),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
     isMS_p(True), toTENCalled_p(False)
   {
@@ -112,7 +111,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     feedExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(),
     fieldIDs_p(), spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
-    selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0)),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
     isMS_p(True), toTENCalled_p(False)
   {
@@ -281,8 +279,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     timeExpr_p(""), uvDistExpr_p(""), polnExpr_p(""),taqlExpr_p(""),stateExpr_p(""), 
     observationExpr_p(""), feedExpr_p(""),
     antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), ddIDs_p(),
-    feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p(),
-    selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0))
+    feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p()
     
   {
     // Construct from a record representing a selection item
@@ -304,10 +301,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
   
-  MSSelection::MSSelection (const MSSelection& other):
-    selectedPolMap_p(Vector<Int>(0)),
-    selectedSetupMap_p(Vector<Vector<Int> >(0))
-    
+  MSSelection::MSSelection (const MSSelection& other)
   {
     // Copy constructor
     // Input:
@@ -1426,13 +1420,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     corrslices.set(Vector<Slice>());
     
     // Get the corr indices as an ordered map
-    OrderedMap<Int, Vector<Vector<Int> > > corrmap(this->getCorrMap(ms));
+    std::map<Int, Vector<Vector<Int> > > corrmap(this->getCorrMap(ms));
     
     // Iterate over the ordered map to fill the slices
-    ConstMapIter<Int, Vector<Vector<Int> > > mi(corrmap);
-    for (mi.toStart(); !mi.atEnd(); mi++) {
-      Int pol=mi.getKey();
-      Vector<Int> corridx=mi.getVal()[0];
+    for (const auto& elem : corrmap) {
+      Int pol=elem.first;
+      Vector<Int> corridx=elem.second[0];
       
       Int ncorr=corridx.nelements();
       corrslices(pol).resize(ncorr);

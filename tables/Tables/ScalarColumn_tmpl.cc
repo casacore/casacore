@@ -36,6 +36,7 @@ namespace casacore {
   template class ScalarColumn<uShort>;
   template class ScalarColumn<Int>;
   template class ScalarColumn<uInt>;
+  template class ScalarColumn<Int64>;
   template class ScalarColumn<Float>;
   template class ScalarColumn<Double>;
   template class ScalarColumn<Complex>;

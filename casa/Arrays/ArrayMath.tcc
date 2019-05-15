@@ -1116,53 +1116,58 @@ template<class T> T mean(const Array<T> &a)
 // <thrown>
 //    </item> ArrayError
 // </thrown>
+// Similar to numpy the ddof argument can be used to get the population
+// variance (ddof=0) or the sample variance (ddof=1).
+template<class T> T pvariance(const Array<T> &a, T mean, uInt ddof)
+{
+  if (a.nelements() < ddof+1) {
+    throw(ArrayError("::variance(const Array<T> &) - Need at least " +
+                     String::toString(ddof+1) + 
+                     " elements"));
+  }
+  T sum = a.contiguousStorage() ?
+    std::accumulate(a.cbegin(), a.cend(), T(), casacore::SumSqrDiff<T>(mean)) :
+    std::accumulate(a.begin(),  a.end(),  T(), casacore::SumSqrDiff<T>(mean));
+  return T(sum/(1.0*a.nelements() - ddof));
+}
 template<class T> T variance(const Array<T> &a, T mean)
 {
-    if (a.nelements() < 2) {
-	throw(ArrayError("::variance(const Array<T> &,T) - Need at least 2 "
-			 "elements"));
-    }
-    T sum = a.contiguousStorage() ?
-      std::accumulate(a.cbegin(), a.cend(), T(), casacore::SumSqrDiff<T>(mean)) :
-      std::accumulate(a.begin(),  a.end(),  T(), casacore::SumSqrDiff<T>(mean));
-    return T(sum/(1.0*a.nelements() - 1));
+  return pvariance (a, mean, 1);
 }
-
-// <thrown>
-//    </item> ArrayError
-// </thrown>
+template<class T> T pvariance(const Array<T> &a, uInt ddof)
+{
+  return pvariance(a, mean(a), ddof);
+}
 template<class T> T variance(const Array<T> &a)
 {
-    if (a.nelements() < 2) {
-	throw(ArrayError("::variance(const Array<T> &) - Need at least 2 "
-			 "elements"));
-    }
-    return variance(a, mean(a));
+  return pvariance(a, mean(a), 1);
 }
 
 // <thrown>
 //    </item> ArrayError
 // </thrown>
-template<class T> T stddev(const Array<T> &a)
+template<class T> T pstddev(const Array<T> &a, T mean, uInt ddof)
 {
-    if (a.nelements() < 2) {
-	throw(ArrayError("::stddev(const Array<T> &) - Need at least 2 "
-			 "elements"));
-    }
-    return sqrt(variance(a));
+  if (a.nelements() < ddof+1) {
+    throw(ArrayError("::stddev(const Array<T> &) - Need at least " +
+                     String::toString(ddof+1) + 
+                     " elements"));
+  }
+  return sqrt(pvariance(a, mean, ddof));
 }
-
-// <thrown>
-//    </item> ArrayError
-// </thrown>
 template<class T> T stddev(const Array<T> &a, T mean)
 {
-    if (a.nelements() < 2) {
-	throw(ArrayError("::stddev(const Array<T> &,T) - Need at least 2 "
-			 "elements"));
-    }
-    return sqrt(variance(a, mean));
+  return pstddev (a, mean, 1);
 }
+template<class T> T pstddev(const Array<T> &a, uInt ddof)
+{
+  return pstddev (a, mean(a), ddof);
+}
+template<class T> T stddev(const Array<T> &a)
+{
+  return pstddev (a, mean(a), 1);
+}
+
 
 // <thrown>
 //    </item> ArrayError

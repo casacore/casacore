@@ -73,21 +73,52 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 static const char*  strpImageExprGram = 0;
 static Int          posImageExprGram = 0;
 
+  
+// Define a class to delete the yy_buffer in case of an exception.
+class ImageExprGramState {
+public:
+  ImageExprGramState (YY_BUFFER_STATE state)
+    : itsState (state)
+  {}
+  ~ImageExprGramState()
+    { clear(); }
+  void clear()
+    { if (itsState) {
+        ImageExprGram_delete_buffer(itsState);
+        itsState=0;
+      }
+    }
+  YY_BUFFER_STATE state() const
+    { return itsState; }
+private:
+  ImageExprGramState (const ImageExprGramState&);
+  ImageExprGramState& operator= (const ImageExprGramState&);
+  YY_BUFFER_STATE itsState;      //# this is a pointer to yy_buffer_state
+};
+
+  
 //# Parse the command.
-//# Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int imageExprGramParseCommand (const String& command)
 {
-    ImageExprGramrestart (ImageExprGramin);
-    yy_start = 1;
-    // Save global state for re-entrancy.
+    // Save current state for re-entrancy.
+    int sav_yy_start = yy_start;
     const char* savStrpImageExprGram = strpImageExprGram;
     Int savPosImageExprGram= posImageExprGram;
+    YY_BUFFER_STATE sav_state = YY_CURRENT_BUFFER;
+    // Create a new state buffer for new expression.
+    ImageExprGramState next (ImageExprGram_create_buffer (ImageExprGramin, YY_BUF_SIZE));
+    ImageExprGram_switch_to_buffer (next.state());
+    yy_start = 1;
     strpImageExprGram = command.chars();     // get pointer to command string
     posImageExprGram  = 0;                   // initialize string position
     int sts = ImageExprGramparse();          // parse command string
-    // Restore global state.
+    // The current state has to be deleted before switching back to previous.
+    next.clear();
+    // Restore previous state.
+    yy_start = sav_yy_start;
     strpImageExprGram = savStrpImageExprGram;
     posImageExprGram= savPosImageExprGram;
+    ImageExprGram_switch_to_buffer (sav_state);
     return sts;
 }
 

@@ -61,7 +61,7 @@ int main (int argc, const char* argv[])
 	istringstream istr1(argv[1]);
 	istr1 >> tileSize;
 	doIt (tileSize);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

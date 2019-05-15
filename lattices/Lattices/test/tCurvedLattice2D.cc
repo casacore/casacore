@@ -210,7 +210,7 @@ int main (int argc, const char* argv[])
 	pa.showCacheStatistics(cout);
       }
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

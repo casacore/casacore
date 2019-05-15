@@ -35,10 +35,11 @@
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/OS/Mutex.h>
 #include<iosfwd>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -49,6 +50,7 @@ class SetupNewTable;
 class Table;
 class MultiFileBase;
 class Record;
+class ArrayBase;
 class IPosition;
 class Slicer;
 class RefRows;
@@ -514,7 +516,7 @@ private:
 
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
-    static SimpleOrderedMap<String,DataManagerCtor> theirRegisterMap;
+    static std::map<String,DataManagerCtor> theirRegisterMap;
     static Mutex theirMutex;
 
 public:
@@ -546,7 +548,7 @@ public:
 
 private:
     // Register the main data managers.
-    static SimpleOrderedMap<String,DataManagerCtor> initRegisterMap();
+    static std::map<String,DataManagerCtor> initRegisterMap();
 };
 
 
@@ -777,6 +779,8 @@ public:
 	{ getIntV (rownr, dataPtr); }
     void get (uInt rownr, uInt* dataPtr)
 	{ getuIntV (rownr, dataPtr); }
+    void get (uInt rownr, Int64* dataPtr)
+	{ getInt64V (rownr, dataPtr); }
     void get (uInt rownr, float* dataPtr)
 	{ getfloatV (rownr, dataPtr); } 
    void get (uInt rownr, double* dataPtr)
@@ -812,6 +816,8 @@ public:
 	{ putIntV (rownr, dataPtr); }
     void put (uInt rownr, const uInt* dataPtr)
 	{ putuIntV (rownr, dataPtr); }
+    void put (uInt rownr, const Int64* dataPtr)
+	{ putInt64V (rownr, dataPtr); }
     void put (uInt rownr, const float* dataPtr)
 	{ putfloatV (rownr, dataPtr); }
     void put (uInt rownr, const double* dataPtr)
@@ -1007,6 +1013,7 @@ protected:
     virtual void getuShortV   (uInt rownr, uShort* dataPtr);
     virtual void getIntV      (uInt rownr, Int* dataPtr);
     virtual void getuIntV     (uInt rownr, uInt* dataPtr);
+    virtual void getInt64V    (uInt rownr, Int64* dataPtr);
     virtual void getfloatV    (uInt rownr, float* dataPtr);
     virtual void getdoubleV   (uInt rownr, double* dataPtr);
     virtual void getComplexV  (uInt rownr, Complex* dataPtr);
@@ -1025,6 +1032,7 @@ protected:
     virtual void putuShortV   (uInt rownr, const uShort* dataPtr);
     virtual void putIntV      (uInt rownr, const Int* dataPtr);
     virtual void putuIntV     (uInt rownr, const uInt* dataPtr);
+    virtual void putInt64V    (uInt rownr, const Int64* dataPtr);
     virtual void putfloatV    (uInt rownr, const float* dataPtr);
     virtual void putdoubleV   (uInt rownr, const double* dataPtr);
     virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
@@ -1050,6 +1058,37 @@ private:
     // Assignment cannot be used for this base class.
     // The private declaration of this operator makes it unusable.
     DataManagerColumn& operator= (const DataManagerColumn&);
+
+    // The default implementations of get and put functions.
+    // <group>
+    void getScalarColumnBase (ArrayBase& dataPtr);
+    void putScalarColumnBase (const ArrayBase& dataPtr);
+    void getScalarColumnCellsBase (const RefRows& rownrs, ArrayBase& dataPtr);
+    void putScalarColumnCellsBase (const RefRows& rownrs, const ArrayBase& dataPtr);
+    void getArrayColumnBase (ArrayBase& data);
+    void putArrayColumnBase (const ArrayBase& data);
+    void getArrayColumnCellsBase (const RefRows& rownrs, ArrayBase& data);
+    void putArrayColumnCellsBase (const RefRows& rownrs, const ArrayBase& data);
+    void getSliceBase (uInt rownr, const Slicer& slicer, ArrayBase& data);
+    void putSliceBase (uInt rownr, const Slicer& slicer, const ArrayBase& data);
+    void getColumnSliceBase (const Slicer& slicer, ArrayBase& data);
+    void putColumnSliceBase (const Slicer& slicer, const ArrayBase& data);
+    void getColumnSliceCellsBase (const RefRows& rownrs,
+                                  const Slicer& slicer, ArrayBase& data);
+    void putColumnSliceCellsBase (const RefRows& rownrs,
+                                  const Slicer& slicer, const ArrayBase& data);
+    // Get a slice from the array in the given row.
+    // It reads the full array in the possibly reshaped ArrayBase object.
+    void getSliceArr (uInt row, const Slicer& section,
+                      CountedPtr<ArrayBase>& fullArr,
+                      ArrayBase& arr);
+    // Put a slice into the array in the given row.
+    // It reads and writes the full array in the possibly reshaped ArrayBase
+    // object.
+    void putSliceArr (uInt row, const Slicer& section,
+                      CountedPtr<ArrayBase>& fullArr,
+                      const ArrayBase& arr);
+    // </group>
 };
 
 

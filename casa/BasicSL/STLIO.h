@@ -42,6 +42,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Forward Declarations
   class AipsIO;
 
+  template <typename T, typename U>
+  inline ostream& operator<< (ostream& os, const std::pair<T,U>& p);
+
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::vector<T>& v);
+
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::set<T>& v);
+
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::list<T>& v);
+
+  template<typename T, typename U>
+  inline ostream& operator<<(ostream& os, const std::map<T,U>& m);
+
   // <summary>
   //    Input/output operators for STL-like containers.
   // </summary>
@@ -169,6 +184,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   AipsIO& operator<< (AipsIO& ios, const std::vector<T>&);
   // </group>
 
+  // Read and write the contents of a map object from/to AipsIO.
+  // It is done in the same way as the old SimpleOrderedMap class, so
+  // persistent SimpleOrderedMap objects in CTDS can be read as std::map
+  // and vice-versa.
+  template<typename K, typename V>
+  AipsIO& operator>> (AipsIO& ios, std::map<K,V>&);
+  template<typename K, typename V>
+  AipsIO& operator<< (AipsIO& ios, const std::map<K,V>&);
+  // </group>
+                      
 } //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES

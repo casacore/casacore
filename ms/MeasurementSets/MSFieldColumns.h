@@ -41,7 +41,7 @@
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -191,7 +191,7 @@ protected:
   Int measCometIndex(int row) const;
   String measCometsPath_p;
   Vector<MeasComet*> measCometsV_p;
-  SimpleOrderedMap <Int, Int> ephIdToMeasComet_p;
+  std::map<Int, Int> ephIdToMeasComet_p;
 
   // Extract the direction Measure from the corresponding ephemeris
   // using the nominal position as an offset.

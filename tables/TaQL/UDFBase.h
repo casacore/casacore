@@ -121,7 +121,7 @@ namespace casacore {
   //      function need to be implemented.
   //      The <src>get</src> functions have an argument TableExprId
   //      defining the table row (or record) for which the function has
-  //      to be evaluated. 
+  //      to be evaluated.
   //      If the UDF is an aggregate functions the TableExprId has to be
   //      upcasted to an TableExprIdAggr object from which all TableExprId
   //      objects in an aggregation group can be retrieved.

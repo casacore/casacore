@@ -95,7 +95,7 @@ TableInvOpt::~TableInvOpt () noexcept
 
 TableInvType::TableInvType (const String& tableName,
                             const String& tpin, const String& tpfil,Category c)
-: TableError ("Table file " + tableName + "is incorrect: Expected type "
+: TableError ("Table file " + tableName + " is incorrect: Expected type "
               + tpin + ", found " + tpfil, c)
 {}
 TableInvType::~TableInvType () noexcept
@@ -127,7 +127,7 @@ TableInvDT::TableInvDT (Category c)
 : TableError ("Invalid Table data type",c)
 {}
 TableInvDT::TableInvDT (const String& name,Category c)
-: TableError ("Invalid Table data type when accessing column" + name,c)
+: TableError ("Invalid Table data type when accessing column " + name,c)
 {}
 TableInvDT::~TableInvDT () noexcept
 {}

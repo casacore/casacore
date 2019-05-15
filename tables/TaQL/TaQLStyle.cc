@@ -82,7 +82,7 @@ void TaQLStyle::set (const String& value)
 
 void TaQLStyle::reset()
 {
-  set ("GLISH"); 
+  set ("GLISH");
   itsDoTiming  = False;
   itsDoTracing = False;
 }

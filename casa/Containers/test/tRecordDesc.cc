@@ -38,7 +38,7 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -116,28 +116,28 @@ void doIt (Bool doExcp)
 	Bool caught = False;
 	try {
 	    a.addField("a", TpDouble); // already exists
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssertExit(caught);
 	caught = False;
 	try {
 	    a.addField("a", TpDouble, IPosition(1,1)); // already exists
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssertExit(caught);
 	caught = False;
 	try {
 	    a.addField("a", TpDouble, IPosition(1,1)); // already exists
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssertExit(caught);
 	caught = False;
 	try {
 	    a.addField("aaa", TpOther);                // invalid type
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssertExit(caught);
@@ -206,7 +206,7 @@ void doIt (Bool doExcp)
 	    try {
 		ab.mergeField(cd, cd.fieldNumber("a"), 
 			      RecordInterface::ThrowOnDuplicates);
-	    } catch (AipsError x) {
+	    } catch (AipsError& x) {
 		caught = True;
 	    } 
 	    AlwaysAssertExit(caught);
@@ -283,14 +283,14 @@ void doIt (Bool doExcp)
 	Bool caught = False;
 	try {
 	    g.addField("Other", TpRecord, IPosition(1,1));
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssertExit(caught);
         caught = False;
 	try {
 	    g.addField("Other", TpTable, IPosition(1,1));
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	AlwaysAssertExit(caught);

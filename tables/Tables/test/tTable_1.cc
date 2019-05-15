@@ -52,7 +52,7 @@ int main (int argc, const char* argv[])
     }
     try {
 	a(nr);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -86,7 +86,7 @@ void a(uInt nrrow) {
     //# Do some erroneous things.
     try {
 	newtab.bindColumn ("ab", sm1);     // newtab is already in use
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 ///    try {

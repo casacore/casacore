@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeRecordField::TableExprNodeRecordField
                                             (DataType dtype,
-					     const Block<Int>& fieldNumbers)
+                                             const Block<Int>& fieldNumbers)
 : TableExprNodeBinary (NTNumeric, VTScalar, OtField, Table()),
   fieldNrs_p  (fieldNumbers),
   lastEntry_p (fieldNumbers.nelements() - 1)
@@ -96,7 +96,7 @@ Bool TableExprNodeRecordField::isDefined (const TableExprId& id)
       RecordDesc desc = recPtr->description();
       if (fieldNrs_p[i] >= Int(desc.nfields())
       ||  !desc.isSubRecord(fieldNrs_p[i])) {
-	return False;
+        return False;
       }
       recPtr = &(recPtr->asRecord (fieldNrs_p[i]));
     }
@@ -180,7 +180,7 @@ const RecordInterface& TableExprNodeRecordField::getRecord
 
 TableExprNodeRecordFieldArray::TableExprNodeRecordFieldArray
                                             (DataType dtype,
-					     const Block<Int>& fieldNumbers)
+                                             const Block<Int>& fieldNumbers)
 : TableExprNodeArray (NTNumeric, OtField),
   fieldNrs_p  (fieldNumbers),
   lastEntry_p (fieldNumbers.nelements() - 1)
@@ -240,7 +240,7 @@ Bool TableExprNodeRecordFieldArray::isDefined (const TableExprId& id)
       RecordDesc desc = recPtr->description();
       if (fieldNrs_p[i] >= Int(desc.nfields())
       ||  !desc.isSubRecord(fieldNrs_p[i])) {
-	return False;
+        return False;
       }
       recPtr = &(recPtr->asRecord (fieldNrs_p[i]));
     }

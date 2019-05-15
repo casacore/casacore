@@ -853,7 +853,7 @@ Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1,
    Bool ok = True;
    try {
       StokesCoordinate tmp(stokes);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
       ok = False;
    } 
 //

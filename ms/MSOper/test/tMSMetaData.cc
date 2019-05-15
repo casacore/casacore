@@ -1178,6 +1178,7 @@ void testIt(MSMetaData& md) {
         {
             cout << "*** Test getIntentsForField()" << endl;
             uInt nFields = md.nFields();
+            const auto fieldNames = md.getFieldNames();
             for (uInt i=0; i<nFields; ++i) {
                 std::set<String> expec;
                 switch (i) {
@@ -1240,8 +1241,10 @@ void testIt(MSMetaData& md) {
                 }
                 cout << "*** i " << i << endl;
                 _printSet(md.getIntentsForField(i));
-
                 AlwaysAssert(md.getIntentsForField(i) == expec, AipsError);
+                AlwaysAssert(
+                    md.getIntentsForField(fieldNames[i]) == expec, AipsError
+                );
             }
         }
         {

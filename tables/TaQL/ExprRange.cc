@@ -38,7 +38,7 @@ TableExprRange::TableExprRange()
 {}
 
 TableExprRange::TableExprRange(const TableColumn& col, double stval,
-			       double endval)
+                               double endval)
 : sval_p     (1),
   eval_p     (1),
   tabColPtr_p(0)
@@ -54,7 +54,7 @@ TableExprRange::TableExprRange (const TableExprRange& that)
   tabColPtr_p(0)
 {
     if (that.tabColPtr_p != 0) {
-	tabColPtr_p = new TableColumn (*(that.tabColPtr_p));
+        tabColPtr_p = new TableColumn (*(that.tabColPtr_p));
     }
 }
 
@@ -64,12 +64,12 @@ TableExprRange::~TableExprRange()
 TableExprRange& TableExprRange::operator= (const TableExprRange& that)
 {
     if (this != &that) {
-	sval_p       = that.sval_p;
-	eval_p       = that.eval_p;
-	delete tabColPtr_p;
-	if (that.tabColPtr_p != 0) {
-	    tabColPtr_p = new TableColumn (*(that.tabColPtr_p));
-	}
+        sval_p       = that.sval_p;
+        eval_p       = that.eval_p;
+        delete tabColPtr_p;
+        if (that.tabColPtr_p != 0) {
+            tabColPtr_p = new TableColumn (*(that.tabColPtr_p));
+        }
     }
     return *this;
 }
@@ -91,23 +91,23 @@ void TableExprRange::mixAnd (const TableExprRange& that)
     uInt i,j;
     //# Loop through all intervals of this.
     for (i=0; i<sval_p.nelements(); i++) {
-	for (j=0; j<that.sval_p.nelements(); j++) {
-	    if (that.sval_p(j) > eval_p(i)) {
-		break;                              // that past this; next this
-	    }
-	    if (that.eval_p(j) >= sval_p(i)) {      // overlap
-		stres(nrres)  = max (sval_p(i), that.sval_p(j));
-		endres(nrres) = min (eval_p(i), that.eval_p(j));
-		nrres++;
-	    }
-	}
+        for (j=0; j<that.sval_p.nelements(); j++) {
+            if (that.sval_p(j) > eval_p(i)) {
+                break;                              // that past this; next this
+            }
+            if (that.eval_p(j) >= sval_p(i)) {      // overlap
+                stres(nrres)  = max (sval_p(i), that.sval_p(j));
+                endres(nrres) = min (eval_p(i), that.eval_p(j));
+                nrres++;
+            }
+        }
     }
     //# Now copy the result (nrres elements of course) into this.
     sval_p.resize(nrres);
     eval_p.resize(nrres);
     if (nrres > 0) {
-	sval_p = stres (Slice(0,nrres));
-	eval_p = endres(Slice(0,nrres));
+        sval_p = stres (Slice(0,nrres));
+        eval_p = endres(Slice(0,nrres));
     }
 }
 
@@ -124,22 +124,22 @@ void TableExprRange::mixOr (const TableExprRange& that)
     //# Store in the result, while inserting the that intervals,
     //# in order of start-value.
     for (i=0; i<sval_p.nelements(); i++) {
-	while (j < that.sval_p.nelements()  &&  that.sval_p(j) < sval_p(i)) {
-	    stres(nrres)  = that.sval_p(j);
-	    endres(nrres) = that.eval_p(j);
-	    nrres++;
-	    j++;
-	}
-	stres(nrres)  = sval_p(i);
-	endres(nrres) = eval_p(i);
-	nrres++;
+        while (j < that.sval_p.nelements()  &&  that.sval_p(j) < sval_p(i)) {
+            stres(nrres)  = that.sval_p(j);
+            endres(nrres) = that.eval_p(j);
+            nrres++;
+            j++;
+        }
+        stres(nrres)  = sval_p(i);
+        endres(nrres) = eval_p(i);
+        nrres++;
     }
     //# Append possible remaining that intervals.
     while (j < that.sval_p.nelements()) {
-	stres(nrres)  = that.sval_p(j);
-	endres(nrres) = that.eval_p(j);
-	nrres++;
-	j++;
+        stres(nrres)  = that.sval_p(j);
+        endres(nrres) = that.eval_p(j);
+        nrres++;
+        j++;
     }
     //# Now combine overlapping intervals and store result in temporary.
     Vector<double> stmp(nrres);
@@ -148,15 +148,15 @@ void TableExprRange::mixOr (const TableExprRange& that)
     stmp(0) = stres(0);                             // first interval
     etmp(0) = endres(0);
     for (i=1; i<nrres; i++) {
-	if (stres(i) <= etmp(j)) {                  // overlap
-	    if (endres(i) > etmp(j)) {
-		etmp(j) = endres(i);                // higher end-value
-	    }
-	}else{
-	    j++;                                    // no overlap,
-	    stmp(j) = stres(i);                     // so insert interval
-	    etmp(j) = endres(i);
-	}
+        if (stres(i) <= etmp(j)) {                  // overlap
+            if (endres(i) > etmp(j)) {
+                etmp(j) = endres(i);                // higher end-value
+            }
+        }else{
+            j++;                                    // no overlap,
+            stmp(j) = stres(i);                     // so insert interval
+            etmp(j) = endres(i);
+        }
     }
     nrres = j+1;
     //# Now set vectors to their final length and store values in them.
@@ -166,8 +166,8 @@ void TableExprRange::mixOr (const TableExprRange& that)
     sval_p.resize(nrres);
     eval_p.resize(nrres);
     if (nrres > 0) {
-	sval_p = stmp(Slice(0,nrres));
-	eval_p = etmp(Slice(0,nrres));
+        sval_p = stmp(Slice(0,nrres));
+        eval_p = etmp(Slice(0,nrres));
     }
 }
 

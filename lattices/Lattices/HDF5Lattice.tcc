@@ -33,6 +33,7 @@
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 #include <casacore/tables/DataMan/TSMCube.h>
+#include <casacore/tables/DataMan/TiledFileAccess.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
@@ -104,9 +105,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   HDF5Lattice<T>::HDF5Lattice (const HDF5Lattice<T>& other)
   : Lattice<T>(),
-    itsFile    (other.itsFile),
-    itsGroup   (other.itsGroup),
-    itsDataSet (other.itsDataSet)
+    itsFile      (other.itsFile),
+    itsGroup     (other.itsGroup),
+    itsDataSet   (other.itsDataSet),
+    itsTileShape (other.itsTileShape)
   {
     DebugAssert (ok(), AipsError);
   }
@@ -121,9 +123,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   HDF5Lattice<T>& HDF5Lattice<T>::operator= (const HDF5Lattice<T>& other)
   {
     if (this != &other) {
-      itsFile    = other.itsFile;
-      itsGroup   = other.itsGroup;
-      itsDataSet = other.itsDataSet;
+      itsFile      = other.itsFile;
+      itsGroup     = other.itsGroup;
+      itsDataSet   = other.itsDataSet;
+      itsTileShape = other.itsTileShape;
     }
     DebugAssert (ok(), AipsError);
     return *this;
@@ -208,7 +211,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   IPosition HDF5Lattice<T>::tileShape() const
   {
-    return itsDataSet->tileShape();
+    return itsTileShape;
   }
 
   template<typename T>
@@ -240,7 +243,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                              const IPosition& axisPath)
   {
     itsDataSet->setCacheSize (TSMCube::calcCacheSize (itsDataSet->shape(),
-                                                      itsDataSet->tileShape(),
+                                                      tileShape(),
                                                       False,
                                                       sliceShape, windowStart,
                                                       windowLength, axisPath,
@@ -294,6 +297,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Open the data set.
     itsDataSet = new HDF5DataSet (*itsGroup, arrayName, (const T*)0);
+    // Calculate tile shape if default tile shape is empty
+    itsTileShape = itsDataSet->tileShape();
+    if (itsTileShape.empty()) {
+      itsTileShape = TiledFileAccess::makeTileShape(itsDataSet->shape());
+    }
   }
 
   template <typename T>
@@ -313,6 +321,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Create the data set.
     itsDataSet = new HDF5DataSet (*itsGroup, arrayName, shape.shape(),
 				  shape.tileShape(), (const T*)0);
+    // Calculate tile shape if default tile shape is empty
+    itsTileShape = itsDataSet->tileShape();
+    if (itsTileShape.empty()) {
+      itsTileShape = TiledFileAccess::makeTileShape(itsDataSet->shape());
+    }
   }
 
   template<typename T>

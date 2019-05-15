@@ -666,7 +666,7 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
    Bool ok = True;
    try {
       MDirection toMD = machine(fromMD);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
       ok = False;
    }
    if (ok) {
@@ -699,7 +699,7 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
       ok = True;
       try {
          MDirection toMD = machine(fromMD);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
          ok = False;
       }
       if (ok) return True;
@@ -735,7 +735,7 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
       ok = True;
       try {
          MDirection toMD = machine(fromMD);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
          ok = False;
       }
       if (ok) return True;
@@ -754,7 +754,7 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
       ok = True;
       try {
          MDirection toMD = machine(fromMD);
-      } catch (AipsError x) {
+      } catch (AipsError& x) {
          ok = False;
       }
       if (!ok) {
@@ -904,7 +904,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
    MFrequency freqFrom(freq, typeFrom);
    try {
       freqTo = machine(freqFrom);
-   } catch (AipsError x) {
+   } catch (AipsError& x) {
       ok = False;
    }
    if (!ok) {

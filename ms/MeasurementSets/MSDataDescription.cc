@@ -45,8 +45,7 @@ MSDataDescription::MSDataDescription():hasBeenDestroyed_p(True) { }
 
 MSDataDescription::MSDataDescription(const String &tableName, 
 				     TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSDataDescriptionEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -56,8 +55,7 @@ MSDataDescription::MSDataDescription(const String &tableName,
 
 MSDataDescription::MSDataDescription(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSDataDescriptionEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -68,8 +66,7 @@ MSDataDescription::MSDataDescription(const String& tableName, const String &tabl
 
 MSDataDescription::MSDataDescription(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSDataDescriptionEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -79,8 +76,7 @@ MSDataDescription::MSDataDescription(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSDataDescription::MSDataDescription(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSDataDescriptionEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -89,8 +85,7 @@ MSDataDescription::MSDataDescription(const Table &table)
 }
 
 MSDataDescription::MSDataDescription(const MSDataDescription &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSDataDescriptionEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -118,54 +113,51 @@ MSDataDescription::~MSDataDescription()
 MSDataDescription& MSDataDescription::operator=(const MSDataDescription &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSDataDescriptionEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSDataDescription::init()
+MSTableMaps MSDataDescription::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-        // FLAG_ROW
-	colMapDef(FLAG_ROW,"FLAG_ROW", TpBool,
-		  "Flag this row","","");
-	// LAG_ID
-	colMapDef(LAG_ID,"LAG_ID",TpInt,"The lag index","","");
-	// POLARIZATION_ID
-	colMapDef(POLARIZATION_ID,"POLARIZATION_ID",TpInt,
-		  "Pointer to polarization table","","");
-	// SPECTRAL_WINDOW_ID
-	colMapDef(SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
-		  "Pointer to spectralwindow table","","");
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // FLAG_ROW
+  colMapDef(maps, FLAG_ROW,"FLAG_ROW", TpBool,
+            "Flag this row","","");
+  // LAG_ID
+  colMapDef(maps, LAG_ID,"LAG_ID",TpInt,"The lag index","","");
+  // POLARIZATION_ID
+  colMapDef(maps, POLARIZATION_ID,"POLARIZATION_ID",TpInt,
+            "Pointer to polarization table","","");
+  // SPECTRAL_WINDOW_ID
+  colMapDef(maps, SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID", TpInt,
+            "Pointer to spectralwindow table","","");
 
-	// PredefinedKeywords
+  // PredefinedKeywords
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // init requiredTableDesc
+  // all required keywords
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
+
+  return maps;
 }
 
 	
 MSDataDescription MSDataDescription::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return MSDataDescription(MSTable<PredefinedColumns,PredefinedKeywords>::
+  return MSDataDescription(MSTable<MSDataDescriptionEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

@@ -43,8 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSPointing::MSPointing():hasBeenDestroyed_p(True) { }
 
 MSPointing::MSPointing(const String &tableName, TableOption option) 
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSPointingEnums>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,8 +53,7 @@ MSPointing::MSPointing(const String &tableName, TableOption option)
 
 MSPointing::MSPointing(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(tableName, tableDescName,option),
+    : MSTable<MSPointingEnums>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -66,8 +64,7 @@ MSPointing::MSPointing(const String& tableName, const String &tableDescName,
 
 MSPointing::MSPointing(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(newTab, nrrow, initialize), 
+    : MSTable<MSPointingEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -77,8 +74,7 @@ MSPointing::MSPointing(SetupNewTable &newTab, uInt nrrow,
 }
 
 MSPointing::MSPointing(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSPointingEnums>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -87,8 +83,7 @@ MSPointing::MSPointing(const Table &table)
 }
 
 MSPointing::MSPointing(const MSPointing &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), 
+    : MSTable<MSPointingEnums>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
@@ -116,93 +111,91 @@ MSPointing::~MSPointing()
 MSPointing& MSPointing::operator=(const MSPointing &other)
 {
     if (&other != this) {
-	MSTable<PredefinedColumns,
-	PredefinedKeywords>::operator=(other);
+	MSTable<MSPointingEnums>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void MSPointing::init()
+MSTableMaps MSPointing::initMaps()
 {
-    if (! columnMap_p.ndefined()) {
-	// the PredefinedColumns
-	// ANTENNA_ID
-	colMapDef(ANTENNA_ID, "ANTENNA_ID", TpInt,
-		  "Antenna Id","","");
-	// DIRECTION
-	colMapDef(DIRECTION, "DIRECTION", TpArrayDouble,
-		  "Antenna pointing direction as polynomial in time","rad"
-		  ,"Direction");
-	// INTERVAL
-	colMapDef(INTERVAL, "INTERVAL", TpDouble,
-		  "Time interval","s","");
-	// NAME
-	colMapDef(NAME, "NAME", TpString,
-		  "Pointing position name","","");
-	// NUM_POLY
-	colMapDef(NUM_POLY, "NUM_POLY", TpInt,
-		  "Series order","","");
-	// TARGET
-	colMapDef(TARGET, "TARGET", TpArrayDouble,
-		  "target direction as polynomial in time","rad"
-		  ,"Direction");
-	// TIME
-	colMapDef(TIME, "TIME", TpDouble,
-		  "Time interval midpoint","s","Epoch");
-	// TIME_ORIGIN
-	colMapDef(TIME_ORIGIN, "TIME_ORIGIN", TpDouble,
-		  "Time origin for direction","s","Epoch");
-	// TRACKING
-	colMapDef(TRACKING, "TRACKING", TpBool,
-		  "Tracking flag - True if on position","","");
-	// ENCODER
-	colMapDef(ENCODER, "ENCODER", TpArrayDouble,
-		  "Encoder values","rad","Direction");
-	// ON_SOURCE
-	colMapDef(ON_SOURCE, "ON_SOURCE", TpBool,
-		  "On source flag","","");
-	// OVER_THE_TOP
-	colMapDef(OVER_THE_TOP, "OVER_THE_TOP", TpBool,
-		  "Antenna over the top","","");
-	// POINTING_MODEL_ID
-	colMapDef(POINTING_MODEL_ID,"POINTING_MODEL_ID",TpInt,
-		  "Pointing model id","","");
-	// POINTING_OFFSET
-	colMapDef(POINTING_OFFSET, "POINTING_OFFSET", TpArrayDouble,
-		  "A priori pointing correction as polynomial in time",
-		  "rad","Direction");
-	// SOURCE_OFFSET
-	colMapDef(SOURCE_OFFSET, "SOURCE_OFFSET", TpArrayDouble,
-		  "Offset from source as polynomial in time","rad","Direction");
-	// PredefinedKeywords
+  MSTableMaps maps;
+  // the PredefinedColumns
+  // ANTENNA_ID
+  colMapDef(maps, ANTENNA_ID, "ANTENNA_ID", TpInt,
+            "Antenna Id","","");
+  // DIRECTION
+  colMapDef(maps, DIRECTION, "DIRECTION", TpArrayDouble,
+            "Antenna pointing direction as polynomial in time","rad"
+            ,"Direction");
+  // INTERVAL
+  colMapDef(maps, INTERVAL, "INTERVAL", TpDouble,
+            "Time interval","s","");
+  // NAME
+  colMapDef(maps, NAME, "NAME", TpString,
+            "Pointing position name","","");
+  // NUM_POLY
+  colMapDef(maps, NUM_POLY, "NUM_POLY", TpInt,
+            "Series order","","");
+  // TARGET
+  colMapDef(maps, TARGET, "TARGET", TpArrayDouble,
+            "target direction as polynomial in time","rad"
+            ,"Direction");
+  // TIME
+  colMapDef(maps, TIME, "TIME", TpDouble,
+            "Time interval midpoint","s","Epoch");
+  // TIME_ORIGIN
+  colMapDef(maps, TIME_ORIGIN, "TIME_ORIGIN", TpDouble,
+            "Time origin for direction","s","Epoch");
+  // TRACKING
+  colMapDef(maps, TRACKING, "TRACKING", TpBool,
+            "Tracking flag - True if on position","","");
+  // ENCODER
+  colMapDef(maps, ENCODER, "ENCODER", TpArrayDouble,
+            "Encoder values","rad","Direction");
+  // ON_SOURCE
+  colMapDef(maps, ON_SOURCE, "ON_SOURCE", TpBool,
+            "On source flag","","");
+  // OVER_THE_TOP
+  colMapDef(maps, OVER_THE_TOP, "OVER_THE_TOP", TpBool,
+            "Antenna over the top","","");
+  // POINTING_MODEL_ID
+  colMapDef(maps, POINTING_MODEL_ID,"POINTING_MODEL_ID",TpInt,
+            "Pointing model id","","");
+  // POINTING_OFFSET
+  colMapDef(maps, POINTING_OFFSET, "POINTING_OFFSET", TpArrayDouble,
+            "A priori pointing correction as polynomial in time",
+            "rad","Direction");
+  // SOURCE_OFFSET
+  colMapDef(maps, SOURCE_OFFSET, "SOURCE_OFFSET", TpArrayDouble,
+            "Offset from source as polynomial in time","rad","Direction");
 
-	// init requiredTableDesc
-	TableDesc requiredTD;
-	// all required keywords
-	// First define the columns with known dimensionality
-	addColumnToDesc(requiredTD, DIRECTION, 2);
-	uInt i;
-	for (i = UNDEFINED_KEYWORD+1;
-	     i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
-	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
-	}
-	
-	// all required columns 
-	// Now define all other columns (duplicates are skipped)
-	for (i = UNDEFINED_COLUMN+1; 
-	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
-	    addColumnToDesc(requiredTD, PredefinedColumns(i));
-	}
-	requiredTD_p=new TableDesc(requiredTD);
-    }
+  // PredefinedKeywords
+
+  // init requiredTableDesc
+  // all required keywords
+  // First define the columns with known dimensionality
+  addColumnToDesc(maps, DIRECTION, 2);
+  uInt i;
+  for (i = UNDEFINED_KEYWORD+1;
+       i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+    addKeyToDesc(maps, PredefinedKeywords(i));
+  }
+  // all required columns 
+  // Now define all other columns (duplicates are skipped)
+  for (i = UNDEFINED_COLUMN+1; 
+       i <= NUMBER_REQUIRED_COLUMNS; i++) {
+    addColumnToDesc(maps, PredefinedColumns(i));
+  }
+
+  return maps;
 }
 
 	
 MSPointing MSPointing::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return MSPointing(MSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSPointing(MSTable<MSPointingEnums>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

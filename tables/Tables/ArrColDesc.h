@@ -31,7 +31,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
 
@@ -69,7 +68,7 @@ template<class T> class Array;
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
-//  Bool, uChar, Short, uShort, Int, uInt, float, double,
+//  Bool, uChar, Short, uShort, Int, uInt, Int64, float, double,
 //  Complex, DComplex and String.
 //
 // At table creation time (when a table gets created from a table
@@ -287,6 +286,7 @@ protected:
   extern template class ArrayColumnDesc<uShort>;
   extern template class ArrayColumnDesc<Int>;
   extern template class ArrayColumnDesc<uInt>;
+  extern template class ArrayColumnDesc<Int64>;
   extern template class ArrayColumnDesc<Float>;
   extern template class ArrayColumnDesc<Double>;
   extern template class ArrayColumnDesc<Complex>;

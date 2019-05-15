@@ -34,7 +34,6 @@
 #include <casacore/casa/Logging/LogOrigin.h>
 #include <casacore/casa/Logging/LogSink.h>
 #include <casacore/casa/Logging/LogFilter.h>
-//#include <aips/LogTables/TableLogSink.h>
 #include <casacore/casa/Logging/LogIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

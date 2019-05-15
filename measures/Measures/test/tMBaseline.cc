@@ -213,7 +213,7 @@ int main()
 	  delete mbc;
 	}
       
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 

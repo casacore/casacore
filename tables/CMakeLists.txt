@@ -23,6 +23,11 @@ foreach (src DataMan/DataManager.cc TaQL/UDFBase.cc)
                  PROPERTIES COMPILE_FLAGS -DSOVERSION=${LIB_SOVERSION})
 endforeach (src)
 
+if (ADIOS2_FOUND)
+  set(ADIOS2_SOURCES DataMan/Adios2StMan.cc DataMan/Adios2StManColumn.cc)
+  set(ADIOS2_HEADERS DataMan/Adios2StMan.h DataMan/Adios2StManColumn.h)
+endif (ADIOS2_FOUND)
+
 add_library (casa_tables
 Tables/ArrayColumn_tmpl.cc
 Tables/ArrColDesc_tmpl.cc
@@ -185,27 +190,14 @@ ${BISON_RecordGram_OUTPUTS}
 ${FLEX_RecordGram_OUTPUTS}
 ${BISON_TableGram_OUTPUTS}
 ${FLEX_TableGram_OUTPUTS}
+${ADIOS2_SOURCES}
 )
 
 target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
-
 if(MPI_FOUND)
-    add_definitions(-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX)
-    target_compile_definitions(casa_tables PRIVATE HAVE_MPI)
-    target_link_libraries(casa_tables ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
     if(ADIOS2_FOUND)
-        target_sources(casa_tables PRIVATE
-            DataMan/Adios2StMan.cc
-            DataMan/Adios2StManColumn.cc
-            )
-        target_compile_definitions(casa_tables PRIVATE HAVE_ADIOS2)
-        target_include_directories(casa_tables PRIVATE ${ADIOS2_INCLUDE_DIRS})
-        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES})
-        install (FILES
-            DataMan/Adios2StMan.h
-            DataMan/Adios2StManColumn.h
-            DESTINATION include/casacore/tables/DataMan
-            )
+        target_link_libraries(casa_tables adios2::adios2)
     endif(ADIOS2_FOUND)
 endif(MPI_FOUND)
 
@@ -382,6 +374,7 @@ DataMan/VirtColEng.h
 DataMan/VirtScaCol.h
 DataMan/VirtScaCol.tcc
 DataMan/VirtualTaQLColumn.h
+${ADIOS2_HEADERS}
 DESTINATION include/casacore/tables/DataMan
 )
 

@@ -186,7 +186,7 @@ int main()
       delete cl;
     }
 
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   } 
 
@@ -197,7 +197,7 @@ int main()
     MeasComet comet;
     cout << "OK:             " << comet.ok() << endl;
     cout << "Name:           " << comet.getName() << endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
   }
 

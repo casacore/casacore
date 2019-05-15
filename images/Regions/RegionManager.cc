@@ -31,7 +31,6 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Containers/HashMap.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Logging/LogFilter.h>
@@ -814,7 +813,7 @@ namespace casacore { //# name space casa begins
 	myimage.defineRegion (newName, mask, RegionHandler::Masks);
 	retval=myimage.hasRegion(newName);
       }
-      catch(AipsError x){
+      catch(AipsError& x){
 	throw(AipsError("Could not write mask in image "+tabName+" because "+x.getMesg()));
       }
       catch(...){

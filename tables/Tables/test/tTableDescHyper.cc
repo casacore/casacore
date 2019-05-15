@@ -54,7 +54,7 @@ int main (int argc, const char*[])
 	if (argc < 2) {
 	    excpDesc();
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -178,14 +178,14 @@ void excpDesc()
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector (""));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // no data columns
     } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      0,
 			      stringToVector ("Data,Weight"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // ndim < 1
     } 
     try {
@@ -193,7 +193,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // ndim != #coord
     } 
     try {
@@ -201,14 +201,14 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Timex"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Timex does not exist
     } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector ("Data,Weight,Datax"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Datax does not exist
     } 
     try {
@@ -217,7 +217,7 @@ void excpDesc()
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Time"),
 			      stringToVector ("Idx"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Idx does not exist
     } 
     try {
@@ -225,7 +225,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,TimeNotNum"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // TimeNotNum not numeric
     } 
     try {
@@ -233,7 +233,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,TimeShort"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Coord short not supported
     } 
     try {
@@ -241,7 +241,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Data"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Coord Data is array > 1-dim
     } 
     try {
@@ -249,21 +249,21 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Pol"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // coord vectors not at start
     } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector ("Data0,Weight"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Data #dim undefined
     } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector ("Data1,Weight"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Data #dim != Weight #ndim
     } 
     try {
@@ -271,7 +271,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data1"),
 			      stringToVector ("Pol,Freq,Baseline,Time"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
     } 
     try {
@@ -279,7 +279,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data"),
 			      stringToVector ("Pol,Time,Baseline,Time"));
-    } catch (AipsError x) {
+    } catch (AipsError&x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
     } 
     try {
@@ -287,7 +287,7 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data"),
 			      stringToVector (",,Pol,"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
     } 
     try {
@@ -296,7 +296,7 @@ void excpDesc()
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Time"),
 			      stringToVector ("TimeShort"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Id short not supported
     } 
     try {
@@ -305,7 +305,7 @@ void excpDesc()
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Time"),
 			      stringToVector ("Data"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Id array not supported
     } 
     try {
@@ -314,7 +314,7 @@ void excpDesc()
 			      stringToVector ("Data,Weight"),
 			      stringToVector ("Pol,Freq,Baseline,Time"),
 			      stringToVector ("Time"));
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;             // Time double used 
     } 
 }

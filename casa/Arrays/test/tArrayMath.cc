@@ -165,17 +165,80 @@ void testMeanFloat()
     res2 += std::abs(ap[i] - m);
   }
   Float v = variance(a);
+  Float pv = pvariance(a);
   Float av = avdev(a);
   AlwaysAssertExit (near(v, res1/(a.size()-1)));
+  AlwaysAssertExit (near(pv, res1/(a.size())));
   AlwaysAssertExit (near(variance(a, m), v));
+  AlwaysAssertExit (near(pvariance(a, m, 1), v));
+  AlwaysAssertExit (near(pvariance(a, m, 0), pv));
+  AlwaysAssertExit (near(pvariance(a, m), pv));
   AlwaysAssertExit (near(av, res2/a.size()));
   AlwaysAssertExit (near(avdev(a, m), av));
   AlwaysAssertExit (near(stddev(a), std::sqrt(v)));
+  AlwaysAssertExit (near(pstddev(a), std::sqrt(pv)));
   AlwaysAssertExit (near(stddev(a, m), std::sqrt(v)));
+  AlwaysAssertExit (near(pstddev(a, m), std::sqrt(pv)));
+  AlwaysAssertExit (near(pstddev(a, m, 0), std::sqrt(pv)));
+  AlwaysAssertExit (near(pstddev(a, m, 1), std::sqrt(v)));
   IPosition start(3,0,1,2);
   IPosition end(3,2,3,4);
   Array<Float> sa(a(start,end));
   Array<Float> sb;
+  sb = sa;    /* copy to make contiguous (that's tested above) */
+  AlwaysAssertExit (near(mean(sa), mean(sb)));
+  AlwaysAssertExit (near(variance(sa), variance(sb)));
+  AlwaysAssertExit (near(stddev(sa), stddev(sb)));
+  AlwaysAssertExit (near(avdev(sa), avdev(sb)));
+  AlwaysAssertExit (near(rms(sa), rms(sb)));
+}
+
+void testMeanComplex()
+{
+  Array<Complex> a(IPosition(3,4,5,6));
+  Complex res1;
+  Complex res2;
+  Complex* ap = a.data();
+  for (uInt i=0; i<a.size(); ++i) {
+    ap[i] = Complex(i+1, 2*i-3);
+    res1 += ap[i];
+    res2 += ap[i] * ap[i];
+  }
+  Complex m = mean(a);
+  AlwaysAssertExit (near(m, res1/float(a.size())));
+  AlwaysAssertExit (near(rms(a), std::sqrt(res2/float(a.size()))));
+  res1 = Complex();
+  res2 = Complex();
+  for (uInt i=0; i<a.size(); ++i) {
+    res1 += abs(ap[i] - m) * abs(ap[i] - m);
+    res2 += abs(ap[i] - m);
+  }
+  Complex v = variance(a);
+  AlwaysAssertExit (v.imag() == 0);
+  AlwaysAssertExit (near (v.real(), variance(real(a)) + variance(imag(a))));
+  Complex pv = pvariance(a);
+  AlwaysAssertExit (pv.imag() == 0);
+  AlwaysAssertExit (near (pv.real(), pvariance(real(a)) + pvariance(imag(a))));
+  Complex av = avdev(a);
+  AlwaysAssertExit (av.imag() == 0);
+  AlwaysAssertExit (near(v, res1/float(a.size()-1)));
+  AlwaysAssertExit (near(pv, res1/float(a.size())));
+  AlwaysAssertExit (near(variance(a, m), v));
+  AlwaysAssertExit (near(pvariance(a, m, 1), v));
+  AlwaysAssertExit (near(pvariance(a, m, 0), pv));
+  AlwaysAssertExit (near(pvariance(a, m), pv));
+  AlwaysAssertExit (near(av, res2/float(a.size())));
+  AlwaysAssertExit (near(avdev(a, m), av));
+  AlwaysAssertExit (near(stddev(a), std::sqrt(v)));
+  AlwaysAssertExit (near(pstddev(a), std::sqrt(pv)));
+  AlwaysAssertExit (near(stddev(a, m), std::sqrt(v)));
+  AlwaysAssertExit (near(pstddev(a, m), std::sqrt(pv)));
+  AlwaysAssertExit (near(pstddev(a, m, 0), std::sqrt(pv)));
+  AlwaysAssertExit (near(pstddev(a, m, 1), std::sqrt(v)));
+  IPosition start(3,0,1,2);
+  IPosition end(3,2,3,4);
+  Array<Complex> sa(a(start,end));
+  Array<Complex> sb;
   sb = sa;    /* copy to make contiguous (that's tested above) */
   AlwaysAssertExit (near(mean(sa), mean(sb)));
   AlwaysAssertExit (near(variance(sa), variance(sb)));
@@ -585,6 +648,7 @@ int main()
     testMinInt();
     testMaxInt();
     testMeanFloat();
+    testMeanComplex();
     testSinDouble();
     testSinhDouble();
     testCosFloat();
@@ -635,7 +699,7 @@ int main()
     testMakeComplex<Double,DComplex>();
     testMinMax1();
     testExpand();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   }

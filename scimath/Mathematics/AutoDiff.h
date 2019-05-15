@@ -165,9 +165,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // All operators and functions are declared in <linkto file=AutoDiffMath.h> 
 // AutoDiffMath</linkto>. The output operator in 
-// <linkto file=AutoDiffIO.h>AutoDiffIO</linkto>. The actual structure of the
-// data block used by <src>AutoDiff</src> is described in 
-// <linkto class=AutoDiffRep>AutoDiffRep</linkto>.
+// <linkto file=AutoDiffIO.h>AutoDiffIO</linkto>.
 // </synopsis>
 //
 // <example>

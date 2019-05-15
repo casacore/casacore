@@ -43,16 +43,38 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
+// Define a struct containing the static data members.
+// The static struct object is created in function getMaps
+// to ensure proper static initialization order.
+class UMaps {
+public:
+  UMaps() {init();}
+  // Decimal prefix list
+  map<String, UnitName> mapPref;
+  // Defining SI unit list
+  map<String, UnitName> mapDef;
+  // SI unit list
+  map<String, UnitName> mapSI;
+  // Customary list
+  map<String, UnitName> mapCust;
+  // User defined unit list
+  map<String, UnitName> mapUser;
+  // FITS unit list inclusion
+  Bool doneFITS;
+private:
+  void init();
+};
+
+
+
 //* Constants
-// <note role=warning>
-// SUN compiler does not accept non-simple default arguments
-// </note>
 // IAU definition of Gaussian grav. constant for calculating IAU units
 const Double IAU_k=0.01720209895;
 // Number of FITS units recognised (change the FITSstring and FITSunit lists
 // in the UnitMap.cc when changing this number.
 const uInt N_FITS = 19;
 
+  
 // <summary>
 // contains all simple known physical units
 // </summary>
@@ -188,8 +210,9 @@ const uInt N_FITS = 19;
 
 class UnitMap {
 public:
-
-//# Constructors
+  friend class UMaps;
+  
+  //# Constructors
 // Default constructor of maps
     UnitMap();
 
@@ -197,18 +220,17 @@ public:
     ~UnitMap();
 
 //# General member functions
-  // Remove all maps (just to get no memory leaks at end of program)
-  static void releaseUM();
     // Check if a unit name is known, and return its value if True
     // <group name="find">
     // Get a prefix definition from key
-    static Bool getPref(const String &s, UnitName &name);
+    static Bool getPref(const String &s, UnitName &name, UMaps* maps=0);
     
+    // Get a standard unit definition (search order: User, Customary, SI)
+    static Bool getUnit(const String &s, UnitName &name, UMaps* maps=0);
+
     // Get a cached definition
     static Bool getCache(const String &s, UnitVal &val);
     
-    // Get a standard unit definition (search order: User, Customary, SI)
-    static Bool getUnit(const String &s, UnitName &name);
     // </group>
     // Save a definition of a full unit name in the cache (the cache will be
     // cleared if getting too large (200 entries)
@@ -310,57 +332,33 @@ public:
   // Copy assignment (not implemented)
   UnitMap &operator=(const UnitMap &other);
   
-  //# Data members
-  
-  // Decimal prefix list
-  static map<String, UnitName> *mapPref;
-  
-  // Defining SI unit list
-  static map<String, UnitName> *mapDef;
-  
-  // SI unit list
-  static map<String, UnitName> *mapSI;
-  
-  // Customary list
-  static map<String, UnitName> *mapCust;
-  
-  // User defined unit list
-  static map<String, UnitName> *mapUser;
-  
-  // Cached list
-  static map<String, UnitVal> *mapCache;  
-  // FITS unit list inclusion
-  static Bool doneFITS;
   static Mutex fitsMutex;
-  // Object to ensure safe multi-threaded lazy single initialization
-  static CallOnce0 theirCallOnce;
   
   //# member functions
+  // Get the static UMaps struct.
+  static UMaps& getMaps();
+  // Get the static mapCache object.
+  // This cannot be part of the UMaps struct, because the UnitVal ctor
+  // is called in the initialization of UMaps, but uses mapCache resulting
+  // in a recursive call.
+  static map<String, UnitVal>& getMapCache();
   // Get the name of a FITS unit
   static Bool getNameFITS(const UnitName *&name, uInt which);
   // Get the belonging unit to a FITS unit
   static const String &getStringFITS(uInt which);
-  // Initialise the static maps
+
   static void initUM();
-  static void doInitUM (void*);
   // Bits and pieces of initUM() to get compilation speed improved
   // <group>
-  static void initUMPrefix();
-  static void initUMSI1();
-  static void initUMSI2();
-  static void initUMCust1();
-  static void initUMCust2();
-  static void initUMCust3();
+  static void initUMPrefix (UMaps&);
+  static void initUMSI1 (UMaps&);
+  static void initUMSI2 (UMaps&);
+  static void initUMCust1 (UMaps&);
+  static void initUMCust2 (UMaps&);
+  static void initUMCust3 (UMaps&);
   // </group>
 
 };
-
-//# static initialization
-static struct unit_map_initialize_ {
-    static unsigned long count;
-    unit_map_initialize_( ) { if ( count++ == 0 ) UnitMap::clearCache( ); }
-    ~unit_map_initialize_( ) { if ( --count == 0 ) UnitMap::releaseUM( ); }
-} unit_map_initialize_instance_;
 
 } //# NAMESPACE CASACORE - END
 

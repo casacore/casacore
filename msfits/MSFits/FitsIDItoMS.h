@@ -35,14 +35,15 @@
 #include <casacore/tables/Tables/TableDesc.h> //
 #include <casacore/tables/Tables/TableRecord.h> //
 #include <casacore/tables/Tables/TableColumn.h> //
-#include <casacore/casa/Containers/SimOrdMap.h> //
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
-#include <casacore/casa/BasicSL/String.h> 
+#include <casacore/casa/BasicSL/String.h>
+#include <map>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSColumns;
@@ -310,8 +311,8 @@ protected:
   String weightyp_p;
   Int nStokes_p;
   Int nBand_p;
-  static SimpleOrderedMap<Int,Int> antIdFromNo;
-  static SimpleOrderedMap<Int,Int> digiLevels;
+  static std::map<Int,Int> antIdFromNo;
+  static std::map<Int,Int> digiLevels;
   static Vector<Double> effChBw;
 
   //

@@ -40,8 +40,8 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/measures/Measures/Stokes.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -132,23 +132,23 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes)
 	    } else {
 		// construct the corrProduct given the stokes values
 		// first, we need to determine the decomposition of the stokes values
-		SimpleOrderedMap<Int, Int> polTypeMap(-1);
+                std::map<Int, Int> polTypeMap;
 		for (uInt i=0;i<stokes.nelements();i++) {
 		    Int key1, key2;
 		    stokesKeys(stokes(i), key1, key2);
-		    if (!polTypeMap.isDefined(key1)) {
-			polTypeMap.define(key1, polTypeMap.ndefined());
+		    if (polTypeMap.find(key1) == polTypeMap.end()) {
+			polTypeMap[key1] = polTypeMap.size();
 		    }
-		    if (key2 != key1 && !polTypeMap.isDefined(key2)) {
-			polTypeMap.define(key2, polTypeMap.ndefined());
+		    if (polTypeMap.find(key2) == polTypeMap.end()) {
+			polTypeMap[key2] = polTypeMap.size();
 		    }
 		}
 		// now re-assemble these into the corr product
 		for (uInt i=0;i<stokes.nelements();i++) {
 		    Int key1, key2;
 		    stokesKeys(stokes(i), key1, key2);
-		    corrProduct(0,i) = polTypeMap(key1);
-		    corrProduct(1,i) = polTypeMap(key2);
+		    corrProduct(0,i) = polTypeMap[key1];
+		    corrProduct(1,i) = polTypeMap[key2];
 		}
 	    }
 	    // and insert it into the table

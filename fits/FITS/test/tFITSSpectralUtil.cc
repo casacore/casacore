@@ -168,7 +168,7 @@ int main()
 	    }
 
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     }
@@ -269,7 +269,7 @@ int main()
 	AlwaysAssertExit(refFrame==refFrameOut);
 	AlwaysAssertExit(near(restFreq,restFreqOut));
 	
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     }
@@ -370,7 +370,7 @@ int main()
     	AlwaysAssertExit(refFrame==refFrameOut);
     	AlwaysAssertExit(near(restFreq,restFreqOut));
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
     	cout << "Caught an exception: " << x.getMesg() << endl;
     	return 1;
     }

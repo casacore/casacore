@@ -41,7 +41,6 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Containers/OrderedMap.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -57,7 +56,7 @@ int main()
     }
 
     // Create the "optional" information
-    OrderedMap<String, Double> mapout(0.0), mapin(0.0);
+    std::map<String, Double> mapout, mapin;
     String unitout, unitin;
     unitout = "Jy";
     Vector<String> namesout(2), namesin(2);
@@ -65,8 +64,8 @@ int main()
     Vector<Float> refout(2), refin(2), locout(2), locin(2), deltaout(2),
 	deltain(2);
     refout = 0.0f; locout = 1.0f; deltaout = 1.0f;
-    mapout("hello") = 1.0;
-    mapout("world") = 2.0;
+    mapout["hello"] = 1.0;
+    mapout["world"] = 2.0;
     String objectin, objectout;
     objectout  = "Testing 1.2.3.";
 
@@ -98,8 +97,8 @@ int main()
     AlwaysAssertExit(allEQ(refout , refin));
     AlwaysAssertExit(allEQ(locout , locin));
     AlwaysAssertExit(allEQ(deltaout , deltain));
-    AlwaysAssertExit(mapin("HELLO") == 1.0);
-    AlwaysAssertExit(mapin("WORLD") == 2.0);
+    AlwaysAssertExit(mapin["HELLO"] == 1.0);
+    AlwaysAssertExit(mapin["WORLD"] == 2.0);
     AlwaysAssertExit(objectout == objectin);
 
     unlink(file);

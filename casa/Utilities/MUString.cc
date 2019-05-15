@@ -277,9 +277,7 @@ Bool MUString::testChar(Char ch) const {
 }
 
 Bool MUString::testCharNC(Char ch) const {
-  Regex ex(String("[") + downcase(String(ch)) +
-	   upcase(String(ch)) + String("]"));
-  return testChar(ex);
+  return (ptr < len && (str[ptr] == toupper(ch)  ||  str[ptr] == tolower(ch)));
 }
 
 Bool MUString::testChar(const Regex &ex) const {

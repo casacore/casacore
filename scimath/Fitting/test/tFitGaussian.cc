@@ -77,7 +77,7 @@ int main()
 
   try {
     solution = fitgauss.fit(pos, f);
-  } catch (AipsError err) {
+  } catch (AipsError& err) {
     cout << "ERROR: " << err.getMesg() << endl;
     fail = 1;
   }
@@ -107,7 +107,7 @@ int main()
   solution.resize();
   try {
     solution = fitgauss.fit(pos, f);
-  } catch (AipsError err) {
+  } catch (AipsError& err) {
     cout << "ERROR: " << err.getMesg() << endl;
     fail = 1;
   }
@@ -148,7 +148,7 @@ int main()
   solution.resize();
   try {
     solution = fitgauss.fit(pos, f);
-  } catch (AipsError err) {
+  } catch (AipsError& err) {
     cout << "ERROR: " << err.getMesg() << endl;
     fail = 1;
   }
@@ -179,7 +179,7 @@ int main()
   solution.resize();
   try {
     solution = fitgauss.fit(pos, f, 0.001);
-  } catch (AipsError err) {
+  } catch (AipsError& err) {
     cout << "ERROR: " << err.getMesg() << endl;
     fail = 1;
   }
@@ -223,7 +223,7 @@ int main()
   solution.resize();
   try {
     solution = fitgauss.fit(pos, f, 0.01, 256);
-  } catch (AipsError err) {
+  } catch (AipsError& err) {
     cout << "ERROR: " << err.getMesg() << endl;
     fail = 1;
   }

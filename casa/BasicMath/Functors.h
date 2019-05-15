@@ -601,7 +601,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   // Functor to add squared diff of right and base value to left.
-  // It can be used to calculate the standard deviation.
+  // It can be used to calculate the variance.
+  // Note: it is specialized for complex values to handle real and imag separately.
   template<typename T, typename Accum=T>
   struct SumSqrDiff : public std::binary_function<Accum,T,Accum>
   {
@@ -610,6 +611,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return left + (right-itsBase)*(right-itsBase); }
   private:
     Accum itsBase;    // store as Accum, so subtraction results in Accum
+  };
+  // Specialize for complex values.
+  // Variance has to be taken for the absolute value of a complex value. thus
+  //       sum(abs((a[i] - mean)**2
+  // where the sqrt used in abs and the **2 cancel each other, thus can be left out.
+  // See also https://en.wikipedia.org/wiki/Complex_random_variable#Variance
+  // Note that although the sum is real, a complex value is used to have equal template types.
+  template<typename T>
+  struct SumSqrDiff<std::complex<T>> : public std::binary_function<std::complex<T>,std::complex<T>,std::complex<T>>
+  {
+    explicit SumSqrDiff(std::complex<T> base) : itsBase(base) {}
+    std::complex<T> operator() (std::complex<T> left, std::complex<T> right) const
+    { return left + ((right.real() - itsBase.real()) * (right.real() - itsBase.real()) +
+                     (right.imag() - itsBase.imag()) * (right.imag() - itsBase.imag())); }
+  private:
+    std::complex<T> itsBase;
   };
 
   // Functor to add absolute diff of right and base value to left.
@@ -621,7 +638,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Accum operator() (Accum left, T right) const
       { return left + abs((right-itsBase)); }
   private:
-    Accum itsBase;    // store as Accum, so subtracttion results in Accum
+    Accum itsBase;    // store as Accum, so subtraction results in Accum
   };
 
   // Functor to downcase a std::string. The result is a casacore::String.

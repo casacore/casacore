@@ -224,6 +224,7 @@ void TSMCoordColumn::aips_name2(putArray,NM) (uInt rownr, const Array<T>* dataPt
 
 TSMCOORDCOLUMN_GETPUT(Int,IntV)
 TSMCOORDCOLUMN_GETPUT(uInt,uIntV)
+TSMCOORDCOLUMN_GETPUT(Int64,Int64V)
 //#TSMCOORDCOLUMN_GETPUT(float,floatV)
 TSMCOORDCOLUMN_GETPUT(double,doubleV)
 TSMCOORDCOLUMN_GETPUT(Complex,ComplexV)

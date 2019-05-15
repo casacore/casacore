@@ -253,7 +253,7 @@ int main()
     cout<< "done check" << endl;
     checkFull("tConcatTable2_tmp.data", 0);
     cout<< "done checkFull" << endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Exception caught: " << x.getMesg() << endl;
     return 1;
   } 

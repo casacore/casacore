@@ -28,7 +28,6 @@
 #include <casacore/tables/Tables/ColDescSet.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/DataMan/DataManager.h>
-#include <casacore/casa/Containers/SimOrdMapIO.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/iostream.h>
 
@@ -37,14 +36,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 ColumnDescSet::ColumnDescSet()
-: cols_p   (ColumnDesc()),
-  colSeq_p (0)
+  : colSeq_p (0)
 {
 }
 
 ColumnDescSet::ColumnDescSet (const ColumnDescSet& that)
-: cols_p   (ColumnDesc()),
-  colSeq_p (0)
+  : colSeq_p (0)
     { operator= (that); }
 
 
@@ -55,15 +52,18 @@ ColumnDescSet::~ColumnDescSet()
 ColumnDescSet& ColumnDescSet::operator= (const ColumnDescSet& that)
 {
     if (this != &that) {
-	cols_p = that.cols_p;
-	uInt nrcol = ncolumn();
+	uInt nrcol = that.cols_p.size();
 	colSeq_p.resize (nrcol);
+        cols_p.clear();
 	//# Now we have to fill in the column order, which is the
 	//# same as the order in the source.
-	//# We have to point to our own ColumnDesc objects.
-	for (uInt i=0; i<nrcol; i++) {
+	//# Make a copy of the ColumnDesc object and keep a pointer to it.
+        for (uInt i=0; i<nrcol; ++i) {
 	    const String& colName = that[i].name();
-	    colSeq_p[i] = &(cols_p(colName));
+            CountedPtr<ColumnDesc> col = that.cols_p.at(colName);
+            cols_p.insert (std::make_pair (colName,
+                                           CountedPtr<ColumnDesc>(new ColumnDesc(*col))));
+	    colSeq_p[i] = cols_p.at(colName).get();
 	}
     }
     return *this;
@@ -73,11 +73,11 @@ ColumnDescSet& ColumnDescSet::operator= (const ColumnDescSet& that)
 ColumnDesc& ColumnDescSet::operator[] (const String& name)
 {
     // Throw an exception if the column is undefined.
-    ColumnDesc* col = cols_p.isDefined (name);
-    if (col == 0) {
+    std::map<String,CountedPtr<ColumnDesc>>::iterator iter = cols_p.find (name);
+    if (iter == cols_p.end()) {
 	throw (TableError ("Table column " + name + " is unknown"));
     }
-    return *col;
+    return *(iter->second);
 }
 
 
@@ -99,9 +99,9 @@ ColumnDesc& ColumnDescSet::addColumn (const ColumnDesc& cd)
 	throw (TableInvColumnDesc (cd.name(), "column already exists"));
     }
     cd.checkAdd (*this);
-    cols_p.define (cd.name(), cd);
+    cols_p.insert (std::make_pair(cd.name(), CountedPtr<ColumnDesc>(new ColumnDesc(cd))));
     //# Get actual column description object.
-    ColumnDesc& coldes = cols_p(cd.name());
+    ColumnDesc& coldes = *(cols_p.at(cd.name()));
     //# Add the new column to the sequence block.
     uInt nrcol = ncolumn();
     if (nrcol > colSeq_p.nelements()) {
@@ -126,12 +126,11 @@ void ColumnDescSet::remove (const String& name)
 	    for (; i<nrcol-1; i++) {
 		colSeq_p[i] = colSeq_p[i+1];
 	    }
-	break;
+            break;
 	}
     }
     //# Now really remove the column.
-    cols_p.remove (name);
-	    
+    cols_p.erase (name);
 }
 
 //# Rename a column in the set.
@@ -146,16 +145,26 @@ void ColumnDescSet::rename (const String& newname, const String& oldname)
         throw (AipsError ("TableDesc::renameColumn - new name " + newname +
 			  " already exists"));
     }
-    cols_p(oldname).checkRename (*this, newname);
-    cols_p.rename (newname, oldname);
-    ColumnDesc& cd = cols_p(newname);
+    // Find the entry in the colSeq_p list, so it can be updated.
+    uInt inx;
+    for (inx=0; inx<colSeq_p.size(); ++inx) {
+      if (static_cast<ColumnDesc*>(colSeq_p[inx])->name() == oldname) {
+        break;
+      }
+    }
+    AlwaysAssert (inx < colSeq_p.size(), AipsError);
+    CountedPtr<ColumnDesc> cdesc = cols_p.at(oldname);
+    cdesc->checkRename (*this, newname);
+    cols_p.erase (oldname);
+    cols_p.insert (std::make_pair(newname, cdesc));
+    ColumnDesc& cd = *(cols_p.at(newname));
+    colSeq_p[inx] = &cd;
     //# Actually rename in BaseColDesc object.
     cd.setName (newname);
     //# Handle rename for other things.
     cd.handleRename (*this, oldname);
-    uInt nrcol = ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
-	cols_p.getVal(i).renameAction (newname, oldname);
+    for (auto& x : cols_p) {
+	x.second->renameAction (newname, oldname);
     }
 }
 

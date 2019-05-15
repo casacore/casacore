@@ -31,7 +31,7 @@ namespace casacore
 {
 
 Adios2StManColumn::Adios2StManColumn(
-        Adios2StMan *aParent,
+        Adios2StMan::impl *aParent,
         int aDataType,
         String aColName,
         std::shared_ptr<adios2::IO> aAdiosIO)
@@ -97,6 +97,34 @@ void Adios2StManColumn::setShape (uInt aRowNr, const IPosition& aShape)
     itsCasaShapes[aRowNr] = aShape;
 }
 
+void Adios2StManColumn::scalarVToSelection(uInt rownr)
+{
+    itsAdiosStart[0] = rownr;
+    itsAdiosCount[0] = 1;
+}
+
+void Adios2StManColumn::arrayVToSelection(uInt rownr)
+{
+    itsAdiosStart[0] = rownr;
+    itsAdiosCount[0] = 1;
+    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+    {
+        itsAdiosStart[i] = 0;
+        itsAdiosCount[i] = itsAdiosShape[i];
+    }
+}
+
+void Adios2StManColumn::sliceVToSelection(uInt rownr, const Slicer &ns)
+{
+    itsAdiosStart[0] = rownr;
+    itsAdiosCount[0] = 1;
+    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+    {
+        itsAdiosStart[i] = ns.start()(ns.ndim() - i);
+        itsAdiosCount[i] = ns.length()(ns.ndim() - i);
+    }
+}
+
 void Adios2StManColumn::putBoolV(uInt rownr, const Bool *dataPtr)
 {
     putScalarV(rownr, dataPtr);
@@ -121,6 +149,10 @@ void Adios2StManColumn::putuIntV(uInt rownr, const uInt *dataPtr)
 {
     putScalarV(rownr, dataPtr);
 }
+void Adios2StManColumn::putInt64V(uInt rownr, const Int64 *dataPtr)
+{
+    putScalarV(rownr, dataPtr);
+}
 void Adios2StManColumn::putfloatV(uInt rownr, const Float *dataPtr)
 {
     putScalarV(rownr, dataPtr);
@@ -137,6 +169,30 @@ void Adios2StManColumn::putDComplexV(uInt rownr, const DComplex *dataPtr)
 {
     putScalarV(rownr, dataPtr);
 }
+
+#define DEFINE_GETPUTSLICE(T) \
+void Adios2StManColumn::putSlice ## T ## V(uInt rownr, const Slicer& ns, const Array<T>* dataPtr) \
+{ \
+    putSliceV(rownr, ns, dataPtr); \
+}\
+\
+void Adios2StManColumn::getSlice ## T ## V(uInt rownr, const Slicer& ns, Array<T>* dataPtr) \
+{ \
+    getSliceV(rownr, ns, dataPtr); \
+}
+
+DEFINE_GETPUTSLICE(Bool)
+DEFINE_GETPUTSLICE(uChar)
+DEFINE_GETPUTSLICE(Short)
+DEFINE_GETPUTSLICE(uShort)
+DEFINE_GETPUTSLICE(Int)
+DEFINE_GETPUTSLICE(uInt)
+DEFINE_GETPUTSLICE(float)
+DEFINE_GETPUTSLICE(double)
+DEFINE_GETPUTSLICE(Complex)
+DEFINE_GETPUTSLICE(DComplex)
+DEFINE_GETPUTSLICE(String)
+#undef DEFINE_PUTSLICE
 
 void Adios2StManColumn::getBoolV(uInt rownr, Bool *dataPtr)
 {
@@ -159,6 +215,10 @@ void Adios2StManColumn::getIntV(uInt rownr, Int *dataPtr)
     getScalarV(rownr, dataPtr);
 }
 void Adios2StManColumn::getuIntV(uInt rownr, uInt *dataPtr)
+{
+    getScalarV(rownr, dataPtr);
+}
+void Adios2StManColumn::getInt64V(uInt rownr, Int64 *dataPtr)
 {
     getScalarV(rownr, dataPtr);
 }
@@ -242,5 +302,18 @@ void Adios2StManColumnT<std::string>::getArrayV(uInt rownr, void *dataPtr)
     }
     reinterpret_cast<Array<String>*>(dataPtr)->putStorage(reinterpret_cast<String *&>(data), deleteIt);
 }
+
+template<>
+void Adios2StManColumnT<std::string>::getSliceV(uInt /*aRowNr*/, const Slicer &/*ns*/, void */*dataPtr*/)
+{
+    throw std::runtime_error("Not implemented yet");
+}
+
+template<>
+void Adios2StManColumnT<std::string>::putSliceV(uInt /*aRowNr*/, const Slicer &/*ns*/, const void */*dataPtr*/)
+{
+    throw std::runtime_error("Not implemented yet");
+}
+
 
 } // namespace casacore

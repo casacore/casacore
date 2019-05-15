@@ -31,6 +31,10 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Map.h>
 
+#ifndef AIPS_USE_DEPRECATED
+#error "MapIO.h is deprecated; use -DBUILD_DEPRECATED=ON to use it"
+#endif
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class AipsIO;

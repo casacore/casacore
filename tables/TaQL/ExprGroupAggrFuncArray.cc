@@ -190,7 +190,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                  AipsError);
     typename Array<T>::contiter itv = val.array().cbegin();
     typename Array<Bool>::contiter itm = val.wmask().cbegin();
-    // Note: itm also get incremented if there is no mask, but that is harmless.
     for (Array<Int64>::const_contiter itn = nr.cbegin();
          itn != nr.cend(); ++itn, ++itv, ++itm) {
       if (*itn > 0) {
@@ -396,10 +395,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupVarianceArrayDouble::TableExprGroupVarianceArrayDouble(TableExprNodeRep* node)
+  TableExprGroupVarianceArrayDouble::TableExprGroupVarianceArrayDouble(TableExprNodeRep* node, uInt ddof)
     : TableExprGroupFuncDouble (node),
-      itsNr (0),
-      itsM2 (0)
+      itsDdof    (ddof),
+      itsNr      (0),
+      itsCurMean (0)
   {}
   TableExprGroupVarianceArrayDouble::~TableExprGroupVarianceArrayDouble()
   {}
@@ -410,32 +410,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
     MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
-      Double meanv = mean(arr);
-      Double m2    = 0;
-      Int64  nr    = arr.size();
+      Array<Double>::const_iterator in = arr.array().begin();
       if (arr.hasMask()) {
-        nr = nfalse(arr.mask());
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        for (size_t i=0; i<arr.size(); ++i, ++in, ++min) {
+          if (! *min) {
+            itsNr++;
+            Double delta = *in - itsCurMean;
+            itsCurMean += delta / itsNr;
+            Double d = *in - itsCurMean;
+            itsValue += d*delta;
+          }
+        }
+      } else {
+        for (size_t i=0; i<arr.size(); ++i, ++in) {
+          itsNr++;
+          Double delta = *in - itsCurMean;
+          itsCurMean += delta / itsNr;
+          Double d = *in - itsCurMean;
+          itsValue += d*delta;
+        }
       }
-      if (nr > 1) {
-        m2 = variance(arr, meanv) * (nr-1);
-      }
-      Double delta = meanv - itsValue;   // itsValue contains the overall mean
-      itsValue = (itsNr*itsValue + nr*meanv) / (itsNr + nr);
-      itsM2   += (m2 + delta*delta*itsNr*nr / (itsNr + nr));
-      itsNr   += nr;
     }
   }
   void TableExprGroupVarianceArrayDouble::finish()
   {
-    if (itsNr > 1) {
-      itsValue = itsM2 / (itsNr-1);
+    if (itsNr > itsDdof) {
+      itsValue /= itsNr-itsDdof;
     } else {
       itsValue = 0;
     }
   }
 
-  TableExprGroupStdDevArrayDouble::TableExprGroupStdDevArrayDouble(TableExprNodeRep* node)
-    : TableExprGroupVarianceArrayDouble (node)
+  TableExprGroupStdDevArrayDouble::TableExprGroupStdDevArrayDouble(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupVarianceArrayDouble (node, ddof)
   {}
   TableExprGroupStdDevArrayDouble::~TableExprGroupStdDevArrayDouble()
   {}
@@ -566,6 +574,63 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (itsNr > 0) {
       itsValue /= double(itsNr);
     }
+  }
+
+  TableExprGroupVarianceArrayDComplex::TableExprGroupVarianceArrayDComplex(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupFuncDouble (node),
+      itsDdof (ddof),
+      itsNr   (0)
+  {}
+  TableExprGroupVarianceArrayDComplex::~TableExprGroupVarianceArrayDComplex()
+  {}
+  void TableExprGroupVarianceArrayDComplex::apply (const TableExprId& id)
+  {
+    // Calculate mean and variance in a running way using a
+    // numerically stable algorithm
+    // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (! arr.empty()) {
+      Array<DComplex>::const_iterator in = arr.array().begin();
+      if (arr.hasMask()) {
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        for (size_t i=0; i<arr.size(); ++i, ++in, ++min) {
+          if (! *min) {
+            itsNr++;
+            DComplex delta = *in - itsCurMean;
+            itsCurMean += delta / Double(itsNr);
+            DComplex d = *in - itsCurMean;
+            itsValue += real(delta)*real(d) + imag(delta)*imag(d);
+          }
+        }
+      } else {
+        for (size_t i=0; i<arr.size(); ++i, ++in) {
+          itsNr++;
+          DComplex delta = *in - itsCurMean;
+          itsCurMean += delta / Double(itsNr);
+          DComplex d = *in - itsCurMean;
+          itsValue += real(delta)*real(d) + imag(delta)*imag(d);
+        }
+      }
+    }
+  }
+  void TableExprGroupVarianceArrayDComplex::finish()
+  {
+    if (itsNr > itsDdof) {
+      itsValue /= itsNr-itsDdof;
+    } else {
+      itsValue = 0;
+    }
+  }
+
+  TableExprGroupStdDevArrayDComplex::TableExprGroupStdDevArrayDComplex(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupVarianceArrayDComplex (node, ddof)
+  {}
+  TableExprGroupStdDevArrayDComplex::~TableExprGroupStdDevArrayDComplex()
+  {}
+  void TableExprGroupStdDevArrayDComplex::finish()
+  {
+    TableExprGroupVarianceArrayDComplex::finish();
+    itsValue = sqrt(itsValue);
   }
 
 
@@ -930,8 +995,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TEGMeanFinish (itsValue, itsNr);
   }
 
-  TableExprGroupVariancesArrayDouble::TableExprGroupVariancesArrayDouble(TableExprNodeRep* node)
-    : TableExprGroupFuncArrayDouble (node)
+  TableExprGroupVariancesArrayDouble::TableExprGroupVariancesArrayDouble(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupFuncArrayDouble (node),
+      itsDdof (ddof)
   {}
   TableExprGroupVariancesArrayDouble::~TableExprGroupVariancesArrayDouble()
   {}
@@ -945,12 +1011,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (checkShape (arr, "GVARIANCES")) {
         itsValue.array() = 0;
         itsValue.wmask() = False;
-        itsMean.resize (arr.shape());
-        itsMean = 0;
+        itsCurMean.resize (arr.shape());
+        itsCurMean = 0;
         itsNr.resize (arr.shape());
         itsNr = 0;
       }
-      Array<Double>::contiter itm = itsMean.cbegin();
+      Array<Double>::contiter itm = itsCurMean.cbegin();
       Array<Int64>::contiter itn = itsNr.cbegin();
       Array<Double>::const_iterator in = arr.array().begin();
       if (arr.hasMask()) {
@@ -979,14 +1045,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   void TableExprGroupVariancesArrayDouble::finish()
   {
-    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),                 AipsError);
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+                 AipsError);
     Array<Double>::contiter itv = itsValue.array().cbegin();
     Array<Bool>::contiter itm = itsValue.wmask().cbegin();
-    // Note: itm also get incremented if there is no mask, but that is harmless.
     for (Array<Int64>::const_contiter itn = itsNr.cbegin();
          itn != itsNr.cend(); ++itn, ++itv, ++itm) {
-      if (*itn > 1) {
-        *itv /= *itn - 1;
+      if (*itn > itsDdof) {
+        *itv /= *itn - itsDdof;
       } else {
         *itv = 0;
         *itm = True;
@@ -994,8 +1060,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupStdDevsArrayDouble::TableExprGroupStdDevsArrayDouble(TableExprNodeRep* node)
-    : TableExprGroupVariancesArrayDouble (node)
+  TableExprGroupStdDevsArrayDouble::TableExprGroupStdDevsArrayDouble(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupVariancesArrayDouble (node, ddof)
   {}
   TableExprGroupStdDevsArrayDouble::~TableExprGroupStdDevsArrayDouble()
   {}
@@ -1046,7 +1112,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                  AipsError);
     Array<Double>::contiter itv = itsValue.array().cbegin();
     Array<Bool>::contiter itm = itsValue.wmask().cbegin();
-    // Note: itm also get incremented if there is no mask, but that is harmless.
     for (Array<Int64>::const_contiter itn = itsNr.cbegin();
          itn != itsNr.cend(); ++itn, ++itv, ++itm) {
       if (*itn > 0) {
@@ -1131,6 +1196,81 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprGroupMeansArrayDComplex::finish()
   {
     TEGMeanFinish (itsValue, itsNr);
+  }
+
+  TableExprGroupVariancesArrayDComplex::TableExprGroupVariancesArrayDComplex(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupFuncArrayDouble (node),
+      itsDdof (ddof)
+  {}
+  TableExprGroupVariancesArrayDComplex::~TableExprGroupVariancesArrayDComplex()
+  {}
+  void TableExprGroupVariancesArrayDComplex::apply (const TableExprId& id)
+  {
+    // Calculate mean and variance in a running way using a
+    // numerically stable algorithm.
+    // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GVARIANCES")) {
+        itsValue.array() = 0;
+        itsValue.wmask() = False;
+        itsCurMean.resize (arr.shape());
+        itsNr.resize (arr.shape());
+        itsNr = 0;
+      }
+      Array<DComplex>::contiter itm = itsCurMean.cbegin();
+      Array<Int64>::contiter itn = itsNr.cbegin();
+      Array<DComplex>::const_iterator in = arr.array().begin();
+      if (arr.hasMask()) {
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        for (Array<Double>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++itm, ++itn) {
+          if (! *min) {
+            (*itn)++;
+            DComplex delta = *in - *itm;
+            *itm += delta / Double(*itn);
+            DComplex d = *in - *itm;
+            *out += real(d)*real(delta) + imag(d)*imag(delta);
+          }
+        }
+      } else {
+        for (Array<Double>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out, ++itm, ++itn) {
+          (*itn)++;
+          DComplex delta = *in - *itm;
+          *itm += delta / Double(*itn);
+          DComplex d = *in - *itm;
+          *out += real(d)*real(delta) + imag(d)*imag(delta);
+        }
+      }
+    }
+  }
+  void TableExprGroupVariancesArrayDComplex::finish()
+  {
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+                 AipsError);
+    Array<Double>::contiter itv = itsValue.array().cbegin();
+    Array<Bool>::contiter itm = itsValue.wmask().cbegin();
+    for (Array<Int64>::const_contiter itn = itsNr.cbegin();
+         itn != itsNr.cend(); ++itn, ++itv, ++itm) {
+      if (*itn > itsDdof) {
+        *itv /= *itn - itsDdof;
+      } else {
+        *itv = 0;
+        *itm = True;
+      }
+    }
+  }
+
+  TableExprGroupStdDevsArrayDComplex::TableExprGroupStdDevsArrayDComplex(TableExprNodeRep* node, uInt ddof)
+    : TableExprGroupVariancesArrayDComplex (node, ddof)
+  {}
+  TableExprGroupStdDevsArrayDComplex::~TableExprGroupStdDevsArrayDComplex()
+  {}
+  void TableExprGroupStdDevsArrayDComplex::finish()
+  {
+    TableExprGroupVariancesArrayDComplex::finish();
+    itsValue = sqrt(itsValue);
   }
 
 

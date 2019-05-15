@@ -30,8 +30,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -163,7 +163,7 @@ private:
   Block<uInt> itsBucketNumber;
 
   //# Map that contains length/offset pairs for free size (size in bytes).
-  SimpleOrderedMap<Int,Int> itsFreeSpace;
+  std::map<Int,Int> itsFreeSpace;
 
   //# How many rows fit in a bucket?
   uInt itsRowsPerBucket;

@@ -172,7 +172,7 @@ int main (int argc, const char* argv[])
     cout << endl << "IncrementalStMan" << endl;
     IncrementalStMan st3(max(bucketSize,1000u), False);
     doTest (nrrow, st3, flushnr);
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 

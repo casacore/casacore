@@ -124,13 +124,21 @@ namespace casacore {
   };
   template<typename T> class MVarianceFunc : public MArrayFunctorBase<T> {
   public:
+    explicit MVarianceFunc(uInt ddof=0)
+      : itsDdof(ddof) {}
     virtual ~MVarianceFunc() {}
-    T operator() (const MArray<T>& arr) const { return variance(arr); }
+    T operator() (const MArray<T>& arr) const { return variance(arr, itsDdof); }
+  private:
+    uInt itsDdof;
   };
   template<typename T> class MStddevFunc : public MArrayFunctorBase<T> {
   public:
-    virtual ~MStddevFunc() {}
-    T operator() (const MArray<T>& arr) const { return stddev(arr); }
+    explicit MStddevFunc(uInt ddof=0)
+      : itsDdof(ddof) {}
+    ~MStddevFunc() {}
+    T operator() (const MArray<T>& arr) const { return stddev(arr, itsDdof); }
+  private:
+    uInt itsDdof;
   };
   template<typename T> class MAvdevFunc : public MArrayFunctorBase<T> {
   public:
@@ -768,35 +776,35 @@ namespace casacore {
   }
 
   template<typename T>
-  T variance(const MArray<T>& a, T mean)
+  T variance(const MArray<T>& a, T mean, uInt ddof)
   {
     Int64 nv = a.nvalid();
-    if (nv < 2) return T();
-    if (! a.hasMask()) return variance(a.array(), mean);
+    if (nv < ddof+1) return T();
+    if (! a.hasMask()) return pvariance(a.array(), mean, ddof);
     T sum = a.array().contiguousStorage() && a.mask().contiguousStorage() ?
       accumulateMasked<T>(a.array().cbegin(), a.array().cend(),
                           a.mask().cbegin(), T(), SumSqrDiff<T>(mean)) :
       accumulateMasked<T>(a.array().begin(),  a.array().end(),
                           a.mask().begin(),  T(), SumSqrDiff<T>(mean));
-    return T(sum / (1.0*nv - 1));
+    return T(sum / (1.0*nv - ddof));
   }
 
   template<typename T>
-  T variance(const MArray<T>& a)
+  T variance(const MArray<T>& a, uInt ddof)
   {
-    return variance(a, mean(a));
+    return variance(a, mean(a), ddof);
   }
 
   template<typename T>
-  T stddev(const MArray<T>& a)
+  T stddev(const MArray<T>& a, uInt ddof)
   {
-    return sqrt(variance(a));
+    return sqrt(variance(a, ddof));
   }
 
   template<typename T>
-  T stddev(const MArray<T>& a, T mean)
+  T stddev(const MArray<T>& a, T mean, uInt ddof)
   {
-    return sqrt(variance(a, mean));
+    return sqrt(variance(a, mean, ddof));
   }
 
   template<typename T>
@@ -948,25 +956,27 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> partialVariances (const MArray<T>& a,
-                              const IPosition& collapseAxes)
+                              const IPosition& collapseAxes,
+                              uInt ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
-      return MArray<T>(partialVariances (a.array(), collapseAxes));
+      return MArray<T>(partialVariances (a.array(), collapseAxes, ddof));
     }
-    return partialArrayMath (a, collapseAxes, MVarianceFunc<T>());
+    return partialArrayMath (a, collapseAxes, MVarianceFunc<T>(ddof));
   }
   template<typename T>
   MArray<T> partialStddevs (const MArray<T>& a,
-                            const IPosition& collapseAxes)
+                            const IPosition& collapseAxes,
+                            uInt ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
-      return MArray<T>(partialStddevs (a.array(), collapseAxes));
+      return MArray<T>(partialStddevs (a.array(), collapseAxes, ddof));
     }
-    return partialArrayMath (a, collapseAxes, MStddevFunc<T>());
+    return partialArrayMath (a, collapseAxes, MStddevFunc<T>(ddof));
   }
   template<typename T>
   MArray<T> partialAvdevs (const MArray<T>& a,
@@ -1098,27 +1108,31 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingVariances (const MArray<T>& a,
-                              const IPosition& halfBoxSize, Bool fillEdge=True)
+                              const IPosition& halfBoxSize,
+                              uInt ddof,
+                              Bool fillEdge=True)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
       return MArray<T>(slidingArrayMath (a.array(), halfBoxSize,
-                                          VarianceFunc<T>(), fillEdge));
+                                          VarianceFunc<T>(ddof), fillEdge));
     }
-    return slidingArrayMath (a, halfBoxSize, MVarianceFunc<T>(), fillEdge);
+    return slidingArrayMath (a, halfBoxSize, MVarianceFunc<T>(ddof), fillEdge);
   }
   template<typename T>
   MArray<T> slidingStddevs (const MArray<T>& a,
-                            const IPosition& halfBoxSize, Bool fillEdge=True)
+                            const IPosition& halfBoxSize,
+                            uInt ddof,
+                            Bool fillEdge=True)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
       return MArray<T>(slidingArrayMath (a.array(), halfBoxSize,
-                                          StddevFunc<T>(), fillEdge));
+                                          StddevFunc<T>(ddof), fillEdge));
     }
-    return slidingArrayMath (a, halfBoxSize, MStddevFunc<T>(), fillEdge);
+    return slidingArrayMath (a, halfBoxSize, MStddevFunc<T>(ddof), fillEdge);
   }
   template<typename T>
   MArray<T> slidingAvdevs (const MArray<T>& a,
@@ -1254,25 +1268,27 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> boxedVariances (const MArray<T>& a,
-                            const IPosition& boxSize)
+                            const IPosition& boxSize,
+                            uInt ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
-      return MArray<T>(boxedArrayMath (a.array(), boxSize, VarianceFunc<T>()));
+      return MArray<T>(boxedArrayMath (a.array(), boxSize, VarianceFunc<T>(ddof)));
     }
-    return boxedArrayMath (a, boxSize, MVarianceFunc<T>());
+    return boxedArrayMath (a, boxSize, MVarianceFunc<T>(ddof));
   }
   template<typename T>
   MArray<T> boxedStddevs (const MArray<T>& a,
-                          const IPosition& boxSize)
+                          const IPosition& boxSize,
+                          uInt ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
-      return MArray<T>(boxedArrayMath (a.array(), boxSize, StddevFunc<T>()));
+      return MArray<T>(boxedArrayMath (a.array(), boxSize, StddevFunc<T>(ddof)));
     }
-    return boxedArrayMath (a, boxSize, MStddevFunc<T>());
+    return boxedArrayMath (a, boxSize, MStddevFunc<T>(ddof));
   }
   template<typename T>
   MArray<T> boxedAvdevs (const MArray<T>& a,

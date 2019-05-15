@@ -172,7 +172,7 @@ int main (int argc, const char* argv[])
 	}
 	cout << nrrow << " rows" << endl;
 	a (nrrow);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

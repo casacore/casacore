@@ -82,6 +82,7 @@ void TSMIdColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
 TSMIDCOLUMN_GETPUT(Bool,BoolV)
 TSMIDCOLUMN_GETPUT(Int,IntV)
 TSMIDCOLUMN_GETPUT(uInt,uIntV)
+TSMIDCOLUMN_GETPUT(Int64,Int64V)
 //#TSMIDCOLUMN_GETPUT(float,floatV)
 TSMIDCOLUMN_GETPUT(double,doubleV)
 TSMIDCOLUMN_GETPUT(Complex,ComplexV)

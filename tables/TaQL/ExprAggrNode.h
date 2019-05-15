@@ -85,7 +85,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Constructor.
     TableExprAggrNode (FunctionType, NodeDataType, ValueType,
-		       const TableExprNodeSet& source,
+                       const TableExprNodeSet& source,
                        const vector<TENShPtr>& nodes,
                        const Block<Int>& dtypeOper);
 

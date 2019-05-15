@@ -32,7 +32,8 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/MaskSpecifier.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Containers/Block.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -144,13 +145,8 @@ public:
                                 const JsonKVMap&);
 
 private:
-  // The default openImage function for an unknown image type.
-  // It returns a null pointer.
-  static LatticeBase* unknownImageOpen (const String& name,
-					const MaskSpecifier&);
-
   // Mapping of the image type to an openImage function.
-  static SimpleOrderedMap<ImageTypes,OpenImageFunction*> theirOpenFuncMap;
+  static std::map<ImageTypes,OpenImageFunction*> theirOpenFuncMap;
 };
 
 

@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/images/Regions/RegionHandler.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Containers/SimOrdMap.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -182,7 +182,7 @@ private:
 
 
   String itsDefaultName;
-  SimpleOrderedMap<String, void*>* itsMaps[2];
+  std::map<String, void*> itsMaps[2];
 };
 
 

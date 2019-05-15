@@ -49,7 +49,7 @@ void a();
 int main () {
   try {
     a();
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << x.getMesg() << endl;
     return 1;
   } 

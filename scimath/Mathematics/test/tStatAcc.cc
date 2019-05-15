@@ -135,7 +135,7 @@ int main()
       s.printSummaryList(cout,"Test of s.printSummaryList");
 
 
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
         cout << x.getMesg() << endl;
         return 1;                       // unexpected error
     } 

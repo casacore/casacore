@@ -429,7 +429,7 @@ int main()
       checkIter (array, IPosition(5,5,2,3,4,5),
 		 IPosition(5,5,2,9,11,13), IPosition(5,1,1,1,1,1));
     }
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
   }

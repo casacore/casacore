@@ -35,7 +35,7 @@ namespace casacore {
 //   <li> <a href="group__Quanta__module.html">Quantities</a> (values with physical units)
 //   <li> <a href="group__OS__module.html">OS</a> and
 //    <a href="group__IO__module.html">IO</a> interface classes
-//   <li> <a href="group__Containers__module.html">Container</a>s (from pre-STL era)
+//   <li> <a href="group__Containers__module.html">Container</a>s (such as Record)
 //   <li> Various <a href="group__Utilities__module.html">utilit</a>y classes
 //        and functions
 //   <li> Classes to store and retrieve Casacore data types in/from the 
@@ -52,9 +52,12 @@ namespace casacore {
 // </ul>
 // It is important to note that most of the code has been developed before STL
 // came into existence, so several classes in modules Containers
-// and Utilities are superseded by their STL counterparts. However, they
-// are still used in some Casacore code.
-// Furthermore, some classes offer some extra functionality compared
+// and Utilities are superseded by their STL counterparts. They
+// have been removed from the Casacore code.
+//
+// Note that class Regex still exists because std::regex is not supported in
+// gcc-4.8 and before; this compiler is still shipped in some distributions.
+// Furthermore, some classes (such as String) offer some extra functionality compared
 // to STL.
 
 }

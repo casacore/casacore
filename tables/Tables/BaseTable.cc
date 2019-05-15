@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#include <thread>
+#include <utility>
+
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseTable.h>
 #include <casacore/tables/Tables/Table.h>
@@ -170,35 +173,68 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
     }
 }
 
+#ifdef HAVE_MPI
+template <typename Func, typename ... Args>
+void safe_mpi_invoke(Func &&mpi_func, const char *errmsg, Args && ... args)
+{
+    if (mpi_func(std::forward<Args>(args)...)) {
+        throw std::runtime_error(errmsg);
+    }
+}
+
+static bool is_mpi_initialized()
+{
+    int mpi_initialized;
+    safe_mpi_invoke(MPI_Initialized, "Error when checking for initialized MPI", &mpi_initialized);
+    return mpi_initialized != 0;
+}
+
+static bool is_mpi_finalized()
+{
+    int mpi_finalized;
+    safe_mpi_invoke(MPI_Finalized, "Error when checking for finalized MPI", &mpi_finalized);
+    return mpi_finalized != 0;
+}
+
+static std::once_flag ensure_mpi_flag;
+
+static void ensure_mpi()
+{
+    std::call_once(ensure_mpi_flag, [&]{
+        if (is_mpi_initialized() || is_mpi_finalized()) {
+            return;
+        }
+#ifdef USE_THREADS
+       int provided;
+       safe_mpi_invoke(MPI_Init_thread, "Error when initializing MPI", nullptr, nullptr, MPI_THREAD_MULTIPLE, &provided);
+       // Checking if provided == MPI_THREAD_MULTIPLE is not necessarily
+       // the best option. Down here we have no idea how users are intending
+       // to use these objects, and therefore throwing an exception is not
+       // correct. For instance, with OpenMPI @ Ubuntu 16.04.05 lots
+       // of unit tests fail.
+#else
+       safe_mpi_invoke(MPI_Init, "Error when initializing MPI", nullptr, nullptr);
+#endif // USE_THREADS
+    });
+}
+
+static bool is_rank_0(MPI_Comm comm)
+{
+    ensure_mpi();
+    if (is_mpi_finalized()) {
+        return false;
+    }
+    int rank;
+    safe_mpi_invoke(MPI_Comm_rank, "Error when getting MPI rank", comm, &rank);
+    return rank == 0;
+}
+#endif // HAVE_MPI
 
 Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
-    int mpi_finalized;
-    MPI_Finalized(&mpi_finalized);
-    if(!mpi_finalized)
-    {
-        int mpi_initialized;
-        MPI_Initialized(&mpi_initialized);
-        if(!mpi_initialized){
-#ifdef USE_THREADS
-            int provided;
-            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
-            if(provided != MPI_THREAD_MULTIPLE)
-            {
-                throw(std::runtime_error(
-                            "Casacore is built with thread and MPI enabled, \
-                            but the MPI installation does not support threads"));
-            }
-#else
-            MPI_Init(0,0);
-#endif
-        }
-        int rank = 0;
-        MPI_Comm_rank(itsMpiComm, &rank);
-        if(rank > 0){
-            return false;
-        }
+    if (!is_rank_0(itsMpiComm)) {
+        return false;
     }
 #endif
     //# Exit if the table directory has already been created.
@@ -258,31 +294,8 @@ Bool BaseTable::makeTableDir()
 Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
-    int mpi_finalized;
-    MPI_Finalized(&mpi_finalized);
-    if(!mpi_finalized)
-    {
-        int mpi_initialized;
-        MPI_Initialized(&mpi_initialized);
-        if(!mpi_initialized){
-#ifdef USE_THREADS
-            int provided;
-            MPI_Init_thread(0,0,MPI_THREAD_MULTIPLE, &provided);
-            if(provided != MPI_THREAD_MULTIPLE)
-            {
-                throw(std::runtime_error(
-                            "Casacore is built with thread and MPI enabled, \
-                            but the MPI installation does not support threads"));
-            }
-#else
-            MPI_Init(0,0);
-#endif
-        }
-        int rank = 0;
-        MPI_Comm_rank(itsMpiComm, &rank);
-        if(rank > 0){
-            return false;
-        }
+    if (!is_rank_0(itsMpiComm)) {
+        return false;
     }
 #endif
     AlwaysAssert (!isNull(), AipsError);

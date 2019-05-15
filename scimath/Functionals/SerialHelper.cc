@@ -47,7 +47,7 @@ Bool SerialHelper::getFuncType(String& ftype) const
        if(!ftype.size() ){
 	   throw InvalidSerializationError("Empty value for functype field");
         }
-    } catch (AipsError (x)) {
+    } catch (AipsError& x) {
 	throw InvalidSerializationError("Wrong type for functype field");
     }
     return True;

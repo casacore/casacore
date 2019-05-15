@@ -161,6 +161,14 @@ void ROTableRow::deleteObjects()
 	    delete (ArrayColumn<uInt>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<uInt> >*)(itsFields[i]);
 	    break;
+	case TpInt64:
+	    delete (ScalarColumn<Int64>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Int64>*)(itsFields[i]);
+	    break;
+	case TpArrayInt64:
+	    delete (ArrayColumn<Int64>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<Int64> >*)(itsFields[i]);
+	    break;
 	case TpFloat:
 	    delete (ScalarColumn<float>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<float>*)(itsFields[i]);
@@ -349,6 +357,10 @@ void ROTableRow::makeObjects (const RecordDesc& description)
 	    itsColumns[i] = new ScalarColumn<uInt> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<uInt>(*itsRecord, i);
 	    break;
+	case TpInt64:
+	    itsColumns[i] = new ScalarColumn<Int64> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Int64>(*itsRecord, i);
+	    break;
 	case TpFloat:
 	    itsColumns[i] = new ScalarColumn<float> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<float>(*itsRecord, i);
@@ -392,6 +404,10 @@ void ROTableRow::makeObjects (const RecordDesc& description)
 	case TpArrayUInt:
 	    itsColumns[i] = new ArrayColumn<uInt> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<uInt> >(*itsRecord, i);
+	    break;
+	case TpArrayInt64:
+	    itsColumns[i] = new ArrayColumn<Int64> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<Int64> >(*itsRecord, i);
 	    break;
 	case TpArrayFloat:
 	    itsColumns[i] = new ArrayColumn<float> (itsTable, name);
@@ -517,6 +533,21 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }else{
 		(*(RecordFieldPtr<Array<uInt> >*)(itsFields[i])).define (
 		                         Array<uInt> (IPosition(ndim, 0)));
+	    }
+	    break;
+	case TpInt64:
+	    (*(const ScalarColumn<Int64>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<Int64>*) itsFields[i]));
+	    break;
+	case TpArrayInt64:
+	    if (isDefined) {
+		(*(const ArrayColumn<Int64>*)(itsColumns[i])).get (
+		       rownr,
+		       *(*(RecordFieldPtr<Array<Int64> >*) itsFields[i]),
+		       True);
+	    }else{
+		(*(RecordFieldPtr<Array<Int64> >*)(itsFields[i])).define (
+		                         Array<Int64> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpFloat:
@@ -668,6 +699,13 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
     case TpArrayUInt:
 	PUTFIELD_ARRAY(uInt);
 	break;
+    case TpInt64:
+	(*(ScalarColumn<Int64>*)(itsColumns[whichColumn])).put
+		                (rownr, record.asInt64 (whichField));
+	break;
+    case TpArrayInt64:
+	PUTFIELD_ARRAY(Int64);
+	break;
     case TpFloat:
 	(*(ScalarColumn<Float>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asfloat (whichField));
@@ -757,6 +795,14 @@ void ROTableRow::putRecord (uInt rownr)
 	case TpArrayUInt:
 	    (*(ArrayColumn<uInt>*)(itsColumns[i])).put (rownr,
 	         (*(RecordFieldPtr<Array<uInt> >*) itsFields[i]).get());
+	    break;
+	case TpInt64:
+	    (*(ScalarColumn<Int64>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Int64>*) itsFields[i]).get());
+	    break;
+	case TpArrayInt64:
+	    (*(ArrayColumn<Int64>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<Int64> >*) itsFields[i]).get());
 	    break;
 	case TpFloat:
 	    (*(ScalarColumn<float>*)(itsColumns[i])).put (rownr,
