@@ -15,7 +15,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
     tar -xzf $SOFA_ARCHIVE
     
     if [ ! -f "$MEASURES_ARCHIVE" ]; then
-        wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar $MEASURES_ARCHIVE
+        wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O $MEASURES_ARCHIVE
     fi
 
     cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
