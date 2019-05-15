@@ -1,12 +1,11 @@
 language: cpp
 cache: ccache
+sudo: false
 
 env:
   global:
     - CCACHE_COMPRESS=1
     - CCACHE_CPP2=yes
-
-
 
 matrix:
   include:
@@ -32,15 +31,9 @@ matrix:
       sudo: true
     - os: osx
       compiler: clang
-      env: PYTHONVERSION=2.7
     - os: osx
-      compiler: clang
-      env: PYTHONVERSION=3.4
-  allow_failures:
-    - os: osx
-      env: PYTHONVERSION=3.4
+      compiler: gcc
 
-sudo: false
 
 install:
   - ./.travis/install.sh
@@ -50,11 +43,3 @@ before_script:
 
 script:
   - ./.travis/script.sh
-
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/a21dbde2d416245fd698
-    on_success: always
-    on_failure: always
-    on_start: false

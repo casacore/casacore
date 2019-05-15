@@ -1,50 +1,42 @@
 #!/bin/bash
 
+alias ccache=true
+
 set -e
 set -x
 
 if [ "$TRAVIS_OS_NAME" = osx ]; then
-   wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O /tmp/sofa.tgz
-   tar -xzf /tmp/sofa.tgz
-   cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
+    SOFA_ARCHIVE=sofa.tgz
+    MEASURES_ARCHIVE=WSRT_Measures.ztar
 
-   mkdir build
-   cd build
+    if [ ! -f "$SOFA_ARCHIVE" ]; then
+      wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O $SOFA_ARCHIVE
+    fi
+    tar -xzf $SOFA_ARCHIVE
+    
+    if [ ! -f "$MEASURES_ARCHIVE" ]; then
+        wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar $MEASURES_ARCHIVE
+    fi
 
-   wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
-   tar zxvf WSRT_Measures.ztar
+    cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
+
+    mkdir -p build
+    cd build
+
+   tar zxvf $MEASURES_ARCHIVE
 
    ccache -M 80M
 
-   PATH=$HOME/miniconda/bin:$PATH
-   source activate testenv
-   PYTHON2_EXECUTABLE=$HOME/miniconda/bin/python
-   PYTHON3_EXECUTABLE=$HOME/miniconda/bin/python
-   which python
-   python -c "import numpy as n; print (n.__version__); print(n.get_include());"
-   export PYTHONPATH=/Users/travis/miniconda/envs/testenv/lib/python${PYTHONVERSION}/site-packages:$PYTHONPATH
-   if [ "$PYTHONVERSION" = "2.7" ]; then
-     BUILD_PYTHON=On
-     BUILD_PYTHON3=Off
-   else
-     ln -s /Users/travis/miniconda/envs/testenv/lib/libboost_python-mt.dylib /Users/travis/miniconda/envs/testenv/lib/libboost_python3-mt.dylib
-     BUILD_PYTHON=Off
-     BUILD_PYTHON3=On
-   fi
-
-   CMAKE_PREFIX_PATH=/Users/travis/miniconda/envs/testenv/
-   ls /Users/travis/miniconda/envs/testenv/
-     echo $PYTHONPATH
-     echo $PATH
-     CXX="ccache $CXX" cmake .. \
+   CXX="ccache $CXX" cmake .. \
         -DUSE_FFTW3=ON \
         -DBUILD_TESTING=ON \
         -DUSE_OPENMP=OFF \
         -DUSE_HDF5=ON \
-        -DBUILD_PYTHON=${BUILD_PYTHON} \
-        -DBUILD_PYTHON3=${BUILD_PYTHON3} \
-        -DPYTHON2_EXECUTABLE=${PYTHON2_EXECUTABLE} \
-        -DPYTHON3_EXECUTABLE=${PYTHON3_EXECUTABLE} \
+        -DBUILD_PYTHON=ON \
+        -DBUILD_PYTHON3=ON \
+        -DPYTHON2_EXECUTABLE=/usr/local/bin/python2 \
+        -DPYTHON3_EXECUTABLE=/usr/local/bin/python3 \
+        -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
         -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
         -DDATA_DIR=$PWD \
         -DSOFA_ROOT_DIR=$HOME \
