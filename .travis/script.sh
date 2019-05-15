@@ -14,5 +14,5 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
     make install
     ccache -s
 else
-    docker run casacore/${DIST}_${CC} make test
+    docker run casacore/${DIST}_${CC} ctest -E "(tBucketFile|tByteIO|tDirectory|tFile|tRegularFile|tSymLink)"
 fi
