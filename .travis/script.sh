@@ -1,6 +1,9 @@
 #!/bin/bash
 
-if [[ "$TRAVIS_OS_NAME" = osx ]]; do
+set -e
+set -x
+
+if [ "$TRAVIS_OS_NAME" = osx ]; then
     cd ${TRAVIS_BUILD_DIR}/build
     ccache -s
     ccache -z
