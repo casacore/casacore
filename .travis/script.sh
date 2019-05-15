@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 if [[ "$TRAVIS_OS_NAME" = osx ]]; do
     cd ${TRAVIS_BUILD_DIR}/build
