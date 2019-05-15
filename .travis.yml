@@ -2,6 +2,15 @@ language: cpp
 cache: ccache
 sudo: false
 
+addons:
+  homebrew:
+    packages:
+    - fftw
+    - hdf5
+    - ccache
+    - boost-python
+    - boost-python3
+
 env:
   global:
     - CCACHE_COMPRESS=1
@@ -34,9 +43,6 @@ matrix:
     - os: osx
       compiler: gcc
 
-
-install:
-  - ./.travis/install.sh
 
 before_script:
   - ./.travis/before_script.sh
