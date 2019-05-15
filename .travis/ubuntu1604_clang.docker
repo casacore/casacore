@@ -28,10 +28,10 @@ RUN cmake .. \
     -DUSE_HDF5=ON \
     -DBUILD_PYTHON=ON \
     -DBUILD_PYTHON3=ON \
+    -DBOOST_PYTHON3_LIBRARY_NAME=python-py35 \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/share/casacore/data \
     -DCMAKE_C_COMPILER=/usr/bin/clang \
     -DCMAKE_CXX_COMPILER=/usr/bin/clang++
-
 RUN make -j4
 RUN make install
