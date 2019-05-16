@@ -10,6 +10,8 @@ addons:
     - ccache
     - boost-python
     - boost-python3
+    - cfitsio
+    - wcslib
 
 env:
   global:

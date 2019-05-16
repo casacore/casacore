@@ -20,6 +20,9 @@ RUN docker-apt-install \
     python-numpy \
     python3-numpy
 ADD . /code
+RUN useradd -ms /bin/bash casacore
+RUN chown casacore.casacore /code
+USER casacore
 RUN mkdir /code/build
 WORKDIR /code/build
 RUN cmake .. \
@@ -32,4 +35,7 @@ RUN cmake .. \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/share/casacore/data
 RUN make -j4
+USER root
 RUN make install
+USER casacore
+
