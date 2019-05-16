@@ -262,7 +262,7 @@ template<class T> Array<T> partialInterQuartileRanges (const Array<T>& array,
     Bool     itsInPlace;
     mutable Block<T> itsTmp;
   };
-  template<typename T> class MadfmFunc {
+  template<typename T> class MadfmFunc : public ArrayFunctorBase<T> {
   public:
     explicit MadfmFunc(Bool sorted = False, Bool takeEvenMean = True,
                        Bool inPlace = False)
