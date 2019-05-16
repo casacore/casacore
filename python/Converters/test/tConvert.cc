@@ -103,7 +103,7 @@ namespace casacore { namespace python {
       .def ("testcomplex",    &TConvert::testcomplex)
       .def ("testdcomplex",   &TConvert::testdcomplex)
       .def ("teststring",     &TConvert::teststring)
-      .def ("testunicode",     &TConvert::testunicode)
+      .def ("testunicode",    &TConvert::testunicode)
       .def ("testrecord",     &TConvert::testrecord)
       .def ("testvh",         &TConvert::testvh)
       .def ("testvecbool",    &TConvert::testvecbool)

@@ -269,7 +269,7 @@ namespace casacore { namespace python {
         if (result == TpBool  ||  result == TpString || dt == TpBool  ||  dt == TpString) {
           throw AipsError ("PycValueHolder: incompatible types in sequence");
         }
-            // Use the 'highest' type.
+        // Use the 'highest' type.
         if (result != TpDComplex) {
           if (dt == TpDComplex) {
             result = dt;

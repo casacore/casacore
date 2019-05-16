@@ -99,7 +99,7 @@ namespace casacore { namespace python {
       PyObject* obj_ptr,
       boost::python::converter::rvalue_from_python_stage1_data* data)
     {
-    char* value = 0;
+    char* value = NULL;
     if (PyUnicode_Check(obj_ptr)) {
         PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "UTF-8", "strict"); // Owned reference
 
@@ -243,7 +243,7 @@ namespace casacore { namespace python {
       typename ContainerType::const_iterator i = c.begin();
       typename ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-    result.append(*i);
+      result.append(*i);
       }
       return result;
     }
