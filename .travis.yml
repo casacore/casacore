@@ -12,6 +12,7 @@ addons:
     - boost-python3
     - cfitsio
     - wcslib
+    update: true
 
 env:
   global:
