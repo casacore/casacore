@@ -19,6 +19,9 @@ RUN docker-apt-install \
     python-numpy \
     python3-numpy
 ADD . /code
+RUN useradd -ms /bin/bash build
+RUN chown build.build /code
+USER build
 RUN mkdir /code/build
 WORKDIR /code/build
 RUN cmake .. \
