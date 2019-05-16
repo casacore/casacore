@@ -359,7 +359,7 @@
         Array<uChar>* uarr = static_cast<Array<uChar>*>(varr);
 	convertArray (res, *uarr);
 	return ValueHolder(res);
-      } else if (PyArray_TYPE(po) == NPY_STRING) {
+      } else if (PyArray_TYPE(po) == NPY_STRING || PyArray_TYPE(po) == NPY_UNICODE) {
 	size_t slen = 0;
 	if (nd > 0) {
 	  slen = PyArray_STRIDES(po)[nd-1];
