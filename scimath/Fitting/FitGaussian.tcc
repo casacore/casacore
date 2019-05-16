@@ -442,7 +442,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
             for (uInt g = 0; g < itsNGaussians; g++) {  
               for (uInt p = 0; p < ngpars; p++) {
                 itsSolutionParameters(g,p) = solution(g*ngpars+p);
-                itsSolutionErrors(g,p) = errors(g*ngpars+p);
+                itsSolutionErrors(g,p) = errors();
               }
             }
             bestRMS = itsRMS;
