@@ -34,7 +34,6 @@
 #include <boost/python/object.hpp>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Array.h>
-
 #include <numpy/arrayobject.h>
 
 namespace casacore { namespace python { namespace numpy {

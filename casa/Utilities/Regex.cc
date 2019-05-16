@@ -357,6 +357,7 @@ String Regex::fromSQLPattern(const String &pattern)
 	case ')':
 	case '\\':
             result.push_back ('\\');
+            break;
 	default:
             result.push_back (c);
 	}

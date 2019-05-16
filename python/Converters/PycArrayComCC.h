@@ -22,8 +22,10 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycArrayComCC.h,v 1.3 2006/11/20 23:58:17 gvandiep Exp $
+
+
+#include <boost/python.hpp>
+#include <numpy/arrayobject.h>
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K
@@ -246,7 +248,7 @@
   void ArrayCopy<String>::toPy (void* to, const String* from, size_t nr)
   {
     PyObject** dst = static_cast<PyObject**>(to);
-    for (size_t i=0; i<nr; i++) {
+    for (uInt i=0; i<nr; i++) {
 #ifdef IS_PY3K
       dst[i] = PyUnicode_FromString(from[i].chars());
 #else
@@ -261,7 +263,7 @@
     for (size_t i=0; i<nr; i++) {
       handle<> py_elem_hdl(src[i]);
       object py_elem_obj(py_elem_hdl);
-      extract<std::string> elem_proxy(py_elem_obj);
+      extract<String> elem_proxy(py_elem_obj);
       to[i] = elem_proxy();
     }
   }
