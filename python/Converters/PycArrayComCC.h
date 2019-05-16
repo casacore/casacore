@@ -263,7 +263,7 @@
     for (size_t i=0; i<nr; i++) {
       handle<> py_elem_hdl(src[i]);
       object py_elem_obj(py_elem_hdl);
-      extract<std::string> elem_proxy(py_elem_obj);
+      extract<String> elem_proxy(py_elem_obj);
       to[i] = elem_proxy();
     }
   }

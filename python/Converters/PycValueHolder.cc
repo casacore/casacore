@@ -168,7 +168,7 @@ namespace casacore { namespace python {
 #else
     } else if (PyString_Check(obj_ptr) || PyUnicode_Check(obj_ptr)) {
 #endif
-      return ValueHolder(String(extract<std::string>(obj_ptr)()));
+      return ValueHolder(String(extract<String>(obj_ptr)()));
     } else if (PyDict_Check(obj_ptr)) {
       dict d = extract<dict>(obj_ptr)();
       if (d.has_key("shape") && d.has_key("array")) {
