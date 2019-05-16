@@ -27,6 +27,9 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    ccache -M 80M
 
+   pip2 install numpy
+   pip3 install numpy
+
    CXX="ccache $CXX" cmake .. \
         -DUSE_FFTW3=ON \
         -DBUILD_TESTING=ON \
