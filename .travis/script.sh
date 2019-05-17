@@ -9,8 +9,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
     ccache -z
     make -j2
     # Skip tConvert on OSX; boost-python can't be found on non-standard location
-    #env CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
-    make test 
+    CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
     make install
     ccache -s
 else
