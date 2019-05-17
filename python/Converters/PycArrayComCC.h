@@ -365,6 +365,12 @@
 	  slen = PyArray_STRIDES(po)[nd-1];
 	}
 	return ValueHolder (ArrayCopyStr_toArray(shp, PyArray_DATA(po), slen));
+      } else if (PyArray_TYPE(po) == NPY_UNICODE) {
+	size_t slen = 0;
+	if (nd > 0) {
+	  slen = PyArray_STRIDES(po)[nd-1];
+	}
+	return ValueHolder (ArrayCopyUnicode_toArray(shp, PyArray_DATA(po), slen));
       }
       break;
     }
