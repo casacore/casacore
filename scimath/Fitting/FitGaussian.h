@@ -178,8 +178,8 @@ class FitGaussian
                 T convcriteria = 0.0001);
 
   // Allow access to the fit parameters from this class
-  Matrix<T> solution(){return itsSolutionParameters;};
-  Matrix<T> errors(){return itsSolutionErrors;};
+  Matrix<T> &solution(){return itsSolutionParameters;};
+  Matrix<T> &errors(){return itsSolutionErrors;};
 
   // Internal function for ensuring that parameters stay within their stated
   // domains (see <src>Gaussian2D</src> and <src>Gaussian3D</src>.)
