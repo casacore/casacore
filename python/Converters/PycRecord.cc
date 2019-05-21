@@ -79,7 +79,7 @@ namespace casacore { namespace python {
       if (PyErr_Occurred()) throw_error_already_set();
       if (!py_elem_hdl.get()) break;             // end of iteration
       object py_elem_key(py_elem_hdl);
-      result.defineFromValueHolder (extract<string>(py_elem_key)(),
+      result.defineFromValueHolder (extract<String>(py_elem_key)(),
            casa_value_from_python::makeValueHolder(d.get(py_elem_key).ptr()));
     }
     return result;

@@ -51,9 +51,8 @@ namespace casacore { namespace python {
 #ifdef IS_PY3K
         PyList_Insert (sysPath, 0, PyUnicode_FromString(workingDir.c_str()));
 #else
-          PyList_Insert (sysPath, 0, PyString_FromString(workingDir.c_str()));
+        PyList_Insert (sysPath, 0, PyString_FromString(workingDir.c_str()));
 #endif
-
         // First import main.
         boost::python::object mainModule = boost::python::import
           ("__main__");

@@ -29,13 +29,13 @@ if (PYTHONINTERP_FOUND)
 	set(BOOST_PYTHON3_LIBRARY_NAME
 	    python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
 	    CACHE
-	    FILEPATH
+        STRING
 	    "The name of the boost python3 library to search for")
     else ()
         set(BOOST_PYTHON3_LIBRARY_NAME
 	    python${PYTHON_VERSION_MAJOR}
 	    CACHE                                                       
-	    FILEPATH                                                    
+        STRING                                                    
 	    "The name of the boost python library to search for")       
     endif ()
     find_package(Boost REQUIRED COMPONENTS ${BOOST_PYTHON3_LIBRARY_NAME})

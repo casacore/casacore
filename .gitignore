@@ -7,3 +7,6 @@ build/
 .project
 .cproject
 .settings
+WSRT_Measures.ztar
+sofa.tgz
+sofa/
