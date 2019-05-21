@@ -1,3 +1,27 @@
+# 3.1.1
+
+## General
+ - Only use DataManager.get/putSlice if possible (#901)
+ - Incremental Storage Manager columns don't support slicing (#899)
+ - User docker for Linux build on Travis for CI  (#856)
+ - improve unicode support (#853)
+ - Changed MadfmFunc so that it inherits from ArrayFunctorBase (#905)
+ - Fix memory leak in TableProxy::getColumnDescription  (#900)
+ - Allow colon and fix recursive bison parsing  (#894)
+ - ObjectID's hash function behavior fix (#897)
+ - Add a public getter for the mask array to LCRegionFixed  (#895)
+ - Replace STL-like containers by their STL counterparts  (#890)
+
+## Python support
+ - Boost 1.67 Python components require a Python version suffix (#844)
+ - Handle numpy Unicode arrays  (#912)
+ - Fix memory leak when converting Python unicode to casa string (#910)
+ - Possible leak bug (#908)
+ 
+## Build system
+ - Travis macOS fails on Python3 OSX build system (#778)
+ - Switch travis to docker /xenial (#847)
+
 # 3.1
 
 ## General
