@@ -177,6 +177,10 @@ class FitGaussian
                 T maximumRMS = 1.0, uInt maxiter = 1024, 
                 T convcriteria = 0.0001);
 
+  // Allow access to the fit parameters from this class
+  const Matrix<T> &solution(){return itsSolutionParameters;};
+  const Matrix<T> &errors(){return itsSolutionErrors;};
+
   // Internal function for ensuring that parameters stay within their stated
   // domains (see <src>Gaussian2D</src> and <src>Gaussian3D</src>.)
   void correctParameters(Matrix<T>& parameters);
@@ -215,6 +219,13 @@ class FitGaussian
 
   //Find the number of unmasked parameters to be fit
   uInt countFreeParameters();
+
+  // The solutions to the fit
+  Matrix<T> itsSolutionParameters;
+  
+  // The errors on the solution parameters
+  Matrix<T> itsSolutionErrors;
+
 };
 
 
