@@ -60,9 +60,9 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
   Double startPoint;
   Double endPoint;
   // Column accessors
-  ROMSMainColumns msMainCol(*ms());
-  ROMSSpWindowColumns msSpwCol(ms()->spectralWindow());
-  ROMSDataDescColumns msDataDescSubTable(ms()->dataDescription());
+  MSMainColumns msMainCol(*ms());
+  MSSpWindowColumns msSpwCol(ms()->spectralWindow());
+  MSDataDescColumns msDataDescSubTable(ms()->dataDescription());
   String units(unit);
   units.downcase();
 

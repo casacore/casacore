@@ -53,162 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSSource;
 
 // <summary>
-// A class to provide easy read-only access to MSSource columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSSource
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSSourceColumns stands for Read-Only MeasurementSet Source Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSSource Table.
-// It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSSourceColumns
-{
-public:
-  // Construct from the supplied Table
-  ROMSSourceColumns(const MSSource& msSource);
-
-  // The destructor does nothing special
-  ~ROMSSourceColumns();
-
-  // Is this object defined? (MSSource table is optional)
-  Bool isNull() const {return isNull_p;}
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Int>& calibrationGroup() const {
-    return calibrationGroup_p;}
-  const ROScalarColumn<String>& code() const {return code_p;}
-  const ROArrayColumn<Double>& direction() const {return direction_p;}
-  const ROArrayQuantColumn<Double>& directionQuant() const {
-    return directionQuant_p;}
-  const ROScalarMeasColumn<MDirection>& directionMeas() const {
-    return directionMeas_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return intervalQuant_p;}
-  const ROScalarColumn<String>& name() const {return name_p;}
-  const ROScalarColumn<Int>& numLines() const {return numLines_p;}
-  const ROArrayColumn<Double>& properMotion() const {return properMotion_p;}
-  const ROArrayQuantColumn<Double>& properMotionQuant() const {
-    return properMotionQuant_p;}
-  const ROScalarColumn<Int>& sourceId() const {return sourceId_p;}
-  const ROScalarColumn<Int>& spectralWindowId() const {
-    return spectralWindowId_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
-  // </group>
-
-  // Access to optional columns
-  // <group>
-  const ROArrayColumn<Double>& position() const {return position_p;}
-  const ROArrayQuantColumn<Double>& positionQuant() const {
-    return positionQuant_p;}
-  const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return positionMeas_p;}
-  const ROScalarColumn<Int>& pulsarId() const {return pulsarId_p;}
-  const ROArrayColumn<Double>& restFrequency() const {return restFrequency_p;}
-  const ROArrayQuantColumn<Double>& restFrequencyQuant() const {
-    return restFrequencyQuant_p;}
-  const ROArrayMeasColumn<MFrequency>& restFrequencyMeas() const {
-    return restFrequencyMeas_p;}
-  const ROScalarColumn<TableRecord>& sourceModel() const {
-    return sourceModel_p;}
-  const ROArrayColumn<Double>& sysvel() const {return sysvel_p;}
-  const ROArrayQuantColumn<Double>& sysvelQuant() const {return sysvelQuant_p;}
-  const ROArrayMeasColumn<MRadialVelocity>& sysvelMeas() const {
-    return sysvelMeas_p;}
-  const ROArrayColumn<String>& transition() const {return transition_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the
-  // columns. Returns zero if the object is null.
-  uInt nrow() const {return isNull() ? 0 : calibrationGroup_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSSourceColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSSource& msSource);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSSourceColumns(const ROMSSourceColumns&);
-  ROMSSourceColumns& operator=(const ROMSSourceColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const MSSource& msSource);
-  
-  //# Is the object not attached to a Table.
-  Bool isNull_p;
-
-  //# required columns
-  ROScalarColumn<Int> calibrationGroup_p;
-  ROScalarColumn<String> code_p;
-  ROArrayColumn<Double> direction_p;
-  ROScalarColumn<Double> interval_p;
-  ROScalarColumn<String> name_p;
-  ROScalarColumn<Int> numLines_p;
-  ROArrayColumn<Double> properMotion_p;
-  ROScalarColumn<Int> sourceId_p;
-  ROScalarColumn<Int> spectralWindowId_p;
-  ROScalarColumn<Double> time_p;
-  //# optional columns
-  ROArrayColumn<Double> position_p;
-  ROScalarColumn<Int> pulsarId_p;
-  ROArrayColumn<Double> restFrequency_p;
-  ROScalarColumn<TableRecord> sourceModel_p;
-  ROArrayColumn<Double> sysvel_p;
-  ROArrayColumn<String> transition_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MDirection> directionMeas_p;
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-  //# Optional Measure columns
-  ROScalarMeasColumn<MPosition> positionMeas_p;
-  ROArrayMeasColumn<MFrequency> restFrequencyMeas_p;
-  ROArrayMeasColumn<MRadialVelocity> sysvelMeas_p;
-
-  //# Access to Quantum columns
-  ROArrayQuantColumn<Double> directionQuant_p;
-  ROScalarQuantColumn<Double> intervalQuant_p;
-  ROArrayQuantColumn<Double> properMotionQuant_p;
-  ROScalarQuantColumn<Double> timeQuant_p;
-  //# Optional Quantum columns
-  ROArrayQuantColumn<Double> positionQuant_p;
-  ROArrayQuantColumn<Double> restFrequencyQuant_p;
-  ROArrayQuantColumn<Double> sysvelQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSSource columns
+// A class to provide easy access to MSSource columns
 // </summary>
 
 // <use visibility=export>
@@ -240,16 +85,19 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSSourceColumns: public ROMSSourceColumns
+class MSSourceColumns
 {
 public:
   // Construct from the supplied Table
-  MSSourceColumns(MSSource& msSource);
+  MSSourceColumns(const MSSource& msSource);
 
   // The destructor does nothing special
   ~MSSourceColumns();
 
-  // Read-write access to required columns
+  // Is this object defined? (MSSource table is optional)
+  Bool isNull() const {return isNull_p;}
+
+  // Access to required columns
   // <group>
   ScalarColumn<Int>& calibrationGroup() {return calibrationGroup_p;}
   ScalarColumn<String>& code() {return code_p;}
@@ -269,7 +117,7 @@ public:
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   // </group>
 
-  // Read-write access to optional columns
+  // Access to optional columns
   // <group>
   ArrayColumn<Double>& position() {return position_p;}
   ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
@@ -286,69 +134,57 @@ public:
   ArrayColumn<String>& transition() {return transition_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Int>& calibrationGroup() const {
-    return ROMSSourceColumns::calibrationGroup();}
-  const ROScalarColumn<String>& code() const {
-    return ROMSSourceColumns::code();}
-  const ROArrayColumn<Double>& direction() const {
-    return ROMSSourceColumns::direction();}
-  const ROArrayQuantColumn<Double>& directionQuant() const {
-    return ROMSSourceColumns::directionQuant();}
-  const ROScalarMeasColumn<MDirection>& directionMeas() const {
-    return ROMSSourceColumns::directionMeas();}
-  const ROScalarColumn<Double>& interval() const {
-    return ROMSSourceColumns::interval();}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return ROMSSourceColumns::intervalQuant();}
-  const ROScalarColumn<String>& name() const {
-    return ROMSSourceColumns::name();}
-  const ROScalarColumn<Int>& numLines() const {
-    return ROMSSourceColumns::numLines();}
-  const ROArrayColumn<Double>& properMotion() const {
-    return ROMSSourceColumns::properMotion();}
-  const ROArrayQuantColumn<Double>& properMotionQuant() const {
-    return ROMSSourceColumns::properMotionQuant();}
-  const ROScalarColumn<Int>& sourceId() const {
-    return ROMSSourceColumns::sourceId();}
-  const ROScalarColumn<Int>& spectralWindowId() const {
-    return ROMSSourceColumns::spectralWindowId();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSSourceColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSSourceColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSSourceColumns::timeMeas();}
+  const ScalarColumn<Int>& calibrationGroup() const {
+    return calibrationGroup_p;}
+  const ScalarColumn<String>& code() const {return code_p;}
+  const ArrayColumn<Double>& direction() const {return direction_p;}
+  const ArrayQuantColumn<Double>& directionQuant() const {
+    return directionQuant_p;}
+  const ScalarMeasColumn<MDirection>& directionMeas() const {
+    return directionMeas_p;}
+  const ScalarColumn<Double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<Double>& intervalQuant() const {
+    return intervalQuant_p;}
+  const ScalarColumn<String>& name() const {return name_p;}
+  const ScalarColumn<Int>& numLines() const {return numLines_p;}
+  const ArrayColumn<Double>& properMotion() const {return properMotion_p;}
+  const ArrayQuantColumn<Double>& properMotionQuant() const {
+    return properMotionQuant_p;}
+  const ScalarColumn<Int>& sourceId() const {return sourceId_p;}
+  const ScalarColumn<Int>& spectralWindowId() const {
+    return spectralWindowId_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   // </group>
 
-  // Read-only access to optional columns
+  // Const access to optional columns
   // <group>
-  const ROArrayColumn<Double>& position() const {
-    return ROMSSourceColumns::position();}
-  const ROArrayQuantColumn<Double>& positionQuant() const {
-    return ROMSSourceColumns::positionQuant();}
-  const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return ROMSSourceColumns::positionMeas();}
-  const ROScalarColumn<Int>& pulsarId() const {
-    return ROMSSourceColumns::pulsarId();}
-  const ROArrayColumn<Double>& restFrequency() const {
-    return ROMSSourceColumns::restFrequency();}
-  const ROArrayQuantColumn<Double>& restFrequencyQuant() const {
-    return ROMSSourceColumns::restFrequencyQuant();}
-  const ROArrayMeasColumn<MFrequency>& restFrequencyMeas() const {
-    return ROMSSourceColumns::restFrequencyMeas();}
-  const ROScalarColumn<TableRecord>& sourceModel() const {
-    return ROMSSourceColumns::sourceModel();}
-  const ROArrayColumn<Double>& sysvel() const {
-    return ROMSSourceColumns::sysvel();}
-  const ROArrayQuantColumn<Double>& sysvelQuant() const {
-    return ROMSSourceColumns::sysvelQuant();}
-  const ROArrayMeasColumn<MRadialVelocity>& sysvelMeas() const {
-    return ROMSSourceColumns::sysvelMeas();}
-  const ROArrayColumn<String>& transition() const {
-    return ROMSSourceColumns::transition();}
+  const ArrayColumn<Double>& position() const {return position_p;}
+  const ArrayQuantColumn<Double>& positionQuant() const {
+    return positionQuant_p;}
+  const ScalarMeasColumn<MPosition>& positionMeas() const {
+    return positionMeas_p;}
+  const ScalarColumn<Int>& pulsarId() const {return pulsarId_p;}
+  const ArrayColumn<Double>& restFrequency() const {return restFrequency_p;}
+  const ArrayQuantColumn<Double>& restFrequencyQuant() const {
+    return restFrequencyQuant_p;}
+  const ArrayMeasColumn<MFrequency>& restFrequencyMeas() const {
+    return restFrequencyMeas_p;}
+  const ScalarColumn<TableRecord>& sourceModel() const {
+    return sourceModel_p;}
+  const ArrayColumn<Double>& sysvel() const {return sysvel_p;}
+  const ArrayQuantColumn<Double>& sysvelQuant() const {return sysvelQuant_p;}
+  const ArrayMeasColumn<MRadialVelocity>& sysvelMeas() const {
+    return sysvelMeas_p;}
+  const ArrayColumn<String>& transition() const {return transition_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the
+  // columns. Returns zero if the object is null.
+  uInt nrow() const {return isNull() ? 0 : calibrationGroup_p.nrow();}
 
   // set the epoch type for the TIME column.
   // <note role=tip>
@@ -387,7 +223,7 @@ protected:
   MSSourceColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSSource& msSource);
+  void attach(const MSSource& msSource);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -396,8 +232,11 @@ private:
   MSSourceColumns& operator=(const MSSourceColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(MSSource& msSource);
+  void attachOptionalCols(const MSSource& msSource);
   
+  //# Is the object not attached to a Table.
+  Bool isNull_p;
+
   //# required columns
   ScalarColumn<Int> calibrationGroup_p;
   ScalarColumn<String> code_p;
@@ -435,6 +274,9 @@ private:
   ArrayQuantColumn<Double> restFrequencyQuant_p;
   ArrayQuantColumn<Double> sysvelQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSSourceColumns ROMSSourceColumns;
 
 } //# NAMESPACE CASACORE - END
 

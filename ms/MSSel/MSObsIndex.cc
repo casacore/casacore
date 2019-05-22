@@ -43,7 +43,7 @@ MSObservationIndex::MSObservationIndex(const MSObservation& observationTable)
 //    observationTable      const MSObservation&    Input MSObservation 
 //                                                  sub-table
 // Output to private data:
-//    msObservationCols_p   ROMSObservationColumns  MSObservation columns 
+//    msObservationCols_p   MSObservationColumns  MSObservation columns 
 //                                                  accessor
 //    observationIds_p      Vector<Int>             Observation id.'s
 //    nrows_p               Int                     Number of rows

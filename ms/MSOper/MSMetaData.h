@@ -982,7 +982,7 @@ private:
     );
 
     MDirection _getInterpolatedDirection(
-        const ROMSPointingColumns& pCols, const Int& index,
+        const MSPointingColumns& pCols, const Int& index,
         const Double& time
     ) const;
 

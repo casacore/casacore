@@ -93,7 +93,7 @@ public:
     const Record &units(const String &) const { return emptyRecord;}
 private:
     MeasurementSet itsMS;
-    ROMSColumns itsMSCols;
+    MSColumns itsMSCols;
 
     // This possibly saves some time, Units of seconds
     Unit itsSecUnit;

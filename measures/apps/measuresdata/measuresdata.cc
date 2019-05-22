@@ -958,7 +958,7 @@ Int last_mjd(const Table *tab) {
   uInt n = tab->nrow();
   Double mjd;
   if (n<1) mjd = 0;
-  else ROScalarColumn<Double>(*tab, "MJD").get(n-1, mjd);
+  else ScalarColumn<Double>(*tab, "MJD").get(n-1, mjd);
   return Int(mjd); 
 }
 

@@ -334,14 +334,14 @@ Bool MS1ToMS2Converter::convert()
     Matrix<Double> dd,ddr,pd,pdr,rd,rdr,pntd,pntdr;
     uInt pdtp, rdtp, ddtp;
     {
-      ROArrayColumn<Double> delDir(fldTab,"DELAY_DIR");
-      ROArrayColumn<Double> delDirRate(fldTab,"DELAY_DIR_RATE");
-      ROArrayColumn<Double> phaseDir(fldTab,"PHASE_DIR");
-      ROArrayColumn<Double> phaseDirRate(fldTab,"PHASE_DIR_RATE");
-      ROArrayColumn<Double> pointingDir(fldTab,"POINTING_DIR");
-      ROArrayColumn<Double> pointingDirRate(fldTab,"POINTING_DIR_RATE");
-      ROArrayColumn<Double> refDir(fldTab,"REFERENCE_DIR");
-      ROArrayColumn<Double> refDirRate(fldTab,"REFERENCE_DIR_RATE");
+      ArrayColumn<Double> delDir(fldTab,"DELAY_DIR");
+      ArrayColumn<Double> delDirRate(fldTab,"DELAY_DIR_RATE");
+      ArrayColumn<Double> phaseDir(fldTab,"PHASE_DIR");
+      ArrayColumn<Double> phaseDirRate(fldTab,"PHASE_DIR_RATE");
+      ArrayColumn<Double> pointingDir(fldTab,"POINTING_DIR");
+      ArrayColumn<Double> pointingDirRate(fldTab,"POINTING_DIR_RATE");
+      ArrayColumn<Double> refDir(fldTab,"REFERENCE_DIR");
+      ArrayColumn<Double> refDirRate(fldTab,"REFERENCE_DIR_RATE");
       dd=delDir.getColumn();
       ddr=delDirRate.getColumn();
       pd=phaseDir.getColumn();
@@ -502,16 +502,16 @@ Bool MS1ToMS2Converter::convert()
   obsTab.addColumn(td[6]);
 
   Table arrTab(ms2_p+"/ARRAY",Table::Old);
-  ROScalarColumn<String> arrName(arrTab,"NAME");
+  ScalarColumn<String> arrName(arrTab,"NAME");
   ScalarColumn<String> telName(obsTab,"TELESCOPE_NAME");
   ArrayColumn<Double> timeRange(obsTab, "TIME_RANGE");
   ScalarColumn<Bool> flagRow(obsTab,"FLAG_ROW");
   flagRow.fillColumn(False);
 
-  ROScalarColumn<Double> time(t, "TIME");
-  ROScalarColumn<Double> interval(t, "INTERVAL");
-  ROScalarColumn<Int> observationid(t, "OBSERVATION_ID");
-  ROScalarColumn<Int> arrayid(t, "ARRAY_ID");
+  ScalarColumn<Double> time(t, "TIME");
+  ScalarColumn<Double> interval(t, "INTERVAL");
+  ScalarColumn<Int> observationid(t, "OBSERVATION_ID");
+  ScalarColumn<Int> arrayid(t, "ARRAY_ID");
   Vector<Double> tim = time.getColumn();
   Vector<Double> inter = interval.getColumn();
   Vector<Int> obsid = observationid.getColumn();
@@ -575,8 +575,8 @@ Bool MS1ToMS2Converter::convert()
   //  TableRecord tbrec = t.rwKeywordSet();
   t.rwKeywordSet().defineTable(MS::keywordName(MS::POINTING),
                                pointTab);
-  ROScalarColumn<Double> time(t, MS::columnName(MS::TIME));
-  ROScalarColumn<Double> interval(t, MS::columnName(MS::INTERVAL));
+  ScalarColumn<Double> time(t, MS::columnName(MS::TIME));
+  ScalarColumn<Double> interval(t, MS::columnName(MS::INTERVAL));
   ScalarColumn<Int> fieldId(t, MS::columnName(MS::FIELD_ID));
   Vector<Double> tim = time.getColumn();
   Vector<Double> inter = interval.getColumn();
@@ -586,7 +586,7 @@ Bool MS1ToMS2Converter::convert()
   Table fldTab(ms2_p+"/FIELD", Table::Update);
   Cube<Double> pd;
   {
-    ROArrayColumn<Double> phaseDir(fldTab, "PHASE_DIR");
+    ArrayColumn<Double> phaseDir(fldTab, "PHASE_DIR");
     pd = phaseDir.getColumn();
   }
 
@@ -602,7 +602,7 @@ Bool MS1ToMS2Converter::convert()
   Int fld = -1;
   Int pnt = 0;
 
-  ROScalarColumn<Int> numPoly(fldTab,"NUM_POLY");
+  ScalarColumn<Int> numPoly(fldTab,"NUM_POLY");
   IPosition shape(2,2,numPoly(0)+1);
   Matrix<Double> pdir(shape);
 
@@ -628,7 +628,7 @@ Bool MS1ToMS2Converter::convert()
     numPoly2.put(i, numPoly(0));
 
   uInt ctp;
-  ROArrayColumn<Double> obspDir(fldTab,"_OBSOLETE_POINTING_DIR");
+  ArrayColumn<Double> obspDir(fldTab,"_OBSOLETE_POINTING_DIR");
   MDirection::Types tp;
   MDirection::getType(tp, obspDir.keywordSet().asString("MEASURE_REFERENCE")); 
   ctp = tp;
@@ -679,8 +679,8 @@ Bool MS1ToMS2Converter::convert()
   for (Int i=0; i<8; i++) spwTab.addColumn(td[i]);
 
   ScalarColumn<Int> snumCorr(spwTab, "NUM_CORR");
-  ROArrayColumn<Int> scorrType(spwTab, "CORR_TYPE");
-  ROArrayColumn<Int> scorrProduct(spwTab, "CORR_PRODUCT");
+  ArrayColumn<Int> scorrType(spwTab, "CORR_TYPE");
+  ArrayColumn<Int> scorrProduct(spwTab, "CORR_PRODUCT");
 
   ScalarColumn<Int> pnumCorr(polTab, "NUM_CORR");
   ArrayColumn<Int> pcorrType(polTab, "CORR_TYPE");
@@ -832,7 +832,7 @@ Bool MS1ToMS2Converter::convert()
     TableMeasValueDesc mvval(td, "SYSVELX");
     TableMeasDesc<MRadialVelocity> mval(mvval);
     mval.write(td);
-    ROScalarColumn<Double> vold(sourceTab, "SYSVEL_OLD");
+    ScalarColumn<Double> vold(sourceTab, "SYSVEL_OLD");
     ArrayColumn<Double> sysvel(sourceTab, "SYSVEL");
     sysvel.rwKeywordSet() = td.columnDesc("SYSVELX").keywordSet();
     // Set data to the old SYSVEL.
@@ -926,8 +926,8 @@ Bool MS1ToMS2Converter::convert()
     t.renameColumn ("WEIGHT_OLD", "WEIGHT");
     t.addColumn (ArrayColumnDesc<Float>("WEIGHT", 1));
 
-    ROArrayColumn<Float> sigma (t, "SIGMA");
-    ROScalarColumn<Float> wold (t, "WEIGHT_OLD");
+    ArrayColumn<Float> sigma (t, "SIGMA");
+    ScalarColumn<Float> wold (t, "WEIGHT_OLD");
     ArrayColumn<Float> weight (t, "WEIGHT");
     for (uInt i=0; i<t.nrow(); i++) {
       Array<Float> arr(sigma.shape(i));

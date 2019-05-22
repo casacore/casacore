@@ -1354,7 +1354,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     if (chanList_l.shape()(0) == 0) return freqList_l;
 
-    const ROMSSpWindowColumns msSpwSubTable(ms_p->spectralWindow());
+    const MSSpWindowColumns msSpwSubTable(ms_p->spectralWindow());
     if (msSpwSubTable.nrow() <= (uInt)max(chanList_l.column(0)))
 	throw(MSSelectionError(String("MSS::getChanFreqList:: Internal error:  Selected list of SPW IDs > "
 				      "no. of rows in the SPECTRAL_WINDOW sub-table.")));

@@ -42,7 +42,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-class ROMSAntennaColumns;
+class MSAntennaColumns;
 class String;
 // <summary>
 // MSDerivedValues calculates values derived from a MS
@@ -76,7 +76,7 @@ class String;
 // // set up 
 // MSDerivedValues msd;
 // MS myMS("myMS");
-// ROMSColumns msc(myMS);
+// MSColumns msc(myMS);
 // msd.setAntennas(msc.antenna());
 // MEpoch ep=MS::epochMeasure(msc.time());
 // ep.set(MVEpoch(Quantity(msc.time()(0),"s")));
@@ -124,7 +124,7 @@ public:
   // Set antenna position from an antenna table
   // Returns the number of antennas. Also
   // sets the observatory position to the average of the antenna positions.
-  Int setAntennas(const ROMSAntennaColumns& ac);
+  Int setAntennas(const MSAntennaColumns& ac);
 
   // Set antenna positions, index in vector is antenna number
   // for calls below.

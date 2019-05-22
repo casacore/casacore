@@ -43,7 +43,7 @@ MSSpWindowIndex::MSSpWindowIndex(const MSSpectralWindow& spectralWindow)
 //    spectralWindow     const MSSpectralWindow&    Input MSSpectralWindow
 //                                                  sub-table
 // Output to private data:
-//    msSpWindowCols_p   ROMSSpWindowColumns        MSSpWindow columns accessor
+//    msSpWindowCols_p   MSSpWindowColumns        MSSpWindow columns accessor
 //    spWindowIds_p      Vector<Int>                Data desc id's
 //    nrows_p            Int                        Number of rows
 //

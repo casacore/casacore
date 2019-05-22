@@ -29,78 +29,22 @@
 #include <casacore/ms/MeasurementSets/MSDoppler.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-ROMSDopplerColumns::ROMSDopplerColumns(const MSDoppler& msDoppler):
-  isNull_p(True),
-  dopplerId_p(),
-  sourceId_p(),
-  transitionId_p(),
-  velDef_p(),
-  velDefMeas_p(),
-  velDefQuant_p()
-{
-  attach(msDoppler);
-}
-
-ROMSDopplerColumns::~ROMSDopplerColumns() {}
-
-ROMSDopplerColumns::ROMSDopplerColumns():
-  isNull_p(True),
-  dopplerId_p(),
-  sourceId_p(),
-  transitionId_p(),
-  velDef_p(),
-  velDefMeas_p(),
-  velDefQuant_p()
+MSDopplerColumns::MSDopplerColumns():
+  isNull_p(True)
 {
 }
 
-void ROMSDopplerColumns::attach(const MSDoppler& msDoppler)
-{
-  isNull_p = msDoppler.isNull();
-  if (!isNull()) {
-    dopplerId_p.attach(msDoppler, MSDoppler::
-		       columnName(MSDoppler::DOPPLER_ID));
-    sourceId_p.attach(msDoppler, MSDoppler::
-		      columnName(MSDoppler::SOURCE_ID));
-    transitionId_p.attach(msDoppler, MSDoppler::
-			  columnName(MSDoppler::TRANSITION_ID));
-    velDef_p.attach(msDoppler, MSDoppler::columnName(MSDoppler::VELDEF));
-    velDefMeas_p.attach(msDoppler, MSDoppler::
-			columnName(MSDoppler::VELDEF));
-    velDefQuant_p.attach(msDoppler, MSDoppler::
-			 columnName(MSDoppler::VELDEF));
-  }
-}
-
-MSDopplerColumns::MSDopplerColumns(MSDoppler& msDoppler):
-  ROMSDopplerColumns(),
-  dopplerId_p(),
-  sourceId_p(),
-  transitionId_p(),
-  velDef_p(),
-  velDefMeas_p(),
-  velDefQuant_p()
+MSDopplerColumns::MSDopplerColumns(const MSDoppler& msDoppler):
+  isNull_p(True)
 {
   attach(msDoppler);
 }
 
 MSDopplerColumns::~MSDopplerColumns() {}
 
-MSDopplerColumns::MSDopplerColumns():
-  ROMSDopplerColumns(),
-  dopplerId_p(),
-  sourceId_p(),
-  transitionId_p(),
-  velDef_p(),
-  velDefMeas_p(),
-  velDefQuant_p()
+void MSDopplerColumns::attach(const MSDoppler& msDoppler)
 {
-}
-
-void MSDopplerColumns::attach(MSDoppler& msDoppler)
-{
-  ROMSDopplerColumns::attach(msDoppler);
+  isNull_p = msDoppler.isNull();
   if (!isNull()) {
     dopplerId_p.attach(msDoppler, MSDoppler::
 		       columnName(MSDoppler::DOPPLER_ID));
@@ -121,9 +65,4 @@ void MSDopplerColumns::setVelDefRef(MDoppler::Types ref)
   velDefMeas_p.setDescRefCode(ref,False);
 }
 
-// Local Variables: 
-// compile-command: "gmake MSDopplerColumns"
-// End: 
-
 } //# NAMESPACE CASACORE - END
-

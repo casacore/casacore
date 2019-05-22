@@ -47,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSSpectralWindow;
 
 // <summary>
-// A class to provide easy read-only access to MSASpectralWindow columns
+// A class to provide easy access to MSSpectralWindow columns
 // </summary>
 
 // <use visibility=export>
@@ -62,75 +62,112 @@ class MSSpectralWindow;
 // </prerequisite>
 //
 // <etymology>
-// ROMSSpectralWindowColumns stands for Read-Only MeasurementSet SpectralWindow Table columns.
+// MSSpectralWindowColumns stands for MeasurementSet SpectralWindow Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the MSSpectralWindow Table.
-// It does the declaration of all the Scalar and ArrayColumns with the
+// This class provides access to the columns in the MSSpectralWindow Table,
+// it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class ROMSSpWindowColumns
+class MSSpWindowColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow);
+  MSSpWindowColumns(const MSSpectralWindow& msSpWindow);
 
   // The destructor does nothing special
-  ~ROMSSpWindowColumns();
+  ~MSSpWindowColumns();
 
-  // Access to columns
+  // Access to required columns
   // <group>
-  const ROArrayColumn<Double>& chanFreq() const {return chanFreq_p;}
-  const ROArrayQuantColumn<Double>& chanFreqQuant() const {
-    return chanFreqQuant_p;}
-  const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const {
-    return chanFreqMeas_p;}
-  const ROArrayColumn<Double>& chanWidth() const {return chanWidth_p;}
-  const ROArrayQuantColumn<Double>& chanWidthQuant() const {
-    return chanWidthQuant_p;}
-  const ROArrayColumn<Double>& effectiveBW() const {return effectiveBW_p;}
-  const ROArrayQuantColumn<Double>& effectiveBWQuant() const {
-    return effectiveBWQuant_p;}
-  const ROScalarColumn<Int>& freqGroup() const {return freqGroup_p;}
-  const ROScalarColumn<String>& freqGroupName() const {return freqGroupName_p;}
-  const ROScalarColumn<Int>& ifConvChain() const {return ifConvChain_p;}
-  const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ROScalarColumn<Int>& measFreqRef() const {return measFreqRef_p;}
-  const ROScalarColumn<String>& name() const {return name_p;}
-  const ROScalarColumn<Int>& netSideband() const {return netSideband_p;}
-  const ROScalarColumn<Int>& numChan() const {return numChan_p;}
-  const ROScalarColumn<Double>& refFrequency() const {return refFrequency_p;}
-  const ROScalarQuantColumn<Double>& refFrequencyQuant() const {
-    return refFrequencyQuant_p;}
-  const ROScalarMeasColumn<MFrequency>& refFrequencyMeas() const {
-    return refFrequencyMeas_p;}
-  const ROArrayColumn<Double>& resolution() const {return resolution_p;}
-  const ROArrayQuantColumn<Double>& resolutionQuant() const {
-    return resolutionQuant_p;}
-  const ROScalarColumn<Double>& totalBandwidth() const {
-    return totalBandwidth_p;}
-  const ROScalarQuantColumn<Double>& totalBandwidthQuant() const {
+  ArrayColumn<Double>& chanFreq() {return chanFreq_p;}
+  ArrayMeasColumn<MFrequency>& chanFreqMeas() {return chanFreqMeas_p;}
+  ArrayQuantColumn<Double>& chanFreqQuant() {return chanFreqQuant_p;}
+  ArrayColumn<Double>& chanWidth() {return chanWidth_p;}
+  ArrayQuantColumn<Double>& chanWidthQuant() { return chanWidthQuant_p;}
+  ArrayColumn<Double>& effectiveBW() {return effectiveBW_p;}
+  ArrayQuantColumn<Double>& effectiveBWQuant() { return effectiveBWQuant_p;}
+  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<Int>& freqGroup() {return freqGroup_p;}
+  ScalarColumn<String>& freqGroupName() {return freqGroupName_p;}
+  ScalarColumn<Int>& ifConvChain() {return ifConvChain_p;}
+  ScalarColumn<Int>& measFreqRef() {return measFreqRef_p;}
+  ScalarColumn<String>& name() {return name_p;}
+  ScalarColumn<Int>& netSideband() {return netSideband_p;}
+  ScalarColumn<Int>& numChan() {return numChan_p;}
+  ScalarColumn<Double>& refFrequency() {return refFrequency_p;}
+  ScalarQuantColumn<Double>& refFrequencyQuant() {return refFrequencyQuant_p;}
+  ScalarMeasColumn<MFrequency>& refFrequencyMeas() {return refFrequencyMeas_p;}
+  ArrayColumn<Double>& resolution() {return resolution_p;}
+  ArrayQuantColumn<Double>& resolutionQuant() { return resolutionQuant_p;}
+  ScalarColumn<Double>& totalBandwidth() {return totalBandwidth_p;}
+  ScalarQuantColumn<Double>& totalBandwidthQuant() {
     return totalBandwidthQuant_p;}
   // </group>
 
   // Access to optional columns
   // <group>
-  const ROArrayColumn<String>& assocNature() const {return assocNature_p;}
-  const ROArrayColumn<Int>& assocSpwId() const {return assocSpwId_p;}
-  const ROScalarColumn<Int>& bbcNo() const {return bbcNo_p;}
-  const ROScalarColumn<Int>& bbcSideband() const {return bbcSideband_p;}
-  const ROScalarColumn<Int>& dopplerId() const {return dopplerId_p;}
-  const ROScalarColumn<Int>& receiverId() const {return receiverId_p;}
+  ArrayColumn<String>& assocNature() {return assocNature_p;}
+  ArrayColumn<Int>& assocSpwId() {return assocSpwId_p;}
+  ScalarColumn<Int>& bbcNo() {return bbcNo_p;}
+  ScalarColumn<Int>& bbcSideband() {return bbcSideband_p;}
+  ScalarColumn<Int>& dopplerId() {return dopplerId_p;}
+  ScalarColumn<Int>& receiverId() {return receiverId_p;}
+  // </group>
+
+  // Const access to columns
+  // <group>
+  const ArrayColumn<Double>& chanFreq() const {return chanFreq_p;}
+  const ArrayQuantColumn<Double>& chanFreqQuant() const {
+    return chanFreqQuant_p;}
+  const ArrayMeasColumn<MFrequency>& chanFreqMeas() const {
+    return chanFreqMeas_p;}
+  const ArrayColumn<Double>& chanWidth() const {return chanWidth_p;}
+  const ArrayQuantColumn<Double>& chanWidthQuant() const {
+    return chanWidthQuant_p;}
+  const ArrayColumn<Double>& effectiveBW() const {return effectiveBW_p;}
+  const ArrayQuantColumn<Double>& effectiveBWQuant() const {
+    return effectiveBWQuant_p;}
+  const ScalarColumn<Int>& freqGroup() const {return freqGroup_p;}
+  const ScalarColumn<String>& freqGroupName() const {return freqGroupName_p;}
+  const ScalarColumn<Int>& ifConvChain() const {return ifConvChain_p;}
+  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<Int>& measFreqRef() const {return measFreqRef_p;}
+  const ScalarColumn<String>& name() const {return name_p;}
+  const ScalarColumn<Int>& netSideband() const {return netSideband_p;}
+  const ScalarColumn<Int>& numChan() const {return numChan_p;}
+  const ScalarColumn<Double>& refFrequency() const {return refFrequency_p;}
+  const ScalarQuantColumn<Double>& refFrequencyQuant() const {
+    return refFrequencyQuant_p;}
+  const ScalarMeasColumn<MFrequency>& refFrequencyMeas() const {
+    return refFrequencyMeas_p;}
+  const ArrayColumn<Double>& resolution() const {return resolution_p;}
+  const ArrayQuantColumn<Double>& resolutionQuant() const {
+    return resolutionQuant_p;}
+  const ScalarColumn<Double>& totalBandwidth() const {
+    return totalBandwidth_p;}
+  const ScalarQuantColumn<Double>& totalBandwidthQuant() const {
+    return totalBandwidthQuant_p;}
+  // </group>
+
+  // Const access to optional columns
+  // <group>
+  const ArrayColumn<String>& assocNature() const {return assocNature_p;}
+  const ArrayColumn<Int>& assocSpwId() const {return assocSpwId_p;}
+  const ScalarColumn<Int>& bbcNo() const {return bbcNo_p;}
+  const ScalarColumn<Int>& bbcSideband() const {return bbcSideband_p;}
+  const ScalarColumn<Int>& dopplerId() const {return dopplerId_p;}
+  const ScalarColumn<Int>& receiverId() const {return receiverId_p;}
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -176,7 +213,7 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  ROMSSpWindowColumns();
+  MSSpWindowColumns();
 
   //# attach this object to the supplied table.
   void attach(const MSSpectralWindow& msSpWindow);
@@ -184,12 +221,12 @@ protected:
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  ROMSSpWindowColumns(const ROMSSpWindowColumns&);
-  ROMSSpWindowColumns& operator=(const ROMSSpWindowColumns&);
+  MSSpWindowColumns(const MSSpWindowColumns&);
+  MSSpWindowColumns& operator=(const MSSpWindowColumns&);
 
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const MSSpectralWindow& msSpWindow);
-
+  
   //# functions to match the supplied arguments against the values in the
   //# specified row.
   //<group>
@@ -205,208 +242,6 @@ private:
   Bool matchNumChan(uInt row, Int nChan) const;
   //</group>
 
-
-  //# required columns
-  ROArrayColumn<Double> chanFreq_p;
-  ROArrayColumn<Double> chanWidth_p;
-  ROArrayColumn<Double> effectiveBW_p;
-  ROScalarColumn<Bool> flagRow_p;
-  ROScalarColumn<Int> freqGroup_p;
-  ROScalarColumn<String> freqGroupName_p;
-  ROScalarColumn<Int> ifConvChain_p;
-  ROScalarColumn<Int> measFreqRef_p;
-  ROScalarColumn<String> name_p;
-  ROScalarColumn<Int> netSideband_p;
-  ROScalarColumn<Int> numChan_p;
-  ROScalarColumn<Double> refFrequency_p;
-  ROArrayColumn<Double> resolution_p;
-  ROScalarColumn<Double> totalBandwidth_p;
-  //# optional columns
-  ROArrayColumn<String> assocNature_p;
-  ROArrayColumn<Int> assocSpwId_p;
-  ROScalarColumn<Int> bbcNo_p;
-  ROScalarColumn<Int> bbcSideband_p;
-  ROScalarColumn<Int> dopplerId_p;
-  ROScalarColumn<Int> receiverId_p;
-
-  //# Access to Measure columns
-  ROArrayMeasColumn<MFrequency> chanFreqMeas_p;
-  ROScalarMeasColumn<MFrequency> refFrequencyMeas_p;
-
-  //# Access to Quantum columns
-  ROArrayQuantColumn<Double> chanFreqQuant_p;
-  ROArrayQuantColumn<Double> chanWidthQuant_p;
-  ROArrayQuantColumn<Double> effectiveBWQuant_p;
-  ROScalarQuantColumn<Double> refFrequencyQuant_p;
-  ROArrayQuantColumn<Double> resolutionQuant_p;
-  ROScalarQuantColumn<Double> totalBandwidthQuant_p;
-  
-  	// m_frame will be set from VLAFiller before calling matchSpw(), which is need when 
-	// converting MFrequency to a different frame. ( This did not work out! )
-   // MeasFrame* m_frame;
-
-};
-
-// <summary>
-// A class to provide easy read-write access to MSSpectralWindow columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSSpectralWindow
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// MSSpectralWindowColumns stands for MeasurementSet SpectralWindow Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides access to the columns in the MSSpectralWindow Table,
-// it does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=MSColumns> MSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class MSSpWindowColumns: public ROMSSpWindowColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  MSSpWindowColumns(MSSpectralWindow& msSpWindow);
-
-  // The destructor does nothing special
-  ~MSSpWindowColumns();
-
-  // Read-write access to required columns
-  // <group>
-  ArrayColumn<Double>& chanFreq() {return chanFreq_p;}
-  ArrayMeasColumn<MFrequency>& chanFreqMeas() {return chanFreqMeas_p;}
-  ArrayQuantColumn<Double>& chanFreqQuant() {return chanFreqQuant_p;}
-  ArrayColumn<Double>& chanWidth() {return chanWidth_p;}
-  ArrayQuantColumn<Double>& chanWidthQuant() { return chanWidthQuant_p;}
-  ArrayColumn<Double>& effectiveBW() {return effectiveBW_p;}
-  ArrayQuantColumn<Double>& effectiveBWQuant() { return effectiveBWQuant_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-  ScalarColumn<Int>& freqGroup() {return freqGroup_p;}
-  ScalarColumn<String>& freqGroupName() {return freqGroupName_p;}
-  ScalarColumn<Int>& ifConvChain() {return ifConvChain_p;}
-  ScalarColumn<Int>& measFreqRef() {return measFreqRef_p;}
-  ScalarColumn<String>& name() {return name_p;}
-  ScalarColumn<Int>& netSideband() {return netSideband_p;}
-  ScalarColumn<Int>& numChan() {return numChan_p;}
-  ScalarColumn<Double>& refFrequency() {return refFrequency_p;}
-  ScalarQuantColumn<Double>& refFrequencyQuant() {return refFrequencyQuant_p;}
-  ScalarMeasColumn<MFrequency>& refFrequencyMeas() {return refFrequencyMeas_p;}
-  ArrayColumn<Double>& resolution() {return resolution_p;}
-  ArrayQuantColumn<Double>& resolutionQuant() { return resolutionQuant_p;}
-  ScalarColumn<Double>& totalBandwidth() {return totalBandwidth_p;}
-  ScalarQuantColumn<Double>& totalBandwidthQuant() {
-    return totalBandwidthQuant_p;}
-  // </group>
-
-  // Read-write access to optional columns
-  // <group>
-  ArrayColumn<String>& assocNature() {return assocNature_p;}
-  ArrayColumn<Int>& assocSpwId() {return assocSpwId_p;}
-  ScalarColumn<Int>& bbcNo() {return bbcNo_p;}
-  ScalarColumn<Int>& bbcSideband() {return bbcSideband_p;}
-  ScalarColumn<Int>& dopplerId() {return dopplerId_p;}
-  ScalarColumn<Int>& receiverId() {return receiverId_p;}
-  // </group>
-
-  // Read-only access to required columns
-  // <group>
-  const ROArrayColumn<Double>& chanFreq() const {
-    return ROMSSpWindowColumns::chanFreq();}
-  const ROArrayQuantColumn<Double>& chanFreqQuant() const {
-    return ROMSSpWindowColumns::chanFreqQuant();}
-  const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const {
-    return ROMSSpWindowColumns::chanFreqMeas();}
-  const ROArrayColumn<Double>& chanWidth() const {
-    return ROMSSpWindowColumns::chanWidth();}
-  const ROArrayQuantColumn<Double>& chanWidthQuant() const {
-    return ROMSSpWindowColumns::chanWidthQuant();}
-  const ROArrayColumn<Double>& effectiveBW() const {
-    return ROMSSpWindowColumns::effectiveBW();}
-  const ROArrayQuantColumn<Double>& effectiveBWQuant() const {
-    return ROMSSpWindowColumns::effectiveBWQuant();}
-  const ROScalarColumn<Int>& freqGroup() const {
-    return ROMSSpWindowColumns::freqGroup();}
-  const ROScalarColumn<String>& freqGroupName() const {
-    return ROMSSpWindowColumns::freqGroupName();}
-  const ROScalarColumn<Int>& ifConvChain() const {
-    return ROMSSpWindowColumns::ifConvChain();}
-  const ROScalarColumn<Bool>& flagRow() const {
-    return ROMSSpWindowColumns::flagRow();}
-  const ROScalarColumn<Int>& measFreqRef() const {
-    return ROMSSpWindowColumns::measFreqRef();}
-  const ROScalarColumn<String>& name() const {
-    return ROMSSpWindowColumns::name();}
-  const ROScalarColumn<Int>& netSideband() const {
-    return ROMSSpWindowColumns::netSideband();}
-  const ROScalarColumn<Int>& numChan() const {
-    return ROMSSpWindowColumns::numChan();}
-  const ROScalarColumn<Double>& refFrequency() const {
-    return ROMSSpWindowColumns::refFrequency();}
-  const ROScalarQuantColumn<Double>& refFrequencyQuant() const {
-    return ROMSSpWindowColumns::refFrequencyQuant();}
-  const ROScalarMeasColumn<MFrequency>& refFrequencyMeas() const {
-    return ROMSSpWindowColumns::refFrequencyMeas();}
-  const ROArrayColumn<Double>& resolution() const {
-    return ROMSSpWindowColumns::resolution();}
-  const ROArrayQuantColumn<Double>& resolutionQuant() const {
-    return ROMSSpWindowColumns::resolutionQuant();}
-  const ROScalarColumn<Double>& totalBandwidth() const {
-    return ROMSSpWindowColumns::totalBandwidth();}
-  const ROScalarQuantColumn<Double>& totalBandwidthQuant() const {
-    return ROMSSpWindowColumns::totalBandwidthQuant();}
-  // </group>
-
-  // Read-only access to optional columns
-  // <group>
-  const ROArrayColumn<String>& assocNature() const {
-    return ROMSSpWindowColumns::assocNature();}
-  const ROArrayColumn<Int>& assocSpwId() const {
-    return ROMSSpWindowColumns::assocSpwId();}
-  const ROScalarColumn<Int>& bbcNo() const {
-    return ROMSSpWindowColumns::bbcNo();}
-  const ROScalarColumn<Int>& bbcSideband() const {
-    return ROMSSpWindowColumns::bbcSideband();}
-  const ROScalarColumn<Int>& dopplerId() const {
-    return ROMSSpWindowColumns::dopplerId();}
-  const ROScalarColumn<Int>& receiverId() const {
-    return ROMSSpWindowColumns::receiverId();}
-  // </group>
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  MSSpWindowColumns();
-
-  //# attach this object to the supplied table.
-  void attach(MSSpectralWindow& msSpWindow);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  MSSpWindowColumns(const MSSpWindowColumns&);
-  MSSpWindowColumns& operator=(const MSSpWindowColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(MSSpectralWindow& msSpWindow);
-  
   //# required columns
   ArrayColumn<Double> chanFreq_p;
   ArrayColumn<Double> chanWidth_p;
@@ -442,6 +277,9 @@ private:
   ArrayQuantColumn<Double> resolutionQuant_p;
   ScalarQuantColumn<Double> totalBandwidthQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSSpWindowColumns ROMSSpWindowColumns;
 
 } //# NAMESPACE CASACORE - END
 

@@ -97,7 +97,7 @@ private:
   MSObservationIndex();
 
   // OBSERVATION subtable column accessor
-  ROMSObservationColumns msObservationCols_p;
+  MSObservationColumns msObservationCols_p;
 
   // Vector cache of observation id's
   Vector<Int> observationIds_p;

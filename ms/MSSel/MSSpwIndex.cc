@@ -237,8 +237,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if ((f1 < 0) || (f0==f1)) mode=EXACT;
     if (approx) mode=APPROX;
 
-    ROArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
-    ROArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
+    ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
+    ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
     for(Int n=0;n<nSpwRows;n++)
       {
 	Float totalBandWidth, refFreq;
@@ -422,8 +422,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int nSpw = spw.nelements(), nFList=freqList.nelements();
     nFSpec = nFList/4;  // 4 integers per channel specification
 
-    ROArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
-    ROArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
+    ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
+    ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
 
     Bool someMatchFailed=False;
     ostringstream Mesg;

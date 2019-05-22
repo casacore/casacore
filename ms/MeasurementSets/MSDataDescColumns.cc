@@ -33,30 +33,41 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSDataDescColumns::ROMSDataDescColumns()
-  :flagRow_p(),
-   polarizationId_p(),
-   spectralWindowId_p(),
-   lagId_p()
+MSDataDescColumns::MSDataDescColumns()
 {
 }
 
-ROMSDataDescColumns::
-ROMSDataDescColumns(const MSDataDescription& msDataDesc):
-  flagRow_p(msDataDesc, MSDataDescription::
-	    columnName(MSDataDescription::FLAG_ROW)),
-  polarizationId_p(msDataDesc, MSDataDescription::
-		   columnName(MSDataDescription::POLARIZATION_ID)),
-  spectralWindowId_p(msDataDesc, MSDataDescription::
-		     columnName(MSDataDescription::SPECTRAL_WINDOW_ID)),
-  lagId_p()
+MSDataDescColumns::MSDataDescColumns(const MSDataDescription& msDataDesc)
 {
+  attach(msDataDesc);
+}
+
+MSDataDescColumns::~MSDataDescColumns() {}
+
+void MSDataDescColumns::attach(const MSDataDescription& msDataDesc)
+{
+  flagRow_p.attach(msDataDesc, MSDataDescription::columnName
+		   (MSDataDescription::FLAG_ROW));
+  polarizationId_p.attach(msDataDesc, MSDataDescription::columnName
+			  (MSDataDescription::POLARIZATION_ID));
+  spectralWindowId_p.attach(msDataDesc, MSDataDescription::columnName
+			    (MSDataDescription::SPECTRAL_WINDOW_ID));
   attachOptionalCols(msDataDesc);
 }
 
-ROMSDataDescColumns::~ROMSDataDescColumns() {}
+void MSDataDescColumns::
+attachOptionalCols(const MSDataDescription& msDataDesc)
+{
+  const ColumnDescSet& cds = msDataDesc.tableDesc().columnDescSet();
+  if (cds.isDefined(MSDataDescription::
+		    columnName(MSDataDescription::LAG_ID))) {
+    lagId_p.attach(msDataDesc, MSDataDescription::
+		   columnName(MSDataDescription::LAG_ID));
+  }
+}
 
-Int ROMSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow) {
+
+Int MSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   const Int spw = spwId;
@@ -65,7 +76,7 @@ Int ROMSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow) {
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("ROMSDataDescColumns::match(...) - "
+      throw(AipsError("MSDataDescColumns::match(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -86,77 +97,6 @@ Int ROMSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow) {
   return -1;
 }
 
-void ROMSDataDescColumns::attach(const MSDataDescription& msDataDesc)
-{
-  flagRow_p.attach(msDataDesc, MSDataDescription::columnName
-		   (MSDataDescription::FLAG_ROW));
-  polarizationId_p.attach(msDataDesc, MSDataDescription::columnName
-			  (MSDataDescription::POLARIZATION_ID));
-  spectralWindowId_p.attach(msDataDesc, MSDataDescription::columnName
-			    (MSDataDescription::SPECTRAL_WINDOW_ID));
-  attachOptionalCols(msDataDesc);
-}
-
-void ROMSDataDescColumns::
-attachOptionalCols(const MSDataDescription& msDataDesc)
-{
-  const ColumnDescSet& cds=msDataDesc.tableDesc().columnDescSet();
-  if (cds.isDefined(MSDataDescription::
-		    columnName(MSDataDescription::LAG_ID))) {
-    lagId_p.attach(msDataDesc,MSDataDescription::
-		   columnName(MSDataDescription::LAG_ID));
-  }
-}
-
-MSDataDescColumns::MSDataDescColumns():
-  ROMSDataDescColumns(),
-  flagRow_p(),
-  polarizationId_p(),
-  spectralWindowId_p(),
-  lagId_p()
-{
-}
-
-MSDataDescColumns::MSDataDescColumns(MSDataDescription& msDataDesc):
-  ROMSDataDescColumns(msDataDesc),
-  flagRow_p(msDataDesc, MSDataDescription::
-	    columnName(MSDataDescription::FLAG_ROW)),
-  polarizationId_p(msDataDesc, MSDataDescription::
-		   columnName(MSDataDescription::POLARIZATION_ID)),
-  spectralWindowId_p(msDataDesc,MSDataDescription::
-		     columnName(MSDataDescription::SPECTRAL_WINDOW_ID)),
-  lagId_p()
-{
-  attachOptionalCols(msDataDesc);
-}
-
-MSDataDescColumns::~MSDataDescColumns() {}
-
-void MSDataDescColumns::attach(MSDataDescription& msDataDesc)
-{
-  ROMSDataDescColumns::attach(msDataDesc);
-  flagRow_p.attach(msDataDesc, MSDataDescription::columnName
-		   (MSDataDescription::FLAG_ROW));
-  polarizationId_p.attach(msDataDesc, MSDataDescription::columnName
-			  (MSDataDescription::POLARIZATION_ID));
-  spectralWindowId_p.attach(msDataDesc, MSDataDescription::columnName
-			    (MSDataDescription::SPECTRAL_WINDOW_ID));
-  attachOptionalCols(msDataDesc);
-}
-
-void MSDataDescColumns::
-attachOptionalCols(MSDataDescription& msDataDesc)
-{
-  const ColumnDescSet& cds = msDataDesc.tableDesc().columnDescSet();
-  if (cds.isDefined(MSDataDescription::
-		    columnName(MSDataDescription::LAG_ID))) {
-    lagId_p.attach(msDataDesc, MSDataDescription::
-		   columnName(MSDataDescription::LAG_ID));
-  }
-}
-// Local Variables: 
-// compile-command: "gmake MSDataDescColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
 

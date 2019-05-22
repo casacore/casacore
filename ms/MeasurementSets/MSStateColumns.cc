@@ -30,33 +30,18 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSStateColumns::ROMSStateColumns(const MSState& msState):
-  cal_p(msState, MSState::columnName(MSState::CAL)),
-  flagRow_p(msState, MSState::columnName(MSState::FLAG_ROW)),
-  load_p(msState, MSState::columnName(MSState::LOAD)),
-  obsMode_p(msState, MSState::columnName(MSState::OBS_MODE)),
-  ref_p(msState, MSState::columnName(MSState::REF)),
-  sig_p(msState, MSState::columnName(MSState::SIG)),
-  subScan_p(msState, MSState::columnName(MSState::SUB_SCAN)),
-  calQuant_p(msState, MSState::columnName(MSState::CAL)),
-  loadQuant_p(msState, MSState::columnName(MSState::LOAD))
-{}
+MSStateColumns::MSStateColumns()
+{
+}
 
-ROMSStateColumns::~ROMSStateColumns() {}
+MSStateColumns::MSStateColumns(const MSState& msState)
+{
+  attach(msState);
+}
 
-ROMSStateColumns::ROMSStateColumns():
-  cal_p(),
-  flagRow_p(),
-  load_p(),
-  obsMode_p(),
-  ref_p(),
-  sig_p(),
-  subScan_p(),
-  calQuant_p(),
-  loadQuant_p()
-{}
+MSStateColumns::~MSStateColumns() {}
 
-void ROMSStateColumns::attach(const MSState& msState) 
+void MSStateColumns::attach(const MSState& msState) 
 {
   cal_p.attach(msState, MSState::columnName(MSState::CAL));
   flagRow_p.attach(msState, MSState::columnName(MSState::FLAG_ROW));
@@ -69,14 +54,14 @@ void ROMSStateColumns::attach(const MSState& msState)
   loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 
-Int ROMSStateColumns::matchState(const Quantum<Double>& stateCalQ,
-				 const Quantum<Double>& stateLoadQ,
-				 const String& stateObsMode,
-				 const Bool& stateRef,
-				 const Bool& stateSig,
-				 const Int& stateSubScan,
-				 const Quantum<Double>& tolerance,
-				 Int tryRow){
+Int MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
+                               const Quantum<Double>& stateLoadQ,
+                               const String& stateObsMode,
+                               const Bool& stateRef,
+                               const Bool& stateSig,
+                               const Int& stateSubScan,
+                               const Quantum<Double>& tolerance,
+                               Int tryRow){
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the temperatures and tolerance to Kelvin
@@ -91,7 +76,7 @@ Int ROMSStateColumns::matchState(const Quantum<Double>& stateCalQ,
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("ROMSStateColumns::matchState(...) - "
+      throw(AipsError("MSStateColumns::matchState(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr)
@@ -119,55 +104,6 @@ Int ROMSStateColumns::matchState(const Quantum<Double>& stateCalQ,
   }
   return -1;
 }
-
-
-
-MSStateColumns::MSStateColumns(MSState& msState):
-  ROMSStateColumns(msState),
-  cal_p(msState, MSState::columnName(MSState::CAL)),
-  flagRow_p(msState, MSState::columnName(MSState::FLAG_ROW)),
-  load_p(msState, MSState::columnName(MSState::LOAD)),
-  obsMode_p(msState, MSState::columnName(MSState::OBS_MODE)),
-  ref_p(msState, MSState::columnName(MSState::REF)),
-  sig_p(msState, MSState::columnName(MSState::SIG)),
-  subScan_p(msState, MSState::columnName(MSState::SUB_SCAN)),
-  calQuant_p(msState, MSState::columnName(MSState::CAL)),
-  loadQuant_p(msState, MSState::columnName(MSState::LOAD))
-{}
-
-MSStateColumns::~MSStateColumns() {}
-
-MSStateColumns::MSStateColumns():
-  ROMSStateColumns(),
-  cal_p(),
-  flagRow_p(),
-  load_p(),
-  obsMode_p(),
-  ref_p(),
-  sig_p(),
-  subScan_p(),
-  calQuant_p(),
-  loadQuant_p()
-{}
-
-void MSStateColumns::attach(MSState& msState) 
-{
-  ROMSStateColumns::attach(msState);
-  cal_p.attach(msState, MSState::columnName(MSState::CAL));
-  flagRow_p.attach(msState, MSState::columnName(MSState::FLAG_ROW));
-  load_p.attach(msState, MSState::columnName(MSState::LOAD));
-  obsMode_p.attach(msState, MSState::columnName(MSState::OBS_MODE));
-  ref_p.attach(msState, MSState::columnName(MSState::REF));
-  sig_p.attach(msState, MSState::columnName(MSState::SIG));
-  subScan_p.attach(msState, MSState::columnName(MSState::SUB_SCAN));
-  calQuant_p.attach(msState, MSState::columnName(MSState::CAL));
-  loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
-}
-
-
-// Local Variables: 
-// compile-command: "gmake MSStateColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
 

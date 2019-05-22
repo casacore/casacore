@@ -40,111 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSFreqOffset;
 
 // <summary>
-// A class to provide easy read-only access to MSFreqOffset columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSFreqOffset
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSFreqOffsetColumns stands for Read-Only MeasurementSet FreqOffset
-// Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSFreqOffset
-// Table.  It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to worry about
-// getting those right. There is an access function for every predefined
-// column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=ROMSColumns>
-// ROMSColumns</linkto> for an example.
-
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSFreqOffsetColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSFreqOffsetColumns(const MSFreqOffset& msFreqOffset);
-  
-  // The destructor does nothing special
-  ~ROMSFreqOffsetColumns();
-  
-  // Is this object defined? (MSFreqOffset table is optional)
-  Bool isNull() const {return isNull_p;}
-  
-  // Access to columns
-  // <group>
-  const ROScalarColumn<Int>& antenna1() const {return antenna1_p;}
-  const ROScalarColumn<Int>& antenna2() const {return antenna2_p;}
-  const ROScalarColumn<Int>& feedId() const {return feedId_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return intervalQuant_p;}
-  const ROScalarColumn<Double>& offset() const {return offset_p;}
-  const ROScalarQuantColumn<Double>& offsetQuant() const {
-    return offsetQuant_p;}
-  const ROScalarColumn<Int>& spectralWindowId() const {
-    return spectralWindowId_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
-  // </group>
-  
-  // Convenience function that returns the number of rows in any of the
-  // columns. Returns zero if the object is null.
-  uInt nrow() const {return isNull() ? 0 : antenna1_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSFreqOffsetColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSFreqOffset& msFreqOffset);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSFreqOffsetColumns(const ROMSFreqOffsetColumns&);
-  ROMSFreqOffsetColumns& operator=(const ROMSFreqOffsetColumns&);
-
-  //# Is the object not attached to a Table.
-  Bool isNull_p;
-
-  //# required columns
-  ROScalarColumn<Int> antenna1_p;
-  ROScalarColumn<Int> antenna2_p;
-  ROScalarColumn<Int> feedId_p;
-  ROScalarColumn<Double> interval_p;
-  ROScalarColumn<Double> offset_p;
-  ROScalarColumn<Int> spectralWindowId_p;
-  ROScalarColumn<Double> time_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> intervalQuant_p;
-  ROScalarQuantColumn<Double> offsetQuant_p;
-  ROScalarQuantColumn<Double> timeQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSFreqOffset columns
+// A class to provide easy access to MSFreqOffset columns
 // </summary>
 
 // <use visibility=export>
@@ -176,16 +72,19 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSFreqOffsetColumns: public ROMSFreqOffsetColumns
+class MSFreqOffsetColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSFreqOffsetColumns(MSFreqOffset& msFreqOffset);
+  MSFreqOffsetColumns(const MSFreqOffset& msFreqOffset);
 
   // The destructor does nothing special
   ~MSFreqOffsetColumns();
   
-  // Read-write access to required columns
+  // Is this object defined? (MSFreqOffset table is optional)
+  Bool isNull() const {return isNull_p;}
+  
+  // Access to required columns
   // <group>
   ScalarColumn<Int>& antenna1() {return antenna1_p;}
   ScalarColumn<Int>& antenna2() {return antenna2_p;}
@@ -200,32 +99,25 @@ public:
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Int>& antenna1() const {
-    return ROMSFreqOffsetColumns::antenna1();}
-  const ROScalarColumn<Int>& antenna2() const {
-    return ROMSFreqOffsetColumns::antenna2();}
-  const ROScalarColumn<Int>& feedId() const {
-    return ROMSFreqOffsetColumns::feedId();}
-  const ROScalarColumn<Double>& interval() const {
-    return ROMSFreqOffsetColumns::interval();}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return ROMSFreqOffsetColumns::intervalQuant();}
-  const ROScalarColumn<Double>& offset() const {
-    return ROMSFreqOffsetColumns::offset();}
-  const ROScalarQuantColumn<Double>& offsetQuant() const {
-    return ROMSFreqOffsetColumns::offsetQuant();}
-  const ROScalarColumn<Int>& spectralWindowId() const {
-    return ROMSFreqOffsetColumns::spectralWindowId();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSFreqOffsetColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSFreqOffsetColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSFreqOffsetColumns::timeMeas();}
+  const ScalarColumn<Int>& antenna1() const {return antenna1_p;}
+  const ScalarColumn<Int>& antenna2() const {return antenna2_p;}
+  const ScalarColumn<Int>& feedId() const {return feedId_p;}
+  const ScalarColumn<Double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<Double>& intervalQuant() const {return intervalQuant_p;}
+  const ScalarColumn<Double>& offset() const {return offset_p;}
+  const ScalarQuantColumn<Double>& offsetQuant() const {return offsetQuant_p;}
+  const ScalarColumn<Int>& spectralWindowId() const {return spectralWindowId_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   // </group>
-  
+
+  // Convenience function that returns the number of rows in any of the
+  // columns. Returns zero if the object is null.
+  uInt nrow() const {return isNull() ? 0 : antenna1_p.nrow();}
+
   // set the epoch type for the TIME column.
   // <note role=tip>
   // In principle this function can only be used if the table is empty,
@@ -243,13 +135,16 @@ protected:
   MSFreqOffsetColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSFreqOffset& msFreqOffset);
+  void attach(const MSFreqOffset& msFreqOffset);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
   MSFreqOffsetColumns(const MSFreqOffsetColumns&);
   MSFreqOffsetColumns& operator=(const MSFreqOffsetColumns&);
+
+  //# Is the object not attached to a Table.
+  Bool isNull_p;
 
   //# required columns
   ScalarColumn<Int> antenna1_p;
@@ -269,6 +164,8 @@ private:
   ScalarQuantColumn<Double> timeQuant_p;
 };
 
+//# Define the RO version for backward compatibility.
+typedef MSFreqOffsetColumns ROMSFreqOffsetColumns;
 
 } //# NAMESPACE CASACORE - END
 

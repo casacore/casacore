@@ -43,7 +43,7 @@ MSDataDescIndex::MSDataDescIndex(const MSDataDescription& dataDescription)
 //    dataDescription    const MSDataDescription&   Input MSDataDescription
 //                                                  sub-table
 // Output to private data:
-//    msDataDescCols_p   ROMSDataDescColumns        MSDataDesc columns accessor
+//    msDataDescCols_p   MSDataDescColumns        MSDataDesc columns accessor
 //    dataDescIds_p      Vector<Int>                Data desc id's
 //    nrows_p            Int                        Number of rows
 //

@@ -397,7 +397,7 @@ namespace casacore {
       throw AipsError("POLARIZATION subtable of " + table.tableName() +
                       " is empty");
     }
-    Vector<Int> inTypes (ROArrayColumn<Int>(polTable, "CORR_TYPE")(0));
+    Vector<Int> inTypes (ArrayColumn<Int>(polTable, "CORR_TYPE")(0));
     // Convert the output string types to ints.
     // First convert abbrevs.
     if (type == "IQUV"  ||  type == "STOKES") {

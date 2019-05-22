@@ -40,163 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSWeather;
 
 // <summary>
-// A class to provide easy read-only access to MSWeather columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSWeather
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSWeatherColumns stands for Read-Only MeasurementSet Weather Table
-// columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSWeather
-// Table.  It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to worry about
-// getting those right. There is an access function for every predefined
-// column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=ROMSColumns>
-// ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSWeatherColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSWeatherColumns(const MSWeather& msWeather);
-
-  // The destructor does nothing special
-  ~ROMSWeatherColumns();
-
-  // Is this object defined? (MSWeather table is optional)
-  Bool isNull() const {return isNull_p;}
-  
-  // Access to columns
-  // <group>
-  const ROScalarColumn<Int>& antennaId() const {return antennaId_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return intervalQuant_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
-  // </group>
-
-  // Access to optional columns
-  // <group>
-  const ROScalarColumn<Float>& dewPoint() const {return dewPoint_p;}
-  const ROScalarQuantColumn<Float>& dewPointQuant() const {
-    return dewPointQuant_p;}
-  const ROScalarColumn<Bool>& dewPointFlag() const {return dewPointFlag_p;}
-  const ROScalarColumn<Float>& H2O() const {return H2O_p;}
-  const ROScalarColumn<Bool>& H2OFlag() const {return H2OFlag_p;}
-  const ROScalarQuantColumn<Float>& H2OQuant() const {return H2OQuant_p;}
-  const ROScalarColumn<Float>& ionosElectron() const {return ionosElectron_p;}
-  const ROScalarQuantColumn<Float>& ionosElectronQuant() const {
-    return ionosElectronQuant_p;}
-  const ROScalarColumn<Bool>& ionosElectronFlag() const {
-    return ionosElectronFlag_p;}
-  const ROScalarColumn<Float>& pressure() const {return pressure_p;}
-  const ROScalarQuantColumn<Float>& pressureQuant() const {
-    return pressureQuant_p;}
-  const ROScalarColumn<Bool>& pressureFlag() const {return pressureFlag_p;}
-  const ROScalarColumn<Float>& relHumidity() const {return relHumidity_p;}
-  const ROScalarColumn<Bool>& relHumidityFlag() const {
-    return relHumidityFlag_p;}
-  const ROScalarColumn<Float>& temperature() const {return temperature_p;}
-  const ROScalarQuantColumn<Float>& temperatureQuant() const {
-    return temperatureQuant_p;}
-  const ROScalarColumn<Bool>& temperatureFlag() const {
-    return temperatureFlag_p;}
-  const ROScalarColumn<Float>& windDirection() const {return windDirection_p;}
-  const ROScalarQuantColumn<Float>& windDirectionQuant() const {
-    return windDirectionQuant_p;}
-  const ROScalarColumn<Bool>& windDirectionFlag() const {
-    return windDirectionFlag_p;}
-  const ROScalarColumn<Float>& windSpeed() const {return windSpeed_p;}
-  const ROScalarQuantColumn<Float>& windSpeedQuant() const {
-    return windSpeedQuant_p;}
-  const ROScalarColumn<Bool>& windSpeedFlag() const {return windSpeedFlag_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the
-  // columns. Returns zero if the object is null.
-  uInt nrow() const {return isNull() ? 0 : antennaId_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSWeatherColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSWeather& msWeather);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSWeatherColumns(const ROMSWeatherColumns&);
-  ROMSWeatherColumns& operator=(const ROMSWeatherColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const MSWeather& msWeather);
-
-  //# Is the object not attached to a Table.
-  Bool isNull_p;
-
-  //# required columns
-  ROScalarColumn<Int> antennaId_p;
-  ROScalarColumn<Double> interval_p;
-  ROScalarColumn<Double> time_p;
-  //# optional columns
-  ROScalarColumn<Float> dewPoint_p;
-  ROScalarColumn<Bool> dewPointFlag_p;
-  ROScalarColumn<Float> H2O_p;
-  ROScalarColumn<Bool> H2OFlag_p;
-  ROScalarColumn<Float> ionosElectron_p;
-  ROScalarColumn<Bool> ionosElectronFlag_p;
-  ROScalarColumn<Float> pressure_p;
-  ROScalarColumn<Bool> pressureFlag_p;
-  ROScalarColumn<Float> relHumidity_p;
-  ROScalarColumn<Bool> relHumidityFlag_p;
-  ROScalarColumn<Float> temperature_p;
-  ROScalarColumn<Bool> temperatureFlag_p;
-  ROScalarColumn<Float> windDirection_p;
-  ROScalarColumn<Bool> windDirectionFlag_p;
-  ROScalarColumn<Float> windSpeed_p;
-  ROScalarColumn<Bool> windSpeedFlag_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> intervalQuant_p;
-  ROScalarQuantColumn<Double> timeQuant_p;
-  //# optional Quantum columns
-  ROScalarQuantColumn<Float> dewPointQuant_p;
-  ROScalarQuantColumn<Float> H2OQuant_p;
-  ROScalarQuantColumn<Float> ionosElectronQuant_p;
-  ROScalarQuantColumn<Float> pressureQuant_p;
-  ROScalarQuantColumn<Float> temperatureQuant_p;
-  ROScalarQuantColumn<Float> windDirectionQuant_p;
-  ROScalarQuantColumn<Float> windSpeedQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSWeather columns
+// A class to provide easy access to MSWeather columns
 // </summary>
 
 // <use visibility=export>
@@ -228,16 +72,19 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSWeatherColumns: public ROMSWeatherColumns
+class MSWeatherColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSWeatherColumns(MSWeather& msWeather);
+  MSWeatherColumns(const MSWeather& msWeather);
 
   // The destructor does nothing special
   ~MSWeatherColumns();
 
-  // Read-write access to required columns
+  // Is this object defined? (MSWeather table is optional)
+  Bool isNull() const {return isNull_p;}
+  
+  // Access to required columns
   // <group>
   ScalarColumn<Int>& antennaId() {return antennaId_p;}
   ScalarColumn<Double>& interval() {return interval_p;}
@@ -247,7 +94,7 @@ public:
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   // </group>
 
-  // Read-write access to optional columns
+  // Access to optional columns
   // <group>
   ScalarColumn<Float>& dewPoint() {return dewPoint_p;}
   ScalarQuantColumn<Float>& dewPointQuant() {return dewPointQuant_p;}
@@ -274,71 +121,57 @@ public:
   ScalarColumn<Bool>& windSpeedFlag() {return windSpeedFlag_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to columns
   // <group>
-  const ROScalarColumn<Int>& antennaId() const {
-    return ROMSWeatherColumns::antennaId();}
-  const ROScalarColumn<Double>& interval() const {
-    return ROMSWeatherColumns::interval();}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return ROMSWeatherColumns::intervalQuant();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSWeatherColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSWeatherColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSWeatherColumns::timeMeas();}
+  const ScalarColumn<Int>& antennaId() const {return antennaId_p;}
+  const ScalarColumn<Double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<Double>& intervalQuant() const {
+    return intervalQuant_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   // </group>
 
-  // Read-only access to optional columns
+  // Access to optional columns
   // <group>
-  const ROScalarColumn<Float>& dewPoint() const {
-    return ROMSWeatherColumns::dewPoint();}
-  const ROScalarQuantColumn<Float>& dewPointQuant() const {
-    return ROMSWeatherColumns::dewPointQuant();}
-  const ROScalarColumn<Bool>& dewPointFlag() const {
-    return ROMSWeatherColumns::dewPointFlag();}
-  const ROScalarColumn<Float>& H2O() const {
-    return ROMSWeatherColumns::H2O();}
-  const ROScalarColumn<Bool>& H2OFlag() const {
-    return ROMSWeatherColumns::H2OFlag();}
-  const ROScalarQuantColumn<Float>& H2OQuant() const {
-    return ROMSWeatherColumns::H2OQuant();}
-  const ROScalarColumn<Float>& ionosElectron() const {
-    return ROMSWeatherColumns::ionosElectron();}
-  const ROScalarQuantColumn<Float>& ionosElectronQuant() const {
-    return ROMSWeatherColumns::ionosElectronQuant();}
-  const ROScalarColumn<Bool>& ionosElectronFlag() const {
-    return ROMSWeatherColumns::ionosElectronFlag();}
-  const ROScalarColumn<Float>& pressure() const {
-    return ROMSWeatherColumns::pressure();}
-  const ROScalarQuantColumn<Float>& pressureQuant() const {
-    return ROMSWeatherColumns::pressureQuant();}
-  const ROScalarColumn<Bool>& pressureFlag() const {
-    return ROMSWeatherColumns::pressureFlag();}
-  const ROScalarColumn<Float>& relHumidity() const {
-    return ROMSWeatherColumns::relHumidity();}
-  const ROScalarColumn<Bool>& relHumidityFlag() const {
-    return ROMSWeatherColumns::relHumidityFlag();}
-  const ROScalarColumn<Float>& temperature() const {
-    return ROMSWeatherColumns::temperature();}
-  const ROScalarQuantColumn<Float>& temperatureQuant() const {
-    return ROMSWeatherColumns::temperatureQuant();}
-  const ROScalarColumn<Bool>& temperatureFlag() const {
-    return ROMSWeatherColumns::temperatureFlag();}
-  const ROScalarColumn<Float>& windDirection() const {
-    return ROMSWeatherColumns::windDirection();}
-  const ROScalarQuantColumn<Float>& windDirectionQuant() const {
-    return ROMSWeatherColumns::windDirectionQuant();}
-  const ROScalarColumn<Bool>& windDirectionFlag() const {
-    return ROMSWeatherColumns::windDirectionFlag();}
-  const ROScalarColumn<Float>& windSpeed() const {
-    return ROMSWeatherColumns::windSpeed();}
-  const ROScalarQuantColumn<Float>& windSpeedQuant() const {
-    return ROMSWeatherColumns::windSpeedQuant();}
-  const ROScalarColumn<Bool>& windSpeedFlag() const {
-    return ROMSWeatherColumns::windSpeedFlag();}
+  const ScalarColumn<Float>& dewPoint() const {return dewPoint_p;}
+  const ScalarQuantColumn<Float>& dewPointQuant() const {
+    return dewPointQuant_p;}
+  const ScalarColumn<Bool>& dewPointFlag() const {return dewPointFlag_p;}
+  const ScalarColumn<Float>& H2O() const {return H2O_p;}
+  const ScalarColumn<Bool>& H2OFlag() const {return H2OFlag_p;}
+  const ScalarQuantColumn<Float>& H2OQuant() const {return H2OQuant_p;}
+  const ScalarColumn<Float>& ionosElectron() const {return ionosElectron_p;}
+  const ScalarQuantColumn<Float>& ionosElectronQuant() const {
+    return ionosElectronQuant_p;}
+  const ScalarColumn<Bool>& ionosElectronFlag() const {
+    return ionosElectronFlag_p;}
+  const ScalarColumn<Float>& pressure() const {return pressure_p;}
+  const ScalarQuantColumn<Float>& pressureQuant() const {
+    return pressureQuant_p;}
+  const ScalarColumn<Bool>& pressureFlag() const {return pressureFlag_p;}
+  const ScalarColumn<Float>& relHumidity() const {return relHumidity_p;}
+  const ScalarColumn<Bool>& relHumidityFlag() const {
+    return relHumidityFlag_p;}
+  const ScalarColumn<Float>& temperature() const {return temperature_p;}
+  const ScalarQuantColumn<Float>& temperatureQuant() const {
+    return temperatureQuant_p;}
+  const ScalarColumn<Bool>& temperatureFlag() const {
+    return temperatureFlag_p;}
+  const ScalarColumn<Float>& windDirection() const {return windDirection_p;}
+  const ScalarQuantColumn<Float>& windDirectionQuant() const {
+    return windDirectionQuant_p;}
+  const ScalarColumn<Bool>& windDirectionFlag() const {
+    return windDirectionFlag_p;}
+  const ScalarColumn<Float>& windSpeed() const {return windSpeed_p;}
+  const ScalarQuantColumn<Float>& windSpeedQuant() const {
+    return windSpeedQuant_p;}
+  const ScalarColumn<Bool>& windSpeedFlag() const {return windSpeedFlag_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the
+  // columns. Returns zero if the object is null.
+  uInt nrow() const {return isNull() ? 0 : antennaId_p.nrow();}
 
   // set the epoch type for the TIME column.
   // <note role=tip>
@@ -357,7 +190,7 @@ protected:
   MSWeatherColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSWeather& msWeather);
+  void attach(const MSWeather& msWeather);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -366,8 +199,11 @@ private:
   MSWeatherColumns& operator=(const MSWeatherColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(MSWeather& msWeather);
+  void attachOptionalCols(const MSWeather& msWeather);
   
+  //# Is the object not attached to a Table.
+  Bool isNull_p;
+
   //# required columns
   ScalarColumn<Int> antennaId_p;
   ScalarColumn<Double> interval_p;
@@ -405,6 +241,9 @@ private:
   ScalarQuantColumn<Float> windDirectionQuant_p;
   ScalarQuantColumn<Float> windSpeedQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSWeatherColumns ROMSWeatherColumns;
 
 } //# NAMESPACE CASACORE - END
 

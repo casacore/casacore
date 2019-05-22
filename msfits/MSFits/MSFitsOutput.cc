@@ -137,7 +137,7 @@ void MSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time) {
 }
 
 void MSFitsOutput::write() const {
-    ROMSObservationColumns obsCols(_ms.observation());
+    MSObservationColumns obsCols(_ms.observation());
     if (
         obsCols.nrow() > 0 && (obsCols.telescopeName()(0) == "WSRT"
         || obsCols.telescopeName()(0) == "LOFAR")
@@ -365,7 +365,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     {
     	// field table info
     	MSField fieldTable(_ms.field());
-    	ROMSFieldColumns msfc(fieldTable);
+    	MSFieldColumns msfc(fieldTable);
     	if (asMultiSource) {
     		// UVFITS expects zeros for multi-source
     		radec = Vector<Double> (2, 0.0);
@@ -638,7 +638,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
             MS::WEIGHT_SPECTRUM));
 
     if (hasWeightArray) {
-        ROMSMainColumns tempCols(_ms);
+        MSMainColumns tempCols(_ms);
         if (!tempCols.weightSpectrum().isDefined(0))
             hasWeightArray = False;
     }
@@ -779,7 +779,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     }
 
     // TELESCOP INSTRUME
-    ROMSObservationColumns obsC(_ms.observation());
+    MSObservationColumns obsC(_ms.observation());
     if (obsC.nrow() == 0) {
         os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
         return 0;
@@ -1568,7 +1568,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
     // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
 
-    MEpoch measTime = ROMSColumns(ms).timeMeas()(0);
+    MEpoch measTime = MSColumns(ms).timeMeas()(0);
 
     MEpoch utctime = MEpoch::Convert(measTime, MEpoch::UTC)();
     MEpoch iattime = MEpoch::Convert(measTime, MEpoch::IAT)();
@@ -1608,7 +1608,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         MeasTable::Observatory(pos, obsName);
         MPosition itrfpos = MPosition::Convert(pos, MPosition::ITRF)();
         MVPosition mvpos = itrfpos.getValue();
-        ROMSAntennaColumns antCols(ms.antenna());
+        MSAntennaColumns antCols(ms.antenna());
         // Nominally arraypos+antpos will be ITRF (see below),
         //   unless we tinker with it, in which case it is
         //   a local convention
@@ -1680,7 +1680,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         desc.addField("POLCALB", TpFloat); // POLCALB
         desc.addField("DIAMETER", TpFloat);
         MSAntenna antennaTable = ms.antenna();
-        ROMSAntennaColumns antennaCols(antennaTable);
+        MSAntennaColumns antennaCols(antennaTable);
 
         // SELECT antennas for the current sub-array
         //    MSAntenna antennaTable = ms.antenna()
@@ -1697,7 +1697,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
                 << arraynum + 1 << LogIO::POST;
 
         MSFeed feedTable = ms.feed();
-        ROMSFeedColumns feedCols(feedTable);
+        MSFeedColumns feedCols(feedTable);
         ArrayColumn<String> inpoltype(feedCols.polarizationType());
         ScalarColumn<Int> inantid(feedCols.antennaId());
         ScalarColumn<Int> spwids(feedCols.spectralWindowId());
@@ -1862,7 +1862,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     LogIO os(LogOrigin("MSFitsOutput", "writeSU"));
     // Basically we make the FIELD_ID the source ID.
     MSField fieldTable(ms.field());
-    ROMSFieldColumns msfc(fieldTable);
+    MSFieldColumns msfc(fieldTable);
     const ScalarColumn<Int>& insrcid = msfc.sourceId();
     const ScalarColumn<String>& inname = msfc.name();
 
@@ -1870,19 +1870,19 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
     // This is for case where SOURCE guaranteed to exist:
     //  MSSource sourceTable(ms.source());
-    //  ROMSSourceColumns sourceColumns(sourceTable);
+    //  MSSourceColumns sourceColumns(sourceTable);
     //  ColumnsIndex srcInx(sourceTable, "SOURCE_ID");
     //  RecordFieldPtr<Int> srcInxFld(srcInx.accessKey(), "SOURCE_ID");
 
     // This is for case where SOURCE may not exist:
     //   (doesn't work yet!)
     MSSource* sourceTable = 0;
-    ROMSSourceColumns* sourceColumns = 0;
+    MSSourceColumns* sourceColumns = 0;
     ColumnsIndex* srcInx = 0;
     RecordFieldPtr<Int>* srcInxFld = 0;
     if (!ms.source().isNull()) {
         sourceTable = new MSSource(ms.source());
-        sourceColumns = new ROMSSourceColumns(*sourceTable);
+        sourceColumns = new MSSourceColumns(*sourceTable);
         // Create an index for the SOURCE table.
         // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
         srcInx = new ColumnsIndex(*sourceTable, "SOURCE_ID");
@@ -2117,7 +2117,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
         Bool combineSpw) {
     LogIO os(LogOrigin("MSFitsOutput", "writeTY"));
     const MSSysCal subtable(syscal);
-    ROMSSysCalColumns sysCalColumns(subtable);
+    MSSysCalColumns sysCalColumns(subtable);
     const uInt nrow = syscal.nrow();
     if (nrow == 0 || sysCalColumns.tsys().isNull()) {
         os << LogIO::SEVERE << "No SysCal TY info!" << LogIO::POST;
@@ -2138,7 +2138,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
     // Get reference time (i.e. start time) from the main table.
     Double refTime;
     { // get starttime (truncated to days)
-        ROMSColumns mscol(ms);
+        MSColumns mscol(ms);
         refTime = floor(mscol.time()(0) / C::day) * C::day;
     }
     // ##### Header
@@ -2267,7 +2267,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
         nrif = 1;
     }
     // Get #pol from 1st row in FEED table.
-    const Int npol = ROMSFeedColumns(ms.feed()).numReceptors()(0);
+    const Int npol = MSFeedColumns(ms.feed()).numReceptors()(0);
     IPosition ifShape(1, nrif);
     const uInt nentries = nrant * nrspw;
 
@@ -2278,7 +2278,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
     Int nchan, nstk;
     Double startTime, startHA;
     {
-        ROMSColumns mscol(ms);
+        MSColumns mscol(ms);
         IPosition shp = mscol.data().shape(0);
         nstk = shp(0);
         nchan = shp(1);
@@ -2295,7 +2295,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
         Table tableChunk(tabiter.table());
         uInt n = tableChunk.nrow();
         MSSysCal syscal(tableChunk);
-        ROMSSysCalColumns sysCalColumns(syscal);
+        MSSysCalColumns sysCalColumns(syscal);
         // Fill the hourangle vector (which is the same for all subsets).
         // Its unit is degrees; startHA is in fractions of a circle.
         // The time is in seconds, so convert that to a full day (circle).
@@ -2405,7 +2405,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
     while (!tabiter.pastEnd()) {
         Table tableChunk(tabiter.table());
         MSSysCal syscal(tableChunk);
-        ROMSSysCalColumns sysCalColumns(syscal);
+        MSSysCalColumns sysCalColumns(syscal);
         //    *antenna = sysCalColumns.antennaId()(0) + 1;
         *antenna = antnums(sysCalColumns.antennaId()(0));
         //    *arrayId = sysCalColumns.arrayId()(0) + 1;
@@ -2447,7 +2447,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
 Bool MSFitsOutput::writeWX(FitsOutput *output, const MeasurementSet &ms) {
     LogIO os(LogOrigin("MSFitsOutput", "writeWX"));
     const MSWeather subtable(ms.weather());
-    ROMSWeatherColumns weatherColumns(subtable);
+    MSWeatherColumns weatherColumns(subtable);
     const uInt nrow = subtable.nrow();
 
     if (nrow == 0) {
@@ -2457,10 +2457,10 @@ Bool MSFitsOutput::writeWX(FitsOutput *output, const MeasurementSet &ms) {
     // Get reference time (i.e. start time) from the main table.
     Double refTime;
     //{                                // get starttime (truncated to days)
-    ROMSColumns mscol(ms);
+    MSColumns mscol(ms);
     refTime = floor(mscol.time()(0) / C::day) * C::day;
     //}
-    //MEpoch measTime = ROMSColumns(ms).timeMeas()(0);
+    //MEpoch measTime = MSColumns(ms).timeMeas()(0);
     MEpoch measTime = mscol.timeMeas()(0);
     // ##### Header
     Record header;
@@ -2577,7 +2577,7 @@ Bool MSFitsOutput::writeWX(FitsOutput *output, const MeasurementSet &ms) {
 
 void MSFitsOutput::getStartHA(Double& startTime, Double& startHA,
         const MeasurementSet& ms, uInt rownr) {
-    ROMSColumns mscol(ms);
+    MSColumns mscol(ms);
     startTime = mscol.time()(rownr);
     MEpoch stTime = mscol.timeMeas()(rownr);
     Int fieldId = mscol.fieldId()(rownr);
@@ -2667,7 +2667,7 @@ Table MSFitsOutput::handleSysCal(const MeasurementSet& ms,
     // Skip first rows which maybe contain an average for each antenna.
     // This is an old WSRT feature/problem.
     {
-        ROMSSysCalColumns sysCalColumns(ms.sysCal());
+        MSSysCalColumns sysCalColumns(ms.sysCal());
         Double sttim = sysCalColumns.time()(0);
         uInt nrow = sysCalColumns.time().nrow();
         for (uInt i = 0; i < nrow; i++) {
@@ -2756,12 +2756,12 @@ void MSFitsOutput::handleAntNumbers(const MeasurementSet& ms,
     //  one-basedness.)
 
     // Discern if which telescope
-    ROMSObservationColumns obscol(ms.observation());
+    MSObservationColumns obscol(ms.observation());
     String arrayName;
     if (obscol.nrow() > 0)
         arrayName = obscol.telescopeName()(0);
 
-    ROMSAntennaColumns antcol(ms.antenna());
+    MSAntennaColumns antcol(ms.antenna());
     ScalarColumn<String> antname(antcol.name());
     Int nAnt = antcol.nrow();
 

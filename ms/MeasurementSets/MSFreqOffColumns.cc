@@ -30,43 +30,20 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSFreqOffsetColumns::
-ROMSFreqOffsetColumns(const MSFreqOffset& msFreqOffset):
-  isNull_p(True),
-  antenna1_p(),
-  antenna2_p(),
-  feedId_p(),
-  interval_p(),
-  offset_p(),
-  spectralWindowId_p(),
-  time_p(),
-  timeMeas_p(),
-  intervalQuant_p(),
-  offsetQuant_p(),
-  timeQuant_p()
+MSFreqOffsetColumns::MSFreqOffsetColumns():
+  isNull_p(True)
+{
+}
+
+MSFreqOffsetColumns::MSFreqOffsetColumns(const MSFreqOffset& msFreqOffset):
+  isNull_p(True)
 {
   attach(msFreqOffset);
 }
 
-ROMSFreqOffsetColumns::~ROMSFreqOffsetColumns() {}
+MSFreqOffsetColumns::~MSFreqOffsetColumns() {}
 
-ROMSFreqOffsetColumns::ROMSFreqOffsetColumns():
-  isNull_p(True),
-  antenna1_p(),
-  antenna2_p(),
-  feedId_p(),
-  interval_p(),
-  offset_p(),
-  spectralWindowId_p(),
-  time_p(),
-  timeMeas_p(),
-  intervalQuant_p(),
-  offsetQuant_p(),
-  timeQuant_p()
-{
-}
-
-void ROMSFreqOffsetColumns::attach(const MSFreqOffset& msFreqOffset)
+void MSFreqOffsetColumns::attach(const MSFreqOffset& msFreqOffset) 
 {
   isNull_p = msFreqOffset.isNull();
   if (!isNull()) {
@@ -95,79 +72,10 @@ void ROMSFreqOffsetColumns::attach(const MSFreqOffset& msFreqOffset)
   }
 }
 
-MSFreqOffsetColumns::MSFreqOffsetColumns(MSFreqOffset& msFreqOffset):
-  ROMSFreqOffsetColumns(),
-  antenna1_p(),
-  antenna2_p(),
-  feedId_p(),
-  interval_p(),
-  offset_p(),
-  spectralWindowId_p(),
-  time_p(),
-  timeMeas_p(),
-  intervalQuant_p(),
-  offsetQuant_p(),
-  timeQuant_p()
-{
-  attach(msFreqOffset);
-}
-
-MSFreqOffsetColumns::~MSFreqOffsetColumns() {}
-
-
 void MSFreqOffsetColumns::
 setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
-
-MSFreqOffsetColumns::MSFreqOffsetColumns():
-  ROMSFreqOffsetColumns(),
-  antenna1_p(),
-  antenna2_p(),
-  feedId_p(),
-  interval_p(),
-  offset_p(),
-  spectralWindowId_p(),
-  time_p(),
-  timeMeas_p(),
-  intervalQuant_p(),
-  offsetQuant_p(),
-  timeQuant_p()
-{
-}
-
-void MSFreqOffsetColumns::attach(MSFreqOffset& msFreqOffset) 
-{
-  ROMSFreqOffsetColumns::attach(msFreqOffset);
-  if (!isNull()) {
-    antenna1_p.attach(msFreqOffset, MSFreqOffset::
-		      columnName(MSFreqOffset::ANTENNA1));
-    antenna2_p.attach(msFreqOffset, MSFreqOffset::
-		      columnName(MSFreqOffset::ANTENNA2));
-    feedId_p.attach(msFreqOffset, MSFreqOffset::
-		    columnName(MSFreqOffset::FEED_ID));
-    interval_p.attach(msFreqOffset, MSFreqOffset::
-		      columnName(MSFreqOffset::INTERVAL));
-    offset_p.attach(msFreqOffset, MSFreqOffset::
-		    columnName(MSFreqOffset::OFFSET));
-    spectralWindowId_p.attach(msFreqOffset, MSFreqOffset::
-			      columnName(MSFreqOffset::SPECTRAL_WINDOW_ID));
-    time_p.attach(msFreqOffset, MSFreqOffset::
-		  columnName(MSFreqOffset::TIME));
-    timeMeas_p.attach(msFreqOffset, MSFreqOffset::
-		      columnName(MSFreqOffset::TIME));
-    intervalQuant_p.attach(msFreqOffset, MSFreqOffset::
-			   columnName(MSFreqOffset::INTERVAL));
-    offsetQuant_p.attach(msFreqOffset, MSFreqOffset::
-			 columnName(MSFreqOffset::OFFSET));
-    timeQuant_p.attach(msFreqOffset, MSFreqOffset::
-		       columnName(MSFreqOffset::TIME));
-  }
-}
-
-// Local Variables: 
-// compile-command: "gmake MSFreqOffColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
 

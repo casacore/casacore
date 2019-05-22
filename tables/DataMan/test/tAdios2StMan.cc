@@ -60,7 +60,7 @@ void GenData(Array<String> &str, uInt row){
 template<class T>
 void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition array_pos)
 {
-    ROArrayColumn<T> array_column(table, column);
+    ArrayColumn<T> array_column(table, column);
     for(uInt i=0; i<rows; ++i)
     {
         Array<T> arr_read = array_column.get(i);
@@ -79,7 +79,7 @@ void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition ar
 template<class T>
 void VerifyScalarColumn(Table &table, std::string column, uInt rows)
 {
-    ROScalarColumn<T> scalar_column(table, column);
+    ScalarColumn<T> scalar_column(table, column);
     for(uInt i=0; i<rows; ++i)
     {
         T scalar_read = scalar_column.get(i);

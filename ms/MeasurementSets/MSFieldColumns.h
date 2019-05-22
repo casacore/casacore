@@ -50,7 +50,8 @@ class MSField;
 template <class Qtype> class Quantum;
 template <class T> class Matrix;
 
-// <summary>
+
+  // <summary>
 // A class to provide easy access to MSField columns
 // </summary>
 
@@ -66,57 +67,111 @@ template <class T> class Matrix;
 // </prerequisite>
 //
 // <etymology>
-// ROMSFieldColumns stands for Read-Only MeasurementSet Field Table columns.
+// MSFieldColumns stands for MeasurementSet Field Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the MSField Table.
-// It does the declaration of all the Scalar and ArrayColumns with the
+// This class provides access to the columns in the MSField Table,
+// it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class ROMSFieldColumns
+class MSFieldColumns
 {
 public:
   // Construct from the supplied Table
-  ROMSFieldColumns(const MSField& msField);
+  MSFieldColumns(const MSField& msField);
 
   // The desctructor does nothing special
-  ~ROMSFieldColumns();
+  ~MSFieldColumns();
 
-  // Read-only access to required columns
+  // Access to required columns
+  //
+  // Note that the direction measures with a stored polynomial have Col() added
+  // to their name. They are better accessed via the functions that have the
+  // same name, without the Col suffix, that will do the interpolation for
+  // you.
   // <group>
-  const ROScalarColumn<String>& code() const {return code_p;}
-  const ROArrayColumn<Double>& delayDir() const {return delayDir_p;}
-  const ROArrayMeasColumn<MDirection>& delayDirMeasCol() const 
+  ScalarColumn<String>& code() {return code_p;}
+  ArrayColumn<Double>& delayDir() {return delayDir_p;}
+  ArrayMeasColumn<MDirection>& delayDirMeasCol() 
     {return delayDirMeas_p;}
-  const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ROScalarColumn<String>& name() const {return name_p;}
-  const ROScalarColumn<Int>& numPoly() const {return numPoly_p;}
-  const ROArrayColumn<Double>& phaseDir() const {return phaseDir_p;}
-  const ROArrayMeasColumn<MDirection>& phaseDirMeasCol() const 
+  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<String>& name() {return name_p;}
+  ScalarColumn<Int>& numPoly() {return numPoly_p;}
+  ArrayColumn<Double>& phaseDir() {return phaseDir_p;}
+  ArrayMeasColumn<MDirection>& phaseDirMeasCol() 
     {return phaseDirMeas_p;}
-  const ROArrayColumn<Double>& referenceDir() const {return referenceDir_p;}
-  const ROArrayMeasColumn<MDirection>& referenceDirMeasCol() const 
+  ArrayColumn<Double>& referenceDir() {return referenceDir_p;}
+  ArrayMeasColumn<MDirection>& referenceDirMeasCol() 
     {return referenceDirMeas_p;}
-  const ROScalarColumn<Int>& sourceId() const {return sourceId_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
+  ScalarColumn<Int>& sourceId() {return sourceId_p;}
+  ScalarColumn<Double>& time() {return time_p;}
+  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
+  ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
   // </group>
 
-  // Read-only access to optional columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Int>& ephemerisId() const {return ephemerisId_p;}
+  const ScalarColumn<String>& code() const {return code_p;}
+  const ArrayColumn<Double>& delayDir() const {return delayDir_p;}
+  const ArrayMeasColumn<MDirection>& delayDirMeasCol() const
+    {return delayDirMeas_p;}
+  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<String>& name() const {return name_p;}
+  const ScalarColumn<Int>& numPoly() const {return numPoly_p;}
+  const ArrayColumn<Double>& phaseDir() const {return phaseDir_p;}
+  const ArrayMeasColumn<MDirection>& phaseDirMeasCol() const
+    {return phaseDirMeas_p;}
+  const ArrayColumn<Double>& referenceDir() const {return referenceDir_p;}
+  const ArrayMeasColumn<MDirection>& referenceDirMeasCol() const
+    {return referenceDirMeas_p;}
+  const ScalarColumn<Int>& sourceId() const {return sourceId_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
   // </group>
+
+  // Access to optional columns
+  // <group>
+  ScalarColumn<Int>& ephemerisId() {return ephemerisId_p;}
+  // </group>
+
+  // Const access to optional columns
+  // <group>
+  const ScalarColumn<Int>& ephemerisId() const {return ephemerisId_p;}
+  // </group>
+
+
+  // Interpolate the direction Measure polynomial
+  static MDirection interpolateDirMeas(const Array<MDirection>& arrDir, 
+				       Int numPoly, Double interTime, 
+				       Double timeOrigin);
+
+
+  // set the epoch reference type for the TIME column. 
+  // <note role=tip>
+  // In principle this function can only be used if the table is empty,
+  // otherwise already written values may thereafter have an incorrect
+  // reference, offset, or unit.  However, it is possible that part of the
+  // table gets written before these values are known.  In that case the
+  // reference, offset, or units can be set by using a False
+  // <src>tableMustBeEmpty</src> argument.
+  // </note>
+  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+
+  // set the direction reference type for the REFERENCE_DIR, DELAY_DIR &
+  // PHASE_DIR columns. This can only be done when the table has no
+  // rows. Trying to do so at other times will throw an exception.
+  void setDirectionRef(MDirection::Types ref);
 
   // Access to interpolated directions from polynomials or ephemerides, 
   // the default time of zero will return the 0th order element of the polynomial.
@@ -179,36 +234,19 @@ public:
   // Needed when the entries in the EPHEMERIS_ID column have changed.
   void updateMeasComets();
 
-
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  ROMSFieldColumns();
+  MSFieldColumns();
 
   //# attach this object to the supplied table.
   void attach(const MSField& msField);
 
-  Int measCometIndex(int row) const;
-  String measCometsPath_p;
-  Vector<MeasComet*> measCometsV_p;
-  std::map<Int, Int> ephIdToMeasComet_p;
-
-  // Extract the direction Measure from the corresponding ephemeris
-  // using the nominal position as an offset.
-  // Note that interTime is assumed to use the same time reference frame
-  // as originEpoch.
-  MDirection extractDirMeas(const MDirection& offsetDir, 
-			    Int index, Double& interTime, 
-			    MEpoch originEpoch) const;
-
-  void getMJDs(Double& originMJD, Double& interMJD, 
-	       const Double interTime, const MEpoch originEpoch) const;
-
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  ROMSFieldColumns(const ROMSFieldColumns&);
-  ROMSFieldColumns& operator=(const ROMSFieldColumns&);
+  MSFieldColumns(const MSFieldColumns&);
+  MSFieldColumns& operator=(const MSFieldColumns&);
 
   //# Check if any optional columns exist and if so attach them.
   //# Initialise the necessary MeasComet objects if the EPHEMERIS_ID column is present.
@@ -230,180 +268,24 @@ private:
 		     MVDirection& mvdir, Double time=0) const;
   // </group>
 
-  //# required columns
-  ROScalarColumn<String> name_p;
-  ROScalarColumn<String> code_p;
-  ROScalarColumn<Double> time_p;
-  ROScalarColumn<Int> numPoly_p;
-  ROArrayColumn<Double> delayDir_p;
-  ROArrayColumn<Double> phaseDir_p;
-  ROArrayColumn<Double> referenceDir_p;
-  ROScalarColumn<Int> sourceId_p;
-  ROScalarColumn<Bool> flagRow_p;
-  //# optional columns
-  ROScalarColumn<Int> ephemerisId_p;
+  Int measCometIndex(int row) const;
 
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-  ROArrayMeasColumn<MDirection> delayDirMeas_p;
-  ROArrayMeasColumn<MDirection> phaseDirMeas_p;
-  ROArrayMeasColumn<MDirection> referenceDirMeas_p;
+  // Extract the direction Measure from the corresponding ephemeris
+  // using the nominal position as an offset.
+  // Note that interTime is assumed to use the same time reference frame
+  // as originEpoch.
+  MDirection extractDirMeas(const MDirection& offsetDir, 
+			    Int index, Double& interTime, 
+			    MEpoch originEpoch) const;
 
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> timeQuant_p;
-};
+  void getMJDs(Double& originMJD, Double& interMJD, 
+	       const Double interTime, const MEpoch originEpoch) const;
 
-// <summary>
-// A class to provide easy read-write access to MSField columns
-// </summary>
+  //# MeasComet data
+  String measCometsPath_p;
+  Vector<MeasComet*> measCometsV_p;
+  std::map<Int, Int> ephIdToMeasComet_p;
 
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSField
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// MSFieldColumns stands for MeasurementSet Field Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides access to the columns in the MSField Table,
-// it does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=MSColumns> MSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class MSFieldColumns: public ROMSFieldColumns
-{
-public:
-  // Construct from the supplied Table
-  MSFieldColumns(MSField& msField);
-
-  // The desctructor does nothing special
-  ~MSFieldColumns();
-
-  // Read-write access to required columns
-  //
-  // Note that the direction measures with a stored polynomial have Col() added
-  // to their name. They are better accessed via the functions that have the
-  // same name, without the Col suffix, that will do the interpolation for
-  // you. These functions are in the ROMSFieldColumns class.
-  // <group>
-  ScalarColumn<String>& code() {return code_p;}
-  ArrayColumn<Double>& delayDir() {return delayDir_p;}
-  ArrayMeasColumn<MDirection>& delayDirMeasCol() 
-    {return delayDirMeas_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-  ScalarColumn<String>& name() {return name_p;}
-  ScalarColumn<Int>& numPoly() {return numPoly_p;}
-  ArrayColumn<Double>& phaseDir() {return phaseDir_p;}
-  ArrayMeasColumn<MDirection>& phaseDirMeasCol() 
-    {return phaseDirMeas_p;}
-  ArrayColumn<Double>& referenceDir() {return referenceDir_p;}
-  ArrayMeasColumn<MDirection>& referenceDirMeasCol() 
-    {return referenceDirMeas_p;}
-  ScalarColumn<Int>& sourceId() {return sourceId_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
-  ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
-  // </group>
-
-  // Read-write access to optional columns
-  // <group>
-  ScalarColumn<Int>& ephemerisId() {return ephemerisId_p;}
-  // </group>
-
-  // Read-only access to required columns
-  // <group>
-  const ROScalarColumn<String>& code() const {
-    return ROMSFieldColumns::code();}
-  const ROArrayColumn<Double>& delayDir() const {
-    return ROMSFieldColumns::delayDir();}
-  const ROArrayMeasColumn<MDirection>& delayDirMeasCol() const {
-    return ROMSFieldColumns::delayDirMeasCol();}
-  const ROScalarColumn<Bool>& flagRow() const {
-    return ROMSFieldColumns::flagRow();}
-  const ROScalarColumn<String>& name() const {
-    return ROMSFieldColumns::name();}
-  const ROScalarColumn<Int>& numPoly() const {
-    return ROMSFieldColumns::numPoly();}
-  const ROArrayColumn<Double>& phaseDir() const {
-    return ROMSFieldColumns::phaseDir();}
-  const ROArrayMeasColumn<MDirection>& phaseDirMeasCol() const {
-    return ROMSFieldColumns::phaseDirMeasCol();}
-  const ROArrayColumn<Double>& referenceDir() const {
-    return ROMSFieldColumns::referenceDir();}
-  const ROArrayMeasColumn<MDirection>& referenceDirMeasCol() const {
-    return ROMSFieldColumns::referenceDirMeasCol();}
-  const ROScalarColumn<Int>& sourceId() const {
-    return ROMSFieldColumns::sourceId();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSFieldColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSFieldColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const { 
-    return ROMSFieldColumns::timeMeas();}
-  // </group>
-
-  // Read-only access to optional columns
-  // <group>
-  const ROScalarColumn<Int>& ephemerisId() const {
-    return ROMSFieldColumns::ephemerisId();}
-  // </group>
-
-  // Interpolate the direction Measure polynomial
-  static MDirection interpolateDirMeas(const Array<MDirection>& arrDir, 
-				       Int numPoly, Double interTime, 
-				       Double timeOrigin);
-
-
-  // set the epoch reference type for the TIME column. 
-  // <note role=tip>
-  // In principle this function can only be used if the table is empty,
-  // otherwise already written values may thereafter have an incorrect
-  // reference, offset, or unit.  However, it is possible that part of the
-  // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
-  // <src>tableMustBeEmpty</src> argument.
-  // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
-
-  // set the direction reference type for the REFERENCE_DIR, DELAY_DIR &
-  // PHASE_DIR columns. This can only be done when the table has no
-  // rows. Trying to do so at other times will throw an exception.
-  void setDirectionRef(MDirection::Types ref);
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  MSFieldColumns();
-
-  //# attach this object to the supplied table.
-  void attach(MSField& msField);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  MSFieldColumns(const MSFieldColumns&);
-  MSFieldColumns& operator=(const MSFieldColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  //# Initialise the necessary MeasComet objects if the EPHEMERIS_ID column is present.
-  void attachOptionalCols(MSField& msField);
-  
   //# required columns
   ScalarColumn<String> name_p;
   ScalarColumn<String> code_p;
@@ -428,6 +310,8 @@ private:
 
 };
 
+//# Define the RO version for backward compatibility.
+typedef MSFieldColumns ROMSFieldColumns;
 
 } //# NAMESPACE CASACORE - END
 

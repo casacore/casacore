@@ -252,7 +252,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     //    Double exposTime = sum(msc.exposure().getColumn());
     MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
 
-    ROMSMainColumns msmc(*pMS);
+    MSMainColumns msmc(*pMS);
     String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
     // Output info
     os << "Data records: " << nrow() << "       Total elapsed time = "
@@ -283,17 +283,17 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     Table mstab(mssel.selectedTable());
 
     // Field names:
-    ROMSFieldColumns field(pMS->field());
+    MSFieldColumns field(pMS->field());
     Vector<String> fieldnames(field.name().getColumn());
     nVisPerField_.resize(fieldnames.nelements());
     nVisPerField_=0;
 
     // Observing Mode (State Table)
-    ROMSStateColumns state(pMS->state());
+    MSStateColumns state(pMS->state());
     Vector<String> obsModes(state.obsMode().getColumn());
 
     // Spw Ids
-    ROMSDataDescColumns dd(pMS->dataDescription());
+    MSDataDescColumns dd(pMS->dataDescription());
     Vector<Int> specwindids(dd.spectralWindowId().getColumn());
     // Field widths for printing:
     Int widthLead  =  2;
@@ -477,13 +477,13 @@ void MSSummary::getScanSummary (Record& outRec) const
     }
 
     // Make objects
-    ROMSColumns msc(*pMS);
+    MSColumns msc(*pMS);
     Double startTime, stopTime;
     minMax(startTime, stopTime, msc.time().getColumn());
 
     MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
 
-    ROMSMainColumns msmc(*pMS);
+    MSMainColumns msmc(*pMS);
     String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
     //outRec.define("numrecords", nrow());
     //outRec.define("IntegrationTime", exposTime);
@@ -505,13 +505,13 @@ void MSSummary::getScanSummary (Record& outRec) const
     Table mstab(mssel.selectedTable());
 
     // Field names:
-    ROMSFieldColumns field(pMS->field());
+    MSFieldColumns field(pMS->field());
     Vector<String> fieldnames(field.name().getColumn());
     nVisPerField_.resize(fieldnames.nelements());
     nVisPerField_=0;
 
     // Spw Ids
-    ROMSDataDescColumns dd(pMS->dataDescription());
+    MSDataDescColumns dd(pMS->dataDescription());
     Vector<Int> specwindids(dd.spectralWindowId().getColumn());
 
     // Set up iteration over OBSID and ARRID:
@@ -528,8 +528,8 @@ void MSSummary::getScanSummary (Record& outRec) const
         Table obsarrtab(obsarriter.table());
 
         // Extract (zero-based) OBSID and ARRID for this iteration:
-        ROTableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
-        ROTableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
+        TableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
+        TableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
 
         // Report OBSID and ARRID, and header for listing:
         //     os << endl << "   ObservationID = " << obsid;
@@ -575,12 +575,12 @@ void MSSummary::getScanSummary (Record& outRec) const
             Int nrow=t.nrow();
 
             // relevant columns
-            ROTableVector<Double> timecol(t,"TIME");
-            ROTableVector<Double> inttim(t,"EXPOSURE");
-            ROTableVector<Int> scncol(t,"SCAN_NUMBER");
-            ROTableVector<Int> fldcol(t,"FIELD_ID");
-            ROTableVector<Int> ddicol(t,"DATA_DESC_ID");
-            ROTableVector<Int> stidcol(t,"STATE_ID");
+            TableVector<Double> timecol(t,"TIME");
+            TableVector<Double> inttim(t,"EXPOSURE");
+            TableVector<Int> scncol(t,"SCAN_NUMBER");
+            TableVector<Int> fldcol(t,"FIELD_ID");
+            TableVector<Int> ddicol(t,"DATA_DESC_ID");
+            TableVector<Int> stidcol(t,"STATE_ID");
 
             // this timestamp
             Double thistime(timecol(0));
@@ -907,7 +907,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
     if (verbose) {
 
         // Make a MS-feed-columns object
-        ROMSFeedColumns msFC(pMS->feed());
+        MSFeedColumns msFC(pMS->feed());
 
         if (msFC.antennaId().nrow()<=0) {
             os << "The FEED table is empty" << endl;
@@ -1072,8 +1072,8 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
 void MSSummary::listObservation (LogIO& os, Bool verbose) const
 {
     // Make objects
-    ROMSColumns msc(*pMS);
-    const ROMSObservationColumns& msOC(msc.observation());
+    MSColumns msc(*pMS);
+    const MSObservationColumns& msOC(msc.observation());
 
     if (msOC.project().nrow()<=0) {
         os << "The OBSERVATION table is empty" << endl;
@@ -1130,7 +1130,7 @@ String formatTime(const Double time) {
 void MSSummary::listHistory (LogIO& os) const
 {
     // Create a MS-history object
-    ROMSHistoryColumns msHis(pMS->history());
+    MSHistoryColumns msHis(pMS->history());
 
     if (msHis.nrow()<=0) {
         os << "The HISTORY table is empty" << endl;
@@ -1138,10 +1138,10 @@ void MSSummary::listHistory (LogIO& os) const
     else {
         uInt nmessages = msHis.time().nrow();
         os << "History table entries: " << nmessages << endl << LogIO::POST;
-        const ROScalarColumn<Double> &theTimes((msHis.time()));
-        const ROScalarColumn<String> &messOrigin((msHis.origin()));
-        const ROScalarColumn<String> &messString((msHis.message()));
-        const ROScalarColumn<String> &messPriority((msHis.priority()));
+        const ScalarColumn<Double> &theTimes((msHis.time()));
+        const ScalarColumn<String> &messOrigin((msHis.origin()));
+        const ScalarColumn<String> &messString((msHis.message()));
+        const ScalarColumn<String> &messPriority((msHis.priority()));
         for (uInt i=0 ; i < nmessages; i++) {
             Quantity tmpq(theTimes(i), "s");
             MVTime mvtime(tmpq);
@@ -1189,7 +1189,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
     }
 
     // Create a MS-source-columns object
-    ROMSSourceColumns msSC(pMS->source());
+    MSSourceColumns msSC(pMS->source());
 
     // Are restFreq and sysvel present?
     Bool restFreqOK=pMS->source().tableDesc().isColumn("REST_FREQUENCY");
@@ -1292,7 +1292,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
 void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
 {
     // Create a MS-spwin-columns object
-    ROMSSpWindowColumns msSWC(pMS->spectralWindow());
+    MSSpWindowColumns msSWC(pMS->spectralWindow());
 
     if (verbose) {}    //null; always the same output
 
@@ -1365,11 +1365,11 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
      in a MS that are used */
 
     // Create a MS-spwin-columns object
-    ROMSSpWindowColumns msSWC(pMS->spectralWindow());
+    MSSpWindowColumns msSWC(pMS->spectralWindow());
     // Create a MS-data_desc-columns object
-    ROMSDataDescColumns msDDC(pMS->dataDescription());
+    MSDataDescColumns msDDC(pMS->dataDescription());
     // Create a MS-polin-columns object
-    ROMSPolarizationColumns msPOLC(pMS->polarization());
+    MSPolarizationColumns msPOLC(pMS->polarization());
 
     if (msDDC.nrow()<=0 or msSWC.nrow()<=0) {
         //The DATA_DESCRIPTION or SPECTRAL_WINDOW table is empty
@@ -1415,7 +1415,7 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
 
 void MSSummary::listPolarization (LogIO& os, Bool) const {
     // Create a MS-pol-columns object
-    ROMSPolarizationColumns msPolC(pMS->polarization());
+    MSPolarizationColumns msPolC(pMS->polarization());
 
     uInt nRow = pMS->polarization().nrow();
     if (nRow<=0) {
@@ -1621,7 +1621,7 @@ void MSSummary::listSysCal (LogIO& os, Bool verbose) const
     if (verbose) {
 
         // Create a MS-syscal-columns object
-        ROMSSysCalColumns msSCC(pMS->sysCal());
+        MSSysCalColumns msSCC(pMS->sysCal());
 
         if (msSCC.tsys().nrow()<=0) {
             os << "The SYSCAL table is empty" << endl;
@@ -1648,7 +1648,7 @@ void MSSummary::listWeather (LogIO& os, Bool verbose) const
     if (verbose) {
 
         // Create a MS-weather-columns object
-        ROMSWeatherColumns msWC(pMS->weather());
+        MSWeatherColumns msWC(pMS->weather());
 
         if (msWC.H2O().nrow()<=0) {
             os << "The WEATHER table is empty" << endl;

@@ -95,7 +95,7 @@ namespace casacore {
 
   Vector<String> ImageAttrGroupCasa::getUnit (const String& attrName)
   {
-    ROTableColumn col(itsTable.table(), attrName);
+    TableColumn col(itsTable.table(), attrName);
     if (col.keywordSet().isDefined("QuantumUnits")) {
       return col.keywordSet().asArrayString("QuantumUnits");
     }
@@ -104,7 +104,7 @@ namespace casacore {
 
   Vector<String> ImageAttrGroupCasa::getMeasInfo (const String& attrName)
   {
-    ROTableColumn col(itsTable.table(), attrName);
+    TableColumn col(itsTable.table(), attrName);
     if (col.keywordSet().isDefined("MEASINFO")) {
       Vector<String> info(2);
       const TableRecord& rec = col.keywordSet().subRecord("MEASINFO");

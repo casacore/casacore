@@ -38,109 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSState;
 
 // <summary>
-// A class to provide easy read-only access to MSState columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSState
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSStateColumns stands for Read-Only MeasurementSet State Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSState Table.
-// It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSStateColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSStateColumns(const MSState& msState);
-
-  // The destructor does nothing special
-  ~ROMSStateColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Double>& cal() const {return cal_p;}
-  const ROScalarQuantColumn<Double>& calQuant() const { return calQuant_p;}
-  const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ROScalarColumn<Double>& load() const {return load_p;}
-  const ROScalarQuantColumn<Double>& loadQuant() const { return loadQuant_p;}
-  const ROScalarColumn<String>& obsMode() const {return obsMode_p;}
-  const ROScalarColumn<Bool>& ref() const {return ref_p;}
-  const ROScalarColumn<Bool>& sig() const {return sig_p;}
-  const ROScalarColumn<Int>& subScan() const {return subScan_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return cal_p.nrow();}
-
-  // Returns the last row that contains a state with the specified values.
-  // For Cal and Load, the tolerance is applied in the match.
-  // Returns -1 if no match could be found. Flagged rows can never match. 
-  // If tryRow is non-negative, then that row is tested
-  // to see if it matches before any others are tested. Setting tryRow to a
-  // positive value greater than the table length will throw an exception
-  // (AipsError), when compiled in debug mode.
-  Int matchState(const Quantum<Double>& stateCalQ,
-		 const Quantum<Double>& stateLoadQ,
-		 const String& stateObsMode,
-		 const Bool& stateRef,
-		 const Bool& stateSig,
-		 const Int& stateSubScan,
-		 const Quantum<Double>& tolerance,
-		 Int tryRow=-1);
-
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSStateColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSState& msState);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSStateColumns(const ROMSStateColumns&);
-  ROMSStateColumns& operator=(const ROMSStateColumns&);
-
-  //# required columns
-  ROScalarColumn<Double> cal_p;
-  ROScalarColumn<Bool> flagRow_p;
-  ROScalarColumn<Double> load_p;
-  ROScalarColumn<String> obsMode_p;
-  ROScalarColumn<Bool> ref_p;
-  ROScalarColumn<Bool> sig_p;
-  ROScalarColumn<Int> subScan_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> calQuant_p;
-  ROScalarQuantColumn<Double> loadQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSState columns
+// A class to provide easy access to MSState columns
 // </summary>
 
 // <use visibility=export>
@@ -171,16 +69,16 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSStateColumns: public ROMSStateColumns
+class MSStateColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSStateColumns(MSState& msState);
+  MSStateColumns(const MSState& msState);
 
   // The destructor does nothing special
   ~MSStateColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   // <group>
   ScalarColumn<Double>& cal() {return cal_p;}
   ScalarQuantColumn<Double>& calQuant() { return calQuant_p;}
@@ -193,9 +91,37 @@ public:
   ScalarColumn<Int>& subScan() {return subScan_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
+  const ScalarColumn<Double>& cal() const {return cal_p;}
+  const ScalarQuantColumn<Double>& calQuant() const { return calQuant_p;}
+  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<Double>& load() const {return load_p;}
+  const ScalarQuantColumn<Double>& loadQuant() const { return loadQuant_p;}
+  const ScalarColumn<String>& obsMode() const {return obsMode_p;}
+  const ScalarColumn<Bool>& ref() const {return ref_p;}
+  const ScalarColumn<Bool>& sig() const {return sig_p;}
+  const ScalarColumn<Int>& subScan() const {return subScan_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return cal_p.nrow();}
+
+  // Returns the last row that contains a state with the specified values.
+  // For Cal and Load, the tolerance is applied in the match.
+  // Returns -1 if no match could be found. Flagged rows can never match. 
+  // If tryRow is non-negative, then that row is tested
+  // to see if it matches before any others are tested. Setting tryRow to a
+  // positive value greater than the table length will throw an exception
+  // (AipsError), when compiled in debug mode.
+  Int matchState(const Quantum<Double>& stateCalQ,
+		 const Quantum<Double>& stateLoadQ,
+		 const String& stateObsMode,
+		 const Bool& stateRef,
+		 const Bool& stateSig,
+		 const Int& stateSubScan,
+		 const Quantum<Double>& tolerance,
+		 Int tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -203,7 +129,7 @@ protected:
   MSStateColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSState& msState);
+  void attach(const MSState& msState);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -224,6 +150,9 @@ private:
   ScalarQuantColumn<Double> calQuant_p;
   ScalarQuantColumn<Double> loadQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSStateColumns ROMSStateColumns;
 
 } //# NAMESPACE CASACORE - END
 

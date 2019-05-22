@@ -85,7 +85,7 @@ void MSFeedIndex::attachIds()
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");
 
     // Attach the MSFeed columns accessor
-    msFeedCols_p = new ROMSFeedColumns(static_cast<MSFeed&>(table()));
+    msFeedCols_p = new MSFeedColumns(static_cast<MSFeed&>(table()));
 }
 
 Int MSFeedIndex::compare (const Block<void*>& fieldPtrs,

@@ -1,4 +1,4 @@
-//# Mscolumnsc.cc:  provides easy access to MeasurementSet columns
+//# MSColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,31 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template class ScalarQuantColumn<Double>;
 
 
-ROMSColumns::ROMSColumns(const MeasurementSet& ms):
-  ROMSMainColumns(ms),
-  antenna_p(ms.antenna()),
-  dataDesc_p(ms.dataDescription()),
-  doppler_p(ms.doppler()),
-  feed_p(ms.feed()),
-  field_p(ms.field()),
-  flagCmd_p(ms.flagCmd()),
-  freqOffset_p(ms.freqOffset()),
-  history_p(ms.history()),
-  observation_p(ms.observation()),
-  pointing_p(ms.pointing()),
-  polarization_p(ms.polarization()),
-  processor_p(ms.processor()),
-  source_p(ms.source()),
-  spectralWindow_p(ms.spectralWindow()),
-  state_p(ms.state()),
-  sysCal_p(ms.sysCal()),
-  weather_p(ms.weather())
-{
-}
-
-ROMSColumns::~ROMSColumns() {}
-
-MSColumns::MSColumns(MeasurementSet& ms):
+MSColumns::MSColumns(const MeasurementSet& ms):
   MSMainColumns(ms),
   antenna_p(ms.antenna()),
   dataDesc_p(ms.dataDescription()),
@@ -119,9 +95,6 @@ void MSColumns::setDirectionRef(MDirection::Types ref)
     source().setDirectionRef(ref);
   }
 }
-// Local Variables: 
-// compile-command: "gmake MSColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
 
