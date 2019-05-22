@@ -88,9 +88,9 @@ namespace casacore { namespace python {
     static void* convertible(PyObject* obj_ptr)
     {
 #ifdef IS_PY3K
-    if (!PyUnicode_Check(obj_ptr)) return 0;
+      if (!PyUnicode_Check(obj_ptr)) return 0;
 #else
-    if (!PyString_Check(obj_ptr) && !PyUnicode_Check(obj_ptr)) return 0;
+      if (!PyString_Check(obj_ptr) && !PyUnicode_Check(obj_ptr)) return 0;
 #endif
       return obj_ptr;
     }
@@ -99,24 +99,25 @@ namespace casacore { namespace python {
       PyObject* obj_ptr,
       boost::python::converter::rvalue_from_python_stage1_data* data)
     {
-    char* value = NULL;
-    if (PyUnicode_Check(obj_ptr)) {
+      char* value = NULL;
+      boost::python::object temp_bytes_obj;
+      if (PyUnicode_Check(obj_ptr)) {
         PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "UTF-8", "strict"); // Owned reference
 
         if (temp_bytes != NULL) {
-            value = PyBytes_AS_STRING(temp_bytes); // Borrowed pointer
-            value = strdup(value);
-            Py_DECREF(temp_bytes);
+          // Take over lifetime management of temp_bytes
+          temp_bytes_obj = boost::python::object(boost::python::handle<>(temp_bytes));
+          value = PyBytes_AS_STRING(temp_bytes);
         } else {
           boost::python::throw_error_already_set();
         }
 #ifndef IS_PY3K
-    } else if (PyString_Check(obj_ptr)) {
+      } else if (PyString_Check(obj_ptr)) {
         value = PyString_AsString(obj_ptr);
 #endif
-    } else {
+      } else {
         boost::python::throw_error_already_set();
-    }
+      }
       if (value == 0) boost::python::throw_error_already_set();
       void* storage = (
         (boost::python::converter::rvalue_from_python_storage<String>*)

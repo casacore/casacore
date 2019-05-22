@@ -1,6 +1,6 @@
 include_directories ("..")
 add_library(tConvert MODULE tConvert.cc)
 SET_TARGET_PROPERTIES(tConvert PROPERTIES PREFIX "_") 
-target_link_libraries (tConvert casa_python ${Boost_PYTHON_LIBRARY_DEBUG} ${PYTHON_LIBRARIES})
+target_link_libraries (tConvert casa_python ${PYTHON_LIBRARIES})
 add_test (tConvert ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./tConvert)
 add_dependencies(check tConvert)

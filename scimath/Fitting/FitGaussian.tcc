@@ -234,9 +234,10 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 
 
   NonLinearFitLM<T> fitter(0);
-  Vector<T> solution;
+  Vector<T> solution,errors;
   Matrix<T> startparameters(itsNGaussians, ngpars);
-  Matrix<T> solutionparameters(itsNGaussians, ngpars);
+  itsSolutionParameters.resize(itsNGaussians, ngpars);
+  itsSolutionErrors.resize(itsNGaussians,ngpars);
 
  Block<Gaussian1D<AutoDiff<T> > > gausscomp1d((itsDimension==1)*itsNGaussians);
  Block<Gaussian2D<AutoDiff<T> > > gausscomp2d((itsDimension==2)*itsNGaussians);
@@ -376,6 +377,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
     fitter.setCriteria(convcriteria);
 
     solution.resize(0);
+    errors.resize(0);
     fitfailure = 0;
     attempt++;
 
@@ -386,6 +388,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
     
     try {
        solution = fitter.fit(pos, f, sigma);
+       errors = fitter.errors();
     } catch (AipsError& fittererror) {
       string errormessage;
       errormessage = fittererror.getMesg();
@@ -440,7 +443,8 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
             //best fit so far - write parameters to solution matrix
             for (uInt g = 0; g < itsNGaussians; g++) {  
               for (uInt p = 0; p < ngpars; p++) {
-                solutionparameters(g,p) = solution(g*ngpars+p);
+                itsSolutionParameters(g,p) = solution(g*ngpars+p);
+                itsSolutionErrors(g,p) = errors(g*ngpars+p);
               }
             }
             bestRMS = itsRMS;
@@ -467,8 +471,8 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
       }
       os <<  LogIO::DEBUG1 << "no fit satisfies RMS criterion; using best available fit"<< LogIO::POST;
     }
-    correctParameters(solutionparameters);
-    return solutionparameters;
+    correctParameters(itsSolutionParameters);
+    return itsSolutionParameters;
   }
 
 // Otherwise, return all zeros 
@@ -478,11 +482,12 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 
   for (uInt g = 0; g < itsNGaussians; g++)  {   
     for (uInt p = 0; p < ngpars; p++) {
-      solutionparameters(g,p) = T(0.0);
+      itsSolutionParameters(g,p) = T(0.0);
+      itsSolutionErrors(g,p) = T(0.0);
     }
   }
 //
-  return solutionparameters;
+  return itsSolutionParameters;
    
 }
 

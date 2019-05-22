@@ -81,6 +81,9 @@
   Array<String> ArrayCopyStr_toArray (const IPosition& shape,
 				      void* data, size_t slen);
 
+  Array<String> ArrayCopyUnicode_toArray (const IPosition& shape,
+					  void* data, size_t slen);
+
   // Convert a Casacore array to a Python array object.
   template <typename T>
   boost::python::object makePyArrayObject (casacore::Array<T> const& arr);
