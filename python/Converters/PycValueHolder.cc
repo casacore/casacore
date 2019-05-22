@@ -150,15 +150,12 @@ namespace casacore { namespace python {
       return casa_array_from_python::makeScalar (obj_ptr);
     } else if (PyBool_Check(obj_ptr)) {
       return ValueHolder(extract<bool>(obj_ptr)());
-#ifdef IS_PY3K
-    } else if (PyLong_Check(obj_ptr)) {
-      return ValueHolder(extract<Int>(obj_ptr)()); // gijs: maybe should be Int64? But only Int seems to work
-#else
+#ifndef IS_PY3K
     } else if (PyInt_Check(obj_ptr)) {
       return ValueHolder(extract<int>(obj_ptr)());
+#endif
     } else if (PyLong_Check(obj_ptr)) {
       return ValueHolder(extract<Int64>(obj_ptr)());
-#endif
     } else if (PyFloat_Check(obj_ptr)) {
       return ValueHolder(extract<double>(obj_ptr)());
     } else if (PyComplex_Check(obj_ptr)) {
@@ -247,18 +244,17 @@ namespace casacore { namespace python {
         dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
         dt = TpDComplex;
-#ifdef IS_PY3K
       } else if (PyLong_Check (py_elem_obj.ptr())) {
-        dt = TpInt;   // gijs: maybe should be TpInt64? But only Int seems to work
+        dt = TpInt64;
+#ifdef IS_PY3K
       } else if (PyUnicode_Check (py_elem_obj.ptr())) {
+        dt = TpString;
 #else
       } else if (PyInt_Check (py_elem_obj.ptr())) {
-          dt = TpInt;
-      } else if (PyLong_Check (py_elem_obj.ptr())) {
-          dt = TpInt64;
+        dt = TpInt;
       } else if (PyString_Check(py_elem_obj.ptr()) || PyUnicode_Check(py_elem_obj.ptr())) {
-#endif
         dt = TpString;
+#endif
       } else {
         throw AipsError ("PycValueHolder: unknown python data type");
       }
