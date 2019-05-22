@@ -1,76 +1,46 @@
 message(STATUS "Looking for python3 specific environment...")
 
-# tempororarly set variables used by findpython
-if (PYTHON3_EXECUTABLE)
-    set(PYTHON_EXECUTABLE ${PYTHON3_EXECUTABLE} CACHE FILEPATH "")
-endif()
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 
-if (PYTHON3_LIBRARY)
-    set(PYTHON_LIBRARY ${PYTHON3_LIBRARY} CACHE FILEPATH "")
-endif()
-
-if (PYTHON3_INCLUDE_DIR)
-set(PYTHON_INCLUDE_DIR ${PYTHON3_INCLUDE_DIR} CACHE FILEPATH "")
-endif()
-
-if (PYTHON3_FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs)
-    set(FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs ${PYTHON3_FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs} CACHE FILEPATH "")
-endif()
-
-# Detect the python properties
-set(Python_ADDITIONAL_VERSIONS 3.7 3.6 3.5 3.4)
-
-find_package(Python REQUIRED)
-
-if (PYTHONINTERP_FOUND)
+if (Python3_FOUND)
     find_package(Boost REQUIRED)
     if (${Boost_MAJOR_VERSION} STREQUAL 1 AND ${Boost_MINOR_VERSION} STRGREATER 66)
         # Boost>=1.67 Python components require a Python version suffix
-	set(BOOST_PYTHON3_LIBRARY_NAME
-	    python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-	    CACHE
-        STRING
-	    "The name of the boost python3 library to search for")
+        set(BOOST_PYTHON3_LIBRARY_NAME
+            python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}
+            CACHE
+            STRING
+            "The name of the boost python3 library to search for")
     else ()
         set(BOOST_PYTHON3_LIBRARY_NAME
-	    python${PYTHON_VERSION_MAJOR}
-	    CACHE                                                       
-        STRING                                                    
-	    "The name of the boost python library to search for")       
+            python${Python3_VERSION_MAJOR}
+            CACHE
+            STRING
+            "The name of the boost python3 library to search for")
     endif ()
     find_package(Boost REQUIRED COMPONENTS ${BOOST_PYTHON3_LIBRARY_NAME})
 
-    find_package (NUMPY REQUIRED)
-
     # copy the variables to their final destination
-    set(PYTHON3_EXECUTABLE ${PYTHON_EXECUTABLE} CACHE FILEPATH "Path to Python3 interpreter")
-    set(PYTHON3_LIBRARY ${PYTHON_LIBRARY} CACHE PATH "Python3 library")
-    set(PYTHON3_INCLUDE_DIR ${PYTHON_INCLUDE_DIR} CACHE PATH "Python3 include folder")
+    set(PYTHON3_EXECUTABLE ${Python3_EXECUTABLE} CACHE FILEPATH "Path to Python3 interpreter")
+    set(PYTHON3_LIBRARY ${Python3_LIBRARIES} CACHE PATH "Python3 library")
+    set(PYTHON3_INCLUDE_DIR ${Python3_INCLUDE_DIRS} CACHE PATH "Python3 include folder")
     set(PYTHON3_FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs ${FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs} CACHE STRING "")
 
-    set(PYTHON3_LIBRARIES ${PYTHON_LIBRARIES} PARENT_SCOPE)
-    set(PYTHON3_NUMPY_INCLUDE_DIRS ${NUMPY_INCLUDE_DIRS} PARENT_SCOPE)
+    set(PYTHON3_LIBRARIES ${Python3_LIBRARIES} PARENT_SCOPE)
+    set(PYTHON3_NUMPY_INCLUDE_DIRS ${Python3_NumPy_INCLUDE_DIRS} PARENT_SCOPE)
     set(PYTHON3_Boost_LIBRARIES ${Boost_LIBRARIES} PARENT_SCOPE)
     set(PYTHON3_Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} PARENT_SCOPE)
-    set(PYTHON3_Boost_PYTHON_LIBRARY_RELEASE ${PYTHON3_Boost_LIBRARIES} PARENT_SCOPE)
-    set(PYTHON3_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS} PARENT_SCOPE)
+    set(PYTHON3_Boost_PYTHON_LIBRARY_RELEASE ${Boost_PYTHON_LIBRARY_RELEASE} PARENT_SCOPE)
+    set(PYTHON3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} PARENT_SCOPE)
 
     # to access the variables here we also need to set them in the local scope
-    set(PYTHON3_LIBRARIES ${PYTHON_LIBRARIES} )
-    set(PYTHON3_NUMPY_INCLUDE_DIRS ${NUMPY_INCLUDE_DIRS} )
+    set(PYTHON3_LIBRARIES ${Python3_LIBRARIES} )
+    set(PYTHON3_NUMPY_INCLUDE_DIRS ${Python3_NumPy_INCLUDE_DIRS} )
     set(PYTHON3_Boost_LIBRARIES ${Boost_LIBRARIES} )
     set(PYTHON3_Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} )
     set(PYTHON3_Boost_PYTHON_LIBRARY_RELEASE ${Boost_PYTHON_LIBRARY_RELEASE} )
-    set(PYTHON3_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS} )
-
-    # Remove cached variable to not confuse user
-    unset(PYTHON_EXECUTABLE CACHE)
-    unset(PYTHON_LIBRARY CACHE)
-    unset(PYTHON_INCLUDE_DIR CACHE)
-    unset(FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs CACHE)
-endif(PYTHONINTERP_FOUND)
-
-
+    set(PYTHON3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} )
+endif(Python3_FOUND)
 
 include_directories (${PYTHON3_Boost_INCLUDE_DIRS} ${PYTHON3_NUMPY_INCLUDE_DIRS} ${PYTHON3_INCLUDE_DIRS})
 
