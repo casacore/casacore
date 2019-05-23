@@ -51,13 +51,14 @@ namespace casacore {
 //    <a href="group__BasicMath__module.html">basic math classes and functors</a>
 // </ul>
 // It is important to note that most of the code has been developed before STL
-// came into existence, so several classes in modules Containers
-// and Utilities are superseded by their STL counterparts. They
-// have been removed from the Casacore code.
+// came into existence. Several classes (such as Map) in module Containers
+// are superseded by their STL counterparts and are not used anymore
+// in the Casacore code. However, for backward compatibility the
+// classes still exist, but are not built unless a special
+// Cmake option is given.
 //
-// Note that class Regex still exists because std::regex is not supported in
-// gcc-4.8 and before; this compiler is still shipped in some distributions.
-// Furthermore, some classes (such as String) offer some extra functionality compared
-// to STL.
+// A few pre-STL classes still exist though.
+// Regex and String are derived from their STL counterparts because
+// they add functionality.
 
 }

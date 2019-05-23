@@ -22,8 +22,10 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycArrayComCC.h,v 1.3 2006/11/20 23:58:17 gvandiep Exp $
+
+
+#include <boost/python.hpp>
+#include <numpy/arrayobject.h>
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K
@@ -261,7 +263,7 @@
     for (size_t i=0; i<nr; i++) {
       handle<> py_elem_hdl(src[i]);
       object py_elem_obj(py_elem_hdl);
-      extract<std::string> elem_proxy(py_elem_obj);
+      extract<String> elem_proxy(py_elem_obj);
       to[i] = elem_proxy();
     }
   }
@@ -363,6 +365,12 @@
 	  slen = PyArray_STRIDES(po)[nd-1];
 	}
 	return ValueHolder (ArrayCopyStr_toArray(shp, PyArray_DATA(po), slen));
+      } else if (PyArray_TYPE(po) == NPY_UNICODE) {
+	size_t slen = 0;
+	if (nd > 0) {
+	  slen = PyArray_STRIDES(po)[nd-1];
+	}
+	return ValueHolder (ArrayCopyUnicode_toArray(shp, PyArray_DATA(po), slen));
       }
       break;
     }

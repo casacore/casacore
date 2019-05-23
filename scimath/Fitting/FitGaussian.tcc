@@ -234,10 +234,10 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 
 
   NonLinearFitLM<T> fitter(0);
-  Vector<T> solution;
+  Vector<T> solution,errors;
   Matrix<T> startparameters(itsNGaussians, ngpars);
   itsSolutionParameters.resize(itsNGaussians, ngpars);
-  itsSolutionErrors.resize(itsNGaussians, ngpars);
+  itsSolutionErrors.resize(itsNGaussians,ngpars);
 
  Block<Gaussian1D<AutoDiff<T> > > gausscomp1d((itsDimension==1)*itsNGaussians);
  Block<Gaussian2D<AutoDiff<T> > > gausscomp2d((itsDimension==2)*itsNGaussians);
@@ -377,6 +377,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
     fitter.setCriteria(convcriteria);
 
     solution.resize(0);
+    errors.resize(0);
     fitfailure = 0;
     attempt++;
 
@@ -387,6 +388,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
     
     try {
        solution = fitter.fit(pos, f, sigma);
+       errors = fitter.errors();
     } catch (AipsError& fittererror) {
       string errormessage;
       errormessage = fittererror.getMesg();
@@ -442,9 +444,9 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
             for (uInt g = 0; g < itsNGaussians; g++) {  
               for (uInt p = 0; p < ngpars; p++) {
                 itsSolutionParameters(g,p) = solution(g*ngpars+p);
+                itsSolutionErrors(g,p) = errors(g*ngpars+p);
               }
             }
-            itsSolutionErrors = errors();
             bestRMS = itsRMS;
             itsSuccess = 1;   //even if it's not a complete success
 	  }

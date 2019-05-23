@@ -55,6 +55,7 @@ int main()
   casacore::Matrix<casacore::Double> estimate;
   casacore::Matrix<casacore::Double> retryfactors;
   casacore::Matrix<casacore::Double> solution;
+  casacore::Matrix<casacore::Double> errors;
 
   FitGaussian<casacore::Double> fitgauss;
 
@@ -84,7 +85,16 @@ int main()
 
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution); 
+  solution = fitgauss.solution();
+  cout << "Internal Parameters:"; printparameters(solution);
+  errors = fitgauss.errors();
+  cout << "Error in Parameters::"; printparameters(errors);
 
+  if (max(errors) > 1e-15) {
+          cout << "Max error" << max(errors) << endl;
+	  fail = 1;
+  }
+ 
 
 
 
@@ -105,6 +115,7 @@ int main()
 
  
   solution.resize();
+  errors.resize();
   try {
     solution = fitgauss.fit(pos, f);
   } catch (AipsError& err) {
@@ -114,6 +125,16 @@ int main()
 
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution);
+  solution = fitgauss.solution();
+  cout << "Internal Parameters:"; printparameters(solution);
+  errors = fitgauss.errors();
+  cout << "Error in Parameters:"; printparameters(errors);
+
+  if (max(errors) > 1e-15) {
+          cout << "Max error" << max(errors) << endl;
+	  fail = 1;
+  }
+ 
 
 
 
@@ -146,6 +167,7 @@ int main()
   fitgauss.setRetryFactors(retryfactors);
 
   solution.resize();
+  errors.resize();
   try {
     solution = fitgauss.fit(pos, f);
   } catch (AipsError& err) {
@@ -155,6 +177,16 @@ int main()
 
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution);
+  solution = fitgauss.solution();
+  cout << "Internal Parameters:"; printparameters(solution);
+  errors = fitgauss.errors();
+  cout << "Error in Parameters:"; printparameters(errors);
+
+  if (max(errors) > 1e-15) {
+          cout << "Max error" << max(errors) << endl;
+	  fail = 1;
+  }
+ 
 
 
 
@@ -177,6 +209,7 @@ int main()
   fitgauss.setFirstEstimate(estimate);
 
   solution.resize();
+  errors.resize();
   try {
     solution = fitgauss.fit(pos, f, 0.001);
   } catch (AipsError& err) {
@@ -186,6 +219,18 @@ int main()
 
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution);
+  solution = fitgauss.solution();
+  cout << "Internal Parameters:"; printparameters(solution);
+  errors = fitgauss.errors();
+  cout << "Error in Parameters:"; printparameters(errors);
+
+  if (max(errors) > 1e-15) {
+          cout << "Max error" << max(errors) << endl;
+	  fail = 1;
+  }
+ 
+
+
 
   
 
@@ -221,6 +266,8 @@ int main()
   fitgauss.setMaxTime(120.0);
 
   solution.resize();
+  errors.resize();
+
   try {
     solution = fitgauss.fit(pos, f, 0.01, 256);
   } catch (AipsError& err) {
@@ -228,10 +275,23 @@ int main()
     fail = 1;
   }
 
+  // I'm only testing one of these
+
+  if (solution(0,1) != fitgauss.solution()(0,1))
+	  fail = 1;
+
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution);
+  solution = fitgauss.solution();
+  cout << "Internal Parameters:"; printparameters(solution);
+  errors = fitgauss.errors();
+  cout << "Error in Parameters:"; printparameters(errors);
   
-
+  if (max(errors) > 1e-15) {
+          cout << "Max error" << max(errors) << endl;
+	  fail = 1;
+  }
+  
 
   return fail;
 }
