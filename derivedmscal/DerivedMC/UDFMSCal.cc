@@ -455,7 +455,7 @@ namespace casacore {
         Vector<Int> selectedAnts1;
         Vector<Int> selectedAnts2;
         Matrix<Int> selectedBaselines;
-        MSSelectionErrorHandler* curHandler = MSAntennaParse::thisMSAErrorHandler;
+        casacore::CountedPtr<casacore::MSSelectionErrorHandler> curHandler = MSAntennaParse::thisMSAErrorHandler;
         UDFMSCalErrorHandler errorHandler;
         MSAntennaParse::thisMSAErrorHandler = &errorHandler;
         try {
@@ -538,7 +538,7 @@ namespace casacore {
         Vector<Int> selectedFeed1;
         Vector<Int> selectedFeed2;
         Matrix<Int> selectedFeedPairs;
-        MSSelectionErrorHandler* curHandler = MSFeedParse::thisMSFErrorHandler;
+        casacore::CountedPtr<casacore::MSSelectionErrorHandler> curHandler = MSFeedParse::thisMSFErrorHandler;
         UDFMSCalErrorHandler errorHandler;
         MSFeedParse::thisMSFErrorHandler = &errorHandler;
         try {
@@ -572,7 +572,7 @@ namespace casacore {
       {
         MeasurementSet ms(table);
         Vector<Int> stateid;
-        MSSelectionErrorHandler* curHandler = MSStateParse::thisMSSErrorHandler;
+        casacore::CountedPtr<casacore::MSSelectionErrorHandler> curHandler = MSStateParse::thisMSSErrorHandler;
         UDFMSCalErrorHandler errorHandler;
         MSStateParse::thisMSSErrorHandler = &errorHandler;
         try {
