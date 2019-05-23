@@ -144,8 +144,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members.
   public:
     static MSFeedParse* thisMSFParser;
-    static MSSelectionErrorHandler* thisMSFErrorHandler;
-    static void cleanupErrorHandler() {if (thisMSFErrorHandler) delete thisMSFErrorHandler;thisMSFErrorHandler=0x0;}
+    static CountedPtr<MSSelectionErrorHandler> thisMSFErrorHandler;
+    static void cleanupErrorHandler() {thisMSFErrorHandler.reset();}
   private:
     TableExprNode node_p;
     const String colName1, colName2;

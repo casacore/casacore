@@ -174,7 +174,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Vector<Int> tt;
 	tt = getPolnIndices(polnIDs[p],polTypes);
 	//	cout << "Poln indices for " << polnIDs[p] << " = " << tt << endl;
-	polnIndices.resize(0);polnIndices=tt;
+	polnIndices.resize(0);
+        polnIndices=tt;
 	thisDDList.resize(0);
 	for (uInt s=0; s<spwIDs.nelements(); s++)
 	  {

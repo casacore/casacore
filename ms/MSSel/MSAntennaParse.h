@@ -173,8 +173,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members.
   public:
     static MSAntennaParse* thisMSAParser;
-    static MSSelectionErrorHandler* thisMSAErrorHandler;
-    static void cleanupErrorHandler() {if (thisMSAErrorHandler) delete thisMSAErrorHandler;thisMSAErrorHandler=0x0;}
+    static CountedPtr<MSSelectionErrorHandler> thisMSAErrorHandler;
+    static void cleanupErrorHandler() {thisMSAErrorHandler.reset();}
     std::bitset<HIGHESTLEVEL> complexity;
   private:
     TableExprNode node_p;
