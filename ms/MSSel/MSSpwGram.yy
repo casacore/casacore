@@ -402,6 +402,7 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
+
 	if (!($$)) delete $$;
 	Int nSpec;
 	// cout << (*($1)) << "  " << endl;
@@ -411,7 +412,8 @@ Spw: IDENTIFIER
 	// if ((*($1))[3] == MSSpwIndex::MSSPW_UNITHZ) cout << "FreqRange ";
 	$$ = new Vector<Int>(myMSSI.convertToSpwIndex($1[0],nSpec)); 
 	/*   cout << (*($$)) << endl; */
-        delete $1;
+	delete $1;
+	myMSSI.matchNameAsIntID(*($$));
       }
 ;
 FullSpec: Spw

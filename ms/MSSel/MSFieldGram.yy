@@ -111,6 +111,7 @@ indexcombexpr  : indexlist
 	           //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 	           //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	           MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
+		   myMSFI.matchIdAgainstNames(*($1));
 		   Vector<Int> selectedIDs(myMSFI.maskFieldIDs(myMSFI.validateIndices(*($1))));
                    $$ = MSFieldParse().selectFieldIds(selectedIDs);
 		   m << "Partial or no match for Field ID list " << (*($1));

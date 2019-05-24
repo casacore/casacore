@@ -77,6 +77,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //
   //------------------------------------------------------------------
+  // Input list modifier.  Examine the input list and treat elements
+  // greater than the number of SPWs by matching them as name
+  // strings. Elements for which this match fails or which are less
+  // than the number of SPWs remain unmodified.
+  void MSSpwIndex::matchNameAsIntID(Vector<Int>& list)
+  {
+    int nSpw = msSpwSubTable_p.name().getColumn().nelements();
+    for(unsigned int i=0;i<list.nelements();i++)
+      {
+	if (list[i] >= nSpw)
+	  {
+	    // Convert to string and attempt a match against the name
+	    // column.
+	    std::stringstream ss;
+	    ss << list[i];
+	    Vector<int> id=matchName(ss.str());
+	    if (id.nelements() > 0)
+	      list[i]=id[0];
+	  }
+      }
+  }
+  //
+  //------------------------------------------------------------------
   //
   Vector<Int> MSSpwIndex::matchName(const String& name)
   {
@@ -485,7 +508,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  Vector<Double> cf,cw;
 		  chanFreq.get(spw(i),cf,True);
 		  chanWidth.get(spw(i),cw,True);
-		  if (cw[0] == 0)
+		  if (abs(cw(0) == 0))
 		    throw(MSSelectionSpwError("Error in the MS SPECTRAL_WINDOW sub-table (channel width==0)."));
 		      
 		  Int cwDir = (Int)(cw(0)/abs(cw(0)));
