@@ -1,0 +1,43 @@
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# Usage: tMSSelection.run
+# -----------------------------------------------------------------------------
+# This script executes the program tMSSelection to test the
+# MSSelection module.
+#
+# $Id$
+#-----------------------------------------------------------------------------
+
+  MS=$CASADEMO"mssel_test_small_multifield_spw.ms"
+
+  runCmd(){
+      # Uncomment following line to generate an output close to a
+      # script to run the tests
+      #echo "#Test:$1"; echo $3;
+      
+      eval "$2 $3"
+  }
+
+  getTestMS() {
+      tar zxf $testsrcdir/$MS.tgz
+  }
+
+  cleanup() {
+      \rm -rf $MS
+  }
+
+  # Get the test MS (un-tar it from $testsrcdir).
+  getTestMS;
+
+  runCmd 1 "$casa_checktool" " ./tMSSelection ms=$MS field=1,2";
+  runCmd 2 "$casa_checktool" " ./tMSSelection ms=$MS field=\"2\",2";
+  runCmd 3 "$casa_checktool" " ./tMSSelection ms=$MS field=\"2\",1";
+  runCmd 4 "$casa_checktool" " ./tMSSelection ms=$MS field=\"2\",1,2000";
+  runCmd 5 "$casa_checktool" " ./tMSSelection ms=$MS field=\"2\",1,2000";
+  runCmd 6 "$casa_checktool" " ./tMSSelection ms=$MS field=2000";
+  runCmd 7 "$casa_checktool" " ./tMSSelection ms=$MS field=20000";
+
+  #
+  # Remove the test MS and any other cleanup required.
+  #
+  cleanup;
