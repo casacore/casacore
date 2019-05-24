@@ -272,7 +272,6 @@ stationid: identstr // IDENTIFIER
 	      //
 	      //	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	      if (!$$) delete $$;
 	      $$ = new Vector<Int>(myMSAI.matchStationRegexOrPattern($1));
 	      if ((*($$)).nelements() == 0) reportError($1,"Station Expression");
 	      free($1);
@@ -286,7 +285,6 @@ stationid: identstr // IDENTIFIER
 	      //
 	      //	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	      if (!$$) delete $$;
 	      $$ = new Vector<Int>(myMSAI.matchStationRegexOrPattern($1,True));
 	      if ((*($$)).nelements() == 0) reportError($1,"Station Expression");
 	      free($1);
@@ -320,7 +318,6 @@ antid: identstr
 	  //
 	  //	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	  if (!$$) delete $$;
 	  $$ = new Vector<Int>(myMSAI.matchAntennaRegexOrPattern($1));
 	  if ((*($$)).nelements() == 0) reportError($1);
 	  free($1);
@@ -334,7 +331,6 @@ antid: identstr
 	  //
 	  //	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	  if (!$$) delete $$;
 	  $$ = new Vector<Int>(myMSAI.matchAntennaRegexOrPattern($1,True));
 	  if ((*($$)).nelements() == 0) reportError($1);
 	  free($1);
