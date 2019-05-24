@@ -1,0 +1,200 @@
+BE: Baseline Expr=
+	BE: Ant1         = []
+	BE: Ant2         = []
+	Baselines = 
+FE: Field Expr=1,2
+	FE: Field        = [1, 2]
+SE: SPW Expr=
+	SE: SPW          = []
+	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [3, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = []
+StateList    = []
+Number of selected rows: 3780
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=
+	BE: Ant1         = []
+	BE: Ant2         = []
+	Baselines = 
+FE: Field Expr=2,2
+	FE: Field        = [2]
+SE: SPW Expr=
+	SE: SPW          = []
+	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [3, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = []
+StateList    = []
+Number of selected rows: 1440
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=
+	BE: Ant1         = []
+	BE: Ant2         = []
+	Baselines = 
+FE: Field Expr=2,1
+	FE: Field        = [1, 2]
+SE: SPW Expr=
+	SE: SPW          = []
+	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [3, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = []
+StateList    = []
+Number of selected rows: 3780
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=
+	BE: Ant1         = []
+	BE: Ant2         = []
+	Baselines = 
+FE: Field Expr=2,1,2000
+	FE: Field        = [1, 2, 4]
+SE: SPW Expr=
+	SE: SPW          = []
+	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [3, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = []
+StateList    = []
+Number of selected rows: 5220
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=
+	BE: Ant1         = []
+	BE: Ant2         = []
+	Baselines = 
+FE: Field Expr=2,1,2000
+	FE: Field        = [1, 2, 4]
+SE: SPW Expr=
+	SE: SPW          = []
+	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [3, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = []
+StateList    = []
+Number of selected rows: 5220
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=
+	BE: Ant1         = []
+	BE: Ant2         = []
+	Baselines = 
+FE: Field Expr=2000
+	FE: Field        = [4]
+SE: SPW Expr=
+	SE: SPW          = []
+	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [3, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = {}
+	PE: CorrMap      = {}
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = []
+StateList    = []
+Number of selected rows: 1440
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+###AipsError: Field Expression: Partial or no match for Field ID list [20000]
+(near char. 5 in string "20000")
