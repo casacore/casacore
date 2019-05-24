@@ -499,8 +499,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
 	    {
-	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
-	      setErrorHandler(ANTENNA_EXPR, tt, True);
+	      MSSelectionErrorHandler tt;
+	      setErrorHandler(ANTENNA_EXPR, &tt, True);
 	    }
 	  else
 	    MSAntennaParse::thisMSAErrorHandler->reset();
@@ -510,8 +510,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSFeedParse::thisMSFErrorHandler == NULL)
 	    {
-	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
-	      setErrorHandler(FEED_EXPR, tt, True);
+	      MSSelectionErrorHandler tt;
+	      setErrorHandler(FEED_EXPR, &tt, True);
 	    }
 	  else
 	    MSFeedParse::thisMSFErrorHandler->reset();
@@ -521,8 +521,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSStateParse::thisMSSErrorHandler == NULL)
 	    {
-	      MSSelectionErrorHandler *tt = new MSSelectionErrorHandler();
-	      setErrorHandler(STATE_EXPR, tt, True);
+	      MSSelectionErrorHandler tt;
+	      setErrorHandler(STATE_EXPR, &tt, True);
 	    }
 	   else
 	     MSStateParse::thisMSSErrorHandler->reset();
@@ -532,8 +532,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSSpwParse::thisMSSpwErrorHandler == NULL)
 	    {
-	      MSSSpwErrorHandler* tt = new MSSSpwErrorHandler();
-	      setErrorHandler(SPW_EXPR, tt, True /*overRide*/);
+	      MSSSpwErrorHandler tt;
+	      setErrorHandler(SPW_EXPR, &tt, True /*overRide*/);
 	    }
 	  else
 	    MSSpwParse::thisMSSpwErrorHandler->reset();
