@@ -296,7 +296,6 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!$$) delete $$;
 	$$ = new Vector<Int>(myMSSI.matchRegexOrPattern($1));
 	
 	ostringstream m; m << "No match found for ";
@@ -316,7 +315,6 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!$$) delete $$;
 	$$ = new Vector<Int>(myMSSI.matchRegexOrPattern($1));
 	
 	ostringstream m; m << "No match found for ";
