@@ -262,7 +262,7 @@ MVTime::Format MVTime::getFormat() {
 }
 
 MVTime::formatTypes MVTime::giveMe(const String &in) {
-  const Int N_name = 30;
+  const Int N_name = 32;
   static const String tab[N_name] = {
     "ANGLE",
     "TIME",
@@ -279,6 +279,8 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     "LOCAL",
     "USE_SPACE",
     "ALPHA",
+    "USE_Z",
+    "ISO",
     "BOOST",
     "NO_H",
     "NO_HM",
@@ -311,6 +313,8 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     MVTime::LOCAL,
     MVTime::USE_SPACE,
     MVTime::ALPHA,
+    MVTime::USE_Z,
+    MVTime::ISO,
     MVTime::BOOST,
     MVTime::NO_H,
     MVTime::NO_HM,
@@ -429,6 +433,9 @@ void MVTime::print(ostream &oss,
 	MVAngle::Format ftmp((MVAngle::formatTypes) intyp, inprec);
 	atmp.print(oss, ftmp);
     }
+    if ((intyp & MVTime::USE_Z) == MVTime::USE_Z) {
+        oss << 'Z';
+    }
 }
 
 Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
@@ -522,7 +529,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
       } else {
         return MVAngle::handleReadError (in, throwExcp);
       }
-    } else if (in.tSkipChar('T')) {	// new FITS
+    } else if (in.tSkipChar('T')) {	// new FITS/ISO
       if (MVAngle::read(res, in, False)) {
         res = Quantity(res.get("deg").getValue()/360., "d");
         // Allow possible time zone as in ISO-8601
@@ -534,7 +541,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
           }
           res -= Quantity(s*r/24.0,"d");	// Time zone
         } else {
-          in.tSkipChar('Z');	// accept FITS UTC (old format)
+          in.tSkipChar('Z');	// accept FITS/ISO UTC
         }
       } else {
         return MVAngle::handleReadError (in, throwExcp);

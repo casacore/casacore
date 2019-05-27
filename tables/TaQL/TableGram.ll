@@ -84,8 +84,8 @@ DATE      {DATEA}|{DATEH}|{DATES}
 DTIMEH    {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
 DTIME     {DTIMEH}|{DTIMEC}
-/* - / or space can be used as separator between date and time */
-DATETIME  {DATE}([-/ ]{DTIME})?
+/* - / space or T can be used as separator between date and time; optional ISO Z */
+DATETIME  {DATE}([-/ T]{DTIME}(Z?))?
 
 /* Sky position as HMS or DMS; dots can be used instead of DMS (as MVAngle allows).
    Positions/times with colons cannot be allowed, because they interfere
