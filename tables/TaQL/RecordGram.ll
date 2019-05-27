@@ -72,7 +72,7 @@ DATE      {DATEA}|{DATEH}|{DATES}
 DTIMEH    {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
 DTIME     {DTIMEH}|{DTIMEC}
-DATETIME  {DATE}([-/ ]{DTIME})?
+DATETIME  {DATE}([-/ T]{DTIME}(Z?))?
 
 POSHM     {INT}[hH]{INT}[mM]{FLINT}?
 POSDM     {INT}[dD]{INT}[mM]{FLINT}?
