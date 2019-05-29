@@ -98,6 +98,7 @@ public:
   // Look up FIELD_ID's for a given field name, or set of field names
   Vector<Int> matchName(const String& name);
   Vector<Int> matchName(const Vector<String>& names);
+  void matchNameAsIntID(Vector<int>& list);
 
   Vector<Int> matchFrequencyRange(const Float f0,const Float f1,Bool approx, const Float f3=0);
 

@@ -111,6 +111,7 @@ indexcombexpr  : indexlist
 	           //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 	           //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	           MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
+		   myMSFI.matchIdAgainstNames(*($1));
 		   Vector<Int> selectedIDs(myMSFI.maskFieldIDs(myMSFI.validateIndices(*($1))));
                    $$ = MSFieldParse().selectFieldIds(selectedIDs);
 		   m << "Partial or no match for Field ID list " << (*($1));
@@ -157,7 +158,6 @@ fieldid: IDENTIFIER
 	    //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	    MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
 	    //	    cerr << "QS: " << $1 << endl;
-	    if (!$$) delete $$;
 	    $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1));
 	    
 	    ostringstream m; m << "No match found for name \"" << $1 << "\"";
@@ -176,7 +176,6 @@ fieldid: IDENTIFIER
 	    //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 	    //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	    MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
-	    if (!$$) delete $$;
 	    $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1,True));
 	    
 	    ostringstream m; m << "No match found for \"" << $1 << "\"";

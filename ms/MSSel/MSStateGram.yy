@@ -131,12 +131,10 @@ indexcombexpr  : indexlist
 //
 logicallist: stateid AMPERSAND stateid
           {
-	    if (!$$) delete $$;
 	    $$ = new Vector<Int>(set_intersection(*$1,*$3));
 	  };
         | logicallist AMPERSAND stateid
 	  {
-	    if (!$$) delete $$;
 	    $$ = new Vector<Int>(set_intersection(*$1,*$3));
 	  };
 //
@@ -171,7 +169,6 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  if (!$$) delete $$;
 	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
@@ -188,7 +185,6 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  if (!$$) delete $$;
 	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1,True));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";

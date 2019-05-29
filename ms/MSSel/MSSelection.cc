@@ -480,8 +480,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //
   //----------------------------------------------------------------------------
-  // Method to install the defaul error hanlder or reset existing
-  // error handlers. If the pointer to error hanlder is NULL, this
+  // Method to install the defaul error handler or reset existing
+  // error handlers. If the pointer to error handler is NULL, this
   // method will install the default error handler.  If the pointer is
   // != NULL, this method will reset the existing error handler.
   //
@@ -497,10 +497,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
       case ANTENNA_EXPR:
 	{
-	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
+	  if (MSAntennaParse::thisMSAErrorHandler.null())
 	    {
-	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
-	      setErrorHandler(ANTENNA_EXPR, tt, True);
+	      MSSelectionErrorHandler tt;
+	      setErrorHandler(ANTENNA_EXPR, &tt, True);
 	    }
 	  else
 	    MSAntennaParse::thisMSAErrorHandler->reset();
@@ -508,10 +508,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
       case FEED_EXPR:
 	{
-	  if (MSFeedParse::thisMSFErrorHandler == NULL)
+	  if (MSFeedParse::thisMSFErrorHandler.null())
 	    {
-	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
-	      setErrorHandler(FEED_EXPR, tt, True);
+	      MSSelectionErrorHandler tt;
+	      setErrorHandler(FEED_EXPR, &tt, True);
 	    }
 	  else
 	    MSFeedParse::thisMSFErrorHandler->reset();
@@ -519,10 +519,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
       case STATE_EXPR:
 	{
-	  if (MSStateParse::thisMSSErrorHandler == NULL)
+	  if (MSStateParse::thisMSSErrorHandler.null())
 	    {
-	      MSSelectionErrorHandler *tt = new MSSelectionErrorHandler();
-	      setErrorHandler(STATE_EXPR, tt, True);
+	      MSSelectionErrorHandler tt;
+	      setErrorHandler(STATE_EXPR, &tt, True);
 	    }
 	   else
 	     MSStateParse::thisMSSErrorHandler->reset();
@@ -530,10 +530,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
       case SPW_EXPR:
 	{
-	  if (MSSpwParse::thisMSSpwErrorHandler == NULL)
+	  if (MSSpwParse::thisMSSpwErrorHandler.null())
 	    {
-	      MSSSpwErrorHandler* tt = new MSSSpwErrorHandler();
-	      setErrorHandler(SPW_EXPR, tt, True /*overRide*/);
+	      MSSSpwErrorHandler tt;
+	      setErrorHandler(SPW_EXPR, &tt, True /*overRide*/);
 	    }
 	  else
 	    MSSpwParse::thisMSSpwErrorHandler->reset();
@@ -797,7 +797,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //----------------------------------------------------------------------------
-  void MSSelection::setErrorHandler(const MSExprType type,  MSSelectionErrorHandler* mssEH,
+  void MSSelection::setErrorHandler(const MSExprType type,
+                                    MSSelectionErrorHandler* mssEH,
 				    const Bool overRide)
   {
     //
@@ -809,60 +810,46 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
       case ANTENNA_EXPR:
 	{
-	  if (overRide)
-	    {
-	      if (mssEH == NULL) MSAntennaParse::thisMSAErrorHandler = mssEH;
-	      else MSAntennaParse::thisMSAErrorHandler = mssEH->clone();
+	  if (overRide  ||  MSAntennaParse::thisMSAErrorHandler.null()) {
+            if (mssEH == NULL) {
+              MSAntennaParse::thisMSAErrorHandler = mssEH;
+            } else {
+              MSAntennaParse::thisMSAErrorHandler = mssEH->clone();
 	    }
-	  else if (MSAntennaParse::thisMSAErrorHandler == NULL)
-	    {
-	      if (mssEH == NULL) MSAntennaParse::thisMSAErrorHandler = mssEH;
-	      else MSAntennaParse::thisMSAErrorHandler = mssEH->clone();
-	    }
+          }
 	  break;
 	}
       case FEED_EXPR:
 	{
-	  if (overRide)
-	    {
-	      if (mssEH == NULL) MSFeedParse::thisMSFErrorHandler = mssEH;
-	      else MSFeedParse::thisMSFErrorHandler = mssEH->clone();
+	  if (overRide  ||  MSFeedParse::thisMSFErrorHandler.null()) {
+            if (mssEH == NULL) {
+              MSFeedParse::thisMSFErrorHandler = mssEH;
+            } else {
+              MSFeedParse::thisMSFErrorHandler = mssEH->clone();
 	    }
-	  else if (MSFeedParse::thisMSFErrorHandler == NULL)
-	    {
-	      if (mssEH == NULL) MSFeedParse::thisMSFErrorHandler = mssEH;
-	      else MSFeedParse::thisMSFErrorHandler = mssEH->clone();
-	    }
+          }
 	  break;
 	}
       case STATE_EXPR:
 	{
-	  if (overRide)
-	    {
-	      MSStateParse::cleanupErrorHandler();
-	      if (mssEH == NULL) MSStateParse::thisMSSErrorHandler = mssEH;
-	      else MSStateParse::thisMSSErrorHandler = mssEH->clone();
+	  if (overRide  ||  MSStateParse::thisMSSErrorHandler.null()) {
+            if (mssEH == NULL) {
+              MSStateParse::thisMSSErrorHandler = mssEH;
+            } else {
+              MSStateParse::thisMSSErrorHandler = mssEH->clone();
 	    }
-	  else if (MSStateParse::thisMSSErrorHandler == NULL)
-	    {
-	      if (mssEH == NULL) MSStateParse::thisMSSErrorHandler = mssEH;
-	      else MSStateParse::thisMSSErrorHandler = mssEH->clone();
-	    }
+          }
 	  break;
 	}
       case SPW_EXPR:
 	{
-	  if (overRide)
-	    {
-	      MSSpwParse::cleanupErrorHandler();
-	      if (mssEH == NULL) MSSpwParse::thisMSSpwErrorHandler = mssEH;
-	      else MSSpwParse::thisMSSpwErrorHandler = mssEH->clone();
+	  if (overRide  ||  MSSpwParse::thisMSSpwErrorHandler.null()) {
+            if (mssEH == NULL) {
+              MSSpwParse::thisMSSpwErrorHandler = mssEH;
+            } else {
+              MSSpwParse::thisMSSpwErrorHandler = mssEH->clone();
 	    }
-	  else if (MSSpwParse::thisMSSpwErrorHandler == NULL)
-	    {
-	      if (mssEH == NULL) MSSpwParse::thisMSSpwErrorHandler = mssEH;
-	      else MSSpwParse::thisMSSpwErrorHandler = mssEH->clone();
-	    }
+          }
 	  break;
 	}
       default: throw(MSSelectionError(String("Wrong MSExprType in MSSelection::setErrorHandler()")));

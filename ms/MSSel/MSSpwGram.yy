@@ -257,6 +257,7 @@ FreqList: FListElements
 	   } 
         | FreqList SEMICOLON FListElements
            {
+             $$ = $1;
 	     Int N0=(*($$)).nelements(), N1=4;
 	      (*($$)).resize(N0+N1,True);  // Resize the existing list
 	      for(Int i=N0;i<N0+N1;i++)
@@ -295,7 +296,6 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!$$) delete $$;
 	$$ = new Vector<Int>(myMSSI.matchRegexOrPattern($1));
 	
 	ostringstream m; m << "No match found for ";
@@ -315,7 +315,6 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!$$) delete $$;
 	$$ = new Vector<Int>(myMSSI.matchRegexOrPattern($1));
 	
 	ostringstream m; m << "No match found for ";
@@ -401,6 +400,7 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
+
 	if (!($$)) delete $$;
 	Int nSpec;
 	// cout << (*($1)) << "  " << endl;
@@ -410,6 +410,8 @@ Spw: IDENTIFIER
 	// if ((*($1))[3] == MSSpwIndex::MSSPW_UNITHZ) cout << "FreqRange ";
 	$$ = new Vector<Int>(myMSSI.convertToSpwIndex($1[0],nSpec)); 
 	/*   cout << (*($$)) << endl; */
+	delete $1;
+	myMSSI.matchNameAsIntID(*($$));
       }
 ;
 FullSpec: Spw
@@ -457,6 +459,7 @@ FullSpec: Spw
 	      //	      $$ = MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList);
 	      MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList,False);
 	      delete $1;
+              delete $3;
 	    }
 ;
 FullExpr: FullSpec        {} 
