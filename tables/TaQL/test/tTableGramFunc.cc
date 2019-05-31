@@ -627,6 +627,9 @@ int testScaDComplex()
   nfail += checkScaDComplex ("cube", "1.4+1i", DComplex(1.4,1)*DComplex(1.4,1)*DComplex(1.4,1));
   nfail += checkScaDComplex ("min", "-1.4+1i, -5+8i", DComplex(-1.4,1));
   nfail += checkScaDComplex ("max", "-1.4+1i, -5+8i", DComplex(-5,8));
+  nfail += checkScaDouble ("norm", "-5+8i", norm(DComplex(-5,8)));
+  nfail += checkScaDouble ("abs", "-5+8i", abs(DComplex(-5,8)));
+  nfail += checkScaDouble ("arg", "-5+8i", arg(DComplex(-5,8)), "rad");
   nfail += checkScaDComplex ("complex", "-1.4,1", DComplex(-1.4,1));
   nfail += checkScaDComplex ("complex", "'-1.4+10j'", DComplex(-1.4,10));
   nfail += checkScaDComplex ("complex", "'-1.4'", DComplex(-1.4,0));

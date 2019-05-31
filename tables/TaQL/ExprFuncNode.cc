@@ -84,7 +84,6 @@ void TableExprFuncNode::fillUnits()
     case atanFUNC:
     case atan2FUNC:
     case timeFUNC:
-    case argFUNC:
       // These functions return radians (if operand is not complex).
       if (operands_p[0]->dataType() != NTComplex) {
         setUnit ("rad");
@@ -99,6 +98,9 @@ void TableExprFuncNode::fillUnits()
       if (! childUnit.empty()) {
         TableExprNodeUnit::adaptUnit (operands_p[0], "d");
       }
+      break;
+    case argFUNC:
+      setUnit ("rad");
       break;
     case absFUNC:
     case realFUNC:

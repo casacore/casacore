@@ -390,7 +390,10 @@ withpart:  {   /* no WITH part */
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | WITH tables
-           { $$ = $2; }
+           {
+             $$ = $2;
+             theFromQueryDone = False;
+           }
          ;
 
 /* The SELECT command; note that many parts are optional which is handled
