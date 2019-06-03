@@ -240,21 +240,20 @@ namespace casacore { namespace python {
         dt = PycArrayScalarType (py_elem_obj.ptr());
       } else if (PyBool_Check (py_elem_obj.ptr())) {
         dt = TpBool;
+#ifndef IS_PY3K
+      } else if (PyInt_Check (py_elem_obj.ptr())) {
+        dt = TpInt;
+      } else if (PyString_Check(py_elem_obj.ptr())) {
+        dt = TpString;
+#endif
+      } else if (PyLong_Check (py_elem_obj.ptr())) {
+        dt = TpInt64;
       } else if (PyFloat_Check (py_elem_obj.ptr())) {
         dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
         dt = TpDComplex;
-      } else if (PyLong_Check (py_elem_obj.ptr())) {
-        dt = TpInt64;
-#ifdef IS_PY3K
       } else if (PyUnicode_Check (py_elem_obj.ptr())) {
         dt = TpString;
-#else
-      } else if (PyInt_Check (py_elem_obj.ptr())) {
-        dt = TpInt;
-      } else if (PyString_Check(py_elem_obj.ptr()) || PyUnicode_Check(py_elem_obj.ptr())) {
-        dt = TpString;
-#endif
       } else {
         throw AipsError ("PycValueHolder: unknown python data type");
       }

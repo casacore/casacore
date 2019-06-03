@@ -95,14 +95,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       exception. Only the <src>casacore::IterError</src> exception is mapped
 //       to a Python <src>StopIteration</src> exception.
 // </ul>
-// Elements in a numpy array are called array scalars. They do not have a python
-// type like <src>int</src>, but instead a type like <src>numpy.int32</src>.
-// The converters can handle such types and convert them correctly to a scalar.
-// Of course, the converters also can handle sequences containing such types.
-//
-// A numpy or numarray scalar array (e.g. <src>array(1.0)</src> is a somewhat
-// peculiar object that cannot be indexed. It is handled correctly by the
-// converters and handled as a scalar value.
+// The converts from Python to C++ can handle some special numpy objects.
+// Such objects can also be contained in sequences or dicts.
+// <ul>
+//  <li> Elements in a numpy array are called array scalars. They do not have
+//       a python type such as <src>int</src>, but instead a type as
+//       <src>numpy.int32</src>.
+//       The converters can handle such types and convert them correctly to
+//       a scalar.
+//  <li> A numpy scalar array (e.g. <src>array(1.0)</src> is a somewhat
+//       peculiar numpy object. It has an empty shape and cannot be indexed.
+//       It is handled correctly by the from converters and handled as a
+//       scalar value.
+//  <li> An empty numpy object (e.g. <src>array([])</src>) is handled as
+//       a None value.
 // </synopsis>
 
 // </module>
