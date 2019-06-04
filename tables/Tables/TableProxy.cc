@@ -1756,7 +1756,7 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
         if (isArray) {
             ndim = cold.asInt("ndim");
             if (cold.isDefined("shape")) {
-                shape = cold.asArrayInt ("shape");
+                shape = cold.toArrayInt ("shape");
             }
             Bool cOrder = False;
             if (cold.isDefined("_c_order")) {
