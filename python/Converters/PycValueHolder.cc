@@ -150,12 +150,16 @@ namespace casacore { namespace python {
       return casa_array_from_python::makeScalar (obj_ptr);
     } else if (PyBool_Check(obj_ptr)) {
       return ValueHolder(extract<bool>(obj_ptr)());
-#ifndef IS_PY3K
-    } else if (PyInt_Check(obj_ptr)) {
-      return ValueHolder(extract<int>(obj_ptr)());
-#endif
     } else if (PyLong_Check(obj_ptr)) {
       return ValueHolder(extract<Int64>(obj_ptr)());
+#ifndef IS_PY3K
+    } else if (PyInt_Check(obj_ptr)) {
+      Int64 v = extract<Int64>(obj_ptr)();
+      if (Int(v) == v) {
+        return ValueHolder(Int(v));
+      }
+      return ValueHolder(v);
+#endif
     } else if (PyFloat_Check(obj_ptr)) {
       return ValueHolder(extract<double>(obj_ptr)());
     } else if (PyComplex_Check(obj_ptr)) {
