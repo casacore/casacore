@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
  // Global pointer to the parser object
   MSAntennaParse* MSAntennaParse::thisMSAParser = 0;
   TableExprNode MSAntennaParse::column1AsTEN_p,MSAntennaParse::column2AsTEN_p;
-  MSSelectionErrorHandler* MSAntennaParse::thisMSAErrorHandler = 0;
+  CountedPtr<MSSelectionErrorHandler> MSAntennaParse::thisMSAErrorHandler;
   
   //# Constructor
   MSAntennaParse::MSAntennaParse ()

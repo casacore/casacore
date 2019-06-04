@@ -627,6 +627,9 @@ int testScaDComplex()
   nfail += checkScaDComplex ("cube", "1.4+1i", DComplex(1.4,1)*DComplex(1.4,1)*DComplex(1.4,1));
   nfail += checkScaDComplex ("min", "-1.4+1i, -5+8i", DComplex(-1.4,1));
   nfail += checkScaDComplex ("max", "-1.4+1i, -5+8i", DComplex(-5,8));
+  nfail += checkScaDouble ("norm", "-5+8i", norm(DComplex(-5,8)));
+  nfail += checkScaDouble ("abs", "-5+8i", abs(DComplex(-5,8)));
+  nfail += checkScaDouble ("arg", "-5+8i", arg(DComplex(-5,8)), "rad");
   nfail += checkScaDComplex ("complex", "-1.4,1", DComplex(-1.4,1));
   nfail += checkScaDComplex ("complex", "'-1.4+10j'", DComplex(-1.4,10));
   nfail += checkScaDComplex ("complex", "'-1.4'", DComplex(-1.4,0));
@@ -739,8 +742,8 @@ int testScaString()
   nfail += checkScaString ("str", "3h2m4.36, 'ANGLE|10'", "+045.31.05.4000");
   nfail += checkScaString ("str", "11sep18/3h2m4.36, 'dmy|USE_SPACE'", "11-Sep-2018 03:02:04");
   nfail += checkScaString ("str", "11sep18 3h2m4.36, 'yMD|no_time'", "2018/09/11");
-  nfail += checkScaString ("str", "11sep18 3h2m4.36, 'FITS'", "2018-09-11T03:02:04");
-  nfail += checkScaString ("str", "11sep18 3h2m4.36, 'FITS|9'", "2018-09-11T03:02:04.360");
+  nfail += checkScaString ("str", "11sep18T3h2m4.36Z, 'FITS'", "2018-09-11T03:02:04");
+  nfail += checkScaString ("str", "11sep18 3h2m4.36, 'ISO|9'", "2018-09-11T03:02:04.360Z");
   nfail += checkScaString ("hms", "3h2m4.16", "03h02m04.160");
   nfail += checkScaString ("dms", "3h2m4.16", "+045d31m02.400");
   nfail += checkScaString ("iif", "T, 'abc', '1234'", "abc");

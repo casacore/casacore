@@ -37,8 +37,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSStateParse* MSStateParse::thisMSSIParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSStateParse::node_p = 0x0;
   Vector<Int> MSStateParse::idList;
-  //CountedPtr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
-  MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler=NULL;
+  CountedPtr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
+  //MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler=NULL;
 
   //# Constructor
   MSStateParse::MSStateParse ()

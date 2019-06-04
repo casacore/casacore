@@ -135,7 +135,9 @@ class Time;
 //	The <src>MVTime::DMY</src> format implies TIME, and will
 //	precede the time with 'dd-Mon-yyyy/'.<br>
 //	The <src>MVTime::FITS</src> format implies TIME, and will
-//	precede the time with 'ccyy-mm-ddT'.
+//	precede the time with 'ccyy-mm-ddT'.<br>
+//	The <src>MVTime::ISO</src> format implies FITS followed by a Z
+//      for the UTC time zone.
 //      The <src>BOOST</src> format implies DMY and USE_SPACE (space instead
 //      of slash between date and time).
 //	<br>
@@ -175,6 +177,7 @@ class Time;
 //	  <li> MVTime::CLEAN modifier for suppressing superfluous periods
 //        <li> MVTime::USE_SPACE to use a space instead of a slash
 //             as delimiter between date and time.
+//        <li> MVTime::USE_Z to follow the time by a Z for the UTC time zone.
 //	  <li> MVTime::NO_[D|H][M] modifier to suppress first field(s)
 //	  <li> MVTime::DIG2 modifier to get +dd.mm.ss.ttt in angle or
 //		time format(i.e. in range -90 - +90 or -12 - +12)
@@ -285,6 +288,8 @@ class MVTime {
 	LOCAL			= 4096,
         USE_SPACE               = 8192,
         ALPHA                   = 16384,
+        USE_Z                   = 32768,
+        ISO                     = FITS + USE_Z,
         BOOST                   = DMY + USE_SPACE,
 	NO_H 			= NO_D,
 	NO_HM 			= NO_DM,
@@ -300,7 +305,7 @@ class MVTime {
 	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM,
 	YMD_ONLY		= YMD + NO_TIME,
 	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2 +
-                                  LOCAL + USE_SPACE + ALPHA
+                                  LOCAL + USE_SPACE + USE_Z + ALPHA
     };
 
 //# Local structure

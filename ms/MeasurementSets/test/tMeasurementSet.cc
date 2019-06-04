@@ -191,10 +191,12 @@ uInt tNonStatic(const String& sdmsName)
     ms.createDefaultSubtables(Table::New);
 
     ArrayColumn<Float> fldata(ms,MS::columnName(MS::FLOAT_DATA));
+    ScalarColumn<Bool> flrow(ms,MS::columnName(MS::FLAG_ROW));
     for (Int i=0; i<10; i++) {
       Matrix<Float> arr(4,2);
       arr=Float(i);
       fldata.put(i,arr);
+      flrow.put(i,False);
     }
     
 

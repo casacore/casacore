@@ -133,6 +133,7 @@ int main ()
     showTime (q, MVTime::TIME+MVTime::NO_DM+MVTime::ALPHA+MVTime::CLEAN, 9);
     showTime (q, MVTime::BOOST, 0);
     showTime (q, MVTime::FITS, 10);
+    showTime (q, MVTime::ISO, 10);
     showTime (q, MVTime::YMD, 5);
     showTime (q, MVTime::DMY, 4);
     showTime (q, MVTime::DMY+MVTime::CLEAN, 4);

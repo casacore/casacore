@@ -371,3 +371,6 @@ SHOW
 show a b c d e
 SHOW a b c d e
 
+with [select abs(phase(t1.DATA) - phase(t2.DATA)) as D from a.ms t1, /home/ger/WSRTA190521040_B001_original.MS t2] t select gmax(iif(D>pi(),D-3.14,D)) from t
+WITH [SELECT abs((phase(t1.DATA))-(phase(t2.DATA))) AS D FROM a.ms AS t1,/home/ger/WSRTA190521040_B001_original.MS AS t2] AS t SELECT gmax(iif((D)>(pi()),(D)-(3.14),D)) FROM t AS t
+
