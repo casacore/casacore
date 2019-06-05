@@ -1922,6 +1922,23 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
         return angdistx (a1, a2);
 
       }
+    case TableExprFuncNode::normangleFUNC:
+      {
+        MArray<Double> values (operands()[0]->getArrayDouble(id));
+        Array<Double> res(values.shape());
+        Bool deleteVal, deleteRes;
+        const Double* val = values.array().getStorage (deleteVal);
+        Double* resp = res.getStorage (deleteRes);
+        size_t n = values.size();
+        for (size_t i=0; i<n; i++) {
+          double v = fmod(val[i], C::_2pi);
+          if (v < -C::pi) v += C::_2pi;
+          res[i] = (v <= C::pi  ?  v : v-C::_2pi);
+        }
+        values.array().freeStorage (val, deleteVal);
+        res.putStorage (resp, deleteRes);
+        return MArray<Double> (res, values);
+      }
     case TableExprFuncNode::datetimeFUNC:
     case TableExprFuncNode::mjdtodateFUNC:
     case TableExprFuncNode::dateFUNC:

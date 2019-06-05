@@ -109,7 +109,6 @@ void TableExprFuncNode::fillUnits()
     case roundFUNC:
     case floorFUNC:
     case ceilFUNC:
-    case fmodFUNC:
     case arrsumFUNC:
     case arrsumsFUNC:
     case runsumFUNC:
@@ -223,6 +222,9 @@ void TableExprFuncNode::fillUnits()
         setUnit (qs.getFullUnit());
       }
       break;
+    case normangleFUNC:
+      setUnit ("rad");
+      // fall through
     case sinFUNC:
     case cosFUNC:
     case tanFUNC:
@@ -241,6 +243,7 @@ void TableExprFuncNode::fillUnits()
     case complexFUNC:
     case minFUNC:
     case maxFUNC:
+    case fmodFUNC:
       setUnit (makeEqualUnits (operands_p, 0, operands_p.size()));
       break;
     case near2FUNC:
@@ -843,6 +846,12 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
         const double* d1 = a1.array().data();
         const double* d2 = a2.array().data();
         return angdist (d1[0], d1[1], d2[0], d2[1]);
+      }
+    case normangleFUNC:
+      {
+        double v = fmod(operands_p[0]->getDouble(id), C::_2pi);
+        if (v < -C::pi) v += C::_2pi;
+        return (v <= C::pi  ?  v : v-C::_2pi);
       }
     case datetimeFUNC:
     case mjdtodateFUNC:
@@ -1796,6 +1805,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case tanhFUNC:
         checkNumOfArg (1, 1, nodes);
         return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
+    case normangleFUNC:
+        checkNumOfArg (1, 1, nodes);
+        return checkDT (dtypeOper, NTReal, NTDouble, nodes);
     case squareFUNC:
     case cubeFUNC:
         checkNumOfArg (1, 1, nodes);

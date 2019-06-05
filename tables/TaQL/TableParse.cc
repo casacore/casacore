@@ -960,6 +960,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::angdistFUNC;
   } else if (funcName == "angdistx"  ||  funcName == "angulardistancex") {
     ftype = TableExprFuncNode::angdistxFUNC;
+  } else if (funcName == "normangle") {
+    ftype = TableExprFuncNode::normangleFUNC;
   } else if (funcName == "cones") {
     ftype = TableExprConeNode::conesFUNC;
     if (narguments == 3) {

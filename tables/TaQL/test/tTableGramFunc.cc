@@ -598,6 +598,8 @@ int testScaDouble()
   nfail += checkScaDouble ("iif", "F, 2, 3.1", 3.1);
   nfail += checkScaDouble ("angdist", "[[34.3deg, 45deg]], [34.2deg, 47deg]", 0.0349276, "rad");
   nfail += checkScaDouble ("angdistx", "[325.7deg, -45deg], [-34.2deg, -47deg]", 0.0349276, "rad");
+  nfail += checkScaDouble ("normangle", "325.7deg", -0.598648, "rad");
+  nfail += checkScaDouble ("normangle", "3", 3.0, "rad");
   nfail += checkScaDouble ("variance", "[1,2]", 0.25);
   nfail += checkScaDouble ("stddev", "[1,2.]", sqrt(0.25));
   nfail += checkScaDouble ("variance", "[1+1i,2+3i]", 1.25);
@@ -895,6 +897,9 @@ int testArrDouble()
                            "[0.200206,0.0738066154]");
   nfail += checkArrDouble ("angdistx", "[34.3deg, 45deg, 34.2deg,45deg], [0.5,0.6,0.7,0.8]",
                            "[[0.2002061307,0.1997055276],[0.0726069829,0.0738066154]]");
+  nfail += checkArrDouble ("normangle", "[-12:12:2]",
+                           "[0.5663706,2.5663706,-1.7168147, 0.2831853,2.2831853,-2.0000000,"
+                           "0.0000000, 2.0000000,-2.2831853,-0.2831853,1.7168147,-2.5663706]");
   return nfail;
 }
 
