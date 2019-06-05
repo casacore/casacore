@@ -15,13 +15,20 @@ $ apt-get search casacore
 
 ```
 
-## macOS
+## MacOS
 
 Use Homebrew with the `ska-sa` tap to install casacore:
 
 ```bash
 $ brew tap ska-sa/tap
 $ brew install casacore
+```
+
+## Docker
+
+We now also publish docker images for each github branch on [quay.io](https://quay.io/repository/casacore/casacore):
+```
+$ docker pull quay.io/casacore/casacore:master
 ```
 
 ## Building from source
