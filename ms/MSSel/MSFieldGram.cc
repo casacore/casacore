@@ -123,7 +123,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	fieldTEN=baseMSFieldGramParseCommand(thisParser, command, selectedIDs);
       }
-    catch(MSSelectionFieldError &x)
+    catch(const MSSelectionFieldError&)
       {
 	delete thisParser;
 	throw;
