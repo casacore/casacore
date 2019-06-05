@@ -2,7 +2,6 @@
 
 ## General
  - Only use DataManager.get/putSlice if possible (#901)
- - Incremental Storage Manager columns don't support slicing (#899)
  - User docker for Linux build on Travis for CI  (#856)
  - improve unicode support (#853)
  - Changed MadfmFunc so that it inherits from ArrayFunctorBase (#905)
@@ -17,6 +16,7 @@
  - Handle numpy Unicode arrays  (#912)
  - Fix memory leak when converting Python unicode to casa string (#910)
  - Possible leak bug (#908)
+ - Always use TpInt64 for PyLong (#916)
  
 ## Build system
  - Travis macOS fails on Python3 OSX build system (#778)

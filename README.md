@@ -12,11 +12,21 @@ Casacore is now part of Debian and Ubuntu, use apt to search for the package you
 ```bash
 $ apt-get update
 $ apt-get search casacore
+
+```
+
+## macOS
+
+Use Homebrew with the `ska-sa` tap to install casacore:
+
+```bash
+$ brew tap ska-sa/tap
+$ brew install casacore
 ```
 
 ## Building from source
 
-### getting the source code
+### Getting the source code
 
 The casacore source code is maintained on github.
 
