@@ -17,6 +17,7 @@
  - Fix memory leak when converting Python unicode to casa string (#910)
  - Possible leak bug (#908)
  - Always use TpInt64 for PyLong (#916)
+ - Improve CMake FindPython (#922)
  
 ## Build system
  - Travis macOS fails on Python3 OSX build system (#778)
