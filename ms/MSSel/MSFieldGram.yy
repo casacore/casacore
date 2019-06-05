@@ -115,9 +115,9 @@ indexcombexpr  : indexlist
 		   Vector<Int> selectedIDs(myMSFI.maskFieldIDs(myMSFI.validateIndices(*($1))));
                    $$ = MSFieldParse().selectFieldIds(selectedIDs);
 		   m << "Partial or no match for Field ID list " << (*($1));
-                   checkFieldError(selectedIDs, m);
-
+                   /* Do delete before check to avoid leak when exception */
 		   delete $1;
+                   checkFieldError(selectedIDs, m);
                  }
 	       ;
 //
@@ -136,14 +136,12 @@ fieldid: IDENTIFIER
 	    //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	    MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
 	    //	    cerr << "ID: " << $1 << endl;
-	    if (!($$)) delete $$;
 	    $$=new Vector<Int>(myMSFI.matchFieldNameOrCode($1));
 	    //$$=new Vector<Int>(myMSAI.matchFieldRegexOrPattern($1));
 	    
 	    ostringstream m; m << "No match found for name \"" << $1 << "\"";
-	    checkFieldError(*($$), m);
-	    
 	    free($1);
+	    checkFieldError(*($$), m);
 	  }
        | QSTRING 
           { //
@@ -161,10 +159,9 @@ fieldid: IDENTIFIER
 	    $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1));
 	    
 	    ostringstream m; m << "No match found for name \"" << $1 << "\"";
+	    free($1);
 	    checkFieldError(*($$), m);
 	    String s(m.str());
-
-	    free($1);
 	  }
        | REGEX
           { //
@@ -179,15 +176,13 @@ fieldid: IDENTIFIER
 	    $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1,True));
 	    
 	    ostringstream m; m << "No match found for \"" << $1 << "\"";
-	    checkFieldError(*($$), m);
-	    
 	    free($1);
-	  }
+	    checkFieldError(*($$), m);
+          }
        ;
 
 fieldidrange: INT // A single field index
                {
-		 if (!($$)) delete $$;
 		 $$ = new Vector<Int>(1);
 		 (*($$))(0) = atoi($1);
 		 free($1);
@@ -201,7 +196,6 @@ fieldidrange: INT // A single field index
 		 for(Int i = 0; i < len; i++) 
 		   fieldids[i] = start + i;
 
-		 if (!($$)) delete $$;
 		 $$ = new Vector<Int>(fieldids);	   
 		 free($1); free($3);
 	       }
@@ -212,43 +206,37 @@ fieldidbounds: LT INT // <ID
 		  //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 		  //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 		  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
-		  if (!($$)) delete $$;
 		  Int n=atoi($2);
 		  $$ = new Vector<Int>(myMSFI.matchFieldIDLT(n));
 
 		  ostringstream m; m << "No field ID found <" << n;
-		  checkFieldError(*($$), m);
-
 		  free($2);
+		  checkFieldError(*($$), m);
 		}
              | GT INT // >ID
                 {
 		  //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 		  //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 		  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
-		  if (!($$)) delete $$;
 		  Int n=atoi($2);
 		  $$ = new Vector<Int>(myMSFI.matchFieldIDGT(n));
 
 		  ostringstream m; m << "No field ID found >" << n;
-		  checkFieldError(*($$), m);
-
 		  free($2);
+		  checkFieldError(*($$), m);
 		}
              | GT INT AMPERSAND LT INT // >ID & <ID
                 {
 		  //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 		  //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 		  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
-		  if (!($$)) delete $$;
 		  Int n0=atoi($2), n1=atoi($5);
 		  $$ = new Vector<Int>(myMSFI.matchFieldIDGTAndLT(n0,n1));
 
 		  ostringstream m; 
 		  m << "No field found in the range [" << n0 << "," << n1 << "]";
-		  checkFieldError(*($$), m);
-
 		  free($2); free($5);
+		  checkFieldError(*($$), m);
 		}
              ;
 fieldidlist: fieldid // A singe field ID
@@ -266,12 +254,12 @@ fieldidlist: fieldid // A singe field ID
            ;
 indexlist: fieldidlist
             {
-	      if (!($$)) delete $$;
 	      $$ = new Vector<Int>(*$1);
 	      delete $1;
 	    }
          | indexlist COMMA fieldidlist  
             {
+              $$ = $1;
 	      Int N0=(*($1)).nelements(), 
 		N1 = (*($3)).nelements();
 	      (*($$)).resize(N0+N1,True);  // Resize the existing list

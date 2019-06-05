@@ -136,12 +136,12 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
 
 feedlist: feedids  // single feed or range
           {
-	    if (!($$)) delete $$;
 	    $$ = new Vector<Int>(*$1);
 	    delete $1;
 	  }
        | feedlist COMMA feedids  // feedID, feedID,...
           {
+            $$ = $1;
 	    Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
 	    (*($$)).resize(N0+N1,True);  // Resize the existing list
 	    for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
@@ -150,7 +150,6 @@ feedlist: feedids  // single feed or range
 
 feedids: INT // A single feed index
              {
-	       if (!($$)) delete $$;
 	       $$ = new Vector<Int>(1);
 	       (*($$))(0) = atoi($1);
 	       free($1);
@@ -163,7 +162,6 @@ feedids: INT // A single feed index
 		Vector<Int> feedids(len);
 		for(Int i = 0; i < len; i++) feedids[i] = start + i;
 
-		if (!($$)) delete $$;
 		$$ = new Vector<Int>(len);
 
 		for (Int i=0; i<len; i++) 
