@@ -118,7 +118,7 @@ void doIt()
   checkScaDouble ("e2*e3", 0, e2*e3, 0.04, "cm.m");
   checkScaDouble ("e3*e2", 0, e3*e2, 0.04, "m.cm");
   checkScaDouble ("e3/e2", 0, e3/e2, 1., "");
-  checkScaDouble ("e3%e2", 0, e3%e2, 0.02, "m");
+  checkScaDouble ("e3%e2", 0, e3%e2, 0., "m");
   // Comparison
   checkScaBool ("e3*e2==e2*e3", 0, e3*e2==e2*e3, True);
   checkScaBool ("e2==e3", 0, e2+0.00001==e3, False);
