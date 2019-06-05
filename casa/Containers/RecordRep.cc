@@ -34,6 +34,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <cstring>                  //# for memmove with gcc-4.3
@@ -720,8 +721,9 @@ void* RecordRep::get_pointer (Int whichField, DataType type) const
     // A scalar can be returned as an array.
     if (! (isArray(type)  &&  asScalar(type) == descDtype)) {
         throw (AipsError ("RecordRep::get_pointer - "
-			  "incorrect data type used for field " +
-			  desc_p.name(whichField)));
+			  "incorrect data type " + ValType::getTypeStr(type) +
+                          " used for field " + desc_p.name(whichField) +
+                          " with type " + ValType::getTypeStr(descDtype)));
     }
     if (datavec_p[whichField] == 0) {
         const_cast<RecordRep*>(this)->makeDataVec (whichField, descDtype);

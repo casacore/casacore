@@ -16,6 +16,7 @@ def dotest(t):
     print (t.testfloat (3.14));
     print (t.testfloat (12));
     print (t.teststring ("this is a string"));
+    print (t.teststring (u"this is a unicode string"));
 
     print (t.testipos ([2,3,4]));
     print (t.testipos (1));
@@ -33,6 +34,8 @@ def dotest(t):
     print (t.testvecstr (["a1","a2","b1","b2"]));
     print (t.testvecstr (()));
     print (t.testvecstr ("sc1"));
+    print (t.testvecstr (u"unicode sc1"));
+    print (t.testvecstr ([u"uni1", "uni2"]));
     print (t.teststdvecbool ([False,True]));
     print (t.teststdvecuint ([1,2,4]));
     print (t.teststdvecuint (()));
@@ -49,13 +52,16 @@ def dotest(t):
     print (t.testvh (1.3));
     print (t.testvh (10-11j));
     print (t.testvh ("str"));
+    print (t.testvh (u"unistr"));
     print (t.testvh ([True]) + 0);         # add 0 to convert numpy to integer
     print (t.testvh ([2,4,6,8,10]));
     print (t.testvh ([1.3,4,5,6]));
     print (t.testvh ([10-11j,1+2j]));
 #    print (t.testvh ([]));
     print (t.testvh (["str1","str2"]));
+    print (t.testvh ([u"ustr1",u"ustr2"]));
     print (t.testvh ({"shape":[2,2],"array":["str1","str2","str3","str4"]}));
+    print (t.testvh ({"shape":[3,1],"array":[u"ustr1",u"ustr2",u"ustr3"]}));
     a  =  t.testvh ({"shape":[2,2],"array":["str1","str2","str3","str4"]});
     print (a);
     print (t.testvh (a));
@@ -96,7 +102,8 @@ def dotest(t):
 
     # On 64-bit machines the output also contains 'dtype=int32'
     # So leave it out.
-    a = t.testrecord({"int":1, "int64":123456789012L, "str":"bc", 'vecint':[1,2,3]})
+    a = t.testrecord({"int":1, "int64":123456789012L, "str":"bc",
+                      "ustr":"ubc", 'vecint':[1,2,3]})
     print ('>>>');
     print (a);
     print ('<<<');
@@ -112,25 +119,43 @@ def testarrvh(arr):
     print (t.testvh([arr[0], arr[1]]));
 
 def testarrb(arr):
+    print ('  testarrb')
+    # Test array
     testarrvh(arr);
+    # Test array scalar
     print (t.testbool(arr[0]));
+    # Test scalar array
+    print (t.testbool(NUM.array(arr[1])));
 
 def testarri(arr):
+    print ('  testarri')
     testarrvh(arr);
     print (t.testint(arr[0]));
+    print (t.testint(NUM.array(arr[1])));
     print (t.testint64(arr[0]));
     print (t.testssize(arr[0]));
     print (t.testfloat(arr[0]));
     print (t.testcomplex(arr[0]));
 
 def testarrf(arr):
+    print ('  testarrf')
     testarrvh(arr);
     print (t.testfloat(arr[0]));
+    print (t.testfloat(NUM.array(arr[1])));
     print (t.testcomplex(arr[0]));
 
 def testarrc(arr):
+    print ('  testarrc')
     testarrvh(arr);
     print (t.testcomplex(arr[0]));
+    print (t.testcomplex(NUM.array(arr[1])));
+
+def testarrstr(arr):
+    print ('  testarrstr')
+    testarrvh(arr);
+    print (t.teststring(arr[0]));
+    # numpy scalar array of string not supported
+    #print (t.teststring(NUM.array(arr[1])));
 
 def testnps():
     testarrb(NUM.array([True,False]));
@@ -146,6 +171,7 @@ def testnps():
     testarrf(NUM.float64([45,46]));
     testarrc(NUM.complex64([-56-66j,-57-67j]));
     testarrc(NUM.complex128([-76-86j,-77-87j]));
+    testarrstr(NUM.array(['1','2']));
 
 def testexcp():
     # Test a normal exception.
@@ -179,8 +205,8 @@ def testnp():
     testnps();
     testexcp();
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     import numpy as NUM
     from distutils.version import LooseVersion
     if LooseVersion(NUM.version.version) >= LooseVersion("1.14"):

@@ -350,7 +350,7 @@ public:
 
     // Get the value of the given field.
     // If the field and value data type mismatch, type promotion
-    // of scalars will be done if possible. If not possible, an exception
+    // will be done if possible. If not possible, an exception
     // is thrown.
     // If the value argument is an array, it will be reshaped if needed.
     // <group>

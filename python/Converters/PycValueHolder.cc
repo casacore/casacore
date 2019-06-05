@@ -150,14 +150,15 @@ namespace casacore { namespace python {
       return casa_array_from_python::makeScalar (obj_ptr);
     } else if (PyBool_Check(obj_ptr)) {
       return ValueHolder(extract<bool>(obj_ptr)());
-#ifdef IS_PY3K
-    } else if (PyLong_Check(obj_ptr)) {
-      return ValueHolder(extract<Int>(obj_ptr)()); // gijs: maybe should be Int64? But only Int seems to work
-#else
-    } else if (PyInt_Check(obj_ptr)) {
-      return ValueHolder(extract<int>(obj_ptr)());
     } else if (PyLong_Check(obj_ptr)) {
       return ValueHolder(extract<Int64>(obj_ptr)());
+#ifndef IS_PY3K
+    } else if (PyInt_Check(obj_ptr)) {
+      Int64 v = extract<Int64>(obj_ptr)();
+      if (Int(v) == v) {
+        return ValueHolder(Int(v));
+      }
+      return ValueHolder(v);
 #endif
     } else if (PyFloat_Check(obj_ptr)) {
       return ValueHolder(extract<double>(obj_ptr)());
@@ -243,21 +244,19 @@ namespace casacore { namespace python {
         dt = PycArrayScalarType (py_elem_obj.ptr());
       } else if (PyBool_Check (py_elem_obj.ptr())) {
         dt = TpBool;
+#ifndef IS_PY3K
+      } else if (PyInt_Check (py_elem_obj.ptr())) {
+        dt = TpInt;
+      } else if (PyString_Check(py_elem_obj.ptr())) {
+        dt = TpString;
+#endif
+      } else if (PyLong_Check (py_elem_obj.ptr())) {
+        dt = TpInt64;
       } else if (PyFloat_Check (py_elem_obj.ptr())) {
         dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
         dt = TpDComplex;
-#ifdef IS_PY3K
-      } else if (PyLong_Check (py_elem_obj.ptr())) {
-        dt = TpInt;   // gijs: maybe should be TpInt64? But only Int seems to work
       } else if (PyUnicode_Check (py_elem_obj.ptr())) {
-#else
-      } else if (PyInt_Check (py_elem_obj.ptr())) {
-          dt = TpInt;
-      } else if (PyLong_Check (py_elem_obj.ptr())) {
-          dt = TpInt64;
-      } else if (PyString_Check(py_elem_obj.ptr()) || PyUnicode_Check(py_elem_obj.ptr())) {
-#endif
         dt = TpString;
       } else {
         throw AipsError ("PycValueHolder: unknown python data type");

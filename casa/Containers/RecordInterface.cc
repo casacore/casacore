@@ -347,89 +347,67 @@ void RecordInterface::get (const RecordFieldId& id, String& value) const
 }
 void RecordInterface::get (const RecordFieldId& id, Array<Bool>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<Bool>& array = *(const Array<Bool>*)
-	                            get_pointer (whichField, TpArrayBool);
+    Array<Bool> array = toArrayBool (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<uChar>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<uChar>& array = *(const Array<uChar>*)
-	                            get_pointer (whichField, TpArrayUChar);
+    Array<uChar> array = toArrayuChar (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<Short>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<Short>& array = *(const Array<Short>*)
-	                            get_pointer (whichField, TpArrayShort);
+    Array<Short> array = toArrayShort (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<Int>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<Int>& array = *(const Array<Int>*)
-	                            get_pointer (whichField, TpArrayInt);
+    Array<Int> array = toArrayInt (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<uInt>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<uInt>& array = *(const Array<uInt>*)
-	                            get_pointer (whichField, TpArrayUInt);
+    Array<uInt> array = toArrayuInt (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<Int64>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<Int64>& array = *(const Array<Int64>*)
-	                            get_pointer (whichField, TpArrayInt64);
+    Array<Int64> array = toArrayInt64 (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<float>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<float>& array = *(const Array<float>*)
-	                            get_pointer (whichField, TpArrayFloat);
+    Array<float> array = toArrayFloat (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<double>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<double>& array = *(const Array<double>*)
-	                            get_pointer (whichField, TpArrayDouble);
+    Array<double> array = toArrayDouble (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<Complex>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<Complex>& array = *(const Array<Complex>*)
-	                            get_pointer (whichField, TpArrayComplex);
+    Array<Complex> array = toArrayComplex (id);
     value.resize (array.shape());
     value = array;
 } 
 void RecordInterface::get (const RecordFieldId& id, Array<DComplex>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<DComplex>& array = *(const Array<DComplex>*)
-	                            get_pointer (whichField, TpArrayDComplex);
+    Array<DComplex> array = toArrayDComplex (id);
     value.resize (array.shape());
     value = array;
 }
 void RecordInterface::get (const RecordFieldId& id, Array<String>& value) const
 {
-    Int whichField = idToNumber (id);
-    const Array<String>& array = *(const Array<String>*)
-	                            get_pointer (whichField, TpArrayString);
+    Array<String> array = toArrayString (id);
     value.resize (array.shape());
     value = array;
 }
