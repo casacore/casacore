@@ -200,24 +200,11 @@ template <class T>
 template <class U>
 Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
 				  const RecordInterface &in) {
-  if (in.isDefined(String("type")) &&
-      in.isDefined(String("order")) &&
-      in.type(in.idToNumber(RecordFieldId("order"))) == TpInt &&
-      (in.type(in.idToNumber(RecordFieldId("type"))) == TpString ||
-       (in.type(in.idToNumber(RecordFieldId("type"))) == TpInt &&
-	in.isDefined(String("ndim")) &&
-	in.isDefined(String("npar")) &&
-	in.isDefined(String("params")) &&
-	in.type(in.idToNumber(RecordFieldId("ndim"))) == TpInt &&
-	in.type(in.idToNumber(RecordFieldId("npar"))) == TpInt &&
-	(in.type(in.idToNumber(RecordFieldId("params"))) ==
-	 TpArrayDouble || in.type(in.idToNumber(RecordFieldId("params"))) ==
-	 TpArrayDComplex)))) {
+  try {
     if (!getType(error, fn, in)) return False;
     if ((nf_p == COMBINE || nf_p == COMPOUND) &&
 	in.isDefined(String("nfunc")) &&
 	in.isDefined(String("funcs")) &&
-	in.type(in.idToNumber(RecordFieldId("nfunc"))) == TpInt &&
 	in.type(in.idToNumber(RecordFieldId("funcs"))) == TpRecord) {
       Int nfunc;
       in.get(RecordFieldId("nfunc"), nfunc);
@@ -240,23 +227,22 @@ Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
 	delete fnc; fnc = 0;
       }
     }
-    if (in.isDefined(String("params")) &&
-	(in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDouble ||
-	 in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDComplex)) {
+    if (in.isDefined(String("params"))) {
       Vector<T> params;
       in.get(RecordFieldId("params"), params);
       setParameters(fn, params);
     }
-    if (in.isDefined(String("masks")) &&
-	in.type(in.idToNumber(RecordFieldId("masks"))) == TpArrayBool) {
+    if (in.isDefined(String("masks"))) {
       Vector<Bool> masks;
       in.get(RecordFieldId("masks"), masks);
       for (uInt i=0; i<fn->nparameters(); ++i) fn->mask(i) = masks[i];
     }
     return True;
+  } catch (const AipsError& x) {
+    error = x.what();
   }
-  error += String("Illegal Function record in "
-		  "FunctionHolder<T>::fromRecord\n");
+  error = String("Illegal Function record in "
+                 "FunctionHolder<T>::fromRecord\n" + error);
   return False;
 }
 
