@@ -1,60 +1,49 @@
 #!/bin/bash
 
+alias ccache=true
+
 set -e
 set -x
 
-wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O /tmp/sofa.tgz
-tar -xzf /tmp/sofa.tgz
-cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
-
-mkdir build
-cd build
-
-wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
-tar zxvf WSRT_Measures.ztar
-
-ccache -M 80M
-
 if [ "$TRAVIS_OS_NAME" = osx ]; then
-  PATH=$HOME/miniconda/bin:$PATH
-  source activate testenv
-  PYTHON2_EXECUTABLE=$HOME/miniconda/bin/python
-  PYTHON3_EXECUTABLE=$HOME/miniconda/bin/python
-  which python
-  python -c "import numpy as n; print (n.__version__); print(n.get_include());"
-  export PYTHONPATH=/Users/travis/miniconda/envs/testenv/lib/python${PYTHONVERSION}/site-packages:$PYTHONPATH
-  if [ "$PYTHONVERSION" = "2.7" ]; then
-    BUILD_PYTHON=On
-    BUILD_PYTHON3=Off
-  else
-    ln -s /Users/travis/miniconda/envs/testenv/lib/libboost_python-mt.dylib /Users/travis/miniconda/envs/testenv/lib/libboost_python3-mt.dylib
-    BUILD_PYTHON=Off
-    BUILD_PYTHON3=On
-  fi
+    SOFA_ARCHIVE=sofa.tgz
+    MEASURES_ARCHIVE=WSRT_Measures.ztar
 
-  CMAKE_PREFIX_PATH=/Users/travis/miniconda/envs/testenv/
-  ls /Users/travis/miniconda/envs/testenv/
+    if [ ! -f "$SOFA_ARCHIVE" ]; then
+      wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O $SOFA_ARCHIVE
+    fi
+    
+    if [ ! -f "$MEASURES_ARCHIVE" ]; then
+        wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O $MEASURES_ARCHIVE
+    fi
+
+    cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
+
+    mkdir -p build
+    cd build
+
+   tar zxvf ../$SOFA_ARCHIVE
+   tar zxvf ../$MEASURES_ARCHIVE
+
+   ccache -M 80M
+
+   pip2 install numpy
+   pip3 install numpy
+
+   CXX="ccache $CXX" cmake .. \
+        -DUSE_FFTW3=ON \
+        -DBUILD_TESTING=ON \
+        -DUSE_OPENMP=OFF \
+        -DUSE_HDF5=ON \
+        -DBUILD_PYTHON=ON \
+        -DBUILD_PYTHON3=ON \
+        -DPYTHON2_EXECUTABLE=/usr/local/bin/python2 \
+        -DPYTHON3_EXECUTABLE=/usr/local/bin/python3 \
+        -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
+        -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
+        -DDATA_DIR=$PWD \
+        -DSOFA_ROOT_DIR=$PWD \
+        -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 else
-  PYTHON2_EXECUTABLE=/usr/bin/python2.7
-  PYTHON3_EXECUTABLE=/usr/bin/python3.4
-  BUILD_PYTHON=On
-  BUILD_PYTHON3=On
-  CMAKE_PREFIX_PATH=
+    docker build . -f .travis/${DIST}_${CC}.docker -t casacore/${DIST}_${CC}
 fi
-
-echo $PYTHONPATH
-echo $PATH
-CXX="ccache $CXX" cmake .. \
-    -DUSE_FFTW3=ON \
-    -DBUILD_TESTING=ON \
-    -DUSE_OPENMP=OFF \
-    -DUSE_HDF5=ON \
-    -DBUILD_PYTHON=${BUILD_PYTHON} \
-    -DBUILD_PYTHON3=${BUILD_PYTHON3} \
-    -DPYTHON2_EXECUTABLE=${PYTHON2_EXECUTABLE} \
-    -DPYTHON3_EXECUTABLE=${PYTHON3_EXECUTABLE} \
-    -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
-    -DDATA_DIR=$PWD \
-    -DSOFA_ROOT_DIR=$HOME \
-    -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
-

@@ -1,5 +1,18 @@
 language: cpp
 cache: ccache
+sudo: false
+
+addons:
+  homebrew:
+    packages:
+    - fftw
+    - hdf5
+    - ccache
+    - boost-python
+    - boost-python3
+    - cfitsio
+    - wcslib
+    update: true
 
 env:
   global:
@@ -10,62 +23,32 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      env: DIST=ubuntu1604
+      services: [docker]
+      sudo: true
     - os: linux
       compiler: clang
+      env: DIST=ubuntu1604
+      services: [docker]
+      sudo: true
+    - os: linux
+      compiler: gcc
+      env: DIST=ubuntu1804
+      services: [docker]
+      sudo: true
+    - os: linux
+      compiler: clang
+      env: DIST=ubuntu1804
+      services: [docker]
+      sudo: true
     - os: osx
       compiler: clang
-      env: PYTHONVERSION=2.7
     - os: osx
-      compiler: clang
-      env: PYTHONVERSION=3.4
-  allow_failures:
-    - os: osx
-      env: PYTHONVERSION=3.4
+      compiler: gcc
 
-sudo: false
-
-install:
-  - ./.travis/install.sh
-
-addons:
-  apt:
-    packages:
-    - ccache
-    - cmake
-    - flex
-    - bison
-    - libblas-dev
-    - liblapack-dev
-    - libcfitsio3-dev
-    - wcslib-dev
-    - libfftw3-dev
-    - gfortran
-    - libncurses5-dev
-    - libreadline6-dev
-    - libhdf5-serial-dev
-    - libboost-dev
-    - libboost-python-dev
-    - python-numpy
-    - python3-numpy
 
 before_script:
   - ./.travis/before_script.sh
 
 script:
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - ccache -s
-  - ccache -z
-  - make -j2
-  - if [ "$TRAVIS_OS_NAME" = osx ]; then TESTS_TO_SKIP="tConvert$"; else TESTS_TO_SKIP=""; fi
-    # Skip tConvert on OSX; boost-python can't be found on non-standard location
-  - env CTEST_OUTPUT_ON_FAILURE=1 ctest -E ${TESTS_TO_SKIP}
-  - make install
-  - ccache -s
-
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/a21dbde2d416245fd698
-    on_success: always
-    on_failure: always
-    on_start: false
+  - ./.travis/script.sh

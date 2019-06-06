@@ -30,6 +30,8 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/DataMan/IncrementalStMan.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -45,8 +47,9 @@ uInt nCorrelations=3;
 Array<Int> referenceArray (IPosition (3, nCorrelations, nChannels, nRows));
 
 // Create the table.
-void createTable (
-	       const Array<Int> array)
+void createTable (DataManager& dataMan,
+                  const Array<Int> array,
+                  Bool useDirect)
 {
     IPosition shape = array.shape();
     int nCorrelations = shape(0);
@@ -57,11 +60,12 @@ void createTable (
 
     TableDesc td("", "1", TableDesc::Scratch);
     td.addColumn (ArrayColumnDesc<Int>("testArrayColumn",IPosition(2, nCorrelations, nChannels),
-                                       ColumnDesc::FixedShape));
+                                       useDirect ? ColumnDesc::Direct : ColumnDesc::FixedShape));
 
     // Now create a new table from the description.
 
     SetupNewTable newtab("tArrayColumnCellSlices_tmp.data", td, Table::New);
+    newtab.bindAll (dataMan);
     Table tab(newtab, nRows, False, Table::LocalEndian);
     ArrayColumn<Int> arrayColumn (tab, "testArrayColumn");
 
@@ -474,9 +478,30 @@ int main()
 {
   try {
       createReferenceArray (nCorrelations, nChannels, nRows);
-      createTable (referenceArray);
-      readCellSlices();
-      writeCellSlices();
+      {
+        StandardStMan dataMan;
+        createTable (dataMan, referenceArray, True);
+        readCellSlices();
+        writeCellSlices();
+      } 
+      {
+        StandardStMan dataMan;
+        createTable (dataMan, referenceArray, False);
+        readCellSlices();
+        writeCellSlices();
+      }
+     {
+        IncrementalStMan dataMan;
+        createTable (dataMan, referenceArray, True);
+        readCellSlices();
+        writeCellSlices();
+      }
+     {
+        IncrementalStMan dataMan;
+        createTable (dataMan, referenceArray, False);
+        readCellSlices();
+        writeCellSlices();
+      }
  } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;

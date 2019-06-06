@@ -2952,6 +2952,7 @@ void FITSIDItoMS1::fillFieldTable()
   ScalarColumn<Float> vfluxS;
   ScalarColumn<Float> alphaS;
   ScalarColumn<Float> foffsetS;
+  ScalarColumn<Double> foffsetSD;
   ScalarColumn<Double> sysvelS;
   ScalarColumn<Double> restfreqS;
 
@@ -2977,7 +2978,13 @@ void FITSIDItoMS1::fillFieldTable()
     ufluxS.attach(suTab,"UFLUX"); // U 
     vfluxS.attach(suTab,"VFLUX"); // V 
     alphaS.attach(suTab,"ALPHA"); // sp. index  
-    foffsetS.attach(suTab,"FREQOFF"); // fq. offset  
+    try{
+      foffsetS.attach(suTab,"FREQOFF"); // fq. offset  
+    }
+    catch(AipsError x){
+      foffsetSD.attach(suTab,"FREQOFF"); // fq. offset  
+      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+    }
     sysvelS.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreqS.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
     *itsLog << LogIO::WARN << "Treating ?FLUX, ALPHA, FREQOFF, SYSVEL, and RESTFREQ columns in input SOURCE table as scalar,"
