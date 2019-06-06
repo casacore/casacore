@@ -147,6 +147,33 @@ public:
   MSWeatherColumns& weather() {return weather_p;}
   // </group>
 
+  // Access to required subtables
+  // <group>
+  const MSAntennaColumns& antenna() const {return antenna_p;}
+  const MSDataDescColumns& dataDescription() const {return dataDesc_p;}
+  const MSFeedColumns& feed() const {return feed_p;}
+  const MSFieldColumns& field() const {return field_p;}
+  const MSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
+  const MSHistoryColumns& history() const {return history_p;}
+  const MSObservationColumns& observation() const {return observation_p;}
+  const MSPointingColumns& pointing() const {return pointing_p;}
+  const MSPolarizationColumns& polarization() const {
+    return polarization_p;}
+  const MSProcessorColumns& processor() const {return processor_p;}
+  const MSSpWindowColumns& spectralWindow() const {
+    return spectralWindow_p;}
+  const MSStateColumns& state() const {return state_p;}
+  // </group>
+
+  // Access to optional subtables
+  // <group>
+  const MSDopplerColumns& doppler() const {return doppler_p;}
+  const MSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+  const MSSourceColumns& source() const {return source_p;}
+  const MSSysCalColumns& sysCal() const {return sysCal_p;}
+  const MSWeatherColumns& weather() const {return weather_p;}
+  // </group>
+
   // set the EPOCH reference type in all EPOCH columns in the MS. Note that
   // only a single EPOCH reference is allowed in the MS. This 
   // <note role=tip>
