@@ -122,6 +122,7 @@ namespace casacore { //# name space casa begins
     case TpArrayUShort:
     case TpArrayInt:
     case TpArrayUInt:
+    case TpArrayInt64:
     case TpArrayFloat:
       makeImage (values.asArrayFloat(), mask.asArrayBool(),
                  IPosition(), coordinates,
