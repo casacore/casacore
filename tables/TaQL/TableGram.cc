@@ -159,6 +159,30 @@ String tableGramRemoveEscapes (const String& in)
     return out;
 }
 
+String tableGramRemoveEscapesQuotes (const String& in)
+{
+    String out;
+    char quote = 0;
+    int leng = in.length();
+    for (int i=0; i<leng; i++) {
+      if (quote) {
+        if (in[i] == quote) {
+          quote = 0;
+        } else {
+          out += in[i];
+        }
+      } else if (in[i] == '"'  ||  in[i] == '\'') {
+        quote = in[i];
+      } else {
+        if (in[i] == '\\') {
+          i++;
+        }
+        out += in[i];
+      }
+    }
+    return out;
+}
+
 String tableGramRemoveQuotes (const String& in)
 {
     //# A string is formed as "..."'...''...' etc.

@@ -183,8 +183,10 @@ NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}("."{NAME})*
 /* A temporary table name can be followed by field names */
 TEMPTAB   [$]{INT}(("."{NAME})?"::"{NAME}("."{NAME})*)?
 /* A table name can contain about every character
-   (but is recognized in specific states only) */
-NAMETAB   ([A-Za-z0-9_./+\-~$@:]|(\\.))+
+   (but is recognized in specific states only).
+   It can be a mix of quoted and unquoted strings (with escaped characters). */
+NAMETABC  ([A-Za-z0-9_./+\-~$@:]|(\\.))+
+NAMETAB   {NAMETABC}|(({STRING}|{NAMETABC})+)
 /* A UDFlib synonym */
 UDFLIBSYN {NAME}{WHITE}"="{WHITE}{NAME}
 /* A regular expression can be delimited by / % or @ optionall=y followed by i
@@ -743,7 +745,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 <FROMstate,CRETABstate,GIVINGstate,SHOWstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
-                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+                         new TaQLConstNodeRep (tableGramRemoveEscapesQuotes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return TABNAME;
 	  }
