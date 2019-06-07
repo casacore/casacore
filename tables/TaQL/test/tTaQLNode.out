@@ -13,8 +13,8 @@ WITH a.tab2 SELECT FROM a.tab
 select from [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
 SELECT FROM [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
 
-select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
-SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2
+select ab,ac,ad,ae,af,ag into tTaQLNode_tmp\".data2 from "tTaQLNode tmp.tab" sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
+SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode\ tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp\".data2
 
 select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 as PLAIN_LOCAL from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2 AS [PLAIN_LOCAL=T]

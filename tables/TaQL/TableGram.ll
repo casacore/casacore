@@ -184,7 +184,8 @@ NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}(("."{NAME})?"::"{NAME}("."{NAME})*)?
 /* A table name can contain about every character
    (but is recognized in specific states only).
-   It can be a mix of quoted and unquoted strings (with escaped characters). */
+   It can be a mix of quoted and unquoted strings (with escaped characters).
+   NOTE: when changing NAMETABC, also change TaQLNodeRep::addEscape. */
 NAMETABC  ([A-Za-z0-9_./+\-~$@:]|(\\.))+
 NAMETAB   {NAMETABC}|(({STRING}|{NAMETABC})+)
 /* A UDFlib synonym */
