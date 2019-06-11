@@ -257,7 +257,6 @@ stationid: identstr // IDENTIFIER
 	      //
 	      //	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	      if (!($$)) delete $$;
 	      $$=new Vector<Int>(myMSAI.matchStationName($1));
 	      if ((*($$)).nelements() == 0) reportError($1,"Station Expression");
 	      free($1);
@@ -302,7 +301,6 @@ antid: identstr
 	  //
 	  //	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	  if (!($$)) delete $$;
 	  $$=new Vector<Int>(myMSAI.matchAntennaName($1));
 	  //$$=new Vector<Int>(myMSAI.matchAntennaRegexOrPattern($1));
 	  if ((*($$)).nelements() == 0) reportError($1);
@@ -339,7 +337,6 @@ antid: identstr
 
 antidrange: INT // A single antenna index
              {
-	       if (!($$)) delete $$;
 	       //
 	       // This code is due to VLA specienfic complication
 	       // arising due to the fact that VLA antennam "NAMES"
@@ -368,7 +365,6 @@ antidrange: INT // A single antenna index
 		Vector<Int> antennaids(len);
 		for(Int i = 0; i < len; i++) antennaids[i] = start + i;
 
-		if (!($$)) delete $$;
 		$$ = new Vector<Int>(len);
 
 		//		MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
@@ -387,12 +383,12 @@ antidrange: INT // A single antenna index
 
 stationlist: stationid
               {
-	   	if (!($$)) delete $$;
 	   	$$ = new Vector<Int>(*$1);
 	   	delete $1;
 	      }
            | stationlist COMMA stationid 
               {
+                $$ = $1;
 		Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
 		(*($$)).resize(N0+N1,True);  // Resize the existing list
 		for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
@@ -406,12 +402,12 @@ antids: antid        {$$ = $1;}// A singe antenna ID
 
 antlist: antids
           {
-	    if (!($$)) delete $$;
 	    $$ = new Vector<Int>(*$1);
 	    delete $1;
 	  }
-       | antlist COMMA antids  // AntnnaID, AntnnaID,...
+       | antlist COMMA antids  // AnetnnaID, AntennaID,...
           {
+            $$ = $1;
 	    Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
 	    (*($$)).resize(N0+N1,True);  // Resize the existing list
 	    for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
@@ -429,7 +425,6 @@ stationcomp: stationid {$$=$1;}
 
 antatstation: antcomp AT stationcomp
                {
-		 if (!($$)) delete $$;
 		 $$ = new Vector<Int>(set_intersection(*($1),*($3)));
 		 ostringstream token;token << "AntID("<<*($1)<<")@StationID("<<*($3)<<")";
 		 if ((*($$)).nelements() == 0) reportError((char *)token.str().c_str(),"Ant@Station Expression");
@@ -438,7 +433,6 @@ antatstation: antcomp AT stationcomp
 	       }
             | AT stationcomp  //Implicit ANT. 
 	       {
-	    	 if (!($$)) delete $$;
 	    	 $$ = new Vector<Int>(*($2));
 		 ostringstream token;token << "@StationID("<<*($2)<<")";
 		 if ((*($$)).nelements() == 0) reportError((char *)token.str().c_str(),"Station Expression");

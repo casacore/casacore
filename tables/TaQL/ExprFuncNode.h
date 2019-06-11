@@ -282,15 +282,17 @@ public:
         anycone3FUNC,     //# 167
         findconeFUNC,     //# 168
         findcone3FUNC,    //# 169
+            // normalize angle between -pi and pi
+        normangleFUNC,    //# 170
             // for Int, Double, Complex or String returning Bool
-        boolFUNC,         //# 170
+        boolFUNC,         //# 171
             // masked array functions
-        nullarrayFUNC,    //# 171
-        marrayFUNC,       //# 172
-        arrdataFUNC,      //# 173
-        arrmaskFUNC,      //# 174
-        negatemaskFUNC,   //# 175
-        replmaskedFUNC,   //# 176
+        nullarrayFUNC,    //# 172
+        marrayFUNC,       //# 173
+        arrdataFUNC,      //# 174
+        arrmaskFUNC,      //# 175
+        negatemaskFUNC,   //# 176
+        replmaskedFUNC,   //# 177
         replunmaskedFUNC, //# 178
         arrflatFUNC,      //# 179
         //# AGGREGATE functions must be the last ones.

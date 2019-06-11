@@ -282,7 +282,7 @@ TableExprNodeModulo::~TableExprNodeModulo()
 {}
 void TableExprNodeModulo::handleUnits()
 {
-    setUnit (lnode_p->unit());
+    TableExprNodeBinary::handleUnits();
 }
 
 TableExprNodeModuloInt::TableExprNodeModuloInt (const TableExprNodeRep& node)

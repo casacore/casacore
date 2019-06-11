@@ -181,6 +181,12 @@ void doDefineAssign (const Record& inrecord)
     } catch (AipsError& x) {
         cout << x.getMesg() << endl;
     } 
+    // Do an erronous get.
+    try {
+      record.asString(0);       // invalid data type
+    } catch (const AipsError& x) {
+      cout << x.what() << endl;
+    }
 }
 
 void doSubRecord (Bool doExcp, const RecordDesc& desc)

@@ -1,12 +1,39 @@
 
 # Casacore
 
-A suite of c++ libraries for radio astronomy data processing.
+A suite of C++ libraries for radio astronomy data processing.
 
 
 # Installation
 
-## Obtaining the source
+## Debian / Ubuntu
+
+Casacore is now part of Debian and Ubuntu, use apt to search for the package you need:
+```bash
+$ apt-get update
+$ apt-get search casacore
+
+```
+
+## MacOS
+
+Use Homebrew with the `ska-sa` tap to install casacore:
+
+```bash
+$ brew tap ska-sa/tap
+$ brew install casacore
+```
+
+## Docker
+
+We now also publish docker images for each github branch on [quay.io](https://quay.io/repository/casacore/casacore):
+```
+$ docker pull quay.io/casacore/casacore:master
+```
+
+## Building from source
+
+### Getting the source code
 
 The casacore source code is maintained on github.
 
@@ -16,7 +43,7 @@ You can obtain it using:
 $ git clone https://github.com/casacore/casacore
 ```
 
-## Requirements
+### Requirements
 
 To compile casacore you need to meet the following requirements:
 
@@ -86,11 +113,12 @@ $ cmake -DUSE_FFTW3=ON -DDATA_DIR=/usr/share/casacore/data -DUSE_OPENMP=ON \
 ```
 
 The `DATA_DIR` should point to the location where you extracted the measures
-data. Special variables `%CASAROOT%` and `%CASAHOME%` can be used here, which can be set at run time through the `.casarc` file.
+data. Special variables `%CASAROOT%` and `%CASAHOME%` can be used here, which
+can be set at run time through the `.casarc` file.
 
-We have expirmental support for Python3 now. You can build python3 support using
-`-DBUILD_PYTHON3=on`. Note that CMake may have problems detecting the correct
-python3 libraries and headers, so probably you need to set them manually. For
+You can build python3 support using `-DBUILD_PYTHON3=ON`. Note that CMake may
+have problems detecting the correct python3 libraries and headers, so probably
+you need to set them manually. For
 example:
 ```
 -DPYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.4m.so
@@ -113,9 +141,6 @@ PYTHON3_INCLUDE_DIR
 
 If you run into problems with boost libraries, try setting `-DBoost_NO_BOOST_CMAKE=True`. This will be necessary if you have the libraries from NRAO casa in your PATH or LD_LIBRARY_PATH.
 
-## Ubuntu packages
-
-Casacore is part of the [kern suite](http://kernsuite.info), which supplies precompiled binaries for Ubuntu 14.04 and 16.04
 
 # Documentation
 

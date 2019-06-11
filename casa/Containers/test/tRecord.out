@@ -10,6 +10,7 @@ ArrayBase::validateConformance shape [3] differs from [1]
 ArrayBase::validateConformance shape [3] differs from [1]
 Record::define - fixed array conformance error for field TpArrayString2
 Record::define - fixed array conformance error for field TpBool
+RecordRep::get_pointer - incorrect data type String   used for field TpBool with type Bool    
 Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
 (Record.cc : 108) Failed AlwaysAssertExit conform (other)

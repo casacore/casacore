@@ -248,7 +248,6 @@ FListElements: FreqRange
 ;
 FreqList: FListElements
            {
-	     if (!($$)) delete $$;
 	     $$ = new Vector<Float>(0);
 	     Int N0=(*($$)).nelements(),N1=4; 
 	     (*($$)).resize(N0+N1,True);  // Resize the existing list
@@ -276,7 +275,6 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!($$)) delete $$;
 	$$=new Vector<Int>(myMSSI.matchName($1));
 	
 	ostringstream m; m << "No match found for ";
@@ -326,7 +324,6 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!($$)) delete $$;
 	ostringstream m,tok; m << "No spw ID found for > ";
 	if ($2[1] == MSSpwIndex::MSSPW_INDEX)
 	  {
@@ -347,7 +344,6 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!($$)) delete $$;
 	ostringstream m, tok; m << "No spw ID found for < ";
 	if ($2[1] == MSSpwIndex::MSSPW_INDEX)
 	  {
@@ -368,7 +364,6 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!($$)) delete $$;
 	ostringstream m,tok; m << "No spw ID found ";
 	if ($1[1] == MSSpwIndex::MSSPW_INDEX)
 	  {
@@ -389,7 +384,6 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	if (!($$)) delete $$;
 	$$ = new Vector<Int>(myMSSI.matchFrequencyRange($2[0],$2[0],True));
 	
 	ostringstream m,tok; m << "No spw ID found ~= ";
@@ -401,7 +395,6 @@ Spw: IDENTIFIER
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
 
-	if (!($$)) delete $$;
 	Int nSpec;
 	// cout << (*($1)) << "  " << endl;
 	// cout << "FreqList ";

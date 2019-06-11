@@ -150,7 +150,6 @@ stateid: IDENTIFIER
 	    // Convert name to index
 	    //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  if (!($$)) delete $$;
 	  $$=new Vector<Int>(myMSSI.matchStateObsMode($1));
 	  //$$=new Vector<Int>(myMSAI.matchStateRegexOrPattern($1));
 
@@ -196,7 +195,6 @@ stateid: IDENTIFIER
 
 stateidrange: INT // A single state index
             {
-	      if (!($$)) delete $$;
 	      $$ = new Vector<Int>(1);
 	      (*($$))(0) = atoi($1);
 	      free($1);
@@ -210,7 +208,6 @@ stateidrange: INT // A single state index
               for(Int i = 0; i < len; i++) {
                 stateids[i] = start + i;
               }
-	      if (!($$)) delete $$;
               $$ = new Vector<Int>(stateids);	   
 	      free($1); free($3);
             }
@@ -219,7 +216,6 @@ stateidrange: INT // A single state index
 stateidbounds: LT INT // <ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  if (!($$)) delete $$;
 		  Int n=atoi($2);
 		  $$ = new Vector<Int>(myMSSI.matchStateIDLT(n));
 
@@ -232,7 +228,6 @@ stateidbounds: LT INT // <ID
               | GT INT // >ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  if (!($$)) delete $$;
 		  Int n=atoi($2);
 		  $$ = new Vector<Int>(myMSSI.matchStateIDGT(n));
 
@@ -244,7 +239,6 @@ stateidbounds: LT INT // <ID
               | GT INT AMPERSAND LT INT // >ID & <ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  if (!($$)) delete $$;
 		  Int n0=atoi($2), n1=atoi($5);
 		  $$ = new Vector<Int>(myMSSI.matchStateIDGTAndLT(n0,n1));
 
@@ -274,12 +268,12 @@ stateidlist: stateid // A singe state ID
           ;
 indexlist : stateidlist
             {
-	      if (!($$)) delete $$;
 	      $$ = new Vector<Int>(*$1);
 	      delete $1;
 	    }
           | indexlist COMMA stateidlist  
             {
+              $$ = $1;
 	      Int N0=(*($1)).nelements(), 
 		N1 = (*($3)).nelements();
 	      (*($$)).resize(N0+N1,True);  // Resize the existing list
