@@ -262,7 +262,7 @@ namespace casacore {
 
     private:
       LogIO *itsLog;
-      CoordinateSystem* itsCSys;
+      std::unique_ptr<CoordinateSystem> itsCSys;
       // Function to return the internal Table object to the RegionHandler.
       static Table& getTable (void* ptr, Bool writable);
       //Convert a string to Quantity
