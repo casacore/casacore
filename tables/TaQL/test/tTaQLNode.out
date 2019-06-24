@@ -7,14 +7,14 @@ SELECT (1)*(3) GIVING a.b
 select 1*3,5+7 into a.b where a>2 groupby c1,c2 having e1<0 and e2>3 orderby d1,d2 limit 2:5:2
 SELECT (1)*(3),(5)+(7) WHERE (a)>(2) GROUPBY c1,c2 HAVING ((e1)<(0))&&((e2)>(3)) ORDERBY d1,d2 LIMIT 2:5:2 GIVING a.b
 
-with a.tab2 select from a.tab #comment
+with "a."tab2 select from "a.tab" #comment
 WITH a.tab2 SELECT FROM a.tab
 
 select from [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
 SELECT FROM [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
 
-select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
-SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2
+select ab,ac,ad,ae,af,ag into tTaQLNode_tmp\".data2 from "tTaQLNode tmp.tab" sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
+SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode\ tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp\".data2
 
 select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 as PLAIN_LOCAL from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2 AS [PLAIN_LOCAL=T]

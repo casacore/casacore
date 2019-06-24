@@ -84,8 +84,11 @@ Int& tableGramPosition();
 // Declare the input routine for flex/bison.
 int tableGramInput (char* buf, int max_size);
 
-// A function to remove escaped characters.
+// A function to remove escape characters.
 String tableGramRemoveEscapes (const String& in);
+
+// A function to remove escape characters and quotes.
+String tableGramRemoveEscapesQuotes (const String& in);
 
 // A function to remove quotes from a quoted string.
 String tableGramRemoveQuotes (const String& in);

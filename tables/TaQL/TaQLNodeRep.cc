@@ -28,6 +28,7 @@
 #include <casacore/tables/TaQL/TaQLNodeRep.h>
 #include <casacore/tables/TaQL/TaQLNode.h>
 #include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -79,6 +80,20 @@ String TaQLNodeRep::checkDataType (const String& dtype)
     }
   }
   return dtstr;
+}
+
+String TaQLNodeRep::addEscape (const String& str) const
+{
+  // This Regex contains the NAMETABC characters in TableGram.ll.
+  static Regex re("[A-Za-z0-9_./+\\-~$@:]");
+  String out;
+  for (size_t i=0; i<str.size(); ++i) {
+    if (! String(str[i]).matches (re)) {
+      out += '\\';
+    }
+    out += str[i];
+  }
+  return out;
 }
 
 } //# NAMESPACE CASACORE - END
