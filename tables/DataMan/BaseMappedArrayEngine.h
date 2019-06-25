@@ -126,10 +126,10 @@ class TableColumn;
 //        static DataManager* makeObject (const String& dataManagerType);
 // </src>
 // <dt><src>
-//        void getArray (uInt rownr, Array<T>& data);
+//        void getArray (rownr_t rownr, Array<T>& data);
 // </src>
 // <dt><src>
-//        void putArray (uInt rownr, const Array<T>& data);
+//        void putArray (rownr_t rownr, const Array<T>& data);
 // </src>
 // (only if the virtual column is writable).
 // </dl>
@@ -138,10 +138,10 @@ class TableColumn;
 // functions:
 // <dl>
 // <dt><src>
-//        void getSlice (uInt rownr, const Slicer& slicer, Array<T>& data);
+//        void getSlice (rownr_t rownr, const Slicer& slicer, Array<T>& data);
 // </src>
 // <dt><src>
-//        void putSlice (uInt rownr, const Slicer& slicer,
+//        void putSlice (rownr_t rownr, const Slicer& slicer,
 //                       const Array<T>& data);
 // </src>
 // <dt><src>
@@ -165,13 +165,13 @@ class TableColumn;
 //    void setShapeColumn (const IPosition& shape);
 // </src>
 // <dt><src>
-//    void setShape (uInt rownr, const IPosition& shape);
+//    void setShape (rownr_t rownr, const IPosition& shape);
 // </src>
 // <dt><src>
-//    uInt ndim (uInt rownr);
+//    uInt ndim (rownr_t rownr);
 // </src>
 // <dt><src>
-//    IPosition shape (uInt rownr);
+//    IPosition shape (rownr_t rownr);
 // </src>
 // </dl>
 // <li>
@@ -184,10 +184,10 @@ class TableColumn;
 //    void close (AipsIO& ios);
 // </src>
 // <dt><src>
-//    void create (uInt nrrow);
+//    void create (rownr_t nrrow);
 // </src>
 // <dt><src>
-//    void open (uInt nrrow, AipsIO& ios);
+//    void open (rownr_t nrrow, AipsIO& ios);
 // </src>
 // <dt><src>
 //    void prepare();
@@ -207,10 +207,10 @@ class TableColumn;
 //    Bool canRemoveRow() const;
 // </src>
 // <dt><src>
-//    void addRow (uInt nrrow);
+//    void addRow (rownr_t nrrow);
 // </src>
 // <dt><src>
-//    void removeRow (uInt rownr);
+//    void removeRow (rownr_t rownr);
 // </src>
 // <dt><src>
 //    DataManagerColumn* makeDirArrColumn (const String& columnName,
@@ -226,7 +226,7 @@ class TableColumn;
 //    Bool isWritable() const;
 // </src>
 // <dt><src>
-//    Bool isShapeDefined (uInt rownr);
+//    Bool isShapeDefined (rownr_t rownr);
 // </src>
 // </dl>
 // </ul>
@@ -320,7 +320,7 @@ protected:
     // Initially the table has the given number of rows.
     // A derived class can have its own create function, but that should
     // always call this create function.
-    virtual void create (uInt initialNrrow);
+    virtual void create (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
@@ -344,8 +344,8 @@ protected:
     // added to an already existing table, table.nrow() gives the existing
     // number of columns instead of 0.
     // <group>
-    virtual void addRow (uInt nrrow);
-    virtual void addRowInit (uInt startRow, uInt nrrow);
+    virtual void addRow (rownr_t nrrow);
+    virtual void addRowInit (rownr_t startRow, rownr_t nrrow);
     // </group>
 
     // Set the shape of the FixedShape arrays in the column.
@@ -360,21 +360,21 @@ protected:
     // It will define the shape of the (underlying) array.
     // This implementation assumes the shape of virtual and stored arrays
     // are the same. If not, it has to be overidden in a derived class.
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Test if the (underlying) array is defined in the given row.
-    virtual Bool isShapeDefined (uInt rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the (underlying) array in the given row.
     // This implementation assumes the dimensionality of virtual and
     // stored arrays are the same. If not, it has to be overidden in a
     // derived class.
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Get the shape of the (underlying) array in the given row.
     // This implementation assumes the shape of virtual and stored arrays
     // are the same. If not, it has to be overidden in a derived class.
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // The data manager can handle changing the shape of an existing array
     // when the underlying stored column can do it.
@@ -387,20 +387,20 @@ protected:
 
     // Get an array in the given row.
     // This will scale and offset from the underlying array.
-    virtual void getArray (uInt rownr, Array<VirtualType>& array);
+    virtual void getArray (rownr_t rownr, Array<VirtualType>& array);
 
     // Put an array in the given row.
     // This will scale and offset to the underlying array.
-    virtual void putArray (uInt rownr, const Array<VirtualType>& array);
+    virtual void putArray (rownr_t rownr, const Array<VirtualType>& array);
 
     // Get a section of the array in the given row.
     // This will scale and offset from the underlying array.
-    virtual void getSlice (uInt rownr, const Slicer& slicer,
+    virtual void getSlice (rownr_t rownr, const Slicer& slicer,
                            Array<VirtualType>& array);
 
     // Put into a section of the array in the given row.
     // This will scale and offset to the underlying array.
-    virtual void putSlice (uInt rownr, const Slicer& slicer,
+    virtual void putSlice (rownr_t rownr, const Slicer& slicer,
                            const Array<VirtualType>& array);
 
     // Get an entire column.
@@ -443,7 +443,7 @@ protected:
 
     // Map the virtual shape to the stored shape.
     // By default is returns the virtual shape.
-    virtual IPosition getStoredShape (uInt rownr,
+    virtual IPosition getStoredShape (rownr_t rownr,
                                       const IPosition& virtualShape);
 
     // Map the slicer for a virtual shape to a stored shape.
@@ -477,7 +477,7 @@ private:
     Bool           tempWritable_p;       //# True =  create phase, so column
     //#                                              is temporarily writable
     //#                                      False = asks stored column
-    uInt           initialNrrow_p;       //# initial #rows in case of create
+    rownr_t        initialNrrow_p;       //# initial #rows in case of create
     Bool           arrayIsFixed_p;       //# True = virtual is FixedShape array
     IPosition      shapeFixed_p;         //# shape in case FixedShape array
     ArrayColumn<StoredType>* column_p;   //# the stored column

@@ -1,4 +1,4 @@
-//# DataManager.h: Abstract base classes for a data manager
+//# DataManager.h: Abstract base class for a data manager
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -31,30 +31,22 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/Tables/ColumnCache.h>
+#include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/OS/Mutex.h>
-#include<iosfwd>
 #include <map>
+#include <iosfwd>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class DataManager;
-class DataManagerColumn;
 class SetupNewTable;
 class Table;
 class MultiFileBase;
 class Record;
-class ArrayBase;
-class IPosition;
-class Slicer;
-class RefRows;
-template<class T> class Array;
 class AipsIO;
 
 
@@ -344,7 +336,7 @@ public:
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
-    virtual void setMaximumCacheSize (uInt nbytes);
+    virtual void setMaximumCacheSize (uInt nMiB);
 
     // Show the data manager's IO statistics. By default it does nothing.
     virtual void showCacheStatistics (std::ostream&) const;
@@ -450,11 +442,11 @@ private:
 
     // Add rows to all columns.
     // The default implementation throws a "not possible" exception.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow (rownr_t nrrow);
 
     // Delete a row from all columns.
     // The default implementation throws a "not possible" exception.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Add a column.
     // The default implementation throws a "not possible" exception.
@@ -478,13 +470,13 @@ private:
     virtual Bool flush (AipsIO& ios, Bool fsync) = 0;
 
     // Let the data manager initialize itself for a new table.
-    virtual void create (uInt nrrow) = 0;
+    virtual void create (rownr_t nrrow) = 0;
 
     // Let the data manager initialize itself for an existing table.
     // The AipsIO stream represents the main table file and must be
     // used by virtual column engines to retrieve the data stored
     // in the flush function.
-    virtual void open (uInt nrrow, AipsIO& ios) = 0;
+    virtual void open (rownr_t nrrow, AipsIO& ios) = 0;
 
     // Open as above.
     // The data manager can return the number of rows it thinks there are.
@@ -492,12 +484,12 @@ private:
     // data are written outside the table system, thus for which no rows
     // have been added.
     // <br>By default it calls open and returns <src>nrrow</src>.
-    virtual uInt open1 (uInt nrrow, AipsIO& ios);
+    virtual rownr_t open1 (rownr_t nrrow, AipsIO& ios);
 
     // Resync the data by rereading cached data from the file.
     // This is called when a lock is acquired on the file and it appears 
     // that data in this data manager has been changed by another process.
-    virtual void resync (uInt nrrow) = 0;
+    virtual void resync (rownr_t nrrow) = 0;
 
     // Resync as above.
     // The data manager can return the number of rows it thinks there are.
@@ -505,7 +497,7 @@ private:
     // data are written outside the table system, thus for which no rows
     // have been added.
     // <br>By default it calls resync and returns <src>nrrow</src>.
-    virtual uInt resync1 (uInt nrrow);
+    virtual rownr_t resync1 (rownr_t nrrow);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all
@@ -546,551 +538,15 @@ public:
     static DataManager* unknownDataManager (const String& dataManagerType,
 					    const Record& spec);
 
+    // Define the highest row number that can be represented as signed 32-bit.
+    // In principle it is the maximum uInt number, but for test purposes it
+    // can be reset (to a lower number).
+    static rownr_t MAXROWNR32;   //# set to 2147483647
+
 private:
     // Register the main data managers.
     static std::map<String,DataManagerCtor> initRegisterMap();
 };
-
-
-
-
-// <summary>
-// Abstract base class for a column in a data manager
-// </summary>
-
-// <use visibility=local>
-
-// <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
-// </reviewed>
-
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> DataManager
-// </prerequisite>
-
-// <etymology>
-// DataManagerColumn handles a column for a data manager.
-// </etymology>
-
-// <synopsis> 
-// DataManagerColumn is the abstract base class to handle a column in
-// a data manager. Each data manager class must have one or more associated
-// classes derived from DataManagerColumn to handle the columns.
-// For example, storage manager StManAipsIO has columns classes
-// StManColumnAipsIO, StManColumnArrayAipsIO and StManColumnIndArrayAipsIO
-// to handle scalars, direct arrays and indirect arrays, resp..
-// However, using multiple inheritance it is possible that the derived
-// DataManager and DataManagerColumn classes are the same. This is used
-// in class ScaledArrayEngine<S,T> which represents both the data manager
-// and its column class. It can do that, because the virtual column engine
-// <linkto class="ScaledArrayEngine:description">ScaledArrayEngine</linkto>
-// can handle only one column.
-//
-// In the synopsis of class DataManager it is described how the (derived)
-// DataManagerColumn objects gets created and deleted.
-// 
-// DataManagerColumn defines various virtual functions to get or put (slices)
-// of data in a column. These functions are called by the table column
-// classes ScalarColumnData and ArrayColumnData.
-// It does not define functions create, open, flush and prepare like
-// those defined in DataManager. It is left to the derived classes to
-// define those as needed and to interact properly with their
-// data manager object.
-// </synopsis> 
-
-// <motivation>
-// An abstract base class is needed to support multiple data
-// managers in the table system
-// </motivation>
-
-// <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-// </todo>
-
-
-class DataManagerColumn
-{
-public:
-
-    // Create a column.
-    DataManagerColumn()
-	: isFixedShape_p(False) {;}
-
-    // Frees up the storage.
-    virtual ~DataManagerColumn();
-
-    // Set the isFixedShape flag.
-    void setIsFixedShape (Bool isFixedShape)
-        { isFixedShape_p = isFixedShape; }
-
-    // Is this a fixed shape column?
-    Bool isFixedShape() const
-        { return isFixedShape_p; }
-
-    // Get the data type of the column as defined in DataType.h.
-    virtual int dataType() const = 0;
-
-    // Get the data type id of the column for dataType==TpOther.
-    // The default implementation returns an emptry string.
-    // This function is required for virtual column engines handling
-    // non-standard data types. It is used to check the data type.
-    virtual String dataTypeId() const;
-
-    // Test if data can be put into this column.
-    // This does not test if the data file is writable, only if
-    // it is in principle allowed to store data into the column.
-    // (It may not be allowed for virtual columns).
-    // The default is True.
-    virtual Bool isWritable() const;
-
-    // Set the maximum length of the value (can be used for strings).
-    // By default the maximum length is ignored.
-    virtual void setMaxLength (uInt maxLength);
-
-    // Set the shape of all (fixed-shaped) arrays in the column.
-    // Effectively it is the same as setShapeColumn, but it also sets
-    // the isFixedShape_p flag.
-    void setFixedShapeColumn (const IPosition& shape)
-        { setShapeColumn (shape); isFixedShape_p = True; }
-
-    // Set the shape of an (variable-shaped) array in the given row.
-    // By default it throws a "not possible" exception.
-    virtual void setShape (uInt rownr, const IPosition& shape);
-
-    // Set the shape and tile shape of an (variable-shaped) array
-    // in the given row.
-    // By default it ignores the tile shape (thus only sets the shape).
-    virtual void setShapeTiled (uInt rownr, const IPosition& shape,
-				const IPosition& tileShape);
-
-    // Is the value shape defined in the given row?
-    // By default it returns True.
-    virtual Bool isShapeDefined (uInt rownr);
-
-    // Get the dimensionality of the item in the given row.
-    // By default it returns shape(rownr).nelements().
-    virtual uInt ndim (uInt rownr);
-
-    // Get the shape of the item in the given row.
-    // By default it returns a zero-length IPosition (for a scalar value).
-    virtual IPosition shape (uInt rownr);
-
-    // Get the tile shape of the item in the given row.
-    // By default it returns a zero-length IPosition.
-    virtual IPosition tileShape (uInt rownr);
-
-    // Can the data manager handle chaging the shape of an existing array?
-    // Default is no.
-    virtual Bool canChangeShape() const;
-
-    // Can the column data manager handle access to a scalar column?
-    // If not, the caller should access the column by looping through
-    // all cells in the column.
-    // Default is no.
-    // <br>
-    // The returned reask switch determines if the information is
-    // permanent. False indicates it is permanent; True indicates it
-    // will be reasked for the next get/putColumn.
-    // By default reask is set to False.
-    virtual Bool canAccessScalarColumn (Bool& reask) const;
-
-    // Can the column data manager handle access to a clooection of cells
-    // in a scalar column?
-    // If not, the caller should access the column cells by looping through
-    // the cells in the column.
-    // Default is no.
-    // <br>
-    // The returned reask switch determines if the information is
-    // permanent. False indicates it is permanent; True indicates it
-    // will be reasked for the next get/putColumn.
-    // By default reask is set to False.
-    virtual Bool canAccessScalarColumnCells (Bool& reask) const;
-
-    // Can the column data manager handle access to a scalar column?
-    // If not, the caller should access the column by looping through
-    // all cells in the column.
-    // Default is no.
-    // <br>
-    // The returned reask switch determines if the information is
-    // permanent. False indicates it is permanent; True indicates it
-    // will be reasked for the next get/putColumn.
-    // By default reask is set to False.
-    virtual Bool canAccessArrayColumn (Bool& reask) const;
-
-    // Can the column data manager handle access to a collection of cells
-    // in an array column?
-    // If not, the caller should access the column cells by looping through
-    // the cells in the column.
-    // Default is no.
-    // <br>
-    // The returned reask switch determines if the information is
-    // permanent. False indicates it is permanent; True indicates it
-    // will be reasked for the next get/putColumn.
-    // By default reask is set to False.
-    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
-
-    // Can the column data manager handle access to a cell slice?
-    // If not, the caller should do slicing itself (by accessing the
-    // entire array and slicing it).
-    // Default is no.
-    // <br>
-    // The returned reask switch determines if the information is
-    // permanent. False indicates it is permanent; True indicates it
-    // will be reasked for the next get/putColumn.
-    // By default reask is set to False.
-    virtual Bool canAccessSlice (Bool& reask) const;
-
-    // Can the column data manager handle access to a column slice?
-    // If not, the caller should access the column slice by looping through
-    // all cell slices in the column.
-    // Default is no.
-    // <br>
-    // The returned reask switch determines if the information is
-    // permanent. False indicates it is permanent; True indicates it
-    // will be reasked for the next get/putColumn.
-    // By default reask is set to False.
-    virtual Bool canAccessColumnSlice (Bool& reask) const;
-
-    // Get access to the ColumnCache object.
-    // <group>
-    ColumnCache& columnCache()
-        { return colCache_p; }
-    const ColumnCache* columnCachePtr() const
-        { return &colCache_p; }
-    // </group>
-
-    // Get the scalar value in the given row.
-    // These functions are non-virtual and are converted to their
-    // virtual getV equivalent to achieve that a derived templated class
-    //(like VirtualScalarColumn) does not have to declare and implement
-    // all these functions.
-    // The compiler complains about hiding virtual functions if you do not
-    // declare all virtual functions with the same name in a derived class.
-    // <group>
-    void get (uInt rownr, Bool* dataPtr)
-	{ getBoolV (rownr, dataPtr); }
-    void get (uInt rownr, uChar* dataPtr)
-	{ getuCharV (rownr, dataPtr); }
-    void get (uInt rownr, Short* dataPtr)
-	{ getShortV (rownr, dataPtr); }
-    void get (uInt rownr, uShort* dataPtr)
-	{ getuShortV (rownr, dataPtr); }
-    void get (uInt rownr, Int* dataPtr)
-	{ getIntV (rownr, dataPtr); }
-    void get (uInt rownr, uInt* dataPtr)
-	{ getuIntV (rownr, dataPtr); }
-    void get (uInt rownr, Int64* dataPtr)
-	{ getInt64V (rownr, dataPtr); }
-    void get (uInt rownr, float* dataPtr)
-	{ getfloatV (rownr, dataPtr); } 
-   void get (uInt rownr, double* dataPtr)
-	{ getdoubleV (rownr, dataPtr); }
-    void get (uInt rownr, Complex* dataPtr)
-	{ getComplexV (rownr, dataPtr); }
-    void get (uInt rownr, DComplex* dataPtr)
-	{ getDComplexV (rownr, dataPtr); }
-    void get (uInt rownr, String* dataPtr)
-	{ getStringV (rownr, dataPtr); }
-    // This function is the get for all non-standard data types.
-    void get (uInt rownr, void* dataPtr)
-	{ getOtherV (rownr, dataPtr); }
-    // </group>
-
-    // Put the scalar value into the given row.
-    // These functions are non-virtual and are converted to their
-    // virtual putV equivalent to achieve that a derived templated class
-    //(like VirtualScalarColumn) does not have to declare and implement
-    // all these functions.
-    // The compiler complains about hiding virtual functions if you do not
-    // declare all virtual functions with the same name in a derived class.
-    // <group>
-    void put (uInt rownr, const Bool* dataPtr)
-	{ putBoolV (rownr, dataPtr); }
-    void put (uInt rownr, const uChar* dataPtr)
-	{ putuCharV (rownr, dataPtr); }
-    void put (uInt rownr, const Short* dataPtr)
-	{ putShortV (rownr, dataPtr); }
-    void put (uInt rownr, const uShort* dataPtr)
-	{ putuShortV (rownr, dataPtr); }
-    void put (uInt rownr, const Int* dataPtr)
-	{ putIntV (rownr, dataPtr); }
-    void put (uInt rownr, const uInt* dataPtr)
-	{ putuIntV (rownr, dataPtr); }
-    void put (uInt rownr, const Int64* dataPtr)
-	{ putInt64V (rownr, dataPtr); }
-    void put (uInt rownr, const float* dataPtr)
-	{ putfloatV (rownr, dataPtr); }
-    void put (uInt rownr, const double* dataPtr)
-	{ putdoubleV (rownr, dataPtr); }
-    void put (uInt rownr, const Complex* dataPtr)
-	{ putComplexV (rownr, dataPtr); }
-    void put (uInt rownr, const DComplex* dataPtr)
-	{ putDComplexV (rownr, dataPtr); }
-    void put (uInt rownr, const String* dataPtr)
-	{ putStringV (rownr, dataPtr); }
-    // This function is the put for all non-standard data types.
-    void put (uInt rownr, const void* dataPtr)
-	{ putOtherV (rownr, dataPtr); }
-    // </group>
-
-    // Get all scalar values in the column.
-    // The argument dataPtr is in fact a Vector<T>*, but a void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getScalarColumnV (void* dataPtr);
-
-    // Put all scalar values in the column.
-    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn putColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putScalarColumnV (const void* dataPtr);
-
-    // Get some scalar values in the column.
-    // The argument dataPtr is in fact a Vector<T>*, but a void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getScalarColumnCellsV (const RefRows& rownrs,
-					void* dataPtr);
-
-    // Put some scalar values in the column.
-    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putScalarColumnCellsV (const RefRows& rownrs,
-					const void* dataPtr);
-
-    // Get scalars from the given row on with a maximum of nrmax values.
-    // It returns the actual number of values got.
-    // This can be used to get an entire column of scalars or to get
-    // a part of a column (for a cache for example).
-    // The argument dataPtr is in fact a T*, but a void*
-    // is needed to be generic.
-    // The default implementation throws an "invalid operation" exception.
-    virtual uInt getBlockV (uInt rownr, uInt nrmax, void* dataPtr);
-
-    // Put nrmax scalars from the given row on.
-    // It returns the actual number of values put.
-    // This can be used to put an entire column of scalars or to put
-    // a part of a column (for a cache for example).
-    // The argument dataPtr is in fact a const T*, but a const void*
-    // is needed to be generic.
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putBlockV (uInt rownr, uInt nrmax, const void* dataPtr);
-
-    // Get the array value in the given row.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn get function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getArrayV (uInt rownr, void* dataPtr);
-
-    // Put the array value into the given row.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn put function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putArrayV (uInt rownr, const void* dataPtr);
-
-    // Get all array values in the column.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getArrayColumnV (void* dataPtr);
-
-    // Put all array values in the column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putArrayColumnV (const void* dataPtr);
-
-    // Get some array values in the column.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getArrayColumnCellsV (const RefRows& rownrs,
-				       void* dataPtr);
-
-    // Put some array values in the column.
-    // The argument dataPtr is in fact an const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putArrayColumnCellsV (const RefRows& rownrs,
-				       const void* dataPtr);
-
-    // Get a section of the array in the given row.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getSlice function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getSliceV (uInt rownr, const Slicer& slicer, void* dataPtr);
-
-    // Put into a section of the array in the given row.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putSlice function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putSliceV (uInt rownr, const Slicer& slicer,
-			    const void* dataPtr);
-
-    // Get a section of all arrays in the column.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getColumnSliceV (const Slicer& slicer, void* dataPtr);
-
-    // Put into a section of all arrays in the column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
-
-    // Get a section of some arrays in the column.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void getColumnSliceCellsV (const RefRows& rownrs,
-				       const Slicer& slicer, void* dataPtr);
-
-    // Put into a section of some arrays in the column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation throws an "invalid operation" exception.
-    virtual void putColumnSliceCellsV (const RefRows& rownrs,
-				       const Slicer& slicer,
-				       const void* dataPtr);
-
-    // Throw an "invalid operation" exception for the default
-    // implementation of get.
-    void throwGet() const;
-
-    // Throw an "invalid operation" exception for the default
-    // implementation of put.
-    void throwPut() const;
-
-    // Set the column name.
-    void setColumnName (const String& colName)
-      { colName_p = colName; }
-
-    // Get rhe column name.
-    const String& columnName() const
-      { return colName_p; }
-
-protected:
-    // Get the scalar value in the given row.
-    // The default implementation throws an "invalid operation" exception.
-    // <group>
-    virtual void getBoolV     (uInt rownr, Bool* dataPtr);
-    virtual void getuCharV    (uInt rownr, uChar* dataPtr);
-    virtual void getShortV    (uInt rownr, Short* dataPtr);
-    virtual void getuShortV   (uInt rownr, uShort* dataPtr);
-    virtual void getIntV      (uInt rownr, Int* dataPtr);
-    virtual void getuIntV     (uInt rownr, uInt* dataPtr);
-    virtual void getInt64V    (uInt rownr, Int64* dataPtr);
-    virtual void getfloatV    (uInt rownr, float* dataPtr);
-    virtual void getdoubleV   (uInt rownr, double* dataPtr);
-    virtual void getComplexV  (uInt rownr, Complex* dataPtr);
-    virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
-    virtual void getStringV   (uInt rownr, String* dataPtr);
-    // This function is the get for all non-standard data types.
-    virtual void getOtherV    (uInt rownr, void* dataPtr);
-    // </group>
-
-    // Put the scalar value into the given row.
-    // The default implementation throws an "invalid operation" exception.
-    // <group>
-    virtual void putBoolV     (uInt rownr, const Bool* dataPtr);
-    virtual void putuCharV    (uInt rownr, const uChar* dataPtr);
-    virtual void putShortV    (uInt rownr, const Short* dataPtr);
-    virtual void putuShortV   (uInt rownr, const uShort* dataPtr);
-    virtual void putIntV      (uInt rownr, const Int* dataPtr);
-    virtual void putuIntV     (uInt rownr, const uInt* dataPtr);
-    virtual void putInt64V    (uInt rownr, const Int64* dataPtr);
-    virtual void putfloatV    (uInt rownr, const float* dataPtr);
-    virtual void putdoubleV   (uInt rownr, const double* dataPtr);
-    virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
-    virtual void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    virtual void putStringV   (uInt rownr, const String* dataPtr);
-    // This function is the put for all non-standard data types.
-    virtual void putOtherV    (uInt rownr, const void* dataPtr);
-    // </group>
-
-private:
-    Bool        isFixedShape_p;
-    String      colName_p;
-    ColumnCache colCache_p;
-
-    // Set the shape of all (fixed-shaped) arrays in the column.
-    // By default it throws a "not possible" exception.
-    virtual void setShapeColumn (const IPosition& shape);
-
-    // The copy constructor cannot be used for this base class.
-    // The private declaration of this constructor makes it unusable.
-    DataManagerColumn (const DataManagerColumn&);
-
-    // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    DataManagerColumn& operator= (const DataManagerColumn&);
-
-    // The default implementations of get and put functions.
-    // <group>
-    void getScalarColumnBase (ArrayBase& dataPtr);
-    void putScalarColumnBase (const ArrayBase& dataPtr);
-    void getScalarColumnCellsBase (const RefRows& rownrs, ArrayBase& dataPtr);
-    void putScalarColumnCellsBase (const RefRows& rownrs, const ArrayBase& dataPtr);
-    void getArrayColumnBase (ArrayBase& data);
-    void putArrayColumnBase (const ArrayBase& data);
-    void getArrayColumnCellsBase (const RefRows& rownrs, ArrayBase& data);
-    void putArrayColumnCellsBase (const RefRows& rownrs, const ArrayBase& data);
-    void getSliceBase (uInt rownr, const Slicer& slicer, ArrayBase& data);
-    void putSliceBase (uInt rownr, const Slicer& slicer, const ArrayBase& data);
-    void getColumnSliceBase (const Slicer& slicer, ArrayBase& data);
-    void putColumnSliceBase (const Slicer& slicer, const ArrayBase& data);
-    void getColumnSliceCellsBase (const RefRows& rownrs,
-                                  const Slicer& slicer, ArrayBase& data);
-    void putColumnSliceCellsBase (const RefRows& rownrs,
-                                  const Slicer& slicer, const ArrayBase& data);
-    // Get a slice from the array in the given row.
-    // It reads the full array in the possibly reshaped ArrayBase object.
-    void getSliceArr (uInt row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
-                      ArrayBase& arr);
-    // Put a slice into the array in the given row.
-    // It reads and writes the full array in the possibly reshaped ArrayBase
-    // object.
-    void putSliceArr (uInt row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
-                      const ArrayBase& arr);
-    // </group>
-};
-
 
 
 } //# NAMESPACE CASACORE - END

@@ -229,7 +229,7 @@ public:
   uInt getBucketSize() const;
   
   // Get the number of rows in this storage manager.
-  uInt getNRow() const;
+  rownr_t getNRow() const;
   
   // The storage manager can add rows.
   virtual Bool canAddRow() const;
@@ -267,8 +267,8 @@ public:
   // Find the bucket containing the column and row and return the pointer
   // to the beginning of the column data in that bucket.
   // It also fills in the start and end row for the column data.
-  char* find (uInt aRowNr,     uInt aColNr, 
-	      uInt& aStartRow, uInt& anEndRow,
+  char* find (rownr_t aRowNr,     uInt aColNr, 
+	      rownr_t& aStartRow, rownr_t& anEndRow,
               const String& colName);
 
   // Add a new bucket and get its bucket number.
@@ -315,15 +315,15 @@ private:
   
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
-  virtual void create (uInt aNrRows);
+  virtual void create (rownr_t aNrRows);
   
   // Open the storage manager file for an existing table, read in
   // the data, and let the SSMColumn objects read their data.
-  virtual void open (uInt aRowNr, AipsIO&);
+  virtual void open (rownr_t aRowNr, AipsIO&);
   
   // Resync the storage manager with the new file contents.
   // This is done by clearing the cache.
-  virtual void resync (uInt aRowNr);
+  virtual void resync (rownr_t aRowNr);
   
   // Reopen the storage manager files for read/write.
   virtual void reopenRW();
@@ -346,10 +346,10 @@ private:
   
   // Add rows to the storage manager.
   // Per column it extends number of rows.
-  virtual void addRow (uInt aNrRows);
+  virtual void addRow (rownr_t aNrRows);
   
   // Delete a row from all columns.
-  virtual void removeRow (uInt aRowNr);
+  virtual void removeRow (rownr_t aRowNr);
   
   // Do the final addition of a column.
   virtual void addColumn (DataManagerColumn*);
@@ -400,7 +400,7 @@ private:
   StManArrayFile* itsIosFile;
   
   // The number of rows in the columns.
-  uInt         itsNrRows;
+  rownr_t         itsNrRows;
   
   // Column offset
   Block<uInt> itsColumnOffset;
@@ -473,7 +473,7 @@ inline uInt SSMBase::getCacheSize() const
   return itsCacheSize;
 }
 
-inline uInt SSMBase::getNRow() const
+inline rownr_t SSMBase::getNRow() const
 {
   return itsNrRows;
 }

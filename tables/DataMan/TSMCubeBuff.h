@@ -127,7 +127,7 @@ public:
 
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
-    virtual void extend (uInt nr, const Record& coordValues,
+    virtual void extend (uInt64 nr, const Record& coordValues,
                          const TSMColumn* lastCoordColumn);
 
     // Read or write a section in the cube.

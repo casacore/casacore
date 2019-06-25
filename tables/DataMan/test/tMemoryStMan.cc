@@ -73,7 +73,7 @@ void deleteRow(const uInt aRow);
 void deleteRows(const Vector<uInt>& aNrRows);
 
 // delete a Column
-void deleteColumn(const String aColumn);
+void deleteColumn(const String& aColumn);
 
 // delete a column && put it back again
 void deleteAndRestore();
@@ -448,7 +448,7 @@ void deleteRows(const Vector<uInt>& aNrRows)
   saveData(aTable);
 }
 
-void deleteColumn(const String aColumn)
+void deleteColumn(const String& aColumn)
 {
   Table aTable = Table("tMemoryStMan_tmp.data", Table::Update);
   restoreData(aTable);

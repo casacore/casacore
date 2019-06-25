@@ -34,6 +34,7 @@ tTiledStMan
 tTSMShape
 tVirtColEng
 tVirtualTaQLColumn
+tVACEngine
 tVSCEngine
 )
 

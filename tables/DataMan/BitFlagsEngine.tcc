@@ -166,7 +166,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   template<typename T>
-  void BitFlagsEngine<T>::create (uInt initialNrrow)
+  void BitFlagsEngine<T>::create (rownr_t initialNrrow)
   {
     BaseMappedArrayEngine<Bool,T>::create (initialNrrow);
     itsIsNew = True;
@@ -200,14 +200,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   template<typename T>
-  void BitFlagsEngine<T>::getArray (uInt rownr, Array<Bool>& array)
+  void BitFlagsEngine<T>::getArray (rownr_t rownr, Array<Bool>& array)
   {
     Array<T> target(array.shape());
     column().get (rownr, target);
     mapOnGet (array, target);
   }
   template<typename T>
-  void BitFlagsEngine<T>::putArray (uInt rownr, const Array<Bool>& array)
+  void BitFlagsEngine<T>::putArray (rownr_t rownr, const Array<Bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -215,7 +215,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  void BitFlagsEngine<T>::getSlice (uInt rownr, const Slicer& slicer,
+  void BitFlagsEngine<T>::getSlice (rownr_t rownr, const Slicer& slicer,
                                     Array<Bool>& array)
   {
     Array<T> target(array.shape());
@@ -223,7 +223,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     mapOnGet (array, target);
   }
   template<typename T>
-  void BitFlagsEngine<T>::putSlice (uInt rownr, const Slicer& slicer,
+  void BitFlagsEngine<T>::putSlice (rownr_t rownr, const Slicer& slicer,
                                     const Array<Bool>& array)
   {
     Array<T> target(array.shape());

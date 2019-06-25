@@ -30,83 +30,78 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ArrayColumnBase.h>
 #include <casacore/casa/Arrays/Slicer.h>
-#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayBase.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> Abstract baseclass for slices functors </summary>
   // <synopsis>
   // There are several ArrayColumn functions to get or put irregular array
-  // slices. ArrayColumn::handleSlices is used to perform all common
+  // slices. ArrayColumnBase::handleSlices is used to perform all common
   // operations using a functor derived from this base class.
   // </synopsis>
-  template<typename T>
   class BaseSlicesFunctor
   {
   public:
     virtual ~BaseSlicesFunctor()
     {}
-    virtual void apply (const Slicer& slicer, Array<T>& arr) = 0;
+    virtual void apply (const Slicer& slicer, ArrayBase& arr) = 0;
   };
 
   // <summary> Functor to get irregular array slices from a cell</summary>
-  template<typename T>
-  class GetCellSlices : public BaseSlicesFunctor<T>
+  class GetCellSlices : public BaseSlicesFunctor
   {
   public:
-    GetCellSlices (const ArrayColumn<T>& col, uInt rownr)
+    GetCellSlices (const ArrayColumnBase& col, uInt rownr)
       : itsCol(col), itsRow(rownr)
     {}
-    virtual void apply (const Slicer& slicer, Array<T>& arr)
-      { itsCol.getSlice (itsRow, slicer, arr); }
+    virtual void apply (const Slicer& slicer, ArrayBase& arr)
+      { itsCol.baseGetSlice (itsRow, slicer, arr); }
   private:
-    const ArrayColumn<T>& itsCol;
-    uInt                  itsRow;
+    const ArrayColumnBase& itsCol;
+    uInt                   itsRow;
   };
 
   // <summary> Functor to get irregular array slices from a column</summary>
-  template<typename T>
-  class GetColumnSlices : public BaseSlicesFunctor<T>
+  class GetColumnSlices : public BaseSlicesFunctor
   {
   public:
-    GetColumnSlices (const ArrayColumn<T>& col)
+    GetColumnSlices (const ArrayColumnBase& col)
       : itsCol(col)
     {}
-    virtual void apply (const Slicer& slicer, Array<T>& arr)
-      { itsCol.getColumn (slicer, arr); }
+    virtual void apply (const Slicer& slicer, ArrayBase& arr)
+      { itsCol.acbGetColumn (slicer, arr, False); }
   private:
-    const ArrayColumn<T>& itsCol;
+    const ArrayColumnBase& itsCol;
   };
 
   // <summary> Functor to put irregular array slices into a cell </summary>
-  template<typename T>
-  class PutCellSlices : public BaseSlicesFunctor<T>
+  class PutCellSlices : public BaseSlicesFunctor
   {
   public:
-    PutCellSlices (ArrayColumn<T>& col, uInt rownr)
+    PutCellSlices (ArrayColumnBase& col, uInt rownr)
       : itsCol(col), itsRow(rownr)
     {}
-    virtual void apply (const Slicer& slicer, Array<T>& arr)
-      { itsCol.putSlice (itsRow, slicer, arr); }
+    virtual void apply (const Slicer& slicer, ArrayBase& arr)
+      { itsCol.basePutSlice (itsRow, slicer, arr); }
   private:
-    ArrayColumn<T>& itsCol;
-    uInt            itsRow;
+    ArrayColumnBase& itsCol;
+    uInt             itsRow;
   };
 
   // <summary> Functor to get irregular array slices from a column</summary>
-  template<typename T>
-  class PutColumnSlices : public BaseSlicesFunctor<T>
+  class PutColumnSlices : public BaseSlicesFunctor
   {
   public:
-    PutColumnSlices (ArrayColumn<T>& col)
+    PutColumnSlices (ArrayColumnBase& col)
       : itsCol(col)
     {}
-    virtual void apply (const Slicer& slicer, Array<T>& arr)
-      { itsCol.putColumn (slicer, arr); }
+    virtual void apply (const Slicer& slicer, ArrayBase& arr)
+      { itsCol.acbPutColumn (slicer, arr); }
   private:
-    ArrayColumn<T>& itsCol;
+    ArrayColumnBase& itsCol;
   };
 
 } //# NAMESPACE CASACORE - END

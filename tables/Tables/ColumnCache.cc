@@ -39,7 +39,7 @@ ColumnCache::ColumnCache()
 }
 
 
-void ColumnCache::set (uInt startRow, uInt endRow, const void* dataPtr)
+void ColumnCache::set (rownr_t startRow, rownr_t endRow, const void* dataPtr)
 {
     itsStart = startRow;
     itsEnd   = endRow;

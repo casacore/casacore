@@ -112,7 +112,7 @@ public:
   void setNrColumns (Int aNrColumns, uInt aSizeUsed);
 
   // Add some rows.
-  void addRow (uInt aNrRows);
+  void addRow (rownr_t aNrRows);
 
   // Show Statistics of index.
   void showStatistics (ostream& anOs) const;
@@ -132,7 +132,8 @@ public:
   void addColumn (Int anOffset, uInt nbits);
 
   // Delete the given row.
-  Int deleteRow (uInt aRowNumber);
+  // It returns the bucket nr if it gets empty, otherwise -1.
+  Int deleteRow (rownr_t aRowNumber);
 
   // Get the number of rows that fits in ach bucket.
   uInt getRowsPerBucket() const;
@@ -140,12 +141,12 @@ public:
   // Find the bucket containing the given row.
   // An exception is thrown if not found.
   // It also sets the first and last row number fitting in that bucket.
-  void find (uInt aRowNumber, uInt& aBucketNr, uInt& aStartRow,
-	     uInt& anEndRow, const String& colName) const;
+  void find (rownr_t aRowNumber, uInt& aBucketNr, rownr_t& aStartRow,
+	     rownr_t& anEndRow, const String& colName) const;
 
 private:
   // Get the index of the bucket containing the given row.
-  uInt getIndex (uInt aRowNr, const String& colName) const;
+  uInt getIndex (rownr_t aRowNr, const String& colName) const;
 
 
   //# Pointer to specific Storage Manager.    
@@ -155,7 +156,7 @@ private:
   uInt itsNUsed;
 
   //# Last row nr indexed together with itsBucketNumber
-  Block<uInt> itsLastRow;
+  Block<rownr_t> itsLastRow;
 
   //# Bucketnumbers indexed together with itsLastRow.
   //# So itsLastRow[0] contains the last rownumber of the bucket

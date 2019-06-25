@@ -52,8 +52,8 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 	   ("SetupNewTable object already used for another Table"));
   }
   //# Use MemoryStMan for stored and unbound columns.
-  TableDesc* tdescPtr  = newtab.tableDescPtr();
-  ColumnSet* colSetPtr = newtab.columnSetPtr();
+  CountedPtr<TableDesc> tdescPtr  = newtab.tableDescPtr();
+  CountedPtr<ColumnSet> colSetPtr = newtab.columnSetPtr();
   MemoryStMan stman(colSetPtr->uniqueDataManagerName("MSMTAB"));
   for (uInt i=0; i<tdescPtr->ncolumn(); i++) {
     PlainColumn* col = colSetPtr->getColumn(i);
@@ -94,7 +94,6 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 MemoryTable::~MemoryTable()
 {
   delete lockPtr_p;
-  delete colSetPtr_p;
 }
 
 void MemoryTable::reopenRW()

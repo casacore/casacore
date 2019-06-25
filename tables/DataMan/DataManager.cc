@@ -1,5 +1,5 @@
-//# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2016
+//# DataManager.cc: Abstract base class for a data manager
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 
 //# Includes
 #include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/StandardStMan.h>
 #include <casacore/tables/DataMan/IncrementalStMan.h>
@@ -45,7 +46,6 @@
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/PlainTable.h>
-#include <casacore/casa/Arrays/ArrayBase.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/DynLib.h>
@@ -97,13 +97,13 @@ Bool DataManager::isStorageManager() const
     { return True; }
 
 
-uInt DataManager::open1 (uInt nrrow, AipsIO& ios)
+rownr_t DataManager::open1 (rownr_t nrrow, AipsIO& ios)
 {
     open (nrrow, ios);
     return nrrow;
 }
 
-uInt DataManager::resync1 (uInt nrrow)
+rownr_t DataManager::resync1 (rownr_t nrrow)
 {
     resync (nrrow);
     return nrrow;
@@ -263,11 +263,11 @@ Bool DataManager::canRemoveColumn() const
 Bool DataManager::canRenameColumn() const
     { return True; }
 
-void DataManager::addRow (uInt)
+void DataManager::addRow (rownr_t)
     { throw DataManInvOper ("DataManager::addRow not allowed for "
                             "data manager type " + dataManagerType()); }
 
-void DataManager::removeRow (uInt)
+void DataManager::removeRow (rownr_t)
     { throw DataManInvOper ("DataManager::removeRow not allowed for "
                             "data manager type " + dataManagerType()); }
 
@@ -287,6 +287,11 @@ void DataManager::removeColumn (DataManagerColumn*)
 std::map<String,DataManagerCtor>
         DataManager::theirRegisterMap(initRegisterMap());
 Mutex DataManager::theirMutex(Mutex::Recursive);
+// Define the nr of rows fitting in an Int which is used by the data
+// managers. Test programs can set it to a lower value to test storing
+// 64-bit rownrs without the need of having very large tables.
+rownr_t DataManager::MAXROWNR32 (2147483647);
+
 
 //# Register a mapping.
 void DataManager::registerCtor (const String& type, DataManagerCtor func)
@@ -348,506 +353,6 @@ DataManager* DataManager::unknownDataManager (const String& type,
     return 0;
 }
 
-
-
-
-DataManagerColumn::~DataManagerColumn()
-{}
-
-void DataManagerColumn::setMaxLength (uInt)
-{}
-
-void DataManagerColumn::setShapeColumn (const IPosition&)
-{
-    throw DataManInvOper ("setShapeColumn only allowed for FixedShape arrays"
-                          " in column " + columnName());
-}
-
-void DataManagerColumn::setShape (uInt, const IPosition&)
-{
-    throw DataManInvOper("setShape only allowed for non-FixedShape arrays"
-                         " in column " + columnName());
-}
-
-void DataManagerColumn::setShapeTiled (uInt rownr, const IPosition& shape,
-				       const IPosition&)
-{
-    setShape (rownr, shape);
-}
-
-// By default the shape is defined (for scalars).
-Bool DataManagerColumn::isShapeDefined (uInt)
-{
-    return True;
-}
-
-// The default implementation of ndim is to use the shape.
-uInt DataManagerColumn::ndim (uInt rownr)
-{
-    return shape(rownr).nelements();
-}
-
-// The shape of the array in the given row.
-IPosition DataManagerColumn::shape (uInt)
-{
-    return IPosition(0);
-}
-
-// The tile shape of the array in the given row.
-IPosition DataManagerColumn::tileShape (uInt)
-{
-    return IPosition(0);
-}
-
-Bool DataManagerColumn::canChangeShape() const
-{
-    return False;
-}
-
-Bool DataManagerColumn::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessArrayColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessScalarColumnCells (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessArrayColumnCells (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessSlice (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessColumnSlice (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-
-
-String DataManagerColumn::dataTypeId() const
-    { return String(); }
-
-Bool DataManagerColumn::isWritable() const
-    { return True; }
-
-void DataManagerColumn::throwGet() const
-    { throw (DataManInvOper ("DataManagerColumn::get not allowed in column "
-                             + columnName())); }
-void DataManagerColumn::throwPut() const
-    { throw (DataManInvOper ("DataManagerColumn::put not allowed in column "
-                             + columnName())); }
-
-
-#define DATAMANAGER_GETPUT(T,NM) \
-void DataManagerColumn::aips_name2(get,NM) (uInt, T*) \
-    { throwGet(); } \
-void DataManagerColumn::aips_name2(put,NM) (uInt, const T*) \
-    { throwPut(); }
-
-DATAMANAGER_GETPUT(Bool,BoolV)
-DATAMANAGER_GETPUT(uChar,uCharV)
-DATAMANAGER_GETPUT(Short,ShortV)
-DATAMANAGER_GETPUT(uShort,uShortV)
-DATAMANAGER_GETPUT(Int,IntV)
-DATAMANAGER_GETPUT(uInt,uIntV)
-DATAMANAGER_GETPUT(Int64,Int64V)
-DATAMANAGER_GETPUT(float,floatV)
-DATAMANAGER_GETPUT(double,doubleV)
-DATAMANAGER_GETPUT(Complex,ComplexV)
-DATAMANAGER_GETPUT(DComplex,DComplexV)
-DATAMANAGER_GETPUT(String,StringV)
-
-
-void DataManagerColumn::getOtherV (uInt, void*)
-{
-  throw (DataManInvOper ("DataManagerColumn::getOtherV not allowed"
-                         " in column " + columnName()));
-}
-void DataManagerColumn::putOtherV (uInt, const void*)
-{
-  throw (DataManInvOper ("DataManagerColumn::putOtherV not allowed"
-                         " in column " + columnName()));
-}
-
-void DataManagerColumn::getScalarColumnV (void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getScalarColumn not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putScalarColumnV (const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putScalarColumn not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getScalarColumnCellsV (const RefRows& rows, void* dataPtr)
-{
-  getScalarColumnCellsBase (rows, *static_cast<ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::putScalarColumnCellsV (const RefRows& rows, const void* dataPtr)
-{
-  putScalarColumnCellsBase (rows, *static_cast<const ArrayBase*>(dataPtr));
-}
-uInt DataManagerColumn::getBlockV (uInt, uInt, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getBlock not allowed"
-                        " in column " + columnName()));
-  return 0;
-}
-void DataManagerColumn::putBlockV (uInt, uInt, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putBlock not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getArrayV (uInt, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getArray not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putArrayV (uInt, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putArray not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getArrayColumnV (void* dataPtr)
-{
-  getArrayColumnBase (*static_cast<ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::putArrayColumnV (const void* dataPtr)
-{
-  putArrayColumnBase (*static_cast<const ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::getArrayColumnCellsV (const RefRows& rows, void* dataPtr)
-{
-  getArrayColumnCellsBase (rows, *static_cast<ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::putArrayColumnCellsV (const RefRows& rows, const void* dataPtr)
-{
-  putArrayColumnCellsBase (rows, *static_cast<const ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::getSliceV (uInt rownr, const Slicer& slicer, void* dataPtr)
-{
-  getSliceBase (rownr, slicer, *static_cast<ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::putSliceV (uInt rownr, const Slicer& slicer, const void* dataPtr)
-{
-  putSliceBase (rownr, slicer, *static_cast<const ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::getColumnSliceV (const Slicer& slicer, void* dataPtr)
-{
-  getColumnSliceBase (slicer, *static_cast<ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::putColumnSliceV (const Slicer& slicer, const void* dataPtr)
-{
-  putColumnSliceBase (slicer, *static_cast<const ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::getColumnSliceCellsV (const RefRows& rows,
-					      const Slicer& slicer, void* dataPtr)
-{
-  getColumnSliceCellsBase (rows, slicer, *static_cast<ArrayBase*>(dataPtr));
-}
-void DataManagerColumn::putColumnSliceCellsV (const RefRows& rows,
-					      const Slicer& slicer, const void* dataPtr)
-{
-  putColumnSliceCellsBase (rows, slicer, *static_cast<const ArrayBase*>(dataPtr));
-}
-
-
-#define DATAMANAGERCOLUMN_GETCELLS(T,TV)         \
-{                                                \
-  Vector<T>& vec = static_cast<Vector<T>&>(arr); \
-  RefRowsSliceIter iter(rownrs);                 \
-  uInt i=0;                                      \
-  while (! iter.pastEnd()) {                     \
-    uInt rownr = iter.sliceStart();              \
-    uInt end   = iter.sliceEnd();                \
-    uInt incr  = iter.sliceIncr();               \
-    while (rownr <= end) {                       \
-      aips_name2(get,TV) (rownr, &(vec[i]));     \
-      i++;                                       \
-      rownr += incr;                             \
-    }                                            \
-    iter++;                                      \
-  }                                              \
-}
-#define DATAMANAGERCOLUMN_PUTCELLS(T,TV)         \
-{                                                \
-  const Vector<T>& vec = static_cast<const Vector<T>&>(arr); \
-  RefRowsSliceIter iter(rownrs);                 \
-  uInt i=0;                                      \
-  while (! iter.pastEnd()) {                     \
-    uInt rownr = iter.sliceStart();              \
-    uInt end   = iter.sliceEnd();                \
-    uInt incr  = iter.sliceIncr();               \
-    while (rownr <= end) {                       \
-      aips_name2(put,TV) (rownr, &(vec[i]));     \
-      i++;                                       \
-      rownr += incr;                             \
-    }                                            \
-    iter++;                                      \
-  }                                              \
-}
-
-void DataManagerColumn::getScalarColumnCellsBase (const RefRows& rownrs,
-                                                  ArrayBase& arr)
-{
-  switch (dataType()) {
-  case TpBool:
-    DATAMANAGERCOLUMN_GETCELLS(Bool,BoolV)
-    break;
-  case TpUChar:
-    DATAMANAGERCOLUMN_GETCELLS(uChar,uCharV)
-    break;
-  case TpShort:
-    DATAMANAGERCOLUMN_GETCELLS(Short,ShortV)
-    break;
-  case TpUShort:
-    DATAMANAGERCOLUMN_GETCELLS(uShort,uShortV)
-    break;
-  case TpInt:
-    DATAMANAGERCOLUMN_GETCELLS(Int,IntV)
-    break;
-  case TpUInt:
-    DATAMANAGERCOLUMN_GETCELLS(uInt,uIntV)
-    break;
-  case TpInt64:
-    DATAMANAGERCOLUMN_GETCELLS(Int64,Int64V)
-    break;
-  case TpFloat:
-    DATAMANAGERCOLUMN_GETCELLS(float,floatV)
-    break;
-  case TpDouble:
-    DATAMANAGERCOLUMN_GETCELLS(double,doubleV)
-    break;
-  case TpComplex:
-    DATAMANAGERCOLUMN_GETCELLS(Complex,ComplexV)
-    break;
-  case TpDComplex:
-    DATAMANAGERCOLUMN_GETCELLS(DComplex,DComplexV)
-    break;
-  case TpString:
-    DATAMANAGERCOLUMN_GETCELLS(String,StringV)
-    break;
-  default:
-    throw (DataManInvOper("DataManagerColumn::getScalarColumnCellsV not allowed"
-                          " in column " + columnName()));
-  }
-}
-
-void DataManagerColumn::putScalarColumnCellsBase (const RefRows& rownrs,
-                                                  const ArrayBase& arr)
-{
-  switch (dataType()) {
-  case TpBool:
-    DATAMANAGERCOLUMN_PUTCELLS(Bool,BoolV)
-    break;
-  case TpUChar:
-    DATAMANAGERCOLUMN_PUTCELLS(uChar,uCharV)
-    break;
-  case TpShort:
-    DATAMANAGERCOLUMN_PUTCELLS(Short,ShortV)
-    break;
-  case TpUShort:
-    DATAMANAGERCOLUMN_PUTCELLS(uShort,uShortV)
-    break;
-  case TpInt:
-    DATAMANAGERCOLUMN_PUTCELLS(Int,IntV)
-    break;
-  case TpUInt:
-    DATAMANAGERCOLUMN_PUTCELLS(uInt,uIntV)
-    break; 
-  case TpInt64:
-    DATAMANAGERCOLUMN_PUTCELLS(Int64,Int64V)
-    break;
-  case TpFloat:
-    DATAMANAGERCOLUMN_PUTCELLS(float,floatV)
-    break;
-  case TpDouble:
-    DATAMANAGERCOLUMN_PUTCELLS(double,doubleV)
-    break;
-  case TpComplex:
-    DATAMANAGERCOLUMN_PUTCELLS(Complex,ComplexV)
-    break;
-  case TpDComplex:
-    DATAMANAGERCOLUMN_PUTCELLS(DComplex,DComplexV)
-    break;
-  case TpString:
-    DATAMANAGERCOLUMN_PUTCELLS(String,StringV)
-    break;
-  default:
-    throw (DataManInvOper("DataManagerColumn::putScalarColumnCellsV not allowed"
-                          " in column " + columnName()));
-  }
-}
-
-void DataManagerColumn::getArrayColumnBase (ArrayBase& arr)
-{
-  const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
-    getArrayV (row, &(iter->getArray()));
-    iter->next();
-  }
-}
-void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
-{
-  const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
-    putArrayV (row, &(iter->getArray()));
-    iter->next();
-  }
-}
-void DataManagerColumn::getArrayColumnCellsBase (const RefRows& rows, ArrayBase& arr)
-{
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
-  RefRowsSliceIter rowsIter(rows);
-  while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
-         row+=rowsIter.sliceIncr()) {
-      DebugAssert (! iter->pastEnd(), AipsError);
-      getArrayV (row, &(iter->getArray()));
-      iter->next();
-    }
-    rowsIter.next();
-  }
-  DebugAssert (iter->pastEnd(), AipsError);
-}
-void DataManagerColumn::putArrayColumnCellsBase (const RefRows& rows,
-                                                 const ArrayBase& arr)
-{
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
-  RefRowsSliceIter rowsIter(rows);
-  while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
-         row+=rowsIter.sliceIncr()) {
-      DebugAssert (! iter->pastEnd(), AipsError);
-      putArrayV (row, &(iter->getArray()));
-      iter->next();
-    }
-    rowsIter.next();
-  }
-  DebugAssert (iter->pastEnd(), AipsError);
-}
-void DataManagerColumn::getSliceArr (uInt row, const Slicer& section,
-                                     CountedPtr<ArrayBase>& fullArr,
-                                     ArrayBase& arr)
-{
-  IPosition shp = shape(row);
-  if (shp.isEqual (arr.shape())) {
-    getArrayV (row, &arr);
-  } else {
-    if (! shp.isEqual (fullArr->shape())) {
-      fullArr->resize (shp);
-    }
-    getArrayV (row, fullArr.get());
-    arr.assignBase (*(fullArr->getSection (section)));
-  }
-}
-void DataManagerColumn::putSliceArr (uInt row, const Slicer& section,
-                                     CountedPtr<ArrayBase>& fullArr,
-                                     const ArrayBase& arr)
-{
-  IPosition shp = shape(row);
-  if (shp.isEqual (arr.shape())) {
-    putArrayV (row, &arr);
-  } else {
-    if (! shp.isEqual (fullArr->shape())) {
-      fullArr->resize (shp);
-    }
-    getArrayV (row, fullArr.get());
-    (fullArr->getSection(section))->assignBase (arr);
-    putArrayV (row, fullArr.get());
-  }
-}
-void DataManagerColumn::getSliceBase (uInt row, const Slicer& section,
-                                      ArrayBase& arr)
-{
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  getSliceArr (row, section, fullArr, arr);
-}
-void DataManagerColumn::putSliceBase (uInt row, const Slicer& section,
-                                      const ArrayBase& arr)
-{
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  putSliceArr (row, section, fullArr, arr);
-}
-void DataManagerColumn::getColumnSliceBase (const Slicer& section, ArrayBase& arr)
-{
-  const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
-    getSliceArr (row, section, fullArr, iter->getArray());
-    iter->next();
-  }
-}
-void DataManagerColumn::putColumnSliceBase (const Slicer& section,
-                                            const ArrayBase& arr)
-{
-  const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
-    putSliceArr (row, section, fullArr, iter->getArray());
-    iter->next();
-  }
-}
-void DataManagerColumn::getColumnSliceCellsBase (const RefRows& rows,
-                                                 const Slicer& section,
-                                                 ArrayBase& arr)
-{
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
-  RefRowsSliceIter rowsIter(rows);
-  while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
-         row+=rowsIter.sliceIncr()) {
-      DebugAssert (! iter->pastEnd(), AipsError);
-      getSliceArr (row, section, fullArr, iter->getArray());
-      iter->next();
-    }
-    rowsIter.next();
-  }
-  DebugAssert (iter->pastEnd(), AipsError);
-}
-void DataManagerColumn::putColumnSliceCellsBase (const RefRows& rows,
-                                                 const Slicer& section,
-                                                 const ArrayBase& arr)
-{
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
-  RefRowsSliceIter rowsIter(rows);
-  while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
-         row+=rowsIter.sliceIncr()) {
-      DebugAssert (! iter->pastEnd(), AipsError);
-      putSliceArr (row, section, fullArr, iter->getArray());
-      iter->next();
-    }
-    rowsIter.next();
-  }
-  DebugAssert (iter->pastEnd(), AipsError);
-}
 
 
 //# Register all mappings of the names of classes derived from

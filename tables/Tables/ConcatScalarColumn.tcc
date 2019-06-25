@@ -48,14 +48,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
 
   template<typename T>
-  void ConcatScalarColumn<T>::getScalarColumn (void* dataPtr) const
+  void ConcatScalarColumn<T>::getScalarColumn (ArrayBase& arr) const
   {
-    Vector<T>& vec = *static_cast<Vector<T>*>(dataPtr);
+    Vector<T>& vec = static_cast<Vector<T>&>(arr);
     uInt st = 0;
     for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
       uInt nr = refColPtr_p[i]->nrow();
       Vector<T> part = vec(Slice(st, nr));
-      refColPtr_p[i]->getScalarColumn (&part);
+      refColPtr_p[i]->getScalarColumn (part);
       st += nr;
     }
     // Set the column cache to the first table.
@@ -64,9 +64,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   void ConcatScalarColumn<T>::getScalarColumnCells (const RefRows& rownrs,
-						    void* dataPtr) const
+						    ArrayBase& arr) const
   {
-    Vector<T>& vec = *static_cast<Vector<T>*>(dataPtr);
+    Vector<T>& vec = static_cast<Vector<T>&>(arr);
     // Get the rownrs as a vector and sort it.
     // In this way the data will be read in sequential order.
     Vector<uInt> rows = rownrs.convert();
@@ -87,14 +87,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  void ConcatScalarColumn<T>::putScalarColumn (const void* dataPtr)
+  void ConcatScalarColumn<T>::putScalarColumn (const ArrayBase& arr)
   {
-    Vector<T> vec (*static_cast<const Vector<T>*>(dataPtr));
+    Vector<T> vec (static_cast<const Vector<T>&>(arr));
     uInt st = 0;
     for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
       uInt nr = refColPtr_p[i]->nrow();
       Vector<T> part = vec(Slice(st, nr));
-      refColPtr_p[i]->putScalarColumn (&part);
+      refColPtr_p[i]->putScalarColumn (part);
       st += nr;
     }
     // Set the column cache to the first table.
@@ -103,9 +103,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   void ConcatScalarColumn<T>::putScalarColumnCells (const RefRows& rownrs,
-						    const void* dataPtr)
+						    const ArrayBase& arr)
   {
-    const Vector<T>& vec = *static_cast<const Vector<T>*>(dataPtr);
+    const Vector<T>& vec = static_cast<const Vector<T>&>(arr);
     // Get the rownrs as a vector and sort it.
     // In this way the data will be read in sequential order.
     Vector<uInt> rows = rownrs.convert();
@@ -130,16 +130,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatScalarColumn<T>::makeSortKey (Sort& sortobj,
                                            CountedPtr<BaseCompare>& cmpObj,
 					   Int order,
-					   const void*& dataSave)
+					   CountedPtr<ArrayBase>& dataSave)
   {
     //# Get the data as a column.
-    //# Save the pointer to the vector for deletion by freeSortKey().
-    dataSave = 0;
-    ScalarColumn<T> col(refTabPtr_p->asTable(),
-                        this->columnDesc().name());
-    Vector<T>* vecPtr = new Vector<T>;
-    col.getColumn (*vecPtr);
+    Vector<T>* vecPtr = new Vector<T>(nrow());
     dataSave = vecPtr;
+    getScalarColumn (*vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
   }
 
@@ -148,15 +144,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                               CountedPtr<BaseCompare>& cmpObj,
 					      Int order,
 					      const Vector<uInt>& rownrs,
-					      const void*& dataSave)
+					      CountedPtr<ArrayBase>& dataSave)
   {
     //# Get the data as a column.
-    dataSave = 0;
-    ScalarColumn<T> col(refTabPtr_p->asTable(),
-                        this->columnDesc().name());
-    Vector<T>* vecPtr = new Vector<T>;
-    col.getColumnCells (RefRows(rownrs), *vecPtr);
+    Vector<T>* vecPtr = new Vector<T>(rownrs.size());
     dataSave = vecPtr;
+    getScalarColumnCells (rownrs, *vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
   }
 
@@ -179,15 +172,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		     order == Sort::Descending  ?  Sort::Descending
 		     : Sort::Ascending);
     vecPtr->freeStorage (datap, deleteIt);
-  }
-
-  template<class T>
-  void ConcatScalarColumn<T>::freeSortKey (const void*& dataSave)
-  {
-    if (dataSave != 0) {
-      delete (Vector<T>*)dataSave;
-    }
-    dataSave = 0;
   }
 
 } //# NAMESPACE CASACORE - END

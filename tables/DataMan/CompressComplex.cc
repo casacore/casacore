@@ -163,7 +163,7 @@ void CompressComplex::registerClass()
 }
 
 
-void CompressComplex::create (uInt initialNrrow)
+void CompressComplex::create (rownr_t initialNrrow)
 {
   BaseMappedArrayEngine<Complex,Int>::create (initialNrrow);
   // Store the various parameters as keywords in this column.
@@ -200,11 +200,11 @@ void CompressComplex::reopenRW()
 {
 }
 
-void CompressComplex::addRowInit (uInt startRow, uInt nrrow)
+void CompressComplex::addRowInit (rownr_t startRow, rownr_t nrrow)
 {
   BaseMappedArrayEngine<Complex,Int>::addRowInit (startRow, nrrow);
   if (autoScale_p) {
-    for (uInt i=0; i<nrrow; i++) {
+    for (rownr_t i=0; i<nrrow; i++) {
       scaleColumn_p->put (startRow++, 0.);
     }
   }
@@ -218,9 +218,9 @@ void CompressComplex::findMinMax (Float& minVal, Float& maxVal,
   setNaN (maxVal);
   Bool deleteIt;
   const Complex* data = array.getStorage (deleteIt);
-  const uInt nr = array.nelements();
+  const Int64 nr = array.nelements();
   Bool firstTime = True;
-  for (uInt i=0; i<nr; i++) {
+  for (Int64 i=0; i<nr; i++) {
     if (isFinite(data[i].real())  &&  isFinite(data[i].imag())) {
       Float tmp = data[i].real();
       if (firstTime) {
@@ -269,8 +269,8 @@ void CompressComplex::scaleOnGet (Float scale, Float offset,
   Bool deleteIn, deleteOut;
   Complex* out = array.getStorage (deleteOut);
   const Int* in = target.getStorage (deleteIn);
-  const uInt nr = array.nelements();
-  for (uInt i=0; i<nr; i++) {
+  const Int64 nr = array.nelements();
+  for (Int64 i=0; i<nr; i++) {
     Int r = in[i] / 65536;
     if (r == -32768) {
       setNaN (out[i]);
@@ -298,8 +298,8 @@ void CompressComplex::scaleOnPut (Float scale, Float offset,
   Bool deleteIn, deleteOut;
   const Complex* in = array.getStorage (deleteIn);
   Int* out = target.getStorage (deleteOut);
-  const uInt nr = array.nelements();
-  for (uInt i=0; i<nr; i++) {
+  const Int64 nr = array.nelements();
+  for (Int64 i=0; i<nr; i++) {
     if (!isFinite(in[i].real())  ||  !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else {
@@ -353,7 +353,7 @@ void CompressComplex::scaleColumnOnGet (Array<Complex>& array,
   }else{
     ArrayIterator<Complex> arrayIter (array, array.ndim() - 1);
     ReadOnlyArrayIterator<Int> targetIter (target, target.ndim() - 1);
-    uInt rownr = 0;
+    rownr_t rownr = 0;
     while (! arrayIter.pastEnd()) {
       scaleOnGet (getScale(rownr), getOffset(rownr),
 		  arrayIter.array(), targetIter.array());
@@ -372,7 +372,7 @@ void CompressComplex::scaleColumnOnPut (const Array<Complex>& array,
   }else{
     ReadOnlyArrayIterator<Complex> arrayIter (array, array.ndim() - 1);
     ArrayIterator<Int> targetIter (target, target.ndim() - 1);
-    uInt rownr = 0;
+    rownr_t rownr = 0;
     while (! arrayIter.pastEnd()) {
       scaleOnPut (getScale(rownr), getOffset(rownr),
 		  arrayIter.array(), targetIter.array());
@@ -384,7 +384,7 @@ void CompressComplex::scaleColumnOnPut (const Array<Complex>& array,
 }
 
 
-void CompressComplex::getArray (uInt rownr, Array<Complex>& array)
+void CompressComplex::getArray (rownr_t rownr, Array<Complex>& array)
 {
   if (! array.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (array.shape());
@@ -393,7 +393,7 @@ void CompressComplex::getArray (uInt rownr, Array<Complex>& array)
   scaleOnGet (getScale(rownr), getOffset(rownr), array, buffer_p);
 }
 
-void CompressComplex::putArray (uInt rownr, const Array<Complex>& array)
+void CompressComplex::putArray (rownr_t rownr, const Array<Complex>& array)
 {
   if (! array.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (array.shape());
@@ -412,7 +412,7 @@ void CompressComplex::putArray (uInt rownr, const Array<Complex>& array)
   column().basePut (rownr, buffer_p);
 }
 
-void CompressComplex::getSlice (uInt rownr, const Slicer& slicer,
+void CompressComplex::getSlice (rownr_t rownr, const Slicer& slicer,
 				Array<Complex>& array)
 {
   if (! array.shape().isEqual (buffer_p.shape())) {
@@ -422,7 +422,7 @@ void CompressComplex::getSlice (uInt rownr, const Slicer& slicer,
   scaleOnGet (getScale(rownr), getOffset(rownr), array, buffer_p);
 }
 
-void CompressComplex::putPart (uInt rownr, const Slicer& slicer,
+void CompressComplex::putPart (rownr_t rownr, const Slicer& slicer,
 			       const Array<Complex>& array,
 			       Float scale, Float offset)
 {
@@ -433,7 +433,7 @@ void CompressComplex::putPart (uInt rownr, const Slicer& slicer,
   column().putSlice (rownr, slicer, buffer_p);
 }
 
-void CompressComplex::putFullPart (uInt rownr, const Slicer& slicer,
+void CompressComplex::putFullPart (rownr_t rownr, const Slicer& slicer,
 				   Array<Complex>& fullArray,
 				   const Array<Complex>& partArray,
 				   Float minVal, Float maxVal)
@@ -452,7 +452,7 @@ void CompressComplex::putFullPart (uInt rownr, const Slicer& slicer,
   column().basePut (rownr, buffer_p);
 }
 
-void CompressComplex::putSlice (uInt rownr, const Slicer& slicer,
+void CompressComplex::putSlice (rownr_t rownr, const Slicer& slicer,
 				const Array<Complex>& array)
 {
   // If the slice is the entire array, write it as such.
@@ -516,8 +516,8 @@ void CompressComplex::putArrayColumn (const Array<Complex>& array)
     column().putColumn (target);
   } else {
     ReadOnlyArrayIterator<Complex> iter(array, array.ndim()-1);
-    uInt nrrow = table().nrow();
-    for (uInt rownr=0; rownr<nrrow; rownr++) {
+    rownr_t nrrow = table().nrow();
+    for (rownr_t rownr=0; rownr<nrrow; rownr++) {
       CompressComplex::putArray (rownr, iter.array());
       iter.next();
     }
@@ -530,9 +530,9 @@ void CompressComplex::getArrayColumnCells (const RefRows& rownrs,
   ArrayIterator<Complex> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressComplex::getArray (rownr, arrIter.array());
       arrIter.next();
@@ -547,9 +547,9 @@ void CompressComplex::putArrayColumnCells (const RefRows& rownrs,
   ReadOnlyArrayIterator<Complex> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressComplex::putArray (rownr, arrIter.array());
       arrIter.next();
@@ -576,8 +576,8 @@ void CompressComplex::putColumnSlice (const Slicer& slicer,
     column().putColumn (slicer, target);
   } else {
     ReadOnlyArrayIterator<Complex> iter(array, array.ndim()-1);
-    uInt nrrow = table().nrow();
-    for (uInt rownr=0; rownr<nrrow; rownr++) {
+    rownr_t nrrow = table().nrow();
+    for (rownr_t rownr=0; rownr<nrrow; rownr++) {
       CompressComplex::putSlice (rownr, slicer, iter.array());
       iter.next();
     }
@@ -591,9 +591,9 @@ void CompressComplex::getColumnSliceCells (const RefRows& rownrs,
   ArrayIterator<Complex> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressComplex::getSlice (rownr, slicer, arrIter.array());
       arrIter.next();
@@ -609,9 +609,9 @@ void CompressComplex::putColumnSliceCells (const RefRows& rownrs,
   ReadOnlyArrayIterator<Complex> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressComplex::putSlice (rownr, slicer, arrIter.array());
       arrIter.next();
@@ -692,7 +692,7 @@ void CompressComplexSD::registerClass()
   DataManager::registerCtor (className(), makeObject);
 }
 
-void CompressComplexSD::create (uInt initialNrrow)
+void CompressComplexSD::create (rownr_t initialNrrow)
 {
   CompressComplex::create (initialNrrow);
   // Set the type.
@@ -708,9 +708,9 @@ void CompressComplexSD::findMinMax (Float& minVal, Float& maxVal,
   setNaN (maxVal);
   Bool deleteIt;
   const Complex* data = array.getStorage (deleteIt);
-  const uInt nr = array.nelements();
+  const Int64 nr = array.nelements();
   Bool firstTime = True;
-  for (uInt i=0; i<nr; i++) {
+  for (Int64 i=0; i<nr; i++) {
     if (isFinite(data[i].real())  &&  isFinite(data[i].imag())) {
       Float tmp = data[i].real();
       if (firstTime) {
@@ -746,8 +746,8 @@ void CompressComplexSD::scaleOnGet (Float scale, Float offset,
   Bool deleteIn, deleteOut;
   Complex* out = array.getStorage (deleteOut);
   const Int* in = target.getStorage (deleteIn);
-  const uInt nr = array.nelements();
-  for (uInt i=0; i<nr; i++) {
+  const Int64 nr = array.nelements();
+  for (Int64 i=0; i<nr; i++) {
     Int inval = in[i];
     if (inval%2 == 0) {
       inval >>= 1;
@@ -784,8 +784,8 @@ void CompressComplexSD::scaleOnPut (Float scale, Float offset,
   Bool deleteIn, deleteOut;
   const Complex* in = array.getStorage (deleteIn);
   Int* out = target.getStorage (deleteOut);
-  const uInt nr = array.nelements();
-  for (uInt i=0; i<nr; i++) {
+  const Int64 nr = array.nelements();
+  for (Int64 i=0; i<nr; i++) {
     if (!isFinite(in[i].real())  ||  !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else if (in[i].imag() == 0) {

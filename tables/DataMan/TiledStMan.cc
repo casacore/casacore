@@ -91,7 +91,7 @@ TiledStMan::~TiledStMan()
 
 IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 				     Double tolerance,
-				     uInt nrPixelsPerTile)
+				     uInt64 nrPixelsPerTile)
 {
     Vector<double> weight(hypercubeShape.nelements());
     weight = double(1);
@@ -102,7 +102,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 				     const Vector<Double>& weight,
 				     const Vector<Double>& tolerance,
-				     uInt nrPixelsPerTile)
+				     uInt64 nrPixelsPerTile)
 {
     uInt nrdim = hypercubeShape.nelements();
     if (weight.nelements() != nrdim  ||  tolerance.nelements() != nrdim) {
@@ -154,7 +154,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 	if (maxDiff >= 1) {
 	    for (i=0; i<nrdim; i++) {
 		if (tileShape(i) == 0) {
-		    tileShape(i) = Int(tmpShape(i) + 0.5);   // round-off
+		    tileShape(i) = Int64(tmpShape(i) + 0.5);   // round-off
 		}
 	    }
 	    break;
@@ -191,10 +191,10 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     IPosition maxShape (nrdim);
     Double cubeSpace = 1;
     for (i=0; i<nrdim; i++) {
-	minShape(i) = Int (tileShape(i) * tolerance(i));
-	maxShape(i) = Int (tileShape(i) / tolerance(i) + 0.5);
+	minShape(i) = Int64 (tileShape(i) * tolerance(i));
+	maxShape(i) = Int64 (tileShape(i) / tolerance(i) + 0.5);
 	if (minShape(i) > maxShape(i)) {
-	    Int sav = minShape(i);
+	    Int64 sav = minShape(i);
 	    minShape(i) = maxShape(i);
 	    maxShape(i) = sav;
 	}
@@ -207,12 +207,12 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 	cubeSpace *= hypercubeShape(i);
     }
     // Find the shapes on each axis that will be tried.
-    Block<uInt> nval(nrdim, uInt(0));
-    PtrBlock<Block<Int>*> values(nrdim);
+    Block<uInt64> nval(nrdim, uInt64(0));
+    PtrBlock<Block<Int64>*> values(nrdim);
     for (i=0; i<nrdim; i++) {
-	values[i] = new Block<Int> (maxShape(i) - minShape(i) + 1);
+	values[i] = new Block<Int64> (maxShape(i) - minShape(i) + 1);
 	// First find exactly fitting shapes.
-	for (Int j=minShape(i); j<=maxShape(i); j++) {
+	for (Int64 j=minShape(i); j<=maxShape(i); j++) {
 	    if (hypercubeShape(i) % j == 0) {
 		(*values[i])[nval[i]] = j;
 		nval[i]++;
@@ -220,8 +220,8 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 	}
 	// If none available, use all possible shapes within half the range.
 	if (nval[i] == 0) {
-	    for (Int j=(tileShape(i)+minShape(i))/2;
-		     j<=(tileShape(i)+maxShape(i))/2; j++) {
+	    for (Int64 j=(tileShape(i)+minShape(i))/2;
+                 j<=(tileShape(i)+maxShape(i))/2; j++) {
 		(*values[i])[nval[i]] = j;
 		nval[i]++;
 	    }
@@ -229,19 +229,19 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     }
     // Now calculate the cost for all the possibilities.
     // Take the one with the lowest cost.
-    Block<uInt> ndone (nrdim, uInt(0));
+    Block<uInt64> ndone (nrdim, uInt64(0));
     IPosition tshape (nrdim);
     for (i=0; i<nrdim; i++) {
 	tshape(i) = (*values[i])[0];
     }
     Double minCost = 1000000;
     while (True) {
-	Int totalSize = 1;
+	Int64 totalSize = 1;
 	Double totalSpace = 1;
 	Double costAxes = 0;
 	for (i=0; i<nrdim; i++) {
 	    totalSize *= tshape(i);
-	    Int ntile = (hypercubeShape(i) + tshape(i) - 1) / tshape(i);
+	    Int64 ntile = (hypercubeShape(i) + tshape(i) - 1) / tshape(i);
 	    totalSpace *= ntile * tshape(i);
 	    costAxes += abs(tileShape(i) - tshape(i)) / double(tileShape(i));
 	}
@@ -271,7 +271,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     // number of tiles.
     for (i=0; i<nrdim; i++) {
 	delete values[i];
-	uInt nrtile = (hypercubeShape(i) + bestShape(i) - 1) / bestShape(i);
+	uInt64 nrtile = (hypercubeShape(i) + bestShape(i) - 1) / bestShape(i);
 	bestShape(i) = (hypercubeShape(i) + nrtile - 1) / nrtile;
     }
     return bestShape;
@@ -288,10 +288,10 @@ Record TiledStMan::dataManagerSpec() const
 {
     Record rec = getProperties();
     rec.define ("DEFAULTTILESHAPE", defaultTileShape().asVector());
-    rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
+    rec.define ("MAXIMUMCACHESIZE", Int64(persMaxCacheSize_p));
     Record subrec;
     Int nrrec=0;
-    for (uInt i=0; i<cubeSet_p.nelements(); i++) {
+    for (uInt64 i=0; i<cubeSet_p.nelements(); i++) {
 	if (cubeSet_p[i] != 0  &&  cubeSet_p[i]->cubeShape().nelements() > 0) {
 	    Record srec;
 	    srec.define ("CubeShape", cubeSet_p[i]->cubeShape().asVector());
@@ -322,7 +322,7 @@ void TiledStMan::setProperties (const Record& rec)
 }
 
 
-void TiledStMan::setShape (uInt, TSMCube*, const IPosition&, const IPosition&)
+void TiledStMan::setShape (rownr_t, TSMCube*, const IPosition&, const IPosition&)
 {
     throw (TSMError ("setShape is not possible for TSM " + hypercolumnName_p));
 }
@@ -362,9 +362,8 @@ Bool TiledStMan::canChangeShape() const
     return False;
 }
 
-Bool TiledStMan::canAccessColumn (Bool& reask) const
+Bool TiledStMan::canAccessColumn() const
 {
-    reask = True;
     return (nhypercubes() == 1);
 }
 
@@ -416,38 +415,38 @@ TSMCube* TiledStMan::getTSMCube (uInt hypercube)
 }
 
 
-const IPosition& TiledStMan::hypercubeShape (uInt rownr) const
+const IPosition& TiledStMan::hypercubeShape (rownr_t rownr) const
 {
     return getHypercube(rownr)->cubeShape();
 }
 
-const IPosition& TiledStMan::tileShape (uInt rownr) const
+const IPosition& TiledStMan::tileShape (rownr_t rownr) const
 {
     return getHypercube(rownr)->tileShape();
 }
 
-uInt TiledStMan::bucketSize (uInt rownr) const
+uInt64 TiledStMan::bucketSize (rownr_t rownr) const
 {
     return getHypercube(rownr)->bucketSize();
 }
 
-uInt TiledStMan::cacheSize (uInt rownr) const
+uInt TiledStMan::cacheSize (rownr_t rownr) const
 {
     return getHypercube(rownr)->cacheSize();
 }
 
-uInt TiledStMan::calcCacheSize (uInt rownr,
-				const IPosition& sliceShape,
-				const IPosition& windowStart,
-				const IPosition& windowLength,
-				const IPosition& axisPath) const
+uInt TiledStMan::calcCacheSize (rownr_t rownr,
+                                const IPosition& sliceShape,
+                                const IPosition& windowStart,
+                                const IPosition& windowLength,
+                                const IPosition& axisPath) const
 {
     // Calculate the cache size for the given hypercube.
     return getHypercube(rownr)->calcCacheSize (sliceShape, windowStart,
 					       windowLength, axisPath);
 }
 
-void TiledStMan::setCacheSize (uInt rownr,
+void TiledStMan::setCacheSize (rownr_t rownr,
 			       const IPosition& sliceShape,
 			       const IPosition& windowStart,
 			       const IPosition& windowLength,
@@ -460,7 +459,7 @@ void TiledStMan::setCacheSize (uInt rownr,
 				       forceSmaller, True);
 }
 
-void TiledStMan::setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller)
+void TiledStMan::setCacheSize (rownr_t rownr, uInt nbuckets, Bool forceSmaller)
 {
     // Set the cache size (in buckets) for the given hypercube.
     TSMCube* hypercube = getHypercube(rownr);
@@ -475,7 +474,7 @@ void TiledStMan::setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forc
 }
 
 
-Bool TiledStMan::userSetCache (uInt rownr) const
+Bool TiledStMan::userSetCache (rownr_t rownr) const
 {
     return getHypercube(rownr)->userSetCache();
 }
@@ -509,12 +508,12 @@ TSMCube* TiledStMan::singleHypercube()
 }
 
 
-uInt TiledStMan::getLengthOffset (uInt nrPixels, Block<uInt>& dataOffset,
-				  Block<uInt>& localOffset,
-				  uInt& localTileLength) const
+uInt64 TiledStMan::getLengthOffset (uInt64 nrPixels, Block<uInt>& dataOffset,
+                                    Block<uInt>& localOffset,
+                                    uInt& localTileLength) const
 {
     localTileLength = 0;
-    uInt length = 0;
+    uInt64 length = 0;
     uInt nrcol = dataCols_p.nelements();
     dataOffset.resize (nrcol);
     localOffset.resize (nrcol);
@@ -989,9 +988,9 @@ void TiledStMan::checkCoordinates (const PtrBlock<TSMColumn*>& coordColSet,
 }
 
 
-uInt TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) const
+rownr_t TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) const
 {
-    uInt nrrowAdded = 1;
+    rownr_t nrrowAdded = 1;
     for (uInt i=nrCoordVector_p; i<nrdim_p-1; i++) {
 	nrrowAdded *= shape(i);
     }
@@ -999,12 +998,12 @@ uInt TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) const
 }
 
 
-void TiledStMan::open (uInt nrrow, AipsIO&)
+void TiledStMan::open (rownr_t nrrow, AipsIO&)
 {
     // Read the header info (for the first time).
     readHeader (nrrow, True);
 }
-void TiledStMan::resync (uInt nrrow)
+void TiledStMan::resync (rownr_t nrrow)
 {
     // Reread the header info.
     readHeader (nrrow, False);
@@ -1044,31 +1043,51 @@ AipsIO* TiledStMan::headerFileOpen()
 }
 
 
-void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
+void TiledStMan::headerFilePut (AipsIO& headerFile, uInt64 nrCube)
 {
-    uInt i;
     // The endian switch is a new feature. So only put it if little endian
     // is used. In that way older software can read newer tables.
-    if (asBigEndian()) {
-        headerFile.putstart ("TiledStMan", 1);
+    // Similarly, use older version if number of rows less than maxUint.
+    Bool useNewVersion = False;
+    if (nrrow_p > MAXROWNR32  ||
+        persMaxCacheSize_p != uInt(persMaxCacheSize_p)) {
+      headerFile.putstart ("TiledStMan", 3);
+      headerFile << asBigEndian();
+      useNewVersion = True;
+    } else if (asBigEndian()) {
+      headerFile.putstart ("TiledStMan", 1);
     } else {
-        headerFile.putstart ("TiledStMan", 2);
-	headerFile << asBigEndian();
+      headerFile.putstart ("TiledStMan", 2);
+      headerFile << asBigEndian();
     }
     //# Write StMan sequence number, the number of rows and columns,
     //# and the column data types.
     //# This is only done to check it when reading back.
     headerFile << sequenceNr();
-    headerFile << nrrow_p;
+    if (useNewVersion) {
+      headerFile << nrrow_p;
+    } else {
+      headerFile << uInt(nrrow_p);
+    }
     headerFile << ncolumn();
-    for (i=0; i<ncolumn(); i++) {
+    for (uInt i=0; i<ncolumn(); i++) {
 	headerFile << colSet_p[i]->dataType();
     }
     headerFile << hypercolumnName_p;
-    headerFile << persMaxCacheSize_p;
+    if (useNewVersion) {
+      headerFile << persMaxCacheSize_p;
+    } else {
+      headerFile << uInt(persMaxCacheSize_p);
+    }
     headerFile << nrdim_p;
-    headerFile << uInt(fileSet_p.nelements());
-    for (i=0; i<fileSet_p.nelements(); i++) {
+    // nrfile and nrcube can never exceed nrrow,
+    // so it's safe to use uInt for old version.
+    if (useNewVersion) {
+      headerFile << uInt64(fileSet_p.nelements());
+    } else {
+      headerFile << uInt(fileSet_p.nelements());
+    }
+    for (uInt64 i=0; i<fileSet_p.nelements(); i++) {
 	if (fileSet_p[i] == 0) {
 	    headerFile << False;
 	}else{
@@ -1076,18 +1095,21 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
 	    fileSet_p[i]->putObject (headerFile);
 	}
     }
-    headerFile << nrCube;
-    for (i=0; i<nrCube; i++) {
+    if (useNewVersion) {
+      headerFile << nrCube;
+    } else {
+      headerFile << uInt(nrCube);
+    }
+    for (uInt64 i=0; i<nrCube; i++) {
 	cubeSet_p[i]->putObject (headerFile);
     }
     headerFile.putend();
 }
 
-void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
+void TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
 				Bool firstTime, Int extraNdim)
 {
     nrrow_p = tabNrrow;
-    uInt i;
     uInt version = headerFile.getstart ("TiledStMan");
     Bool bigEndian = True;
     if (version >= 2) {
@@ -1097,10 +1119,17 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
         throw DataManError("Endian flag in TSM mismatches the table flag");
     }
     //# Get and check the number of rows and columns and the column types.
-    uInt nrrow, nrcol, seqnr;
+    rownr_t nrrow;
+    uInt nrcol, seqnr;
     int  dtype;
     headerFile >> seqnr;
-    headerFile >> nrrow;
+    if (version >= 3) {
+        headerFile >> nrrow;
+    } else {
+        uInt nrrowOld;
+        headerFile >> nrrowOld;
+        nrrow = nrrowOld;
+    }
     headerFile >> nrcol;
     if (seqnr != sequenceNr()  ||  nrcol != ncolumn()) {
       //# Temporary hack to fix a corrupted table.
@@ -1121,7 +1150,7 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 		   String::toString(nrrow)));
 #endif
     }
-    for (i=0; i<ncolumn(); i++) {
+    for (uInt i=0; i<ncolumn(); i++) {
 	headerFile >> dtype;
 	if (dtype != colSet_p[i]->dataType()) {
 	    throw (DataManInternalError
@@ -1129,7 +1158,13 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	}
     }
     headerFile >> hypercolumnName_p;
-    headerFile >> persMaxCacheSize_p;
+    if (version >= 3) {
+      headerFile >> persMaxCacheSize_p;
+    } else {
+      uInt tmp;
+      headerFile >> tmp;
+      persMaxCacheSize_p = tmp;
+    }
     maxCacheSize_p = persMaxCacheSize_p;
     if (firstTime) {
 	// Setup the various things (i.e. initialize other variables).
@@ -1141,16 +1176,21 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	throw (DataManInternalError
 	              ("TiledStMan::headerFileGet: mismatch in nrdim"));
     }
-    uInt nrFile;
+    uInt64 nrFile;
     Bool flag;
-    headerFile >> nrFile;
-    uInt nrold;
-    nrold = fileSet_p.nelements();
+    if (version >= 3) {
+      headerFile >> nrFile;
+    } else {
+      uInt nrFile32;
+      headerFile >> nrFile32;
+      nrFile = nrFile32;
+    }
+    uInt64 nrFileOld = fileSet_p.nelements();
     fileSet_p.resize (nrFile);
-    for (i=nrold; i<nrFile; i++) {
+    for (uInt64 i=nrFileOld; i<nrFile; i++) {
 	fileSet_p[i] = 0;
     }
-    for (i=0; i<nrFile; i++) {
+    for (uInt64 i=0; i<nrFile; i++) {
 	headerFile >> flag;
 	if (flag) {
 	    if (fileSet_p[i] == 0) {
@@ -1164,14 +1204,20 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	    fileSet_p[i] = 0;
 	}
     }
-    uInt nrCube;
-    headerFile >> nrCube;
-    nrold = cubeSet_p.nelements();
+    uInt64 nrCube;
+    if (version >= 3) {
+      headerFile >> nrCube;
+    } else {
+      uInt nrCube32;
+      headerFile >> nrCube32;
+      nrCube = nrCube32;
+    }
+    uInt64 nrCubeOld = cubeSet_p.nelements();
     cubeSet_p.resize (nrCube);
-    for (i=nrold; i<nrCube; i++) {
+    for (uInt64 i=nrCubeOld; i<nrCube; i++) {
 	cubeSet_p[i] = 0;
     }
-    for (i=0; i<nrCube; i++) {
+    for (uInt64 i=0; i<nrCube; i++) {
 	if (cubeSet_p[i] == 0) {
             if (tsmOption().option() == TSMOption::MMap) {
                 //cout << "mmapping TSM" << endl;

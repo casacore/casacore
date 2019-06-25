@@ -89,14 +89,14 @@ class ISMBase: public DataManager
 public:
     // Create an incremental storage manager without a name.
     // The bucket size has to be given in bytes and the cache size in buckets.
-    // The bucket size is checked or calculated as described in
+    // The bucket size is checked or calculated (if 0) as described in
     // IncrementalStMan.h.
     explicit ISMBase (uInt bucketSize = 0, Bool checkBucketSize = True,
 		      uInt cacheSize = 1);
 
     // Create an incremental storage manager with the given name.
     // The bucket size has to be given in bytes and the cache size in buckets.
-    // The bucket size is checked or calculated as described in
+    // The bucket size is checked or calculated (if 0) as described in
     // IncrementalStMan.h.
     ISMBase (const String& dataManagerName,
 	     uInt bucketSize, Bool checkBucketSize, uInt cacheSize);
@@ -165,10 +165,13 @@ public:
     // Get the size of a uInt in external format (can be canonical or local).
     uInt uIntSize() const;
 
+    // Get the size of a rownr in external format (can be canonical or local).
+    uInt rownrSize() const;
+
     // Get the bucket containing the given row.
     // Also return the first and last row of that bucket.
     // The bucket object is created and deleted by the caching mechanism.
-    ISMBucket* getBucket (uInt rownr, uInt& bucketStartRow,
+    ISMBucket* getBucket (rownr_t rownr, rownr_t& bucketStartRow,
 			  uInt& bucketNrrow);
 
     // Get the next bucket.
@@ -178,7 +181,7 @@ public:
     // After each iteration BucketStartRow and bucketNrrow are set.
     // A 0 is returned when no more buckets.
     // The bucket object is created and deleted by the caching mechanism.
-    ISMBucket* nextBucket (uInt& cursor, uInt& bucketStartRow,
+    ISMBucket* nextBucket (uInt& cursor, rownr_t& bucketStartRow,
 			   uInt& bucketNrrow);
 
     // Get access to the temporary buffer.
@@ -190,7 +193,7 @@ public:
     uInt uniqueNr();
 
     // Get the number of rows in this storage manager.
-    uInt nrow() const;
+    rownr_t nrow() const;
 
     // Can the storage manager add rows? (yes)
     virtual Bool canAddRow() const;
@@ -215,7 +218,7 @@ public:
 
     // Add a bucket to the storage manager (i.e. to the cache).
     // The pointer is taken over.
-    void addBucket (uInt rownr, ISMBucket* bucket);
+    void addBucket (rownr_t rownr, ISMBucket* bucket);
 
     // Make the current bucket in the cache dirty (i.e. something has been
     // changed in it and it needs to be written when removed from the cache).
@@ -227,14 +230,14 @@ public:
     StManArrayFile* openArrayFile (ByteIO::OpenOption opt);
 
     // Check that there are no repeated rowIds in the buckets comprising this ISM.
-    Bool checkBucketLayout (uInt &offendingCursor,
-                            uInt &offendingBucketStartRow,
-                            uInt &offendingBucketNrow,
-                            uInt &offendingBucketNr,
-                            uInt &offendingCol,
-                            uInt &offendingIndex,
-                            uInt &offendingRow,
-                            uInt &offendingPrevRow);
+    Bool checkBucketLayout (uInt& offendingCursor,
+                            rownr_t& offendingBucketStartRow,
+                            uInt& offendingBucketNrow,
+                            uInt& offendingBucketNr,
+                            uInt& offendingCol,
+                            uInt& ffendingIndex,
+                            rownr_t& offendingRow,
+                            rownr_t& offendingPrevRow);
 
 private:
     // Copy constructor (only meant for clone function).
@@ -255,15 +258,15 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create (rownr_t nrrow);
 
     // Open the storage manager file for an existing table, read in
     // the data, and let the ISMColumn objects read their data.
-    virtual void open (uInt nrrow, AipsIO&);
+    virtual void open (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
-    virtual void resync (uInt nrrow);
+    virtual void resync (rownr_t nrrow);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
@@ -280,10 +283,10 @@ private:
     // Add rows to the storage manager.
     // Per column it extends the interval for which the last value written
     // is valid.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow (rownr_t nrrow);
 
     // Delete a row from all columns.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Do the final addition of a column.
     // The <src>DataManagerColumn</src> object has already been created
@@ -347,7 +350,7 @@ private:
     // Unique nr for column in this storage manager.
     uInt         uniqnr_p;
     // The number of rows in the columns.
-    uInt         nrrow_p;
+    rownr_t      nrrow_p;
     // The assembly of all columns.
     PtrBlock<ISMColumn*>  colSet_p;
     // The cache with the ISM buckets.
@@ -374,6 +377,8 @@ private:
     Bool dataChanged_p;
     // The size of a uInt in external format (local or canonical).
     uInt uIntSize_p;
+    // The size of a rownr in external format (local or canonical).
+    uInt rownrSize_p;
     // A temporary read/write buffer (also for other classes).
     char* tempBuffer_p;
 };
@@ -394,7 +399,7 @@ inline uInt ISMBase::uniqueNr()
     return uniqnr_p++;
 }
 
-inline uInt ISMBase::nrow() const
+inline rownr_t ISMBase::nrow() const
 {
     return nrrow_p;
 }
@@ -407,6 +412,11 @@ inline uInt ISMBase::bucketSize() const
 inline uInt ISMBase::uIntSize() const
 {
     return uIntSize_p;
+}
+
+inline uInt ISMBase::rownrSize() const
+{
+    return rownrSize_p;
 }
 
 inline char* ISMBase::tempBuffer() const

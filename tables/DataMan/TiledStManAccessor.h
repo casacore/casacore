@@ -190,19 +190,19 @@ public:
 
     // Get the current cache size (in buckets) for the hypercube in
     // the given row.
-    uInt cacheSize (uInt rownr) const;
+    uInt cacheSize (rownr_t rownr) const;
 
     // Get the hypercube shape of the data in the given row.
-    const IPosition& hypercubeShape (uInt rownr) const;
+    const IPosition& hypercubeShape (rownr_t rownr) const;
 
     // Get the tile shape of the data in the given row.
-    const IPosition& tileShape (uInt rownr) const;
+    const IPosition& tileShape (rownr_t rownr) const;
 
     // Get the bucket size (in bytes) of the hypercube in the given row.
-    uInt bucketSize (uInt rownr) const;
+    uInt bucketSize (rownr_t rownr) const;
 
     // Get coordinate and id values of the hypercube in the given row.
-    const Record& valueRecord (uInt rownr) const;
+    const Record& valueRecord (rownr_t rownr) const;
 
     // Return the number of hypercubes.
     uInt nhypercubes() const;
@@ -242,9 +242,9 @@ public:
     // The non-specified <src>axisPath</src> parts get the natural order.
     // E.g. in the previous example axisPath=[2] defines the same path.
     // <group>
-    uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
+    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
 			const IPosition& axisPath) const;
-    uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
+    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
 			const IPosition& windowStart,
 			const IPosition& windowLength,
 			const IPosition& axisPath) const;
@@ -255,10 +255,10 @@ public:
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
     // <group>
-    void setCacheSize (uInt rownr, const IPosition& sliceShape,
+    void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
 		       const IPosition& axisPath,
 		       Bool forceSmaller = True);
-    void setCacheSize (uInt rownr, const IPosition& sliceShape,
+    void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
 		       const IPosition& windowStart,
 		       const IPosition& windowLength,
 		       const IPosition& axisPath,
@@ -270,7 +270,7 @@ public:
     // than 10%, the maximum cache size is used instead.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
-    void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller = True);
+    void setCacheSize (rownr_t rownr, uInt nbuckets, Bool forceSmaller = True);
 
     // This version allows setting the tile cache for a particular hypercube.  This
     // is useful when iterating over the hypercubes in an StMan.

@@ -146,7 +146,7 @@ public:
     // and the offset of its current value.
     // It returns the index where the row number can be put in the
     // bucket index.
-    uInt getInterval (uInt colnr, uInt rownr, uInt bucketNrrow,
+    uInt getInterval (uInt colnr, rownr_t rownr, uInt bucketNrrow,
 		      uInt& start, uInt& end, uInt& offset) const;
 
     // Is the bucket large enough to add a value?
@@ -155,7 +155,7 @@ public:
     // Add the data to the data part.
     // It updates the bucket index at the given index.
     // An exception is thrown if the bucket is too small.
-    void addData (uInt colnr, uInt rownr, uInt index,
+    void addData (uInt colnr, rownr_t rownr, uInt index,
 		  const char* data, uInt leng);
 
     // Is the bucket large enough to replace a value?
@@ -178,13 +178,13 @@ public:
 
     // Get access to the offset of the data for given column and row.
     // It allows to change it (used for example by replaceData).
-    uInt& getOffset (uInt colnr, uInt rownr);
+    uInt& getOffset (uInt colnr, rownr_t rownr);
 
     // Get access to the index information for the given column.
     // This is used by ISMColumn when putting the data.
     // <group>
     // Return the row numbers with a stored value.
-    Block<uInt>& rowIndex (uInt colnr);
+    Block<rownr_t>& rowIndex (uInt colnr);
     // Return the offsets of the values stored in the data part.
     Block<uInt>& offIndex (uInt colnr);
     // Return the number of values stored.
@@ -201,8 +201,8 @@ public:
     // values in the left bucket. The duplicated Block contains a switch
     // per column indicating if the value is copied.
     uInt split (ISMBucket*& left, ISMBucket*& right, Block<Bool>& duplicated,
-		uInt bucketStartRow, uInt bucketNrrow,
-		uInt colnr, uInt rownr, uInt lengToAdd);
+		rownr_t bucketStartRow, uInt bucketNrrow,
+		uInt colnr, rownr_t rownr, uInt lengToAdd);
 
     // Determine whether a simple split is possible. If so, do it.
     // This is possible if the new row is at the end of the last bucket,
@@ -214,7 +214,7 @@ public:
     // left and right bucket.
     Bool simpleSplit (ISMBucket* left, ISMBucket* right,
 		      Block<Bool>& duplicated,
-		      uInt& splitRownr, uInt rownr);
+		      rownr_t& splitRownr, rownr_t rownr);
 
     // Return the index where the bucket should be split to get
     // two parts with almost identical length.
@@ -226,7 +226,7 @@ public:
     // <src>nused</src> get updated. The caller is responsible for
     // removing data when needed (e.g. <src>ISMIndColumn</src> removes
     // the indirect arrays from its file).
-    void shiftLeft (uInt index, uInt nr, Block<uInt>& rowIndex,
+    void shiftLeft (uInt index, uInt nr, Block<rownr_t>& rowIndex,
 		    Block<uInt>& offIndex, uInt& nused, uInt leng);
 
     // Copy the contents of that bucket to this bucket.
@@ -259,8 +259,8 @@ public:
     void show (ostream& os) const;
 
     // Check that there are no repeated rowIds in the bucket
-    Bool check (uInt &offendingCol, uInt &offendingIndex,
-                uInt &offendingRow, uInt &offendingPrevRow) const;
+    Bool check (uInt& offendingCol, uInt& offendingIndex,
+                rownr_t& offendingRow, rownr_t& offendingPrevRow) const;
 
 private:
     // Forbid copy constructor.
@@ -278,7 +278,7 @@ private:
     uInt insertData (const char* data, uInt leng);
 
     // Copy a data item from this bucket to the other bucket.
-    uInt copyData (ISMBucket& other, uInt colnr, uInt toRownr,
+    uInt copyData (ISMBucket& other, uInt colnr, rownr_t toRownr,
 		   uInt fromIndex, uInt toIndex) const;
 
     // Read the data from the storage into this bucket.
@@ -291,15 +291,16 @@ private:
     //# Declare member variables.
     // Pointer to the parent storage manager.
     ISMBase*          stmanPtr_p;
-    // The size (in bytes) of an uInt (used in index, etc.).
+    // The size (in bytes) of an uInt and rownr_t (used in index, etc.).
     uInt              uIntSize_p;
+    uInt              rownrSize_p;
     // The size (in bytes) of the data.
     uInt              dataLeng_p;
     // The size (in bytes) of the index.
     uInt              indexLeng_p;
     // The row index per column; each index contains the row number
     // of each value stored in the bucket (for that column).
-    PtrBlock<Block<uInt>*> rowIndex_p;
+    PtrBlock<Block<rownr_t>*> rowIndex_p;
     // The offset index per column; each index contains the offset (in bytes)
     // of each value stored in the bucket (for that column).
     PtrBlock<Block<uInt>*> offIndex_p;
@@ -315,7 +316,7 @@ inline const char* ISMBucket::get (uInt offset) const
 {
     return data_p + offset;
 }
-inline Block<uInt>& ISMBucket::rowIndex (uInt colnr)
+inline Block<rownr_t>& ISMBucket::rowIndex (uInt colnr)
 {
     return *(rowIndex_p[colnr]);
 }

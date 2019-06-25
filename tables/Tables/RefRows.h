@@ -89,9 +89,11 @@ public:
     // Create the object from a Vector containing the row numbers.
     // When <src>isSliced==False</src>, the vector is treated as
     // containing individual row numbers, otherwise as containing
-    // slices in the form start,end,incr.
+    // (possibly multiple) slices in the form start,end,incr.
     // When <src>collapse==True</src>, it will try to collapse the
     // individual row numbers to the slice form (to save memory).
+  ///    RefRows (const Vector<rownr_t>& rowNumbers, Bool isSliced = False,
+  ///	     Bool collapse = False);
     RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
 	     Bool collapse = False);
 

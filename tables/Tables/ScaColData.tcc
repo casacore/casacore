@@ -75,18 +75,6 @@ void ScalarColumnData<T>::createDataManagerColumn()
 
 
 template<class T>
-Bool ScalarColumnData<T>::canAccessScalarColumn (Bool& reask) const
-{
-    return dataColPtr_p->canAccessScalarColumn (reask);
-}
-template<class T>
-Bool ScalarColumnData<T>::canAccessScalarColumnCells (Bool& reask) const
-{
-    return dataColPtr_p->canAccessScalarColumnCells (reask);
-}
-
-
-template<class T>
 void ScalarColumnData<T>::initialize (uInt startRow, uInt endRow)
 {
     if (colDescPtr_p->dataType() != TpOther) {
@@ -115,40 +103,37 @@ void ScalarColumnData<T>::get (uInt rownr, void* val) const
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr);
     }
     checkReadLock (True);
-    dataColPtr_p->get (rownr, (T*)val);
+    dataColPtr_p->get (rownr, static_cast<T*>(val));
     autoReleaseLock();
 }
 
 
 template<class T>
-void ScalarColumnData<T>::getScalarColumn (void* val) const
+void ScalarColumnData<T>::getScalarColumn (ArrayBase& val) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r');
     }
-    Vector<T>* vecPtr = (Vector<T>*)val;
-    if (vecPtr->nelements() != nrow()) {
+    if (val.ndim() != 1  ||  val.nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumn"));
     }
     checkReadLock (True);
-    dataColPtr_p->getScalarColumnV (vecPtr);
+    dataColPtr_p->getScalarColumnV (val);
     autoReleaseLock();
 }
 
 template<class T>
 void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
-						void* val) const
+						ArrayBase& val) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs);
     }
-    Vector<T>& vec = *(Vector<T>*)val;
-    uInt nr = rownrs.nrow();
-    if (vec.nelements() != nr) {
-	throw (TableArrayConformanceError("ScalarColumnData::getColumnCells"));
+    if (val.ndim() != 1  ||  val.nelements() != rownrs.nrow()) {
+	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumnCells"));
     }
     checkReadLock (True);
-    dataColPtr_p->getScalarColumnCellsV (rownrs, &vec);
+    dataColPtr_p->getScalarColumnCellsV (rownrs, val);
     autoReleaseLock();
 }
 
@@ -159,42 +144,40 @@ void ScalarColumnData<T>::put (uInt rownr, const void* val)
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr);
     }
-    checkValueLength ((const T*)val);
+    checkValueLength (static_cast<const T*>(val));
     checkWriteLock (True);
-    dataColPtr_p->put (rownr, (const T*)val);
+    dataColPtr_p->put (rownr, static_cast<const T*>(val));
     autoReleaseLock();
 }
 
 template<class T>
-void ScalarColumnData<T>::putScalarColumn (const void* val)
+void ScalarColumnData<T>::putScalarColumn (const ArrayBase& val)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w');
     }
-    const Vector<T>* vecPtr = (const Vector<T>*)val;
-    if (vecPtr->nelements() != nrow()) {
+    if (val.ndim() != 1  ||  val.nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
-    checkValueLength (vecPtr);
+    checkValueLength (static_cast<const Array<T>*>(&val));
     checkWriteLock (True);
-    dataColPtr_p->putScalarColumnV (vecPtr);
+    dataColPtr_p->putScalarColumnV (val);
     autoReleaseLock();
 }
 
 template<class T>
 void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
-						const void* val)
+						const ArrayBase& val)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownrs);
     }
-    const Vector<T>& vec = *(const Vector<T>*)val;
-    if (vec.nelements() != rownrs.nrow()) {
+    if (val.ndim() != 1  ||  val.nelements() != rownrs.nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
-    checkValueLength (&vec);
+    checkValueLength (static_cast<const Array<T>*>(&val));
     checkWriteLock (True);
-    dataColPtr_p->putScalarColumnCellsV (rownrs, &vec);
+    dataColPtr_p->putScalarColumnCellsV (rownrs, val);
     autoReleaseLock();
 }
 
@@ -203,26 +186,13 @@ template<class T>
 void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
 				       CountedPtr<BaseCompare>& cmpObj,
 				       Int order,
-				       const void*& dataSave)
+				       CountedPtr<ArrayBase>& dataSave)
 {
-    //#// Optimal is to ask the data manager for a pointer to
-    //#// the consecutive data. Often this may succeed.
     //# Get the data as a column.
     //# Save the pointer to the vector for deletion by freeSortKey().
-    dataSave = 0;
-    uInt nrrow = nrow();
-    Vector<T>* vecPtr = new Vector<T>(nrrow);
-    Bool reask;
-    if (canAccessScalarColumn (reask)) {
-	getScalarColumn (vecPtr);
-    }else{
-	checkReadLock (True);
-	for (uInt i=0; i<nrrow; i++) {
-	    dataColPtr_p->get (i,  &(*vecPtr)(i));
-	}
-	autoReleaseLock();
-    }
+    Vector<T>* vecPtr = new Vector<T>(nrow());
     dataSave = vecPtr;
+    getScalarColumn (*vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
 }
 
@@ -231,25 +201,12 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
                                           CountedPtr<BaseCompare>& cmpObj,
 					  Int order,
 					  const Vector<uInt>& rownrs,
-					  const void*& dataSave)
+					  CountedPtr<ArrayBase>& dataSave)
 {
-    //#// Optimal is to ask the data manager for a pointer to
-    //#// the consecutive data. Often this may succeed.
     //# Get the data as a column.
-    dataSave = 0;
-    uInt nrrow = rownrs.nelements();
-    Vector<T>* vecPtr = new Vector<T>(nrrow);
-    Bool reask;
-    if (canAccessScalarColumnCells (reask)) {
-	getScalarColumnCells (rownrs, vecPtr);
-    }else{
-	checkReadLock (True);
-	for (uInt i=0; i<nrrow; i++) {
-	    dataColPtr_p->get (rownrs(i),  &(*vecPtr)(i));
-	}
-	autoReleaseLock();
-    }
+    Vector<T>* vecPtr = new Vector<T>(rownrs.size());
     dataSave = vecPtr;
+    getScalarColumnCells (rownrs, *vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
 }
 
@@ -263,24 +220,13 @@ void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
     //# Use the compare function if given, otherwise pass data type.
     //# Throw an exception if no compare function is given for
     //# an unknown data type.
-    Bool deleteIt;
-    const T* datap = vecPtr->getStorage (deleteIt);
+    AlwaysAssert (vecPtr->contiguousStorage(), AipsError);
     if (cmpObj.null()) {
         cmpObj = new ObjCompare<T>();
     }
-    sortobj.sortKey (datap, cmpObj, sizeof(T),
+    sortobj.sortKey (vecPtr->data(), cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending
 		                                 : Sort::Ascending);
-    vecPtr->freeStorage (datap, deleteIt);
-}
-
-template<class T>
-void ScalarColumnData<T>::freeSortKey (const void*& dataSave)
-{
-    if (dataSave != 0) {
-	delete (Vector<T>*)dataSave;
-    }
-    dataSave = 0;
 }
 
 template<class T>

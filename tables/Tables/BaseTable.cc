@@ -106,7 +106,6 @@ void BaseTable::BaseTableCommon (const String& name, int option, uInt nrrow)
 
 BaseTable::~BaseTable()
 {
-    delete tdescPtr_p;
     //# Delete the table files (if there) if marked for delete.
     if (isMarkedForDelete()) {
 	if (madeDir_p) {
@@ -716,10 +715,10 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     //# Create a sort object.
     //# Pass all keys (and their data) to it.
     Sort sortobj;
-    PtrBlock<const void*> dataSave(nrkey);          // to remember data blocks
+    Block<CountedPtr<ArrayBase> > data(nrkey);        // to remember data blocks
     Block<CountedPtr<BaseCompare> > cmp(cmpObj);
     for (i=0; i<nrkey; i++) {
-	sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], dataSave[i]);
+	sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], data[i]);
     }
     //# Create a reference table.
     //# This table will NOT be in row order.
@@ -733,9 +732,6 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     nrrow = sortobj.sort (rows, nrrow, option);
     adjustRownrs (nrrow, rows, False);
     resultTable->setNrrow (nrrow);
-    for (i=0; i<nrkey; i++) {
-	sortCol[i]->freeSortKey (dataSave[i]);
-    }
     return resultTable;
 }
 
@@ -1048,9 +1044,9 @@ BaseTableIterator* BaseTable::makeIterator
 }
 
 
-const TableDesc& BaseTable::makeTableDesc() const
+const TableDesc& BaseTable::makeEmptyTableDesc() const
 {
-    if (tdescPtr_p == 0) {
+    if (tdescPtr_p.null()) {
         const_cast<BaseTable*>(this)->tdescPtr_p = new TableDesc();
     }
     return *tdescPtr_p;

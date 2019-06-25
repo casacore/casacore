@@ -129,7 +129,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // be moved to that subdirectory when the concatenated table is written
     // (by writeConcatTable).
     // <group>
-    ConcatTable (const Block<BaseTable*>& tables,
+    ConcatTable (const Block<Table>& tables,
 		 const Block<String>& subTables,
                  const String& subDirName);
     ConcatTable (const Block<String>& tableNames,
@@ -362,7 +362,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members
     Block<String>     subTableNames_p;
     String            subDirName_p;
-    Block<BaseTable*> baseTabPtr_p;           //# pointers to parent tables
+    Block<Table>      tables_p;            //# Tables forming the concat
     std::map<String,ConcatColumn*> colMap_p;  //# map name to column
     TableRecord       keywordSet_p;
     Bool              changed_p;           //# True = changed since last write

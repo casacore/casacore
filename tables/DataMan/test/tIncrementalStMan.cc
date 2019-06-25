@@ -65,6 +65,7 @@ void f();
 
 int main (int argc, const char* argv[])
 {
+  ///  DataManager::MAXROWNR32 = 0;
     uInt nr = 1000;
     if (argc > 1) {
 	istringstream istr(argv[1]);
@@ -246,6 +247,9 @@ void a (uInt bucketSize, uInt mode)
     }
     // All rows from 0 on get this value.
     arr4.put (0, vstr);
+    ///cout << "arr4 = ";
+    ///    cout << arr4(0) << ' '<< arr4(9) << endl;
+    ///cout << "arr4 = " << arr4.getColumn () << endl;
     cout << "arr4 = " << arr4.getColumn (Slicer(Slice(0,1))) << endl;
     // All rows from 1 on get this value.
     arr4.put (1, vstr);

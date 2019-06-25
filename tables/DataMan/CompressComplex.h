@@ -130,7 +130,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // ArrayColumn data (table, "virtualArray");
 // Array<double> someArray(IPosition(4,2,3,4));
 // someArray = 0;
-// for (uInt i=0, i<10; i++) {          // table will have 10 rows
+// for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
 //     table.addRow();
 //     data.put (i, someArray)
 // }
@@ -206,7 +206,7 @@ private:
 protected:
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
-  virtual void create (uInt initialNrrow);
+  virtual void create (rownr_t initialNrrow);
 
 private:
   // Preparing consists of setting the writable switch and
@@ -221,24 +221,24 @@ private:
   // Add rows to the table.
   // If auto-scaling, it initializes the scale column with 0
   // to indicate that no data has been processed yet.
-  virtual void addRowInit (uInt startRow, uInt nrrow);
+  virtual void addRowInit (rownr_t startRow, rownr_t nrrow);
 
   // Get an array in the given row.
   // This will scale and offset from the underlying array.
-  virtual void getArray (uInt rownr, Array<Complex>& array);
+  virtual void getArray (rownr_t rownr, Array<Complex>& array);
 
   // Put an array in the given row.
   // This will scale and offset to the underlying array.
-  virtual void putArray (uInt rownr, const Array<Complex>& array);
+  virtual void putArray (rownr_t rownr, const Array<Complex>& array);
 
   // Get a section of the array in the given row.
   // This will scale and offset from the underlying array.
-  virtual void getSlice (uInt rownr, const Slicer& slicer,
+  virtual void getSlice (rownr_t rownr, const Slicer& slicer,
 			 Array<Complex>& array);
 
   // Put into a section of the array in the given row.
   // This will scale and offset to the underlying array.
-  virtual void putSlice (uInt rownr, const Slicer& slicer,
+  virtual void putSlice (rownr_t rownr, const Slicer& slicer,
 			 const Array<Complex>& array);
 
   // Get an entire column.
@@ -322,10 +322,10 @@ protected:
                                        //# (makes multi-threading harder)
 
   // Get the scale value for this row.
-  Float getScale (uInt rownr);
+  Float getScale (rownr_t rownr);
 
   // Get the offset value for this row.
-  Float getOffset (uInt rownr);
+  Float getOffset (rownr_t rownr);
 
   // Find minimum and maximum from the array data.
   // NaN and infinite values are ignored. If no values are finite,
@@ -339,13 +339,13 @@ protected:
 			Float minVal, Float maxVal) const;
 
   // Put a part of an array in a row using given scale/offset values.
-  void putPart (uInt rownr, const Slicer& slicer,
+  void putPart (rownr_t rownr, const Slicer& slicer,
 		const Array<Complex>& array,
 		Float scale, Float offset);
 
   // Fill the array part into the full array and put it using the
   // given min/max values.
-  void putFullPart (uInt rownr, const Slicer& slicer,
+  void putFullPart (rownr_t rownr, const Slicer& slicer,
 		    Array<Complex>& fullArray,
 		    const Array<Complex>& partArray,
 		    Float minVal, Float maxVal);
@@ -425,7 +425,7 @@ public:
 // ArrayColumn data (table, "virtualArray");
 // Array<double> someArray(IPosition(4,2,3,4));
 // someArray = 0;
-// for (uInt i=0, i<10; i++) {          // table will have 10 rows
+// for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
 //     table.addRow();
 //     data.put (i, someArray)
 // }
@@ -493,7 +493,7 @@ private:
 
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
-  virtual void create (uInt initialNrrow);
+  virtual void create (rownr_t initialNrrow);
 
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.
@@ -529,11 +529,11 @@ public:
 
 
 
-inline Float CompressComplex::getScale (uInt rownr)
+inline Float CompressComplex::getScale (rownr_t rownr)
 {
   return (fixed_p  ?  scale_p : (*scaleColumn_p)(rownr));
 }
-inline Float CompressComplex::getOffset (uInt rownr)
+inline Float CompressComplex::getOffset (rownr_t rownr)
 {
   return (fixed_p  ?  offset_p : (*offsetColumn_p)(rownr));
 }

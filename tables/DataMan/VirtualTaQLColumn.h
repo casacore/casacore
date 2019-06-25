@@ -133,9 +133,9 @@ public:
   // <group>
   virtual int dataType() const;
   virtual Bool isWritable() const;
-  virtual uInt ndim (uInt rownr);
-  virtual IPosition shape (uInt rownr);
-  virtual Bool isShapeDefined (uInt rownr);
+  virtual uInt ndim (rownr_t rownr);
+  virtual IPosition shape (rownr_t rownr);
+  virtual Bool isShapeDefined (rownr_t rownr);
   // </group>
 
 private:
@@ -156,7 +156,7 @@ private:
 
   // Let the engine initialize the object for a new table.
   // It defines a column keyword holding the expression.
-  virtual void create (uInt);
+  virtual void create (rownr_t);
 
   // Prepare compiles the expression.
   virtual void prepare();
@@ -168,38 +168,48 @@ private:
   //# The same is true for getColumn.
 
   // Get the scalar value in the given row.
-  // The default implementation throws an "invalid operation" exception.
   // <group>
-  virtual void getBoolV     (uInt rownr, Bool* dataPtr);
-  virtual void getuCharV    (uInt rownr, uChar* dataPtr);
-  virtual void getShortV    (uInt rownr, Short* dataPtr);
-  virtual void getuShortV   (uInt rownr, uShort* dataPtr);
-  virtual void getIntV      (uInt rownr, Int* dataPtr);
-  virtual void getuIntV     (uInt rownr, uInt* dataPtr);
-  virtual void getInt64V    (uInt rownr, Int64* dataPtr);
-  virtual void getfloatV    (uInt rownr, float* dataPtr);
-  virtual void getdoubleV   (uInt rownr, double* dataPtr);
-  virtual void getComplexV  (uInt rownr, Complex* dataPtr);
-  virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
-  virtual void getStringV   (uInt rownr, String* dataPtr);
+  virtual void getBool     (rownr_t rownr, Bool* dataPtr);
+  virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
+  virtual void getShort    (rownr_t rownr, Short* dataPtr);
+  virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
+  virtual void getInt      (rownr_t rownr, Int* dataPtr);
+  virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
+  virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+  virtual void getfloat    (rownr_t rownr, float* dataPtr);
+  virtual void getdouble   (rownr_t rownr, double* dataPtr);
+  virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
+  virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
+  virtual void getString   (rownr_t rownr, String* dataPtr);
   // </group>
 
   // Get the array value in the given row.
   // The argument dataPtr is in fact an Array<T>*, but a void*
   // is needed to be generic.
-  // The array pointed to by dataPtr has to have the correct shape
+  // The array given by <src>arr</src> has to have the correct shape
   // (which is guaranteed by the ArrayColumn get function).
-  // The default implementation throws an "invalid operation" exception.
-  virtual void getArrayV (uInt rownr, void* dataPtr);
+  virtual void getArrayV (rownr_t rownr, ArrayBase& arr);
 
   // Get the array result into itsCurResult.
-  IPosition getResult (uInt rownr);
+  void getResult (rownr_t rownr);
 
   // Make the result cache.
   void makeCurResult();
 
-  // Clear the result cache.
-  void clearCurResult();
+  // Get functions implemented by means of their DataMaangerColumn::dmGetXX
+  // counterparts.
+  // <group>
+  virtual void getScalarColumnV (ArrayBase& arr);
+  virtual void getScalarColumnCellsV (const RefRows& rownrs,
+                                      ArrayBase& arr);
+  virtual void getArrayColumnV (ArrayBase& data);
+  virtual void getArrayColumnCellsV (const RefRows& rownrs,
+                                     ArrayBase& data);
+  virtual void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& data);
+  virtual void getColumnSliceV (const Slicer& slicer, ArrayBase& data);
+  virtual void getColumnSliceCellsV (const RefRows& rownrs,
+                                     const Slicer& slicer, ArrayBase& data);
+  // </group>
 
 
   //# Now define the data members.
@@ -209,9 +219,8 @@ private:
   String         itsExpr;             //# TaQL expression
   TableExprNode* itsNode;             //# compiled TaQL expression
   Bool           itsTempWritable;
-  Int            itsCurRow;           //# Currently evaluated row
-  void*          itsCurResult;        //# result in itsCurRow
-  IPosition      itsCurShape;         //# shape in itsCurRow
+  rownr_t        itsCurRow;           //# Currently evaluated row
+  ArrayBase*     itsCurResult;        //# result in itsCurRow
 };
 
 

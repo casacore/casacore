@@ -34,115 +34,81 @@
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/tables/DataMan/DataManError.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-StManColumn::StManColumn (int dataType)
-: dtype_p (dataType)
-{}
-
 StManColumn::~StManColumn()
 {}
 
-int StManColumn::dataType() const
-    { return dtype_p; }
+// The following takes care of backward compatibility for external storage managers.
+// It maps the get/putXX functions taking rownr_t to the old get/putXXV taking uInt.
+// As before the default get/putXXV implementations throw a 'not implemented' exception.
+#define STMANCOLUMN_GETPUT_SCALAR(T,NM) \
+void StManColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
+  { aips_name2(get,NM) (rownr, dataPtr); } \
+void StManColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
+  { aips_name2(put,NM) (rownr, dataPtr); } \
+void StManColumn::aips_name2(get,NM) (uInt, T*) \
+    { throwGet(); } \
+void StManColumn::aips_name2(put,NM) (uInt, const T*) \
+    { throwPut(); }
 
-
-//# Accessing an entire column is by default possible for scalars.
-Bool StManColumn::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
-//# Accessing column cells is possible for scalars and arrays.
-Bool StManColumn::canAccessScalarColumnCells (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-Bool StManColumn::canAccessArrayColumnCells (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
-
-Bool StManColumn::isNativeDataType (int dtype)
-{
-    switch (dtype) {
-    case TpBool:
-    case TpUChar:
-    case TpShort:
-    case TpUShort:
-    case TpInt:
-    case TpUInt:
-    case TpInt64:
-    case TpFloat:
-    case TpDouble:
-    case TpComplex:
-    case TpDComplex:
-    case TpString:
-    case TpArrayBool:
-    case TpArrayUChar:
-    case TpArrayShort:
-    case TpArrayUShort:
-    case TpArrayInt:
-    case TpArrayUInt:
-    case TpArrayInt64:
-    case TpArrayFloat:
-    case TpArrayDouble:
-    case TpArrayComplex:
-    case TpArrayDComplex:
-    case TpArrayString:
-	return True;
-    }
-    return False;
-}
+STMANCOLUMN_GETPUT_SCALAR(Bool,BoolV)
+STMANCOLUMN_GETPUT_SCALAR(uChar,uCharV)
+STMANCOLUMN_GETPUT_SCALAR(Short,ShortV)
+STMANCOLUMN_GETPUT_SCALAR(uShort,uShortV)
+STMANCOLUMN_GETPUT_SCALAR(Int,IntV)
+STMANCOLUMN_GETPUT_SCALAR(uInt,uIntV)
+STMANCOLUMN_GETPUT_SCALAR(float,floatV)
+STMANCOLUMN_GETPUT_SCALAR(double,doubleV)
+STMANCOLUMN_GETPUT_SCALAR(Complex,ComplexV)
+STMANCOLUMN_GETPUT_SCALAR(DComplex,DComplexV)
+STMANCOLUMN_GETPUT_SCALAR(String,StringV)
 
 
 //# Call the correct getScalarColumnX function depending on the data type.
-void StManColumn::getScalarColumnV (void* dataPtr)
+void StManColumn::getScalarColumnV (ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getScalarColumnBoolV ((Vector<Bool>*)dataPtr);
+	getScalarColumnBoolV (static_cast<Vector<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getScalarColumnuCharV ((Vector<uChar>*)dataPtr);
+	getScalarColumnuCharV (static_cast<Vector<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getScalarColumnShortV ((Vector<Short>*)dataPtr);
+	getScalarColumnShortV (static_cast<Vector<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getScalarColumnuShortV ((Vector<uShort>*)dataPtr);
+	getScalarColumnuShortV (static_cast<Vector<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getScalarColumnIntV ((Vector<Int>*)dataPtr);
+	getScalarColumnIntV (static_cast<Vector<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getScalarColumnuIntV ((Vector<uInt>*)dataPtr);
+	getScalarColumnuIntV (static_cast<Vector<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getScalarColumnInt64V ((Vector<Int64>*)dataPtr);
+      getScalarColumnInt64V (static_cast<Vector<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getScalarColumnfloatV ((Vector<float>*)dataPtr);
+	getScalarColumnfloatV (static_cast<Vector<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getScalarColumndoubleV ((Vector<double>*)dataPtr);
+	getScalarColumndoubleV (static_cast<Vector<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getScalarColumnComplexV ((Vector<Complex>*)dataPtr);
+	getScalarColumnComplexV (static_cast<Vector<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getScalarColumnDComplexV ((Vector<DComplex>*)dataPtr);
+	getScalarColumnDComplexV (static_cast<Vector<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getScalarColumnStringV ((Vector<String>*)dataPtr);
+	getScalarColumnStringV (static_cast<Vector<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getScalarColumn"));
@@ -150,44 +116,44 @@ void StManColumn::getScalarColumnV (void* dataPtr)
 }
 
 //# Call the correct putScalarColumnX function depending on the data type.
-void StManColumn::putScalarColumnV (const void* dataPtr)
+void StManColumn::putScalarColumnV (const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putScalarColumnBoolV ((const Vector<Bool>*)dataPtr);
+	putScalarColumnBoolV (static_cast<const Vector<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putScalarColumnuCharV ((const Vector<uChar>*)dataPtr);
+	putScalarColumnuCharV (static_cast<const Vector<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putScalarColumnShortV ((const Vector<Short>*)dataPtr);
+	putScalarColumnShortV (static_cast<const Vector<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putScalarColumnuShortV ((const Vector<uShort>*)dataPtr);
+	putScalarColumnuShortV (static_cast<const Vector<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putScalarColumnIntV ((const Vector<Int>*)dataPtr);
+	putScalarColumnIntV (static_cast<const Vector<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putScalarColumnuIntV ((const Vector<uInt>*)dataPtr);
+	putScalarColumnuIntV (static_cast<const Vector<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putScalarColumnInt64V ((const Vector<Int64>*)dataPtr);
+	putScalarColumnInt64V (static_cast<const Vector<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putScalarColumnfloatV ((const Vector<float>*)dataPtr);
+	putScalarColumnfloatV (static_cast<const Vector<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putScalarColumndoubleV ((const Vector<double>*)dataPtr);
+	putScalarColumndoubleV (static_cast<const Vector<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putScalarColumnComplexV ((const Vector<Complex>*)dataPtr);
+	putScalarColumnComplexV (static_cast<const Vector<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putScalarColumnDComplexV ((const Vector<DComplex>*)dataPtr);
+	putScalarColumnDComplexV (static_cast<const Vector<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putScalarColumnStringV ((const Vector<String>*)dataPtr);
+	putScalarColumnStringV (static_cast<const Vector<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putScalarColumn"));
@@ -196,44 +162,44 @@ void StManColumn::putScalarColumnV (const void* dataPtr)
 
 //# Call the correct getScalarColumnCellsX function depending on the data type.
 void StManColumn::getScalarColumnCellsV (const RefRows& rownrs,
-					 void* dataPtr)
+					 ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getScalarColumnCellsBoolV (rownrs, (Vector<Bool>*)dataPtr);
+	getScalarColumnCellsBoolV (rownrs, static_cast<Vector<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getScalarColumnCellsuCharV (rownrs, (Vector<uChar>*)dataPtr);
+	getScalarColumnCellsuCharV (rownrs, static_cast<Vector<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getScalarColumnCellsShortV (rownrs, (Vector<Short>*)dataPtr);
+	getScalarColumnCellsShortV (rownrs, static_cast<Vector<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getScalarColumnCellsuShortV (rownrs, (Vector<uShort>*)dataPtr);
+	getScalarColumnCellsuShortV (rownrs, static_cast<Vector<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getScalarColumnCellsIntV (rownrs, (Vector<Int>*)dataPtr);
+	getScalarColumnCellsIntV (rownrs, static_cast<Vector<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getScalarColumnCellsuIntV (rownrs, (Vector<uInt>*)dataPtr);
+	getScalarColumnCellsuIntV (rownrs, static_cast<Vector<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getScalarColumnCellsInt64V (rownrs, (Vector<Int64>*)dataPtr);
+	getScalarColumnCellsInt64V (rownrs, static_cast<Vector<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getScalarColumnCellsfloatV (rownrs, (Vector<float>*)dataPtr);
+	getScalarColumnCellsfloatV (rownrs, static_cast<Vector<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getScalarColumnCellsdoubleV (rownrs, (Vector<double>*)dataPtr);
+	getScalarColumnCellsdoubleV (rownrs, static_cast<Vector<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getScalarColumnCellsComplexV (rownrs, (Vector<Complex>*)dataPtr);
+	getScalarColumnCellsComplexV (rownrs, static_cast<Vector<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getScalarColumnCellsDComplexV (rownrs, (Vector<DComplex>*)dataPtr);
+	getScalarColumnCellsDComplexV (rownrs, static_cast<Vector<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getScalarColumnCellsStringV (rownrs, (Vector<String>*)dataPtr);
+	getScalarColumnCellsStringV (rownrs, static_cast<Vector<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getScalarColumnCells"));
@@ -242,169 +208,89 @@ void StManColumn::getScalarColumnCellsV (const RefRows& rownrs,
 
 //# Call the correct putScalarColumnCellsX function depending on the data type.
 void StManColumn::putScalarColumnCellsV (const RefRows& rownrs,
-					 const void* dataPtr)
+					 const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putScalarColumnCellsBoolV (rownrs, (const Vector<Bool>*)dataPtr);
+	putScalarColumnCellsBoolV (rownrs, static_cast<const Vector<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putScalarColumnCellsuCharV (rownrs, (const Vector<uChar>*)dataPtr);
+	putScalarColumnCellsuCharV (rownrs, static_cast<const Vector<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putScalarColumnCellsShortV (rownrs, (const Vector<Short>*)dataPtr);
+	putScalarColumnCellsShortV (rownrs, static_cast<const Vector<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putScalarColumnCellsuShortV (rownrs, (const Vector<uShort>*)dataPtr);
+	putScalarColumnCellsuShortV (rownrs, static_cast<const Vector<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putScalarColumnCellsIntV (rownrs, (const Vector<Int>*)dataPtr);
+	putScalarColumnCellsIntV (rownrs, static_cast<const Vector<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putScalarColumnCellsuIntV (rownrs, (const Vector<uInt>*)dataPtr);
+	putScalarColumnCellsuIntV (rownrs, static_cast<const Vector<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putScalarColumnCellsInt64V (rownrs, (const Vector<Int64>*)dataPtr);
+	putScalarColumnCellsInt64V (rownrs, static_cast<const Vector<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putScalarColumnCellsfloatV (rownrs, (const Vector<float>*)dataPtr);
+	putScalarColumnCellsfloatV (rownrs, static_cast<const Vector<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putScalarColumnCellsdoubleV (rownrs, (const Vector<double>*)dataPtr);
+	putScalarColumnCellsdoubleV (rownrs, static_cast<const Vector<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putScalarColumnCellsComplexV (rownrs, (const Vector<Complex>*)dataPtr);
+	putScalarColumnCellsComplexV (rownrs, static_cast<const Vector<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putScalarColumnCellsDComplexV (rownrs, (const Vector<DComplex>*)dataPtr);
+	putScalarColumnCellsDComplexV (rownrs, static_cast<const Vector<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putScalarColumnCellsStringV (rownrs, (const Vector<String>*)dataPtr);
+	putScalarColumnCellsStringV (rownrs, static_cast<const Vector<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putScalarColumnCells"));
     }
 }
 
-//# Call the correct getBlockX function depending on the data type.
-uInt StManColumn::getBlockV (uInt rownr, uInt nrmax, void* dataPtr)
-{
-    switch (dtype_p) {
-    case TpBool:
-	return getBlockBoolV (rownr, nrmax, (Bool*)dataPtr);
-    case TpUChar:
-	return getBlockuCharV (rownr, nrmax, (uChar*)dataPtr);
-    case TpShort:
-	return getBlockShortV (rownr, nrmax, (Short*)dataPtr);
-    case TpUShort:
-	return getBlockuShortV (rownr, nrmax, (uShort*)dataPtr);
-    case TpInt:
-	return getBlockIntV (rownr, nrmax, (Int*)dataPtr);
-    case TpUInt:
-	return getBlockuIntV (rownr, nrmax, (uInt*)dataPtr);
-    case TpInt64:
-	return getBlockInt64V (rownr, nrmax, (Int64*)dataPtr);
-    case TpFloat:
-	return getBlockfloatV (rownr, nrmax, (float*)dataPtr);
-    case TpDouble:
-	return getBlockdoubleV (rownr, nrmax, (double*)dataPtr);
-    case TpComplex:
-	return getBlockComplexV (rownr, nrmax, (Complex*)dataPtr);
-    case TpDComplex:
-	return getBlockDComplexV (rownr, nrmax, (DComplex*)dataPtr);
-    case TpString:
-	return getBlockStringV (rownr, nrmax, (String*)dataPtr);
-    default:
-	throw (DataManInvDT ("StManColumn::getBlock"));
-    }
-    // NOTREACHED - to shut up a warning message
-    return 0;
-}
-
-//# Call the correct putBlockX function depending on the data type.
-void StManColumn::putBlockV (uInt rownr, uInt nrmax, const void* dataPtr)
-{
-    switch (dtype_p) {
-    case TpBool:
-	putBlockBoolV (rownr, nrmax, (const Bool*)dataPtr);
-	break;
-    case TpUChar:
-	putBlockuCharV (rownr, nrmax, (const uChar*)dataPtr);
-	break;
-    case TpShort:
-	putBlockShortV (rownr, nrmax, (const Short*)dataPtr);
-	break;
-    case TpUShort:
-	putBlockuShortV (rownr, nrmax, (const uShort*)dataPtr);
-	break;
-    case TpInt:
-	putBlockIntV (rownr, nrmax, (const Int*)dataPtr);
-	break;
-    case TpUInt:
-	putBlockuIntV (rownr, nrmax, (const uInt*)dataPtr);
-	break;
-    case TpInt64:
-	putBlockInt64V (rownr, nrmax, (const Int64*)dataPtr);
-	break;
-    case TpFloat:
-	putBlockfloatV (rownr, nrmax, (const float*)dataPtr);
-	break;
-    case TpDouble:
-	putBlockdoubleV (rownr, nrmax, (const double*)dataPtr);
-	break;
-    case TpComplex:
-	putBlockComplexV (rownr, nrmax, (const Complex*)dataPtr);
-	break;
-    case TpDComplex:
-	putBlockDComplexV (rownr, nrmax, (const DComplex*)dataPtr);
-	break;
-    case TpString:
-	putBlockStringV (rownr, nrmax, (const String*)dataPtr);
-	break;
-    default:
-	throw (DataManInvDT ("StManColumn::putBlock"));
-    }
-}
-
 //# Call the correct getArrayX function depending on the data type.
-void StManColumn::getArrayV (uInt rownr, void* dataPtr)
+void StManColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getArrayBoolV (rownr, (Array<Bool>*)dataPtr);
+	getArrayBoolV (rownr, static_cast<Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getArrayuCharV (rownr, (Array<uChar>*)dataPtr);
+	getArrayuCharV (rownr, static_cast<Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getArrayShortV (rownr, (Array<Short>*)dataPtr);
+	getArrayShortV (rownr, static_cast<Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getArrayuShortV (rownr, (Array<uShort>*)dataPtr);
+	getArrayuShortV (rownr, static_cast<Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getArrayIntV (rownr, (Array<Int>*)dataPtr);
+	getArrayIntV (rownr, static_cast<Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getArrayuIntV (rownr, (Array<uInt>*)dataPtr);
+	getArrayuIntV (rownr, static_cast<Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getArrayInt64V (rownr, (Array<Int64>*)dataPtr);
+	getArrayInt64V (rownr, static_cast<Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getArrayfloatV (rownr, (Array<float>*)dataPtr);
+	getArrayfloatV (rownr, static_cast<Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getArraydoubleV (rownr, (Array<double>*)dataPtr);
+	getArraydoubleV (rownr, static_cast<Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getArrayComplexV (rownr, (Array<Complex>*)dataPtr);
+	getArrayComplexV (rownr, static_cast<Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getArrayDComplexV (rownr, (Array<DComplex>*)dataPtr);
+	getArrayDComplexV (rownr, static_cast<Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getArrayStringV (rownr, (Array<String>*)dataPtr);
+	getArrayStringV (rownr, static_cast<Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getArray"));
@@ -412,44 +298,44 @@ void StManColumn::getArrayV (uInt rownr, void* dataPtr)
 }
 
 //# Call the correct putArrayX function depending on the data type.
-void StManColumn::putArrayV (uInt rownr, const void* dataPtr)
+void StManColumn::putArrayV (rownr_t rownr, const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putArrayBoolV (rownr, (const Array<Bool>*)dataPtr);
+	putArrayBoolV (rownr, static_cast<const Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putArrayuCharV (rownr, (const Array<uChar>*)dataPtr);
+	putArrayuCharV (rownr, static_cast<const Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putArrayShortV (rownr, (const Array<Short>*)dataPtr);
+	putArrayShortV (rownr, static_cast<const Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putArrayuShortV (rownr, (const Array<uShort>*)dataPtr);
+	putArrayuShortV (rownr, static_cast<const Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putArrayIntV (rownr, (const Array<Int>*)dataPtr);
+	putArrayIntV (rownr, static_cast<const Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putArrayuIntV (rownr, (const Array<uInt>*)dataPtr);
+	putArrayuIntV (rownr, static_cast<const Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putArrayInt64V (rownr, (const Array<Int64>*)dataPtr);
+	putArrayInt64V (rownr, static_cast<const Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putArrayfloatV (rownr, (const Array<float>*)dataPtr);
+	putArrayfloatV (rownr, static_cast<const Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putArraydoubleV (rownr, (const Array<double>*)dataPtr);
+	putArraydoubleV (rownr, static_cast<const Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putArrayComplexV (rownr, (const Array<Complex>*)dataPtr);
+	putArrayComplexV (rownr, static_cast<const Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putArrayDComplexV (rownr, (const Array<DComplex>*)dataPtr);
+	putArrayDComplexV (rownr, static_cast<const Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putArrayStringV (rownr, (const Array<String>*)dataPtr);
+	putArrayStringV (rownr, static_cast<const Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putArray"));
@@ -457,44 +343,44 @@ void StManColumn::putArrayV (uInt rownr, const void* dataPtr)
 }
 
 //# Call the correct getColumnSliceX function depending on the data type.
-void StManColumn::getSliceV (uInt rownr, const Slicer& ns, void* dataPtr)
+void StManColumn::getSliceV (rownr_t rownr, const Slicer& ns, ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getSliceBoolV (rownr, ns, (Array<Bool>*)dataPtr);
+	getSliceBoolV (rownr, ns, static_cast<Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getSliceuCharV (rownr, ns, (Array<uChar>*)dataPtr);
+	getSliceuCharV (rownr, ns, static_cast<Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getSliceShortV (rownr, ns, (Array<Short>*)dataPtr);
+	getSliceShortV (rownr, ns, static_cast<Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getSliceuShortV (rownr, ns, (Array<uShort>*)dataPtr);
+	getSliceuShortV (rownr, ns, static_cast<Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getSliceIntV (rownr, ns, (Array<Int>*)dataPtr);
+	getSliceIntV (rownr, ns, static_cast<Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getSliceuIntV (rownr, ns, (Array<uInt>*)dataPtr);
+	getSliceuIntV (rownr, ns, static_cast<Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getSliceInt64V (rownr, ns, (Array<Int64>*)dataPtr);
+	getSliceInt64V (rownr, ns, static_cast<Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getSlicefloatV (rownr, ns, (Array<float>*)dataPtr);
+	getSlicefloatV (rownr, ns, static_cast<Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getSlicedoubleV (rownr, ns, (Array<double>*)dataPtr);
+	getSlicedoubleV (rownr, ns, static_cast<Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getSliceComplexV (rownr, ns, (Array<Complex>*)dataPtr);
+	getSliceComplexV (rownr, ns, static_cast<Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getSliceDComplexV (rownr, ns, (Array<DComplex>*)dataPtr);
+	getSliceDComplexV (rownr, ns, static_cast<Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getSliceStringV (rownr, ns, (Array<String>*)dataPtr);
+	getSliceStringV (rownr, ns, static_cast<Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getSlice"));
@@ -502,44 +388,44 @@ void StManColumn::getSliceV (uInt rownr, const Slicer& ns, void* dataPtr)
 }
 
 //# Call the correct putSliceX function depending on the data type.
-void StManColumn::putSliceV (uInt rownr, const Slicer& ns, const void* dataPtr)
+void StManColumn::putSliceV (rownr_t rownr, const Slicer& ns, const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putSliceBoolV (rownr, ns, (const Array<Bool>*)dataPtr);
+	putSliceBoolV (rownr, ns, static_cast<const Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putSliceuCharV (rownr, ns, (const Array<uChar>*)dataPtr);
+	putSliceuCharV (rownr, ns, static_cast<const Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putSliceShortV (rownr, ns, (const Array<Short>*)dataPtr);
+	putSliceShortV (rownr, ns, static_cast<const Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putSliceuShortV (rownr, ns, (const Array<uShort>*)dataPtr);
+	putSliceuShortV (rownr, ns, static_cast<const Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putSliceIntV (rownr, ns, (const Array<Int>*)dataPtr);
+	putSliceIntV (rownr, ns, static_cast<const Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putSliceuIntV (rownr, ns, (const Array<uInt>*)dataPtr);
+	putSliceuIntV (rownr, ns, static_cast<const Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putSliceInt64V (rownr, ns, (const Array<Int64>*)dataPtr);
+	putSliceInt64V (rownr, ns, static_cast<const Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putSlicefloatV (rownr, ns, (const Array<float>*)dataPtr);
+	putSlicefloatV (rownr, ns, static_cast<const Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putSlicedoubleV (rownr, ns, (const Array<double>*)dataPtr);
+	putSlicedoubleV (rownr, ns, static_cast<const Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putSliceComplexV (rownr, ns, (const Array<Complex>*)dataPtr);
+	putSliceComplexV (rownr, ns, static_cast<const Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putSliceDComplexV (rownr, ns, (const Array<DComplex>*)dataPtr);
+	putSliceDComplexV (rownr, ns, static_cast<const Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putSliceStringV (rownr, ns, (const Array<String>*)dataPtr);
+	putSliceStringV (rownr, ns, static_cast<const Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putSlice"));
@@ -547,44 +433,44 @@ void StManColumn::putSliceV (uInt rownr, const Slicer& ns, const void* dataPtr)
 }
 
 //# Call the correct getArrayColumnX function depending on the data type.
-void StManColumn::getArrayColumnV (void* dataPtr)
+void StManColumn::getArrayColumnV (ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getArrayColumnBoolV ((Array<Bool>*)dataPtr);
+	getArrayColumnBoolV (static_cast<Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getArrayColumnuCharV ((Array<uChar>*)dataPtr);
+	getArrayColumnuCharV (static_cast<Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getArrayColumnShortV ((Array<Short>*)dataPtr);
+	getArrayColumnShortV (static_cast<Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getArrayColumnuShortV ((Array<uShort>*)dataPtr);
+	getArrayColumnuShortV (static_cast<Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getArrayColumnIntV ((Array<Int>*)dataPtr);
+	getArrayColumnIntV (static_cast<Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getArrayColumnuIntV ((Array<uInt>*)dataPtr);
+	getArrayColumnuIntV (static_cast<Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getArrayColumnInt64V ((Array<Int64>*)dataPtr);
+	getArrayColumnInt64V (static_cast<Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getArrayColumnfloatV ((Array<float>*)dataPtr);
+	getArrayColumnfloatV (static_cast<Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getArrayColumndoubleV ((Array<double>*)dataPtr);
+	getArrayColumndoubleV (static_cast<Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getArrayColumnComplexV ((Array<Complex>*)dataPtr);
+	getArrayColumnComplexV (static_cast<Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getArrayColumnDComplexV ((Array<DComplex>*)dataPtr);
+	getArrayColumnDComplexV (static_cast<Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getArrayColumnStringV ((Array<String>*)dataPtr);
+	getArrayColumnStringV (static_cast<Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getArrayColumn"));
@@ -592,44 +478,44 @@ void StManColumn::getArrayColumnV (void* dataPtr)
 }
 
 //# Call the correct putArrayColumnX function depending on the data type.
-void StManColumn::putArrayColumnV (const void* dataPtr)
+void StManColumn::putArrayColumnV (const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putArrayColumnBoolV ((const Array<Bool>*)dataPtr);
+	putArrayColumnBoolV (static_cast<const Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putArrayColumnuCharV ((const Array<uChar>*)dataPtr);
+	putArrayColumnuCharV (static_cast<const Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putArrayColumnShortV ((const Array<Short>*)dataPtr);
+	putArrayColumnShortV (static_cast<const Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putArrayColumnuShortV ((const Array<uShort>*)dataPtr);
+	putArrayColumnuShortV (static_cast<const Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putArrayColumnIntV ((const Array<Int>*)dataPtr);
+	putArrayColumnIntV (static_cast<const Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putArrayColumnuIntV ((const Array<uInt>*)dataPtr);
+	putArrayColumnuIntV (static_cast<const Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putArrayColumnInt64V ((const Array<Int64>*)dataPtr);
+	putArrayColumnInt64V (static_cast<const Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putArrayColumnfloatV ((const Array<float>*)dataPtr);
+	putArrayColumnfloatV (static_cast<const Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putArrayColumndoubleV ((const Array<double>*)dataPtr);
+	putArrayColumndoubleV (static_cast<const Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putArrayColumnComplexV ((const Array<Complex>*)dataPtr);
+	putArrayColumnComplexV (static_cast<const Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putArrayColumnDComplexV ((const Array<DComplex>*)dataPtr);
+	putArrayColumnDComplexV (static_cast<const Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putArrayColumnStringV ((const Array<String>*)dataPtr);
+	putArrayColumnStringV (static_cast<const Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putArrayColumn"));
@@ -638,44 +524,44 @@ void StManColumn::putArrayColumnV (const void* dataPtr)
 
 //# Call the correct getArrayColumnCellsX function depending on the data type.
 void StManColumn::getArrayColumnCellsV (const RefRows& rownrs,
-					void* dataPtr)
+					ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getArrayColumnCellsBoolV (rownrs, (Array<Bool>*)dataPtr);
+	getArrayColumnCellsBoolV (rownrs, static_cast<Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getArrayColumnCellsuCharV (rownrs, (Array<uChar>*)dataPtr);
+	getArrayColumnCellsuCharV (rownrs, static_cast<Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getArrayColumnCellsShortV (rownrs, (Array<Short>*)dataPtr);
+	getArrayColumnCellsShortV (rownrs, static_cast<Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getArrayColumnCellsuShortV (rownrs, (Array<uShort>*)dataPtr);
+	getArrayColumnCellsuShortV (rownrs, static_cast<Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getArrayColumnCellsIntV (rownrs, (Array<Int>*)dataPtr);
+	getArrayColumnCellsIntV (rownrs, static_cast<Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getArrayColumnCellsuIntV (rownrs, (Array<uInt>*)dataPtr);
+	getArrayColumnCellsuIntV (rownrs, static_cast<Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getArrayColumnCellsInt64V (rownrs, (Array<Int64>*)dataPtr);
+	getArrayColumnCellsInt64V (rownrs, static_cast<Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getArrayColumnCellsfloatV (rownrs, (Array<float>*)dataPtr);
+	getArrayColumnCellsfloatV (rownrs, static_cast<Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getArrayColumnCellsdoubleV (rownrs, (Array<double>*)dataPtr);
+	getArrayColumnCellsdoubleV (rownrs, static_cast<Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getArrayColumnCellsComplexV (rownrs, (Array<Complex>*)dataPtr);
+	getArrayColumnCellsComplexV (rownrs, static_cast<Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getArrayColumnCellsDComplexV (rownrs, (Array<DComplex>*)dataPtr);
+	getArrayColumnCellsDComplexV (rownrs, static_cast<Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getArrayColumnCellsStringV (rownrs, (Array<String>*)dataPtr);
+	getArrayColumnCellsStringV (rownrs, static_cast<Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getArrayColumnCells"));
@@ -684,44 +570,44 @@ void StManColumn::getArrayColumnCellsV (const RefRows& rownrs,
 
 //# Call the correct putArrayColumnCellsX function depending on the data type.
 void StManColumn::putArrayColumnCellsV (const RefRows& rownrs,
-					const void* dataPtr)
+					const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putArrayColumnCellsBoolV (rownrs, (const Array<Bool>*)dataPtr);
+	putArrayColumnCellsBoolV (rownrs, static_cast<const Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putArrayColumnCellsuCharV (rownrs, (const Array<uChar>*)dataPtr);
+	putArrayColumnCellsuCharV (rownrs, static_cast<const Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putArrayColumnCellsShortV (rownrs, (const Array<Short>*)dataPtr);
+	putArrayColumnCellsShortV (rownrs, static_cast<const Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putArrayColumnCellsuShortV (rownrs, (const Array<uShort>*)dataPtr);
+	putArrayColumnCellsuShortV (rownrs, static_cast<const Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putArrayColumnCellsIntV (rownrs, (const Array<Int>*)dataPtr);
+	putArrayColumnCellsIntV (rownrs, static_cast<const Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putArrayColumnCellsuIntV (rownrs, (const Array<uInt>*)dataPtr);
+	putArrayColumnCellsuIntV (rownrs, static_cast<const Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putArrayColumnCellsInt64V (rownrs, (const Array<Int64>*)dataPtr);
+	putArrayColumnCellsInt64V (rownrs, static_cast<const Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putArrayColumnCellsfloatV (rownrs, (const Array<float>*)dataPtr);
+	putArrayColumnCellsfloatV (rownrs, static_cast<const Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putArrayColumnCellsdoubleV (rownrs, (const Array<double>*)dataPtr);
+	putArrayColumnCellsdoubleV (rownrs, static_cast<const Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putArrayColumnCellsComplexV (rownrs, (const Array<Complex>*)dataPtr);
+	putArrayColumnCellsComplexV (rownrs, static_cast<const Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putArrayColumnCellsDComplexV (rownrs, (const Array<DComplex>*)dataPtr);
+	putArrayColumnCellsDComplexV (rownrs, static_cast<const Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putArrayColumnCellsStringV (rownrs, (const Array<String>*)dataPtr);
+	putArrayColumnCellsStringV (rownrs, static_cast<const Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putArrayColumnCells"));
@@ -729,44 +615,44 @@ void StManColumn::putArrayColumnCellsV (const RefRows& rownrs,
 }
 
 //# Call the correct getColumnSliceX function depending on the data type.
-void StManColumn::getColumnSliceV (const Slicer& ns, void* dataPtr)
+void StManColumn::getColumnSliceV (const Slicer& ns, ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getColumnSliceBoolV (ns, (Array<Bool>*)dataPtr);
+	getColumnSliceBoolV (ns, static_cast<Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getColumnSliceuCharV (ns, (Array<uChar>*)dataPtr);
+	getColumnSliceuCharV (ns, static_cast<Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getColumnSliceShortV (ns, (Array<Short>*)dataPtr);
+	getColumnSliceShortV (ns, static_cast<Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getColumnSliceuShortV (ns, (Array<uShort>*)dataPtr);
+	getColumnSliceuShortV (ns, static_cast<Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getColumnSliceIntV (ns, (Array<Int>*)dataPtr);
+	getColumnSliceIntV (ns, static_cast<Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getColumnSliceuIntV (ns, (Array<uInt>*)dataPtr);
+	getColumnSliceuIntV (ns, static_cast<Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getColumnSliceInt64V (ns, (Array<Int64>*)dataPtr);
+	getColumnSliceInt64V (ns, static_cast<Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getColumnSlicefloatV (ns, (Array<float>*)dataPtr);
+	getColumnSlicefloatV (ns, static_cast<Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getColumnSlicedoubleV (ns, (Array<double>*)dataPtr);
+	getColumnSlicedoubleV (ns, static_cast<Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getColumnSliceComplexV (ns, (Array<Complex>*)dataPtr);
+	getColumnSliceComplexV (ns, static_cast<Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getColumnSliceDComplexV (ns, (Array<DComplex>*)dataPtr);
+	getColumnSliceDComplexV (ns, static_cast<Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getColumnSliceStringV (ns, (Array<String>*)dataPtr);
+	getColumnSliceStringV (ns, static_cast<Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getColumnSlice"));
@@ -774,44 +660,44 @@ void StManColumn::getColumnSliceV (const Slicer& ns, void* dataPtr)
 }
 
 //# Call the correct putColumnSliceX function depending on the data type.
-void StManColumn::putColumnSliceV (const Slicer& ns, const void* dataPtr)
+void StManColumn::putColumnSliceV (const Slicer& ns, const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putColumnSliceBoolV (ns, (const Array<Bool>*)dataPtr);
+	putColumnSliceBoolV (ns, static_cast<const Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putColumnSliceuCharV (ns, (const Array<uChar>*)dataPtr);
+	putColumnSliceuCharV (ns, static_cast<const Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putColumnSliceShortV (ns, (const Array<Short>*)dataPtr);
+	putColumnSliceShortV (ns, static_cast<const Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putColumnSliceuShortV (ns, (const Array<uShort>*)dataPtr);
+	putColumnSliceuShortV (ns, static_cast<const Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putColumnSliceIntV (ns, (const Array<Int>*)dataPtr);
+	putColumnSliceIntV (ns, static_cast<const Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putColumnSliceuIntV (ns, (const Array<uInt>*)dataPtr);
+	putColumnSliceuIntV (ns, static_cast<const Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putColumnSliceInt64V (ns, (const Array<Int64>*)dataPtr);
+	putColumnSliceInt64V (ns, static_cast<const Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putColumnSlicefloatV (ns, (const Array<float>*)dataPtr);
+	putColumnSlicefloatV (ns, static_cast<const Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putColumnSlicedoubleV (ns, (const Array<double>*)dataPtr);
+	putColumnSlicedoubleV (ns, static_cast<const Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putColumnSliceComplexV (ns, (const Array<Complex>*)dataPtr);
+	putColumnSliceComplexV (ns, static_cast<const Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putColumnSliceDComplexV (ns, (const Array<DComplex>*)dataPtr);
+	putColumnSliceDComplexV (ns, static_cast<const Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putColumnSliceStringV (ns, (const Array<String>*)dataPtr);
+	putColumnSliceStringV (ns, static_cast<const Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putColumnSlice"));
@@ -820,44 +706,44 @@ void StManColumn::putColumnSliceV (const Slicer& ns, const void* dataPtr)
 
 //# Call the correct getColumnSliceCellsX function depending on the data type.
 void StManColumn::getColumnSliceCellsV (const RefRows& rownrs,
-					const Slicer& ns, void* dataPtr)
+					const Slicer& ns, ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	getColumnSliceCellsBoolV (rownrs, ns, (Array<Bool>*)dataPtr);
+	getColumnSliceCellsBoolV (rownrs, ns, static_cast<Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	getColumnSliceCellsuCharV (rownrs, ns, (Array<uChar>*)dataPtr);
+	getColumnSliceCellsuCharV (rownrs, ns, static_cast<Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	getColumnSliceCellsShortV (rownrs, ns, (Array<Short>*)dataPtr);
+	getColumnSliceCellsShortV (rownrs, ns, static_cast<Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	getColumnSliceCellsuShortV (rownrs, ns, (Array<uShort>*)dataPtr);
+	getColumnSliceCellsuShortV (rownrs, ns, static_cast<Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	getColumnSliceCellsIntV (rownrs, ns, (Array<Int>*)dataPtr);
+	getColumnSliceCellsIntV (rownrs, ns, static_cast<Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	getColumnSliceCellsuIntV (rownrs, ns, (Array<uInt>*)dataPtr);
+	getColumnSliceCellsuIntV (rownrs, ns, static_cast<Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	getColumnSliceCellsInt64V (rownrs, ns, (Array<Int64>*)dataPtr);
+	getColumnSliceCellsInt64V (rownrs, ns, static_cast<Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	getColumnSliceCellsfloatV (rownrs, ns, (Array<float>*)dataPtr);
+	getColumnSliceCellsfloatV (rownrs, ns, static_cast<Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	getColumnSliceCellsdoubleV (rownrs, ns, (Array<double>*)dataPtr);
+	getColumnSliceCellsdoubleV (rownrs, ns, static_cast<Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	getColumnSliceCellsComplexV (rownrs, ns, (Array<Complex>*)dataPtr);
+	getColumnSliceCellsComplexV (rownrs, ns, static_cast<Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	getColumnSliceCellsDComplexV (rownrs, ns, (Array<DComplex>*)dataPtr);
+	getColumnSliceCellsDComplexV (rownrs, ns, static_cast<Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	getColumnSliceCellsStringV (rownrs, ns, (Array<String>*)dataPtr);
+	getColumnSliceCellsStringV (rownrs, ns, static_cast<Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::getColumnSliceCells"));
@@ -866,46 +752,44 @@ void StManColumn::getColumnSliceCellsV (const RefRows& rownrs,
 
 //# Call the correct putColumnSliceCellsX function depending on the data type.
 void StManColumn::putColumnSliceCellsV (const RefRows& rownrs,
-					const Slicer& ns, const void* dataPtr)
+					const Slicer& ns, const ArrayBase& dataPtr)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
-	putColumnSliceCellsBoolV (rownrs, ns, (const Array<Bool>*)dataPtr);
+	putColumnSliceCellsBoolV (rownrs, ns, static_cast<const Array<Bool>*>(&dataPtr));
 	break;
     case TpUChar:
-	putColumnSliceCellsuCharV (rownrs, ns, (const Array<uChar>*)dataPtr);
+	putColumnSliceCellsuCharV (rownrs, ns, static_cast<const Array<uChar>*>(&dataPtr));
 	break;
     case TpShort:
-	putColumnSliceCellsShortV (rownrs, ns, (const Array<Short>*)dataPtr);
+	putColumnSliceCellsShortV (rownrs, ns, static_cast<const Array<Short>*>(&dataPtr));
 	break;
     case TpUShort:
-	putColumnSliceCellsuShortV (rownrs, ns, (const Array<uShort>*)dataPtr);
+	putColumnSliceCellsuShortV (rownrs, ns, static_cast<const Array<uShort>*>(&dataPtr));
 	break;
     case TpInt:
-	putColumnSliceCellsIntV (rownrs, ns, (const Array<Int>*)dataPtr);
+	putColumnSliceCellsIntV (rownrs, ns, static_cast<const Array<Int>*>(&dataPtr));
 	break;
     case TpUInt:
-	putColumnSliceCellsuIntV (rownrs, ns, (const Array<uInt>*)dataPtr);
+	putColumnSliceCellsuIntV (rownrs, ns, static_cast<const Array<uInt>*>(&dataPtr));
 	break;
     case TpInt64:
-	putColumnSliceCellsInt64V (rownrs, ns, (const Array<Int64>*)dataPtr);
+	putColumnSliceCellsInt64V (rownrs, ns, static_cast<const Array<Int64>*>(&dataPtr));
 	break;
     case TpFloat:
-	putColumnSliceCellsfloatV (rownrs, ns, (const Array<float>*)dataPtr);
+	putColumnSliceCellsfloatV (rownrs, ns, static_cast<const Array<float>*>(&dataPtr));
 	break;
     case TpDouble:
-	putColumnSliceCellsdoubleV (rownrs, ns, (const Array<double>*)dataPtr);
+	putColumnSliceCellsdoubleV (rownrs, ns, static_cast<const Array<double>*>(&dataPtr));
 	break;
     case TpComplex:
-	putColumnSliceCellsComplexV (rownrs, ns,
-				     (const Array<Complex>*)dataPtr);
+	putColumnSliceCellsComplexV (rownrs, ns, static_cast<const Array<Complex>*>(&dataPtr));
 	break;
     case TpDComplex:
-	putColumnSliceCellsDComplexV (rownrs, ns,
-				      (const Array<DComplex>*)dataPtr);
+	putColumnSliceCellsDComplexV (rownrs, ns, static_cast<const Array<DComplex>*>(&dataPtr));
 	break;
     case TpString:
-	putColumnSliceCellsStringV (rownrs, ns, (const Array<String>*)dataPtr);
+	putColumnSliceCellsStringV (rownrs, ns, static_cast<const Array<String>*>(&dataPtr));
 	break;
     default:
 	throw (DataManInvDT ("StManColumn::putColumnSliceCells"));
@@ -918,185 +802,58 @@ void StManColumn::throwInvalidOp(const String &op) const
                              " for column " + columnName())); }
 
 
-//# For scalars the default implementation of get/putScalarColumn handles
-//# its data using get/putBlock. For arrays it throws an exception.
-//# The default implementation of getBlock gets one value.
-//# The default implementation of putBlock puts one value at a time.
+//# The default implementations use the DataManagerColumn counterparts.
 #define STMANCOLUMN_GETPUT(T,NM) \
 void StManColumn::aips_name2(getScalarColumn,NM) (Vector<T>* dataPtr) \
-{ \
-    Bool deleteIt; \
-    T* data = dataPtr->getStorage (deleteIt); \
-    uInt nrdone = 0; \
-    uInt nrgot; \
-    for (uInt nrtodo=dataPtr->nelements(); nrtodo>0;) { \
-        nrgot = aips_name2(getBlock,NM) (nrdone, nrtodo, data); \
-        nrtodo -= nrgot; \
-        nrdone += nrgot; \
-        data += nrgot; \
-    } \
-    dataPtr->putStorage (data, deleteIt); \
-} \
+    { getScalarColumnBase (*dataPtr); } \
 void StManColumn::aips_name2(putScalarColumn,NM) (const Vector<T>* dataPtr) \
-{ \
-    Bool deleteIt; \
-    const T* data = dataPtr->getStorage (deleteIt); \
-    aips_name2(putBlock,NM) (0, dataPtr->nelements(), data); \
-    dataPtr->freeStorage (data, deleteIt); \
-} \
-uInt StManColumn::aips_name2(getBlock,NM) \
-                                 (uInt rownr, uInt nrmax, T* dataPtr) \
-{ \
-    if (nrmax > 0) { \
-	aips_name2(get,NM) (rownr, dataPtr); \
-	return 1; \
-    } \
-    return 0; \
-} \
-void StManColumn::aips_name2(putBlock,NM) \
-                                 (uInt rownr, uInt nrmax, const T* dataPtr) \
-{ \
-    while (nrmax > 0) { \
-	aips_name2(put,NM) (rownr++, dataPtr++); \
-	nrmax--; \
-    } \
-} \
+    { putScalarColumnBase (*dataPtr); } \
 void StManColumn::aips_name2(getArray,NM) (uInt, Array<T>*) \
     { throwInvalidOp("getArray" #NM); } \
 void StManColumn::aips_name2(putArray,NM) (uInt, const Array<T>*) \
     { throwInvalidOp("putArray" #NM); } \
-void StManColumn::aips_name2(getSlice,NM) (uInt, const Slicer&, Array<T>*) \
-    { throwInvalidOp("getSlice" #NM); } \
-void StManColumn::aips_name2(putSlice,NM) (uInt, const Slicer&, const Array<T>*) \
-    { throwInvalidOp("putSlice" #NM); } \
-void StManColumn::aips_name2(getArrayColumn,NM) (Array<T>*) \
-    { throwInvalidOp("getArrayColumn" #NM); } \
-void StManColumn::aips_name2(putArrayColumn,NM) (const Array<T>*) \
-    { throwInvalidOp("putArrayColumn" #NM); } \
-void StManColumn::aips_name2(getColumnSlice,NM) (const Slicer&, Array<T>*) \
-    { throwInvalidOp("getColumnSlice" #NM); } \
-void StManColumn::aips_name2(putColumnSlice,NM) (const Slicer&, const Array<T>*) \
-    { throwInvalidOp("putColumnSlice" #NM); } \
+void StManColumn::aips_name2(getSlice,NM) (uInt rownr, const Slicer& slicer, \
+                                           Array<T>* arr) \
+    { getSliceBase (rownr, slicer, *arr); } \
+void StManColumn::aips_name2(putSlice,NM) (uInt rownr, const Slicer& slicer, \
+                                           const Array<T>* arr) \
+    { putSliceBase (rownr, slicer, *arr); } \
+void StManColumn::aips_name2(getArrayColumn,NM) (Array<T>* arr) \
+    { getArrayColumnBase (*arr); } \
+void StManColumn::aips_name2(putArrayColumn,NM) (const Array<T>* arr) \
+    { putArrayColumnBase (*arr); } \
+void StManColumn::aips_name2(getColumnSlice,NM) (const Slicer& slicer, \
+                                                 Array<T>* arr) \
+    { getColumnSliceBase (slicer, *arr); } \
+void StManColumn::aips_name2(putColumnSlice,NM) (const Slicer& slicer, \
+                                                 const Array<T>* arr) \
+    { putColumnSliceBase (slicer, *arr); } \
 void StManColumn::aips_name2(getScalarColumnCells,NM) \
                                              (const RefRows& rownrs, \
 					      Vector<T>* values) \
-{ \
-    Vector<T>& value = *values; \
-    uInt i=0; \
-    RefRowsSliceIter rowiter(rownrs); \
-    while (! rowiter.pastEnd()) { \
-        uInt rownr = rowiter.sliceStart(); \
-        uInt end = rowiter.sliceEnd(); \
-        uInt incr = rowiter.sliceIncr(); \
-        while (rownr <= end) { \
-	    aips_name2(get,NM) (rownr, &(value(i++))); \
-            rownr += incr; \
-        } \
-	rowiter++; \
-    } \
-} \
+    { getScalarColumnCellsBase (rownrs, *values); } \
 void StManColumn::aips_name2(putScalarColumnCells,NM) \
                                              (const RefRows& rownrs, \
 					      const Vector<T>* values) \
-{ \
-    const Vector<T>& value = *values; \
-    uInt i=0; \
-    RefRowsSliceIter rowiter(rownrs); \
-    while (! rowiter.pastEnd()) { \
-        uInt rownr = rowiter.sliceStart(); \
-        uInt end = rowiter.sliceEnd(); \
-        uInt incr = rowiter.sliceIncr(); \
-        while (rownr <= end) { \
-	    aips_name2(put,NM) (rownr, &(value(i++))); \
-            rownr += incr; \
-        } \
-	rowiter++; \
-    } \
-} \
+    { putScalarColumnCellsBase (rownrs, *values); } \
 void StManColumn::aips_name2(getArrayColumnCells,NM) \
                                             (const RefRows& rownrs, \
 					     Array<T>* values) \
-{ \
-    Array<T>& value = *values; \
-    ArrayIterator<T> iter(value, value.ndim()-1); \
-    RefRowsSliceIter rowiter(rownrs); \
-    while (! rowiter.pastEnd()) { \
-        uInt rownr = rowiter.sliceStart(); \
-        uInt end = rowiter.sliceEnd(); \
-        uInt incr = rowiter.sliceIncr(); \
-        while (rownr <= end) { \
-            if (! isFixedShape()) { \
-                if (! iter.array().shape().isEqual (shape(rownr))) { \
-                    throw DataManError("getArrayColumnCells shape mismatch" \
-                                       " for column " + columnName());  \
-                } \
-            } \
-  	    aips_name2(getArray,NM) (rownr, &(iter.array())); \
-            rownr += incr; \
-	    iter.next(); \
-	} \
-        rowiter++; \
-    } \
-} \
+    { getArrayColumnCellsBase (rownrs, *values); } \
 void StManColumn::aips_name2(putArrayColumnCells,NM) \
                                             (const RefRows& rownrs, \
 					     const Array<T>* values) \
-{ \
-    const Array<T>& value = *values; \
-    ReadOnlyArrayIterator<T> iter(value, value.ndim()-1); \
-    RefRowsSliceIter rowiter(rownrs); \
-    while (! rowiter.pastEnd()) { \
-        uInt rownr = rowiter.sliceStart(); \
-        uInt end = rowiter.sliceEnd(); \
-        uInt incr = rowiter.sliceIncr(); \
-        while (rownr <= end) { \
-  	    aips_name2(putArray,NM) (rownr, &(iter.array())); \
-            rownr += incr; \
-	    iter.next(); \
-	} \
-        rowiter++; \
-    } \
-} \
+    { putArrayColumnCellsBase (rownrs, *values); } \
 void StManColumn::aips_name2(getColumnSliceCells,NM) \
                                             (const RefRows& rownrs, \
 					     const Slicer& ns, \
 					     Array<T>* values) \
-{ \
-    Array<T>& value = *values; \
-    ArrayIterator<T> iter(value, value.ndim()-1); \
-    RefRowsSliceIter rowiter(rownrs); \
-    while (! rowiter.pastEnd()) { \
-        uInt rownr = rowiter.sliceStart(); \
-        uInt end = rowiter.sliceEnd(); \
-        uInt incr = rowiter.sliceIncr(); \
-        while (rownr <= end) { \
-	    aips_name2(getSlice,NM) (rownr, ns, &(iter.array())); \
-            rownr += incr; \
-	    iter.next(); \
-	} \
-        rowiter++; \
-    } \
-} \
+    { getColumnSliceCellsBase (rownrs, ns, *values); } \
 void StManColumn::aips_name2(putColumnSliceCells,NM) \
                                             (const RefRows& rownrs, \
 					     const Slicer& ns, \
 					     const Array<T>* values) \
-{ \
-    const Array<T>& value = *values; \
-    ReadOnlyArrayIterator<T> iter(value, value.ndim()-1); \
-    RefRowsSliceIter rowiter(rownrs); \
-    while (! rowiter.pastEnd()) { \
-        uInt rownr = rowiter.sliceStart(); \
-        uInt end = rowiter.sliceEnd(); \
-        uInt incr = rowiter.sliceIncr(); \
-        while (rownr <= end) { \
-	    aips_name2(putSlice,NM) (rownr, ns, &(iter.array())); \
-            rownr += incr; \
-	    iter.next(); \
-	} \
-        rowiter++; \
-    } \
-}
+    { putColumnSliceCellsBase (rownrs, ns, *values); } \
 
 STMANCOLUMN_GETPUT(Bool,BoolV)
 STMANCOLUMN_GETPUT(uChar,uCharV)
@@ -1129,4 +886,3 @@ timer.show("a"); \
 */
 
 } //# NAMESPACE CASACORE - END
-

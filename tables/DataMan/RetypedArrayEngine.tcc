@@ -76,10 +76,9 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const Record& spec)
     if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
         setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
 	if (spec.isDefined("SHAPE")) {
-	    Vector<Int> shp;
+	    Vector<Int64> shp;
 	    spec.get ("SHAPE", shp);
-	    shape_p.resize (shp.nelements());
-	    shape_p = IPosition(shp);
+	    shape_p.fill (shp.size(), shp.begin());
 	}
 	if (spec.isDefined("RECORD")) {
 	    record_p = spec.asRecord ("RECORD");
@@ -168,10 +167,8 @@ void RetypedArrayEngine<S,T>::prepare()
 {
     // Get the various parameters from keywords in this column.
     TableColumn thisCol (table(), virtualName());
-    Vector<Int> vector;
-    thisCol.keywordSet().get ("_RetypedArrayEngine_Shape", vector);
-    shape_p.resize (vector.nelements());
-    shape_p = IPosition (vector);
+    Vector<Int64> vec (thisCol.keywordSet().toArrayInt64("_RetypedArrayEngine_Shape"));
+    shape_p.fill (vec.size(), vec.begin());
     record_p = thisCol.keywordSet().subRecord ("_RetypedArrayEngine_Record");
     // Set the column shape in the base class (when needed).
     // This has to be dome before prepare in the base class is called.
@@ -185,7 +182,7 @@ void RetypedArrayEngine<S,T>::prepare()
 }
 
 template<class S, class T>
-void RetypedArrayEngine<S,T>::create (uInt initialNrrow)
+void RetypedArrayEngine<S,T>::create (rownr_t initialNrrow)
 {
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
@@ -208,7 +205,7 @@ void RetypedArrayEngine<S,T>::setShapeColumn (const IPosition& shape)
 }
 
 template<class S, class T>
-void RetypedArrayEngine<S,T>::setShape (uInt rownr, const IPosition& shape)
+void RetypedArrayEngine<S,T>::setShape (rownr_t rownr, const IPosition& shape)
 {
     //# Do not define the shape in the stored column when it has
     //# already been defined and matches the virtual shape.
@@ -224,13 +221,13 @@ void RetypedArrayEngine<S,T>::setShape (uInt rownr, const IPosition& shape)
 }
 
 template<class S, class T>
-uInt RetypedArrayEngine<S,T>::ndim (uInt rownr)
+uInt RetypedArrayEngine<S,T>::ndim (rownr_t rownr)
 {
     return column().ndim (rownr) - shape_p.nelements();
 }
 
 template<class S, class T>
-IPosition RetypedArrayEngine<S,T>::shape (uInt rownr)
+IPosition RetypedArrayEngine<S,T>::shape (rownr_t rownr)
 {
     // The virtual shape is the stored shape minus the first dimensions.
     IPosition storedShape = column().shape (rownr);
@@ -240,7 +237,7 @@ IPosition RetypedArrayEngine<S,T>::shape (uInt rownr)
 
 template<class S, class T>
 IPosition RetypedArrayEngine<S,T>::getStoredShape
-(uInt rownr, const IPosition& virtualShape)
+(rownr_t rownr, const IPosition& virtualShape)
 {
     //# Determine the element shape.
     //# If the stored is defined, take it from there.
@@ -279,11 +276,11 @@ IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
 	throw (DataManInvOper ("RetypedArrayEngine: stored/virtual"
 			       " dimensionalities are not appropriate"));
     }
-    uInt i;
     //# Determine and check the shape of the virtual elements in the target
     //# which are formed by the first axes in the stored.
     //# Their shape cannot be greater than the real virtual element shape.
     IPosition elemShape (shape_p.nelements());
+    uInt i;   //used later
     for (i=0; i<shape_p.nelements(); i++) {
 	if (tShape(i) > shape_p(i)) {
 	    throw (DataManInvOper
