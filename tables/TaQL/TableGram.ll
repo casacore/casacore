@@ -1,5 +1,5 @@
 /*
-    TableGram.l: Lexical analyzer for table commands
+    TableGram.ll: Lexical analyzer for table commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC,a USA.
 
@@ -42,11 +42,19 @@
 /* States to distinguish how some tokens are recognized */
 %s STYLEstate
 %s EXPRstate
-%s GIVINGstate
-%s FROMstate
-%s CRETABstate
+%s TABLENAMEstate
 /* Exclusive state meaning that tokens are only recognized in that state */
 %x SHOWstate
+
+/* Define functions to set the EXPRstate or TABLENAMEstate.
+   Unfortunately the symbolic state names above cannot be used because
+   Flex defines them just before %% below. So ensure that the values
+   below are indeed the 2nd and 3rd state above (INITIALstate=0).
+*/
+%{
+  void setEXPRstate()      { BEGIN(2); }
+  void setTABLENAMEstate() { BEGIN(3); }
+%}
 
 /* Define all tokens recognized by flex.
    Imaginary part of a Complex value can be given as:   FLOATi
@@ -222,20 +230,16 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
                           ORDER BY column-list GIVING table
     The WHERE, ORDER BY, and GIVING parts are optional.
     Elements in a list are separated by commas.
-    A table-name can be only a table file name or a table file name
+    A table name can be only a table file name or a table file name
     followed by whitespace and an alphanumeric name. That 2nd name
-    serves as a shorthand for possible later use in the field name.
-    A table name can be given in the FROM part and in the giving PART.
-    These are indicated by the FROM/GIVING/CRETABstate, because a table name
-    can contain special characters like -.
-    A table name can also be $nnn indicating a temporary table. It can optionally
+    serves as a shorthand for possible later use in the command.
+    A table name can be given in a few parts of the command.
+    These are indicated by the TABLENAMEstate, because a table name
+    can contain special characters such as ~.
+    In TableGram.yy care is taken that the state is switched forth and back to
+    between TABLENAMEstate and EXPRstate.
+    A table name can be $nnn indicating a temporary table. It can optionally
     be followed by :: and the name of a subtable of that temporary table.
-    In a subquery care must be taken that the state is switched back to
-    EXPRstate, because a FROM can be the last part in a subquery and
-    because a set can be specified in the GIVING part.
-    This is done by setting the state when parentheses or square brackets
-    are found. ( and [ indicate the beginning of a set(subquery).
-    ) and ] indicate the end of subquery.
 
     The order in the following list is important, since, for example,
     the word "giving" must be recognized as GIVING and not as NAME.
@@ -284,7 +288,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 {UPDATE}  {
             tableGramPosition() += yyleng;
-	    BEGIN(FROMstate);
+	    BEGIN(TABLENAMEstate);
 	    return UPDATE;
 	  }
 {SET}  {
@@ -294,7 +298,6 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 {INSERT}  {
             tableGramPosition() += yyleng;
-	    BEGIN(FROMstate);
 	    return INSERT;
 	  }
 {VALUES}  {
@@ -323,12 +326,12 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 {CREATETAB} {
             tableGramPosition() += yyleng;
-	    BEGIN(CRETABstate);
+	    BEGIN(TABLENAMEstate);
 	    return CREATETAB;
 	  }
 {ALTERTAB} {
             tableGramPosition() += yyleng;
-	    BEGIN(CRETABstate);
+	    BEGIN(TABLENAMEstate);
 	    return ALTERTAB;
 	  }
 {ADDCOL}  {
@@ -367,8 +370,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return DROPKEY;
           } 
 {ADDROW}  {
-	    BEGIN(EXPRstate);
             tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
 	    return ADDROW;
           } 
 {DMINFO}  {
@@ -378,18 +381,17 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 {WITH}    {
             tableGramPosition() += yyleng;
-            BEGIN(FROMstate);
+            BEGIN(TABLENAMEstate);
 	    return WITH;
 	  }
 {FROM}    {
             tableGramPosition() += yyleng;
-	    BEGIN(FROMstate);
+	    BEGIN(TABLENAMEstate);
 	    return FROM;
 	  }
 {WHERE}   {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
-            theFromQueryDone = False;
 	    return WHERE;
 	  }
 {ORDERBY} {
@@ -411,15 +413,17 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 {GIVING}  {
             tableGramPosition() += yyleng;
-	    BEGIN(GIVINGstate);
+	    BEGIN(TABLENAMEstate);
 	    return GIVING;
           }
 {INTO}    {
             tableGramPosition() += yyleng;
+	    BEGIN(TABLENAMEstate);
 	    return INTO;
           }
 {SUBTABLES}    {
             tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
 	    return SUBTABLES;
           }
 {LIMIT}   {
@@ -474,22 +478,18 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 "["       {
             tableGramPosition() += yyleng;
-            BEGIN(EXPRstate);
             return LBRACKET;
           }
 "("       {
             tableGramPosition() += yyleng;
-            BEGIN(EXPRstate);
             return LPAREN;
           }
 "]"       {
             tableGramPosition() += yyleng;
-            BEGIN(EXPRstate);
             return RBRACKET;
           }
 ")"       {
             tableGramPosition() += yyleng;
-            BEGIN(EXPRstate);
             return RPAREN;
           }
 ";"       {
@@ -561,10 +561,6 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 "}"       { tableGramPosition() += yyleng; return RBRACE; }
 ","       {
             tableGramPosition() += yyleng;
-            if (theFromQueryDone) {
-              BEGIN(FROMstate);
-              theFromQueryDone=False;
-            }
             return COMMA;
           }
 
@@ -656,11 +652,11 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return LITERAL;
 	  }
 
- /* In the Exprstate the word TIME is a normal column or function name.
+ /* In most states the word TIME is a normal column or function name.
     Otherwise it is the TIME keyword (to show timings).
     The same for SHOW.
  */
-<EXPRstate,FROMstate,CRETABstate,GIVINGstate>{TIMEWORD} { 
+<EXPRstate,TABLENAMEstate>{TIMEWORD} { 
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
@@ -671,7 +667,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
 	    return TIMING;
 	  }
-<EXPRstate,FROMstate,CRETABstate,GIVINGstate>{SHOW} { 
+<EXPRstate,TABLENAMEstate>{SHOW} { 
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
@@ -740,7 +736,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 
  /* A table file name can be given in the UPDATE, FROM, GIVING, CRETAB clause */
-<FROMstate,CRETABstate,GIVINGstate,SHOWstate>{NAMETAB} {
+<TABLENAMEstate,SHOWstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));

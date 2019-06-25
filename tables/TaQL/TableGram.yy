@@ -142,7 +142,7 @@ Expect them, so bison does not generate an error message.
 %type <node> normcol
 %type <nodelist> withpart
 %type <nodelist> tables
-%type <nodelist> tabconc
+%type <nodelist> tablist
 %type <nodelist> concsub
 %type <nodelist> concslist
 %type <nodename> concinto
@@ -247,10 +247,11 @@ TaQLRecFldNodeRep* noderecfldrep;
 }
 
 %{
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-Bool theFromQueryDone;           /* for flex to know how to handle a , */
-} //# NAMESPACE CASACORE - END
 int TableGramlex (YYSTYPE*);
+/* Define the functions in TableGram.ll
+   to set EXPRstate or TABLENAMEstate from bison */
+void setEXPRstate();
+void setTABLENAMEstate();
 %}
 
 
@@ -389,10 +390,8 @@ withpart:  {   /* no WITH part */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | WITH tables
-           {
-             $$ = $2;
-             theFromQueryDone = False;
+         | WITH tables {
+               $$ = $2;
            }
          ;
 
@@ -1025,6 +1024,9 @@ tabnmopts: NAME {  /* PLAIN_BIG, etc. for backward compatibility */
          ;
 
 /* The optional GIVING clause can result in a table or a set */
+givenlb:   LBRACKET {
+               setEXPRstate();
+           }
 given:     {   /* no result */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1032,7 +1034,7 @@ given:     {   /* no result */
          | GIVING tabnmtyp {
                $$ = $2;
 	   }
-         | GIVING LBRACKET elems RBRACKET {
+         | GIVING givenlb elems RBRACKET {
 	       $$ = new TaQLNode(
                     new TaQLGivingNodeRep (*$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1229,14 +1231,23 @@ colspec:   NAME NAME {
          ;
 
 /* A list of tables with optional aliases. */
-tables:    tabalias {
+tables:    tablist {
+               $$ = $1;
+               /* All table names processed, thus expressions hereafter */
+               setEXPRstate();
+           }
+tablist:   tabalias {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
                $$->add (*$1);
+               /* Another table name can be expected */
+               setTABLENAMEstate();
 	   }
-         | tables COMMA tabalias {
+         | tablist COMMA tabalias {
 	       $$ = $1;
                $$->add (*$3);
+               /* Another table name can be expected */
+               setTABLENAMEstate();
 	   }
          ;
 
@@ -1294,14 +1305,13 @@ tfnamen:   tfname {
    concatenate and the GIVING/INTO to make the concat table persistent.
 */
 tfname:    tfcommand {
-	       theFromQueryDone = True;
 	       $1->setFromExecute();
                $$ = $1;
            }
          | stabname {
 	       $$ = $1;
            }
-         | LBRACKET tabconc concsub concinto RBRACKET {
+         | LBRACKET tables concsub concinto RBRACKET {
 	       $$ = new TaQLNode(
                     new TaQLConcTabNodeRep($4->getString(), *$2, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1333,16 +1343,19 @@ concslist: NAME {
          ;
 
 /* Concat table persistency using GIVING or INTO is optional */
+concgiven: GIVING {
+               setTABLENAMEstate();
+           }
+         | INTO tabname {
+               setTABLENAMEstate();
+           }
 concinto:  {   /* no GIVING */
                $$ = new TaQLConstNode(new TaQLConstNodeRep(String()));
                TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | GIVING tabname {
+         | concgiven tabname {
                $$ = $2;
            }
-         | INTO tabname {
-               $$ = $2;
-          }
          ;
 
 /* A table name can contain various characters, possibly using a quoted literal */
@@ -1369,18 +1382,6 @@ tabname:   NAME {
                $$ = $1;
            }
          ;
-
-/* A list of table names and possible aliases for concatenation */
-tabconc:   tabalias {
-               $$ = new TaQLMultiNode(False);
-	       TaQLNode::theirNodesCreated.push_back ($$);
-               $$->add (*$1);
-	   }
-         | tabconc COMMA tabalias {
-	       $$ = $1;
-               $$->add (*$3);
-           }
-	 ;
 
 /* WHERE is optional */
 whexpr:    {   /* no selection */

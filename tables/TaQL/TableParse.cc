@@ -3514,7 +3514,7 @@ DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
   }
   if (dtype == TpOther) {
     throw TableInvExpr ("Datatype " + dtstr + " of column " + colName +
-                        " is invalid");
+                        " is invalid (maybe a set with incompatible units)");
   }
   return dtype;
 }
