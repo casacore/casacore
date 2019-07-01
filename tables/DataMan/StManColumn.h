@@ -32,6 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/StManColumnBase.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -85,6 +86,40 @@ public:
     {}
 
     virtual ~StManColumn();
+
+    // Set the shape of an (variable-shaped) array in the given row.
+    // By default it throws a "not possible" exception.
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
+    virtual void setShape (uInt rownr, const IPosition& shape);
+
+    // Set the shape and tile shape of an (variable-shaped) array
+    // in the given row.
+    // By default it ignores the tile shape (thus only sets the shape).
+    virtual void setShapeTiled (rownr_t rownr, const IPosition& shape,
+				const IPosition& tileShape);
+    virtual void setShapeTiled (uInt rownr, const IPosition& shape,
+				const IPosition& tileShape);
+
+    // Is the value shape defined in the given row?
+    // By default it returns True.
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual Bool isShapeDefined (uInt rownr);
+
+    // Get the dimensionality of the item in the given row.
+    // By default it returns shape(rownr).nelements().
+    virtual uInt ndim (rownr_t rownr);
+    virtual uInt ndim (uInt rownr);
+
+    // Get the shape of the item in the given row.
+    // By default it returns a zero-length IPosition (for a scalar value).
+    virtual IPosition shape (rownr_t rownr);
+    virtual IPosition shape (uInt rownr);
+
+    // Get the tile shape of the item in the given row.
+    // By default it returns a zero-length IPosition.
+    virtual IPosition tileShape (rownr_t rownr);
+    virtual IPosition tileShape (uInt rownr);
+
 
     // Get the scalar value in the given row.
     // <group>

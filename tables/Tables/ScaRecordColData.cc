@@ -63,16 +63,16 @@ void ScalarRecordColumnData::createDataManagerColumn()
 }
 
 
-void ScalarRecordColumnData::initialize (uInt, uInt)
+void ScalarRecordColumnData::initialize (rownr_t, rownr_t)
 {}	
 
-Bool ScalarRecordColumnData::isDefined (uInt) const
+Bool ScalarRecordColumnData::isDefined (rownr_t) const
 {
     return True;
 }
 
 
-void ScalarRecordColumnData::get (uInt rownr, void* val) const
+void ScalarRecordColumnData::get (rownr_t rownr, void* val) const
 {
     checkReadLock (True);
     getRecord (rownr, *(TableRecord*)val);
@@ -82,13 +82,13 @@ void ScalarRecordColumnData::get (uInt rownr, void* val) const
 void ScalarRecordColumnData::getScalarColumn (ArrayBase& val) const
 {
     Vector<TableRecord>& vec = static_cast<Vector<TableRecord>&>(val);
-    uInt nr = nrow();
+    rownr_t nr = nrow();
     if (vec.nelements() != nr) {
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::getScalarColumn"));
     }
     checkReadLock (True);
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	getRecord (i, vec(i));
     }
     autoReleaseLock();
@@ -104,11 +104,11 @@ void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
     }
     checkReadLock (True);
     RefRowsSliceIter iter(rownrs);
-    uInt i=0;
+    rownr_t i=0;
     while (! iter.pastEnd()) {
-	uInt rownr = iter.sliceStart();
-	uInt end = iter.sliceEnd();
-	uInt incr = iter.sliceIncr();
+	rownr_t rownr = iter.sliceStart();
+	rownr_t end = iter.sliceEnd();
+	rownr_t incr = iter.sliceIncr();
 	while (rownr <= end) {
 	    getRecord (rownr, vec(i++));
 	    rownr += incr;
@@ -119,7 +119,7 @@ void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
 }
 
 
-void ScalarRecordColumnData::put (uInt rownr, const void* val)
+void ScalarRecordColumnData::put (rownr_t rownr, const void* val)
 {
     checkWriteLock (True);
     putRecord (rownr, *(const TableRecord*)val);
@@ -129,13 +129,13 @@ void ScalarRecordColumnData::put (uInt rownr, const void* val)
 void ScalarRecordColumnData::putScalarColumn (const ArrayBase& val)
 {
     const Vector<TableRecord>& vec = static_cast<const Vector<TableRecord>&>(val);
-    uInt nr = nrow();
+    rownr_t nr = nrow();
     if (vec.nelements() != nr) {
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::putScalarColumn"));
     }
     checkWriteLock (True);
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	putRecord (i, vec(i));
     }
     autoReleaseLock();
@@ -151,11 +151,11 @@ void ScalarRecordColumnData::putScalarColumnCells (const RefRows& rownrs,
     }
     checkWriteLock (True);
     RefRowsSliceIter iter(rownrs);
-    uInt i=0;
+    rownr_t i=0;
     while (! iter.pastEnd()) {
-	uInt rownr = iter.sliceStart();
-	uInt end = iter.sliceEnd();
-	uInt incr = iter.sliceIncr();
+	rownr_t rownr = iter.sliceStart();
+	rownr_t end = iter.sliceEnd();
+	rownr_t incr = iter.sliceIncr();
 	while (rownr <= end) {
 	    putRecord (rownr, vec(i++));
 	    rownr += incr;
@@ -166,7 +166,7 @@ void ScalarRecordColumnData::putScalarColumnCells (const RefRows& rownrs,
 }
 
 
-void ScalarRecordColumnData::getRecord (uInt rownr, TableRecord& rec) const
+void ScalarRecordColumnData::getRecord (rownr_t rownr, TableRecord& rec) const
 {
     if (! dataColPtr_p->isShapeDefined (rownr)) {
 	rec = TableRecord();
@@ -184,7 +184,7 @@ void ScalarRecordColumnData::getRecord (uInt rownr, TableRecord& rec) const
     }
 }
 
-void ScalarRecordColumnData::putRecord (uInt rownr, const TableRecord& rec)
+void ScalarRecordColumnData::putRecord (rownr_t rownr, const TableRecord& rec)
 {
     MemoryIO memio;
     AipsIO aio(&memio);

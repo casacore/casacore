@@ -113,16 +113,16 @@ public:
     // </group>
 
     // Get nr of rows in the column.
-    virtual uInt nrow() const;
+    virtual rownr_t nrow() const;
 
     // Test if a value in a particular cell has been defined.
-    virtual Bool isDefined (uInt rownr) const;
+    virtual Bool isDefined (rownr_t rownr) const;
 
     // Set the shape of the array in the given row.
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Set the shape and tile shape of the array in the given row.
-    virtual void setShape (uInt rownr, const IPosition& shape,
+    virtual void setShape (rownr_t rownr, const IPosition& shape,
 			   const IPosition& tileShape);
 
     // Get the global #dimensions of an array (i.e. for all rows).
@@ -132,27 +132,27 @@ public:
     virtual IPosition shapeColumn() const;
 
     // Get the #dimensions of an array in a particular cell.
-    virtual uInt ndim (uInt rownr) const;
+    virtual uInt ndim (rownr_t rownr) const;
 
     // Get the shape of an array in a particular cell.
-    virtual IPosition shape (uInt rownr) const;
+    virtual IPosition shape (rownr_t rownr) const;
 
     // It can change shape if the underlying column can.
     virtual Bool canChangeShape() const;
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
-    void initialize (uInt startRownr, uInt endRownr);
+    void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Get the value from a particular cell.
     // This can be a scalar or an array.
-    virtual void get (uInt rownr, void* dataPtr) const;
+    virtual void get (rownr_t rownr, void* dataPtr) const;
 
     // Get an array from a particular cell.
-    virtual void getArray (uInt rownr, ArrayBase& dataPtr) const;
+    virtual void getArray (rownr_t rownr, ArrayBase& dataPtr) const;
 
     // Get a slice of an N-dimensional array in a particular cell.
-    virtual void getSlice (uInt rownr, const Slicer&, ArrayBase& dataPtr) const;
+    virtual void getSlice (rownr_t rownr, const Slicer&, ArrayBase& dataPtr) const;
 
     // Get the vector of all scalar values in a column.
     virtual void getScalarColumn (ArrayBase& dataPtr) const;
@@ -185,13 +185,13 @@ public:
 
     // Put the value in a particular cell.
     // This can be a scalar or an array.
-    virtual void put (uInt rownr, const void* dataPtr);
+    virtual void put (rownr_t rownr, const void* dataPtr);
 
     // Put the array value in a particular cell.
-    virtual void putArray (uInt rownr, const ArrayBase& dataPtr);
+    virtual void putArray (rownr_t rownr, const ArrayBase& dataPtr);
 
     // Put a slice of an N-dimensional array in a particular cell.
-    virtual void putSlice (uInt rownr, const Slicer&, const ArrayBase& dataPtr);
+    virtual void putSlice (rownr_t rownr, const Slicer&, const ArrayBase& dataPtr);
 
     // Put the vector of all scalar values in the column.
     virtual void putScalarColumn (const ArrayBase& dataPtr);

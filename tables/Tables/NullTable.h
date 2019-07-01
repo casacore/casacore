@@ -105,9 +105,9 @@ public:
   virtual BaseColumn* getColumn (uInt columnIndex) const;
   virtual BaseColumn* getColumn (const String& columnName) const;
   virtual Bool canAddRow() const;
-  virtual void addRow (uInt nrrow, Bool initialize);
+  virtual void addRow (rownr_t nrrow, Bool initialize);
   virtual Bool canRemoveRow() const;
-  virtual void removeRow (uInt rownr);
+  virtual void removeRow (rownr_t rownr);
   virtual DataManager* findDataManager (const String& name,
                                         Bool byColumn) const;
   virtual void addColumn (const ColumnDesc& columnDesc, Bool addToParent);
@@ -128,7 +128,7 @@ public:
   virtual BaseTable* root();
   virtual Bool rowOrder() const;
   virtual Vector<uInt>* rowStorage();
-  virtual Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
+  virtual Bool adjustRownrs (rownr_t nrrow, Vector<uInt>& rownrs,
 			     Bool determineOrder) const;
   virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
 			     const Block<CountedPtr<BaseCompare> >&,

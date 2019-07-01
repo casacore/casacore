@@ -90,19 +90,19 @@ public:
     // It creates storage manager(s) for unbound columns and initializes
     // all storage managers. The given number of rows is stored in
     // the table and initialized if the flag is set.
-    PlainTable (SetupNewTable&, uInt nrrow, Bool initialize,
+    PlainTable (SetupNewTable&, rownr_t nrrow, Bool initialize,
             const TableLock& lockOptions, int endianFormat,
             const TSMOption& tsmOption);
 
 #ifdef HAVE_MPI
     // MPI version of the constructor
-    PlainTable (MPI_Comm mpiComm, SetupNewTable&, uInt nrrow,
+    PlainTable (MPI_Comm mpiComm, SetupNewTable&, rownr_t nrrow,
             Bool initialize, const TableLock& lockOptions,
             int endianFormat, const TSMOption& tsmOption);
 #endif
 
     // Common part of the constructor shared by MPI and non-MPI
-    void PlainTableCommon (SetupNewTable&, uInt nrrow, Bool initialize,
+    void PlainTableCommon (SetupNewTable&, rownr_t nrrow, Bool initialize,
             const TableLock& lockOptions, int endianFormat,
             const TSMOption& tsmOption);
 
@@ -110,7 +110,7 @@ public:
     // It opens the table file, reads the table control information
     // and creates and initializes the required storage managers.
     PlainTable (AipsIO&, uInt version, const String& name, const String& type,
-		uInt nrrow, int option, const TableLock& lockOptions,
+		rownr_t nrrow, int option, const TableLock& lockOptions,
 		const TSMOption& tsmOption, Bool addToCache, uInt locknr);
 
     // The destructor flushes (i.e. writes) the table if it is opened
@@ -213,14 +213,14 @@ public:
 
     // Add one or more rows and possibly initialize them.
     // This will fail for tables not supporting addition of rows.
-    virtual void addRow (uInt nrrow, Bool initialize);
+    virtual void addRow (rownr_t nrrow, Bool initialize);
 
     // Test if it is possible to remove a row from this table.
     virtual Bool canRemoveRow() const;
 
     // Remove the given row.
     // This will fail for tables not supporting removal of rows.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Add a column to the table.
     // The last Bool argument is not used in PlainTable, but can be used in

@@ -127,7 +127,7 @@ class TableColumn;
 // // NAME is a unique key, so only one row number matches.
 // // Otherwise function getRowNumbers had to be used.
 // *nameFld = "MYNAME";
-// uInt rownr = colInx.getRowNumber (found);
+// rownr_t rownr = colInx.getRowNumber (found);
 // if (!found) {
 //     cout << "Name MYNAME is unknown" << endl;
 // }
@@ -203,8 +203,8 @@ public:
   // functions. Note that the given Record will be copied to the internal
   // record, thus overwrites it.
   // <group>
-  uInt getRowNumber (Bool& found);
-  uInt getRowNumber (Bool& found, const Record& key);
+  rownr_t getRowNumber (Bool& found);
+  rownr_t getRowNumber (Bool& found, const Record& key);
   // </group>
 
   // Find the row numbers matching the key. It should be used instead
@@ -269,7 +269,7 @@ protected:
   // in <src>itsUniqueIndexArray</src> is returned.
   // If not found, <src>found</src> is set to False and the index
   // of the next higher key is returned.
-  uInt bsearch (Bool& found, void* fieldPtr) const;
+  rownr_t bsearch (Bool& found, void* fieldPtr) const;
 
   // Compare the key in <src>fieldPtr</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
@@ -281,7 +281,7 @@ protected:
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
   // If <src>unique</src> is True, the row numbers will be made unique.
-  void fillRowNumbers (Vector<uInt>& rows, uInt start, uInt end,
+  void fillRowNumbers (Vector<uInt>& rows, rownr_t start, rownr_t end,
 		       Bool unique) const;
 
   // Get the data if the column is an array.
@@ -295,11 +295,11 @@ protected:
   // </group>
 
   // Fill the rownrs belonging to each array value.
-  void fillRownrs (uInt npts, const Block<uInt>& nrel);
+  void fillRownrs (rownr_t npts, const Block<uInt>& nrel);
 
 private:
-  Table  itsTable;
-  uInt   itsNrrow;
+  Table   itsTable;
+  rownr_t itsNrrow;
   Record* itsLowerKeyPtr;
   Record* itsUpperKeyPtr;
   Int     itsDataType;

@@ -57,6 +57,7 @@ Bool StManColumnBase::isNativeDataType (int dtype)
     case TpUShort:
     case TpInt:
     case TpUInt:
+    case TpInt64:
     case TpFloat:
     case TpDouble:
     case TpComplex:
@@ -68,6 +69,7 @@ Bool StManColumnBase::isNativeDataType (int dtype)
     case TpArrayUShort:
     case TpArrayInt:
     case TpArrayUInt:
+    case TpArrayInt64:
     case TpArrayFloat:
     case TpArrayDouble:
     case TpArrayComplex:

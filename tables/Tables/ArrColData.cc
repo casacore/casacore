@@ -94,7 +94,7 @@ void ArrayColumnData::createDataManagerColumn()
 
 //# Initialize the array in the given rows.
 //# This removes an array if present.
-void ArrayColumnData::initialize (uInt, uInt)
+void ArrayColumnData::initialize (rownr_t, rownr_t)
 {}
 
 uInt ArrayColumnData::ndimColumn() const
@@ -125,32 +125,32 @@ void ArrayColumnData::setShapeColumn (const IPosition& shp)
     shapeColDef_p = True;
 }
 
-Bool ArrayColumnData::isDefined (uInt rownr) const
+Bool ArrayColumnData::isDefined (rownr_t rownr) const
 {
     return dataColPtr_p->isShapeDefined(rownr);
 }
-uInt ArrayColumnData::ndim (uInt rownr) const
+uInt ArrayColumnData::ndim (rownr_t rownr) const
 {
     return dataColPtr_p->ndim(rownr);
 }
-IPosition ArrayColumnData::shape (uInt rownr) const
+IPosition ArrayColumnData::shape (rownr_t rownr) const
 {
     return dataColPtr_p->shape(rownr);
 }
-IPosition ArrayColumnData::tileShape (uInt rownr) const
+IPosition ArrayColumnData::tileShape (rownr_t rownr) const
 {
     return dataColPtr_p->tileShape(rownr);
 }
 
 
-void ArrayColumnData::setShape (uInt rownr, const IPosition& shp)
+void ArrayColumnData::setShape (rownr_t rownr, const IPosition& shp)
 {
     checkShape (shp);
     checkWriteLock (True);
     dataColPtr_p->setShape (rownr, shp);
     autoReleaseLock();
 }
-void ArrayColumnData::setShape (uInt rownr, const IPosition& shp,
+void ArrayColumnData::setShape (rownr_t rownr, const IPosition& shp,
                                 const IPosition& tileShp)
 {
     checkShape (shp);
@@ -165,7 +165,7 @@ Bool ArrayColumnData::canChangeShape() const
 }
 
 
-void ArrayColumnData::getArray (uInt rownr, ArrayBase& array) const
+void ArrayColumnData::getArray (rownr_t rownr, ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr,
@@ -176,7 +176,7 @@ void ArrayColumnData::getArray (uInt rownr, ArrayBase& array) const
     autoReleaseLock();
 }
 
-void ArrayColumnData::getSlice (uInt rownr, const Slicer& ns,
+void ArrayColumnData::getSlice (rownr_t rownr, const Slicer& ns,
                                 ArrayBase& array) const
 {
     if (rtraceColumn_p) {
@@ -190,7 +190,7 @@ void ArrayColumnData::getSlice (uInt rownr, const Slicer& ns,
 }
 
 
-void ArrayColumnData::putArray (uInt rownr, const ArrayBase& array)
+void ArrayColumnData::putArray (rownr_t rownr, const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr,
@@ -204,7 +204,7 @@ void ArrayColumnData::putArray (uInt rownr, const ArrayBase& array)
     autoReleaseLock();
 }
 
-void ArrayColumnData::putSlice (uInt rownr, const Slicer& ns,
+void ArrayColumnData::putSlice (rownr_t rownr, const Slicer& ns,
                                 const ArrayBase& array)
 {
     if (wtraceColumn_p) {

@@ -54,14 +54,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class GetCellSlices : public BaseSlicesFunctor
   {
   public:
-    GetCellSlices (const ArrayColumnBase& col, uInt rownr)
+    GetCellSlices (const ArrayColumnBase& col, rownr_t rownr)
       : itsCol(col), itsRow(rownr)
     {}
     virtual void apply (const Slicer& slicer, ArrayBase& arr)
       { itsCol.baseGetSlice (itsRow, slicer, arr); }
   private:
     const ArrayColumnBase& itsCol;
-    uInt                   itsRow;
+    rownr_t                itsRow;
   };
 
   // <summary> Functor to get irregular array slices from a column</summary>
@@ -81,14 +81,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class PutCellSlices : public BaseSlicesFunctor
   {
   public:
-    PutCellSlices (ArrayColumnBase& col, uInt rownr)
+    PutCellSlices (ArrayColumnBase& col, rownr_t rownr)
       : itsCol(col), itsRow(rownr)
     {}
     virtual void apply (const Slicer& slicer, ArrayBase& arr)
       { itsCol.basePutSlice (itsRow, slicer, arr); }
   private:
     ArrayColumnBase& itsCol;
-    uInt             itsRow;
+    rownr_t          itsRow;
   };
 
   // <summary> Functor to get irregular array slices from a column</summary>

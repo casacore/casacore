@@ -335,31 +335,30 @@ void StManAipsIO::resync (rownr_t nrrow)
     AipsIO ios(fileName());
     uInt version = ios.getstart ("StManAipsIO");
     //# Get and check the number of rows and columns and the column types.
-    uInt i, nrc, snr;
+    uInt i, nrr, nrc, snr;
     int  dt;
     if (version > 1) {
 	ios >> stmanName_p;
     }
     ios >> snr;
     ios >> uniqnr_p;
-    ios >> nrc;
-    nrrow_p = nrc;
+    ios >> nrr;
     ios >> nrc;
     if (snr != sequenceNr()  ||  nrc != ncolumn()) {
 	throw (DataManInternalError
 	                 ("StManAipsIO::open: mismatch in seqnr,#col"));
     }
-    if (nrrow != nrrow_p) {
+    if (nrrow != nrr) {
 #if defined(TABLEREPAIR)
         cerr << "StManAipsIO::open: mismatch in #row (expected " << nrrow
-	     << ", found " << nrrow_p << ")" << endl;
+	     << ", found " << nrr << ")" << endl;
 	cerr << "Remainder will be added or discarded" << endl;
 	setHasPut();
 #else
 	throw (DataManInternalError
 	                 ("StManAipsIO::open: mismatch in #row; expected " +
 			  String::toString(nrrow) + ", found " +
-			  String::toString(nrrow_p)));
+			  String::toString(nrr)));
 #endif
     }
     for (i=0; i<ncolumn(); i++) {
@@ -371,14 +370,14 @@ void StManAipsIO::resync (rownr_t nrrow)
     }
     //# Now read in all the columns.
     for (i=0; i<ncolumn(); i++) {
-	colSet_p[i]->getFile (nrrow_p, ios);
+	colSet_p[i]->getFile (nrr, ios);
 	//# The following can only be executed in case of TABLEREPAIR.
 	//# Add rows if storage manager has fewer rows than table.
 	//# Remove rows if storage manager has more rows than table.
-	if (nrrow > nrrow_p) {
-	    colSet_p[i]->addRow (nrrow, nrrow_p);
-	} else if (nrrow < nrrow_p) {
-	    for (uInt r=nrrow; r<nrrow_p; r++) {
+	if (nrrow > nrr) {
+	    colSet_p[i]->addRow (nrrow, nrr);
+	} else if (nrrow < nrr) {
+	    for (uInt r=nrrow; r<nrr; r++) {
 	        colSet_p[i]->remove (nrrow);
 	    }
 	}

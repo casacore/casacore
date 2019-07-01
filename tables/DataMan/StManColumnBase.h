@@ -131,14 +131,6 @@ private:
     // The object cannot be assigned to.
     StManColumnBase& operator= (const StManColumnBase&);
 
-    // Throw an "invalid operation" exception for the default
-    // implementation of getArray.
-    void throwGetArray() const;
-
-    // Throw an "invalid operation" exception for the default
-    // implementation of putArray.
-    void throwPutArray() const;
-
 private:
     // The data type of the column.
     DataType dtype_p;

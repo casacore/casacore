@@ -142,7 +142,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Create a concat table out of a file (written by writeConcatTable).
     // The referenced tables will also be opened (if not stored in the cache).
-    ConcatTable (AipsIO&, const String& name, uInt nrrow, int option,
+    ConcatTable (AipsIO&, const String& name, rownr_t nrrow, int option,
 		 const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // The destructor flushes (i.e. writes) the table if it is opened
@@ -257,7 +257,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual Bool canRemoveRow() const;
 
     // Remove the given row.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Test if columns can be removed (no).
     virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;

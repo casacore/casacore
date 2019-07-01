@@ -104,7 +104,7 @@ public:
     // </group>
 
     // Get nr of rows in the column.
-    uInt nrow() const;
+    rownr_t nrow() const;
 
     // Define the shape of all arrays in the column.
     virtual void setShapeColumn (const IPosition& shape);

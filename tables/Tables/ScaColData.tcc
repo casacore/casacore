@@ -75,17 +75,17 @@ void ScalarColumnData<T>::createDataManagerColumn()
 
 
 template<class T>
-void ScalarColumnData<T>::initialize (uInt startRow, uInt endRow)
+void ScalarColumnData<T>::initialize (rownr_t startRow, rownr_t endRow)
 {
     if (colDescPtr_p->dataType() != TpOther) {
-	for (uInt i=startRow; i<=endRow; i++) {
+	for (rownr_t i=startRow; i<=endRow; i++) {
 	    dataColPtr_p->put (i, &(scaDescPtr_p->defaultValue()));
 	}
     }
 }	
 
 template<class T>
-Bool ScalarColumnData<T>::isDefined (uInt rownr) const
+Bool ScalarColumnData<T>::isDefined (rownr_t rownr) const
 {
     if (!undefFlag_p) {
 	return True;
@@ -97,7 +97,7 @@ Bool ScalarColumnData<T>::isDefined (uInt rownr) const
 
 
 template<class T>
-void ScalarColumnData<T>::get (uInt rownr, void* val) const
+void ScalarColumnData<T>::get (rownr_t rownr, void* val) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr);
@@ -139,7 +139,7 @@ void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
 
 
 template<class T>
-void ScalarColumnData<T>::put (uInt rownr, const void* val)
+void ScalarColumnData<T>::put (rownr_t rownr, const void* val)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr);

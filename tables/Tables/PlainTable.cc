@@ -49,7 +49,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Initialize the static TableCache object.
 TableCache PlainTable::theirTableCache;
 
-PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
+PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
                         const TSMOption& tsmOption)
   : BaseTable (newtab.name(), newtab.option(), 0)
@@ -59,7 +59,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 }
 
 #ifdef HAVE_MPI
-PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow,
+PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow,
                         Bool initialize, const TableLock& lockOptions,
                         int endianFormat, const TSMOption& tsmOption)
     : BaseTable (mpiComm, newtab.name(), newtab.option(), 0)
@@ -69,7 +69,7 @@ PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow,
 }
 #endif
 
-void PlainTable::PlainTableCommon (SetupNewTable& newtab, uInt nrrow,
+void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
                                    Bool initialize, const TableLock& lockOptions,
                                    int endianFormat, const TSMOption& tsmOption)
 {
@@ -166,7 +166,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, uInt nrrow,
 }
 
 PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
-			const String& type, uInt nrrow, int opt,
+			const String& type, rownr_t nrrow, int opt,
 			const TableLock& lockOptions,
                         const TSMOption& tsmOption,
 			Bool addToCache, uInt locknr)
@@ -198,7 +198,9 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     uInt ncolumn;
     Bool tableChanged;
     Block<Bool> dmChanged;
-    lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
+    uInt nrr = nrrow;
+    lockSync_p.read (nrr, ncolumn, tableChanged, dmChanged);
+    nrrow_p = nrr;
     tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
 
     //# Reopen the file to be sure that the internal stdio buffer is not reused.
@@ -209,8 +211,13 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     AipsIO ios (Table::fileName(tabname), ByteIO::Old);
     String tp;
     version = ios.getstart ("Table");
+    if (version > 2) {
+      ios >> nrrow;
+    } else {
+      ios >> nrr;
+      nrrow = nrr;
+    }
     uInt format;
-    ios >> nrrow;
     ios >> format;
     bigEndian_p = (format==0);
     ios >> tp;
@@ -660,7 +667,7 @@ Bool PlainTable::canRenameColumn (const String& columnName) const
 
 
 //# Add rows.
-void PlainTable::addRow (uInt nrrw, Bool initialize)
+void PlainTable::addRow (rownr_t nrrw, Bool initialize)
 {
     if (nrrw > 0) {
         checkWritable("addRow");
@@ -678,7 +685,7 @@ void PlainTable::addRow (uInt nrrw, Bool initialize)
     }
 }
 
-void PlainTable::removeRow (uInt rownr)
+void PlainTable::removeRow (rownr_t rownr)
 {
     checkWritable("rowmoveRow");
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date

@@ -32,7 +32,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  void ConcatRows::add (uInt nrow)
+  void ConcatRows::add (rownr_t nrow)
   {
     if (Int64(nrow) + itsRows[itsNTable] >= Int64(65536)*65536) {
       throw TableError ("Concatenation of tables exceeds 2**32 rows");
@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsRows[itsNTable] = itsRows[itsNTable-1] + nrow;
   }
 
-  void ConcatRows::findRownr (uInt rownr) const
+  void ConcatRows::findRownr (rownr_t rownr) const
   {
     if (rownr >= itsRows[itsNTable]) {
       throw TableError ("ConcatTable: rownr " + String::toString(rownr) +
@@ -78,7 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Construct the iterator on a ConcatRows object for the given row range.
   ConcatRowsIter::ConcatRowsIter (const ConcatRows& rows,
-				  uInt start, uInt end, uInt incr)
+				  rownr_t start, rownr_t end, rownr_t incr)
     : itsRows  (&rows),
       itsChunk (3),
       itsStart (start),
@@ -104,7 +104,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       } else {
 	itsChunk[0] = 0;
 	if (itsIncr != 1) {
-	  uInt rem = ((*itsRows)[itsPos] - itsStart) % itsIncr;
+	  rownr_t rem = ((*itsRows)[itsPos] - itsStart) % itsIncr;
 	  if (rem != 0) {
 	    itsChunk[0] = itsIncr - rem;
 	  }

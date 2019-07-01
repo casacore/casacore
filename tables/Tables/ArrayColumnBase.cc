@@ -100,7 +100,7 @@ void ArrayColumnBase::adaptShape (const IPosition& shp,
   }
 }
 
-void ArrayColumnBase::acbGet (uInt rownr, ArrayBase& arr, Bool resize) const
+void ArrayColumnBase::acbGet (rownr_t rownr, ArrayBase& arr, Bool resize) const
 {
   TABLECOLUMNCHECKROW(rownr);
   // Check array conformance and resize if needed and possible.
@@ -108,7 +108,7 @@ void ArrayColumnBase::acbGet (uInt rownr, ArrayBase& arr, Bool resize) const
   baseColPtr_p->getArray (rownr, arr);
 }
 
-void ArrayColumnBase::acbGetSlice (uInt rownr, const Slicer& arraySection,
+void ArrayColumnBase::acbGetSlice (rownr_t rownr, const Slicer& arraySection,
                                    ArrayBase& arr, Bool resize) const
 {
   TABLECOLUMNCHECKROW(rownr);
@@ -130,7 +130,7 @@ void ArrayColumnBase::acbGetSlice (uInt rownr, const Slicer& arraySection,
   }
 }
 
-void ArrayColumnBase::acbGetSlice (uInt rownr,
+void ArrayColumnBase::acbGetSlice (rownr_t rownr,
                                    const Vector<Vector<Slice> >& arraySlices,
                                    ArrayBase& arr, Bool resize) const
 {
@@ -150,7 +150,7 @@ void ArrayColumnBase::acbGetSlice (uInt rownr,
 
 void ArrayColumnBase::acbGetColumn (ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   //# Take shape of array in first row.
   IPosition shp;
   if (nrrow > 0) {
@@ -169,7 +169,7 @@ void ArrayColumnBase::acbGetColumn (ArrayBase& arr, Bool resize) const
 void ArrayColumnBase::acbGetColumn (const Slicer& arraySection,
                                     ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   //# Use shape of array in first row.
   IPosition shp, blc,trc,inc;
   if (nrrow > 0) {
@@ -190,7 +190,7 @@ void ArrayColumnBase::acbGetColumn (const Slicer& arraySection,
 void ArrayColumnBase::acbGetColumn (const Vector<Vector<Slice> >& arraySlices,
                                     ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   // Get total shape.
   // Use shape of first row (if there) as overall array shape.
   IPosition colShp;
@@ -212,7 +212,7 @@ void ArrayColumnBase::acbGetColumn (const Vector<Vector<Slice> >& arraySlices,
 void ArrayColumnBase::acbGetColumnRange (const Slicer& rowRange,
                                          ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
   //# If the entire column is accessed, use that function.
@@ -226,7 +226,7 @@ void ArrayColumnBase::acbGetColumnRange (const Slicer& rowRange,
 void ArrayColumnBase::acbGetColumnCells (const RefRows& rownrs,
                                          ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = rownrs.nrow();
+  rownr_t nrrow = rownrs.nrow();
   //# Take shape of array in first row.
   IPosition arrshp;
   if (nrrow > 0) {
@@ -243,7 +243,7 @@ void ArrayColumnBase::acbGetColumnRange (const Slicer& rowRange,
                                          const Slicer& arraySection,
                                          ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
   //# If the entire column is accessed, use that function.
@@ -259,7 +259,7 @@ void ArrayColumnBase::acbGetColumnCells (const RefRows& rownrs,
                                          const Slicer& arraySection,
                                          ArrayBase& arr, Bool resize) const
 {
-  uInt nrrow = rownrs.nrow();
+  rownr_t nrrow = rownrs.nrow();
   IPosition arrshp, arrblc, arrtrc, arrinc;
   if (nrrow > 0) {
     arrshp = arraySection.inferShapeFromSource (shape(rownrs.firstRow()),
@@ -277,7 +277,7 @@ void ArrayColumnBase::acbGetColumnCells (const RefRows& rownrs,
 }
 
 
-void ArrayColumnBase::setShape (uInt rownr, const IPosition& shape)
+void ArrayColumnBase::setShape (rownr_t rownr, const IPosition& shape)
 {
   checkWritable();
   TABLECOLUMNCHECKROW(rownr); 
@@ -295,7 +295,7 @@ void ArrayColumnBase::setShape (uInt rownr, const IPosition& shape)
   }
 }
 
-void ArrayColumnBase::setShape (uInt rownr, const IPosition& shape,
+void ArrayColumnBase::setShape (rownr_t rownr, const IPosition& shape,
                                 const IPosition& tileShape)
 {
   checkWritable();
@@ -315,7 +315,7 @@ void ArrayColumnBase::setShape (uInt rownr, const IPosition& shape,
 }
 	
 
-void ArrayColumnBase::acbPut (uInt rownr, const ArrayBase& arr)
+void ArrayColumnBase::acbPut (rownr_t rownr, const ArrayBase& arr)
 {
   checkWritable();
   TABLECOLUMNCHECKROW(rownr); 
@@ -332,7 +332,7 @@ void ArrayColumnBase::acbPut (uInt rownr, const ArrayBase& arr)
   baseColPtr_p->putArray (rownr, arr);
 }
 
-void ArrayColumnBase::acbPutSlice (uInt rownr, const Slicer& arraySection,
+void ArrayColumnBase::acbPutSlice (rownr_t rownr, const Slicer& arraySection,
                                    const ArrayBase& arr)
 {
   checkWritable();
@@ -347,7 +347,7 @@ void ArrayColumnBase::acbPutSlice (uInt rownr, const Slicer& arraySection,
   baseColPtr_p->putSlice (rownr, arraySection, arr);
 }
 
-void ArrayColumnBase::acbPutSlice (uInt rownr,
+void ArrayColumnBase::acbPutSlice (rownr_t rownr,
                                    const Vector<Vector<Slice> >& arraySlices,
                                    const ArrayBase& arr)
 {
@@ -369,7 +369,7 @@ void ArrayColumnBase::acbPutColumn (const ArrayBase& arr)
 {
   checkWritable();
   //# First check if number of rows matches.
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   IPosition shp  = arr.shape();
   uInt last = shp.nelements() - 1;
   if (shp[last] != Int(nrrow)) {
@@ -388,7 +388,7 @@ void ArrayColumnBase::acbPutColumn (const ArrayBase& arr)
                 "ArrayColumn::putColumn");
   } else {
     //# Otherwise set the shape of each cell (as far as needed).
-    for (uInt i=0; i<nrrow; i++) {
+    for (rownr_t i=0; i<nrrow; i++) {
       setShape (i, shp);
     }
   }
@@ -400,7 +400,7 @@ void ArrayColumnBase::acbPutColumn (const Slicer& arraySection,
                                     const ArrayBase& arr)
 {
   checkWritable();
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   //# First check if number of rows matches.
   IPosition arrshp = arr.shape();
   uInt last = arrshp.nelements() - 1;
@@ -430,7 +430,7 @@ void ArrayColumnBase::acbPutColumn (const Vector<Vector<Slice> >& arraySlices,
                                     const ArrayBase& arr)
 {
   checkWritable();
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   // Get total shape.
   // Use shape of first row (if there) as overall array shape.
   IPosition colShp;
@@ -456,7 +456,7 @@ void ArrayColumnBase::acbPutColumn (const Vector<Vector<Slice> >& arraySlices,
 void ArrayColumnBase::acbPutColumnRange (const Slicer& rowRange,
                                          const ArrayBase& arr)
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
   //# If the entire column is accessed, use that function.
@@ -472,7 +472,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rownrs,
 {
   checkWritable();
   //# First check if number of rows matches.
-  uInt nrrow = rownrs.nrow();
+  rownr_t nrrow = rownrs.nrow();
   IPosition arrshp  = arr.shape();
   uInt last = arrshp.nelements() - 1;
   if (arrshp(last) != Int(nrrow)) {
@@ -494,9 +494,9 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rownrs,
     //# Otherwise set the shape of each cell (as far as needed).
     RefRowsSliceIter iter(rownrs);
     while (! iter.pastEnd()) {
-      uInt rownr = iter.sliceStart();
-      uInt end = iter.sliceEnd();
-      uInt incr = iter.sliceIncr();
+      rownr_t rownr = iter.sliceStart();
+      rownr_t end = iter.sliceEnd();
+      rownr_t incr = iter.sliceIncr();
       while (rownr <= end) {
         setShape (rownr, arrshp);
         rownr += incr;
@@ -512,7 +512,7 @@ void ArrayColumnBase::acbPutColumnRange (const Slicer& rowRange,
                                          const Slicer& arraySection,
                                          const ArrayBase& arr)
 {
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
   //# If the entire column is accessed, use that function.
@@ -529,7 +529,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rownrs,
 {
   checkWritable();
   //# First check if number of rows matches.
-  uInt nrrow = rownrs.nrow();
+  rownr_t nrrow = rownrs.nrow();
   IPosition arrshp = arr.shape();
   uInt last = arrshp.nelements() - 1;
   if (arrshp(last) != Int(nrrow)) {
@@ -570,7 +570,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
   CountedPtr<ArrayPositionIterator> arrIter =
     source.makeIterator (source.ndim()-1);
   while (! rowIter.pastEnd()) {
-    for (uInt rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
+    for (rownr_t rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
          rownr += rowIter.sliceIncr()) {
       acbPutSlice (rownr, arraySlices, arrIter->getArray());
       arrIter->next();
@@ -600,7 +600,7 @@ void ArrayColumnBase::acbGetColumnCells (const RefRows& rows,
   CountedPtr<ArrayPositionIterator> arrIter =
     destination.makeIterator (destination.ndim()-1);
   while (! rowIter.pastEnd()) {
-    for (uInt rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
+    for (rownr_t rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
          rownr += rowIter.sliceIncr()) {
       ArrayBase& destArray = arrIter->getArray();
       // Iterate through the slicers.
@@ -634,7 +634,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
   CountedPtr<ArrayPositionIterator> arrIter =
     source.makeIterator (source.ndim()-1);
   while (! rowIter.pastEnd()) {
-    for (uInt rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
+    for (rownr_t rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
          rownr += rowIter.sliceIncr()) {
       ArrayBase& destArray = arrIter->getArray();
       // Iterate through the slicers.
@@ -655,8 +655,8 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
 //# involved in each loop iteration.
 void ArrayColumnBase::acbFillColumn (const ArrayBase& value)
 {
-  uInt nrrow = nrow();
-  for (uInt i=0; i<nrrow; i++) {
+  rownr_t nrrow = nrow();
+  for (rownr_t i=0; i<nrrow; i++) {
     acbPut (i, value);
   }
 }
@@ -665,14 +665,14 @@ void ArrayColumnBase::acbPutColumn (const ArrayColumnBase& that)
 {
   checkWritable();
   //# Check the column lengths.
-  uInt nrrow = nrow();
+  rownr_t nrrow = nrow();
   if (nrrow != that.nrow()) {
     throw TableConformanceError
       ("Nr of rows differs in ArrayColumn::putColumn for column " +
        baseColPtr_p->columnDesc().name() + " (from column " +
        that.baseColPtr_p->columnDesc().name() + ')');
   }
-  for (uInt i=0; i<nrrow; i++) {
+  for (rownr_t i=0; i<nrrow; i++) {
     put (i, that, i);
   }
 }

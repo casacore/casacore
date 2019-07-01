@@ -114,7 +114,7 @@ public:
 
 protected:
     BaseTable*             sortTab_p;     //# Table sorted in iteration order
-    uInt                   lastRow_p;     //# last row used from reftab
+    rownr_t                lastRow_p;     //# last row used from reftab
     uInt                   nrkeys_p;      //# nr of columns in group
     String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects

@@ -51,9 +51,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatScalarColumn<T>::getScalarColumn (ArrayBase& arr) const
   {
     Vector<T>& vec = static_cast<Vector<T>&>(arr);
-    uInt st = 0;
+    rownr_t st = 0;
     for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
-      uInt nr = refColPtr_p[i]->nrow();
+      rownr_t nr = refColPtr_p[i]->nrow();
       Vector<T> part = vec(Slice(st, nr));
       refColPtr_p[i]->getScalarColumn (part);
       st += nr;
@@ -74,11 +74,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     GenSortIndirect<uInt>::sort (inx, rows);
     const ConcatRows& ccRows = refTabPtr_p->rows();
     uInt tabRownr;
-    uInt tableNr=0;
+    uInt    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
     for (uInt i=0; i<inx.nelements(); ++i) {
-      uInt row = inx[i];
+      rownr_t row = inx[i];
       ccRows.mapRownr (tableNr, tabRownr, rows[row]);
       refColPtr_p[tableNr]->get (tabRownr, &(vec[row]));
     }
@@ -90,9 +90,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatScalarColumn<T>::putScalarColumn (const ArrayBase& arr)
   {
     Vector<T> vec (static_cast<const Vector<T>&>(arr));
-    uInt st = 0;
+    rownr_t st = 0;
     for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
-      uInt nr = refColPtr_p[i]->nrow();
+      rownr_t nr = refColPtr_p[i]->nrow();
       Vector<T> part = vec(Slice(st, nr));
       refColPtr_p[i]->putScalarColumn (part);
       st += nr;
@@ -113,11 +113,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     GenSortIndirect<uInt>::sort (inx, rows);
     const ConcatRows& ccRows = refTabPtr_p->rows();
     uInt tabRownr;
-    uInt tableNr=0;
+    uInt    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
     for (uInt i=0; i<inx.nelements(); ++i) {
-      uInt row = inx[i];
+      rownr_t row = inx[i];
       ccRows.mapRownr (tableNr, tabRownr, rows[row]);
       refColPtr_p[tableNr]->put (tabRownr, &(vec[row]));
     }

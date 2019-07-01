@@ -43,13 +43,13 @@ BaseColumn::~BaseColumn()
 //# By default all functions throw an exception
 //# to ensure they are called correctly.
 
-void BaseColumn::setShape (uInt, const IPosition&)
+void BaseColumn::setShape (rownr_t, const IPosition&)
 {
   throw (TableInvOper ("invalid setShape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
 }
 
-void BaseColumn::setShape (uInt, const IPosition&, const IPosition&)
+void BaseColumn::setShape (rownr_t, const IPosition&, const IPosition&)
 {
   throw (TableInvOper ("invalid setShape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
@@ -69,21 +69,21 @@ IPosition BaseColumn::shapeColumn() const
   return IPosition(0);
 }
 
-uInt BaseColumn::ndim (uInt) const
+uInt BaseColumn::ndim (rownr_t) const
 {
   throw (TableInvOper ("invalid ndim() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
   return 0;
 }
 
-IPosition BaseColumn::shape (uInt) const
+IPosition BaseColumn::shape (rownr_t) const
 {
   throw (TableInvOper ("invalid shape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
   return IPosition(0);
 }
 
-IPosition BaseColumn::tileShape (uInt) const
+IPosition BaseColumn::tileShape (rownr_t) const
 {
   throw (TableInvOper ("invalid tileShape() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
@@ -95,19 +95,19 @@ Bool BaseColumn::canChangeShape() const
     return False;                      // can not be changed
 }
 
-void BaseColumn::get (uInt, void*) const
+void BaseColumn::get (rownr_t, void*) const
 {
   throw (TableInvOper ("get() not implemented for column " +
                        colDesc_p.name() + "; only valid for a scalar"));
 }
 
-void BaseColumn::getArray (uInt, ArrayBase&) const
+void BaseColumn::getArray (rownr_t, ArrayBase&) const
 {
   throw (TableInvOper ("getArray() not implemented for column " +
                        colDesc_p.name() + "; only valid for an array"));
 }
 
-void BaseColumn::getSlice (uInt, const Slicer&, ArrayBase&) const
+void BaseColumn::getSlice (rownr_t, const Slicer&, ArrayBase&) const
 {
   throw (TableInvOper ("getSlice() not implemented for column " +
                        colDescPtr_p->name() + "; only valid for an array"));
@@ -150,19 +150,19 @@ void BaseColumn::getColumnSlice (const Slicer&, ArrayBase&) const
                        colDescPtr_p->name() + "; only valid for an array"));
 }
 
-void BaseColumn::put (uInt, const void*)
+void BaseColumn::put (rownr_t, const void*)
 {
   throw (TableInvOper ("put() not implemented for column " +
                        colDesc_p.name() + "; only valid for a scalar"));
 }
 
-void BaseColumn::putArray (uInt, const ArrayBase&)
+void BaseColumn::putArray (rownr_t, const ArrayBase&)
 {
   throw (TableInvOper ("putArray() not implemented for column " +
                        colDesc_p.name() + "; only valid for an array"));
 }
 
-void BaseColumn::putSlice (uInt, const Slicer&, const ArrayBase&)
+void BaseColumn::putSlice (rownr_t, const Slicer&, const ArrayBase&)
 {
   throw (TableInvOper ("putSlice() not implemented for column " +
                        colDescPtr_p->name() + "; only valid for an array"));
@@ -230,7 +230,7 @@ void BaseColumn::freeIterBuf (void*&, void*&)
 }
 
 
-void BaseColumn::getScalar (uInt rownr, Bool& value) const
+void BaseColumn::getScalar (rownr_t rownr, Bool& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -244,7 +244,7 @@ void BaseColumn::getScalar (uInt rownr, Bool& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, uChar& value) const
+void BaseColumn::getScalar (rownr_t rownr, uChar& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -258,7 +258,7 @@ void BaseColumn::getScalar (uInt rownr, uChar& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, Short& value) const
+void BaseColumn::getScalar (rownr_t rownr, Short& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -272,7 +272,7 @@ void BaseColumn::getScalar (uInt rownr, Short& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, uShort& value) const
+void BaseColumn::getScalar (rownr_t rownr, uShort& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -291,7 +291,7 @@ void BaseColumn::getScalar (uInt rownr, uShort& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, Int& value) const
+void BaseColumn::getScalar (rownr_t rownr, Int& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -320,7 +320,7 @@ void BaseColumn::getScalar (uInt rownr, Int& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, uInt& value) const
+void BaseColumn::getScalar (rownr_t rownr, uInt& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -344,7 +344,7 @@ void BaseColumn::getScalar (uInt rownr, uInt& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, Int64& value) const
+void BaseColumn::getScalar (rownr_t rownr, Int64& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -383,7 +383,7 @@ void BaseColumn::getScalar (uInt rownr, Int64& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, float& value) const
+void BaseColumn::getScalar (rownr_t rownr, float& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -432,7 +432,7 @@ void BaseColumn::getScalar (uInt rownr, float& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, double& value) const
+void BaseColumn::getScalar (rownr_t rownr, double& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -481,7 +481,7 @@ void BaseColumn::getScalar (uInt rownr, double& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, Complex& value) const
+void BaseColumn::getScalar (rownr_t rownr, Complex& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -541,7 +541,7 @@ void BaseColumn::getScalar (uInt rownr, Complex& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, DComplex& value) const
+void BaseColumn::getScalar (rownr_t rownr, DComplex& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -600,7 +600,7 @@ void BaseColumn::getScalar (uInt rownr, DComplex& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, String& value) const
+void BaseColumn::getScalar (rownr_t rownr, String& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -614,7 +614,7 @@ void BaseColumn::getScalar (uInt rownr, String& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, TableRecord& value) const
+void BaseColumn::getScalar (rownr_t rownr, TableRecord& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -628,7 +628,7 @@ void BaseColumn::getScalar (uInt rownr, TableRecord& value) const
     }
 }
 
-void BaseColumn::getScalar (uInt rownr, void* value,
+void BaseColumn::getScalar (rownr_t rownr, void* value,
 			    const String& dataTypeId) const
 {
     if (!colDescPtr_p->isScalar()) {
@@ -642,7 +642,7 @@ void BaseColumn::getScalar (uInt rownr, void* value,
 }
 
 
-void BaseColumn::putScalar (uInt rownr, const Bool& value)
+void BaseColumn::putScalar (rownr_t rownr, const Bool& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -656,7 +656,7 @@ void BaseColumn::putScalar (uInt rownr, const Bool& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const uChar& value)
+void BaseColumn::putScalar (rownr_t rownr, const uChar& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -713,7 +713,7 @@ void BaseColumn::putScalar (uInt rownr, const uChar& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const Short& value)
+void BaseColumn::putScalar (rownr_t rownr, const Short& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -755,7 +755,7 @@ void BaseColumn::putScalar (uInt rownr, const Short& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const uShort& value)
+void BaseColumn::putScalar (rownr_t rownr, const uShort& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -802,7 +802,7 @@ void BaseColumn::putScalar (uInt rownr, const uShort& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const Int& value)
+void BaseColumn::putScalar (rownr_t rownr, const Int& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -839,7 +839,7 @@ void BaseColumn::putScalar (uInt rownr, const Int& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const uInt& value)
+void BaseColumn::putScalar (rownr_t rownr, const uInt& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -876,7 +876,7 @@ void BaseColumn::putScalar (uInt rownr, const uInt& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const Int64& value)
+void BaseColumn::putScalar (rownr_t rownr, const Int64& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -908,7 +908,7 @@ void BaseColumn::putScalar (uInt rownr, const Int64& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const float& value)
+void BaseColumn::putScalar (rownr_t rownr, const float& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -935,7 +935,7 @@ void BaseColumn::putScalar (uInt rownr, const float& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const double& value)
+void BaseColumn::putScalar (rownr_t rownr, const double& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -962,7 +962,7 @@ void BaseColumn::putScalar (uInt rownr, const double& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const Complex& value)
+void BaseColumn::putScalar (rownr_t rownr, const Complex& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -980,7 +980,7 @@ void BaseColumn::putScalar (uInt rownr, const Complex& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const DComplex& value)
+void BaseColumn::putScalar (rownr_t rownr, const DComplex& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -998,7 +998,7 @@ void BaseColumn::putScalar (uInt rownr, const DComplex& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const String& value)
+void BaseColumn::putScalar (rownr_t rownr, const String& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -1012,7 +1012,7 @@ void BaseColumn::putScalar (uInt rownr, const String& value)
     }
 }
 
-void BaseColumn::putScalar (uInt rownr, const TableRecord& value)
+void BaseColumn::putScalar (rownr_t rownr, const TableRecord& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();

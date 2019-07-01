@@ -43,7 +43,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
+RefTable::RefTable (AipsIO& ios, const String& name, rownr_t nrrow, int opt,
 		    const TableLock& lockOptions, const TSMOption& tsmOption)
 : BaseTable    (name, opt, nrrow),
   rowStorage_p (0),              // initially empty vector of rownrs
@@ -60,7 +60,7 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 }
 
 
-RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
+RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
 : BaseTable    ("", Table::Scratch, nrall),
   baseTabPtr_p (btp->root()),
   rowOrd_p     (order),
@@ -90,8 +90,8 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
     rowStorage_p = rownrs;
     rows_p = getStorage (rowStorage_p);
     //# Check if the row numbers do not exceed #rows.
-    uInt nmax = btp->nrow();
-    for (uInt i=0; i<nrrow_p; i++) {
+    rownr_t nmax = btp->nrow();
+    for (rownr_t i=0; i<nrrow_p; i++) {
 	if (rows_p[i] >= nmax) {
 	    throw (indexError<Int> ((Int)rows_p[i], "RefTable Row vector"));
 	}
@@ -114,8 +114,8 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     //# Store the rownr if the mask is set.
-    uInt nr = min (mask.nelements(), btp->nrow());
-    for (uInt i=0; i<nr; i++) {
+    rownr_t nr = min (mask.nelements(), btp->nrow());
+    for (rownr_t i=0; i<nr; i++) {
 	if (mask(i)) {
 	    addRownr (i);
 	}
@@ -255,7 +255,7 @@ uInt RefTable::getModifyCounter() const
 
 
 //# Adjust the input rownrs to the actual rownrs in the root table.
-Bool RefTable::adjustRownrs (uInt nr, Vector<uInt>& rowStorage,
+Bool RefTable::adjustRownrs (rownr_t nr, Vector<uInt>& rowStorage,
 			     Bool determineOrder) const
 {
     uInt* rownrs = getStorage (rowStorage);
@@ -285,7 +285,7 @@ void RefTable::writeRefTable (Bool)
 	AipsIO ios;
 	writeStart (ios, True);
 	ios << "RefTable";
-	ios.putstart ("RefTable", 2);
+	ios.putstart ("RefTable", 3);
 	// Make the name of the base table relative to this table.
 	ios << Path::stripDirectory (baseTabPtr_p->tableName(),
 				     tableName());
@@ -300,9 +300,9 @@ void RefTable::writeRefTable (Bool)
 	ios << rowOrd_p;
         ios << nrrow_p;
         // Do not write more than 2**20 rownrs at once (CAS-7020).
-        uInt done = 0;
+        rownr_t done = 0;
         while (done < nrrow_p) {
-          uInt todo = std::min(nrrow_p-done, 1048576u);
+          rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
           ios.put (todo, rows_p+done, False);
           done += todo;
         }
@@ -320,7 +320,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
 {
     //# Open the file, read name and type of root and read object data.
     String rootName;
-    uInt rootNrow, nrrow;
+    rownr_t rootNrow, nrrow;
     Int version = ios.getstart ("RefTable");
     ios >> rootName;
     rootName = Path::addDirectory (rootName, tableName());
@@ -329,17 +329,22 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     if (version > 1) {
         ios >> names;
     }
-    ios >> rootNrow;
-    ios >> rowOrd_p;
-    ios >> nrrow;
+    if (version > 2) {
+      ios >> rootNrow >> rowOrd_p >> nrrow;
+    } else {
+      uInt n1, n2;
+      ios >> n1 >> rowOrd_p >> n2;
+      rootNrow = n1;
+      nrrow = n2;
+    }
     DebugAssert (nrrow == nrrow_p, AipsError);
     //# Resize the block of rownrs and read them in.
     rowStorage_p.resize (nrrow);
     rows_p = getStorage (rowStorage_p);
     // Do not read more than 2**20 rows at once (CAS-7020).
-    uInt done = 0;
+    rownr_t done = 0;
     while (done < nrrow) {
-      uInt todo = std::min(nrrow_p-done, 1048576u);
+      rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
       ios.get (todo, rows_p+done);
       done += todo;
     }
@@ -492,11 +497,11 @@ void RefTable::addRefCol (const TableDesc& tdesc)
 
 
 //# Add a row number of the root table.
-void RefTable::addRownr (uInt rnr)
+void RefTable::addRownr (rownr_t rnr)
 {
-    uInt nrow = rowStorage_p.nelements();
+    rownr_t nrow = rowStorage_p.nelements();
     if (nrrow_p >= nrow) {
-        nrow = max ( nrow + 1024, uInt(1.2f * nrow));
+        nrow = max ( nrow + 1024, rownr_t(1.2f * nrow));
 	rowStorage_p.resize (nrow, True);
 	rows_p = getStorage (rowStorage_p);
     }
@@ -505,7 +510,7 @@ void RefTable::addRownr (uInt rnr)
 }
 
 //# Set exact number of rows.
-void RefTable::setNrrow (uInt nrrow)
+void RefTable::setNrrow (rownr_t nrrow)
 {
     if (nrrow > nrrow_p) {
 	throw (TableError ("RefTable::setNrrow: exceeds current nrrow"));
@@ -668,9 +673,9 @@ Vector<uInt>* RefTable::rowStorage()
 //# Convert a vector of row numbers to row numbers in this table.
 Vector<uInt> RefTable::rootRownr (const Vector<uInt>& rownrs) const
 {
-    uInt nrow = rownrs.nelements();
+    rownr_t nrow = rownrs.nelements();
     Vector<uInt> rnr(nrow);
-    for (uInt i=0; i<nrow; i++) {
+    for (rownr_t i=0; i<nrow; i++) {
 	rnr(i) = rows_p[rownrs(i)];
     }
     return rnr;
@@ -765,7 +770,7 @@ Bool RefTable::canRemoveColumn (const Vector<String>& columnNames) const
 Bool RefTable::canRenameColumn (const String& columnName) const
     { return tdescPtr_p->isColumn (columnName); }
 
-void RefTable::removeRow (uInt rownr)
+void RefTable::removeRow (rownr_t rownr)
 {
     if (rownr >= nrrow_p) {
 	throw (TableInvOper ("removeRow: rownr out of bounds"));

@@ -42,7 +42,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  ConcatTable::ConcatTable (AipsIO& ios, const String& name, uInt nrrow,
+  ConcatTable::ConcatTable (AipsIO& ios, const String& name, rownr_t nrrow,
 			    int option, const TableLock& lockOptions,
                             const TSMOption& tsmOption)
     : BaseTable (name, option, nrrow),
@@ -572,7 +572,7 @@ void ConcatTable::addColumn (const TableDesc& tableDesc,
   Bool ConcatTable::canRenameColumn (const String&) const
   { return False; }
 
-  void ConcatTable::removeRow (uInt)
+  void ConcatTable::removeRow (rownr_t)
   {
     throw TableInvOper("ConcatTable cannot remove rows");
   }

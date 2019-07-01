@@ -45,7 +45,7 @@ public:
     ColumnHolder(Table &inTab, const Table &outTab);
     ~ColumnHolder();
     void attach(const String &outCol, const String &inCol);
-    Bool copy(uInt toRow, uInt fromRow);
+    Bool copy(rownr_t toRow, rownr_t fromRow);
 private:
     //# The following constructors and operator don't seem to be useful
     ColumnHolder();
@@ -107,15 +107,14 @@ void ColumnHolder::attach(const String &outCol, const String &inCol)
     }
 }
 
-Bool ColumnHolder::copy(uInt toRow, uInt fromRow)
+Bool ColumnHolder::copy(rownr_t toRow, rownr_t fromRow)
 {
-    uInt i;
     if (fromRow >= in.nrow() || toRow >= out.nrow()) {
 	return False;
     }
 
     // loop over all columns
-    for (i=0; i < inTabCol.nelements(); i++) {
+    for (uInt i=0; i < inTabCol.nelements(); i++) {
 	outTabCol[i]->put(toRow, (*inTabCol[i]), (fromRow));
     }
     return True;
@@ -156,7 +155,7 @@ RowCopier::RowCopier(Table &out, const Table &in,
     }
 }
 
-Bool RowCopier::copy(uInt toRow, uInt fromRow)
+Bool RowCopier::copy(rownr_t toRow, rownr_t fromRow)
 {
     return columns_p->copy(toRow, fromRow);
 }

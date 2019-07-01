@@ -115,13 +115,13 @@ class String;
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
     // Use the function isDefined to test if the cell contains an array.
-    uInt ndim (uInt rownr) const
+    uInt ndim (rownr_t rownr) const
       { TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
 
     // Get the shape of an array in a particular cell.
     // If the cell does not contain an array, a 0-dim shape is returned.
     // Use the function isDefined to test if the cell contains an array.
-    IPosition shape (uInt rownr) const
+    IPosition shape (rownr_t rownr) const
       { TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->shape (rownr); }
 
     // Counterparts of the acbGet() functions below not checking shapes, etc.
@@ -129,16 +129,16 @@ class String;
     // knows for sure that the arguments are correct.
     // E.g., they are used internally in virtual column engines.
     // <group>
-    void baseGet (uInt rownr, ArrayBase& array) const
+    void baseGet (rownr_t rownr, ArrayBase& array) const
       { baseColPtr_p->getArray (rownr, array); }
-    void baseGetSlice (uInt rownr, const Slicer& arraySection,
+    void baseGetSlice (rownr_t rownr, const Slicer& arraySection,
                        ArrayBase& array) const
       { baseColPtr_p->getSlice (rownr, arraySection, array); }
     // </group>
 
     // Get the array value in a particular cell (i.e. table row).
     // The row numbers count from 0 until #rows-1.
-    void acbGet (uInt rownr, ArrayBase& array, Bool resize) const;
+    void acbGet (rownr_t rownr, ArrayBase& array, Bool resize) const;
 
     // Get a slice of an N-dimensional array in a particular cell
     // (i.e. table row).
@@ -146,7 +146,7 @@ class String;
     // The dimensionality of the slice must match the dimensionality
     // of the table array and the slice definition should not exceed
     // the shape of the table array.
-    void acbGetSlice (uInt rownr, const Slicer& arraySection, ArrayBase& array,
+    void acbGetSlice (rownr_t rownr, const Slicer& arraySection, ArrayBase& array,
                       Bool resize) const;
 
     // Get an irregular slice of an N-dimensional array in a particular cell
@@ -168,7 +168,7 @@ class String;
     // with the last dimension representing the number of rows and the
     // other dimensions representing the shape of the slice.
     // The arrays in the column must have the same shape in all cells.
-    void acbGetSlice (uInt rownr,
+    void acbGetSlice (rownr_t rownr,
                       const Vector<Vector<Slice> >& arraySlices,
                       ArrayBase& arr, Bool resize) const;
 
@@ -245,10 +245,10 @@ class String;
     // Setting the shape is needed if the array is put in slices,
     // otherwise the table system would not know the shape.
     // <group>
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Try to store the array in a tiled way using the given tile shape.
-    void setShape (uInt rownr, const IPosition& shape,
+    void setShape (rownr_t rownr, const IPosition& shape,
 		   const IPosition& tileShape);
     // </group>
 
@@ -257,9 +257,9 @@ class String;
     // knows for sure that the arguments are correct.
     // E.g., they are used internally in virtual column engines.
     // <group>
-    void basePut (uInt rownr, const ArrayBase& array)
+    void basePut (rownr_t rownr, const ArrayBase& array)
       { baseColPtr_p->putArray (rownr, array); }
-    void basePutSlice (uInt rownr, const Slicer& arraySection,
+    void basePutSlice (rownr_t rownr, const Slicer& arraySection,
                        const ArrayBase& array)
       { baseColPtr_p->putSlice (rownr, arraySection, array); }
     // </group>
@@ -268,7 +268,7 @@ class String;
     // The row numbers count from 0 until #rows-1.
     // If the shape of the table array in that cell has not already been
     // defined, it will be defined implicitly.
-    void acbPut (uInt rownr, const ArrayBase& array);
+    void acbPut (rownr_t rownr, const ArrayBase& array);
 
     // Put into a slice of an N-dimensional array in a particular cell.
     // The row numbers count from 0 until #rows-1.
@@ -276,10 +276,10 @@ class String;
     // The dimensionality of the slice must match the dimensionality
     // of the table array and the slice definition should not exceed
     // the shape of the table array.
-    void acbPutSlice (uInt rownr, const Slicer& arraySection,
+    void acbPutSlice (rownr_t rownr, const Slicer& arraySection,
                       const ArrayBase& array);
 
-    void acbPutSlice (uInt rownr, const Vector<Vector<Slice> >& arraySlices,
+    void acbPutSlice (rownr_t rownr, const Vector<Vector<Slice> >& arraySlices,
                       const ArrayBase& arr);
 
     // Put the array of all values in the column.

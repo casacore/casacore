@@ -62,20 +62,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
-BaseTable::BaseTable (const String& name, int option, uInt nrrow)
+BaseTable::BaseTable (const String& name, int option, rownr_t nrrow)
 {
     BaseTableCommon(name, option, nrrow);
 }
 
 #ifdef HAVE_MPI
-BaseTable::BaseTable (MPI_Comm mpiComm, const String& name, int option, uInt nrrow)
+BaseTable::BaseTable (MPI_Comm mpiComm, const String& name, int option, rownr_t nrrow)
     :itsMpiComm  (mpiComm)
 {
     BaseTableCommon(name, option, nrrow);
 }
 #endif
 
-void BaseTable::BaseTableCommon (const String& name, int option, uInt nrrow)
+void BaseTable::BaseTableCommon (const String& name, int option, rownr_t nrrow)
 {
     nrlink_p = 0;
     nrrow_p = nrrow;
@@ -348,8 +348,14 @@ void BaseTable::writeStart (AipsIO& ios, Bool bigEndian)
     ios.open (Table::fileName(name_p), ByteIO::New);
     //# Start the object as Table, so class Table can read it back.
     //# Version 2 (of PlainTable) does not have its own TableRecord anymore.
-    ios.putstart ("Table", 2);
-    ios << nrrow_p;
+    //# Use old version if nr of rows fit in an Int, otherwise use new version.
+    if (nrrow_p > rownr_t(std::numeric_limits<Int>::max())) {
+        ios.putstart ("Table", 3);
+        ios << nrrow_p;
+    } else {
+        ios.putstart ("Table", 2);
+        ios << uInt(nrrow_p);
+    }
     //# Write endianity as a uInt, because older tables contain a uInt 0 here.
     uInt endian = 0;
     if (!bigEndian) {
@@ -597,10 +603,10 @@ Bool BaseTable::canAddRow() const
 Bool BaseTable::canRemoveRow() const
     { return False; }
 
-void BaseTable::addRow (uInt, Bool)
+void BaseTable::addRow (rownr_t, Bool)
     { throw (TableInvOper ("Table: cannot add a row to table " + name_p)); }
 
-void BaseTable::removeRow (uInt)
+void BaseTable::removeRow (rownr_t)
     { throw (TableInvOper ("Table: cannot remove a row from table " + name_p)); }
 
 void BaseTable::removeRow (const Vector<uInt>& rownrs)
@@ -722,7 +728,7 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     }
     //# Create a reference table.
     //# This table will NOT be in row order.
-    uInt nrrow = nrow();
+    rownr_t nrrow = nrow();
     RefTable* resultTable = makeRefTable (False, nrrow);
     //# Now sort the table storing the row-numbers in the RefTable.
     //# Adjust rownrs in case source table is already a RefTable.
@@ -735,7 +741,7 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     return resultTable;
 }
 
-RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
+RefTable* BaseTable::makeRefTable (Bool rowOrder, rownr_t initialNrrow)
 {
     RefTable* rtp = new RefTable(this, rowOrder, initialNrrow);
     return rtp;
@@ -743,10 +749,10 @@ RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
 
 
 //# No rownrs have to be adjusted and they are by default in ascending order.
-Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
+Bool BaseTable::adjustRownrs (rownr_t, Vector<uInt>&, Bool) const
     { return True; }
 
-BaseTable* BaseTable::select (uInt maxRow, uInt offset)
+BaseTable* BaseTable::select (rownr_t maxRow, rownr_t offset)
 {
     if (offset > nrow()) {
         offset = nrow();
@@ -758,13 +764,13 @@ BaseTable* BaseTable::select (uInt maxRow, uInt offset)
         return this;
     }
     Vector<uInt> rownrs(maxRow);
-    indgen(rownrs, offset);
+    indgen(rownrs, uInt(offset));
     return select(rownrs);
 }
 
 // Do the row selection.
 BaseTable* BaseTable::select (const TableExprNode& node,
-                              uInt maxRow, uInt offset)
+                              rownr_t maxRow, rownr_t offset)
 {
     // Check we don't deal with a null table.
     AlwaysAssert (!isNull(), AipsError);
@@ -800,9 +806,9 @@ BaseTable* BaseTable::select (const TableExprNode& node,
     //# Adjust the row numbers to reflect row numbers in the root table.
     SPtrHolder<RefTable> resultTable (makeRefTable (True, 0));
     Bool val;
-    uInt nrrow = nrow();
+    rownr_t nrrow = nrow();
     TableExprId id;
-    for (uInt i=0; i<nrrow; i++) {
+    for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr (i);
       node.get (id, val);
       if (val) {
@@ -1014,7 +1020,7 @@ uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
     AlwaysAssert (!isNull(), AipsError);
     allsw = False;
     inx = RefTable::getStorage (*rowStorage());
-    uInt nr = nrow();
+    rownr_t nr = nrow();
     if (!rowOrder()) {
 	//# rows are not in order, so sort them.
 	//# They have to be copied, because the original should not be changed.
@@ -1080,7 +1086,7 @@ Bool BaseTable::checkRemoveColumn (const Vector<String>& columnNames,
     return True;
 }
 
-void BaseTable::checkRowNumberThrow (uInt rownr) const
+void BaseTable::checkRowNumberThrow (rownr_t rownr) const
 {
     throw (TableError ("TableColumn: row number " + String::toString(rownr) +
 		       " exceeds #rows " +

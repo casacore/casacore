@@ -129,7 +129,7 @@ template<typename T> class RecordFieldPtr;
 //     // ANTENNA is a unique key, so only one row number matches.
 //     // Otherwise function getRowNumbers had to be used.
 //     *antFld = antenna;
-//     uInt antRownr = colInx.getRowNumber (found);
+//     rownr_t antRownr = colInx.getRowNumber (found);
 //     if (!found) {
 //         cout << "Antenna " << antenna << " is unknown" << endl;
 //     } else {
@@ -213,7 +213,7 @@ template<typename T> class RecordFieldPtr;
 //     // Fill the key field.
 //     *time = ...;
 //     // Find the row number for this time.
-//     uInt rownr = colInx.getRowNumber (found);
+//     rownr_t rownr = colInx.getRowNumber (found);
 // }
 // </srcblock>
 // </example>
@@ -307,8 +307,8 @@ public:
     // functions. Note that the given Record will be copied to the internal
     // record, thus overwrites it.
     // <group>
-    uInt getRowNumber (Bool& found);
-    uInt getRowNumber (Bool& found, const Record& key);
+    rownr_t getRowNumber (Bool& found);
+    rownr_t getRowNumber (Bool& found, const Record& key);
     // </group>
 
     // Find the row numbers matching the key. It should be used instead
@@ -367,7 +367,7 @@ protected:
     // in <src>itsUniqueIndex</src> is returned.
     // If not found, <src>found</src> is set to False and the index
     // of the next higher key is returned.
-    uInt bsearch (Bool& found, const Block<void*>& fieldPtrs) const;
+    rownr_t bsearch (Bool& found, const Block<void*>& fieldPtrs) const;
 
     // Compare the key in <src>fieldPtrs</src> with the given index entry.
     // -1 is returned when less, 0 when equal, 1 when greater.
@@ -378,7 +378,7 @@ protected:
 
     // Fill the row numbers vector for the given start till end in the
     // <src>itsUniqueIndex</src> vector (end is not inclusive).
-    void fillRowNumbers (Vector<uInt>& rows, uInt start, uInt end) const;
+    void fillRowNumbers (Vector<uInt>& rows, rownr_t start, rownr_t end) const;
 
 private:
     // Fill the internal key fields from the corresponding external key.
@@ -392,8 +392,8 @@ private:
       key.get (field.name(), *field);
     }
 
-    Table  itsTable;
-    uInt   itsNrrow;
+    Table   itsTable;
+    rownr_t itsNrrow;
     Record* itsLowerKeyPtr;
     Record* itsUpperKeyPtr;
     Block<Int>   itsDataTypes;

@@ -485,9 +485,13 @@ protected:
     // </group>
 
 private:
-    Bool        isFixedShape_p;
-    String      colName_p;
-    ColumnCache colCache_p;
+    // The copy constructor cannot be used for this base class.
+    // The private declaration of this constructor makes it unusable.
+    DataManagerColumn (const DataManagerColumn&);
+
+    // Assignment cannot be used for this base class.
+    // The private declaration of this operator makes it unusable.
+    DataManagerColumn& operator= (const DataManagerColumn&);
 
     // Set the shape of all (fixed-shaped) arrays in the column.
     // By default it throws a "not possible" exception.
@@ -506,13 +510,10 @@ private:
                       CountedPtr<ArrayBase>& fullArr,
                       const ArrayBase& arr);
 
-    // The copy constructor cannot be used for this base class.
-    // The private declaration of this constructor makes it unusable.
-    DataManagerColumn (const DataManagerColumn&);
-
-    // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    DataManagerColumn& operator= (const DataManagerColumn&);
+    //# Data members
+    Bool        isFixedShape_p;
+    String      colName_p;
+    ColumnCache colCache_p;
 };
 
 

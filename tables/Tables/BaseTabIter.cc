@@ -129,7 +129,6 @@ void BaseTableIterator::reset()
 
 BaseTable* BaseTableIterator::next()
 {
-    uInt i;
     // Allocate a RefTable to represent the rows in the iteration group.
     RefTable* itp = sortTab_p->makeRefTable (False, 0);
     if (lastRow_p >= sortTab_p->nrow()) {
@@ -137,14 +136,14 @@ BaseTable* BaseTableIterator::next()
     }
     // Add the last found rownr to this iteration group.
     itp->addRownr (lastRow_p);
-    for (i=0; i<nrkeys_p; i++) {
+    for (uInt i=0; i<nrkeys_p; i++) {
 	colPtr_p[i]->get (lastRow_p, lastVal_p[i]);
     }
     Bool match;
-    uInt nr = sortTab_p->nrow();
+    rownr_t nr = sortTab_p->nrow();
     while (++lastRow_p < nr) {
 	match = True;
-	for (i=0; i<nrkeys_p; i++) {
+	for (uInt i=0; i<nrkeys_p; i++) {
 	    colPtr_p[i]->get (lastRow_p, curVal_p[i]);
 	    if (cmpObj_p[i]->comp (curVal_p[i], lastVal_p[i])  != 0) {
 		match = False;

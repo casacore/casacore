@@ -113,7 +113,7 @@ void ArrayColumn<T>::checkDataType() const
 }
 
 template<class T>
-Array<T> ArrayColumn<T>::operator() (uInt rownr) const
+Array<T> ArrayColumn<T>::operator() (rownr_t rownr) const
 {
     Array<T> arr;
     get (rownr, arr);
@@ -121,7 +121,7 @@ Array<T> ArrayColumn<T>::operator() (uInt rownr) const
 }
 
 template<class T>
-Array<T> ArrayColumn<T>::get (uInt rownr) const
+Array<T> ArrayColumn<T>::get (rownr_t rownr) const
 {
     Array<T> arr;
     get (rownr, arr);
@@ -129,14 +129,14 @@ Array<T> ArrayColumn<T>::get (uInt rownr) const
 }
 
 template<class T>
-void ArrayColumn<T>::get (uInt rownr, Array<T>& arr, Bool resize) const
+void ArrayColumn<T>::get (rownr_t rownr, Array<T>& arr, Bool resize) const
 {
     acbGet (rownr, arr, resize);
 }
 
 
 template<class T>
-Array<T> ArrayColumn<T>::getSlice (uInt rownr,
+Array<T> ArrayColumn<T>::getSlice (rownr_t rownr,
                                    const Slicer& arraySection) const
 {
     Array<T> arr;
@@ -145,7 +145,7 @@ Array<T> ArrayColumn<T>::getSlice (uInt rownr,
 }
 
 template<class T>
-void ArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
+void ArrayColumn<T>::getSlice (rownr_t rownr, const Slicer& arraySection,
                                Array<T>& arr, Bool resize) const
 {
     acbGetSlice (rownr, arraySection, arr, resize);
@@ -154,7 +154,7 @@ void ArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
 
 template<class T>
 Array<T> ArrayColumn<T>::getSlice
-(uInt rownr, const Vector<Vector<Slice> >& arraySlices) const
+(rownr_t rownr, const Vector<Vector<Slice> >& arraySlices) const
 {
     Array<T> arr;
     getSlice (rownr, arraySlices, arr);
@@ -162,7 +162,7 @@ Array<T> ArrayColumn<T>::getSlice
 }
 
 template<class T>
-void ArrayColumn<T>::getSlice (uInt rownr,
+void ArrayColumn<T>::getSlice (rownr_t rownr,
                                const Vector<Vector<Slice> >& arraySlices,
                                Array<T>& arr, Bool resize) const
 {
@@ -332,33 +332,33 @@ void ArrayColumn<T>::getColumnCells (const RefRows& rownrs,
 
 
 template<class T>
-void ArrayColumn<T>::setShape (uInt rownr, const IPosition& shape)
+void ArrayColumn<T>::setShape (rownr_t rownr, const IPosition& shape)
 {
   ArrayColumnBase::setShape (rownr, shape);
 }
 	
 template<class T>
-void ArrayColumn<T>::setShape (uInt rownr, const IPosition& shape,
+void ArrayColumn<T>::setShape (rownr_t rownr, const IPosition& shape,
 			       const IPosition& tileShape)
 {
   ArrayColumnBase::setShape (rownr, shape, tileShape);
 }
 	
 template<class T>
-void ArrayColumn<T>::put (uInt rownr, const Array<T>& arr)
+void ArrayColumn<T>::put (rownr_t rownr, const Array<T>& arr)
 {
   acbPut (rownr, arr);
 }
 
 template<class T>
-void ArrayColumn<T>::putSlice (uInt rownr, const Slicer& arraySection,
+void ArrayColumn<T>::putSlice (rownr_t rownr, const Slicer& arraySection,
 			       const Array<T>& arr)
 {
   acbPutSlice (rownr, arraySection, arr);
 }
 
 template<class T>
-void ArrayColumn<T>::putSlice (uInt rownr,
+void ArrayColumn<T>::putSlice (rownr_t rownr,
                                const Vector<Vector<Slice> >& arraySlices,
 			       const Array<T>& arr)
 {
@@ -384,8 +384,8 @@ ArrayColumn<T>::putColumnCells (const RefRows& rows,
 
 
 template<class T>
-void ArrayColumn<T>::put (uInt thisRownr, const TableColumn& that,
-			  uInt thatRownr, Bool preserveTileShape)
+void ArrayColumn<T>::put (rownr_t thisRownr, const TableColumn& that,
+			  rownr_t thatRownr, Bool preserveTileShape)
 {
   TableColumn::put (thisRownr, that, thatRownr, preserveTileShape);
 }

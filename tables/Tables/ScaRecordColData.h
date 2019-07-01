@@ -106,13 +106,13 @@ public:
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description.
-    virtual void initialize (uInt startRownr, uInt endRownr);
+    virtual void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Test if the given cell contains a defined value.
-    virtual Bool isDefined (uInt rownr) const;
+    virtual Bool isDefined (rownr_t rownr) const;
 
     // Get the value from a particular cell.
-    virtual void get (uInt rownr, void*) const;
+    virtual void get (rownr_t rownr, void*) const;
 
     // Get the array of all values in the column.
     // The length of the buffer pointed to by dataPtr must match
@@ -128,7 +128,7 @@ public:
     // Put the value in a particular cell.
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    virtual void put (uInt rownr, const void* dataPtr);
+    virtual void put (rownr_t rownr, const void* dataPtr);
 
     // Put the array of all values in the column.
     // The length of the buffer pointed to by dataPtr must match
@@ -191,8 +191,8 @@ private:
     // Handle getting and putting a record.
     // It is stored as a Vector of uChar.
     // <group>
-    void getRecord (uInt rownr, TableRecord& rec) const;
-    void putRecord (uInt rownr, const TableRecord& rec);
+    void getRecord (rownr_t rownr, TableRecord& rec) const;
+    void putRecord (rownr_t rownr, const TableRecord& rec);
     // </group>
 };
 

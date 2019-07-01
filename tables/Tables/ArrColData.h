@@ -112,7 +112,7 @@ public:
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
-    void initialize (uInt startRownr, uInt endRownr);
+    void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Get the global #dimensions of an array (ie. for all rows).
     uInt ndimColumn() const;
@@ -126,36 +126,36 @@ public:
 
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
-    uInt ndim (uInt rownr) const;
+    uInt ndim (rownr_t rownr) const;
 
     // Get the shape of an array in a particular cell.
     // If the cell does not contain an array, an empty IPosition is returned.
-    IPosition shape(uInt rownr) const;
+    IPosition shape(rownr_t rownr) const;
 
     // Get the tile shape of an array in a particular cell.
     // If the cell does not contain an array, an empty IPosition is returned.
-    IPosition tileShape(uInt rownr) const;
+    IPosition tileShape(rownr_t rownr) const;
 
     // Set dimensions of array in a particular cell.
     // <group>
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
     // The shape of tiles in the array can also be defined.
-    void setShape (uInt rownr, const IPosition& shape,
+    void setShape (rownr_t rownr, const IPosition& shape,
 		   const IPosition& tileShape);
     // </group>
 
     // Test if the given cell contains an array.
-    Bool isDefined (uInt rownr) const;
+    Bool isDefined (rownr_t rownr) const;
 
     // Get the array from a particular cell.
     // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void getArray (uInt rownr, ArrayBase& arrayPtr) const;
+    void getArray (rownr_t rownr, ArrayBase& arrayPtr) const;
 
     // Get a slice of an N-dimensional array in a particular cell.
     // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void getSlice (uInt rownr, const Slicer&, ArrayBase& arrayPtr) const;
+    void getSlice (rownr_t rownr, const Slicer&, ArrayBase& arrayPtr) const;
 
     // Get the array of all values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
@@ -189,12 +189,12 @@ public:
     // Put the value in a particular cell.
     // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void putArray (uInt rownr, const ArrayBase& arrayPtr);
+    void putArray (rownr_t rownr, const ArrayBase& arrayPtr);
 
     // Put a slice of an N-dimensional array in a particular cell.
     // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void putSlice (uInt rownr, const Slicer&, const ArrayBase& arrayPtr);
+    void putSlice (rownr_t rownr, const Slicer&, const ArrayBase& arrayPtr);
 
     // Put the array of all values in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.

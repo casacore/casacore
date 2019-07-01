@@ -118,7 +118,7 @@ public:
     // be disturbed (as will be the case for a sort).
     // A row number vector of the given size is initially allocated.
     // Later this RefTable will be filled in by the select, etc..
-    RefTable (BaseTable*, Bool rowOrder, uInt initialNrrow);
+    RefTable (BaseTable*, Bool rowOrder, rownr_t initialNrrow);
 
     // A RefTable with the given row numbers is constructed.
     RefTable (BaseTable*, const Vector<uInt>& rowNumbers);
@@ -136,7 +136,7 @@ public:
 
     // Create a reference table out of a file (written by writeRefTable).
     // The referenced table will also be created (if not stored in the cache).
-    RefTable (AipsIO&, const String& name, uInt nrrow, int option,
+    RefTable (AipsIO&, const String& name, rownr_t nrrow, int option,
 	      const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // The destructor flushes (i.e. writes) the table if it is opened
@@ -245,7 +245,7 @@ public:
     virtual Bool canRemoveRow() const;
 
     // Remove the given row.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Add one or more columns to the table.
     // The column is added to the parent table if told so and if not existing.
@@ -291,7 +291,7 @@ public:
 
     // Get rownr in root table.
     // This converts the given row number to the row number in the root table.
-    uInt rootRownr (uInt rownr) const;
+    rownr_t rootRownr (rownr_t rownr) const;
 
     // Get vector of rownrs in root table.
     // This converts the given row numbers to row numbers in the root table.
@@ -305,16 +305,16 @@ public:
     virtual Vector<uInt>* rowStorage();
 
     // Add a rownr to reference table.
-    void addRownr (uInt rownr);
+    void addRownr (rownr_t rownr);
 
     // Set the exact number of rows in the table.
     // An exception is thrown if more than current nrrow.
-    void setNrrow (uInt nrrow);
+    void setNrrow (rownr_t nrrow);
 
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in row order.
-    virtual Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
+    virtual Bool adjustRownrs (rownr_t nrrow, Vector<uInt>& rownrs,
 			       Bool determineOrder) const;
 
     // And, or, subtract or xor the row numbers of 2 tables.
@@ -389,7 +389,7 @@ private:
 
 
 
-inline uInt RefTable::rootRownr (uInt rnr) const
+inline rownr_t RefTable::rootRownr (rownr_t rnr) const
     { return rows_p[rnr]; }
 
 

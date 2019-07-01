@@ -44,6 +44,63 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 StManColumn::~StManColumn()
 {}
 
+// Map to backward compatibility functions.
+void StManColumn::setShape (rownr_t rownr, const IPosition& shape)
+  { setShape (uInt(rownr), shape); }
+
+void StManColumn::setShapeTiled (rownr_t rownr, const IPosition& shape,
+                    const IPosition& tileShape)
+  { setShapeTiled (uInt(rownr), shape, tileShape); }
+
+Bool StManColumn::isShapeDefined (rownr_t rownr)
+  { return isShapeDefined (uInt(rownr)); }
+
+uInt StManColumn::ndim (rownr_t rownr)
+  { return ndim (uInt(rownr)); }
+
+IPosition StManColumn::shape (rownr_t rownr)
+  { return shape (uInt(rownr)); }
+
+IPosition StManColumn::tileShape (rownr_t rownr)
+  { return tileShape(uInt(rownr)); }
+
+void StManColumn::setShape (uInt, const IPosition&)
+{
+    throw DataManInvOper("setShape only allowed for non-FixedShape arrays"
+                         " in column " + columnName());
+}
+
+void StManColumn::setShapeTiled (uInt rownr, const IPosition& shape,
+                                 const IPosition&)
+{
+    setShape (rownr, shape);
+}
+
+// By default the shape is defined (for scalars).
+Bool StManColumn::isShapeDefined (uInt)
+{
+    return True;
+}
+
+// The default implementation of ndim is to use the shape.
+uInt StManColumn::ndim (uInt rownr)
+{
+    return shape(rownr).nelements();
+}
+
+// The shape of the array in the given row.
+IPosition StManColumn::shape (uInt)
+{
+    return IPosition(0);
+}
+
+// The tile shape of the array in the given row.
+IPosition StManColumn::tileShape (uInt)
+{
+    return IPosition(0);
+}
+
+
 // The following takes care of backward compatibility for external storage managers.
 // It maps the get/putXX functions taking rownr_t to the old get/putXXV taking uInt.
 // As before the default get/putXXV implementations throw a 'not implemented' exception.
@@ -53,9 +110,9 @@ void StManColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
 void StManColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
   { aips_name2(put,NM) (rownr, dataPtr); } \
 void StManColumn::aips_name2(get,NM) (uInt, T*) \
-    { throwGet(); } \
+  { throwInvalidOp(CASACORE_STRINGIFY(aips_name2(get,NM))); }     \
 void StManColumn::aips_name2(put,NM) (uInt, const T*) \
-    { throwPut(); }
+  { throwInvalidOp(CASACORE_STRINGIFY(aips_name2(put,NM))); }     \
 
 STMANCOLUMN_GETPUT_SCALAR(Bool,BoolV)
 STMANCOLUMN_GETPUT_SCALAR(uChar,uCharV)

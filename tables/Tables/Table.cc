@@ -37,7 +37,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/TableError.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -507,14 +507,21 @@ Bool Table::isNativeDataType (DataType dtype)
 
 
 //# The logic is similar to that in open.
-uInt Table::getLayout (TableDesc& desc, const String& tableName)
+rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
 {
     String tabName = Path(tableName).absoluteName();
-    uInt nrow, format;
+    rownr_t nrow;
+    uInt format;
     String tp;
     AipsIO ios (Table::fileName(tabName));
-    ios.getstart ("Table");
-    ios >> nrow;
+    uInt version = ios.getstart ("Table");
+    if (version > 2) {
+      ios >> nrow;
+    } else {
+      uInt n;
+      ios >> n;
+      nrow = n;
+    }
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
@@ -633,8 +640,15 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
     //# Determine the kind of table by reading the type.
     String tp;
     uInt version = ios.getstart ("Table");
-    uInt nrrow, format;
-    ios >> nrrow;
+    uInt format;
+    rownr_t nrrow;
+    if (version > 2) {
+      ios >> nrrow;
+    } else {
+      uInt n;
+      ios >> n;
+      nrrow = n;
+    }
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
@@ -1072,7 +1086,7 @@ ostream& operator<< (ostream& ios, const Table& tab)
     ios << "  (";
     ios << tab.tableDesc().ncolumn();
     ios << " columns, ",
-    ios << tab.nrow();
+      ios << uInt(tab.nrow());
     ios << " rows)";
     ios << endl;
     return ios;

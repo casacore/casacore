@@ -318,7 +318,7 @@ void ColumnsIndex::readData()
 {
   // Acquire a lock if needed.
   TableLocker locker(itsTable, FileLocker::Read);
-  uInt nrrow = itsTable.nrow();
+  rownr_t nrrow = itsTable.nrow();
   if (nrrow != itsNrrow) {
     itsColumnChanged.set (True);
     itsChanged = True;
@@ -465,12 +465,13 @@ void ColumnsIndex::readData()
   itsChanged = False;
 }
 
-uInt ColumnsIndex::bsearch (Bool& found, const Block<void*>& fieldPtrs) const
+rownr_t ColumnsIndex::bsearch (Bool& found, const Block<void*>& fieldPtrs) const
 {
   found = False;
-  Int lower = 0;
-  Int upper = itsUniqueIndex.nelements() - 1;
-  Int middle = 0;
+  Int64 lower = 0;
+  Int64 upper = itsUniqueIndex.nelements();
+  upper--;
+  Int64 middle = 0;
   while (lower <= upper) {
     middle = (upper + lower) / 2;
     Int cmp = itsCompare (fieldPtrs, itsData, itsDataTypes,
@@ -624,13 +625,13 @@ Int ColumnsIndex::compare (const Block<void*>& fieldPtrs,
   return 0;
 }
  
-uInt ColumnsIndex::getRowNumber (Bool& found, const Record& key)
+rownr_t ColumnsIndex::getRowNumber (Bool& found, const Record& key)
 {
   copyKey (itsLowerFields, key);
   return getRowNumber (found);
 }
 
-uInt ColumnsIndex::getRowNumber (Bool& found)
+rownr_t ColumnsIndex::getRowNumber (Bool& found)
 {
   if (!isUnique()) {
     throw (TableError ("ColumnsIndex::getRowNumber only possible "
@@ -638,7 +639,7 @@ uInt ColumnsIndex::getRowNumber (Bool& found)
   }
   // Read the data (if needed).
   readData();
-  uInt inx = bsearch (found, itsLowerFields);
+  rownr_t inx = bsearch (found, itsLowerFields);
   if (found) {
     inx = itsDataInx[inx];
   }
@@ -656,7 +657,7 @@ Vector<uInt> ColumnsIndex::getRowNumbers()
   // Read the data (if needed).
   readData();
   Bool found;
-  uInt inx = bsearch (found, itsLowerFields);
+  rownr_t inx = bsearch (found, itsLowerFields);
   Vector<uInt> rows;
   if (found) {
     fillRowNumbers (rows, inx, inx+1);
@@ -683,14 +684,14 @@ Vector<uInt> ColumnsIndex::getRowNumbers (Bool lowerInclusive,
   // Try to find the lower key. If not found, bsearch is giving the
   // index of the next higher key.
   // So increment the start index if found and is not to be included.
-  uInt start = bsearch (found, itsLowerFields);
+  rownr_t start = bsearch (found, itsLowerFields);
   if (found  &&  !lowerInclusive) {
     start++;
   }
   // Try to find the upper key.
   // Increment the end index such that it is not inclusive
   // (thus increment if the found end index is to be included).
-  uInt end = bsearch (found, itsUpperFields);
+  rownr_t end = bsearch (found, itsUpperFields);
   if (found  &&  upperInclusive) {
     end++;
   }
@@ -702,7 +703,7 @@ Vector<uInt> ColumnsIndex::getRowNumbers (Bool lowerInclusive,
 }
 
 void ColumnsIndex::fillRowNumbers (Vector<uInt>& rows,
-				   uInt start, uInt end) const
+				   rownr_t start, rownr_t end) const
 {
   start = itsUniqueInx[start];
   if (end < itsUniqueIndex.nelements()) {
@@ -710,7 +711,7 @@ void ColumnsIndex::fillRowNumbers (Vector<uInt>& rows,
   } else {
     end = itsDataIndex.nelements();
   }
-  uInt nr = end-start;
+  rownr_t nr = end-start;
   rows.resize (nr);
   Bool deleteIt;
   uInt* rowStorage = rows.getStorage (deleteIt);

@@ -120,16 +120,16 @@ public:
     const ColumnDesc& columnDesc() const;
 
     // Get nr of rows in the column.
-    virtual uInt nrow() const = 0;
+    virtual rownr_t nrow() const = 0;
 
     // Test if the given cell contains a defined value.
-    virtual Bool isDefined (uInt rownr) const = 0;
+    virtual Bool isDefined (rownr_t rownr) const = 0;
 
     // Set the shape of the array in the given row.
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Set the shape and tile shape of the array in the given row.
-    virtual void setShape (uInt rownr, const IPosition& shape,
+    virtual void setShape (rownr_t rownr, const IPosition& shape,
 			   const IPosition& tileShape);
 
     // Get the global #dimensions of an array (ie. for all rows).
@@ -139,13 +139,13 @@ public:
     virtual IPosition shapeColumn() const;
 
     // Get the #dimensions of an array in a particular cell.
-    virtual uInt ndim (uInt rownr) const;
+    virtual uInt ndim (rownr_t rownr) const;
 
     // Get the shape of an array in a particular cell.
-    virtual IPosition shape (uInt rownr) const;
+    virtual IPosition shape (rownr_t rownr) const;
 
     // Get the tile shape of an array in a particular cell.
-    virtual IPosition tileShape (uInt rownr) const;
+    virtual IPosition tileShape (rownr_t rownr) const;
 
     // Ask the data manager if the shape of an existing array can be changed.
     // Default is no.
@@ -153,16 +153,16 @@ public:
 
     // Initialize the rows from startRow till endRow (inclusive)
     // with the default value defined in the column description.
-    virtual void initialize (uInt startRownr, uInt endRownr) = 0;
+    virtual void initialize (rownr_t startRownr, rownr_t endRownr) = 0;
 
     // Get a scalar value from a particular cell.
-    virtual void get (uInt rownr, void* dataPtr) const;
+    virtual void get (rownr_t rownr, void* dataPtr) const;
 
     // Get an array from a particular cell.
-    virtual void getArray (uInt rownr, ArrayBase& dataPtr) const;
+    virtual void getArray (rownr_t rownr, ArrayBase& dataPtr) const;
 
     // Get a slice of an N-dimensional array in a particular cell.
-    virtual void getSlice (uInt rownr, const Slicer&, ArrayBase& dataPtr) const;
+    virtual void getSlice (rownr_t rownr, const Slicer&, ArrayBase& dataPtr) const;
 
     // Get the vector of all scalar values in a column.
     virtual void getScalarColumn (ArrayBase& dataPtr) const;
@@ -194,13 +194,13 @@ public:
 				      const Slicer&, ArrayBase& dataPtr) const;
 
     // Put the scalar value in a particular cell.
-    virtual void put (uInt rownr, const void* dataPtr);
+    virtual void put (rownr_t rownr, const void* dataPtr);
 
     // Put the array value in a particular cell.
-    virtual void putArray (uInt rownr, const ArrayBase& dataPtr);
+    virtual void putArray (rownr_t rownr, const ArrayBase& dataPtr);
 
     // Put a slice of an N-dimensional array in a particular cell.
-    virtual void putSlice (uInt rownr, const Slicer&, const ArrayBase& dataPtr);
+    virtual void putSlice (rownr_t rownr, const Slicer&, const ArrayBase& dataPtr);
 
     // Put the vector of all scalar values in the column.
     virtual void putScalarColumn (const ArrayBase& dataPtr);
@@ -236,43 +236,43 @@ public:
     // Note that an unsigned integer cannot be converted to a signed integer
     // with the same length. So only Int64 can handle all integer values.
     // <group>
-    void getScalar (uInt rownr, Bool& value) const;
-    void getScalar (uInt rownr, uChar& value) const;
-    void getScalar (uInt rownr, Short& value) const;
-    void getScalar (uInt rownr, uShort& value) const;
-    void getScalar (uInt rownr, Int& value) const;
-    void getScalar (uInt rownr, uInt& value) const;
-    void getScalar (uInt rownr, Int64& value) const;
-    void getScalar (uInt rownr, float& value) const;
-    void getScalar (uInt rownr, double& value) const;
-    void getScalar (uInt rownr, Complex& value) const;
-    void getScalar (uInt rownr, DComplex& value) const;
-    void getScalar (uInt rownr, String& value) const;
-    void getScalar (uInt rownr, TableRecord& value) const;
+    void getScalar (rownr_t rownr, Bool& value) const;
+    void getScalar (rownr_t rownr, uChar& value) const;
+    void getScalar (rownr_t rownr, Short& value) const;
+    void getScalar (rownr_t rownr, uShort& value) const;
+    void getScalar (rownr_t rownr, Int& value) const;
+    void getScalar (rownr_t rownr, uInt& value) const;
+    void getScalar (rownr_t rownr, Int64& value) const;
+    void getScalar (rownr_t rownr, float& value) const;
+    void getScalar (rownr_t rownr, double& value) const;
+    void getScalar (rownr_t rownr, Complex& value) const;
+    void getScalar (rownr_t rownr, DComplex& value) const;
+    void getScalar (rownr_t rownr, String& value) const;
+    void getScalar (rownr_t rownr, TableRecord& value) const;
     // </group>
 
     // Get a scalar for the other data types.
     // The given data type id must match the data type id of this column.
-    void getScalar (uInt rownr, void* value, const String& dataTypeId) const;
+    void getScalar (rownr_t rownr, void* value, const String& dataTypeId) const;
 
     // Put the value into the row and convert it from the given type.
     // This can only be used for scalar columns with a standard data type.
     // <group>
-    void putScalar (uInt rownr, const Bool& value);
-    void putScalar (uInt rownr, const uChar& value);
-    void putScalar (uInt rownr, const Short& value);
-    void putScalar (uInt rownr, const uShort& value);
-    void putScalar (uInt rownr, const Int& value);
-    void putScalar (uInt rownr, const uInt& value);
-    void putScalar (uInt rownr, const Int64& value);
-    void putScalar (uInt rownr, const float& value);
-    void putScalar (uInt rownr, const double& value);
-    void putScalar (uInt rownr, const Complex& value);
-    void putScalar (uInt rownr, const DComplex& value);
-    void putScalar (uInt rownr, const String& value);
-    void putScalar (uInt rownr, const Char* value)
+    void putScalar (rownr_t rownr, const Bool& value);
+    void putScalar (rownr_t rownr, const uChar& value);
+    void putScalar (rownr_t rownr, const Short& value);
+    void putScalar (rownr_t rownr, const uShort& value);
+    void putScalar (rownr_t rownr, const Int& value);
+    void putScalar (rownr_t rownr, const uInt& value);
+    void putScalar (rownr_t rownr, const Int64& value);
+    void putScalar (rownr_t rownr, const float& value);
+    void putScalar (rownr_t rownr, const double& value);
+    void putScalar (rownr_t rownr, const Complex& value);
+    void putScalar (rownr_t rownr, const DComplex& value);
+    void putScalar (rownr_t rownr, const String& value);
+    void putScalar (rownr_t rownr, const Char* value)
         { putScalar (rownr, String(value)); }
-    void putScalar (uInt rownr, const TableRecord& value);
+    void putScalar (rownr_t rownr, const TableRecord& value);
     // </group>
 
     // Get a pointer to the underlying column cache.

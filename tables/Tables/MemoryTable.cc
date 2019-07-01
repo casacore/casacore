@@ -40,7 +40,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
+MemoryTable::MemoryTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
 : BaseTable   (newtab.name(), newtab.option(), 0),
   colSetPtr_p (0),
   lockPtr_p   (0)
@@ -219,7 +219,7 @@ Bool MemoryTable::canAddRow() const
   return True;
 }
 
-void MemoryTable::addRow (uInt nrrw, Bool initialize)
+void MemoryTable::addRow (rownr_t nrrw, Bool initialize)
 {
   if (nrrw > 0) {
     nrrowToAdd_p = nrrw;
@@ -237,7 +237,7 @@ Bool MemoryTable::canRemoveRow() const
   return True;
 }
 
-void MemoryTable::removeRow (uInt rownr)
+void MemoryTable::removeRow (rownr_t rownr)
 {
   colSetPtr_p->removeRow (rownr);
   nrrow_p--;

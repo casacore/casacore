@@ -553,7 +553,7 @@ public:
     // <br> The number of rows is returned. The description of the table
     // is stored in desc (its contents will be overwritten).
     // <br> An exception is thrown if the table does not exist.
-    static uInt getLayout (TableDesc& desc, const String& tableName);
+    static rownr_t getLayout (TableDesc& desc, const String& tableName);
 
     // Get the table info of the table with the given name.
     // An empty object is returned if the table is unknown.

@@ -149,13 +149,13 @@ public:
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
     // Use the function isDefined to test if the cell contains an array.
-    uInt ndim (uInt rownr) const
+    uInt ndim (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
 
     // Get the shape of an array in a particular cell.
     // If the cell does not contain an array, a 0-dim shape is returned.
     // Use the function isDefined to test if the cell contains an array.
-    IPosition shape (uInt rownr) const
+    IPosition shape (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->shape (rownr); }
 
     // Get the array value in a particular cell (i.e. table row).
@@ -165,9 +165,9 @@ public:
     // array must be empty or its shape must conform the table array shape.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void get (uInt rownr, Array<T>& array, Bool resize = False) const;
-    Array<T> get (uInt rownr) const;
-    Array<T> operator() (uInt rownr) const;
+    void get (rownr_t rownr, Array<T>& array, Bool resize = False) const;
+    Array<T> get (rownr_t rownr) const;
+    Array<T> operator() (rownr_t rownr) const;
     // </group>
 
     // Get a slice of an N-dimensional array in a particular cell
@@ -182,9 +182,9 @@ public:
     // table array slice.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void getSlice (uInt rownr, const Slicer& arraySection, Array<T>& array,
+    void getSlice (rownr_t rownr, const Slicer& arraySection, Array<T>& array,
 		   Bool resize = False) const;
-    Array<T> getSlice (uInt rownr, const Slicer& arraySection) const;
+    Array<T> getSlice (rownr_t rownr, const Slicer& arraySection) const;
     // </group>
 
     // Get an irregular slice of an N-dimensional array in a particular cell
@@ -212,10 +212,10 @@ public:
     // array.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void getSlice (uInt rownr,
+    void getSlice (rownr_t rownr,
                    const Vector<Vector<Slice> >& arraySlices,
                    Array<T>& arr, Bool resize = False) const;
-    Array<T> getSlice (uInt rownr,
+    Array<T> getSlice (rownr_t rownr,
                        const Vector<Vector<Slice> >& arraySlices) const;
     // </group>
 
@@ -334,10 +334,10 @@ public:
     // Setting the shape is needed if the array is put in slices,
     // otherwise the table system would not know the shape.
     // <group>
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Try to store the array in a tiled way using the given tile shape.
-    void setShape (uInt rownr, const IPosition& shape,
+    void setShape (rownr_t rownr, const IPosition& shape,
 		   const IPosition& tileShape);
     // </group>
 
@@ -345,7 +345,7 @@ public:
     // The row numbers count from 0 until #rows-1.
     // If the shape of the table array in that cell has not already been
     // defined, it will be defined implicitly.
-    void put (uInt rownr, const Array<T>& array);
+    void put (rownr_t rownr, const Array<T>& array);
 
     // Copy the value of a cell of that column to a cell of this column.
     // This function uses a generic TableColumn object as input.
@@ -353,12 +353,12 @@ public:
     // exception is thrown.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const TableColumn& that,
+    void put (rownr_t rownr, const TableColumn& that,
               Bool preserveTileShape=False)
       { put (rownr, that, rownr, preserveTileShape); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
+    void put (rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
               Bool preserveTileShape=False);
     // </group>
 
@@ -368,10 +368,10 @@ public:
     // The dimensionality of the slice must match the dimensionality
     // of the table array and the slice definition should not exceed
     // the shape of the table array.
-    void putSlice (uInt rownr, const Slicer& arraySection,
+    void putSlice (rownr_t rownr, const Slicer& arraySection,
 		   const Array<T>& array);
 
-    void putSlice (uInt rownr, const Vector<Vector<Slice> >& arraySlices,
+    void putSlice (rownr_t rownr, const Vector<Vector<Slice> >& arraySlices,
                    const Array<T>& arr);
 
     // Put the array of all values in the column.
