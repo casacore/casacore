@@ -55,26 +55,26 @@ TabVecScaCol<T>::~TabVecScaCol ()
 
 
 template<class T>
-uInt TabVecScaCol<T>::nelem() const
+rownr_t TabVecScaCol<T>::nelem() const
     { return colPtr_p->nrow(); }
 
 template<class T>
-T TabVecScaCol<T>::value (uInt i) const
+T TabVecScaCol<T>::value (rownr_t i) const
     { return (*colPtr_p)(i); }
 
 template<class T>
-void TabVecScaCol<T>::getVal (uInt i, T& val) const
+void TabVecScaCol<T>::getVal (rownr_t i, T& val) const
     { colPtr_p->get (i, val); }
 
 template<class T>
-void TabVecScaCol<T>::putVal (uInt i, const T& val)
+void TabVecScaCol<T>::putVal (rownr_t i, const T& val)
     { colPtr_p->put (i, val); }
 
 template<class T>
 void TabVecScaCol<T>::set (const T& val)
 {
-    uInt nrrow = colPtr_p->nrow();
-    for (uInt i=0; i<nrrow; i++) {
+    rownr_t nrrow = colPtr_p->nrow();
+    for (rownr_t i=0; i<nrrow; i++) {
 	colPtr_p->put (i, val);
     }
 }

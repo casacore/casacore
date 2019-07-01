@@ -38,10 +38,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T> \
 Bool aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& l, const TabVecRep<T>& r) \
 { \
-    uInt nr = r.nelements(); \
+    rownr_t nr = r.nelements(); \
     l.validateConformance(nr); \
     Bool retval = True; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
         if (! (l.value(i) OP r.value(i))) { \
 	    retval = False; \
 	    break; \
@@ -52,9 +52,9 @@ Bool aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& l, const TabVecRep<T>& r)
 template<class T> \
 Bool aips_name2(tabVecRepvalr,NAME) (const TabVecRep<T>& tv, const T& val) \
 { \
-    uInt nr = tv.nelements(); \
+    rownr_t nr = tv.nelements(); \
     Bool retval = True; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
         if (! (tv.value(i) OP val)) { \
 	    retval = False; \
 	    break; \
@@ -65,9 +65,9 @@ Bool aips_name2(tabVecRepvalr,NAME) (const TabVecRep<T>& tv, const T& val) \
 template<class T> \
 Bool aips_name2(tabVecRepvall,NAME) (const T& val, const TabVecRep<T>& tv) \
 { \
-    uInt nr = tv.nelements(); \
+    rownr_t nr = tv.nelements(); \
     Bool retval = True; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
         if (! (val OP tv.value(i))) { \
 	    retval = False; \
 	    break; \

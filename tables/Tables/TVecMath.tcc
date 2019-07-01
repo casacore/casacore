@@ -44,9 +44,9 @@ template<class T> \
 TabVecRep<T>& aips_name2(tabVecRepvalr,NAME) (const TabVecRep<T>& tv, \
                                               const T& val) \
 { \
-    uInt nr = tv.nelements(); \
+    rownr_t nr = tv.nelements(); \
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tv.newVec(); \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tv.getVal (i, vec(i)); \
 	vec(i) OPA val; \
     } \
@@ -56,10 +56,10 @@ template<class T> \
 TabVecRep<T>& aips_name2(tabVecRepvall,NAME) (const T& val, \
                                               const TabVecRep<T>& tv) \
 { \
-    uInt nr = tv.nelements(); \
+    rownr_t nr = tv.nelements(); \
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tv.newVec(); \
     T tmp; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tv.getVal (i, tmp); \
 	vec(i) = val OP tmp; \
     } \
@@ -69,10 +69,10 @@ template<class T> \
 TabVecRep<T>& aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& tvl, \
                                             const TabVecRep<T>& tvr) \
 { \
-    uInt nr = tvr.nelements(); \
+    rownr_t nr = tvr.nelements(); \
     tvl.validateConformance(nr); \
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tvl.newVec(); \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tvl.getVal (i, vec(i)); \
 	vec(i) OPA tvr.value(i); \
     } \
@@ -81,9 +81,9 @@ TabVecRep<T>& aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& tvl, \
 template<class T> \
 void aips_name2(tabVecRepvalass,NAME) (TabVecRep<T>& tv, const T& val) \
 { \
-    uInt nr = tv.nelements(); \
+    rownr_t nr = tv.nelements(); \
     T tmp; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tv.getVal (i, tmp); \
 	tmp OPA val; \
 	tv.putVal (i, tmp); \
@@ -93,10 +93,10 @@ template<class T> \
 void aips_name2(tabVecReptvass,NAME) (TabVecRep<T>& tvl, \
                                       const TabVecRep<T>& tvr) \
 { \
-    uInt nr = tvr.nelements(); \
+    rownr_t nr = tvr.nelements(); \
     tvl.validateConformance(nr); \
     T tmp; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tvl.getVal (i, tmp); \
 	tmp OPA tvr.value(i); \
 	tvl.putVal (i, tmp); \
@@ -113,10 +113,10 @@ TVECMATHOPER(div,/,/=)
 template<class T>
 TabVecRep<T>& tabVecRepnegate(const TabVecRep<T>& tv)
 {
-    uInt nr = tv.nelements();
+    rownr_t nr = tv.nelements();
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tv.newVec();
     T tmp;
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	tv.getVal (i, tmp);
 	vec(i) = -tmp;
     }
@@ -127,7 +127,7 @@ TabVecRep<T>& tabVecRepnegate(const TabVecRep<T>& tv)
 template<class T>
 void tabVecRepminmax (T& min, T& max, const TabVecRep<T>& tv)
 {
-    uInt nr = tv.nelements();
+    rownr_t nr = tv.nelements();
     if (nr == 0) {
 	throw(ArrayError("void minMax(T& min, T& max, const TabVecRep<T>&) - "
 			 "TabVecRep has no elements"));
@@ -135,7 +135,7 @@ void tabVecRepminmax (T& min, T& max, const TabVecRep<T>& tv)
     T tmp;
     tv.getVal (0, min);
     max = min;
-    for (uInt i=1; i<nr; i++) {
+    for (rownr_t i=1; i<nr; i++) {
         tv.getVal (i, tmp);
 	if (tmp < min)
 	    min = tmp;
@@ -148,8 +148,8 @@ void tabVecRepminmax (T& min, T& max, const TabVecRep<T>& tv)
 template<class T>
 void tabVecRepindgen(TabVecRep<T>& tv, Int start, Int inc)
 {
-    uInt nr = tv.nelements();
-    for (uInt i=0; i<nr; i++) {
+    rownr_t nr = tv.nelements();
+    for (rownr_t i=0; i<nr; i++) {
 	tv.putVal (i, start + i*inc);
     }
 }
@@ -159,10 +159,10 @@ void tabVecRepindgen(TabVecRep<T>& tv, Int start, Int inc)
 template<class T> \
 TabVecRep<T>& aips_name2(tabVecRep,NAME) (const TabVecRep<T>& tv) \
 { \
-    uInt nr = tv.nelements(); \
+    rownr_t nr = tv.nelements(); \
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tv.newVec(); \
     T tmp; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tv.getVal (i, tmp); \
 	vec(i) = NAME(tmp); \
     } \
@@ -174,11 +174,11 @@ template<class T> \
 TabVecRep<T>& aips_name2(tabVecRep,NAME) (const TabVecRep<T>& tvl, \
                                           const TabVecRep<T>& tvr) \
 { \
-    uInt nr = tvr.nelements(); \
+    rownr_t nr = tvr.nelements(); \
     tvl.validateConformance(nr); \
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tvl.newVec(); \
     T tmpl, tmpr; \
-    for (uInt i=0; i<nr; i++) { \
+    for (rownr_t i=0; i<nr; i++) { \
 	tvl.getVal (i, tmpl); \
 	tvr.getVal (i, tmpr); \
 	vec(i) = NAME(tmpl, tmpr); \
@@ -210,10 +210,10 @@ TABVECFUNC (tanh)
 template<class T>
 TabVecRep<T>& tabVecReppowd (const TabVecRep<T>& tv, const double& exp)
 {
-    uInt nr = tv.nelements();
+    rownr_t nr = tv.nelements();
     TabVecTemp<T>& vec = *(TabVecTemp<T>*)tv.newVec();
     T tmp;
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	tv.getVal (i, tmp);
 	vec(i) = pow(tmp, exp);
     }
@@ -224,14 +224,14 @@ TabVecRep<T>& tabVecReppowd (const TabVecRep<T>& tv, const double& exp)
 template<class T>
 T tabVecRepsum (const TabVecRep<T>& tv)
 {
-    uInt nr = tv.nelements();
+    rownr_t nr = tv.nelements();
     if (nr == 0) {
 	throw(ArrayError("T sum(const TabVecRep<T>&) - "
 			 "TabVecRep has no elements"));
     }
     T tmp, res;
     tv.getVal (0, res);
-    for (uInt i=1; i<nr; i++) {
+    for (rownr_t i=1; i<nr; i++) {
 	tv.getVal (i, tmp);
 	res += tmp;
     }
@@ -241,14 +241,14 @@ T tabVecRepsum (const TabVecRep<T>& tv)
 template<class T>
 T tabVecRepproduct (const TabVecRep<T>& tv)
 {
-    uInt nr = tv.nelements();
+    rownr_t nr = tv.nelements();
     if (nr == 0) {
 	throw(ArrayError("T product(const TabVecRep<T>&) - "
 			 "TabVecRep has no elements"));
     }
     T tmp, res;
     tv.getVal (0, res);
-    for (uInt i=1; i<nr; i++) {
+    for (rownr_t i=1; i<nr; i++) {
 	tv.getVal (i, tmp);
 	res *= tmp;
     }
@@ -259,10 +259,10 @@ T tabVecRepproduct (const TabVecRep<T>& tv)
 template<class T>
 T tabVecRepinnerproduct (const TabVecRep<T>& tvl, const TabVecRep<T>& tvr)
 {
-    uInt nr = tvr.nelements();
+    rownr_t nr = tvr.nelements();
     tvl.validateConformance(nr);
     T res = 0;
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	res += tvl.value(i) * tvr.value(i);
     }
     return res;
@@ -271,10 +271,10 @@ T tabVecRepinnerproduct (const TabVecRep<T>& tvl, const TabVecRep<T>& tvr)
 template<class T>
 T tabVecRepnorm (const TabVecRep<T>& tv)
 {
-    uInt nr = tv.nelements();
+    rownr_t nr = tv.nelements();
     T tmp;
     T res = 0;
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	tv.getVal (i, tmp);
 	res += tmp*tmp;
     }
