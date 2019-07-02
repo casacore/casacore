@@ -49,7 +49,7 @@
 /* Define functions to set the EXPRstate or TABLENAMEstate.
    Unfortunately the symbolic state names above cannot be used because
    Flex defines them just before %% below. So ensure that the values
-   below are indeed the 2nd and 3rd state above (INITIALstate=0).
+   below are indeed the 2nd and 3rd state above (note: INITIALstate=0).
 */
 %{
   void setEXPRstate()      { BEGIN(2); }
@@ -735,7 +735,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return TABNAME;
 	  }
 
- /* A table file name can be given in the UPDATE, FROM, GIVING, CRETAB clause */
+ /* An unquoted table file name can be given at several places */
 <TABLENAMEstate,SHOWstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(

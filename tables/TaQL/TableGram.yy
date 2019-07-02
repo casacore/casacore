@@ -268,7 +268,7 @@ topcomm:   topcomm1
          | topcomm1 SEMICOL
          ;
 
-/* A command can be preceeded by the TIME keyword and style arguments */
+/* A command can be preceded by the TIME keyword and style arguments */
 topcomm1:  command
          | sttimcoms command
          ;
@@ -423,7 +423,7 @@ selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limito
            }
          ;
 
-/* The column list can be preceeded by ALL or DISTINCT */
+/* The column list can be preceded by ALL or DISTINCT */
 selcol:    normcol {
                $$ = $1;
            }
@@ -1346,7 +1346,7 @@ concslist: NAME {
 concgiven: GIVING {
                setTABLENAMEstate();
            }
-         | INTO tabname {
+         | INTO {
                setTABLENAMEstate();
            }
 concinto:  {   /* no GIVING */
