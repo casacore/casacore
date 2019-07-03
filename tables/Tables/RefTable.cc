@@ -33,6 +33,7 @@
 #include <casacore/tables/Tables/TableTrace.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/OS/Path.h>
@@ -77,7 +78,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
-RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
+RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
 : BaseTable    ("", Table::Scratch, rownrs.nelements()),
   baseTabPtr_p (btp->root()),
   rowOrd_p     (True),
@@ -182,10 +183,10 @@ void RefTable::getPartNames (Block<String>& names, Bool recursive) const
   }
 }
 
-uInt* RefTable::getStorage (Vector<uInt>& rownrs)
+rownr_t* RefTable::getStorage (Vector<rownr_t>& rownrs)
 {
     Bool deleteIt;
-    uInt* p = rownrs.getStorage (deleteIt);
+    rownr_t* p = rownrs.getStorage (deleteIt);
     AlwaysAssert (deleteIt == False, AipsError);
     return p;
 }
@@ -255,16 +256,16 @@ uInt RefTable::getModifyCounter() const
 
 
 //# Adjust the input rownrs to the actual rownrs in the root table.
-Bool RefTable::adjustRownrs (rownr_t nr, Vector<uInt>& rowStorage,
+Bool RefTable::adjustRownrs (rownr_t nr, Vector<rownr_t>& rowStorage,
 			     Bool determineOrder) const
 {
-    uInt* rownrs = getStorage (rowStorage);
+    rownr_t* rownrs = getStorage (rowStorage);
     Bool rowOrder = True;
-    for (uInt i=0; i<nr; i++) {
+    for (rownr_t i=0; i<nr; i++) {
 	rownrs[i] = rows_p[rownrs[i]];
     }
     if (determineOrder) {
-	for (uInt i=1; i<nr; i++) {
+	for (rownr_t i=1; i<nr; i++) {
 	    if (rownrs[i] <= rownrs[i-1]) {
 		rowOrder = False;
 		break;
@@ -282,10 +283,17 @@ void RefTable::writeRefTable (Bool)
     //# Do this only when something has changed.
     if (changed_p) {
         TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'w');
+        // Write old version if all row numbers fit in 32 bits.
+        Int version = 3;
+        if (nrrow_p < std::numeric_limits<uInt>::max()  &&
+            baseTabPtr_p->nrow() < std::numeric_limits<uInt>::max()  &&
+            allLT (rowStorage_p, rownr_t(std::numeric_limits<uInt>::max()))) {
+          version = 2;
+        }
 	AipsIO ios;
 	writeStart (ios, True);
 	ios << "RefTable";
-	ios.putstart ("RefTable", 3);
+	ios.putstart ("RefTable", version);
 	// Make the name of the base table relative to this table.
 	ios << Path::stripDirectory (baseTabPtr_p->tableName(),
 				     tableName());
@@ -296,14 +304,30 @@ void RefTable::writeRefTable (Bool)
 	    names(i) = tdescPtr_p->columnDesc(i).name();
 	}
 	ios << names;
-	ios << baseTabPtr_p->nrow();
-	ios << rowOrd_p;
-        ios << nrrow_p;
+        if (version == 2) {
+          ios << uInt(baseTabPtr_p->nrow());
+          ios << rowOrd_p;
+          ios << uInt(nrrow_p);
+        } else {
+          ios << baseTabPtr_p->nrow();
+          ios << rowOrd_p;
+          ios << nrrow_p;
+        }
         // Do not write more than 2**20 rownrs at once (CAS-7020).
+        Vector<uInt> rows32;
+        if (version == 2) {
+          rows32.resize (nrrow_p);
+          convertArray (rows32, rowStorage_p(Slice(0, nrrow_p)));
+        }
+        const uInt* rows32p = rows32.data();
         rownr_t done = 0;
         while (done < nrrow_p) {
           rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
-          ios.put (todo, rows_p+done, False);
+          if (version == 2) {
+            ios.put (todo, rows32p+done, False);
+          } else {
+            ios.put (todo, rows_p+done, False);
+          }
           done += todo;
         }
 	ios.putend();
@@ -322,6 +346,10 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     String rootName;
     rownr_t rootNrow, nrrow;
     Int version = ios.getstart ("RefTable");
+    if (version > 3) {
+      throw TableError ("RefTable version " + String::toString(version) +
+                        " not supported by this version of Cassacore");
+    }
     ios >> rootName;
     rootName = Path::addDirectory (rootName, tableName());
     ios >> nameMap_p;
@@ -341,12 +369,23 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     //# Resize the block of rownrs and read them in.
     rowStorage_p.resize (nrrow);
     rows_p = getStorage (rowStorage_p);
-    // Do not read more than 2**20 rows at once (CAS-7020).
     rownr_t done = 0;
-    while (done < nrrow) {
-      rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
-      ios.get (todo, rows_p+done);
-      done += todo;
+    // Do not read more than 2**20 rows at once (CAS-7020).
+    if (version > 2) {
+      while (done < nrrow) {
+        rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
+        ios.get (todo, rows_p+done);
+        done += todo;
+      }
+    } else {
+      Vector<uInt> rows(nrrow);
+      uInt* p = rows.data();
+      while (done < nrrow) {
+        rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
+        ios.get (todo, p+done);
+        done += todo;
+      }
+      convertArray (rowStorage_p, rows);
     }
     ios.getend();
     //# Now read in the root table referenced to.
@@ -667,14 +706,14 @@ BaseColumn* RefTable::getColumn (uInt columnIndex) const
 }
     
 
-Vector<uInt>* RefTable::rowStorage()
+Vector<rownr_t>* RefTable::rowStorage()
     { return &rowStorage_p; }
 
 //# Convert a vector of row numbers to row numbers in this table.
-Vector<uInt> RefTable::rootRownr (const Vector<uInt>& rownrs) const
+Vector<rownr_t> RefTable::rootRownr (const Vector<rownr_t>& rownrs) const
 {
     rownr_t nrow = rownrs.nelements();
-    Vector<uInt> rnr(nrow);
+    Vector<rownr_t> rnr(nrow);
     for (rownr_t i=0; i<nrow; i++) {
 	rnr(i) = rows_p[rownrs(i)];
     }
@@ -687,12 +726,12 @@ BaseTable* RefTable::root()
 Bool RefTable::rowOrder() const
     { return rowOrd_p; }
 
-Vector<uInt> RefTable::rowNumbers () const
+Vector<rownr_t> RefTable::rowNumbers() const
 {
     if (nrrow_p == rowStorage_p.nelements()) {
 	return rowStorage_p;
     }
-    Vector<uInt> vec (rowStorage_p);
+    Vector<rownr_t> vec (rowStorage_p);
     return vec(Slice(0, nrrow_p));
 }
 
@@ -827,13 +866,13 @@ DataManager* RefTable::findDataManager (const String& name, Bool byColumn) const
 
 
 // And 2 index arrays, which are both in ascending order.
-void RefTable::refAnd (uInt nr1, const uInt* inx1,
-		       uInt nr2, const uInt* inx2)
+void RefTable::refAnd (rownr_t nr1, const rownr_t* inx1,
+		       rownr_t nr2, const rownr_t* inx2)
 {
-    uInt allrow = (nr1 < nr2  ?  nr1 : nr2);  // max #output rows
+    rownr_t allrow = (nr1 < nr2  ?  nr1 : nr2);  // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
     rows_p = getStorage (rowStorage_p);
-    uInt i1, i2, row1, row2;
+    rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
@@ -863,13 +902,13 @@ void RefTable::refAnd (uInt nr1, const uInt* inx1,
 }
 
 // Or 2 index arrays, which are both in ascending order.
-void RefTable::refOr (uInt nr1, const uInt* inx1,
-		      uInt nr2, const uInt* inx2)
+void RefTable::refOr (rownr_t nr1, const rownr_t* inx1,
+		      rownr_t nr2, const rownr_t* inx2)
 {
-    uInt allrow = nr1 + nr2;                  // max #output rows
+    rownr_t allrow = nr1 + nr2;                  // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
     rows_p = getStorage (rowStorage_p);
-    uInt i1, i2, row1, row2;
+    rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
@@ -901,13 +940,13 @@ void RefTable::refOr (uInt nr1, const uInt* inx1,
 }
 
 // Subtract 2 index arrays, which are both in ascending order.
-void RefTable::refSub (uInt nr1, const uInt* inx1,
-		       uInt nr2, const uInt* inx2)
+void RefTable::refSub (rownr_t nr1, const rownr_t* inx1,
+		       rownr_t nr2, const rownr_t* inx2)
 {
-    uInt allrow = nr1;                        // max #output rows
+    rownr_t allrow = nr1;                        // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
     rows_p = getStorage (rowStorage_p);
-    uInt i1, i2, row1, row2;
+    rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
@@ -937,13 +976,13 @@ void RefTable::refSub (uInt nr1, const uInt* inx1,
 }
 
 // Xor 2 index arrays, which are both in ascending order.
-void RefTable::refXor (uInt nr1, const uInt* inx1,
-		       uInt nr2, const uInt* inx2)
+void RefTable::refXor (rownr_t nr1, const rownr_t* inx1,
+		       rownr_t nr2, const rownr_t* inx2)
 {
-    uInt allrow = nr1 + nr2;                  // max #output rows
+    rownr_t allrow = nr1 + nr2;                  // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
     rows_p = getStorage (rowStorage_p);
-    uInt i1, i2, row1, row2;
+    rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
@@ -974,16 +1013,16 @@ void RefTable::refXor (uInt nr1, const uInt* inx1,
 }
 
 // Negate a table.
-void RefTable::refNot (uInt nr, const uInt* inx, uInt nrtot)
+void RefTable::refNot (rownr_t nr, const rownr_t* inx, rownr_t nrtot)
 {
     // All rows not in the original table must be "selected".
     // The original table has NRTOT rows.
     // So loop through the inx-array and store all rownrs not in the array.
-    uInt allrow = nrtot - nr;                 // #output rows
+    rownr_t allrow = nrtot - nr;                 // #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
     rows_p = getStorage (rowStorage_p);
-    uInt start = 0;
-    uInt i, j;
+    rownr_t start = 0;
+    rownr_t i, j;
     for (i=0; i<nr; i++) {                    // loop through inx-array
 	for (j=start; j<inx[i]; j++) {
 	    rows_p[nrrow_p++] = j;            // not in inx-array

@@ -211,6 +211,10 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     AipsIO ios (Table::fileName(tabname), ByteIO::Old);
     String tp;
     version = ios.getstart ("Table");
+    if (version > 3) {
+      throw TableError ("PlainTable version " + String::toString(version) +
+                        " not supported by this version of Casacore");
+    }
     if (version > 2) {
       ios >> nrrow;
     } else {

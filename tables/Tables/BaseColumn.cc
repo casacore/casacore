@@ -213,7 +213,7 @@ void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
                        " is only valid for a scalar"));
 }
 void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
-				 const Vector<uInt>&, CountedPtr<ArrayBase>&)
+				 const Vector<rownr_t>&, CountedPtr<ArrayBase>&)
 {
   throw (TableInvOper ("makeSortKey(rownrs) for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));

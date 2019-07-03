@@ -57,6 +57,7 @@ Tables/RefColumn.cc
 Tables/RefRows.cc
 Tables/RefTable.cc
 Tables/RowCopier.cc
+Tables/RowNumbers.cc
 Tables/ScaColDesc_tmpl.cc
 Tables/ScalarColumn_tmpl.cc
 Tables/ScaRecordColData.cc
@@ -250,6 +251,7 @@ Tables/RefColumn.h
 Tables/RefRows.h
 Tables/RefTable.h
 Tables/RowCopier.h
+Tables/RowNumbers.h
 Tables/ScaColData.h
 Tables/ScaColData.tcc
 Tables/ScaColDesc.h

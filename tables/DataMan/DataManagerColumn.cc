@@ -223,11 +223,11 @@ void DataManagerColumn::putOther (rownr_t, const void*)
       iter++; \
     } \
   } else { \
-    const Vector<uInt>& rowvec = rownrs.rowVector(); \
+    const Vector<rownr_t>& rowvec = rownrs.rowVector(); \
     rownr_t nr = rowvec.nelements(); \
     if (nr > 0) { \
       Bool delR; \
-      const uInt* rows = rowvec.getStorage (delR); \
+      const rownr_t* rows = rowvec.getStorage (delR); \
       const T* cptr = static_cast<const T*>(colCache_p.dataPtr()); \
       rownr_t strow  = colCache_p.start(); \
       rownr_t endrow = colCache_p.end(); \

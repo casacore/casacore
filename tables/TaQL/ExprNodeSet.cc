@@ -744,7 +744,7 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
     }
 }
 
-TableExprNodeSet::TableExprNodeSet (const Vector<uInt>& rownrs,
+TableExprNodeSet::TableExprNodeSet (const Vector<rownr_t>& rownrs,
                                     const TableExprNodeSet& set)
 : TableExprNodeRep (set.dataType(), VTSet, OtUndef, Table()),
   itsElems         (rownrs.size() * set.size()),
@@ -757,7 +757,7 @@ TableExprNodeSet::TableExprNodeSet (const Vector<uInt>& rownrs,
 {
     // Fill in all values.
     uInt nrel = set.size();
-    for (uInt i=0; i<rownrs.size(); i++) {
+    for (rownr_t i=0; i<rownrs.size(); i++) {
         for (uInt j=0; j<nrel; j++) {
             itsElems[j+i*nrel] = set[j].evaluate (rownrs[i]);
         }

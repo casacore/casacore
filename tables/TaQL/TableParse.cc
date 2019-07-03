@@ -2002,7 +2002,7 @@ TableExprNode TableParseSelect::doExists (Bool notexists, Bool showTimings)
     timer.show ("  Exists query");
   }
   // Flag notexists tells if NOT EXISTS or EXISTS was given.
-  return TableExprNode (notexists == (table_p.nrow() < limit_p));
+  return TableExprNode (notexists == (Int64(table_p.nrow()) < limit_p));
 }
 
 //# Execute a subquery and create the correct node object for it.
@@ -2284,7 +2284,7 @@ void TableParseSelect::handleCount()
 
 //# Execute the updates.
 void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
-                                 Table& updTable, const Vector<uInt>& rownrs,
+                                 Table& updTable, const Vector<rownr_t>& rownrs,
                                  const CountedPtr<TableExprGroupResult>& groups)
 {
   Timer timer;
@@ -2387,7 +2387,7 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
   }
   // Loop through all rows in the table and update each row.
   TableExprIdAggr rowid(groups);
-  for (uInt row=0; row<rownrs.size(); ++row) {
+  for (rownr_t row=0; row<rownrs.size(); ++row) {
     rowid.setRownr (rownrs[row]);
     for (uInt i=0; i<nrkey; i++) {
       TableColumn& col = cols[i];
@@ -2539,7 +2539,7 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
 }
 
 template<typename TCOL, typename TNODE>
-void TableParseSelect::copyMaskedValue (uInt row, ArrayColumn<TCOL>& acol,
+void TableParseSelect::copyMaskedValue (rownr_t row, ArrayColumn<TCOL>& acol,
                                         const Slicer* slicerPtr,
                                         const TNODE* val,
                                         uInt incr, const Array<Bool>& mask)
@@ -2602,7 +2602,7 @@ Array<Bool> TableParseSelect::makeMaskSlice (const Array<Bool>& mask,
 }
 
 template<typename TCOL, typename TNODE>
-void TableParseSelect::updateScalar (uInt row, const TableExprId& rowid,
+void TableParseSelect::updateScalar (rownr_t row, const TableExprId& rowid,
                                      const TableExprNode& node,
                                      TableColumn& col)
 {
@@ -2613,7 +2613,7 @@ void TableParseSelect::updateScalar (uInt row, const TableExprId& rowid,
   col.putScalar (row, value);
 }
 template<typename TCOL, typename TNODE>
-void TableParseSelect::updateArray (uInt row, const TableExprId& rowid,
+void TableParseSelect::updateArray (rownr_t row, const TableExprId& rowid,
                                     const TableExprNode& node,
                                     const Array<TNODE>& res,
                                     ArrayColumn<TCOL>& col)
@@ -2631,7 +2631,7 @@ void TableParseSelect::updateArray (uInt row, const TableExprId& rowid,
   }
 }
 template<typename TCOL, typename TNODE>
-void TableParseSelect::updateSlice (uInt row, const TableExprId& rowid,
+void TableParseSelect::updateSlice (rownr_t row, const TableExprId& rowid,
                                     const TableExprNode& node,
                                     const Array<TNODE>& res,
                                     const Slicer& slice,
@@ -2682,7 +2682,7 @@ void TableParseSelect::checkMaskColumn (Bool hasMask,
 }
 
 template<typename TCOL, typename TNODE>
-void TableParseSelect::updateValue (uInt row, const TableExprId& rowid,
+void TableParseSelect::updateValue (rownr_t row, const TableExprId& rowid,
                                     Bool isScalarCol,
                                     const TableExprNode& node,
                                     const Array<Bool>& mask,
@@ -2778,9 +2778,9 @@ Table TableParseSelect::doInsert (Bool showTimings, Table& table)
     } else if (limit_p < 0) {
       nrow = table.nrow() + limit_p;
     }
-    Vector<uInt> newRownrs(nrow);
+    Vector<rownr_t> newRownrs(nrow);
     indgen (newRownrs, table.nrow());
-    Vector<uInt> selRownrs(1, table.nrow() + nrow);
+    Vector<rownr_t> selRownrs(1, table.nrow() + nrow);
     // Add new rows to TableExprNodeRowid.
     // It works because NodeRowid does not obey disableApplySelection.
     for (vector<TableExprNode>::iterator iter=applySelNodes_p.begin();
@@ -2841,14 +2841,14 @@ Table TableParseSelect::doInsert (Bool showTimings, Table& table)
     }
   }
   // Add the required nr of rows to the table and make a selection of it.
-  uInt rownr = table.nrow();
+  rownr_t rownr = table.nrow();
   table.addRow (sel.nrow());
-  Vector<uInt> rownrs(sel.nrow());
+  Vector<rownr_t> rownrs(sel.nrow());
   indgen (rownrs, rownr);     // fill with rownr, rownr+1, etc.
   Table tab = table(rownrs);
   TableRow rowto (tab, Vector<String>(columnNames_p));
   ROTableRow rowfrom (sel, Vector<String>(sourceNames));
-  for (uInt i=0; i<sel.nrow(); i++) {
+  for (rownr_t i=0; i<sel.nrow(); i++) {
     rowto.put (i, rowfrom.get(i), False);
   }
   if (showTimings) {
@@ -2899,7 +2899,7 @@ Table TableParseSelect::doCount (Bool showTimings, const Table& table)
   while (!iter.pastEnd()) {
     Table tabfrom = iter.table();
     // Add one row containing the column values.
-    uInt rownr = tab.nrow();
+    rownr_t rownr = tab.nrow();
     tab.addRow();
     Table tabto = tab.project (bcolNames);
     TableCopy::copyRows (tabto, tabfrom, rownr, 0, 1);
@@ -2952,10 +2952,10 @@ void TableParseSelect::doHaving (Bool showTimings,
 {
   Timer timer;
   // Find the rows matching the HAVING expression.
-  Vector<uInt> rownrs(rownrs_p.size());
-  uInt nr = 0;
+  Vector<rownr_t> rownrs(rownrs_p.size());
+  rownr_t nr = 0;
   TableExprIdAggr rowid(groups);
-  for (uInt i=0; i<rownrs_p.size(); ++i) {
+  for (rownr_t i=0; i<rownrs_p.size(); ++i) {
     rowid.setRownr (rownrs_p[i]);
     if (havingNode_p.getBool (rowid)) {
       rownrs[nr++] = rownrs_p[i];
@@ -2987,7 +2987,7 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doOnlyCountAll
   func.setResult (rownrs_p.size());
   // The resulting table has only 1 group; use the last row with it.
   if (! rownrs_p.empty()) {
-    rownrs_p.reference (Vector<uInt>(1, rownrs_p[rownrs_p.size()-1]));
+    rownrs_p.reference (Vector<rownr_t>(1, rownrs_p[rownrs_p.size()-1]));
   }
   // Save the aggregation results in a result object.
   return CountedPtr<TableExprGroupResult>(new TableExprGroupResult(funcSets));
@@ -3009,7 +3009,7 @@ TableParseSelect::doGroupByAggrMultipleKeys
   // Loop through all rows.
   // For each row generate the key to get the right entry.
   TableExprId rowid(0);
-  for (uInt i=0; i<rownrs_p.size(); ++i) {
+  for (rownr_t i=0; i<rownrs_p.size(); ++i) {
     rowid.setRownr (rownrs_p[i]);
     keySet.fill (groupbyNodes_p, rowid);
     int groupnr = funcSets.size();
@@ -3066,10 +3066,10 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doGroupByAggr
   // Let the function nodes finish their operation.
   // Form the rownr vector from the rows kept in the aggregate objects.
   // Similarly, form the TableExprId vector if there are lazy nodes.
-  Vector<uInt> rownrs(funcSets.size());
+  Vector<rownr_t> rownrs(funcSets.size());
   vector<CountedPtr<vector<TableExprId> > > ids;
   ids.reserve (funcSets.size());
-  uInt n=0;
+  rownr_t n=0;
   for (uInt i=0; i<funcSets.size(); ++i) {
     const vector<CountedPtr<TableExprGroupFuncBase> >& funcs
       = funcSets[i]->getFuncs();
@@ -3108,7 +3108,7 @@ void replaceIds (vector<CountedPtr<vector<TableExprId> > >& ids)
   // We need to replace each rowid by its sequence nr because a table selection
   // will map the selected rows to rowid 0..n.
   // So store the index in the rowids.
-  for (uInt i=0; i<rowids.size(); ++i) {
+  for (rownr_t i=0; i<rowids.size(); ++i) {
     rowids[inxVec[i]] = i;
   }
   // Now replace the TableExprIds by the new rowids.
@@ -3130,10 +3130,9 @@ void TableParseSelect::doSort (Bool showTimings)
     return;
   }
   Timer timer;
-  uInt i;
   uInt nrkey = sort_p.size();
   //# First check if the sort keys are correct.
-  for (i=0; i<nrkey; i++) {
+  for (uInt i=0; i<nrkey; i++) {
     const TableParseSort& key = sort_p[i];
     //# This throws an exception for unknown data types (datetime, regex).
     key.node().getColumnDataType();
@@ -3141,7 +3140,7 @@ void TableParseSelect::doSort (Bool showTimings)
   Block<void*> arrays(nrkey);
   Sort sort;
   Bool deleteIt;
-  for (i=0; i<nrkey; i++) {
+  for (uInt i=0; i<nrkey; i++) {
     const TableParseSort& key = sort_p[i];
     switch (key.node().getColumnDataType()) {
     case TpBool:
@@ -3268,14 +3267,14 @@ void TableParseSelect::doSort (Bool showTimings)
       AlwaysAssert (False, AipsError);
     }
   }
-  uInt nrrow = rownrs_p.size();
-  Vector<uInt> newRownrs (nrrow);
+  rownr_t nrrow = rownrs_p.size();
+  Vector<rownr_t> newRownrs (nrrow);
   int sortOpt = Sort::HeapSort;
   if (noDupl_p) {
     sortOpt += Sort::NoDuplicates;
   }
   sort.sort (newRownrs, nrrow, sortOpt);
-  for (i=0; i<nrkey; i++) {
+  for (uInt i=0; i<nrkey; i++) {
     const TableParseSort& key = sort_p[i];
     switch (key.node().getColumnDataType()) {
     case TpBool:
@@ -3322,7 +3321,7 @@ void TableParseSelect::doSort (Bool showTimings)
     timer.show ("  Orderby     ");
   }
   // Convert index to rownr.
-  for (uInt i=0; i<newRownrs.size(); ++i) {
+  for (rownr_t i=0; i<newRownrs.size(); ++i) {
     newRownrs[i] = rownrs_p[newRownrs[i]];
   }
   rownrs_p.reference (newRownrs);
@@ -3332,7 +3331,7 @@ void TableParseSelect::doSort (Bool showTimings)
 void TableParseSelect::doLimOff (Bool showTimings)
 {
   Timer timer;
-  Vector<uInt> newRownrs;
+  Vector<rownr_t> newRownrs;
   // Negative values mean from the end (a la Python indexing).
   Int64 nrow = rownrs_p.size();
   if (offset_p < 0) {
@@ -3698,10 +3697,10 @@ Table TableParseSelect::doDistinct (Bool showTimings, const Table& table)
   } else {
     // Get the rownumbers.
     // Make sure it does not reference an internal array.
-    Vector<uInt> rownrs(tabs.rowNumbers(table));
+    Vector<rownr_t> rownrs(tabs.rowNumbers(table));
     rownrs.unique();
     // Put the rownumbers back in the original order.
-    GenSort<uInt>::sort (rownrs);
+    GenSort<rownr_t>::sort (rownrs);
     result = table(rownrs);
     rownrs_p.reference (rownrs);
   }
@@ -3847,7 +3846,7 @@ void TableParseSelect::checkTableProjSizes() const
 {
   // Check if all tables used in non-constant select expressions
   // have the same size as the first table.
-  Int64 nrow = fromTables_p[0].table().nrow();
+  rownr_t nrow = fromTables_p[0].table().nrow();
   for (uInt i=0; i<columnExpr_p.size(); i++) {
     if (! columnExpr_p[i].getRep()->isConstant()) {
       if (columnExpr_p[i].getRep()->nrow() != nrow) {
@@ -3860,7 +3859,7 @@ void TableParseSelect::checkTableProjSizes() const
 
 //# Execute all parts of a TaQL command doing some selection.
 void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
-                                Bool mustSelect, uInt maxRow,
+                                Bool mustSelect, rownr_t maxRow,
                                 Bool doTracing)
 {
   //# A selection query consists of:
@@ -3952,7 +3951,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   //# Determine if we can pre-empt the selection loop.
   //# That is possible if a positive limit and offset are given
   //# without sorting, select distinct, groupby, or aggregation.
-  uInt nrmax=0;
+  rownr_t nrmax=0;
   if (endrow_p > 0  &&  sort_p.size() == 0  &&  !distinct_p  &&
       groupAggrUsed == 0) {
     nrmax = endrow_p;

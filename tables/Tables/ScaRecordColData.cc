@@ -208,7 +208,7 @@ void ScalarRecordColumnData::makeSortKey (Sort&,
 void ScalarRecordColumnData::makeRefSortKey (Sort&,
                                              CountedPtr<BaseCompare>&,
 					     Int,
-					     const Vector<uInt>&,
+					     const Vector<rownr_t>&,
 					     CountedPtr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "

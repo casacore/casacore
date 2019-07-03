@@ -323,7 +323,7 @@ namespace casacore {
     // Let a derived class recreate its column objects in case a selection
     // has to be applied.
     // The default implementation does nothing.
-    virtual void recreateColumnObjects (const Vector<uInt>& rownrs);
+    virtual void recreateColumnObjects (const Vector<rownr_t>& rownrs);
 
   public:
     // Register the name and construction function of a UDF (thread-safe).
@@ -362,7 +362,7 @@ namespace casacore {
 
     // If needed, let the UDF re-create column objects for a selection of rows.
     // It calls the function recreateColumnObjects.
-    void applySelection (const Vector<uInt>& rownrs);
+    void applySelection (const Vector<rownr_t>& rownrs);
 
     // Create a UDF object (thread-safe).
     // It looks in the map with fixed function names. If unknown,

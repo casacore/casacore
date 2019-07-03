@@ -146,7 +146,7 @@ public:
                               CountedPtr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
     void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
-			 const Vector<uInt>& rownrs,
+			 const Vector<rownr_t>& rownrs,
                          CountedPtr<ArrayBase>& dataSave);
     // </group>
 

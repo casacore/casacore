@@ -330,7 +330,7 @@ public:
     // of rows.
     // Element i is constructed by evaluating the input element
     // for row rownr[i].
-    TableExprNodeSet (const Vector<uInt>& rownrs, const TableExprNodeSet&);
+    TableExprNodeSet (const Vector<rownr_t>& rownrs, const TableExprNodeSet&);
 
     TableExprNodeSet(const TableExprNodeSet&);
 

@@ -152,29 +152,29 @@ public:
 
     // Get a single element for the entire column (used by sort).
     // <group>
-    virtual Array<Bool>     getElemColumnBool     (const Vector<uInt>& rownrs,
+    virtual Array<Bool>     getElemColumnBool     (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<uChar>    getElemColumnuChar    (const Vector<uInt>& rownrs,
+    virtual Array<uChar>    getElemColumnuChar    (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<Short>    getElemColumnShort    (const Vector<uInt>& rownrs,
+    virtual Array<Short>    getElemColumnShort    (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<uShort>   getElemColumnuShort   (const Vector<uInt>& rownrs,
+    virtual Array<uShort>   getElemColumnuShort   (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<Int>      getElemColumnInt      (const Vector<uInt>& rownrs,
+    virtual Array<Int>      getElemColumnInt      (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<uInt>     getElemColumnuInt     (const Vector<uInt>& rownrs,
+    virtual Array<uInt>     getElemColumnuInt     (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<Int64>    getElemColumnInt64    (const Vector<uInt>& rownrs,
+    virtual Array<Int64>    getElemColumnInt64    (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<Float>    getElemColumnFloat    (const Vector<uInt>& rownrs,
+    virtual Array<Float>    getElemColumnFloat    (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<Double>   getElemColumnDouble   (const Vector<uInt>& rownrs,
+    virtual Array<Double>   getElemColumnDouble   (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<Complex>  getElemColumnComplex  (const Vector<uInt>& rownrs,
+    virtual Array<Complex>  getElemColumnComplex  (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<DComplex> getElemColumnDComplex (const Vector<uInt>& rownrs,
+    virtual Array<DComplex> getElemColumnDComplex (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
-    virtual Array<String>   getElemColumnString   (const Vector<uInt>& rownrs,
+    virtual Array<String>   getElemColumnString   (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
     // </group>
 
@@ -225,7 +225,7 @@ public:
     virtual void disableApplySelection();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     // Get the TableColumn object.
     const TableColumn& getColumn() const;
@@ -274,12 +274,12 @@ public:
     ~TableExprNodeArrayColumnBool();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Bool getElemBool (const TableExprId& id, const Slicer& index);
     virtual MArray<Bool>  getArrayBool (const TableExprId& id);
     virtual MArray<Bool>  getSliceBool (const TableExprId& id, const Slicer&);
-    virtual Array<Bool>  getElemColumnBool (const Vector<uInt>& rownrs,
+    virtual Array<Bool>  getElemColumnBool (const Vector<rownr_t>& rownrs,
                                             const Slicer&);
 protected:
     ArrayColumn<Bool> col_p;
@@ -312,13 +312,13 @@ public:
     ~TableExprNodeArrayColumnuChar();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual MArray<Int64> getArrayInt (const TableExprId& id);
     virtual MArray<Int64> getSliceInt (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<uChar>  getElemColumnuChar (const Vector<uInt>& rownrs,
+    virtual Array<uChar>  getElemColumnuChar (const Vector<rownr_t>& rownrs,
                                               const Slicer&);
 protected:
     ArrayColumn<uChar> col_p;
@@ -351,13 +351,13 @@ public:
     ~TableExprNodeArrayColumnShort();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual MArray<Int64> getArrayInt (const TableExprId& id);
     virtual MArray<Int64> getSliceInt (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<Short>  getElemColumnShort (const Vector<uInt>& rownrs,
+    virtual Array<Short>  getElemColumnShort (const Vector<rownr_t>& rownrs,
                                               const Slicer&);
 protected:
     ArrayColumn<Short> col_p;
@@ -390,13 +390,13 @@ public:
     ~TableExprNodeArrayColumnuShort();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual MArray<Int64> getArrayInt (const TableExprId& id);
     virtual MArray<Int64> getSliceInt (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<uShort> getElemColumnuShort (const Vector<uInt>& rownrs,
+    virtual Array<uShort> getElemColumnuShort (const Vector<rownr_t>& rownrs,
                                                const Slicer&);
 protected:
     ArrayColumn<uShort> col_p;
@@ -429,13 +429,13 @@ public:
     ~TableExprNodeArrayColumnInt();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual MArray<Int64> getArrayInt (const TableExprId& id);
     virtual MArray<Int64> getSliceInt (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<Int>    getElemColumnInt (const Vector<uInt>& rownrs,
+    virtual Array<Int>    getElemColumnInt (const Vector<rownr_t>& rownrs,
                                             const Slicer&);
 protected:
     ArrayColumn<Int> col_p;
@@ -468,13 +468,13 @@ public:
     ~TableExprNodeArrayColumnuInt();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual MArray<Int64> getArrayInt (const TableExprId& id);
     virtual MArray<Int64> getSliceInt (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<uInt>   getElemColumnuInt (const Vector<uInt>& rownrs,
+    virtual Array<uInt>   getElemColumnuInt (const Vector<rownr_t>& rownrs,
                                              const Slicer&);
 protected:
     ArrayColumn<uInt> col_p;
@@ -507,13 +507,13 @@ public:
     ~TableExprNodeArrayColumnInt64();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual MArray<Int64> getArrayInt (const TableExprId& id);
     virtual MArray<Int64> getSliceInt (const TableExprId& id,
                                        const Slicer&);
-    virtual Array<Int64>  getElemColumnInt64 (const Vector<uInt>& rownrs,
+    virtual Array<Int64>  getElemColumnInt64 (const Vector<rownr_t>& rownrs,
                                               const Slicer&);
 protected:
     ArrayColumn<Int64> col_p;
@@ -546,13 +546,13 @@ public:
     ~TableExprNodeArrayColumnFloat();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual MArray<Double> getArrayDouble (const TableExprId& id);
     virtual MArray<Double> getSliceDouble (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<Float>  getElemColumnFloat (const Vector<uInt>& rownrs,
+    virtual Array<Float>  getElemColumnFloat (const Vector<rownr_t>& rownrs,
                                               const Slicer&);
 protected:
     ArrayColumn<Float> col_p;
@@ -585,13 +585,13 @@ public:
     ~TableExprNodeArrayColumnDouble();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual MArray<Double> getArrayDouble (const TableExprId& id);
     virtual MArray<Double> getSliceDouble (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<Double> getElemColumnDouble (const Vector<uInt>& rownrs,
+    virtual Array<Double> getElemColumnDouble (const Vector<rownr_t>& rownrs,
                                                const Slicer&);
 protected:
     ArrayColumn<Double> col_p;
@@ -624,13 +624,13 @@ public:
     ~TableExprNodeArrayColumnComplex();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
     virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
     virtual MArray<DComplex> getSliceDComplex (const TableExprId& id,
                                               const Slicer&);
-    virtual Array<Complex>  getElemColumnComplex (const Vector<uInt>& rownrs,
+    virtual Array<Complex>  getElemColumnComplex (const Vector<rownr_t>& rownrs,
                                                   const Slicer&);
 protected:
     ArrayColumn<Complex> col_p;
@@ -663,13 +663,13 @@ public:
     ~TableExprNodeArrayColumnDComplex();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
     virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
     virtual MArray<DComplex> getSliceDComplex (const TableExprId& id,
                                               const Slicer&);
-    virtual Array<DComplex> getElemColumnDComplex (const Vector<uInt>& rownrs,
+    virtual Array<DComplex> getElemColumnDComplex (const Vector<rownr_t>& rownrs,
                                                    const Slicer&);
 protected:
     ArrayColumn<DComplex> col_p;
@@ -702,13 +702,13 @@ public:
     ~TableExprNodeArrayColumnString();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     virtual String getElemString (const TableExprId& id, const Slicer& index);
     virtual MArray<String> getArrayString (const TableExprId& id);
     virtual MArray<String> getSliceString (const TableExprId& id,
                                           const Slicer&);
-    virtual Array<String> getElemColumnString (const Vector<uInt>& rownrs,
+    virtual Array<String> getElemColumnString (const Vector<rownr_t>& rownrs,
                                                const Slicer&);
 protected:
     ArrayColumn<String> col_p;
@@ -853,18 +853,18 @@ public:
     // (that means that the index can vary with row number).
     virtual Bool getColumnDataType (DataType&) const;
 
-    virtual Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
-    virtual Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
-    virtual Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
-    virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
-    virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
-    virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
-    virtual Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
-    virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
-    virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
-    virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
-    virtual Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
-    virtual Array<String>   getColumnString (const Vector<uInt>& rownrs);
+    virtual Array<Bool>     getColumnBool (const Vector<rownr_t>& rownrs);
+    virtual Array<uChar>    getColumnuChar (const Vector<rownr_t>& rownrs);
+    virtual Array<Short>    getColumnShort (const Vector<rownr_t>& rownrs);
+    virtual Array<uShort>   getColumnuShort (const Vector<rownr_t>& rownrs);
+    virtual Array<Int>      getColumnInt (const Vector<rownr_t>& rownrs);
+    virtual Array<uInt>     getColumnuInt (const Vector<rownr_t>& rownrs);
+    virtual Array<Int64>    getColumnInt64 (const Vector<rownr_t>& rownrs);
+    virtual Array<Float>    getColumnFloat (const Vector<rownr_t>& rownrs);
+    virtual Array<Double>   getColumnDouble (const Vector<rownr_t>& rownrs);
+    virtual Array<Complex>  getColumnComplex (const Vector<rownr_t>& rownrs);
+    virtual Array<DComplex> getColumnDComplex (const Vector<rownr_t>& rownrs);
+    virtual Array<String>   getColumnString (const Vector<rownr_t>& rownrs);
 
     // Get the index node.
     const TableExprNodeIndex* getIndexNode() const;

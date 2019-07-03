@@ -34,12 +34,24 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+RefRows::RefRows (const Vector<rownr_t>& rowNumbers, Bool isSliced,
+		  Bool collapse)
+{
+  init (rowNumbers, isSliced, collapse);
+}
+  
 RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 		  Bool collapse)
-: itsRows   (rowNumbers),
-  itsNrows  (rowNumbers.nelements()),
-  itsSliced (isSliced)
 {
+  init (RowNumbers(rowNumbers), isSliced, collapse);
+}
+
+void RefRows::init (const Vector<rownr_t>& rowNumbers, Bool isSliced,
+                    Bool collapse)
+{
+  itsRows   = rowNumbers;
+  itsNrows  = rowNumbers.nelements();
+  itsSliced = isSliced;
     if (itsSliced) {
 	AlwaysAssert (itsNrows%3 == 0, AipsError);
 	itsNrows = 0;
@@ -48,14 +60,14 @@ RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 	//# Stop doing that when the number of elements in the
 	//# resulting array would exceed the input length, because
 	//# in that case we gain not anything at all.
-	Vector<uInt> rows(itsNrows+3);
-	uInt start = 0;
-	uInt end = 0;
-	uInt incr = 0;
-	uInt nv = 0;
-	uInt nr = 0;
-	for (uInt i=0; i<itsNrows  &&  nr<itsNrows; i++) {
-	    uInt value = rowNumbers(i);
+	Vector<rownr_t> rows(itsNrows+3);
+	rownr_t start = 0;
+	rownr_t end = 0;
+	rownr_t incr = 0;
+	rownr_t nv = 0;
+	rownr_t nr = 0;
+	for (rownr_t i=0; i<itsNrows  &&  nr<itsNrows; i++) {
+	    rownr_t value = rowNumbers(i);
 	    if (nv == 0) {
 		start = value;
 		nv++;
@@ -108,7 +120,7 @@ RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
     }
 }
 
-RefRows::RefRows (uInt start, uInt end, uInt incr)
+RefRows::RefRows (rownr_t start, rownr_t end, rownr_t incr)
 : itsRows   (3),
   itsNrows  (1 + (end-start)/incr),
   itsSliced (True)
@@ -147,29 +159,29 @@ Bool RefRows::operator== (const RefRows& other) const
               &&  allEQ (itsRows, other.itsRows));
 }
 
-uInt RefRows::fillNrows() const
+rownr_t RefRows::fillNrows() const
 {
-    uInt nr = 0;
-    uInt n = itsRows.nelements();
+    rownr_t nr = 0;
+    rownr_t n = itsRows.nelements();
 
-    for (uInt i=0; i<n; i+=3) {
+    for (rownr_t i=0; i<n; i+=3) {
 	nr += 1 + (itsRows(i+1) - itsRows(i)) / itsRows(i+2);
     }
     ((RefRows*)this)->itsNrows = nr;
     return nr;
 }
 
-Vector<uInt> RefRows::convert (const Vector<uInt>& rootRownrs) const
+RowNumbers RefRows::convert (const RowNumbers& rootRownrs) const
 {
-    uInt n = nrow();
-    Vector<uInt> rownrs(n);
+    rownr_t n = nrow();
+    Vector<rownr_t> rownrs(n);
     if (itsSliced) {
-	uInt nr = 0;
+	rownr_t nr = 0;
         RefRowsSliceIter iter(*this);
         while (! iter.pastEnd()) {
-            uInt rownr = iter.sliceStart();
-            uInt end = iter.sliceEnd();
-            uInt incr = iter.sliceIncr();
+            rownr_t rownr = iter.sliceStart();
+            rownr_t end = iter.sliceEnd();
+            rownr_t incr = iter.sliceIncr();
             while (rownr <= end) {
 		DebugAssert (rownr <= rootRownrs.nelements(), AipsError);
 		rownrs(nr++) = rootRownrs(rownr);
@@ -178,7 +190,7 @@ Vector<uInt> RefRows::convert (const Vector<uInt>& rootRownrs) const
 	    iter++;
         }
     } else {
-        for (uInt i=0; i<n; i++) {
+        for (rownr_t i=0; i<n; i++) {
 	    DebugAssert (itsRows(i) <= rootRownrs.nelements(), AipsError);
 	    rownrs(i) = rootRownrs(itsRows(i));
 	}
@@ -186,19 +198,19 @@ Vector<uInt> RefRows::convert (const Vector<uInt>& rootRownrs) const
     return rownrs;
 }
 
-Vector<uInt> RefRows::convert() const
+RowNumbers RefRows::convert() const
 {
     if (!itsSliced) {
         return itsRows;
     }
-    uInt n = nrow();
-    Vector<uInt> rownrs(n);
-    uInt nr = 0;
+    rownr_t n = nrow();
+    Vector<rownr_t> rownrs(n);
+    rownr_t nr = 0;
     RefRowsSliceIter iter(*this);
     while (! iter.pastEnd()) {
-        uInt rownr = iter.sliceStart();
-	uInt end = iter.sliceEnd();
-	uInt incr = iter.sliceIncr();
+        rownr_t rownr = iter.sliceStart();
+	rownr_t end = iter.sliceEnd();
+	rownr_t incr = iter.sliceIncr();
 	while (rownr <= end) {
 	    rownrs(nr++) = rownr;
 	    rownr += incr;

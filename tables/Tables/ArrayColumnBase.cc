@@ -561,7 +561,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
 {
   checkWritable();
   // Check if the nr of rows in the array matches.
-  if (rows.nrows() != source.shape()[source.ndim()-1]) {
+  if (Int64(rows.nrows()) != source.shape()[source.ndim()-1]) {
     throw TableArrayConformanceError("ArrayColumn::putColumnCells - number of "
                                      "rows in RefRows and Array mismatches");
   }

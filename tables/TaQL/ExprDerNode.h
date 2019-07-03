@@ -309,7 +309,7 @@ public:
     virtual void disableApplySelection();
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     // Get the data type of this scalar column.
     Bool getColumnDataType (DataType&) const;
@@ -323,18 +323,18 @@ public:
     const TableColumn& getColumn() const;
 
     // Get the data for the given rows.
-    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
-    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
-    Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
-    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
-    Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
-    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
-    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
-    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
-    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
-    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
-    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
-    Array<String>   getColumnString (const Vector<uInt>& rownrs);
+    Array<Bool>     getColumnBool (const Vector<rownr_t>& rownrs);
+    Array<uChar>    getColumnuChar (const Vector<rownr_t>& rownrs);
+    Array<Short>    getColumnShort (const Vector<rownr_t>& rownrs);
+    Array<uShort>   getColumnuShort (const Vector<rownr_t>& rownrs);
+    Array<Int>      getColumnInt (const Vector<rownr_t>& rownrs);
+    Array<uInt>     getColumnuInt (const Vector<rownr_t>& rownrs);
+    Array<Int64>    getColumnInt64 (const Vector<rownr_t>& rownrs);
+    Array<Float>    getColumnFloat (const Vector<rownr_t>& rownrs);
+    Array<Double>   getColumnDouble (const Vector<rownr_t>& rownrs);
+    Array<Complex>  getColumnComplex (const Vector<rownr_t>& rownrs);
+    Array<DComplex> getColumnDComplex (const Vector<rownr_t>& rownrs);
+    Array<String>   getColumnString (const Vector<rownr_t>& rownrs);
 
     // Get the column unit (can be empty).
     static Unit getColumnUnit (const TableColumn&);
@@ -407,10 +407,10 @@ class TableExprNodeRowid : public TableExprNodeBinary
 public:
     TableExprNodeRowid (const Table&);
     ~TableExprNodeRowid();
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
     Int64 getInt (const TableExprId& id);
 private:
-    Vector<uInt> rownrs_p;
+    Vector<rownr_t> rownrs_p;
 };
 
 

@@ -124,11 +124,11 @@ public:
   virtual void renameColumn (const String& newName, const String& oldName);
   virtual void renameHypercolumn (const String& newName,
 				    const String& oldName);
-  virtual Vector<uInt> rowNumbers() const;
+  virtual Vector<rownr_t> rowNumbers() const;
   virtual BaseTable* root();
   virtual Bool rowOrder() const;
-  virtual Vector<uInt>* rowStorage();
-  virtual Bool adjustRownrs (rownr_t nrrow, Vector<uInt>& rownrs,
+  virtual Vector<rownr_t>* rowStorage();
+  virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
 			     Bool determineOrder) const;
   virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
 			     const Block<CountedPtr<BaseCompare> >&,

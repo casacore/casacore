@@ -143,7 +143,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatScalarColumn<T>::makeRefSortKey (Sort& sortobj,
                                               CountedPtr<BaseCompare>& cmpObj,
 					      Int order,
-					      const Vector<uInt>& rownrs,
+					      const Vector<rownr_t>& rownrs,
 					      CountedPtr<ArrayBase>& dataSave)
   {
     //# Get the data as a column.

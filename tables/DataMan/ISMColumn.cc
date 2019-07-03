@@ -390,11 +390,11 @@ void ISMColumn::getScaColCells (const RefRows& rownrs, \
 	    iter++; \
         } \
     } else { \
-        const Vector<uInt>& rowvec = rownrs.rowVector(); \
-        uInt nr = rowvec.nelements(); \
+        const Vector<rownr_t>& rowvec = rownrs.rowVector(); \
+        rownr_t nr = rowvec.nelements(); \
         if (nr > 0) { \
             Bool delR; \
-            const uInt* rows = rowvec.getStorage (delR); \
+            const rownr_t* rows = rowvec.getStorage (delR); \
             if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
                 aips_name2(get,T) (0, &(value[0])); \
             } \
@@ -402,7 +402,7 @@ void ISMColumn::getScaColCells (const RefRows& rownrs, \
             rownr_t strow = cache.start(); \
             rownr_t endrow = cache.end(); \
             AlwaysAssert (cache.incr() == 0, AipsError); \
-            for (uInt i=0; i<nr; i++) { \
+            for (rownr_t i=0; i<nr; i++) { \
 	        rownr_t rownr = rows[i]; \
                 if (rownr >= strow  &&  rownr <= endrow) { \
 	            value[i] = *cacheValue; \

@@ -42,6 +42,7 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/BasicSL/STLMath.h>
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/Containers/Block.h>
@@ -609,12 +610,12 @@ void BaseTable::addRow (rownr_t, Bool)
 void BaseTable::removeRow (rownr_t)
     { throw (TableInvOper ("Table: cannot remove a row from table " + name_p)); }
 
-void BaseTable::removeRow (const Vector<uInt>& rownrs)
+void BaseTable::removeRow (const Vector<rownr_t>& rownrs)
 {
     //# Copy the rownrs and sort them.
     //# Loop through them from end to start. In that way we are sure
     //# that the deletion of a row does not affect later rows.
-    Vector<uInt> rownrsCopy;
+    Vector<rownr_t> rownrsCopy;
     rownrsCopy = rownrs;
     genSort (rownrsCopy);
     for (Int i=rownrsCopy.nelements()-1; i>=0; i--) {
@@ -657,13 +658,12 @@ void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo,
   }
 }
 
-
 //# Get a vector of row numbers.
-Vector<uInt> BaseTable::rowNumbers() const
+Vector<rownr_t> BaseTable::rowNumbers() const
 {
     AlwaysAssert (!isNull(), AipsError);
-    Vector<uInt> vec(nrow());
-    indgen (vec, (uInt)0);                  // store 0,1,... in it
+    Vector<rownr_t> vec(nrow());
+    indgen (vec, (rownr_t)0);                  // store 0,1,... in it
     return vec;
 }
 
@@ -676,11 +676,10 @@ Bool BaseTable::rowOrder() const
     { return True; }
 
 //# By the default the table cannot return the storage of rownrs.
-Vector<uInt>* BaseTable::rowStorage()
+Vector<rownr_t>* BaseTable::rowStorage()
 {
     throw (TableInvOper ("rowStorage() not possible; table " + name_p +
                          " is no RefTable"));
-    return 0;
 }
 
 
@@ -716,14 +715,13 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
 			      const Block<CountedPtr<BaseCompare> >& cmpObj,
                               const Block<Int>& order, int option)
 {
-    uInt i;
     uInt nrkey = sortCol.nelements();
     //# Create a sort object.
     //# Pass all keys (and their data) to it.
     Sort sortobj;
     Block<CountedPtr<ArrayBase> > data(nrkey);        // to remember data blocks
     Block<CountedPtr<BaseCompare> > cmp(cmpObj);
-    for (i=0; i<nrkey; i++) {
+    for (uInt i=0; i<nrkey; i++) {
 	sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], data[i]);
     }
     //# Create a reference table.
@@ -733,7 +731,7 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     //# Now sort the table storing the row-numbers in the RefTable.
     //# Adjust rownrs in case source table is already a RefTable.
     //# Then delete possible allocated data blocks.
-    Vector<uInt>& rows = *(resultTable->rowStorage());
+    Vector<rownr_t>& rows = *(resultTable->rowStorage());
     //# Note that nrrow can change in case Sort::NoDuplicates was given.
     nrrow = sortobj.sort (rows, nrrow, option);
     adjustRownrs (nrrow, rows, False);
@@ -749,7 +747,7 @@ RefTable* BaseTable::makeRefTable (Bool rowOrder, rownr_t initialNrrow)
 
 
 //# No rownrs have to be adjusted and they are by default in ascending order.
-Bool BaseTable::adjustRownrs (rownr_t, Vector<uInt>&, Bool) const
+Bool BaseTable::adjustRownrs (rownr_t, Vector<rownr_t>&, Bool) const
     { return True; }
 
 BaseTable* BaseTable::select (rownr_t maxRow, rownr_t offset)
@@ -763,8 +761,8 @@ BaseTable* BaseTable::select (rownr_t maxRow, rownr_t offset)
     if (offset == 0  &&  maxRow == nrow()) {
         return this;
     }
-    Vector<uInt> rownrs(maxRow);
-    indgen(rownrs, uInt(offset));
+    Vector<rownr_t> rownrs(maxRow);
+    indgen(rownrs, rownr_t(offset));
     return select(rownrs);
 }
 
@@ -790,7 +788,7 @@ BaseTable* BaseTable::select (const TableExprNode& node,
             return select (maxRow, offset);
         }
         // Select no rows.
-        return select(Vector<uInt>());
+        return select(Vector<rownr_t>());
     }
     // Now check if this table has been used for all columns.
     // Accept that the expression has no table, which can be the case for
@@ -828,7 +826,7 @@ BaseTable* BaseTable::select (const TableExprNode& node,
     return resultTable.transfer();
 }
 
-BaseTable* BaseTable::select (const Vector<uInt>& rownrs)
+BaseTable* BaseTable::select (const Vector<rownr_t>& rownrs)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, rownrs);
@@ -868,10 +866,10 @@ BaseTable* BaseTable::tabAnd (BaseTable* that)
     //# Sorting means that the array is allocated on the heap, which has
     //# to be deleted afterwards.
     Bool allsw1, allsw2;
-    uInt* inx1;
-    uInt* inx2;
-    uInt nr1 = this->logicRows (inx1, allsw1);
-    uInt nr2 = that->logicRows (inx2, allsw2);
+    rownr_t* inx1;
+    rownr_t* inx2;
+    rownr_t nr1 = this->logicRows (inx1, allsw1);
+    rownr_t nr2 = that->logicRows (inx2, allsw2);
     RefTable* rtp = makeRefTable (True, 0);           // will be in row order
     rtp->refAnd (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
     if (allsw1) {
@@ -899,10 +897,10 @@ BaseTable* BaseTable::tabOr (BaseTable* that)
     //# Sorting means that the array is allocated on the heap, which has
     //# to be deleted afterwards.
     Bool allsw1, allsw2;
-    uInt* inx1;
-    uInt* inx2;
-    uInt nr1 = this->logicRows (inx1, allsw1);
-    uInt nr2 = that->logicRows (inx2, allsw2);
+    rownr_t* inx1;
+    rownr_t* inx2;
+    rownr_t nr1 = this->logicRows (inx1, allsw1);
+    rownr_t nr2 = that->logicRows (inx2, allsw2);
     RefTable* rtp = makeRefTable (True, 0);           // will be in row order
     rtp->refOr (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
     if (allsw1) {
@@ -933,10 +931,10 @@ BaseTable* BaseTable::tabSub (BaseTable* that)
     //# Sorting means that the array is allocated on the heap, which has
     //# to be deleted afterwards.
     Bool allsw1, allsw2;
-    uInt* inx1;
-    uInt* inx2;
-    uInt nr1 = this->logicRows (inx1, allsw1);
-    uInt nr2 = that->logicRows (inx2, allsw2);
+    rownr_t* inx1;
+    rownr_t* inx2;
+    rownr_t nr1 = this->logicRows (inx1, allsw1);
+    rownr_t nr2 = that->logicRows (inx2, allsw2);
     RefTable* rtp = makeRefTable (True, 0);           // will be in row order
     rtp->refSub (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
     if (allsw1) {
@@ -966,10 +964,10 @@ BaseTable* BaseTable::tabXor (BaseTable* that)
     //# Sorting means that the array is allocated on the heap, which has
     //# to be deleted afterwards.
     Bool allsw1, allsw2;
-    uInt* inx1;
-    uInt* inx2;
-    uInt nr1 = this->logicRows (inx1, allsw1);
-    uInt nr2 = that->logicRows (inx2, allsw2);
+    rownr_t* inx1;
+    rownr_t* inx2;
+    rownr_t nr1 = this->logicRows (inx1, allsw1);
+    rownr_t nr2 = that->logicRows (inx2, allsw2);
     RefTable* rtp = makeRefTable (True, 0);           // will be in row order
     rtp->refXor (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
     if (allsw1) {
@@ -994,8 +992,8 @@ BaseTable* BaseTable::tabNot()
     //# Sorting means that the array is allocated on the heap, which has
     //# to be deleted.
     Bool allsw1;
-    uInt* inx1;
-    uInt nr1 = this->logicRows (inx1, allsw1);
+    rownr_t* inx1;
+    rownr_t nr1 = this->logicRows (inx1, allsw1);
     RefTable* rtp = makeRefTable (True, 0);           // will be in row order
     rtp->refNot (nr1, inx1, root()->nrow());    // store rownrs in new RefTable
     if (allsw1) {
@@ -1015,7 +1013,7 @@ void BaseTable::logicCheck (BaseTable* that)
 //# Get the rownrs from the reference table.
 //# Note that rowStorage() throws an exception if it is not a RefTable.
 //# Sort them if not in row order.
-uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
+rownr_t BaseTable::logicRows (rownr_t*& inx, Bool& allsw)
 {
     AlwaysAssert (!isNull(), AipsError);
     allsw = False;
@@ -1024,9 +1022,9 @@ uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
     if (!rowOrder()) {
 	//# rows are not in order, so sort them.
 	//# They have to be copied, because the original should not be changed.
-	uInt* inxcp = new uInt[nr];
+	rownr_t* inxcp = new rownr_t[nr];
 	objcopy (inxcp, inx, nr);
-	GenSort<uInt>::sort (inxcp, nr);
+	GenSort<rownr_t>::sort (inxcp, nr);
 	inx = inxcp;
 	allsw = True;
     }

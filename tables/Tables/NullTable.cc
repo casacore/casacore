@@ -225,7 +225,7 @@ void NullTable::renameHypercolumn (const String&, const String&)
   throw makeError ("renameHypercolumn");
 }
 
-Vector<uInt> NullTable::rowNumbers() const
+Vector<rownr_t> NullTable::rowNumbers() const
 {
   throw makeError ("rowNumbers");
 }
@@ -237,15 +237,15 @@ BaseTable* NullTable::root()
 
 Bool NullTable::rowOrder() const
 {
-  throw makeError ("rowOrde");
+  throw makeError ("rowOrder");
 }
 
-Vector<uInt>* NullTable::rowStorage()
+Vector<rownr_t>* NullTable::rowStorage()
 {
   throw makeError ("rowStorage");
 }
 
-Bool NullTable::adjustRownrs (rownr_t, Vector<uInt>&,
+Bool NullTable::adjustRownrs (rownr_t, Vector<rownr_t>&,
 			      Bool) const
 {
   throw makeError ("adjustRownrs");

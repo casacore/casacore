@@ -163,7 +163,7 @@ BaseTable* BaseTableIterator::next()
       keyChangeAtLastNext_p=String();
 
     //# Adjust rownrs in case source table is already a RefTable.
-    Vector<uInt>& rownrs = *(itp->rowStorage());
+    Vector<rownr_t>& rownrs = *(itp->rowStorage());
     sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
     return itp;
 }

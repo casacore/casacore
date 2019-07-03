@@ -150,7 +150,7 @@ public:
     // Do it only for the given row numbers.
     virtual void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
                                  Int order,
-                                 const Vector<uInt>& rownrs,
+                                 const Vector<rownr_t>& rownrs,
                                  CountedPtr<ArrayBase>& dataSave);
     // </group>
 

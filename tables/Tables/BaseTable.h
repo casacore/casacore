@@ -333,7 +333,7 @@ public:
     //    tab.removeRow (10);      // remove row 10
     //    tab.removeRow (20);      // remove row 20, which was 21
     //
-    //    Vector<uInt> vec(2);
+    //    Vector<rownr_t> vec(2);
     //    vec(0) = 10;
     //    vec(1) = 20;
     //    tab.removeRow (vec);     // remove row 10 and 20
@@ -343,6 +343,7 @@ public:
     // </note>
     // <group>
     virtual void removeRow (rownr_t rownr);
+    void removeRow (const Vector<rownr_t>& rownrs);
     void removeRow (const Vector<uInt>& rownrs);
     // </group>
 
@@ -359,7 +360,7 @@ public:
     BaseTable* select (rownr_t maxRow, rownr_t offset);
 
     // Select rows using a vector of row numbers.
-    BaseTable* select (const Vector<uInt>& rownrs);
+    BaseTable* select (const Vector<rownr_t>& rownrs);
 
     // Select rows using a mask block.
     // The length of the block must match the number of rows in the table.
@@ -442,7 +443,7 @@ public:
     // Get a vector of row numbers.
     // By default it returns the row numbers 0..nrrow()-1.
     // It needs to be implemented for RefTable only.
-    virtual Vector<uInt> rowNumbers() const;
+    virtual Vector<rownr_t> rowNumbers() const;
 
     // Get pointer to root table (i.e. parent of a RefTable).
     // Default it is this table.
@@ -458,12 +459,12 @@ public:
 
     // By the default the table cannot return the storage of rownrs.
     // That can only be done by a RefTable, where it is implemented.
-    virtual Vector<uInt>* rowStorage();
+    virtual Vector<rownr_t>* rowStorage();
 
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in order.
-    virtual Bool adjustRownrs (rownr_t nrrow, Vector<uInt>& rownrs,
+    virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
 			       Bool determineOrder) const;
 
     // Do the actual sort.
@@ -578,7 +579,7 @@ private:
 
     // Get the rownrs of the table in ascending order to be
     // used in the logical operation on the table.
-    uInt logicRows (uInt*& rownrs, Bool& allocated);
+    rownr_t logicRows (rownr_t*& rownrs, Bool& allocated);
 
     // Make an empty table description.
     // This is used if one asks for the description of a NullTable.

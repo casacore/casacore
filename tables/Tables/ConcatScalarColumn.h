@@ -111,7 +111,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void makeRefSortKey (Sort& sortobj,
                                  CountedPtr<BaseCompare>& cmpObj,
 				 Int order,
-				 const Vector<uInt>& rownrs,
+				 const Vector<rownr_t>& rownrs,
 				 CountedPtr<ArrayBase>& dataSave);
     virtual void fillSortKey (const Vector<T>* vecPtr,
 			      Sort& sortobj,

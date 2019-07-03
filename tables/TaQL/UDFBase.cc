@@ -151,10 +151,10 @@ namespace casacore {
   MArray<MVTime>  UDFBase:: getArrayDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDate not implemented"); }
 
-  void UDFBase::recreateColumnObjects (const Vector<uInt>&)
+  void UDFBase::recreateColumnObjects (const Vector<rownr_t>&)
   {}
 
-  void UDFBase::applySelection (const Vector<uInt>& rownrs)
+  void UDFBase::applySelection (const Vector<rownr_t>& rownrs)
   {
     if (itsApplySelection) {
       recreateColumnObjects (rownrs);
