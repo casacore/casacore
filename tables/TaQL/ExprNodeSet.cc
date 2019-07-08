@@ -455,7 +455,7 @@ void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, Int64& cnt,
 }
 
 void TableExprNodeSetElem::matchBool (Bool* match, const Bool* value,
-                                      uInt nval,
+                                      size_t nval,
                                       const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
@@ -470,7 +470,7 @@ void TableExprNodeSetElem::matchBool (Bool* match, const Bool* value,
     }
 }
 void TableExprNodeSetElem::matchInt (Bool* match, const Int64* value,
-                                     uInt nval,
+                                     size_t nval,
                                      const TableExprId& id) const
 {
     Int64 start = itsStart==0  ?  0 : itsStart->getInt (id);
@@ -526,7 +526,7 @@ void TableExprNodeSetElem::matchInt (Bool* match, const Int64* value,
     }
 }
 void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
-                                        uInt nval,
+                                        size_t nval,
                                         const TableExprId& id) const
 {
     Double start = itsStart==0  ?  0 : itsStart->getDouble (id);
@@ -581,7 +581,7 @@ void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
     }
 }
 void TableExprNodeSetElem::matchDComplex (Bool* match, const DComplex* value,
-                                          uInt nval,
+                                          size_t nval,
                                           const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
@@ -596,7 +596,7 @@ void TableExprNodeSetElem::matchDComplex (Bool* match, const DComplex* value,
     }
 }
 void TableExprNodeSetElem::matchString (Bool* match, const String* value,
-                                        uInt nval,
+                                        size_t nval,
                                         const TableExprId& id) const
 {
     String start;
@@ -631,7 +631,7 @@ void TableExprNodeSetElem::matchString (Bool* match, const String* value,
     }
 }
 void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
-                                      uInt nval,
+                                      size_t nval,
                                       const TableExprId& id) const
 {
     Double start = itsStart==0  ?  0 : Double(itsStart->getDate (id));
@@ -756,9 +756,9 @@ TableExprNodeSet::TableExprNodeSet (const Vector<rownr_t>& rownrs,
   itsFindFunc      (0)
 {
     // Fill in all values.
-    uInt nrel = set.size();
+    size_t nrel = set.size();
     for (rownr_t i=0; i<rownrs.size(); i++) {
-        for (uInt j=0; j<nrel; j++) {
+        for (size_t j=0; j<nrel; j++) {
             itsElems[j+i*nrel] = set[j].evaluate (rownrs[i]);
         }
     }
@@ -786,9 +786,9 @@ TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
   itsEnd           (that.itsEnd),
   itsFindFunc      (that.itsFindFunc)
 {
-  uInt n = that.itsElems.size();
+  size_t n = that.itsElems.size();
   itsElems.resize (n);
-  for (uInt i=0; i<n; i++) {
+  for (size_t i=0; i<n; i++) {
     itsElems[i] = new TableExprNodeSetElem (*castSetElem(that.itsElems[i]));
   }
 }
@@ -807,7 +807,7 @@ void TableExprNodeSet::combineIntIntervals()
     // No start value, so only the highest end value is relevant.
     // Make a single interval with the used open/closed-ness.
     Int64 val = elem.end()->getInt(id);
-    for (uInt i=1; i<itsElems.size(); i++) {
+    for (size_t i=1; i<itsElems.size(); i++) {
       Int64 valn = castItsElem(i)->end()->getInt(id);
       if (valn > val) {
         val = valn;
@@ -818,7 +818,7 @@ void TableExprNodeSet::combineIntIntervals()
   } else if (elem.end() == 0) {
     // No end value, so only the lowest start value is relevant.
     Int64 val = elem.start()->getInt(id);
-    for (uInt i=1; i<itsElems.size(); i++) {
+    for (size_t i=1; i<itsElems.size(); i++) {
       Int64 valn = castItsElem(i)->start()->getInt(id);
       if (valn < val) {
         val = valn;
@@ -830,14 +830,14 @@ void TableExprNodeSet::combineIntIntervals()
     // The intervals contain both a start and an end value.
     // Make the block large enough for all possible intervals.
     elems.resize (itsElems.size());
-    uInt nelem = 0;
+    size_t nelem = 0;
     // Get all start values and sort them (indirectly) in ascending order.
     Block<Int64> vals(itsElems.size());
-    for (uInt i=0; i<itsElems.size(); i++) {
+    for (size_t i=0; i<itsElems.size(); i++) {
       vals[i] = castItsElem(i)->start()->getInt(id);
     }
     Vector<uInt> index;
-    GenSortIndirect<Int64>::sort (index, vals, vals.size());
+    GenSortIndirect<Int64,uInt>::sort (index, vals, vals.size());
     // Get the start and end value of first interval in sorted list.
     Int64 stval  = vals[index[0]];
     Int64 endval = castItsElem(index[0])->end()->getInt(id);
@@ -875,7 +875,7 @@ void TableExprNodeSet::combineIntIntervals()
     // Store the values in a start and an end array.
     itsStart.resize (nelem);
     itsEnd.resize (nelem);
-    for (uInt i=0; i<nelem; i++) {
+    for (size_t i=0; i<nelem; i++) {
       itsStart[i] = castSetElem(elems[i])->start()->getInt(id);
       itsEnd[i]   = castSetElem(elems[i])->end()->getInt(id);
     }
@@ -897,7 +897,7 @@ void TableExprNodeSet::combineDoubleIntervals()
     // No start value, so only the highest end value is relevant.
     // Make a single interval with the used open/closed-ness.
     Double val = elem.end()->getDouble(id);
-    for (uInt i=1; i<itsElems.size(); i++) {
+    for (size_t i=1; i<itsElems.size(); i++) {
       Double valn = castItsElem(i)->end()->getDouble(id);
       if (valn > val) {
         val = valn;
@@ -908,7 +908,7 @@ void TableExprNodeSet::combineDoubleIntervals()
   } else if (elem.end() == 0) {
     // No end value, so only the lowest start value is relevant.
     Double val = elem.start()->getDouble(id);
-    for (uInt i=1; i<itsElems.size(); i++) {
+    for (size_t i=1; i<itsElems.size(); i++) {
       Double valn = castItsElem(i)->start()->getDouble(id);
       if (valn < val) {
         val = valn;
@@ -920,14 +920,14 @@ void TableExprNodeSet::combineDoubleIntervals()
     // The intervals contain both a start and an end value.
     // Make the block large enough for all possible intervals.
     elems.resize (itsElems.size());
-    uInt nelem = 0;
+    size_t nelem = 0;
     // Get all start values and sort them (indirectly) in ascending order.
     Block<Double> vals(itsElems.size());
-    for (uInt i=0; i<itsElems.size(); i++) {
+    for (size_t i=0; i<itsElems.size(); i++) {
       vals[i] = castItsElem(i)->start()->getDouble(id);
     }
     Vector<uInt> index;
-    GenSortIndirect<Double>::sort (index, vals, vals.size());
+    GenSortIndirect<Double,uInt>::sort (index, vals, vals.size());
     // Get the start and end value of first interval in sorted list.
     Double stval  = vals[index[0]];
     Double endval = castItsElem(index[0])->end()->getDouble(id);
@@ -965,7 +965,7 @@ void TableExprNodeSet::combineDoubleIntervals()
     // Store the values in a start and an end array.
     itsStart.resize (nelem);
     itsEnd.resize (nelem);
-    for (uInt i=0; i<nelem; i++) {
+    for (size_t i=0; i<nelem; i++) {
       itsStart[i] = castSetElem(elems[i])->start()->getDouble(id);
       itsEnd[i]   = castSetElem(elems[i])->end()->getDouble(id);
     }
@@ -988,7 +988,7 @@ void TableExprNodeSet::combineDateIntervals()
     // No start value, so only the highest end value is relevant.
     // Make a single interval with the used open/closed-ness.
     Double val = elem.end()->getDate(id);
-    for (uInt i=1; i<itsElems.size(); i++) {
+    for (size_t i=1; i<itsElems.size(); i++) {
       Double valn = castItsElem(i)->end()->getDate(id);
       if (valn > val) {
         val = valn;
@@ -1000,7 +1000,7 @@ void TableExprNodeSet::combineDateIntervals()
   } else if (elem.end() == 0) {
     // No end value, so only the lowest start value is relevant.
     Double val = elem.start()->getDate(id);
-    for (uInt i=1; i<itsElems.size(); i++) {
+    for (size_t i=1; i<itsElems.size(); i++) {
       Double valn = castItsElem(i)->start()->getDate(id);
       if (valn < val) {
         val = valn;
@@ -1013,14 +1013,14 @@ void TableExprNodeSet::combineDateIntervals()
     // The intervals contain both a start and an end value.
     // Make the block large enough for all possible intervals.
     elems.resize (itsElems.size());
-    uInt nelem = 0;
+    size_t nelem = 0;
     // Get all start values and sort them (indirectly) in ascending order.
     Block<Double> vals(itsElems.size());
-    for (uInt i=0; i<itsElems.size(); i++) {
+    for (size_t i=0; i<itsElems.size(); i++) {
       vals[i] = castItsElem(i)->start()->getDate(id);
     }
     Vector<uInt> index;
-    GenSortIndirect<Double>::sort (index, vals, vals.size());
+    GenSortIndirect<Double,uInt>::sort (index, vals, vals.size());
     // Get the start and end value of first interval in sorted list.
     Double stval  = vals[index[0]];
     Double endval = castItsElem(index[0])->end()->getDate(id);
@@ -1060,7 +1060,7 @@ void TableExprNodeSet::combineDateIntervals()
     // Store the values in a start and an end array.
     itsStart.resize (nelem);
     itsEnd.resize (nelem);
-    for (uInt i=0; i<nelem; i++) {
+    for (size_t i=0; i<nelem; i++) {
       itsStart[i] = castSetElem(elems[i])->start()->getDate(id);
       itsEnd[i]   = castSetElem(elems[i])->end()->getDate(id);
     }
@@ -1091,7 +1091,7 @@ void TableExprNodeSet::setFindFunc (Bool isLeftClosed, Bool isRightClosed)
 void TableExprNodeSet::add (const TableExprNodeSetElem& elem,
                             Bool adaptType)
 {
-    uInt n = itsElems.size();
+    size_t n = itsElems.size();
     itsElems.resize (n+1);
     itsElems[n] = new TableExprNodeSetElem (elem);
     // Set and adapt unit as needed.
@@ -1126,7 +1126,7 @@ void TableExprNodeSet::add (const TableExprNodeSetElem& elem,
 void TableExprNodeSet::adaptSetUnits (const Unit& unit)
 {
     if (! unit.empty()) {
-        for (uInt i=0; i<itsElems.size(); i++) {
+        for (size_t i=0; i<itsElems.size(); i++) {
             itsElems[i]->adaptSetUnits (unit);
         }
         setUnit (unit);
@@ -1136,7 +1136,7 @@ void TableExprNodeSet::adaptSetUnits (const Unit& unit)
 void TableExprNodeSet::checkEqualDataTypes() const
 {
     if (itsCheckTypes) {
-        for (uInt i=0; i<itsElems.size(); i++) {
+        for (size_t i=0; i<itsElems.size(); i++) {
             if (itsElems[i]->dataType() != dtype_p) {
                 throw TableInvExpr ("Set elements must have equal data types");
             }
@@ -1147,21 +1147,21 @@ void TableExprNodeSet::checkEqualDataTypes() const
 void TableExprNodeSet::show (ostream& os, uInt indent) const
 {
     TableExprNodeRep::show (os, indent);
-    for (uInt j=0; j<itsElems.size(); j++) {
+    for (size_t j=0; j<itsElems.size(); j++) {
         itsElems[j]->show (os, indent+2);
     }
 }
 
 void TableExprNodeSet::getAggrNodes (vector<TableExprNodeRep*>& aggr)
 {
-    for (uInt j=0; j<itsElems.size(); j++) {
+    for (size_t j=0; j<itsElems.size(); j++) {
         itsElems[j]->getAggrNodes (aggr);
     }
 }
 
 void TableExprNodeSet::getColumnNodes (vector<TableExprNodeRep*>& cols)
 {
-    for (uInt j=0; j<itsElems.size(); j++) {
+    for (size_t j=0; j<itsElems.size(); j++) {
         itsElems[j]->getColumnNodes (cols);
     }
 }
@@ -1169,8 +1169,8 @@ void TableExprNodeSet::getColumnNodes (vector<TableExprNodeRep*>& cols)
 Bool TableExprNodeSet::hasArrays() const
 {
     //# Check if a value is an array?
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         const TableExprNodeSetElem& elem = *(castItsElem(i));
         if (elem.start()  &&  elem.start()->valueType() == VTArray) {
             return True;
@@ -1191,8 +1191,8 @@ TENShPtr TableExprNodeSet::setOrArray() const
     // into an array.
     if (! unit().empty()) {
         Quantity q(1., unit());
-        uInt n = size();
-        for (uInt i=0; i<n; i++) {
+        size_t n = size();
+        for (size_t i=0; i<n; i++) {
               if (! itsElems[i]->unit().empty()) {
                   if (! q.isConform (itsElems[i]->unit())) {
                       return new TableExprNodeSet (*this);
@@ -1200,14 +1200,14 @@ TENShPtr TableExprNodeSet::setOrArray() const
               }
         }
         // No different units, so adapt elements to first unit.
-        for (uInt i=0; i<n; i++) {
+        for (size_t i=0; i<n; i++) {
             itsElems[i]->adaptSetUnits (unit());
         }
     }
     // If discrete, all start values should be filled in.
     if (itsDiscrete) {
-        uInt n = size();
-        for (uInt i=0; i<n; i++) {
+        size_t n = size();
+        for (size_t i=0; i<n; i++) {
             if (castItsElem(i)->start() == 0) {
                 throw (TableInvExpr ("no start value in discrete interval"));
             }
@@ -1290,11 +1290,11 @@ MArray<MVTime> TableExprNodeSet::getArrayDate (const TableExprId& id)
 
 Bool TableExprNodeSet::findOpenOpen (Double value)
 {
-    uInt n = itsElems.size();
+    size_t n = itsElems.size();
     if (value >= itsEnd[n-1]) {
         return False;
     }
-    for (uInt i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
         if (value <= itsStart[i]) {
             return False;
         }
@@ -1306,11 +1306,11 @@ Bool TableExprNodeSet::findOpenOpen (Double value)
 }
 Bool TableExprNodeSet::findOpenClosed (Double value)
 {
-    uInt n = itsElems.size();
+    size_t n = itsElems.size();
     if (value > itsEnd[n-1]) {
         return False;
     }
-    for (uInt i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
         if (value <= itsStart[i]) {
             return False;
         }
@@ -1322,11 +1322,11 @@ Bool TableExprNodeSet::findOpenClosed (Double value)
 }
 Bool TableExprNodeSet::findClosedOpen (Double value)
 {
-    uInt n = itsElems.size();
+    size_t n = itsElems.size();
     if (value >= itsEnd[n-1]) {
         return False;
     }
-    for (uInt i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
         if (value < itsStart[i]) {
             return False;
         }
@@ -1338,11 +1338,11 @@ Bool TableExprNodeSet::findClosedOpen (Double value)
 }
 Bool TableExprNodeSet::findClosedClosed (Double value)
 {
-    uInt n = itsElems.size();
+    size_t n = itsElems.size();
     if (value > itsEnd[n-1]) {
         return False;
     }
-    for (uInt i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
         if (value < itsStart[i]) {
             return False;
         }
@@ -1356,8 +1356,8 @@ Bool TableExprNodeSet::findClosedClosed (Double value)
 Bool TableExprNodeSet::hasBool (const TableExprId& id, Bool value)
 {
     Bool result = False;
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchBool (&result, &value, 1, id);
     }
     return result;
@@ -1368,8 +1368,8 @@ Bool TableExprNodeSet::hasInt (const TableExprId& id, Int64 value)
         return (this->*itsFindFunc) (value);
     }
     Bool result = False;
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchInt (&result, &value, 1, id);
     }
     return result;
@@ -1380,8 +1380,8 @@ Bool TableExprNodeSet::hasDouble (const TableExprId& id, Double value)
         return (this->*itsFindFunc) (value);
     }
     Bool result = False;
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchDouble (&result, &value, 1, id);
     }
     return result;
@@ -1390,8 +1390,8 @@ Bool TableExprNodeSet::hasDComplex (const TableExprId& id,
                                     const DComplex& value)
 {
     Bool result = False;
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchDComplex (&result, &value, 1, id);
     }
     return result;
@@ -1399,8 +1399,8 @@ Bool TableExprNodeSet::hasDComplex (const TableExprId& id,
 Bool TableExprNodeSet::hasString (const TableExprId& id, const String& value)
 {
     Bool result = False;
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchString (&result, &value, 1, id);
     }
     return result;
@@ -1411,8 +1411,8 @@ Bool TableExprNodeSet::hasDate (const TableExprId& id, const MVTime& value)
         return (this->*itsFindFunc) (value);
     }
     Bool result = False;
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchDate (&result, &value, 1, id);
     }
     return result;
@@ -1425,9 +1425,9 @@ MArray<Bool> TableExprNodeSet::hasArrayBool (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const Bool* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t nval = value.size();
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchBool (out, in, nval, id);
     }
     value.array().freeStorage (in, deleteIn);
@@ -1442,9 +1442,9 @@ MArray<Bool> TableExprNodeSet::hasArrayInt (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const Int64* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t nval = value.size();
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchInt (out, in, nval, id);
     }
     value.array().freeStorage (in, deleteIn);
@@ -1459,9 +1459,9 @@ MArray<Bool> TableExprNodeSet::hasArrayDouble (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const Double* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t nval = value.size();
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchDouble (out, in, nval, id);
     }
     value.array().freeStorage (in, deleteIn);
@@ -1476,9 +1476,9 @@ MArray<Bool> TableExprNodeSet::hasArrayDComplex (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const DComplex* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t nval = value.size();
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchDComplex (out, in, nval, id);
     }
     value.array().freeStorage (in, deleteIn);
@@ -1493,9 +1493,9 @@ MArray<Bool> TableExprNodeSet::hasArrayString (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const String* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t nval = value.size();
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchString (out, in, nval, id);
     }
     value.array().freeStorage (in, deleteIn);
@@ -1510,9 +1510,9 @@ MArray<Bool> TableExprNodeSet::hasArrayDate (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const MVTime* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    uInt n = itsElems.size();
-    for (uInt i=0; i<n; i++) {
+    size_t nval = value.size();
+    size_t n = itsElems.size();
+    for (size_t i=0; i<n; i++) {
         castItsElem(i)->matchDate (out, in, nval, id);
     }
     value.array().freeStorage (in, deleteIn);

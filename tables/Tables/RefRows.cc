@@ -39,13 +39,13 @@ RefRows::RefRows (const Vector<rownr_t>& rowNumbers, Bool isSliced,
 {
   init (rowNumbers, isSliced, collapse);
 }
-  
+
 RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 		  Bool collapse)
 {
   init (RowNumbers(rowNumbers), isSliced, collapse);
 }
-
+  
 void RefRows::init (const Vector<rownr_t>& rowNumbers, Bool isSliced,
                     Bool collapse)
 {

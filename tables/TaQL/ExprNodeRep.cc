@@ -1078,13 +1078,12 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
             dtIn = NTNumeric;
         }
     }
-    uInt i;
     NodeDataType resultType = dtIn;
     if (dtIn == NTNumeric) {
         // NTNumeric -> dtIn must be NTComplex or NTDouble or NTInt
         //              and set resultType to the highest type of dtIn
         resultType = (dtOut==NTDouCom ? NTDouble : NTInt);
-        for (i=0; i<nelem; i++) {
+        for (uInt i=0; i<nelem; i++) {
             if (nodes[i]->dataType() == NTComplex) {
                 resultType = NTComplex;
             } else if (nodes[i]->dataType() == NTDouble) {
@@ -1099,7 +1098,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
         // NTReal -> dtIn must be NTDouble or NTInt
         //           and set resultType to the highest type of dtIn
         resultType = (dtOut==NTDouCom ? NTDouble : NTInt);
-        for (i=0; i<nelem; i++) {
+        for (uInt i=0; i<nelem; i++) {
             if (nodes[i]->dataType() == NTDouble) {
                 resultType = NTDouble;
             } else if (nodes[i]->dataType() != NTInt) {
@@ -1108,7 +1107,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
         }
     } else {
         // Data types of the nodes must match dtIn
-        for (i=0; i<nelem; i++) {
+        for (uInt i=0; i<nelem; i++) {
             // Double or String to Date conversion can be possible.
             if (nodes[i]->dataType() != dtIn) {
                 if (dateConv  &&  dtIn == NTDate) {

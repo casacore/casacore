@@ -757,7 +757,7 @@ private:
   void copyMaskedValue (rownr_t row, ArrayColumn<TCOL>& acol,
                         const Slicer* slicerPtr,
                         const TNODE* val,
-                        uInt incr, const Array<Bool>& mask);
+                        size_t incr, const Array<Bool>& mask);
   Array<Bool> makeMaskSlice (const Array<Bool>& mask,
                              Bool maskFirst,
                              const IPosition& shapeCol,

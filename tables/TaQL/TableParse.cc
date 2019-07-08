@@ -2542,7 +2542,7 @@ template<typename TCOL, typename TNODE>
 void TableParseSelect::copyMaskedValue (rownr_t row, ArrayColumn<TCOL>& acol,
                                         const Slicer* slicerPtr,
                                         const TNODE* val,
-                                        uInt incr, const Array<Bool>& mask)
+                                        size_t incr, const Array<Bool>& mask)
 {
   // Get the array from the table.
   Array<TCOL> res(mask.shape());
@@ -2887,10 +2887,10 @@ Table TableParseSelect::doCount (Bool showTimings, const Table& table)
   Table intab = doProject (False, table);
   // Create an empty memory table with the same description as the input table.
   Table tab = TableCopy::makeEmptyMemoryTable ("", intab, True);
-  // Add the uInt _COUNT_ column.
-  ScalarColumnDesc<uInt> countDesc ("_COUNT_");
+  // Add the Int64 _COUNT_ column.
+  ScalarColumnDesc<Int64> countDesc ("_COUNT_");
   tab.addColumn (countDesc);
-  ScalarColumn<uInt> countCol(tab, "_COUNT_");
+  ScalarColumn<Int64> countCol(tab, "_COUNT_");
   // Iterate for all columns through the input table.
   Vector<String> colNames = intab.tableDesc().columnNames();
   Block<String> bcolNames(colNames.size());
@@ -3103,8 +3103,8 @@ void replaceIds (vector<CountedPtr<vector<TableExprId> > >& ids)
       rowids[inx++] = vec[j].rownr();
     }
   }
-  Vector<uInt> inxVec;
-  GenSortIndirect<Int64>::sort (inxVec, rowids);
+  Vector<rownr_t> inxVec;
+  GenSortIndirect<Int64,rownr_t>::sort (inxVec, rowids);
   // We need to replace each rowid by its sequence nr because a table selection
   // will map the selected rows to rowid 0..n.
   // So store the index in the rowids.

@@ -139,7 +139,7 @@ void b()
 	}
     }
     // Read a few rows.
-    Vector<uInt> rows(2);
+    Vector<rownr_t> rows(2);
     rows[0] = 2;
     rows[1] = 5;
     Vector<VSCExample> vecRF = colA.getColumnCells(RefRows(rows));

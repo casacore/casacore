@@ -40,7 +40,7 @@
 
 void doIt()
 {
-    Vector<uInt> vec(18);
+    Vector<rownr_t> vec(18);
     vec(0) = 1;
     vec(1) = 1;
     vec(2) = 2;
@@ -108,8 +108,8 @@ void doIt()
 	}
     }
     {
-	Vector<uInt> rows(18);
-	indgen (rows, uInt(1));
+	Vector<rownr_t> rows(18);
+	indgen (rows, rownr_t(1));
 	rows(17) = 0;
 	RefRows ref(rows);
 	AlwaysAssertExit (ref.nrows() == 18);
@@ -117,8 +117,8 @@ void doIt()
 	cout << ref.convert(vec) << endl;
     }
     {
-	Vector<uInt> rows(18);
-	indgen (rows, uInt(1));
+	Vector<rownr_t> rows(18);
+	indgen (rows, rownr_t(1));
 	rows(17) = 0;
 	RefRows ref(rows, False, True);
 	AlwaysAssertExit (ref.nrows() == 18);

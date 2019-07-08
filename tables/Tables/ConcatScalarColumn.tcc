@@ -69,11 +69,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<T>& vec = static_cast<Vector<T>&>(arr);
     // Get the rownrs as a vector and sort it.
     // In this way the data will be read in sequential order.
-    Vector<uInt> rows = rownrs.convert();
-    Vector<uInt> inx;
-    GenSortIndirect<uInt>::sort (inx, rows);
+    Vector<rownr_t> rows = rownrs.convert();
+    Vector<rownr_t> inx;
+    GenSortIndirect<rownr_t,rownr_t>::sort (inx, rows);
     const ConcatRows& ccRows = refTabPtr_p->rows();
-    uInt tabRownr;
+    rownr_t tabRownr;
     uInt    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
@@ -108,11 +108,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const Vector<T>& vec = static_cast<const Vector<T>&>(arr);
     // Get the rownrs as a vector and sort it.
     // In this way the data will be read in sequential order.
-    Vector<uInt> rows = rownrs.convert();
-    Vector<uInt> inx;
-    GenSortIndirect<uInt>::sort (inx, rows);
+    Vector<rownr_t> rows = rownrs.convert();
+    Vector<rownr_t> inx;
+    GenSortIndirect<rownr_t,rownr_t>::sort (inx, rows);
     const ConcatRows& ccRows = refTabPtr_p->rows();
-    uInt tabRownr;
+    rownr_t tabRownr;
     uInt    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.

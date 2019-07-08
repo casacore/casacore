@@ -435,7 +435,7 @@ void c()
     removedRows(12) = True;                    // row 10 was old row 12
     b (removedRows);
     // Remove several rows.
-    Vector<uInt> rows(5);
+    Vector<rownr_t> rows(5);
     for (i=0; i<5; i++) {
 	rows(i)=i+2;
 	removedRows(i+3) = True;
@@ -463,7 +463,7 @@ void d()
     // Remove the last 10 rows.
     // Open the table as read/write for that purpose.
     Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
-    Vector<uInt> rows(10);
+    Vector<rownr_t> rows(10);
     for (i=0; i<10; i++) {
 	rows(i)=i+10;
     }

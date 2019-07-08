@@ -794,8 +794,7 @@ public:
     // </note>
     // <group>
     void removeRow (rownr_t rownr);
-    void removeRow (const Vector<rownr_t>& rownrs);
-    void removeRow (const Vector<uInt>& rownrs);
+    void removeRow (const RowNumbers& rownrs);
     // </group>
 
     // Create a TableExprNode object for a column or for a keyword
@@ -854,9 +853,7 @@ public:
     // <srcblock>
     //     Table result = thisTable (otherTable.rowNumbers());
     // </srcblock>
-    //# The uInt version is for backward compatibility.
-    Table operator() (const Vector<rownr_t>& rownrs) const;
-    Table operator() (const Vector<uInt>& rownrs) const;
+    Table operator() (const RowNumbers& rownrs) const;
 
     // Select rows using a mask block.
     // The length of the block must match the number of rows in the table.
@@ -1241,7 +1238,7 @@ inline void Table::addRow (rownr_t nrrow, Bool initialize)
     { baseTabPtr_p->addRow (nrrow, initialize); }
 inline void Table::removeRow (rownr_t rownr)
     { baseTabPtr_p->removeRow (rownr); }
-inline void Table::removeRow (const Vector<rownr_t>& rownrs)
+inline void Table::removeRow (const RowNumbers& rownrs)
     { baseTabPtr_p->removeRow (rownrs); }
 inline void Table::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
     { baseTabPtr_p->addColumn (columnDesc, addToParent); }

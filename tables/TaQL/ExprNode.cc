@@ -64,15 +64,19 @@ TableExprNode::TableExprNode (const Bool& val)
 {
     node_p = new TableExprNodeConstBool (val);
 }
-TableExprNode::TableExprNode (const Int64& val)
-{
-    node_p = new TableExprNodeConstInt (val);
-}
 TableExprNode::TableExprNode (const Int& val)
 {
     node_p = new TableExprNodeConstInt (val);
 }
 TableExprNode::TableExprNode (const uInt& val)
+{
+    node_p = new TableExprNodeConstInt (val);
+}
+TableExprNode::TableExprNode (const Int64& val)
+{
+    node_p = new TableExprNodeConstInt (val);
+}
+TableExprNode::TableExprNode (const uInt64& val)
 {
     node_p = new TableExprNodeConstInt (val);
 }
@@ -141,10 +145,6 @@ TableExprNode::TableExprNode (const Array<Int>& val)
     node_p = new TableExprNodeArrayConstInt (val);
 }
 TableExprNode::TableExprNode (const Array<uInt>& val)
-{
-    node_p = new TableExprNodeArrayConstInt (val);
-}
-TableExprNode::TableExprNode (const Array<Int64>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
 }

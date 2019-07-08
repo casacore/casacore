@@ -167,8 +167,7 @@ void showtab (const Table& tab, const Vector<String>& colnam)
 {
   uInt nrcol = 0;
   PtrBlock<TableColumn*> tableColumns(colnam.nelements());
-  uInt i;
-  for (i=0; i<colnam.nelements(); i++) {
+  for (uInt i=0; i<colnam.nelements(); i++) {
     if (! tab.tableDesc().isColumn (colnam(i))) {
       cout << "Column " << colnam(i) << " does not exist" << endl;
     }else{
@@ -188,7 +187,7 @@ void showtab (const Table& tab, const Vector<String>& colnam)
     return;
   }
   
-  for (i=0; i<tab.nrow(); i++) {
+  for (uInt i=0; i<tab.nrow(); i++) {
     for (uInt j=0; j<nrcol; j++) {
       if (tableColumns[j]->columnDesc().isArray()) {
 	cout << " shape=" << tableColumns[j]->shape (i);
@@ -212,7 +211,7 @@ void showtab (const Table& tab, const Vector<String>& colnam)
     cout << endl;
   }
   
-  for (i=0; i<nrcol; i++) {
+  for (uInt i=0; i<nrcol; i++) {
     delete tableColumns[i];
   }
 }
@@ -240,7 +239,7 @@ void showExpr(const TableExprNode& expr)
     cout << "Unit: " << unit.getName() << endl;
   }
   if (expr.isScalar()) {
-    Vector<uInt> rownrs(expr.nrow());
+    Vector<rownr_t> rownrs(expr.nrow());
     indgen (rownrs);
     switch (expr.getColumnDataType()) {
     case TpBool:
@@ -284,7 +283,7 @@ void showExpr(const TableExprNode& expr)
     }
     cout << endl;
   } else {
-    for (uInt i=0; i<expr.nrow(); i++) {
+    for (rownr_t i=0; i<expr.nrow(); i++) {
       cout << "  row " << i << ":  ";
       switch (expr.dataType()) {
       case TpBool:
@@ -360,7 +359,6 @@ void seltab (const String& str)
   // Parse and execute the command.
   TaQLResult result;
   Table* tabp = 0;
-  uInt i;
   Vector<String> vecstr;
   String cmd;
   // A semicolon can be used to specify a possible table after it (for $1).
@@ -385,7 +383,7 @@ void seltab (const String& str)
       vecstr[nrcol] = "_COUNT_";
     }
     cout << vecstr.nelements() << " selected columns: ";
-    for (i=0; i<vecstr.nelements(); i++) {
+    for (uInt i=0; i<vecstr.nelements(); i++) {
       cout << " " << vecstr(i);
     }
     cout << endl;

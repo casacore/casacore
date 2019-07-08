@@ -112,7 +112,9 @@ void a (uInt nrrow)
 	}
     }
     {
-	Table rtab (tab(abv));
+        Vector<rownr_t> abvcp(abv.size());
+        convertArray (abvcp, abv);
+	Table rtab (tab(abvcp));
 	ScalarColumn<uInt> ab1(rtab,"ab");
 	ScalarColumn<Int> ad(rtab,"ad");
 	Timer timer;

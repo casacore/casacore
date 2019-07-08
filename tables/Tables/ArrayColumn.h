@@ -360,6 +360,10 @@ public:
     // and this (i.e. output) cell.
     void put (rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
               Bool preserveTileShape=False);
+    // For backward compatibility (otherwise can be ambigious).
+    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
+              Bool preserveTileShape=False)
+      { put (rownr_t(thisRownr), that, rownr_t(thatRownr), preserveTileShape); }
     // </group>
 
     // Put into a slice of an N-dimensional array in a particular cell.

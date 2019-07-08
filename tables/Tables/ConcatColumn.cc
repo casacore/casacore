@@ -74,7 +74,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatColumn::initialize (rownr_t startRow, rownr_t endRow)
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     for (rownr_t i=startRow; i<endRow; ++i) {
       refTabPtr_p->rows().mapRownr (tableNr, tabRownr, i);
       refColPtr_p[tableNr]->initialize (tabRownr, tabRownr);
@@ -84,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatColumn::setShape (rownr_t rownr, const IPosition& shape)
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->setShape (tabRownr, shape);
   }
@@ -93,7 +93,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			       const IPosition& tileShape)
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->setShape (tabRownr, shape, tileShape);
   }
@@ -111,7 +111,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   uInt ConcatColumn::ndim (rownr_t rownr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     return refColPtr_p[tableNr]->ndim (tabRownr);
   }
@@ -119,7 +119,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   IPosition ConcatColumn::shape(rownr_t rownr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     return refColPtr_p[tableNr]->shape (tabRownr);
   }
@@ -127,7 +127,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   IPosition ConcatColumn::tileShape(rownr_t rownr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     return refColPtr_p[tableNr]->tileShape (tabRownr);
   }
@@ -135,7 +135,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Bool ConcatColumn::isDefined (rownr_t rownr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     return refColPtr_p[tableNr]->isDefined (tabRownr);
   }
@@ -150,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatColumn::get (rownr_t rownr, void* dataPtr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->get (tabRownr, dataPtr);
     // Set the column cache to the table used.
@@ -160,7 +160,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatColumn::getArray (rownr_t rownr, ArrayBase& arr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->getArray (tabRownr, arr);
   }
@@ -169,7 +169,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			       ArrayBase& arr) const
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->getSlice (tabRownr, ns, arr);
   }
@@ -177,7 +177,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatColumn::put (rownr_t rownr, const void* dataPtr)
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->put (tabRownr, dataPtr);
     // Set the column cache to the table used.
@@ -187,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatColumn::putArray (rownr_t rownr, const ArrayBase& arr)
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->putArray (tabRownr, arr);
   }
@@ -196,7 +196,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			       const ArrayBase& arr)
   {
     uInt tableNr;
-    uInt tabRownr;
+    rownr_t tabRownr;
     refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
     refColPtr_p[tableNr]->putSlice (tabRownr, ns, arr);
   }
@@ -286,7 +286,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				 AccessRowsFunc* accessFunc) const
   {
     // The rows to access.
-    Vector<uInt> rows = rownrs.convert();
+    Vector<rownr_t> rows = rownrs.convert();
     // We have one or more slices of rows.
     // Try to access them also in a sliced way, because that is faster.
     // First make resources.
@@ -294,7 +294,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const ConcatRows& ccRows = refTabPtr_p->rows();
     // The RefRows vector for the rownrs to be handled in an underlying table.
     // Make it as large as needed to avoid resizes.
-    Vector<uInt> tabRowNrs(rows.nelements());
+    Vector<rownr_t> tabRowNrs(rows.nelements());
     // The rows are handled by combining them as much as possible in a RefRows
     // slice. This is possible until a different underlying table needs to
     // be accessed.
@@ -314,7 +314,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	if (lastTabNr >= 0) {
 	  rownr_t nrrow = i - st[rowAxis];
 	  sz[rowAxis] = nrrow;
-	  Vector<uInt> rowPart(tabRowNrs(Slice(st[rowAxis], nrrow))); 
+	  Vector<rownr_t> rowPart(tabRowNrs(Slice(st[rowAxis], nrrow))); 
 	  CountedPtr<ArrayBase> part (arr.getSection (Slicer(st, sz)));
 	  accessFunc (refColPtr_p[lastTabNr], RefRows(rowPart), ns, *part);
 	}
@@ -325,7 +325,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (lastTabNr >= 0) {
       rownr_t nrrow = rows.nelements() - st[rowAxis];
       sz[rowAxis] = nrrow;
-      Vector<uInt> rowPart(tabRowNrs(Slice(st[rowAxis], nrrow))); 
+      Vector<rownr_t> rowPart(tabRowNrs(Slice(st[rowAxis], nrrow))); 
       CountedPtr<ArrayBase> part (arr.getSection (Slicer(st, sz)));
       accessFunc (refColPtr_p[lastTabNr], RefRows(rowPart), ns, *part);
     }

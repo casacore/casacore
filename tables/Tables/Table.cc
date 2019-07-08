@@ -944,18 +944,13 @@ TableExprNode Table::nodeRandom () const
 }
 
 
-void Table::removeRow (const Vector<uInt>& rownrs)
-    { baseTabPtr_p->removeRow (RowNumbers(rownrs)); }
-
 //# Select rows based on an expression.
 Table Table::operator() (const TableExprNode& expr,
                          rownr_t maxRow, rownr_t offset) const
     { return Table (baseTabPtr_p->select (expr, maxRow, offset)); }
 //# Select rows based on row numbers.
-Table Table::operator() (const Vector<rownr_t>& rownrs) const
+Table Table::operator() (const RowNumbers& rownrs) const
     { return Table (baseTabPtr_p->select (rownrs)); }
-Table Table::operator() (const Vector<uInt>& rownrs) const
-    { return Table (baseTabPtr_p->select (RowNumbers(rownrs))); }
 //# Select rows based on a mask.
 Table Table::operator() (const Block<Bool>& mask) const
     { return Table (baseTabPtr_p->select (mask)); }

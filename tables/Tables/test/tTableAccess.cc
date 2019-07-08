@@ -150,7 +150,7 @@ void readTable (const Table& tab)
 {
   readSca<Int> (tab);
   readArr<Int> (tab);
-  Vector<uInt> rownrs(1,1);
+  Vector<rownr_t> rownrs(1,1);
   Table tab2 = tab(rownrs);
   readSca<Int> (tab2);
   readArr<Int> (tab2);

@@ -43,11 +43,19 @@ namespace casacore { //#Begin namespace casacore
     {}
 
     // Construct from a Vector of old style row numbers.
+#ifdef IMPLICIT_CTDS_32BIT
     RowNumbers (const Vector<uInt>& rows);
-
+#else
+    explicit RowNumbers (const Vector<uInt>& rows);
+#endif
+    
     // Conversion operator to convert Vector<rownr_t> to Vector<uInt>.
     // This is for backward compatibility of Table::rowNumbers.
+#ifdef IMPLICIT_CTDS_32BIT
     operator Vector<uInt>() const
+#else
+    explicit operator Vector<uInt>() const
+#endif
       { return convertRownrVector (*this); }
 
     // Do the actual conversion.

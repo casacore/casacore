@@ -217,8 +217,8 @@ MArray<Bool> TableExprNodeArray::hasArrayBool (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const Bool* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    for (uInt i=0; i<nval; i++) {
+    size_t nval = value.size();
+    for (size_t i=0; i<nval; i++) {
         out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
@@ -233,8 +233,8 @@ MArray<Bool> TableExprNodeArray::hasArrayInt (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const Int64* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    for (uInt i=0; i<nval; i++) {
+    size_t nval = value.size();
+    for (size_t i=0; i<nval; i++) {
         out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
@@ -249,8 +249,8 @@ MArray<Bool> TableExprNodeArray::hasArrayDouble (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const Double* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    for (uInt i=0; i<nval; i++) {
+    size_t nval = value.size();
+    for (size_t i=0; i<nval; i++) {
         out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
@@ -265,8 +265,8 @@ MArray<Bool> TableExprNodeArray::hasArrayDComplex (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const DComplex* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    for (uInt i=0; i<nval; i++) {
+    size_t nval = value.size();
+    for (size_t i=0; i<nval; i++) {
         out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
@@ -281,8 +281,8 @@ MArray<Bool> TableExprNodeArray::hasArrayString (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const String* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    for (uInt i=0; i<nval; i++) {
+    size_t nval = value.size();
+    for (size_t i=0; i<nval; i++) {
         out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);
@@ -297,8 +297,8 @@ MArray<Bool> TableExprNodeArray::hasArrayDate (const TableExprId& id,
     Bool deleteIn, deleteOut;
     const MVTime* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.size();
-    for (uInt i=0; i<nval; i++) {
+    size_t nval = value.size();
+    for (size_t i=0; i<nval; i++) {
         out[i] = anyEQ (in[i], set);
     }
     value.array().freeStorage (in, deleteIn);

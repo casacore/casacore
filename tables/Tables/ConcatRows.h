@@ -115,7 +115,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsRows[i]; }
 
     // Map an overall row number to a table and row number.
-    void mapRownr (uInt& tableNr, uInt& tabRownr, rownr_t rownr) const
+    void mapRownr (uInt& tableNr, rownr_t& tabRownr, rownr_t rownr) const
     {
       if (rownr < itsLastStRow  ||  rownr >= itsLastEndRow) {
 	findRownr (rownr);
@@ -224,7 +224,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     const ConcatRows* itsRows;
-    Vector<uInt>      itsChunk;
+    Vector<rownr_t>   itsChunk;
     rownr_t           itsStart;
     rownr_t           itsEnd;
     rownr_t           itsIncr;

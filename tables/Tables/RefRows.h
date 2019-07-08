@@ -94,8 +94,13 @@ public:
     // individual row numbers to the slice form (to save memory).
     RefRows (const Vector<rownr_t>& rowNumbers, Bool isSliced = False,
              Bool collapse = False);
+#ifdef IMPLICIT_CTDS_32BIT
     RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
-	     Bool collapse = False);
+             Bool collapse = False);
+#else
+    explicit RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
+                      Bool collapse = False);
+#endif
 
     // Create the object from a single start,end,incr slice.
     RefRows (rownr_t start, rownr_t end, rownr_t incr=1);

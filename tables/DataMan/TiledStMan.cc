@@ -743,7 +743,7 @@ void TiledStMan::setup (Int extraNdim)
 	lengths[i] = dataColSet[i]->tilePixelSize();
     }
     Vector<uInt> inx;
-    GenSortIndirect<uInt>::sort (inx, lengths, nrd, Sort::Descending);
+    GenSortIndirect<uInt,uInt>::sort (inx, lengths, nrd, Sort::Descending);
     // Rearrange the objects and set their column number.
     // In this way function setLengths will behave correctly.
     for (i=0; i<nrd; i++) {
