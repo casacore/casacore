@@ -156,7 +156,7 @@ void ScalarQuantColumn<T>::throwIfNull() const
 }
  
 template<class T>
-void ScalarQuantColumn<T>::getData (uInt rownr, Quantum<T>& q) const
+void ScalarQuantColumn<T>::getData (rownr_t rownr, Quantum<T>& q) const
 {
   // Quantums are created from Ts stored in itsDataCol and Units
   // in itsUnitsCol, if units are variable, or itsUnit if non-variable.
@@ -169,7 +169,7 @@ void ScalarQuantColumn<T>::getData (uInt rownr, Quantum<T>& q) const
 }
 
 template<class T>
-void ScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q) const
+void ScalarQuantColumn<T>::get (rownr_t rownr, Quantum<T>& q) const
 {
   getData (rownr, q);
   if (itsConvOut) {
@@ -178,7 +178,7 @@ void ScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q) const
 }
 
 template<class T>
-void ScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q,
+void ScalarQuantColumn<T>::get (rownr_t rownr, Quantum<T>& q,
                                 const Unit& u) const
 {
   getData (rownr, q);
@@ -186,7 +186,7 @@ void ScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q,
 }
 
 template<class T>
-void ScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q,
+void ScalarQuantColumn<T>::get (rownr_t rownr, Quantum<T>& q,
                                 const Quantum<T>& other) const
 {
   getData (rownr, q);
@@ -194,7 +194,7 @@ void ScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q,
 }
 
 template<class T> 
-Quantum<T> ScalarQuantColumn<T>::operator() (uInt rownr) const
+Quantum<T> ScalarQuantColumn<T>::operator() (rownr_t rownr) const
 {
   Quantum<T> q;
   get (rownr, q);
@@ -202,7 +202,7 @@ Quantum<T> ScalarQuantColumn<T>::operator() (uInt rownr) const
 }
 
 template<class T> 
-Quantum<T> ScalarQuantColumn<T>::operator() (uInt rownr,
+Quantum<T> ScalarQuantColumn<T>::operator() (rownr_t rownr,
                                              const Unit& u) const
 {
   Quantum<T> q;
@@ -211,7 +211,7 @@ Quantum<T> ScalarQuantColumn<T>::operator() (uInt rownr,
 }
 
 template<class T> 
-Quantum<T> ScalarQuantColumn<T>::operator() (uInt rownr,
+Quantum<T> ScalarQuantColumn<T>::operator() (rownr_t rownr,
                                              const Quantum<T>& other) const
 {
   Quantum<T> q;
@@ -220,7 +220,7 @@ Quantum<T> ScalarQuantColumn<T>::operator() (uInt rownr,
 }
  
 template<class T>
-void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
+void ScalarQuantColumn<T>::put (rownr_t rownr, const Quantum<T>& q)
 {
   // The value component of the quantum is stored in itsDataCol and the
   // unit component in itsUnitsCol unless Units are non-variable in

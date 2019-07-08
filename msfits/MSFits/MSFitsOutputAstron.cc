@@ -465,9 +465,9 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // stokes(0) >= 0, or descending order if < 0.
   Vector<uInt> stokesIndex(numcorr0);
   if (stokes(0) >= 0) {
-    GenSortIndirect<Int>::sort(stokesIndex, stokes);
+    GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes);
   } else {
-    GenSortIndirect<Int>::sort(stokesIndex, stokes, Sort::Descending);
+    GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes, Sort::Descending);
   }
 
   // OK, make sure that we can represent the stokes in FITS

@@ -332,7 +332,7 @@ namespace casacore {
     itsWavel.reserve (spwTab.nrow());
     itsWavels.reserve (spwTab.nrow());
     uInt nfreq = 0;
-    for (uInt i=0; i<spwTab.nrow(); ++i) {
+    for (rownr_t i=0; i<spwTab.nrow(); ++i) {
       itsWavel.push_back (refCol(i) / C::c);
       itsWavels.push_back (freqCol(i) / C::c);
       if (itsWavels[i].size() > nfreq) {
@@ -673,7 +673,7 @@ namespace casacore {
   }
 
 
-  void UDFMSCal::recreateColumnObjects (const Vector<uInt>& rownrs)
+  void UDFMSCal::recreateColumnObjects (const Vector<rownr_t>& rownrs)
   {
     if (! itsIdColName.empty()) {
       TableExprNodeRep* col = const_cast<TableExprNodeRep*>(itsIdNode.getNodeRep());
@@ -722,7 +722,7 @@ namespace casacore {
       return itsDataNode.getBool (id);
     case GETVALUE:
       {
-        Int64 rownr = getRowNr(id);
+        rownr_t rownr = getRowNr(id);
         if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
           return False;
         }
@@ -738,7 +738,7 @@ namespace casacore {
     switch (itsType) {
     case GETVALUE:
       {
-        Int64 rownr = getRowNr(id);
+        rownr_t rownr = getRowNr(id);
         if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
           return 0;
         }
@@ -763,7 +763,7 @@ namespace casacore {
       return itsEngine.getDelay (itsArg, id.rownr());
     case GETVALUE:
       {
-        Int64 rownr = getRowNr(id);
+        rownr_t rownr = getRowNr(id);
         if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
           return 0.;
         }
@@ -780,7 +780,7 @@ namespace casacore {
     switch (itsType) {
     case GETVALUE:
       {
-        Int64 rownr = getRowNr(id);
+        rownr_t rownr = getRowNr(id);
         if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
           return DComplex();
         }
@@ -797,7 +797,7 @@ namespace casacore {
     switch (itsType) {
     case GETVALUE:
       {
-        Int64 rownr = getRowNr(id);
+        rownr_t rownr = getRowNr(id);
         if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
           return String();
         }

@@ -202,7 +202,7 @@ Vector<String> ArrayQuantColumn<T>::getUnits() const
 }
 
 template<class T>
-void ArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q, 
+void ArrayQuantColumn<T>::getData (rownr_t rownr, Array<Quantum<T> >& q, 
                                    Bool resize) const
 { 
   // Quantums are created and put into q by taking T data from 
@@ -258,7 +258,7 @@ void ArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+void ArrayQuantColumn<T>::get (rownr_t rownr, Array<Quantum<T> >& q,
                                Bool resize) const
 {        
   if (itsConvOut) {
@@ -269,7 +269,7 @@ void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+void ArrayQuantColumn<T>::get (rownr_t rownr, Array<Quantum<T> >& q,
                                const Unit& u, Bool resize) const
 {        
   getData (rownr, q, resize);
@@ -285,7 +285,7 @@ void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+void ArrayQuantColumn<T>::get (rownr_t rownr, Array<Quantum<T> >& q,
                                const Vector<Unit>& u, Bool resize) const
 {        
   getData (rownr, q, resize);
@@ -313,7 +313,7 @@ void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+void ArrayQuantColumn<T>::get (rownr_t rownr, Array<Quantum<T> >& q,
                                const Quantum<T>& other, 
                                Bool resize) const
 {
@@ -321,7 +321,7 @@ void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T> 
-Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr) const
+Array<Quantum<T> > ArrayQuantColumn<T>::operator() (rownr_t rownr) const
 {
   Array<Quantum<T> > q;
   get (rownr, q);
@@ -329,7 +329,7 @@ Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr) const
 }
 
 template<class T> 
-Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr,
+Array<Quantum<T> > ArrayQuantColumn<T>::operator() (rownr_t rownr,
                                                     const Unit& u) const
 {
   Array<Quantum<T> > q;
@@ -338,7 +338,7 @@ Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr,
 }
 
 template<class T> 
-Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr,
+Array<Quantum<T> > ArrayQuantColumn<T>::operator() (rownr_t rownr,
                                                     const Vector<Unit>& u) const
 {
   Array<Quantum<T> > q;
@@ -348,7 +348,7 @@ Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr,
 
 template<class T> 
 Array<Quantum<T> > ArrayQuantColumn<T>::operator()
-                               (uInt rownr, const Quantum<T>& other) const
+                               (rownr_t rownr, const Quantum<T>& other) const
 {
   Array<Quantum<T> > q;
   get (rownr, q, other);
@@ -364,7 +364,7 @@ void ArrayQuantColumn<T>::throwIfNull() const
 }
  
 template<class T>
-void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
+void ArrayQuantColumn<T>::put (rownr_t rownr, const Array<Quantum<T> >& q)
 {
   // Each quantum in q is separated out into its T component and
   // Unit component which are stored in itsDataCol and, if Units are

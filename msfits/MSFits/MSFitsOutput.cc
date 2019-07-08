@@ -582,9 +582,9 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     // stokes(0) >= 0, or descending order if < 0.
     Vector<uInt> stokesIndex(numcorr0);
     if (stokes(0) >= 0) {
-        GenSortIndirect<Int>::sort(stokesIndex, stokes);
+        GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes);
     } else {
-        GenSortIndirect<Int>::sort(stokesIndex, stokes, Sort::Descending);
+        GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes, Sort::Descending);
     }
 
     // OK, make sure that we can represent the stokes in FITS
@@ -955,7 +955,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
                     miniDDIDs[rowInTBF] = spwidMap[inspwinid(rownr + rowInTBF)];
                     ++nperIF[miniDDIDs[rowInTBF]];
                 }
-                GenSortIndirect<Int>::sort(miniSort, miniDDIDs);
+                GenSortIndirect<Int,uInt>::sort(miniSort, miniDDIDs);
                 for (uInt rowInTBF = 0; rowInTBF < nrowsThisTBF; ++rowInTBF) {
                     sortIndex[rownr] = rownr + miniSort[rowInTBF] - rowInTBF;
                     tbfends[rownr] = tbfend;

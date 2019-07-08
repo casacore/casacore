@@ -83,75 +83,73 @@ uInt SortKey::tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
     DataType dtype = cmpObj_p->dataType();
     if (dtype == TpDouble) {
 	if (incr_p == sizeof(Double)) {
-	    return GenSortIndirect<Double>::sort (indexVector, (Double*)data_p,
-						  nrrec, ord, opt);
+          return GenSortIndirect<Double,uInt>::sort (indexVector, (Double*)data_p,
+                                                     nrrec, ord, opt);
 	}
     } else if (dtype == TpFloat) {
 	if (incr_p == sizeof(Float)) {
-	    return GenSortIndirect<Float>::sort (indexVector, (Float*)data_p,
-						 nrrec, ord, opt);
+          return GenSortIndirect<Float,uInt>::sort (indexVector, (Float*)data_p,
+                                                    nrrec, ord, opt);
 	}
     } else if (dtype == TpUInt) {
 	if (incr_p == sizeof(uInt)) {
-	    return GenSortIndirect<uInt>::sort (indexVector, (uInt*)data_p,
-						nrrec, ord, opt);
+          return GenSortIndirect<uInt,uInt>::sort (indexVector, (uInt*)data_p,
+                                                   nrrec, ord, opt);
 	}
     } else if (dtype == TpInt) {
 	if (incr_p == sizeof(Int)) {
-	    return GenSortIndirect<Int>::sort (indexVector, (Int*)data_p,
-					       nrrec, ord, opt);
+          return GenSortIndirect<Int,uInt>::sort (indexVector, (Int*)data_p,
+                                                  nrrec, ord, opt);
 	}
     } else if (dtype == TpInt64) {
 	if (incr_p == sizeof(Int64)) {
-	    return GenSortIndirect<Int64>::sort (indexVector, (Int64*)data_p,
-                                                 nrrec, ord, opt);
+          return GenSortIndirect<Int64,uInt>::sort (indexVector, (Int64*)data_p,
+                                                    nrrec, ord, opt);
 	}
     } else if (dtype == TpString) {
 	if (incr_p == sizeof(String)) {
-	    return GenSortIndirect<String>::sort (indexVector, (String*)data_p,
-						  nrrec, ord, opt);
+          return GenSortIndirect<String,uInt>::sort (indexVector, (String*)data_p,
+                                                     nrrec, ord, opt);
 	}
     }
     return 0;
 }
 
-rownr_t SortKey::tryGenSort (Vector<rownr_t>& indexVector, rownr_t nrrec, int opt) const
+uInt64 SortKey::tryGenSort (Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const
 {
-  /*
     Sort::Order ord = (order_p < 0  ?  Sort::Ascending : Sort::Descending);
     DataType dtype = cmpObj_p->dataType();
     if (dtype == TpDouble) {
 	if (incr_p == sizeof(Double)) {
-	    return GenSortIndirect<Double>::sort (indexVector, (Double*)data_p,
-						  nrrec, ord, opt);
+	    return GenSortIndirect<Double,uInt64>::sort (indexVector, (Double*)data_p,
+                                                         nrrec, ord, opt);
 	}
     } else if (dtype == TpFloat) {
 	if (incr_p == sizeof(Float)) {
-	    return GenSortIndirect<Float>::sort (indexVector, (Float*)data_p,
-						 nrrec, ord, opt);
+	    return GenSortIndirect<Float,uInt64>::sort (indexVector, (Float*)data_p,
+                                                        nrrec, ord, opt);
 	}
     } else if (dtype == TpUInt) {
 	if (incr_p == sizeof(uInt)) {
-	    return GenSortIndirect<uInt>::sort (indexVector, (uInt*)data_p,
-						nrrec, ord, opt);
+	    return GenSortIndirect<uInt,uInt64>::sort (indexVector, (uInt*)data_p,
+                                                       nrrec, ord, opt);
 	}
     } else if (dtype == TpInt) {
 	if (incr_p == sizeof(Int)) {
-	    return GenSortIndirect<Int>::sort (indexVector, (Int*)data_p,
-					       nrrec, ord, opt);
+            return GenSortIndirect<Int,uInt64>::sort (indexVector, (Int*)data_p,
+                                                      nrrec, ord, opt);
 	}
     } else if (dtype == TpInt64) {
 	if (incr_p == sizeof(Int64)) {
-	    return GenSortIndirect<Int64>::sort (indexVector, (Int64*)data_p,
-                                                 nrrec, ord, opt);
+	    return GenSortIndirect<Int64,uInt64>::sort (indexVector, (Int64*)data_p,
+                                                        nrrec, ord, opt);
 	}
     } else if (dtype == TpString) {
 	if (incr_p == sizeof(String)) {
-	    return GenSortIndirect<String>::sort (indexVector, (String*)data_p,
-						  nrrec, ord, opt);
+	    return GenSortIndirect<String,uInt64>::sort (indexVector, (String*)data_p,
+                                                         nrrec, ord, opt);
 	}
     }
-  */
     return 0;
 }
 

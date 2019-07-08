@@ -145,7 +145,7 @@ namespace casacore {
       }
     }
     checkRows (attrName, rownr);
-    itsTable.putCell (attrName, Vector<Int>(1,rownr), data);
+    itsTable.putCell (attrName, Vector<Int64>(1,rownr), data);
   }
 
   void ImageAttrGroupCasa::checkRows (const String& attrName, uInt rownr)
