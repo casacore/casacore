@@ -1,3 +1,7 @@
+# 3.1.2
+
+ - Bump version in version.h (since in 3.1.1 it was still at '3.1.0')
+
 # 3.1.1
 
 ## General
