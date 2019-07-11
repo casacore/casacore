@@ -191,22 +191,19 @@ public:
         arrayVToSelection(rownr);
         if(itsReadCacheMaxRows > 0)
         {
-            if(itsAdiosStart[0] >= itsReadCacheStartRow && itsAdiosStart[0] < itsReadCacheStartRow + itsReadCacheRows)
-            {
-                Bool deleteIt;
-                auto *arrayPtr = asArrayPtr(dataPtr);
-                T *data = arrayPtr->getStorage(deleteIt);
-                size_t index = itsArraySize * (itsAdiosStart[0] - itsReadCacheStartRow);
-                size_t length = sizeof(T) * itsArraySize;
-                std::memcpy(data, itsReadCache.data() + index, length);
-                arrayPtr->putStorage(data, deleteIt);
-            }
-            else
+            if(itsAdiosStart[0] < itsReadCacheStartRow or itsAdiosStart[0] >= itsReadCacheStartRow + itsReadCacheRows)
             {
                 itsAdiosCount[0] = itsReadCacheMaxRows;
                 itsReadCacheRows = itsReadCacheMaxRows;
                 fromAdios(itsReadCache.data());
             }
+            Bool deleteIt;
+            auto *arrayPtr = asArrayPtr(dataPtr);
+            T *data = arrayPtr->getStorage(deleteIt);
+            size_t index = itsArraySize * (itsAdiosStart[0] - itsReadCacheStartRow);
+            size_t length = sizeof(T) * itsArraySize;
+            std::memcpy(data, itsReadCache.data() + index, length);
+            arrayPtr->putStorage(data, deleteIt);
         }
         else
         {
