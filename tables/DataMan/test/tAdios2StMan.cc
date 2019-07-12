@@ -69,8 +69,9 @@ void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition ar
         AlwaysAssertExit (arr_read.nelements() == arr_gen.nelements());
         for(size_t j=0; j<arr_read.nelements(); ++j)
         {
-            std::cout << "read: " << arr_read.data()[j] << std::endl;
-            std::cout << "gen:" << arr_gen.data()[j] << std::endl;
+            std::cout << "Column : " << column << ", Row : " << i << std::endl;
+            std::cout << "Read : " << arr_read.data()[j] << std::endl;
+            std::cout << "Generated : " << arr_gen.data()[j] << std::endl;
             AlwaysAssertExit (arr_read.data()[j] == arr_gen.data()[j]);
         }
     }
