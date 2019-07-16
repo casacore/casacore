@@ -989,7 +989,7 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
   return changed;
 }
 
-void SSMBase::resync (rownr_t aNrRows)
+rownr_t SSMBase::resync64 (rownr_t aNrRows)
 {
   itsNrRows = aNrRows;
   if (itsPtrIndex.nelements() != 0) {
@@ -1013,6 +1013,7 @@ void SSMBase::resync (rownr_t aNrRows)
   for (uInt i=0; i<aNrCol; i++) {
     itsPtrColumn[i]->resync (itsNrRows);
   }
+  return itsNrRows;
 }
 
 void SSMBase::create (rownr_t aNrRows)
@@ -1023,7 +1024,7 @@ void SSMBase::create (rownr_t aNrRows)
   addRow (aNrRows);
 }
 
-void SSMBase::open (rownr_t aRowNr, AipsIO& ios)
+rownr_t SSMBase::open64 (rownr_t aRowNr, AipsIO& ios)
 {
   itsNrRows = aRowNr;
   ios.getstart ("SSM");
@@ -1041,7 +1042,7 @@ void SSMBase::open (rownr_t aRowNr, AipsIO& ios)
   for (uInt i=0; i<aNrCol; i++) {
     itsPtrColumn[i]->getFile(itsNrRows);
   }
-  
+  return itsNrRows;
 }
 
 StManArrayFile* SSMBase::openArrayFile (ByteIO::OpenOption anOpt)

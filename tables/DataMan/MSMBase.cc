@@ -262,16 +262,17 @@ void MSMBase::create (rownr_t nrrow)
   nrrowCreate_p = nrrow;
 }
 
-void MSMBase::open (rownr_t tabNrrow, AipsIO&)
+rownr_t MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
 {
   nrrow_p = tabNrrow;
   //# Create the required nr of rows and initialize them.
   for (uInt i=0; i<ncolumn(); i++) {
     colSet_p[i]->doCreate (tabNrrow);
   }
+  return nrrow_p;
 }
 
-void MSMBase::resync (rownr_t nrrow)
+rownr_t MSMBase::resync64 (rownr_t nrrow)
 {
   // Add or remove rows if it has changed.
   // Note that removing decreases the row number, so the same row number
@@ -284,6 +285,7 @@ void MSMBase::resync (rownr_t nrrow)
       removeRow (nrrow);
     }
   }
+  return nrrow_p;
 }
 
 void MSMBase::deleteManager()

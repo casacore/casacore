@@ -93,7 +93,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     AlwaysAssert (fromCol.columnDesc().isArray(), AipsError);
     Array<T> arr;
     ArrayColumn<T> toCol(table, column);
-    for (uInt i=0; i<table.nrow(); ++i) {
+    for (rownr_t i=0; i<table.nrow(); ++i) {
       // Only write if the source cell contains an array.
       if (fromCol.isDefined(i)) {
         IPosition shp(fromCol.shape(i));

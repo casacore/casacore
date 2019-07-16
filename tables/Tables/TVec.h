@@ -158,7 +158,7 @@ public:
 protected:
     uInt      count_p;               //# reference count
     TabVecTag tag_p;
-    Int       nrel_p;                //# #elements (<0 = ask derived class)
+    Int64     nrel_p;                //# #elements (<0 = ask derived class)
 
     // Get nr of elements.
     virtual rownr_t nelem() const;

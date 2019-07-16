@@ -296,9 +296,9 @@ void ColumnsIndexArray::readData()
 rownr_t ColumnsIndexArray::bsearch (Bool& found, void* fieldPtr) const
 {
   found = False;
-  Int lower = 0;
-  Int upper = itsUniqueIndex.nelements() - 1;
-  Int middle = 0;
+  Int64 lower = 0;
+  Int64 upper = itsUniqueIndex.nelements() - 1;
+  Int64 middle = 0;
   while (lower <= upper) {
     middle = (upper + lower) / 2;
     Int cmp = compare (fieldPtr, itsData, itsDataType,
@@ -319,7 +319,7 @@ rownr_t ColumnsIndexArray::bsearch (Bool& found, void* fieldPtr) const
 Int ColumnsIndexArray::compare (void* fieldPtr,
 				void* dataPtr,
 				Int dataType,
-				Int index)
+				rownr_t index)
 {
   switch (dataType) {
   case TpUChar:
@@ -415,40 +415,40 @@ rownr_t ColumnsIndexArray::getRowNumber (Bool& found)
   return inx;
 }
 
-Vector<uInt> ColumnsIndexArray::getRowNumbers (const Record& key,
-					       Bool unique)
+RowNumbers ColumnsIndexArray::getRowNumbers (const Record& key,
+                                             Bool unique)
 {
   ColumnsIndex::copyKeyField (itsLowerField, itsDataType, key);
   return getRowNumbers (unique);
 }
 
-Vector<uInt> ColumnsIndexArray::getRowNumbers (Bool unique)
+RowNumbers ColumnsIndexArray::getRowNumbers (Bool unique)
 {
   // Read the data (if needed).
   readData();
   Bool found;
   rownr_t inx = bsearch (found, itsLowerField);
-  Vector<uInt> rows;
+  RowNumbers rows;
   if (found) {
     fillRowNumbers (rows, inx, inx+1, unique);
   }
   return rows;
 }
 
-Vector<uInt> ColumnsIndexArray::getRowNumbers (const Record& lowerKey,
-					       const Record& upperKey,
-					       Bool lowerInclusive,
-					       Bool upperInclusive,
-					       Bool unique)
+RowNumbers ColumnsIndexArray::getRowNumbers (const Record& lowerKey,
+                                             const Record& upperKey,
+                                             Bool lowerInclusive,
+                                             Bool upperInclusive,
+                                             Bool unique)
 {
   ColumnsIndex::copyKeyField (itsLowerField, itsDataType, lowerKey);
   ColumnsIndex::copyKeyField (itsUpperField, itsDataType, upperKey);
   return getRowNumbers (lowerInclusive, upperInclusive, unique);
 }
 
-Vector<uInt> ColumnsIndexArray::getRowNumbers (Bool lowerInclusive,
-					       Bool upperInclusive,
-					       Bool unique)
+RowNumbers ColumnsIndexArray::getRowNumbers (Bool lowerInclusive,
+                                             Bool upperInclusive,
+                                             Bool unique)
 {
   // Read the data (if needed).
   readData();
@@ -467,14 +467,14 @@ Vector<uInt> ColumnsIndexArray::getRowNumbers (Bool lowerInclusive,
   if (found  &&  upperInclusive) {
     end++;
   }
-  Vector<uInt> rows;
+  RowNumbers rows;
   if (start < end) {
     fillRowNumbers (rows, start, end, unique);
   }
   return rows;
 }
 
-void ColumnsIndexArray::fillRowNumbers (Vector<uInt>& rows,
+void ColumnsIndexArray::fillRowNumbers (Vector<rownr_t>& rows,
 					rownr_t start, rownr_t end,
 					Bool unique) const
 {
@@ -487,14 +487,14 @@ void ColumnsIndexArray::fillRowNumbers (Vector<uInt>& rows,
   rownr_t nr = end-start;
   rows.resize (nr);
   Bool deleteIt;
-  uInt* rowStorage = rows.getStorage (deleteIt);
+  rownr_t* rowStorage = rows.getStorage (deleteIt);
   for (rownr_t i=0; i<nr; i++) {
     rowStorage[i] = itsRownrs[itsDataInx[start+i]];
   }
   rows.putStorage (rowStorage, deleteIt);
   if (unique) {
-    rownr_t nrrow = GenSort<uInt>::sort (rows, Sort::Ascending,
-                                         Sort::NoDuplicates);
+    rownr_t nrrow = GenSort<rownr_t>::sort (rows, Sort::Ascending,
+                                            Sort::NoDuplicates);
     rows.resize (nrrow, True);
   }
 }
@@ -518,7 +518,7 @@ void ColumnsIndexArray::getArray (Vector<uChar>& result, const String& name)
   ArrayColumn<uChar> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, uInt(0));
+    Block<rownr_t> nrel(nrrow, rownr_t(0));
     Array<uChar> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
@@ -550,7 +550,7 @@ void ColumnsIndexArray::getArray (Vector<Short>& result, const String& name)
   ArrayColumn<Short> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, uInt(0));
+    Block<rownr_t> nrel(nrrow, rownr_t(0));
     Array<Short> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
@@ -582,7 +582,7 @@ void ColumnsIndexArray::getArray (Vector<Int>& result, const String& name)
   ArrayColumn<Int> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, uInt(0));
+    Block<rownr_t> nrel(nrrow, rownr_t(0));
     Array<Int> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
@@ -614,7 +614,7 @@ void ColumnsIndexArray::getArray (Vector<uInt>& result, const String& name)
   ArrayColumn<uInt> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, uInt(0));
+    Block<rownr_t> nrel(nrrow, rownr_t(0));
     Array<uInt> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
@@ -646,7 +646,7 @@ void ColumnsIndexArray::getArray (Vector<Int64>& result, const String& name)
   ArrayColumn<Int64> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, uInt(0));
+    Block<rownr_t> nrel(nrrow, rownr_t(0));
     Array<Int64> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
@@ -678,7 +678,7 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
   ArrayColumn<String> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, uInt(0));
+    Block<rownr_t> nrel(nrrow, rownr_t(0));
     Array<String> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
@@ -705,10 +705,10 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
   }
 }
 
-void ColumnsIndexArray::fillRownrs (rownr_t npts, const Block<uInt>& nrel)
+void ColumnsIndexArray::fillRownrs (rownr_t npts, const Block<rownr_t>& nrel)
 {
   itsRownrs.resize (npts);
-  uInt* data = itsRownrs.storage();
+  rownr_t* data = itsRownrs.storage();
   for (rownr_t i=0; i<nrel.nelements(); i++) {
     rownr_t nr = nrel[i];
     for (rownr_t j=0; j<nr; j++) {

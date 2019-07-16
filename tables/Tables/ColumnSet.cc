@@ -206,7 +206,7 @@ rownr_t ColumnSet::resync (rownr_t nrrow, Bool forceSync)
 		                   blockDataMan_p.nelements(), AipsError);
 	for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	    if (dataManChanged_p[i]  ||  nrrow != nrrow_p  ||  forceSync) {
-                rownr_t nrr = BLOCKDATAMANVAL(i)->resync1 (nrrow);
+                rownr_t nrr = BLOCKDATAMANVAL(i)->resync64 (nrrow);
                 if (nrr > nrrow) {
                     nrrow = nrr;
                 }
@@ -899,7 +899,7 @@ rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndi
 	ios.getnew (leng, data);
 	MemoryIO memio (data, leng);
 	AipsIO aio(&memio);
-	rownr_t nrrow = BLOCKDATAMANVAL(i)->open1 (nrrow_p, aio);
+	rownr_t nrrow = BLOCKDATAMANVAL(i)->open64 (nrrow_p, aio);
         if (nrrow > nrrow_p) {
           nrrow_p = nrrow;
         }

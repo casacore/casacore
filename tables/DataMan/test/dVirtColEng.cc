@@ -91,10 +91,11 @@ Bool DummyVirtualEngine::flush (AipsIO& ios, Bool)
 }
 void DummyVirtualEngine::create (rownr_t)
 {}
-void DummyVirtualEngine::open (rownr_t, AipsIO& ios)
+rownr_t DummyVirtualEngine::open64 (rownr_t nrrow, AipsIO& ios)
 {
     data1_p.open (ios);
     data2_p.open (ios);
+    return nrrow;
 }
 void DummyVirtualEngine::prepare ()
 {

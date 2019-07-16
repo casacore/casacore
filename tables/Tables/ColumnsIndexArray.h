@@ -136,7 +136,7 @@ class TableColumn;
 // RecordFieldPtr<String> nameUpp(colInx.accessUpperKey(), "NAME");
 // *nameFld = "LOWER";
 // *nameUpp = "UPPER";
-// Vector<uInt> rownrs = colInx.getRowNumbers (True, True, True);
+// RowNumbers rownrs = colInx.getRowNumbers (True, True, True);
 // </srcblock>
 
 // <motivation>
@@ -219,8 +219,8 @@ public:
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  Vector<uInt> getRowNumbers (Bool unique=False);
-  Vector<uInt> getRowNumbers (const Record& key, Bool unique=False);
+  RowNumbers getRowNumbers (Bool unique=False);
+  RowNumbers getRowNumbers (const Record& key, Bool unique=False);
   // </group>
 
   // Find the row numbers matching the key range. The boolean arguments
@@ -236,11 +236,11 @@ public:
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  Vector<uInt> getRowNumbers (Bool lowerInclusive, Bool upperInclusive,
-			      Bool unique=False);
-  Vector<uInt> getRowNumbers (const Record& lower, const Record& upper,
-			      Bool lowerInclusive, Bool upperInclusive,
-			      Bool unique=False);
+  RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive,
+                            Bool unique=False);
+  RowNumbers getRowNumbers (const Record& lower, const Record& upper,
+                            Bool lowerInclusive, Bool upperInclusive,
+                            Bool unique=False);
   // </group>
 
 protected:
@@ -276,12 +276,12 @@ protected:
   static Int compare (void* fieldPtr,
 		      void* dataPtr,
 		      Int dataType,
-		      Int index);
+		      rownr_t index);
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
   // If <src>unique</src> is True, the row numbers will be made unique.
-  void fillRowNumbers (Vector<uInt>& rows, rownr_t start, rownr_t end,
+  void fillRowNumbers (Vector<rownr_t>& rows, rownr_t start, rownr_t end,
 		       Bool unique) const;
 
   // Get the data if the column is an array.
@@ -295,7 +295,7 @@ protected:
   // </group>
 
   // Fill the rownrs belonging to each array value.
-  void fillRownrs (rownr_t npts, const Block<uInt>& nrel);
+  void fillRownrs (rownr_t npts, const Block<rownr_t>& nrel);
 
 private:
   Table   itsTable;
@@ -309,13 +309,13 @@ private:
   //# They are used for fast access to the records.
   void*   itsLowerField;
   void*   itsUpperField;
-  Bool         itsChanged;
-  Vector<uInt> itsDataIndex;         //# Row numbers of all keys
+  Bool            itsChanged;
+  Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
   //# Indices in itsDataIndex for each unique key
-  Vector<uInt> itsUniqueIndex;
-  Block<uInt>  itsRownrs;            //# rownr for each value
-  uInt*        itsDataInx;           //# pointer to data in itsDataIndex
-  uInt*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
+  Vector<rownr_t> itsUniqueIndex;
+  Block<rownr_t>  itsRownrs;            //# rownr for each value
+  rownr_t*        itsDataInx;           //# pointer to data in itsDataIndex
+  rownr_t*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
 };
 
 

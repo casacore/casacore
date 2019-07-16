@@ -785,7 +785,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
     case TpUInt:
     {
       Vector<uInt> vs = expr.getColumnuInt (rownrs);
-      Vector<Int> vi(vs.nelements());
+      Vector<Int64> vi(vs.nelements());
       convertArray (vi, vs);
       rec.define ("values", vi);
       break;
@@ -1004,11 +1004,11 @@ Int TableProxy::ncolumns()
   return table_p.tableDesc().ncolumn();
 }
 
-Vector<Int> TableProxy::shape()
+Vector<Int64> TableProxy::shape()
 {
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
-  Vector<Int> result(2);
+  Vector<Int64> result(2);
   result(0) = table_p.tableDesc().ncolumn();
   result(1) = table_p.nrow();
   return result;
@@ -1751,12 +1751,12 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 
         Bool isArray = cold.isDefined("ndim");
         Int ndim;
-        Vector<Int> shape;
+        Vector<Int64> shape;
 
         if (isArray) {
             ndim = cold.asInt("ndim");
             if (cold.isDefined("shape")) {
-                shape = cold.toArrayInt ("shape");
+                shape = cold.toArrayInt64 ("shape");
             }
             Bool cOrder = False;
             if (cold.isDefined("_c_order")) {
@@ -1840,7 +1840,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
 				     const String& name, const String& comment,
 				     const String& dmtype, const String& dmgrp,
 				     int option,
-				     Int ndim, const Vector<Int>& shape,
+				     Int ndim, const Vector<Int64>& shape,
 				     Bool cOrder,
 				     String& message)
 {
@@ -1855,7 +1855,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   }
   IPosition shp;
   if (shape.nelements() > 0) {
-    if (anyLE (shape, 0)) {
+    if (anyLE (shape, Int64(0))) {
       message = "arrayColumnDesc: shape < 0";
       return False;
     }
@@ -2014,7 +2014,7 @@ Record TableProxy::recordColumnDesc (const ColumnDesc& cold, Bool cOrder)
     cdesc.define ("ndim", Int(cold.ndim()));
     IPosition shape = fillAxes (cold.shape(), cOrder);
     if (shape.nelements() > 0) {
-      Vector<Int> vec(shape.nelements());
+      Vector<Int64> vec(shape.nelements());
       for (uInt i=0; i<shape.nelements(); i++) {
 	vec(i) = shape(i);
       }

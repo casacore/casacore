@@ -146,7 +146,7 @@ void tabVecRepminmax (T& min, T& max, const TabVecRep<T>& tv)
 
 
 template<class T>
-void tabVecRepindgen(TabVecRep<T>& tv, Int start, Int inc)
+void tabVecRepindgen(TabVecRep<T>& tv, T start, T inc)
 {
     rownr_t nr = tv.nelements();
     for (rownr_t i=0; i<nr; i++) {

@@ -77,7 +77,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uInt    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
-    for (uInt i=0; i<inx.nelements(); ++i) {
+    for (rownr_t i=0; i<inx.nelements(); ++i) {
       rownr_t row = inx[i];
       ccRows.mapRownr (tableNr, tabRownr, rows[row]);
       refColPtr_p[tableNr]->get (tabRownr, &(vec[row]));
@@ -116,7 +116,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uInt    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
-    for (uInt i=0; i<inx.nelements(); ++i) {
+    for (rownr_t i=0; i<inx.nelements(); ++i) {
       rownr_t row = inx[i];
       ccRows.mapRownr (tableNr, tabRownr, rows[row]);
       refColPtr_p[tableNr]->put (tabRownr, &(vec[row]));

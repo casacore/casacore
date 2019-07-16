@@ -172,7 +172,7 @@ private:
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
     // The default implementation does nothing.
-    virtual void resync (rownr_t nrrow);
+    virtual rownr_t resync64 (rownr_t nrrow);
 
     // Initialize the object for a new table containing initially nrrow rows.
     // It can be used to initialize variables (possibly using data
@@ -185,7 +185,7 @@ private:
     // to initialize variables (possibly using data from other columns
     // in the table).
     // The default implementation does nothing.
-    virtual void open (rownr_t nrrow, AipsIO& mainTableFile);
+    virtual rownr_t open64 (rownr_t nrrow, AipsIO& mainTableFile);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all

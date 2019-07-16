@@ -219,7 +219,7 @@ template<class T> void tabVecRepminmax (T& min, T& max, const TabVecRep<T>&);
 
 // Fills all elements of the table vector with a sequence starting with
 // "start" and incrementing by "inc" for each element.
-template<class T> void tabVecRepindgen (TabVecRep<T>&, Int start, Int inc);
+template<class T> void tabVecRepindgen (TabVecRep<T>&, T start, T inc);
 
 // Sum of all the elements of a table vector.
 template<class T> T tabVecRepsum (const TabVecRep<T>&);

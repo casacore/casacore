@@ -37,6 +37,10 @@ namespace casacore { //#Begin namespace casacore
   class RowNumbers: public Vector<rownr_t>
   {
   public:
+    // Construct an empty RowNumbers Vector.
+    RowNumbers()
+    {}
+
     // Construct from a Vector of row numbers.
     RowNumbers (const Vector<rownr_t>& rows)
       : Vector<rownr_t> (rows)

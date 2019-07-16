@@ -68,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       itsStart (0),
       itsEnd   (rows.nrow()),
       itsIncr  (1),
-      itsPos   (0)
+      itsTabNr (0)
   {
     itsPastEnd  = (itsEnd==0);
     itsChunk[0] = 0;
@@ -84,14 +84,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       itsStart (start),
       itsEnd   (std::min(end+1, rows.nrow())),
       itsIncr  (incr),
-      itsPos   (0)
+      itsTabNr (0)
   {
     if (itsStart >= itsEnd) {
       itsPastEnd = True;
     } else {
       itsPastEnd = False;
-      rows.mapRownr (itsPos, itsChunk[0], start);
-      itsChunk[1] = std::min(rows[itsPos], itsEnd) - 1 - rows[itsPos-1];
+      rows.mapRownr (itsTabNr, itsChunk[0], start);
+      itsChunk[1] = std::min(rows[itsTabNr], itsEnd) - 1 - rows[itsTabNr-1];
       itsChunk[2] = itsIncr;
     }
   }
@@ -99,19 +99,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatRowsIter::next()
   {
     if (!itsPastEnd) {
-      if (itsPos+1 >= itsRows->ntable()  ||  (*itsRows)[itsPos] >= itsEnd) {
+      if (itsTabNr+1 >= itsRows->ntable()  ||  (*itsRows)[itsTabNr] >= itsEnd) {
 	itsPastEnd = True;
       } else {
 	itsChunk[0] = 0;
 	if (itsIncr != 1) {
-	  rownr_t rem = ((*itsRows)[itsPos] - itsStart) % itsIncr;
+	  rownr_t rem = ((*itsRows)[itsTabNr] - itsStart) % itsIncr;
 	  if (rem != 0) {
 	    itsChunk[0] = itsIncr - rem;
 	  }
 	}
-	itsChunk[1] = std::min((*itsRows)[itsPos+1], itsEnd) - 1 -
-	  (*itsRows)[itsPos];
-	++itsPos;
+	itsChunk[1] = std::min((*itsRows)[itsTabNr+1], itsEnd) - 1 -
+	  (*itsRows)[itsTabNr];
+	++itsTabNr;
       }
     }
   }

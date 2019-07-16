@@ -220,7 +220,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the nr of the table the current chunk is in.
     uInt tableNr() const
-      { return itsPos; }
+      { return itsTabNr; }
 
   private:
     const ConcatRows* itsRows;
@@ -228,7 +228,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rownr_t           itsStart;
     rownr_t           itsEnd;
     rownr_t           itsIncr;
-    uInt              itsPos;
+    uInt              itsTabNr;
     Bool              itsPastEnd;
   };
 

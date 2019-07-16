@@ -470,34 +470,32 @@ private:
     virtual Bool flush (AipsIO& ios, Bool fsync) = 0;
 
     // Let the data manager initialize itself for a new table.
-    virtual void create (rownr_t nrrow) = 0;
+    // <br>The default implementation calls the uInt version.
+    //#virtual void create (rownr_t nrrow) = 0;
+    virtual void create (rownr_t nrrow);
 
     // Let the data manager initialize itself for an existing table.
     // The AipsIO stream represents the main table file and must be
     // used by virtual column engines to retrieve the data stored
     // in the flush function.
-    virtual void open (rownr_t nrrow, AipsIO& ios) = 0;
-
-    // Open as above.
-    // The data manager can return the number of rows it thinks there are.
+    // <br>The data manager returns 0 or the nr of rows it thinks there are.
     // This is particularly useful for data managers like LofarStMan whose
     // data are written outside the table system, thus for which no rows
     // have been added.
-    // <br>By default it calls open and returns <src>nrrow</src>.
-    virtual rownr_t open1 (rownr_t nrrow, AipsIO& ios);
+    // <br>The default implementation calls the uInt version of open and open1.
+    //#virtual rownr_t open (rownr_t nrrow, AipsIO& ios) = 0;
+    virtual rownr_t open64 (rownr_t nrrow, AipsIO& ios);
 
     // Resync the data by rereading cached data from the file.
     // This is called when a lock is acquired on the file and it appears 
     // that data in this data manager has been changed by another process.
-    virtual void resync (rownr_t nrrow) = 0;
-
-    // Resync as above.
-    // The data manager can return the number of rows it thinks there are.
+    // <br>The data manager returns 0 or the number of rows it thinks there are.
     // This is particularly useful for data managers like LofarStMan whose
     // data are written outside the table system, thus for which no rows
     // have been added.
-    // <br>By default it calls resync and returns <src>nrrow</src>.
-    virtual rownr_t resync1 (rownr_t nrrow);
+    // <br>The default implementation calls the uInt version of open and open1.
+    //#virtual rownr_t resync (rownr_t nrrow) = 0;
+    virtual rownr_t resync64 (rownr_t nrrow);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all
@@ -505,6 +503,18 @@ private:
     // are read back and partly initialized.
     // The default implementation does nothing.
     virtual void prepare();
+
+    // Backward compatibility function using uInt instead of rownr_t.
+    // The default implementations throw an exception.
+    // <group>
+    virtual void addRow (uInt nrrow);
+    virtual void removeRow (uInt rownr);
+    virtual void create (uInt nrrow);
+    virtual void open (uInt nrrow, AipsIO& ios);
+    virtual uInt open1 (uInt nrrow, AipsIO& ios);
+    virtual void resync (uInt nrrow);
+    virtual uInt resync1 (uInt nrrow);
+    // </group>
 
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.

@@ -198,9 +198,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     uInt ncolumn;
     Bool tableChanged;
     Block<Bool> dmChanged;
-    uInt nrr = nrrow;
-    lockSync_p.read (nrr, ncolumn, tableChanged, dmChanged);
-    nrrow_p = nrr;
+    lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
     tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
 
     //# Reopen the file to be sure that the internal stdio buffer is not reused.
@@ -218,8 +216,9 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     if (version > 2) {
       ios >> nrrow;
     } else {
-      ios >> nrr;
-      nrrow = nrr;
+      uInt n;
+      ios >> n;
+      nrrow = n;
     }
     uInt format;
     ios >> format;
@@ -441,7 +440,7 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 	    // Older readonly table files may have empty locksync data.
 	    // Skip the sync-ing in that case.
 	    uInt ncolumn;
-            uInt nrrow;
+            rownr_t nrrow;
 	    if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
 				   colSetPtr_p->dataManChanged())) {
 		tableChanged = False;
@@ -525,7 +524,7 @@ void PlainTable::resync()
     // Older readonly table files may have empty locksync data.
     // Skip the sync-ing in that case.
     uInt ncolumn;
-    uInt nrrow;
+    rownr_t nrrow;
     if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
 			   colSetPtr_p->dataManChanged())) {
         tableChanged = False;

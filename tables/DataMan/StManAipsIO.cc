@@ -323,11 +323,11 @@ void StManAipsIO::create (rownr_t nrrow)
     setHasPut();
 }
 
-void StManAipsIO::open (rownr_t tabNrrow, AipsIO&)
+rownr_t StManAipsIO::open64 (rownr_t tabNrrow, AipsIO&)
 {
-    resync (tabNrrow);
+    return resync64 (tabNrrow);
 }
-void StManAipsIO::resync (rownr_t nrrow)
+rownr_t StManAipsIO::resync64 (rownr_t nrrow)
 {
     if (iosfile_p != 0) {
         iosfile_p->resync();
@@ -384,6 +384,7 @@ void StManAipsIO::resync (rownr_t nrrow)
     }
     nrrow_p = nrrow;
     ios.getend();
+    return nrrow_p;
 }
 
 

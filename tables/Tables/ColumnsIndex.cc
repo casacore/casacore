@@ -492,7 +492,7 @@ rownr_t ColumnsIndex::bsearch (Bool& found, const Block<void*>& fieldPtrs) const
 Int ColumnsIndex::compare (const Block<void*>& fieldPtrs,
 			   const Block<void*>& dataPtrs,
 			   const Block<Int>& dataTypes,
-			   Int index)
+			   rownr_t index)
 {
   uInt nfield = fieldPtrs.nelements();
   for (uInt i=0; i<nfield; i++) {
@@ -646,37 +646,37 @@ rownr_t ColumnsIndex::getRowNumber (Bool& found)
   return inx;
 }
 
-Vector<uInt> ColumnsIndex::getRowNumbers (const Record& key)
+RowNumbers ColumnsIndex::getRowNumbers (const Record& key)
 {
   copyKey (itsLowerFields, key);
   return getRowNumbers();
 }
 
-Vector<uInt> ColumnsIndex::getRowNumbers()
+RowNumbers ColumnsIndex::getRowNumbers()
 {
   // Read the data (if needed).
   readData();
   Bool found;
   rownr_t inx = bsearch (found, itsLowerFields);
-  Vector<uInt> rows;
+  RowNumbers rows;
   if (found) {
     fillRowNumbers (rows, inx, inx+1);
   }
   return rows;
 }
 
-Vector<uInt> ColumnsIndex::getRowNumbers (const Record& lowerKey,
-					  const Record& upperKey,
-					  Bool lowerInclusive,
-					  Bool upperInclusive)
+RowNumbers ColumnsIndex::getRowNumbers (const Record& lowerKey,
+                                        const Record& upperKey,
+                                        Bool lowerInclusive,
+                                        Bool upperInclusive)
 {
   copyKey (itsLowerFields, lowerKey);
   copyKey (itsUpperFields, upperKey);
   return getRowNumbers (lowerInclusive, upperInclusive);
 }
 
-Vector<uInt> ColumnsIndex::getRowNumbers (Bool lowerInclusive,
-					  Bool upperInclusive)
+RowNumbers ColumnsIndex::getRowNumbers (Bool lowerInclusive,
+                                        Bool upperInclusive)
 {
   // Read the data (if needed).
   readData();
@@ -695,14 +695,14 @@ Vector<uInt> ColumnsIndex::getRowNumbers (Bool lowerInclusive,
   if (found  &&  upperInclusive) {
     end++;
   }
-  Vector<uInt> rows;
+  RowNumbers rows;
   if (start < end) {
     fillRowNumbers (rows, start, end);
   }
   return rows;
 }
 
-void ColumnsIndex::fillRowNumbers (Vector<uInt>& rows,
+void ColumnsIndex::fillRowNumbers (Vector<rownr_t>& rows,
 				   rownr_t start, rownr_t end) const
 {
   start = itsUniqueInx[start];
@@ -714,7 +714,7 @@ void ColumnsIndex::fillRowNumbers (Vector<uInt>& rows,
   rownr_t nr = end-start;
   rows.resize (nr);
   Bool deleteIt;
-  uInt* rowStorage = rows.getStorage (deleteIt);
+  rownr_t* rowStorage = rows.getStorage (deleteIt);
   objcopy (rowStorage, itsDataInx+start, nr);
   rows.putStorage (rowStorage, deleteIt);
 }

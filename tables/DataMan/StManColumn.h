@@ -334,7 +334,7 @@ protected:
     // Get the scalar values in the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementations call 
+    // The default implementations calls DataManagerColumn::getScalarColumnBase.
     // <group>
     virtual void getScalarColumnBoolV     (Vector<Bool>* dataPtr);
     virtual void getScalarColumnuCharV    (Vector<uChar>* dataPtr);
@@ -353,7 +353,7 @@ protected:
     // Put the scalar values into the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ScalarColumn putColumn function).
-    // The default implementation uses the corresponding putBlockXXXV.
+    // The default implementations calls DataManagerColumn::putScalarColumnBase.
     // <group>
     virtual void putScalarColumnBoolV     (const Vector<Bool>* dataPtr);
     virtual void putScalarColumnuCharV    (const Vector<uChar>* dataPtr);
@@ -372,7 +372,7 @@ protected:
     // Get the scalar values in some cells of the column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ScalarColumn getColumnCells function).
-    // The default implementation loops through all rows.
+    // The default implementations call DataManagerColumn::getScalarColumnCellsBase.
     // <group>
     virtual void getScalarColumnCellsBoolV     (const RefRows& rownrs,
 						Vector<Bool>* dataPtr);
@@ -403,7 +403,7 @@ protected:
     // Put the scalar values into some cells of the column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ScalarColumn putColumnCells function).
-    // The default implementation loops through all rows.
+    // The default implementations call DataManagerColumn::putScalarColumnCellsBase.
     // <group>
     virtual void putScalarColumnCellsBoolV     (const RefRows& rownrs,
 						const Vector<Bool>* dataPtr);
@@ -434,7 +434,7 @@ protected:
     // Get the array value in the given row.
     // The array pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn get function).
-    // The default implementation loops through all rows.
+    // The default implementations throw an exception.
     // <group>
     virtual void getArrayBoolV     (uInt rownr, Array<Bool>* dataPtr);
     virtual void getArrayuCharV    (uInt rownr, Array<uChar>* dataPtr);
@@ -453,7 +453,7 @@ protected:
     // Put the array value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn put function).
-    // The default implementation loops through all rows.
+    // The default implementations throw an exception.
     // <group>
     virtual void putArrayBoolV     (uInt rownr,
 				    const Array<Bool>* dataPtr);
@@ -484,7 +484,7 @@ protected:
     // Get the array values in the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation uses the corresponding getBlockXXXV.
+    // The default implementations call DataManagerColumn::getArrayColumnBase.
     // <group>
     virtual void getArrayColumnBoolV     (Array<Bool>* dataPtr);
     virtual void getArrayColumnuCharV    (Array<uChar>* dataPtr);
@@ -503,7 +503,7 @@ protected:
     // Put the array values into the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation uses the corresponding putBlockXXXV.
+    // The default implementations call DataManagerColumn::putArrayColumnBase.
     // <group>
     virtual void putArrayColumnBoolV     (const Array<Bool>* dataPtr);
     virtual void putArrayColumnuCharV    (const Array<uChar>* dataPtr);
@@ -522,7 +522,7 @@ protected:
     // Get the array values in some cells of the column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn getColumnCells function).
-    // The default implementation throws an "invalid operation exception".
+    // The default implementations call DataManagerColumn::getArrayColumnCellsBase.
     // <group>
     virtual void getArrayColumnCellsBoolV     (const RefRows& rownrs,
 					       Array<Bool>* dataPtr);
@@ -553,7 +553,7 @@ protected:
     // Put the array values into some cells of the column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn putColumnCells function).
-    // The default implementation throws an "invalid operation exception".
+    // The default implementations call DataManagerColumn::putArrayColumnCellsBase.
     // <group>
     virtual void putArrayColumnCellsBoolV     (const RefRows& rownrs,
 					       const Array<Bool>* dataPtr);
@@ -584,7 +584,7 @@ protected:
     // Get the array value in the given row.
     // The array pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getSlice function).
-    // The default implementation throws an "invalid operation exception".
+    // The default implementations call DataManagerColumn::getSliceBase.
     // <group>
     virtual void getSliceBoolV     (uInt rownr, const Slicer& ns,
 				    Array<Bool>* dataPtr);
@@ -615,7 +615,7 @@ protected:
     // Put the array value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn putSlice function).
-    // The default implementation throws an "invalid operation exception".
+    // The default implementations call DataManagerColumn::putSliceBase.
     // <group>
     virtual void putSliceBoolV     (uInt rownr, const Slicer& ns,
 				    const Array<Bool>* dataPtr);
@@ -646,7 +646,7 @@ protected:
     // Get the array values in the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation uses the corresponding getBlockXXXV.
+    // The default implementations call DataManagerColumn::getColumnSliceBase.
     // <group>
     virtual void getColumnSliceBoolV     (const Slicer& ns,
 					  Array<Bool>* dataPtr);
@@ -677,7 +677,7 @@ protected:
     // Put the array values into the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation uses the corresponding putBlockXXXV.
+    // The default implementations call DataManagerColumn::putColumnSliceBase.
     // <group>
     virtual void putColumnSliceBoolV     (const Slicer& ns,
 					  const Array<Bool>* dataPtr);
@@ -708,7 +708,7 @@ protected:
     // Get the array values in some cells of the column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn getColumnCells function).
-    // The default implementation throws an "invalid operation exception".
+    // The default implementations call DataManagerColumn::getColumnSliceCellsBase.
     // <group>
     virtual void getColumnSliceCellsBoolV     (const RefRows& rownrs,
 					       const Slicer& ns,
@@ -751,7 +751,7 @@ protected:
     // Put the array values into some cells of the column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ArrayColumn putColumnSlice function).
-    // The default implementation throws an "invalid operation exception".
+    // The default implementations call DataManagerColumn::putColumnSliceCellsBase.
     // <group>
     virtual void putColumnSliceCellsBoolV     (const RefRows& rownrs,
 					       const Slicer& ns,

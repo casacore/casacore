@@ -320,10 +320,10 @@ public:
     TSMFile* getFile (uInt sequenceNumber);
 
     // Open the storage manager for an existing table.
-    virtual void open (rownr_t nrrow, AipsIO&);
+    virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
-    virtual void resync (rownr_t nrrow);
+    virtual rownr_t resync64 (rownr_t nrrow);
 
     // Reopen all files used in this storage manager for read/write access.
     virtual void reopenRW();

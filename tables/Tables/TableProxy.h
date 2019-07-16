@@ -527,7 +527,7 @@ public:
   Int64 nrows();
 
   // Get the shape (#columns, #rows) of the table.
-  Vector<Int> shape();
+  Vector<Int64> shape();
 
   // Get the row numbers of the table.
   Vector<Int64> rowNumbers (TableProxy& other);
@@ -642,7 +642,7 @@ public:
                   const String& dataManagerType,
                   const String& dataManagerGroup,
                   int options,
-                  Int ndim, const Vector<Int>& shape,
+                  Int ndim, const Vector<Int64>& shape,
                   Bool cOrder,
                   String& message);
 

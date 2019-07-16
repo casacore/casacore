@@ -94,7 +94,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
     rownr_t nmax = btp->nrow();
     for (rownr_t i=0; i<nrrow_p; i++) {
 	if (rows_p[i] >= nmax) {
-	    throw (indexError<Int> ((Int)rows_p[i], "RefTable Row vector"));
+            throw (indexError<rownr_t> (rows_p[i], "RefTable Row vector"));
 	}
     }
     //# Adjust rownrs in case input table is a reference table.

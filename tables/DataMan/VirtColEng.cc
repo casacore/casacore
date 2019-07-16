@@ -53,10 +53,10 @@ Bool VirtualColumnEngine::flush (AipsIO&, Bool)
 { return False; }
 void VirtualColumnEngine::create (rownr_t)
 {}
-void VirtualColumnEngine::open (rownr_t, AipsIO&)
-{}
-void VirtualColumnEngine::resync (rownr_t)
-{}
+rownr_t VirtualColumnEngine::open64 (rownr_t nrow, AipsIO&)
+  { return nrow; }
+rownr_t VirtualColumnEngine::resync64 (rownr_t nrow)
+  { return nrow; }
 void VirtualColumnEngine::prepare()
 {}
 void VirtualColumnEngine::deleteManager()

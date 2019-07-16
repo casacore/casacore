@@ -590,7 +590,7 @@ Bool ISMBase::flush (AipsIO& ios, Bool fsync)
     return changed;
 }
 
-void ISMBase::resync (rownr_t nrrow)
+rownr_t ISMBase::resync64 (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     if (index_p != 0) {
@@ -606,6 +606,7 @@ void ISMBase::resync (rownr_t nrrow)
     if (iosfile_p != 0) {
         iosfile_p->resync();
     }
+    return nrrow_p;
 }
 
 void ISMBase::create (rownr_t nrrow)
@@ -616,7 +617,7 @@ void ISMBase::create (rownr_t nrrow)
     addRow (nrrow);
 }
 
-void ISMBase::open (rownr_t tabNrrow, AipsIO& ios)
+rownr_t ISMBase::open64 (rownr_t tabNrrow, AipsIO& ios)
 {
     nrrow_p = tabNrrow;
     // Do not check the bucketsize for an existing table.
@@ -640,6 +641,7 @@ void ISMBase::open (rownr_t tabNrrow, AipsIO& ios)
     for (uInt i=0; i<nrcol; i++) {
 	colSet_p[i]->getFile (nrrow_p);
     }
+    return nrrow_p;
 }
 
 StManArrayFile* ISMBase::openArrayFile (ByteIO::OpenOption opt)

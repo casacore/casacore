@@ -97,17 +97,55 @@ Bool DataManager::isStorageManager() const
     { return True; }
 
 
-rownr_t DataManager::open1 (rownr_t nrrow, AipsIO& ios)
+
+void DataManager::create (rownr_t nrrow)
+{
+  AlwaysAssert (nrrow <= std::numeric_limits<uInt>::max(), AipsError);
+  create (uInt(nrrow));
+}
+  
+rownr_t DataManager::open64 (rownr_t nrrow, AipsIO& ios)
+{
+  return open1 (uInt(nrrow), ios);
+}
+
+rownr_t DataManager::resync64 (rownr_t nrrow)
+{
+  AlwaysAssert (nrrow < std::numeric_limits<uInt>::max(), AipsError);
+  return resync1 (uInt(nrrow));
+}
+
+
+uInt DataManager::open1 (uInt nrrow, AipsIO& ios)
 {
     open (nrrow, ios);
     return nrrow;
 }
 
-rownr_t DataManager::resync1 (rownr_t nrrow)
+uInt DataManager::resync1 (uInt nrrow)
 {
     resync (nrrow);
     return nrrow;
 }
+
+void DataManager::create (uInt)
+{
+    { throw DataManInvOper ("DataManager::create not implemented for "
+                            "data manager type " + dataManagerType()); }
+}
+
+void DataManager::open (uInt, AipsIO&)
+{
+    { throw DataManInvOper ("DataManager::open not implemented for "
+                            "data manager type " + dataManagerType()); }
+}
+
+void DataManager::resync (uInt)
+{
+    { throw DataManInvOper ("DataManager::resync not implemented for "
+                            "data manager type " + dataManagerType()); }
+}
+
 
 void DataManager::reopenRW()
 {}
@@ -263,11 +301,22 @@ Bool DataManager::canRemoveColumn() const
 Bool DataManager::canRenameColumn() const
     { return True; }
 
-void DataManager::addRow (rownr_t)
+void DataManager::addRow (rownr_t nrrow)
+{
+  AlwaysAssert (nrrow < std::numeric_limits<uInt>::max(), AipsError);
+  addRow (uInt(nrrow));
+}
+
+void DataManager::removeRow (rownr_t rownr)
+{
+  removeRow (uInt(rownr));
+}
+
+void DataManager::addRow (uInt)
     { throw DataManInvOper ("DataManager::addRow not allowed for "
                             "data manager type " + dataManagerType()); }
 
-void DataManager::removeRow (rownr_t)
+void DataManager::removeRow (uInt)
     { throw DataManInvOper ("DataManager::removeRow not allowed for "
                             "data manager type " + dataManagerType()); }
 

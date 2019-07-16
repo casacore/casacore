@@ -87,7 +87,7 @@ public:
     Bool acquire (FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
 
     // Get the current number of rows in this object.
-    uInt nrow() const;
+    rownr_t nrow() const;
     
     // Release the lock and synchronize the table access.
     // When autolocking is in effect, the lock is only released when
@@ -95,7 +95,7 @@ public:
     // <linkto class=TableLockData>TableLockData</linkto>) has expired.
     // It does nothing when permanent locking is used.
     // It throws an exception when the release failed.
-    void release (uInt nrrow);
+    void release (rownr_t nrrow);
 
     // Check if the table has a read or write lock, thus if the table can
     // be read or written safely.
@@ -118,7 +118,7 @@ private:
     //# Define the lock and sync data objects.
     TableLockData  itsLock;
     TableSyncData  itsSync;
-    uInt           itsNrrow;
+    rownr_t        itsNrrow;
 };
 
 
@@ -126,7 +126,7 @@ inline Bool ExternalLockSync::hasLock (FileLocker::LockType type) const
 {
     return itsLock.hasLock (type);
 }
-inline void ExternalLockSync::release (uInt nrrow)
+inline void ExternalLockSync::release (rownr_t nrrow)
 {
     itsNrrow = nrrow;
     itsLock.release();
@@ -136,7 +136,7 @@ inline MemoryIO* ExternalLockSync::doReleaseCallBack (Bool)
     itsSync.write (itsNrrow);
     return &(itsSync.memoryIO());
 }
-inline uInt ExternalLockSync::nrow() const
+inline rownr_t ExternalLockSync::nrow() const
 {
     return itsNrrow;
 }

@@ -159,7 +159,7 @@ template<typename T> class RecordFieldPtr;
 //     *timeUpp = ...;
 //     *antUpp = ...;
 //     // Find the row numbers for keys between low and upp (inclusive).
-//     Vector<uInt> rows = colInx.getRowNumbers (True, True);
+//     RowNumbers rows = colInx.getRowNumbers (True, True);
 // }
 // </srcblock>
 //
@@ -176,7 +176,7 @@ template<typename T> class RecordFieldPtr;
 // Int myCompare (const Block<void*>& fieldPtrs,
 //                const Block<void*>& dataPtrs,
 //                const Block<Int>& dataTypes,
-//                Int index)
+//                rownr_t index)
 // {
 //   // Assert (for performance only in debug mode) that the correct
 //   // fields are used.
@@ -239,7 +239,7 @@ public:
     typedef Int Compare (const Block<void*>& fieldPtrs,
 			 const Block<void*>& dataPtrs,
 			 const Block<Int>& dataTypes,
-			 Int index);
+			 rownr_t index);
 
     // Create an index on the given table for the given column.
     // The column has to be a scalar column.
@@ -318,8 +318,8 @@ public:
     // functions. Note that the given Record will be copied to the internal
     // record, thus overwrites it.
     // <group>
-    Vector<uInt> getRowNumbers();
-    Vector<uInt> getRowNumbers (const Record& key);
+    RowNumbers getRowNumbers();
+    RowNumbers getRowNumbers (const Record& key);
     // </group>
 
     // Find the row numbers matching the key range. The boolean arguments
@@ -330,9 +330,9 @@ public:
     // Note that the given Records will be copied to the internal
     // records, thus overwrite them.
     // <group>
-    Vector<uInt> getRowNumbers (Bool lowerInclusive, Bool upperInclusive);
-    Vector<uInt> getRowNumbers (const Record& lower, const Record& upper,
-				Bool lowerInclusive, Bool upperInclusive);
+    RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive);
+    RowNumbers getRowNumbers (const Record& lower, const Record& upper,
+                              Bool lowerInclusive, Bool upperInclusive);
     // </group>
 
     // Fill the internal key field from the corresponding external key.
@@ -374,11 +374,11 @@ protected:
     static Int compare (const Block<void*>& fieldPtrs,
 			const Block<void*>& dataPtrs,
 			const Block<Int>& dataTypes,
-			Int index);
+			rownr_t index);
 
     // Fill the row numbers vector for the given start till end in the
     // <src>itsUniqueIndex</src> vector (end is not inclusive).
-    void fillRowNumbers (Vector<uInt>& rows, rownr_t start, rownr_t end) const;
+    void fillRowNumbers (Vector<rownr_t>& rows, rownr_t start, rownr_t end) const;
 
 private:
     // Fill the internal key fields from the corresponding external key.
@@ -396,22 +396,22 @@ private:
     rownr_t itsNrrow;
     Record* itsLowerKeyPtr;
     Record* itsUpperKeyPtr;
-    Block<Int>   itsDataTypes;
-    Block<void*> itsDataVectors;
-    Block<void*> itsData;              //# pointer to data in itsDataVectors
+    Block<Int>      itsDataTypes;
+    Block<void*>    itsDataVectors;
+    Block<void*>    itsData;              //# pointer to data in itsDataVectors
     //# The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
     //# They are used for fast access to the records.
-    Block<void*> itsLowerFields;
-    Block<void*> itsUpperFields;
-    Block<Bool>  itsColumnChanged;
-    Bool         itsChanged;
-    Bool         itsNoSort;            //# True = sort is not needed
-    Compare*     itsCompare;           //# Compare function
-    Vector<uInt> itsDataIndex;         //# Row numbers of all keys
+    Block<void*>    itsLowerFields;
+    Block<void*>    itsUpperFields;
+    Block<Bool>     itsColumnChanged;
+    Bool            itsChanged;
+    Bool            itsNoSort;            //# True = sort is not needed
+    Compare*        itsCompare;           //# Compare function
+    Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
     //# Indices in itsDataIndex for each unique key
-    Vector<uInt> itsUniqueIndex;
-    uInt*        itsDataInx;           //# pointer to data in itsDataIndex
-    uInt*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
+    Vector<rownr_t> itsUniqueIndex;
+    rownr_t*        itsDataInx;           //# pointer to data in itsDataIndex
+    rownr_t*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
 };
 
 

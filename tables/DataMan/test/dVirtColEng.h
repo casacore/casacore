@@ -343,7 +343,7 @@ private:
     // Initialize the object for an existing table with the given number
     // of rows.
     // It will read back the data written by close.
-    void open (rownr_t nrrow, AipsIO& ios);
+    rownr_t open64 (rownr_t nrrow, AipsIO& ios);
 
     // Initialize the engine.
     void prepare();

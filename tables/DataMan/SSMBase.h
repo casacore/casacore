@@ -319,11 +319,11 @@ private:
   
   // Open the storage manager file for an existing table, read in
   // the data, and let the SSMColumn objects read their data.
-  virtual void open (rownr_t aRowNr, AipsIO&);
+  virtual rownr_t open64 (rownr_t aRowNr, AipsIO&);
   
   // Resync the storage manager with the new file contents.
   // This is done by clearing the cache.
-  virtual void resync (rownr_t aRowNr);
+  virtual rownr_t resync64 (rownr_t aRowNr);
   
   // Reopen the storage manager files for read/write.
   virtual void reopenRW();

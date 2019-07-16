@@ -998,15 +998,17 @@ rownr_t TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) cons
 }
 
 
-void TiledStMan::open (rownr_t nrrow, AipsIO&)
+rownr_t TiledStMan::open64 (rownr_t nrrow, AipsIO&)
 {
     // Read the header info (for the first time).
     readHeader (nrrow, True);
+    return nrrow;
 }
-void TiledStMan::resync (rownr_t nrrow)
+rownr_t TiledStMan::resync64 (rownr_t nrrow)
 {
     // Reread the header info.
     readHeader (nrrow, False);
+    return nrrow;
 }
 
 Bool TiledStMan::flushCaches (Bool fsync)
