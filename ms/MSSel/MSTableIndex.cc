@@ -169,13 +169,13 @@ void MSTableIndex::setChanged()
     if (index_p) index_p->setChanged();
 }
 
-Vector<uInt> MSTableIndex::getRowNumbers()
+Vector<rownr_t> MSTableIndex::getRowNumbers()
 {
     getInternals();
     return lastSearch_p;
 }
 
-uInt MSTableIndex::getNearestRow(Bool &found)
+Int64 MSTableIndex::getNearestRow(Bool &found)
 {
     // getInternals ensures that lastSearch_p is the match to the integer keys
     getInternals();
@@ -221,9 +221,9 @@ void MSTableIndex::nearestTime()
     Int thisElem = 0;
     Int nElem = lastSearch_p.nelements();
     Bool deleteIt;
-    const uInt *rowPtr = lastSearch_p.getStorage(deleteIt);
+    const rownr_t *rowPtr = lastSearch_p.getStorage(deleteIt);
     while (!nearestFound_p && thisElem < nElem) {
-	uInt thisRow = rowPtr[thisElem];
+	rownr_t thisRow = rowPtr[thisElem];
 	// needs column unit conversion here to seconds
 	nearestFound_p = time_p < timeVals_p[thisRow];
 	thisElem++;

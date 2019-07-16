@@ -104,7 +104,7 @@ public:
   Vector<Int> matchSourceCode(const String& code);
 
   //Return rows matching a SourceID
-  Vector<uInt> getRowNumbersOfSourceID(const Int sid);
+  Vector<rownr_t> getRowNumbersOfSourceID(const Int sid);
 
 
 protected:
@@ -114,7 +114,7 @@ protected:
   static Int compare (const Block<void*>& fieldPtrs,
                       const Block<void*>& dataPtrs,
                       const Block<Int>& dataTypes,
-                      Int index);
+                      rownr_t index);
   
 private:
   // Pointer to local ROMSSourceColumns object

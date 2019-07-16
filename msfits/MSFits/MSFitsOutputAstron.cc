@@ -1506,7 +1506,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
       //  Optional access to SOURCE table 
       if (sourceTable) {
       	**srcInxFld = insrcid(fieldnum);
-      	Vector<uInt> rownrs = srcInx->getRowNumbers();
+      	Vector<rownr_t> rownrs = srcInx->getRowNumbers();
       	if (rownrs.nelements() > 0) {
       	  uInt rownr = rownrs(0);
 	  // Name in SOURCE table overides name in FIELD table

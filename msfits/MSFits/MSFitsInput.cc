@@ -3451,7 +3451,7 @@ void MSFitsInput::fillSourceTable() {
                 sourceIndex.sourceId() = fid;
                 sourceIndex.spectralWindowId() = spwIds(spwId);
 
-                Vector<uInt> rows = sourceIndex.getRowNumbers();
+                Vector<rownr_t> rows = sourceIndex.getRowNumbers();
                 if (rows.nelements() == 0) {
                     _ms.source().addRow();
                     Int j = _ms.source().nrow() - 1;
@@ -3524,7 +3524,7 @@ void MSFitsInput::fillSourceTable() {
                 MSSourceIndex sourceIndex(_ms.source());
                 sourceIndex.sourceId() = lastFieldId;
                 sourceIndex.spectralWindowId() = spwId;
-                Vector<uInt> rows = sourceIndex.getRowNumbers();
+                Vector<rownr_t> rows = sourceIndex.getRowNumbers();
                 if (rows.nelements() == 0) {
                     _ms.source().addRow();
                     Int j = _ms.source().nrow() - 1;

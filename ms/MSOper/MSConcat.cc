@@ -2025,8 +2025,8 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 
       *antInd = a;
       *itsAntInd = newAntId;
-      const Vector<uInt> feedsToCompare = feedIndex.getRowNumbers();
-      const Vector<uInt> itsFeedsToCompare = itsFeedIndex.getRowNumbers();
+      const Vector<rownr_t> feedsToCompare = feedIndex.getRowNumbers();
+      const Vector<rownr_t> itsFeedsToCompare = itsFeedIndex.getRowNumbers();
       const uInt nFeedsToCompare = feedsToCompare.nelements();
       uInt matchingFeeds = 0;
       Vector<uInt> ignoreRows;
@@ -2092,7 +2092,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
       if(matchingFeeds != nFeedsToCompare){
 //  	cout << "Antenna " << a << " did not find all needed feeds " 
 //  	     << matchingFeeds << "/" << nFeedsToCompare << endl;
-	const Vector<uInt> feedsToCopy = feedIndex.getRowNumbers();
+	const Vector<rownr_t> feedsToCopy = feedIndex.getRowNumbers();
 	const uInt nFeedsToCopy = feedsToCopy.nelements();
 	uInt destRow = feed.nrow();
 	uInt rCount = 0;
@@ -2162,7 +2162,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
       // Copy all the feeds associated with the antenna into the feed
       // table. I'm assuming that they are not already there.
       *antInd = a;
-      const Vector<uInt> feedsToCopy = feedIndex.getRowNumbers();
+      const Vector<rownr_t> feedsToCopy = feedIndex.getRowNumbers();
       const uInt nFeedsToCopy = feedsToCopy.nelements();
       uInt destRow = feed.nrow();
       feed.addRow(nFeedsToCopy);
