@@ -69,19 +69,19 @@ void MSCalEngine::setTable (const Table& table)
   itsCalIdMap.clear();
 }
 
-double MSCalEngine::getHA (Int antnr, uInt rownr)
+double MSCalEngine::getHA (Int antnr, rownr_t rownr)
 {
   setData (antnr, rownr);
   return itsRADecToHADec().getValue().get()[0];
 }
 
-void MSCalEngine::getHaDec (Int antnr, uInt rownr, Array<double>& data)
+void MSCalEngine::getHaDec (Int antnr, rownr_t rownr, Array<double>& data)
 {
   setData (antnr, rownr);
   data = itsRADecToHADec().getValue().get();
 }
 
-double MSCalEngine::getPA (Int antnr, uInt rownr)
+double MSCalEngine::getPA (Int antnr, rownr_t rownr)
 {
   Int mount = setData (antnr, rownr);
   if (mount == 1) {
@@ -92,25 +92,25 @@ double MSCalEngine::getPA (Int antnr, uInt rownr)
   return 0.;
 }
 
-double MSCalEngine::getLAST (Int antnr, uInt rownr)
+double MSCalEngine::getLAST (Int antnr, rownr_t rownr)
 {
   setData (antnr, rownr);
   return itsUTCToLAST().getValue().get();
 }
 
-void MSCalEngine::getAzEl (Int antnr, uInt rownr, Array<double>& data)
+void MSCalEngine::getAzEl (Int antnr, rownr_t rownr, Array<double>& data)
 {
   setData (antnr, rownr);
   data = itsRADecToAzEl().getValue().get();
 }
 
-void MSCalEngine::getItrf (Int antnr, uInt rownr, Array<double>& data)
+void MSCalEngine::getItrf (Int antnr, rownr_t rownr, Array<double>& data)
 {
   setData (antnr, rownr);
   data = itsRADecToItrf().getValue().get();
 }
 
-void MSCalEngine::getNewUVW (Bool asApp, uInt rownr, Array<double>& data)
+void MSCalEngine::getNewUVW (Bool asApp, rownr_t rownr, Array<double>& data)
 {
   setData (-1, rownr, True);
   Int ant1 = itsAntCol[0](rownr);
@@ -145,7 +145,7 @@ void MSCalEngine::getNewUVW (Bool asApp, uInt rownr, Array<double>& data)
   }
 }
 
-double MSCalEngine::getDelay (Int antnr, uInt rownr)
+double MSCalEngine::getDelay (Int antnr, rownr_t rownr)
 {
   setData (-1, rownr, True);
   // Get the direction in ITRF xyz.
@@ -187,7 +187,7 @@ void MSCalEngine::setDirColName (const String& colName)
   itsReadFieldDir = True;
 }
 
-Int MSCalEngine::setData (Int antnr, uInt rownr, Bool fillAnt)
+Int MSCalEngine::setData (Int antnr, rownr_t rownr, Bool fillAnt)
 {
   // Initialize if not done yet.
   if (itsLastCalInx < 0) {
@@ -397,7 +397,7 @@ void MSCalEngine::fillAntPos (Int calDescId, Int calInx)
   antPos.reserve (tab.nrow());
   mounts.reserve (tab.nrow());
   antMB.reserve  (tab.nrow());
-  for (uInt i=0; i<tab.nrow(); ++i) {
+  for (rownr_t i=0; i<tab.nrow(); ++i) {
     String mount = mountCol(i);
     mount.downcase();
     Int mountType = 0;
@@ -437,7 +437,7 @@ void MSCalEngine::fillFieldDir (Int calDescId, Int calInx)
     ArrayMeasColumn<MDirection> dirCol(tab, itsDirColName);
     vector<MDirection>& fieldDir = itsFieldDir[calInx];
     fieldDir.reserve (tab.nrow());
-    for (uInt i=fieldDir.size(); i<tab.nrow(); ++i) {
+    for (rownr_t i=fieldDir.size(); i<tab.nrow(); ++i) {
       // Get first value of MDirection array in this row.
       fieldDir.push_back (dirCol(i).data()[0]);
     }
@@ -454,7 +454,7 @@ void MSCalEngine::fillCalDesc()
   ScalarColumn<String> nameCol(tab, "MS_NAME");
   // Handle CAL_DESC_IDs not seen so far.
   itsCalIdMap.reserve (tab.nrow());
-  for (uInt i=itsCalIdMap.size(); i<tab.nrow(); ++i) {
+  for (rownr_t i=itsCalIdMap.size(); i<tab.nrow(); ++i) {
     String msName = nameCol(i);
     Int inx = itsCalMap.size();
     map<string,int>::iterator iter = itsCalMap.find (msName);
