@@ -290,9 +290,9 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 
 	Int nSpW=spwId_p.nelements();
 	Matrix<Double> chanFreq =
-			msc.spectralWindow().chanFreq().getColumnCells(RefRows(spwId_p));
+          msc.spectralWindow().chanFreq().getColumnCells(RefRows(RowNumbers(spwId_p)));
 	Matrix<Double> bandwidth =
-			msc.spectralWindow().resolution().getColumnCells(RefRows(spwId_p));
+          msc.spectralWindow().resolution().getColumnCells(RefRows(RowNumbers(spwId_p)));
 	for (Int i=0; i<nSpW; i++) {
 		chanFreq_p.resize(nChan,nSpW); bandwidth_p.resize(nChan,nSpW);
 		for (Int j=0; j<nChan; j++) {
@@ -495,11 +495,10 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		break;
 		case MSS::ROWS:
 		{
-			Vector<Int> rows = items.asArrayInt(RecordFieldId(i));
+			Vector<Int64> rows = items.toArrayInt64(RecordFieldId(i));
 			if (rows.nelements()>0) {
-				Int n=rows.nelements();
-				if (oneBased) rows-=1;
-				Vector<uInt> uRows(n);
+                                if (oneBased) rows-=Int64(1);
+				Vector<rownr_t> uRows(rows.size());
 				convertArray(uRows,rows);
 				// Select rows from the base table.
 				// This is consistent with the rownumbers returned by range.
@@ -664,8 +663,8 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	Int nItems=items.nelements(),nRows=selms_p.nrow();
 	Table tab;
 	if (inc>1 && inc<=nRows) {
-		Vector<uInt> rows(nRows/inc);
-		indgen(rows,uInt(0),uInt(inc));
+		Vector<rownr_t> rows(nRows/inc);
+		indgen(rows,rownr_t(0),rownr_t(inc));
 		tab=selms_p(rows);
 	} else {
 		tab=selms_p;
@@ -1616,7 +1615,7 @@ Bool MSSelector::iterNext()
 		if (startRow_p>0 || (more && maxRow_p>0 && nIterRow>maxRow_p)) {
 			Int nRow=min(maxRow_p,nIterRow-startRow_p);
 			selRows_p.resize(nRow);
-			indgen(selRows_p,uInt(startRow_p),uInt(1));
+			indgen(selRows_p,rownr_t(startRow_p),rownr_t(1));
 			startRow_p+=maxRow_p;
 			selms_p=msIter_p->table()(selRows_p);
 			more=True;
@@ -1639,7 +1638,7 @@ Bool MSSelector::iterOrigin()
 			selms_p=msIter_p->table();
 		} else {
 			selRows_p.resize(maxRow_p);
-			indgen(selRows_p,uInt(0),uInt(1));
+			indgen(selRows_p,rownr_t(0),rownr_t(1));
 			selms_p=msIter_p->table()(selRows_p);
 			startRow_p=maxRow_p;
 		}

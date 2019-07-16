@@ -508,7 +508,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  Vector<Double> cf,cw;
 		  chanFreq.get(spw(i),cf,True);
 		  chanWidth.get(spw(i),cw,True);
-		  if (abs(cw(0) == 0))
+		  if (abs(cw(0)) == 0)
 		    throw(MSSelectionSpwError("Error in the MS SPECTRAL_WINDOW sub-table (channel width==0)."));
 		      
 		  Int cwDir = (Int)(cw(0)/abs(cw(0)));

@@ -379,7 +379,7 @@ protected:
   void setFieldInfo();
 
 // Determine if the numbers in r1 are a sorted subset of those in r2
-  Bool isSubSet(const Vector<uInt>& r1, const Vector<uInt>& r2);
+  Bool isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2);
 
   MSIter* This;
   Block<MeasurementSet> bms_p;

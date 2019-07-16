@@ -315,7 +315,7 @@ private:
   Matrix<Double> chanFreq_p,bandwidth_p;
   MSDerivedValues msd_p;
   Matrix<Int> rowIndex_p; // mapping of rows to time and ifr slots
-  Vector<uInt> selRows_p; // range of rows from selms_p returned by getData
+  Vector<rownr_t> selRows_p; // range of rows from selms_p returned by getData
   Int startRow_p, maxRow_p; // start and length of range of rows
   Bool useIfrDefault_p;
 

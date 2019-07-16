@@ -188,7 +188,7 @@ Record MSRange::range(const Vector<Int>& keys,
       {
 	if (checkShapes()) {
 	  out.define(keyword,
-		  msc.spectralWindow().chanFreq().getColumnCells(spwId_p));
+                     msc.spectralWindow().chanFreq().getColumnCells(RowNumbers(spwId_p)));
 	} else {
 	  shapeChangesWarning=True;
 	}
@@ -199,10 +199,10 @@ Record MSRange::range(const Vector<Int>& keys,
       {
 	if (checkShapes()) {
 	  Matrix<Int> corrTypes=
-	    msc.polarization().corrType().getColumnCells(polId_p);
+	    msc.polarization().corrType().getColumnCells(RowNumbers(polId_p));
 	  if (fld==MSS::CORR_NAMES) {
 	    Matrix<String> names(corrTypes.shape());
-	    for (uInt k=0; k<names.nrow(); k++) {
+	    for (rownr_t k=0; k<names.nrow(); k++) {
 	      for (uInt j=0; j<names.ncolumn(); j++) {
 		names(k,j)=Stokes::name(Stokes::type(corrTypes(k,j)));
 	      }
@@ -260,13 +260,13 @@ Record MSRange::range(const Vector<Int>& keys,
     case MSS::NUM_CORR:
       {
 	checkShapes();
-	out.define(keyword,msc.polarization().numCorr().getColumnCells(polId_p));
+	out.define(keyword,msc.polarization().numCorr().getColumnCells(RowNumbers(polId_p)));
       }
       break;
     case MSS::NUM_CHAN:
       {
 	checkShapes();
-	out.define(keyword,msc.spectralWindow().numChan().getColumnCells(spwId_p));
+	out.define(keyword,msc.spectralWindow().numChan().getColumnCells(RowNumbers(spwId_p)));
       }
       break;
     case MSS::PHASE:
@@ -306,17 +306,17 @@ Record MSRange::range(const Vector<Int>& keys,
       {
 	checkShapes();
 	out.define(keyword,msc.spectralWindow().refFrequency().
-		getColumnCells(spwId_p));
+                   getColumnCells(RowNumbers(spwId_p)));
       }
       break;
     case MSS::ROWS:
       {
 	// Glish doesn't like uInt (like me), so convert
-	Int n=ms_p.nrow();
-	Vector<uInt> rowNumbers=ms_p.rowNumbers();
-	Vector<Int> rows(n);
+	Int64 n=ms_p.nrow();
+	Vector<rownr_t> rowNumbers=ms_p.rowNumbers();
+	Vector<Int64> rows(n);
 	convertArray(rows,rowNumbers);
-	if (oneBased) rows+=1;
+	if (oneBased) rows+=Int64(1);
 	out.define(keyword,rows);
       }
       break;
@@ -514,10 +514,10 @@ void MSRange::minMax(Float& mini, Float& maxi,
 		     Bool useFlags)
 {
   IPosition shp=data.shape(0);
-  Int nrow=data.nrow();
-  Int numrow=Int(blockSize_p*1.0e6/(sizeof(Float)*shp(0)*shp(1)));
-  for (Int start=0; start<nrow; start+=numrow) {
-    Int n=min(numrow,nrow-start);
+  rownr_t nrow=data.nrow();
+  rownr_t numrow=rownr_t(blockSize_p*1.0e6/(sizeof(Float)*shp(0)*shp(1)));
+  for (rownr_t start=0; start<nrow; start+=numrow) {
+    rownr_t n=min(numrow,nrow-start);
     Float minf, maxf;
     Slicer rowSlicer(Slice(start,n));
     if (sel_p) {
@@ -557,10 +557,10 @@ void MSRange::minMax(Matrix<Float>& minmax,
 		     Bool useFlags)
 {
   IPosition shp=data1.shape(0);
-  Int nrow=data1.nrow();
-  Int numrow=Int(blockSize_p*1.0e6/(sizeof(Complex)*shp(0)*shp(1)));
-  for (Int start=0; start<nrow; start+=numrow) {
-    Int n=min(numrow,nrow-start);
+  rownr_t nrow=data1.nrow();
+  rownr_t numrow=rownr_t(blockSize_p*1.0e6/(sizeof(Complex)*shp(0)*shp(1)));
+  for (rownr_t start=0; start<nrow; start+=numrow) {
+    rownr_t n=min(numrow,nrow-start);
     Vector<Float> minf(4), maxf(4);
     Slicer rowSlicer(Slice(start,n));
     Array<Complex> avData;

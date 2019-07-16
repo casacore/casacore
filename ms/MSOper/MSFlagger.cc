@@ -914,7 +914,7 @@ void MSFlagger::saveToFlagHist(Int level, Table& tab)
     }
     Vector<uInt> rows(n);
     indgen(rows,uInt(i*maxRow));
-    Table sel=tab(rows);
+    Table sel=tab(RowNumbers(rows));
     ArrayColumn<Bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
     ROArrayColumn<Bool> flagCol(sel,MS::columnName(MS::FLAG));
     ROScalarColumn<Bool> flagRowCol(sel,MS::columnName(MS::FLAG_ROW));
@@ -978,7 +978,7 @@ void MSFlagger::applyFlagHist(Int level, Table& tab)
     Int n=min(maxRow,nRow-i*maxRow);
     Vector<uInt> rows(n);
     indgen(rows,uInt(i*maxRow));
-    Table sel=tab(rows);
+    Table sel=tab(RowNumbers(rows));
     ROArrayColumn<Bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
     Cube<Bool> flag(flagHisCol.getColumn(slicer).
       reform(IPosition(3,shape(1),shape(2),n)));

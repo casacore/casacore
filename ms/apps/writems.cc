@@ -1960,7 +1960,7 @@ bool readParms (int argc, char* argv[])
     if (nant == 0  ||  nant >= tab.nrow()) {
       nant = tab.nrow();
     } else {
-      Vector<uInt> rows(nant);
+      Vector<rownr_t> rows(nant);
       indgen (rows);
       tab = tab(rows);
     }

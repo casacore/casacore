@@ -238,7 +238,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 
     Vector<uInt> delrows(itsMS.state().nrow());
     indgen(delrows);
-    itsMS.state().removeRow(delrows); 
+    itsMS.state().removeRow(RowNumbers(delrows)); 
   }
   else{ // both state tables are filled
     const uInt oldStateRows = itsMS.state().nrow();
@@ -939,7 +939,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 
     Vector<uInt> delrows(itsMS.state().nrow());
     indgen(delrows);
-    itsMS.state().removeRow(delrows); 
+    itsMS.state().removeRow(RowNumbers(delrows)); 
   }
   else{ // both state tables are filled
     const uInt oldStateRows = itsMS.state().nrow();
@@ -1050,7 +1050,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     log << LogIO::NORMAL << "Deleting all rows in the Pointing subtable ..." << LogIO::POST ;
     Vector<uInt> delrows(itsMS.pointing().nrow());
     indgen(delrows);
-    itsMS.pointing().removeRow(delrows); 
+    itsMS.pointing().removeRow(RowNumbers(delrows)); 
   }
 
   // SYSCAL
@@ -1613,7 +1613,7 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint,const
              
     Vector<uInt> delrows(itsMS.pointing().nrow());
     indgen(delrows);
-    itsMS.pointing().removeRow(delrows); 
+    itsMS.pointing().removeRow(RowNumbers(delrows)); 
 
     return False;
 
@@ -1652,7 +1652,7 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint,const
 	 << LogIO::POST;
       Vector<uInt> rowtodel(point.nrow());
       indgen(rowtodel);
-      point.removeRow(rowtodel);
+      point.removeRow(RowNumbers(rowtodel));
       return False;
     } 
 
@@ -1686,7 +1686,7 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint,const
 
     Vector<uInt> delrows(otherPoint.nrow());
     indgen(delrows);
-    otherPoint.removeRow(delrows); 
+    otherPoint.removeRow(RowNumbers(delrows)); 
 
     return False;
   }
@@ -1727,11 +1727,11 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint,const
 
       Vector<uInt> delrows(itsMS.pointing().nrow());
       indgen(delrows);
-      itsMS.pointing().removeRow(delrows); 
+      itsMS.pointing().removeRow(RowNumbers(delrows)); 
 
       Vector<uInt> rowtodel(otherPoint.nrow());
       indgen(rowtodel);
-      otherPoint.removeRow(rowtodel);
+      otherPoint.removeRow(RowNumbers(rowtodel));
       
       return False;
     } 
@@ -1795,7 +1795,7 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal,
 	 << LogIO::POST;
       Vector<uInt> rowtodel(sysCal.nrow());
       indgen(rowtodel);
-      sysCal.removeRow(rowtodel);
+      sysCal.removeRow(RowNumbers(rowtodel));
       return False;
     }
 
@@ -1865,7 +1865,7 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather,
     if(!idsOK){
       Vector<uInt> rowstodel(weather.nrow());
       indgen(rowstodel);
-      weather.removeRow(rowstodel);
+      weather.removeRow(RowNumbers(rowstodel));
       return False;
     }
 
@@ -1945,7 +1945,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
     }
     if(rowsToBeRemoved.size()>0){ // actually remove the rows
       Vector<uInt> rowsTBR(rowsToBeRemoved);
-      obs.removeRow(rowsTBR);
+      obs.removeRow(RowNumbers(rowsTBR));
     }    
     os << "Added " << obs.nrow()- originalNrow << " rows and matched "
        << rowsToBeRemoved.size() << " rows in the observation subtable." << LogIO::POST;
@@ -2252,7 +2252,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
     Vector<uInt> sortedI(otherms.nrow());
     ROMSMainColumns msmc(otherms);
     Vector<Double> mainTimesV = msmc.time().getColumn();
-    GenSortIndirect<Double>::sort(sortedI,mainTimesV);
+    GenSortIndirect<Double,uInt>::sort(sortedI,mainTimesV);
     validityRange.resize(2);
     validityRange(0) = mainTimesV(sortedI(0));
     validityRange(1) = mainTimesV(sortedI(otherms.nrow()-1));
@@ -2569,7 +2569,7 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 
       if(rowsToBeRemoved.size()>0){ // actually remove the rows
 	Vector<uInt> rowsTBR(rowsToBeRemoved);
-	newSource.removeRow(rowsTBR);
+	newSource.removeRow(RowNumbers(rowsTBR));
 //	cout << "Removed " << rowsToBeRemoved.size() << " redundant rows from SOURCE table." << endl;
 	newNumrows_this=newSource.nrow(); // update number of rows 
  	sourceCol.sourceId().getColumn(newThisId, True); // update vector if IDs
@@ -2733,7 +2733,7 @@ Bool MSConcat::updateSource2(){ // to be called after copyField
 
       if(rowsToBeRemoved.size()>0){ // actually remove the rows
 	Vector<uInt> rowsTBR(rowsToBeRemoved);
-	newSource.removeRow(rowsTBR);
+	newSource.removeRow(RowNumbers(rowsTBR));
 	//cout << "Removed " << rowsToBeRemoved.size() << " stray rows from SOURCE table." << endl;
       }
 

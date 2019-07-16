@@ -1380,7 +1380,7 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
     MSRange msr(*pMS);
 
     Vector<Int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
-    Vector<uInt> uddId(ddId.nelements());
+    Vector<rownr_t> uddId(ddId.nelements());
 
     for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
     // now get the corresponding spectral windows and pol setups

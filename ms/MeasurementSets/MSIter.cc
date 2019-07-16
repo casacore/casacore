@@ -113,14 +113,14 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
   construct(sortColumns,addDefaultSortColumns);
 }
 
-Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
+Bool MSIter::isSubSet (const Vector<rownr_t>& r1, const Vector<rownr_t>& r2) {
   Int n1 = r1.nelements();
   Int n2 = r2.nelements();
   if (n1==0) return True;
   if (n2<n1) return False;
   Bool freeR1, freeR2;
-  const uInt* p1=r1.getStorage(freeR1);
-  const uInt* p2=r2.getStorage(freeR2);
+  const rownr_t* p1=r1.getStorage(freeR1);
+  const rownr_t* p2=r2.getStorage(freeR2);
   Int i,j;
   for (i=0,j=0; i<n1 && j<n2; i++) {
     while (p1[i]!=p2[j++] && j<n2) {}
