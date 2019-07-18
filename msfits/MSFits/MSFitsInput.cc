@@ -1948,7 +1948,11 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             mount = "ORBITING";
             break;
         case 4:
+            mount = "ALT-AZ+NASMYTH-R";
+            break;
         case 5:
+            mount = "ALT-AZ+NASMYTH-L";
+            break;
         case 6:
             mount = "BIZARRE";
             break;
