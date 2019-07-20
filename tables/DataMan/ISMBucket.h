@@ -146,8 +146,8 @@ public:
     // and the offset of its current value.
     // It returns the index where the row number can be put in the
     // bucket index.
-    uInt getInterval (uInt colnr, rownr_t rownr, uInt bucketNrrow,
-		      uInt& start, uInt& end, uInt& offset) const;
+    uInt getInterval (uInt colnr, rownr_t rownr, rownr_t bucketNrrow,
+		      rownr_t& start, rownr_t& end, uInt& offset) const;
 
     // Is the bucket large enough to add a value?
     Bool canAddData (uInt leng) const;
@@ -200,9 +200,9 @@ public:
     // The starting values in the right bucket may be copies of the
     // values in the left bucket. The duplicated Block contains a switch
     // per column indicating if the value is copied.
-    uInt split (ISMBucket*& left, ISMBucket*& right, Block<Bool>& duplicated,
-		rownr_t bucketStartRow, uInt bucketNrrow,
-		uInt colnr, rownr_t rownr, uInt lengToAdd);
+    rownr_t split (ISMBucket*& left, ISMBucket*& right, Block<Bool>& duplicated,
+                   rownr_t bucketStartRow, rownr_t bucketNrrow,
+                   uInt colnr, rownr_t rownr, uInt lengToAdd);
 
     // Determine whether a simple split is possible. If so, do it.
     // This is possible if the new row is at the end of the last bucket,

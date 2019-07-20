@@ -55,6 +55,7 @@ tTable_1
 tTable_2
 tTable_3
 tTable_4
+tVeryBigTable
 )
 
 # Some test sources include a test .h file.

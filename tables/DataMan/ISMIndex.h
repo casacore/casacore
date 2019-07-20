@@ -97,7 +97,7 @@ public:
     // Get the bucket number for the given row.
     // Also return the start row of the bucket and the number of rows in it.
     uInt getBucketNr (rownr_t rownr, rownr_t& bucketStartRow,
-		      uInt& bucketNrrow) const;
+		      rownr_t& bucketNrrow) const;
 
     // Read the bucket index from the AipsIO object.
     void get (AipsIO& os);
@@ -118,11 +118,11 @@ public:
     // <br>The start of the iteration is indicated by cursor=0.
     // The first bucket returned is the bucket containing the rownr
     // given in <src>bucketStartRow</src> (thus set bucketStartRow
-    // to 0 if you to start at the first bucket).
+    // to 0 if you want to start at the first bucket).
     // <br>The next iterations return the next bucket number and fill
     // the starting row and number of rows.
     Bool nextBucketNr (uInt& cursor, rownr_t& bucketStartRow,
-                       uInt& bucketNrrow, uInt& bucketNr) const;
+                       rownr_t& bucketNrrow, uInt& bucketNr) const;
 
     // Show the index.
     void show (std::ostream&) const;

@@ -75,8 +75,8 @@ void ISMIndex::put (AipsIO& os)
     if (version > 1) {
       putBlock (os, rows_p, nused_p + 1);
     } else {
-      Block<uInt> rows(rows_p.size());
-      std::copy (rows_p.begin(), rows_p.end(), rows.begin());
+      Block<uInt> rows(nused_p +1);
+      std::copy (rows_p.begin(), rows_p.begin() + nused_p + 1, rows.begin());
       putBlock (os, rows, nused_p + 1);
     }
     putBlock (os, bucketNr_p, nused_p);
@@ -145,7 +145,7 @@ uInt ISMIndex::getIndex (rownr_t rownr) const
 }
 
 uInt ISMIndex::getBucketNr (rownr_t rownr, rownr_t& bucketStartRow,
-			    uInt& bucketNrrow) const
+			    rownr_t& bucketNrrow) const
 {
     uInt index = getIndex (rownr);
     bucketStartRow = rows_p[index];
@@ -154,7 +154,7 @@ uInt ISMIndex::getBucketNr (rownr_t rownr, rownr_t& bucketStartRow,
 }
 
 Bool ISMIndex::nextBucketNr (uInt& cursor, rownr_t& bucketStartRow,
-			     uInt& bucketNrrow, uInt& bucketNr) const
+			     rownr_t& bucketNrrow, uInt& bucketNr) const
 {
     // When first time, get the index of the bucket containing the row.
     // End the iteration when the first row is past the end.

@@ -111,8 +111,8 @@ uInt& ISMBucket::getOffset (uInt colnr, rownr_t rownr)
     return (*(offIndex_p[colnr]))[inx];
 }
 
-uInt ISMBucket::getInterval (uInt colnr, rownr_t rownr, uInt bucketNrrow,
-			     uInt& start, uInt& end, uInt& offset) const
+uInt ISMBucket::getInterval (uInt colnr, rownr_t rownr, rownr_t bucketNrrow,
+			     rownr_t& start, rownr_t& end, uInt& offset) const
 {
     Block<rownr_t>& rowIndex = *(rowIndex_p[colnr]);
     Bool found;
@@ -448,10 +448,10 @@ Bool ISMBucket::simpleSplit (ISMBucket* left, ISMBucket* right,
     return True;
 }
 
-uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
-		       Block<Bool>& duplicated,
-		       rownr_t bucketStartRow, uInt bucketNrrow,
-		       uInt colnr, rownr_t rownr, uInt lengToAdd)
+rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
+                          Block<Bool>& duplicated,
+                          rownr_t bucketStartRow, rownr_t bucketNrrow,
+                          uInt colnr, rownr_t rownr, uInt lengToAdd)
 {
     AlwaysAssert (bucketNrrow > 1, AipsError);
     uInt nrcol = stmanPtr_p->ncolumn();

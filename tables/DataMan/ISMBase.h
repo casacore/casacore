@@ -172,7 +172,7 @@ public:
     // Also return the first and last row of that bucket.
     // The bucket object is created and deleted by the caching mechanism.
     ISMBucket* getBucket (rownr_t rownr, rownr_t& bucketStartRow,
-			  uInt& bucketNrrow);
+			  rownr_t& bucketNrrow);
 
     // Get the next bucket.
     // cursor=0 indicates the start of the iteration.
@@ -182,7 +182,7 @@ public:
     // A 0 is returned when no more buckets.
     // The bucket object is created and deleted by the caching mechanism.
     ISMBucket* nextBucket (uInt& cursor, rownr_t& bucketStartRow,
-			   uInt& bucketNrrow);
+			   rownr_t& bucketNrrow);
 
     // Get access to the temporary buffer.
     char* tempBuffer() const;

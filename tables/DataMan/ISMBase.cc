@@ -217,7 +217,8 @@ void ISMBase::showBucketLayout (ostream& os)
 {
   uInt cursor=0;
   rownr_t bstrow=0;
-  uInt bnrow, bucketNr;
+  rownr_t bnrow;
+  uInt bucketNr;
   while (getIndex().nextBucketNr (cursor, bstrow, bnrow, bucketNr)) {
     os << " bucket strow=" << bstrow << " bucketnr=" << bucketNr << endl;
     ((ISMBucket*) (getCache().getBucket (bucketNr)))->show (os);
@@ -404,15 +405,15 @@ void ISMBase::writeIndex()
     
 
 ISMBucket* ISMBase::getBucket (rownr_t rownr, rownr_t& bucketStartRow,
-			       uInt& bucketNrrow)
+			       rownr_t& bucketNrrow)
 {
     uInt bucketNr = getIndex().getBucketNr (rownr, bucketStartRow,
-					     bucketNrrow);
+                                            bucketNrrow);
     return (ISMBucket*) (getCache().getBucket (bucketNr));
 }
 
 ISMBucket* ISMBase::nextBucket (uInt& cursor, rownr_t& bucketStartRow,
-				uInt& bucketNrrow)
+				rownr_t& bucketNrrow)
 {
     uInt bucketNr;
     if (getIndex().nextBucketNr (cursor, bucketStartRow,
@@ -474,7 +475,7 @@ void ISMBase::removeRow (rownr_t rownr)
     // Get the bucket and interval to which the row belongs.
     uInt i;
     rownr_t bucketStartRow;
-    uInt bucketNrrow;
+    rownr_t bucketNrrow;
     ISMBucket* bucket = getBucket (rownr, bucketStartRow, bucketNrrow);
     uInt bucketRownr = rownr - bucketStartRow;
     // Remove that row from the bucket for all columns.
@@ -758,7 +759,7 @@ Bool ISMBase::checkBucketLayout (uInt& offendingCursor,
   Bool ok = False;
   uInt cursor = 0;
   rownr_t bucketStartRow = 0;
-  uInt bucketNrow = 0;
+  rownr_t bucketNrow = 0;
   uInt bucketNr = 0;
   while (getIndex().nextBucketNr(cursor, bucketStartRow, bucketNrow, bucketNr)) {
     ok = ((ISMBucket*) (getCache().getBucket(bucketNr)))->check(offendingCol,

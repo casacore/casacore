@@ -128,10 +128,11 @@ void ISMColumn::addRow (rownr_t, rownr_t)
     //# Nothing to do.
 }
 
-void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
-			uInt newNrrow)
+void ISMColumn::remove (rownr_t bucketRownr, ISMBucket* bucket, rownr_t bucketNrrow,
+			rownr_t newNrrow)
 {
-    uInt inx, stint, endint, offset;
+    uInt inx, offset;
+    rownr_t stint, endint;
     // Get the index where to remove the value.
     // If the rownr is not the start of the interval, index is one further.
     inx = bucket->getInterval (colnr_p, bucketRownr, bucketNrrow,
@@ -435,12 +436,13 @@ void ISMColumn::getValue (rownr_t rownr, void* value, Bool setCache)
 {
     // Get the bucket with its row number boundaries.
     rownr_t bucketStartRow;
-    uInt bucketNrrow;
+    rownr_t bucketNrrow;
     ISMBucket* bucket = stmanPtr_p->getBucket (rownr, bucketStartRow,
 					       bucketNrrow);
     // Get the interval in the bucket with its rownr boundaries.
     rownr -= bucketStartRow;
-    uInt offset, stint, endint;
+    uInt offset;
+    rownr_t stint, endint;
     bucket->getInterval (colnr_p, rownr, bucketNrrow, stint, endint, offset);
     // Get the value.
     // Set the start and end rownr for which this value is valid.
@@ -659,11 +661,12 @@ void ISMColumn::putValue (rownr_t rownr, const void* value)
 {
     // Get the bucket and interval to which the row belongs.
     rownr_t bucketStartRow;
-    uInt bucketNrrow;
+    rownr_t bucketNrrow;
     ISMBucket* bucket = stmanPtr_p->getBucket (rownr, bucketStartRow,
 					       bucketNrrow);
-    uInt bucketRownr = rownr - bucketStartRow;
-    uInt inx, stint, endint, offset;
+    rownr_t bucketRownr = rownr - bucketStartRow;
+    rownr_t stint, endint;
+    uInt inx, offset;
     // Get the index where to add/replace the new value.
     // Note: offset gives the offset of the current value, which is often NOT
     //       the same as offIndex[inx] (usually it is offIndex[inx-1]).
@@ -877,7 +880,7 @@ void ISMColumn::putFromRow (rownr_t rownr, const char* data, uInt lenData)
 #endif
 
     ISMBucket* bucket;
-    uInt bucketNrrow;
+    rownr_t bucketNrrow;
     uInt cursor = 0;
     bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow);
     // Loop through all buckets from the given row on.
@@ -902,13 +905,14 @@ void ISMColumn::putFromRow (rownr_t rownr, const char* data, uInt lenData)
 #endif
 }
 
-void ISMColumn::putData (ISMBucket* bucket, uInt bucketStartRow,
-			 uInt bucketNrrow, uInt bucketRownr,
+void ISMColumn::putData (ISMBucket* bucket, rownr_t bucketStartRow,
+			 rownr_t bucketNrrow, rownr_t bucketRownr,
 			 const char* data, uInt lenData,
 			 Bool afterLastRow, Bool canSplit)
 {
     // Determine the index.
-    uInt inx, start, end, dum3;
+    uInt inx, dum3;
+    rownr_t start, end;
     inx = bucket->getInterval (colnr_p, bucketRownr, 0, start, end, dum3);
     if ((afterLastRow  &&  bucketRownr == 0)  ||  start == end) {
 	Block<uInt>& offIndex = bucket->offIndex (colnr_p);
@@ -920,8 +924,8 @@ void ISMColumn::putData (ISMBucket* bucket, uInt bucketStartRow,
     }
 }
 
-void ISMColumn::replaceData (ISMBucket* bucket, uInt bucketStartRow,
-			     uInt bucketNrrow, uInt bucketRownr, uInt& offset,
+void ISMColumn::replaceData (ISMBucket* bucket, rownr_t bucketStartRow,
+			     rownr_t bucketNrrow, rownr_t bucketRownr, uInt& offset,
 			     const char* data, uInt lenData, Bool canSplit)
 {
     // Replacing a value means removing the old value.
@@ -939,9 +943,9 @@ void ISMColumn::replaceData (ISMBucket* bucket, uInt bucketStartRow,
     ISMBucket* left;
     ISMBucket* right;
     Block<Bool> duplicated;
-    uInt splitRownr = bucket->split (left, right, duplicated,
-				     bucketStartRow, bucketNrrow,
-				     colnr_p, bucketRownr, lenData - oldLeng);
+    rownr_t splitRownr = bucket->split (left, right, duplicated,
+                                        bucketStartRow, bucketNrrow,
+                                        colnr_p, bucketRownr, lenData - oldLeng);
 
 #ifdef AIPS_TRACE
     cout << "  replace split at rownr "<<splitRownr<<endl;
@@ -963,8 +967,8 @@ void ISMColumn::replaceData (ISMBucket* bucket, uInt bucketStartRow,
     stmanPtr_p->addBucket (splitRownr + bucketStartRow, right);
 }
 
-Bool ISMColumn::addData (ISMBucket* bucket, uInt bucketStartRow,
-			 uInt bucketNrrow, uInt bucketRownr, uInt inx,
+Bool ISMColumn::addData (ISMBucket* bucket, rownr_t bucketStartRow,
+			 rownr_t bucketNrrow, rownr_t bucketRownr, uInt inx,
 			 const char* data, uInt lenData,
 			 Bool afterLastRow, Bool canSplit)
 {
@@ -978,9 +982,9 @@ Bool ISMColumn::addData (ISMBucket* bucket, uInt bucketStartRow,
     ISMBucket* left;
     ISMBucket* right;
     Block<Bool> duplicated;
-    uInt splitRownr = bucket->split (left, right, duplicated,
-				     bucketStartRow, bucketNrrow,
-				     colnr_p, bucketRownr, lenData);
+    rownr_t splitRownr = bucket->split (left, right, duplicated,
+                                        bucketStartRow, bucketNrrow,
+                                        colnr_p, bucketRownr, lenData);
 
 #ifdef AIPS_TRACE
     cout << "  add split at rownr "<<splitRownr<<endl;
@@ -991,8 +995,8 @@ Bool ISMColumn::addData (ISMBucket* bucket, uInt bucketStartRow,
     bucket->copy (*left);
     delete left;
     // Add the data to the correct part.
-    uInt startRow = bucketStartRow;
-    uInt nrrow    = splitRownr;
+    rownr_t startRow = bucketStartRow;
+    rownr_t nrrow    = splitRownr;
     if (bucketRownr >= splitRownr) {
 	bucket = right;
 	bucketRownr -= splitRownr;

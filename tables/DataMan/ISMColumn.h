@@ -210,8 +210,8 @@ public:
     virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
     // Remove the given row in the bucket from the column.
-    void remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
-		 uInt newNrrow);
+    void remove (rownr_t bucketRownr, ISMBucket* bucket, rownr_t bucketNrrow,
+		 rownr_t newNrrow);
 
     // Get the function needed to read/write a uInt and rownr from/to
     // external format. This is used by other classes to read the length
@@ -303,21 +303,21 @@ private:
     // Put a data value into the bucket.
     // When it is at the first row of the bucket, it replaces the value.
     // Otherwise it is added.
-    void putData (ISMBucket* bucket, uInt bucketStartRow,
-		  uInt bucketNrrow, uInt bucketRownr,
+    void putData (ISMBucket* bucket, rownr_t bucketStartRow,
+		  rownr_t bucketNrrow, rownr_t bucketRownr,
 		  const char* data, uInt lenData,
 		  Bool afterLastRow, Bool canSplit);
 
     // Replace a value at the given offset in the bucket.
     // If the bucket is too small, it will be split (if allowed).
-    void replaceData (ISMBucket* bucket, uInt bucketStartRow,
-		      uInt bucketNrrow, uInt bucketRownr, uInt& offset,
+    void replaceData (ISMBucket* bucket, rownr_t bucketStartRow,
+		      rownr_t bucketNrrow, rownr_t bucketRownr, uInt& offset,
 		      const char* data, uInt lenData, Bool canSplit = True);
 
     // Add a value at the given index in the bucket.
     // If the bucket is too small, it will be split (if allowed).
-    Bool addData (ISMBucket* bucket, uInt bucketStartRow,
-		  uInt bucketNrrow, uInt bucketRownr, uInt inx,
+    Bool addData (ISMBucket* bucket, rownr_t bucketStartRow,
+		  rownr_t bucketNrrow, rownr_t bucketRownr, uInt inx,
 		  const char* data, uInt lenData,
 		  Bool afterLastRow = False, Bool canSplit = True);
 
