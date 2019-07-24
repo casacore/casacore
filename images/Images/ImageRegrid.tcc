@@ -1263,10 +1263,6 @@ void ImageRegrid<T>::make2DCoordinateGrid(LogIO& os, Bool& allFailed, Bool&misse
 // to be masked as the coarse grid is unlikely to finish exactly
 // on the lattice edge
 
-  uInt i, k;
-  Int where;
-  Bool ok = True;
-
   const uInt nPixelAxes = 2;
   uInt nConversions;
   if ( decimate > 1 ) {
