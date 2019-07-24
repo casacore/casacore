@@ -151,7 +151,7 @@ void TaQLConstNodeRep::show (std::ostream& os) const
   case CTString:
     if (itsIsTableName) {
       /// NOTE: possible special characters in the string should be handled.
-      os << itsSValue;
+      os << addEscape(itsSValue);
     } else {
       /// NOTE: possible quotes in the string should be handled.
       os << "'" << itsSValue << "'";
@@ -1044,7 +1044,7 @@ void TaQLGivingNodeRep::show (std::ostream& os) const
   if (itsExprList.isValid()) {
     itsExprList.show (os);
   } else {
-    os << itsName;
+    os << addEscape(itsName);
     if (itsType.isValid()) {
       os << " AS ";
       itsType.show (os);
@@ -1945,7 +1945,7 @@ void TaQLConcTabNodeRep::showDerived (std::ostream& os) const
     itsSubTables.show (os);
   }
   if (! itsTableName.empty()) {
-    os << " GIVING " << itsTableName;
+    os << " GIVING " << addEscape(itsTableName);
   }
   os << ']';
 }

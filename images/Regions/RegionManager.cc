@@ -67,10 +67,9 @@
 namespace casacore { //# name space casa begins
 
 
-  RegionManager::RegionManager()
+  RegionManager::RegionManager() : itsCSys(nullptr)
   {
       itsLog= new LogIO();
-      itsCSys=0;
   }
 
   RegionManager::RegionManager(const CoordinateSystem& csys) : itsCSys(new CoordinateSystem(csys))
@@ -83,9 +82,6 @@ namespace casacore { //# name space casa begins
   {
     if(itsLog !=0)
       delete itsLog;
-    if(itsCSys != 0)
-      delete itsCSys;
-
   }
 
   /*************************************************************
@@ -111,11 +107,11 @@ namespace casacore { //# name space casa begins
   }
 
   void RegionManager::setcoordsys(const CoordinateSystem& csys){
-    itsCSys= new CoordinateSystem(csys);
+    itsCSys.reset( new CoordinateSystem(csys) );
   }
 
   const CoordinateSystem& RegionManager::getcoordsys() const{
-	  if (itsCSys == 0) {
+	  if (!itsCSys) {
 	      throw(AipsError("CoordinateSystem not set in RegionManager tool"));
 	  }
 	  return *itsCSys;
@@ -209,7 +205,7 @@ namespace casacore { //# name space casa begins
 			      const Vector<Int>& pixelaxes,  
 			      const String& absrel, const String& comment){
  
-    if(itsCSys==0) {
+    if(!itsCSys) {
       ThrowCc("CoordinateSystem has not been set");
     }
     ImageRegion * leImReg=wbox(blc, trc, pixelaxes, *itsCSys, absrel);
@@ -364,7 +360,7 @@ namespace casacore { //# name space casa begins
 				       const Vector<Int>& pixelaxes,  
 				       const String& absrel){
     *itsLog << LogOrigin("RegionManager", "wpolygon");
-    if(itsCSys !=0){
+    if(itsCSys){
       return wpolygon(x, y, pixelaxes, *itsCSys, absrel);
     }
     else{
@@ -402,7 +398,7 @@ namespace casacore { //# name space casa begins
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
-	  if (itsCSys == 0) {
+	  if (!itsCSys) {
 		  throw(AipsError("CoordinateSystem not set in RegionManager tool"));
 	  }
 	  return wellipse(xc, yc, a, b, pa, pixelAxis0, pixelAxis1, *itsCSys, absrel);
@@ -428,7 +424,7 @@ namespace casacore { //# name space casa begins
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
-	  if(itsCSys == 0){
+	  if(!itsCSys){
 		  throw(AipsError("CoordinateSystem not set in RegionManager tool"));
 	  }
 	  return wsphere(center, radius, pixelAxes, *itsCSys, absrel);
@@ -453,7 +449,7 @@ namespace casacore { //# name space casa begins
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
-	  if(itsCSys == 0){
+	  if(!itsCSys){
 		  throw(AipsError("CoordinateSystem not set in RegionManager tool"));
 	  }
 	  return wellipsoid(center, radii, pixelAxes, *itsCSys, absrel);
@@ -497,7 +493,7 @@ namespace casacore { //# name space casa begins
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
-	  if(itsCSys == 0){
+	  if(!itsCSys){
 		  throw(AipsError("CoordinateSystem not set in RegionManager tool"));
 	  }
 	  return wshell(center, innerRadii, outerRadii, pixelAxes, *itsCSys, absrel);

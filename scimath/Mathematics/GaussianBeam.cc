@@ -134,13 +134,18 @@ void GaussianBeam::setMajorMinor(
     const Quantity& majAx, const Quantity& minAx
 ) {
     static ostringstream oss;
+    auto majVal = majAx.getValue();
+    auto minVal = minAx.getValue();
     ThrowIf(
-        majAx.getValue() < 0,
-        "Major axis cannot be less than zero."
+        isInf(majVal) || isInf(minVal) || isNaN(majVal) || isNaN(minVal),
+        "Neither the major nor the minor axis value is permitted "
+        "to be infinity or NaN"
     );
     ThrowIf(
-        minAx.getValue() < 0,
-        "Minor axis cannot be less than zero."
+        majVal < 0, "Major axis cannot be less than zero."
+    );
+    ThrowIf(
+        minVal < 0, "Minor axis cannot be less than zero."
     );
     ThrowIf (
         ! majAx.isConform("rad"),
@@ -161,6 +166,11 @@ void GaussianBeam::setMajorMinor(
 }
 
 void GaussianBeam::setPA(const Quantity& pa, Bool unwrap) {
+    auto paVal = pa.getValue();
+    ThrowIf(
+        isInf(paVal) || isNaN(paVal),
+        "The position angle value is not permitted to be infinity or NaN"
+    );
     ThrowIf(
         ! pa.isConform("rad"),
         "Position angle must have angular units ("

@@ -26,7 +26,9 @@
 //# $Id$
 
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableSyncData.h>
 #include <casacore/casa/IO/LockFile.h>
+#include <casacore/casa/Containers/BlockIO.h>
 #include <casacore/casa/OS/Path.h>
 #include <stdexcept>
 #include <iostream>
@@ -34,27 +36,57 @@
 using namespace casacore;
 using namespace std;
 
+void showVerbose (const String& lockFileName)
+{
+  LockFile lfile(lockFileName);
+  TableSyncData data;
+  // Read the lock info from the file into a buffer.
+  // Thereafter interpret the data read.
+  lfile.getInfo (data.memoryIO());
+  uInt nrrow, nrcolumn;
+  Bool tableChanged;
+  Block<Bool> dataManChanged;
+  data.read (nrrow, nrcolumn, tableChanged, dataManChanged);
+  // Show the data.
+  cout << "Lock file info   (of " << data.memoryIO().length() << " bytes)" << endl;
+  cout << "  nrows:           " << nrrow << endl;
+  cout << "  ncolumns:        " << nrcolumn << endl;
+  cout << "  table changed:   " << tableChanged << endl;
+  cout << "  dataman changed: " << dataManChanged << endl;
+  cout << "  modify counter:  " << data.getModifyCounter() << endl;
+  int nrid = lfile.reqIds()[0];
+  cout << "  " << nrid << " outstanding lock requests from other processes" << endl;
+}
+
 int main (int argc, char* argv[])
 {
   if (TableLock::lockingDisabled()) {
     cerr << "Note: table locking is disabled because Casacore "
          << "was built with -DAIPS_TABLES_NOLOCKING" << endl;
   }
-  if (argc < 2) {
-    cerr << "Use as:   showtablelock tablename" << endl;
+  int starg = 1;
+  Bool verbose = False;
+  if (argc > starg  &&  String(argv[starg]) == "-v") {
+    verbose = True;
+    starg += 1;
+  }
+  if (argc <= starg) {
+    cerr << "Use as:   showtablelock [-v] tablename" << endl;
+    cerr << "      -v    verbose" << endl;
     return 1;
   }
   try {
-    String tablename(argv[1]);
+    String tablename(argv[starg]);
     tablename = Path(tablename).absoluteName();
     if (! Table::isReadable (tablename)) {
       cerr << "Table " << tablename
            << " does not exist (or not readable)" << endl;
       return 1;
     }
+    String lockFileName(tablename + "/table.lock");
     uInt pid = 0;
     Bool permLocked = False;
-    uInt type = LockFile::showLock (pid, permLocked, tablename + "/table.lock");
+    uInt type = LockFile::showLock (pid, permLocked, lockFileName);
     String perm;
     if (permLocked) {
       perm = "permanently ";
@@ -71,6 +103,9 @@ int main (int argc, char* argv[])
     } else {
       cout << "Table " <<  tablename
            << " is neither opened nor locked in another process" << endl;
+    }
+    if (verbose) {
+      showVerbose (lockFileName);
     }
   } catch (std::exception& x) {
     cerr << x.what() << endl;

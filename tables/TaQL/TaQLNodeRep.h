@@ -144,6 +144,9 @@ public:
   // Check the data type string and return its standard form.
   static String checkDataType (const String&);
 
+  // Add escape characters to a table name where needed.
+  String addEscape (const String& str) const;
+
 private:
   // Letter objects cannot be copied.
   // <group>

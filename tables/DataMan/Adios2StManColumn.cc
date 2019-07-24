@@ -77,11 +77,6 @@ IPosition Adios2StManColumn::shape(uInt aRowNr)
         }
         else
         {
-            /*
-            throw(std::runtime_error("Shape not defined for Column "
-                        + static_cast<std::string>(itsColumnName)
-                        + " Row " + std::to_string(aRowNr)));
-                        */
             return IPosition();
         }
     }
