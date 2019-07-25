@@ -302,9 +302,10 @@ void Directory::copy (const Path& target, Bool overwrite,
     command += itsFile.path().expandedName() + "' '" +
                targetName.expandedName() + "'";
     int result = system(command.chars());
-    if(result != 0)
+    if(result != 0) {
       throw AipsError("Executing cp command returned an error. Command was: "
 		      + command);
+    }
     // Give write permission to user if needed.
     if (setUserWritePermission) {
 #if defined(__hpux__) || defined(AIPS_IRIX)
