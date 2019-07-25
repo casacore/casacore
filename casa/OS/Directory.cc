@@ -301,7 +301,11 @@ void Directory::copy (const Path& target, Bool overwrite,
     String command("cp -r '");
     command += itsFile.path().expandedName() + "' '" +
                targetName.expandedName() + "'";
-    AlwaysAssert (system(command.chars()) == 0, AipsError);
+    int result = system(command.chars());
+    if(result != 0) {
+      throw AipsError("Executing cp command returned an error. Command was: "
+		      + command);
+    }
     // Give write permission to user if needed.
     if (setUserWritePermission) {
 #if defined(__hpux__) || defined(AIPS_IRIX)
