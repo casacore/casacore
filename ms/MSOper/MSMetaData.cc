@@ -4964,8 +4964,11 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     vector<Double> freqLimits(2);
     Vector<Quantity> tmp;
     vector<SpwProperties> spwInfo(bws.size());
+    std::set<uInt> wvrFirst, wvrSecond;
     const static Unit emptyUnit;
     const static Unit hz("Hz");
+    const static String wvr = "WVR";
+    const static String wvrNominal = "WVR#NOMINAL";
     auto nrows = bws.size();
     for (uInt i=0; i<nrows; ++i) {
         spwInfo[i].bandwidth = bws[i];
@@ -5006,8 +5009,14 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         if (spwInfo[i].reffreq.getUnit() == emptyUnit) {
             spwInfo[i].reffreq.set(hz);
         }
-        // algorithm from thunter, CAS-5794
-        if (
+        // algorithm from thunter, CAS-5794, CAS-12592
+        if (name[i].contains(wvr)) {
+            wvrFirst.insert(i);
+            if (name[i] == wvrNominal) {
+                wvrSecond.insert(i);
+            }
+        }
+        else if (
             nchan >= 15
             && ! (
                 nchan == 256 || nchan == 128 || nchan == 64 || nchan == 32
@@ -5022,13 +5031,16 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         ) {
             avgSpw.insert(i);
         }
+        /*
         else if (spwInfo[i].nchans == 4) {
             wvrSpw.insert(i);
         }
+        */
         else {
             tdmSpw.insert(i);
         }
     }
+    wvrSpw = wvrSecond.empty() ? wvrFirst : wvrSecond;
     return spwInfo;
 }
 

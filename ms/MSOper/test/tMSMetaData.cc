@@ -266,7 +266,7 @@ void testIt(MSMetaData& md) {
     cout << "*** test nSpw()" << endl;
     uInt nSpw = md.nSpw(True);
     AlwaysAssert(nSpw == 40, AipsError);
-    AlwaysAssert(md.nSpw(False) == 24, AipsError);
+    AlwaysAssert(md.nSpw(False) == 40, AipsError);
     cout << "*** test getIntentsForSpw()" << endl;
     for (uInt spw=0; spw<nSpw; ++spw) {
         std::set<String> exp;
@@ -547,8 +547,11 @@ void testIt(MSMetaData& md) {
         {
             cout << "*** test getTDMSpw()" << endl;
             std::set<uInt> exp;
-            uInt myints[] = {1, 3, 5, 7, 9, 11, 13, 15};
-            exp.insert(myints, myints+8);
+            uInt myints[] = {
+                0, 1, 3, 5, 7, 9, 11, 13, 15, 25, 26, 27, 28, 29,
+                30, 31, 32, 33, 34, 35, 36, 37, 38, 39
+            };
+            exp.insert(myints, myints+24);
             AlwaysAssert(md.getTDMSpw() == exp, AipsError);
         }
         {
@@ -571,11 +574,14 @@ void testIt(MSMetaData& md) {
         {
             cout << "*** test getWVRSpw()" << endl;
             std::set<uInt> exp;
+            /*
             uInt myints[] = {
                 0, 25, 26, 27, 28, 29, 30, 31,
                 32, 33, 34, 35, 36, 37, 38, 39
             };
             exp.insert(myints, myints+16);
+            cout << "wvr " << md.getWVRSpw() << endl;
+            */
             AlwaysAssert(md.getWVRSpw() == exp, AipsError);
         }
         {
