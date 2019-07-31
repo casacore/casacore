@@ -4957,22 +4957,22 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         _ms->spectralWindow(),
         MSSpectralWindow::columnName(MSSpectralWindowEnums::RESOLUTION)
     );
-    Vector<Int> nss  = spwCols.netSideband().getColumn();
-    Vector<String> name = spwCols.name().getColumn();
-    Bool myHasBBCNo = hasBBCNo();
-    Vector<Int> bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
+    auto nss  = spwCols.netSideband().getColumn();
+    auto name = spwCols.name().getColumn();
+    auto myHasBBCNo = hasBBCNo();
+    auto bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
     vector<Double> freqLimits(2);
     Vector<Quantity> tmp;
     vector<SpwProperties> spwInfo(bws.size());
     const static Unit emptyUnit;
     const static Unit hz("Hz");
-    uInt nrows = bws.size();
+    auto nrows = bws.size();
     for (uInt i=0; i<nrows; ++i) {
         spwInfo[i].bandwidth = bws[i];
         tmp.resize(0);
         cfCol.get(i, tmp);
         spwInfo[i].chanfreqs = QVD(tmp);
-        Unit u = spwInfo[i].chanfreqs.getFullUnit();
+        auto u = spwInfo[i].chanfreqs.getFullUnit();
         spwInfo[i].meanfreq = Quantity(
             mean(spwInfo[i].chanfreqs.getValue()), u
         );
@@ -4991,9 +4991,9 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         tmp.resize(0);
         resCol.get(i, tmp);
         spwInfo[i].resolution = QVD(tmp);
-        QVD halfWidths = (spwInfo[i].chanwidths)/2.0;
-        Quantity lowFreq = (spwInfo[i].chanfreqs - halfWidths).min();
-        Quantity highFreq = (spwInfo[i].chanfreqs + halfWidths).max();
+        auto halfWidths = (spwInfo[i].chanwidths)/2.0;
+        auto lowFreq = (spwInfo[i].chanfreqs - halfWidths).min();
+        auto highFreq = (spwInfo[i].chanfreqs + halfWidths).max();
         spwInfo[i].centerfreq = (lowFreq + highFreq)/2;
         spwInfo[i].name = name[i];
         if (myHasBBCNo) {
