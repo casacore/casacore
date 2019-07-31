@@ -151,27 +151,27 @@ void testIt(MSMetaData& md) {
 
         if (*scanNum == 1 || *scanNum == 5 || *scanNum == 8) {
             String mystr[] = {
-                    "CALIBRATE_POINTING#ON_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
+                "CALIBRATE_POINTING#ON_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
             };
             exp.insert(mystr, mystr+2);
         }
         else if (*scanNum == 2) {
             String mystr[] = {
-                    "CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
-                    "CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
-                    "CALIBRATE_WVR#OFF_SOURCE",
-                    "CALIBRATE_WVR#ON_SOURCE"
+                "CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
+                "CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
+                "CALIBRATE_WVR#OFF_SOURCE",
+                "CALIBRATE_WVR#ON_SOURCE"
             };
             exp.insert(mystr, mystr+4);
         }
         else if (
-                *scanNum == 3 || *scanNum == 6
-                || *scanNum == 9 || *scanNum == 11
-                || *scanNum == 13 || *scanNum == 15
-                || *scanNum == 17 || *scanNum == 19
-                || *scanNum == 22 || *scanNum == 24
-                || *scanNum == 26 || *scanNum == 29
-                || *scanNum == 31
+            *scanNum == 3 || *scanNum == 6
+            || *scanNum == 9 || *scanNum == 11
+            || *scanNum == 13 || *scanNum == 15
+            || *scanNum == 17 || *scanNum == 19
+            || *scanNum == 22 || *scanNum == 24
+            || *scanNum == 26 || *scanNum == 29
+            || *scanNum == 31
         ) {
             String mystr[] = {
                     "CALIBRATE_ATMOSPHERE#OFF_SOURCE",
@@ -183,36 +183,36 @@ void testIt(MSMetaData& md) {
         }
         else if (*scanNum == 4) {
             String mystr[] = {
-                    "CALIBRATE_BANDPASS#ON_SOURCE",
-                    "CALIBRATE_PHASE#ON_SOURCE",
-                    "CALIBRATE_WVR#ON_SOURCE"
+                "CALIBRATE_BANDPASS#ON_SOURCE",
+                "CALIBRATE_PHASE#ON_SOURCE",
+                "CALIBRATE_WVR#ON_SOURCE"
             };
             exp.insert(mystr, mystr+3);
         }
         else if (*scanNum == 7) {
             String mystr[] = {
-                    "CALIBRATE_AMPLI#ON_SOURCE",
-                    "CALIBRATE_PHASE#ON_SOURCE",
-                    "CALIBRATE_WVR#ON_SOURCE"
+                "CALIBRATE_AMPLI#ON_SOURCE",
+                "CALIBRATE_PHASE#ON_SOURCE",
+                "CALIBRATE_WVR#ON_SOURCE"
             };
             exp.insert(mystr, mystr+3);
         }
         else if (
-                *scanNum == 10 || *scanNum == 14
-                || *scanNum == 18 || *scanNum == 21
-                || *scanNum == 25 || *scanNum == 28
-                || *scanNum == 32
+            *scanNum == 10 || *scanNum == 14
+            || *scanNum == 18 || *scanNum == 21
+            || *scanNum == 25 || *scanNum == 28
+            || *scanNum == 32
         ) {
             String mystr[] = {
-                    "CALIBRATE_PHASE#ON_SOURCE",
-                    "CALIBRATE_WVR#ON_SOURCE"
+                "CALIBRATE_PHASE#ON_SOURCE",
+                "CALIBRATE_WVR#ON_SOURCE"
             };
             exp.insert(mystr, mystr+2);
         }
         else if (
-                *scanNum == 12 || *scanNum == 16
-                || *scanNum == 20 || *scanNum == 23
-                || *scanNum == 27 || *scanNum == 30
+            *scanNum == 12 || *scanNum == 16
+            || *scanNum == 20 || *scanNum == 23
+            || *scanNum == 27 || *scanNum == 30
         ) {
             exp.insert("OBSERVE_TARGET#ON_SOURCE");
         }
@@ -222,8 +222,8 @@ void testIt(MSMetaData& md) {
     AlwaysAssert(md.getIntents() == uniqueIntents, AipsError);
     cout << "*** test getSpwsForIntent()" << endl;
     for (
-            std::set<String>::const_iterator intent=uniqueIntents.begin();
-            intent!=uniqueIntents.end(); ++intent
+        auto intent=uniqueIntents.cbegin();
+        intent!=uniqueIntents.cend(); ++intent
     ) {
         std::set<uInt> exp;
         if (
@@ -255,9 +255,9 @@ void testIt(MSMetaData& md) {
                 *intent == "CALIBRATE_WVR#ON_SOURCE"
         ) {
             uInt myints[] = {
-                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                    10, 11, 12, 13, 14, 15, 16,
-                    17, 18, 19, 20, 21, 22, 23, 24
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                10, 11, 12, 13, 14, 15, 16,
+                17, 18, 19, 20, 21, 22, 23, 24
             };
             exp.insert(myints, myints+25);
         }
@@ -288,8 +288,8 @@ void testIt(MSMetaData& md) {
         }
         else if (spw < 9) {
             String mystr[] = {
-                    "CALIBRATE_POINTING#ON_SOURCE",
-                    "CALIBRATE_WVR#ON_SOURCE"
+                "CALIBRATE_POINTING#ON_SOURCE",
+                "CALIBRATE_WVR#ON_SOURCE"
             };
             exp.insert(mystr, mystr+2);
         }
@@ -330,22 +330,22 @@ void testIt(MSMetaData& md) {
             std::set<uInt> exp;
             if (i==0 || i==3) {
                 uInt myints[] = {
-                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                        10, 11, 12, 13, 14, 15, 16, 17,
-                        18, 19, 20, 21, 22, 23, 24
+                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                    10, 11, 12, 13, 14, 15, 16, 17,
+                    18, 19, 20, 21, 22, 23, 24
                 };
                 exp.insert(myints, myints+25);
             }
             if (i == 1) {
                 uInt myints[] = {
-                        0, 1, 2, 3, 4, 5, 6, 7, 8
+                    0, 1, 2, 3, 4, 5, 6, 7, 8
                 };
                 exp.insert(myints, myints+9);
             }
             if (i==2 || i==4 || i==5) {
                 uInt myints[] = {
-                        0, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17, 18, 19, 20, 21, 22, 23, 24
+                    0, 9, 10, 11, 12, 13, 14, 15, 16,
+                    17, 18, 19, 20, 21, 22, 23, 24
                 };
                 exp.insert(myints, myints+17);
             }
@@ -360,12 +360,10 @@ void testIt(MSMetaData& md) {
         {
 
           MDirection phasCen=md.phaseDirFromFieldIDAndTime(2);
-          
           AlwaysAssert(
                 near(phasCen.getAngle().getValue()[0], -2.72554329 , 5e-7),
                 AipsError
             );
-
         }
         cout << "*** test getFieldIDsForSpw()" << endl;
         for (uInt i=0; i<md.nSpw(True); ++i) {
@@ -375,8 +373,8 @@ void testIt(MSMetaData& md) {
                 uInt myints[] = {0, 1, 2, 3, 4, 5};
                 exp.insert(myints, myints+6);
                 String mystr[] = {
-                        "3C279", "J1337-129", "Titan", "J1625-254",
-                        "V866 Sco", "RNO 90"
+                    "3C279", "J1337-129", "Titan", "J1625-254",
+                    "V866 Sco", "RNO 90"
                 };
                 expNames.insert(mystr, mystr+6);
 
@@ -385,7 +383,7 @@ void testIt(MSMetaData& md) {
                 uInt myints[] = {0, 1, 3};
                 exp.insert(myints, myints+3);
                 String mystr[] = {
-                        "3C279", "J1337-129", "J1625-254"
+                    "3C279", "J1337-129", "J1625-254"
                 };
                 expNames.insert(mystr, mystr+3);
             }
@@ -393,8 +391,8 @@ void testIt(MSMetaData& md) {
                 uInt myints[] = {0, 2, 3, 4, 5};
                 exp.insert(myints, myints+5);
                 String mystr[] = {
-                        "3C279", "Titan", "J1625-254",
-                        "V866 Sco", "RNO 90"
+                    "3C279", "Titan", "J1625-254",
+                    "V866 Sco", "RNO 90"
 
                 };
                 expNames.insert(mystr, mystr+5);
@@ -564,8 +562,8 @@ void testIt(MSMetaData& md) {
             cout << "*** test getChannelAvgSpw()" << endl;
             std::set<uInt> exp;
             uInt myints[] = {
-                    2, 4, 6, 8, 10, 12, 14,
-                    16, 18, 20, 22, 24
+                2, 4, 6, 8, 10, 12, 14,
+                16, 18, 20, 22, 24
             };
             exp.insert(myints, myints+12);
             AlwaysAssert(md.getChannelAvgSpw() == exp, AipsError);
@@ -574,8 +572,8 @@ void testIt(MSMetaData& md) {
             cout << "*** test getWVRSpw()" << endl;
             std::set<uInt> exp;
             uInt myints[] = {
-                    0, 25, 26, 27, 28, 29, 30, 31,
-                    32, 33, 34, 35, 36, 37, 38, 39
+                0, 25, 26, 27, 28, 29, 30, 31,
+                32, 33, 34, 35, 36, 37, 38, 39
             };
             exp.insert(myints, myints+16);
             AlwaysAssert(md.getWVRSpw() == exp, AipsError);
@@ -643,11 +641,11 @@ void testIt(MSMetaData& md) {
             std::set<Int> myscans;
             myscans.insert(3);
             AlwaysAssert(
-                    allNearAbs(
-                        md.getTimesForScans(scanKeys(myscans, arrayKey)),
-                        expec, 0.1
-                    ),
-                    AipsError
+                allNearAbs(
+                    md.getTimesForScans(scanKeys(myscans, arrayKey)),
+                    expec, 0.1
+                ),
+                AipsError
             );
         }
         {
@@ -661,8 +659,8 @@ void testIt(MSMetaData& md) {
             scanKey.arrayID = 0;
             scanKey.obsID = 0;
             for (
-                    std::set<Int>::const_iterator curScan=scanNumbers.begin();
-                    curScan!=scanNumbers.end(); ++curScan
+                std::set<Int>::const_iterator curScan=scanNumbers.begin();
+                curScan!=scanNumbers.end(); ++curScan
             ) {
                 expec.clear();
                 if (*curScan == 1 || *curScan == 5 || *curScan == 8) {
@@ -674,19 +672,19 @@ void testIt(MSMetaData& md) {
                     expec.insert(mine, mine+2);
                 }
                 else if (
-                        *curScan == 3 || *curScan==6 || *curScan==9
-                        || *curScan==11 || *curScan==13 || *curScan==15
-                        || *curScan==17 || *curScan==19 || *curScan==22
-                        || *curScan==24 || *curScan==26 || *curScan==29
-                        || *curScan==31
+                    *curScan == 3 || *curScan==6 || *curScan==9
+                    || *curScan==11 || *curScan==13 || *curScan==15
+                    || *curScan==17 || *curScan==19 || *curScan==22
+                    || *curScan==24 || *curScan==26 || *curScan==29
+                    || *curScan==31
                 ) {
                     Int mine[] = {7, 8, 9};
                     expec.insert(mine, mine+3);
                 }
                 else if (*curScan==4) {
                     Int mine[] = {
-                            10, 11, 12, 13, 14, 15, 16, 17, 18,
-                            19, 20, 21, 22, 23, 24, 25
+                        10, 11, 12, 13, 14, 15, 16, 17, 18,
+                        19, 20, 21, 22, 23, 24, 25
                     };
                     expec.insert(mine, mine+16);
                 }
@@ -695,18 +693,18 @@ void testIt(MSMetaData& md) {
                     expec.insert(mine, mine+6);
                 }
                 else if (
-                        *curScan==10 || *curScan==14 || *curScan==18
-                        || *curScan==21 || *curScan==25 || *curScan==28
-                        || *curScan==32
+                    *curScan==10 || *curScan==14 || *curScan==18
+                    || *curScan==21 || *curScan==25 || *curScan==28
+                    || *curScan==32
                 ) {
                     expec.insert(32);
                 }
                 else if (
-                        *curScan==12 || *curScan==16
-                        || *curScan==20 || *curScan==23
+                    *curScan==12 || *curScan==16
+                    || *curScan==20 || *curScan==23
                 ) {
                     Int mine[] = {
-                            33, 34, 35, 36, 37, 38, 39, 40, 41, 42
+                        33, 34, 35, 36, 37, 38, 39, 40, 41, 42
                     };
                     expec.insert(mine, mine+10);
                 }
@@ -725,22 +723,20 @@ void testIt(MSMetaData& md) {
             cout << "*** test getScansForIntent()" << endl;
             std::set<String> intents = md.getIntents();
             for (
-                    std::set<String>::const_iterator intent=intents.begin();
-                    intent!=intents.end(); ++intent
+                std::set<String>::const_iterator intent=intents.begin();
+                intent!=intents.end(); ++intent
             ) {
                 std::set<Int> expec;
-                if (
-                        *intent=="CALIBRATE_AMPLI#ON_SOURCE"
-                ) {
+                if (*intent=="CALIBRATE_AMPLI#ON_SOURCE") {
                     expec.insert(7);
                 }
                 else if (
-                        *intent=="CALIBRATE_ATMOSPHERE#OFF_SOURCE"
-                                || *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
+                    *intent=="CALIBRATE_ATMOSPHERE#OFF_SOURCE"
+                    || *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
                 ) {
                     Int mine[] = {
-                            3, 6, 9, 11, 13, 15, 17,
-                            19, 22, 24, 26, 29, 31
+                        3, 6, 9, 11, 13, 15, 17,
+                        19, 22, 24, 26, 29, 31
                     };
                     expec.insert(mine, mine+13);
                 }
@@ -749,7 +745,7 @@ void testIt(MSMetaData& md) {
                 }
                 else if (*intent=="CALIBRATE_PHASE#ON_SOURCE") {
                     Int mine[] = {
-                            4, 7, 10, 14, 18, 21, 25, 28, 32
+                        4, 7, 10, 14, 18, 21, 25, 28, 32
                     };
                     expec.insert(mine, mine+9);
                 }
@@ -758,23 +754,23 @@ void testIt(MSMetaData& md) {
                     expec.insert(mine, mine+3);
                 }
                 else if (
-                        *intent=="CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
-                                || *intent=="CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
+                    *intent=="CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
+                    || *intent=="CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
                 ) {
                     expec.insert(2);
                 }
                 else if (*intent=="CALIBRATE_WVR#OFF_SOURCE") {
                     Int mine[] = {
-                            2, 3, 6, 9, 11, 13, 15, 17,
-                            19, 22, 24, 26, 29, 31
+                        2, 3, 6, 9, 11, 13, 15, 17,
+                        19, 22, 24, 26, 29, 31
                     };
                     expec.insert(mine, mine+14);
                 }
                 else if (*intent=="CALIBRATE_WVR#ON_SOURCE") {
                     Int mine[] = {
-                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                            11, 13, 14, 15, 17, 18, 19, 21,
-                            22, 24, 25, 26, 28, 29, 31, 32
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                        11, 13, 14, 15, 17, 18, 19, 21,
+                        22, 24, 25, 26, 28, 29, 31, 32
                     };
                     expec.insert(mine, mine+26);
                 }
@@ -814,23 +810,19 @@ void testIt(MSMetaData& md) {
                     break;
                 case 3: {
                     Int mine[] = {
-                            8, 9, 10, 13, 14, 17, 18,
-                            21, 24, 25, 28, 31, 32
+                        8, 9, 10, 13, 14, 17, 18,
+                        21, 24, 25, 28, 31, 32
                     };
                     expec.insert(mine, mine+13);
                     break;
                 }
                 case 4: {
-                    Int mine[] = {
-                            11, 12, 19, 20, 26, 27
-                    };
+                    Int mine[] = {11, 12, 19, 20, 26, 27};
                     expec.insert(mine, mine+6);
                     break;
                 }
                 case 5: {
-                    Int mine[] = {
-                            15, 16, 22, 23, 29, 30
-                    };
+                    Int mine[] = {15, 16, 22, 23, 29, 30};
                     expec.insert(mine, mine+6);
                     break;
                 }
@@ -847,14 +839,14 @@ void testIt(MSMetaData& md) {
                 std::set<Int> expec;
                 expec.insert(i);
                 String name = i == 0 ? "3C279"
-                        : i == 1 ? "J1337-129"
-                                : i == 2 ? "Titan"
-                                        : i == 3 ? "J1625-254"
-                                                : i == 4 ? "V866 Sco"
-                                                        : "RNO 90";
+                    : i == 1 ? "J1337-129"
+                        : i == 2 ? "Titan"
+                            : i == 3 ? "J1625-254"
+                                : i == 4 ? "V866 Sco"
+                                    : "RNO 90";
                 AlwaysAssert(
-                        md.getFieldIDsForField(name) == expec,
-                        AipsError
+                    md.getFieldIDsForField(name) == expec,
+                    AipsError
                 );
             }
         }
@@ -883,8 +875,8 @@ void testIt(MSMetaData& md) {
                 case 3: {
                     name = "J1625-254";
                     Int mine[] = {
-                            8, 9, 10, 13, 14, 17, 18,
-                            21, 24, 25, 28, 31, 32
+                        8, 9, 10, 13, 14, 17, 18,
+                        21, 24, 25, 28, 31, 32
                     };
                     expec.insert(mine, mine+13);
                     break;
@@ -892,7 +884,7 @@ void testIt(MSMetaData& md) {
                 case 4: {
                     name = "V866 Sco";
                     Int mine[] = {
-                            11, 12, 19, 20, 26, 27
+                        11, 12, 19, 20, 26, 27
                     };
                     expec.insert(mine, mine+6);
                     break;
@@ -900,7 +892,7 @@ void testIt(MSMetaData& md) {
                 case 5: {
                     name = "RNO 90";
                     Int mine[] = {
-                            15, 16, 22, 23, 29, 30
+                        15, 16, 22, 23, 29, 30
                     };
                     expec.insert(mine, mine+6);
                     break;
@@ -947,9 +939,9 @@ void testIt(MSMetaData& md) {
                     expec2.insert(3);
                 }
                 else if (
-                        *curScan==11 || *curScan==12
-                        || *curScan==19 || *curScan==20
-                        || *curScan==26 || *curScan==27
+                    *curScan==11 || *curScan==12
+                    || *curScan==19 || *curScan==20
+                    || *curScan==26 || *curScan==27
                 ) {
                     expec.insert(4);
                     expec2.insert(4);
@@ -1003,27 +995,27 @@ void testIt(MSMetaData& md) {
                 }
                 else if (
                     *intent=="CALIBRATE_BANDPASS#ON_SOURCE"
-                        || *intent=="CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
-                        || *intent=="CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
+                    || *intent=="CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
+                    || *intent=="CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
                 ) {
                     expec.insert(0);
                 }
                 else if (
                     *intent=="CALIBRATE_ATMOSPHERE#OFF_SOURCE"
-                        || *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
-                        || *intent=="CALIBRATE_WVR#OFF_SOURCE"
+                    || *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
+                    || *intent=="CALIBRATE_WVR#OFF_SOURCE"
                 ) {
                     Int mine[] = {0, 2, 3, 4, 5};
                     expec.insert(mine, mine+5);
                 }
                 else if (
-                        *intent=="CALIBRATE_PHASE#ON_SOURCE"
+                    *intent=="CALIBRATE_PHASE#ON_SOURCE"
                 ) {
                     Int mine[] = {0, 2, 3};
                     expec.insert(mine, mine+3);
                 }
                 else if (
-                        *intent=="CALIBRATE_POINTING#ON_SOURCE"
+                    *intent=="CALIBRATE_POINTING#ON_SOURCE"
                 ) {
                     Int mine[] = {0, 1, 3};
                     expec.insert(mine, mine+3);
@@ -1086,8 +1078,8 @@ void testIt(MSMetaData& md) {
             uInt mine[] = {1, 2, 3, 4, 5};
             expec.insert(mine, mine+5);
             AlwaysAssert(
-                    md.getFieldsForTimes(4842824746.0, 10000) == expec,
-                    AipsError
+                md.getFieldsForTimes(4842824746.0, 10000) == expec,
+                AipsError
             );
         }
         {
@@ -1115,7 +1107,7 @@ void testIt(MSMetaData& md) {
             cout << "*** test getObservatoryPosition()" << endl;
             MPosition tPos = md.getObservatoryPosition(0);
             Vector<Double> angles = tPos.getAngle("deg").getValue();
-                        cout << angles << endl;
+            cout << angles << endl;
             AlwaysAssert(near(angles[0], -67.7549, 1e-6), AipsError);
             AlwaysAssert(near(angles[1], -23.0229, 1e-6), AipsError);
             cout << "*** cache size " << md.getCache() << endl;
@@ -1161,20 +1153,6 @@ void testIt(MSMetaData& md) {
                 allEQ(antennaDiameters.getValue(), 12.0), AipsError
             );
         }
-        /*
-        {
-            cout << "*** test getExposuresForTimes()" << endl;
-            std::map<Double, Double> exposuresForTimes = md.getExposuresForTimes();
-
-            for (
-                std::map<Double, Double>::const_iterator iter=exposuresForTimes.begin();
-                iter!=exposuresForTimes.end(); ++iter
-            ) {
-                cout << std::setprecision(11) << iter->first << ", " << iter->second << endl;
-            }
-
-        }
-        */
         {
             cout << "*** Test getIntentsForField()" << endl;
             uInt nFields = md.nFields();
@@ -1317,7 +1295,7 @@ void testIt(MSMetaData& md) {
                             expec.insert(mine, mine+6);
                         }
                         break;
-                }
+                    }
                     case 4: {
                         if (sqldSwitch != MSMetaData::SQLD_ONLY) {
                             uInt mine[] = {
@@ -1423,7 +1401,6 @@ void testIt(MSMetaData& md) {
             cout << "*** Test getFieldsForSourceMap" << endl;
             std::map<Int, std::set<Int> > res = md.getFieldsForSourceMap();
             std::map<Int, std::set<String> > res2 = md.getFieldNamesForSourceMap();
-
             String names[] = {
                 "3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"
             };
@@ -2595,11 +2572,6 @@ int main() {
         String datadir = parts[0] + "/data/";
         delete [] parts;
         casacore::MeasurementSet ms(datadir + "regression/unittest/MSMetaData/MSMetaData.ms");
-        /*
-        cout << "*** test preload constructor" << endl;
-        MSMetaDataPreload md(ms);
-        testIt(md);
-        */
         cout << "*** test on-demand constructor" << endl;
         MSMetaData md1(&ms, 100);
         cout << "*** cache size " << md1.getCache() << endl;
@@ -2611,7 +2583,6 @@ int main() {
         MSMetaData md2(&ms, 0);
         testIt(md2);
         AlwaysAssert(md2.getCache() == 0, AipsError);
-
         cout << "OK" << endl;
     } 
     catch (const AipsError& x) {
