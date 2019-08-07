@@ -1760,7 +1760,13 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
             *nosta = id[antnum];
             String mount = upcase(inantmount(antnum));
             // MS has "EQUATORIAL", "ALT-AZ", "X-Y",  "SPACE-HALCA" 
-            if (mount.contains("ALT-AZ")) {
+            if (mount.contains("ALT-AZ+NASMYTH-R")) {
+                *mntsta = 4;
+            }
+            else if (mount.contains("ALT-AZ+NASMYTH-L")) {
+                *mntsta = 5;
+            }
+	    else if (mount.contains("ALT-AZ")) {
                 *mntsta = 0;
             }
             else if (mount.contains("EQUATORIAL")) {
@@ -1776,7 +1782,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
                 *mntsta = 7;
             }
             else if (mount.contains("BIZARRE")) {
-                *mntsta = 4; // 5, 6
+                *mntsta = 6;
             }
             else {
                 *mntsta = 7; // fits does not use anyway, put it 7
