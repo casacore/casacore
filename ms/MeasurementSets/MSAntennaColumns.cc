@@ -42,52 +42,18 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSAntennaColumns::ROMSAntennaColumns(const MSAntenna& msAntenna):
-  dishDiameter_p(msAntenna, MSAntenna::
-		 columnName(MSAntenna::DISH_DIAMETER)),
-  flagRow_p(msAntenna, MSAntenna::columnName(MSAntenna::FLAG_ROW)),
-  mount_p(msAntenna, MSAntenna::columnName(MSAntenna::MOUNT)),
-  name_p(msAntenna, MSAntenna::columnName(MSAntenna::NAME)),
-  offset_p(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET)),
-  position_p(msAntenna, MSAntenna::columnName(MSAntenna::POSITION)),
-  station_p(msAntenna, MSAntenna::columnName(MSAntenna::STATION)),
-  type_p(msAntenna, MSAntenna::columnName(MSAntenna::TYPE)),
-  meanOrbit_p(),
-  orbitId_p(),
-  phasedArrayId_p(),
-  offsetMeas_p(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET)),
-  positionMeas_p(msAntenna, MSAntenna::columnName(MSAntenna::POSITION)),
-  dishDiameterQuant_p(msAntenna, MSAntenna::
-		      columnName(MSAntenna::DISH_DIAMETER)),
-  offsetQuant_p(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET)),
-  positionQuant_p(msAntenna, MSAntenna::columnName(MSAntenna::POSITION))
-{
-  attachOptionalCols(msAntenna);
-}
-
-ROMSAntennaColumns::~ROMSAntennaColumns() {}
-
-ROMSAntennaColumns::ROMSAntennaColumns():
-  dishDiameter_p(),
-  flagRow_p(),
-  mount_p(),
-  name_p(),
-  offset_p(),
-  position_p(),
-  station_p(),
-  type_p(),
-  meanOrbit_p(),
-  orbitId_p(),
-  phasedArrayId_p(),
-  offsetMeas_p(),
-  positionMeas_p(),
-  dishDiameterQuant_p(),
-  offsetQuant_p(),
-  positionQuant_p()
+MSAntennaColumns::MSAntennaColumns()
 {
 }
 
-void ROMSAntennaColumns::attach(const MSAntenna& msAntenna)
+MSAntennaColumns::MSAntennaColumns(const MSAntenna& msAntenna)
+{
+  attach(msAntenna);
+}
+
+MSAntennaColumns::~MSAntennaColumns() {}
+
+void MSAntennaColumns::attach(const MSAntenna& msAntenna)
 {
   dishDiameter_p.attach(msAntenna, MSAntenna::
 			columnName(MSAntenna::DISH_DIAMETER));
@@ -113,7 +79,7 @@ void ROMSAntennaColumns::attach(const MSAntenna& msAntenna)
   attachOptionalCols(msAntenna);
 }
 
-void ROMSAntennaColumns::attachOptionalCols(const MSAntenna& msAntenna)
+void MSAntennaColumns::attachOptionalCols(const MSAntenna& msAntenna)
 {
   const ColumnDescSet& cds=msAntenna.tableDesc().columnDescSet();
   const String& meanOrbit=MSAntenna::columnName(MSAntenna::MEAN_ORBIT);
@@ -127,7 +93,19 @@ void ROMSAntennaColumns::attachOptionalCols(const MSAntenna& msAntenna)
   }
 }
 
-Int ROMSAntennaColumns::
+
+void MSAntennaColumns::setPositionRef(MPosition::Types ref)
+{
+  positionMeas_p.setDescRefCode(ref);
+}
+
+void MSAntennaColumns::setOffsetRef(MPosition::Types ref) 
+{
+  offsetMeas_p.setDescRefCode(ref);
+}
+
+
+Int MSAntennaColumns::
 matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
 	     Int tryRow) {
   uInt r = nrow();
@@ -139,7 +117,7 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   // to do this then they should be doing the conversions elsewhere and the
   // sooner they know about this error the better.
   if (MPosition::castType(positionMeas().getMeasRef().getType()) != refType) {
-    throw(AipsError("ROMSAntennaColumns::matchAntenna(...) - "
+    throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
 		    " cannot match when reference frames differ"));
   }
   // Convert the tolerance to meters
@@ -152,7 +130,7 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("ROMSAntennaColumns::matchAntenna(...) - "
+      throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -171,20 +149,20 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   return -1;
 }
 
-Int ROMSAntennaColumns::matchAntenna(const String& antName,
-					const MPosition& antennaPos,
-					const Quantum<Double>& tolerance,
-					Int tryRow) {
+Int MSAntennaColumns::matchAntenna(const String& antName,
+                                   const MPosition& antennaPos,
+                                   const Quantum<Double>& tolerance,
+                                   Int tryRow) {
   return matchAntennaAndStation(antName, "",
 				antennaPos, tolerance, tryRow);
 
 }
 
-Int ROMSAntennaColumns::matchAntennaAndStation(const String& antName,
-					       const String& stationName,
-					       const MPosition& antennaPos,
-					       const Quantum<Double>& tolerance,
-					       Int tryRow) {
+Int MSAntennaColumns::matchAntennaAndStation(const String& antName,
+                                             const String& stationName,
+                                             const MPosition& antennaPos,
+                                             const Quantum<Double>& tolerance,
+                                             Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -194,7 +172,7 @@ Int ROMSAntennaColumns::matchAntennaAndStation(const String& antName,
   // to do this then they should be doing the conversions elsewhere and the
   // sooner they know about this error the better.
   if (MPosition::castType(positionMeas().getMeasRef().getType()) != refType) {
-    throw(AipsError("ROMSAntennaColumns::matchAntenna(...) - "
+    throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
 		    " cannot match when reference frames differ"));
   }
   // Convert the tolerance to meters
@@ -208,7 +186,7 @@ Int ROMSAntennaColumns::matchAntennaAndStation(const String& antName,
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("ROMSAntennaColumns::matchAntenna(...) - "
+      throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
                       "the row you suggest is too big"));
     }
     Bool stationMatches = stationName.empty() || matchStation(tr, stationName);
@@ -234,131 +212,23 @@ Int ROMSAntennaColumns::matchAntennaAndStation(const String& antName,
 }
 
 
-Bool ROMSAntennaColumns::matchName(uInt row, const String& antName) const {
+Bool MSAntennaColumns::matchName(uInt row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
   return antName.matches(name()(row));
 }
 
-Bool ROMSAntennaColumns::matchStation(uInt row, const String& stationName) const {
+Bool MSAntennaColumns::matchStation(uInt row, const String& stationName) const {
   DebugAssert(row < nrow(), AipsError);
   return stationName.matches(station()(row));
 }
 
-Bool ROMSAntennaColumns::
+Bool MSAntennaColumns::
 matchPosition(uInt row, const Vector<Double>& antPosInM,
 	      const Double tolInM) const {
   DebugAssert(row < nrow(), AipsError);
   DebugAssert(antPosInM.nelements() == 3, AipsError);
   return allNearAbs(position()(row), antPosInM, tolInM);
 }
-
-MSAntennaColumns::MSAntennaColumns(MSAntenna& msAntenna):
-  ROMSAntennaColumns(msAntenna),
-  dishDiameter_p(msAntenna, MSAntenna::
-		 columnName(MSAntenna::DISH_DIAMETER)),
-  flagRow_p(msAntenna, MSAntenna::columnName(MSAntenna::FLAG_ROW)),
-  mount_p(msAntenna, MSAntenna::columnName(MSAntenna::MOUNT)),
-  name_p(msAntenna, MSAntenna::columnName(MSAntenna::NAME)),
-  offset_p(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET)),
-  position_p(msAntenna, MSAntenna::columnName(MSAntenna::POSITION)),
-  station_p(msAntenna, MSAntenna::columnName(MSAntenna::STATION)),
-  type_p(msAntenna, MSAntenna::columnName(MSAntenna::TYPE)),
-  meanOrbit_p(),
-  orbitId_p(),
-  phasedArrayId_p(),
-  offsetMeas_p(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET)),
-  positionMeas_p(msAntenna, MSAntenna::columnName(MSAntenna::POSITION)),
-  dishDiameterQuant_p(msAntenna, MSAntenna::
-		      columnName(MSAntenna::DISH_DIAMETER)),
-  offsetQuant_p(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET)),
-  positionQuant_p(msAntenna, MSAntenna::columnName(MSAntenna::POSITION))
-{
-  const ColumnDescSet& cds=msAntenna.tableDesc().columnDescSet();
-  const String& meanOrbit=MSAntenna::columnName(MSAntenna::MEAN_ORBIT);
-  if (cds.isDefined(meanOrbit)) meanOrbit_p.attach(msAntenna,meanOrbit);
-  const String& orbitId=MSAntenna::columnName(MSAntenna::ORBIT_ID);
-  if (cds.isDefined(orbitId)) orbitId_p.attach(msAntenna,orbitId);
-  const String& phasedArrayId=MSAntenna::columnName(MSAntenna::PHASED_ARRAY_ID);
-  if (cds.isDefined(phasedArrayId)) phasedArrayId_p.attach(msAntenna,phasedArrayId);
-}
-
-MSAntennaColumns::~MSAntennaColumns() {}
-
-MSAntennaColumns::MSAntennaColumns():
-  ROMSAntennaColumns(),
-  dishDiameter_p(),
-  flagRow_p(),
-  mount_p(),
-  name_p(),
-  offset_p(),
-  position_p(),
-  station_p(),
-  type_p(),
-  meanOrbit_p(),
-  orbitId_p(),
-  phasedArrayId_p(),
-  offsetMeas_p(),
-  positionMeas_p(),
-  dishDiameterQuant_p(),
-  offsetQuant_p(),
-  positionQuant_p()
-{
-}
-
-void MSAntennaColumns::attach(MSAntenna& msAntenna)
-{
-  ROMSAntennaColumns::attach(msAntenna);
-  dishDiameter_p.attach(msAntenna, MSAntenna::
-			columnName(MSAntenna::DISH_DIAMETER));
-  flagRow_p.attach(msAntenna, MSAntenna::
-		   columnName(MSAntenna::FLAG_ROW));
-  mount_p.attach(msAntenna, MSAntenna::columnName(MSAntenna::MOUNT));
-  name_p.attach(msAntenna, MSAntenna::columnName(MSAntenna::NAME));
-  offset_p.attach(msAntenna, MSAntenna::columnName(MSAntenna::OFFSET));
-  position_p.attach(msAntenna, MSAntenna::
-		    columnName(MSAntenna::POSITION));
-  station_p.attach(msAntenna, MSAntenna::columnName(MSAntenna::STATION));
-  type_p.attach(msAntenna, MSAntenna::columnName(MSAntenna::TYPE));
-  offsetMeas_p.attach(msAntenna, MSAntenna::
-		      columnName(MSAntenna::OFFSET));
-  positionMeas_p.attach(msAntenna, MSAntenna::
-			columnName(MSAntenna::POSITION));
-  dishDiameterQuant_p.attach(msAntenna, MSAntenna::
-			     columnName(MSAntenna::DISH_DIAMETER));
-  offsetQuant_p.attach(msAntenna, MSAntenna::
-		       columnName(MSAntenna::OFFSET));
-  positionQuant_p.attach(msAntenna, MSAntenna::
-			 columnName(MSAntenna::POSITION));
-  attachOptionalCols(msAntenna);
-}
-
-void MSAntennaColumns::attachOptionalCols(MSAntenna& msAntenna)
-{
-  const ColumnDescSet& cds=msAntenna.tableDesc().columnDescSet();
-  const String& meanOrbit=MSAntenna::columnName(MSAntenna::MEAN_ORBIT);
-  if (cds.isDefined(meanOrbit)) meanOrbit_p.attach(msAntenna,meanOrbit);
-  const String& orbitId=MSAntenna::columnName(MSAntenna::ORBIT_ID);
-  if (cds.isDefined(orbitId)) orbitId_p.attach(msAntenna,orbitId);
-  const String& phasedArrayId=MSAntenna::
-    columnName(MSAntenna::PHASED_ARRAY_ID);
-  if (cds.isDefined(phasedArrayId)) {
-    phasedArrayId_p.attach(msAntenna, phasedArrayId);
-  }
-}
-
-
-void MSAntennaColumns::setPositionRef(MPosition::Types ref)
-{
-  positionMeas_p.setDescRefCode(ref);
-}
-
-void MSAntennaColumns::setOffsetRef(MPosition::Types ref) 
-{
-  offsetMeas_p.setDescRefCode(ref);
-}
-// Local Variables: 
-// compile-command: "gmake MSAntennaColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
 

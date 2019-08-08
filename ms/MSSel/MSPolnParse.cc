@@ -230,7 +230,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     Vector<Int> rowList;
     MSPolarization mspol(ms()->polarizationTableName());
-    ROMSPolarizationColumns mspolC(mspol);
+    MSPolarizationColumns mspolC(mspol);
     //
     // First extract the corrType column of the Polarization sub-table
     // row-by-row (since this column can be of variable shape!)
@@ -284,7 +284,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSPolnParse::getPolnIndices(const Int& polId, const Vector<Int>& polnTypes)
   {
     MSPolarization mspol(ms()->polarizationTableName());
-    ROMSPolarizationColumns mspolC(mspol);
+    MSPolarizationColumns mspolC(mspol);
     Vector<Int> polIndices;
 
     //    for (uInt row=0; row<mspolC.nrow();row++)

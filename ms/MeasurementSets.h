@@ -108,8 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // compile time, there is a helper class for each (sub)table (e.g., 
 // MSFieldColumns). The helper class for the MeasurementSet, 
 // MSColumns gives access to the main table columns and the helper objects 
-// for all subtables. A read-only version of these classes is also
-// provided (e.g., ROMSFieldColumns).
+// for all subtables.
 //
 // At present these classes are separate from the Table classes, mainly
 // to ensure that the member functions are only called on valid, completely
@@ -240,7 +239,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      // Create the MeasurementSet from an existing Table on disk
 //      MeasurementSet ms("myMS"); 
 //      // Create the RO column access objects for main table and subtables
-//      ROMSColumns msc(ms);
+//      MSColumns msc(ms);
 //      // show data from row 5
 //      cout << msc.data()(5) << endl;
 //      // show phase center for row 3 in field table

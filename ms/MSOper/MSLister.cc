@@ -160,8 +160,8 @@ Bool MSLister::setMS (MeasurementSet& ms)
         getRanges(*pMS_p);
 
         // Set up for selection on channel or polarisation
-        ROMSSpWindowColumns msSpWinC(pMS_p->spectralWindow());
-        ROMSPolarizationColumns msPolC(pMS_p->polarization());
+        MSSpWindowColumns msSpWinC(pMS_p->spectralWindow());
+        MSPolarizationColumns msPolC(pMS_p->polarization());
         // nchan_p = msSpWinC.numChan()(0);
         npols_p = msPolC.corrType()(0).nelements();
         pols_p.resize(npols_p,False);
@@ -179,7 +179,7 @@ Bool MSLister::setMS (MeasurementSet& ms)
         freqs_p=msSpWinC.refFrequency().getColumn();
 
         // Create map from data_desc_id to spwid:
-        ROMSDataDescColumns msDDI(pMS_p->dataDescription());
+        MSDataDescColumns msDDI(pMS_p->dataDescription());
         spwins_p=msDDI.spectralWindowId().getColumn();
 
         // Signal completion of initList
@@ -387,9 +387,9 @@ void MSLister::selectvis(const String& timerange,
     // Check to see if selection returned any rows.
     Bool nonTrivial = pMSSelection->getSelectedMS(*pMSSel_p, "");
     Vector<Int> selSPW = pMSSelection->getSpwList();
-	ROMSDataDescColumns ddCols(pMS_p->dataDescription());
-	ROScalarColumn<Int> ddpolIDs = ddCols.polarizationId();
-	ROScalarColumn<Int> spwIDs = ddCols.spectralWindowId();
+	MSDataDescColumns ddCols(pMS_p->dataDescription());
+	ScalarColumn<Int> ddpolIDs = ddCols.polarizationId();
+	ScalarColumn<Int> spwIDs = ddCols.spectralWindowId();
 	Vector<Int> selDDIDs(selSPW.size());
 	uInt idx = 0;
 	for (uInt i=0; i<selSPW.size(); i++) {
@@ -489,7 +489,7 @@ void MSLister::selectvis(const String& timerange,
     }
 
     // Set up for selection on channel or polarisation
-    ROMSSpWindowColumns msSpWinC(pMSSel_p->spectralWindow());
+    MSSpWindowColumns msSpWinC(pMSSel_p->spectralWindow());
     /// // If no channels were specified for selection, select all by default.
     /// if (nchan_p== 0) {
     ///   nchan_p = msSpWinC.numChan()(0);
@@ -507,7 +507,7 @@ void MSLister::selectvis(const String& timerange,
 
     _polarizationSetup(selPolID);
     logStream_p << LogIO::DEBUG2 << "polarizationSetup done." << LogIO::POST;
-    // ROMSPolarizationColumns msPolC(pMSSel_p->polarization());
+    // MSPolarizationColumns msPolC(pMSSel_p->polarization());
     // npols_p = msPolC.corrType()(0).nelements();
     // pols_p.resize(npols_p,False);
     // for (uInt i=0; i<npols_p; i++) {
@@ -687,7 +687,7 @@ void MSLister::listData(const int pageRows,
       Vector<String> antennaNames; // Hold name for each antenna
       Vector<String> antNames1(ant1Length); // Antenna names for the ID's held in ant1
       Vector<String> antNames2(ant1Length); // Antenna names for the ID's held in ant2
-      ROMSAntennaColumns antCol(pMS_p->antenna());
+      MSAntennaColumns antCol(pMS_p->antenna());
       antennaNames = antCol.name().getColumn();
       for (Int i=0; i<ant1Length; i++) {
         antNames1(i) = antennaNames(ant1(i));
@@ -1214,7 +1214,7 @@ void MSLister::_polarizationSetup(const uInt selPolID) {
 
 	/*
   logStream_p << LogIO::DEBUG1 << "Begin: MSLister::polarizationSetup" << LogIO::POST;
-  ROMSPolarizationColumns msPolC(pMS->polarization());
+  MSPolarizationColumns msPolC(pMS->polarization());
   npols_p = msPolC.corrType()(0).nelements();
   pols_p.resize(npols_p,False);
   for (uInt i=0; i<npols_p; i++) {
@@ -1224,7 +1224,7 @@ void MSLister::_polarizationSetup(const uInt selPolID) {
   */
 
 	// gauranteed to have 1 row here
-	ROMSPolarizationColumns polCols(pMS_p->polarization());
+	MSPolarizationColumns polCols(pMS_p->polarization());
 	Array<Int> pols = polCols.corrType()(selPolID);
 	npols_p = pols.size();
 	pols_p.resize(npols_p);

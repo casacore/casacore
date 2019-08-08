@@ -44,161 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSPointing;
 
 // <summary>
-// A class to provide easy read-only access to MSPointing columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSPointing
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSPointingColumns stands for Read-Only MeasurementSet Pointing Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSPointing
-// Table.  It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to worry about
-// getting those right. There is an access function for every predefined
-// column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=ROMSColumns>
-// ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSPointingColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSPointingColumns(const MSPointing& msPointing);
-
-  // The destructor does nothing special
-  ~ROMSPointingColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Int>& antennaId() const {return antennaId_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return intervalQuant_p;}
-  const ROScalarColumn<String>& name() const {return name_p;}
-  const ROScalarColumn<Int>& numPoly() const {return numPoly_p;}
-  const ROScalarColumn<Double>& timeOrigin() const {return timeOrigin_p;}
-  const ROScalarQuantColumn<Double>& timeOriginQuant() const {
-   return timeOriginQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeOriginMeas() const {
-    return timeOriginMeas_p;}
-  const ROArrayColumn<Double>& direction() const {return direction_p;}
-  const ROArrayMeasColumn<MDirection>& directionMeasCol() const {
-    return directionMeas_p;}
-  const ROArrayColumn<Double>& target() const {return target_p;}
-  const ROArrayMeasColumn<MDirection>& targetMeasCol()const {
-    return targetMeas_p;}
-  const ROScalarColumn<Bool>& tracking() const {return tracking_p;}
-  // </group>
-
-  // Access to optional columns
-  // <group>
-  const ROArrayColumn<Double>& pointingOffset() const {
-    return pointingOffset_p;}
-  const ROArrayMeasColumn<MDirection>& pointingOffsetMeasCol() const {
-    return pointingOffsetMeas_p;}
-  const ROArrayColumn<Double>& sourceOffset() const {return sourceOffset_p;}
-  const ROArrayMeasColumn<MDirection>& sourceOffsetMeasCol() const {
-    return sourceOffsetMeas_p;}
-  const ROArrayColumn<Double>& encoder() const {return encoder_p;}
-  const ROScalarMeasColumn<MDirection>& encoderMeas() const {
-    return encoderMeas_p;}
-  const ROScalarColumn<Int>& pointingModelId() const {
-    return pointingModelId_p;}
-  const ROScalarColumn<Bool>& onSource() const {return onSource_p;}
-  const ROScalarColumn<Bool>& overTheTop() const {return overTheTop_p;}
-  // </group>
-  
-  // Access to interpolated directions, the default time of zero will
-  // return the 0th order element of the polynomial.
-  // <group>
-  MDirection directionMeas(Int row, Double time = 0) const;
-  MDirection targetMeas(Int row, Double time = 0) const;
-  MDirection pointingOffsetMeas(Int row, Double time = 0) const;
-  MDirection sourceOffsetMeas(Int row, Double time = 0) const;
-  // </group>
-
-  // return the first matching row index for this time and antenna, 
-  // returns -1 if no match was found
-  // For long tables you may give a guess row...the last return
-  // is usually a good one.
-  Int pointingIndex(Int antenna, Double time, Int guessRow=0) const;
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return antennaId_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSPointingColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSPointing& msPointing);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSPointingColumns(const ROMSPointingColumns&);
-  ROMSPointingColumns& operator=(const ROMSPointingColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const MSPointing& msPointing);
-  
-  //# required columns
-  ROScalarColumn<Int> antennaId_p;
-  ROArrayColumn<Double> direction_p;
-  ROScalarColumn<Double> interval_p;
-  ROScalarColumn<String> name_p;
-  ROScalarColumn<Int> numPoly_p;
-  ROArrayColumn<Double> target_p;
-  ROScalarColumn<Double> time_p;
-  ROScalarColumn<Double> timeOrigin_p;
-  ROScalarColumn<Bool> tracking_p;
-  //# optional columns
-  ROArrayColumn<Double> encoder_p;
-  ROScalarColumn<Bool> onSource_p;
-  ROScalarColumn<Int> pointingModelId_p;
-  ROArrayColumn<Double> pointingOffset_p;
-  ROArrayColumn<Double> sourceOffset_p;
-  ROScalarColumn<Bool> overTheTop_p;
-
-  //# Access to Measure columns
-  ROArrayMeasColumn<MDirection> directionMeas_p;
-  ROArrayMeasColumn<MDirection> targetMeas_p;
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-  ROScalarMeasColumn<MEpoch> timeOriginMeas_p;
-  //# optional Measure columns
-  ROScalarMeasColumn<MDirection> encoderMeas_p;
-  ROArrayMeasColumn<MDirection> pointingOffsetMeas_p;
-  ROArrayMeasColumn<MDirection> sourceOffsetMeas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> intervalQuant_p;
-  ROScalarQuantColumn<Double> timeQuant_p;
-  ROScalarQuantColumn<Double> timeOriginQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSPointing columns
+// A class to provide easy access to MSPointing columns
 // </summary>
 
 // <use visibility=export>
@@ -230,21 +76,21 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSPointingColumns: public ROMSPointingColumns
+class MSPointingColumns
 {
 public:
   // Construct from the supplied Table
-  MSPointingColumns(MSPointing& msPointing);
+  MSPointingColumns(const MSPointing& msPointing);
 
   // The destructor does nothing special
   ~MSPointingColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   //
   // Note that the direction measures with a stored polynomial have Col() added
   // to their name. They are better accessed via the functions that have the
   // same name, without the Col suffix, that will do the interpolation for
-  // you. These functions are in the ROMSPointingColumns class.
+  // you.
   // <group>
   ScalarColumn<Int>& antennaId() {return antennaId_p;}
   ScalarColumn<Double>& time() {return time_p;}
@@ -264,12 +110,12 @@ public:
   ScalarColumn<Bool>& tracking() {return tracking_p;}
   // </group>
 
-  // Read-write access to optional columns
+  // Access to optional columns
   // 
   // Note that the direction measures with a stored polynomial have Col() added
   // to their name. They are better accessed via the functions that have the
   // same name, without the Col suffix, that will do the interpolation for
-  // you. These functions are in the ROMSPointingColumns class.
+  // you.
   // <group>
   ArrayColumn<Double>& pointingOffset() {return pointingOffset_p;}
   ArrayMeasColumn<MDirection>& pointingOffsetMeasCol() {
@@ -284,64 +130,67 @@ public:
   ScalarColumn<Bool>& overTheTop() {return overTheTop_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Int>& antennaId() const {
-    return ROMSPointingColumns::antennaId();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSPointingColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSPointingColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSPointingColumns::timeMeas();}
-  const ROScalarColumn<Double>& interval() const {
-    return ROMSPointingColumns::interval();}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return ROMSPointingColumns::intervalQuant();}
-  const ROScalarColumn<String>& name() const {
-    return ROMSPointingColumns::name();}
-  const ROScalarColumn<Int>& numPoly() const {
-    return ROMSPointingColumns::numPoly();}
-  const ROScalarColumn<Double>& timeOrigin() const {
-    return ROMSPointingColumns::timeOrigin();}
-  const ROScalarQuantColumn<Double>& timeOriginQuant() const {
-    return ROMSPointingColumns::timeOriginQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeOriginMeas() const {
-    return ROMSPointingColumns::timeOriginMeas();}
-  const ROArrayColumn<Double>& direction() const {
-    return ROMSPointingColumns::direction();}
-  const ROArrayMeasColumn<MDirection>& directionMeasCol() const {
-    return ROMSPointingColumns::directionMeasCol();}
-  const ROArrayColumn<Double>& target() const {
-    return ROMSPointingColumns::target();}
-  const ROArrayMeasColumn<MDirection>& targetMeasCol()const {
-    return ROMSPointingColumns::targetMeasCol();}
-  const ROScalarColumn<Bool>& tracking() const {
-    return ROMSPointingColumns::tracking();}
+  const ScalarColumn<Int>& antennaId() const {return antennaId_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
+  const ScalarColumn<Double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<Double>& intervalQuant() const {
+    return intervalQuant_p;}
+  const ScalarColumn<String>& name() const {return name_p;}
+  const ScalarColumn<Int>& numPoly() const {return numPoly_p;}
+  const ScalarColumn<Double>& timeOrigin() const {return timeOrigin_p;}
+  const ScalarQuantColumn<Double>& timeOriginQuant() const {
+   return timeOriginQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeOriginMeas() const {
+    return timeOriginMeas_p;}
+  const ArrayColumn<Double>& direction() const {return direction_p;}
+  const ArrayMeasColumn<MDirection>& directionMeasCol() const {
+    return directionMeas_p;}
+  const ArrayColumn<Double>& target() const {return target_p;}
+  const ArrayMeasColumn<MDirection>& targetMeasCol()const {
+    return targetMeas_p;}
+  const ScalarColumn<Bool>& tracking() const {return tracking_p;}
   // </group>
 
   // Access to optional columns
   // <group>
-  const ROArrayColumn<Double>& pointingOffset() const {
-    return ROMSPointingColumns::pointingOffset();}
-  const ROArrayMeasColumn<MDirection>& pointingOffsetMeasCol() const {
-    return ROMSPointingColumns::pointingOffsetMeasCol();}
-  const ROArrayColumn<Double>& sourceOffset() const {
-    return ROMSPointingColumns::sourceOffset();}
-  const ROArrayMeasColumn<MDirection>& sourceOffsetMeasCol() const {
-    return ROMSPointingColumns::sourceOffsetMeasCol();}
-  const ROArrayColumn<Double>& encoder() const {
-    return ROMSPointingColumns::encoder();}
-  const ROScalarMeasColumn<MDirection>& encoderMeas() const {
-    return ROMSPointingColumns::encoderMeas();}
-  const ROScalarColumn<Int>& pointingModelId() const {
-    return ROMSPointingColumns::pointingModelId();}
-  const ROScalarColumn<Bool>& onSource() const {
-    return ROMSPointingColumns::onSource();}
-  const ROScalarColumn<Bool>& overTheTop() const {
-    return ROMSPointingColumns::overTheTop();}
+  const ArrayColumn<Double>& pointingOffset() const {
+    return pointingOffset_p;}
+  const ArrayMeasColumn<MDirection>& pointingOffsetMeasCol() const {
+    return pointingOffsetMeas_p;}
+  const ArrayColumn<Double>& sourceOffset() const {return sourceOffset_p;}
+  const ArrayMeasColumn<MDirection>& sourceOffsetMeasCol() const {
+    return sourceOffsetMeas_p;}
+  const ArrayColumn<Double>& encoder() const {return encoder_p;}
+  const ScalarMeasColumn<MDirection>& encoderMeas() const {
+    return encoderMeas_p;}
+  const ScalarColumn<Int>& pointingModelId() const {
+    return pointingModelId_p;}
+  const ScalarColumn<Bool>& onSource() const {return onSource_p;}
+  const ScalarColumn<Bool>& overTheTop() const {return overTheTop_p;}
   // </group>
   
+  // Access to interpolated directions, the default time of zero will
+  // return the 0th order element of the polynomial.
+  // <group>
+  MDirection directionMeas(Int row, Double time = 0) const;
+  MDirection targetMeas(Int row, Double time = 0) const;
+  MDirection pointingOffsetMeas(Int row, Double time = 0) const;
+  MDirection sourceOffsetMeas(Int row, Double time = 0) const;
+  // </group>
+
+  // return the first matching row index for this time and antenna, 
+  // returns -1 if no match was found
+  // For long tables you may give a guess row...the last return
+  // is usually a good one.
+  Int pointingIndex(Int antenna, Double time, Int guessRow=0) const;
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return antennaId_p.nrow();}
+
   // set the epoch reference type for the TIME & TIME_ORIGIN column.
   // <note role=tip>
   // In principle this function can only be used if the table is empty,
@@ -372,7 +221,7 @@ protected:
   MSPointingColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSPointing& msPointing);
+  void attach(const MSPointing& msPointing);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -381,7 +230,7 @@ private:
   MSPointingColumns& operator=(const MSPointingColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(MSPointing& msPointing);
+  void attachOptionalCols(const MSPointing& msPointing);
   
   //# required columns
   ScalarColumn<Int> antennaId_p;
@@ -416,6 +265,9 @@ private:
   ScalarQuantColumn<Double> timeQuant_p;
   ScalarQuantColumn<Double> timeOriginQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSPointingColumns ROMSPointingColumns;
 
 } //# NAMESPACE CASACORE - END
 

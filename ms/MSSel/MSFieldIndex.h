@@ -124,7 +124,7 @@ private:
   MSFieldIndex();
 
   // FIELD subtable column accessor
-  ROMSFieldColumns msFieldCols_p;
+  MSFieldColumns msFieldCols_p;
 
   // Vector cache of field id's
   Vector<Int> fieldIds_p;

@@ -44,7 +44,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward decl
-class ROMSColumns;
+class MSColumns;
 class TableIterator;
 
 // <summary>
@@ -236,8 +236,8 @@ public:
   // Return reference to the current MS
   const MS& ms() const;
 
-  // Return reference to the current ROMSColumns
-  const ROMSColumns& msColumns() const;
+  // Return reference to the current MSColumns
+  const MSColumns& msColumns() const;
 
   // Return the current MS Id (according to the order in which 
   // they appeared in the constructor)
@@ -387,7 +387,7 @@ protected:
   Block<Bool> tabIterAtStart_p;
 
   Int nMS_p;
-  CountedPtr<ROMSColumns> msc_p;
+  CountedPtr<MSColumns> msc_p;
   Table curTable_p;
   Int curMS_p, lastMS_p, curArray_p, lastArray_p, curSource_p;
   String curFieldName_p, curSourceName_p;
@@ -444,7 +444,7 @@ protected:
 inline Bool MSIter::more() const { return more_p;}
 inline Table MSIter::table() const {return curTable_p;}
 inline const MS& MSIter::ms() const {return bms_p[curMS_p];}
-inline const ROMSColumns& MSIter::msColumns() const { return *msc_p;}
+inline const MSColumns& MSIter::msColumns() const { return *msc_p;}
 inline Bool MSIter::newMS() const { return newMS_p;}
 inline Bool MSIter::newArray() const {return newArray_p;}
 inline Bool MSIter::newField() const { return newField_p;}

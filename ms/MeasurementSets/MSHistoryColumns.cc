@@ -30,100 +30,19 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSHistoryColumns::ROMSHistoryColumns(const MSHistory& msHistory):
-  application_p(msHistory, MSHistory::
-		columnName(MSHistory::APPLICATION)),
-  appParams_p(msHistory, MSHistory::columnName(MSHistory::APP_PARAMS)),
-  cliCommand_p(msHistory, MSHistory::columnName(MSHistory::CLI_COMMAND)),
-  message_p(msHistory, MSHistory::columnName(MSHistory::MESSAGE)),
-  objectId_p(msHistory, MSHistory::columnName(MSHistory::OBJECT_ID)),
-  observationId_p(msHistory, MSHistory::
-		  columnName(MSHistory::OBSERVATION_ID)),
-  origin_p(msHistory, MSHistory::columnName(MSHistory::ORIGIN)),
-  priority_p(msHistory, MSHistory::columnName(MSHistory::PRIORITY)),
-  time_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
-  timeMeas_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
-  timeQuant_p(msHistory, MSHistory::columnName(MSHistory::TIME))
-{}
-
-ROMSHistoryColumns::~ROMSHistoryColumns() {}
-
-ROMSHistoryColumns::ROMSHistoryColumns():
-  application_p(),
-  appParams_p(),
-  cliCommand_p(),
-  message_p(),
-  objectId_p(),
-  observationId_p(),
-  origin_p(),
-  priority_p(),
-  time_p(),
-  timeMeas_p(),
-  timeQuant_p()
-{}
-
-void ROMSHistoryColumns::attach(const MSHistory& msHistory)
+MSHistoryColumns::MSHistoryColumns()
 {
-  application_p.attach(msHistory, MSHistory::
-		       columnName(MSHistory::APPLICATION));
-  appParams_p.attach(msHistory, MSHistory::
-		     columnName(MSHistory::APP_PARAMS));
-  cliCommand_p.attach(msHistory, MSHistory::
-		      columnName(MSHistory::CLI_COMMAND));
-  message_p.attach(msHistory, MSHistory::columnName(MSHistory::MESSAGE));
-  objectId_p.attach(msHistory, MSHistory::
-		    columnName(MSHistory::OBJECT_ID));
-  observationId_p.attach(msHistory, MSHistory::
-			 columnName(MSHistory::OBSERVATION_ID));
-  origin_p.attach(msHistory, MSHistory::columnName(MSHistory::ORIGIN));
-  priority_p.attach(msHistory, MSHistory::
-		    columnName(MSHistory::PRIORITY));
-  time_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
-  timeMeas_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
-  timeQuant_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
 }
 
-MSHistoryColumns::MSHistoryColumns(MSHistory& msHistory):
-  ROMSHistoryColumns(msHistory),
-  application_p(msHistory, MSHistory::
-		columnName(MSHistory::APPLICATION)),
-  appParams_p(msHistory, MSHistory::columnName(MSHistory::APP_PARAMS)),
-  cliCommand_p(msHistory, MSHistory::columnName(MSHistory::CLI_COMMAND)),
-  message_p(msHistory, MSHistory::columnName(MSHistory::MESSAGE)),
-  objectId_p(msHistory, MSHistory::columnName(MSHistory::OBJECT_ID)),
-  observationId_p(msHistory, MSHistory::
-		  columnName(MSHistory::OBSERVATION_ID)),
-  origin_p(msHistory, MSHistory::columnName(MSHistory::ORIGIN)),
-  priority_p(msHistory, MSHistory::columnName(MSHistory::PRIORITY)),
-  time_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
-  timeMeas_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
-  timeQuant_p(msHistory, MSHistory::columnName(MSHistory::TIME))
-{}
+MSHistoryColumns::MSHistoryColumns(const MSHistory& msHistory)
+{
+  attach(msHistory);
+}
 
 MSHistoryColumns::~MSHistoryColumns() {}
 
-void MSHistoryColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
-  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
-}
-
-MSHistoryColumns::MSHistoryColumns():
-  ROMSHistoryColumns(),
-  application_p(),
-  appParams_p(),
-  cliCommand_p(),
-  message_p(),
-  objectId_p(),
-  observationId_p(),
-  origin_p(),
-  priority_p(),
-  time_p(),
-  timeMeas_p(),
-  timeQuant_p()
-{}
-
-void MSHistoryColumns::attach(MSHistory& msHistory)
+void MSHistoryColumns::attach(const MSHistory& msHistory)
 {
-  ROMSHistoryColumns::attach(msHistory);
   application_p.attach(msHistory, MSHistory::
 		       columnName(MSHistory::APPLICATION));
   appParams_p.attach(msHistory, MSHistory::
@@ -142,9 +61,10 @@ void MSHistoryColumns::attach(MSHistory& msHistory)
   timeMeas_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
   timeQuant_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
 }
-// Local Variables: 
-// compile-command: "gmake MSHistoryColumns"
-// End: 
+
+void MSHistoryColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
+{
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
+}
 
 } //# NAMESPACE CASACORE - END
-

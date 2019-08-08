@@ -35,46 +35,85 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSPointingColumns::
-ROMSPointingColumns(const MSPointing& msPointing):
-  antennaId_p(msPointing, MSPointing::
-	      columnName(MSPointing::ANTENNA_ID)),
-  direction_p(msPointing, MSPointing::columnName(MSPointing::DIRECTION)),
-  interval_p(msPointing, MSPointing::columnName(MSPointing::INTERVAL)),
-  name_p(msPointing, MSPointing::columnName(MSPointing::NAME)),
-  numPoly_p(msPointing, MSPointing::columnName(MSPointing::NUM_POLY)),
-  target_p(msPointing, MSPointing::columnName(MSPointing::TARGET)),
-  time_p(msPointing, MSPointing::columnName(MSPointing::TIME)),
-  timeOrigin_p(msPointing, MSPointing::
-	       columnName(MSPointing::TIME_ORIGIN)),
-  tracking_p(msPointing, MSPointing::columnName(MSPointing::TRACKING)),
-  encoder_p(),
-  onSource_p(),
-  pointingModelId_p(),
-  pointingOffset_p(),
-  sourceOffset_p(),
-  overTheTop_p(),
-  directionMeas_p(msPointing, MSPointing::
-		  columnName(MSPointing::DIRECTION)),
-  targetMeas_p(msPointing, MSPointing::columnName(MSPointing::TARGET)),
-  timeMeas_p(msPointing, MSPointing::columnName(MSPointing::TIME)),
-  timeOriginMeas_p(msPointing, MSPointing::
-		   columnName(MSPointing::TIME_ORIGIN)),
-  encoderMeas_p(),
-  pointingOffsetMeas_p(),
-  sourceOffsetMeas_p(),
-  intervalQuant_p(msPointing, MSPointing::
-		  columnName(MSPointing::INTERVAL)),
-  timeQuant_p(msPointing, MSPointing::columnName(MSPointing::TIME)),
-  timeOriginQuant_p(msPointing, MSPointing::
-		    columnName(MSPointing::TIME_ORIGIN))
+MSPointingColumns::MSPointingColumns()
 { 
+}
+
+MSPointingColumns::MSPointingColumns(const MSPointing& msPointing)
+{ 
+  attach(msPointing);
+}
+
+MSPointingColumns::~MSPointingColumns() {}
+
+void MSPointingColumns::attach(const MSPointing& msPointing)
+{
+  antennaId_p.attach(msPointing, MSPointing::
+		     columnName(MSPointing::ANTENNA_ID));
+  direction_p.attach(msPointing, MSPointing::
+		     columnName(MSPointing::DIRECTION));
+  interval_p.attach(msPointing, MSPointing::
+		    columnName(MSPointing::INTERVAL));
+  name_p.attach(msPointing, MSPointing::columnName(MSPointing::NAME));
+  numPoly_p.attach(msPointing, MSPointing::
+		   columnName(MSPointing::NUM_POLY));
+  target_p.attach(msPointing, MSPointing::
+		  columnName(MSPointing::TARGET));
+  time_p.attach(msPointing, MSPointing::columnName(MSPointing::TIME));
+  timeOrigin_p.attach(msPointing, MSPointing::
+	       columnName(MSPointing::TIME_ORIGIN));
+  tracking_p.attach(msPointing, MSPointing::
+		    columnName(MSPointing::TRACKING));
+  directionMeas_p.attach(msPointing, MSPointing::
+		  columnName(MSPointing::DIRECTION));
+  targetMeas_p.attach(msPointing, MSPointing::
+		      columnName(MSPointing::TARGET));
+  timeMeas_p.attach(msPointing, MSPointing::
+		    columnName(MSPointing::TIME));
+  timeOriginMeas_p.attach(msPointing, MSPointing::
+		   columnName(MSPointing::TIME_ORIGIN));
+  intervalQuant_p.attach(msPointing, MSPointing::
+		  columnName(MSPointing::INTERVAL));
+  timeQuant_p.attach(msPointing, MSPointing::
+		     columnName(MSPointing::TIME));
+  timeOriginQuant_p.attach(msPointing, MSPointing::
+			   columnName(MSPointing::TIME_ORIGIN));
   attachOptionalCols(msPointing);
 }
 
-ROMSPointingColumns::~ROMSPointingColumns() {}
+void MSPointingColumns::attachOptionalCols(const MSPointing& msPointing)
+{
+  const ColumnDescSet& cds = msPointing.tableDesc().columnDescSet();
+  const String& encoder = MSPointing::columnName(MSPointing::ENCODER);
+  if (cds.isDefined(encoder)) {
+    encoder_p.attach(msPointing, encoder);
+    encoderMeas_p.attach(msPointing, encoder);
+  }
+  const String& onSource = MSPointing::columnName(MSPointing::ON_SOURCE);
+  if (cds.isDefined(onSource)) onSource_p.attach(msPointing, onSource);
+  const String& pointingModelId = 
+    MSPointing::columnName(MSPointing::POINTING_MODEL_ID);
+  if (cds.isDefined(pointingModelId)) {
+    pointingModelId_p.attach(msPointing, pointingModelId);
+  }
+  const String& pointingOffset = MSPointing::
+    columnName(MSPointing::POINTING_OFFSET);
+  if (cds.isDefined(pointingOffset)) {
+    pointingOffset_p.attach(msPointing, pointingOffset);
+    pointingOffsetMeas_p.attach(msPointing, pointingOffset);
+  }
+  const String& sourceOffset = MSPointing::
+    columnName(MSPointing::SOURCE_OFFSET);
+  if (cds.isDefined(sourceOffset)) {
+    sourceOffset_p.attach(msPointing, sourceOffset);
+    sourceOffsetMeas_p.attach(msPointing, sourceOffset);
+  }
+  const String& overTheTop = 
+    MSPointing::columnName(MSPointing::OVER_THE_TOP);
+  if (cds.isDefined(overTheTop)) overTheTop_p.attach(msPointing, overTheTop);
+}
 
-MDirection ROMSPointingColumns::directionMeas(Int row, 
+MDirection MSPointingColumns::directionMeas(Int row, 
 						 Double interTime) const
 {
   return MSFieldColumns::interpolateDirMeas(directionMeasCol()(row),
@@ -82,14 +121,14 @@ MDirection ROMSPointingColumns::directionMeas(Int row,
 					       interTime, time()(row)); 
 }
 
-MDirection ROMSPointingColumns::targetMeas(Int row, Double interTime) const
+MDirection MSPointingColumns::targetMeas(Int row, Double interTime) const
 {
   return MSFieldColumns::interpolateDirMeas(targetMeasCol()(row),
 					       numPoly()(row),
 					       interTime, time()(row)); 
 }
 
-MDirection ROMSPointingColumns::pointingOffsetMeas(Int row, 
+MDirection MSPointingColumns::pointingOffsetMeas(Int row, 
 						      Double interTime) const
 {
   if (pointingOffsetMeasCol().isNull()) return MDirection();
@@ -98,7 +137,7 @@ MDirection ROMSPointingColumns::pointingOffsetMeas(Int row,
 					       interTime, time()(row)); 
 }
 
-MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
+MDirection MSPointingColumns::sourceOffsetMeas(Int row,
 						    Double interTime) const
 {
   if (sourceOffsetMeasCol().isNull()) return MDirection();
@@ -108,7 +147,7 @@ MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
 }
 
 
-  Int ROMSPointingColumns::pointingIndex(Int antenna, Double ptime, Int guessRow) const
+Int MSPointingColumns::pointingIndex(Int antenna, Double ptime, Int guessRow) const
 {
   if((this->nrow()) < 1)
     return -1;
@@ -163,240 +202,6 @@ MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
   return -1;
 }
 
-ROMSPointingColumns::ROMSPointingColumns():
-  antennaId_p(),
-  direction_p(),
-  interval_p(),
-  name_p(),
-  numPoly_p(),
-  target_p(),
-  time_p(),
-  timeOrigin_p(),
-  tracking_p(),
-  encoder_p(),
-  onSource_p(),
-  pointingModelId_p(),
-  pointingOffset_p(),
-  sourceOffset_p(),
-  overTheTop_p(),
-  directionMeas_p(),
-  targetMeas_p(),
-  timeMeas_p(),
-  timeOriginMeas_p(),
-  encoderMeas_p(),
-  pointingOffsetMeas_p(),
-  sourceOffsetMeas_p(),
-  intervalQuant_p(),
-  timeQuant_p(),
-  timeOriginQuant_p()
-{ 
-}
-
-void ROMSPointingColumns::attach(const MSPointing& msPointing)
-{
-  antennaId_p.attach(msPointing, MSPointing::
-	      columnName(MSPointing::ANTENNA_ID));
-  direction_p.attach(msPointing, MSPointing::
-		     columnName(MSPointing::DIRECTION));
-  interval_p.attach(msPointing, MSPointing::
-		    columnName(MSPointing::INTERVAL));
-  name_p.attach(msPointing, MSPointing::columnName(MSPointing::NAME));
-  numPoly_p.attach(msPointing, MSPointing::
-		   columnName(MSPointing::NUM_POLY));
-  target_p.attach(msPointing, MSPointing::
-		  columnName(MSPointing::TARGET));
-  time_p.attach(msPointing, MSPointing::columnName(MSPointing::TIME));
-  timeOrigin_p.attach(msPointing, MSPointing::
-	       columnName(MSPointing::TIME_ORIGIN));
-  tracking_p.attach(msPointing, MSPointing::
-		    columnName(MSPointing::TRACKING));
-  directionMeas_p.attach(msPointing, MSPointing::
-		  columnName(MSPointing::DIRECTION));
-  targetMeas_p.attach(msPointing, MSPointing::
-		      columnName(MSPointing::TARGET));
-  timeMeas_p.attach(msPointing, MSPointing::
-		    columnName(MSPointing::TIME));
-  timeOriginMeas_p.attach(msPointing, MSPointing::
-		   columnName(MSPointing::TIME_ORIGIN));
-  intervalQuant_p.attach(msPointing, MSPointing::
-		  columnName(MSPointing::INTERVAL));
-  timeQuant_p.attach(msPointing, MSPointing::
-		     columnName(MSPointing::TIME));
-  timeOriginQuant_p.attach(msPointing, MSPointing::
-			   columnName(MSPointing::TIME_ORIGIN));
-  attachOptionalCols(msPointing);
-}
-
-void ROMSPointingColumns::
-attachOptionalCols(const MSPointing& msPointing)
-{
-  const ColumnDescSet& cds = msPointing.tableDesc().columnDescSet();
-  const String& encoder = MSPointing::columnName(MSPointing::ENCODER);
-  if (cds.isDefined(encoder)) {
-    encoder_p.attach(msPointing, encoder);
-    encoderMeas_p.attach(msPointing, encoder);
-  }
-  const String& onSource = MSPointing::columnName(MSPointing::ON_SOURCE);
-  if (cds.isDefined(onSource)) onSource_p.attach(msPointing, onSource);
-  const String& pointingModelId = 
-    MSPointing::columnName(MSPointing::POINTING_MODEL_ID);
-  if (cds.isDefined(pointingModelId)) {
-    pointingModelId_p.attach(msPointing, pointingModelId);
-  }
-  const String& pointingOffset = MSPointing::
-    columnName(MSPointing::POINTING_OFFSET);
-  if (cds.isDefined(pointingOffset)) {
-    pointingOffset_p.attach(msPointing, pointingOffset);
-    pointingOffsetMeas_p.attach(msPointing, pointingOffset);
-  }
-  const String& sourceOffset = MSPointing::
-    columnName(MSPointing::SOURCE_OFFSET);
-  if (cds.isDefined(sourceOffset)) {
-    sourceOffset_p.attach(msPointing, sourceOffset);
-    sourceOffsetMeas_p.attach(msPointing, sourceOffset);
-  }
-  const String& overTheTop = 
-    MSPointing::columnName(MSPointing::OVER_THE_TOP);
-  if (cds.isDefined(overTheTop)) overTheTop_p.attach(msPointing, overTheTop);
-}
-
-MSPointingColumns::MSPointingColumns(MSPointing& msPointing):
-  ROMSPointingColumns(msPointing),
-  antennaId_p(msPointing, MSPointing::
-	      columnName(MSPointing::ANTENNA_ID)),
-  direction_p(msPointing, MSPointing::columnName(MSPointing::DIRECTION)),
-  interval_p(msPointing, MSPointing::columnName(MSPointing::INTERVAL)),
-  name_p(msPointing, MSPointing::columnName(MSPointing::NAME)),
-  numPoly_p(msPointing, MSPointing::columnName(MSPointing::NUM_POLY)),
-  target_p(msPointing, MSPointing::columnName(MSPointing::TARGET)),
-  time_p(msPointing, MSPointing::columnName(MSPointing::TIME)),
-  timeOrigin_p(msPointing, MSPointing::
-	       columnName(MSPointing::TIME_ORIGIN)),
-  tracking_p(msPointing, MSPointing::columnName(MSPointing::TRACKING)),
-  encoder_p(),
-  onSource_p(),
-  pointingModelId_p(),
-  pointingOffset_p(),
-  sourceOffset_p(),
-  overTheTop_p(),
-  directionMeas_p(msPointing, MSPointing::
-		  columnName(MSPointing::DIRECTION)),
-  targetMeas_p(msPointing, MSPointing::columnName(MSPointing::TARGET)),
-  timeMeas_p(msPointing, MSPointing::columnName(MSPointing::TIME)),
-  timeOriginMeas_p(msPointing, MSPointing::
-		   columnName(MSPointing::TIME_ORIGIN)),
-  encoderMeas_p(),
-  pointingOffsetMeas_p(),
-  sourceOffsetMeas_p(),
-  intervalQuant_p(msPointing, MSPointing::
-		  columnName(MSPointing::INTERVAL)),
-  timeQuant_p(msPointing, MSPointing::columnName(MSPointing::TIME)),
-  timeOriginQuant_p(msPointing, MSPointing::
-		    columnName(MSPointing::TIME_ORIGIN))
-{ 
-  attachOptionalCols(msPointing);
-}
-
-MSPointingColumns::~MSPointingColumns() {}
-
-MSPointingColumns::MSPointingColumns():
-  ROMSPointingColumns(),
-  antennaId_p(),
-  direction_p(),
-  interval_p(),
-  name_p(),
-  numPoly_p(),
-  target_p(),
-  time_p(),
-  timeOrigin_p(),
-  tracking_p(),
-  encoder_p(),
-  onSource_p(),
-  pointingModelId_p(),
-  pointingOffset_p(),
-  sourceOffset_p(),
-  overTheTop_p(),
-  directionMeas_p(),
-  targetMeas_p(),
-  timeMeas_p(),
-  timeOriginMeas_p(),
-  encoderMeas_p(),
-  pointingOffsetMeas_p(),
-  sourceOffsetMeas_p(),
-  intervalQuant_p(),
-  timeQuant_p(),
-  timeOriginQuant_p()
-{ 
-}
-
-void MSPointingColumns::attach(MSPointing& msPointing)
-{
-  ROMSPointingColumns::attach(msPointing);
-  antennaId_p.attach(msPointing, MSPointing::
-		     columnName(MSPointing::ANTENNA_ID));
-  direction_p.attach(msPointing, MSPointing::
-		     columnName(MSPointing::DIRECTION));
-  interval_p.attach(msPointing, MSPointing::
-		    columnName(MSPointing::INTERVAL));
-  name_p.attach(msPointing, MSPointing::columnName(MSPointing::NAME));
-  numPoly_p.attach(msPointing, MSPointing::
-		   columnName(MSPointing::NUM_POLY));
-  target_p.attach(msPointing, MSPointing::
-		  columnName(MSPointing::TARGET));
-  time_p.attach(msPointing, MSPointing::columnName(MSPointing::TIME));
-  timeOrigin_p.attach(msPointing, MSPointing::
-	       columnName(MSPointing::TIME_ORIGIN));
-  tracking_p.attach(msPointing, MSPointing::
-		    columnName(MSPointing::TRACKING));
-  directionMeas_p.attach(msPointing, MSPointing::
-		  columnName(MSPointing::DIRECTION));
-  targetMeas_p.attach(msPointing, MSPointing::
-		      columnName(MSPointing::TARGET));
-  timeMeas_p.attach(msPointing, MSPointing::
-		    columnName(MSPointing::TIME));
-  timeOriginMeas_p.attach(msPointing, MSPointing::
-		   columnName(MSPointing::TIME_ORIGIN));
-  intervalQuant_p.attach(msPointing, MSPointing::
-		  columnName(MSPointing::INTERVAL));
-  timeQuant_p.attach(msPointing, MSPointing::
-		     columnName(MSPointing::TIME));
-  timeOriginQuant_p.attach(msPointing, MSPointing::
-			   columnName(MSPointing::TIME_ORIGIN));
-  attachOptionalCols(msPointing);
-}
-
-void MSPointingColumns::attachOptionalCols(MSPointing& msPointing)
-{
-  const ColumnDescSet& cds = msPointing.tableDesc().columnDescSet();
-  const String& encoder = MSPointing::columnName(MSPointing::ENCODER);
-  if (cds.isDefined(encoder)) {
-    encoder_p.attach(msPointing, encoder);
-    encoderMeas_p.attach(msPointing, encoder);
-  }
-  const String& onSource = MSPointing::columnName(MSPointing::ON_SOURCE);
-  if (cds.isDefined(onSource)) onSource_p.attach(msPointing, onSource);
-  const String& pointingModelId = 
-    MSPointing::columnName(MSPointing::POINTING_MODEL_ID);
-  if (cds.isDefined(pointingModelId)) {
-    pointingModelId_p.attach(msPointing, pointingModelId);
-  }
-  const String& pointingOffset = MSPointing::
-    columnName(MSPointing::POINTING_OFFSET);
-  if (cds.isDefined(pointingOffset)) {
-    pointingOffset_p.attach(msPointing, pointingOffset);
-    pointingOffsetMeas_p.attach(msPointing, pointingOffset);
-  }
-  const String& sourceOffset = MSPointing::
-    columnName(MSPointing::SOURCE_OFFSET);
-  if (cds.isDefined(sourceOffset)) {
-    sourceOffset_p.attach(msPointing, sourceOffset);
-    sourceOffsetMeas_p.attach(msPointing, sourceOffset);
-  }
-  const String& overTheTop = 
-    MSPointing::columnName(MSPointing::OVER_THE_TOP);
-  if (cds.isDefined(overTheTop)) overTheTop_p.attach(msPointing, overTheTop);
-}
-
 void MSPointingColumns::
 setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
@@ -420,9 +225,5 @@ void MSPointingColumns::setEncoderDirectionRef(MDirection::Types ref)
     encoderMeas_p.setDescRefCode(ref);
   }
 }
-// Local Variables: 
-// compile-command: "gmake MSPointingColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
-

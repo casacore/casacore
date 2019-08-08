@@ -45,39 +45,88 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSFieldColumns::ROMSFieldColumns(const MSField& msField):
-  measCometsPath_p(),
-  measCometsV_p(),
-  name_p(msField, MSField::columnName(MSField::NAME)),
-  code_p(msField, MSField::columnName(MSField::CODE)),
-  time_p(msField, MSField::columnName(MSField::TIME)),
-  numPoly_p(msField, MSField::columnName(MSField::NUM_POLY)),
-  delayDir_p(msField, MSField::columnName(MSField::DELAY_DIR)),
-  phaseDir_p(msField, MSField::columnName(MSField::PHASE_DIR)),
-  referenceDir_p(msField, MSField::columnName(MSField::REFERENCE_DIR)),
-  sourceId_p(msField, MSField::columnName(MSField::SOURCE_ID)),
-  flagRow_p(msField, MSField::columnName(MSField::FLAG_ROW)),
-  ephemerisId_p(),
-  timeMeas_p(msField, MSField::columnName(MSField::TIME)),
-  delayDirMeas_p(msField, MSField::columnName(MSField::DELAY_DIR)),
-  phaseDirMeas_p(msField, MSField::columnName(MSField::PHASE_DIR)),
-  referenceDirMeas_p(msField,
-		     MSField::columnName(MSField::REFERENCE_DIR)),
-  timeQuant_p(msField, MSField::columnName(MSField::TIME))
+
+MSFieldColumns::MSFieldColumns()
 {
+}
+
+MSFieldColumns::MSFieldColumns(const MSField& msField)
+{
+  attach(msField);
+}
+
+MSFieldColumns::~MSFieldColumns()
+{
+  // EPHEM
+  for (uInt i=0; i<measCometsV_p.size(); i++) {
+    delete measCometsV_p(i);
+  }
+}
+
+void MSFieldColumns::attach(const MSField& msField)
+{
+  name_p.attach(msField, MSField::columnName(MSField::NAME));
+  code_p.attach(msField, MSField::columnName(MSField::CODE));
+  time_p.attach(msField, MSField::columnName(MSField::TIME));
+  numPoly_p.attach(msField, MSField::columnName(MSField::NUM_POLY));
+  delayDir_p.attach(msField, MSField::columnName(MSField::DELAY_DIR));
+  phaseDir_p.attach(msField, MSField::columnName(MSField::PHASE_DIR));
+  referenceDir_p.attach(msField,
+			MSField::columnName(MSField::REFERENCE_DIR));
+  sourceId_p.attach(msField, MSField::columnName(MSField::SOURCE_ID));
+  flagRow_p.attach(msField, MSField::columnName(MSField::FLAG_ROW));
+  timeMeas_p.attach(msField, MSField::columnName(MSField::TIME));
+  delayDirMeas_p.attach(msField,MSField::columnName(MSField::DELAY_DIR));
+  phaseDirMeas_p.attach(msField,MSField::columnName(MSField::PHASE_DIR));
+  referenceDirMeas_p.attach(msField,
+			    MSField::columnName(MSField::REFERENCE_DIR));
+  timeQuant_p.attach(msField, MSField::columnName(MSField::TIME));
   attachOptionalCols(msField);
 }
 
-ROMSFieldColumns::~ROMSFieldColumns() {
-
-  // EPHEM
-  for(uInt i=0; i<measCometsV_p.size(); i++){
-    delete measCometsV_p(i);
+void MSFieldColumns::attachOptionalCols(const MSField& msField)
+{
+  const ColumnDescSet& cds = msField.tableDesc().columnDescSet();
+  const String& ephemerisId = MSField::columnName(MSField::EPHEMERIS_ID);
+  if (cds.isDefined(ephemerisId)){
+    ephemerisId_p.attach(msField, ephemerisId);
+    measCometsPath_p = Path(msField.tableName()).absoluteName();
+    updateMeasComets();
   }
-
 }
 
-MDirection ROMSFieldColumns::delayDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::
+interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly, 
+		   Double interTime, Double timeOrigin)
+{
+  Vector<MDirection> vecDir(arrDir);
+  if ((numPoly == 0) || interTime<1 || nearAbs(interTime, timeOrigin)) {
+    return vecDir(0);
+  } else {
+    Vector<Double> dir(vecDir(0).getAngle().getValue()), tmp; 
+    Double dt = interTime - timeOrigin;
+    Double fac = 1;
+    for (Int i=1; i<(numPoly+1); i++) {
+      fac *= dt;
+      tmp = vecDir(i).getAngle().getValue();
+      tmp *= fac;
+      dir += tmp;
+    }
+    return MDirection(MVDirection(dir),vecDir(0).getRef());
+  }
+}
+
+void MSFieldColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
+}
+
+void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
+  delayDirMeas_p.setDescRefCode(ref);
+  phaseDirMeas_p.setDescRefCode(ref); 
+  referenceDirMeas_p.setDescRefCode(ref);
+}
+
+MDirection MSFieldColumns::delayDirMeas(Int row, Double interTime) const
 {
   Int npoly = numPoly()(row);
   if(npoly>0){
@@ -93,7 +142,7 @@ MDirection ROMSFieldColumns::delayDirMeas(Int row, Double interTime) const
   }
 }
 
-MDirection ROMSFieldColumns::phaseDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::phaseDirMeas(Int row, Double interTime) const
 {
   Int npoly = numPoly()(row);
   if(npoly>0){
@@ -109,7 +158,7 @@ MDirection ROMSFieldColumns::phaseDirMeas(Int row, Double interTime) const
   }
 }
 
-MDirection ROMSFieldColumns::referenceDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::referenceDirMeas(Int row, Double interTime) const
 {
   Int npoly = numPoly()(row);
   if(npoly>0){
@@ -125,7 +174,7 @@ MDirection ROMSFieldColumns::referenceDirMeas(Int row, Double interTime) const
   }
 }
 
-MDirection ROMSFieldColumns::ephemerisDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::ephemerisDirMeas(Int row, Double interTime) const
 {
   if(measCometIndex(row)>=0){
     const MDirection zeroDir = MDirection(Quantity(0, "deg"), Quantity(0, "deg"));
@@ -139,7 +188,7 @@ MDirection ROMSFieldColumns::ephemerisDirMeas(Int row, Double interTime) const
 }
 
 
-MRadialVelocity ROMSFieldColumns::radVelMeas(Int row, Double interTime) const
+MRadialVelocity MSFieldColumns::radVelMeas(Int row, Double interTime) const
 {
   MRadialVelocity rval;
 
@@ -154,7 +203,7 @@ MRadialVelocity ROMSFieldColumns::radVelMeas(Int row, Double interTime) const
     
       if(!measCometsV_p(index)->getRadVel(mvradvel, interMJD)){
 	stringstream ss;
-	ss << "ROMSFieldColumns::radVelMeas(...) - No valid ephemeris entry for MJD " 
+	ss << "MSFieldColumns::radVelMeas(...) - No valid ephemeris entry for MJD " 
 	   << setprecision(11) << interMJD << " for field " << row;
 	throw(AipsError(ss.str()));
       }
@@ -178,7 +227,7 @@ MRadialVelocity ROMSFieldColumns::radVelMeas(Int row, Double interTime) const
   return rval;  
 }
 
-Quantity ROMSFieldColumns::rho(Int row, Double interTime) const
+Quantity MSFieldColumns::rho(Int row, Double interTime) const
 {
 
   Quantity rval(0.,"m");
@@ -193,7 +242,7 @@ Quantity ROMSFieldColumns::rho(Int row, Double interTime) const
       MVPosition mvpos;
       if(!measCometsV_p(index)->get(mvpos, interMJD)){
 	stringstream ss;
-	ss << "ROMSFieldColumns::rho(...) - No valid ephemeris entry for MJD " 
+	ss << "MSFieldColumns::rho(...) - No valid ephemeris entry for MJD " 
 	   << setprecision(11) << interMJD << " for field " << row;
 	throw(AipsError(ss.str()));
       }
@@ -205,7 +254,7 @@ Quantity ROMSFieldColumns::rho(Int row, Double interTime) const
 
 }
 
-Bool ROMSFieldColumns::needInterTime(Int row) const
+Bool MSFieldColumns::needInterTime(Int row) const
 {
   if( ( measCometsV_p.size()>0 && ephemerisId()(row)>=0 )
       || (numPoly()(row)>0) 
@@ -215,7 +264,7 @@ Bool ROMSFieldColumns::needInterTime(Int row) const
   return False;
 }
 
-Int ROMSFieldColumns::measCometIndex(Int row) const
+Int MSFieldColumns::measCometIndex(Int row) const
 {
   Int rval = -1;
   if( measCometsV_p.size()>0 ){
@@ -227,7 +276,7 @@ Int ROMSFieldColumns::measCometIndex(Int row) const
   return rval;
 }
 
-String ROMSFieldColumns::ephemPath(Int row) const
+String MSFieldColumns::ephemPath(Int row) const
 {
   String rval = "";
   Int index = measCometIndex(row);
@@ -237,7 +286,7 @@ String ROMSFieldColumns::ephemPath(Int row) const
   return rval;
 }
 
-Bool ROMSFieldColumns::
+Bool MSFieldColumns::
 matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
 		  MVDirection& mvdir, Double time) const 
 {
@@ -254,7 +303,7 @@ matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   }
 }
 
-Bool ROMSFieldColumns::
+Bool MSFieldColumns::
 matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
 	      MVDirection& mvdir, Double time) const 
 {
@@ -271,7 +320,7 @@ matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   }
 }
 
-Bool ROMSFieldColumns::
+Bool MSFieldColumns::
 matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
 	      MVDirection& mvdir, Double time) const 
 {
@@ -288,11 +337,11 @@ matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   }
 }
 
-Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
-				     const MDirection& delayDirection,
-				     const MDirection& phaseDirection,
-				     const Quantum<Double>& maxSeparation,
-				     Int tryRow, Double time) {
+Int MSFieldColumns::matchDirection(const MDirection& referenceDirection,
+                                   const MDirection& delayDirection,
+                                   const MDirection& phaseDirection,
+                                   const Quantum<Double>& maxSeparation,
+                                   Int tryRow, Double time) {
   uInt r = nrow();
   if (r == 0) return -1;
   const MVDirection& referenceDirVal = referenceDirection.getValue();
@@ -308,7 +357,7 @@ Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("ROMSFieldColumns::matchDirection(...) - "
+      throw(AipsError("MSFieldColumns::matchDirection(...) - "
 		      "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -355,61 +404,7 @@ Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
   return -1;
 }
 
-ROMSFieldColumns::ROMSFieldColumns():
-  measCometsPath_p(),
-  measCometsV_p(),
-  name_p(),
-  code_p(),
-  time_p(),
-  numPoly_p(),
-  delayDir_p(),
-  phaseDir_p(),
-  referenceDir_p(),
-  sourceId_p(),
-  flagRow_p(),
-  ephemerisId_p(),
-  timeMeas_p(),
-  delayDirMeas_p(),
-  phaseDirMeas_p(),
-  referenceDirMeas_p(),
-  timeQuant_p()
-{
-}
-
-void ROMSFieldColumns::attach(const MSField& msField)
-{
-  name_p.attach(msField, MSField::columnName(MSField::NAME));
-  code_p.attach(msField, MSField::columnName(MSField::CODE));
-  time_p.attach(msField, MSField::columnName(MSField::TIME));
-  numPoly_p.attach(msField, MSField::columnName(MSField::NUM_POLY));
-  delayDir_p.attach(msField, MSField::columnName(MSField::DELAY_DIR));
-  phaseDir_p.attach(msField, MSField::columnName(MSField::PHASE_DIR));
-  referenceDir_p.attach(msField,
-			MSField::columnName(MSField::REFERENCE_DIR));
-  sourceId_p.attach(msField, MSField::columnName(MSField::SOURCE_ID));
-  flagRow_p.attach(msField, MSField::columnName(MSField::FLAG_ROW));
-  timeMeas_p.attach(msField, MSField::columnName(MSField::TIME));
-  delayDirMeas_p.attach(msField,MSField::columnName(MSField::DELAY_DIR));
-  phaseDirMeas_p.attach(msField,MSField::columnName(MSField::PHASE_DIR));
-  referenceDirMeas_p.attach(msField,
-			    MSField::columnName(MSField::REFERENCE_DIR));
-  timeQuant_p.attach(msField, MSField::columnName(MSField::TIME));
-  attachOptionalCols(msField);
-}
-
-void ROMSFieldColumns::attachOptionalCols(const MSField& msField)
-{
-  const ColumnDescSet& cds = msField.tableDesc().columnDescSet();
-  const String& ephemerisId = MSField::columnName(MSField::EPHEMERIS_ID);
-  if (cds.isDefined(ephemerisId)){
-    ephemerisId_p.attach(msField, ephemerisId);
-
-    measCometsPath_p = Path(msField.tableName()).absoluteName();
-    updateMeasComets();
-  }
-}
-
-void ROMSFieldColumns::updateMeasComets()
+void MSFieldColumns::updateMeasComets()
 {
   // delete old MeasComet objects
   for(uInt i=0; i<measCometsV_p.size(); i++){
@@ -457,9 +452,9 @@ void ROMSFieldColumns::updateMeasComets()
 } 
 
 
-MDirection ROMSFieldColumns::extractDirMeas(const MDirection& offsetDir, 
-					    Int index, Double& interTime, 
-					    MEpoch originEpoch) const
+MDirection MSFieldColumns::extractDirMeas(const MDirection& offsetDir, 
+                                          Int index, Double& interTime, 
+                                          MEpoch originEpoch) const
 {
   // this method is only called if numpoly==0
 
@@ -474,7 +469,7 @@ MDirection ROMSFieldColumns::extractDirMeas(const MDirection& offsetDir,
     MVPosition xmvpos;
     if(!measCometsV_p(index)->get(xmvpos, interMJD)){
       stringstream ss;
-      ss << "ROMSFieldColumns::extractDirMeas(...) - No valid ephemeris entry for MJD " 
+      ss << "MSFieldColumns::extractDirMeas(...) - No valid ephemeris entry for MJD " 
 	 << setprecision(11) << interMJD << " in ephemeris " << measCometsV_p(index)->getTablePath();
       throw(AipsError(ss.str()));
     }
@@ -488,8 +483,8 @@ MDirection ROMSFieldColumns::extractDirMeas(const MDirection& offsetDir,
   }
 }
 
-void ROMSFieldColumns::getMJDs(Double& originMJD, Double& interMJD, 
-			       const Double interTime, const MEpoch originEpoch) const
+void MSFieldColumns::getMJDs(Double& originMJD, Double& interMJD, 
+                             const Double interTime, const MEpoch originEpoch) const
 {
   // assume the same time reference frame of originEpoch and interTime
   MEpoch::Types assumedType = MEpoch::castType(originEpoch.getRef().getType());
@@ -510,117 +505,4 @@ void ROMSFieldColumns::getMJDs(Double& originMJD, Double& interMJD,
 }
 
 
-MSFieldColumns::MSFieldColumns(MSField& msField):
-  ROMSFieldColumns(msField),
-  name_p(msField,MSField::columnName(MSField::NAME)),
-  code_p(msField,MSField::columnName(MSField::CODE)),
-  time_p(msField,MSField::columnName(MSField::TIME)),
-  numPoly_p(msField,MSField::columnName(MSField::NUM_POLY)),
-  delayDir_p(msField,MSField::columnName(MSField::DELAY_DIR)),
-  phaseDir_p(msField,MSField::columnName(MSField::PHASE_DIR)),
-  referenceDir_p(msField,MSField::columnName(MSField::REFERENCE_DIR)),
-  sourceId_p(msField,MSField::columnName(MSField::SOURCE_ID)),
-  flagRow_p(msField,MSField::columnName(MSField::FLAG_ROW)),
-  ephemerisId_p(),
-  timeMeas_p(msField,MSField::columnName(MSField::TIME)),
-  delayDirMeas_p(msField,MSField::columnName(MSField::DELAY_DIR)),
-  phaseDirMeas_p(msField,MSField::columnName(MSField::PHASE_DIR)),
-  referenceDirMeas_p(msField,
-		     MSField::columnName(MSField::REFERENCE_DIR)),
-  timeQuant_p(msField,MSField::columnName(MSField::TIME))
-{
-  attachOptionalCols(msField);
-}
-
-MSFieldColumns::~MSFieldColumns() {}
-
-MSFieldColumns::MSFieldColumns():
-  ROMSFieldColumns(),
-  name_p(),
-  code_p(),
-  time_p(),
-  numPoly_p(),
-  delayDir_p(),
-  phaseDir_p(),
-  referenceDir_p(),
-  sourceId_p(),
-  flagRow_p(),
-  ephemerisId_p(),
-  timeMeas_p(),
-  delayDirMeas_p(),
-  phaseDirMeas_p(),
-  referenceDirMeas_p(),
-  timeQuant_p()
-{
-}
-
-void MSFieldColumns::attach(MSField& msField)
-{
-  ROMSFieldColumns::attach(msField);
-  name_p.attach(msField, MSField::columnName(MSField::NAME));
-  code_p.attach(msField, MSField::columnName(MSField::CODE));
-  time_p.attach(msField, MSField::columnName(MSField::TIME));
-  numPoly_p.attach(msField, MSField::columnName(MSField::NUM_POLY));
-  delayDir_p.attach(msField, MSField::columnName(MSField::DELAY_DIR));
-  phaseDir_p.attach(msField, MSField::columnName(MSField::PHASE_DIR));
-  referenceDir_p.attach(msField,
-			MSField::columnName(MSField::REFERENCE_DIR));
-  sourceId_p.attach(msField, MSField::columnName(MSField::SOURCE_ID));
-  flagRow_p.attach(msField, MSField::columnName(MSField::FLAG_ROW));
-  timeMeas_p.attach(msField, MSField::columnName(MSField::TIME));
-  delayDirMeas_p.attach(msField,MSField::columnName(MSField::DELAY_DIR));
-  phaseDirMeas_p.attach(msField,MSField::columnName(MSField::PHASE_DIR));
-  referenceDirMeas_p.attach(msField,
-			    MSField::columnName(MSField::REFERENCE_DIR));
-  timeQuant_p.attach(msField, MSField::columnName(MSField::TIME));
-  attachOptionalCols(msField);
-}
-
-void MSFieldColumns::attachOptionalCols(MSField& msField)
-{
-  const ColumnDescSet& cds = msField.tableDesc().columnDescSet();
-  const String& ephemerisId = MSField::columnName(MSField::EPHEMERIS_ID);
-  if (cds.isDefined(ephemerisId)){
-    ephemerisId_p.attach(msField, ephemerisId);
-    measCometsPath_p = Path(msField.tableName()).absoluteName();
-    updateMeasComets();
-  }
-}
-
-MDirection MSFieldColumns::
-interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly, 
-		   Double interTime, Double timeOrigin)
-{
-  Vector<MDirection> vecDir(arrDir);
-  if ((numPoly == 0) || interTime<1 || nearAbs(interTime, timeOrigin)) {
-    return vecDir(0);
-  } else {
-    Vector<Double> dir(vecDir(0).getAngle().getValue()), tmp; 
-    Double dt = interTime - timeOrigin;
-    Double fac = 1;
-    for (Int i=1; i<(numPoly+1); i++) {
-      fac *= dt;
-      tmp = vecDir(i).getAngle().getValue();
-      tmp *= fac;
-      dir += tmp;
-    }
-    return MDirection(MVDirection(dir),vecDir(0).getRef());
-  }
-}
-
-
-void MSFieldColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
-  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
-}
-
-void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
-  delayDirMeas_p.setDescRefCode(ref);
-  phaseDirMeas_p.setDescRefCode(ref); 
-  referenceDirMeas_p.setDescRefCode(ref);
-}
-// Local Variables: 
-// compile-command: "gmake MSFieldColumns"
-// End: 
-
 } //# NAMESPACE CASACORE - END
-

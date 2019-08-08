@@ -45,225 +45,9 @@ class MeasurementSet;
 class String;
 template <class T> class Vector;
 
-// <summary>
-// A class for easy read-only access to MeasurementSet main table columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MeasurementSet
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSColumns stands for Read-Only MeasurementSet Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MeasurementSet.
-// It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// <note role=warning> The Table that is used to construct this class must not
-// be destroyed (or go out of scope) before this class does. Otherwise the
-// scalar and array columns use by this class will be left dangling.</note>
-// </synopsis>
-// </synopsis>
-//
-// <example>
-// <srcblock>
-// // use as follows
-// MeasurementSet ms("myMS"); 
-// ROMSColumns msc(ms);
-// // show data from row 5
-// cout << msc.data()(5);
-// // show name of antenna on row 3 in antenna table
-// cout << msc.antenna().name();
-// </srcblock>
-// </example>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-//
-// <todo asof="1997/02/01">
-//   <li> We might decide to merge all the MSColumn classes with the
-//        corresponding MeasurementSet classes.
-// </todo>
-
-class ROMSMainColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSMainColumns(const MeasurementSet& ms);
-
-  // The desctructor does nothing special
-  ~ROMSMainColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Int>& antenna1() const {return antenna1_p;}
-  const ROScalarColumn<Int>& antenna2() const {return antenna2_p;}
-  const ROScalarColumn<Int>& arrayId() const {return arrayId_p;}
-  const ROScalarColumn<Int>& dataDescId() const {return dataDescId_p;}
-  const ROScalarColumn<Double>& exposure() const {return exposure_p;}
-  const ROScalarQuantColumn<Double>& exposureQuant() const { 
-    return exposureQuant_p;}
-  const ROScalarColumn<Int>& feed1() const {return feed1_p;}
-  const ROScalarColumn<Int>& feed2() const {return feed2_p;}
-  const ROScalarColumn<Int>& fieldId() const {return fieldId_p;}
-  const ROArrayColumn<Bool>& flag() const {return flag_p;}
-  const ROArrayColumn<Bool>& flagCategory() const {return flagCategory_p;}
-  const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return intervalQuant_p;}
-  const ROScalarColumn<Int>& observationId() const {return observationId_p;}
-  const ROScalarColumn<Int>& processorId() const {return processorId_p;}
-  const ROScalarColumn<Int>& scanNumber() const {return scanNumber_p;}
-  const ROArrayColumn<Float>& sigma() const {return sigma_p;}
-  const ROScalarColumn<Int>& stateId() const {return stateId_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return timeMeas_p;}
-  const ROScalarColumn<Double>& timeCentroid() const {return timeCentroid_p;}
-  const ROScalarQuantColumn<Double>& timeCentroidQuant() const {
-    return timeCentroidQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeCentroidMeas() const {
-    return timeCentroidMeas_p;}
-  const ROArrayColumn<Double>& uvw() const {return uvw_p;}
-  const ROArrayQuantColumn<Double>& uvwQuant() const {
-    return uvwQuant_p;}
-  const ROScalarMeasColumn<Muvw>& uvwMeas() const {
-    return uvwMeas_p;}
-  const ROArrayColumn<Float>& weight() const {return weight_p;}
-  // </group>
-
-  // Access to optional columns
-  // <group>
-  const ROScalarColumn<Int>& antenna3() const {return antenna3_p;}
-  const ROScalarColumn<Bool>& baselineRef() const {return baselineRef_p;}
-  const ROArrayColumn<Complex>& correctedData() const {return correctedData_p;}
-  const ROArrayColumn<Complex>& data() const {return data_p;}
-  const ROScalarColumn<Int>& feed3() const {return feed3_p;}
-  const ROArrayColumn<Float>& floatData() const {return floatData_p;}
-  const ROArrayColumn<Float>& imagingWeight() const {return imagingWeight_p;}
-  const ROArrayColumn<Complex>& lagData() const {return lagData_p;}
-  const ROArrayColumn<Complex>& modelData() const {return modelData_p;}
-  const ROScalarColumn<Int>& phaseId() const {return phaseId_p;}
-  const ROScalarColumn<Int>& pulsarBin() const {return pulsarBin_p;}
-  const ROScalarColumn<Int>& pulsarGateId() const {return pulsarGateId_p;}
-  const ROArrayColumn<Float>& sigmaSpectrum() const {return sigmaSpectrum_p;}
-  const ROScalarColumn<Double>& timeExtraPrec() const {return timeExtraPrec_p;}
-  const ROScalarQuantColumn<Double>& timeExtraPrecQuant() const {
-    return timeExtraPrecQuant_p;}
-  const ROArrayColumn<Double>& uvw2() const {return uvw2_p;}
-  const ROScalarMeasColumn<Muvw>& uvw2Meas() const {
-    return uvw2Meas_p;}
-  const ROArrayQuantColumn<Double>& uvw2Quant() const {
-    return uvw2Quant_p;}
-  const ROArrayColumn<Complex>& videoPoint() const {return videoPoint_p;}
-  const ROArrayColumn<Float>& weightSpectrum() const {return weightSpectrum_p;}
-  const ROArrayColumn<Float>& weightSpectrumCorrected() const {return weightSpectrumCorrected_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return antenna1_p.nrow();}
-  
-  // Returns the category labels for the FLAG_CATEGORY column.
-  Vector<String> flagCategories() const;
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSMainColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MeasurementSet& ms);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSMainColumns(const ROMSMainColumns&);
-  ROMSMainColumns& operator=(const ROMSMainColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const MeasurementSet& ms);
-  
-  //# required columns
-  ROScalarColumn<Int> antenna1_p;
-  ROScalarColumn<Int> antenna2_p;
-  ROScalarColumn<Int> arrayId_p;
-  ROScalarColumn<Int> dataDescId_p;
-  ROScalarColumn<Double> exposure_p;
-  ROScalarColumn<Int> feed1_p;
-  ROScalarColumn<Int> feed2_p;
-  ROScalarColumn<Int> fieldId_p;
-  ROArrayColumn<Bool> flag_p;
-  ROArrayColumn<Bool> flagCategory_p;
-  ROScalarColumn<Bool> flagRow_p;
-  ROScalarColumn<Double> interval_p;
-  ROScalarColumn<Int> observationId_p;
-  ROScalarColumn<Int> processorId_p;
-  ROScalarColumn<Int> scanNumber_p;
-  ROArrayColumn<Float> sigma_p;
-  ROScalarColumn<Int> stateId_p;
-  ROScalarColumn<Double> time_p;
-  ROScalarColumn<Double> timeCentroid_p;
-  ROArrayColumn<Double> uvw_p;
-  ROArrayColumn<Float> weight_p;
-  //# optional columns
-  ROScalarColumn<Int> antenna3_p;
-  ROScalarColumn<Bool> baselineRef_p;
-  ROArrayColumn<Complex> data_p;
-  ROScalarColumn<Int> feed3_p;
-  ROArrayColumn<Float> floatData_p;
-  ROArrayColumn<Complex> lagData_p;
-  ROScalarColumn<Int> phaseId_p;
-  ROScalarColumn<Int> pulsarBin_p;
-  ROScalarColumn<Int> pulsarGateId_p;
-  ROArrayColumn<Float> sigmaSpectrum_p;
-  ROScalarColumn<Double> timeExtraPrec_p;
-  ROArrayColumn<Double> uvw2_p;
-  ROArrayColumn<Complex> videoPoint_p;
-  ROArrayColumn<Float> weightSpectrum_p;
-  ROArrayColumn<Float> weightSpectrumCorrected_p;
-
-  //# columns required for synthesis applications - all optional
-  ROArrayColumn<Complex> correctedData_p;
-  ROArrayColumn<Float> imagingWeight_p;
-  ROArrayColumn<Complex> modelData_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-  ROScalarMeasColumn<MEpoch> timeCentroidMeas_p;
-  ROScalarMeasColumn<Muvw> uvwMeas_p;
-  //# optional Measure columns
-  ROScalarMeasColumn<Muvw> uvw2Meas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> exposureQuant_p;
-  ROScalarQuantColumn<Double> intervalQuant_p;
-  ROScalarQuantColumn<Double> timeQuant_p;
-  ROScalarQuantColumn<Double> timeCentroidQuant_p;
-  ROArrayQuantColumn<Double> uvwQuant_p;
-  //# optional Quantum columns
-  ROScalarQuantColumn<Double> timeExtraPrecQuant_p;
-  ROArrayQuantColumn<Double> uvw2Quant_p;
-
-};
 
 // <summary>
-// A class for easy read-write access to MeasurementSet main table columns
+// A class for easy access to MeasurementSet main table columns
 // </summary>
 
 // <use visibility=export>
@@ -319,17 +103,17 @@ private:
 //   <li> We might decide to merge this class with the MeasurementSet
 // </todo>
 
-class MSMainColumns: public ROMSMainColumns
+class MSMainColumns
 {
 public:
 
   // Create a columns object that accesses the data in the specified Table
-  MSMainColumns(MeasurementSet& ms);
+  MSMainColumns(const MeasurementSet& ms);
 
   // The desctructor does nothing special
   ~MSMainColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   // <group>
   ScalarColumn<Int>& antenna1() {return antenna1_p;}
   ScalarColumn<Int>& antenna2() {return antenna2_p;}
@@ -370,7 +154,7 @@ public:
   ArrayColumn<Float>& weight() {return weight_p;}
   // </group>
 
-  // Read-write access to optional columns
+  // Access to optional columns
   // <group>
   ScalarColumn<Int>& antenna3() {return antenna3_p;}
   ScalarColumn<Bool>& baselineRef() {return baselineRef_p;}
@@ -398,113 +182,80 @@ public:
   ArrayColumn<Float>& weightSpectrumCorrected() {return weightSpectrumCorrected_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Int>& antenna1() const {
-    return ROMSMainColumns::antenna1();}
-  const ROScalarColumn<Int>& antenna2() const {
-    return ROMSMainColumns::antenna2();}
-  const ROScalarColumn<Int>& arrayId() const {
-    return ROMSMainColumns::arrayId();}
-  const ROScalarColumn<Int>& dataDescId() const {
-    return ROMSMainColumns::dataDescId();}
-  const ROScalarColumn<Double>& exposure() const {
-    return ROMSMainColumns::exposure();}
-  const ROScalarQuantColumn<Double>& exposureQuant() const { 
-    return ROMSMainColumns::exposureQuant();}
-  const ROScalarColumn<Int>& feed1() const {
-    return ROMSMainColumns::feed1();}
-  const ROScalarColumn<Int>& feed2() const {
-    return ROMSMainColumns::feed2();}
-  const ROScalarColumn<Int>& fieldId() const {
-    return ROMSMainColumns::fieldId();}
-  const ROArrayColumn<Bool>& flag() const {
-    return ROMSMainColumns::flag();}
-  const ROArrayColumn<Bool>& flagCategory() const {
-    return ROMSMainColumns::flagCategory();}
-  const ROScalarColumn<Bool>& flagRow() const {
-    return ROMSMainColumns::flagRow();}
-  const ROScalarColumn<Double>& interval() const {
-    return ROMSMainColumns::interval();}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return ROMSMainColumns::intervalQuant();}
-  const ROScalarColumn<Int>& observationId() const {
-    return ROMSMainColumns::observationId();}
-  const ROScalarColumn<Int>& processorId() const {
-    return ROMSMainColumns::processorId();}
-  const ROScalarColumn<Int>& scanNumber() const {
-    return ROMSMainColumns::scanNumber();}
-  const ROArrayColumn<Float>& sigma() const {
-    return ROMSMainColumns::sigma();}
-  const ROScalarColumn<Int>& stateId() const {
-    return ROMSMainColumns::stateId();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSMainColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSMainColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSMainColumns::timeMeas();}
-  const ROScalarColumn<Double>& timeCentroid() const {
-    return ROMSMainColumns::timeCentroid();}
-  const ROScalarQuantColumn<Double>& timeCentroidQuant() const {
-    return ROMSMainColumns::timeCentroidQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeCentroidMeas() const {
-    return ROMSMainColumns::timeCentroidMeas();}
-  const ROArrayColumn<Double>& uvw() const {
-    return ROMSMainColumns::uvw();}
-  const ROArrayQuantColumn<Double>& uvwQuant() const {
-    return ROMSMainColumns::uvwQuant();}
-  const ROScalarMeasColumn<Muvw>& uvwMeas() const {
-    return ROMSMainColumns::uvwMeas();}
-  const ROArrayColumn<Float>& weight() const {
-    return ROMSMainColumns::weight();}
+  const ScalarColumn<Int>& antenna1() const {return antenna1_p;}
+  const ScalarColumn<Int>& antenna2() const {return antenna2_p;}
+  const ScalarColumn<Int>& arrayId() const {return arrayId_p;}
+  const ScalarColumn<Int>& dataDescId() const {return dataDescId_p;}
+  const ScalarColumn<Double>& exposure() const {return exposure_p;}
+  const ScalarQuantColumn<Double>& exposureQuant() const { 
+    return exposureQuant_p;}
+  const ScalarColumn<Int>& feed1() const {return feed1_p;}
+  const ScalarColumn<Int>& feed2() const {return feed2_p;}
+  const ScalarColumn<Int>& fieldId() const {return fieldId_p;}
+  const ArrayColumn<Bool>& flag() const {return flag_p;}
+  const ArrayColumn<Bool>& flagCategory() const {return flagCategory_p;}
+  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<Double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<Double>& intervalQuant() const {
+    return intervalQuant_p;}
+  const ScalarColumn<Int>& observationId() const {return observationId_p;}
+  const ScalarColumn<Int>& processorId() const {return processorId_p;}
+  const ScalarColumn<Int>& scanNumber() const {return scanNumber_p;}
+  const ArrayColumn<Float>& sigma() const {return sigma_p;}
+  const ScalarColumn<Int>& stateId() const {return stateId_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {
+    return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {
+    return timeMeas_p;}
+  const ScalarColumn<Double>& timeCentroid() const {return timeCentroid_p;}
+  const ScalarQuantColumn<Double>& timeCentroidQuant() const {
+    return timeCentroidQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeCentroidMeas() const {
+    return timeCentroidMeas_p;}
+  const ArrayColumn<Double>& uvw() const {return uvw_p;}
+  const ArrayQuantColumn<Double>& uvwQuant() const {
+    return uvwQuant_p;}
+  const ScalarMeasColumn<Muvw>& uvwMeas() const {
+    return uvwMeas_p;}
+  const ArrayColumn<Float>& weight() const {return weight_p;}
   // </group>
 
-  // Read-only access to optional columns
+  // Access to optional columns
   // <group>
-  const ROScalarColumn<Int>& antenna3() const {
-    return ROMSMainColumns::antenna3();}
-  const ROScalarColumn<Bool>& baselineRef() const {
-    return ROMSMainColumns::baselineRef();}
-  const ROArrayColumn<Complex>& correctedData() const {
-    return ROMSMainColumns::correctedData();}
-  const ROArrayColumn<Complex>& data() const {
-    return ROMSMainColumns::data();}
-  const ROScalarColumn<Int>& feed3() const {
-    return ROMSMainColumns::feed3();}
-  const ROArrayColumn<Float>& floatData() const {
-    return ROMSMainColumns::floatData();}
-  const ROArrayColumn<Float>& imagingWeight() const {
-    return ROMSMainColumns::imagingWeight();}
-  const ROArrayColumn<Complex>& lagData() const {
-    return ROMSMainColumns::lagData();}
-  const ROArrayColumn<Complex>& modelData() const {
-    return ROMSMainColumns::modelData();}
-  const ROScalarColumn<Int>& phaseId() const {
-    return ROMSMainColumns::phaseId();}
-  const ROScalarColumn<Int>& pulsarBin() const {
-    return ROMSMainColumns::pulsarBin();}
-  const ROScalarColumn<Int>& pulsarGateId() const {
-    return ROMSMainColumns::pulsarGateId();}
-  const ROArrayColumn<Float>& sigmaSpectrum() const {
-    return ROMSMainColumns::sigmaSpectrum();}
-  const ROScalarColumn<Double>& timeExtraPrec() const {
-    return ROMSMainColumns::timeExtraPrec();}
-  const ROScalarQuantColumn<Double>& timeExtraPrecQuant() const {
-    return ROMSMainColumns::timeExtraPrecQuant();}
-  const ROArrayColumn<Double>& uvw2() const {
-    return ROMSMainColumns::uvw2();}
-  const ROScalarMeasColumn<Muvw>& uvw2Meas() const {
-    return ROMSMainColumns::uvw2Meas();}
-  const ROArrayQuantColumn<Double>& uvw2Quant() const {
-    return ROMSMainColumns::uvw2Quant();}
-  const ROArrayColumn<Complex>& videoPoint() const {
-    return ROMSMainColumns::videoPoint();}
-  const ROArrayColumn<Float>& weightSpectrum() const {
-    return ROMSMainColumns::weightSpectrum();}
-  const ROArrayColumn<Float>& weightSpectrumCorrected() const {
-    return ROMSMainColumns::weightSpectrumCorrected();}
+  const ScalarColumn<Int>& antenna3() const {return antenna3_p;}
+  const ScalarColumn<Bool>& baselineRef() const {return baselineRef_p;}
+  const ArrayColumn<Complex>& correctedData() const {return correctedData_p;}
+  const ArrayColumn<Complex>& data() const {return data_p;}
+  const ScalarColumn<Int>& feed3() const {return feed3_p;}
+  const ArrayColumn<Float>& floatData() const {return floatData_p;}
+  const ArrayColumn<Float>& imagingWeight() const {return imagingWeight_p;}
+  const ArrayColumn<Complex>& lagData() const {return lagData_p;}
+  const ArrayColumn<Complex>& modelData() const {return modelData_p;}
+  const ScalarColumn<Int>& phaseId() const {return phaseId_p;}
+  const ScalarColumn<Int>& pulsarBin() const {return pulsarBin_p;}
+  const ScalarColumn<Int>& pulsarGateId() const {return pulsarGateId_p;}
+  const ArrayColumn<Float>& sigmaSpectrum() const {return sigmaSpectrum_p;}
+  const ScalarColumn<Double>& timeExtraPrec() const {return timeExtraPrec_p;}
+  const ScalarQuantColumn<Double>& timeExtraPrecQuant() const {
+    return timeExtraPrecQuant_p;}
+  const ArrayColumn<Double>& uvw2() const {return uvw2_p;}
+  const ScalarMeasColumn<Muvw>& uvw2Meas() const {
+    return uvw2Meas_p;}
+  const ArrayQuantColumn<Double>& uvw2Quant() const {
+    return uvw2Quant_p;}
+  const ArrayColumn<Complex>& videoPoint() const {return videoPoint_p;}
+  const ArrayColumn<Float>& weightSpectrum() const {return weightSpectrum_p;}
+  const ArrayColumn<Float>& weightSpectrumCorrected() const {return weightSpectrumCorrected_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return antenna1_p.nrow();}
+  
+  // Returns the category labels for the FLAG_CATEGORY column.
+  Vector<String> flagCategories() const;
 
   // set the epoch type for the TIME and TIME_CENTROID columns. 
   // <note role=tip>
@@ -534,7 +285,7 @@ protected:
   MSMainColumns();
 
   //# attach this object to the supplied table.
-  void attach(MeasurementSet& ms);
+  void attach(const MeasurementSet& ms);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -543,7 +294,7 @@ private:
   MSMainColumns& operator=(const MSMainColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(MeasurementSet& ms);
+  void attachOptionalCols(const MeasurementSet& ms);
   
   //# required columns
   ScalarColumn<Int> antenna1_p;
@@ -608,6 +359,8 @@ private:
 
 };
 
+//# Define the RO version for backward compatibility.
+typedef MSMainColumns ROMSMainColumns;
 
 } //# NAMESPACE CASACORE - END
 

@@ -108,7 +108,7 @@ private:
   // Default constructor
   MSAntennaIndex();
   // ANTENNA subtable column accessor
-  ROMSAntennaColumns msAntennaCols_p;
+  MSAntennaColumns msAntennaCols_p;
 
   // Vector cache of antenna id's
   Vector<Int> antennaIds_p, stationIds_p;
