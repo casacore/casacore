@@ -32,6 +32,7 @@
 
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

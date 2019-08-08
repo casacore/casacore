@@ -263,6 +263,49 @@ int main(int argc, const char *argv[])
       }
    }
 
+// Test Estimate
+
+   {
+    
+       cout << endl << endl << "Test estimator" << endl;
+       IPosition shape(2,128,128);
+       Array<float> psf(shape);
+       IPosition index(2);
+       const double fwhm2sigma = sqrt(8.*log(2.));
+       for (index[0] = 0; index[0]<128; ++index[0]) {
+           for (index[1] = 0; index[1]<128; ++index[1]) {
+               const double xOffset = (double(index[0])-64.);
+               const double yOffset = (double(index[1])-64.);
+               const double expFactor = exp(-square(xOffset/2*fwhm2sigma)/2.-
+                            square(yOffset/2.*fwhm2sigma)/2.);
+               psf(index) = expFactor;
+           }
+       }
+ 
+       LogIO logger;
+       Fit2D fitter2(logger);
+       Vector<Double> param = fitter2.estimate(Fit2D::GAUSSIAN, psf);
+       
+       cout << "Estimate " << param << endl;
+
+       if (abs(param[1]-64)>1e-5 || abs(param[2]-64)>1e-6)
+          throw (AipsError("Estimate position not accurate to 1e-6"));
+
+       fitter2.addModel(Fit2D::GAUSSIAN, param);
+       Array<float> sigma(psf.shape());
+       sigma.set(1.);
+       if (fitter2.fit(psf,sigma) == Fit2D::OK) {
+          param = fitter2.availableSolution();
+          cout << "Fitted: " << param << endl;
+          if (abs(param[1]-64)>1e-5 || abs(param[2]-64)>1e-6)
+              throw (AipsError("Fit position not accurate to 1e-6"));
+
+       }
+       else {
+          cerr << "Failed to fit" << endl;
+       }
+       cout << endl << endl << "Estimate test ok" << endl;
+   }
 
    Fit2D fitter3(logger);
    fitter3.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
