@@ -48,7 +48,7 @@ ImageBeamSet::ImageBeamSet() :
 
 ImageBeamSet::ImageBeamSet(const Matrix<GaussianBeam>& beams) :
     _beams(beams) {
-    _calculateAreas();
+        _calculateAreas();
 }
 
 ImageBeamSet::ImageBeamSet(const GaussianBeam& beam) :
@@ -245,7 +245,7 @@ void ImageBeamSet::setBeam(Int chan, Int stokes, const GaussianBeam& beam) {
     else {
         // chan >=0 && stokes < 0
         _beams(IPosition(2, chan, 0), IPosition(2, chan, nstokes()-1)) = beam;
-        if (_maxBeamPos[1] == stokes || _minBeamPos[1] == stokes) {
+        if (_maxBeamPos[0] == chan || _minBeamPos[0] == chan) {
             // we are overwriting the max or min beam, so we need to recalculate
             // the areas
             _calculateAreas();
@@ -464,30 +464,26 @@ ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
         "no nStokes field found"
     );
     uInt nchan = rec.asuInt("nChannels");
-    ImageBeamSet beams(nchan, rec.asuInt("nStokes"));
     uInt count = 0;
     uInt chan = 0;
     uInt stokes = 0;
-    Array<GaussianBeam>::const_iterator iterend = beams.getBeams().end();
+    Matrix<GaussianBeam> beams(nchan, rec.asuInt("nStokes"));
+    auto iterend = beams.end();
     for (
-        Array<GaussianBeam>::const_iterator iter =
-        beams.getBeams().begin(); iter != iterend; ++iter, ++count
+        auto iter = beams.begin(); iter != iterend; ++iter, ++count
     ) {
         String field = "*" + String::toString(count);
         ThrowIf(
             ! rec.isDefined(field),
             "Field " + field + " is not defined"
         );
-        beams.setBeam(
-            chan, stokes,
-            GaussianBeam::fromRecord(rec.asRecord(field))
-        );
+            *iter = GaussianBeam::fromRecord(rec.asRecord(field));
         if (++chan == nchan) {
             chan = 0;
-            stokes++;
+            ++stokes;
         }
     }
-    return beams;
+    return ImageBeamSet(beams);
 }
 
 Record ImageBeamSet::toRecord() const {

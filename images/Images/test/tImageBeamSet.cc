@@ -567,8 +567,8 @@ int main() {
             while (iter != end) {
                 radius = Quantity(count, "arcsec");
                 iter->setMajorMinor(radius, radius);
-                iter++;
-                count++;
+                ++iter;
+                ++count;
             }
             radius = Quantity(6.5, "arcsec");
             beams(2,2) = GaussianBeam(radius, radius, Quantity(0, "deg"));
@@ -638,6 +638,26 @@ int main() {
             AlwaysAssert(
                 beamSet(1, 1).getPA(True) == Quantity(-40, "deg"), AipsError
             );
+        }
+        {
+            cout << "check replacing largest beam works" << endl;
+            Quantity five(5, "arcsec");
+            Quantity four(4, "arcsec");
+            Quantity two(2, "arcsec");
+            Matrix<GaussianBeam> mat(1, 2);
+            cout << __LINE__ << endl;
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[1][0] = GaussianBeam(four, four, four);
+            ImageBeamSet beams(mat);
+            auto maxbeam = beams.getMaxAreaBeam();
+            cout << "maxbeam " << maxbeam << endl;
+            AlwaysAssert(maxbeam.getMajor().getValue() == 5, AipsError);
+            beams.setBeam(0, -1, GaussianBeam(four, four, four));
+            maxbeam = beams.getMaxAreaBeam();
+            cout << "maxbeam " << maxbeam << endl;
+            AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
+
+
 
         }
     }
