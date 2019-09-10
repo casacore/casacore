@@ -639,26 +639,34 @@ int main() {
                 beamSet(1, 1).getPA(True) == Quantity(-40, "deg"), AipsError
             );
         }
+        const Quantity five(5, "arcsec");
+        const Quantity four(4, "arcsec");
+        const Quantity two(2, "arcsec");
         {
-            cout << "check replacing largest beam works" << endl;
-            Quantity five(5, "arcsec");
-            Quantity four(4, "arcsec");
-            Quantity two(2, "arcsec");
+            cout << "check replacing largest beam works when chan specified "
+                << "and stokes negative" << endl;
             Matrix<GaussianBeam> mat(1, 2);
-            cout << __LINE__ << endl;
             mat[0][0] = GaussianBeam(five, five, five);
             mat[1][0] = GaussianBeam(four, four, four);
             ImageBeamSet beams(mat);
             auto maxbeam = beams.getMaxAreaBeam();
-            cout << "maxbeam " << maxbeam << endl;
             AlwaysAssert(maxbeam.getMajor().getValue() == 5, AipsError);
             beams.setBeam(0, -1, GaussianBeam(four, four, four));
             maxbeam = beams.getMaxAreaBeam();
-            cout << "maxbeam " << maxbeam << endl;
             AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
-
-
-
+        }
+        {
+            cout << "check replacing largest beam works when stokes specified "
+                << "and chan negative" << endl;
+            Matrix<GaussianBeam> mat(2, 1);
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[0][1] = GaussianBeam(four, four, four);
+            ImageBeamSet beams(mat);
+            auto maxbeam = beams.getMaxAreaBeam();
+            AlwaysAssert(maxbeam.getMajor().getValue() == 5, AipsError);
+            beams.setBeam(-1, 0, GaussianBeam(four, four, four));
+            maxbeam = beams.getMaxAreaBeam();
+            AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
         }
     }
     catch (const AipsError& x) {
