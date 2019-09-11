@@ -105,7 +105,7 @@ const String flagTileId = "FLAG_CATEGORY_HYPERCUBE_ID";
 struct MSFeedParameterExtractor : protected MSIter {
   
   MSFeedParameterExtractor(const MeasurementSet &ms) {
-      msc_p=new ROMSColumns(ms);
+      msc_p=new MSColumns(ms);
       msc_p->antenna().mount().getColumn(antennaMounts_p,True);
       checkFeed_p=True;
       setFeedInfo();

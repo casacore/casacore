@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
       fndObs = MeasTable::Observatory (arrayPos, telescope);
     }
     if (!fndObs) {
-      ROMSAntennaColumns antcol(ms.antenna());
+      MSAntennaColumns antcol(ms.antenna());
       arrayPos = antcol.positionMeas()(ms.antenna().nrow()/2);
     }
     mdv.setObservatoryPosition (arrayPos);

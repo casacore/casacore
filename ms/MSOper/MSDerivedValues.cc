@@ -73,7 +73,7 @@ MSDerivedValues::getAntennaPositions () const
 }
 
 
-Int MSDerivedValues::setAntennas(const ROMSAntennaColumns& ac)
+Int MSDerivedValues::setAntennas(const MSAntennaColumns& ac)
 {
   Int nAnt=ac.position().nrow();
 
@@ -123,13 +123,13 @@ MSDerivedValues& MSDerivedValues::setObservatoryPosition(const MPosition&
 MSDerivedValues& MSDerivedValues::setMeasurementSet(const MeasurementSet& ms){
 
   ms_p=ms;
-  const ROMSAntennaColumns ac(ms_p.antenna());
+  const MSAntennaColumns ac(ms_p.antenna());
   //set antenna mounts and obs position
   setAntennas(ac);
   // set the restFrequency spwid 0, fieldid 0 for now
   setRestFrequency(0, 0);
   //set the frequency type
-  const ROMSSpWindowColumns spc(ms_p.spectralWindow());
+  const MSSpWindowColumns spc(ms_p.spectralWindow());
   MFrequency refreq0=spc.refFrequencyMeas()(0);
   MFrequency::Types freqType =
     MFrequency::castType(refreq0.getRef().getType());
@@ -225,7 +225,7 @@ MSDerivedValues& MSDerivedValues::setFieldCenter(uInt fieldid)
 {
 
   if(hasMS_p && (ms_p.field().nrow() > fieldid)){
-    ROMSColumns msc(ms_p);
+    MSColumns msc(ms_p);
     const MDirection dirn=msc.field().phaseDirMeas(fieldid);
     setFieldCenter(dirn);
   }

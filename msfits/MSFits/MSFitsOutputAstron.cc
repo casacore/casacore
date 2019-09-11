@@ -132,7 +132,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   Vector<Int> spwids;
   uInt nrspw;
   {
-    ROScalarColumn<Int> ddidcol(ms, MS::columnName(MS::DATA_DESC_ID));
+    ScalarColumn<Int> ddidcol(ms, MS::columnName(MS::DATA_DESC_ID));
     nrspw = makeIdMap (spwidMap, spwids, ddidcol.getColumn(), isSubset);
   }
 
@@ -140,7 +140,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   Block<Int> fieldidMap;
   uInt nrfield;
   {
-    ROScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
+    ScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
     Vector<Int> fldid = fldidcol.getColumn();
     if (!asMultiSource) {
       if (!allEQ (fldid, fldid(0))) {
@@ -253,7 +253,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   {
     MSObservation obsTable(rawms.observation());
     if (obsTable.nrow() > 0) {
-      ROScalarColumn<String> inarrayname(obsTable,
+      ScalarColumn<String> inarrayname(obsTable,
 					 MSObservation::columnName
 					 (MSObservation::TELESCOPE_NAME));
       doWsrt = inarrayname(0) == "WSRT";
@@ -261,7 +261,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   }
 
   MSField fieldTable(rawms.field());
-  ROMSFieldColumns msfc(fieldTable);
+  MSFieldColumns msfc(fieldTable);
   Vector<Double> radec = msfc.phaseDirMeas(0).getAngle().getValue();
   radec *=180.0/C::pi; // convert to degrees for FITS
   if (radec(0) < 0) {
@@ -290,21 +290,21 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     os << LogIO::SEVERE << "No polarization table in MS" << LogIO::POST;
     return 0;
   }
-  ROScalarColumn<Int> spwId(ddTable, 
+  ScalarColumn<Int> spwId(ddTable, 
 	 MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
-  ROScalarColumn<Int> polId(ddTable, 
+  ScalarColumn<Int> polId(ddTable, 
 	 MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
-  ROScalarColumn<Int> numcorr(polTable, 
+  ScalarColumn<Int> numcorr(polTable, 
 	      MSPolarization::columnName(MSPolarization::NUM_CORR));
-  ROScalarColumn<Int> numchan(spectralTable, 
+  ScalarColumn<Int> numchan(spectralTable, 
 	      MSSpectralWindow::columnName(MSSpectralWindow::NUM_CHAN));
-  ROArrayColumn<Double> frequencies(spectralTable,
+  ArrayColumn<Double> frequencies(spectralTable,
 	    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-  ROArrayColumn<Int> stokesTypes(polTable,
+  ArrayColumn<Int> stokesTypes(polTable,
 				 MSPolarization::columnName(MSPolarization::CORR_TYPE));
-  ROScalarColumn<Double> totalbw(spectralTable,
+  ScalarColumn<Double> totalbw(spectralTable,
 	      MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  ROScalarColumn<Int> meas_freq_ref(spectralTable, 
+  ScalarColumn<Int> meas_freq_ref(spectralTable, 
 	      MSSpectralWindow::columnName(MSSpectralWindow::MEAS_FREQ_REF));
 
   // Also find out what the Stokes are and make sure that they are the same
@@ -371,7 +371,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 	if (rawms.keywordSet().isDefined ("NFRA_TMS_PARAMETERS")) {
 	  Table tmsParm = rawms.keywordSet().asTable ("NFRA_TMS_PARAMETERS");
 	  Table sel;
-	  ROTableColumn tc(tmsParm, "NAME");
+	  TableColumn tc(tmsParm, "NAME");
 	  String tmp;
 	  tc.getScalar(0, tmp);
 
@@ -385,7 +385,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 	    return 0;
 	  } else {
 	    String aValue;
-	    aValue = ROScalarColumn<String>(sel, "VALUE")(0);
+	    aValue = ScalarColumn<String>(sel, "VALUE")(0);
 
 	    //
 	    // Find the comma's,
@@ -520,7 +520,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
                            isColumn(MS::columnName(MS::WEIGHT_SPECTRUM));
 
   if(hasWeightArray){
-    ROMSMainColumns tempCols(rawms);
+    MSMainColumns tempCols(rawms);
     if(!tempCols.weightSpectrum().isDefined(0))
       hasWeightArray=False;
   }
@@ -542,7 +542,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // BASELINE
   desc.addField("baseline", TpFloat);
   // FREQSEL
-  ROScalarColumn<Int> inddid(rawms,
+  ScalarColumn<Int> inddid(rawms,
 			     MS::columnName(MS::DATA_DESC_ID));
   desc.addField("freqsel", TpFloat);
   // SOURCE and INTTIM only in multi-source table
@@ -558,7 +558,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ek.define("bzero", 0.0);
   String bunit = "UNCALIB";
   {
-    ROTableColumn indata (rawms, columnName);
+    TableColumn indata (rawms, columnName);
     if (indata.keywordSet().isDefined("QuantumUnit") && 
 	indata.keywordSet().dataType("QuantumUnit") == TpString) {
       indata.keywordSet().get("QuantumUnit", bunit);
@@ -666,7 +666,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 
   // OBS-TIME
   {
-    ROScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
+    ScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
     ek.define("date-obs", toFITSDate(intm(0)/C::day)); // First time entry
   }
 
@@ -687,7 +687,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   }
 
   // TELESCOP INSTRUME
-  ROMSObservationColumns obsC(rawms.observation());
+  MSObservationColumns obsC(rawms.observation());
   if (obsC.nrow() == 0) {
     os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
     return 0;
@@ -773,24 +773,24 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   Table sortTable = rawms.sort (sortNames);
 
   // Make objects for the various columns.
-  ROArrayColumn<Complex> indata(sortTable, columnName);
-  ROArrayColumn<Float> inweightscalar(sortTable, 
+  ArrayColumn<Complex> indata(sortTable, columnName);
+  ArrayColumn<Float> inweightscalar(sortTable, 
 				      MS::columnName(MS::WEIGHT));
-  ROArrayColumn<Float> inweightarray;
+  ArrayColumn<Float> inweightarray;
   if (hasWeightArray) {
     inweightarray.attach(sortTable, MS::columnName(MS::WEIGHT_SPECTRUM));
   }
-  ROScalarColumn<Bool> inrowflag(sortTable, MS::columnName(MS::FLAG_ROW));
-  ROArrayColumn<Bool> indataflag(sortTable, MS::columnName(MS::FLAG));
-  ROArrayColumn<Double> inuvw(sortTable, MS::columnName(MS::UVW));
-  ROScalarColumn<Double> intime(sortTable, MS::columnName(MS::TIME));
-  ROScalarColumn<Int> inant1(sortTable, MS::columnName(MS::ANTENNA1));
-  ROScalarColumn<Int> inant2(sortTable, MS::columnName(MS::ANTENNA2));
-  ROScalarColumn<Int> inarray(sortTable, MS::columnName(MS::ARRAY_ID));
-  ROScalarColumn<Int> inspwinid(sortTable,
+  ScalarColumn<Bool> inrowflag(sortTable, MS::columnName(MS::FLAG_ROW));
+  ArrayColumn<Bool> indataflag(sortTable, MS::columnName(MS::FLAG));
+  ArrayColumn<Double> inuvw(sortTable, MS::columnName(MS::UVW));
+  ScalarColumn<Double> intime(sortTable, MS::columnName(MS::TIME));
+  ScalarColumn<Int> inant1(sortTable, MS::columnName(MS::ANTENNA1));
+  ScalarColumn<Int> inant2(sortTable, MS::columnName(MS::ANTENNA2));
+  ScalarColumn<Int> inarray(sortTable, MS::columnName(MS::ARRAY_ID));
+  ScalarColumn<Int> inspwinid(sortTable,
 				MS::columnName(MS::DATA_DESC_ID));
-  ROScalarColumn<Int> infieldid;
-  ROScalarColumn<Double> inexposure;
+  ScalarColumn<Int> infieldid;
+  ScalarColumn<Double> inexposure;
   if (asMultiSource) {
     infieldid.attach (sortTable, MS::columnName(MS::FIELD_ID));
     inexposure.attach (sortTable, MS::columnName(MS::EXPOSURE));
@@ -941,13 +941,13 @@ Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFQ"));
   MSSpectralWindow specTable(ms.spectralWindow());
-  ROArrayColumn<Double> inchanfreq
+  ArrayColumn<Double> inchanfreq
             (specTable,
 	     MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-  ROScalarColumn<Double> intotbw
+  ScalarColumn<Double> intotbw
             (specTable,
 	     MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  ROScalarColumn<Int> insideband
+  ScalarColumn<Int> insideband
             (specTable,
 	     MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
 
@@ -956,7 +956,7 @@ Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
   {
     MSObservation obsTable(ms.observation());
     if (obsTable.nrow() > 0) {
-      ROScalarColumn<String> inarrayname(obsTable,
+      ScalarColumn<String> inarrayname(obsTable,
 					 MSObservation::columnName
 					 (MSObservation::TELESCOPE_NAME));
       doWsrt = inarrayname(0) == "WSRT";
@@ -1056,7 +1056,7 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeAN"));
   MSObservation obsTable(ms.observation());
-  ROScalarColumn<String> inarrayname(obsTable,
+  ScalarColumn<String> inarrayname(obsTable,
 				     MSObservation::columnName
 				     (MSObservation::TELESCOPE_NAME));
 
@@ -1068,7 +1068,7 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
   // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
 
-  MEpoch measTime = ROMSColumns(ms).timeMeas()(0);
+  MEpoch measTime = MSColumns(ms).timeMeas()(0);
 
   MEpoch utctime = MEpoch::Convert (measTime, MEpoch::UTC) ();
   MEpoch iattime = MEpoch::Convert (measTime, MEpoch::IAT) ();
@@ -1185,26 +1185,26 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     desc.addField("POLCALB", TpFloat);           // POLCALB
 
     MSAntenna antennaTable = ms.antenna();
-    ROMSAntennaColumns antennaCols (antennaTable);
+    MSAntennaColumns antennaCols (antennaTable);
 
     // SELECT antennas for the current sub-array
     //    MSAntenna antennaTable = ms.antenna()
     //(ms.antenna().col(MSAntenna::columnName(MSAntenna::ARRAY_ID)) == 
     //				  Int(arraynum));
 
-    ROScalarColumn<String> inantname(antennaCols.station());
-    ROScalarColumn<String> antid(antennaCols.name());
-    ROScalarColumn<String> inantmount(antennaCols.mount());
-    MPosition::ROScalarColumn inantposition(antennaCols.positionMeas());
-    ROArrayColumn<Double> inantoffset(antennaCols.offset());
+    ScalarColumn<String> inantname(antennaCols.station());
+    ScalarColumn<String> antid(antennaCols.name());
+    ScalarColumn<String> inantmount(antennaCols.mount());
+    MPosition::ScalarColumn inantposition(antennaCols.positionMeas());
+    ArrayColumn<Double> inantoffset(antennaCols.offset());
     const uInt nant = antennaTable.nrow();
     os << LogIO::NORMAL << "Found " << nant << " antennas in array #"
        << arraynum+1 << LogIO::POST;
 
     MSFeed feedTable = ms.feed();
-    ROMSFeedColumns feedCols (feedTable);
-    ROArrayColumn<String> inpoltype(feedCols.polarizationType());
-    ROScalarColumn<Int> inantid(feedCols.antennaId());
+    MSFeedColumns feedCols (feedTable);
+    ArrayColumn<String> inpoltype(feedCols.polarizationType());
+    ScalarColumn<Int> inantid(feedCols.antennaId());
 
     FITSTableWriter writer(output, desc, strlengths, nant, 
 			   header, units, False);
@@ -1328,27 +1328,27 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeSU"));
   // Basically we make the FIELD_ID the source ID.
   MSField fieldTable(ms.field());
-  ROMSFieldColumns msfc(fieldTable);
-  const ROScalarColumn<Int>& insrcid=msfc.sourceId();
-  const ROScalarColumn<String>& inname=msfc.name();
+  MSFieldColumns msfc(fieldTable);
+  const ScalarColumn<Int>& insrcid=msfc.sourceId();
+  const ScalarColumn<String>& inname=msfc.name();
 
   // If source table exists, access it
 
   // This is for case where SOURCE guaranteed to exist:
   //  MSSource sourceTable(ms.source());
-  //  ROMSSourceColumns sourceColumns(sourceTable);
+  //  MSSourceColumns sourceColumns(sourceTable);
   //  ColumnsIndex srcInx(sourceTable, "SOURCE_ID");
   //  RecordFieldPtr<Int> srcInxFld(srcInx.accessKey(), "SOURCE_ID");
 
   // This is for case where SOURCE may not exist:
   //   (doesn't work yet!)
   MSSource* sourceTable=0;
-  ROMSSourceColumns* sourceColumns=0;
+  MSSourceColumns* sourceColumns=0;
   ColumnsIndex* srcInx=0;
   RecordFieldPtr<Int>* srcInxFld=0;
   if (!ms.source().isNull()) {
     sourceTable = new MSSource(ms.source());
-    sourceColumns = new ROMSSourceColumns(*sourceTable);
+    sourceColumns = new MSSourceColumns(*sourceTable);
     // Create an index for the SOURCE table.
     // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
     srcInx=new ColumnsIndex(*sourceTable, "SOURCE_ID");
@@ -1366,7 +1366,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
     os << LogIO::SEVERE << "No spectral window table!" << LogIO::POST;
     return False;
   }
-  ROScalarColumn<Double> totalbw(spectralTable,
+  ScalarColumn<Double> totalbw(spectralTable,
 		   MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   Double totalBandwidth = totalbw(0);
   //    const uInt nsource = sourceTable.nrow(); // this is allowed to be 0
@@ -1386,12 +1386,12 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // Note that datasets with mixed vel.frames or mixed line/continuum cannot
   // be handled. 
   if (spectralTable.tableDesc().isColumn ("NFRA_VELOCDEFINITION")) {
-    ROScalarColumn<String> velTypeCol (spectralTable, "NFRA_VELOCDEFINITION");
+    ScalarColumn<String> velTypeCol (spectralTable, "NFRA_VELOCDEFINITION");
     velType = velTypeCol(0);
     velType.upcase();
     header.define("VELTYP", velType);
     if (spectralTable.tableDesc().isColumn ("NFRA_CONVERSIONTYPE")) {
-      ROScalarColumn<String> velDefCol (spectralTable, "NFRA_CONVERSIONTYPE");
+      ScalarColumn<String> velDefCol (spectralTable, "NFRA_CONVERSIONTYPE");
       velDef = velDefCol(0);
       velDef.upcase();
       header.define("VELDEF", velDef);
@@ -1574,7 +1574,7 @@ Bool MSFitsOutputAstron::writeTY(FitsOutput *output, const MeasurementSet &ms,
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeTY"));
   const MSSysCal subtable(syscal);
-  ROMSSysCalColumns sysCalColumns(subtable);
+  MSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
   if (nrow == 0  ||  sysCalColumns.tsys().isNull()) {
     os << LogIO::SEVERE << "No SysCal TY info!" << LogIO::POST;
@@ -1595,7 +1595,7 @@ Bool MSFitsOutputAstron::writeTY(FitsOutput *output, const MeasurementSet &ms,
   // Get reference time (i.e. start time) from the main table.
   Double refTime;
   {                                // get starttime (truncated to days)
-    ROMSColumns mscol(ms);
+    MSColumns mscol(ms);
     refTime = floor(mscol.time()(0) / C::day) * C::day;
   }
   // ##### Header
@@ -1720,7 +1720,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
     nrif = 1;
   }
   // Get #pol from 1st row in FEED table.
-  const Int npol = ROMSFeedColumns(ms.feed()).numReceptors()(0);
+  const Int npol = MSFeedColumns(ms.feed()).numReceptors()(0);
   IPosition ifShape(1,nrif);
   const uInt nentries = nrant*nrspw;
 
@@ -1732,7 +1732,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   Int nchan, nstk;
   Double startTime, startHA;
   {
-    ROMSColumns mscol(ms);
+    MSColumns mscol(ms);
     IPosition shp = mscol.data().shape(0);
     nstk = shp(0);
     nchan = shp(1);
@@ -1749,7 +1749,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
     Table tableChunk (tabiter.table());
     uInt n = tableChunk.nrow();
     MSSysCal syscal (tableChunk);
-    ROMSSysCalColumns sysCalColumns (syscal);
+    MSSysCalColumns sysCalColumns (syscal);
     // Fill the hourangle vector (which is the same for all subsets).
     // Its unit is degrees; startHA is in fractions of a circle.
     // The time is in seconds, so convert that to a full day (circle).
@@ -1855,7 +1855,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   while (!tabiter.pastEnd()) {
     Table tableChunk (tabiter.table());
     MSSysCal syscal (tableChunk);
-    ROMSSysCalColumns sysCalColumns (syscal);
+    MSSysCalColumns sysCalColumns (syscal);
     *antenna = sysCalColumns.antennaId()(0) + 1;
     //    *arrayId = sysCalColumns.arrayId()(0) + 1;
     *arrayId = 1;
@@ -1895,7 +1895,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
 void MSFitsOutputAstron::getStartHA (Double& startTime, Double& startHA,
 			       const MeasurementSet& ms, uInt rownr)
 {
-    ROMSColumns mscol(ms);
+    MSColumns mscol(ms);
     startTime = mscol.time()(rownr);
     MEpoch stTime = mscol.timeMeas()(rownr);
     Int fieldId = mscol.fieldId()(rownr);
@@ -1929,8 +1929,8 @@ Table MSFitsOutputAstron::handleSysCal (const MeasurementSet& ms,
   {
     // Find the maximum antenna number.
     // Assure that the minimum >= 0.
-    ROScalarColumn<Int> ant1col(ms, MS::columnName(MS::ANTENNA1));
-    ROScalarColumn<Int> ant2col(ms, MS::columnName(MS::ANTENNA2));
+    ScalarColumn<Int> ant1col(ms, MS::columnName(MS::ANTENNA1));
+    ScalarColumn<Int> ant2col(ms, MS::columnName(MS::ANTENNA2));
     Vector<Int> ant1 = ant1col.getColumn();
     Vector<Int> ant2 = ant2col.getColumn();
     Int minant1, minant2, maxant1, maxant2;
@@ -1957,7 +1957,7 @@ Table MSFitsOutputAstron::handleSysCal (const MeasurementSet& ms,
   }
   {
     // Now skip all antennas in SYSCAL not present in the main table.
-    ROScalarColumn<Int> antcol(syscal,
+    ScalarColumn<Int> antcol(syscal,
 			       MSSysCal::columnName(MSSysCal::ANTENNA_ID));
     Vector<Int> ant = antcol.getColumn();
     Int minant, maxant;
@@ -1987,7 +1987,7 @@ Table MSFitsOutputAstron::handleSysCal (const MeasurementSet& ms,
   // Skip first rows which maybe contain an average for each antenna.
   // This is an old WSRT feature/problem.
   {
-    ROMSSysCalColumns sysCalColumns (ms.sysCal());
+    MSSysCalColumns sysCalColumns (ms.sysCal());
     Double sttim = sysCalColumns.time()(0);
     uInt nrow = sysCalColumns.time().nrow();
     for (uInt i=0; i<nrow; i++) {

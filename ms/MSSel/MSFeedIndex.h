@@ -125,7 +125,7 @@ private:
   RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;
 
   // Pointer to FEED columns accessor
-  ROMSFeedColumns* msFeedCols_p;
+  MSFeedColumns* msFeedCols_p;
 
   void attachIds();
 };

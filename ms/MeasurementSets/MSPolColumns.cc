@@ -36,29 +36,19 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSPolarizationColumns::
-ROMSPolarizationColumns(const MSPolarization& msPolarization):
-  corrProduct_p(msPolarization, MSPolarization::
-		columnName(MSPolarization::CORR_PRODUCT)),
-  corrType_p(msPolarization, MSPolarization::
-	     columnName(MSPolarization::CORR_TYPE)),
-  flagRow_p(msPolarization, MSPolarization::
-	    columnName(MSPolarization::FLAG_ROW)),
-  numCorr_p(msPolarization, MSPolarization::
-	    columnName(MSPolarization::NUM_CORR))
-{}
-
-ROMSPolarizationColumns::~ROMSPolarizationColumns() {}
-
-ROMSPolarizationColumns::ROMSPolarizationColumns():
-  corrProduct_p(),
-  corrType_p(),
-  flagRow_p(),
-  numCorr_p()
+MSPolarizationColumns::MSPolarizationColumns()
 {
 }
 
-void ROMSPolarizationColumns::
+MSPolarizationColumns::
+MSPolarizationColumns(const MSPolarization& msPolarization)
+{
+  attach(msPolarization);
+}
+
+MSPolarizationColumns::~MSPolarizationColumns() {}
+
+void MSPolarizationColumns::
 attach(const MSPolarization& msPolarization)
 {
   corrProduct_p.attach(msPolarization, MSPolarization::
@@ -71,7 +61,7 @@ attach(const MSPolarization& msPolarization)
 		   columnName(MSPolarization::NUM_CORR));
 }
 
-Int ROMSPolarizationColumns::
+Int MSPolarizationColumns::
 match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
@@ -85,7 +75,7 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("ROMSPolarszationColumns::match(...) - "
+      throw(AipsError("MSPolarszationColumns::match(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -106,59 +96,17 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
   return -1;
 }
 
-Bool ROMSPolarizationColumns::
+Bool MSPolarizationColumns::
 matchCorrType(uInt row, const Vector<Int>& polType) const {
   DebugAssert(row < nrow(), AipsError);
   return allEQ(corrType()(row), polType);
 }
 
-Bool ROMSPolarizationColumns::
+Bool MSPolarizationColumns::
 matchCorrProduct(uInt row, const Matrix<Int>& polProduct) const {
   DebugAssert(row < nrow(), AipsError);
     // The static cast is a work around for an SGI compiler Bug
   return allEQ(corrProduct()(row), static_cast< const Matrix<Int> &>(polProduct));
 }
 
-MSPolarizationColumns::
-MSPolarizationColumns(MSPolarization& msPolarization):
-  ROMSPolarizationColumns(msPolarization),
-  corrProduct_p(msPolarization, MSPolarization::
-		columnName(MSPolarization::CORR_PRODUCT)),
-  corrType_p(msPolarization, MSPolarization::
-	   columnName(MSPolarization::CORR_TYPE)),
-  flagRow_p(msPolarization, MSPolarization::
-	  columnName(MSPolarization::FLAG_ROW)),
-  numCorr_p(msPolarization, MSPolarization::
-	    columnName(MSPolarization::NUM_CORR))
-{}
-
-MSPolarizationColumns::~MSPolarizationColumns() {}
-
-MSPolarizationColumns::MSPolarizationColumns():
-  ROMSPolarizationColumns(),
-  corrProduct_p(),
-  corrType_p(),
-  flagRow_p(),
-  numCorr_p()
-{
-}
-
-void MSPolarizationColumns::
-attach(MSPolarization& msPolarization)
-{
-  ROMSPolarizationColumns::attach(msPolarization);
-  corrProduct_p.attach(msPolarization, MSPolarization::
-		       columnName(MSPolarization::CORR_PRODUCT));
-  corrType_p.attach(msPolarization, MSPolarization::
-		    columnName(MSPolarization::CORR_TYPE));
-  flagRow_p.attach(msPolarization, MSPolarization::
-		   columnName(MSPolarization::FLAG_ROW));
-  numCorr_p.attach(msPolarization, MSPolarization::
-		   columnName(MSPolarization::NUM_CORR));
-}
-// Local Variables: 
-// compile-command: "gmake MSPolColumns"
-// End: 
-
 } //# NAMESPACE CASACORE - END
-

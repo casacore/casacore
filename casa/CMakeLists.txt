@@ -6,7 +6,10 @@ configure_file (
   config.h.in
   "${PROJECT_BINARY_DIR}/casacore/casa/config.h"
   @ONLY)
-
+configure_file (
+  version.h.in
+  "${PROJECT_BINARY_DIR}/casacore/casa/version.h"
+  @ONLY)
 
 set (
 parser_inputs
@@ -686,7 +689,7 @@ System.h
 typeinfo.h
 Utilities.h
 vector.h
-version.h
+${PROJECT_BINARY_DIR}/casacore/casa/version.h
 DESTINATION include/casacore/casa
 )
 

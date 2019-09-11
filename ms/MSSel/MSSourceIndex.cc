@@ -44,7 +44,7 @@ MSSourceIndex::MSSourceIndex(const MSSource &source)
     : MSTableIndex(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"), compare)
 { 
   attachIds();
-  msSourceCols_p = new ROMSSourceColumns(source);
+  msSourceCols_p = new MSSourceColumns(source);
 }
 
 MSSourceIndex::MSSourceIndex(const MSSourceIndex &other)

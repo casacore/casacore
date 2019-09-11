@@ -133,8 +133,8 @@ private:
   // Construct from an MS FIELD subtable
   MSSpwIndex();
   // FIELD subtable column accessor
-  ROMSSpWindowColumns msSpwSubTable_p;
-  //  ROMSDataDescColumns msDataDescSubTable_p;
+  MSSpWindowColumns msSpwSubTable_p;
+  //  MSDataDescColumns msDataDescSubTable_p;
   enum MODES {EXACT=1, APPROX, RANGE};
   Vector<Int> spwIDs;
 };

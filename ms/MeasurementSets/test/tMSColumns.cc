@@ -174,11 +174,11 @@ int main() {
       ms.initRefs();
     } // write the MS to disk
 
-    //  now create the MSColumns and ROMSColumns objects, testing all
+    //  now create the MSColumns and MSColumns objects, testing all
     // declarations and column definitions for type consistency
     {
       MeasurementSet ms("tMSColumns_table.ms",Table::Old);
-      ROMSColumns romsc(ms);
+      MSColumns romsc(ms);
     }
     {
       MeasurementSet ms("tMSColumns_table.ms",Table::Update);

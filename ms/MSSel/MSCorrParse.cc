@@ -72,7 +72,7 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
   Slicer slicer;
   Bool corrTypeExist = False;
 
-  ROArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
+  ArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
   TableDesc tdSel;
   String colSel = "SELECTED_DATA";
 
@@ -85,7 +85,7 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
   
   ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
   
-  ROMSPolarizationColumns polc(selms.polarization());
+  MSPolarizationColumns polc(selms.polarization());
   Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
   IPosition ip = corrtypeArray.shape();
 

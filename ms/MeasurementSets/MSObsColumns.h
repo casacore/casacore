@@ -44,108 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSObservation;
 
 // <summary>
-// A class to provide easy read-only access to MSObservation columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSObservation
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSObservationColumns stands for Read-Only MeasurementSet Observation
-// Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSObservation
-// Table.  It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to worry about
-// getting those right. There is an access function for every predefined
-// column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=ROMSColumns>
-// ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSObservationColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSObservationColumns(const MSObservation& msObservation);
-
-  // The destructor does nothing special
-  ~ROMSObservationColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ROArrayColumn<String>& log() const {return log_p;}
-  const ROScalarColumn<String>& observer() const {return observer_p;}
-  const ROScalarColumn<String>& project() const {return project_p;}
-  const ROScalarColumn<Double>& releaseDate() const {return releaseDate_p;}
-  const ROScalarQuantColumn<Double>& releaseDateQuant() const {
-    return releaseDateQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& releaseDateMeas() const {
-    return releaseDateMeas_p;}
-  const ROArrayColumn<String>& schedule() const {return schedule_p;}
-  const ROScalarColumn<String>& scheduleType() const {return scheduleType_p;}
-  const ROScalarColumn<String>& telescopeName() const {return telescopeName_p;}
-  const ROArrayColumn<Double>& timeRange() const {return timeRange_p;}
-  const ROArrayQuantColumn<Double>& timeRangeQuant() const {
-    return timeRangeQuant_p;}
-  const ROArrayMeasColumn<MEpoch>& timeRangeMeas() const {
-    return timeRangeMeas_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return flagRow_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSObservationColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSObservation& msObservation);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSObservationColumns(const ROMSObservationColumns&);
-  ROMSObservationColumns& operator=(const ROMSObservationColumns&);
-
-  //# required columns
-  ROScalarColumn<Bool> flagRow_p;
-  ROArrayColumn<String> log_p;
-  ROScalarColumn<String> observer_p;
-  ROScalarColumn<String> project_p;
-  ROScalarColumn<Double> releaseDate_p;
-  ROArrayColumn<String> schedule_p;
-  ROScalarColumn<String> scheduleType_p;
-  ROScalarColumn<String> telescopeName_p;
-  ROArrayColumn<Double> timeRange_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> releaseDateMeas_p;
-  ROArrayMeasColumn<MEpoch> timeRangeMeas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> releaseDateQuant_p;
-  ROArrayQuantColumn<Double> timeRangeQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSObservation columns
+// A class to provide easy access to MSObservation columns
 // </summary>
 
 // <use visibility=export>
@@ -178,16 +77,16 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSObservationColumns: public ROMSObservationColumns
+class MSObservationColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSObservationColumns(MSObservation& msObservation);
+  MSObservationColumns(const MSObservation& msObservation);
 
   // The desctructor does nothing special
   ~MSObservationColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   // <group>
   ScalarColumn<Bool>& flagRow() {return flagRow_p;}
   ArrayColumn<String>& log() {return log_p;}
@@ -204,35 +103,29 @@ public:
   ArrayMeasColumn<MEpoch>& timeRangeMeas() {return timeRangeMeas_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Bool>& flagRow() const {
-    return ROMSObservationColumns::flagRow();}
-  const ROArrayColumn<String>& log() const {
-    return ROMSObservationColumns::log();}
-  const ROScalarColumn<String>& observer() const {
-    return ROMSObservationColumns::observer();}
-  const ROScalarColumn<String>& project() const {
-    return ROMSObservationColumns::project();}
-  const ROScalarColumn<Double>& releaseDate() const {
-    return ROMSObservationColumns::releaseDate();}
-  const ROScalarQuantColumn<Double>& releaseDateQuant() const {
-    return ROMSObservationColumns::releaseDateQuant();}
-  const ROScalarMeasColumn<MEpoch>& releaseDateMeas() const {
-    return ROMSObservationColumns::releaseDateMeas();}
-  const ROArrayColumn<String>& schedule() const {
-    return ROMSObservationColumns::schedule();}
-  const ROScalarColumn<String>& scheduleType() const {
-    return ROMSObservationColumns::scheduleType();}
-  const ROScalarColumn<String>& telescopeName() const {
-    return ROMSObservationColumns::telescopeName();}
-  const ROArrayColumn<Double>& timeRange() const {
-    return ROMSObservationColumns::timeRange();}
-  const ROArrayQuantColumn<Double>& timeRangeQuant() const {
-    return ROMSObservationColumns::timeRangeQuant();}
-  const ROArrayMeasColumn<MEpoch>& timeRangeMeas() const {
-    return ROMSObservationColumns::timeRangeMeas();}
+  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ArrayColumn<String>& log() const {return log_p;}
+  const ScalarColumn<String>& observer() const {return observer_p;}
+  const ScalarColumn<String>& project() const {return project_p;}
+  const ScalarColumn<Double>& releaseDate() const {return releaseDate_p;}
+  const ScalarQuantColumn<Double>& releaseDateQuant() const {
+    return releaseDateQuant_p;}
+  const ScalarMeasColumn<MEpoch>& releaseDateMeas() const {
+    return releaseDateMeas_p;}
+  const ArrayColumn<String>& schedule() const {return schedule_p;}
+  const ScalarColumn<String>& scheduleType() const {return scheduleType_p;}
+  const ScalarColumn<String>& telescopeName() const {return telescopeName_p;}
+  const ArrayColumn<Double>& timeRange() const {return timeRange_p;}
+  const ArrayQuantColumn<Double>& timeRangeQuant() const {
+    return timeRangeQuant_p;}
+  const ArrayMeasColumn<MEpoch>& timeRangeMeas() const {
+    return timeRangeMeas_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return flagRow_p.nrow();}
 
   // set the epoch type for the TIME_RANGE & RELEASE_DATE columns.
   // <note role=tip>
@@ -251,7 +144,7 @@ protected:
   MSObservationColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSObservation& msObservation);
+  void attach(const MSObservation& msObservation);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -278,6 +171,9 @@ private:
   ScalarQuantColumn<Double> releaseDateQuant_p;
   ArrayQuantColumn<Double> timeRangeQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSObservationColumns ROMSObservationColumns;
 
 } //# NAMESPACE CASACORE - END
 

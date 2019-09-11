@@ -161,7 +161,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<Int> FieldIdsFromFN ;
     Vector<Int> FieldIdsFromFC ;
     
-    ROMSFieldColumns msFC(ms()->field());
+    MSFieldColumns msFC(ms()->field());
     MSFieldIndex msFI(ms()->field());
     String colName = MS::columnName(MS::FIELD_ID);
     TableExprNode condition = 0;

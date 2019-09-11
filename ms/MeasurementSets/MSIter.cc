@@ -549,7 +549,7 @@ void MSIter::setMSInfo()
   if (newMS_p) {
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
-    msc_p = new ROMSColumns(bms_p[curMS_p]);
+    msc_p = new MSColumns(bms_p[curMS_p]);
     // check to see if we are attached to a 'reference MS' with a 
     // DATA column that is a selection of the original DATA
     if(!msc_p->data().isNull() || !msc_p->floatData().isNull())
@@ -656,7 +656,7 @@ void MSIter::setFeedInfo()
       Bool unique = True;
       for (TableIterator tabIter(msc_p->feed().time().table(),cols);
 	   !tabIter.pastEnd(); tabIter.next()) {
-	ROMSFeedColumns msfc(MSFeed(tabIter.table()));
+	MSFeedColumns msfc(MSFeed(tabIter.table()));
 	// check if any antennas appear more than once
 	Vector<Int> antennas=msfc.antennaId().getColumn();
 	Int nRow=antennas.nelements();
@@ -803,7 +803,7 @@ const String& MSIter::sourceName()  const {
 }
 const MDirection& MSIter::phaseCenter() const {
   if(msc_p){
-    Double firstTimeStamp=ROScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
+    Double firstTimeStamp=ScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
     if(newField_p || (firstTimeStamp != prevFirstTimeStamp_p)){
       This->prevFirstTimeStamp_p=firstTimeStamp;
       This->phaseCenter_p=msc_p->field().phaseDirMeas(curField_p, firstTimeStamp);

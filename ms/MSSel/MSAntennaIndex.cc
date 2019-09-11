@@ -47,7 +47,7 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
 // Input:
 //    antenna           const MSAntenna&           Input MSAntenna object
 // Output to private data:
-//    msAntennaCols_p   ROMSAntennaColumns         MSAntenna columns accessor
+//    msAntennaCols_p   MSAntennaColumns         MSAntenna columns accessor
 //    antennaIds_p      Vector<Int>                Antenna id's
 //    nrows_p           Int                        Number of rows
 //

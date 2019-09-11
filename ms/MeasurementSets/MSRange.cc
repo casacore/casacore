@@ -86,12 +86,12 @@ Bool MSRange::checkShapes()
   if (n>0 && spwId_p.nelements()>0) return constantShape_p; 
   constantShape_p=True;
   if (n==0) {
-    ROScalarColumn<Int> dd(ms_p,MS::columnName(MS::DATA_DESC_ID));
+    ScalarColumn<Int> dd(ms_p,MS::columnName(MS::DATA_DESC_ID));
     Vector<Int> ddId=scalarRange(dd);
     ddId_p=ddId;
   }
   Int n2=ddId_p.nelements();
-  ROMSDataDescColumns ddc(ms_p.dataDescription());
+  MSDataDescColumns ddc(ms_p.dataDescription());
   spwId_p.resize(n2);
   polId_p.resize(n2);
   for (Int i=0; i<n2; i++) {
@@ -102,8 +102,8 @@ Bool MSRange::checkShapes()
 
   // check if the shape is the same for all spectral windows that occur
   // in the main table
-  ROMSSpWindowColumns spwc(ms_p.spectralWindow());
-  ROMSPolarizationColumns polc(ms_p.polarization());
+  MSSpWindowColumns spwc(ms_p.spectralWindow());
+  MSPolarizationColumns polc(ms_p.polarization());
   for (Int i=1; i<n2; i++) {
     if (spwc.numChan()(spwId_p(i)) != spwc.numChan()(spwId_p(i-1)) ||
 	polc.numCorr()(polId_p(i)) != polc.numCorr()(polId_p(i-1))) {
@@ -151,7 +151,7 @@ Record MSRange::range(const Vector<Int>& keys,
     os<< LogIO::WARN << "Table is empty - nothing to do"<<LogIO::POST;
     return out;
   }
-  ROMSColumns msc(ms_p);
+  MSColumns msc(ms_p);
   Matrix<Bool> want(nFuncType,nDataType,False);
   // use HeapSort as it's performance is guaranteed, quicksort is often
   // extremely slow (O(n*n)) for inputs with many successive duplicates
@@ -398,7 +398,7 @@ Record MSRange::range(const Vector<Int>& keys,
   for (Int dataType=Observed; dataType<nDataType; dataType++) {
     Bool needCol2=False;
     if (anyEQ(want.column(dataType),True)) {
-      ROArrayColumn<Complex> colData1, colData2;
+      ArrayColumn<Complex> colData1, colData2;
       if (dataType==Observed || dataType==ObsResidual) {
 	colData1.reference(msc.data());
       } else if (dataType==Corrected || dataType==Ratio || dataType==Residual){
@@ -491,14 +491,14 @@ void MSRange::setBlockSize(Int blockSize)
 }
 
 void MSRange::scalarRange(Record& out, const String& item, 
-		 const ROScalarColumn<Int>& id, Bool oneBased) 
+		 const ScalarColumn<Int>& id, Bool oneBased) 
 {
   Vector<Int> ids=scalarRange(id);
   if (oneBased) ids+=1;
   out.define(item,ids);
 }
 
-Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id)
+Vector<Int> MSRange::scalarRange(const ScalarColumn<Int>& id)
 {
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;
@@ -509,8 +509,8 @@ Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id)
 }
 
 void MSRange::minMax(Float& mini, Float& maxi, 
-		     const ROArrayColumn<Float>& data,
-		     const ROArrayColumn<Bool>& flag,
+		     const ArrayColumn<Float>& data,
+		     const ArrayColumn<Bool>& flag,
 		     Bool useFlags)
 {
   IPosition shp=data.shape(0);
@@ -550,9 +550,9 @@ void MSRange::minMax(Float& mini, Float& maxi,
 
 void MSRange::minMax(Matrix<Float>& minmax, 
 		     const Vector<Bool>& funcSel,
-		     const ROArrayColumn<Complex>& data1,
-		     const ROArrayColumn<Complex>& data2,
-		     const ROArrayColumn<Bool>& flag,
+		     const ArrayColumn<Complex>& data1,
+		     const ArrayColumn<Complex>& data2,
+		     const ArrayColumn<Bool>& flag,
 		     Int dataType,
 		     Bool useFlags)
 {
@@ -621,8 +621,8 @@ void MSRange::minMax(Matrix<Float>& minmax,
   }
 }
 
-Vector<Int> MSRange::ifrNumbers(const ROScalarColumn<Int>& ant1,
-				const ROScalarColumn<Int>& ant2)
+Vector<Int> MSRange::ifrNumbers(const ScalarColumn<Int>& ant1,
+				const ScalarColumn<Int>& ant2)
 {
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;

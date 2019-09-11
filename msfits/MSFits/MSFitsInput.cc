@@ -1694,7 +1694,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     TableRecord btKeywords = bt.getKeywords();
     Int nAnt = bt.nrows();
     Table anTab = bt.fullTable();
-    ROScalarColumn<Int> id(anTab, "NOSTA");
+    ScalarColumn<Int> id(anTab, "NOSTA");
     Vector<Int> ids = id.getColumn();
     std::set<Int> sids(ids.begin(), ids.end());
     _nAntRow = *std::max_element(sids.begin(), sids.end());
@@ -1843,12 +1843,12 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         diameter = 15.0;
     }
     MSAntennaColumns& ant(_msc->antenna());
-    ROScalarColumn<String> name(anTab, "ANNAME");
-    ROScalarColumn<Int> mountType(anTab, "MNTSTA");
-    ROScalarColumn<Float> offset(anTab, "STAXOF");
-    ROScalarColumn<Float> polangleA(anTab, "POLAA");
-    ROScalarColumn<Float> polangleB(anTab, "POLAB");
-    ROArrayColumn<Double> antXYZ(anTab, "STABXYZ");
+    ScalarColumn<String> name(anTab, "ANNAME");
+    ScalarColumn<Int> mountType(anTab, "MNTSTA");
+    ScalarColumn<Float> offset(anTab, "STAXOF");
+    ScalarColumn<Float> polangleA(anTab, "POLAA");
+    ScalarColumn<Float> polangleB(anTab, "POLAB");
+    ArrayColumn<Double> antXYZ(anTab, "STABXYZ");
     Vector<Float> antDiams(nAnt);
     antDiams.set(diameter);
 
@@ -1856,7 +1856,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     // any of the values are valid
     Bool positiveDiamsFound = False;
     if (anTab.tableDesc().isColumn("DIAMETER")) {
-        Vector<Float> tmpDiams = ROScalarColumn<Float>(anTab, "DIAMETER").getColumn();
+        Vector<Float> tmpDiams = ScalarColumn<Float>(anTab, "DIAMETER").getColumn();
         if (anyGT(tmpDiams, 0.0f)) {
             antDiams = tmpDiams;
             positiveDiamsFound = True;
@@ -1948,7 +1948,11 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             mount = "ORBITING";
             break;
         case 4:
+            mount = "ALT-AZ+NASMYTH-R";
+            break;
         case 5:
+            mount = "ALT-AZ+NASMYTH-L";
+            break;
         case 6:
             mount = "BIZARRE";
             break;
@@ -1989,7 +1993,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         ant.type().put(row, "GROUND-BASED");
 
         // Do UVFITS-dependent position corrections:
-        // ROArrayColumn antXYZ(i) may need coord transform; do it in corXYZ:
+        // ArrayColumn antXYZ(i) may need coord transform; do it in corXYZ:
         Vector<Double> corXYZ = antXYZ(i);
         if (rotate) {
             corXYZ = product(posRot, corXYZ);
@@ -2029,24 +2033,24 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
   //  Table fqTab=bt.fullTable("",Table::Scratch);
   Table fqTab=bt.fullTable();
   Int nRow=fqTab.nrow();
-  ROScalarColumn<Int> colFrqSel(fqTab,"FRQSEL");
+  ScalarColumn<Int> colFrqSel(fqTab,"FRQSEL");
   Matrix<Double> ifFreq(_nIF,nRow);
   Matrix<Float> chWidth(_nIF,nRow);
   Matrix<Float> totalBandwidth(_nIF,nRow);
   // The type of the column changes according to the number of entries
   if (_nIF==1) {
-    ROScalarColumn<Double> colIFFreq(fqTab,"IF FREQ");
-    ROScalarColumn<Float> colChWidth(fqTab,"CH WIDTH");
-    ROScalarColumn<Float> colTotalBandwidth(fqTab,"TOTAL BANDWIDTH");
+    ScalarColumn<Double> colIFFreq(fqTab,"IF FREQ");
+    ScalarColumn<Float> colChWidth(fqTab,"CH WIDTH");
+    ScalarColumn<Float> colTotalBandwidth(fqTab,"TOTAL BANDWIDTH");
     for (Int i=0; i<nRow; i++) {
       ifFreq(0,i)=colIFFreq(i);
       chWidth(0,i)=colChWidth(i);
       totalBandwidth(0,i)=colTotalBandwidth(i);
     }
   } else {
-    ROArrayColumn<Double> colIFFreq(fqTab,"IF FREQ");
-    ROArrayColumn<Float> colChWidth(fqTab,"CH WIDTH");
-    ROArrayColumn<Float> colTotalBandwidth(fqTab,"TOTAL BANDWIDTH");
+    ArrayColumn<Double> colIFFreq(fqTab,"IF FREQ");
+    ArrayColumn<Float> colChWidth(fqTab,"CH WIDTH");
+    ArrayColumn<Float> colTotalBandwidth(fqTab,"TOTAL BANDWIDTH");
     try{
       colIFFreq.getColumn(ifFreq);
       colChWidth.getColumn(chWidth);
@@ -2202,23 +2206,23 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     uInt noif = bt.getKeywords().asuInt("NO_IF");
     // Table suTab=bt.fullTable("",Table::Scratch);
     Table suTab = bt.fullTable();
-    ROScalarColumn<Int> id(suTab, "ID. NO.");
-    ROScalarColumn<String> name(suTab, "SOURCE");
-    ROScalarColumn<Int> qual(suTab, "QUAL");
+    ScalarColumn<Int> id(suTab, "ID. NO.");
+    ScalarColumn<String> name(suTab, "SOURCE");
+    ScalarColumn<Int> qual(suTab, "QUAL");
     Bool multiqual = False;
     Int minqual, maxqual;
     minMax(minqual, maxqual, qual.getColumn());
     if (minqual != maxqual)
         multiqual = True;
-    ROScalarColumn<String> code(suTab, "CALCODE");
-    // ROScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
-    ROScalarColumn<Double> ra(suTab, "RAEPO"); //degrees
-    ROScalarColumn<Double> dec(suTab, "DECEPO"); //degrees
-    ROScalarColumn<Double> raapp(suTab, "RAAPP"); //degrees
-    ROScalarColumn<Double> decapp(suTab, "DECAPP"); //degrees
-    ROScalarColumn<Double> epoch(suTab, "EPOCH"); //years
-    ROScalarColumn<Double> pmra(suTab, "PMRA"); //deg/day
-    ROScalarColumn<Double> pmdec(suTab, "PMDEC"); //deg/day
+    ScalarColumn<String> code(suTab, "CALCODE");
+    // ScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
+    ScalarColumn<Double> ra(suTab, "RAEPO"); //degrees
+    ScalarColumn<Double> dec(suTab, "DECEPO"); //degrees
+    ScalarColumn<Double> raapp(suTab, "RAAPP"); //degrees
+    ScalarColumn<Double> decapp(suTab, "DECAPP"); //degrees
+    ScalarColumn<Double> epoch(suTab, "EPOCH"); //years
+    ScalarColumn<Double> pmra(suTab, "PMRA"); //deg/day
+    ScalarColumn<Double> pmdec(suTab, "PMDEC"); //deg/day
     if (Int(suTab.nrow()) < nField) {
         _log << LogOrigin("MSFitsInput", __func__)
                << LogIO::NORMAL
@@ -2231,8 +2235,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     _sysVel.resize(noif, suTab.nrow());
     Bool throwImmediately = False;
     try {
-    	ROArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-    	ROArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+    	ArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+    	ArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
     	restfreq.getColumn(_restFreq);
         // purposeful assignment of throwImmediately
         // because it appears that the sense of rows and columns are reversed here
@@ -2254,8 +2258,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     				<< "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
     	}
       _restFreq.resize(noif, suTab.nrow());
-      ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-      ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      ScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
       Vector<Double> tmprf(suTab.nrow());
       Vector<Double> tmpsv(suTab.nrow());
       restfreq.getColumn(tmprf);
@@ -2848,15 +2852,15 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
 
     Table fqTab = bt.fullTable();
     Int nRow = fqTab.nrow();
-    ROScalarColumn<Int> colFrqSel(fqTab, "FRQSEL");
+    ScalarColumn<Int> colFrqSel(fqTab, "FRQSEL");
     Matrix<Double> ifFreq(_nIF, nRow);
     Matrix<Float> chWidth(_nIF, nRow);
     Matrix<Float> totalBandwidth(_nIF, nRow);
     // The type of the column changes according to the number of entries
     if (_nIF == 1) {
-        ROScalarColumn<Double> colIFFreq(fqTab, "IF FREQ");
-        ROScalarColumn<Float> colChWidth(fqTab, "CH WIDTH");
-        ROScalarColumn<Float> colTotalBandwidth(fqTab, "TOTAL BANDWIDTH");
+        ScalarColumn<Double> colIFFreq(fqTab, "IF FREQ");
+        ScalarColumn<Float> colChWidth(fqTab, "CH WIDTH");
+        ScalarColumn<Float> colTotalBandwidth(fqTab, "TOTAL BANDWIDTH");
         for (Int i = 0; i < nRow; i++) {
             ifFreq(0, i) = colIFFreq(i);
             chWidth(0, i) = colChWidth(i);
@@ -2864,9 +2868,9 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
         }
     }
     else {
-        ROArrayColumn<Double> colIFFreq(fqTab, "IF FREQ");
-        ROArrayColumn<Float> colChWidth(fqTab, "CH WIDTH");
-        ROArrayColumn<Float> colTotalBandwidth(fqTab, "TOTAL BANDWIDTH");
+        ArrayColumn<Double> colIFFreq(fqTab, "IF FREQ");
+        ArrayColumn<Float> colChWidth(fqTab, "CH WIDTH");
+        ArrayColumn<Float> colTotalBandwidth(fqTab, "TOTAL BANDWIDTH");
         colIFFreq.getColumn(ifFreq);
         colChWidth.getColumn(chWidth);
         colTotalBandwidth.getColumn(totalBandwidth);
@@ -3057,12 +3061,12 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     for (Int group = 0; group < nrows; group++) {
         const Table tb = (group < 1) ? bt.thisRow() : bt.nextRow();
         try {
-            ROScalarColumn<Float> colDate(tb, TType(iTime0));
-            ROScalarColumn<Float> colUU(tb, TType(iU));
-            ROScalarColumn<Float> colVV(tb, TType(iV));
-            ROScalarColumn<Float> colWW(tb, TType(iW));
-            ROScalarColumn<Float> colBL(tb, TType(iBsln));
-            ROArrayColumn<Float> colVis(tb, TType(iVis));
+            ScalarColumn<Float> colDate(tb, TType(iTime0));
+            ScalarColumn<Float> colUU(tb, TType(iU));
+            ScalarColumn<Float> colVV(tb, TType(iV));
+            ScalarColumn<Float> colWW(tb, TType(iW));
+            ScalarColumn<Float> colBL(tb, TType(iBsln));
+            ArrayColumn<Float> colVis(tb, TType(iVis));
 
             Int visL = 1;
             for (uInt i = 0; i < _nPixel.nelements(); i++)
@@ -3077,14 +3081,14 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             // Extract fqid
             Int freqId = 1;
             if (iFreq >= 0) {
-                ROScalarColumn<Float> colFrqSel(tb, TType(iFreq));
+                ScalarColumn<Float> colFrqSel(tb, TType(iFreq));
                 freqId = (Int) colFrqSel.asfloat(0);
             }
 
             // Extract field Id
             Int fieldId = 0;
             if (iSource >= 0) {
-                ROScalarColumn<Float> colSU(tb, TType(iSource));
+                ScalarColumn<Float> colSU(tb, TType(iSource));
                 // make 0-based
                 fieldId = (Int) colSU.asfloat(0) - 1;
             }
@@ -3582,23 +3586,23 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     MSFieldColumns& msField(_msc->field());
     // Table suTab=bt.fullTable("",Table::Scratch);
     Table suTab = bt.fullTable();
-    ROScalarColumn<Int> id(suTab, "ID. NO.");
-    ROScalarColumn<String> name(suTab, "SOURCE");
-    ROScalarColumn<Int> qual(suTab, "QUAL");
+    ScalarColumn<Int> id(suTab, "ID. NO.");
+    ScalarColumn<String> name(suTab, "SOURCE");
+    ScalarColumn<Int> qual(suTab, "QUAL");
     Bool multiqual = False;
     Int minqual, maxqual;
     minMax(minqual, maxqual, qual.getColumn());
     if (minqual != maxqual)
         multiqual = True;
-    ROScalarColumn<String> code(suTab, "CALCODE");
-    // ROScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
-    ROScalarColumn<Double> ra(suTab, "RAEPO"); //degrees
-    ROScalarColumn<Double> dec(suTab, "DECEPO"); //degrees
-    ROScalarColumn<Double> raapp(suTab, "RAAPP"); //degrees
-    ROScalarColumn<Double> decapp(suTab, "DECAPP"); //degrees
-    ROScalarColumn<Double> epoch(suTab, "EPOCH"); //years
-    ROScalarColumn<Double> pmra(suTab, "PMRA"); //deg/day
-    ROScalarColumn<Double> pmdec(suTab, "PMDEC"); //deg/day
+    ScalarColumn<String> code(suTab, "CALCODE");
+    // ScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
+    ScalarColumn<Double> ra(suTab, "RAEPO"); //degrees
+    ScalarColumn<Double> dec(suTab, "DECEPO"); //degrees
+    ScalarColumn<Double> raapp(suTab, "RAAPP"); //degrees
+    ScalarColumn<Double> decapp(suTab, "DECAPP"); //degrees
+    ScalarColumn<Double> epoch(suTab, "EPOCH"); //years
+    ScalarColumn<Double> pmra(suTab, "PMRA"); //deg/day
+    ScalarColumn<Double> pmdec(suTab, "PMDEC"); //deg/day
     if (Int(suTab.nrow()) < nField) {
         _log << LogOrigin("MSFitsInput", __func__)
                << LogIO::NORMAL
@@ -3611,8 +3615,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     _restFreq.resize(noif, suTab.nrow());
     _sysVel.resize(noif, suTab.nrow());
     try{
-      ROArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-      ROArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      ArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
       restfreq.getColumn(_restFreq);
       sysvel.getColumn(_sysVel);
     }
@@ -3622,8 +3626,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
 	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
 	       << "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
       }
-      ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-      ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      ScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
       Vector<Double> tmprf(suTab.nrow());
       Vector<Double> tmpsv(suTab.nrow());
       restfreq.getColumn(tmprf);

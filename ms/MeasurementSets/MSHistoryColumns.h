@@ -40,100 +40,9 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSHistory;
-// <summary>
-// A class to provide easy read-only access to MSHistory columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSHistory
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSHistoryColumns stands for Read-Only MeasurementSet History Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSHistory
-// Table.  It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to worry about
-// getting those right. There is an access function for every predefined
-// column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=ROMSColumns>
-// ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSHistoryColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSHistoryColumns(const MSHistory& msHistory);
-
-  // The destructor does nothing special
-  ~ROMSHistoryColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<String>& application() const {return application_p;}
-  const ROArrayColumn<String>& appParams() const {return appParams_p;}
-  const ROArrayColumn<String>& cliCommand() const {return cliCommand_p;}
-  const ROScalarColumn<String>& message() const {return message_p;}
-  const ROScalarColumn<Int>& objectId() const {return objectId_p;}
-  const ROScalarColumn<Int>& observationId() const {return observationId_p;}
-  const ROScalarColumn<String>& origin() const {return origin_p;}
-  const ROScalarColumn<String>& priority() const {return priority_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return application_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSHistoryColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSHistory& msHistory);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSHistoryColumns(const ROMSHistoryColumns&);
-  ROMSHistoryColumns& operator=(const ROMSHistoryColumns&);
-
-  //# required columns
-  ROScalarColumn<String> application_p;
-  ROArrayColumn<String> appParams_p;
-  ROArrayColumn<String> cliCommand_p;
-  ROScalarColumn<String> message_p;
-  ROScalarColumn<Int> objectId_p;
-  ROScalarColumn<Int> observationId_p;
-  ROScalarColumn<String> origin_p;
-  ROScalarColumn<String> priority_p;
-  ROScalarColumn<Double> time_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> timeQuant_p;
-};
 
 // <summary>
-// A class to provide easy read-write access to MSHistory columns
+// A class to provide easy access to MSHistory columns
 // </summary>
 
 // <use visibility=export>
@@ -170,16 +79,16 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSHistoryColumns: public ROMSHistoryColumns
+class MSHistoryColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSHistoryColumns(MSHistory& msHistory);
+  MSHistoryColumns(const MSHistory& msHistory);
 
   // The destructor does nothing special
   ~MSHistoryColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   // <group>
   ScalarColumn<String>& application() {return application_p;}
   ArrayColumn<String>& appParams() {return appParams_p;}
@@ -194,31 +103,23 @@ public:
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<String>& application() const {
-    return ROMSHistoryColumns::application();}
-  const ROArrayColumn<String>& appParams() const {
-    return ROMSHistoryColumns::appParams();}
-  const ROArrayColumn<String>& cliCommand() const {
-    return ROMSHistoryColumns::cliCommand();}
-  const ROScalarColumn<String>& message() const {
-    return ROMSHistoryColumns::message();}
-  const ROScalarColumn<Int>& objectId() const {
-    return ROMSHistoryColumns::objectId();}
-  const ROScalarColumn<Int>& observationId() const {
-    return ROMSHistoryColumns::observationId();}
-  const ROScalarColumn<String>& origin() const {
-    return ROMSHistoryColumns::origin();}
-  const ROScalarColumn<String>& priority() const {
-    return ROMSHistoryColumns::priority();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSHistoryColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSHistoryColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSHistoryColumns::timeMeas();}
+  const ScalarColumn<String>& application() const {return application_p;}
+  const ArrayColumn<String>& appParams() const {return appParams_p;}
+  const ArrayColumn<String>& cliCommand() const {return cliCommand_p;}
+  const ScalarColumn<String>& message() const {return message_p;}
+  const ScalarColumn<Int>& objectId() const {return objectId_p;}
+  const ScalarColumn<Int>& observationId() const {return observationId_p;}
+  const ScalarColumn<String>& origin() const {return origin_p;}
+  const ScalarColumn<String>& priority() const {return priority_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return application_p.nrow();}
 
   // set the epoch type for the TIME column.
   // <note role=tip>
@@ -237,7 +138,7 @@ protected:
   MSHistoryColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSHistory& msHistory);
+  void attach(const MSHistory& msHistory);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -262,6 +163,9 @@ private:
   //# Access to Quantum columns
   ScalarQuantColumn<Double> timeQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSHistoryColumns ROMSHistoryColumns;
 
 } //# NAMESPACE CASACORE - END
 

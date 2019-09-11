@@ -136,7 +136,7 @@ private:
     // the subtable
     Table tab_p;
 
-    ROScalarColumn<Double> timeColumn_p, intervalColumn_p;
+    ScalarColumn<Double> timeColumn_p, intervalColumn_p;
     Vector<Double> timeVec_p, intervalVec_p;
     const Double *timeVals_p, *intervalVals_p;
     Bool deleteItTime_p, deleteItInterval_p;

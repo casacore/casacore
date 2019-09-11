@@ -29,6 +29,7 @@
 #define ADIOS2STMANCOLUMN_H
 
 #include <unordered_map>
+#include <numeric>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/tables/DataMan/StManColumn.h>
 #include <casacore/tables/Tables/RefRows.h>
@@ -152,14 +153,31 @@ public:
         itsAdiosEngine = aAdiosEngine;
         itsAdiosOpenMode = aOpenMode;
         itsAdiosVariable = itsAdiosIO->InquireVariable<T>(itsColumnName);
-        if (!itsAdiosVariable && aOpenMode == 'w')
+        if(aOpenMode == 'w')
         {
-            itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
-                itsColumnName,
-                itsAdiosShape,
-                itsAdiosStart,
-                itsAdiosCount);
+            if (!itsAdiosVariable)
+            {
+                itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
+                        itsColumnName,
+                        itsAdiosShape,
+                        itsAdiosStart,
+                        itsAdiosCount);
+            }
         }
+        else if(aOpenMode == 'r')
+        {
+            size_t cacheSize = std::accumulate(
+                    itsAdiosShape.begin() + 1,
+                    itsAdiosShape.end(),
+                    itsReadCacheMaxRows,
+                    std::multiplies<size_t>());
+            itsReadCache.resize(cacheSize);
+        }
+        itsArraySize = std::accumulate(
+                itsAdiosShape.begin() + 1,
+                itsAdiosShape.end(),
+                1,
+                std::multiplies<size_t>());
     }
 
     virtual void putArrayV(uInt rownr, const void *dataPtr)
@@ -171,7 +189,26 @@ public:
     virtual void getArrayV(uInt rownr, void *dataPtr)
     {
         arrayVToSelection(rownr);
-        fromAdios(dataPtr);
+        if(itsReadCacheMaxRows > 0)
+        {
+            if(itsAdiosStart[0] < itsReadCacheStartRow or itsAdiosStart[0] >= itsReadCacheStartRow + itsReadCacheRows)
+            {
+                itsAdiosCount[0] = itsReadCacheMaxRows;
+                itsReadCacheRows = itsReadCacheMaxRows;
+                fromAdios(itsReadCache.data());
+            }
+            Bool deleteIt;
+            auto *arrayPtr = asArrayPtr(dataPtr);
+            T *data = arrayPtr->getStorage(deleteIt);
+            size_t index = itsArraySize * (itsAdiosStart[0] - itsReadCacheStartRow);
+            size_t length = sizeof(T) * itsArraySize;
+            std::memcpy(data, itsReadCache.data() + index, length);
+            arrayPtr->putStorage(data, deleteIt);
+        }
+        else
+        {
+            fromAdios(dataPtr);
+        }
     }
 
     virtual void putScalarV(uInt rownr, const void *dataPtr)
@@ -265,8 +302,13 @@ public:
     }
 
 private:
-    adios2::Variable<T> itsAdiosVariable;
     const String itsStringArrayBarrier = "ADIOS2BARRIER";
+    adios2::Variable<T> itsAdiosVariable;
+    size_t itsReadCacheStartRow = 0;
+    size_t itsReadCacheRows = 0;
+    size_t itsReadCacheMaxRows = 1000;
+    size_t itsArraySize;
+    std::vector<T> itsReadCache;
 
     Array<T> *asArrayPtr(void *dataPtr) const
     {

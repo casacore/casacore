@@ -1074,101 +1074,111 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // Add in the fields from miscInfo that we can
     //
-    const uInt nmisc = image.miscInfo().nfields();
+    const auto miscInfo = image.miscInfo();
+    const uInt nmisc = miscInfo.nfields();
     for (i=0; i<nmisc; i++) {
-      String tmp0 = image.miscInfo().name(i);
-      String miscname(tmp0.at(0,8));
-      if (tmp0.length() > 8) {
-        os  << LogIO::NORMAL << "Truncating miscinfo field " << tmp0
-            << " to " << miscname << LogIO::POST;
-      }
-      //
-      if (miscname != "end" && miscname != "END") {
-        if (header.isDefined(miscname)) {
-          // These warnings just cause confusion.  They are usually
-          // from the alt* keywords which FITSSpectralUtil writes.
-          // They may also have been preserved in miscInfo when an
-          // image came from FITS and hence the conflict.
+        String tmp0 = miscInfo.name(i);
+        String miscname(tmp0.at(0,8));
+        if (tmp0.length() > 8) {
+            os  << LogIO::NORMAL << "Truncating miscinfo field " << tmp0
+                << " to " << miscname << LogIO::POST;
+        }
+        //
+        if (miscname != "end" && miscname != "END") {
+            if (header.isDefined(miscname)) {
+            // These warnings just cause confusion.  They are usually
+            // from the alt* keywords which FITSSpectralUtil writes.
+            // They may also have been preserved in miscInfo when an
+            // image came from FITS and hence the conflict.
 
-          /*
-            os << LogIO::WARN << "FITS keyword " << miscname
-            << " is already defined so dropping it" << LogIO::POST;
-          */
-        } else {
-          DataType misctype = image.miscInfo().dataType(i);
-          switch(misctype) {
-          case TpBool:
-            header.define(miscname, image.miscInfo().asBool(i));
-            break;
-          case TpChar:
-          case TpUChar:
-          case TpShort:
-          case TpUShort:
-          case TpInt:
-          case TpUInt:
-            header.define(miscname, image.miscInfo().asInt(i));
-            break;
-          case TpFloat:
-            header.define(miscname, image.miscInfo().asfloat(i));
-            break;
-          case TpDouble:
-            header.define(miscname, image.miscInfo().asdouble(i));
-            break;
-          case TpComplex:
-            header.define(miscname, image.miscInfo().asComplex(i));
-            break;
-          case TpDComplex:
-            header.define(miscname, image.miscInfo().asDComplex(i));
-            break;
-          case TpString:
-            if (miscname.contains("date") && miscname != "date") {
-              // Try to canonicalize dates (i.e. solve Y2K)
-              String outdate;
-              // We only need to convert the date, the timesys we'll just
-              // copy through
-              if (FITSDateUtil::convertDateString(outdate,
-                                                  image.miscInfo().asString(i))) {
-                // Conversion worked - change the header
-                header.define(miscname, outdate);
-              } else {
-                // conversion failed - just copy the existing date
-                header.define(miscname, image.miscInfo().asString(i));
-              }
-            } else {
-              // Just copy non-date strings through
-              header.define(miscname, image.miscInfo().asString(i));
-            }
-            break;
+            /*
+                os << LogIO::WARN << "FITS keyword " << miscname
+                << " is already defined so dropping it" << LogIO::POST;
+            */
+        } 
+        else {
+            DataType misctype = miscInfo.dataType(i);
+            switch(misctype) {
+                case TpBool:
+                    header.define(miscname, miscInfo.asBool(i));
+                    break;
+                case TpChar:
+                case TpUChar:
+                case TpShort:
+                case TpUShort:
+                case TpInt:
+                case TpUInt:
+                    header.define(miscname, miscInfo.asInt(i));
+                    break;
+                case TpInt64:
+                    header.define(miscname, miscInfo.asInt(i));
+                    break;
+                case TpFloat:
+                    header.define(miscname, miscInfo.asfloat(i));
+                    break;
+                case TpDouble:
+                    header.define(miscname, miscInfo.asdouble(i));
+                    break;
+                case TpComplex:
+                    header.define(miscname, miscInfo.asComplex(i));
+                    break;
+                case TpDComplex:
+                    header.define(miscname, miscInfo.asDComplex(i));
+                    break;
+                case TpString:
+                    if (miscname.contains("date") && miscname != "date") {
+                        // Try to canonicalize dates (i.e. solve Y2K)
+                        String outdate;
+                        // We only need to convert the date, the timesys we'll just
+                        // copy through
+                        if (
+                            FITSDateUtil::convertDateString(outdate,
+                            miscInfo.asString(i))
+                        ) {
+                            // Conversion worked - change the header
+                            header.define(miscname, outdate);
+                        }
+                        else {
+                            // conversion failed - just copy the existing date
+                            header.define(miscname, miscInfo.asString(i));
+                        }
+                    }
+                    else {
+                        // Just copy non-date strings through
+                        header.define(miscname, miscInfo.asString(i));
+                    }
+                break;
             // These should be the cases that we actually see. I don't think
             // asArray* converts types.
-          case TpArrayBool:
-            header.define(miscname, image.miscInfo().asArrayBool(i));
-            break;
-          case TpArrayChar:
-          case TpArrayUShort:
-          case TpArrayInt:
-          case TpArrayUInt:
-          case TpArrayInt64:
-            header.define(miscname, image.miscInfo().toArrayInt(i));
-            break;
-          case TpArrayFloat:
-            header.define(miscname, image.miscInfo().asArrayfloat(i));
-            break;
-          case TpArrayDouble:
-            header.define(miscname, image.miscInfo().asArraydouble(i));
-            break;
-          case TpArrayString:
-            header.define(miscname, image.miscInfo().asArrayString(i));
-            break;
-          default:
-            {
-              ostringstream os;
-              os << misctype;
-              os << LogIO::NORMAL << "Not writing miscInfo field '" <<
-                miscname << "' - cannot handle type " << String(os) <<
-                LogIO::POST;
+            case TpArrayBool:
+                header.define(miscname, miscInfo.asArrayBool(i));
+                break;
+            case TpArrayChar:
+            case TpArrayUShort:
+            case TpArrayInt:
+            case TpArrayUInt:
+            case TpArrayInt64:
+                header.define(miscname, miscInfo.toArrayInt(i));
+                break;
+            case TpArrayFloat:
+                header.define(miscname, miscInfo.asArrayfloat(i));
+                break;
+            case TpArrayDouble:
+                header.define(miscname, miscInfo.asArraydouble(i));
+                break;
+            case TpArrayString:
+                header.define(miscname, miscInfo.asArrayString(i));
+                break;
+            default:
+                {
+                    ostringstream mytype;
+                    mytype << misctype;
+                    os << LogIO::NORMAL << "Not writing miscInfo field '" <<
+                    miscname << "' - cannot handle type " << String(mytype) <<
+                    LogIO::POST;
+
+                }
             }
-          }
         }
         if (header.isDefined(miscname)) {
           header.setComment(miscname, image.miscInfo().comment(i));

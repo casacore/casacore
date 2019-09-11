@@ -117,8 +117,8 @@ protected:
                       rownr_t index);
   
 private:
-  // Pointer to local ROMSSourceColumns object
-  ROMSSourceColumns* msSourceCols_p;
+  // Pointer to local MSSourceColumns object
+  MSSourceColumns* msSourceCols_p;
   
   RecordFieldPtr<Int> sourceId_p, spwId_p;
 

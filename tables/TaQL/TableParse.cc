@@ -678,7 +678,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     }
   } else if (funcName == "norm") {
     ftype = TableExprFuncNode::normFUNC;
-  } else if (funcName == "abs"  ||  funcName == "amplitude") {
+  } else if (funcName == "abs"  ||  funcName == "amplitude"  ||
+             funcName == "ampl") {
     ftype = TableExprFuncNode::absFUNC;
   } else if (funcName == "arg"  ||  funcName == "phase") {
     ftype = TableExprFuncNode::argFUNC;
@@ -1115,9 +1116,14 @@ TableExprNode TableParseSelect::makeUDFNode (TableParseSelect* sel,
                                              const Table& table,
                                              const TaQLStyle& style)
 {
+  Vector<String> parts = stringToVector (name, '.');
+  if (parts.size() == 1) {
+    // No ., thus no UDF but a builtin function.
+    throw TableInvExpr ("TaQL function " + name + " is unknown; "
+                        "use 'show func' to see all functions");
+  }
   TableExprNode udf;
   if (sel) {
-    Vector<String> parts = stringToVector (name, '.');
     if (parts.size() > 2) {
       // At least 3 parts; see if the first part is a table shorthand.
       Table tab = sel->findTable (parts[0], False);
@@ -3513,7 +3519,7 @@ DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
   }
   if (dtype == TpOther) {
     throw TableInvExpr ("Datatype " + dtstr + " of column " + colName +
-                        " is invalid");
+                        " is invalid (maybe a set with incompatible units)");
   }
   return dtype;
 }

@@ -1340,7 +1340,7 @@ void MSCreateCasa::addImagerColumns()
 {
   // Find data shape from FLAG column.
   // Make tiles of appr. 1 MB.
-  IPosition shape = ROTableColumn(itsMS, MS::columnName(MS::FLAG)).shapeColumn();
+  IPosition shape = TableColumn(itsMS, MS::columnName(MS::FLAG)).shapeColumn();
   String colName = MS::columnName(MS::CORRECTED_DATA);
   if (! itsMS.tableDesc().isColumn(colName)) {
     TableDesc td;
@@ -1965,7 +1965,7 @@ bool readParms (int argc, char* argv[])
       tab = tab(rows);
     }
     AlwaysAssert (nant>0, AipsError);
-    ROArrayColumn<double> posCol(tab, "POSITION");
+    ArrayColumn<double> posCol(tab, "POSITION");
     posCol.getColumn (myAntPos);
   }
   return true;

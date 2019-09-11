@@ -104,7 +104,7 @@ private:
   MSDataDescIndex();
 
   // DATA_DESC subtable column accessor
-  ROMSDataDescColumns msDataDescCols_p;
+  MSDataDescColumns msDataDescCols_p;
 
   // Vector cache of DataDesc id's
   Vector<Int> dataDescIds_p;
