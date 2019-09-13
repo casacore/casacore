@@ -51,9 +51,11 @@ Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
 
 Adios2StMan::Adios2StMan(MPI_Comm mpiComm, std::string engineType,
     std::map<std::string, std::string> engineParams,
-    std::vector<std::map<std::string, std::string>> transportParams)
+    std::vector<std::map<std::string, std::string>> transportParams,
+    size_t readerCacheRows)
     : DataManager(),
-    pimpl(std::unique_ptr<impl>(new impl(*this, mpiComm, engineType, engineParams, transportParams)))
+    pimpl(std::unique_ptr<impl>(
+                new impl(*this, mpiComm, engineType, engineParams, transportParams, readerCacheRows)))
 {
 }
 
@@ -151,9 +153,11 @@ Adios2StMan::impl::impl(Adios2StMan &parent, MPI_Comm mpiComm)
 Adios2StMan::impl::impl(
         Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
         std::map<std::string, std::string> engineParams,
-        std::vector<std::map<std::string, std::string>> transportParams)
+        std::vector<std::map<std::string, std::string>> transportParams,
+        size_t readerCacheRows)
     : parent(parent)
 {
+    itsReadCacheMaxRows = readerCacheRows;
     itsMpiComm = mpiComm;
     itsAdiosEngineType = engineType;
     itsAdiosEngineParams = engineParams;
@@ -185,29 +189,8 @@ Adios2StMan::impl::impl(
 #endif
         }
     }
-
     itsAdios = std::make_shared<adios2::ADIOS>(itsMpiComm, true);
-
     itsAdiosIO = std::make_shared<adios2::IO>(itsAdios->DeclareIO("Adios2StMan"));
-
-    if (itsAdiosEngineType.empty() == false)
-    {
-        itsAdiosIO->SetEngine(itsAdiosEngineType);
-    }
-    if (itsAdiosEngineParams.empty() == false)
-    {
-        itsAdiosIO->SetParameters(itsAdiosEngineParams);
-    }
-    for (size_t i = 0; i < itsAdiosTransportParamsVec.size(); ++i)
-    {
-        std::string transportName = std::to_string(i);
-        auto j = itsAdiosTransportParamsVec[i].find("Name");
-        if (j != itsAdiosTransportParamsVec[i].end())
-        {
-            transportName = j->second;
-        }
-        itsAdiosIO->AddTransport(transportName, itsAdiosTransportParamsVec[i]);
-    }
 }
 
 Adios2StMan::impl::~impl()
@@ -246,11 +229,27 @@ void Adios2StMan::impl::create(uInt aNrRows)
 {
     itsOpenMode = 'w';
     itsRows = aNrRows;
+    itsAdiosIO->SetEngine("Table");
+    if (itsAdiosEngineParams.empty() == false)
+    {
+        itsAdiosIO->SetParameters(itsAdiosEngineParams);
+    }
+    for (size_t i = 0; i < itsAdiosTransportParamsVec.size(); ++i)
+    {
+        std::string transportName = std::to_string(i);
+        auto j = itsAdiosTransportParamsVec[i].find("Name");
+        if (j != itsAdiosTransportParamsVec[i].end())
+        {
+            transportName = j->second;
+        }
+        itsAdiosIO->AddTransport(transportName, itsAdiosTransportParamsVec[i]);
+    }
+
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Write));
     for (uInt i = 0; i < ncolumn(); ++i)
     {
-        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode);
+        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode, itsReadCacheMaxRows);
     }
     itsAdiosEngine->BeginStep();
 }
@@ -259,11 +258,26 @@ void Adios2StMan::impl::open(uInt aNrRows, AipsIO &ios)
 {
     itsOpenMode = 'r';
     itsRows = aNrRows;
+    itsAdiosIO->SetEngine("BP4");
+    if (itsAdiosEngineParams.empty() == false)
+    {
+        itsAdiosIO->SetParameters(itsAdiosEngineParams);
+    }
+    for (size_t i = 0; i < itsAdiosTransportParamsVec.size(); ++i)
+    {
+        std::string transportName = std::to_string(i);
+        auto j = itsAdiosTransportParamsVec[i].find("Name");
+        if (j != itsAdiosTransportParamsVec[i].end())
+        {
+            transportName = j->second;
+        }
+        itsAdiosIO->AddTransport(transportName, itsAdiosTransportParamsVec[i]);
+    }
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Read));
     for (uInt i = 0; i < ncolumn(); ++i)
     {
-        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode);
+        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode, itsReadCacheMaxRows);
     }
     itsAdiosEngine->BeginStep();
 
