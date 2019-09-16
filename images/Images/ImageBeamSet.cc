@@ -46,9 +46,14 @@ ImageBeamSet::ImageBeamSet() :
     _maxBeam    (GaussianBeam::NULL_BEAM),
     _minBeamPos (2, 0), _maxBeamPos(2, 0) {}
 
-ImageBeamSet::ImageBeamSet(const Matrix<GaussianBeam>& beams) :
-    _beams(beams) {
-        _calculateAreas();
+ImageBeamSet::ImageBeamSet(const Matrix<GaussianBeam>& beams) 
+: _beams(beams) {
+    ThrowIf(
+        beams.empty(),
+        "The number of channels and/or the number of stokes in "
+        "the beams matrix is zero, which is not permitted"
+    );
+    _calculateAreas();
 }
 
 ImageBeamSet::ImageBeamSet(const GaussianBeam& beam) :
@@ -354,7 +359,7 @@ const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
 }
 
 void ImageBeamSet::_calculateAreas() {
-    _areas.resize(_beams.shape());
+     _areas.resize(_beams.shape());
     if (!_beams.empty()) {
         _areaUnit = _beams.begin()->getMajor().getUnit();
         _areaUnit =
@@ -446,11 +451,20 @@ ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
         ! rec.isDefined("nStokes"),
         "no nStokes field found"
     );
-    uInt nchan = rec.asuInt("nChannels");
+    auto nchan = rec.asuInt("nChannels");
+    if (nchan == 0) {
+        // provide backward compatibility for records written with 0 channels
+        nchan = 1;
+    }
+    auto nstokes = rec.asuInt("nStokes");
+    if (nstokes == 0) {
+        // provide backward compatibility for records written with 0 stokes
+        nstokes = 1;
+    }
     uInt count = 0;
     uInt chan = 0;
     uInt stokes = 0;
-    Matrix<GaussianBeam> beams(nchan, rec.asuInt("nStokes"));
+    Matrix<GaussianBeam> beams(nchan, nstokes);
     auto iterend = beams.end();
     for (
         auto iter = beams.begin(); iter != iterend; ++iter, ++count
