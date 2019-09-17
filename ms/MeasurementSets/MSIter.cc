@@ -70,9 +70,18 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
   //  by TIME to use an interval_p which is guaranteed to be small enough
   //  without having to read the INTERVAL column.)
   //
+  // If interval_p is a large number (MSIter sets it to DBL_MAX if interval=0),
+  // then it is equivalent to grouping all timestamps together. In this case it
+  // is also important to avoid the computation of the interval bin. It has
+  // been observed that due to numerical differences either t1 or t2 can be
+  // -1 or 1, rather than 0 as it should be when all the timestamps are in the
+  // same bin.
+  //
   // The 2.0 is a fudge factor.  The result of the comparison should probably
   // be cached.
-  if(abs(interval_p) < 2.0 * DBL_MIN)
+  if(interval_p > DBL_MAX / 2.0)
+    return 0;
+  else if(interval_p < 2.0 * DBL_MIN)
     return v1 < v2 ? -1 : 1;
 
   // The times are binned in bins with a width of interval_p.
@@ -132,7 +141,7 @@ Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
 }
 
 void MSIter::construct(const Block<Int>& sortColumns, 
-		       Bool addDefaultSortColumns)
+                       Bool addDefaultSortColumns)
 {
   This = (MSIter*)this; 
   nMS_p=bms_p.nelements();
@@ -161,7 +170,8 @@ void MSIter::construct(const Block<Int>& sortColumns,
     Vector<String> colNames = bms_p[0].keywordSet().asArrayString("SORT_COLUMNS");
     uInt n=colNames.nelements();
     cols.resize(n);
-    for (uInt i=0; i<n; i++) cols[i]=MS::columnType(colNames(i));
+    for (uInt i=0; i<n; i++)
+      cols[i]=MS::columnType(colNames(i));
   } else {
     cols=sortColumns;
   }
@@ -170,7 +180,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
   Int nCol=0;
   for (uInt i=0; i<cols.nelements(); i++) {
     if (cols[i]>0 && 
-	cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
+        cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
       if (cols[i]==MS::ARRAY_ID && !arraySeen) { arraySeen=True; nCol++; }
       if (cols[i]==MS::FIELD_ID && !fieldSeen) { fieldSeen=True; nCol++; }
       if (cols[i]==MS::DATA_DESC_ID && !ddSeen) { ddSeen=True; nCol++; }
@@ -180,7 +190,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
   }
   Block<String> columns;
-  
+
   Int iCol=0;
   if (addDefaultSortColumns) {
     columns.resize(cols.nelements()+4-nCol);
@@ -217,7 +227,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
       columns[iCol++]=MS::columnName(MS::TIME);
     }
   }
-  
+
   // now find the time column and set the compare function
   Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
   for (uInt i=0; i<columns.nelements(); i++) {
@@ -227,7 +237,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
   }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
-  
+
   // Store the sorted table for future access if possible, 
   // reuse it if already there
   for (Int i=0; i<nMS_p; i++) {
@@ -236,53 +246,53 @@ void MSIter::construct(const Block<Int>& sortColumns,
     // check if we already have a sorted table consistent with the requested
     // sort order
     if (!bms_p[i].keywordSet().isDefined("SORT_COLUMNS") ||
-	!bms_p[i].keywordSet().isDefined("SORTED_TABLE") ||
-	bms_p[i].keywordSet().asArrayString("SORT_COLUMNS").nelements()!=
-	columns.nelements() ||
-	!allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
-	       Vector<String>(columns))) {
-      // if not, sort and store it (if possible)
-      store=(bms_p[i].isWritable() && (bms_p[i].tableType() != Table::Memory));
+        !bms_p[i].keywordSet().isDefined("SORTED_TABLE") ||
+         bms_p[i].keywordSet().asArrayString("SORT_COLUMNS").nelements()!=
+                  columns.nelements() ||
+        !allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
+               Vector<String>(columns))) {
+        // if not, sort and store it (if possible)
+        store=(bms_p[i].isWritable() && (bms_p[i].tableType() != Table::Memory));
     } else {
       sorted = bms_p[i].keywordSet().asTable("SORTED_TABLE");
       // if sorted table is smaller it can't be useful, remake it
       if (sorted.nrow() < bms_p[i].nrow()) store = bms_p[i].isWritable();
       else { 
-	// if input is a sorted subset of the stored sorted table
-	// we can use the input in the iterator
-	if (isSubSet(bms_p[i].rowNumbers(),sorted.rowNumbers())) {
-	  useIn=True;
-	} else {
-	  // check if #rows in input table is the same as the base table
-	  // i.e., this is the entire table, if so, use sorted version instead
-	  String anttab = bms_p[i].antenna().tableName(); // see comments below
-	  Table base (anttab.erase(anttab.length()-8));
-	  if (base.nrow()==bms_p[i].nrow()) {
-	    useSorted = True;
-	  } else {
-	    store=bms_p[i].isWritable();
-	  }
-	}
+        // if input is a sorted subset of the stored sorted table
+        // we can use the input in the iterator
+        if (isSubSet(bms_p[i].rowNumbers(),sorted.rowNumbers())) {
+          useIn=True;
+        } else {
+          // check if #rows in input table is the same as the base table
+          // i.e., this is the entire table, if so, use sorted version instead
+          String anttab = bms_p[i].antenna().tableName(); // see comments below
+          Table base (anttab.erase(anttab.length()-8));
+          if (base.nrow()==bms_p[i].nrow()) {
+            useSorted = True;
+          } else {
+            store=bms_p[i].isWritable();
+          }
+        }
       }
     }
 
     if (!useIn && !useSorted) {
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
-      sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::ParSort);
+      sorted = bms_p[i].sort(columns, objComp, orders, Sort::ParSort);
     }
-    
+
     // Only store if globally requested _and_ locally decided
     if (storeSorted_p && store) {
-	// We need to get the name of the base table to add a persistent
-	// subtable (the ms used here might be a reference table)
-	// There is no table function to get this, so we use the name of
-	// the antenna subtable to get at it.
-	String anttab = bms_p[i].antenna().tableName();
-	sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New); 
-	sorted.flush();
-	bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
-	bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
+      // We need to get the name of the base table to add a persistent
+      // subtable (the ms used here might be a reference table)
+      // There is no table function to get this, so we use the name of
+      // the antenna subtable to get at it.
+      String anttab = bms_p[i].antenna().tableName();
+      sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New);
+      sorted.flush();
+      bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
+      bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
     }
 
     // create the iterator for each MS
@@ -290,15 +300,15 @@ void MSIter::construct(const Block<Int>& sortColumns,
     // the sorted table, so the iterator can avoid sorting.
     if (useIn) {
       tabIter_p[i] = new TableIterator(bms_p[i],columns,objComp,orders,
-				       TableIterator::NoSort);
+                                       TableIterator::NoSort);
     } else {
       tabIter_p[i] = new TableIterator(sorted,columns,objComp,orders,
-				       TableIterator::NoSort);
-    } 
+                                       TableIterator::NoSort);
+    }
     tabIterAtStart_p[i]=True;
   }
   setMSInfo();
-  
+
 }
 
 MSIter::MSIter(const MSIter& other)

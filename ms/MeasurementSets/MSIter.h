@@ -58,15 +58,15 @@ class MSInterval : public BaseCompare
 {
 public:
   explicit MSInterval(Double interval) : interval_p(interval), offset_p(0) {}
-    virtual ~MSInterval() {}
-    virtual int comp(const void * obj1, const void * obj2) const;
-    Double getOffset() const {return offset_p;}
-    virtual void setOffset(Double offset) {offset_p=offset;}
-    Double getInterval() const {return interval_p;}
-    void setInterval(Double interval) {interval_p=interval;}
+  virtual ~MSInterval() {}
+  virtual int comp(const void * obj1, const void * obj2) const;
+  Double getOffset() const {return offset_p;}
+  virtual void setOffset(Double offset) {offset_p=offset;}
+  Double getInterval() const {return interval_p;}
+  void setInterval(Double interval) {interval_p=abs(interval);}
 private:
-    Double interval_p;
-    mutable Double offset_p;
+  Double interval_p;
+  mutable Double offset_p;
 };
 
 // <summary> 
@@ -237,6 +237,8 @@ public:
   const MS& ms() const;
 
   // Return reference to the current MSColumns
+  // Note that this gives access to the columns for the whole MS,
+  // not just the current iteration.
   const MSColumns& msColumns() const;
 
   // Return the current MS Id (according to the order in which 
