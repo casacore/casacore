@@ -93,9 +93,9 @@ public:
     // <group name=tableLikeConstructors>
     MSAntenna (const String &tableName, TableOption = Table::Old);
     MSAntenna (const String &tableName, const String &tableDescName,
-		    TableOption = Table::Old);
-    MSAntenna (SetupNewTable &newTab, uInt nrrow = 0,
-		    Bool initialize = False);
+               TableOption = Table::Old);
+    MSAntenna (SetupNewTable &newTab, rownr_t nrrow = 0,
+               Bool initialize = False);
     MSAntenna (const Table &table);
     MSAntenna (const MSAntenna &other);
     // </group>

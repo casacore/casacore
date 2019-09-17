@@ -77,7 +77,7 @@ public:
 
     struct TimeStampProperties {
         std::set<Int> ddIDs;
-        uInt nrows;
+        rownr_t nrows;
     };
 
     struct ColumnStats {
@@ -90,9 +90,9 @@ public:
 
     struct SubScanProperties {
         // number of auto-correlation rows
-        uInt acRows;
+        rownr_t acRows;
         // number of cross-correlation rows.
-        uInt xcRows;
+        rownr_t xcRows;
         std::set<Int> antennas;
         Double beginTime;
         std::set<uInt> ddIDs;
@@ -108,7 +108,7 @@ public:
         Quantity meanExposureTime;
         std::set<uInt> spws;
         // number of rows for each spectral window
-        std::map<uInt, uInt> spwNRows;
+        std::map<uInt, rownr_t> spwNRows;
         std::set<Int> stateIDs;
         std::map<Double, TimeStampProperties> timeProps;
     };
@@ -245,18 +245,18 @@ public:
     virtual std::set<uInt> getSpwsForIntent(const String& intent);
 
     // get the number of visibilities
-    uInt nRows() const;
+    rownr_t nRows() const;
 
-    uInt nRows(CorrelationType cType);
+    rownr_t nRows(CorrelationType cType);
 
-    std::shared_ptr<const std::map<SubScanKey, uInt> > getNRowMap(CorrelationType type) const;
+    std::shared_ptr<const std::map<SubScanKey, rownr_t> > getNRowMap(CorrelationType type) const;
 
-    uInt nRows(
+    rownr_t nRows(
         CorrelationType cType, Int arrayID, Int observationID,
         Int scanNumber, Int fieldID
     ) const;
 
-    uInt nRows(CorrelationType cType, uInt fieldID) const;
+    rownr_t nRows(CorrelationType cType, uInt fieldID) const;
 
     // get number of spectral windows
     uInt nSpw(Bool includewvr) const;
@@ -641,7 +641,7 @@ public:
     // get the pointing directions associated with antenna1 and antenna2 for
     // the specified row of the main MS table
     std::pair<MDirection, MDirection> getPointingDirection(
-        Int& ant1, Int& ant2, Double& time, uInt row,
+        Int& ant1, Int& ant2, Double& time, rownr_t row,
         Bool interpolate=false, Int initialguess=0
     ) const;
 
@@ -677,7 +677,7 @@ private:
         // the subscan and that spwID
         std::map<uInt, Quantity> meanInterval;
         // number of rows for each spectral window
-        std::map<uInt, uInt> spwNRows;
+        std::map<uInt, rownr_t> spwNRows;
         // time range (which takes into account helf of the corresponding
         // interval, which is not accounted for in the SubScanProperties times
         std::pair<Double, Double> timeRange;
@@ -724,7 +724,8 @@ private:
     Bool _showProgress;
     mutable Float _cacheMB;
     const Float _maxCacheMB;
-    mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
+    mutable rownr_t _nACRows, _nXCRows;
+    mutable uInt _nStates, _nSpw, _nFields, _nAntennas,
         _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
     mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
     mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
@@ -743,8 +744,8 @@ private:
     mutable std::set<String> _uniqueIntents;
     mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs, _uniqueAntennaIDs;
     mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw, _uniqueDataDescIDs;
-    mutable std::shared_ptr<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
-    mutable std::shared_ptr<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
+  mutable std::shared_ptr<std::map<SubScanKey, rownr_t> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
+    mutable std::shared_ptr<std::map<Int, rownr_t> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
     mutable std::shared_ptr<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
     mutable vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
@@ -834,17 +835,17 @@ private:
 
     static void _getScalarIntColumn(
         Vector<Int>& v, TableProxy& table, const String& colname,
-        Int beginRow, Int nrows
+        rownr_t beginRow, rownr_t nrows
     );
 
     static void _getScalarDoubleColumn(
         Vector<Double>& v, TableProxy& table, const String& colname,
-        Int beginRow, Int nrows
+        rownr_t beginRow, rownr_t nrows
     );
 
     static void _getScalarQuantDoubleColumn(
         Quantum<Vector<Double> >& v, TableProxy& table, const String& colname,
-        Int beginRow, Int nrows
+        rownr_t beginRow, rownr_t nrows
     );
 
     void _mergeScanProps(
@@ -861,7 +862,7 @@ private:
     ) const;
 
     void _createSubScanRecords(
-        Record& parent, uInt& scanNRows, std::set<Int>& antennasForScan,
+        Record& parent, rownr_t& scanNRows, std::set<Int>& antennasForScan,
         const ScanKey& scanKey, const std::map<SubScanKey, SubScanProperties>& subScanProps
     ) const;
 
@@ -911,7 +912,7 @@ private:
         const Vector<Int>& observations, const Vector<Int>& ant1,
         const Vector<Int>& ant2, const Quantum<Vector<Double> >& exposureTimes,
         const Quantum<Vector<Double> >& intervalTimes, const vector<uInt>& ddIDToSpw,
-        uInt beginRow, uInt endRow
+        rownr_t beginRow, rownr_t endRow
     ) const;
 
     std::shared_ptr<Vector<Int> > _getDataDescIDs() const;
@@ -993,19 +994,19 @@ private:
     vector<MPosition> _getObservatoryPositions();
 
     void _getRowStats(
-        uInt& nACRows, uInt& nXCRows,
-        std::map<SubScanKey, uInt>*& subScanToNACRowsMap,
-        std::map<SubScanKey, uInt>*& subScanToNXCRowsMap,
-        std::map<Int, uInt>*& fieldToNACRowsMap,
-        std::map<Int, uInt>*& fieldToNXCRowsMap
+        rownr_t& nACRows, rownr_t& nXCRows,
+        std::map<SubScanKey, rownr_t>*& subScanToNACRowsMap,
+        std::map<SubScanKey, rownr_t>*& subScanToNXCRowsMap,
+        std::map<Int, rownr_t>*& fieldToNACRowsMap,
+        std::map<Int, rownr_t>*& fieldToNXCRowsMap
     ) const;
 
     void _getRowStats(
-        uInt& nACRows, uInt& nXCRows,
-        std::shared_ptr<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
-        std::shared_ptr<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
-        std::shared_ptr<std::map<Int, uInt> >& fieldToNACRowsMap,
-        std::shared_ptr<std::map<Int, uInt> >& fieldToNXCRowsMap
+        rownr_t& nACRows, rownr_t& nXCRows,
+        std::shared_ptr<std::map<SubScanKey, rownr_t> >& scanToNACRowsMap,
+        std::shared_ptr<std::map<SubScanKey, rownr_t> >& scanToNXCRowsMap,
+        std::shared_ptr<std::map<Int, rownr_t> >& fieldToNACRowsMap,
+        std::shared_ptr<std::map<Int, rownr_t> >& fieldToNXCRowsMap
     ) const;
 
     // get scan properties

@@ -929,7 +929,7 @@ void NewMSSimulator::initFeeds(const String& mode,
   Matrix<Double> feedAngle(2,nRow);
   Cube<Complex> polResp(2,2,nRow);
   
-  Int iRow=0;
+  rownr_t iRow=0;
   if(isList) {
     polResp=Complex(0.0,0.0);
     for (Int i=0; i<nAnt; i++) {
@@ -1292,7 +1292,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   MSObservation& obs=ms_p->observation();
   MSObservationColumns& obsc=msc.observation();
   Int nobsrow= obsc.nrow();
-  Int row=ms_p->nrow()-1;
+  Int64 row=ms_p->nrow()-1;
   Int maxObsId=-1;
   Int maxArrayId=0;
 
@@ -1370,7 +1370,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   uInt nSubElevation = 0;
   
   // Start scan number from last one (if there was one)
-  Int nMSRows=ms_p->nrow();
+  Int64 nMSRows=ms_p->nrow();
 
   // init counters past end
   Int scan=0;
@@ -1387,7 +1387,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   else {
     nBaselines =nAnt*(nAnt-1)/2;
   }
-  Int nNewRows=nBaselines*nFeed;
+  Int64 nNewRows=nBaselines*nFeed;
 
   //Int nIntegrations=max(1, Int(0.5+(Tend-Tstart)/Tint));
   Int nIntegrations=0; 
@@ -1558,7 +1558,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
       Vector<Bool> isShadowed(nAnt);  isShadowed.set(False);
       Vector<Bool> isTooLow(nAnt);    isTooLow.set(False);
       Double fractionBlocked1=0.0, fractionBlocked2=0.0;
-      Int startingRow = row;
+      Int64 startingRow = row;
       Double diamMax2 = square( max(antDiam) );
 
       // fringe stopping center could be different for different feeds
@@ -1679,7 +1679,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     Matrix<Bool> trueFlag(nCorr,nChan); 
     trueFlag=True;
 
-    Int reRow = startingRow;
+    Int64 reRow = startingRow;
     for (Int ant1=0; ant1<nAnt; ant1++) {
 	Int startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
@@ -1733,7 +1733,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     }    
     
     // this is all still inside the single integration loop
-    Int numpointrows=nAnt;
+    Int64 numpointrows=nAnt;
     MSPointingColumns& pointingc=msc.pointing();
     Int numPointing=pointingc.nrow();
     ms_p->pointing().addRow(numpointrows);

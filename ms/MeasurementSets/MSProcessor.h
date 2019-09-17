@@ -93,7 +93,7 @@ public:
     MSProcessor (const String &tableName, TableOption = Table::Old);
     MSProcessor (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSProcessor (SetupNewTable &newTab, uInt nrrow = 0,
+    MSProcessor (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSProcessor (const Table &table);
     MSProcessor (const MSProcessor &other);

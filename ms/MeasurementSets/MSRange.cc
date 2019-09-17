@@ -281,10 +281,10 @@ Record MSRange::range(const Vector<Int>& keys,
       {
 	Record phasedir(RecordInterface::Variable);
 	// return 0th order position only
-	Int nField = ms_p.field().nrow();
+	rownr_t nField = ms_p.field().nrow();
 	Matrix<Double> phaseDir(2,nField);
 	Vector<Double> dir(2);
-	for (Int i=0; i<nField; i++) {
+	for (rownr_t i=0; i<nField; i++) {
 	  dir=msc.field().phaseDirMeas(i).getAngle().getValue();
 	  phaseDir(0,i)=dir(0); phaseDir(1,i)=dir(1);
 	}
@@ -345,7 +345,7 @@ Record MSRange::range(const Vector<Int>& keys,
     case MSS::TIMES:
       {
 	Vector<Double> times=msc.time().getColumn();
-	Int n=GenSort<Double>::sort (times, order, option);
+	Int64 n=GenSort<Double>::sort (times, order, option);
 	out.define(keyword,times(Slice(0,n)));
       }
       break;
@@ -503,7 +503,7 @@ Vector<Int> MSRange::scalarRange(const ScalarColumn<Int>& id)
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;
   Vector<Int> idvec=id.getColumn();
-  Int n=GenSort<Int>::sort (idvec, order, option);
+  Int64 n=GenSort<Int>::sort (idvec, order, option);
   Vector<Int> ids=idvec(Slice(0,n));
   return ids;
 }
@@ -630,7 +630,7 @@ Vector<Int> MSRange::ifrNumbers(const ScalarColumn<Int>& ant1,
   Array<Int> a2=ant2.getColumn();
   DebugAssert(max(a1)<1000 && max(a2)<1000,AipsError);
   a1*=1000; a1+=a2;
-  Int n=GenSort<Int>::sort (a1, order, option);
+  Int64 n=GenSort<Int>::sort (a1, order, option);
   return a1(Slice(0,n));
 }
 

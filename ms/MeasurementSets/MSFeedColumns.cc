@@ -103,22 +103,22 @@ void MSFeedColumns::setPositionRef(MPosition::Types ref)
   positionMeas_p.setDescRefCode(ref);
 }
 
-Int MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
-                             Quantum<Double>& newIntervalQ,
-                             const Int& antId,
-                             const Int& fId,
-                             const Int& spwId,
-                             const Quantum<Double>& timeQ,
-                             const Quantum<Double>& intervalQ,
-                             const Int& numRec,
-                             const Array<Quantum<Double> >& beamOffsetQ,
-                             const Array<String>& polType,
-                             const Array<Complex>& polResp,
-                             const Array<Quantum<Double> >& positionQ,
-                             const Array<Quantum<Double> >& receptorAngleQ,
-                             const Vector<uInt>& ignoreRows,
-                             const Quantum<Double>& focusLengthQ
-                             )
+Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
+                               Quantum<Double>& newIntervalQ,
+                               Int antId,
+                               Int fId,
+                               Int spwId,
+                               const Quantum<Double>& timeQ,
+                               const Quantum<Double>& intervalQ,
+                               Int numRec,
+                               const Array<Quantum<Double> >& beamOffsetQ,
+                               const Array<String>& polType,
+                               const Array<Complex>& polResp,
+                               const Array<Quantum<Double> >& positionQ,
+                               const Array<Quantum<Double> >& receptorAngleQ,
+                               const RowNumbers& ignoreRows,
+                               const Quantum<Double>& focusLengthQ
+                               )
 {
   const Unit d("deg");
   const Unit s("s");
@@ -126,7 +126,7 @@ Int MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
 
   newTimeQ = newIntervalQ = Quantum<Double>(0.,s);
 
-  uInt r = nrow();
+  rownr_t r = nrow();
   if (r == 0) return -1;
 
   const Double timeInS = timeQ.getValue(s);
@@ -139,8 +139,8 @@ Int MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
   while (r > 0) {
     r--;
     Bool ignore = False;
-    for(uInt i=0; i<ignoreRows.nelements(); i++){
-      if(ignoreRows(i)==r){
+    for(size_t i=0; i<ignoreRows.nelements(); ++i){
+      if(ignoreRows[i]==r){
 	ignore = True;
 	break;
       }
@@ -167,7 +167,7 @@ Int MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
 	 && fLengthMatches
 	 ){
 	Bool matches=True;
-	for(Int i=0; i<numRec; i++){ // compare all receptors
+	for(Int i=0; i<numRec; ++i){ // compare all receptors
 	  if(!(beamOffsetQuant()(r)(IPosition(2,0,i)).getValue(d) == beamOffsetQ(IPosition(2,0,i)).getValue(d)
 	       && beamOffsetQuant()(r)(IPosition(2,1,i)).getValue(d) == beamOffsetQ(IPosition(2,1,i)).getValue(d)
 	       && polarizationType()(r)(IPosition(1,i)) == polType(IPosition(1,i))

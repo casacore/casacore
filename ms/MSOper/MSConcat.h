@@ -122,12 +122,12 @@ private:
   Bool updateSource();
   Bool updateSource2();
   Bool sourceRowsEquivalent(const MSSourceColumns& sourceCol, 
-			    const uInt& rowi, const uInt& rowj,
+			    const rownr_t& rowi, const rownr_t& rowj,
 			    const Bool dontTestDirection=False,
 			    const Bool dontTestTransAndRest=False);
 
   Bool obsRowsEquivalent(const MSObservationColumns& obsCol, 
-			 const uInt& rowi, const uInt& rowj);
+			 const rownr_t& rowi, const rownr_t& rowj);
 
 
   void updateModelDataKeywords(MeasurementSet& ms);
@@ -156,7 +156,7 @@ private:
 };
 
 template<class T>
-Bool areEQ(const ScalarColumn<T>& col, uInt row_i, uInt row_j) 
+Bool areEQ(const ScalarColumn<T>& col, rownr_t row_i, rownr_t row_j) 
 {
   T value_i, value_j;
   col.get(row_i, value_i);
@@ -165,7 +165,7 @@ Bool areEQ(const ScalarColumn<T>& col, uInt row_i, uInt row_j)
 }
 
 template<class T>
-Bool areEQ(const ArrayColumn<T>& col, uInt row_i, uInt row_j) 
+Bool areEQ(const ArrayColumn<T>& col, rownr_t row_i, rownr_t row_j) 
 {
   Bool rval(False);
   Array<T> arr_i;
@@ -173,8 +173,8 @@ Bool areEQ(const ArrayColumn<T>& col, uInt row_i, uInt row_j)
   
   col.get(row_i, arr_i, True);
   col.get(row_j, arr_j, True);
-  Int ni = arr_i.nelements();
-  Int nj = arr_j.nelements();
+  size_t ni = arr_i.nelements();
+  size_t nj = arr_j.nelements();
   if( (ni==0 && nj==0) ||    // no data is regarded as equal
       allEQ(arr_i, arr_j)){
     rval = True;

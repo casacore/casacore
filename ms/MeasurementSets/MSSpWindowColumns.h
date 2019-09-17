@@ -171,7 +171,7 @@ public:
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return chanFreq_p.nrow();}
+  rownr_t nrow() const {return chanFreq_p.nrow();}
 
   // returns the last row that contains a spectral window that has the
   // specified reference frequency, number of channels, total-bandwidth and IF
@@ -185,30 +185,31 @@ public:
   // set to a non-negative value then that row is checked first to see if it
   // matches. An AIpsError exception is thrown if tryRow is bigger than the
   // number of rows in the Table. Returns -1 if no match could be found.
-  Int matchSpw(const MFrequency& refFreq, uInt nChan, 
-	       const Quantum<Double>& bandwidth, Int ifChain,
-	       const Quantum<Double>& tolerance, Int tryRow=-1) const;
+  Int64 matchSpw(const MFrequency& refFreq, uInt nChan, 
+                 const Quantum<Double>& bandwidth, Int ifChain,
+                 const Quantum<Double>& tolerance, Int64 tryRow=-1) const;
   // Similar to above, but also pass in the frame info.			 
-  Int matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1, const MeasFrame& measFrm,
-          const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
-	       const Quantum<Double>& bandwidth, Int ifChain,
-	       const Quantum<Double>& tolerance, Int tryRow=-1) const; 
+  Int64 matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1,
+                 const MeasFrame& measFrm,
+                 const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
+                 const Quantum<Double>& bandwidth, Int ifChain,
+                 const Quantum<Double>& tolerance, Int64 tryRow=-1) const; 
   // This is to check that the channels are matched individually
   // and also if the spw is matched in reverse; 
 
   //Same as the above but returns all the possible match that it could find
   // in the spectral window table. 
-  Vector<Int> allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
-	       const Quantum<Double>& bandwidth, Int ifChain,
-	       const Quantum<Double>& tolerance) const;
+  RowNumbers allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
+                           const Quantum<Double>& bandwidth, Int ifChain,
+                           const Quantum<Double>& tolerance) const;
 
   //This version does a channel to channel match too and also return
   // the reversed if it matches but the channels are in inverse order
   // like an upper or lower side band having same characteristics
-  Int matchSpw(const MFrequency& refFreq, uInt nChan, 
-	       const Quantum<Double>& bandwidth, Int ifChain,
-	       const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
-	       Bool& reversed) const;
+  Int64 matchSpw(const MFrequency& refFreq, uInt nChan, 
+                 const Quantum<Double>& bandwidth, Int ifChain,
+                 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
+                 Bool& reversed) const;
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -230,16 +231,18 @@ private:
   //# functions to match the supplied arguments against the values in the
   //# specified row.
   //<group>
-  Bool matchRefFrequency(uInt row, MFrequency::Types refType, 
+  Bool matchRefFrequency(rownr_t row, MFrequency::Types refType, 
 			 Double refFreqInHz, Double tolInHz) const;
-  Bool matchRefFreqCnvtrd(uInt row, MFrequency refOrChanFreq, const Bool isRefFreq, const MeasFrame& measFrm,
-          const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, Double tolInHz) const;
-  Bool matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
+  Bool matchRefFreqCnvtrd(rownr_t row, MFrequency refOrChanFreq, const Bool isRefFreq,
+                          const MeasFrame& measFrm,
+                          const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc,
+                          Double tolInHz) const;
+  Bool matchChanFreq(rownr_t row, const Vector<Double>& chanFreqInHz,
 		     Double tolInHz) const;
-  Bool matchIfConvChain(uInt row, Int ifChain) const;
-  Bool matchTotalBandwidth(uInt row, Double bandwidthInHz,
+  Bool matchIfConvChain(rownr_t row, Int ifChain) const;
+  Bool matchTotalBandwidth(rownr_t row, Double bandwidthInHz,
 			   Double tolInHz) const;
-  Bool matchNumChan(uInt row, Int nChan) const;
+  Bool matchNumChan(rownr_t row, Int nChan) const;
   //</group>
 
   //# required columns

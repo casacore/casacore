@@ -171,7 +171,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
     initRefs();
 }
 
-MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
+MeasurementSet::MeasurementSet(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSMainEnums>(newTab, nrrow, initialize), 
       doNotLockSubtables_p (False),
@@ -181,12 +181,12 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MS(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MS"));
 }
 
 MeasurementSet::MeasurementSet(SetupNewTable &newTab,
-			       const TableLock& lockOptions, uInt nrrow,
+			       const TableLock& lockOptions, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSMainEnums>(newTab, lockOptions, nrrow, initialize), 
       doNotLockSubtables_p (False),
@@ -196,7 +196,7 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MS(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MS"));
 }
 
@@ -225,7 +225,7 @@ MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherM
 
 #ifdef HAVE_MPI
 MeasurementSet::MeasurementSet (MPI_Comm comm,
-			       SetupNewTable &newTab, uInt nrrow,
+			       SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSMainEnums>(comm, newTab, nrrow, initialize),
       doNotLockSubtables_p (False),
@@ -235,13 +235,13 @@ MeasurementSet::MeasurementSet (MPI_Comm comm,
     // verify that the now opened table is valid
     addCat();
     if (! validate(this->tableDesc()))
-	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MS(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MS"));
 }
 
 MeasurementSet::MeasurementSet (MPI_Comm comm,
 			       SetupNewTable &newTab,
-			       const TableLock& lockOptions, uInt nrrow,
+			       const TableLock& lockOptions, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSMainEnums>(comm, newTab, lockOptions, nrrow, initialize),
       doNotLockSubtables_p (False),
@@ -251,7 +251,7 @@ MeasurementSet::MeasurementSet (MPI_Comm comm,
     // verify that the now opened table is valid
     addCat();
     if (! validate(this->tableDesc()))
-	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MS(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MS"));
 }
 #endif // HAVE_MPI
@@ -983,7 +983,7 @@ Bool MeasurementSet::makeComplexData()
   // now copy data across from FLOAT_DATA
   ArrayColumn<Float> floatData(*this,MS::columnName(MS::FLOAT_DATA));
   ArrayColumn<Complex> data(*this,MS::columnName(MS::DATA));
-  for (uInt i=0; i<nrow(); i++) {
+  for (rownr_t i=0; i<nrow(); i++) {
     Array<Float> floatArr(floatData(i));
     Array<Complex> dataArr(floatArr.shape());
     convertArray(dataArr,floatArr);

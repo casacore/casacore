@@ -41,6 +41,11 @@ namespace casacore { //#Begin namespace casacore
     RowNumbers()
     {}
 
+    // Construct with the given length.
+    RowNumbers (size_t n)
+      : Vector<rownr_t> (n)
+    {}
+    
     // Construct from a Vector of row numbers.
     RowNumbers (const Vector<rownr_t>& rows)
       : Vector<rownr_t> (rows)

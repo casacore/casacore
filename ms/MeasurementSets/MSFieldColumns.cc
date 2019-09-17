@@ -58,7 +58,7 @@ MSFieldColumns::MSFieldColumns(const MSField& msField)
 MSFieldColumns::~MSFieldColumns()
 {
   // EPHEM
-  for (uInt i=0; i<measCometsV_p.size(); i++) {
+  for (size_t i=0; i<measCometsV_p.size(); i++) {
     delete measCometsV_p(i);
   }
 }
@@ -126,7 +126,7 @@ void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
   referenceDirMeas_p.setDescRefCode(ref);
 }
 
-MDirection MSFieldColumns::delayDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::delayDirMeas(rownr_t row, Double interTime) const
 {
   Int npoly = numPoly()(row);
   if(npoly>0){
@@ -142,7 +142,7 @@ MDirection MSFieldColumns::delayDirMeas(Int row, Double interTime) const
   }
 }
 
-MDirection MSFieldColumns::phaseDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::phaseDirMeas(rownr_t row, Double interTime) const
 {
   Int npoly = numPoly()(row);
   if(npoly>0){
@@ -158,7 +158,7 @@ MDirection MSFieldColumns::phaseDirMeas(Int row, Double interTime) const
   }
 }
 
-MDirection MSFieldColumns::referenceDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::referenceDirMeas(rownr_t row, Double interTime) const
 {
   Int npoly = numPoly()(row);
   if(npoly>0){
@@ -174,7 +174,7 @@ MDirection MSFieldColumns::referenceDirMeas(Int row, Double interTime) const
   }
 }
 
-MDirection MSFieldColumns::ephemerisDirMeas(Int row, Double interTime) const
+MDirection MSFieldColumns::ephemerisDirMeas(rownr_t row, Double interTime) const
 {
   if(measCometIndex(row)>=0){
     const MDirection zeroDir = MDirection(Quantity(0, "deg"), Quantity(0, "deg"));
@@ -188,7 +188,7 @@ MDirection MSFieldColumns::ephemerisDirMeas(Int row, Double interTime) const
 }
 
 
-MRadialVelocity MSFieldColumns::radVelMeas(Int row, Double interTime) const
+MRadialVelocity MSFieldColumns::radVelMeas(rownr_t row, Double interTime) const
 {
   MRadialVelocity rval;
 
@@ -227,7 +227,7 @@ MRadialVelocity MSFieldColumns::radVelMeas(Int row, Double interTime) const
   return rval;  
 }
 
-Quantity MSFieldColumns::rho(Int row, Double interTime) const
+Quantity MSFieldColumns::rho(rownr_t row, Double interTime) const
 {
 
   Quantity rval(0.,"m");
@@ -254,7 +254,7 @@ Quantity MSFieldColumns::rho(Int row, Double interTime) const
 
 }
 
-Bool MSFieldColumns::needInterTime(Int row) const
+Bool MSFieldColumns::needInterTime(rownr_t row) const
 {
   if( ( measCometsV_p.size()>0 && ephemerisId()(row)>=0 )
       || (numPoly()(row)>0) 
@@ -264,7 +264,7 @@ Bool MSFieldColumns::needInterTime(Int row) const
   return False;
 }
 
-Int MSFieldColumns::measCometIndex(Int row) const
+Int MSFieldColumns::measCometIndex(rownr_t row) const
 {
   Int rval = -1;
   if( measCometsV_p.size()>0 ){
@@ -276,7 +276,7 @@ Int MSFieldColumns::measCometIndex(Int row) const
   return rval;
 }
 
-String MSFieldColumns::ephemPath(Int row) const
+String MSFieldColumns::ephemPath(rownr_t row) const
 {
   String rval = "";
   Int index = measCometIndex(row);
@@ -287,7 +287,7 @@ String MSFieldColumns::ephemPath(Int row) const
 }
 
 Bool MSFieldColumns::
-matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
+matchReferenceDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad, 
 		  MVDirection& mvdir, Double time) const 
 {
   try{
@@ -304,7 +304,7 @@ matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
 }
 
 Bool MSFieldColumns::
-matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
+matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad, 
 	      MVDirection& mvdir, Double time) const 
 {
   try{
@@ -321,7 +321,7 @@ matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
 }
 
 Bool MSFieldColumns::
-matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
+matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad, 
 	      MVDirection& mvdir, Double time) const 
 {
   try{
@@ -337,12 +337,12 @@ matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   }
 }
 
-Int MSFieldColumns::matchDirection(const MDirection& referenceDirection,
-                                   const MDirection& delayDirection,
-                                   const MDirection& phaseDirection,
-                                   const Quantum<Double>& maxSeparation,
-                                   Int tryRow, Double time) {
-  uInt r = nrow();
+Int64 MSFieldColumns::matchDirection(const MDirection& referenceDirection,
+                                     const MDirection& delayDirection,
+                                     const MDirection& phaseDirection,
+                                     const Quantum<Double>& maxSeparation,
+                                     Int64 tryRow, Double time) {
+  rownr_t r = nrow();
   if (r == 0) return -1;
   const MVDirection& referenceDirVal = referenceDirection.getValue();
   const MVDirection& delayDirVal = delayDirection.getValue();
@@ -355,10 +355,11 @@ Int MSFieldColumns::matchDirection(const MDirection& referenceDirection,
   // Main matching loop
   MVDirection mvdir;
   if (tryRow >= 0) {
-    const uInt tr = tryRow;
+    const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSFieldColumns::matchDirection(...) - "
-		      "the row you suggest is too big"));
+		      "row " + String::toString(tr) +
+                      " you suggest is too big"));
     }
     if (!flagRow()(tr) &&
 	numPoly()(tr) == 0){
@@ -407,7 +408,7 @@ Int MSFieldColumns::matchDirection(const MDirection& referenceDirection,
 void MSFieldColumns::updateMeasComets()
 {
   // delete old MeasComet objects
-  for(uInt i=0; i<measCometsV_p.size(); i++){
+  for(size_t i=0; i<measCometsV_p.size(); i++){
     delete measCometsV_p(i);
   }
   measCometsV_p.resize(0);
@@ -419,7 +420,7 @@ void MSFieldColumns::updateMeasComets()
 
   // (re)create all necessary MeasComet objects
   Vector<Int> ephId = ephemerisId_p.getColumn();
-  for(uInt i=0; i<ephId.size(); i++){
+  for(size_t i=0; i<ephId.size(); i++){
     Int theEphId = ephId(i);
     //cout << "updateMeasComet: processing row " << i << ", found eph id " << theEphId << endl;
     if(theEphId>=0 
@@ -441,7 +442,7 @@ void MSFieldColumns::updateMeasComets()
       }
       // create the new MeasComet object and store pointer to it in measCometsV_p
       MeasComet* mC = new MeasComet(ephemTablePath);
-      uInt nMeasCom = measCometsV_p.size();
+      size_t nMeasCom = measCometsV_p.size();
       measCometsV_p.resize(nMeasCom+1, True);
       measCometsV_p(nMeasCom) = mC;
       // remember the connection ephId to the measCometsV_p index

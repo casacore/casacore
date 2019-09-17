@@ -287,7 +287,7 @@ MSReader::MSReader(const MeasurementSet &ms)
 }
 
 
-void MSReader::gotoRow(uInt which) 
+void MSReader::gotoRow(rownr_t which) 
 {
     // give up if this isn't a valid row.  Perhaps this should do something more
     // obnoxious, like make this a boolean fn and return False?
@@ -295,7 +295,7 @@ void MSReader::gotoRow(uInt which)
 
     // don't do anything if which is the same as the previous call.
     // This will have problems is the MS has been written to in the meantime.
-    if (itsRowNumbers[itsMainId] >= 0 && uInt(itsRowNumbers[itsMainId]) == which) return;
+    if (itsRowNumbers[itsMainId] >= 0 && itsRowNumbers[itsMainId] == Int64(which)) return;
 
     itsRowNumbers = -1;
 
@@ -362,7 +362,7 @@ void MSReader::gotoRow(uInt which)
 	itsDopplerIndex.dopplerId() = itsIds.dopplerId(which);
 	itsDopplerIndex.sourceId() = itsIds.sourceId(which);
 	// doppler does not use time or interval as keys
-	Int dopRow = itsDopplerIndex.getNearestRow(found);
+	Int64 dopRow = itsDopplerIndex.getNearestRow(found);
 	if (found) {
 	    itsTabRows[itsDopplerId].get(dopRow);
 	    itsRowNumbers[itsDopplerId] = dopRow;
@@ -377,7 +377,7 @@ void MSReader::gotoRow(uInt which)
     itsFeed1Index.spectralWindowId() = spwId;
     itsFeed1Index.time() = stime;
     itsFeed1Index.interval() = sint;
-    Int feedRow = itsFeed1Index.getNearestRow(found);
+    Int64 feedRow = itsFeed1Index.getNearestRow(found);
     if (found) {
 	itsTabRows[itsFeed1Id].get(feedRow);
 	itsRowNumbers[itsFeed1Id] = feedRow;
@@ -406,7 +406,7 @@ void MSReader::gotoRow(uInt which)
 	itsFreqOffIndex.feedId() = feed1;
 	itsFreqOffIndex.time() = stime;
 	itsFreqOffIndex.interval() = sint;
-	Int foffRow = itsFreqOffIndex.getNearestRow(found);
+	Int64 foffRow = itsFreqOffIndex.getNearestRow(found);
 	if (found) {
 	    itsTabRows[itsFreqOffsetId].get(foffRow);
 	    itsRowNumbers[itsFreqOffsetId] = foffRow;
@@ -417,7 +417,7 @@ void MSReader::gotoRow(uInt which)
     itsPointing1Index.antennaId() = ant1Id;
     itsPointing1Index.time() = stime;
     itsPointing1Index.interval() = sint;
-    Int pointRow = itsPointing1Index.getNearestRow(found);
+    Int64 pointRow = itsPointing1Index.getNearestRow(found);
     if (found) {
 	itsTabRows[itsPointing1Id].get(pointRow);
 	itsRowNumbers[itsPointing1Id] = pointRow;
@@ -440,7 +440,7 @@ void MSReader::gotoRow(uInt which)
 	itsSourceIndex.spectralWindowId() = itsIds.spectralWindowId(which);
 	itsSourceIndex.time() = stime;
 	itsSourceIndex.interval() = sint;
-	Int sourceRow = itsSourceIndex.getNearestRow(found);
+	Int64 sourceRow = itsSourceIndex.getNearestRow(found);
 	if (found) {
 	    itsTabRows[itsSourceId].get(sourceRow);
 	    itsRowNumbers[itsSourceId] = sourceRow;
@@ -454,7 +454,7 @@ void MSReader::gotoRow(uInt which)
 	itsSyscal1Index.spectralWindowId() = spwId;
 	itsSyscal1Index.time() = stime;
 	itsSyscal1Index.interval() = sint;
-	Int syscalRow = itsSyscal1Index.getNearestRow(found);
+	Int64 syscalRow = itsSyscal1Index.getNearestRow(found);
 	if (found) {
 	    itsTabRows[itsSyscal1Id].get(syscalRow);
 	    itsRowNumbers[itsSyscal1Id] = syscalRow;
@@ -482,7 +482,7 @@ void MSReader::gotoRow(uInt which)
 	itsWeather1Index.antennaId() = ant1Id;
 	itsWeather1Index.time() = stime;
 	itsWeather1Index.interval() = sint;
-	Int weatherRow = itsWeather1Index.getNearestRow(found);
+	Int64 weatherRow = itsWeather1Index.getNearestRow(found);
 	if (found) {
 	    itsTabRows[itsWeather1Id].get(weatherRow);
 	    itsRowNumbers[itsWeather1Id] = weatherRow;
@@ -508,7 +508,7 @@ void MSReader::gotoRow(uInt which)
 	if (!itsIndexes[i].isNull()) {
 	    itsIndexes[i].time() = stime;
 	    itsIndexes[i].interval() = sint;
-	    Int thisRow = itsIndexes[i].getNearestRow(found);
+	    Int64 thisRow = itsIndexes[i].getNearestRow(found);
 	    if (found) {
 		itsTabRows[i].get(thisRow);
 		itsRowNumbers[i] = thisRow;
@@ -524,7 +524,7 @@ const RecordInterface &MSReader::tableRow(const String &name) const
     return itsTabRows[tabId].record();
 }
 
-Int MSReader::rowNumber(const String &name) const
+Int64 MSReader::rowNumber(const String &name) const
 {
     if (itsTabId.find(name) == itsTabId.end()) return -1;
     Int tabId = itsTabId.at(name);

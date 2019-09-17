@@ -277,15 +277,15 @@ protected:
 	     TableOption option);
     MSTable (const String &tableName, const String &tableDescName,
 	     const TableLock& lockOptions, TableOption option);
-    MSTable (SetupNewTable &newTab, uInt nrrow,
+    MSTable (SetupNewTable &newTab, rownr_t nrrow,
 	     Bool initialize);
-    MSTable (SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
+    MSTable (SetupNewTable &newTab, const TableLock& lockOptions, rownr_t nrrow,
 	     Bool initialize);
 #ifdef HAVE_MPI
-    MSTable (MPI_Comm comm, SetupNewTable &newTab, uInt nrrow,
+    MSTable (MPI_Comm comm, SetupNewTable &newTab, rownr_t nrrow,
 	     Bool initialize);
-    MSTable (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
-	     Bool initialize);
+    MSTable (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions,
+             rownr_t nrrow, Bool initialize);
 #endif // HAVE_MPI
     MSTable (const Table &table);
     MSTable (const MSTable<MSEnum> &other);

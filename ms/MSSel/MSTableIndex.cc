@@ -169,7 +169,7 @@ void MSTableIndex::setChanged()
     if (index_p) index_p->setChanged();
 }
 
-Vector<rownr_t> MSTableIndex::getRowNumbers()
+RowNumbers MSTableIndex::getRowNumbers()
 {
     getInternals();
     return lastSearch_p;

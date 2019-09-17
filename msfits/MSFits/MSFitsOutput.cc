@@ -68,6 +68,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 
 #include <set>
+#include <limits>
 
 namespace casacore {
 
@@ -306,6 +307,10 @@ Bool MSFitsOutput::writeFitsFile(
 	const Bool padWithFlags, Int avgchan, uInt fieldNumber,
 	Bool overwrite
 ) {
+    // A FITS table can handle only Int nrows.
+    if (ms.nrow() > std::numeric_limits<Int>::max()) {
+      throw AipsError("MS " + ms.tableName() + " is too big (#rows exceeds MAX_INT)");
+    }
     MSFitsOutput out(fitsfile, ms, column);
     out.setChannelInfo(startchan, nchan, stepchan, avgchan);
     out.setWriteSysCal(writeSysCal);

@@ -94,7 +94,7 @@ public:
     MSPointing (const String &tableName, TableOption = Table::Old);
     MSPointing (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSPointing (SetupNewTable &newTab, uInt nrrow = 0,
+    MSPointing (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSPointing (const Table &table);
     MSPointing (const MSPointing &other);

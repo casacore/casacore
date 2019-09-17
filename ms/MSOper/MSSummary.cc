@@ -109,7 +109,7 @@ MSSummary::~MSSummary ()
 //
 // Retrieve number of rows
 //
-Int MSSummary::nrow () const
+Int64 MSSummary::nrow () const
 {
     return _msmd->nRows();
 }
@@ -322,7 +322,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     std::shared_ptr<const std::map<SubScanKey, MSMetaData::SubScanProperties> > ssprops
         = _msmd->getSubScanProperties(True);
     std::shared_ptr<const std::map<SubScanKey, std::set<String> > > ssToIntents = _msmd->getSubScanToIntentsMap();
-    std::shared_ptr<const map<SubScanKey, uInt> > nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
+    std::shared_ptr<const map<SubScanKey, rownr_t> > nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
     for (; iter != end; ++iter) {
         Int obsid = iter->obsID;
         Int arrid = iter->arrayID;
@@ -351,7 +351,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         Int lastscan = 0;
         for (; siter != send; ++siter) {
             const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
-            Int nrow = props.acRows + props.xcRows;
+            Int64 nrow = props.acRows + props.xcRows;
             Int thisscan = siter->scan;
             std::set<uInt> ddIDs = props.ddIDs;
             std::set<Int> stateIDs = props.stateIDs;
@@ -561,7 +561,7 @@ void MSSummary::getScanSummary (Record& outRec) const
         Int nst(1);
         Double btime(0.0), etime(0.0);
         Bool firsttime(True);
-        Int thisnrow(0);
+        Int64 thisnrow(0);
         Double meanIntTim(0.0);
 
 
@@ -572,7 +572,7 @@ void MSSummary::getScanSummary (Record& outRec) const
 
             // ms table at this timestamp
             Table t(stiter.table());
-            Int nrow=t.nrow();
+            Int64 nrow=t.nrow();
 
             // relevant columns
             TableVector<Double> timecol(t,"TIME");
@@ -603,7 +603,7 @@ void MSSummary::getScanSummary (Record& outRec) const
             nVisPerField_(fldids(0))+=nrow;
 
             // fill field and ddi lists for this timestamp
-            for (Int i=1; i < nrow; i++) {
+            for (Int64 i=1; i < nrow; i++) {
                 if ( !anyEQ(fldids,fldcol(i)) ) {
                     nfld++;
                     fldids.resize(nfld,True);
@@ -931,8 +931,8 @@ void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
             os << endl;
 
             // loop through rows
-            // for (uInt row=0; row<msFC.antennaId().nrow(); row++) {
-            for (uInt row=0; row<1; row++) {
+            // for (rownr_t row=0; row<msFC.antennaId().nrow(); row++) {
+            for (rownr_t row=0; row<1; row++) {
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);    os << "  ";
                 os.output().width(widthAnt);    os << (msFC.antennaId()(row)+1);
@@ -1105,7 +1105,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
             os.output().width(widthProj);    os << "Project";
             os << endl;
 
-            for (uInt row=0;row<msOC.project().nrow();row++) {
+            for (rownr_t row=0;row<msOC.project().nrow();row++) {
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);    os << "  ";
                 os.output().width(widthTel);    os << msOC.telescopeName()(row);
@@ -1232,7 +1232,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
             os.output().precision(12);
 
             // Loop through rows
-            for (uInt row=0; row<msSC.direction().nrow(); row++) {
+            for (rownr_t row=0; row<msSC.direction().nrow(); row++) {
                 MDirection mRaDec=msSC.directionMeas()(row);
                 MVAngle mvRa=mRaDec.getAngle().getValue()(0);
                 MVAngle mvDec=mRaDec.getAngle().getValue()(1);
@@ -1322,7 +1322,7 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
         os << endl;
 
         // For each row of the SpWin subtable, write the info
-        for (uInt row=0; row<msSWC.refFrequency().nrow(); row++) {
+        for (rownr_t row=0; row<msSWC.refFrequency().nrow(); row++) {
             os.output().setf(ios::left, ios::adjustfield);
             os.output().width(widthLead);        os << "  ";
             // 1st column: reference frequency
@@ -1417,7 +1417,7 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
     // Create a MS-pol-columns object
     MSPolarizationColumns msPolC(pMS->polarization());
 
-    uInt nRow = pMS->polarization().nrow();
+    rownr_t nRow = pMS->polarization().nrow();
     if (nRow<=0) {
         os << "The POLARIZATION table is empty: see the FEED table" << endl;
     }
@@ -1436,7 +1436,7 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
         os << endl;
 
         // For each row of the Pol subtable, write the info
-        for (uInt row=0; row<nRow; row++) {
+        for (rownr_t row=0; row<nRow; row++) {
             os.output().setf(ios::left, ios::adjustfield);
             os.output().width(widthLead);        os << "  ";
             // 8th column: the correlation type(s)
@@ -1667,25 +1667,25 @@ void MSSummary::listWeather (LogIO& os, Bool verbose) const
 void MSSummary::listTables (LogIO& os, Bool verbose) const
 {
     // Get nrows for each table (=-1 if table absent)
-    Vector<Int> tableRows(18);
+    Vector<Int64> tableRows(18);
     tableRows(0) = nrow();
     tableRows(1) = pMS->antenna().nrow();
     tableRows(2) = pMS->dataDescription().nrow();
-    tableRows(3) = (pMS->doppler().isNull() ? -1 : (Int)pMS->doppler().nrow());
+    tableRows(3) = (pMS->doppler().isNull() ? -1 : (Int64)pMS->doppler().nrow());
     tableRows(4) = pMS->feed().nrow();
     tableRows(5) = pMS->field().nrow();
     tableRows(6) = pMS->flagCmd().nrow();
-    tableRows(7) = (pMS->freqOffset().isNull() ? -1 : (Int)pMS->freqOffset().nrow());
+    tableRows(7) = (pMS->freqOffset().isNull() ? -1 : (Int64)pMS->freqOffset().nrow());
     tableRows(8) = pMS->history().nrow();
     tableRows(9) = pMS->observation().nrow();
     tableRows(10) = pMS->pointing().nrow();
     tableRows(11) = pMS->polarization().nrow();
     tableRows(12) = pMS->processor().nrow();
-    tableRows(13) = (pMS->source().isNull() ? -1 : (Int)pMS->source().nrow());
+    tableRows(13) = (pMS->source().isNull() ? -1 : (Int64)pMS->source().nrow());
     tableRows(14) = pMS->spectralWindow().nrow();
     tableRows(15) = pMS->state().nrow();
-    tableRows(16) = (pMS->sysCal().isNull() ? -1 : (Int)pMS->sysCal().nrow());
-    tableRows(17) = (pMS->weather().isNull() ? -1 : (Int)pMS->weather().nrow());
+    tableRows(16) = (pMS->sysCal().isNull() ? -1 : (Int64)pMS->sysCal().nrow());
+    tableRows(17) = (pMS->weather().isNull() ? -1 : (Int64)pMS->weather().nrow());
 
     Vector<String> rowStrings(18), tableStrings(18);
     rowStrings = " rows";

@@ -94,7 +94,7 @@ public:
     MSWeather (const String &tableName, TableOption = Table::Old);
     MSWeather (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSWeather (SetupNewTable &newTab, uInt nrrow = 0,
+    MSWeather (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSWeather (const Table &table);
     MSWeather (const MSWeather &other);

@@ -63,14 +63,14 @@ MSAntenna::MSAntenna(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSAntenna"));
 }
 
-MSAntenna::MSAntenna(SetupNewTable &newTab, uInt nrrow,
+MSAntenna::MSAntenna(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSAntennaEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSAntenna(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSAntenna(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSAntenna"));
 }
 

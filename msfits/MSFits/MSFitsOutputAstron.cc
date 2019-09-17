@@ -61,6 +61,7 @@
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/Logging/LogIO.h>
 
+#include <limits>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -94,6 +95,10 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
                                  Double sensitivity)
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFitsFile"));
+  // A FITS table can handle only Int nrows.
+  if (ms.nrow() > std::numeric_limits<Int>::max()) {
+    throw AipsError("MS " + ms.tableName() + " is too big (#rows exceeds MAX_INT)");
+  }
   const uInt nrow = ms.nrow();
   String msfile=ms.tableName();
   String outfile;

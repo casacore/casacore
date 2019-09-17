@@ -105,10 +105,10 @@ void MSAntennaColumns::setOffsetRef(MPosition::Types ref)
 }
 
 
-Int MSAntennaColumns::
+Int64 MSAntennaColumns::
 matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
-	     Int tryRow) {
-  uInt r = nrow();
+	     Int64 tryRow) {
+  rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
   const MPosition::Types refType =
@@ -128,10 +128,11 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
   // Main matching loop
   if (tryRow >= 0) {
-    const uInt tr = tryRow;
+    const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
-                      "the row you suggest is too big"));
+                      "row " + String::toString(tr) +
+                      " you suggest is too big"));
     }
     if (!flagRow()(tr) &&
 	matchPosition(tr, antPosInM, tolInM)) {
@@ -149,21 +150,21 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   return -1;
 }
 
-Int MSAntennaColumns::matchAntenna(const String& antName,
-                                   const MPosition& antennaPos,
-                                   const Quantum<Double>& tolerance,
-                                   Int tryRow) {
+Int64 MSAntennaColumns::matchAntenna(const String& antName,
+                                     const MPosition& antennaPos,
+                                     const Quantum<Double>& tolerance,
+                                     Int64 tryRow) {
   return matchAntennaAndStation(antName, "",
 				antennaPos, tolerance, tryRow);
 
 }
 
-Int MSAntennaColumns::matchAntennaAndStation(const String& antName,
-                                             const String& stationName,
-                                             const MPosition& antennaPos,
-                                             const Quantum<Double>& tolerance,
-                                             Int tryRow) {
-  uInt r = nrow();
+Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
+                                               const String& stationName,
+                                               const MPosition& antennaPos,
+                                               const Quantum<Double>& tolerance,
+                                               Int64 tryRow) {
+  rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
   const MPosition::Types refType =
@@ -184,10 +185,11 @@ Int MSAntennaColumns::matchAntennaAndStation(const String& antName,
 
   // Main matching loop
   if (tryRow >= 0) {
-    const uInt tr = tryRow;
+    const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
-                      "the row you suggest is too big"));
+                      "row " + String::toString(tr) +
+                      " you suggest is too big"));
     }
     Bool stationMatches = stationName.empty() || matchStation(tr, stationName);
     if (!flagRow()(tr) &&
@@ -212,18 +214,18 @@ Int MSAntennaColumns::matchAntennaAndStation(const String& antName,
 }
 
 
-Bool MSAntennaColumns::matchName(uInt row, const String& antName) const {
+Bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
   return antName.matches(name()(row));
 }
 
-Bool MSAntennaColumns::matchStation(uInt row, const String& stationName) const {
+Bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
   DebugAssert(row < nrow(), AipsError);
   return stationName.matches(station()(row));
 }
 
 Bool MSAntennaColumns::
-matchPosition(uInt row, const Vector<Double>& antPosInM,
+matchPosition(rownr_t row, const Vector<Double>& antPosInM,
 	      const Double tolInM) const {
   DebugAssert(row < nrow(), AipsError);
   DebugAssert(antPosInM.nelements() == 3, AipsError);

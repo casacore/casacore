@@ -105,7 +105,7 @@ public:
 
   // Convenience function that returns the number of rows in any of the
   // columns. Returns zero if the object is null.
-  uInt nrow() const {return isNull() ? 0 : dopplerId_p.nrow();}
+  rownr_t nrow() const {return isNull() ? 0 : dopplerId_p.nrow();}
 
   // set the DOPPLER type for the VELDEF column.
   void setVelDefRef(MDoppler::Types ref);  

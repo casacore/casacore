@@ -44,7 +44,9 @@ void MSSelUtil2<T>::reorderData(Array<T>& data,
 				Int nIfr, const Vector<Int>& timeSlot, 
 				Int nTime, const T& defvalue)
 {
-  Int nPol=data.shape()(0),nChan=data.shape()(1),nRow=data.shape()(2);
+  Int nPol=data.shape()(0);
+  Int nChan=data.shape()(1);
+  Int64 nRow=data.shape()(2);
   Array<T> data2(IPosition(4,nPol,nChan,nIfr,nTime));
   data2.set(defvalue);
   
@@ -52,8 +54,8 @@ void MSSelUtil2<T>::reorderData(Array<T>& data,
   const T* pdata=data.getStorage(deleteData);
   T* pdata2=data2.getStorage(deleteData2);
   Int n=nPol*nChan;
-  for (Int i=0; i<nRow; i++) {
-    Int start1=i*n, start2=(ifrSlot(i)+timeSlot(i)*nIfr)*n;
+  for (Int64 i=0; i<nRow; i++) {
+    Int64 start1=i*n, start2=(ifrSlot(i)+timeSlot(i)*nIfr)*n;
     for (Int j=0; j<n; j++) pdata2[start2+j]=pdata[start1+j];
   }
   data.freeStorage(pdata,deleteData);
@@ -64,8 +66,8 @@ void MSSelUtil2<T>::reorderData(Array<T>& data,
 
 // reorder from 4d to 3d (removing ifr axis)
 template <class T>
-void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
-				Int nRow)
+void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex,
+			        Int64 nRow)
 {
   Int nPol=data.shape()(0),nChan=data.shape()(1),nIfr=data.shape()(2),
     nTime=data.shape()(3);
@@ -82,9 +84,9 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
   Int n=nPol*nChan;
   for (Int i=0; i<nTime; i++) {
     for (Int j=0; j<nIfr; j++) {
-      Int k=rowIndex(j,i);
+      Int64 k=rowIndex(j,i);
       if (k>=0) {
-	Int start2=k*n, start1=(j+i*nIfr)*n;
+	Int64 start2=k*n, start1=(j+i*nIfr)*n;
 	for (Int l=0; l<n; l++) pData2[start2+l]=pData[start1+l];
       }
     }
@@ -94,7 +96,7 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
   data.reference(data2);
 }
 
-// average data (with flags & weights applied) over it's last axis (time or
+// average data (with flags & weights applied) over its last axis (time or
 // row), return in data (overwritten), dataFlag gives new flags.
 template <class T>
 void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data, 

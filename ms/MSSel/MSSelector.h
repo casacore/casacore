@@ -207,7 +207,7 @@ public:
   // (the default of zero returns all rows). To keep MSIter from adding  
   // the default sort columns, specify addDefaultSortColumns=False
   Bool iterInit(const Vector<String>& columns,
-		Double interval, Int maxRows=0,
+		Double interval, rownr_t maxRows=0,
 		Bool addDefaultSortColumns=True);
   
   // Step the iterator, sets the selection to the current table iteration.
@@ -223,7 +223,7 @@ public:
   Bool iterEnd();
 
   // Number of rows in selected table
-  Int nrow() const;
+  rownr_t nrow() const;
 
   // Return the selected table
   Table selectedTable() const;
@@ -314,13 +314,13 @@ private:
   Vector<Int> ifrSelection_p,ifrAxis_p;
   Matrix<Double> chanFreq_p,bandwidth_p;
   MSDerivedValues msd_p;
-  Matrix<Int> rowIndex_p; // mapping of rows to time and ifr slots
-  Vector<rownr_t> selRows_p; // range of rows from selms_p returned by getData
-  Int startRow_p, maxRow_p; // start and length of range of rows
+  Matrix<Int64> rowIndex_p; // mapping of rows to time and ifr slots
+  RowNumbers selRows_p; // range of rows from selms_p returned by getData
+  rownr_t startRow_p, maxRow_p; // start and length of range of rows
   Bool useIfrDefault_p;
 
 };
-inline Int MSSelector::nrow() const { return selms_p.nrow();}
+inline rownr_t MSSelector::nrow() const { return selms_p.nrow();}
 inline Vector<Int> MSSelector::dataDescId() const { return dataDescId_p;}
 inline Table MSSelector::selectedTable() const {return selms_p;}
 inline Bool MSSelector::selected() const {return initSel_p;}

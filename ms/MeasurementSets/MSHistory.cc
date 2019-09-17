@@ -65,7 +65,7 @@ MSHistory::MSHistory(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSHistory"));
 }
 
-MSHistory::MSHistory(SetupNewTable &newTab, uInt nrrow,
+MSHistory::MSHistory(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSHistoryEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)

@@ -1575,7 +1575,7 @@ Bool MSSelector::putData(const Record& items)
 }
 
 Bool MSSelector::iterInit(const Vector<String>& columns,
-		Double interval, Int maxRows,
+		Double interval, rownr_t maxRows,
 		Bool addDefaultSortColumns)
 {
 	LogIO os;
@@ -1605,7 +1605,7 @@ Bool MSSelector::iterNext()
 {
 	Bool more=False;
 	if (msIter_p) {
-		Int nIterRow=msIter_p->table().nrow();
+		rownr_t nIterRow=msIter_p->table().nrow();
 		if (startRow_p==0 || startRow_p> nIterRow) {
 			(*msIter_p)++;
 			more=msIter_p->more();
@@ -1613,7 +1613,7 @@ Bool MSSelector::iterNext()
 			startRow_p = 0;
 		}
 		if (startRow_p>0 || (more && maxRow_p>0 && nIterRow>maxRow_p)) {
-			Int nRow=min(maxRow_p,nIterRow-startRow_p);
+			rownr_t nRow=min(maxRow_p,nIterRow-startRow_p);
 			selRows_p.resize(nRow);
 			indgen(selRows_p,rownr_t(startRow_p),rownr_t(1));
 			startRow_p+=maxRow_p;
@@ -1633,7 +1633,7 @@ Bool MSSelector::iterOrigin()
 	if (msIter_p) {
 		startRow_p=0;
 		msIter_p->origin();
-		Int nIterRow=msIter_p->table().nrow();
+		rownr_t nIterRow=msIter_p->table().nrow();
 		if (maxRow_p==0 || nIterRow<=maxRow_p) {
 			selms_p=msIter_p->table();
 		} else {
@@ -1678,7 +1678,7 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 		chanSel(0)=data.shape()(1); chanSel(1)=0; chanSel(2)=1; chanSel(3)=1;
 	}
 	Int nChan=chanSel(0);
-	Int nRow=data.shape()(2);
+	Int64 nRow=data.shape()(2);
 	avData.resize(IPosition(3,nPol,nChan,nRow));
 	if (chanSel(2)==1) {
 		// no averaging, just copy the data across
@@ -1746,7 +1746,7 @@ void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 		chanSel(0)=data.shape()(1); chanSel(1)=0; chanSel(2)=1; chanSel(3)=1;
 	}
 	Int nChan=chanSel(0);
-	Int nRow=data.shape()(2);
+	Int64 nRow=data.shape()(2);
 	avData.resize(IPosition(3,nPol,nChan,nRow));
 	if (chanSel(2)==1) {
 		// no averaging, just copy the data across
@@ -1817,7 +1817,7 @@ Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag,
 		chanSel(0)=flag.shape()(1); chanSel(1)=0; chanSel(2)=1; chanSel(3)=1;
 	}
 	Int nChan=chanSel(0);
-	Int nRow=flag.shape()(2);
+	Int64 nRow=flag.shape()(2);
 	avFlag.resize(IPosition(3,nPol,nChan,nRow));
 	if (chanSel(2)==1) {
 		// no averaging, just copy flags
@@ -1859,7 +1859,7 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
 	Array<Bool> polFlag=avFlag;
 	Array<Bool> out;
 	Int n=polIndex_p.nelements();
-	Int nRow=avFlag.shape()(2);
+	Int64 nRow=avFlag.shape()(2);
 	// check if we need to read the data before writing it back
 	if (convert_p || (n>2 && n<col.shape(0)(0))||
 			(chanSel_p(2)>1 && chanSel_p(3)>chanSel_p(2))) {
@@ -1937,15 +1937,15 @@ Array<Float> MSSelector::getWeight(const ArrayColumn<Float>& wtCol,
 void MSSelector::reorderFlagRow(Array<Bool>& flagRow)
 {
 	Int nIfr=flagRow.shape()(0), nSlot=flagRow.shape()(1);
-	Int nRow=selms_p.nrow();
+	rownr_t nRow=selms_p.nrow();
 	Bool deleteFlag, deleteRow;
 	const Bool* pFlag=flagRow.getStorage(deleteFlag);
-	const Int* pRow=rowIndex_p.getStorage(deleteRow);
+	const Int64* pRow=rowIndex_p.getStorage(deleteRow);
 	Vector<Bool> rowFlag(nRow);
 	Int offset=0;
 	for (Int i=0; i<nSlot; i++, offset+=nIfr) {
 		for (Int j=0; j<nIfr; j++) {
-			Int k=pRow[offset+j];
+			rownr_t k=pRow[offset+j];
 			if (k>0) {
 				rowFlag(k)=pFlag[offset+j];
 			}
@@ -1960,16 +1960,16 @@ void MSSelector::reorderFlagRow(Array<Bool>& flagRow)
 void MSSelector::reorderWeight(Array<Float>& weight)
 {
 	Int nCorr=weight.shape()(0), nIfr=weight.shape()(1), nSlot=weight.shape()(2);
-	Int nRow=selms_p.nrow();
+	Int64 nRow=selms_p.nrow();
 	Bool deleteWeight, deleteRow, deleteRowWeight;
 	const Float* pWeight=weight.getStorage(deleteWeight);
-	const Int* pRow=rowIndex_p.getStorage(deleteRow);
+	const Int64* pRow=rowIndex_p.getStorage(deleteRow);
 	Matrix<Float> rowWeight(nCorr, nRow);
 	Float* pRowWeight=rowWeight.getStorage(deleteRowWeight);
 	Int offset=0;
 	for (Int i=0; i<nSlot; i++) {
 		for (Int j=0; j<nIfr; j++, offset++) {
-			Int k=pRow[offset];
+			rownr_t k=pRow[offset];
 			if (k>0) {
 				Int wOffset = nCorr*offset;
 				Int rwOffset = nCorr*k;

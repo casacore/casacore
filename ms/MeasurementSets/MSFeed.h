@@ -94,7 +94,7 @@ public:
     MSFeed (const String &tableName, TableOption = Table::Old);
     MSFeed (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSFeed (SetupNewTable &newTab, uInt nrrow = 0,
+    MSFeed (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSFeed (const Table &table);
     MSFeed (const MSFeed &other);

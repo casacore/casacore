@@ -121,7 +121,7 @@ public:
     // interval values.  For now, this code will miss the case where the subtable has
     // interval = -1 and the start time is outside of the time range implied by the time
     // and interval.  If the table has changed and the time is > 
-    virtual Vector<rownr_t> getRowNumbers();
+    virtual RowNumbers getRowNumbers();
 
     // get the row number which falls in the interval and has the time nearest to the
     // center of the interval (time()).  This also has the same problem as the previous function.
@@ -152,7 +152,7 @@ private:
     Double lastTime_p, lastInterval_p;
 
     // last search result - matching integer keys
-    Vector<rownr_t> lastSearch_p;
+    RowNumbers lastSearch_p;
 
     // last nearest
     Int64 lastNearest_p;
