@@ -259,6 +259,8 @@ uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
     nthr = omp_get_max_threads();
     if (uInt(nthr) > nr) nthr = nr;
   }
+  if (nthr == 0)
+    nthr = 1;
 #else
   nthr = 1;
 #endif
@@ -607,6 +609,8 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
     nthr = omp_get_max_threads();
     if (uInt(nthr) > nr) nthr = nr;
   }
+  if (nthr == 0)
+    nthr = 1;
 #else
   nthr = 1;
 #endif

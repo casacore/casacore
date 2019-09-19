@@ -461,8 +461,9 @@ size_t Conversion::bitToBool (void* to, const void* from,
     const size_t bits_per_loop = 8;
     const size_t nwords = nvalues / bits_per_loop;
 #ifdef _OPENMP
-    size_t nthr = std::min((size_t)omp_get_max_threads(),
-                           nwords / (16 * 1024));
+    size_t nthr =
+        std::max((size_t)1,
+                 std::min((size_t)omp_get_max_threads(), nwords / (16 * 1024)));
 # pragma omp parallel for if (nwords >= 32 * 1024) num_threads(nthr)
 #endif
     for (size_t i = 0; i < nwords; ++i) {
