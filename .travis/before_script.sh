@@ -29,6 +29,9 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    pip3 install numpy
 
+   # Boost cmake config break finding boost_python
+   rm -rf /usr/local/lib/cmake/Boost-1.*
+
    CXX="ccache $CXX" cmake .. \
         -DUSE_FFTW3=ON \
         -DBUILD_TESTING=ON \
