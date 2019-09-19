@@ -298,16 +298,16 @@ StatisticsDataset<CASA_STATP>::initLoopVars() {
 CASA_STATD
 void StatisticsDataset<CASA_STATP>::initThreadVars(
     uInt& nBlocks, uInt64& extra, uInt& nthreads,
-    PtrHolder<DataIterator>& dataIter,  PtrHolder<MaskIterator>& maskIter,
-    PtrHolder<WeightsIterator>& weightsIter, PtrHolder<uInt64>& offset,
+    std::unique_ptr<DataIterator[]>& dataIter,  std::unique_ptr<MaskIterator[]>& maskIter,
+    std::unique_ptr<WeightsIterator[]>& weightsIter, std::unique_ptr<uInt64[]>& offset,
     uInt nThreadsMax
 ) const {
     ThrowIf(nThreadsMax == 0, "Logic error: nThreadsMax should never be 0");
     auto n = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    dataIter.set(new DataIterator[n], True);
-    maskIter.set(new MaskIterator[n], True);
-    weightsIter.set(new WeightsIterator[n], True);
-    offset.set(new uInt64[n], True);
+    dataIter.reset(new DataIterator[n]);
+    maskIter.reset(new MaskIterator[n]);
+    weightsIter.reset(new WeightsIterator[n]);
+    offset.reset(new uInt64[n]);
     nBlocks = _chunk.count/ClassicalStatisticsData::BLOCK_SIZE;
     extra = _chunk.count % ClassicalStatisticsData::BLOCK_SIZE;
     if (extra > 0) {
