@@ -302,6 +302,7 @@ void StatisticsDataset<CASA_STATP>::initThreadVars(
     PtrHolder<WeightsIterator>& weightsIter, PtrHolder<uInt64>& offset,
     uInt nThreadsMax
 ) const {
+    ThrowIf(nThreadsMax == 0, "Logic error: nThreadsMax should never be 0");
     auto n = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
     dataIter.set(new DataIterator[n], True);
     maskIter.set(new MaskIterator[n], True);
@@ -312,7 +313,9 @@ void StatisticsDataset<CASA_STATP>::initThreadVars(
     if (extra > 0) {
         ++nBlocks;
     }
+    ThrowIf(nBlocks == 0, "Logic error: nBlocks should never be 0");
     nthreads = min(nThreadsMax, nBlocks);
+    ThrowIf(nthreads == 0, "Logic error: nthreads should never be 0");
     for (uInt tid=0; tid<nthreads; ++tid) {
         // advance the per-thread iterators to their correct starting
         // locations
