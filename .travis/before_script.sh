@@ -38,6 +38,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DBUILD_PYTHON3=ON \
         -DPYTHON3_EXECUTABLE=/usr/local/bin/python3 \
         -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
+        -DBoost_NO_BOOST_CMAKE=True \
         -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
         -DDATA_DIR=$PWD \
         -DSOFA_ROOT_DIR=$PWD \
