@@ -52,13 +52,7 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 {
   double v1 = *(const Double*)obj1;
   double v2 = *(const Double*)obj2;
-  // Initialize offset_p to first timestamp.
-  // Subtract a bit to avoid rounding problems.
-  // Note that a time is the middle of an interval; ideally half that width
-  // should be subtracted, but we don't know the width.
-  if (offset_p == 0.0) {
-    offset_p = v2 - 0.01;
-  }
+
   // Shortcut if values are equal.
   if (v1 == v2) return 0;
 
@@ -232,14 +226,6 @@ void MSIter::construct()
     }
   }
 
-  // now find the time column and set the compare function
-  Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
-  for (uInt i=0; i<columns.nelements(); i++) {
-    if (columns[i]==MS::columnName(MS::TIME)) {
-      timeComp_p = new MSInterval(interval_p);
-      objComp[i] = timeComp_p;
-    }
-  }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
 
   // Store the sorted table for future access if possible, 
@@ -280,6 +266,20 @@ void MSIter::construct()
       }
     }
 
+    // now find the time column and set the compare function for
+    // the time column. The rest of the sorting columns would
+    // get the default comparison function.
+    Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
+    for (uInt icol=0; icol<columns.nelements(); icol++) {
+      if (columns[icol]==MS::columnName(MS::TIME)) {
+        auto timeComp = new MSInterval(interval_p);
+        // Use the first timestamp as the reference to start counting
+        // the intervals
+        double time0 = ScalarColumn<double>(bms_p[i], MS::columnName(MS::TIME))(0);
+        timeComp->setOffset(time0);
+        objComp[icol] = timeComp;
+      }
+    }
     if (!useIn && !useSorted) {
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
@@ -392,7 +392,6 @@ MSIter::operator=(const MSIter& other)
   frequency0_p = other.frequency0_p;
   restFrequency_p = other.restFrequency_p;
   telescopePosition_p = other.telescopePosition_p;
-  timeComp_p.reset(new MSInterval(interval_p));
   prevFirstTimeStamp_p=other.prevFirstTimeStamp_p;
   return *this;
 }
@@ -416,9 +415,7 @@ const MS& MSIter::ms(const uInt id) const {
 void MSIter::setInterval(Double timeInterval)
 {
   interval_p=timeInterval;
-  if (timeComp_p) {
-    timeComp_p->setInterval(timeInterval);
-  }
+  construct();
 }
 
 void MSIter::origin()
@@ -478,43 +475,6 @@ void MSIter::setState()
   setFeedInfo();
   setFieldInfo();
 
-  // If time binning, update the MSInterval's offset to account for glitches.
-  // For example, if averaging to 5s and the input is
-  //   TIME  STATE_ID  INTERVAL
-  //    0      0         1
-  //    1      0         1
-  //    2      1         1
-  //    3      1         1
-  //    4      1         1
-  //    5      1         1
-  //    6      1         1
-  //    7      0         1
-  //    8      0         1
-  //    9      0         1
-  //   10      0         1
-  //   11      0         1
-  //  we want the output to be
-  //   TIME  STATE_ID  INTERVAL
-  //    0.5    0         2
-  //    4      1         5
-  //    9      0         5
-  //  not what we'd get without the glitch fix:
-  //   TIME  STATE_ID  INTERVAL
-  //    0.5    0         2
-  //    3      1         3
-  //    5.5    1         2
-  //    8      0         3
-  //   10.5    0         2
-  //
-  // Resetting the offset with each advance() might be too often, i.e. we might
-  // need different spws to share the same offset.  But in testing resetting
-  // with each advance produces results more consistent with expectations than
-  // either not resetting at all or resetting only
-  // if(colTime_p(0) - 0.02 > timeComp_p->getOffset()).
-  //
-  if(timeComp_p){
-      timeComp_p->setOffset(0.0);
-  }
 }
 
 const Vector<Double>& MSIter::frequency() const

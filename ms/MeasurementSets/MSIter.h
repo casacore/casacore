@@ -213,10 +213,12 @@ public:
   //# Members
  
   // Set or reset the time interval to use for iteration.
-  // You should call origin() to reset the iteration after 
+  // This will reset the iterator completely, so you should
+  // discard any running iteration and
+  // call origin() to reset the iteration after 
   // calling this.
   void setInterval(Double timeInterval);
- 
+
   // Reset iterator to start of data
   virtual void origin();
  
@@ -442,8 +444,6 @@ protected:
   MFrequency restFrequency_p;
   MPosition telescopePosition_p;
 
-  CountedPtr<MSInterval> timeComp_p; // Points to the time comparator.
-                                     // 0 if not using a time interval.
 };
 
 inline Bool MSIter::more() const { return more_p;}
