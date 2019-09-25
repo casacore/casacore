@@ -46,41 +46,47 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 				      const Block<String>& keys,
 				      const Block<CountedPtr<BaseCompare> >& cmp,
 				      const Block<Int>& order,
-				      int option)
+				      int option,
+				      std::shared_ptr<Vector<uInt>> groupBoundaries)
 : lastRow_p (0),
   nrkeys_p  (keys.nelements()),
   keyChangeAtLastNext_p(""),
   colPtr_p  (keys.nelements()),
   cmpObj_p  (cmp),
   lastVal_p (keys.nelements()),
-  curVal_p  (keys.nelements())
+  curVal_p  (keys.nelements()),
+  groupBoundaries_p (groupBoundaries)
 {
     // If needed sort the table in order of the iteration keys.
     // The passed in compare functions are for the iteration.
     if (option == TableIterator::NoSort) {
-	sortTab_p = btp;
+        sortTab_p = btp;
     }else{
-	Sort::Option sortopt = Sort::QuickSort;
-	if (option == TableIterator::HeapSort) {
-	    sortopt = Sort::HeapSort;
-	} else if (option == TableIterator::InsSort) {
-	    sortopt = Sort::InsSort;
-	}
-	Block<Int> ord(nrkeys_p, Sort::Ascending);
-	for (uInt i=0; i<nrkeys_p; i++) {
-	    if (order[i] == TableIterator::Descending) {
-		ord[i] = Sort::Descending;
-	    }
-	}
-	sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt));
+        Sort::Option sortopt = Sort::QuickSort;
+        if (option == TableIterator::HeapSort) {
+            sortopt = Sort::HeapSort;
+        } else if (option == TableIterator::InsSort) {
+            sortopt = Sort::InsSort;
+        }
+        Block<Int> ord(nrkeys_p, Sort::Ascending);
+        for (uInt i=0; i<nrkeys_p; i++) {
+            if (order[i] == TableIterator::Descending) {
+                ord[i] = Sort::Descending;
+            }
+        }
+        groupBoundaries_p = std::make_shared<Vector<uInt>>();
+        sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt,
+                                            groupBoundaries_p));
     }
     sortTab_p->link();
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
     for (uInt i=0; i<nrkeys_p; i++) {
-	colPtr_p[i] = sortTab_p->getColumn (keys[i]);
-	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
+        colPtr_p[i] = sortTab_p->getColumn (keys[i]);
+        colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
+    if(groupBoundaries_p)
+        groupBoundariesIt_p = groupBoundaries_p->begin();
 }
 
 
@@ -129,34 +135,78 @@ void BaseTableIterator::reset()
 
 BaseTable* BaseTableIterator::next()
 {
+    // If there are no group boundaries precomputed do an expensive
+    // walk to check where a new boundary happens by calling the comparion
+    // functions
+    if(!groupBoundaries_p)
+        return noGroupBoundariesNext();
+
     uInt i;
     // Allocate a RefTable to represent the rows in the iteration group.
     RefTable* itp = sortTab_p->makeRefTable (False, 0);
     if (lastRow_p >= sortTab_p->nrow()) {
-	return itp;                              // the end of the table
+        return itp;                              // the end of the table
+    }
+
+    // Go to the next group boundary (the one after this), which will be
+    // one past the end of the current group.
+    ++groupBoundariesIt_p;
+    uInt startNextGroup;
+    if(groupBoundariesIt_p == groupBoundaries_p->end())
+        startNextGroup = sortTab_p->nrow();
+    else
+        startNextGroup = *groupBoundariesIt_p;
+    // lastRow_p contains the starting point for this group
+    uInt startThisGroup = lastRow_p;
+    for (uInt irow=startThisGroup; irow < startNextGroup; irow++)
+        itp->addRownr (irow);
+    // Set lastRow_p to the starting point of next group
+    lastRow_p = startNextGroup;
+
+    // If we've reached the end of the table, clear the keyCh_p
+    if (lastRow_p==sortTab_p->nrow())
+      keyChangeAtLastNext_p=String();
+
+    //# Adjust rownrs in case source table is already a RefTable.
+    Vector<uInt>& rownrs = *(itp->rowStorage());
+    sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
+    return itp;
+
+}
+
+BaseTable* BaseTableIterator::noGroupBoundariesNext()
+{
+    // This is an expensive way to find the next group boundary by calling
+    // the sorting function for each individual row.
+
+    uInt i;
+    // Allocate a RefTable to represent the rows in the iteration group.
+    RefTable* itp = sortTab_p->makeRefTable (False, 0);
+    if (lastRow_p >= sortTab_p->nrow()) {
+        return itp;                              // the end of the table
     }
     // Add the last found rownr to this iteration group.
     itp->addRownr (lastRow_p);
     for (i=0; i<nrkeys_p; i++) {
-	colPtr_p[i]->get (lastRow_p, lastVal_p[i]);
+        colPtr_p[i]->get (lastRow_p, lastVal_p[i]);
     }
     Bool match;
     uInt nr = sortTab_p->nrow();
     while (++lastRow_p < nr) {
-	match = True;
-	for (i=0; i<nrkeys_p; i++) {
-	    colPtr_p[i]->get (lastRow_p, curVal_p[i]);
-	    if (cmpObj_p[i]->comp (curVal_p[i], lastVal_p[i])  != 0) {
-		match = False;
-		// update so users can see which key changed
-		keyChangeAtLastNext_p=colPtr_p[i]->columnDesc().name();   
-		break;
-	    }
-	}
-	if (!match) {
-	    break;
-	}
-	itp->addRownr (lastRow_p);
+        match = True;
+        for (i=0; i<nrkeys_p; i++) {
+            colPtr_p[i]->get (lastRow_p, curVal_p[i]);
+            if (cmpObj_p[i]->comp (curVal_p[i], lastVal_p[i])  != 0) {
+                match = False;
+                // update so users can see which key changed
+                keyChangeAtLastNext_p=colPtr_p[i]->columnDesc().name();
+                break;
+            }
+        }
+        if (!match) {
+            break;
+        }
+        itp->addRownr (lastRow_p);
     }
 
     // If we've reached the end of the table, clear the keyCh_p

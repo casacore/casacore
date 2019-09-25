@@ -682,7 +682,8 @@ Vector<uInt>* BaseTable::rowStorage()
 //# Sort a table.
 BaseTable* BaseTable::sort (const Block<String>& names,
 			    const Block<CountedPtr<BaseCompare> >& cmpObj,
-                            const Block<Int>& order, int option)
+                            const Block<Int>& order, int option,
+                            std::shared_ptr<Vector<uInt>> groupBoundaries)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Check if the vectors have equal length.
@@ -703,13 +704,14 @@ BaseTable* BaseTable::sort (const Block<String>& names,
 	}
     }
     // Return the result as a table.
-    return doSort (sortCol, cmpObj, order, option);
+    return doSort (sortCol, cmpObj, order, option, groupBoundaries);
 }
 
 //# Do the actual sort.
 BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
-			      const Block<CountedPtr<BaseCompare> >& cmpObj,
-                              const Block<Int>& order, int option)
+                              const Block<CountedPtr<BaseCompare> >& cmpObj,
+                              const Block<Int>& order, int option,
+                              std::shared_ptr<Vector<uInt>> groupBoundaries)
 {
     uInt i;
     uInt nrkey = sortCol.nelements();
@@ -719,7 +721,7 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     PtrBlock<const void*> dataSave(nrkey);          // to remember data blocks
     Block<CountedPtr<BaseCompare> > cmp(cmpObj);
     for (i=0; i<nrkey; i++) {
-	sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], dataSave[i]);
+        sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], dataSave[i]);
     }
     //# Create a reference table.
     //# This table will NOT be in row order.
@@ -731,10 +733,12 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     Vector<uInt>& rows = *(resultTable->rowStorage());
     //# Note that nrrow can change in case Sort::NoDuplicates was given.
     nrrow = sortobj.sort (rows, nrrow, option);
+    if(groupBoundaries)
+        sortobj.unique(*groupBoundaries, rows);
     adjustRownrs (nrrow, rows, False);
     resultTable->setNrrow (nrrow);
     for (i=0; i<nrkey; i++) {
-	sortCol[i]->freeSortKey (dataSave[i]);
+        sortCol[i]->freeSortKey (dataSave[i]);
     }
     return resultTable;
 }
@@ -1035,7 +1039,8 @@ uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
 BaseTableIterator* BaseTable::makeIterator
 (const Block<String>& names,
  const Block<CountedPtr<BaseCompare> >& cmpObj,
- const Block<Int>& order, int option)
+ const Block<Int>& order, int option,
+ std::shared_ptr<Vector<uInt>> groupBoundaries)
 {
     AlwaysAssert (!isNull(), AipsError);
     if (names.nelements() != order.nelements()
@@ -1043,7 +1048,7 @@ BaseTableIterator* BaseTable::makeIterator
 	throw (TableInvOper ("TableIterator: Unequal block lengths"));
     }
     BaseTableIterator* bti = new BaseTableIterator (this, names,
-						    cmpObj, order, option);
+						    cmpObj, order, option, groupBoundaries);
     return bti;
 }
 

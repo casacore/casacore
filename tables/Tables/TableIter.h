@@ -171,8 +171,9 @@ public:
     // Give an optional compare object per column.
     // A zero pointer means that the default compare function will be used.
     TableIterator (const Table&, const Block<String>& columnNames,
-		   const Block<CountedPtr<BaseCompare> >&,
-		   const Block<Int>& orders, Option = ParSort);
+                   const Block<CountedPtr<BaseCompare> >&,
+                   const Block<Int>& orders, Option = ParSort,
+                   std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr);
     // </group>
 
     // Copy constructor (copy semantics).

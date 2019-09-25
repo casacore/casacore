@@ -389,13 +389,15 @@ public:
 
     // Sort a table on one or more columns of scalars.
     BaseTable* sort (const Block<String>& columnNames,
-		     const Block<CountedPtr<BaseCompare> >& compareObjects,
-		     const Block<Int>& sortOrder, int sortOption);
+                     const Block<CountedPtr<BaseCompare> >& compareObjects,
+                     const Block<Int>& sortOrder, int sortOption,
+                     std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr);
 
     // Create an iterator.
     BaseTableIterator* makeIterator (const Block<String>& columnNames,
                                      const Block<CountedPtr<BaseCompare> >&,
-				     const Block<Int>& orders, int option);
+                                     const Block<Int>& orders, int option,
+                                     std::shared_ptr<Vector<uInt>> groupBoundaries);
 
     // Add one or more columns to the table.
     // The default implementation throws an "invalid operation" exception.
@@ -471,8 +473,9 @@ public:
     // Only in RefTable a smarter implementation is provided.
     virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
                                const Block<CountedPtr<BaseCompare> >&,
-			       const Block<Int>& sortOrder,
-			       int sortOption);
+                               const Block<Int>& sortOrder,
+                               int sortOption,
+                               std::shared_ptr<Vector<uInt>> groupBoundaries);
 
     // Create a RefTable object.
     RefTable* makeRefTable (Bool rowOrder, uInt initialNrrow);

@@ -911,9 +911,10 @@ public:
     // A null CountedPtr means using the standard compare object
     // from class <linkto class="ObjCompare:description">ObjCompare</linkto>.
     Table sort (const Block<String>& columnNames,
-		const Block<CountedPtr<BaseCompare> >& compareObjects,
-		const Block<Int>& sortOrders,
-		int = Sort::ParSort) const;
+                const Block<CountedPtr<BaseCompare> >& compareObjects,
+                const Block<Int>& sortOrders,
+                int = Sort::ParSort,
+                std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr) const;
     // </group>
 
     // Get a vector of row numbers in the root table of rows in this table.
