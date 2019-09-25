@@ -369,7 +369,7 @@ public:
 
 protected:
   // handle the construction details
-  void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
+  void construct();
   // advance the iteration
   void advance();
   // set the iteration state
@@ -387,6 +387,9 @@ protected:
   Block<MeasurementSet> bms_p;
   PtrBlock<TableIterator* > tabIter_p;
   Block<Bool> tabIterAtStart_p;
+
+  Block<Int> sortColumns_p;
+  Bool addDefaultSortColumns_p;
 
   Int nMS_p;
   CountedPtr<MSColumns> msc_p;

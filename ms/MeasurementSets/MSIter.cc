@@ -92,34 +92,39 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 }
 
 
-  MSIter::MSIter():nMS_p(0),storeSorted_p(False),prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(True)
+  MSIter::MSIter(): addDefaultSortColumns_p(true), nMS_p(0), storeSorted_p(False), prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(True)
 {}
 
 MSIter::MSIter(const MeasurementSet& ms,
-	       const Block<Int>& sortColumns,
-	       Double timeInterval,
-	       Bool addDefaultSortColumns,
-	       Bool storeSorted)
+               const Block<Int>& sortColumns,
+               Double timeInterval,
+               Bool addDefaultSortColumns,
+               Bool storeSorted)
 : curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
   interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
-  allBeamOffsetsZero_p(True)
+  allBeamOffsetsZero_p(True),
+  sortColumns_p(sortColumns),
+  addDefaultSortColumns_p(addDefaultSortColumns)
 {
   bms_p.resize(1); 
   bms_p[0]=ms;
-  construct(sortColumns,addDefaultSortColumns);
+  construct();
 }
 
 MSIter::MSIter(const Block<MeasurementSet>& mss,
-	       const Block<Int>& sortColumns,
-	       Double timeInterval,
-	       Bool addDefaultSortColumns,
-	       Bool storeSorted)
+               const Block<Int>& sortColumns,
+               Double timeInterval,
+               Bool addDefaultSortColumns,
+               Bool storeSorted)
 : bms_p(mss),curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
-  interval_p(timeInterval), prevFirstTimeStamp_p(-1.0)
+  interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
+  sortColumns_p(sortColumns),
+  addDefaultSortColumns_p(addDefaultSortColumns)
+
 {
-  construct(sortColumns,addDefaultSortColumns);
+  construct();
 }
 
 Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
@@ -140,8 +145,7 @@ Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   return ok;
 }
 
-void MSIter::construct(const Block<Int>& sortColumns, 
-                       Bool addDefaultSortColumns)
+void MSIter::construct()
 {
   This = (MSIter*)this; 
   nMS_p=bms_p.nelements();
@@ -164,7 +168,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
   Block<Int> cols; 
   // try to reuse the existing sorted table if we didn't specify
   // any sortColumns
-  if (sortColumns.nelements()==0 && 
+  if (sortColumns_p.nelements()==0 && 
       bms_p[0].keywordSet().isDefined("SORT_COLUMNS")) {
     // note that we use the order of the first MS for all MS's
     Vector<String> colNames = bms_p[0].keywordSet().asArrayString("SORT_COLUMNS");
@@ -173,7 +177,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     for (uInt i=0; i<n; i++)
       cols[i]=MS::columnType(colNames(i));
   } else {
-    cols=sortColumns;
+    cols=sortColumns_p;
   }
 
   Bool timeSeen=False, arraySeen=False, ddSeen=False, fieldSeen=False;
@@ -192,7 +196,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
   Block<String> columns;
 
   Int iCol=0;
-  if (addDefaultSortColumns) {
+  if (addDefaultSortColumns_p) {
     columns.resize(cols.nelements()+4-nCol);
     if (!arraySeen) {
       // add array if it's not there
@@ -335,6 +339,8 @@ MSIter::operator=(const MSIter& other)
     tabIter_p[i] = new TableIterator(*(other.tabIter_p[i]));
     tabIter_p[i]->copyState(*other.tabIter_p[i]);
   }
+  sortColumns_p = other.sortColumns_p;
+  addDefaultSortColumns_p = other.addDefaultSortColumns_p;
   tabIterAtStart_p = other.tabIterAtStart_p;
   curMS_p = other.curMS_p;
   lastMS_p = other.lastMS_p;
