@@ -194,8 +194,8 @@ public:
 
     void initThreadVars(
         uInt& nBlocks, uInt64& extra, uInt& nthreads,
-        PtrHolder<DataIterator>& dataIter, PtrHolder<MaskIterator>& maskIter,
-        PtrHolder<WeightsIterator>& weightsIter, PtrHolder<uInt64>& offset,
+        std::unique_ptr<DataIterator[]>& dataIter, std::unique_ptr<MaskIterator[]>& maskIter,
+        std::unique_ptr<WeightsIterator[]>& weightsIter, std::unique_ptr<uInt64[]>& offset,
         uInt nThreadsMax
     ) const;
 

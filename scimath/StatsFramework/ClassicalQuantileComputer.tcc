@@ -303,10 +303,10 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
         const auto& chunk = ds->initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds->initThreadVars(
             nBlocks, extra, nthreads, dataIter, maskIter,
             weightsIter, offset, nThreadsMax
@@ -431,10 +431,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArray(DataArray& ary) {
         const auto& chunk = ds->initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds->initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -664,10 +664,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
         const auto& chunk = ds->initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds->initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
