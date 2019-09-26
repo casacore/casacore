@@ -340,12 +340,20 @@ public:
     // Note that the records indexed by <src>indexVector(uniqueVector(i))</src>
     // till <src>indexVector(uniqueVector(i+1))</src> are all the same.
     // <br>
+    //
     // It returns the number of unique records. The unique array
     // is resized to that number.
+    // The third version also gives back a vector with the keys that
+    // change in each sorting group. The size of changeKey is the same as
+    // uniqueVector, and for each unique sorting group indicates the index
+    // of the keyword that will change at the end of the group.
     // <group>
     uInt unique (Vector<uInt>& uniqueVector, uInt nrrec) const;
     uInt unique (Vector<uInt>& uniqueVector,
-		 const Vector<uInt>& indexVector) const;
+                 const Vector<uInt>& indexVector) const;
+    uInt unique (Vector<uInt>& uniqueVector,
+                 Vector<uInt>& changeKey,
+                 const Vector<uInt>& indexVector) const;
     // </group>
 
 private:
@@ -388,8 +396,12 @@ private:
     // Siftdown algorithm for heapsort.
     void siftDown (Int low, Int up, uInt* indices) const;
 
-    // Compare the keys of 2 records.
+    // Compare 2 records based on the comparison functions
     int compare (uInt index1, uInt index2) const;
+
+    // As compare() but it also gives back the index of the first comparison
+    // function that didn't match.
+    int compareChangeIdx(uInt i1, uInt i2, uInt& idxComp) const;
 
     // Swap 2 indices.
     inline void swap (Int index1, Int index2, uInt* indices) const;

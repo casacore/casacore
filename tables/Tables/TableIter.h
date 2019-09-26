@@ -173,7 +173,8 @@ public:
     TableIterator (const Table&, const Block<String>& columnNames,
                    const Block<CountedPtr<BaseCompare> >&,
                    const Block<Int>& orders, Option = ParSort,
-                   std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr);
+                   std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr,
+                   std::shared_ptr<Vector<uInt>> groupKeyIdxChange = nullptr);
     // </group>
 
     // Copy constructor (copy semantics).

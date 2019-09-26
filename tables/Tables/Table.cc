@@ -870,10 +870,14 @@ Table Table::sort (const Block<String>& names,
 
 //# Sort on multiple columns and orders with given functions.
 Table Table::sort (const Block<String>& names,
-		   const Block<CountedPtr<BaseCompare> >& cmpObjs,
-		   const Block<Int>& orders, int option,
-           std::shared_ptr<Vector<uInt>> groupBoundaries ) const
-    { return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option, groupBoundaries)); }
+                   const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                   const Block<Int>& orders, int option,
+                   std::shared_ptr<Vector<uInt>> groupBoundaries,
+                   std::shared_ptr<Vector<uInt>> groupKeyChange) const
+{
+    return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option,
+                                     groupBoundaries, groupKeyChange));
+}
 
 
 //# Create an expression node to handle a keyword.

@@ -93,7 +93,8 @@ public:
                        const Block<CountedPtr<BaseCompare> >&,
                        const Block<Int>& orders,
                        int option,
-                       std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr);
+                       std::shared_ptr<Vector<uInt>> groupBoundaries=nullptr,
+                       std::shared_ptr<Vector<uInt>> groupKeyIdxChange=nullptr);
 
     // Clone this iterator.
     BaseTableIterator* clone() const;
@@ -127,6 +128,10 @@ protected:
     std::shared_ptr<Vector<uInt>>  groupBoundaries_p;
     // Iterator for groupBoundaries_p
     Vector<uInt>::iterator groupBoundariesIt_p;
+    // Vector with Key Id that will change at the end of each sorting group
+    std::shared_ptr<Vector<uInt>>  groupKeyIdxChange_p;
+    // Iterator for groupKeyIdxChange_p
+    Vector<uInt>::iterator groupKeyIdxChangeIt_p;
     // pointer to column objects
     PtrBlock<BaseColumn*>  colPtr_p;
     // comparison object per column

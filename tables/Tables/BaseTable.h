@@ -391,13 +391,15 @@ public:
     BaseTable* sort (const Block<String>& columnNames,
                      const Block<CountedPtr<BaseCompare> >& compareObjects,
                      const Block<Int>& sortOrder, int sortOption,
-                     std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr);
+                     std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr,
+                     std::shared_ptr<Vector<uInt>> groupKeyChange  = nullptr);
 
     // Create an iterator.
     BaseTableIterator* makeIterator (const Block<String>& columnNames,
                                      const Block<CountedPtr<BaseCompare> >&,
                                      const Block<Int>& orders, int option,
-                                     std::shared_ptr<Vector<uInt>> groupBoundaries);
+                                     std::shared_ptr<Vector<uInt>> groupBoundaries,
+                                     std::shared_ptr<Vector<uInt>> groupKeyChange);
 
     // Add one or more columns to the table.
     // The default implementation throws an "invalid operation" exception.
@@ -475,7 +477,8 @@ public:
                                const Block<CountedPtr<BaseCompare> >&,
                                const Block<Int>& sortOrder,
                                int sortOption,
-                               std::shared_ptr<Vector<uInt>> groupBoundaries);
+                               std::shared_ptr<Vector<uInt>> groupBoundaries,
+                               std::shared_ptr<Vector<uInt>> groupKeyChange);
 
     // Create a RefTable object.
     RefTable* makeRefTable (Bool rowOrder, uInt initialNrrow);

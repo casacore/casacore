@@ -914,7 +914,8 @@ public:
                 const Block<CountedPtr<BaseCompare> >& compareObjects,
                 const Block<Int>& sortOrders,
                 int = Sort::ParSort,
-                std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr) const;
+                std::shared_ptr<Vector<uInt>> groupBoundaries = nullptr,
+                std::shared_ptr<Vector<uInt>> groupKeyChange  = nullptr) const;
     // </group>
 
     // Get a vector of row numbers in the root table of rows in this table.

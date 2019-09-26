@@ -281,10 +281,12 @@ void MSIter::construct()
       }
     }
     std::shared_ptr<Vector<uInt>> groupBoundaries = std::make_shared<Vector<uInt>>();
+    std::shared_ptr<Vector<uInt>> groupKeyChange  = std::make_shared<Vector<uInt>>();
     if (!useIn && !useSorted) {
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
-      sorted = bms_p[i].sort(columns, objComp, orders, Sort::ParSort, groupBoundaries);
+      sorted = bms_p[i].sort(columns, objComp, orders, Sort::ParSort,
+                             groupBoundaries, groupKeyChange);
     }
 
     // Only store if globally requested _and_ locally decided
@@ -305,10 +307,12 @@ void MSIter::construct()
     // the sorted table, so the iterator can avoid sorting.
     if (useIn) {
       tabIter_p[i] = new TableIterator(bms_p[i],columns,objComp,orders,
-                                       TableIterator::NoSort, groupBoundaries);
+                                       TableIterator::NoSort,
+                                       groupBoundaries, groupKeyChange);
     } else {
       tabIter_p[i] = new TableIterator(sorted,columns,objComp,orders,
-                                       TableIterator::NoSort, groupBoundaries);
+                                       TableIterator::NoSort,
+                                       groupBoundaries, groupKeyChange);
     }
     tabIterAtStart_p[i]=True;
   }

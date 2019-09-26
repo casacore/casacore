@@ -48,7 +48,8 @@ TableIterator::TableIterator (const Table& tab,
     Block<Int> ord(1, order);
     Block<CountedPtr<BaseCompare> > cmpObj(1);
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
-						     ord, option, nullptr);
+                                                     ord, option,
+                                                     nullptr, nullptr);
     next();                            // get first subtable
 }
 
@@ -61,7 +62,8 @@ TableIterator::TableIterator (const Table& tab,
     Block<Int> ord(keys.nelements(), order);
     Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements());
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
-						     ord, option, nullptr);
+                                                     ord, option,
+                                                     nullptr, nullptr);
     next();                            // get first subtable
 }
 
@@ -73,7 +75,8 @@ TableIterator::TableIterator (const Table& tab,
 {
     Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements());
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
-                                                     orders, option, nullptr);
+                                                     orders, option,
+                                                     nullptr, nullptr);
     next();                            // get first subtable
 }
 
@@ -82,11 +85,13 @@ TableIterator::TableIterator (const Table& tab,
                               const Block<CountedPtr<BaseCompare> >& cmpObjs,
                               const Block<Int>& orders,
                               Option option,
-                              std::shared_ptr<Vector<uInt>> groupBoundaries)
+                              std::shared_ptr<Vector<uInt>> groupBoundaries,
+                              std::shared_ptr<Vector<uInt>> groupKeyIdxChange)
 : tabIterPtr_p (0)
 {
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObjs, orders,
-                                                     option, groupBoundaries);
+                                                     option, groupBoundaries,
+                                                     groupKeyIdxChange);
     next();                            // get first subtable
 }
 

@@ -681,9 +681,10 @@ Vector<uInt>* BaseTable::rowStorage()
 
 //# Sort a table.
 BaseTable* BaseTable::sort (const Block<String>& names,
-			    const Block<CountedPtr<BaseCompare> >& cmpObj,
+                            const Block<CountedPtr<BaseCompare> >& cmpObj,
                             const Block<Int>& order, int option,
-                            std::shared_ptr<Vector<uInt>> groupBoundaries)
+                            std::shared_ptr<Vector<uInt>> groupBoundaries,
+                            std::shared_ptr<Vector<uInt>> groupKeyChange)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Check if the vectors have equal length.
@@ -704,14 +705,16 @@ BaseTable* BaseTable::sort (const Block<String>& names,
 	}
     }
     // Return the result as a table.
-    return doSort (sortCol, cmpObj, order, option, groupBoundaries);
+    return doSort (sortCol, cmpObj, order, option,
+                   groupBoundaries, groupKeyChange);
 }
 
 //# Do the actual sort.
 BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
                               const Block<CountedPtr<BaseCompare> >& cmpObj,
                               const Block<Int>& order, int option,
-                              std::shared_ptr<Vector<uInt>> groupBoundaries)
+                              std::shared_ptr<Vector<uInt>> groupBoundaries,
+                              std::shared_ptr<Vector<uInt>> groupKeyChange)
 {
     uInt i;
     uInt nrkey = sortCol.nelements();
@@ -733,8 +736,8 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     Vector<uInt>& rows = *(resultTable->rowStorage());
     //# Note that nrrow can change in case Sort::NoDuplicates was given.
     nrrow = sortobj.sort (rows, nrrow, option);
-    if(groupBoundaries)
-        sortobj.unique(*groupBoundaries, rows);
+    if(groupBoundaries && groupKeyChange)
+        sortobj.unique(*groupBoundaries, *groupKeyChange, rows);
     adjustRownrs (nrrow, rows, False);
     resultTable->setNrrow (nrrow);
     for (i=0; i<nrkey; i++) {
@@ -1040,15 +1043,16 @@ BaseTableIterator* BaseTable::makeIterator
 (const Block<String>& names,
  const Block<CountedPtr<BaseCompare> >& cmpObj,
  const Block<Int>& order, int option,
- std::shared_ptr<Vector<uInt>> groupBoundaries)
+ std::shared_ptr<Vector<uInt>> groupBoundaries,
+ std::shared_ptr<Vector<uInt>> groupKeyChange)
 {
     AlwaysAssert (!isNull(), AipsError);
     if (names.nelements() != order.nelements()
-    ||  names.nelements() != cmpObj.nelements()) {
-	throw (TableInvOper ("TableIterator: Unequal block lengths"));
+     || names.nelements() != cmpObj.nelements()) {
+        throw (TableInvOper ("TableIterator: Unequal block lengths"));
     }
     BaseTableIterator* bti = new BaseTableIterator (this, names,
-						    cmpObj, order, option, groupBoundaries);
+            cmpObj, order, option, groupBoundaries, groupKeyChange);
     return bti;
 }
 
