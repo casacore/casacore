@@ -280,9 +280,11 @@ void MSIter::construct()
         objComp[icol] = timeComp;
       }
     }
-    std::shared_ptr<Vector<uInt>> groupBoundaries = std::make_shared<Vector<uInt>>();
-    std::shared_ptr<Vector<uInt>> groupKeyChange  = std::make_shared<Vector<uInt>>();
+    std::shared_ptr<Vector<uInt>> groupBoundaries;
+    std::shared_ptr<Vector<uInt>> groupKeyChange;
     if (!useIn && !useSorted) {
+      groupBoundaries = std::make_shared<Vector<uInt>>();
+      groupKeyChange  = std::make_shared<Vector<uInt>>();
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
       sorted = bms_p[i].sort(columns, objComp, orders, Sort::ParSort,
