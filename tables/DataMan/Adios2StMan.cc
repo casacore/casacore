@@ -229,7 +229,14 @@ void Adios2StMan::impl::create(uInt aNrRows)
 {
     itsOpenMode = 'w';
     itsRows = aNrRows;
-    itsAdiosIO->SetEngine(itsAdiosEngineType);
+    if (itsAdiosEngineType.empty())
+    {
+        itsAdiosIO->SetEngine("Table");
+    }
+    else
+    {
+        itsAdiosIO->SetEngine(itsAdiosEngineType);
+    }
     if (itsAdiosEngineParams.empty() == false)
     {
         itsAdiosIO->SetParameters(itsAdiosEngineParams);
@@ -258,7 +265,10 @@ void Adios2StMan::impl::open(uInt aNrRows, AipsIO &ios)
 {
     itsOpenMode = 'r';
     itsRows = aNrRows;
-    itsAdiosIO->SetEngine("BP4");
+    if (itsAdiosEngineType.empty() == false)
+    {
+        itsAdiosIO->SetEngine(itsAdiosEngineType);
+    }
     if (itsAdiosEngineParams.empty() == false)
     {
         itsAdiosIO->SetParameters(itsAdiosEngineParams);
