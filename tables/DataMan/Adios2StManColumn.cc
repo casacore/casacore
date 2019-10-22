@@ -111,8 +111,30 @@ void Adios2StManColumn::arrayVToSelection(uInt rownr)
 
 void Adios2StManColumn::sliceVToSelection(uInt rownr, const Slicer &ns)
 {
-    itsAdiosStart[0] = rownr;
-    itsAdiosCount[0] = 1;
+    columnSliceCellsVToSelection(rownr, 1, ns);
+}
+
+void Adios2StManColumn::columnSliceVToSelection(const Slicer &ns)
+{
+    columnSliceCellsVToSelection(0, itsStManPtr->getNrRows(), ns);
+}
+
+void Adios2StManColumn::columnSliceCellsVToSelection(const RefRows &rows, const Slicer &ns)
+{
+    RefRowsSliceIter iter(rows);
+    auto row_start = iter.sliceStart();
+    auto row_end = iter.sliceEnd();
+    iter.next();
+    if (!iter.pastEnd()) {
+        throw std::runtime_error("Adios2StManColumn::columnSliceCellsVToSelection supports single slices");
+    }
+    columnSliceCellsVToSelection(row_start, row_end - row_start + 1, ns);
+}
+
+void Adios2StManColumn::columnSliceCellsVToSelection(uInt row_start, uInt row_count, const Slicer &ns)
+{
+    itsAdiosStart[0] = row_start;
+    itsAdiosCount[0] = row_count;
     for (size_t i = 1; i < itsAdiosShape.size(); ++i)
     {
         itsAdiosStart[i] = ns.start()(ns.ndim() - i);
@@ -303,5 +325,28 @@ void Adios2StManColumnT<std::string>::putSliceV(uInt /*aRowNr*/, const Slicer &/
     throw std::runtime_error("Not implemented yet");
 }
 
+template<>
+void Adios2StManColumnT<std::string>::getColumnSliceV(const Slicer &/*ns*/, void */*dataPtr*/)
+{
+    throw std::runtime_error("Not implemented yet");
+}
+
+template<>
+void Adios2StManColumnT<std::string>::putColumnSliceV(const Slicer &/*ns*/, const void */*dataPtr*/)
+{
+    throw std::runtime_error("Not implemented yet");
+}
+
+template<>
+void Adios2StManColumnT<std::string>::getColumnSliceCellsV(const RefRows& /*rownrs*/, const Slicer& /*slicer*/, void* /*dataPtr*/)
+{
+    throw std::runtime_error("Not implemented yet");
+}
+
+template<>
+void Adios2StManColumnT<std::string>::putColumnSliceCellsV(const RefRows& /*rownrs*/, const Slicer& /*slicer*/, const void* /*dataPtr*/)
+{
+    throw std::runtime_error("Not implemented yet");
+}
 
 } // namespace casacore

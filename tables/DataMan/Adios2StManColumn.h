@@ -49,6 +49,7 @@ public:
             std::shared_ptr<adios2::IO> aAdiosIO);
 
     virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
+    virtual Bool canAccessColumnSlice (Bool& reask) const { reask = false; return true; };
 
     virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
                         char aOpenMode, size_t aReaderCacheRows) = 0;
@@ -119,6 +120,9 @@ protected:
     void scalarVToSelection(uInt rownr);
     void arrayVToSelection(uInt rownr);
     void sliceVToSelection(uInt rownr, const Slicer &ns);
+    void columnSliceVToSelection(const Slicer &ns);
+    void columnSliceCellsVToSelection(const RefRows &rows, const Slicer &ns);
+    void columnSliceCellsVToSelection(uInt row_start, uInt row_end, const Slicer &ns);
 
     Adios2StMan::impl *itsStManPtr;
 
@@ -282,16 +286,30 @@ public:
         fromAdios(dataPtr);
     }
 
+    virtual void putColumnSliceV(const Slicer &ns, const void *dataPtr)
+    {
+        columnSliceVToSelection(ns);
+        toAdios(dataPtr);
+    }
+
     virtual void getColumnSliceV(const Slicer &ns, void *dataPtr)
     {
-        itsAdiosStart[0] = 0;
-        itsAdiosCount[0] = itsAdiosShape[0];
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = ns.start()(i - 1);
-            itsAdiosCount[i] = ns.length()(i - 1);
-        }
+        columnSliceVToSelection(ns);
         fromAdios(dataPtr);
+    }
+
+    virtual void getColumnSliceCellsV(const RefRows& rownrs,
+                                      const Slicer& slicer, void* dataPtr)
+    {
+        columnSliceCellsVToSelection(rownrs, slicer);
+        fromAdios(dataPtr);
+    }
+
+    virtual void putColumnSliceCellsV (const RefRows& rownrs,
+                                       const Slicer& slicer, const void* dataPtr)
+    {
+        columnSliceCellsVToSelection(rownrs, slicer);
+        toAdios(dataPtr);
     }
 
 private:
