@@ -139,11 +139,11 @@ private:
 
     // Add rows to all columns.
     // The default implementation does nothing.
-    virtual void addRow (rownr_t nrrow);
+    virtual void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
     // The default implementation does nothing.
-    virtual void removeRow (rownr_t rownr);
+    virtual void removeRow64 (rownr_t rownr);
 
     // Flush the data in the engine object.
     // If the object contains persistent data, this is the place to write them.
@@ -178,7 +178,7 @@ private:
     // It can be used to initialize variables (possibly using data
     // from other columns in the table).
     // The default implementation does nothing.
-    virtual void create (rownr_t initialNrrow);
+    virtual void create64 (rownr_t initialNrrow);
 
     // Initialize the object for an existing table containing nrrow rows.
     // It can be used to read values back (written by close) and/or

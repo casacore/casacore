@@ -231,7 +231,7 @@ private:
 
     // Initialize the object for a new table.
     // It defines the keywords containing the engine parameters.
-    virtual void create (rownr_t initialNrrow);
+    virtual void create64 (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.

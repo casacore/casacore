@@ -137,7 +137,7 @@ TableColumn BaseMappedArrayEngine<VirtualType, StoredType>::makeTableColumn
 
 
 template<class VirtualType, class StoredType>
-void BaseMappedArrayEngine<VirtualType, StoredType>::create (rownr_t initialNrrow)
+void BaseMappedArrayEngine<VirtualType, StoredType>::create64 (rownr_t initialNrrow)
 {
     //# Define the stored name as a column keyword in the virtual.
     makeTableColumn (virtualName_p).rwKeywordSet().define
@@ -191,7 +191,7 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::prepare2()
 //# Add nrrow rows to the end of the table.
 //# Set the shape if virtual is FixedShape and stored is non-FixedShape.
 template<class VirtualType, class StoredType>
-void BaseMappedArrayEngine<VirtualType, StoredType>::addRow (rownr_t nrrow)
+void BaseMappedArrayEngine<VirtualType, StoredType>::addRow64 (rownr_t nrrow)
 {
   addRowInit (table().nrow(), nrrow);
 }

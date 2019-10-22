@@ -459,7 +459,7 @@ Bool ISMBase::canRemoveColumn() const
 }
 
 
-void ISMBase::addRow (rownr_t nrrow)
+void ISMBase::addRow64 (rownr_t nrrow)
 {
     getIndex().addRow (nrrow);
     uInt nrcol = ncolumn();
@@ -470,7 +470,7 @@ void ISMBase::addRow (rownr_t nrrow)
     dataChanged_p = True;
 }
 
-void ISMBase::removeRow (rownr_t rownr)
+void ISMBase::removeRow64 (rownr_t rownr)
 {
     // Get the bucket and interval to which the row belongs.
     uInt i;
@@ -610,12 +610,12 @@ rownr_t ISMBase::resync64 (rownr_t nrrow)
     return nrrow_p;
 }
 
-void ISMBase::create (rownr_t nrrow)
+void ISMBase::create64 (rownr_t nrrow)
 {
     init();
     recreate();
     nrrow_p = 0;
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 
 rownr_t ISMBase::open64 (rownr_t tabNrrow, AipsIO& ios)

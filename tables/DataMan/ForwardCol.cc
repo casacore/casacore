@@ -101,9 +101,9 @@ Bool ForwardColumnEngine::canAddRow() const
 { return True; }
 Bool ForwardColumnEngine::canRemoveRow() const
 { return True; }
-void ForwardColumnEngine::addRow (rownr_t)
+void ForwardColumnEngine::addRow64 (rownr_t)
 {}
-void ForwardColumnEngine::removeRow (rownr_t)
+void ForwardColumnEngine::removeRow64 (rownr_t)
 {}
 
 
@@ -170,7 +170,7 @@ DataManagerColumn* ForwardColumnEngine::makeIndArrColumn (const String& name,
 }
 
 
-void ForwardColumnEngine::create (rownr_t)
+void ForwardColumnEngine::create64 (rownr_t)
 {
     baseCreate();
 }

@@ -77,7 +77,7 @@ DataManager* VSCExampleVSCEngine::clone() const
 
 
 // Store the target column names in the keywords of this column.
-void VSCExampleVSCEngine::create (rownr_t)
+void VSCExampleVSCEngine::create64 (rownr_t)
 {
     TableColumn src (table(), sourceColumnName());
     src.rwKeywordSet().define ("_xTargetName", xTargetName_p);

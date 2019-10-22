@@ -115,9 +115,9 @@ Bool TiledFileHelper::flush (AipsIO&, Bool)
   throw AipsError ("TileFileHelper::flush - not implemented");
   return False;
 }
-void TiledFileHelper::create (rownr_t)
+void TiledFileHelper::create64 (rownr_t)
 {
-  throw AipsError ("TileFileHelper::create - not implemented");
+  throw AipsError ("TileFileHelper::create64 - not implemented");
 }
 TSMCube* TiledFileHelper::getHypercube (rownr_t)
 {

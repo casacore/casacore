@@ -338,7 +338,7 @@ private:
     // Intially the table has the given number of rows.
     // This function does not have to do anything; the real initialization
     // is done by prepare.
-    void create (rownr_t initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Initialize the object for an existing table with the given number
     // of rows.

@@ -145,7 +145,7 @@ void ColumnSet::initSomeDataManagers (uInt from, Table& tab)
     //# Now give the data managers the opportunity to create files as needed.
     //# Thereafter to prepare things.
     for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
-	BLOCKDATAMANVAL(i)->create (nrrow_p);
+	BLOCKDATAMANVAL(i)->create64 (nrrow_p);
     }
     prepareSomeDataManagers (from);
 }
@@ -275,12 +275,12 @@ void ColumnSet::addRow (rownr_t nrrow)
     // First add row to storage managers, thereafter to virtual engines.
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         if (BLOCKDATAMANVAL(i)->isStorageManager()) {
-	    BLOCKDATAMANVAL(i)->addRow (nrrow);
+	    BLOCKDATAMANVAL(i)->addRow64 (nrrow);
 	}
     }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         if (! BLOCKDATAMANVAL(i)->isStorageManager()) {
-	    BLOCKDATAMANVAL(i)->addRow (nrrow);
+	    BLOCKDATAMANVAL(i)->addRow64 (nrrow);
 	}
     }
     nrrow_p += nrrow;
@@ -299,7 +299,7 @@ void ColumnSet::removeRow (rownr_t rownr)
 			     " (#rows=" + String::toString(nrrow_p) + ")"));
     }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	BLOCKDATAMANVAL(i)->removeRow (rownr);
+	BLOCKDATAMANVAL(i)->removeRow64 (rownr);
     }
     nrrow_p--;
 }

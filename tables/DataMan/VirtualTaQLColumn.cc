@@ -143,7 +143,7 @@ DataManagerColumn* VirtualTaQLColumn::makeIndArrColumn (const String& name,
 }
 
 
-void VirtualTaQLColumn::create (rownr_t)
+void VirtualTaQLColumn::create64 (rownr_t)
 {
   // Define a keyword in the column telling the expression.
   itsTempWritable = True;

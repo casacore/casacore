@@ -69,7 +69,7 @@ DataManager* VACExampleVACEngine::clone() const
 
 
 // Store the target column names in the keywords of this column.
-void VACExampleVACEngine::create (rownr_t)
+void VACExampleVACEngine::create64 (rownr_t)
 {
   TableColumn src (table(), sourceColumnName());
   src.rwKeywordSet().define ("_xTargetName", xTargetName_p);

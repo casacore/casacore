@@ -131,14 +131,14 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 }
 
 
-void TiledCellStMan::create (rownr_t nrrow)
+void TiledCellStMan::create64 (rownr_t nrrow)
 {
     // Set up the various things.
     setup(0);
     // Create the one and single TSMFile object.
     createFile (0);
     // Add the rows for the given number of rows.
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 	    
 
@@ -178,7 +178,7 @@ void TiledCellStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 }
 
 
-void TiledCellStMan::addRow (rownr_t nrow)
+void TiledCellStMan::addRow64 (rownr_t nrow)
 {
     // Resize block when needed.
     uInt64 size = cubeSet_p.nelements();

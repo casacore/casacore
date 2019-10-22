@@ -106,7 +106,7 @@ DataManagerColumn* ForwardColumnIndexedRowEngine::makeIndArrColumn
 }
 
 
-void ForwardColumnIndexedRowEngine::create (rownr_t)
+void ForwardColumnIndexedRowEngine::create64 (rownr_t)
 {
     // The table is new.
     baseCreate();

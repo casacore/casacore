@@ -673,7 +673,7 @@ Bool SSMBase::canRemoveColumn() const
 }
 
 
-void SSMBase::addRow (rownr_t aNrRows)
+void SSMBase::addRow64 (rownr_t aNrRows)
 {
   //make sure cache is available and filled (I need itsPtrIndex)
   getCache();
@@ -693,7 +693,7 @@ void SSMBase::addRow (rownr_t aNrRows)
   isDataChanged = True;
 }
 
-void SSMBase::removeRow (rownr_t aRowNr)
+void SSMBase::removeRow64 (rownr_t aRowNr)
 {
   uInt aNrCol = ncolumn();
   for (uInt j=0; j< aNrCol; j++) {
@@ -723,7 +723,7 @@ void SSMBase::removeRow (rownr_t aRowNr)
     itsFirstIdxBucket  = -1;
     itsIdxBucketOffset = 0;
     itsNrIdxBuckets    = 0;
-    create(itsNrRows);
+    create64(itsNrRows);
     //    recreate();
   }
   isDataChanged = True;
@@ -1016,12 +1016,12 @@ rownr_t SSMBase::resync64 (rownr_t aNrRows)
   return itsNrRows;
 }
 
-void SSMBase::create (rownr_t aNrRows)
+void SSMBase::create64 (rownr_t aNrRows)
 {
   init();
   recreate();
   itsNrRows = 0;
-  addRow (aNrRows);
+  addRow64 (aNrRows);
 }
 
 rownr_t SSMBase::open64 (rownr_t aRowNr, AipsIO& ios)

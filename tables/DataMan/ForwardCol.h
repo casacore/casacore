@@ -478,11 +478,11 @@ private:
 
     // Add rows to all columns.
     // This is not doing anything (but needed to override the default).
-    void addRow (rownr_t nrrow);
+    void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
     // This is not doing anything (but needed to override the default).
-    void removeRow (rownr_t rownr);
+    void removeRow64 (rownr_t rownr);
 
     // This data manager allows to add columns.
     Bool canAddColumn() const;
@@ -509,7 +509,7 @@ private:
     // Initialize the object for a new table.
     // It defines the column keywords containing the name of the
     // original table, which can be the parent of the referenced table.
-    void create (rownr_t initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Initialize the engine.
     // It gets the name of the original table(s) from the column keywords,

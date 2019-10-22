@@ -101,7 +101,7 @@ Bool TiledColumnStMan::canAccessColumn () const
 }
 
 
-void TiledColumnStMan::create (rownr_t nrrow)
+void TiledColumnStMan::create64 (rownr_t nrrow)
 {
     // Set up the various things.
     setup(1);
@@ -121,7 +121,7 @@ void TiledColumnStMan::create (rownr_t nrrow)
     cubeSet_p[0] = makeTSMCube (fileSet_p[0],
 				cubeShape, tileShape_p, emptyRecord);
     // Add the rows for the given number of rows.
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 	    
 
@@ -197,7 +197,7 @@ IPosition TiledColumnStMan::defaultTileShape() const
     return tileShape_p;
 }
 
-void TiledColumnStMan::addRow (rownr_t nrow)
+void TiledColumnStMan::addRow64 (rownr_t nrow)
 {
     cubeSet_p[0]->extend (nrow, emptyRecord, coordColSet_p[nrdim_p - 1]);
     nrrow_p += nrow;

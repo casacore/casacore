@@ -163,9 +163,9 @@ void CompressComplex::registerClass()
 }
 
 
-void CompressComplex::create (rownr_t initialNrrow)
+void CompressComplex::create64 (rownr_t initialNrrow)
 {
-  BaseMappedArrayEngine<Complex,Int>::create (initialNrrow);
+  BaseMappedArrayEngine<Complex,Int>::create64 (initialNrrow);
   // Store the various parameters as keywords in this column.
   TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressComplex_Scale",      scale_p);
@@ -692,9 +692,9 @@ void CompressComplexSD::registerClass()
   DataManager::registerCtor (className(), makeObject);
 }
 
-void CompressComplexSD::create (rownr_t initialNrrow)
+void CompressComplexSD::create64 (rownr_t initialNrrow)
 {
-  CompressComplex::create (initialNrrow);
+  CompressComplex::create64 (initialNrrow);
   // Set the type.
   TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressComplex_Type", "CompressComplexSD");

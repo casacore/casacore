@@ -441,12 +441,12 @@ private:
 			int dataType, const String& dataTypeId) const;
 
     // Add rows to all columns.
-    // The default implementation throws a "not possible" exception.
-    virtual void addRow (rownr_t nrrow);
+    // <br>The default implementation calls the uInt version.
+    virtual void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
-    // The default implementation throws a "not possible" exception.
-    virtual void removeRow (rownr_t rownr);
+    // <br>The default implementation calls the uInt version.
+    virtual void removeRow64 (rownr_t rownr);
 
     // Add a column.
     // The default implementation throws a "not possible" exception.
@@ -471,8 +471,7 @@ private:
 
     // Let the data manager initialize itself for a new table.
     // <br>The default implementation calls the uInt version.
-    //#virtual void create (rownr_t nrrow) = 0;
-    virtual void create (rownr_t nrrow);
+    virtual void create64 (rownr_t nrrow);
 
     // Let the data manager initialize itself for an existing table.
     // The AipsIO stream represents the main table file and must be
@@ -483,7 +482,6 @@ private:
     // data are written outside the table system, thus for which no rows
     // have been added.
     // <br>The default implementation calls the uInt version of open and open1.
-    //#virtual rownr_t open (rownr_t nrrow, AipsIO& ios) = 0;
     virtual rownr_t open64 (rownr_t nrrow, AipsIO& ios);
 
     // Resync the data by rereading cached data from the file.
@@ -493,8 +491,8 @@ private:
     // This is particularly useful for data managers like LofarStMan whose
     // data are written outside the table system, thus for which no rows
     // have been added.
-    // <br>The default implementation calls the uInt version of open and open1.
-    //#virtual rownr_t resync (rownr_t nrrow) = 0;
+    // <br>The default implementation calls the uInt version of resync and
+    // resync1.
     virtual rownr_t resync64 (rownr_t nrrow);
 
     // Let the data manager initialize itself further.

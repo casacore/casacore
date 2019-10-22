@@ -206,7 +206,7 @@ private:
 protected:
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
-  virtual void create (rownr_t initialNrrow);
+  virtual void create64 (rownr_t initialNrrow);
 
 private:
   // Preparing consists of setting the writable switch and
@@ -493,7 +493,7 @@ private:
 
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
-  virtual void create (rownr_t initialNrrow);
+  virtual void create64 (rownr_t initialNrrow);
 
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.

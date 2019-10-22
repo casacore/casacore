@@ -313,7 +313,7 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     return True;
 }
 
-void StManAipsIO::create (rownr_t nrrow)
+void StManAipsIO::create64 (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     //# Let the column create something if needed.

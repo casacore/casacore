@@ -156,7 +156,7 @@ private:
 
   // Let the engine initialize the object for a new table.
   // It defines a column keyword holding the expression.
-  virtual void create (rownr_t);
+  virtual void create64 (rownr_t);
 
   // Prepare compiles the expression.
   virtual void prepare();

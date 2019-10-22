@@ -247,7 +247,7 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (rownr_t nrrow);
+    virtual void create64 (rownr_t nrrow);
 
     // Open the storage manager file for an existing table and read in
     // the data and let the StManColumnAipsIO objects read their data.

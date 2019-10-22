@@ -98,7 +98,7 @@ Bool DataManager::isStorageManager() const
 
 
 
-void DataManager::create (rownr_t nrrow)
+void DataManager::create64 (rownr_t nrrow)
 {
   AlwaysAssert (nrrow <= std::numeric_limits<uInt>::max(), AipsError);
   create (uInt(nrrow));
@@ -301,14 +301,15 @@ Bool DataManager::canRemoveColumn() const
 Bool DataManager::canRenameColumn() const
     { return True; }
 
-void DataManager::addRow (rownr_t nrrow)
+void DataManager::addRow64 (rownr_t nrrow)
 {
   AlwaysAssert (nrrow < std::numeric_limits<uInt>::max(), AipsError);
   addRow (uInt(nrrow));
 }
 
-void DataManager::removeRow (rownr_t rownr)
+void DataManager::removeRow64 (rownr_t rownr)
 {
+  AlwaysAssert (rownr < std::numeric_limits<uInt>::max(), AipsError);
   removeRow (uInt(rownr));
 }
 

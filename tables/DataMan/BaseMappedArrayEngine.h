@@ -184,10 +184,10 @@ class TableColumn;
 //    void close (AipsIO& ios);
 // </src>
 // <dt><src>
-//    void create (rownr_t nrrow);
+//    void create64 (rownr_t nrrow);
 // </src>
 // <dt><src>
-//    void open (rownr_t nrrow, AipsIO& ios);
+//    void open64 (rownr_t nrrow, AipsIO& ios);
 // </src>
 // <dt><src>
 //    void prepare();
@@ -207,10 +207,10 @@ class TableColumn;
 //    Bool canRemoveRow() const;
 // </src>
 // <dt><src>
-//    void addRow (rownr_t nrrow);
+//    void addRow64 (rownr_t nrrow);
 // </src>
 // <dt><src>
-//    void removeRow (rownr_t rownr);
+//    void removeRow64 (rownr_t rownr);
 // </src>
 // <dt><src>
 //    DataManagerColumn* makeDirArrColumn (const String& columnName,
@@ -320,7 +320,7 @@ protected:
     // Initially the table has the given number of rows.
     // A derived class can have its own create function, but that should
     // always call this create function.
-    virtual void create (rownr_t initialNrrow);
+    virtual void create64 (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
@@ -344,7 +344,7 @@ protected:
     // added to an already existing table, table.nrow() gives the existing
     // number of columns instead of 0.
     // <group>
-    virtual void addRow (rownr_t nrrow);
+    virtual void addRow64 (rownr_t nrrow);
     virtual void addRowInit (rownr_t startRow, rownr_t nrrow);
     // </group>
 

@@ -84,12 +84,12 @@ String TiledDataStMan::dataManagerType() const
     { return "TiledDataStMan"; }
 
 
-void TiledDataStMan::create (rownr_t nrrow)
+void TiledDataStMan::create64 (rownr_t nrrow)
 {
     // Set up the various things.
     setup(-1);
     // Add the rows for the given number of rows.
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 	    
 
@@ -134,7 +134,7 @@ void TiledDataStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 }
 
 
-void TiledDataStMan::addRow (rownr_t nrow)
+void TiledDataStMan::addRow64 (rownr_t nrow)
 {
     nrrow_p += nrow;
     setDataChanged();

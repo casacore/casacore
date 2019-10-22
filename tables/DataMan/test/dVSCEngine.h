@@ -121,7 +121,7 @@ public:
     DataManager* clone() const;
 
     // Store the target column names in the source column keywords.
-    void create (rownr_t);
+    void create64 (rownr_t);
 
     // Prepare the engine by allocating column objects
     // for the target columns.

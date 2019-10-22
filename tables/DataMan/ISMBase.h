@@ -258,7 +258,7 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (rownr_t nrrow);
+    virtual void create64 (rownr_t nrrow);
 
     // Open the storage manager file for an existing table, read in
     // the data, and let the ISMColumn objects read their data.
@@ -283,10 +283,10 @@ private:
     // Add rows to the storage manager.
     // Per column it extends the interval for which the last value written
     // is valid.
-    virtual void addRow (rownr_t nrrow);
+    virtual void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
-    virtual void removeRow (rownr_t rownr);
+    virtual void removeRow64 (rownr_t rownr);
 
     // Do the final addition of a column.
     // The <src>DataManagerColumn</src> object has already been created

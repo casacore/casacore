@@ -166,9 +166,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   template<typename T>
-  void BitFlagsEngine<T>::create (rownr_t initialNrrow)
+  void BitFlagsEngine<T>::create64 (rownr_t initialNrrow)
   {
-    BaseMappedArrayEngine<Bool,T>::create (initialNrrow);
+    BaseMappedArrayEngine<Bool,T>::create64 (initialNrrow);
     itsIsNew = True;
   }
 

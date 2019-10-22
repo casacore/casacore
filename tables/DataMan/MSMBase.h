@@ -127,7 +127,7 @@ private:
   virtual Bool flush (AipsIO&, Bool fsync);
 
   // Let the storage manager create the nr of rows needed.
-  virtual void create (rownr_t nrrow);
+  virtual void create64 (rownr_t nrrow);
 
   // Open the storage manager file for an existing table.
   // It fills the rows with 0 values.
@@ -150,10 +150,10 @@ private:
   virtual void deleteManager();
 
   // Add rows to all columns.
-  virtual void addRow (rownr_t nrrow);
+  virtual void addRow64 (rownr_t nrrow);
 
   // Delete a row from all columns.
-  virtual void removeRow (rownr_t rownr);
+  virtual void removeRow64 (rownr_t rownr);
 
   // Create a column in the storage manager on behalf of a table column.
   // <group>

@@ -191,7 +191,7 @@ void TiledShapeStMan::setupCheck (const TableDesc& tableDesc,
 }
 
 
-void TiledShapeStMan::create (rownr_t nrrow)
+void TiledShapeStMan::create64 (rownr_t nrrow)
 {
     // Set up the various things.
     setup(1);
@@ -200,7 +200,7 @@ void TiledShapeStMan::create (rownr_t nrrow)
     cubeSet_p[0] = new TSMCube (this, 0, IPosition(), IPosition(),
                                 Record(), -1);
     // Add the rows for the given number of rows.
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 	    
 
@@ -245,7 +245,7 @@ void TiledShapeStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 }
 
 
-void TiledShapeStMan::addRow (rownr_t nrow)
+void TiledShapeStMan::addRow64 (rownr_t nrow)
 {
     rownr_t oldnrrow = nrrow_p;
     nrrow_p += nrow;

@@ -38,7 +38,13 @@ namespace casacore { //#Begin namespace casacore
     resize (rows.size());
     convertArray (*this, rows);
   }
-  
+
+  Array<rownr_t>& RowNumbers::operator= (const Array<rownr_t>& other)
+  {
+    Vector<rownr_t>::operator= (other);
+    return *this;
+  }
+
   Vector<uInt> RowNumbers::convertRownrVector (const Vector<rownr_t>& rows64)
   {
     AlwaysAssert (allLE (rows64, rownr_t(std::numeric_limits<uInt>::max())), AipsError);

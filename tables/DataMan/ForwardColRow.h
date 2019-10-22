@@ -349,7 +349,7 @@ private:
     // It defines the column keywords containing the name of the
     // original table, which can be the parent of the referenced table.
     // It also defines a keyword containing the row column name.
-    void create (rownr_t initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Initialize the engine.
     // It gets the name of the original table(s) from the column keywords,

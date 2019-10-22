@@ -182,9 +182,9 @@ void RetypedArrayEngine<S,T>::prepare()
 }
 
 template<class S, class T>
-void RetypedArrayEngine<S,T>::create (rownr_t initialNrrow)
+void RetypedArrayEngine<S,T>::create64 (rownr_t initialNrrow)
 {
-    BaseMappedArrayEngine<S,T>::create (initialNrrow);
+    BaseMappedArrayEngine<S,T>::create64 (initialNrrow);
     // Store the various parameters as keywords in this column.
     TableColumn thisCol (this->makeTableColumn (virtualName()));
     thisCol.rwKeywordSet().define ("_RetypedArrayEngine_Shape",

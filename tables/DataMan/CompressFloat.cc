@@ -162,9 +162,9 @@ void CompressFloat::registerClass()
 }
 
 
-void CompressFloat::create (rownr_t initialNrrow)
+void CompressFloat::create64 (rownr_t initialNrrow)
 {
-  BaseMappedArrayEngine<Float,Short>::create (initialNrrow);
+  BaseMappedArrayEngine<Float,Short>::create64 (initialNrrow);
   // Store the various parameters as keywords in this column.
   TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressFloat_Scale",      scale_p);

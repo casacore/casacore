@@ -89,7 +89,7 @@ Bool DummyVirtualEngine::flush (AipsIO& ios, Bool)
     data2_p.flush (ios);
     return True;
 }
-void DummyVirtualEngine::create (rownr_t)
+void DummyVirtualEngine::create64 (rownr_t)
 {}
 rownr_t DummyVirtualEngine::open64 (rownr_t nrrow, AipsIO& ios)
 {

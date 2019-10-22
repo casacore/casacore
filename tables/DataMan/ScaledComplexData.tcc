@@ -196,9 +196,9 @@ void ScaledComplexData<S,T>::registerClass()
 
 
 template<class S, class T>
-void ScaledComplexData<S,T>::create (rownr_t initialNrrow)
+void ScaledComplexData<S,T>::create64 (rownr_t initialNrrow)
 {
-    BaseMappedArrayEngine<S,T>::create (initialNrrow);
+    BaseMappedArrayEngine<S,T>::create64 (initialNrrow);
     // Store the various parameters as keywords in this column.
     TableColumn thisCol (table(), virtualName());
     thisCol.rwKeywordSet().define ("_ScaledComplexData_Scale",

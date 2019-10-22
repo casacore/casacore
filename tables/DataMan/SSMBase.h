@@ -315,7 +315,7 @@ private:
   
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
-  virtual void create (rownr_t aNrRows);
+  virtual void create64 (rownr_t aNrRows);
   
   // Open the storage manager file for an existing table, read in
   // the data, and let the SSMColumn objects read their data.
@@ -346,10 +346,10 @@ private:
   
   // Add rows to the storage manager.
   // Per column it extends number of rows.
-  virtual void addRow (rownr_t aNrRows);
+  virtual void addRow64 (rownr_t aNrRows);
   
   // Delete a row from all columns.
-  virtual void removeRow (rownr_t aRowNr);
+  virtual void removeRow64 (rownr_t aRowNr);
   
   // Do the final addition of a column.
   virtual void addColumn (DataManagerColumn*);
