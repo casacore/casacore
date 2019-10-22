@@ -50,7 +50,8 @@ public:
     Adios2StMan(MPI_Comm mpiComm = MPI_COMM_WORLD);
     Adios2StMan(MPI_Comm mpiComm, std::string engineType,
             std::map<std::string, std::string> engineParams,
-            std::vector<std::map<std::string, std::string>> transportParams);
+            std::vector<std::map<std::string, std::string>> transportParams,
+            size_t readerCacheRows = 1024);
 
     virtual ~Adios2StMan();
 

@@ -43,12 +43,15 @@ namespace casacore
 class Adios2StManColumn : public StManColumn
 {
 public:
-    Adios2StManColumn(Adios2StMan::impl *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
+    Adios2StManColumn(Adios2StMan::impl *aParent,
+            int aDataType,
+            String aColName,
+            std::shared_ptr<adios2::IO> aAdiosIO);
 
     virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
 
     virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
-                        char aOpenMode) = 0;
+                        char aOpenMode, size_t aReaderCacheRows) = 0;
     virtual void setShapeColumn(const IPosition &aShape);
     virtual IPosition shape(uInt aRowNr);
     Bool canChangeShape() const;
@@ -148,23 +151,13 @@ public:
     {
     }
 
-    void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
+    void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode, size_t aReaderCacheRows)
     {
         itsAdiosEngine = aAdiosEngine;
         itsAdiosOpenMode = aOpenMode;
+        itsReadCacheMaxRows = aReaderCacheRows;
         itsAdiosVariable = itsAdiosIO->InquireVariable<T>(itsColumnName);
-        if(aOpenMode == 'w')
-        {
-            if (!itsAdiosVariable)
-            {
-                itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
-                        itsColumnName,
-                        itsAdiosShape,
-                        itsAdiosStart,
-                        itsAdiosCount);
-            }
-        }
-        else if(aOpenMode == 'r')
+        if(aOpenMode == 'r')
         {
             size_t cacheSize = std::accumulate(
                     itsAdiosShape.begin() + 1,
@@ -306,7 +299,7 @@ private:
     adios2::Variable<T> itsAdiosVariable;
     size_t itsReadCacheStartRow = 0;
     size_t itsReadCacheRows = 0;
-    size_t itsReadCacheMaxRows = 1000;
+    size_t itsReadCacheMaxRows;
     size_t itsArraySize;
     std::vector<T> itsReadCache;
 
@@ -322,7 +315,18 @@ private:
 
     void toAdios(const T *data)
     {
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        if (!itsAdiosVariable)
+        {
+            itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
+                    itsColumnName,
+                    itsAdiosShape,
+                    itsAdiosStart,
+                    itsAdiosCount);
+        }
+        else
+        {
+            itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        }
         itsAdiosEngine->Put<T>(itsAdiosVariable, data, adios2::Mode::Sync);
     }
 

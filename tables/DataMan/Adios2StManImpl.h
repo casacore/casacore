@@ -44,7 +44,8 @@ public:
     impl(Adios2StMan &parent, MPI_Comm mpiComm = MPI_COMM_WORLD);
     impl(Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
             std::map<std::string, std::string> engineParams,
-            std::vector<std::map<std::string, std::string>> transportParams);
+            std::vector<std::map<std::string, std::string>> transportParams,
+            size_t readerCacheRows);
 
     ~impl();
 
@@ -84,6 +85,7 @@ private:
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
 
     char itsOpenMode;
+    size_t itsReadCacheMaxRows = 1024;
 
     static std::string itsAdiosEngineType;
     static adios2::Params itsAdiosEngineParams;
