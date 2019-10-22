@@ -461,10 +461,75 @@ ISMCOLUMN_GET(Int,IntV)
 ISMCOLUMN_GET(uInt,uIntV)
 ISMCOLUMN_GET(Int64,Int64V)
 ISMCOLUMN_GET(float,floatV)
-ISMCOLUMN_GET(double,doubleV)
+// ISMCOLUMN_GET(double,doubleV)
 ISMCOLUMN_GET(Complex,ComplexV)
 ISMCOLUMN_GET(DComplex,DComplexV)
 ISMCOLUMN_GET(String,StringV)
+
+
+
+void ISMColumn::getScalarColumnCellsdoubleV(const RefRows& rownrs, Vector<double> * values)
+{
+    Bool delV;
+
+    double* value = values->getStorage (delV);
+    double* valptr = value;
+
+    const ColumnCache& cache = columnCache();
+
+    if (rownrs.isSliced()) {
+        RefRowsSliceIter iter(rownrs);
+        while (! iter.pastEnd()) {
+            uInt rownr = iter.sliceStart();
+            uInt end = iter.sliceEnd();
+            uInt incr = iter.sliceIncr();
+            while (rownr <= end) {
+                if (rownr < cache.start()  ||  rownr > cache.end()) {
+                    getdoubleV(rownr, valptr);
+                    DebugAssert (cache.incr() == 0, AipsError);
+                }
+                const double* cacheValue = (const double*)(cache.dataPtr());
+                uInt endrow = min (end, cache.end());
+                while (rownr <= endrow) {
+                    *valptr++ = *cacheValue;
+                    rownr += incr;
+                }
+            }
+        iter++;
+        }
+    } else {
+        const Vector<uInt>& rowvec = rownrs.rowVector();
+        uInt nr = rowvec.nelements();
+        if (nr > 0) {
+            Bool delR;
+            const uInt* rows = rowvec.getStorage (delR);
+            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) {
+                getdoubleV(0, &(value[0]));
+            }
+            const double* cacheValue = (const double*)(cache.dataPtr());
+            uInt strow = cache.start();
+            uInt endrow = cache.end();
+            AlwaysAssert (cache.incr() == 0, AipsError);
+            for (uInt i=0; i<nr; i++) {
+            uInt rownr = rows[i];
+
+            if (rownr >= strow  &&  rownr <= endrow) {
+                value[i] = *cacheValue;
+            } else {
+                getdoubleV(rownr, &(value[i]));
+                cacheValue = (const double*)(cache.dataPtr());
+                strow = cache.start();
+                endrow = cache.end();
+            }
+        }
+            rowvec.freeStorage (rows, delR);
+        }
+    }
+
+    values->putStorage (value, delV);
+}
+
+
 
 void ISMColumn::getValue (uInt rownr, void* value, Bool setCache)
 {
