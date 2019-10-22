@@ -26,18 +26,6 @@
 //# $Id$
 
 #include <casacore/tables/DataMan/ISMColumn.h>
-#include <casacore/tables/DataMan/ISMBase.h>
-#include <casacore/tables/DataMan/ISMBucket.h>
-#include <casacore/tables/Tables/RefRows.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Utilities/ValType.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Copy.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/OS/CanonicalConversion.h>
-#include <casacore/casa/OS/LECanonicalConversion.h>
-
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -174,285 +162,12 @@ void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
     }
 }
 
-
-void ISMColumn::getBoolV (uInt rownr, Bool* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(Bool*)lastValue_p;
-}
-void ISMColumn::getuCharV (uInt rownr, uChar* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(uChar*)lastValue_p;
-}
-void ISMColumn::getShortV (uInt rownr, Short* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(Short*)lastValue_p;
-}
-void ISMColumn::getuShortV (uInt rownr, uShort* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(uShort*)lastValue_p;
-}
-void ISMColumn::getIntV (uInt rownr, Int* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(Int*)lastValue_p;
-}
-void ISMColumn::getuIntV (uInt rownr, uInt* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(uInt*)lastValue_p;
-}
-void ISMColumn::getInt64V (uInt rownr, Int64* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(Int64*)lastValue_p;
-}
-void ISMColumn::getfloatV (uInt rownr, float* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(float*)lastValue_p;
-}
-void ISMColumn::getdoubleV (uInt rownr, double* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(double*)lastValue_p;
-}
-void ISMColumn::getComplexV (uInt rownr, Complex* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(Complex*)lastValue_p;
-}
-void ISMColumn::getDComplexV (uInt rownr, DComplex* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(DComplex*)lastValue_p;
-}
-void ISMColumn::getStringV (uInt rownr, String* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
-    *value = *(String*)lastValue_p;
-}
-
-void ISMColumn::getScalarColumnBoolV (Vector<Bool>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getBoolV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Bool*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnuCharV (Vector<uChar>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getuCharV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(uChar*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnShortV (Vector<Short>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getShortV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Short*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnuShortV (Vector<uShort>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getuShortV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(uShort*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnIntV (Vector<Int>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getIntV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Int*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnuIntV (Vector<uInt>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getuIntV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(uInt*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnInt64V (Vector<Int64>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getInt64V (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Int64*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnfloatV (Vector<float>* dataPtr)
-{
-    //# Note: using getStorage/putStorage is about 3 times faster
-    //# if the vector is consecutive, but it is slower if not.
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getfloatV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(float*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumndoubleV (Vector<double>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getdoubleV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(double*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnComplexV (Vector<Complex>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getComplexV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Complex*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnDComplexV (Vector<DComplex>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getDComplexV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(DComplex*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnStringV (Vector<String>* dataPtr)
-{
-    uInt nrrow = dataPtr->nelements();
-    uInt rownr = 0;
-    while (rownr < nrrow) {
-	getStringV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(String*)lastValue_p;
-	}
-    }
-}
-
 #define ISMCOLUMN_GET(T,NM) \
-void ISMColumn::aips_name2(getScalarColumnCells,NM) \
-                                             (const RefRows& rownrs, \
-					      Vector<T>* values) \
-{ \
-    Bool delV; \
-    T* value = values->getStorage (delV); \
-    T* valptr = value; \
-    const ColumnCache& cache = columnCache(); \
-    if (rownrs.isSliced()) { \
-        RefRowsSliceIter iter(rownrs); \
-        while (! iter.pastEnd()) { \
-            uInt rownr = iter.sliceStart(); \
-            uInt end = iter.sliceEnd(); \
-            uInt incr = iter.sliceIncr(); \
-            while (rownr <= end) { \
-                if (rownr < cache.start()  ||  rownr > cache.end()) { \
-                    aips_name2(get,NM) (rownr, valptr); \
-                    DebugAssert (cache.incr() == 0, AipsError); \
-                } \
-                const T* cacheValue = (const T*)(cache.dataPtr()); \
-                uInt endrow = min (end, cache.end()); \
-                while (rownr <= endrow) { \
-	            *valptr++ = *cacheValue; \
-                    rownr += incr; \
-	        } \
-     	    } \
-	    iter++; \
-        } \
-    } else { \
-        const Vector<uInt>& rowvec = rownrs.rowVector(); \
-        uInt nr = rowvec.nelements(); \
-        if (nr > 0) { \
-            Bool delR; \
-            const uInt* rows = rowvec.getStorage (delR); \
-            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-                aips_name2(get,NM) (0, &(value[0])); \
-            } \
-            const T* cacheValue = (const T*)(cache.dataPtr()); \
-            uInt strow = cache.start(); \
-            uInt endrow = cache.end(); \
-            AlwaysAssert (cache.incr() == 0, AipsError); \
-            for (uInt i=0; i<nr; i++) { \
-	        uInt rownr = rows[i]; \
-                if (rownr >= strow  &&  rownr <= endrow) { \
-	            value[i] = *cacheValue; \
-	        } else { \
-	            aips_name2(get,NM) (rownr, &(value[i])); \
-                    cacheValue = (const T*)(cache.dataPtr()); \
-                    strow = cache.start(); \
-                    endrow = cache.end(); \
-	        } \
-	    } \
-            rowvec.freeStorage (rows, delR); \
-        } \
-    } \
-    values->putStorage (value, delV); \
-}
+void ISMColumn::aips_name2(get,NM) \
+                            (uInt rownr, \
+                             T* dataPtr) \
+{ ISMColumn::get<T>(rownr, dataPtr); }
+
 ISMCOLUMN_GET(Bool,BoolV)
 ISMCOLUMN_GET(uChar,uCharV)
 ISMCOLUMN_GET(Short,ShortV)
@@ -461,75 +176,50 @@ ISMCOLUMN_GET(Int,IntV)
 ISMCOLUMN_GET(uInt,uIntV)
 ISMCOLUMN_GET(Int64,Int64V)
 ISMCOLUMN_GET(float,floatV)
-// ISMCOLUMN_GET(double,doubleV)
+ISMCOLUMN_GET(double,doubleV)
 ISMCOLUMN_GET(Complex,ComplexV)
 ISMCOLUMN_GET(DComplex,DComplexV)
 ISMCOLUMN_GET(String,StringV)
+#undef ISMCOLUMN_GET
 
+#define ISMCOLUMN_GET(T,NM) \
+void ISMColumn::aips_name2(getScalarColumn,NM) \
+                                             (Vector<T>* dataPtr)\
+{ ISMColumn::getScalarColumn<T>(dataPtr); }
 
+ISMCOLUMN_GET(Bool,BoolV)
+ISMCOLUMN_GET(uChar,uCharV)
+ISMCOLUMN_GET(Short,ShortV)
+ISMCOLUMN_GET(uShort,uShortV)
+ISMCOLUMN_GET(Int,IntV)
+ISMCOLUMN_GET(uInt,uIntV)
+ISMCOLUMN_GET(Int64,Int64V)
+ISMCOLUMN_GET(float,floatV)
+ISMCOLUMN_GET(double,doubleV)
+ISMCOLUMN_GET(Complex,ComplexV)
+ISMCOLUMN_GET(DComplex,DComplexV)
+ISMCOLUMN_GET(String,StringV)
+#undef ISMCOLUMN_GET
 
-void ISMColumn::getScalarColumnCellsdoubleV(const RefRows& rownrs, Vector<double> * values)
-{
-    Bool delV;
+#define ISMCOLUMN_GET(T,NM) \
+void ISMColumn::aips_name2(getScalarColumnCells,NM) \
+                                             (const RefRows& rownrs, \
+					                          Vector<T>* values) \
+{ ISMColumn::getScalarColumnCells<T>(rownrs, values); }
 
-    double* value = values->getStorage (delV);
-    double* valptr = value;
-
-    const ColumnCache& cache = columnCache();
-
-    if (rownrs.isSliced()) {
-        RefRowsSliceIter iter(rownrs);
-        while (! iter.pastEnd()) {
-            uInt rownr = iter.sliceStart();
-            uInt end = iter.sliceEnd();
-            uInt incr = iter.sliceIncr();
-            while (rownr <= end) {
-                if (rownr < cache.start()  ||  rownr > cache.end()) {
-                    getdoubleV(rownr, valptr);
-                    DebugAssert (cache.incr() == 0, AipsError);
-                }
-                const double* cacheValue = (const double*)(cache.dataPtr());
-                uInt endrow = min (end, cache.end());
-                while (rownr <= endrow) {
-                    *valptr++ = *cacheValue;
-                    rownr += incr;
-                }
-            }
-        iter++;
-        }
-    } else {
-        const Vector<uInt>& rowvec = rownrs.rowVector();
-        uInt nr = rowvec.nelements();
-        if (nr > 0) {
-            Bool delR;
-            const uInt* rows = rowvec.getStorage (delR);
-            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) {
-                getdoubleV(0, &(value[0]));
-            }
-            const double* cacheValue = (const double*)(cache.dataPtr());
-            uInt strow = cache.start();
-            uInt endrow = cache.end();
-            AlwaysAssert (cache.incr() == 0, AipsError);
-            for (uInt i=0; i<nr; i++) {
-            uInt rownr = rows[i];
-
-            if (rownr >= strow  &&  rownr <= endrow) {
-                value[i] = *cacheValue;
-            } else {
-                getdoubleV(rownr, &(value[i]));
-                cacheValue = (const double*)(cache.dataPtr());
-                strow = cache.start();
-                endrow = cache.end();
-            }
-        }
-            rowvec.freeStorage (rows, delR);
-        }
-    }
-
-    values->putStorage (value, delV);
-}
-
-
+ISMCOLUMN_GET(Bool,BoolV)
+ISMCOLUMN_GET(uChar,uCharV)
+ISMCOLUMN_GET(Short,ShortV)
+ISMCOLUMN_GET(uShort,uShortV)
+ISMCOLUMN_GET(Int,IntV)
+ISMCOLUMN_GET(uInt,uIntV)
+ISMCOLUMN_GET(Int64,Int64V)
+ISMCOLUMN_GET(float,floatV)
+ISMCOLUMN_GET(double,doubleV)
+ISMCOLUMN_GET(Complex,ComplexV)
+ISMCOLUMN_GET(DComplex,DComplexV)
+ISMCOLUMN_GET(String,StringV)
+#undef ISMCOLUMN_GET
 
 void ISMColumn::getValue (uInt rownr, void* value, Bool setCache)
 {

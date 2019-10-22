@@ -37,6 +37,18 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/OS/Conversion.h>
+#include <casacore/tables/DataMan/ISMBase.h>
+#include <casacore/tables/DataMan/ISMBucket.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/LECanonicalConversion.h>
+#include <casacore/casa/aipsdef.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -165,6 +177,13 @@ public:
     virtual void getComplexV  (uInt rownr, Complex* dataPtr);
     virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
     virtual void getStringV   (uInt rownr, String* dataPtr);
+    template <typename T>
+    inline void get(uInt rownr, T* value){
+        if (isLastValueInvalid (rownr)) {
+	        getValue (rownr, lastValue_p, True);
+        }
+        *value = *(T*)lastValue_p;
+    }
     // </group>
 
     // Put a scalar value in the given row.
@@ -199,6 +218,17 @@ public:
     virtual void getScalarColumnComplexV  (Vector<Complex>* dataPtr);
     virtual void getScalarColumnDComplexV (Vector<DComplex>* dataPtr);
     virtual void getScalarColumnStringV   (Vector<String>* dataPtr);
+    template <typename T>
+    inline void getScalarColumn (Vector<T>* dataPtr){
+        uInt nrrow = dataPtr->nelements();
+        uInt rownr = 0;
+        while (rownr < nrrow) {
+            get<T> (rownr, &((*dataPtr)(rownr)));
+            for (rownr++; Int(rownr)<=endRow_p; rownr++) {
+                (*dataPtr)(rownr) = *(T*)lastValue_p;
+            }
+        }
+    }
     // </group>
 
     // Put the scalar values into the entire column.
@@ -248,6 +278,76 @@ public:
 						Vector<DComplex>* dataPtr);
     virtual void getScalarColumnCellsStringV   (const RefRows& rownrs,
 						Vector<String>* dataPtr);
+
+    template <typename T>
+    inline void getScalarColumnCells(const RefRows& rownrs,
+                                Vector<T>* values)
+    {
+        Bool delV;
+        T* value = values->getStorage (delV);
+        T* valptr = value;
+        const ColumnCache& cache = columnCache();
+        if (rownrs.isSliced()) { 
+            RefRowsSliceIter iter(rownrs);
+            while (! iter.pastEnd()) {
+                /* for each slice we read out values from either 
+                   the cache or directly off the slice. Since we're
+                   dealing with slices don't update the cache
+                */
+                uInt rownr = iter.sliceStart();
+                uInt end = iter.sliceEnd();
+                uInt incr = iter.sliceIncr();
+                while (rownr <= end) {
+                    if (rownr < cache.start()  ||  rownr > cache.end()) {
+                        get<T>(rownr, valptr);
+                        DebugAssert (cache.start() == 1, AipsError); // assert cache invalid
+                        DebugAssert (cache.end() == 0, AipsError);
+                        DebugAssert (cache.incr() == 0, AipsError);
+                        rownr += incr;
+                        valptr++;
+                    } else { // cache not invalid, read up to the end of the cache
+                        const T* cacheValue = (const T*)(cache.dataPtr());
+                        uInt endrow = min (end, cache.end());
+                        DebugAssert(cache.incr() == incr, AipsError);
+
+                        while (rownr <= endrow) {
+                            *valptr++ = *cacheValue;
+                            rownr += incr;
+                        } 
+                    }
+                    
+                } 
+            iter++;
+            } 
+        } else { 
+            const Vector<uInt>& rowvec = rownrs.rowVector(); 
+            uInt nr = rowvec.nelements(); 
+            if (nr > 0) { 
+                Bool delR; 
+                const uInt* rows = rowvec.getStorage (delR); 
+                if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { 
+                    get<T>(0, &(value[0])); 
+                } 
+                const T* cacheValue = (const T*)(cache.dataPtr()); 
+                uInt strow = cache.start(); 
+                uInt endrow = cache.end(); 
+                AlwaysAssert (cache.incr() == 0, AipsError); 
+                for (uInt i=0; i<nr; i++) { 
+                    uInt rownr = rows[i]; 
+                    if (rownr >= strow  &&  rownr <= endrow) { 
+                        value[i] = *cacheValue; 
+                    } else { 
+                        get<T>(rownr, &(value[i])); 
+                        cacheValue = (const T*)(cache.dataPtr()); 
+                        strow = cache.start(); 
+                        endrow = cache.end(); 
+                    } 
+                } 
+                rowvec.freeStorage (rows, delR); 
+            } 
+        } 
+        values->putStorage (value, delV); 
+    }
     // </group>
 
     // Get an array value in the given row.
