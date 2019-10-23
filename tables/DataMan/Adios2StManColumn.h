@@ -129,7 +129,6 @@ protected:
 
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
-    char itsAdiosOpenMode;
     std::string itsAdiosDataType;
     adios2::Dims itsAdiosShape = {std::numeric_limits<uInt>::max()};
     adios2::Dims itsAdiosStart = {0};
@@ -154,7 +153,6 @@ public:
     void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
     {
         itsAdiosEngine = aAdiosEngine;
-        itsAdiosOpenMode = aOpenMode;
         itsAdiosVariable = itsAdiosIO->InquireVariable<T>(itsColumnName);
         if (!itsAdiosVariable && aOpenMode == 'w')
         {

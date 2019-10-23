@@ -264,10 +264,9 @@ void Adios2StManColumn::getDComplexV(uInt rownr, DComplex *dataPtr)
 // string
 
 template<>
-void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
+void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char /*aOpenMode*/)
 {
     itsAdiosEngine = aAdiosEngine;
-    itsAdiosOpenMode = aOpenMode;
 }
 
 void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
