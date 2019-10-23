@@ -225,7 +225,7 @@ Adios2StMan::impl::~impl()
 DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
                                      const Record &/*spec*/)
 {
-        return new Adios2StMan(itsMpiComm, itsAdiosEngineType,
+    return new Adios2StMan(itsMpiComm, itsAdiosEngineType,
                                itsAdiosEngineParams,
                                itsAdiosTransportParamsVec);
 }
