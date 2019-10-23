@@ -114,6 +114,24 @@ void Adios2StManColumn::arrayVToSelection(uInt rownr)
     }
 }
 
+void Adios2StManColumn::scalarColumnCellsVToSelection(const RefRows &rows)
+{
+    RefRowsSliceIter iter(rows);
+    auto row_start = iter.sliceStart();
+    auto row_end = iter.sliceEnd();
+    iter.next();
+    if (!iter.pastEnd()) {
+        throw std::runtime_error("Adios2StManColumn::scalarColumnCellsVToSelection supports single slices");
+    }
+    itsAdiosStart[0] = row_start;
+    itsAdiosCount[0] = row_end - row_start + 1;
+    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+    {
+        itsAdiosStart[i] = 0;
+        itsAdiosCount[i] = itsAdiosShape[i];
+    }
+}
+
 void Adios2StManColumn::sliceVToSelection(uInt rownr, const Slicer &ns)
 {
     columnSliceCellsVToSelection(rownr, 1, ns);
@@ -158,6 +176,17 @@ void Adios2StManColumn::get ## T ## V(uInt rownr, T *dataPtr) \
     getScalarV(rownr, dataPtr); \
 }
 
+#define DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V(T) \
+void Adios2StManColumn::getScalarColumnCells ## T ## V(const RefRows& rownrs, Vector<T>* dataPtr) \
+{ \
+    getScalarColumnCellsV(rownrs, dataPtr); \
+} \
+\
+void Adios2StManColumn::putScalarColumnCells ## T ## V(const RefRows& rownrs, const Vector<T>* dataPtr) \
+{ \
+    putScalarColumnCellsV(rownrs, dataPtr); \
+}
+
 #define DEFINE_GETPUT_SLICE_TYPE_V(T) \
 void Adios2StManColumn::putSlice ## T ## V(uInt rownr, const Slicer& ns, const Array<T>* dataPtr) \
 { \
@@ -171,6 +200,7 @@ void Adios2StManColumn::getSlice ## T ## V(uInt rownr, const Slicer& ns, Array<T
 
 #define DEFINE_GETPUT(T) \
 DEFINE_GETPUT_TYPE_V(T) \
+DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V(T) \
 DEFINE_GETPUT_SLICE_TYPE_V(T)
 
 DEFINE_GETPUT(Bool)
@@ -185,8 +215,10 @@ DEFINE_GETPUT(Complex)
 DEFINE_GETPUT(DComplex)
 DEFINE_GETPUT_TYPE_V(Int64)
 DEFINE_GETPUT_SLICE_TYPE_V(String)
+DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V(Int64)
 #undef DEFINE_GETPUT
 #undef DEFINE_GETPUT_TYPE_V
+#undef DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V
 #undef DEFINE_GETPUT_SLICE_TYPE_V
 
 

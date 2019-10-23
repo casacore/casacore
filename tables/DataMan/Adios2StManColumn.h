@@ -60,6 +60,8 @@ public:
 
     virtual void putScalarV(uInt aRowNr, const void *aDataPtr) = 0;
     virtual void getScalarV(uInt aRowNr, void *aDataPtr) = 0;
+    virtual void getScalarColumnCellsV(const RefRows &rownrs, void *dataPtr) = 0;
+    virtual void putScalarColumnCellsV(const RefRows &rownrs, const void *dataPtr) = 0;
 
     virtual void putBoolV(uInt aRowNr, const Bool *aDataPtr);
     virtual void putuCharV(uInt aRowNr, const uChar *aDataPtr);
@@ -86,6 +88,30 @@ public:
     virtual void getComplexV(uInt aRowNr, Complex *aDataPtr);
     virtual void getDComplexV(uInt aRowNr, DComplex *aDataPtr);
     virtual void getStringV(uInt aRowNr, String *aDataPtr);
+
+    virtual void getScalarColumnCellsBoolV(const RefRows& rownrs, Vector<Bool>* dataPtr);
+    virtual void getScalarColumnCellsuCharV(const RefRows& rownrs, Vector<uChar>* dataPtr);
+    virtual void getScalarColumnCellsShortV(const RefRows& rownrs, Vector<Short>* dataPtr);
+    virtual void getScalarColumnCellsuShortV(const RefRows& rownrs, Vector<uShort>* dataPtr);
+    virtual void getScalarColumnCellsIntV(const RefRows& rownrs, Vector<Int>* dataPtr);
+    virtual void getScalarColumnCellsuIntV(const RefRows& rownrs, Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsInt64V(const RefRows& rownrs, Vector<Int64>* dataPtr);
+    virtual void getScalarColumnCellsfloatV(const RefRows& rownrs, Vector<float>* dataPtr);
+    virtual void getScalarColumnCellsdoubleV(const RefRows& rownrs, Vector<double>* dataPtr);
+    virtual void getScalarColumnCellsComplexV(const RefRows& rownrs, Vector<Complex>* dataPtr);
+    virtual void getScalarColumnCellsDComplexV(const RefRows& rownrs, Vector<DComplex>* dataPtr);
+
+    virtual void putScalarColumnCellsBoolV(const RefRows& rownrs, const Vector<Bool>* dataPtr);
+    virtual void putScalarColumnCellsuCharV(const RefRows& rownrs, const Vector<uChar>* dataPtr);
+    virtual void putScalarColumnCellsShortV(const RefRows& rownrs, const Vector<Short>* dataPtr);
+    virtual void putScalarColumnCellsuShortV(const RefRows& rownrs, const Vector<uShort>* dataPtr);
+    virtual void putScalarColumnCellsIntV(const RefRows& rownrs, const Vector<Int>* dataPtr);
+    virtual void putScalarColumnCellsuIntV(const RefRows& rownrs, const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnCellsInt64V(const RefRows& rownrs, const Vector<Int64>* dataPtr);
+    virtual void putScalarColumnCellsfloatV(const RefRows& rownrs, const Vector<float>* dataPtr);
+    virtual void putScalarColumnCellsdoubleV(const RefRows& rownrs, const Vector<double>* dataPtr);
+    virtual void putScalarColumnCellsComplexV(const RefRows& rownrs, const Vector<Complex>* dataPtr);
+    virtual void putScalarColumnCellsDComplexV(const RefRows& rownrs, const Vector<DComplex>* dataPtr);
 
     virtual void putSliceBoolV(uInt rownr, const Slicer& ns, const Array<Bool>* dataPtr);
     virtual void putSliceuCharV(uInt rownr, const Slicer& ns, const Array<uChar>* dataPtr);
@@ -115,6 +141,7 @@ public:
 protected:
     void scalarVToSelection(uInt rownr);
     void arrayVToSelection(uInt rownr);
+    void scalarColumnCellsVToSelection(const RefRows &rownrs);
     void sliceVToSelection(uInt rownr, const Slicer &ns);
     void columnSliceVToSelection(const Slicer &ns);
     void columnSliceCellsVToSelection(const RefRows &rows, const Slicer &ns);
@@ -186,6 +213,18 @@ public:
     {
         scalarVToSelection(aRowNr);
         fromAdios(reinterpret_cast<T *>(data));
+    }
+
+    virtual void getScalarColumnCellsV(const RefRows &rownrs, void *dataPtr)
+    {
+        scalarColumnCellsVToSelection(rownrs);
+        fromAdios(dataPtr);
+    }
+
+    virtual void putScalarColumnCellsV(const RefRows &rownrs, const void *dataPtr)
+    {
+        scalarColumnCellsVToSelection(rownrs);
+        toAdios(dataPtr);
     }
 
     virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
