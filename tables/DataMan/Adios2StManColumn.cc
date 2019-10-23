@@ -147,49 +147,15 @@ void Adios2StManColumn::columnSliceCellsVToSelection(uInt row_start, uInt row_co
     }
 }
 
-void Adios2StManColumn::putBoolV(uInt rownr, const Bool *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putuCharV(uInt rownr, const uChar *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putShortV(uInt rownr, const Short *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putuShortV(uInt rownr, const uShort *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putIntV(uInt rownr, const Int *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putuIntV(uInt rownr, const uInt *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putInt64V(uInt rownr, const Int64 *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putfloatV(uInt rownr, const Float *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putdoubleV(uInt rownr, const Double *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putComplexV(uInt rownr, const Complex *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putDComplexV(uInt rownr, const DComplex *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
+#define DEFINE_GETPUT_TYPE_V(T) \
+void Adios2StManColumn::put ## T ## V(uInt rownr, const T *dataPtr) \
+{ \
+    putScalarV(rownr, dataPtr); \
+} \
+\
+void Adios2StManColumn::get ## T ## V(uInt rownr, T *dataPtr) \
+{ \
+    getScalarV(rownr, dataPtr); \
 }
 
 #define DEFINE_GETPUTSLICE(T) \
@@ -203,6 +169,17 @@ void Adios2StManColumn::getSlice ## T ## V(uInt rownr, const Slicer& ns, Array<T
     getSliceV(rownr, ns, dataPtr); \
 }
 
+DEFINE_GETPUT_TYPE_V(Bool)
+DEFINE_GETPUT_TYPE_V(uChar)
+DEFINE_GETPUT_TYPE_V(Short)
+DEFINE_GETPUT_TYPE_V(uShort)
+DEFINE_GETPUT_TYPE_V(Int)
+DEFINE_GETPUT_TYPE_V(uInt)
+DEFINE_GETPUT_TYPE_V(float)
+DEFINE_GETPUT_TYPE_V(double)
+DEFINE_GETPUT_TYPE_V(Complex)
+DEFINE_GETPUT_TYPE_V(DComplex)
+DEFINE_GETPUT_TYPE_V(Int64)
 DEFINE_GETPUTSLICE(Bool)
 DEFINE_GETPUTSLICE(uChar)
 DEFINE_GETPUTSLICE(Short)
@@ -214,52 +191,9 @@ DEFINE_GETPUTSLICE(double)
 DEFINE_GETPUTSLICE(Complex)
 DEFINE_GETPUTSLICE(DComplex)
 DEFINE_GETPUTSLICE(String)
+#undef DEFINE_GETPUT_TYPE_V
 #undef DEFINE_PUTSLICE
 
-void Adios2StManColumn::getBoolV(uInt rownr, Bool *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getuCharV(uInt rownr, uChar *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getShortV(uInt rownr, Short *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getuShortV(uInt rownr, uShort *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getIntV(uInt rownr, Int *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getuIntV(uInt rownr, uInt *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getInt64V(uInt rownr, Int64 *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getfloatV(uInt rownr, Float *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getdoubleV(uInt rownr, Double *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getComplexV(uInt rownr, Complex *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getDComplexV(uInt rownr, DComplex *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
 
 // string
 
