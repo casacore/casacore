@@ -244,26 +244,24 @@ void Adios2StMan::impl::addRow(uInt aNrRows)
 
 void Adios2StMan::impl::create(uInt aNrRows)
 {
-    itsOpenMode = 'w';
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Write));
     for (uInt i = 0; i < ncolumn(); ++i)
     {
-        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode);
+        itsColumnPtrBlk[i]->create(itsAdiosEngine, 'w');
     }
     itsAdiosEngine->BeginStep();
 }
 
 void Adios2StMan::impl::open(uInt aNrRows, AipsIO &ios)
 {
-    itsOpenMode = 'r';
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Read));
     for (uInt i = 0; i < ncolumn(); ++i)
     {
-        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode);
+        itsColumnPtrBlk[i]->create(itsAdiosEngine, 'r');
     }
     itsAdiosEngine->BeginStep();
 
