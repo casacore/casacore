@@ -1,4 +1,4 @@
-//# tExternalStMan.cc: Test program for an external stman with old interface
+//# tExternalStManNew.cc: Test program for an external stman with new interface
 //# Copyright (C) 2019
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,9 +25,10 @@
 //#
 //# $Id$
 
-// This test is a very simplified clone of ASTRON's LofarStMan.
-// using the old DataManager interface.
-// It tests if the old DataManager interface works properly.
+// This test is a very simplified clone of ASTRON's LofarStMan
+// using the new DataManager interface.
+// It can be compared with tExternalStMan.cc to show the differences
+// between the old and new DataManager interface.
 //
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
@@ -35,7 +36,6 @@
 
 //# Includes
 #include <casacore/tables/DataMan/DataManager.h>
-#include <casacore/tables/DataMan/StManColumn.h>
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -110,7 +110,7 @@ namespace casacore {
     static void registerClass();
 
     // Get the nr of rows.
-    uInt getNRow() const
+    rownr_t getNRow() const
       { return ntime * nant * nant; }
 
   private:
@@ -126,24 +126,18 @@ namespace casacore {
   
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create64 (rownr_t nrrow);
   
     // Open the storage manager file for an existing table.
     // Return the number of rows in the data file.
-    // <group>
-    virtual void open (uInt nrrow, AipsIO&); //# should never be called
-    virtual uInt open1 (uInt nrrow, AipsIO&);
-    // </group>
+    virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
 
     // Prepare the columns.
     virtual void prepare();
 
     // Resync the storage manager with the new file contents.
     // It does nothing.
-    // <group>
-    virtual void resync (uInt nrrow);   //# should never be called
-    virtual uInt resync1 (uInt nrrow);
-    // </group>
+    virtual rownr_t resync64 (rownr_t nrrow);
   
     // Reopen the storage manager files for read/write.
     // It does nothing.
@@ -156,11 +150,11 @@ namespace casacore {
 
     // Add rows to the storage manager.
     // It cannot do it, so throws an exception.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow64 (rownr_t nrrow);
   
     // Delete a row from all columns.
     // It cannot do it, so throws an exception.
-    virtual void removeRow (uInt rowNr);
+    virtual void removeRow64 (rownr_t rowNr);
   
     // Do the final addition of a column.
     // It won't do anything.
@@ -195,11 +189,11 @@ namespace casacore {
   };
 
 
-  class LofarColumn : public StManColumn
+  class LofarColumn : public DataManagerColumn
   {
   public:
     explicit LofarColumn (LofarStMan* parent, int dtype)
-      : StManColumn (dtype),
+      : itsDataType (dtype),
         itsParent   (parent)
     {}
     virtual ~LofarColumn();
@@ -209,7 +203,11 @@ namespace casacore {
     virtual void setShapeColumn (const IPosition& shape);
     // Prepare the column. By default it does nothing.
     virtual void prepareCol();
+    // Get the data type.
+    int dataType() const
+      { return itsDataType; }
   protected:
+    int         itsDataType;
     LofarStMan* itsParent;
   };
 
@@ -221,7 +219,7 @@ namespace casacore {
     explicit Ant1Column (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~Ant1Column();
-    virtual void getIntV (uInt rowNr, Int* dataPtr);
+    virtual void getInt (rownr_t rowNr, Int* dataPtr);
   };
 
   // <summary>ANTENNA2 column in the LOFAR Storage Manager.</summary>
@@ -232,7 +230,7 @@ namespace casacore {
     explicit Ant2Column (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~Ant2Column();
-    virtual void getIntV (uInt rowNr, Int* dataPtr);
+    virtual void getInt (rownr_t rowNr, Int* dataPtr);
   };
 
   // <summary>TIME and TIME_CENTROID column in the LOFAR Storage Manager.</summary>
@@ -243,7 +241,7 @@ namespace casacore {
     explicit TimeColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~TimeColumn();
-    virtual void getdoubleV (uInt rowNr, Double* dataPtr);
+    virtual void getdouble (rownr_t rowNr, Double* dataPtr);
   };
 
   // <summary>INTERVAL and EXPOSURE column in the LOFAR Storage Manager.</summary>
@@ -254,7 +252,7 @@ namespace casacore {
     explicit IntervalColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~IntervalColumn();
-    virtual void getdoubleV (uInt rowNr, Double* dataPtr);
+    virtual void getdouble (rownr_t rowNr, Double* dataPtr);
   };
 
   // <summary>All columns in the LOFAR Storage Manager with value 0.</summary>
@@ -265,7 +263,7 @@ namespace casacore {
     explicit ZeroColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~ZeroColumn();
-    virtual void getIntV (uInt rowNr, Int* dataPtr);
+    virtual void getInt (rownr_t rowNr, Int* dataPtr);
   private:
     Int itsValue;
   };
@@ -278,7 +276,7 @@ namespace casacore {
     explicit FalseColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FalseColumn();
-    virtual void getBoolV (uInt rowNr, Bool* dataPtr);
+    virtual void getBool (rownr_t rowNr, Bool* dataPtr);
   private:
     Bool itsValue;
   };
@@ -291,9 +289,8 @@ namespace casacore {
     explicit UvwColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~UvwColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual void getArraydoubleV (uInt rowNr,
-                                  Array<Double>* dataPtr);
+    virtual IPosition shape (rownr_t rownr);
+    virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
   };
 
   // <summary>DATA column in the LOFAR Storage Manager.</summary>
@@ -305,11 +302,9 @@ namespace casacore {
       : LofarColumn(parent, dtype) {}
     virtual ~DataColumn();
     virtual Bool isWritable() const;
-    virtual IPosition shape (uInt rownr);
-    virtual void getArrayComplexV (uInt rowNr,
-                                   Array<Complex>* dataPtr);
-    virtual void putArrayComplexV (uInt rowNr,
-                                   const Array<Complex>* dataPtr);
+    virtual IPosition shape (rownr_t rownr);
+    virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
+    virtual void putArrayV (rownr_t rowNr, const ArrayBase& dataPtr);
   };
 
   // <summary>FLAG column in the LOFAR Storage Manager.</summary>
@@ -320,9 +315,8 @@ namespace casacore {
     explicit FlagColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual void getArrayBoolV (uInt rowNr,
-                                Array<Bool>* dataPtr);
+    virtual IPosition shape (rownr_t rownr);
+    virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
   };
 
   // <summary>WEIGHT column in the LOFAR Storage Manager.</summary>
@@ -333,9 +327,8 @@ namespace casacore {
     explicit WeightColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~WeightColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual void getArrayfloatV (uInt rowNr,
-                                 Array<Float>* dataPtr);
+    virtual IPosition shape (rownr_t rownr);
+    virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
   };
 
   // <summary>SIGMA column in the LOFAR Storage Manager.</summary>
@@ -346,9 +339,8 @@ namespace casacore {
     explicit SigmaColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~SigmaColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual void getArrayfloatV (uInt rowNr,
-                                 Array<Float>* dataPtr);
+    virtual IPosition shape (rownr_t rownr);
+    virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
   };
 
   // <summary>WEIGHT_SPECTRUM column in the LOFAR Storage Manager.</summary>
@@ -359,9 +351,8 @@ namespace casacore {
     explicit WSpectrumColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~WSpectrumColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual void getArrayfloatV (uInt rowNr,
-                                 Array<Float>* dataPtr);
+    virtual IPosition shape (rownr_t rownr);
+    virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
   };
 
   // <summary>FLAG_CATEGORY column in the LOFAR Storage Manager.</summary>
@@ -372,8 +363,8 @@ namespace casacore {
     explicit FlagCatColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagCatColumn();
-    virtual Bool isShapeDefined (uInt rownr);
-    virtual IPosition shape (uInt rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual IPosition shape (rownr_t rownr);
   };
 
 
@@ -390,7 +381,7 @@ namespace casacore {
 
   Ant1Column::~Ant1Column()
   {}
-  void Ant1Column::getIntV (uInt rownr, Int* dataPtr)
+  void Ant1Column::getInt (rownr_t rownr, Int* dataPtr)
   {
     // Use 3 antennae (baselines 0-0, 0-1, 0-2, 1-0, 1-1, 1-2, 2-0, 2-1, 2-2).
     *dataPtr = (rownr%(nant*nant)) / nant;
@@ -398,7 +389,7 @@ namespace casacore {
 
   Ant2Column::~Ant2Column()
   {}
-  void Ant2Column::getIntV (uInt rownr, Int* dataPtr)
+  void Ant2Column::getInt (rownr_t rownr, Int* dataPtr)
   {
     // Use 3 antennae (baselines 0-0, 0-1, 0-2, 1-0, 1-1, 1-2, 2-0, 2-1, 2-2).
     *dataPtr = rownr%nant;
@@ -406,21 +397,21 @@ namespace casacore {
 
   TimeColumn::~TimeColumn()
   {}
-  void TimeColumn::getdoubleV (uInt rownr, Double* dataPtr)
+  void TimeColumn::getdouble (rownr_t rownr, Double* dataPtr)
   {
     *dataPtr = 1 + 2 * (rownr/(nant*nant));
   }
 
   IntervalColumn::~IntervalColumn()
   {}
-  void IntervalColumn::getdoubleV (uInt, Double* dataPtr)
+  void IntervalColumn::getdouble (rownr_t, Double* dataPtr)
   {
     *dataPtr = 2;
   }
 
   ZeroColumn::~ZeroColumn()
   {}
-  void ZeroColumn::getIntV (uInt, Int* dataPtr)
+  void ZeroColumn::getInt (rownr_t, Int* dataPtr)
   {
     itsValue = 0;
     columnCache().setIncrement (0);
@@ -432,7 +423,7 @@ namespace casacore {
 
   FalseColumn::~FalseColumn()
   {}
-  void FalseColumn::getBoolV (uInt, Bool* dataPtr)
+  void FalseColumn::getBool (rownr_t, Bool* dataPtr)
   {
     itsValue = False;
     columnCache().setIncrement (0);
@@ -444,15 +435,20 @@ namespace casacore {
 
   UvwColumn::~UvwColumn()
   {}
-  IPosition UvwColumn::shape (uInt)
+  IPosition UvwColumn::shape (rownr_t)
   {
     return IPosition(1,3);
   }
-  void UvwColumn::getArraydoubleV (uInt rownr, Array<Double>* dataPtr)
+  void UvwColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    (*dataPtr)[0] = rownr * 0.1;
-    (*dataPtr)[1] = rownr * 0.1 + 0.03;
-    (*dataPtr)[2] = rownr * 0.1 + 0.06;
+    DebugAssert (dataType() == TpDouble, AipsError);
+    Bool deleteIt;
+    void* ptr = dataPtr.getVStorage (deleteIt);
+    double* p = static_cast<double*>(ptr);
+    p[0] = rownr * 0.1;
+    p[1] = rownr * 0.1 + 0.03;
+    p[2] = rownr * 0.1 + 0.06;
+    dataPtr.putVStorage (ptr, deleteIt);
   }
 
   DataColumn::~DataColumn()
@@ -461,73 +457,84 @@ namespace casacore {
   {
     return True;
   }
-  IPosition DataColumn::shape (uInt)
+  IPosition DataColumn::shape (rownr_t)
   {
     return IPosition(2, npol, nchan);
   }
-  void DataColumn::getArrayComplexV (uInt rownr, Array<Complex>* dataPtr)
+  void DataColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    indgen (*dataPtr, Complex(rownr, rownr+0.5));
+    DebugAssert (dataType() == TpComplex, AipsError);
+    Array<Complex>& arr = static_cast<Array<Complex>&>(dataPtr);
+    indgen (arr, Complex(rownr, rownr+0.5));
   }
-  void DataColumn::putArrayComplexV (uInt rownr, const Array<Complex>* dataPtr)
+  void DataColumn::putArrayV (rownr_t rownr, const ArrayBase& dataPtr)
   {
-    cout << "Ignored DataColumn::putArrayComplexV " << dataPtr->shape()
+    DebugAssert (dataType() == TpComplex, AipsError);
+    cout << "Ignored DataColumn::putArrayComplexV " << dataPtr.shape()
          << " for row " << rownr << endl;
   }
 
   FlagColumn::~FlagColumn()
   {}
-  IPosition FlagColumn::shape (uInt)
+  IPosition FlagColumn::shape (rownr_t)
   {
     return IPosition(2, npol, nchan);
   }
-  void FlagColumn::getArrayBoolV (uInt rownr, Array<Bool>* dataPtr)
+  void FlagColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    *dataPtr = False;
-    (*dataPtr)(IPosition(2,rownr%npol, rownr%nchan)) = True;
+    DebugAssert (dataType() == TpBool, AipsError);
+    Array<Bool>& arr = static_cast<Array<Bool>&>(dataPtr);
+    arr = False;
+    arr(IPosition(2,rownr%npol, rownr%nchan)) = True;
   }
 
 
   WeightColumn::~WeightColumn()
   {}
-  IPosition WeightColumn::shape (uInt)
+  IPosition WeightColumn::shape (rownr_t)
   {
     return IPosition(1, 4);
   }
-  void WeightColumn::getArrayfloatV (uInt, Array<Float>* dataPtr)
+  void WeightColumn::getArrayV (rownr_t, ArrayBase& dataPtr)
   {
-    *dataPtr = float(1);
+    DebugAssert (dataType() == TpFloat, AipsError);
+    Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
+    arr = float(1);
   }
 
   SigmaColumn::~SigmaColumn()
   {}
-  IPosition SigmaColumn::shape (uInt)
+  IPosition SigmaColumn::shape (rownr_t)
   {
     return IPosition(1, 4);
   }
-  void SigmaColumn::getArrayfloatV (uInt, Array<Float>* dataPtr)
+  void SigmaColumn::getArrayV (rownr_t, ArrayBase& dataPtr)
   {
-    *dataPtr = float(1);
+    DebugAssert (dataType() == TpFloat, AipsError);
+    Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
+    arr = float(1);
   }
 
   WSpectrumColumn::~WSpectrumColumn()
   {}
-  IPosition WSpectrumColumn::shape (uInt)
+  IPosition WSpectrumColumn::shape (rownr_t)
   {
     return IPosition(2, npol, nchan);
   }
-  void WSpectrumColumn::getArrayfloatV (uInt rownr, Array<Float>* dataPtr)
+  void WSpectrumColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    *dataPtr = float(rownr);
+    DebugAssert (dataType() == TpFloat, AipsError);
+    Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
+    arr = float(rownr);
   }
 
   FlagCatColumn::~FlagCatColumn()
   {}
-  Bool FlagCatColumn::isShapeDefined (uInt)
+  Bool FlagCatColumn::isShapeDefined (rownr_t)
   {
     return False;
   }
-  IPosition FlagCatColumn::shape (uInt)
+  IPosition FlagCatColumn::shape (rownr_t)
   {
     throw DataManError ("LofarStMan: no data in column FLAG_CATEGORY");
   }
@@ -663,11 +670,11 @@ namespace casacore {
     return True;
   }
 
-  void LofarStMan::addRow (uInt)
+  void LofarStMan::addRow64 (rownr_t)
   {
     throw DataManError ("LofarStMan cannot add rows");
   }
-  void LofarStMan::removeRow (uInt)
+  void LofarStMan::removeRow64 (rownr_t)
   {
     throw DataManError ("LofarStMan cannot remove rows");
   }
@@ -681,14 +688,10 @@ namespace casacore {
     return False;
   }
 
-  void LofarStMan::create (uInt)
+  void LofarStMan::create64 (rownr_t)
   {}
 
-  void LofarStMan::open (uInt, AipsIO&)
-  {
-    throw DataManError ("LofarStMan::open should never be called");
-  }
-  uInt LofarStMan::open1 (uInt, AipsIO&)
+  rownr_t LofarStMan::open64 (rownr_t, AipsIO&)
   {
     return getNRow();
   }
@@ -696,11 +699,7 @@ namespace casacore {
   void LofarStMan::prepare()
   {}
 
-  void LofarStMan::resync (uInt)
-  {
-    throw DataManError ("LofarStMan::resync should never be called");
-  }
-  uInt LofarStMan::resync1 (uInt)
+  rownr_t LofarStMan::resync64 (rownr_t)
   {
     return getNRow();
   }
@@ -779,7 +778,7 @@ void readTable()
 {
   // Open the table and check if #rows is as expected.
   Table tab("tLofarStMan_tmp.data");
-  uInt nrow = tab.nrow();
+  rownr_t nrow = tab.nrow();
   uInt nbasel = nant*nant;
   AlwaysAssertExit (nrow = ntime*nbasel);
   AlwaysAssertExit (!tab.canAddRow());
@@ -814,7 +813,7 @@ void readTable()
   indgen (dataExp, Complex(0, 0.5));
   Array<Float> weightExp(IPosition(2,1,nchan), 0.);
   // Loop through all rows in the table and check the data.
-  uInt row=0;
+  rownr_t row=0;
   for (uInt i=0; i<ntime; ++i) {
     for (uInt j=0; j<nant; ++j) {
       for (uInt k=0; k<nant; ++k) {
@@ -875,7 +874,7 @@ void readTable()
   // Check the UVW coordinates.
   Array<double> uvwExp(IPosition(1,3));
   indgen (uvwExp, 0., 0.03);
-  for (uInt i=0; i<nrow; ++i) {
+  for (rownr_t i=0; i<nrow; ++i) {
     AlwaysAssertExit (allNear(uvwCol(i), uvwExp, 1e-13));
     uvwExp += 0.1;
   }

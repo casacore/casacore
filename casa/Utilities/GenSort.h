@@ -203,7 +203,7 @@ private:
 // Another advantage is that this sort is always stable (i.e. equal
 // values are kept in their original order).
 
-template<class T, class INX> class GenSortIndirect
+template<class T, class INX=uInt> class GenSortIndirect
 {
 public:
 
@@ -353,26 +353,26 @@ uInt genSort (Block<T>& data, uInt nr,
 
 // <group name=genSortIndirect>
 
-template<class T, class INX>
+template<class T, class INX=uInt>
 inline
 uInt genSort (Vector<INX>& indexVector, const T* data, INX nr,
               Sort::Order order = Sort::Ascending, int options=0)
   { return GenSortIndirect<T,INX>::sort (indexVector, data, nr, order, options); }
 
-template<class T, class INX>
+template<class T, class INX=uInt>
 inline
 uInt genSort (Vector<INX>& indexVector, const Array<T>& data,
               Sort::Order order = Sort::Ascending, int options=0)
   { return GenSortIndirect<T,INX>::sort (indexVector, data, order, options); }
 
-template<class T, class INX>
+template<class T, class INX=uInt>
 inline
 uInt genSort (Vector<INX>& indexVector, const Block<T>& data,
               Sort::Order order = Sort::Ascending, int options=0)
   { return GenSortIndirect<T,INX>::sort (indexVector, data, data.nelements(),
                                          order, options); }
 
-template<class T, class INX>
+template<class T, class INX=uInt>
 inline
 uInt genSort (Vector<INX>& indexVector, const Block<T>& data, INX nr,
               Sort::Order order = Sort::Ascending, int options=0)

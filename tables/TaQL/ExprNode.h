@@ -223,6 +223,11 @@ public:
     TableExprNode (const Array<Int>& value);
     TableExprNode (const Array<uInt>& value);
     TableExprNode (const Array<Int64>& value);
+    //# The following constructor has to be explicit, othwerwise
+    //#    Table(Vector<rownr_t>)
+    //# gives an ambiguous error as the preferred class RowNumbers
+    //# has a similar constructor.
+    explicit TableExprNode (const Array<uInt64>& value);
     TableExprNode (const Array<Float>& value);
     TableExprNode (const Array<Double>& value);
     TableExprNode (const Array<Complex>& value);
@@ -236,6 +241,7 @@ public:
     TableExprNode (const MArray<Int>& value);
     TableExprNode (const MArray<uInt>& value);
     TableExprNode (const MArray<Int64>& value);
+    TableExprNode (const MArray<uInt64>& value);
     TableExprNode (const MArray<Float>& value);
     TableExprNode (const MArray<Double>& value);
     TableExprNode (const MArray<Complex>& value);

@@ -7,6 +7,7 @@ tBitFlagsEngine
 tCompressComplex
 tCompressFloat
 tExternalStMan
+tExternalStManNew
 tForwardCol
 tForwardColRow
 tIncrementalStMan

@@ -93,12 +93,14 @@ private:
 class TableExprNodeArrayConstInt : public TableExprNodeArray
 {
 public:
+    TableExprNodeArrayConstInt (const Array<uInt64>& value);
     TableExprNodeArrayConstInt (const Array<Int64>& value);
     TableExprNodeArrayConstInt (const Array<uInt>& value);
     TableExprNodeArrayConstInt (const Array<Int>& value);
     TableExprNodeArrayConstInt (const Array<uShort>& value);
     TableExprNodeArrayConstInt (const Array<Short>& value);
     TableExprNodeArrayConstInt (const Array<uChar>& value);
+    TableExprNodeArrayConstInt (const MArray<uInt64>& value);
     TableExprNodeArrayConstInt (const MArray<Int64>& value);
     TableExprNodeArrayConstInt (const MArray<uInt>& value);
     TableExprNodeArrayConstInt (const MArray<Int>& value);

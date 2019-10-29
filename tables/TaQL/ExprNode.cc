@@ -148,6 +148,14 @@ TableExprNode::TableExprNode (const Array<uInt>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
 }
+TableExprNode::TableExprNode (const Array<Int64>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+}
+TableExprNode::TableExprNode (const Array<uInt64>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+}
 TableExprNode::TableExprNode (const Array<Float>& val)
 {
     node_p = new TableExprNodeArrayConstDouble (val);
@@ -198,6 +206,10 @@ TableExprNode::TableExprNode (const MArray<uInt>& val)
     node_p = new TableExprNodeArrayConstInt (val);
 }
 TableExprNode::TableExprNode (const MArray<Int64>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+}
+TableExprNode::TableExprNode (const MArray<uInt64>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
 }
