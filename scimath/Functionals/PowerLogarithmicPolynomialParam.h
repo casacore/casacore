@@ -127,14 +127,14 @@ public:
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
   T coefficient(uInt which) const {
-    DebugAssert(which<=nparameters, AipsError); return param_p[which]; }
+    DebugAssert(which<=nparameters(), AipsError); return param_p[which]; }
   
   // Return all the coefficients as a vector.
   const Vector<T> &coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>. 
   void setCoefficient(uInt which, const T value) {
-    DebugAssert(which<=nparameters, AipsError); param_p[which] = value; }
+    DebugAssert(which<=nparameters(), AipsError); param_p[which] = value; }
   
   // Set all the coefficients at once, throw away all existing coefficients.
   void setCoefficients(const Vector<T> &coefficients);
