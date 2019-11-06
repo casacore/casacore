@@ -425,7 +425,7 @@ const tableProperties allProperties[] = {
     "TAI_UTC difference obtained from USNO",		"leapSecond",
     False,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "maia.usno.navy.mil", "ser7", "tai-utc.dat" } },
+    { "ftp.astron.nl", "outgoing/Measures", "tai-utc.dat" } },
 
   //**********************************************************************//
 
@@ -461,7 +461,7 @@ const tableProperties allProperties[] = {
     "IERS Earth Orientation Data predicted from NEOS",	"predict",
     False,			"",			vector<String>(),
     &IERSpredictFormat,		vector<formatDescr>(),
-    { "maia.usno.navy.mil", "ser7", "finals.daily" } },
+    { "ftp.iers.org", "products/eop/rapid/daily", "finals.daily" } },
 
   //**********************************************************************//
 
@@ -473,7 +473,7 @@ const tableProperties allProperties[] = {
     "IERS EOP2000C04_05 Earth Orientation Data IAU2000","predict2000",
     False,			"",			vector<String>(),
     &IERSpredict2000Format,	vector<formatDescr>(),
-    { "maia.usno.navy.mil", "ser7", "finals2000A.daily" } },
+    { "ftp.iers.org", "products/eop/rapid/daily", "finals2000A.daily" } },
 
   //**********************************************************************//
 
@@ -485,7 +485,7 @@ const tableProperties allProperties[] = {
     "IGRF12 reference magnetic field",			"earthField",
     False,			"",			vector<String>(),
     &IGRFFormat,		vector<formatDescr>(),
-    { "www.ngdc.noaa.gov", "IAGA/vmod", "igrf12coeffs.txt" } },
+    { "www.ngdc.noaa.gov", "IAGA/vmod/coeffs", "igrf12coeffs.txt" } },
 
   //**********************************************************************//
 
