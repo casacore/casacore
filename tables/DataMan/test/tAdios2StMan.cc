@@ -69,9 +69,9 @@ void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition ar
         AlwaysAssertExit (arr_read.nelements() == arr_gen.nelements());
         for(size_t j=0; j<arr_read.nelements(); ++j)
         {
-            std::cout << "Column : " << column << ", Row : " << i << std::endl;
-            std::cout << "Read : " << arr_read.data()[j] << std::endl;
-            std::cout << "Generated : " << arr_gen.data()[j] << std::endl;
+            std::cout << "Column : " << column << ", Row : " << i;
+            std::cout << ", Read : " << arr_read.data()[j];
+            std::cout << ", Generated : " << arr_gen.data()[j] << std::endl;
             AlwaysAssertExit (arr_read.data()[j] == arr_gen.data()[j]);
         }
     }
@@ -86,6 +86,9 @@ void VerifyScalarColumn(Table &table, std::string column, uInt rows)
         T scalar_read = scalar_column.get(i);
         T scalar_gen;
         GenData(scalar_gen, i);
+        std::cout << "Column : " << column << ", Row : " << i;
+        std::cout << ", Read : " << scalar_read;
+        std::cout << ", Generated : " << scalar_gen << std::endl;
         AlwaysAssertExit (scalar_gen == scalar_read);
     }
 }

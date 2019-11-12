@@ -8,7 +8,6 @@ addons:
     - fftw
     - hdf5
     - ccache
-    - boost-python
     - boost-python3
     - cfitsio
     - wcslib

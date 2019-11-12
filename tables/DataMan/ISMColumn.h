@@ -241,7 +241,7 @@ public:
 
 protected:
     // Test if the last value is invalid for this row.
-    int isLastValueInvalid (Int64 rownr) const;
+    Bool isLastValueInvalid (rownr_t rownr);
 
     // Get the value for this row.
     // Set the cache if the flag is set.
@@ -268,8 +268,8 @@ protected:
     uInt              nrcopy_p;
     // Cache for interval for which last value read is valid.
     // The last value is valid for startRow_p till endRow_p (inclusive).
-    Int64             startRow_p;
-    Int64             endRow_p;
+    rownr_t           startRow_p;
+    rownr_t           endRow_p;
     void*             lastValue_p;
     // The last row for which a value has been put.
     rownr_t           lastRowPut_p;
@@ -380,7 +380,7 @@ private:
 };
 
 
-  inline int ISMColumn::isLastValueInvalid (Int64 rownr) const
+inline Bool ISMColumn::isLastValueInvalid (rownr_t rownr)
 {
     return rownr < startRow_p  ||  rownr > endRow_p;
 }

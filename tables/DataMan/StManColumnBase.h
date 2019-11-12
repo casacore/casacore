@@ -1,5 +1,5 @@
 //# StManColumnBase.h: Base storage manager column class
-//# Copyright (C) 1994,1995,1996,1998,2002
+//# Copyright (C) 2019
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,45 +55,15 @@ template<class T> class Vector;
 // </prerequisite>
 
 // <etymology>
-// StManColumn handles a column for a storage manager.
+// StManColumnBase is the base class for a storage manager.
 // </etymology>
 
 // <synopsis> 
-// StManColumn is the abstract base class to handle a column in all
+// StManColumnBase is the abstract base class to handle a column in all
 // kind of storage managers. It is derived from DataManagerColumn
-// and implements several virtual functions for derived storage
-// manager column classes (like StManColumnAipsIO).
-//
-// All get and put functions (except for single scalars) in the abstract
-// base class DataManagerColumn have a generic ArrayBase& data argument.
-// This is done to allow arbitrary typed arguments. This can be done
-// because the data type of the derived class always matches the
-// type of the data argument.
-// However, at one time the ArrayBase& has to be casted to the exact type.
-// Storage managers only support the standard data types; therefore
-// it is possible to do the cast in a base class. This concentrates
-// the burden in one class and allows the derived classes to work
-// with correctly typed arguments.
-// The price is an extra virtual function call, but that is not a
-// problem for (expensive) operations on arrays.
-// It is not done for single scalars, because that price may be too high.
-// 
-// See StManColumnAipsIO for the get/put functions required in a storage
-// manager column class handling scalars.
-// See StManColumnArrayAipsIO for the get/put functions required in a
-// storage manager column class handling arrays. This class also
-// contains the shape functions for direct arrays, while
-// StManColumnIndArrayAipsIO contains the shape functions for indirec
-// arrays.
-//
-// StManColumn also contains the data type of the column (which it
-// gets from the derived classes at construction time) and implements
-// the function dataType on behalf of its derived classes.
+// and implements a few (virtual) functions handling the column's
+// data type for derived storage manager column classes.
 // </synopsis> 
-
-// <motivation>
-// Making life easier for the derived classes.
-// </motivation>
 
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.

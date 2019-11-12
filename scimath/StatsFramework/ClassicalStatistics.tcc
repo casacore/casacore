@@ -476,10 +476,10 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -861,10 +861,10 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
         const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -1003,10 +1003,10 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(
         const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -1135,10 +1135,10 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doNpts() {
         const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
-        PtrHolder<DataIterator> dataIter;
-        PtrHolder<MaskIterator> maskIter;
-        PtrHolder<WeightsIterator> weightsIter;
-        PtrHolder<uInt64> offset;
+        std::unique_ptr<DataIterator[]> dataIter;
+        std::unique_ptr<MaskIterator[]> maskIter;
+        std::unique_ptr<WeightsIterator[]> weightsIter;
+        std::unique_ptr<uInt64[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax

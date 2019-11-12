@@ -36,6 +36,7 @@
 
 //# Includes
 #include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -189,12 +190,12 @@ namespace casacore {
   };
 
 
-  class LofarColumn : public DataManagerColumn
+  class LofarColumn : public StManColumnBase
   {
   public:
     explicit LofarColumn (LofarStMan* parent, int dtype)
-      : itsDataType (dtype),
-        itsParent   (parent)
+      : StManColumnBase (dtype),
+        itsParent       (parent)
     {}
     virtual ~LofarColumn();
     // Most columns are not writable (only DATA is writable).
@@ -203,11 +204,7 @@ namespace casacore {
     virtual void setShapeColumn (const IPosition& shape);
     // Prepare the column. By default it does nothing.
     virtual void prepareCol();
-    // Get the data type.
-    int dataType() const
-      { return itsDataType; }
   protected:
-    int         itsDataType;
     LofarStMan* itsParent;
   };
 
@@ -441,7 +438,7 @@ namespace casacore {
   }
   void UvwColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpDouble, AipsError);
+    DebugAssert (dtype() == TpDouble, AipsError);
     Bool deleteIt;
     void* ptr = dataPtr.getVStorage (deleteIt);
     double* p = static_cast<double*>(ptr);
@@ -463,13 +460,13 @@ namespace casacore {
   }
   void DataColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpComplex, AipsError);
+    DebugAssert (dyype() == TpComplex, AipsError);
     Array<Complex>& arr = static_cast<Array<Complex>&>(dataPtr);
     indgen (arr, Complex(rownr, rownr+0.5));
   }
   void DataColumn::putArrayV (rownr_t rownr, const ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpComplex, AipsError);
+    DebugAssert (dtype() == TpComplex, AipsError);
     cout << "Ignored DataColumn::putArrayComplexV " << dataPtr.shape()
          << " for row " << rownr << endl;
   }
@@ -482,7 +479,7 @@ namespace casacore {
   }
   void FlagColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpBool, AipsError);
+    DebugAssert (dtype() == TpBool, AipsError);
     Array<Bool>& arr = static_cast<Array<Bool>&>(dataPtr);
     arr = False;
     arr(IPosition(2,rownr%npol, rownr%nchan)) = True;
@@ -497,7 +494,7 @@ namespace casacore {
   }
   void WeightColumn::getArrayV (rownr_t, ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpFloat, AipsError);
+    DebugAssert (dtype() == TpFloat, AipsError);
     Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
     arr = float(1);
   }
@@ -510,7 +507,7 @@ namespace casacore {
   }
   void SigmaColumn::getArrayV (rownr_t, ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpFloat, AipsError);
+    DebugAssert (dtype() == TpFloat, AipsError);
     Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
     arr = float(1);
   }
@@ -523,7 +520,7 @@ namespace casacore {
   }
   void WSpectrumColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    DebugAssert (dataType() == TpFloat, AipsError);
+    DebugAssert (dtype() == TpFloat, AipsError);
     Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
     arr = float(rownr);
   }

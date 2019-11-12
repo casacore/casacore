@@ -62,6 +62,7 @@ void c();
 void d();
 void e (uInt nrrow);
 void f();
+void testWithLocking();
 
 int main (int argc, const char* argv[])
 {
@@ -82,6 +83,7 @@ int main (int argc, const char* argv[])
 	e (20);
 	a (nr, 0);
 	f();
+        testWithLocking();
     } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -517,4 +519,51 @@ void f()
     arr2.put (0, arrrow0);
     arr2.put (12, arrrow12);
     b (removedRows);
+}
+
+
+// This function tests issue 970.
+void testWithLocking()
+{
+  // Create a table of 10**6 rows where each 10000-th row is written.
+  {
+    uInt nrow = 1000000;
+    uInt time_rows = 10000;
+    TableDesc td;
+    td.addColumn(ScalarColumnDesc<Int>("TIME"));
+    SetupNewTable newtab("tIn.tab", td, Table::New);
+    IncrementalStMan ism;
+    newtab.bindAll (ism);
+    Table tab(newtab, nrow);
+    ScalarColumn<Int> col(tab, "TIME");
+    uInt row=0;
+    while (row < nrow) {
+      uInt n = min(time_rows, nrow-row);
+      Vector<Int> vec(n);
+      indgen (vec, Int(row));
+      col.put (row, Int(row));
+      row += n;
+    }
+  }
+  // Read back the table and use UserLocking to make a lock
+  // which invalidates the cache.
+  // Do it twice with a size less and greater than 10000.
+  for (uInt time_rows=3333; time_rows<=33333; time_rows+=30000) {
+    Table tab("tIn.tab", TableLock::UserLocking);
+    uInt nrow = tab.nrow();
+    uInt row = 0;
+    while (row < nrow) {
+      uInt n = min(time_rows, nrow-row);
+      tab.lock();
+      ScalarColumn<Int> col(tab, "TIME");
+      Vector<Int> vec = col.getColumnRange (Slicer(IPosition(1,row),
+                                                   IPosition(1,n)));
+      // Check the contents.
+      for (uInt i=0; i<n; ++i) {
+        AlwaysAssertExit (vec[i] == row/10000*10000);
+        row++;
+      }
+      tab.unlock();
+    }
+  }
 }

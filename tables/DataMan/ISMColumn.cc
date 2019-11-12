@@ -47,8 +47,8 @@ ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
   fixedLength_p  (0),
   colnr_p        (colnr),
   nrelem_p       (1),
-  startRow_p     (-1),
-  endRow_p       (-1),
+  startRow_p     (1),
+  endRow_p       (0),
   lastValue_p    (0),
   lastRowPut_p   (0)
 {
@@ -149,8 +149,8 @@ void ISMColumn::remove (rownr_t bucketRownr, ISMBucket* bucket, rownr_t bucketNr
     uInt& nused = bucket->indexUsed (colnr_p);
     // Invalidate the last value read.
     columnCache().invalidate();
-    startRow_p = -1;
-    endRow_p   = -1;
+    startRow_p = 1;
+    endRow_p   = 0;
     // We have to change the bucket, so let the cache set the dirty flag
     // for this bucket.
     stmanPtr_p->setBucketDirty();
@@ -180,86 +180,62 @@ void ISMColumn::remove (rownr_t bucketRownr, ISMBucket* bucket, rownr_t bucketNr
 
 void ISMColumn::getBool (rownr_t rownr, Bool* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(Bool*)lastValue_p;
 }
 void ISMColumn::getuChar (rownr_t rownr, uChar* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(uChar*)lastValue_p;
 }
 void ISMColumn::getShort (rownr_t rownr, Short* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(Short*)lastValue_p;
 }
 void ISMColumn::getuShort (rownr_t rownr, uShort* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(uShort*)lastValue_p;
 }
 void ISMColumn::getInt (rownr_t rownr, Int* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(Int*)lastValue_p;
 }
 void ISMColumn::getuInt (rownr_t rownr, uInt* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(uInt*)lastValue_p;
 }
 void ISMColumn::getInt64 (rownr_t rownr, Int64* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(Int64*)lastValue_p;
 }
 void ISMColumn::getfloat (rownr_t rownr, float* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(float*)lastValue_p;
 }
 void ISMColumn::getdouble (rownr_t rownr, double* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(double*)lastValue_p;
 }
 void ISMColumn::getComplex (rownr_t rownr, Complex* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(Complex*)lastValue_p;
 }
 void ISMColumn::getDComplex (rownr_t rownr, DComplex* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(DComplex*)lastValue_p;
 }
 void ISMColumn::getString (rownr_t rownr, String* value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, True);
-    }
+    getValue (rownr, lastValue_p, True);
     *value = *(String*)lastValue_p;
 }
 
@@ -358,7 +334,7 @@ void ISMColumn::getScaCol (Vector<T>& dataPtr) \
     rownr_t rownr = 0; \
     while (rownr < nrrow) { \
         aips_name2(get,T) (rownr, &(dataPtr(rownr))); \
-	for (rownr++; Int64(rownr)<=endRow_p; rownr++) { \
+	for (rownr++; rownr<=endRow_p; ++rownr) { \
 	    dataPtr(rownr) = *(T*)lastValue_p; \
 	} \
     } \
@@ -369,7 +345,6 @@ void ISMColumn::getScaColCells (const RefRows& rownrs, \
     Bool delV; \
     T* value = values.getStorage (delV); \
     T* valptr = value; \
-    const ColumnCache& cache = columnCache(); \
     if (rownrs.isSliced()) { \
         RefRowsSliceIter iter(rownrs); \
         while (! iter.pastEnd()) { \
@@ -377,12 +352,13 @@ void ISMColumn::getScaColCells (const RefRows& rownrs, \
             rownr_t end = iter.sliceEnd(); \
             rownr_t incr = iter.sliceIncr(); \
             while (rownr <= end) { \
-                if (rownr < cache.start()  ||  rownr > cache.end()) { \
+                if (isLastValueInvalid (rownr)) { \
                     aips_name2(get,T) (rownr, valptr); \
-                    DebugAssert (cache.incr() == 0, AipsError); \
+                    valptr++; \
+                    rownr += incr; \
                 } \
-                const T* cacheValue = (const T*)(cache.dataPtr()); \
-                rownr_t endrow = min (end, cache.end()); \
+                const T* cacheValue = (const T*)(lastValue_p); \
+                rownr_t endrow = min (end, endRow_p); \
                 while (rownr <= endrow) { \
 	            *valptr++ = *cacheValue; \
                     rownr += incr; \
@@ -396,22 +372,21 @@ void ISMColumn::getScaColCells (const RefRows& rownrs, \
         if (nr > 0) { \
             Bool delR; \
             const rownr_t* rows = rowvec.getStorage (delR); \
-            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+            if (isLastValueInvalid (rows[0])) { \
                 aips_name2(get,T) (0, &(value[0])); \
             } \
-            const T* cacheValue = (const T*)(cache.dataPtr()); \
-            rownr_t strow = cache.start(); \
-            rownr_t endrow = cache.end(); \
-            AlwaysAssert (cache.incr() == 0, AipsError); \
+            const T* cacheValue = (const T*)(lastValue_p); \
+            rownr_t strow = startRow_p; \
+            rownr_t endrow = endRow_p; \
             for (rownr_t i=0; i<nr; i++) { \
 	        rownr_t rownr = rows[i]; \
                 if (rownr >= strow  &&  rownr <= endrow) { \
 	            value[i] = *cacheValue; \
 	        } else { \
 	            aips_name2(get,T) (rownr, &(value[i])); \
-                    cacheValue = (const T*)(cache.dataPtr()); \
-                    strow = cache.start(); \
-                    endrow = cache.end(); \
+                    cacheValue = (const T*)(lastValue_p); \
+                    strow = startRow_p; \
+                    endrow = endRow_p; \
 	        } \
 	    } \
             rowvec.freeStorage (rows, delR); \
@@ -434,6 +409,7 @@ ISMCOLUMN_GET(String)
 
 void ISMColumn::getValue (rownr_t rownr, void* value, Bool setCache)
 {
+  if (rownr < startRow_p  ||  rownr > endRow_p) {
     // Get the bucket with its row number boundaries.
     rownr_t bucketStartRow;
     rownr_t bucketNrrow;
@@ -449,9 +425,10 @@ void ISMColumn::getValue (rownr_t rownr, void* value, Bool setCache)
     readFunc_p (value, bucket->get (offset), nrcopy_p);
     startRow_p = bucketStartRow + stint;
     endRow_p   = bucketStartRow + endint;
-    if (setCache) {
-	columnCache().set (startRow_p, endRow_p, lastValue_p);
-    }
+  }
+  if (setCache) {
+    columnCache().set (startRow_p, endRow_p, lastValue_p);
+  }
 }
 
 void ISMColumn::putBool (rownr_t rownr, const Bool* value)
@@ -635,9 +612,7 @@ void ISMColumn::putScaCol (const Vector<String>& dataPtr)
 
 void ISMColumn::getArrayV (rownr_t rownr, ArrayBase& value)
 {
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
+    getValue (rownr, lastValue_p, False);
     if (dtype() == TpString) {
       value.assignBase (Array<String> (shape_p, (String*)lastValue_p, SHARE));
     } else {
@@ -696,8 +671,8 @@ void ISMColumn::putValue (rownr_t rownr, const void* value)
     }
     // Invalidate the last value read.
     columnCache().invalidate();
-    startRow_p = -1;
-    endRow_p   = -1;
+    startRow_p = 1;
+    endRow_p   = 0;
     // Exit if new value equals current value.
     readFunc_p (lastValue_p, bucket->get (offset), nrcopy_p);
     if (compareValue (value, lastValue_p)) {
@@ -1214,8 +1189,8 @@ void ISMColumn::resync (rownr_t nrrow)
 {
     // Invalidate the last value read.
     columnCache().invalidate();
-    startRow_p   = -1;
-    endRow_p     = -1;
+    startRow_p   = 1;
+    endRow_p     = 0;
     lastRowPut_p = nrrow;
 }
 void ISMColumn::reopenRW()
