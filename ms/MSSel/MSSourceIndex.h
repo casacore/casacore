@@ -104,7 +104,7 @@ public:
   Vector<Int> matchSourceCode(const String& code);
 
   //Return rows matching a SourceID
-  Vector<rownr_t> getRowNumbersOfSourceID(const Int sid);
+  RowNumbers getRowNumbersOfSourceID(const Int sid);
 
 
 protected:

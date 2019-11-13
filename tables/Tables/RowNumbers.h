@@ -42,7 +42,7 @@ namespace casacore { //#Begin namespace casacore
     {}
 
     // Construct with the given length.
-    RowNumbers (size_t n)
+    explicit RowNumbers (size_t n)
       : Vector<rownr_t> (n)
     {}
     
@@ -51,15 +51,20 @@ namespace casacore { //#Begin namespace casacore
       : Vector<rownr_t> (rows)
     {}
 
+    // Construct from a std::vector of row numbers.
+    RowNumbers (const std::vector<rownr_t>& rows);
+
     // Array<T> has this virtual function, so also define in this
     // class to avoid 'virtual function override' warning.
     virtual Array<rownr_t>& operator= (const Array<rownr_t>& other);
 
-    // Construct from a Vector of old style row numbers.
+    // Construct from a Vector or std::vector of old style row numbers.
 #ifdef IMPLICIT_CTDS_32BIT
     RowNumbers (const Vector<uInt>& rows);
+    RowNumbers (const std::vector<uInt>& rows);
 #else
     explicit RowNumbers (const Vector<uInt>& rows);
+    explicit RowNumbers (const std::vector<uInt>& rows);
 #endif
     
     // Conversion operator to convert Vector<rownr_t> to Vector<uInt>.

@@ -32,11 +32,25 @@
 
 namespace casacore { //#Begin namespace casacore
 
+  RowNumbers::RowNumbers (const std::vector<rownr_t>& rows)
+  {
+    // Resize the Vector in the parent class and convert to it.
+    resize (rows.size());
+    std::copy (rows.begin(), rows.end(), this->cbegin());
+  }
+
   RowNumbers::RowNumbers (const Vector<uInt>& rows)
   {
-    // Resize the vector in the parent class and convert to it.
+    // Resize the Vector in the parent class and convert to it.
     resize (rows.size());
     convertArray (*this, rows);
+  }
+
+  RowNumbers::RowNumbers (const std::vector<uInt>& rows)
+  {
+    // Resize the Vector in the parent class and convert to it.
+    resize (rows.size());
+    std::copy (rows.begin(), rows.end(), this->cbegin());
   }
 
   Array<rownr_t>& RowNumbers::operator= (const Array<rownr_t>& other)

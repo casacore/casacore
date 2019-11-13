@@ -113,7 +113,7 @@ Vector<Int> MSSourceIndex::matchSourceCode(const String& code)
   }
   return retval;
 } 
-Vector<rownr_t> MSSourceIndex::getRowNumbersOfSourceID(const Int sid){
+RowNumbers MSSourceIndex::getRowNumbersOfSourceID(const Int sid){
 
   ColumnsIndex sidIndx(table(), MSSource::columnName(MSSource::SOURCE_ID));
   RecordFieldPtr<Int> sourceId (sidIndx.accessKey(), MSSource::columnName(MSSource::SOURCE_ID));
