@@ -777,6 +777,48 @@ int main() {
             AlwaysAssert(near(sd.variance, variance), AipsError);
         }
         {
+            // weights, masks, no max/min (CAS-11859 fix)
+            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+            vector<Double> w0(v0.size());
+            w0[0] = 0;
+            w0[1] = 2;
+            w0[2] = 3;
+            w0[3] = 4;
+            w0[4] = 5;
+            vector<Double> w1(v1.size());
+            w1[0] = 1;
+            w1[1] = 2;
+            w1[2] = 3;
+            vector<Bool> m0(v0.size());
+            m0[0] = True;
+            m0[1] = False;
+            m0[2] = False;
+            m0[3] = True;
+            m0[4] = True;
+            vector<Bool> m1(v1.size());
+            m1[0] = False;
+            m1[1] = True;
+            m1[2] = False;
+            std::set<StatisticsData::STATS> targets;
+            // excludes max/min, so exercises another code branch
+            targets.insert(StatisticsData::VARIANCE);
+            cs.setStatsToCalculate(targets);
+            cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
+            cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
+            StatsData<Double> sd = cs.getStatistics();
+            Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+            AlwaysAssert(sd.masked, AipsError);
+            AlwaysAssert(sd.weighted, AipsError);
+            AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+            AlwaysAssert(sd.npts == 3, AipsError);
+            AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+            AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+            AlwaysAssert(sd.sum == 40.5, AipsError);
+            AlwaysAssert(sd.sumweights == 11.0, AipsError);
+            AlwaysAssert(sd.sumsq == 195.25, AipsError);
+            AlwaysAssert(near(sd.variance, variance), AipsError);
+        }
+        {
             // integer weights; masks
             ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
             vector<Int> w0(v0.size());
@@ -1898,6 +1940,20 @@ int main() {
                 }
             }
             AlwaysAssert(cs.getNPts() == expec, AipsError);
+        }
+        {
+            ClassicalStatistics<
+                Double, vector<Double>::const_iterator, vector<Bool>::const_iterator
+            > cs;
+            vector<Double> v {4, 7, 12, 18};
+            vector<Double> w {0.5, 02, 1, 0.9};
+            cs.setData(v.cbegin(), w.cbegin(), v.size());
+            auto stats = cs.getStatistics();
+            cout << "mean " << stats.mean  << endl;
+            cout << "variance " << stats.variance << endl;
+            cout << "nvariance " << stats.nvariance << endl;
+            cout << "nvar/n " << stats.nvariance/stats.npts << endl;
+
         }
     }
     catch (const AipsError& x) {
