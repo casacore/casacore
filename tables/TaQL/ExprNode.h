@@ -379,6 +379,41 @@ public:
     Array<String>   getColumnString (const RowNumbers& rownrs) const;
     // </group>
 
+    // The same functions as above for the old Vector<uInt>.
+    // They are primarily meant for CASA's SplatalogueTable class.
+    // Normally they should not be used, hence declared private
+    // unless told otherwise.
+#ifndef IMPLICIT_CTDS_32BIT
+private:
+#endif
+    // <group>
+    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs) const
+      { return getColumnBool (RowNumbers(rownrs)); }
+    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs) const
+      { return getColumnuChar (RowNumbers(rownrs)); }
+    Array<Short>    getColumnShort (const Vector<uInt>& rownrs) const
+      { return getColumnShort (RowNumbers(rownrs)); }
+    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs) const
+      { return getColumnuShort (RowNumbers(rownrs)); }
+    Array<Int>      getColumnInt (const Vector<uInt>& rownrs) const
+      { return getColumnInt (RowNumbers(rownrs)); }
+    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const
+      { return getColumnuInt (RowNumbers(rownrs)); }
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const 
+      { return getColumnInt64 (RowNumbers(rownrs)); }
+    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const
+      { return getColumnFloat (RowNumbers(rownrs)); }
+    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs) const
+      { return getColumnDouble (RowNumbers(rownrs)); }
+    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs) const
+      { return getColumnComplex (RowNumbers(rownrs)); }
+    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs) const
+      { return getColumnDComplex (RowNumbers(rownrs)); }
+    Array<String>   getColumnString (const Vector<uInt>& rownrs) const
+      { return getColumnString (RowNumbers(rownrs)); }
+    // </group>
+public:
+
     // Show the tree.
     void show (ostream&) const;
 
