@@ -29,7 +29,6 @@
 #define ADIOS2STMANCOLUMN_H
 
 #include <unordered_map>
-#include <numeric>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/tables/DataMan/StManColumn.h>
 #include <casacore/tables/Tables/RefRows.h>
@@ -43,16 +42,13 @@ namespace casacore
 class Adios2StManColumn : public StManColumn
 {
 public:
-    Adios2StManColumn(Adios2StMan::impl *aParent,
-            int aDataType,
-            String aColName,
-            std::shared_ptr<adios2::IO> aAdiosIO);
+    Adios2StManColumn(Adios2StMan::impl *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
 
     virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
     virtual Bool canAccessColumnSlice (Bool& reask) const { reask = false; return true; };
 
     virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
-                        char aOpenMode, size_t aReaderCacheRows) = 0;
+                        char aOpenMode) = 0;
     virtual void setShapeColumn(const IPosition &aShape);
     virtual IPosition shape(uInt aRowNr);
     Bool canChangeShape() const;
@@ -155,26 +151,19 @@ public:
     {
     }
 
-    void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode, size_t aReaderCacheRows)
+    void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
     {
         itsAdiosEngine = aAdiosEngine;
         itsAdiosOpenMode = aOpenMode;
-        itsReadCacheMaxRows = aReaderCacheRows;
         itsAdiosVariable = itsAdiosIO->InquireVariable<T>(itsColumnName);
-        if(aOpenMode == 'r')
+        if (!itsAdiosVariable && aOpenMode == 'w')
         {
-            size_t cacheSize = std::accumulate(
-                    itsAdiosShape.begin() + 1,
-                    itsAdiosShape.end(),
-                    itsReadCacheMaxRows,
-                    std::multiplies<size_t>());
-            itsReadCache.resize(cacheSize);
+            itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
+                itsColumnName,
+                itsAdiosShape,
+                itsAdiosStart,
+                itsAdiosCount);
         }
-        itsArraySize = std::accumulate(
-                itsAdiosShape.begin() + 1,
-                itsAdiosShape.end(),
-                1,
-                std::multiplies<size_t>());
     }
 
     virtual void putArrayV(uInt rownr, const void *dataPtr)
@@ -186,26 +175,7 @@ public:
     virtual void getArrayV(uInt rownr, void *dataPtr)
     {
         arrayVToSelection(rownr);
-        if(itsReadCacheMaxRows > 0)
-        {
-            if(itsAdiosStart[0] < itsReadCacheStartRow or itsAdiosStart[0] >= itsReadCacheStartRow + itsReadCacheRows)
-            {
-                itsAdiosCount[0] = itsReadCacheMaxRows;
-                itsReadCacheRows = itsReadCacheMaxRows;
-                fromAdios(itsReadCache.data());
-            }
-            Bool deleteIt;
-            auto *arrayPtr = asArrayPtr(dataPtr);
-            T *data = arrayPtr->getStorage(deleteIt);
-            size_t index = itsArraySize * (itsAdiosStart[0] - itsReadCacheStartRow);
-            size_t length = sizeof(T) * itsArraySize;
-            std::memcpy(data, itsReadCache.data() + index, length);
-            arrayPtr->putStorage(data, deleteIt);
-        }
-        else
-        {
-            fromAdios(dataPtr);
-        }
+        fromAdios(dataPtr);
     }
 
     virtual void putScalarV(uInt rownr, const void *dataPtr)
@@ -313,13 +283,8 @@ public:
     }
 
 private:
-    const String itsStringArrayBarrier = "ADIOS2BARRIER";
     adios2::Variable<T> itsAdiosVariable;
-    size_t itsReadCacheStartRow = 0;
-    size_t itsReadCacheRows = 0;
-    size_t itsReadCacheMaxRows;
-    size_t itsArraySize;
-    std::vector<T> itsReadCache;
+    const String itsStringArrayBarrier = "ADIOS2BARRIER";
 
     Array<T> *asArrayPtr(void *dataPtr) const
     {
@@ -333,18 +298,7 @@ private:
 
     void toAdios(const T *data)
     {
-        if (!itsAdiosVariable)
-        {
-            itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
-                    itsColumnName,
-                    itsAdiosShape,
-                    itsAdiosStart,
-                    itsAdiosCount);
-        }
-        else
-        {
-            itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        }
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
         itsAdiosEngine->Put<T>(itsAdiosVariable, data, adios2::Mode::Sync);
     }
 

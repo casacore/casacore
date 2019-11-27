@@ -77,6 +77,11 @@ IPosition Adios2StManColumn::shape(uInt aRowNr)
         }
         else
         {
+            /*
+            throw(std::runtime_error("Shape not defined for Column "
+                        + static_cast<std::string>(itsColumnName)
+                        + " Row " + std::to_string(aRowNr)));
+                        */
             return IPosition();
         }
     }
@@ -258,13 +263,20 @@ void Adios2StManColumn::getDComplexV(uInt rownr, DComplex *dataPtr)
 
 // string
 
+template<>
+void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
+{
+    itsAdiosEngine = aAdiosEngine;
+    itsAdiosOpenMode = aOpenMode;
+}
+
 void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
 {
     std::string variableName = static_cast<std::string>(itsColumnName) + std::to_string(rownr);
     adios2::Variable<std::string> v = itsAdiosIO->InquireVariable<std::string>(variableName);
     if (!v)
     {
-        v = itsAdiosIO->DefineVariable<std::string>(variableName, {adios2::LocalValueDim});
+        v = itsAdiosIO->DefineVariable<std::string>(variableName);
     }
     itsAdiosEngine->Put(v, reinterpret_cast<const std::string *>(dataPtr), adios2::Mode::Sync);
 }
