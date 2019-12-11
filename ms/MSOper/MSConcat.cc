@@ -678,18 +678,23 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   vector<Int> polSwap;
 
   for (uInt r = 0; r < otherRows; r++) {
+    // Determine whether we need to swap rows in the visibility matrix
+    // if we change the order of the antennas.  This is done by
+    // creating a mapping that makes sure the receptor numbers remain
+    // correct when the antennas are swapped.
     uInt d = otherDDId(r);
     uInt p = otherDDCols.polarizationId()(otherDDId(r));
     if (p != polId) {
       const Matrix<Int> &products = otherPolCols.corrProduct()(p);
       polSwap.resize(products.shape()(1));
       for (Int i = 0; i < products.shape()(1); i++) {
-	for (Int j = 0; j < products.shape()(1); j++)
+	for (Int j = 0; j < products.shape()(1); j++) {
 	  if (products(0, i) == products(1, j) &&
 	      products(1, i) == products(0, j)) {
 	    polSwap[i] = j;
 	    break;
 	  }
+	}
       }
       polId = p;
     }
@@ -1445,18 +1450,23 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   vector<Int> polSwap;
 
   for (uInt r = 0; r < newRows; r++, curRow++) {
+    // Determine whether we need to swap rows in the visibility matrix
+    // if we change the order of the antennas.  This is done by
+    // creating a mapping that makes sure the receptor numbers remain
+    // correct when the antennas are swapped.
     uInt d = otherDDId(r);
     uInt p = otherDDCols.polarizationId()(otherDDId(r));
     if (p != polId) {
       const Matrix<Int> &products = otherPolCols.corrProduct()(p);
       polSwap.resize(products.shape()(1));
       for (Int i = 0; i < products.shape()(1); i++) {
-	for (Int j = 0; j < products.shape()(1); j++)
+	for (Int j = 0; j < products.shape()(1); j++) {
 	  if (products(0, i) == products(1, j) &&
 	      products(1, i) == products(0, j)) {
 	    polSwap[i] = j;
 	    break;
 	  }
+	}
       }
       polId = p;
     }
