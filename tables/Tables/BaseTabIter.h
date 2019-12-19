@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/Containers/Block.h>
@@ -89,9 +90,11 @@ public:
     // will be used for the sort and to compare if values are equal.
     // If a comare object is null, the default ObjCompare<T> will be used.
     BaseTableIterator (BaseTable*, const Block<String>& columnNames,
-		       const Block<CountedPtr<BaseCompare> >&,
-		       const Block<Int>& orders,
-		       int option);
+                       const Block<CountedPtr<BaseCompare> >&,
+                       const Block<Int>& orders,
+                       int option,
+                       std::shared_ptr<Vector<uInt>> groupBoundaries=nullptr,
+                       std::shared_ptr<Vector<uInt>> groupKeyIdxChange=nullptr);
 
     // Clone this iterator.
     BaseTableIterator* clone() const;
@@ -113,12 +116,26 @@ public:
     inline const String& keyChangeAtLastNext() const { return keyChangeAtLastNext_p; };
 
 protected:
-    BaseTable*             sortTab_p;     //# Table sorted in iteration order
-    uInt                   lastRow_p;     //# last row used from reftab
-    uInt                   nrkeys_p;      //# nr of columns in group
-    String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
-    PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
-    Block<CountedPtr<BaseCompare> > cmpObj_p;  //# comparison object per column
+    // Table sorted in iteration order
+    BaseTable*                     sortTab_p;
+    // last row used from reftab
+    uInt                           lastRow_p;
+    // nr of columns in group
+    uInt                           nrkeys_p;
+    // name of column that terminated most recent next()
+    String                         keyChangeAtLastNext_p;
+    // Vector with row numbers at which a sorting group boundary happens
+    std::shared_ptr<Vector<uInt>>  groupBoundaries_p;
+    // Iterator for groupBoundaries_p
+    Vector<uInt>::iterator groupBoundariesIt_p;
+    // Vector with Key Id that will change at the end of each sorting group
+    std::shared_ptr<Vector<uInt>>  groupKeyIdxChange_p;
+    // Iterator for groupKeyIdxChange_p
+    Vector<uInt>::iterator groupKeyIdxChangeIt_p;
+    // pointer to column objects
+    PtrBlock<BaseColumn*>  colPtr_p;
+    // comparison object per column
+    Block<CountedPtr<BaseCompare> > cmpObj_p;
 
     // Copy constructor (to be used by clone)
     BaseTableIterator (const BaseTableIterator&);
@@ -128,6 +145,8 @@ private:
     // the envelope class TableIterator has reference semantics.
     // Declaring it private, makes it unusable.
     BaseTableIterator& operator= (const BaseTableIterator&);
+
+    BaseTable* noGroupBoundariesNext();
 
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column

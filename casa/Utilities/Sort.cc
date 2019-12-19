@@ -234,30 +234,44 @@ uInt Sort::unique (Vector<uInt>& uniqueVector, uInt nrrec) const
 }
 
 uInt Sort::unique (Vector<uInt>& uniqueVector,
-		   const Vector<uInt>& indexVector) const
+                   const Vector<uInt>& indexVector) const
+{
+    Vector<uInt> changeKey;
+    return unique(uniqueVector, changeKey, indexVector);
+}
+
+uInt Sort::unique (Vector<uInt>& uniqueVector,
+                   Vector<uInt>& changeKey,
+                   const Vector<uInt>& indexVector) const
 {
     uInt nrrec = indexVector.nelements();
     uniqueVector.resize (nrrec);
+    changeKey.resize (nrrec);
     if (nrrec == 0) {
         return 0;
     }
     // Pass the sort function a C-array of indices, because indexing
     // in there is (much) faster than in a vector.
-    Bool delInx, delUniq;
+    Bool delInx, delUniq, delChange;
     const uInt* inx = indexVector.getStorage (delInx);
     uInt* uniq = uniqueVector.getStorage (delUniq);
+    uInt* change = changeKey.getStorage (delChange);
     uniq[0] = 0;
     uInt nruniq = 1;
+    uInt idxComp;
     for (uInt i=1; i<nrrec; i++) {
-        Int cmp = compare (inx[i-1], inx[i]);
-	if (cmp != 1  &&  cmp != -1) {
-	    uniq[nruniq++] = i;
-	}
+        Int cmp = compareChangeIdx (inx[i-1], inx[i], idxComp);
+        if (cmp != 1  &&  cmp != -1) {
+            change[nruniq-1] = idxComp;
+            uniq[nruniq++] = i;
+        }
     }
     indexVector.freeStorage (inx, delInx);
     uniqueVector.putStorage (uniq, delUniq);
+    changeKey.putStorage (change, delChange);
     if (nruniq < nrrec) {
         uniqueVector.resize (nruniq, True);
+        changeKey.resize (nruniq, True);
     }
     return nruniq;
 }
@@ -599,22 +613,36 @@ void Sort::siftDown (Int low, Int up, uInt* inx) const
 //   -1   when data is equal and indices are out of order
 int Sort::compare (uInt i1, uInt i2) const
 {
+    uInt idxComp;
+    return compareChangeIdx(i1, i2, idxComp);
+}
+
+// This is a similar function to compare() but it also gives back which is the
+// first comparison function that doesn't match.
+// idxComp gives the comparison function index. In case the function returns
+// 1 or -1 idxComp is not modified.
+int Sort::compareChangeIdx(uInt i1, uInt i2, uInt& idxComp) const
+{
     int seq;
     SortKey* skp;
     for (uInt i=0; i<nrkey_p; i++) {
-	skp = keys_p[i];
+        skp = keys_p[i];
         seq = skp->cmpObj_p->comp ((char*)skp->data_p + i1*skp->incr_p,
-                                   (char*)skp->data_p + i2*skp->incr_p);
-	if (seq == skp->order_p)
-	    return 2;                       // in order
-	if (seq != 0) {
-	    return 0;                       // out-of-order
-	}
+                (char*)skp->data_p + i2*skp->incr_p);
+        if (seq == skp->order_p)
+        {
+            idxComp = i;
+            return 2;                       // in order
+        }
+        if (seq != 0) {
+            idxComp = i;
+            return 0;                       // out-of-order
+        }
     }
     // Equal keys, so return i1<i2 to maintain stability.
     if (i1<i2) {
         if (order_p == 1) return -1;          // desc, thus out-of-order
-	return 1;                             // equal keys; in order
+        return 1;                             // equal keys; in order
     }
     if (order_p == 1) return 1;
     return -1;                                // equal keys; out-of-order

@@ -52,13 +52,7 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 {
   double v1 = *(const Double*)obj1;
   double v2 = *(const Double*)obj2;
-  // Initialize offset_p to first timestamp.
-  // Subtract a bit to avoid rounding problems.
-  // Note that a time is the middle of an interval; ideally half that width
-  // should be subtracted, but we don't know the width.
-  if (offset_p == 0.0) {
-    offset_p = v2 - 0.01;
-  }
+
   // Shortcut if values are equal.
   if (v1 == v2) return 0;
 
@@ -70,9 +64,18 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
   //  by TIME to use an interval_p which is guaranteed to be small enough
   //  without having to read the INTERVAL column.)
   //
+  // If interval_p is a large number (MSIter sets it to DBL_MAX if interval=0),
+  // then it is equivalent to grouping all timestamps together. In this case it
+  // is also important to avoid the computation of the interval bin. It has
+  // been observed that due to numerical differences either t1 or t2 can be
+  // -1 or 1, rather than 0 as it should be when all the timestamps are in the
+  // same bin.
+  //
   // The 2.0 is a fudge factor.  The result of the comparison should probably
   // be cached.
-  if(abs(interval_p) < 2.0 * DBL_MIN)
+  if(interval_p > DBL_MAX / 2.0)
+    return 0;
+  else if(interval_p < 2.0 * DBL_MIN)
     return v1 < v2 ? -1 : 1;
 
   // The times are binned in bins with a width of interval_p.
@@ -83,34 +86,39 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 }
 
 
-  MSIter::MSIter():nMS_p(0),storeSorted_p(False),prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(True)
+  MSIter::MSIter(): addDefaultSortColumns_p(true), nMS_p(0), storeSorted_p(False), prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(True)
 {}
 
 MSIter::MSIter(const MeasurementSet& ms,
-	       const Block<Int>& sortColumns,
-	       Double timeInterval,
-	       Bool addDefaultSortColumns,
-	       Bool storeSorted)
+               const Block<Int>& sortColumns,
+               Double timeInterval,
+               Bool addDefaultSortColumns,
+               Bool storeSorted)
 : curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
   interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
-  allBeamOffsetsZero_p(True)
+  allBeamOffsetsZero_p(True),
+  sortColumns_p(sortColumns),
+  addDefaultSortColumns_p(addDefaultSortColumns)
 {
   bms_p.resize(1); 
   bms_p[0]=ms;
-  construct(sortColumns,addDefaultSortColumns);
+  construct();
 }
 
 MSIter::MSIter(const Block<MeasurementSet>& mss,
-	       const Block<Int>& sortColumns,
-	       Double timeInterval,
-	       Bool addDefaultSortColumns,
-	       Bool storeSorted)
+               const Block<Int>& sortColumns,
+               Double timeInterval,
+               Bool addDefaultSortColumns,
+               Bool storeSorted)
 : bms_p(mss),curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
-  interval_p(timeInterval), prevFirstTimeStamp_p(-1.0)
+  interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
+  sortColumns_p(sortColumns),
+  addDefaultSortColumns_p(addDefaultSortColumns)
+
 {
-  construct(sortColumns,addDefaultSortColumns);
+  construct();
 }
 
 Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
@@ -131,8 +139,7 @@ Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   return ok;
 }
 
-void MSIter::construct(const Block<Int>& sortColumns, 
-		       Bool addDefaultSortColumns)
+void MSIter::construct()
 {
   This = (MSIter*)this; 
   nMS_p=bms_p.nelements();
@@ -155,22 +162,23 @@ void MSIter::construct(const Block<Int>& sortColumns,
   Block<Int> cols; 
   // try to reuse the existing sorted table if we didn't specify
   // any sortColumns
-  if (sortColumns.nelements()==0 && 
+  if (sortColumns_p.nelements()==0 && 
       bms_p[0].keywordSet().isDefined("SORT_COLUMNS")) {
     // note that we use the order of the first MS for all MS's
     Vector<String> colNames = bms_p[0].keywordSet().asArrayString("SORT_COLUMNS");
     uInt n=colNames.nelements();
     cols.resize(n);
-    for (uInt i=0; i<n; i++) cols[i]=MS::columnType(colNames(i));
+    for (uInt i=0; i<n; i++)
+      cols[i]=MS::columnType(colNames(i));
   } else {
-    cols=sortColumns;
+    cols=sortColumns_p;
   }
 
   Bool timeSeen=False, arraySeen=False, ddSeen=False, fieldSeen=False;
   Int nCol=0;
   for (uInt i=0; i<cols.nelements(); i++) {
     if (cols[i]>0 && 
-	cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
+        cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
       if (cols[i]==MS::ARRAY_ID && !arraySeen) { arraySeen=True; nCol++; }
       if (cols[i]==MS::FIELD_ID && !fieldSeen) { fieldSeen=True; nCol++; }
       if (cols[i]==MS::DATA_DESC_ID && !ddSeen) { ddSeen=True; nCol++; }
@@ -180,9 +188,9 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
   }
   Block<String> columns;
-  
+
   Int iCol=0;
-  if (addDefaultSortColumns) {
+  if (addDefaultSortColumns_p) {
     columns.resize(cols.nelements()+4-nCol);
     if (!arraySeen) {
       // add array if it's not there
@@ -217,17 +225,9 @@ void MSIter::construct(const Block<Int>& sortColumns,
       columns[iCol++]=MS::columnName(MS::TIME);
     }
   }
-  
-  // now find the time column and set the compare function
-  Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
-  for (uInt i=0; i<columns.nelements(); i++) {
-    if (columns[i]==MS::columnName(MS::TIME)) {
-      timeComp_p = new MSInterval(interval_p);
-      objComp[i] = timeComp_p;
-    }
-  }
+
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
-  
+
   // Store the sorted table for future access if possible, 
   // reuse it if already there
   for (Int i=0; i<nMS_p; i++) {
@@ -236,53 +236,72 @@ void MSIter::construct(const Block<Int>& sortColumns,
     // check if we already have a sorted table consistent with the requested
     // sort order
     if (!bms_p[i].keywordSet().isDefined("SORT_COLUMNS") ||
-	!bms_p[i].keywordSet().isDefined("SORTED_TABLE") ||
-	bms_p[i].keywordSet().asArrayString("SORT_COLUMNS").nelements()!=
-	columns.nelements() ||
-	!allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
-	       Vector<String>(columns))) {
-      // if not, sort and store it (if possible)
-      store=(bms_p[i].isWritable() && (bms_p[i].tableType() != Table::Memory));
+        !bms_p[i].keywordSet().isDefined("SORTED_TABLE") ||
+         bms_p[i].keywordSet().asArrayString("SORT_COLUMNS").nelements()!=
+                  columns.nelements() ||
+        !allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
+               Vector<String>(columns))) {
+        // if not, sort and store it (if possible)
+        store=(bms_p[i].isWritable() && (bms_p[i].tableType() != Table::Memory));
     } else {
       sorted = bms_p[i].keywordSet().asTable("SORTED_TABLE");
       // if sorted table is smaller it can't be useful, remake it
       if (sorted.nrow() < bms_p[i].nrow()) store = bms_p[i].isWritable();
       else { 
-	// if input is a sorted subset of the stored sorted table
-	// we can use the input in the iterator
-	if (isSubSet(bms_p[i].rowNumbers(),sorted.rowNumbers())) {
-	  useIn=True;
-	} else {
-	  // check if #rows in input table is the same as the base table
-	  // i.e., this is the entire table, if so, use sorted version instead
-	  String anttab = bms_p[i].antenna().tableName(); // see comments below
-	  Table base (anttab.erase(anttab.length()-8));
-	  if (base.nrow()==bms_p[i].nrow()) {
-	    useSorted = True;
-	  } else {
-	    store=bms_p[i].isWritable();
-	  }
-	}
+        // if input is a sorted subset of the stored sorted table
+        // we can use the input in the iterator
+        if (isSubSet(bms_p[i].rowNumbers(),sorted.rowNumbers())) {
+          useIn=True;
+        } else {
+          // check if #rows in input table is the same as the base table
+          // i.e., this is the entire table, if so, use sorted version instead
+          String anttab = bms_p[i].antenna().tableName(); // see comments below
+          Table base (anttab.erase(anttab.length()-8));
+          if (base.nrow()==bms_p[i].nrow()) {
+            useSorted = True;
+          } else {
+            store=bms_p[i].isWritable();
+          }
+        }
       }
     }
 
+    // now find the time column and set the compare function for
+    // the time column. The rest of the sorting columns would
+    // get the default comparison function.
+    Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
+    for (uInt icol=0; icol<columns.nelements(); icol++) {
+      if (columns[icol]==MS::columnName(MS::TIME)) {
+        auto timeComp = new MSInterval(interval_p);
+        // Use the first timestamp as the reference to start counting
+        // the intervals
+        double time0 = ScalarColumn<double>(bms_p[i], MS::columnName(MS::TIME))(0);
+        timeComp->setOffset(time0);
+        objComp[icol] = timeComp;
+      }
+    }
+    std::shared_ptr<Vector<uInt>> groupBoundaries;
+    std::shared_ptr<Vector<uInt>> groupKeyChange;
     if (!useIn && !useSorted) {
+      groupBoundaries = std::make_shared<Vector<uInt>>();
+      groupKeyChange  = std::make_shared<Vector<uInt>>();
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
-      sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
+      sorted = bms_p[i].sort(columns, objComp, orders, Sort::ParSort,
+                             groupBoundaries, groupKeyChange);
     }
-    
+
     // Only store if globally requested _and_ locally decided
     if (storeSorted_p && store) {
-	// We need to get the name of the base table to add a persistent
-	// subtable (the ms used here might be a reference table)
-	// There is no table function to get this, so we use the name of
-	// the antenna subtable to get at it.
-	String anttab = bms_p[i].antenna().tableName();
-	sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New); 
-	sorted.flush();
-	bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
-	bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
+      // We need to get the name of the base table to add a persistent
+      // subtable (the ms used here might be a reference table)
+      // There is no table function to get this, so we use the name of
+      // the antenna subtable to get at it.
+      String anttab = bms_p[i].antenna().tableName();
+      sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New);
+      sorted.flush();
+      bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
+      bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
     }
 
     // create the iterator for each MS
@@ -290,15 +309,17 @@ void MSIter::construct(const Block<Int>& sortColumns,
     // the sorted table, so the iterator can avoid sorting.
     if (useIn) {
       tabIter_p[i] = new TableIterator(bms_p[i],columns,objComp,orders,
-				       TableIterator::NoSort);
+                                       TableIterator::NoSort,
+                                       groupBoundaries, groupKeyChange);
     } else {
       tabIter_p[i] = new TableIterator(sorted,columns,objComp,orders,
-				       TableIterator::NoSort);
-    } 
+                                       TableIterator::NoSort,
+                                       groupBoundaries, groupKeyChange);
+    }
     tabIterAtStart_p[i]=True;
   }
   setMSInfo();
-  
+
 }
 
 MSIter::MSIter(const MSIter& other)
@@ -325,6 +346,8 @@ MSIter::operator=(const MSIter& other)
     tabIter_p[i] = new TableIterator(*(other.tabIter_p[i]));
     tabIter_p[i]->copyState(*other.tabIter_p[i]);
   }
+  sortColumns_p = other.sortColumns_p;
+  addDefaultSortColumns_p = other.addDefaultSortColumns_p;
   tabIterAtStart_p = other.tabIterAtStart_p;
   curMS_p = other.curMS_p;
   lastMS_p = other.lastMS_p;
@@ -376,7 +399,6 @@ MSIter::operator=(const MSIter& other)
   frequency0_p = other.frequency0_p;
   restFrequency_p = other.restFrequency_p;
   telescopePosition_p = other.telescopePosition_p;
-  timeComp_p.reset(new MSInterval(interval_p));
   prevFirstTimeStamp_p=other.prevFirstTimeStamp_p;
   return *this;
 }
@@ -400,9 +422,7 @@ const MS& MSIter::ms(const uInt id) const {
 void MSIter::setInterval(Double timeInterval)
 {
   interval_p=timeInterval;
-  if (timeComp_p) {
-    timeComp_p->setInterval(timeInterval);
-  }
+  construct();
 }
 
 void MSIter::origin()
@@ -462,43 +482,6 @@ void MSIter::setState()
   setFeedInfo();
   setFieldInfo();
 
-  // If time binning, update the MSInterval's offset to account for glitches.
-  // For example, if averaging to 5s and the input is
-  //   TIME  STATE_ID  INTERVAL
-  //    0      0         1
-  //    1      0         1
-  //    2      1         1
-  //    3      1         1
-  //    4      1         1
-  //    5      1         1
-  //    6      1         1
-  //    7      0         1
-  //    8      0         1
-  //    9      0         1
-  //   10      0         1
-  //   11      0         1
-  //  we want the output to be
-  //   TIME  STATE_ID  INTERVAL
-  //    0.5    0         2
-  //    4      1         5
-  //    9      0         5
-  //  not what we'd get without the glitch fix:
-  //   TIME  STATE_ID  INTERVAL
-  //    0.5    0         2
-  //    3      1         3
-  //    5.5    1         2
-  //    8      0         3
-  //   10.5    0         2
-  //
-  // Resetting the offset with each advance() might be too often, i.e. we might
-  // need different spws to share the same offset.  But in testing resetting
-  // with each advance produces results more consistent with expectations than
-  // either not resetting at all or resetting only
-  // if(colTime_p(0) - 0.02 > timeComp_p->getOffset()).
-  //
-  if(timeComp_p){
-      timeComp_p->setOffset(0.0);
-  }
 }
 
 const Vector<Double>& MSIter::frequency() const

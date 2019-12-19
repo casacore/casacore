@@ -58,15 +58,15 @@ class MSInterval : public BaseCompare
 {
 public:
   explicit MSInterval(Double interval) : interval_p(interval), offset_p(0) {}
-    virtual ~MSInterval() {}
-    virtual int comp(const void * obj1, const void * obj2) const;
-    Double getOffset() const {return offset_p;}
-    virtual void setOffset(Double offset) {offset_p=offset;}
-    Double getInterval() const {return interval_p;}
-    void setInterval(Double interval) {interval_p=interval;}
+  virtual ~MSInterval() {}
+  virtual int comp(const void * obj1, const void * obj2) const;
+  Double getOffset() const {return offset_p;}
+  virtual void setOffset(Double offset) {offset_p=offset;}
+  Double getInterval() const {return interval_p;}
+  void setInterval(Double interval) {interval_p=abs(interval);}
 private:
-    Double interval_p;
-    mutable Double offset_p;
+  Double interval_p;
+  mutable Double offset_p;
 };
 
 // <summary> 
@@ -213,10 +213,12 @@ public:
   //# Members
  
   // Set or reset the time interval to use for iteration.
-  // You should call origin() to reset the iteration after 
+  // This will reset the iterator completely, so you should
+  // discard any running iteration and
+  // call origin() to reset the iteration after 
   // calling this.
   void setInterval(Double timeInterval);
- 
+
   // Reset iterator to start of data
   virtual void origin();
  
@@ -237,6 +239,8 @@ public:
   const MS& ms() const;
 
   // Return reference to the current MSColumns
+  // Note that this gives access to the columns for the whole MS,
+  // not just the current iteration.
   const MSColumns& msColumns() const;
 
   // Return the current MS Id (according to the order in which 
@@ -367,7 +371,7 @@ public:
 
 protected:
   // handle the construction details
-  void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
+  void construct();
   // advance the iteration
   void advance();
   // set the iteration state
@@ -385,6 +389,9 @@ protected:
   Block<MeasurementSet> bms_p;
   PtrBlock<TableIterator* > tabIter_p;
   Block<Bool> tabIterAtStart_p;
+
+  Block<Int> sortColumns_p;
+  Bool addDefaultSortColumns_p;
 
   Int nMS_p;
   CountedPtr<MSColumns> msc_p;
@@ -437,8 +444,6 @@ protected:
   MFrequency restFrequency_p;
   MPosition telescopePosition_p;
 
-  CountedPtr<MSInterval> timeComp_p; // Points to the time comparator.
-                                     // 0 if not using a time interval.
 };
 
 inline Bool MSIter::more() const { return more_p;}
