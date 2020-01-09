@@ -1,0 +1,6 @@
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.txt text
+*.cc text
+*.tcc text
+*.h text
