@@ -87,6 +87,80 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 {}
 
 MSIter::MSIter(const MeasurementSet& ms,
+               const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
+  curMS_p(0),lastMS_p(-1),
+  storeSorted_p(false),
+  interval_p(0), prevFirstTimeStamp_p(-1.0),
+  allBeamOffsetsZero_p(True),
+  timeComp_p(0),
+  timeInSort_p(false),
+  arrayInSort_p(false),
+  ddInSort_p(false),
+  fieldInSort_p(false)
+{
+    This = (MSIter*)this;
+    bms_p.resize(1);
+    bms_p[0]=ms;
+    construct(sortColumns);
+}
+
+MSIter::MSIter(const Block<MeasurementSet>& mss,
+  const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
+  bms_p(mss), curMS_p(0),lastMS_p(-1),
+  storeSorted_p(false),
+  interval_p(0), prevFirstTimeStamp_p(-1.0),
+  allBeamOffsetsZero_p(True),
+  timeComp_p(0),
+  timeInSort_p(false),
+  arrayInSort_p(false),
+  ddInSort_p(false),
+  fieldInSort_p(false)
+{
+    This = (MSIter*)this;
+    construct(sortColumns);
+}
+
+void MSIter::construct(
+  const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns)
+{
+    nMS_p=bms_p.nelements();
+    if (nMS_p==0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
+    for (Int i=0; i<nMS_p; i++) {
+        if (bms_p[i].nrow()==0) {
+            throw(AipsError("MSIter::construct - Input MeasurementSet.has zero selected rows"));
+        }
+    }
+    tabIter_p.resize(nMS_p);
+    tabIterAtStart_p.resize(nMS_p);
+
+    // Creating the sorting members to be pass to the TableIterator constructor
+    Block<String> sortColumnNames;
+    Block<CountedPtr<BaseCompare>> sortCompareFunctions;
+
+    sortColumnNames.resize(sortColumns.size());
+    sortCompareFunctions.resize(sortColumns.size());
+    Block<Int> sortOrders(sortColumns.size(),TableIterator::Ascending);
+    size_t iCol=0;
+    for(auto element : sortColumns)
+    {
+        sortColumnNames[iCol] = element.first;
+        sortCompareFunctions[iCol] = element.second;
+        ++iCol;
+    }
+
+    // Create the table iterators
+    for (Int i=0; i<nMS_p; i++) {
+        Bool useIn=False, store=False, useSorted=False;
+        // create the iterator for each MS
+        tabIter_p[i] = new TableIterator(bms_p[i],sortColumnNames,
+                                         sortCompareFunctions,sortOrders);
+        tabIterAtStart_p[i]=True;
+    }
+    setMSInfo();
+}
+
+
+MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns,

@@ -191,13 +191,24 @@ public:
   // concurrent readers from interfering with each other.
 
   MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns,
-	 Double timeInterval=0, Bool addDefaultSortColumns=True,
-	 Bool storeSorted=True);
+         Double timeInterval=0, Bool addDefaultSortColumns=True,
+         Bool storeSorted=True);
 
   // Same as above with multiple MSs as input.
   MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns,
-	 Double timeInterval=0, Bool addDefaultSortColumns=True,
-	 Bool storeSorted=True);
+         Double timeInterval=0, Bool addDefaultSortColumns=True,
+         Bool storeSorted=True);
+
+  // This constructor is similar to the previous ones but the comparison
+  // functions used to group the iterations are given explicitly, making
+  // the constructor more generic. Also, the column is specified as a string,
+  // to support sorting by columns not part of the standard MS definition.
+  MSIter(const MeasurementSet& ms,
+         const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
+
+  // Same as above with multiple MSs as input.
+  MSIter(const Block<MeasurementSet>& mss,
+         const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
 
   // Copy construct. This calls the assigment operator.
   MSIter(const MSIter & other);
@@ -385,6 +396,8 @@ public:
 protected:
   // handle the construction details
   void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
+  // handle the construction details using explicit comparison functions
+  void construct(const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
   // advance the iteration
   void advance();
   // set the iteration state
@@ -466,7 +479,7 @@ inline const MSColumns& MSIter::msColumns() const { return *msc_p;}
 inline Bool MSIter::newMS() const { return newMS_p;}
 inline Bool MSIter::newArray() const {return newArrayId_p;}
 inline Bool MSIter::newField() const { return newFieldId_p;}
-inline Bool MSIter::newSpectralWindow() const
+inline Bool MSIter::newSpectralWindow() const 
 { return newSpectralWindowId_p;}
 inline size_t MSIter::msId() const { return curMS_p;}
 inline size_t MSIter::numMS() const { return nMS_p;}
