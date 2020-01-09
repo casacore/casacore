@@ -246,44 +246,65 @@ public:
   // Return true if msId has changed since last iteration
   Bool newMS() const;
 
-  // Return the current ArrayId
+  // Return the current ArrayIds for all rows in this iteration
+  const ScalarColumn<Int>& colArrayIds() const;
+
+  // Return the current FieldIds for all rows in this iteration
+  const ScalarColumn<Int>& colFieldIds() const;
+
+  // Return the current DataDescriptionIds for all rows in this iteration
+  const ScalarColumn<Int>& colDataDescriptionIds() const;
+
+  // Return the ArrayId of the first element in this iteration
   Int arrayId() const;
 
   // Return True if ArrayId has changed since last iteration
+  // Note that if MS_ARRAY is not part of the sorting columns this
+  // will always be true.
   Bool newArray() const;
 
-  // Return the current FieldId
+  // Return the FieldId of the first element in this iteration
   Int fieldId() const;
 
   // Return True if FieldId/Source has changed since last iteration
+  // Note that if MS_FIELD_ID is not part of the sorting columns this
+  // will always be true.
   Bool newField() const;
 
-  // Return current SpectralWindow
+  // Return SpectralWindow of the first element in this iteration
   Int spectralWindowId() const;
 
   // Return True if SpectralWindow has changed since last iteration
+  // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
+  // will always be true.
   Bool newSpectralWindow() const;
 
-  // Return current DataDescriptionId
+  // Return DataDescriptionId of the first element in this iteration
   Int dataDescriptionId() const;
 
   // Return True if DataDescriptionId has changed since last iteration
+  // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
+  // will always be true.
   Bool newDataDescriptionId() const;
 
-  // Return current PolarizationId
+  // Return PolarizationId of the first element in this iteration
   Int polarizationId() const;
 
   // Return True if polarization has changed since last iteration
+  // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
+  // will always be true.
   Bool newPolarizationId() const;
 
 
-  // Return frame for polarization (returns PolFrame enum)
+  // Return frame for polarization of the first element in this iteration
+  // @returns PolFrame enum
   Int polFrame() const;
 
   // Return the frequencies corresponding to the DATA matrix.
   const Vector<Double>& frequency() const;
 
-  // Return frequency of first channel with reference frame as a Measure.
+  // Return frequency of first channel of the first element in iteration
+  // with reference frame as a Measure.
   // The reference frame Epoch is that of the first row, reset it as needed
   // for each row.
   // The reference frame Position is the average of the antenna positions.
@@ -382,15 +403,19 @@ protected:
   PtrBlock<TableIterator* > tabIter_p;
   Block<Bool> tabIterAtStart_p;
 
+  // This booleans determine if given columns are part of the sorting
+  Bool timeInSort_p, arrayInSort_p, ddInSort_p, fieldInSort_p;
+
   size_t nMS_p, curMS_p;
   CountedPtr<MSColumns> msc_p;
   Table curTable_p;
-  Int lastMS_p, curArray_p, lastArray_p, curSource_p;
-  String curFieldName_p, curSourceName_p;
-  Int curField_p, lastField_p, curSpectralWindow_p, lastSpectralWindow_p;
+  Int lastMS_p, curArrayIdFirst_p, lastArrayId_p, curSourceIdFirst_p;
+  String curFieldNameFirst_p, curSourceNameFirst_p;
+  Int curFieldIdFirst_p, lastFieldId_p;
+  Int curSpectralWindowIdFirst_p, lastSpectralWindowId_p;
   Int curPolarizationId_p, lastPolarizationId_p;
-  Int curDataDescId_p, lastDataDescId_p;
-  Bool more_p, newMS_p, newArray_p, newField_p, newSpectralWindow_p,
+  Int curDataDescIdFirst_p, lastDataDescId_p;
+  Bool more_p, newMS_p, newArrayId_p, newFieldId_p, newSpectralWindowId_p,
     newPolarizationId_p, newDataDescId_p,
     timeDepFeed_p, spwDepFeed_p, checkFeed_p;
 
@@ -439,18 +464,24 @@ inline Table MSIter::table() const {return curTable_p;}
 inline const MS& MSIter::ms() const {return bms_p[curMS_p];}
 inline const MSColumns& MSIter::msColumns() const { return *msc_p;}
 inline Bool MSIter::newMS() const { return newMS_p;}
-inline Bool MSIter::newArray() const {return newArray_p;}
-inline Bool MSIter::newField() const { return newField_p;}
+inline Bool MSIter::newArray() const {return newArrayId_p;}
+inline Bool MSIter::newField() const { return newFieldId_p;}
 inline Bool MSIter::newSpectralWindow() const
-{ return newSpectralWindow_p;}
+{ return newSpectralWindowId_p;}
 inline size_t MSIter::msId() const { return curMS_p;}
 inline size_t MSIter::numMS() const { return nMS_p;}
-inline Int MSIter::arrayId() const {return curArray_p;}
-inline Int MSIter::fieldId() const { return curField_p;}
+inline const ScalarColumn<Int>& MSIter::colArrayIds() const
+{ return colArray_p;}
+inline const ScalarColumn<Int>& MSIter::colFieldIds() const
+{ return colField_p;}
+inline const ScalarColumn<Int>& MSIter::colDataDescriptionIds() const
+{ return colDataDesc_p;}
+inline Int MSIter::arrayId() const {return curArrayIdFirst_p;}
+inline Int MSIter::fieldId() const { return curFieldIdFirst_p;}
 inline Int MSIter::spectralWindowId() const
-{ return curSpectralWindow_p;}
+{ return curSpectralWindowIdFirst_p;}
 inline Int MSIter::polarizationId() const {return curPolarizationId_p;}
-inline Int MSIter::dataDescriptionId() const {return curDataDescId_p;}
+inline Int MSIter::dataDescriptionId() const {return curDataDescIdFirst_p;}
 inline Bool MSIter::newPolarizationId() const { return newPolarizationId_p;}
 inline Bool MSIter::newDataDescriptionId() const { return newDataDescId_p;}
 inline Int MSIter::polFrame() const { return polFrame_p;}
