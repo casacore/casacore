@@ -175,17 +175,6 @@ inline Float max(Float a, Float b) { if (a > b) return a; else return b; }
 inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // </group>
 
-// Get the absolute value of uInt. Should already be defined
-// for integers in <src><stdlib.h></src>.  Define it for uInts so that certain
-// compilers can resolve the ambiguity when used in a templated class.
-// <group>
-#if defined(AIPS_BSD)                                                          
-  inline Int64 abs(Int64 Val) {return Val;}                                    
-#else                                                                          
-  inline uInt abs(uInt Val) {return Val;}  
-#endif
-// </group>
-
 // Return the square of a value.
 // <group>
 inline Int    square(Int val)    {return val*val;}

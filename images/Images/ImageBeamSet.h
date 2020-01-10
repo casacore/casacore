@@ -283,6 +283,12 @@ private:
 
     void _calculateAreas();
 
+    // common code for replacing a beam in a multi-beam set
+    void _replaceBeam(
+        const GaussianBeam& beam, const IPosition& location1,
+        const IPosition& location2, Bool overwriteMaxMin
+    );
+    
     // Show the spectral info.
     static void _chanInfoToStream(
         ostream& os, const SpectralCoordinate *spCoord,
