@@ -87,11 +87,11 @@ public:
     // Create the table iterator to iterate through the given
     // columns in the given order. The given compare objects
     // will be used for the sort and to compare if values are equal.
-    // If a comare object is null, the default ObjCompare<T> will be used.
+    // If a compare object is null, the default ObjCompare<T> will be used.
     BaseTableIterator (BaseTable*, const Block<String>& columnNames,
-		       const Block<CountedPtr<BaseCompare> >&,
-		       const Block<Int>& orders,
-		       int option);
+                       const Block<CountedPtr<BaseCompare> >&,
+                       const Block<Int>& orders,
+                       int option);
 
     // Clone this iterator.
     BaseTableIterator* clone() const;
@@ -106,10 +106,10 @@ public:
 
     virtual void copyState(const BaseTableIterator &);
 
-    // Report Name of slowest sort column that changed to 
-    //  terminate the most recent call to next()
-    //  Enables clients to sense iteration boundary properties
-    //  and organize associated iterations
+    // Report Name of slowest sort column that changed (according to the
+    // comparison function) to terminate the most recent call to next()
+    // Enables clients to sense iteration boundary properties
+    // and organize associated iterations
     inline const String& keyChangeAtLastNext() const { return keyChangeAtLastNext_p; };
 
 protected:
