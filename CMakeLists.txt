@@ -63,6 +63,7 @@ endif()
 
 # By default do not use ADIOS2, HDF5, FFTW3
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
+option (USE_READLINE "Build readline support" YES)
 option (USE_ADIOS2 "Build ADIOS2 " NO)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
@@ -323,7 +324,9 @@ include (CTest)
 #    "Maximum ctest time allowed before CTest will kill the test." FORCE)
 
 find_package (DL)
-find_package (Readline)
+if (USE_READLINE)
+    find_package (Readline REQUIRED)
+endif (USE_READLINE)
 find_package (SOFA)
 if (USE_ADIOS2)
     set(USE_MPI ON)
