@@ -1,3 +1,20 @@
+# 3.2
+ 
+## General
+ - Remove some unused functionality (#854, #947)
+ - Prevent setting OpenMP num_threads to zero (#962)
+
+## Tables
+ - Fix locking issue with IncrementalStorageManager (#970, #974)
+ - Various improvements to TaQL
+ - Various ADIOS2 improvements (#943, #966)
+
+## Measures
+ - Update hardcoded URLs for fetching measures data (#975)
+
+## FITS
+ - Correctly convert Nasmyth mount types (#946, #954)
+
 # 3.1.2
 
  - Bump version in version.h (since in 3.1.1 it was still at '3.1.0')

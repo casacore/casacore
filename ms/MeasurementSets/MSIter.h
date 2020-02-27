@@ -44,7 +44,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward decl
-class ROMSColumns;
+class MSColumns;
 class TableIterator;
 
 // <summary>
@@ -236,8 +236,8 @@ public:
   // Return reference to the current MS
   const MS& ms() const;
 
-  // Return reference to the current ROMSColumns
-  const ROMSColumns& msColumns() const;
+  // Return reference to the current MSColumns
+  const MSColumns& msColumns() const;
 
   // Return the current MS Id (according to the order in which 
   // they appeared in the constructor)
@@ -316,10 +316,6 @@ public:
   // to the first plane of the cube returned by this method
   const Cube<Double>& receptorAngles() const;
 
-  // Return the channel number of the first channel in the DATA.
-  // (non-zero for reference MS created by VisSet with channel selection)
-  Int startChan() const;
-
   // Return a string mount identifier for each antenna
   const Vector<String>& antennaMounts() const;
 
@@ -387,7 +383,7 @@ protected:
   Block<Bool> tabIterAtStart_p;
 
   Int nMS_p;
-  CountedPtr<ROMSColumns> msc_p;
+  CountedPtr<MSColumns> msc_p;
   Table curTable_p;
   Int curMS_p, lastMS_p, curArray_p, lastArray_p, curSource_p;
   String curFieldName_p, curSourceName_p;
@@ -395,17 +391,14 @@ protected:
   Int curPolarizationId_p, lastPolarizationId_p;
   Int curDataDescId_p, lastDataDescId_p;
   Bool more_p, newMS_p, newArray_p, newField_p, newSpectralWindow_p, 
-    newPolarizationId_p, newDataDescId_p, preselected_p,
+    newPolarizationId_p, newDataDescId_p, 
     timeDepFeed_p, spwDepFeed_p, checkFeed_p;
-  Int startChan_p;
 
   // Globally control disk storage of SORTED_TABLE
   Bool storeSorted_p;
 
   // time selection
   Double interval_p;
-  // channel selection
-  Block<Int> preselectedChanStart_p,preselectednChan_p;
   
   // columns
   ScalarColumn<Int> colArray_p, colDataDesc_p, colField_p;
@@ -444,7 +437,7 @@ protected:
 inline Bool MSIter::more() const { return more_p;}
 inline Table MSIter::table() const {return curTable_p;}
 inline const MS& MSIter::ms() const {return bms_p[curMS_p];}
-inline const ROMSColumns& MSIter::msColumns() const { return *msc_p;}
+inline const MSColumns& MSIter::msColumns() const { return *msc_p;}
 inline Bool MSIter::newMS() const { return newMS_p;}
 inline Bool MSIter::newArray() const {return newArray_p;}
 inline Bool MSIter::newField() const { return newField_p;}
@@ -475,7 +468,6 @@ inline const Vector<String>& MSIter::antennaMounts() const
 {return antennaMounts_p;}
 inline const Cube<RigidVector<Double, 2> >& MSIter::getBeamOffsets() const
 {return beamOffsets_p;}
-inline Int MSIter::startChan() const {return startChan_p;}
 inline Bool MSIter::allBeamOffsetsZero() const {return allBeamOffsetsZero_p;}
 
 } //# NAMESPACE CASACORE - END

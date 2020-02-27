@@ -48,7 +48,7 @@ void putData(MSDataDescColumns& cols) {
   cols.flagRow().put(4, True);
 }
 
-void getData(const ROMSDataDescColumns& cols) {
+void getData(const MSDataDescColumns& cols) {
   // test the spectralWindowId functions.
   AlwaysAssert(cols.spectralWindowId()(0) == 0, AipsError);
   AlwaysAssert(cols.spectralWindowId()(4) == 1, AipsError);
@@ -82,7 +82,7 @@ int main() {
     {// Check the RO class
       const MSDataDescription table(filename, Table::Old);
       // Check the constructor
-      const ROMSDataDescColumns cols(table);
+      const MSDataDescColumns cols(table);
       // Check the data is still there
       getData(cols);
     }

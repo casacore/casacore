@@ -103,7 +103,7 @@ private:
   MSPolarizationIndex();
 
   // POLARIZATION subtable column accessor
-  ROMSPolarizationColumns msPolarizationCols_p;
+  MSPolarizationColumns msPolarizationCols_p;
 
   // Vector cache of polarization id's
   Vector<Int> polarizationIds_p;

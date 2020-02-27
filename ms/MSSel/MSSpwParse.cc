@@ -86,10 +86,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 							  const Bool addTen,
 							  const Bool addIDs)
   {
-    // ROMSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
-    // ROMSDataDescColumns msDataDescSubTable(ms()->dataDescription());
-    ROMSSpWindowColumns msSpwSubTable(spwSubTable_p);
-    ROMSDataDescColumns msDataDescSubTable(ddSubTable_p);
+    // MSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
+    // MSDataDescColumns msDataDescSubTable(ms()->dataDescription());
+    MSSpWindowColumns msSpwSubTable(spwSubTable_p);
+    MSDataDescColumns msDataDescSubTable(ddSubTable_p);
 
     Vector<Int> mapDDID2SpwID, notFoundIDs;
     Int nDDIDRows;
@@ -161,10 +161,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const TableExprNode *MSSpwParse::selectSpwIdsFromFreqList(const Vector<Float>& freq,
 							    const Float factor)
   {
-    // ROMSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
-    // ROMSDataDescColumns msDataDescSubTable(ms()->dataDescription());
-    ROMSSpWindowColumns msSpwSubTable(spwSubTable_p);
-    ROMSDataDescColumns msDataDescSubTable(ddSubTable_p);
+    // MSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
+    // MSDataDescColumns msDataDescSubTable(ms()->dataDescription());
+    MSSpWindowColumns msSpwSubTable(spwSubTable_p);
+    MSDataDescColumns msDataDescSubTable(ddSubTable_p);
     Vector<Float> mapFreq2SpwID;
     Vector<Int> mapDDID2SpwID;
     Int nSpwRows, nDDIDRows;

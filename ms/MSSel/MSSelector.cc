@@ -166,15 +166,15 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 	}
 	// check if the data shape is the same for all data
 	// if not: select first data desc id only
-	ROScalarColumn<Int> dd(selms_p,MS::columnName(MS::DATA_DESC_ID));
-	ROMSDataDescColumns ddc(selms_p.dataDescription());
+	ScalarColumn<Int> dd(selms_p,MS::columnName(MS::DATA_DESC_ID));
+	MSDataDescColumns ddc(selms_p.dataDescription());
 	Vector<Int> ddId=dd.getColumn();
 	Int ndd=GenSort<Int>::sort(ddId, Sort::Ascending,
 			Sort::HeapSort | Sort::NoDuplicates);
 	ddId.resize(ndd,True);
 	dataDescId_p.resize(ndd); dataDescId_p=ddId;
-	ROMSSpWindowColumns spwc(ms_p.spectralWindow());
-	ROMSPolarizationColumns polc(ms_p.polarization());
+	MSSpWindowColumns spwc(ms_p.spectralWindow());
+	MSPolarizationColumns polc(ms_p.polarization());
 	spwId_p.resize(ndd);
 	polId_p.resize(ndd);
 	for (Int i=0; i<ndd; i++) {
@@ -208,11 +208,11 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 		// save the current selection
 		savems_p=selms_p;
 		// Set channel selection to entire spectrum
-		ROMSSpWindowColumns spwc(selms_p.spectralWindow());
+		MSSpWindowColumns spwc(selms_p.spectralWindow());
 		selectChannel(spwc.numChan()(spwId_p(0)),0,1,1);
 
 		// Set polarization selection/conversion to all present
-		ROMSPolarizationColumns polc(selms_p.polarization());
+		MSPolarizationColumns polc(selms_p.polarization());
 		Vector<Int> pols=polc.corrType()(polId_p(0));
 		Vector<String> polSel(pols.nelements());
 		for (uInt i=0; i<pols.nelements(); i++) {
@@ -264,7 +264,7 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 		os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
 		return False;
 	}
-	ROMSColumns msc(selms_p);
+	MSColumns msc(selms_p);
 	Int numChan=msc.spectralWindow().numChan()(spwId_p(0));
 	Int end=start+(nChan-1)*incr+(width-1);
 	ok=(ok && end < numChan);
@@ -348,7 +348,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 
 	// now find out the input polarizations, assuming all selected data is
 	// the same
-	ROMSPolarizationColumns mspol(selms_p.polarization());
+	MSPolarizationColumns mspol(selms_p.polarization());
 	Int numCorr=mspol.numCorr()(polId_p(0));
 	Vector<Int> inputPol=mspol.corrType()(polId_p(0));
 
@@ -558,7 +558,7 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 			Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
 			if (range.nelements()==2) {
 				range*=range; // square
-				ROArrayColumn<Double> uvwcol(selms_p,MS::columnName(MS::UVW));
+				ArrayColumn<Double> uvwcol(selms_p,MS::columnName(MS::UVW));
 				Int nrow=selms_p.nrow();
 				if (nrow>0) {
 					Matrix<Double> uvw=uvwcol.getColumn();
@@ -670,7 +670,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	} else {
 		tab=selms_p;
 	}
-	ROMSColumns msc(tab);
+	MSColumns msc(tab);
 	Int nIfr = ifrSelection_p.nelements();
 	Int nSlot = 0;
 	Int nRow = tab.nrow();
@@ -1348,7 +1348,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 						<< " data may give incorrect results"<< LogIO::POST;
 			}
 			// get the data if this is a data column
-			ROArrayColumn<Complex> colData;
+			ArrayColumn<Complex> colData;
 			Array<Complex> data;
 			if (dataType<=Model) {
 				colData.reference( dataType == Observed ? msc.data() :
@@ -1655,14 +1655,14 @@ Bool MSSelector::iterEnd()
 	return True;
 }
 void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
-		const ROArrayColumn<Complex>& col) const
+		const ArrayColumn<Complex>& col) const
 {
 	getAveragedData(avData,flag,col,Slicer(Slice()));
 }
 
 
 void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
-		const ROArrayColumn<Complex>& col,
+		const ArrayColumn<Complex>& col,
 		const Slicer & rowSlicer) const
 {
 	Array<Complex> data;
@@ -1724,13 +1724,13 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 }
 
 void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
-		const ROArrayColumn<Float>& col) const
+		const ArrayColumn<Float>& col) const
 {
 	getAveragedData(avData,flag,col,Slicer(Slice()));
 }
 
 void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
-		const ROArrayColumn<Float>& col,
+		const ArrayColumn<Float>& col,
 		const Slicer& rowSlicer) const
 {
 	Array<Float> data;
@@ -1795,13 +1795,13 @@ void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 }
 
 Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-		const ROArrayColumn<Bool>& col) const
+		const ArrayColumn<Bool>& col) const
 {
 	return getAveragedFlag(avFlag,col,Slicer(Slice()));
 }
 
 Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-		const ROArrayColumn<Bool>& col,
+		const ArrayColumn<Bool>& col,
 		const Slicer& rowSlicer) const
 {
 	Array<Bool> flag;
@@ -1916,7 +1916,7 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
 	else col.putColumn(out);
 }
 
-Array<Float> MSSelector::getWeight(const ROArrayColumn<Float>& wtCol,
+Array<Float> MSSelector::getWeight(const ArrayColumn<Float>& wtCol,
 		Bool sigma) const
 {
 	Array<Float> wt;

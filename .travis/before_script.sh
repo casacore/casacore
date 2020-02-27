@@ -27,7 +27,6 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    ccache -M 80M
 
-   pip2 install numpy
    pip3 install numpy
 
    CXX="ccache $CXX" cmake .. \
@@ -35,11 +34,11 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DBUILD_TESTING=ON \
         -DUSE_OPENMP=OFF \
         -DUSE_HDF5=ON \
-        -DBUILD_PYTHON=ON \
+        -DBUILD_PYTHON=OFF \
         -DBUILD_PYTHON3=ON \
-        -DPYTHON2_EXECUTABLE=/usr/local/bin/python2 \
         -DPYTHON3_EXECUTABLE=/usr/local/bin/python3 \
         -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
+        -DBoost_NO_BOOST_CMAKE=True \
         -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
         -DDATA_DIR=$PWD \
         -DSOFA_ROOT_DIR=$PWD \

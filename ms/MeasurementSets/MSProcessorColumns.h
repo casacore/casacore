@@ -37,93 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSProcessor;
 
 // <summary>
-// A class to provide easy read-only access to MSProcessor columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSProcessor
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSProcessorColumns stands for Read-Only MeasurementSet Processor Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSProcessor
-// Table.  It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to worry about
-// getting those right. There is an access function for every predefined
-// column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=ROMSColumns>
-// ROMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSProcessorColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSProcessorColumns(const MSProcessor& msProcessor);
-
-  // The destructor does nothing special
-  ~ROMSProcessorColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ROScalarColumn<Int>& modeId() const {return modeId_p;}
-  const ROScalarColumn<String>& type() const {return type_p;}
-  const ROScalarColumn<Int>& typeId() const {return typeId_p;}
-  const ROScalarColumn<String>& subType() const {return subType_p;}
-  // </group>
-
-  // Read-only access to optional columns
-  // <group>
-  const ROScalarColumn<Int>& passId() const {return passId_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return flagRow_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSProcessorColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSProcessor& msProcessor);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSProcessorColumns(const ROMSProcessorColumns&);
-  ROMSProcessorColumns& operator=(const ROMSProcessorColumns&);
-
-  //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const MSProcessor& msField);
-  
-  //# required columns
-  ROScalarColumn<Bool> flagRow_p;
-  ROScalarColumn<Int> modeId_p;
-  ROScalarColumn<String> type_p;
-  ROScalarColumn<Int> typeId_p;
-  ROScalarColumn<String> subType_p;
-  //# optional columns
-  ROScalarColumn<Int> passId_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSProcessor columns
+// A class to provide easy access to MSProcessor columns
 // </summary>
 
 // <use visibility=export>
@@ -154,16 +68,16 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSProcessorColumns: public ROMSProcessorColumns
+class MSProcessorColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSProcessorColumns(MSProcessor& msProcessor);
+  MSProcessorColumns(const MSProcessor& msProcessor);
 
   // The destructor does nothing special
   ~MSProcessorColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   // <group>
   ScalarColumn<Bool>& flagRow() {return flagRow_p;}
   ScalarColumn<Int>& modeId() {return modeId_p;}
@@ -172,30 +86,27 @@ public:
   ScalarColumn<String>& subType() {return subType_p;}
   // </group>
 
-  // Read-write access to optional columns
+  // Access to optional columns
   // <group>
   ScalarColumn<Int>& passId() {return passId_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Bool>& flagRow() const {
-    return ROMSProcessorColumns::flagRow();}
-  const ROScalarColumn<Int>& modeId() const {
-    return ROMSProcessorColumns::modeId();}
-  const ROScalarColumn<String>& type() const {
-    return ROMSProcessorColumns::type();}
-  const ROScalarColumn<Int>& typeId() const {
-    return ROMSProcessorColumns::typeId();}
-  const ROScalarColumn<String>& subType() const {
-    return ROMSProcessorColumns::subType();}
+  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<Int>& modeId() const {return modeId_p;}
+  const ScalarColumn<String>& type() const {return type_p;}
+  const ScalarColumn<Int>& typeId() const {return typeId_p;}
+  const ScalarColumn<String>& subType() const {return subType_p;}
   // </group>
 
-  // Read-only access to optional columns
+  // Const access to optional columns
   // <group>
-  const ROScalarColumn<Int>& passId() const {
-    return ROMSProcessorColumns::passId();}
+  const ScalarColumn<Int>& passId() const {return passId_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return flagRow_p.nrow();}
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -203,7 +114,7 @@ protected:
   MSProcessorColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSProcessor& msProcessor);
+  void attach(const MSProcessor& msProcessor);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -212,7 +123,7 @@ private:
   MSProcessorColumns& operator=(const MSProcessorColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(MSProcessor& msProcessor);
+  void attachOptionalCols(const MSProcessor& msProcessor);
   
   //# required columns
   ScalarColumn<Bool> flagRow_p;
@@ -223,6 +134,9 @@ private:
   //# optional columns
   ScalarColumn<Int> passId_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSProcessorColumns ROMSProcessorColumns;
 
 } //# NAMESPACE CASACORE - END
 

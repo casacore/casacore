@@ -37,15 +37,11 @@
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MRadialVelocity.h>
-
-//#include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MeasRef.h>
-//#include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/Quanta/MVFrequency.h>
 #include <casacore/casa/Quanta/MVDirection.h>
-//#include <casacore/casa/Quanta/MVDoppler.h>
 #include <casacore/casa/Quanta/MVEpoch.h>
 #include <casacore/casa/Quanta/MVFrequency.h>
 #include <casacore/casa/Quanta/MVPosition.h>
@@ -57,281 +53,18 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSSpWindowColumns::
-ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):
-  chanFreq_p(msSpWindow, MSSpectralWindow::
-	     columnName(MSSpectralWindow::CHAN_FREQ)),
-  chanWidth_p(msSpWindow, MSSpectralWindow::
-	      columnName(MSSpectralWindow::CHAN_WIDTH)),
-  effectiveBW_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::EFFECTIVE_BW)),
-  flagRow_p(msSpWindow, MSSpectralWindow::
-	    columnName(MSSpectralWindow::FLAG_ROW)),
-  freqGroup_p(msSpWindow, MSSpectralWindow::
-	      columnName(MSSpectralWindow::FREQ_GROUP)),
-  freqGroupName_p(msSpWindow, MSSpectralWindow::
-		  columnName(MSSpectralWindow::FREQ_GROUP_NAME)),
-  ifConvChain_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::IF_CONV_CHAIN)),
-  measFreqRef_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::MEAS_FREQ_REF)),
-  name_p(msSpWindow, MSSpectralWindow::
-	 columnName(MSSpectralWindow::NAME)),
-  netSideband_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::NET_SIDEBAND)),
-  numChan_p(msSpWindow, MSSpectralWindow::
-	    columnName(MSSpectralWindow::NUM_CHAN)),
-  refFrequency_p(msSpWindow, MSSpectralWindow::
-		 columnName(MSSpectralWindow::REF_FREQUENCY)),
-  resolution_p(msSpWindow, MSSpectralWindow::
-	       columnName(MSSpectralWindow::RESOLUTION)),
-  totalBandwidth_p(msSpWindow, MSSpectralWindow::
-		   columnName(MSSpectralWindow::TOTAL_BANDWIDTH)),
-  assocNature_p(),
-  assocSpwId_p(),
-  bbcNo_p(),
-  bbcSideband_p(),
-  dopplerId_p(),
-  receiverId_p(),
-  chanFreqMeas_p(msSpWindow, MSSpectralWindow::
-		 columnName(MSSpectralWindow::CHAN_FREQ)),
-  refFrequencyMeas_p(msSpWindow, MSSpectralWindow::
-		     columnName(MSSpectralWindow::REF_FREQUENCY)),
-  chanFreqQuant_p(msSpWindow, MSSpectralWindow::
-		  columnName(MSSpectralWindow::CHAN_FREQ)),
-  chanWidthQuant_p(msSpWindow, MSSpectralWindow::
-		   columnName(MSSpectralWindow::CHAN_WIDTH)),
-  effectiveBWQuant_p(msSpWindow, MSSpectralWindow::
-		     columnName(MSSpectralWindow::EFFECTIVE_BW)),
-  refFrequencyQuant_p(msSpWindow, MSSpectralWindow::
-		      columnName(MSSpectralWindow::REF_FREQUENCY)),
-  resolutionQuant_p(msSpWindow, MSSpectralWindow::
-		    columnName(MSSpectralWindow::RESOLUTION)),
-  totalBandwidthQuant_p(msSpWindow, MSSpectralWindow::
-			columnName(MSSpectralWindow::TOTAL_BANDWIDTH))
-{
-  attachOptionalCols(msSpWindow);
-}
-
-ROMSSpWindowColumns::~ROMSSpWindowColumns() {}
-
-Int ROMSSpWindowColumns::
-matchSpw(const MFrequency& refFreq, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance, Int tryRow) const {
-  uInt r = nrow();
-  if (r == 0) return -1;
-  // Convert the reference frequency to Hz
-  const MFrequency::Types refType = 
-    MFrequency::castType(refFreq.getRef().getType());
-  const Double refFreqInHz = refFreq.getValue().getValue();
-  // Convert the totalBandwidth to Hz
-  const Unit Hz("Hz");
-  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
-  const Double bandwidthInHz = bandwidth.getValue(Hz);
-
-  // Convert the tolerance to Hz
-  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
-  const Double tolInHz = tolerance.getValue(Hz);
-  // Main matching loop
-  if (tryRow >= 0) {
-    const uInt tr = tryRow;
-    if (tr >= r) {
-      throw(AipsError("ROMSSpWindowColumns::match(...) - "
-                      "the row you suggest is too big"));
-    }
-    if (!flagRow()(tr) &&
-	matchNumChan(tr, nChan) &&
-	matchIfConvChain(tr, ifChain) &&
-	//matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
-	matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
- 	matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
-		 return tr;
-    }
-    if (tr == r-1) r--;
-  }
-  while (r > 0) {
-    r--;
-    if (!flagRow()(r) &&
-	matchNumChan(r, nChan) &&
-	matchIfConvChain(r, ifChain) &&
-	//matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
-	matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
- 	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
-      return r;
-    }
-  }
-  return -1;
-}
-// this version has info of MeasFrame.
-Int ROMSSpWindowColumns::
-matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasFrame& measFrm,
-    const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance, Int tryRow) const {
-  uInt r = nrow();
-  if (r == 0) return -1;
-  // Convert the totalBandwidth to Hz
-  const Unit Hz("Hz");
-  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
-  const Double bandwidthInHz = bandwidth.getValue(Hz);
-  // Convert the tolerance to Hz
-  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
-  const Double tolInHz = tolerance.getValue(Hz);
-  // Main matching loop
-  if (tryRow >= 0) {
-    const uInt tr = tryRow;
-    if (tr >= r) {
-      throw(AipsError("ROMSSpWindowColumns::match(...) - "
-                      "the row you suggest is too big"));
-    }
-    if (!flagRow()(tr) &&
-	      matchNumChan(tr, nChan) &&
-	      matchIfConvChain(tr, ifChain) &&
-  	      //matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
-			matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
-	      ( /*matchRefFreqCnvtrd(tr, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
-	      matchRefFreqCnvtrd(tr, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
-		   return tr;
-    }
-    if (tr == r-1) r--;
-  }
-  while (r > 0) {
-    r--;
-    if (!flagRow()(r) &&
-	      matchNumChan(r, nChan) &&
-	      matchIfConvChain(r, ifChain) &&
-	      //matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
-			matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
-	      ( /*matchRefFreqCnvtrd(r, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
-	        matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
-         return r;
-    }
-  }
-  return -1;
-}
-
-Vector<Int> ROMSSpWindowColumns::
-allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance) const {
-  uInt r = nrow();
-  Vector<Int> matched;
-  if (r == 0) return matched;
-  // Convert the reference frequency to Hz
-  const MFrequency::Types refType = 
-    MFrequency::castType(refFreq.getRef().getType());
-  const Double refFreqInHz = refFreq.getValue().getValue();
-  // Convert the totalBandwidth to Hz
-  const Unit Hz("Hz");
-  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
-  const Double bandwidthInHz = bandwidth.getValue(Hz);
-  // Convert the tolerance to Hz
-  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
-  const Double tolInHz = tolerance.getValue(Hz);
-
-
-  Int numMatch=0;
-  for (uInt k=0; k < r; ++k){
-    
-
-    if (!flagRow()(k) &&
-	matchNumChan(k, nChan) &&
-	matchIfConvChain(k, ifChain) &&
-	//matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz/4) &&
-	matchTotalBandwidth(k, bandwidthInHz, bandwidthInHz/4.) &&
- 	matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
-	//matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
-      ++numMatch;
-      matched.resize(numMatch, True);
-      matched(numMatch-1)=k;
-    }
-
-  }
-
-  return matched;
-
-}
-
-
-Int ROMSSpWindowColumns::
-matchSpw(const MFrequency& refFreq, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
-	 Bool& reversed) const {
-
-  reversed=False;
-  
-  Int matchedSpw=-1;
-
-  Vector<Int> allMatchSpw=
-    allMatchedSpw(refFreq, nChan, bandwidth, ifChain, tolerance);
- 
-  Int nMatches=allMatchSpw.shape()(0);
-  if(nMatches==0) return -1;
-
-
-
-  // if only one channel then return the first match
-  if (nChan == 1) return allMatchSpw[0];
-  Double tolInHz= tolerance.get("Hz").getValue();
-  for (Int k=0; k < nMatches; ++k){
-
-    matchedSpw=allMatchSpw[k];
-      
-    if(matchChanFreq(matchedSpw, otherFreqs, tolInHz)){ 
-      return matchedSpw;
-    }
-    else{ 
-      Vector<Double> reverseFreq(otherFreqs.shape());
-      for (uInt k=0; k < nChan ; ++k){
-	reverseFreq[k]=otherFreqs[nChan-1-k];
-      }
-      if(matchChanFreq(matchedSpw, reverseFreq, tolInHz)){
-	reversed=True;
-	return matchedSpw;
-      }
-
-    }
-
-  }
- 
-
-  return -1;
-}
-ROMSSpWindowColumns::ROMSSpWindowColumns():
-  chanFreq_p(),
-  chanWidth_p(),
-  effectiveBW_p(),
-  flagRow_p(),
-  freqGroup_p(),
-  freqGroupName_p(),
-  ifConvChain_p(),
-  measFreqRef_p(),
-  name_p(),
-  netSideband_p(),
-  numChan_p(),
-  refFrequency_p(),
-  resolution_p(),
-  totalBandwidth_p(),
-  assocNature_p(),
-  assocSpwId_p(),
-  bbcNo_p(),
-  bbcSideband_p(),
-  dopplerId_p(),
-  receiverId_p(),
-  chanFreqMeas_p(),
-  refFrequencyMeas_p(),
-  chanFreqQuant_p(),
-  chanWidthQuant_p(),
-  effectiveBWQuant_p(),
-  refFrequencyQuant_p(),
-  resolutionQuant_p(),
-  totalBandwidthQuant_p()
+MSSpWindowColumns::MSSpWindowColumns()
 {
 }
 
-void ROMSSpWindowColumns::attach(const MSSpectralWindow& msSpWindow)
+MSSpWindowColumns::MSSpWindowColumns(const MSSpectralWindow& msSpWindow)
+{
+  attach(msSpWindow);
+}
+
+MSSpWindowColumns::~MSSpWindowColumns() {}
+
+void MSSpWindowColumns::attach(const MSSpectralWindow& msSpWindow)
 {
   chanFreq_p.attach(msSpWindow, MSSpectralWindow::
 		    columnName(MSSpectralWindow::CHAN_FREQ));
@@ -380,7 +113,7 @@ void ROMSSpWindowColumns::attach(const MSSpectralWindow& msSpWindow)
   attachOptionalCols(msSpWindow);
 }
 
-void ROMSSpWindowColumns::
+void MSSpWindowColumns::
 attachOptionalCols(const MSSpectralWindow& msSpWindow)
 {
   const ColumnDescSet& cds=msSpWindow.tableDesc().columnDescSet();
@@ -404,7 +137,188 @@ attachOptionalCols(const MSSpectralWindow& msSpWindow)
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
 }
 
-Bool ROMSSpWindowColumns::
+Int MSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance, Int tryRow) const {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // Convert the reference frequency to Hz
+  const MFrequency::Types refType = 
+    MFrequency::castType(refFreq.getRef().getType());
+  const Double refFreqInHz = refFreq.getValue().getValue();
+  // Convert the totalBandwidth to Hz
+  const Unit Hz("Hz");
+  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
+  const Double bandwidthInHz = bandwidth.getValue(Hz);
+
+  // Convert the tolerance to Hz
+  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
+  const Double tolInHz = tolerance.getValue(Hz);
+  // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("MSSpWindowColumns::match(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	matchNumChan(tr, nChan) &&
+	matchIfConvChain(tr, ifChain) &&
+	//matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
+	matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
+ 	matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
+		 return tr;
+    }
+    if (tr == r-1) r--;
+  }
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r) &&
+	matchNumChan(r, nChan) &&
+	matchIfConvChain(r, ifChain) &&
+	//matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
+	matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
+ 	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
+      return r;
+    }
+  }
+  return -1;
+}
+// this version has info of MeasFrame.
+Int MSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasFrame& measFrm,
+    const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance, Int tryRow) const {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // Convert the totalBandwidth to Hz
+  const Unit Hz("Hz");
+  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
+  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  // Convert the tolerance to Hz
+  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
+  const Double tolInHz = tolerance.getValue(Hz);
+  // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("MSSpWindowColumns::match(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	      matchNumChan(tr, nChan) &&
+	      matchIfConvChain(tr, ifChain) &&
+  	      //matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
+			matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
+	      ( /*matchRefFreqCnvtrd(tr, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
+	      matchRefFreqCnvtrd(tr, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+		   return tr;
+    }
+    if (tr == r-1) r--;
+  }
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r) &&
+	      matchNumChan(r, nChan) &&
+	      matchIfConvChain(r, ifChain) &&
+	      //matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
+			matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
+	      ( /*matchRefFreqCnvtrd(r, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
+	        matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+         return r;
+    }
+  }
+  return -1;
+}
+
+Vector<Int> MSSpWindowColumns::
+allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance) const {
+  uInt r = nrow();
+  Vector<Int> matched;
+  if (r == 0) return matched;
+  // Convert the reference frequency to Hz
+  const MFrequency::Types refType = 
+    MFrequency::castType(refFreq.getRef().getType());
+  const Double refFreqInHz = refFreq.getValue().getValue();
+  // Convert the totalBandwidth to Hz
+  const Unit Hz("Hz");
+  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
+  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  // Convert the tolerance to Hz
+  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
+  const Double tolInHz = tolerance.getValue(Hz);
+
+
+  Int numMatch=0;
+  for (uInt k=0; k < r; ++k){
+    
+
+    if (!flagRow()(k) &&
+	matchNumChan(k, nChan) &&
+	matchIfConvChain(k, ifChain) &&
+	//matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz/4) &&
+	matchTotalBandwidth(k, bandwidthInHz, bandwidthInHz/4.) &&
+ 	matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
+	//matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+      ++numMatch;
+      matched.resize(numMatch, True);
+      matched(numMatch-1)=k;
+    }
+
+  }
+
+  return matched;
+
+}
+
+
+Int MSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
+	 Bool& reversed) const
+{
+  reversed=False;
+  
+  Int matchedSpw=-1;
+
+  Vector<Int> allMatchSpw=
+    allMatchedSpw(refFreq, nChan, bandwidth, ifChain, tolerance);
+ 
+  Int nMatches=allMatchSpw.shape()(0);
+  if(nMatches==0) return -1;
+
+  // if only one channel then return the first match
+  if (nChan == 1) return allMatchSpw[0];
+  Double tolInHz= tolerance.get("Hz").getValue();
+  for (Int k=0; k < nMatches; ++k){
+
+    matchedSpw=allMatchSpw[k];
+      
+    if(matchChanFreq(matchedSpw, otherFreqs, tolInHz)){ 
+      return matchedSpw;
+    }
+    else{ 
+      Vector<Double> reverseFreq(otherFreqs.shape());
+      for (uInt k=0; k < nChan ; ++k){
+	reverseFreq[k]=otherFreqs[nChan-1-k];
+      }
+      if(matchChanFreq(matchedSpw, reverseFreq, tolInHz)){
+	reversed=True;
+	return matchedSpw;
+      }
+    }
+  }
+ 
+  return -1;
+}
+
+
+Bool MSSpWindowColumns::
 matchRefFrequency(uInt row, MFrequency::Types refType, 
 		  Double refFreqInHz, Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
@@ -414,7 +328,7 @@ matchRefFrequency(uInt row, MFrequency::Types refType,
   }
   return nearAbs(rowFreq.getValue().getValue(), refFreqInHz, tolInHz);
 }
-Bool ROMSSpWindowColumns::
+Bool MSSpWindowColumns::
 matchRefFreqCnvtrd(uInt row, MFrequency refFreq, const Bool isRefFreq, const MeasFrame& measFrm,
         const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, Double tolInHz) const {
   // measFrm is the frame info for the current spw.
@@ -424,10 +338,10 @@ matchRefFreqCnvtrd(uInt row, MFrequency refFreq, const Bool isRefFreq, const Mea
   MFrequency rowFreq;
   if( isRefFreq ) { 
      rowFreq = refFrequencyMeas()(row);
-	  //cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] match reference frequency. "<< endl;
+	  //cout<< "[MSSpWindowColumns::matchRefFreqCnvtr()] match reference frequency. "<< endl;
   }else{
      rowFreq = Vector<MFrequency>(chanFreqMeas()(row))(0);
-	  //cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] match first channel frequency. " << endl;
+	  //cout<< "[MSSpWindowColumns::matchRefFreqCnvtr()] match first channel frequency. " << endl;
   }
   //const MFrequency refFreqCtrd;
   const MFrequency::Types refType = MFrequency::castType(refFreq.getRef().getType());
@@ -532,7 +446,7 @@ matchRefFreqCnvtrd(uInt row, MFrequency refFreq, const Bool isRefFreq, const Mea
   return nearAbs(rowFreqInHzCnvtrd, refFreqInHzCnvtrd, tolInHz);
 }
 
-Bool ROMSSpWindowColumns::
+Bool MSSpWindowColumns::
 matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
 	      Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
@@ -544,195 +458,24 @@ matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
   return allNearAbs(chanFreq()(row), chanFreqInHz, tolInHz);
 }
   
-Bool ROMSSpWindowColumns::
+Bool MSSpWindowColumns::
 matchIfConvChain(uInt row, Int ifChain) const {
   DebugAssert(row < nrow(), AipsError);
   return ifChain == ifConvChain()(row);
 }
 
-Bool ROMSSpWindowColumns::
+Bool MSSpWindowColumns::
 matchTotalBandwidth(uInt row, Double bandwidthInHz,
 		    Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
   return nearAbs(totalBandwidth()(row), bandwidthInHz, fabs(tolInHz));
 }
 
-Bool ROMSSpWindowColumns::
+Bool MSSpWindowColumns::
 matchNumChan(uInt row, Int nChan) const {
   DebugAssert(row < nrow(), AipsError);
   return nChan == numChan()(row);
 }
 
-MSSpWindowColumns::MSSpWindowColumns(MSSpectralWindow& msSpWindow):
-  ROMSSpWindowColumns(msSpWindow),
-  chanFreq_p(msSpWindow, MSSpectralWindow::
-	     columnName(MSSpectralWindow::CHAN_FREQ)),
-  chanWidth_p(msSpWindow, MSSpectralWindow::
-	      columnName(MSSpectralWindow::CHAN_WIDTH)),
-  effectiveBW_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::EFFECTIVE_BW)),
-  flagRow_p(msSpWindow, MSSpectralWindow::
-	    columnName(MSSpectralWindow::FLAG_ROW)),
-  freqGroup_p(msSpWindow, MSSpectralWindow::
-	      columnName(MSSpectralWindow::FREQ_GROUP)),
-  freqGroupName_p(msSpWindow, MSSpectralWindow::
-		  columnName(MSSpectralWindow::FREQ_GROUP_NAME)),
-  ifConvChain_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::IF_CONV_CHAIN)),
-  measFreqRef_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::MEAS_FREQ_REF)),
-  name_p(msSpWindow, MSSpectralWindow::
-	 columnName(MSSpectralWindow::NAME)),
-  netSideband_p(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::NET_SIDEBAND)),
-  numChan_p(msSpWindow, MSSpectralWindow::
-	    columnName(MSSpectralWindow::NUM_CHAN)),
-  refFrequency_p(msSpWindow, MSSpectralWindow::
-		 columnName(MSSpectralWindow::REF_FREQUENCY)),
-  resolution_p(msSpWindow, MSSpectralWindow::
-	       columnName(MSSpectralWindow::RESOLUTION)),
-  totalBandwidth_p(msSpWindow, MSSpectralWindow::
-		   columnName(MSSpectralWindow::TOTAL_BANDWIDTH)),
-  assocNature_p(),
-  assocSpwId_p(),
-  bbcNo_p(),
-  bbcSideband_p(),
-  dopplerId_p(),
-  receiverId_p(),
-  chanFreqMeas_p(msSpWindow, MSSpectralWindow::
-		 columnName(MSSpectralWindow::CHAN_FREQ)),
-  refFrequencyMeas_p(msSpWindow, MSSpectralWindow::
-		     columnName(MSSpectralWindow::REF_FREQUENCY)),
-  chanFreqQuant_p(msSpWindow, MSSpectralWindow::
-		  columnName(MSSpectralWindow::CHAN_FREQ)),
-  chanWidthQuant_p(msSpWindow, MSSpectralWindow::
-		   columnName(MSSpectralWindow::CHAN_WIDTH)),
-  effectiveBWQuant_p(msSpWindow, MSSpectralWindow::
-		     columnName(MSSpectralWindow::EFFECTIVE_BW)),
-  refFrequencyQuant_p(msSpWindow, MSSpectralWindow::
-		      columnName(MSSpectralWindow::REF_FREQUENCY)),
-  resolutionQuant_p(msSpWindow, MSSpectralWindow::
-		    columnName(MSSpectralWindow::RESOLUTION)),
-  totalBandwidthQuant_p(msSpWindow, MSSpectralWindow::
-			columnName(MSSpectralWindow::TOTAL_BANDWIDTH))
-{
-  attachOptionalCols(msSpWindow);
-}
-
-MSSpWindowColumns::~MSSpWindowColumns() {}
-
-MSSpWindowColumns::MSSpWindowColumns():
-  ROMSSpWindowColumns(),
-  chanFreq_p(),
-  chanWidth_p(),
-  effectiveBW_p(),
-  flagRow_p(),
-  freqGroup_p(),
-  freqGroupName_p(),
-  ifConvChain_p(),
-  measFreqRef_p(),
-  name_p(),
-  netSideband_p(),
-  numChan_p(),
-  refFrequency_p(),
-  resolution_p(),
-  totalBandwidth_p(),
-  assocNature_p(),
-  assocSpwId_p(),
-  bbcNo_p(),
-  bbcSideband_p(),
-  dopplerId_p(),
-  receiverId_p(),
-  chanFreqMeas_p(),
-  refFrequencyMeas_p(),
-  chanFreqQuant_p(),
-  chanWidthQuant_p(),
-  effectiveBWQuant_p(),
-  refFrequencyQuant_p(),
-  resolutionQuant_p(),
-  totalBandwidthQuant_p()
-{
-}
-
-void MSSpWindowColumns::attach(MSSpectralWindow& msSpWindow)
-{
-  ROMSSpWindowColumns::attach(msSpWindow);
-  chanFreq_p.attach(msSpWindow, MSSpectralWindow::
-		    columnName(MSSpectralWindow::CHAN_FREQ));
-  chanWidth_p.attach(msSpWindow, MSSpectralWindow::
-		     columnName(MSSpectralWindow::CHAN_WIDTH));
-  effectiveBW_p.attach(msSpWindow, MSSpectralWindow::
-		       columnName(MSSpectralWindow::EFFECTIVE_BW));
-  flagRow_p.attach(msSpWindow, MSSpectralWindow::
-		   columnName(MSSpectralWindow::FLAG_ROW));
-  freqGroup_p.attach(msSpWindow, MSSpectralWindow::
-		     columnName(MSSpectralWindow::FREQ_GROUP));
-  freqGroupName_p.attach(msSpWindow, MSSpectralWindow::
-			 columnName(MSSpectralWindow::FREQ_GROUP_NAME));
-  ifConvChain_p.attach(msSpWindow, MSSpectralWindow::
-		       columnName(MSSpectralWindow::IF_CONV_CHAIN));
-  measFreqRef_p.attach(msSpWindow, MSSpectralWindow::
-		       columnName(MSSpectralWindow::MEAS_FREQ_REF));
-  name_p.attach(msSpWindow, MSSpectralWindow::
-		columnName(MSSpectralWindow::NAME));
-  netSideband_p.attach(msSpWindow, MSSpectralWindow::
-		       columnName(MSSpectralWindow::NET_SIDEBAND));
-  numChan_p.attach(msSpWindow, MSSpectralWindow::
-		   columnName(MSSpectralWindow::NUM_CHAN));
-  refFrequency_p.attach(msSpWindow, MSSpectralWindow::
-			columnName(MSSpectralWindow::REF_FREQUENCY));
-  resolution_p.attach(msSpWindow, MSSpectralWindow::
-		      columnName(MSSpectralWindow::RESOLUTION));
-  totalBandwidth_p.attach(msSpWindow, MSSpectralWindow::
-			  columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  chanFreqMeas_p.attach(msSpWindow, MSSpectralWindow::
-			columnName(MSSpectralWindow::CHAN_FREQ));
-  refFrequencyMeas_p.attach(msSpWindow, MSSpectralWindow::
-			    columnName(MSSpectralWindow::REF_FREQUENCY));
-  chanFreqQuant_p.attach(msSpWindow, MSSpectralWindow::
-			 columnName(MSSpectralWindow::CHAN_FREQ));
-  chanWidthQuant_p.attach(msSpWindow, MSSpectralWindow::
-			  columnName(MSSpectralWindow::CHAN_WIDTH));
-  effectiveBWQuant_p.attach(msSpWindow, MSSpectralWindow::
-			    columnName(MSSpectralWindow::EFFECTIVE_BW));
-  refFrequencyQuant_p.attach(msSpWindow, MSSpectralWindow::
-			     columnName(MSSpectralWindow::REF_FREQUENCY));
-  resolutionQuant_p.attach(msSpWindow, MSSpectralWindow::
-			   columnName(MSSpectralWindow::RESOLUTION));
-  totalBandwidthQuant_p.attach(msSpWindow, MSSpectralWindow::
-			       columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  attachOptionalCols(msSpWindow);
-}
-
-void MSSpWindowColumns::
-attachOptionalCols(MSSpectralWindow& msSpWindow)
-{
-  const ColumnDescSet& cds=msSpWindow.tableDesc().columnDescSet();
-  const String& assocNature=
-    MSSpectralWindow::columnName(MSSpectralWindow::ASSOC_NATURE);
-  if (cds.isDefined(assocNature)) assocNature_p.attach(msSpWindow,assocNature);
-  const String& assocSpwId=
-    MSSpectralWindow::columnName(MSSpectralWindow::ASSOC_SPW_ID);
-  if (cds.isDefined(assocSpwId)) assocSpwId_p.attach(msSpWindow,assocSpwId);
-  const String& bbcNo=
-    MSSpectralWindow::columnName(MSSpectralWindow::BBC_NO);
-  if (cds.isDefined(bbcNo)) bbcNo_p.attach(msSpWindow,bbcNo);
-  const String& bbcSideband=
-    MSSpectralWindow::columnName(MSSpectralWindow::BBC_SIDEBAND);
-  if (cds.isDefined(bbcSideband)) bbcSideband_p.attach(msSpWindow,bbcSideband);
-  const String& dopplerId=
-    MSSpectralWindow::columnName(MSSpectralWindow::DOPPLER_ID);
-  if (cds.isDefined(dopplerId)) dopplerId_p.attach(msSpWindow,dopplerId);
-  const String& receiverId=
-    MSSpectralWindow::columnName(MSSpectralWindow::RECEIVER_ID);
-  if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
-}
-
-
-// Local Variables: 
-// compile-command: "gmake MSSpWindowColumns"
-// End: 
-
 
 } //# NAMESPACE CASACORE - END
-

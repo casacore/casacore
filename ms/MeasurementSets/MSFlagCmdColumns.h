@@ -41,99 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MSFlagCmd;
 
 // <summary>
-// A class to provide easy read-only access to MSFlagCmd columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MSFlagCmd
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSFlagCmdColumns stands for Read-Only MeasurementSet FlagCmd Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MSFlagCmd
-// Table.  It does the declaration of all the ScalarColumns with the correct
-// types, so the application programmer doesn't have to worry about getting
-// those right. There is an access function for every predefined column. Access
-// to non-predefined columns will still have to be done with explicit
-// declarations.  See <linkto class=ROMSColumns> ROMSColumns</linkto> for
-// an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-
-class ROMSFlagCmdColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified Table
-  ROMSFlagCmdColumns(const MSFlagCmd& msFlagCmd);
-
-  // The destructor does nothing special
-  ~ROMSFlagCmdColumns();
-
-  // Access to required columns
-  // <group>
-  const ROScalarColumn<Bool>& applied() const {return applied_p;}
-  const ROScalarColumn<String>& command() const {return command_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return intervalQuant_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarColumn<Int>& level() const {return level_p;}
-  const ROScalarColumn<String>& reason() const {return reason_p;}
-  const ROScalarColumn<Int>& severity() const {return severity_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
-  const ROScalarColumn<String>& type() const {return type_p;}
-  // </group>
-
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return applied_p.nrow();}
-
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
-  ROMSFlagCmdColumns();
-
-  //# attach this object to the supplied table.
-  void attach(const MSFlagCmd& msFlagCmd);
-
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
-  ROMSFlagCmdColumns(const ROMSFlagCmdColumns&);
-  ROMSFlagCmdColumns& operator=(const ROMSFlagCmdColumns&);
-
-  //# required columns
-  ROScalarColumn<Bool> applied_p;
-  ROScalarColumn<String> command_p;
-  ROScalarColumn<Double> interval_p;
-  ROScalarColumn<Int> level_p;
-  ROScalarColumn<String> reason_p;
-  ROScalarColumn<Int> severity_p;
-  ROScalarColumn<Double> time_p;
-  ROScalarColumn<String> type_p;
-
-  //# Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-
-  //# Access to Quantum columns
-  ROScalarQuantColumn<Double> intervalQuant_p;
-  ROScalarQuantColumn<Double> timeQuant_p;
-};
-
-// <summary>
-// A class to provide easy read-write access to MSFlagCmd columns
+// A class to provide easy access to MSFlagCmd columns
 // </summary>
 
 // <use visibility=export>
@@ -164,16 +72,16 @@ private:
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSFlagCmdColumns: public ROMSFlagCmdColumns
+class MSFlagCmdColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  MSFlagCmdColumns(MSFlagCmd& msFlagCmd);
+  MSFlagCmdColumns(const MSFlagCmd& msFlagCmd);
   
   // The destructor does nothing special
   ~MSFlagCmdColumns();
 
-  // Read-write access to required columns
+  // Access to required columns
   // <group>
   ScalarColumn<Bool>& applied() {return applied_p;}
   ScalarColumn<String>& command() {return command_p;}
@@ -188,31 +96,23 @@ public:
   ScalarColumn<String>& type() {return type_p;}
   // </group>
 
-  // Read-only access to required columns
+  // Const access to required columns
   // <group>
-  const ROScalarColumn<Bool>& applied() const {
-    return ROMSFlagCmdColumns::applied();}
-  const ROScalarColumn<String>& command() const {
-    return ROMSFlagCmdColumns::command();}
-  const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return ROMSFlagCmdColumns::intervalQuant();}
-  const ROScalarColumn<Double>& interval() const {
-    return ROMSFlagCmdColumns::interval();}
-  const ROScalarColumn<Int>& level() const {
-    return ROMSFlagCmdColumns::level();}
-  const ROScalarColumn<String>& reason() const {
-    return ROMSFlagCmdColumns::reason();}
-  const ROScalarColumn<Int>& severity() const {
-    return ROMSFlagCmdColumns::severity();}
-  const ROScalarColumn<Double>& time() const {
-    return ROMSFlagCmdColumns::time();}
-  const ROScalarQuantColumn<Double>& timeQuant() const {
-    return ROMSFlagCmdColumns::timeQuant();}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return ROMSFlagCmdColumns::timeMeas();}
-  const ROScalarColumn<String>& type() const {
-    return ROMSFlagCmdColumns::type();}
+  const ScalarColumn<Bool>& applied() const {return applied_p;}
+  const ScalarColumn<String>& command() const {return command_p;}
+  const ScalarColumn<Double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<Double>& intervalQuant() const {return intervalQuant_p;}
+  const ScalarColumn<Int>& level() const {return level_p;}
+  const ScalarColumn<String>& reason() const {return reason_p;}
+  const ScalarColumn<Int>& severity() const {return severity_p;}
+  const ScalarColumn<Double>& time() const {return time_p;}
+  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
+  const ScalarColumn<String>& type() const {return type_p;}
   // </group>
+
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return applied_p.nrow();}
 
   // set the epoch type for the FLAG_CMD column.
   // <note role=tip>
@@ -231,7 +131,7 @@ protected:
   MSFlagCmdColumns();
 
   //# attach this object to the supplied table.
-  void attach(MSFlagCmd& msFlagCmd);
+  void attach(const MSFlagCmd& msFlagCmd);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
@@ -256,6 +156,9 @@ private:
   ScalarQuantColumn<Double> intervalQuant_p;
   ScalarQuantColumn<Double> timeQuant_p;
 };
+
+//# Define the RO version for backward compatibility.
+typedef MSFlagCmdColumns ROMSFlagCmdColumns;
 
 } //# NAMESPACE CASACORE - END
 

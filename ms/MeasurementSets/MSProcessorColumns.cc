@@ -33,82 +33,19 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ROMSProcessorColumns::
-ROMSProcessorColumns(const MSProcessor& msProcessor):
-  flagRow_p(msProcessor, MSProcessor::columnName(MSProcessor::FLAG_ROW)),
-  modeId_p(msProcessor, MSProcessor::columnName(MSProcessor::MODE_ID)),
-  type_p(msProcessor, MSProcessor::columnName(MSProcessor::TYPE)),
-  typeId_p(msProcessor, MSProcessor::columnName(MSProcessor::TYPE_ID)),
-  subType_p(msProcessor, MSProcessor::columnName(MSProcessor::SUB_TYPE)),
-  passId_p()
-{
-  attachOptionalCols(msProcessor);
-}
-
-ROMSProcessorColumns::~ROMSProcessorColumns() {}
-
-ROMSProcessorColumns::ROMSProcessorColumns():
-  flagRow_p(),
-  modeId_p(),
-  type_p(),
-  typeId_p(),
-  subType_p(),
-  passId_p()
+MSProcessorColumns::MSProcessorColumns()
 {
 }
 
-void ROMSProcessorColumns::attach(const MSProcessor& msProcessor)
+MSProcessorColumns::MSProcessorColumns(const MSProcessor& msProcessor)
 {
-  flagRow_p.attach(msProcessor, MSProcessor::
-		   columnName(MSProcessor::FLAG_ROW));
-  modeId_p.attach(msProcessor, MSProcessor::
-		  columnName(MSProcessor::MODE_ID));
-  type_p.attach(msProcessor, MSProcessor::
-		columnName(MSProcessor::TYPE));
-  typeId_p.attach(msProcessor, MSProcessor::
-		  columnName(MSProcessor::TYPE_ID));
-  subType_p.attach(msProcessor, MSProcessor::
-		   columnName(MSProcessor::SUB_TYPE));
-  attachOptionalCols(msProcessor);
-}
-
-void ROMSProcessorColumns::
-attachOptionalCols(const MSProcessor& msProcessor)
-{
-  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
-  const String& passId=MSProcessor::columnName(MSProcessor::PASS_ID);
-  if (cds.isDefined(passId)) passId_p.attach(msProcessor, passId);
-}
-
-MSProcessorColumns::MSProcessorColumns(MSProcessor& msProcessor):
-  ROMSProcessorColumns(msProcessor),
-  flagRow_p(msProcessor, MSProcessor::columnName(MSProcessor::FLAG_ROW)),
-  modeId_p(msProcessor, MSProcessor::columnName(MSProcessor::MODE_ID)),
-  type_p(msProcessor, MSProcessor::columnName(MSProcessor::TYPE)),
-  typeId_p(msProcessor, MSProcessor::columnName(MSProcessor::TYPE_ID)),
-  subType_p(msProcessor, MSProcessor::columnName(MSProcessor::SUB_TYPE))
-{
-  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
-  const String& passId=MSProcessor::columnName(MSProcessor::PASS_ID);
-  if (cds.isDefined(passId)) passId_p.attach(msProcessor, passId);
+  attach(msProcessor);
 }
 
 MSProcessorColumns::~MSProcessorColumns() {}
 
-MSProcessorColumns::MSProcessorColumns():
-  ROMSProcessorColumns(),
-  flagRow_p(),
-  modeId_p(),
-  type_p(),
-  typeId_p(),
-  subType_p(),
-  passId_p()
+void MSProcessorColumns::attach(const MSProcessor& msProcessor)
 {
-}
-
-void MSProcessorColumns::attach(MSProcessor& msProcessor)
-{
-  ROMSProcessorColumns::attach(msProcessor);
   flagRow_p.attach(msProcessor, MSProcessor::
 		   columnName(MSProcessor::FLAG_ROW));
   modeId_p.attach(msProcessor, MSProcessor::
@@ -122,15 +59,12 @@ void MSProcessorColumns::attach(MSProcessor& msProcessor)
   attachOptionalCols(msProcessor);
 }
 
-void MSProcessorColumns::attachOptionalCols(MSProcessor& msProcessor)
+void MSProcessorColumns::attachOptionalCols(const MSProcessor& msProcessor)
 {
   const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
   const String& passId=MSProcessor::columnName(MSProcessor::PASS_ID);
   if (cds.isDefined(passId)) passId_p.attach(msProcessor, passId);
 }
-// Local Variables: 
-// compile-command: "gmake MSProcessorColumns"
-// End: 
 
 } //# NAMESPACE CASACORE - END
 

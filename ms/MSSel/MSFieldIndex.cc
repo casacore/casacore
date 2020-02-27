@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Input:
     //    field           const MSField&           Input MSField object
     // Output to private data:
-    //    msFieldCols_p   ROMSFieldColumns         MSField columns accessor
+    //    msFieldCols_p   MSFieldColumns         MSField columns accessor
     //    fieldIds_p      Vector<Int>              Field id's
     //    nrows_p         Int                      Number of rows
     //

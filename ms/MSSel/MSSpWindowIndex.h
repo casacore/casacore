@@ -106,7 +106,7 @@ private:
   MSSpWindowIndex();
 
   // SPECTRAL_WINDOW subtable column accessor
-  ROMSSpWindowColumns msSpWindowCols_p;
+  MSSpWindowColumns msSpWindowCols_p;
 
   // Vector cache of SpWindow id's
   Vector<Int> spWindowIds_p;

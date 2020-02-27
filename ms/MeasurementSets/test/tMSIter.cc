@@ -138,10 +138,10 @@ void iterMS (double binwidth)
   MSIter msIter(ms, sort, binwidth, False);
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()
-         << " a1=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
-         << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
          << " time="
-         << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
+         << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << " keyCh=" << msIter.keyChange()
          << endl;
   }
@@ -156,10 +156,10 @@ void iterMSMemory (double binwidth)
   MSIter msIter(ms, sort, binwidth, False, False); // Use stored table in memory
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()
-         << " a1=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
-         << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
          << " time="
-         << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
+         << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << endl;
   }
 }
@@ -175,10 +175,10 @@ void iter2MS (double binwidth)
   unsigned i = 0;
   for (msIter.origin(); msIter.more(); ++msIter) {
     cout << "nrow=" << msIter.table().nrow()
-         << " a1=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
-         << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
          << " time="
-         << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
+         << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << " keyCh=" << msIter.keyChange()
          << endl;
     if (++i == 4) {
@@ -186,10 +186,10 @@ void iter2MS (double binwidth)
       MSIter msIter1 = msIter;
       for (msIter1.origin(); msIter1.more(); ++msIter1) {
         cout << "nrow=" << msIter1.table().nrow()
-             << " a1=" << ROScalarColumn<Int>(msIter1.table(), "ANTENNA1")(0)
-             << " a2=" << ROScalarColumn<Int>(msIter1.table(), "ANTENNA2")(0)
+             << " a1=" << ScalarColumn<Int>(msIter1.table(), "ANTENNA1")(0)
+             << " a2=" << ScalarColumn<Int>(msIter1.table(), "ANTENNA2")(0)
              << " time="
-             << ROScalarColumn<double>(msIter1.table(), "TIME").getColumn() - 1e9
+             << ScalarColumn<double>(msIter1.table(), "TIME").getColumn() - 1e9
              << " keyCh=" << msIter1.keyChange()
              << endl;
       }
@@ -211,10 +211,10 @@ void iter2MSMemory (double binwidth)
   unsigned i = 0;
   for (it->origin(); it->more(); ++(*it)) {
     cout << "nrow=" << it->table().nrow()
-         << " a1=" << ROScalarColumn<Int>(it->table(), "ANTENNA1")(0)
-         << " a2=" << ROScalarColumn<Int>(it->table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<Int>(it->table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<Int>(it->table(), "ANTENNA2")(0)
          << " time="
-         << ROScalarColumn<double>(it->table(), "TIME").getColumn() - 1e9
+         << ScalarColumn<double>(it->table(), "TIME").getColumn() - 1e9
          << endl;
     if (++i % 2 == 1) {
       msIter1 = msIter;

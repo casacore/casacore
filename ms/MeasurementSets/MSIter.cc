@@ -350,15 +350,11 @@ MSIter::operator=(const MSIter& other)
   newSpectralWindow_p = other.newSpectralWindow_p;
   newPolarizationId_p = other.newPolarizationId_p;
   newDataDescId_p = other.newDataDescId_p;
-  preselected_p = other.preselected_p;
   timeDepFeed_p = other.timeDepFeed_p;
   spwDepFeed_p = other.spwDepFeed_p;
   checkFeed_p = other.checkFeed_p;
-  startChan_p = other.startChan_p;
   storeSorted_p = other.storeSorted_p;
   interval_p = other.interval_p;
-  preselectedChanStart_p = other.preselectedChanStart_p;
-  preselectednChan_p = other.preselectednChan_p;
   colArray_p = other.colArray_p;
   colDataDesc_p = other.colDataDesc_p;
   colField_p = other.colField_p;
@@ -506,15 +502,8 @@ const Vector<Double>& MSIter::frequency() const
   if (!freqCacheOK_p) {
     This->freqCacheOK_p=True;
     Int spw = curSpectralWindow_p;
-    if (preselected_p) {
-      msc_p->spectralWindow().chanFreq().
-	getSlice(spw,Slicer(Slice(preselectedChanStart_p[spw],
-				  preselectednChan_p[spw])),
-		 This->frequency_p,True);
-    } else {
-      msc_p->spectralWindow().chanFreq().
-	get(spw,This->frequency_p,True);
-    }
+    msc_p->spectralWindow().chanFreq().
+      get(spw,This->frequency_p,True);
   }
   return frequency_p;
 }
@@ -549,30 +538,7 @@ void MSIter::setMSInfo()
   if (newMS_p) {
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
-    msc_p = new ROMSColumns(bms_p[curMS_p]);
-    // check to see if we are attached to a 'reference MS' with a 
-    // DATA column that is a selection of the original DATA
-    if(!msc_p->data().isNull() || !msc_p->floatData().isNull())
-    {
-      const TableRecord & kws = (msc_p->data().isNull() ?
-          msc_p->floatData().keywordSet() :
-          msc_p->data().keywordSet());
-      preselected_p = kws.isDefined("CHANNEL_SELECTION");
-      if (preselected_p) {
-        // get the selection
-        Matrix<Int> selection;
-        kws.get("CHANNEL_SELECTION",selection);
-        Int nSpw = selection.ncolumn();
-        preselectedChanStart_p.resize(nSpw);
-        preselectednChan_p.resize(nSpw);
-        for (Int i = 0; i < nSpw; i++) {
-          preselectedChanStart_p[i] = selection(0,i);
-          preselectednChan_p[i] = selection(1,i);
-        }
-      }
-    }
-    else
-      preselected_p = false;
+    msc_p = new MSColumns(bms_p[curMS_p]);
 
     // determine the reference frame position
     String observatory;
@@ -656,7 +622,7 @@ void MSIter::setFeedInfo()
       Bool unique = True;
       for (TableIterator tabIter(msc_p->feed().time().table(),cols);
 	   !tabIter.pastEnd(); tabIter.next()) {
-	ROMSFeedColumns msfc(MSFeed(tabIter.table()));
+	MSFeedColumns msfc(MSFeed(tabIter.table()));
 	// check if any antennas appear more than once
 	Vector<Int> antennas=msfc.antennaId().getColumn();
 	Int nRow=antennas.nelements();
@@ -752,10 +718,7 @@ void MSIter::setDataDescInfo()
   newPolarizationId_p=(lastPolarizationId_p!=curPolarizationId_p);
   if (newSpectralWindow_p) {
     lastSpectralWindow_p = curSpectralWindow_p;
-    startChan_p= (preselected_p ? preselectedChanStart_p[curSpectralWindow_p] :
-		  0);
     freqCacheOK_p=False;
-  
   }
   if (newPolarizationId_p) {
     lastPolarizationId_p = curPolarizationId_p;
@@ -803,7 +766,7 @@ const String& MSIter::sourceName()  const {
 }
 const MDirection& MSIter::phaseCenter() const {
   if(msc_p){
-    Double firstTimeStamp=ROScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
+    Double firstTimeStamp=ScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
     if(newField_p || (firstTimeStamp != prevFirstTimeStamp_p)){
       This->prevFirstTimeStamp_p=firstTimeStamp;
       This->phaseCenter_p=msc_p->field().phaseDirMeas(curField_p, firstTimeStamp);

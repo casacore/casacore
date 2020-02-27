@@ -71,7 +71,7 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
   Bool found = False;
 
   // Accessor for the MS columns and sub-tables
-  ROMSColumns msc (ms_p);
+  MSColumns msc (ms_p);
   // Retrieve the doppler id & source id
   Int dopId = (msc.spectralWindow().dopplerId().isNull() ? 
                -1 : msc.spectralWindow().dopplerId()(spwId));

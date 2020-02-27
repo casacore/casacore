@@ -102,21 +102,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //
   // MSMainColInterface objects is a generalization of
-  // ROMSMainColumns.  This is constructed with a Table, which can be
+  // MSMainColumns.  This is constructed with a Table, which can be
   // MS or CalTable (or any other table with interface methods like
   // those in MSMainColumns.  The access methods of MSMainColumns
   // allowed via MSMacinColInterface are flag(), flagRow(),
   // exposureQuant() and timeQuant().
   //
   // The MSMainColInterface::flagRow(int &) is slightly slower than
-  // ROMSMainColumns::flagRow()(int &) interface.  However since this
+  // MSMainColumns::flagRow()(int &) interface.  However since this
   // is used only to determine the first unflagged row, the loss in
   // effciency should not be an issue.
   //
   void  MSTimeParse::getDefaults()
   {
     uInt firstLogicalRow=0; // This is the logical first row
-    //ROMSMainColumns mainColumns_l(*ms_p);
+    //MSMainColumns mainColumns_l(*ms_p);
     //    MSMainColInterface mainColumns_l(*ms_p);
 
     if (!defaultTimeComputed) {
@@ -157,7 +157,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // Get the exposure in seconds.
     //
-    ROScalarQuantColumn<Double> exposure;
+    ScalarQuantColumn<Double> exposure;
     exposure.reference(mainColumn_p->exposureQuant());
     if (ms_p == NULL) {
       // This instance is not attached to an MS (which

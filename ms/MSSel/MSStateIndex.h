@@ -115,7 +115,7 @@ private:
   MSStateIndex();
 
   // FIELD subtable column accessor
-  ROMSStateColumns msStateCols_p;
+  MSStateColumns msStateCols_p;
 
   // Vector cache of field id's
   Vector<Int> stateIds_p;

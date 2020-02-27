@@ -66,7 +66,7 @@ void MSValidIds::attach(const MeasurementSet &ms)
     
     ms_p = ms;
 
-    romsCols_p = new ROMSColumns(ms_p);
+    romsCols_p = new MSColumns(ms_p);
     AlwaysAssert(romsCols_p, AipsError);
 
     // check on existance of optional sub-tables

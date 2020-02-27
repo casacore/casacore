@@ -28,6 +28,7 @@
 #include <casacore/ms/MSOper/MSConcat.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
@@ -123,7 +124,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   return fixedShape;
 }
 
-  Bool MSConcat::checkEphIdInField(const ROMSFieldColumns& otherFldCol) const {
+  Bool MSConcat::checkEphIdInField(const MSFieldColumns& otherFldCol) const {
   // test if this MS FIELD table has an ephID column
   if(!itsMS.field().actualTableDesc().isColumn(MSField::columnName(MSField::EPHEMERIS_ID))){
     // if not, test if the other MS uses ephem objects
@@ -189,7 +190,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	<< LogIO::EXCEPTION;
 
   {
-    const ROMSFieldColumns otherMSFCols(otherMS.field());
+    const MSFieldColumns otherMSFCols(otherMS.field());
     if(!checkEphIdInField(otherMSFCols)){
       log << "EPHEMERIS_ID column missing in FIELD table of MS " << itsMS.tableName()
 	  << LogIO::EXCEPTION;
@@ -201,15 +202,15 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     //   is the same
     if (otherMS.nrow() > 0) {
       if (itsFixedShape.nelements() > 0) {
-	const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
-	const ROMSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
-	const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
+	const MSPolarizationColumns otherPolCols(otherMS.polarization());
+	const MSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
+	const MSDataDescColumns otherDDCols(otherMS.dataDescription());
 	const uInt nShapes = otherDDCols.nrow();
 	for (uInt s = 0; s < nShapes; s++) {
 	  checkShape(getShape(otherDDCols, otherSpwCols, otherPolCols, s));
 	}
       }
-      const ROMSMainColumns otherMainCols(otherMS);
+      const MSMainColumns otherMainCols(otherMS);
       checkCategories(otherMainCols);
     }
   }
@@ -387,6 +388,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   ArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& otherSigma = otherMainCols.sigma();
   ArrayColumn<Float>& otherSigmaSp = otherMainCols.sigmaSpectrum();
+  ArrayColumn<Bool>& otherFlag = otherMainCols.flag();
+  ArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
 
   ScalarColumn<Int>& otherAnt1Col = otherMainCols.antenna1();
   ScalarColumn<Int>& otherAnt2Col = otherMainCols.antenna2();
@@ -565,6 +568,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   
   Bool copyWtSp = (!otherWeightSp.isNull()) && otherWeightSp.isDefined(0);
   Bool copySgSp = (!otherSigmaSp.isNull()) && otherSigmaSp.isDefined(0);
+  Bool copyFlagCat = (!otherFlagCat.isNull()) && otherFlagCat.isDefined(0); 
   
   // MAIN
   
@@ -668,7 +672,32 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     }  
   }
 
+  const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
+  const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
+  Int polId = -1;
+  vector<Int> polSwap;
+
   for (uInt r = 0; r < otherRows; r++) {
+    // Determine whether we need to swap rows in the visibility matrix
+    // if we change the order of the antennas.  This is done by
+    // creating a mapping that makes sure the receptor numbers remain
+    // correct when the antennas are swapped.
+    uInt d = otherDDId(r);
+    uInt p = otherDDCols.polarizationId()(otherDDId(r));
+    if (p != polId) {
+      const Matrix<Int> &products = otherPolCols.corrProduct()(p);
+      polSwap.resize(products.shape()(1));
+      for (Int i = 0; i < products.shape()(1); i++) {
+	for (Int j = 0; j < products.shape()(1); j++) {
+	  if (products(0, i) == products(1, j) &&
+	      products(1, i) == products(0, j)) {
+	    polSwap[i] = j;
+	    break;
+	  }
+	}
+      }
+      polId = p;
+    }
     
     Bool doConjugateVis = False;
 
@@ -699,6 +728,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       Vector<Int> datShape;
       Matrix<Complex> reversedData;
       Matrix<Float> reversedFloatData;
+      Matrix<Complex> swappedData;
       if(doFloatData){
 	datShape=otherFloatData.shape(r).asVector();
 	reversedFloatData.resize(datShape[0], datShape[1]);
@@ -735,7 +765,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       else{
 	if(doConjugateVis){
-	  otherData.put(r, conj(reversedData));	  
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(reversedData)).row(polSwap[p]);
+	  }
+	  otherData.put(r, conj(swappedData));
 	}
 	else{
 	  otherData.put(r, reversedData);
@@ -743,7 +777,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       if(doCorrectedData){
 	if(doConjugateVis){
-	  otherCorrectedData.put(r, conj(reversedCorrData));
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(reversedCorrData)).row(polSwap[p]);
+	  }
+	  otherCorrectedData.put(r, conj(swappedData));
 	}
 	else{
 	  otherCorrectedData.put(r, reversedCorrData);
@@ -751,7 +789,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       if(doModelData){
 	if(doConjugateVis){
-	  otherModelData.put(r, conj(reversedModData));
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(reversedModData)).row(polSwap[p]);
+	  }
+	  otherModelData.put(r, conj(swappedData));
 	}
 	else{
 	  otherModelData.put(r, reversedModData);
@@ -759,19 +801,36 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
     }
     else{ // no reversal
+      Vector<Int> datShape;
+      Matrix<Complex> swappedData;
       if(!doFloatData){
 	if(doConjugateVis){ // conjugate because order of antennas was reversed
-	  otherData.put(r, conj(otherData(r)));
+	  datShape=otherData.shape(r).asVector();
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(otherData(r))).row(polSwap[p]);
+	  }
+	  otherData.put(r, conj(swappedData));
 	}
       }
       if(doModelData){
 	if(doConjugateVis){
-	  otherModelData.put(r, conj(otherModelData(r)));
+	  datShape=otherModelData.shape(r).asVector();
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(otherModelData(r))).row(polSwap[p]);
+	  }
+	  otherModelData.put(r, conj(swappedData));
 	}
       } 
       if(doCorrectedData){
 	if(doConjugateVis){
-	  otherCorrectedData.put(r, conj(otherCorrectedData(r)));
+	  datShape=otherCorrectedData.shape(r).asVector();
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(otherCorrectedData(r))).row(polSwap[p]);
+	  }
+	  otherCorrectedData.put(r, conj(swappedData));
 	}
       }
     } // end if itsChanReversed
@@ -780,13 +839,92 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     otherFieldId[r] = newFldIndices[otherFieldId[r]];
     
     if(doWeightScale){
-      otherWeight.put(r, otherWeight(r)*itsWeightScale);
-      if (copyWtSp) otherWeightSp.put(r, otherWeightSp(r)*itsWeightScale);
-      
-      otherSigma.put(r, otherSigma(r) * sScale);
-      if (copySgSp) otherSigmaSp.put(r, otherWeightSp(r) * sScale);
+      if(doConjugateVis){
+	Vector<Int> datShape=otherWeight.shape(r).asVector();
+	Vector<Float> swappedWeight(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedWeight(p) = (Vector<Float>(otherWeight(r)))(polSwap[p]);
+	}
+	otherWeight.put(r, swappedWeight*itsWeightScale);
+	if (copyWtSp) {
+	  datShape.assign(otherWeightSp.shape(r).asVector());
+	  Matrix<Float> swappedWeightSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedWeightSp.row(p) = (Matrix<Float>(otherWeightSp(r))).row(polSwap[p]);
+	  }
+	  otherWeightSp.put(r, swappedWeightSp*itsWeightScale);
+	}
+	datShape.assign(otherSigma.shape(r).asVector());
+	Vector<Float> swappedSigma(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedSigma(p) = (Vector<Float>(otherSigma(r)))(polSwap[p]);
+	}
+	otherSigma.put(r, swappedSigma*sScale);
+	if (copySgSp) {
+	  datShape.assign(otherSigmaSp.shape(r).asVector());
+	  Matrix<Float> swappedSigmaSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedSigmaSp.row(p) = (Matrix<Float>(otherSigmaSp(r))).row(polSwap[p]);
+	  }
+	  otherSigmaSp.put(r, swappedSigmaSp*sScale);
+	}
+      }
+      else{
+	otherWeight.put(r, otherWeight(r)*itsWeightScale);
+	if (copyWtSp) otherWeightSp.put(r, otherWeightSp(r)*itsWeightScale);
+	otherSigma.put(r, otherSigma(r)*sScale);
+	if (copySgSp) otherSigmaSp.put(r, otherWeightSp(r)*sScale);
+      }
     }
-    
+    else{
+      if(doConjugateVis){
+	Vector<Int> datShape=otherWeight.shape(r).asVector();
+	Vector<Float> swappedWeight(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedWeight(p) = (Vector<Float>(otherWeight(r)))(polSwap[p]);
+	}
+	otherWeight.put(r, swappedWeight);
+	if (copyWtSp) {
+	  datShape.assign(otherWeightSp.shape(r).asVector());
+	  Matrix<Float> swappedWeightSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedWeightSp.row(p) = (Matrix<Float>(otherWeightSp(r))).row(polSwap[p]);
+	  }
+	  otherWeightSp.put(r, swappedWeightSp);
+	}
+	datShape.assign(otherSigma.shape(r).asVector());
+	Vector<Float> swappedSigma(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedSigma(p) = (Vector<Float>(otherSigma(r)))(polSwap[p]);
+	}
+	otherSigma.put(r, swappedSigma);
+	if (copySgSp) {
+	  datShape.assign(otherSigmaSp.shape(r).asVector());
+	  Matrix<Float> swappedSigmaSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedSigmaSp.row(p) = (Matrix<Float>(otherSigmaSp(r))).row(polSwap[p]);
+	  }
+	  otherSigmaSp.put(r, swappedSigmaSp);
+	}
+      }
+    }
+
+    if(doConjugateVis){
+      Vector<Int> datShape=otherFlag.shape(r).asVector();
+      Matrix<Bool> swappedFlag(datShape[0], datShape[1]);
+      for (Int p = 0; p < datShape[0]; p++) {
+	swappedFlag.row(p) = (Matrix<Bool>(otherFlag(r))).row(polSwap[p]);
+      }
+      otherFlag.put(r, swappedFlag);
+      if (copyFlagCat) {
+	datShape.assign(otherFlagCat.shape(r).asVector());
+	Cube<Bool> swappedFlagCat(datShape[0], datShape[1], datShape[2]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedFlagCat.yzPlane(p) = (Cube<Bool>(otherFlagCat(r))).yzPlane(polSwap[p]);
+	}
+	otherFlagCat.put(r, swappedFlagCat);
+      }
+    }
   } // end for
   
   // write the scalar columns
@@ -890,7 +1028,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   }
 
   {
-    const ROMSFieldColumns otherMSFCols(otherMS.field());
+    const MSFieldColumns otherMSFCols(otherMS.field());
     if(!checkEphIdInField(otherMSFCols)){
       log << "EPHEMERIS_ID column missing in FIELD table of MS " << itsMS.tableName()
 	  << LogIO::EXCEPTION;
@@ -899,12 +1037,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 
   // verify that shape of the two MSs as described in POLARISATION, SPW, and DATA_DESCR
   //   is the same
-  const ROMSMainColumns otherMainCols(otherMS);
+  const MSMainColumns otherMainCols(otherMS);
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
-      const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
-      const ROMSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
-      const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
+      const MSPolarizationColumns otherPolCols(otherMS.polarization());
+      const MSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
+      const MSDataDescColumns otherDDCols(otherMS.dataDescription());
       const uInt nShapes = otherDDCols.nrow();
       for (uInt s = 0; s < nShapes; s++) {
 	checkShape(getShape(otherDDCols, otherSpwCols, otherPolCols, s));
@@ -1111,37 +1249,37 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       << destMS->nrow() << endl << LogIO::POST;
   
   // create column objects for those columns which need not be modified
-  const ROScalarColumn<Double>& otherTime = otherMainCols.time();
+  const ScalarColumn<Double>& otherTime = otherMainCols.time();
   ScalarColumn<Double>& thisTime = destMainCols.time();
-  const ROScalarColumn<Double>& otherInterval = otherMainCols.interval();
+  const ScalarColumn<Double>& otherInterval = otherMainCols.interval();
   ScalarColumn<Double>& thisInterval = destMainCols.interval();
-  const ROScalarColumn<Double>& otherExposure = otherMainCols.exposure();
+  const ScalarColumn<Double>& otherExposure = otherMainCols.exposure();
   ScalarColumn<Double>& thisExposure = destMainCols.exposure();
-  const ROScalarColumn<Double>& otherTimeCen = otherMainCols.timeCentroid();
+  const ScalarColumn<Double>& otherTimeCen = otherMainCols.timeCentroid();
   ScalarColumn<Double>& thisTimeCen = destMainCols.timeCentroid();
-  const ROScalarColumn<Int>& otherArrayId = otherMainCols.arrayId();
+  const ScalarColumn<Int>& otherArrayId = otherMainCols.arrayId();
   ScalarColumn<Int>& thisArrayId = destMainCols.arrayId();
-  const ROArrayColumn<Bool>& otherFlag = otherMainCols.flag();
+  const ArrayColumn<Bool>& otherFlag = otherMainCols.flag();
   ArrayColumn<Bool>& thisFlag = destMainCols.flag();
-  const ROArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
+  const ArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
   ArrayColumn<Bool>& thisFlagCat = destMainCols.flagCategory();
   Bool copyFlagCat = !(thisFlagCat.isNull() || otherFlagCat.isNull());
   copyFlagCat = copyFlagCat && thisFlagCat.isDefined(0) 
     && otherFlagCat.isDefined(0);
-  const ROScalarColumn<Bool>& otherFlagRow = otherMainCols.flagRow();
+  const ScalarColumn<Bool>& otherFlagRow = otherMainCols.flagRow();
   ScalarColumn<Bool>& thisFlagRow = destMainCols.flagRow();
-  const ROScalarColumn<Int>& otherFeed1 = otherMainCols.feed1();
+  const ScalarColumn<Int>& otherFeed1 = otherMainCols.feed1();
   ScalarColumn<Int>& thisFeed1 = destMainCols.feed1();
-  const ROScalarColumn<Int>& otherFeed2 = otherMainCols.feed2();
+  const ScalarColumn<Int>& otherFeed2 = otherMainCols.feed2();
   ScalarColumn<Int>& thisFeed2 = destMainCols.feed2();
   
   // create column objects for those columns which potentially need to be modified
   
-  ROArrayColumn<Complex> otherData;
+  ArrayColumn<Complex> otherData;
   ArrayColumn<Complex> thisData;
-  ROArrayColumn<Float> otherFloatData;
+  ArrayColumn<Float> otherFloatData;
   ArrayColumn<Float> thisFloatData;
-  ROArrayColumn<Complex> otherModelData, otherCorrectedData;
+  ArrayColumn<Complex> otherModelData, otherCorrectedData;
   ArrayColumn<Complex> thisModelData, thisCorrectedData;
   
   if(doFloatData){
@@ -1162,28 +1300,28 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     otherModelData.reference(otherMainCols.modelData());
   }
   
-  const ROScalarColumn<Int>& otherAnt1 = otherMainCols.antenna1();
+  const ScalarColumn<Int>& otherAnt1 = otherMainCols.antenna1();
   ScalarColumn<Int> thisAnt1 = destMainCols.antenna1();
-  const ROScalarColumn<Int>& otherAnt2 = otherMainCols.antenna2();
+  const ScalarColumn<Int>& otherAnt2 = otherMainCols.antenna2();
   ScalarColumn<Int> thisAnt2 = destMainCols.antenna2();
-  const ROScalarColumn<Int>& otherDDId = otherMainCols.dataDescId();
+  const ScalarColumn<Int>& otherDDId = otherMainCols.dataDescId();
   ScalarColumn<Int> thisDDId = destMainCols.dataDescId();
-  const ROScalarColumn<Int>& otherFieldId = otherMainCols.fieldId();
+  const ScalarColumn<Int>& otherFieldId = otherMainCols.fieldId();
   ScalarColumn<Int> thisFieldId = destMainCols.fieldId();
-  const ROArrayColumn<Double>& otherUvw = otherMainCols.uvw();
+  const ArrayColumn<Double>& otherUvw = otherMainCols.uvw();
   ArrayColumn<Double> thisUvw = destMainCols.uvw();
-  const ROArrayColumn<Float>& otherWeight = otherMainCols.weight();
+  const ArrayColumn<Float>& otherWeight = otherMainCols.weight();
   ArrayColumn<Float> thisWeight = destMainCols.weight();
-  const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
+  const ArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float> thisWeightSp = destMainCols.weightSpectrum();
-  const ROArrayColumn<Float>& otherSigma = otherMainCols.sigma();
+  const ArrayColumn<Float>& otherSigma = otherMainCols.sigma();
   ArrayColumn<Float> thisSigma = destMainCols.sigma();
-  const ROArrayColumn<Float>& otherSigmaSp = otherMainCols.sigmaSpectrum();
+  const ArrayColumn<Float>& otherSigmaSp = otherMainCols.sigmaSpectrum();
   ArrayColumn<Float> thisSigmaSp = destMainCols.sigmaSpectrum();
 
-  const ROScalarColumn<Int>& otherScan = otherMainCols.scanNumber();
-  const ROScalarColumn<Int>& otherStateId = otherMainCols.stateId();
-  const ROScalarColumn<Int>& otherObsId=otherMainCols.observationId();
+  const ScalarColumn<Int>& otherScan = otherMainCols.scanNumber();
+  const ScalarColumn<Int>& otherStateId = otherMainCols.stateId();
+  const ScalarColumn<Int>& otherObsId=otherMainCols.observationId();
 
   ScalarColumn<Int> thisScan;
   ScalarColumn<Int> thisStateId;
@@ -1252,7 +1390,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   Int defaultScanOffset=0;
   Int minScanOther = 0;
   {
-    ROTableVector<Int> ScanTabVectOther(otherScan);
+    TableVector<Int> ScanTabVectOther(otherScan);
     minScanOther = min(ScanTabVectOther);
     defaultScanOffset = maxScanThis + 1 - minScanOther;
     if(defaultScanOffset<0){
@@ -1306,8 +1444,33 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     sScale = 1/sqrt(itsWeightScale);
   }
 
+  const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
+  const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
+  Int polId = -1;
+  vector<Int> polSwap;
+
   for (uInt r = 0; r < newRows; r++, curRow++) {
-    
+    // Determine whether we need to swap rows in the visibility matrix
+    // if we change the order of the antennas.  This is done by
+    // creating a mapping that makes sure the receptor numbers remain
+    // correct when the antennas are swapped.
+    uInt d = otherDDId(r);
+    uInt p = otherDDCols.polarizationId()(otherDDId(r));
+    if (p != polId) {
+      const Matrix<Int> &products = otherPolCols.corrProduct()(p);
+      polSwap.resize(products.shape()(1));
+      for (Int i = 0; i < products.shape()(1); i++) {
+	for (Int j = 0; j < products.shape()(1); j++) {
+	  if (products(0, i) == products(1, j) &&
+	      products(1, i) == products(0, j)) {
+	    polSwap[i] = j;
+	    break;
+	  }
+	}
+      }
+      polId = p;
+    }
+
     Int newA1 = newAntIndices[otherAnt1(r)];
     Int newA2 = newAntIndices[otherAnt2(r)];
     Bool doConjugateVis = False;
@@ -1375,6 +1538,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       Vector<Int> datShape;
       Matrix<Complex> reversedData;
       Matrix<Float> reversedFloatData;
+      Matrix<Complex> swappedData;
       if(doFloatData){
 	datShape=otherFloatData.shape(r).asVector();
 	reversedFloatData.resize(datShape[0], datShape[1]);
@@ -1403,7 +1567,6 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	    reversedCorrData(k1,k2)=(Matrix<Complex>(otherCorrectedData(r)))(k1,
 									     datShape[1]-1-k2);
 	  }
-	  
 	}
       } 
       if(doFloatData){
@@ -1411,7 +1574,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       else{
 	if(doConjugateVis){
-	  thisData.put(curRow, conj(reversedData));	  
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(reversedData)).row(polSwap[p]);
+	  }
+	  thisData.put(curRow, conj(swappedData));
 	}
 	else{
 	  thisData.put(curRow, reversedData);
@@ -1419,7 +1586,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       if(doCorrectedData){
 	if(doConjugateVis){
-	  thisCorrectedData.put(curRow, conj(reversedCorrData));
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(reversedCorrData)).row(polSwap[p]);
+	  }
+	  thisCorrectedData.put(curRow, conj(swappedData));
 	}
 	else{
 	  thisCorrectedData.put(curRow, reversedCorrData);
@@ -1427,7 +1598,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       if(doModelData){
 	if(doConjugateVis){
-	  thisModelData.put(curRow, conj(reversedModData));
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(reversedModData)).row(polSwap[p]);
+	  }
+	  thisModelData.put(curRow, conj(swappedData));
 	}
 	else{
 	  thisModelData.put(curRow, reversedModData);
@@ -1435,12 +1610,19 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
     }
     else{ // no reversal
+      Vector<Int> datShape;
+      Matrix<Complex> swappedData;
       if(doFloatData){
 	thisFloatData.put(curRow, otherFloatData, r);
       }
       else{
 	if(doConjugateVis){ // conjugate because order of antennas was reversed
-	  thisData.put(curRow, conj(otherData(r)));
+	  datShape=otherData.shape(r).asVector();
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(otherData(r))).row(polSwap[p]);
+	  }
+	  thisData.put(curRow, conj(swappedData));
 	}
 	else{
 	  thisData.put(curRow, otherData, r);
@@ -1448,7 +1630,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
       if(doModelData){
 	if(doConjugateVis){
-	  thisModelData.put(curRow, conj(otherModelData(r)));
+	  datShape=otherModelData.shape(r).asVector();
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(otherModelData(r))).row(polSwap[p]);
+	  }
+	  thisModelData.put(curRow, conj(swappedData));
 	}
 	else{
 	  thisModelData.put(curRow, otherModelData, r);
@@ -1456,7 +1643,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       } 
       if(doCorrectedData){
 	if(doConjugateVis){
-	  thisCorrectedData.put(curRow, conj(otherCorrectedData(r)));
+	  datShape=otherCorrectedData.shape(r).asVector();
+	  swappedData.resize(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedData.row(p) = (Matrix<Complex>(otherCorrectedData(r))).row(polSwap[p]);
+	  }
+	  thisCorrectedData.put(curRow, conj(swappedData));
 	}
 	else{
 	  thisCorrectedData.put(curRow, otherCorrectedData, r);
@@ -1465,16 +1657,82 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     } // end if itsChanReversed
     
     if(doWeightScale){
-      thisWeight.put(curRow, otherWeight(r)*itsWeightScale);
-      if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp(r)*itsWeightScale);
-      thisSigma.put(curRow, otherSigma(r)*sScale);
-      if (copySgSp) thisSigmaSp.put(curRow, otherSigmaSp(r)*sScale);
+      if(doConjugateVis){
+	Vector<Int> datShape=otherWeight.shape(r).asVector();
+	Vector<Float> swappedWeight(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedWeight(p) = (Vector<Float>(otherWeight(r)))(polSwap[p]);
+	}
+	thisWeight.put(curRow, swappedWeight*itsWeightScale);
+	if (copyWtSp) {
+	  datShape.assign(otherWeightSp.shape(r).asVector());
+	  Matrix<Float> swappedWeightSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedWeightSp.row(p) = (Matrix<Float>(otherWeightSp(r))).row(polSwap[p]);
+	  }
+	  thisWeightSp.put(curRow, swappedWeightSp*itsWeightScale);
+	}
+	datShape.assign(otherSigma.shape(r).asVector());
+	Vector<Float> swappedSigma(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedSigma(p) = (Vector<Float>(otherSigma(r)))(polSwap[p]);
+	}
+	thisSigma.put(curRow, swappedSigma*sScale);
+	if (copySgSp) {
+	  datShape.assign(otherSigmaSp.shape(r).asVector());
+	  Matrix<Float> swappedSigmaSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedSigmaSp.row(p) = (Matrix<Float>(otherSigmaSp(r))).row(polSwap[p]);
+	  }
+	  thisSigmaSp.put(curRow, swappedSigmaSp*sScale);
+	}
+      }
+      else {
+	thisWeight.put(curRow, otherWeight(r)*itsWeightScale);
+	if (copyWtSp)
+	  thisWeightSp.put(curRow, otherWeightSp(r)*itsWeightScale);
+	thisSigma.put(curRow, otherSigma(r)*sScale);
+	if (copySgSp)
+	  thisSigmaSp.put(curRow, otherSigmaSp(r)*sScale);
+      }
     }
     else{
-      thisWeight.put(curRow, otherWeight, r);
-      if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
-      thisSigma.put(curRow, otherSigma, r);
-      if (copySgSp) thisSigmaSp.put(curRow, otherSigmaSp, r);
+      if (doConjugateVis){
+	Vector<Int> datShape=otherWeight.shape(r).asVector();
+	Vector<Float> swappedWeight(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedWeight(p) = (Vector<Float>(otherWeight(r)))(polSwap[p]);
+	}
+	thisWeight.put(curRow, swappedWeight);
+	if (copyWtSp) {
+	  datShape.assign(otherWeightSp.shape(r).asVector());
+	  Matrix<Float> swappedWeightSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedWeightSp.row(p) = (Matrix<Float>(otherWeightSp(r))).row(polSwap[p]);
+	  }
+	  thisWeightSp.put(curRow, swappedWeightSp);
+	}
+	datShape.assign(otherSigma.shape(r).asVector());
+	Vector<Float> swappedSigma(datShape[0]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedSigma(p) = (Vector<Float>(otherSigma(r)))(polSwap[p]);
+	}
+	thisSigma.put(curRow, swappedSigma);
+	if (copySgSp) {
+	  datShape.assign(otherSigmaSp.shape(r).asVector());
+	  Matrix<Float> swappedSigmaSp(datShape[0], datShape[1]);
+	  for (Int p = 0; p < datShape[0]; p++) {
+	    swappedSigmaSp.row(p) = (Matrix<Float>(otherSigmaSp(r))).row(polSwap[p]);
+	  }
+	  thisSigmaSp.put(curRow, swappedSigmaSp);
+	}
+      }
+      else{
+	thisWeight.put(curRow, otherWeight, r);
+	if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
+	thisSigma.put(curRow, otherSigma, r);
+	if (copySgSp) thisSigmaSp.put(curRow, otherSigmaSp, r);
+      }
     }
     
     if(notYetFeedWarned && (otherFeed1(r)>0 || otherFeed2(r)>0)){
@@ -1497,8 +1755,26 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     thisExposure.put(curRow, otherExposure, r);
     thisTimeCen.put(curRow, otherTimeCen, r);
     thisArrayId.put(curRow, otherArrayId, r);
-    thisFlag.put(curRow, otherFlag, r);
-    if (copyFlagCat) thisFlagCat.put(curRow, otherFlagCat, r);
+    if(doConjugateVis){
+      Vector<Int> datShape=otherFlag.shape(r).asVector();
+      Matrix<Bool> swappedFlag(datShape[0], datShape[1]);
+      for (Int p = 0; p < datShape[0]; p++) {
+	swappedFlag.row(p) = (Matrix<Bool>(otherFlag(r))).row(polSwap[p]);
+      }
+      thisFlag.put(curRow, swappedFlag);
+      if (copyFlagCat) {
+	datShape.assign(otherFlagCat.shape(r).asVector());
+	Cube<Bool> swappedFlagCat(datShape[0], datShape[1], datShape[2]);
+	for (Int p = 0; p < datShape[0]; p++) {
+	  swappedFlagCat.yzPlane(p) = (Cube<Bool>(otherFlagCat(r))).yzPlane(polSwap[p]);
+	}
+	thisFlagCat.put(curRow, swappedFlagCat);
+      }
+    }
+    else{
+      thisFlag.put(curRow, otherFlag, r);
+      if (copyFlagCat) thisFlagCat.put(curRow, otherFlagCat, r);
+    }
     thisFlagRow.put(curRow, otherFlagRow, r);
 
   } // end for
@@ -1547,9 +1823,9 @@ void MSConcat::checkShape(const IPosition& otherShape) const
   }
 }
 
-IPosition MSConcat::getShape(const ROMSDataDescColumns& ddCols, 
-			     const ROMSSpWindowColumns& spwCols, 
-			     const ROMSPolarizationColumns& polCols, 
+IPosition MSConcat::getShape(const MSDataDescColumns& ddCols, 
+			     const MSSpWindowColumns& spwCols, 
+			     const MSPolarizationColumns& polCols, 
 			     uInt whichShape) {
   DebugAssert(whichShape < ddCols.nrow(), AipsError);
   const Int polId = ddCols.polarizationId()(whichShape);
@@ -1565,7 +1841,7 @@ IPosition MSConcat::getShape(const ROMSDataDescColumns& ddCols,
   return IPosition(2, nCorr, nChan);
 }
 
-void MSConcat::checkCategories(const ROMSMainColumns& otherCols) const {
+void MSConcat::checkCategories(const MSMainColumns& otherCols) const {
    LogIO os(LogOrigin("MSConcat", "checkCategories"));
   const Vector<String> cat = flagCategories();
   const Vector<String> otherCat = otherCols.flagCategories();
@@ -1974,7 +2250,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
   const uInt nAntIds = otherAnt.nrow();
   Block<uInt> antMap(nAntIds);
 
-  const ROMSAntennaColumns otherAntCols(otherAnt);
+  const MSAntennaColumns otherAntCols(otherAnt);
   MSAntennaColumns& antCols = antenna();
   MSAntenna& ant = itsMS.antenna();
   const Quantum<Double> tol(1, "m");
@@ -1984,7 +2260,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
   //RecordFieldId nameAnt(MSAntenna::columnName(MSAntenna::NAME));
 
   MSFeedColumns& feedCols = feed();
-  const ROMSFeedColumns otherFeedCols(otherFeed);
+  const MSFeedColumns otherFeedCols(otherFeed);
 
   const String& antIndxName = MSFeed::columnName(MSFeed::ANTENNA_ID);
   const String& spwIndxName = MSFeed::columnName(MSFeed::SPECTRAL_WINDOW_ID);
@@ -2187,7 +2463,7 @@ Block<uInt> MSConcat::copyState(const MSState& otherState) {
   const uInt nStateIds = otherState.nrow();
   Block<uInt> stateMap(nStateIds);
 
-  const ROMSStateColumns otherStateCols(otherState);
+  const MSStateColumns otherStateCols(otherState);
   MSStateColumns& stateCols = state();
   MSState& stateT = itsMS.state();
   const ROTableRow otherStateRow(otherState);
@@ -2218,7 +2494,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
   const uInt nFlds = otherFld.nrow();
   Block<uInt> fldMap(nFlds);
   const Quantum<Double> tolerance=itsDirTol;
-  const ROMSFieldColumns otherFieldCols(otherFld);
+  const MSFieldColumns otherFieldCols(otherFld);
   MSFieldColumns& fieldCols = field();
 
   const MDirection::Types dirType = MDirection::castType(
@@ -2250,7 +2526,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
                        // maxThisEphId==-1 would mean there is an EPHEMERIS_ID column but there are no entries
     // find first and last obs time of other MS
     Vector<uInt> sortedI(otherms.nrow());
-    ROMSMainColumns msmc(otherms);
+    MSMainColumns msmc(otherms);
     Vector<Double> mainTimesV = msmc.time().getColumn();
     GenSortIndirect<Double>::sort(sortedI,mainTimesV);
     validityRange.resize(2);
@@ -2408,7 +2684,7 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
     newSourceIndex_p.clear();
     Int numrows=otherSource.nrow();
     Int destRow=newSource.nrow();
-    ROMSSourceColumns otherSourceCol(otherms.source());
+    MSSourceColumns otherSourceCol(otherms.source());
     Vector<Int> otherId=otherSourceCol.sourceId().getColumn();
     newSource.addRow(numrows);
     const ROTableRow otherSourceRow(otherSource);
@@ -2439,8 +2715,8 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
 
     solSystObjects_p.clear();
 
-    const ROMSFieldColumns otherFieldCols(otherms.field());
-    const ROMSFieldColumns fieldCols(itsMS.field());
+    const MSFieldColumns otherFieldCols(otherms.field());
+    const MSFieldColumns fieldCols(itsMS.field());
     for(uInt i=0; i<itsMS.field().nrow(); i++){
       MDirection::Types refType = MDirection::castType(fieldCols.phaseDirMeas(i).getRef().getType());
       if(refType>=MDirection::MERCURY && refType<MDirection::N_Planets){ // we have a solar system object
@@ -2845,18 +3121,18 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
   const uInt nDDs = otherDD.nrow();
   Block<uInt> ddMap(nDDs);
   
-  const ROMSSpWindowColumns otherSpwCols(otherSpw);
+  const MSSpWindowColumns otherSpwCols(otherSpw);
   MSSpectralWindow& spw = itsMS.spectralWindow();
   MSSpWindowColumns& spwCols = spectralWindow();
   const ROTableRow otherSpwRow(otherSpw);
   TableRow spwRow(spw);
-  const ROMSPolarizationColumns otherPolCols(otherPol);
+  const MSPolarizationColumns otherPolCols(otherPol);
   MSPolarization& pol = itsMS.polarization();
   MSPolarizationColumns& polCols = polarization();
   const ROTableRow otherPolRow(otherPol);
   TableRow polRow(pol);
 
-  const ROMSDataDescColumns otherDDCols(otherDD);
+  const MSDataDescColumns otherDDCols(otherDD);
   MSDataDescColumns& ddCols = dataDescription();
 
   const Quantum<Double> freqTol=itsFreqTol;

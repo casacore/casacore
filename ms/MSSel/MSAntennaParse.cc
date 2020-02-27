@@ -314,7 +314,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     //    MSAntenna msant(ms()->antenna());
     MSAntenna msant(subTable());
-    ROMSAntennaColumns antCols(msant);
+    MSAntennaColumns antCols(msant);
     // First get the antenna positions.
     vector<Vector<double> > antVec;
     antVec.reserve (msant.nrow());

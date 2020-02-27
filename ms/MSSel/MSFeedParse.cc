@@ -124,7 +124,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     {
       // cannot use indgen for this, rows of feed table may have same feed ID
-      ROMSFeedColumns* msfc = new ROMSFeedColumns(subTable());
+      MSFeedColumns* msfc = new MSFeedColumns(subTable());
       Vector<Int> f2 = msfc->feedId().getColumn();
       delete msfc;
       /*

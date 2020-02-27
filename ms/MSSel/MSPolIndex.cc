@@ -48,7 +48,7 @@ MSPolarizationIndex::MSPolarizationIndex(const MSPolarization&
 //    polarizationTable   const MSPolarization&   Input MSPolarization 
 //                                                sub-table
 // Output to private data:
-//    msPolarizationCols_p   ROMSPolarizationColumns   MSPolarization columns 
+//    msPolarizationCols_p   MSPolarizationColumns   MSPolarization columns 
 //                                                     accessor
 //    polarizationIds_p      Vector<Int>               Polarization id.'s
 //    nrows_p                Int                       Number of rows

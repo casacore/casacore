@@ -132,7 +132,7 @@ void MSMetaData::_getStateToIntentsMap(
     }
     uniqueIntents.clear();
     String intentsColName = MSState::columnName(MSStateEnums::OBS_MODE);
-    ROScalarColumn<String> intentsCol(_ms->state(), intentsColName);
+    ScalarColumn<String> intentsCol(_ms->state(), intentsColName);
     Vector<String> intentSets = intentsCol.getColumn();
         // Allow an empty STATE table.
         if (intentSets.empty()) {
@@ -1069,8 +1069,8 @@ std::shared_ptr<std::set<Int> > MSMetaData::_getEphemFieldIDs() const {
     if (_ephemFields) {
         return _ephemFields;
     }
-    ROMSFieldColumns msfc(_ms->field());
-    ROScalarColumn<Int> ephemCol = msfc.ephemerisId();
+    MSFieldColumns msfc(_ms->field());
+    ScalarColumn<Int> ephemCol = msfc.ephemerisId();
     _ephemFields.reset(new std::set<Int>());
     if (ephemCol.isNull()) {
         return _ephemFields;
@@ -1089,7 +1089,7 @@ std::shared_ptr<std::set<Int> > MSMetaData::_getEphemFieldIDs() const {
 
 MDirection MSMetaData::phaseDirFromFieldIDAndTime(const uInt fieldID,  const MEpoch& ep) const {
     _hasFieldID(fieldID);
-    ROMSFieldColumns msfc(_ms->field());
+    MSFieldColumns msfc(_ms->field());
     if(! msfc.needInterTime(fieldID)) {
         return msfc.phaseDirMeas(fieldID, 0.0);
     }
@@ -1103,7 +1103,7 @@ MDirection MSMetaData::getReferenceDirection(
     const uInt fieldID,  const MEpoch& ep
 ) const {
     _hasFieldID(fieldID);
-    ROMSFieldColumns msfc(_ms->field());
+    MSFieldColumns msfc(_ms->field());
     if(! msfc.needInterTime(fieldID)) {
         return msfc.referenceDirMeas(fieldID, 0.0);
     }
@@ -1183,7 +1183,7 @@ vector<String> MSMetaData::getFieldNames() const {
     }
 
     String fieldNameColName = MSField::columnName(MSFieldEnums::NAME);
-    ROScalarColumn<String> nameCol(_ms->field(), fieldNameColName);
+    ScalarColumn<String> nameCol(_ms->field(), fieldNameColName);
     vector<String> fieldNames = nameCol.getColumn().tovector();
     uInt mysize = 0;
     vector<String>::const_iterator end = fieldNames.end();
@@ -1205,7 +1205,7 @@ vector<String> MSMetaData::getFieldCodes() const {
         return _fieldCodes;
     }
     String fieldCodeColName = MSField::columnName(MSFieldEnums::CODE);
-    ROScalarColumn<String> codeCol(_ms->field(), fieldCodeColName);
+    ScalarColumn<String> codeCol(_ms->field(), fieldCodeColName);
     vector<String> fieldCodes = codeCol.getColumn().tovector();
     if (_cacheUpdated(_sizeof(fieldCodes))) {
         _fieldCodes = fieldCodes;
@@ -1538,7 +1538,7 @@ vector<String> MSMetaData::_getAntennaNames(
     namesToIDsMap.clear();
     std::map<String, uInt> mymap;
     String antNameColName = MSAntenna::columnName(MSAntennaEnums::NAME);
-    ROScalarColumn<String> nameCol(_ms->antenna(), antNameColName);
+    ScalarColumn<String> nameCol(_ms->antenna(), antNameColName);
     Vector<String> names = nameCol.getColumn();
     Vector<String>::const_iterator end = names.end();
     uInt i = 0;
@@ -1730,7 +1730,7 @@ vector<String> MSMetaData::_getStationNames() {
         return _stationNames;
     }
     String antStationColName = MSAntenna::columnName(MSAntennaEnums::STATION);
-    vector<String> stationNames = ROScalarColumn<String>(
+    vector<String> stationNames = ScalarColumn<String>(
         _ms->antenna(), antStationColName
     ).getColumn().tovector();
     if (_cacheUpdated(_sizeof(stationNames))) {
@@ -1810,7 +1810,7 @@ QVD MSMetaData::getAntennaDiameters() const {
         return _antennaDiameters;
     }
     String antDiamColName = MSAntenna::columnName(MSAntennaEnums::DISH_DIAMETER);
-    ROScalarColumn<Double> diamCol(_ms->antenna(), antDiamColName);
+    ScalarColumn<Double> diamCol(_ms->antenna(), antDiamColName);
     Vector<Double> diams = diamCol.getColumn();
     String unit = *diamCol.keywordSet().asArrayString("QuantumUnits").begin();
     QVD antennaDiameters = QVD(diams, unit);
@@ -2820,7 +2820,7 @@ vector<Array<Int> > MSMetaData::getCorrProducts() const {
         return _corrProds;
     }
     String colName = MSPolarization::columnName(MSPolarizationEnums::CORR_PRODUCT);
-    ROArrayColumn<Int> col(_ms->polarization(), colName);
+    ArrayColumn<Int> col(_ms->polarization(), colName);
     uInt colSize = col.nrow();
     vector<Array<Int> > contents(colSize);
     for (uInt i=0; i<colSize; ++i) {
@@ -2838,7 +2838,7 @@ vector<vector<Int> > MSMetaData::getCorrTypes() const {
         return _corrTypes;
     }
     String colName = MSPolarization::columnName(MSPolarizationEnums::CORR_TYPE);
-    ROArrayColumn<Int> col(_ms->polarization(), colName);
+    ArrayColumn<Int> col(_ms->polarization(), colName);
     uInt colSize = col.nrow();
     vector<vector<Int> > contents(colSize);
     for (uInt i=0; i<colSize; ++i) {
@@ -2856,7 +2856,7 @@ vector<Int> MSMetaData::getNumCorrs() const {
         return _numCorrs;
     }
     String colName = MSPolarization::columnName(MSPolarization::NUM_CORR);
-    ROScalarColumn<Int> col(_ms->polarization(), colName);
+    ScalarColumn<Int> col(_ms->polarization(), colName);
     vector<Int> myvec = col.getColumn().tovector();
     if (_cacheUpdated(sizeof(myvec))) {
         _numCorrs = myvec;
@@ -2892,7 +2892,7 @@ vector<int> MSMetaData::getFieldTableSourceIDs() const {
         return _field_sourceIDs;
     }
     String colName = MSField::columnName(MSField::SOURCE_ID);
-    ROScalarColumn<Int> col(_ms->field(), colName);
+    ScalarColumn<Int> col(_ms->field(), colName);
     vector<Int> myvec = col.getColumn().tovector();
     if (_cacheUpdated(sizeof(myvec))) {
         _field_sourceIDs = myvec;
@@ -2940,15 +2940,15 @@ MSMetaData::_getSourceInfo() const {
         return _sourceInfo;
     }
     auto colName = MSSource::columnName(MSSource::SOURCE_ID);
-    ROScalarColumn<Int> id(_ms->source(), colName);
+    ScalarColumn<Int> id(_ms->source(), colName);
     colName = MSSource::columnName(MSSource::SPECTRAL_WINDOW_ID);
-    ROScalarColumn<Int> spw(_ms->source(), colName);
+    ScalarColumn<Int> spw(_ms->source(), colName);
     colName = MSSource::columnName(MSSource::NAME);
-    ROScalarColumn<String> name(_ms->source(), colName);
+    ScalarColumn<String> name(_ms->source(), colName);
     colName = MSSource::columnName(MSSource::REST_FREQUENCY);
     ArrayMeasColumn<MFrequency> restfreq(_ms->source(), colName);
     colName = MSSource::columnName(MSSource::TRANSITION);
-    ROArrayColumn<String> transition(_ms->source(), colName);
+    ArrayColumn<String> transition(_ms->source(), colName);
     map<SourceKey, SourceProperties> mymap;
     auto nrows = _ms->source().nrow();
     Array<MFrequency> rf;
@@ -3025,7 +3025,7 @@ vector<String> MSMetaData::getSourceNames() const {
         return _sourceNames;
     }
     String colName = MSSource::columnName(MSSource::NAME);
-    ROScalarColumn<String> col(_ms->source(), colName);
+    ScalarColumn<String> col(_ms->source(), colName);
     vector<String> myvec = col.getColumn().tovector();
     if (_cacheUpdated(sizeof(myvec))) {
         _sourceNames = myvec;
@@ -3039,7 +3039,7 @@ vector<int> MSMetaData::getSourceTableSourceIDs() const {
         return _source_sourceIDs;
     }
     String colName = MSSource::columnName(MSSource::SOURCE_ID);
-    ROScalarColumn<Int> col(_ms->source(), colName);
+    ScalarColumn<Int> col(_ms->source(), colName);
     vector<Int> myvec = col.getColumn().tovector();
     if (_cacheUpdated(sizeof(myvec))) {
         _source_sourceIDs = myvec;
@@ -3049,7 +3049,7 @@ vector<int> MSMetaData::getSourceTableSourceIDs() const {
 
 uInt MSMetaData::nUniqueSourceIDsFromSourceTable() const {
     String colName = MSSource::columnName(MSSource::SOURCE_ID);
-    ROScalarColumn<Int> col(_ms->source(), colName);
+    ScalarColumn<Int> col(_ms->source(), colName);
     Vector<Int> myvec = col.getColumn();
     std::set<Int> myset(myvec.begin(), myvec.end());
     return myset.size();
@@ -3178,7 +3178,7 @@ vector<String> MSMetaData::getObservers() const {
         return _observers;
     }
     String colName = MSObservation::columnName(MSObservationEnums::OBSERVER);
-    ROScalarColumn<String> col(_ms->observation(), colName);
+    ScalarColumn<String> col(_ms->observation(), colName);
     vector<String> contents = col.getColumn().tovector();
     if (_cacheUpdated(_sizeof(contents))) {
         _observers = contents;
@@ -3191,7 +3191,7 @@ vector<String> MSMetaData::getObservatoryNames() {
         return _observatoryNames;
     }
     String tnameColName = MSObservation::columnName(MSObservationEnums::TELESCOPE_NAME);
-    ROScalarColumn<String> telescopeNameCol(_ms->observation(), tnameColName);
+    ScalarColumn<String> telescopeNameCol(_ms->observation(), tnameColName);
     vector<String> names = telescopeNameCol.getColumn().tovector();
     if (_cacheUpdated(_sizeof(names))) {
         _observatoryNames = names;
@@ -3204,7 +3204,7 @@ vector<String> MSMetaData::getProjects() const {
         return _projects;
     }
     String colName = MSObservation::columnName(MSObservationEnums::PROJECT);
-    ROScalarColumn<String> col(_ms->observation(), colName);
+    ScalarColumn<String> col(_ms->observation(), colName);
     vector<String> projects = col.getColumn().tovector();
     if (_cacheUpdated(_sizeof(projects))) {
         _projects = projects;
@@ -3218,7 +3218,7 @@ vector<vector<String> > MSMetaData::getSchedules() const {
         return _schedules;
     }
     String colName = MSObservation::columnName(MSObservationEnums::SCHEDULE);
-    ROArrayColumn<String> col(_ms->observation(), colName);
+    ArrayColumn<String> col(_ms->observation(), colName);
     uInt colSize = col.nrow();
     vector<vector<String> > contents(colSize);
     for (uInt i=0; i<colSize; ++i) {
@@ -3235,7 +3235,7 @@ vector<std::pair<MEpoch, MEpoch> > MSMetaData::getTimeRangesOfObservations() con
         return _timeRangesForObs;
     }
     String colName = MSObservation::columnName(MSObservationEnums::TIME_RANGE);
-    ROArrayColumn<Double> col(_ms->observation(), colName);
+    ArrayColumn<Double> col(_ms->observation(), colName);
     TableRecord kv = col.keywordSet();
     String unit = kv.asArrayString("QuantumUnits").tovector()[0];
     MEpoch::Types myRF;
@@ -3262,7 +3262,7 @@ MPosition MSMetaData::getObservatoryPosition(uInt which) const {
         return _observatoryPositions[which];
     }
     String tnameColName = MSObservation::columnName(MSObservationEnums::TELESCOPE_NAME);
-    ROScalarColumn<String> telescopeNameCol(_ms->observation(), tnameColName);
+    ScalarColumn<String> telescopeNameCol(_ms->observation(), tnameColName);
     vector<String> names = telescopeNameCol.getColumn().tovector();
     vector<MPosition> observatoryPositions(names.size());
     for (uInt i=0; i<observatoryPositions.size(); ++i) {
@@ -3315,7 +3315,7 @@ vector<MPosition> MSMetaData::_getAntennaPositions() const {
         return _antennaPositions;
     }
     String antNameColName = MSAntenna::columnName(MSAntennaEnums::NAME);
-    ROScalarColumn<String> nameCol(_ms->antenna(), antNameColName);
+    ScalarColumn<String> nameCol(_ms->antenna(), antNameColName);
     String antPosColName = MSAntenna::columnName(MSAntennaEnums::POSITION);
     ArrayColumn<Double> posCol(_ms->antenna(), antPosColName);
     Array<Double> xyz = posCol.getColumn();
@@ -4448,7 +4448,7 @@ map<Int, std::set<Int> > MSMetaData::getFieldsForSourceMap() const {
         return _sourceToFieldsMap;
     }
     String sourceIDName = MSField::columnName(MSFieldEnums::SOURCE_ID);
-    Vector<Int> sourceIDs = ROScalarColumn<Int>(_ms->field(), sourceIDName).getColumn();
+    Vector<Int> sourceIDs = ScalarColumn<Int>(_ms->field(), sourceIDName).getColumn();
     map<Int, std::set<Int> > mymap;
     std::set<Int> uSourceIDs(sourceIDs.begin(), sourceIDs.end());
     std::set<Int>::const_iterator iter = uSourceIDs.begin();
@@ -4568,12 +4568,12 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
     );
     const String& ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
     const String& ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
-    antenna1 = ROScalarColumn<Int>(*_ms, ant1ColName).get(row);
-    antenna2 = ROScalarColumn<Int>(*_ms, ant2ColName).get(row);
+    antenna1 = ScalarColumn<Int>(*_ms, ant1ColName).get(row);
+    antenna2 = ScalarColumn<Int>(*_ms, ant2ColName).get(row);
     bool autocorr = (antenna1==antenna2);
     const String& timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
     time = ScalarColumn<Double>(*_ms, timeColName).get(row);
-    ROMSPointingColumns pCols(_ms->pointing());
+    MSPointingColumns pCols(_ms->pointing());
     Int pidx1, pidx2;
     pidx1 = pCols.pointingIndex(antenna1, time, initialguess);
     if (autocorr) {
@@ -4602,7 +4602,7 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 }
 
 MDirection MSMetaData::_getInterpolatedDirection(
-    const ROMSPointingColumns& pCols, const Int& index1,
+    const MSPointingColumns& pCols, const Int& index1,
     const Double& time
 ) const {
     Int antenna = pCols.antennaId()(index1);
@@ -4650,7 +4650,7 @@ vector<uInt> MSMetaData::getDataDescIDToSpwMap() const {
         return _dataDescIDToSpwMap;
     }
     String spwColName = MSDataDescription::columnName(MSDataDescriptionEnums::SPECTRAL_WINDOW_ID);
-    ROScalarColumn<Int> spwCol(_ms->dataDescription(), spwColName);
+    ScalarColumn<Int> spwCol(_ms->dataDescription(), spwColName);
     Vector<Int> spws = spwCol.getColumn();
     vector<uInt> dataDescToSpwMap(spws.begin(), spws.end());
     uInt mysize = sizeof(Int) * dataDescToSpwMap.size();
@@ -4714,7 +4714,7 @@ vector<uInt> MSMetaData::getDataDescIDToPolIDMap() const {
         return _dataDescIDToPolIDMap;
     }
     String polColName = MSDataDescription::columnName(MSDataDescriptionEnums::POLARIZATION_ID);
-    ROScalarColumn<Int> polCol(_ms->dataDescription(), polColName);
+    ScalarColumn<Int> polCol(_ms->dataDescription(), polColName);
     Vector<Int> pols = polCol.getColumn();
     vector<uInt> dataDescToPolIDMap(pols.begin(), pols.end());
     uInt mysize = sizeof(Int) * dataDescToPolIDMap.size();
@@ -4935,7 +4935,7 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
 ) const {
     static const Regex rxSqld("BB_[0-9]#SQLD");
-    ROMSSpWindowColumns spwCols(_ms->spectralWindow());
+    MSSpWindowColumns spwCols(_ms->spectralWindow());
     Vector<Double> bws = spwCols.totalBandwidth().getColumn();
     ArrayQuantColumn<Double> cfCol(
         _ms->spectralWindow(),
@@ -4957,22 +4957,25 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         _ms->spectralWindow(),
         MSSpectralWindow::columnName(MSSpectralWindowEnums::RESOLUTION)
     );
-    Vector<Int> nss  = spwCols.netSideband().getColumn();
-    Vector<String> name = spwCols.name().getColumn();
-    Bool myHasBBCNo = hasBBCNo();
-    Vector<Int> bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
+    auto nss  = spwCols.netSideband().getColumn();
+    auto name = spwCols.name().getColumn();
+    auto myHasBBCNo = hasBBCNo();
+    auto bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
     vector<Double> freqLimits(2);
     Vector<Quantity> tmp;
     vector<SpwProperties> spwInfo(bws.size());
+    std::set<uInt> wvrFirst, wvrSecond;
     const static Unit emptyUnit;
     const static Unit hz("Hz");
-    uInt nrows = bws.size();
+    const static String wvr = "WVR";
+    const static String wvrNominal = "WVR#NOMINAL";
+    auto nrows = bws.size();
     for (uInt i=0; i<nrows; ++i) {
         spwInfo[i].bandwidth = bws[i];
         tmp.resize(0);
         cfCol.get(i, tmp);
         spwInfo[i].chanfreqs = QVD(tmp);
-        Unit u = spwInfo[i].chanfreqs.getFullUnit();
+        auto u = spwInfo[i].chanfreqs.getFullUnit();
         spwInfo[i].meanfreq = Quantity(
             mean(spwInfo[i].chanfreqs.getValue()), u
         );
@@ -4991,9 +4994,9 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         tmp.resize(0);
         resCol.get(i, tmp);
         spwInfo[i].resolution = QVD(tmp);
-        QVD halfWidths = (spwInfo[i].chanwidths)/2.0;
-        Quantity lowFreq = (spwInfo[i].chanfreqs - halfWidths).min();
-        Quantity highFreq = (spwInfo[i].chanfreqs + halfWidths).max();
+        auto halfWidths = (spwInfo[i].chanwidths)/2.0;
+        auto lowFreq = (spwInfo[i].chanfreqs - halfWidths).min();
+        auto highFreq = (spwInfo[i].chanfreqs + halfWidths).max();
         spwInfo[i].centerfreq = (lowFreq + highFreq)/2;
         spwInfo[i].name = name[i];
         if (myHasBBCNo) {
@@ -5006,8 +5009,14 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         if (spwInfo[i].reffreq.getUnit() == emptyUnit) {
             spwInfo[i].reffreq.set(hz);
         }
-        // algorithm from thunter, CAS-5794
-        if (
+        // algorithm from thunter, CAS-5794, CAS-12592
+        if (name[i].contains(wvr)) {
+            wvrFirst.insert(i);
+            if (name[i] == wvrNominal) {
+                wvrSecond.insert(i);
+            }
+        }
+        else if (
             nchan >= 15
             && ! (
                 nchan == 256 || nchan == 128 || nchan == 64 || nchan == 32
@@ -5022,13 +5031,16 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         ) {
             avgSpw.insert(i);
         }
+        /*
         else if (spwInfo[i].nchans == 4) {
             wvrSpw.insert(i);
         }
+        */
         else {
             tdmSpw.insert(i);
         }
     }
+    wvrSpw = wvrSecond.empty() ? wvrFirst : wvrSecond;
     return spwInfo;
 }
 

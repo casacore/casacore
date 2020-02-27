@@ -59,114 +59,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 
-// <summary>
-// A class to provide easy read-only access to MeasurementSet columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> MeasurementSet
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// ROMSColumns stands for Read-Only MeasurementSet Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the MeasurementSet.
-// It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// </synopsis>
-//
-// <example>
-// <srcblock>
-// // use as follows
-// MeasurementSet ms("myMS"); 
-// ROMSColumns msc(ms);
-// // show data from row 5
-// cout << msc.data()(5);
-// // show name of antenna on row 3 in antenna table
-// cout << msc.antenna().name();
-// </srcblock>
-// </example>
-//
-// <motivation>
-// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
-// </motivation>
-//
-// <todo asof="1997/02/01">
-//   <li> We might decide to merge all the MSColumn classes with the
-//        corresponding MeasurementSet classes.
-// </todo>
-
-class ROMSColumns: public ROMSMainColumns
-{
-public:
-  // Create a columns object that accesses the data in the specified MS
-  ROMSColumns(const MeasurementSet& ms);
-
-  // The destructor does nothing special
-  ~ROMSColumns();
-
-  // Access to required subtables
-  // <group>
-  const ROMSAntennaColumns& antenna() const {return antenna_p;}
-  const ROMSDataDescColumns& dataDescription() const {return dataDesc_p;}
-  const ROMSFeedColumns& feed() const {return feed_p;}
-  const ROMSFieldColumns& field() const {return field_p;}
-  const ROMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
-  const ROMSHistoryColumns& history() const {return history_p;}
-  const ROMSObservationColumns& observation() const {return observation_p;}
-  const ROMSPointingColumns& pointing() const {return pointing_p;}
-  const ROMSPolarizationColumns& polarization() const {
-    return polarization_p;}
-  const ROMSProcessorColumns& processor() const {return processor_p;}
-  const ROMSSpWindowColumns& spectralWindow() const {
-    return spectralWindow_p;}
-  const ROMSStateColumns& state() const {return state_p;}
-  // </group>
-
-  // Access to optional subtables
-  // <group>
-  const ROMSDopplerColumns& doppler() const {return doppler_p;}
-  const ROMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
-  const ROMSSourceColumns& source() const {return source_p;}
-  const ROMSSysCalColumns& sysCal() const {return sysCal_p;}
-  const ROMSWeatherColumns& weather() const {return weather_p;}
-  // </group>
-
-private:
-  // Access to subtables
-  ROMSAntennaColumns antenna_p;
-  ROMSDataDescColumns dataDesc_p;
-  ROMSDopplerColumns doppler_p; //optional
-  ROMSFeedColumns feed_p;
-  ROMSFieldColumns field_p;
-  ROMSFlagCmdColumns flagCmd_p;
-  ROMSFreqOffsetColumns freqOffset_p; //optional
-  ROMSHistoryColumns history_p;
-  ROMSObservationColumns observation_p;
-  ROMSPointingColumns pointing_p;
-  ROMSPolarizationColumns polarization_p;
-  ROMSProcessorColumns processor_p;
-  ROMSSourceColumns source_p; // optional
-  ROMSSpWindowColumns spectralWindow_p;
-  ROMSStateColumns state_p;
-  ROMSSysCalColumns sysCal_p; //optional
-  ROMSWeatherColumns weather_p; //optional
-};
 
 // <summary>
-// A class to provide easy read-write access to MeasurementSet columns
+// A class to provide easy access to MeasurementSet columns
 // </summary>
 
 // <use visibility=export>
@@ -222,12 +117,12 @@ class MSColumns: public MSMainColumns
 {
 public:
   // Create a columns object that accesses the data in the specified MS
-  MSColumns(MeasurementSet& ms);
+  MSColumns(const MeasurementSet& ms);
 
   // The destructor does nothing special
   ~MSColumns();
 
-  // Read-write access to required subtables
+  // Access to required subtables
   // <group>
   MSAntennaColumns& antenna() {return antenna_p;}
   MSDataDescColumns& dataDescription() {return dataDesc_p;}
@@ -243,7 +138,7 @@ public:
   MSStateColumns& state() {return state_p;}
   // </group>
 
-  // Read-write access to optional subtables
+  // Access to optional subtables
   // <group>
   MSDopplerColumns& doppler() {return doppler_p;}
   MSFreqOffsetColumns& freqOffset() {return freqOffset_p;}
@@ -252,31 +147,31 @@ public:
   MSWeatherColumns& weather() {return weather_p;}
   // </group>
 
-  // Read-only access to required subtables
+  // Access to required subtables
   // <group>
-  const ROMSAntennaColumns& antenna() const {return antenna_p;}
-  const ROMSDataDescColumns& dataDescription() const {return dataDesc_p;}
-  const ROMSFeedColumns& feed() const {return feed_p;}
-  const ROMSFieldColumns& field() const {return field_p;}
-  const ROMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
-  const ROMSHistoryColumns& history() const {return history_p;}
-  const ROMSObservationColumns& observation() const {return observation_p;}
-  const ROMSPointingColumns& pointing() const {return pointing_p;}
-  const ROMSPolarizationColumns& polarization() const {
+  const MSAntennaColumns& antenna() const {return antenna_p;}
+  const MSDataDescColumns& dataDescription() const {return dataDesc_p;}
+  const MSFeedColumns& feed() const {return feed_p;}
+  const MSFieldColumns& field() const {return field_p;}
+  const MSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
+  const MSHistoryColumns& history() const {return history_p;}
+  const MSObservationColumns& observation() const {return observation_p;}
+  const MSPointingColumns& pointing() const {return pointing_p;}
+  const MSPolarizationColumns& polarization() const {
     return polarization_p;}
-  const ROMSProcessorColumns& processor() const {return processor_p;}
-  const ROMSSourceColumns& source() const {return source_p;}
-  const ROMSSpWindowColumns& spectralWindow() const {
+  const MSProcessorColumns& processor() const {return processor_p;}
+  const MSSpWindowColumns& spectralWindow() const {
     return spectralWindow_p;}
-  const ROMSStateColumns& state() const {return state_p;}
+  const MSStateColumns& state() const {return state_p;}
   // </group>
 
-  // Read-only access to optional subtables
+  // Access to optional subtables
   // <group>
-  const ROMSDopplerColumns& doppler() const {return doppler_p;}
-  const ROMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
-  const ROMSSysCalColumns& sysCal() const {return sysCal_p;}
-  const ROMSWeatherColumns& weather() const {return weather_p;}
+  const MSDopplerColumns& doppler() const {return doppler_p;}
+  const MSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+  const MSSourceColumns& source() const {return source_p;}
+  const MSSysCalColumns& sysCal() const {return sysCal_p;}
+  const MSWeatherColumns& weather() const {return weather_p;}
   // </group>
 
   // set the EPOCH reference type in all EPOCH columns in the MS. Note that
@@ -316,6 +211,9 @@ private:
   MSWeatherColumns weather_p; //optional
 };
 
+//# Define the RO version for backward compatibility.
+typedef MSColumns ROMSColumns;
+  
 //# Declare extern templates for often used types.
   extern template class ArrayMeasColumn<MDirection>;
   extern template class ScalarMeasColumn<MPosition>;

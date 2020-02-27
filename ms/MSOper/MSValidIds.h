@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
-class ROMSColumns;
+class MSColumns;
 
 // <summary>
 // </summary>
@@ -123,7 +123,7 @@ public:
     // </group>
 private:
     MeasurementSet ms_p;
-    ROMSColumns *romsCols_p;
+    MSColumns *romsCols_p;
 
     Bool hasDoppler_p, hasSource_p;
     

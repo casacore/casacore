@@ -37,10 +37,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class TableDesc;
-class ROMSMainColumns;
-class ROMSDataDescColumns;
-class ROMSSpWindowColumns;
-class ROMSPolarizationColumns;
+class MSMainColumns;
+class MSDataDescColumns;
+class MSSpWindowColumns;
+class MSPolarizationColumns;
 class MSAntenna;
 class MSDataDescription;
 class MSFeed;
@@ -98,13 +98,13 @@ public:
 private:
   MSConcat();
   static IPosition isFixedShape(const TableDesc& td);
-  static IPosition getShape(const ROMSDataDescColumns& ddCols, 
-			    const ROMSSpWindowColumns& spwCols, 
-			    const ROMSPolarizationColumns& polCols, 
+  static IPosition getShape(const MSDataDescColumns& ddCols, 
+			    const MSSpWindowColumns& spwCols, 
+			    const MSPolarizationColumns& polCols, 
 			    uInt whichShape);
   void checkShape(const IPosition& otherShape) const;
-  void checkCategories(const ROMSMainColumns& otherCols) const;
-  Bool checkEphIdInField(const ROMSFieldColumns& otherFldCol) const;
+  void checkCategories(const MSMainColumns& otherCols) const;
+  Bool checkEphIdInField(const MSFieldColumns& otherFldCol) const;
   Bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Bool copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Bool copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAndIndices);
@@ -156,7 +156,7 @@ private:
 };
 
 template<class T>
-Bool areEQ(const ROScalarColumn<T>& col, uInt row_i, uInt row_j) 
+Bool areEQ(const ScalarColumn<T>& col, uInt row_i, uInt row_j) 
 {
   T value_i, value_j;
   col.get(row_i, value_i);
@@ -165,7 +165,7 @@ Bool areEQ(const ROScalarColumn<T>& col, uInt row_i, uInt row_j)
 }
 
 template<class T>
-Bool areEQ(const ROArrayColumn<T>& col, uInt row_i, uInt row_j) 
+Bool areEQ(const ArrayColumn<T>& col, uInt row_i, uInt row_j) 
 {
   Bool rval(False);
   Array<T> arr_i;

@@ -20,12 +20,12 @@ if (POLICY CMP0074)
 endif()
 
 set(PROJECT_VERSION_MAJOR 3)
-set(PROJECT_VERSION_MINOR 1)
-set(PROJECT_VERSION_PATCH 2)
+set(PROJECT_VERSION_MINOR 2)
+set(PROJECT_VERSION_PATCH 1)
 set(PROJECT_VERSION 
   "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
-SET(PROJECT_SOVERSION 3)
+SET(PROJECT_SOVERSION 4)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -63,6 +63,7 @@ endif()
 
 # By default do not use ADIOS2, HDF5, FFTW3
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
+option (USE_READLINE "Build readline support" YES)
 option (USE_ADIOS2 "Build ADIOS2 " NO)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
@@ -323,7 +324,9 @@ include (CTest)
 #    "Maximum ctest time allowed before CTest will kill the test." FORCE)
 
 find_package (DL)
-find_package (Readline)
+if (USE_READLINE)
+    find_package (Readline REQUIRED)
+endif (USE_READLINE)
 find_package (SOFA)
 if (USE_ADIOS2)
     set(USE_MPI ON)

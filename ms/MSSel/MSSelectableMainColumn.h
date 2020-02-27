@@ -52,10 +52,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     virtual void init(const Table& msLikeTable) {table_p=&msLikeTable;}
     const Table* table()                      {return table_p;}
-    virtual const ROArrayColumn<Bool>& flag() = 0;
+    virtual const ArrayColumn<Bool>& flag() = 0;
     virtual Bool flagRow(const Int& i) = 0;
-    virtual const ROScalarQuantColumn<Double>& exposureQuant() = 0;
-    virtual const ROScalarQuantColumn<Double>& timeQuant() = 0;
+    virtual const ScalarQuantColumn<Double>& exposureQuant() = 0;
+    virtual const ScalarQuantColumn<Double>& timeQuant() = 0;
     virtual const MeasurementSet *asMS() = 0;
 
   protected:
@@ -72,18 +72,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual ~MSMainColInterface() {if (msCols_p) delete msCols_p;}
 
     virtual void init(const Table& msAsTable)
-    {MSSelectableMainColumn::init(msAsTable);ms_p = MeasurementSet(msAsTable); msCols_p=new ROMSMainColumns(ms_p);}
-    virtual const ROArrayColumn<Bool>& flag() {return msCols_p->flag();}
+    {MSSelectableMainColumn::init(msAsTable);ms_p = MeasurementSet(msAsTable); msCols_p=new MSMainColumns(ms_p);}
+    virtual const ArrayColumn<Bool>& flag() {return msCols_p->flag();}
 
     //    virtual Bool flagRow(const Int& i) {return allTrue(msCols_p->flag()(i));}
     virtual Bool flagRow(const Int& i) {return msCols_p->flagRow()(i);}
-    virtual const ROScalarQuantColumn<Double>& exposureQuant() {return msCols_p->exposureQuant();}
-    virtual const ROScalarQuantColumn<Double>& timeQuant()     {return msCols_p->timeQuant();}
+    virtual const ScalarQuantColumn<Double>& exposureQuant() {return msCols_p->exposureQuant();}
+    virtual const ScalarQuantColumn<Double>& timeQuant()     {return msCols_p->timeQuant();}
 
     virtual const MeasurementSet *asMS(){return static_cast<const MeasurementSet *>(table());}
   private:
     MeasurementSet ms_p;
-    ROMSMainColumns *msCols_p;
+    MSMainColumns *msCols_p;
 
   };
 

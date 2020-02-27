@@ -567,8 +567,8 @@ int main() {
             while (iter != end) {
                 radius = Quantity(count, "arcsec");
                 iter->setMajorMinor(radius, radius);
-                iter++;
-                count++;
+                ++iter;
+                ++count;
             }
             radius = Quantity(6.5, "arcsec");
             beams(2,2) = GaussianBeam(radius, radius, Quantity(0, "deg"));
@@ -638,7 +638,35 @@ int main() {
             AlwaysAssert(
                 beamSet(1, 1).getPA(True) == Quantity(-40, "deg"), AipsError
             );
-
+        }
+        const Quantity five(5, "arcsec");
+        const Quantity four(4, "arcsec");
+        const Quantity two(2, "arcsec");
+        {
+            cout << "check replacing largest beam works when chan specified "
+                << "and stokes negative" << endl;
+            Matrix<GaussianBeam> mat(1, 2);
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[1][0] = GaussianBeam(four, four, four);
+            ImageBeamSet beams(mat);
+            auto maxbeam = beams.getMaxAreaBeam();
+            AlwaysAssert(maxbeam.getMajor().getValue() == 5, AipsError);
+            beams.setBeam(0, -1, GaussianBeam(four, four, four));
+            maxbeam = beams.getMaxAreaBeam();
+            AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
+        }
+        {
+            cout << "check replacing largest beam works when stokes specified "
+                << "and chan negative" << endl;
+            Matrix<GaussianBeam> mat(2, 1);
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[0][1] = GaussianBeam(four, four, four);
+            ImageBeamSet beams(mat);
+            auto maxbeam = beams.getMaxAreaBeam();
+            AlwaysAssert(maxbeam.getMajor().getValue() == 5, AipsError);
+            beams.setBeam(-1, 0, GaussianBeam(four, four, four));
+            maxbeam = beams.getMaxAreaBeam();
+            AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
         }
     }
     catch (const AipsError& x) {
