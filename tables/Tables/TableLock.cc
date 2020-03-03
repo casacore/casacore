@@ -28,6 +28,7 @@
 
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -83,15 +84,21 @@ void TableLock::init()
 #ifdef AIPS_TABLE_NOLOCKING
   itsOption = NoLocking;
 #else
-  if (itsOption == DefaultLocking) {
-    itsOption           = AutoLocking;
-    itsIsDefaultLocking = True;
-  } else if (itsOption == AutoNoReadLocking) {
-    itsOption      = AutoLocking;
-    itsReadLocking = False;
-  } else if (itsOption == UserNoReadLocking) {
-    itsOption      = UserLocking;
-    itsReadLocking = False;
+  Bool opt;
+  AipsrcValue<Bool>::find (opt, "table.nolocking", False);
+  if (opt) {
+    itsOption = NoLocking;
+  } else {
+    if (itsOption == DefaultLocking) {
+      itsOption           = AutoLocking;
+      itsIsDefaultLocking = True;
+    } else if (itsOption == AutoNoReadLocking) {
+      itsOption      = AutoLocking;
+      itsReadLocking = False;
+    } else if (itsOption == UserNoReadLocking) {
+      itsOption      = UserLocking;
+      itsReadLocking = False;
+    }
   }
 #endif
   if (itsOption == NoLocking) {
@@ -126,7 +133,9 @@ Bool TableLock::lockingDisabled()
 #ifdef AIPS_TABLE_NOLOCKING
   return True;
 #else
-  return False;
+  Bool opt;
+  AipsrcValue<Bool>::find (opt, "table.nolocking", False);
+  return opt;
 #endif
 }
 
