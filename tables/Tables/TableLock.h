@@ -56,6 +56,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <p>
 // It also keeps the <src>LockFile</src> object used to do the
 // actual locking/unlocking.
+//
+// It is possible to disable locking by building casacore with -DAIPS_TABLE_NOLOCKING
+// or by setting the aipsrc variable table.nolocking=true.
 
 // <motivation> 
 // Encapsulate Table locking info.
@@ -72,6 +75,9 @@ public:
     // because table data has to be synchronized (thus written to disk)
     // when a lock is released. Otherwise the other processes see data
     // which is not up-to-date.
+    //
+    // Building Casacore with -DTABLE_NOLOCKING or setting aipsrc variable
+    // table.nolocking=1 forces lock option NoLocking.
     enum LockOption {
 	// The table is permanently locked.
 	// A lock is set at the beginning and only released when
@@ -156,7 +162,7 @@ public:
     // Get the maximum wait period in AutoLocking mode.
     uInt maxWait() const;
 
-    // Is table locking disabled (because AIPS_TABLE_NOLOCKING was set)?
+    // Is table locking disabled (because AIPS_TABLE_NOLOCKING or table.nolocking is set)?
     static Bool lockingDisabled();
 
 
