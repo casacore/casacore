@@ -17,7 +17,6 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O $MEASURES_ARCHIVE
     fi
 
-    cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
 
     mkdir -p build
     cd build
@@ -25,6 +24,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
    tar zxvf ../$SOFA_ARCHIVE
    tar zxvf ../$MEASURES_ARCHIVE
 
+   cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
    ccache -M 80M
 
    pip3 install numpy
