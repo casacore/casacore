@@ -45,6 +45,9 @@ matrix:
     - os: osx
       compiler: gcc
 
+jobs:
+  allow_failures:
+  - os: osx
 
 before_script:
   - ./.travis/before_script.sh
