@@ -82,6 +82,7 @@ int main()
     sleep(5);
     Double diff = HostInfo::secondsFrom1970() - now;
     // Assume granularity could be as bad as 100ms
+    cout << "5 second sleep took: " << diff << " seconds" << endl;
     AlwaysAssertExit(diff >= 4.9 && diff <= 5.1);
 
     // No good way to test hostName, other than using the same library call
