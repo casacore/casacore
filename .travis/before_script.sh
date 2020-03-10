@@ -38,6 +38,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DUSE_HDF5=ON \
         -DBUILD_PYTHON=OFF \
         -DBUILD_PYTHON3=ON \
+        -DPython3_ROOT_DIR=/usr/local/Cellar/python/3.7.6_1 \
         -DPYTHON3_EXECUTABLE=/usr/local/bin/python3 \
         -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
         -DBoost_NO_BOOST_CMAKE=True \
