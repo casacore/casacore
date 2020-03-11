@@ -29,7 +29,8 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    pip3 install numpy
    python --version
-   which python
+   PYTHON3_VERSION=`ls -1 /usr/local/Cellar/python | tail -1`
+   PYTHON_ROOT=/usr/local/Cellar/python/$PYTHON3_VERSION
 
    CXX="ccache $CXX" cmake .. \
         -DUSE_FFTW3=ON \
@@ -38,8 +39,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DUSE_HDF5=ON \
         -DBUILD_PYTHON=OFF \
         -DBUILD_PYTHON3=ON \
-        -DPython3_ROOT_DIR=/usr/local/Cellar/python/3.7.6_1 \
-        -DPYTHON3_EXECUTABLE=/usr/local/Cellar/python/3.7.6_1/bin/python3.7 \
+        -DPython3_ROOT_DIR=$PYTHON_ROOT \
         -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
         -DBoost_NO_BOOST_CMAKE=True \
         -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
