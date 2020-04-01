@@ -281,16 +281,6 @@ public:
   // 
   void readFitsFile(Int obsType = MSTileLayout::Standard);
 
-  // A simultaneous change to MSFitsOutput means that no longer are
-  // antenna positions being rotated when written to UVFITS. Calling
-  // this method with b=True will perform the reverse of a rotation
-  // when converting from uvfits to MS for relevant UVFITS files which
-  // were written prior to this change. Else no rotation of antenna
-  // positions is done.
-  void rotateAntennaPositions(Bool b) {
-      _rotateAnts = b;
-  }
-
 protected:
 
   // Check that the input is a UV fits file with required contents.
@@ -430,7 +420,7 @@ private:
 
   Matrix<Double> _restFreq; // used for UVFITS
   Matrix<Double> _sysVel;
-  Bool _msCreated, _rotateAnts;
+  Bool _msCreated;
 
   std::pair<Int, Int> _extractAntennas(Float baseline);
 
