@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
-
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/namespace.h>
 // <summary>

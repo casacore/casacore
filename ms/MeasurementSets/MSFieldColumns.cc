@@ -39,6 +39,7 @@
 #include <casacore/tables/Tables/ColDescSet.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/iomanip.h>

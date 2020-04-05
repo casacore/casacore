@@ -41,6 +41,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/version.h>
@@ -49,6 +50,7 @@
 #include <fstream>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
+#include <unistd.h>
 
 #ifdef HAVE_READLINE
 # include <readline/readline.h>

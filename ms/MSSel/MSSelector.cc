@@ -1687,8 +1687,8 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 	} else {
 		// Average channel by channel
 		Array<Bool> mask(!flag);
-		Array<Float> wt(flag.shape(),0.0); wt(mask)=1.0;
-		Array<Float> avWt(avData.shape(),0.0);
+		Array<Float> wt(flag.shape(),0.0f); wt(mask)=1.0;
+		Array<Float> avWt(avData.shape(),0.0f);
 		for (Int i=0; i<nChan; i++) {
 			// if width>1, the slice doesn't have an increment, so we take big steps
 			Int chn=i*chanSel(3);
@@ -1755,8 +1755,8 @@ void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 	} else {
 		// Average channel by channel
 		Array<Bool> mask(!flag);
-		Array<Float> wt(flag.shape(),0.0); wt(mask)=1.0;
-		Array<Float> avWt(avData.shape(),0.0);
+		Array<Float> wt(flag.shape(),0.0f); wt(mask)=1.0;
+		Array<Float> avWt(avData.shape(),0.0f);
 		for (Int i=0; i<nChan; i++) {
 			// if width>1, the slice doesn't have an increment, so we take big steps
 			Int chn=i*chanSel(3);

@@ -139,8 +139,8 @@ int main()
     Vector<DComplex> y(5); indgen(y); 
     const DComplex j(0.,1.);  
     y = y+j*y*y;
-    Block<Double> bx; x.toBlock(bx);
-    Block<DComplex> by; y.toBlock(by);
+    Block<Double> bx = makeBlock(x);
+    Block<DComplex> by = makeBlock(y);
     ScalarSampledFunctional<Double> fx(bx);
     ScalarSampledFunctional<DComplex> fy(by);
     Interpolate1D<Double,DComplex> value(fx, fy);

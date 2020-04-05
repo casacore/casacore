@@ -346,7 +346,7 @@ try {
       cSys2.removeWorldAxis(wSpec, cSys.referenceValue()(wSpec));
 //
       IPosition shape2(cSys2.nPixelAxes(),10);
-      for (uInt i=0; i<min(shape.nelements(),shape2.nelements()); i++) {
+      for (uInt i=0; i<std::min(shape.nelements(),shape2.nelements()); i++) {
          shape2(i) = shape(i);
       }
       LCRegion* pLCRegion = 0;

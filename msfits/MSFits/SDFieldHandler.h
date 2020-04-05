@@ -30,6 +30,7 @@
 #define MS_SDFIELDHANDLER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/RecordField.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -41,9 +42,6 @@ class MSFieldColumns;
 class String;
 class Record;
 class ColumnsIndex;
-
-template <class T> class Vector;
-template <class T> class Matrix;
 
 // <summary>
 // </summary>

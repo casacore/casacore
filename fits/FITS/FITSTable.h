@@ -31,6 +31,7 @@
 
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/Block.h>
@@ -43,7 +44,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class FITSFieldCopier;
 class TableDesc;
-template<class T> class Vector;
 
 // <summary>
 // Simplified interface to FITS tables with Casacore Look and Feel.

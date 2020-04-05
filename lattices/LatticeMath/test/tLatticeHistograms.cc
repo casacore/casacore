@@ -61,7 +61,7 @@ int main() {
         LogIO os(lor);
         doitFloat(os);
         {
-            Array<Float> arr(IPosition(2, 5, 10), 0.0);
+            Array<Float> arr(IPosition(2, 5, 10), 0.0f);
             for (uInt i=0; i<10; i++ ) {
                 arr(IPosition(2, 4, i)) = 100*(i+1);
                 arr(IPosition(2, 0, i)) = -arr(IPosition(2, 4, i));
@@ -79,7 +79,7 @@ int main() {
             AlwaysAssert(counts(IPosition(1, 12)) == 30, AipsError);
         }
         {
-            Array<Float> arr(IPosition(3, 2, 4, 6), 0.0);
+            Array<Float> arr(IPosition(3, 2, 4, 6), 0.0f);
             Float sum = 0;
             for (uInt i=0; i<2; ++i) {
                 for (uInt j=0; j<4; ++j) {

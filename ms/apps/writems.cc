@@ -1881,8 +1881,10 @@ bool readParms (int argc, char* argv[])
   myFirstBand  = parmInt (params, "firstspw", vars);
   myTotalNBand = parmInt (params, "totalspw", vars);
   AlwaysAssertExit (myTotalNBand >= myNBand);
-  myNChan = Vector<Int> (params.getIntArray ("nchan"));
-  myNPol  = Vector<Int> (params.getIntArray ("npol"));
+  Block<int> nchanBlock = params.getIntArray ("nchan");
+  myNChan = Vector<Int> (nchanBlock.begin(), nchanBlock.end());
+  Block<int> npolBlock = params.getIntArray ("npol");
+  myNPol  = Vector<Int> (npolBlock.begin(), npolBlock.end());
   myNTime = params.getInt ("ntime");
   myNTimeField = params.getInt ("ntimefield");
   // Determine possible tile size. Default is no tiling.

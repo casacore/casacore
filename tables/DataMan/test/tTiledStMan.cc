@@ -91,14 +91,14 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	if (str == "end") {
 	    return IPosition();
 	}
-	Vector<String> vec = stringToVector (str);
+	Vector<std::string> vec = strToVector (str);
 	if (vec.nelements() > nrdim) {
 	    cout << "value can contain max. " << nrdim << " values" << endl;
 	}else{
 	    Bool error = False;
 	    IPosition pos(vec.nelements());
 	    for (uInt i=0; i<vec.nelements(); i++) {
-		istringstream istr(vec(i).chars());
+		istringstream istr(vec(i));
 		istr >> pos(i);
 		if (pos(i) < 0) {
 		    cout << "Value " << pos(i) << " must be >= 0" << endl;

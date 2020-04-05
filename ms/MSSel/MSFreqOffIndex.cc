@@ -28,6 +28,7 @@
 #include <casacore/ms/MSSel/MSFreqOffIndex.h>
 
 #include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/ms/MeasurementSets/MSFreqOffset.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

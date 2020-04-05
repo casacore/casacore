@@ -73,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fullTEN_p(),ms_p(NULL),  antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""), taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
-    feedExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(),
+    feedExpr_p(""), exprOrder_p(MAX_EXPR, Int(NO_EXPR)), antenna1IDs_p(), antenna2IDs_p(),
     fieldIDs_p(), spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(),
     feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fullTEN_p(), ms_p(&ms), antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""),taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
-    feedExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(),
+    feedExpr_p(""), exprOrder_p(MAX_EXPR, Int(NO_EXPR)), antenna1IDs_p(), antenna2IDs_p(),
     fieldIDs_p(), spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
@@ -969,7 +969,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	polnExpr_p    = "";
 	stateExpr_p    = "";
 	observationExpr_p    = "";
-	exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
+	exprOrder_p = Vector<Int>(MAX_EXPR, int(NO_EXPR));
       }
     else
       {
@@ -1442,7 +1442,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //   }
     //   cout << "------------------------------------------------------" << endl;
     
-    exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
+    exprOrder_p = Vector<Int>(MAX_EXPR, Int(NO_EXPR));
     
     // Extract and set all expressions
     //

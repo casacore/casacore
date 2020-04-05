@@ -31,6 +31,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -40,9 +41,6 @@ class MSMainColumns;
 class MEpoch;
 class MVTime;
 class Record;
-
-template <class T> class Vector;
-template <class T> class Matrix;
 
 // <summary>
 // </summary>

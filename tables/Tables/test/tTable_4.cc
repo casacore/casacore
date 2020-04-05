@@ -267,8 +267,7 @@ void doTable (Bool ask, const TableDesc& td)
 	  cout << "Column names: ";
 	}
 	cin >> str;
-	Block<String> cols;
-	stringToVector(str).toBlock (cols);
+	Block<String> cols = makeBlock(stringToVector(str));
 	tab = tab.project (cols);
       } else if (op == 5) {
 	tab.actualTableDesc().show (cout);

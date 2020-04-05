@@ -37,6 +37,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

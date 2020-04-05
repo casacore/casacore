@@ -29,6 +29,7 @@
 #define MS_MSPOLCOLUMNS_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/measures/Measures/Stokes.h>
@@ -36,8 +37,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSPolarization;
-template <class T> class Vector;
-template <class T> class Matrix;
 
 // <summary>
 // A class to provide easy access to MSPolarization columns

@@ -33,6 +33,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/VectorIter.h>
 #include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/OS/Mutex.h>
 
 namespace casacore {

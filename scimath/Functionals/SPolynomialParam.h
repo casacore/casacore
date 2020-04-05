@@ -33,11 +33,9 @@
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations
-template<class T> class Vector;
 
 // <summary>  Parameter handling for scaled 1-D polynomials
 // </summary>

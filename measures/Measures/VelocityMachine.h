@@ -35,12 +35,12 @@
 #include <casacore/measures/Measures/MCFrequency.h>
 #include <casacore/measures/Measures/MCDoppler.h>
 #include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasFrame;
-template <class T> class Vector;
 
 // <summary> Converts between velocities and frequencies </summary>
 

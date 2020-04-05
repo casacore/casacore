@@ -126,14 +126,18 @@ public:
     // Note that the assign function can be used to assign a
     // non-conforming cube.
     // <group>
-    Cube<T, Alloc> &operator=(const Cube<T, Alloc> &other) = delete;
-    
+    Cube<T, Alloc> &operator=(const Cube<T, Alloc>& source)
+    { Array<T, Alloc>::operator=(source); return *this; }
+     Cube<T, Alloc> &operator=(Cube<T, Alloc>&& source)
+    { Array<T, Alloc>::operator=(std::move(source)); return *this; }
+   
     //virtual Array<T> &assign_conforming(const Array<T> &other);
     // </group>
 
     // Copy val into every element of this cube; i.e. behaves as if
     // val were a constant conformant cube.
-    Array<T> &operator=(const T &val)
+    using Array<T, Alloc>::operator=;
+    Array<T, Alloc> &operator=(const T &val)
       { return Array<T>::operator=(val); }
 
     // Copy to this those values in marray whose corresponding elements

@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -42,8 +43,6 @@ class MSObservation;
 class MSObservationColumns;
 class Record;
 class String;
-
-template <class T> class Vector;
 
 // <summary>
 // </summary>

@@ -412,7 +412,7 @@ bool read(std::istream &s, Array<T, Alloc> &x,
 template <typename T, typename Alloc>
 bool readArrayBlock(std::istream &s, bool &trans,
                     IPosition &p,
-                    std::vector<T> &x, const IPosition *ip, bool it) {
+                    std::vector<T, Alloc> &x, const IPosition *ip, bool it) {
   if (!s.good()) {
     s.clear(std::ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
     return false;
@@ -483,8 +483,8 @@ bool readArrayBlock(std::istream &s, bool &trans,
       s.clear(std::ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
       how = false;
     } else {
-      if (x.nelements() <= cnt) {
-        x.resize(2*x.nelements() + 1);
+      if (x.size() <= cnt) {
+        x.resize(2*x.size() + 1);
       }
       x[cnt] = r;
       cnt++;
@@ -512,8 +512,8 @@ bool readArrayBlock(std::istream &s, bool &trans,
             std::istringstream ins(sts);
             ins >> r;
             st = st.substr(ix+1);
-            if (x.nelements() <= cnt) {
-              x.resize(2*x.nelements() + 1);
+            if (x.size() <= cnt) {
+              x.resize(2*x.size() + 1);
             }
             x[cnt] = r;
             cnt++;
@@ -523,8 +523,8 @@ bool readArrayBlock(std::istream &s, bool &trans,
             std::istringstream ins(sts);
             ins >> r;
             st = st.substr(ix);
-            if (x.nelements() <= cnt) {
-              x.resize(2*x.nelements() + 1);
+            if (x.size() <= cnt) {
+              x.resize(2*x.size() + 1);
             }
             x[cnt] = r;
             cnt++;
@@ -539,8 +539,8 @@ bool readArrayBlock(std::istream &s, bool &trans,
         } else {
           std::istringstream ins(st); /// Necessary for template
           ins >> r;				/// expansion
-          if (x.nelements() <= cnt) {
-            x.resize(2*x.nelements() + 1);
+          if (x.size() <= cnt) {
+            x.resize(2*x.size() + 1);
           }
           x[cnt] = r;
           cnt++;
@@ -555,8 +555,8 @@ bool readArrayBlock(std::istream &s, bool &trans,
           s.clear(std::ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
           how = false;
         } else {
-          if (x.nelements() <= cnt) {
-            x.resize(2*x.nelements() + 1);
+          if (x.size() <= cnt) {
+            x.resize(2*x.size() + 1);
           }
           x[cnt] = r;
           cnt++;

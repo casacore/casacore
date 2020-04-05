@@ -188,7 +188,7 @@ Int MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
 	       && timeQuant()(r).getValue(s)+modHalfIntervalInS >= timeInS+halfIntervalInS)
 	     ){ // only difference is the validity time
 	    newTimeQ = (timeQuant()(r)+timeQ)/2.;
-	    Double maxTime = max(timeQuant()(r).getValue(s)+modHalfIntervalInS,
+	    Double maxTime = std::max(timeQuant()(r).getValue(s)+modHalfIntervalInS,
 			       timeInS+halfIntervalInS);
 	    newIntervalQ = Quantum<Double>(2*(maxTime-newTimeQ.getValue(s)), s);
 	  }

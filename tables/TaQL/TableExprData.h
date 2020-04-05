@@ -33,13 +33,13 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
 class IPosition;
-template<class T> class Array;
 template<class T> class Block;
 
 

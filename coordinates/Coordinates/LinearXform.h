@@ -30,12 +30,12 @@
 #define COORDINATES_LINEARXFORM_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
+
 #include <wcslib/lin.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> class Vector;
-template<class T> class Matrix;
 class String;
 
 // <summary>

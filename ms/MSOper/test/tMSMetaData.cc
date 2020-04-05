@@ -30,6 +30,7 @@
 #include <casacore/ms/MSOper/MSMetaData.h>
 
 #include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/BasicMath/StdLogical.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/OS/Directory.h>

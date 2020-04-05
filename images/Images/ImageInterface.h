@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/images/Regions/RegionHandler.h>
 #include <casacore/images/Images/MaskSpecifier.h>
 #include <casacore/images/Images/ImageInfo.h>
@@ -45,7 +46,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class LatticeIterInterface;
-template <class T> class Vector;
 template <class T> class COWPtr;
 class ImageRegion;
 class IPosition;

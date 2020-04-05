@@ -240,7 +240,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 	bms_p[i].keywordSet().asArrayString("SORT_COLUMNS").nelements()!=
 	columns.nelements() ||
 	!allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
-	       Vector<String>(columns))) {
+	       Vector<String>(columns.begin(), columns.end()))) {
       // if not, sort and store it (if possible)
       store=(bms_p[i].isWritable() && (bms_p[i].tableType() != Table::Memory));
     } else {
@@ -282,7 +282,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 	sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New); 
 	sorted.flush();
 	bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
-	bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
+	bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns.begin(), columns.end()));
     }
 
     // create the iterator for each MS
