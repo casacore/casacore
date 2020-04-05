@@ -30,13 +30,9 @@
 #include <casacore/scimath/Functionals/Gaussian2D.h>
 #include <casacore/scimath/Functionals/Gaussian3D.h>
 #include <casacore/casa/iostream.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 #include <casacore/casa/namespace.h>
-
-namespace casacore {
-   template <class T> class Matrix;
-   template <class T> class Vector;
-}
 
 void printfparameters(Function<Double> &f);
 void printparameters(Matrix<Double> &m);

@@ -605,9 +605,9 @@ template<typename T, typename Alloc> inline void indgen(Array<T, Alloc> &a, T st
 
 // Create a Vector of the given length and fill it with the start value
 // incremented with <code>inc</code> for each element.
-template<typename T, typename Alloc> inline Vector<T> indgen(size_t length, T start, T inc)
+template<typename T, typename Alloc=std::allocator<T>> inline Vector<T, Alloc> indgen(size_t length, T start, T inc)
 {
-  Vector<T> x(length);
+  Vector<T, Alloc> x(length);
   indgen(x, start, inc);
   return x;
 }

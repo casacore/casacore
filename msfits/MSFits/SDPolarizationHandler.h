@@ -31,6 +31,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -40,8 +41,6 @@ class MeasurementSet;
 class MSPolarization;
 class MSPolarizationColumns;
 class Record;
-
-template <class T> class Vector;
 
 // <summary>
 // </summary>

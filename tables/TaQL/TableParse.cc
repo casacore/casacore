@@ -2852,8 +2852,8 @@ Table TableParseSelect::doInsert (Bool showTimings, Table& table)
   Vector<uInt> rownrs(sel.nrow());
   indgen (rownrs, rownr);     // fill with rownr, rownr+1, etc.
   Table tab = table(rownrs);
-  TableRow rowto (tab, Vector<String>(columnNames_p));
-  ROTableRow rowfrom (sel, Vector<String>(sourceNames));
+  TableRow rowto (tab, Vector<String>(columnNames_p.begin(), columnNames_p.end()));
+  ROTableRow rowfrom (sel, Vector<String>(sourceNames.begin(), sourceNames.end()));
   for (uInt i=0; i<sel.nrow(); i++) {
     rowto.put (i, rowfrom.get(i), False);
   }

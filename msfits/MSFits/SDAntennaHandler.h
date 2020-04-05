@@ -44,8 +44,6 @@ class MSAntenna;
 class MSAntennaColumns;
 class Record;
 
-template <class T> class Vector;
-
 // <summary>
 // </summary>
 

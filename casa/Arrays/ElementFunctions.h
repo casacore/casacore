@@ -289,6 +289,12 @@ inline double floormod (double x, double y)
   return r;
 }
 
+template<class T, class F> inline void convertScalar (T& out, F in)
+{ out = static_cast<T>(in); }
+
+inline void convertScalar (std::complex<float>& out, std::complex<double> in)
+{ out = std::complex<float>(in.real(), in.imag()); }
+
 } }
 
 #endif

@@ -319,7 +319,7 @@ circularConv(Array<FType>& result,
   // Check the dimensions of the model are compatible with the current psf
   validate();
   IPosition imageSize = extractShape(thePsfSize, model.shape());
-  if (max(imageSize.asVector(), 
+  if (casacore::max(imageSize.asVector(), 
 	  thePsfSize.asVector()) 
       != theFFTSize){
     resizeXfr(model.shape(), False, False);

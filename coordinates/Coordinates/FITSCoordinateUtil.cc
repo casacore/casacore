@@ -44,6 +44,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/casa/Quanta/Quantum.h>

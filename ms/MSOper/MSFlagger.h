@@ -30,11 +30,11 @@
 #define MS_MSFLAGGER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Record.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> class Array;
 class MSSelector;
 class Table;
 class String;

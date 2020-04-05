@@ -193,7 +193,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   size_t MArray<T>::flatten (T* out, size_t size) const
   {
     if (size < itsArray.size()) {
-      throw ArrayError ("MArray::flatten - size " + String::toString(size) +
+      throw ArrayError ("MArray::flatten - size " + std::to_string(size) +
                         " of output buffer is too small");
     }
     size_t nr = 0;

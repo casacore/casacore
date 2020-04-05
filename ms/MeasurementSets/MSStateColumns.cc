@@ -80,8 +80,8 @@ Int MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr)
-	&& fabs(calQuant()(tr).getValue(k) - calInK) < tolInK
-	&& fabs(loadQuant()(tr).getValue(k) - loadInK) < tolInK
+	&& std::fabs(calQuant()(tr).getValue(k) - calInK) < tolInK
+	&& std::fabs(loadQuant()(tr).getValue(k) - loadInK) < tolInK
 	&& obsMode()(tr) == stateObsMode
 	&& ref()(tr) == stateRef
 	&& sig()(tr) == stateSig
@@ -93,8 +93,8 @@ Int MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
   while (r > 0) {
     r--;
     if (!flagRow()(r)
-	&& fabs(calQuant()(r).getValue(k) - calInK) < tolInK
-	&& fabs(loadQuant()(r).getValue(k) - loadInK) < tolInK
+	&& std::fabs(calQuant()(r).getValue(k) - calInK) < tolInK
+	&& std::fabs(loadQuant()(r).getValue(k) - loadInK) < tolInK
 	&& obsMode()(r) == stateObsMode
 	&& ref()(r) == stateRef
 	&& sig()(r) == stateSig

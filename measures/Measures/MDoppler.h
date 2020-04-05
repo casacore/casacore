@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVDoppler.h>
@@ -43,7 +44,6 @@ class MCDoppler;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class T> class Vector;
 template <class T> class Quantum;
 
 //# Typedefs

@@ -36,6 +36,7 @@
 #include <cstdlib>          // for mkstemp
 #include <casacore/casa/string.h>    // for strerror
 #include <errno.h>
+#include <unistd.h>
 
 using namespace casacore;
 using namespace std;

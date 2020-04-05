@@ -37,6 +37,7 @@
 #include <casacore/measures/Measures/MCBase.h>
 #include <casacore/measures/Measures/MConvertBase.h>
 #include <casacore/measures/Measures/MeasMath.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/casa/OS/Mutex.h>
 
@@ -45,7 +46,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class MCuvw;
 class String;
-template <class T> class Vector;
 
 //# Typedefs
 

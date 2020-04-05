@@ -46,9 +46,7 @@ public:
   
   template<typename InputIterator>
   Storage(InputIterator startIter, InputIterator endIter, const Alloc& allocator=Alloc()) :
-    Alloc(allocator),
-    _data(construct(startIter, endIter)),
-    _end(_data + std::distance(startIter, endIter))
+    Storage(startIter, endIter, allocator, std::is_integral<InputIterator>())
   { }
   
   Storage(const Storage&) = delete;
@@ -56,7 +54,7 @@ public:
   
   static std::unique_ptr<Storage> MakeFromMove(T* startIter, T* endIter, const Alloc& allocator)
   {
-    return std::unique_ptr<Storage>(new Storage(startIter, endIter, allocator, std::true_type()));
+    return std::unique_ptr<Storage>(new Storage(startIter, endIter, allocator, std::true_type(), std::true_type()));
   }
   
   ~Storage() noexcept
@@ -78,12 +76,26 @@ public:
   size_t size() const { return _end - _data; }
   
 private:
-  Storage(T* startIter, T* endIter, const Alloc& allocator, std::true_type /*move*/) :
+  Storage(T* startIter, T* endIter, const Alloc& allocator, std::true_type /*integral*/, std::true_type /*move*/) :
     Alloc(allocator),
     _data(construct_move(startIter, endIter)),
     _end(_data + (endIter-startIter))
   { }
   
+  template<typename InputIterator>
+  Storage(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::false_type /*integral*/) :
+    Alloc(allocator),
+    _data(construct_range(startIter, endIter)),
+    _end(_data + std::distance(startIter, endIter))
+  { }
+
+  template<typename Integral>
+  Storage(Integral n, Integral val, const Alloc& allocator, std::true_type /*integral*/) :
+    Alloc(allocator),
+    _data(construct(n, val)),
+    _end(_data + n)
+  { }
+
   T* construct(size_t n)
   {
     if(n == 0)
@@ -121,7 +133,7 @@ private:
   }
   
   template<typename InputIterator>
-  T* construct(InputIterator startIter, InputIterator endIter)
+  T* construct_range(InputIterator startIter, InputIterator endIter)
   {
     if(startIter == endIter)
       return nullptr;

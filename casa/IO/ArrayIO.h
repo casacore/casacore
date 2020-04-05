@@ -213,8 +213,8 @@ void writeAsciiVector (const Vector<T, Alloc>& vec, const char* fileName);
 // </group>
 
 AipsIO& operator<< (AipsIO& aio, const IPosition& ip);
-
 AipsIO& operator>> (AipsIO& aio, IPosition& ip);
+LogIO& operator<< (LogIO& os, const IPosition& ip);
 
 template<typename T, typename Alloc>
 Block<T> makeBlock(const Array<T, Alloc>& array);
@@ -224,6 +224,6 @@ Vector<String> stringToVector (const String& string, const std::regex& delim);
 
 } //# NAMESPACE CASACORE - END
 
-#include "ArrayIO.tcc"
+#include <casacore/casa/IO/ArrayIO.tcc>
 
 #endif

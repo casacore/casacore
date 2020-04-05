@@ -31,11 +31,10 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> class Vector;
-template <class T> class Array;
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
 class LatticeExprNode;

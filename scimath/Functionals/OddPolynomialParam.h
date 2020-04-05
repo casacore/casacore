@@ -30,14 +30,12 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Functionals/Function1D.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations
-template<class T> class Vector;
 
 // <summary>  Parameter handling for odd polynomials
 // </summary>

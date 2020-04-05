@@ -34,7 +34,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Random.h>
-
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

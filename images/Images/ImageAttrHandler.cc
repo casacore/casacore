@@ -28,6 +28,7 @@
 //# Includes
 #include <casacore/images/Images/ImageAttrHandler.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore {
 

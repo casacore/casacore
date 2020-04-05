@@ -1196,7 +1196,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Bool LSQFit::getErrors(U *errors) {
     if (!invertRect()) return False;
     for (uInt i=0; i<nun_p; ++i) {		// all columns
-      *errors++ = sqrt(std::abs(nceq_p->row(i)[i]))*error_p[CHI2];
+      *errors++ = std::sqrt(std::abs(nceq_p->row(i)[i]))*error_p[CHI2];
     }
     return True;
   }
@@ -1205,8 +1205,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Bool LSQFit::getErrors(std::complex<U> *errors) {
     if (!invertRect()) return False;
     for (uInt i=0; i+1<nun_p; i+=2) {		// all columns
-      *errors++ = std::complex<U>(sqrt(std::abs(nceq_p->row(i)[i])),
-				  sqrt(std::abs(nceq_p->row(i+1)[i+1])))*
+      *errors++ = std::complex<U>(std::sqrt(std::abs(nceq_p->row(i)[i])),
+				  std::sqrt(std::abs(nceq_p->row(i+1)[i+1])))*
 	static_cast<U>(error_p[CHI2]);
     }
     return True;
@@ -1224,7 +1224,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template <class U>
   void LSQFit::copyDiagonal(U &errors, LSQReal) {
     for (uInt i=0; i<nun_p; ++i) {		// all columns
-      *errors++ = sqrt(std::abs(*nceq_p->diag(i)))*error_p[CHI2];
+      *errors++ = std::sqrt(std::abs(*nceq_p->diag(i)))*error_p[CHI2];
     }
   }
 
@@ -1232,8 +1232,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void LSQFit::copyDiagonal(U &errors, LSQComplex) {
     for (uInt i=0; i+1<nun_p; i+=2) {		// all columns
       *errors++ =
-	typename U::value_type(sqrt(std::abs(nceq_p->row(i)[i])),
-			       sqrt(std::abs(nceq_p->row(i+1)[i+1])))*
+	typename U::value_type(std::sqrt(std::abs(nceq_p->row(i)[i])),
+			       std::sqrt(std::abs(nceq_p->row(i+1)[i+1])))*
 	(error_p[CHI2]);
     }
   }

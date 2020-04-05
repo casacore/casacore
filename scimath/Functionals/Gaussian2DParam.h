@@ -30,13 +30,11 @@
 #define SCIMATH_GAUSSIAN2DPARAM_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/BasicSL/String.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations
-template<class T> class Vector;
 
 // <summary> Parameter handling for 2 dimensional Gaussian class
 // </summary>

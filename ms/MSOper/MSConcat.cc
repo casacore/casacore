@@ -1866,7 +1866,7 @@ void MSConcat::setRespectForFieldName(const Bool respectFieldName){
 
 void MSConcat::checkShape(const IPosition& otherShape) const 
 {
-  const uInt nAxes = min(itsFixedShape.nelements(), otherShape.nelements());
+  const uInt nAxes = std::min(itsFixedShape.nelements(), otherShape.nelements());
   DebugAssert(nAxes > 0 && nAxes < 4, AipsError);
   if (nAxes > 1 && itsFixedShape(1) != otherShape(1)) {
     throw(AipsError(String("MSConcat::checkShapes\n") + 

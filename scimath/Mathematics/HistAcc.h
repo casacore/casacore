@@ -34,11 +34,11 @@
 #include <casacore/scimath/Mathematics/StatAcc.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/iosfwd.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // forward declarations:
-template <class T> class Array;
 class String;
 
 // <reviewed reviewer="" date="" tests="tHistAcc" demos="">

@@ -31,12 +31,12 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template <class T> class Vector;
 class IPosition;
 
 // <summary>

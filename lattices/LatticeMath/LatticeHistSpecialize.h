@@ -30,14 +30,14 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template <class T> class Vector;
-template <class T> class Block;
 class PGPlotter;
 
 // <summary> Specialized functions for LatticeHistograms</summary>

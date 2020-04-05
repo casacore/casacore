@@ -870,14 +870,14 @@ void doIt()
   checkScaDouble ("min si-sd", exprid, min(esi2,esd1), std::min(sid2,sd1));
   checkScaDouble ("min sd-si", exprid, min(esd2,esi1), std::min(sd2,sid1));
   checkScaDouble ("min sd-sd", exprid, min(esd2,esd1), std::min(sd2,sd1));
-  checkArrDouble ("min ad-ad", exprid, min(earrd2,earrd1), min(arrd2,arrd1));
+  checkArrDouble ("min ad-ad", exprid, min(earrd2,earrd1), casacore::min(arrd2,arrd1));
   checkArrDouble ("min sd-ad", exprid, min(esd2,earrd1), min(arrd1,sd2));
   checkArrDouble ("min ad-sd", exprid, min(earrd1,esd2), min(arrd1,sd2));
   checkArrInt ("min ai-si", exprid, min(earri2,esi1), min(arri2,si1));
-  checkArrInt ("min ai-ai", exprid, min(earri2,earri2), min(arri2,arri2));
+  checkArrInt ("min ai-ai", exprid, min(earri2,earri2), casacore::min(arri2,arri2));
   checkArrDouble ("min ai-sd", exprid, min(earri2,esd1), min(arrid2,sd1));
   checkArrDouble ("min sd-ai", exprid, min(esd2,earri2), min(sd2,arrid2));
-  checkArrDouble ("min ad-ai", exprid, min(earrd2,earri1), min(arrd2,arrid1));
+  checkArrDouble ("min ad-ai", exprid, min(earrd2,earri1), casacore::min(arrd2,arrid1));
   checkScaDComplex ("min sz-sz", exprid, min(esz2,esz1), min(sz2,sz1));
   checkArrDComplex ("min az-az", exprid, min(earrz2,earrz1),
 		    ::min(arrz2,arrz1));
@@ -899,14 +899,14 @@ void doIt()
   checkScaDouble ("max si-sd", exprid, max(esi2,esd1), std::max(sid2,sd1));
   checkScaDouble ("max sd-si", exprid, max(esd2,esi1), std::max(sd2,sid1));
   checkScaDouble ("max sd-sd", exprid, max(esd2,esd1), std::max(sd2,sd1));
-  checkArrDouble ("max ad-ad", exprid, max(earrd2,earrd1), max(arrd2,arrd1));
+  checkArrDouble ("max ad-ad", exprid, max(earrd2,earrd1), casacore::max(arrd2,arrd1));
   checkArrDouble ("max sd-ad", exprid, max(esd2,earrd1), max(arrd1,sd2));
   checkArrDouble ("max ad-sd", exprid, max(earrd1,esd2), max(arrd1,sd2));
   checkArrInt ("max ai-si", exprid, max(earri2,esi1), max(arri2,si1));
-  checkArrInt ("max ai-ai", exprid, max(earri2,earri2), max(arri2,arri2));
+  checkArrInt ("max ai-ai", exprid, max(earri2,earri2), casacore::max(arri2,arri2));
   checkArrDouble ("max ai-sd", exprid, max(earri2,esd1), max(arrid2,sd1));
   checkArrDouble ("max sd-ai", exprid, max(esd2,earri2), max(sd2,arrid2));
-  checkArrDouble ("max ad-ai", exprid, max(earrd2,earri1), max(arrd2,arrid1));
+  checkArrDouble ("max ad-ai", exprid, max(earrd2,earri1), casacore::max(arrd2,arrid1));
   checkScaDComplex ("max sz-sz", exprid, max(esz2,esz1), max(sz2,sz1));
   checkArrDComplex ("max az-az", exprid, max(earrz2,earrz1),
 		    ::max(arrz2,arrz1));

@@ -30,13 +30,11 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/scimath/Functionals/Function1D.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations
-template<class T> class Vector;
 
 // <summary>
 // a class for evaluating a Butterworth filter transfer function.

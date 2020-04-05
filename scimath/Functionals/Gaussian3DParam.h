@@ -30,14 +30,12 @@
 #define SCIMATH_GAUSSIAN3DPARAM_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-  //# Forward Declarations.
-  template<class T> class Vector;
-
 
 // <summary> Parameter handling for 3 dimensional Gaussian class
 // </summary>

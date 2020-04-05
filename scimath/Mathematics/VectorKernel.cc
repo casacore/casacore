@@ -31,6 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/scimath/Functionals/Gaussian1D.h>
 #include <casacore/casa/Logging/LogIO.h>
@@ -153,7 +154,7 @@ Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width,
 
 
 Vector<Int> VectorKernel::toKernelTypes (const String& kernels,
-                                         const Regex& delimiter)
+                                         const std::regex& delimiter)
 {
    const Vector<String> kernelStrings = stringToVector(kernels, delimiter);
    return VectorKernel::toKernelTypes(kernelStrings);

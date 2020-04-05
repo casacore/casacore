@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRow.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Quanta/MVPosition.h>
@@ -43,7 +44,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class MVRadialVelocity;
 class MVDirection;
-template <class T> class Vector;
 
 // <summary>Position for comets and other solar system bodies</summary>
 

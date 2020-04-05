@@ -34,13 +34,12 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/tables/DataMan/RetypedArraySetGet.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 #include <casacore/casa/namespace.h>
 //# Forward Declarations
 namespace casacore {
 class TableRecord;
-template<class T> class Array;
-template<class T> class Vector;
 }
 
 // <summary>

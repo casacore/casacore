@@ -34,7 +34,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> Array<T> partialSums (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialSums (const Array<T, Alloc>& array,
 					const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
@@ -43,13 +43,13 @@ template<class T> Array<T> partialSums (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
   size_t stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   bool deleteData, deleteRes;
   const T* arrData = array.getStorage (deleteData);
@@ -101,7 +101,7 @@ template<class T> Array<T> partialSums (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialSumSqrs (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialSumSqrs (const Array<T, Alloc>& array,
                                            const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
@@ -110,13 +110,13 @@ template<class T> Array<T> partialSumSqrs (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
   size_t stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   bool deleteData, deleteRes;
   const T* arrData = array.getStorage (deleteData);
@@ -170,7 +170,7 @@ template<class T> Array<T> partialSumSqrs (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialProducts (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialProducts (const Array<T, Alloc>& array,
 					    const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
@@ -179,13 +179,13 @@ template<class T> Array<T> partialProducts (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
   size_t stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = T(1);
   bool deleteData, deleteRes;
   const T* arrData = array.getStorage (deleteData);
@@ -237,7 +237,7 @@ template<class T> Array<T> partialProducts (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialMins (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialMins (const Array<T, Alloc>& array,
 					const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
@@ -246,13 +246,13 @@ template<class T> Array<T> partialMins (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
   size_t stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   bool deleteData, deleteRes;
   const T* arrData = array.getStorage (deleteData);
@@ -265,8 +265,8 @@ template<class T> Array<T> partialMins (const Array<T>& array,
     size_t axis = collapseAxes(i);
     end(axis) = 0;
   }
-  Array<T> tmp(array);           // to get a non-const array for operator()
-  Array<T> scratch(result);
+  Array<T, Alloc> tmp(array);           // to get a non-const array for operator()
+  Array<T, Alloc> scratch(result);
   result.assign_conforming( tmp(IPosition(ndim,0), end).reform (resShape) );
   // Find out how contiguous the data is, i.e. if some contiguous data
   // end up in the same output element.
@@ -319,7 +319,7 @@ template<class T> Array<T> partialMins (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialMaxs (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialMaxs (const Array<T, Alloc>& array,
 					const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
@@ -328,13 +328,13 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
   size_t stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   bool deleteData, deleteRes;
   const T* arrData = array.getStorage (deleteData);
@@ -347,7 +347,7 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
     size_t axis = collapseAxes(i);
     end(axis) = 0;
   }
-  Array<T> tmp(array);           // to get a non-const array for operator()
+  Array<T, Alloc> tmp(array);           // to get a non-const array for operator()
   result.assign_conforming( tmp(IPosition(ndim,0), end).reform (resShape) );
   // Find out how contiguous the data is, i.e. if some contiguous data
   // end up in the same output element.
@@ -400,13 +400,13 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialMeans (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialMeans (const Array<T, Alloc>& array,
 					 const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
     return array.copy();
   }
-  Array<T> result = partialSums (array, collapseAxes);
+  Array<T, Alloc> result = partialSums (array, collapseAxes);
   size_t nr = result.nelements();
   if (nr > 0) {
     size_t factor = array.nelements() / nr;
@@ -420,22 +420,22 @@ template<class T> Array<T> partialMeans (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialVariances (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
 					     const IPosition& collapseAxes,
-					     const Array<T>& means)
+					     const Array<T, Alloc>& means)
 {
   return partialVariances (array, collapseAxes, means, 1);
 }
 
-template<class T> Array<T> partialVariances (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
 					     const IPosition& collapseAxes,
-					     const Array<T>& means,
+					     const Array<T, Alloc>& means,
                                              size_t ddof)
 {
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
@@ -445,7 +445,7 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
     throw ArrayError ("partialVariances: shape of means array mismatches "
 		     "shape of result array");
   }
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   size_t nr = result.nelements();
   int factor = int(array.nelements() / nr) - ddof;
@@ -514,7 +514,7 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
+template<typename T, typename Alloc> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
                                                            const IPosition& collapseAxes,
                                                            const Array<std::complex<T>>& means,
                                                            size_t ddof)
@@ -601,14 +601,14 @@ template<class T> Array<std::complex<T>> partialVariances (const Array<std::comp
   return result;
 }
 
-template<class T> Array<T> partialAvdevs (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialAvdevs (const Array<T, Alloc>& array,
 					  const IPosition& collapseAxes,
-					  const Array<T>& means)
+					  const Array<T, Alloc>& means)
 {
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
@@ -618,7 +618,7 @@ template<class T> Array<T> partialAvdevs (const Array<T>& array,
     throw ArrayError ("partialAvdevs: shape of means array mismatches "
 		     "shape of result array");
   }
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   size_t nr = result.nelements();
   size_t factor = array.nelements() / nr;
@@ -682,7 +682,7 @@ template<class T> Array<T> partialAvdevs (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialRmss (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialRmss (const Array<T, Alloc>& array,
 					const IPosition& collapseAxes)
 {
   if (collapseAxes.nelements() == 0) {
@@ -691,13 +691,13 @@ template<class T> Array<T> partialRmss (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   IPosition resShape, incr;
   int nelemCont = 0;
   size_t stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   result = 0;
   size_t nr = result.nelements();
   size_t factor = array.nelements() / nr;
@@ -757,13 +757,13 @@ template<class T> Array<T> partialRmss (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialMedians (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialMedians (const Array<T, Alloc>& array,
 					   const IPosition& collapseAxes,
 					   bool takeEvenMean,
 					   bool inPlace)
 {
   // Need to make shallow copy because operator() is non-const.
-  Array<T> arr = array;
+  Array<T, Alloc> arr = array;
   // Is there anything to collapse?
   if (collapseAxes.nelements() == 0) {
     return (inPlace  ?  array : array.copy());
@@ -771,7 +771,7 @@ template<class T> Array<T> partialMedians (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   // Get the remaining axes.
   // It also checks if axes are specified correctly.
@@ -790,7 +790,7 @@ template<class T> Array<T> partialMedians (const Array<T>& array,
     resShape.resize(1);
     resShape[0] = 1;
   }
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   bool deleteRes;
   T* resData = result.getStorage (deleteRes);
   T* res = resData;
@@ -818,13 +818,13 @@ template<class T> Array<T> partialMedians (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialMadfms (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialMadfms (const Array<T, Alloc>& array,
                                          const IPosition& collapseAxes,
                                          bool takeEvenMean,
                                          bool inPlace)
 {
   // Need to make shallow copy because operator() is non-const.
-  Array<T> arr = array;
+  Array<T, Alloc> arr = array;
   // Is there anything to collapse?
   if (collapseAxes.nelements() == 0) {
     return (inPlace  ?  array : array.copy());
@@ -832,7 +832,7 @@ template<class T> Array<T> partialMadfms (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   // Get the remaining axes.
   // It also checks if axes are specified correctly.
@@ -851,7 +851,7 @@ template<class T> Array<T> partialMadfms (const Array<T>& array,
     resShape.resize(1);
     resShape[0] = 1;
   }
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   bool deleteRes;
   T* resData = result.getStorage (deleteRes);
   T* res = resData;
@@ -879,16 +879,16 @@ template<class T> Array<T> partialMadfms (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialFractiles (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialFractiles (const Array<T, Alloc>& array,
 					     const IPosition& collapseAxes,
 					     float fraction,
 					     bool inPlace)
 {
   if (fraction < 0  ||  fraction > 1) {
-    throw(ArrayError("::fractile(const Array<T>&) - fraction <0 or >1 "));
+    throw(ArrayError("::fractile(const Array<T, Alloc>&) - fraction <0 or >1 "));
   }    
   // Need to make shallow copy because operator() is non-const.
-  Array<T> arr = array;
+  Array<T, Alloc> arr = array;
   // Is there anything to collapse?
   if (collapseAxes.nelements() == 0) {
     return (inPlace  ?  array : array.copy());
@@ -896,7 +896,7 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   // Get the remaining axes.
   // It also checks if axes are specified correctly.
@@ -915,7 +915,7 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
     resShape.resize(1);
     resShape[0] = 1;
   }
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   bool deleteRes;
   T* resData = result.getStorage (deleteRes);
   T* res = resData;
@@ -943,13 +943,13 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialInterFractileRanges (const Array<T>& array,
+template<typename T, typename Alloc> Array<T, Alloc> partialInterFractileRanges (const Array<T, Alloc>& array,
                                                        const IPosition& collapseAxes,
                                                        float fraction,
                                                        bool inPlace)
 {
   // Need to make shallow copy because operator() is non-const.
-  Array<T> arr = array;
+  Array<T, Alloc> arr = array;
   // Is there anything to collapse?
   if (collapseAxes.nelements() == 0) {
     return (inPlace  ?  array : array.copy());
@@ -957,7 +957,7 @@ template<class T> Array<T> partialInterFractileRanges (const Array<T>& array,
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
   if (ndim == 0) {
-    return Array<T>();
+    return Array<T, Alloc>();
   }
   // Get the remaining axes.
   // It also checks if axes are specified correctly.
@@ -976,7 +976,7 @@ template<class T> Array<T> partialInterFractileRanges (const Array<T>& array,
     resShape.resize(1);
     resShape[0] = 1;
   }
-  Array<T> result (resShape);
+  Array<T, Alloc> result (resShape);
   bool deleteRes;
   T* resData = result.getStorage (deleteRes);
   T* res = resData;

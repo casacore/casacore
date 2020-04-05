@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -39,11 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class IPosition;
 class LatticeNavigator;
-template <class T> class Array;
-template <class T> class Cube;
-template <class T> class Matrix;
-template <class T> class Vector;
-
 
 // <summary>
 // A readonly iterator for Lattices

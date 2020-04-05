@@ -87,14 +87,14 @@ namespace casacore {
     // Construct from a string that contains an image name or image expression.
     // It is opened using ImageOpener.
     ImageProxy (const String& name, const String& mask,
-                const vector<ImageProxy>& images);
+                const std::vector<ImageProxy>& images);
 
     // Construct from the concatenation of the image objects along the axis.
     // The axis must be given as a Fortran-array axis.
     // All images must be of the same data type.
     //# The dummy arguments are needed to let all constructors have a
     //# different number of arguments (for Boost-Python).
-    ImageProxy (const vector<ImageProxy>& images, Int axis,
+    ImageProxy (const std::vector<ImageProxy>& images, Int axis,
                 Int dummy1=0, Int dummy2=0);
 
     // Construct from a ValueHolder containing an Array of Float or Complex.
@@ -141,7 +141,7 @@ namespace casacore {
     // It throws an exception if not succeeded.
     static LatticeBase* openImage (const String& name,
                                    const String& mask = String(),
-                                   const vector<ImageProxy>& images = vector<ImageProxy>());
+                                   const std::vector<ImageProxy>& images = std::vector<ImageProxy>());
 
     // Open an image in the file/table with the given name.
     // The specified mask will be applied (default is default mask).

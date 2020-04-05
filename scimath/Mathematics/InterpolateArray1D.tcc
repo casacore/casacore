@@ -149,8 +149,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
                                                    Bool goodIsTrue,
 						   Bool extrapolate)
 {
-  Vector<Domain> vxout(xout);
-  Vector<Domain> vxin(xin);
+  Vector<Domain> vxout(xout.begin(), xout.end());
+  Vector<Domain> vxin(xin.begin(), xin.end());
   interpolate(yout,youtFlags,vxout,vxin,yin,yinFlags,
 	      method,goodIsTrue,extrapolate);
 }

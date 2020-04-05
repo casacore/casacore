@@ -893,17 +893,17 @@ template<typename T, typename Alloc> Array<T, Alloc> fmod(const Array<T, Alloc> 
 template<typename T, typename Alloc> Array<T, Alloc> floormod(const Array<T, Alloc> &a, const Array<T, Alloc> &b)
 {
     checkArrayShapes (a, b, "floormod");
-    return arrayTransformResult (a, b, arrays_internal::floormod);
+    return arrayTransformResult (a, b, static_cast<T (*)(T,T)>(arrays_internal::floormod));
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> floormod(const T &a, const Array<T, Alloc> &b)
 {
-    return arrayTransformResult (a, b, arrays_internal::floormod);
+    return arrayTransformResult (a, b, static_cast<T (*)(T,T)>(arrays_internal::floormod));
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> floormod(const Array<T, Alloc> &a, const T &b)
 {
-    return arrayTransformResult (a, b, arrays_internal::floormod);
+    return arrayTransformResult (a, b, static_cast<T (*)(T,T)>(arrays_internal::floormod));
 }
 
 
@@ -1228,12 +1228,6 @@ void setImag(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray)
                   [](C l, R r)->C { return C(std::real(l), r); });
 }
 
-
-template<class T, class F> inline void convertScalar (T& out, F in)
-{ out = static_cast<T>(in); }
-inline void convertScalar (std::complex<float>& out, std::complex<double> in)
-{ out = std::complex<float>(in.real(), in.imag()); }
-
 template<typename T, typename AllocT, typename U, typename AllocU>
 void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from)
 {
@@ -1251,7 +1245,7 @@ void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from)
       for (typename Array<T, AllocT>::contiter iterTo = to.cbegin();
 	   iterFrom != endFrom;
 	   ++iterFrom, ++iterTo) {
-	convertScalar (*iterTo, *iterFrom);
+	arrays_internal::convertScalar (*iterTo, *iterFrom);
       }
     } else {
       typename Array<U>::const_iterator endFrom = from.end();
@@ -1259,7 +1253,7 @@ void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from)
       for (typename Array<T, AllocT>::iterator iterTo = to.begin();
 	   iterFrom != endFrom;
 	   ++iterFrom, ++iterTo) {
-	convertScalar (*iterTo, *iterFrom);
+	arrays_internal::convertScalar (*iterTo, *iterFrom);
       }
     }
 }

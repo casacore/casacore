@@ -31,13 +31,13 @@
 //# Includes
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Record.h>
 
 //# Forward declarations
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class String;
   template<class T> class GenericL2Fit;
-  template<class T> class Vector;
 
 // <summary> This class gives Proxy to Fitting connection</summary>
 

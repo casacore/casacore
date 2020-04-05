@@ -177,7 +177,7 @@ try {
 
 // Convert cursor axes array to a vector (0 relative)
    
-   Vector<Int> cursorAxes(cursorAxesB);
+   Vector<Int> cursorAxes(cursorAxesB.begin(), cursorAxesB.end());
    if (cursorAxes.nelements() == 1 && cursorAxes(0) == -10) {
       cursorAxes.resize(0);
    } else {
@@ -239,9 +239,9 @@ try {
 
 // Plotting things
 
-   Regex re("[ \n\t\r\v\f,]+", 1);
+   std::regex re("[ \n\t\r\v\f,]+", 1);
    Vector<Int> statisticTypes = LatticeStatsBase::toStatisticTypes(statsToPlot, re);
-   Vector<Int> nxy(nxyB);
+   Vector<Int> nxy(nxyB.begin(), nxyB.end());
    if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
     if (device != "none" && 
        (statisticTypes.nelements()!=0 || !device.empty() || 

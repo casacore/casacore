@@ -33,6 +33,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/iostream.h>
 
@@ -40,7 +41,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 
-                                                const Regex& delimiter)
+                                                const std::regex& delimiter)
 { 
    Vector<String> statsStrings = stringToVector(statsU, delimiter);
    return LatticeStatsBase::toStatisticTypes(statsStrings);

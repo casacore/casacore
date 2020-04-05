@@ -29,6 +29,7 @@
 #define MS_MSFIELDCOLUMNS_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MCDirection.h>
@@ -48,7 +49,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class MVDirection;
 class MSField;
 template <class Qtype> class Quantum;
-template <class T> class Matrix;
 
 
   // <summary>

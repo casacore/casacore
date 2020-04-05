@@ -30,13 +30,10 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/tables/DataMan/DataManager.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations
-template<class T> class Vector;
-
 
 // <summary>
 // Templated base class for virtual scalar column

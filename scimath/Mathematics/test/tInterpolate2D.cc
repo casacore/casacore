@@ -27,6 +27,7 @@
 #include <casacore/scimath/Mathematics/Interpolate2D.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <vector>
 #include <string>
 
@@ -62,13 +63,13 @@ int main() {
         where(0) = 3.452; where(1) = 6.1;
 
         // Test for all implemented methods
-        vector<string> methods(4);
+        std::vector<string> methods(4);
         methods[0] = "linear";
         methods[1] = "cubic";
         methods[2] = "lanczos";
         methods[3] = "nearest";
 
-        vector<Double> results(4);
+        std::vector<Double> results(4);
         results[0] = 9.552; // Linear
         results[1] = 9.552; // Cubic
         results[2] = 9.473654921656; // Lanczos
@@ -91,7 +92,7 @@ int main() {
         // complex value interpolation, CAS-11375
         Matrix<Complex> matt_c(10,10);
         Matrix<DComplex> matt_dc(10,10);
-        vector<DComplex> cresults(results.size());
+        std::vector<DComplex> cresults(results.size());
         for (uInt i=0; i<results.size(); ++i) {
             cresults[i] = DComplex(results[i], 2*results[i]);
         }

@@ -217,7 +217,7 @@ void testTempCloseDelete()
   tIm.tempClose();
   IPosition blc(4,0 , 0, 0, nchan);
   IPosition trc(4, nx-1, ny-1, 0, nchan);
-  Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0);
+  Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
   for (Int k=0; k < nchan ; ++k){
     blc(3)=k; trc(3)=k;
     Slicer sl(blc, trc, Slicer::endIsLast);

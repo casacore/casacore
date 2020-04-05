@@ -33,6 +33,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Block.h>
 
 #include <casacore/casa/sstream.h>
 

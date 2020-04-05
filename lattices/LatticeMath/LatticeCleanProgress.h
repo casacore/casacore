@@ -41,8 +41,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template <class T> class Vector;
-template <class T> class Matrix;
 class PGPlotter;
 
 // <summary>

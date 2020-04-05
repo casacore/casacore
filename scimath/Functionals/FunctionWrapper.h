@@ -32,11 +32,11 @@
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperParam.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
-template <class T> class Vector;
 template <class T> class WrapperBase;
 
 // <summary> Construct nD function objects from C++ functions 
