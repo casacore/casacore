@@ -26,12 +26,11 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYACCESSOR_H
-#define CASA_ARRAYACCESSOR_H
+#ifndef CASA_ARRAYACCESSOR_2_H
+#define CASA_ARRAYACCESSOR_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Array.h>
+#include "Array.h"
 
 namespace casacore { //#Begin casa namespace
 
@@ -44,7 +43,7 @@ template <class T, class U> class ArrayAccessor;
 
 namespace {
   // <summary> Class to enumerate compile-time axis numeration </summary>
-  template <uInt AX> struct Axis {
+  template <size_t AX> struct Axis {
     enum {
       // Specify the constant axis
       N=AX
@@ -53,9 +52,9 @@ namespace {
   // <summary>Class to specify run-time axis values</summary>
   struct AxisN {
     // Construct the run-time axis number
-    explicit AxisN(const uInt n) : N(n) {}
+    explicit AxisN(const size_t n) : N(n) {}
     // Axis number
-    uInt N;
+    size_t N;
   };
 }
 
@@ -78,7 +77,7 @@ template <class T> class ArrayBaseAccessor {
   explicit ArrayBaseAccessor(const Array<T> &arr) :
     arrayPtr_p(&arr), axis_p(0), ptr_p(const_cast<T*>(arrayPtr_p->data())),
     step_p(0), begin_p(0), end_p(0) {;}
-  ArrayBaseAccessor(const Array<T> &arr, const uInt ax) :
+  ArrayBaseAccessor(const Array<T> &arr, const size_t ax) :
     arrayPtr_p(&arr), axis_p(ax), ptr_p(const_cast<T*>(arrayPtr_p->data())),
     step_p(0), begin_p(0), end_p(0) {;}
   // </group>
@@ -87,7 +86,7 @@ template <class T> class ArrayBaseAccessor {
   ArrayBaseAccessor(const ArrayBaseAccessor<T> &other) :
     arrayPtr_p(other.arrayPtr_p), axis_p(other.axis_p), ptr_p(other.ptr_p),
     step_p(other.step_p), begin_p(other.begin_p), end_p(other.end_p) {;}
-  ArrayBaseAccessor(const ArrayBaseAccessor<T> &other, const uInt ax) :
+  ArrayBaseAccessor(const ArrayBaseAccessor<T> &other, const size_t ax) :
     arrayPtr_p(other.arrayPtr_p), axis_p(ax), ptr_p(other.ptr_p),
     step_p(other.step_p), begin_p(other.begin_p), end_p(other.end_p) {;}
   // </group>
@@ -106,17 +105,17 @@ template <class T> class ArrayBaseAccessor {
   // <group>
   void init(const Array<T> &arr) { arrayPtr_p = &arr;
   ptr_p = const_cast<T*>(arrayPtr_p->data()); }
-  void init(const Array<T> &arr, const uInt ax) { arrayPtr_p = &arr;
+  void init(const Array<T> &arr, const size_t ax) { arrayPtr_p = &arr;
   axis_p = ax; ptr_p = const_cast<T*>(arrayPtr_p->data()); }
-  void init(const uInt ax) { arrayPtr_p = 0; axis_p = ax; ptr_p = 0; }
+  void init(const size_t ax) { arrayPtr_p = 0; axis_p = ax; ptr_p = 0; }
   // </group>
 
  public:
   //# Operators
   // Iterator-like operations.
   // <group>
-  void operator+=(const uInt ix) { ptr_p += ix*step_p; }
-  void operator-=(const uInt ix) { ptr_p -= ix*step_p; }
+  void operator+=(const size_t ix) { ptr_p += ix*step_p; }
+  void operator-=(const size_t ix) { ptr_p -= ix*step_p; }
   void operator++() { ptr_p += step_p; }
   void operator++(int) { ptr_p += step_p; }
   void operator--() { ptr_p -= step_p; }
@@ -129,37 +128,37 @@ template <class T> class ArrayBaseAccessor {
   T &operator*() { return *ptr_p; }
   T *data() { return ptr_p; }
   const Array<T> &baseArray() { return *arrayPtr_p; }
-  uInt step() { return step_p; }
+  size_t step() { return step_p; }
   // </group>
   
   // Index along current axis
   // <group>
-  const T &operator[](const Int ix) const { return *(ptr_p + ix*step_p); };
-  T &operator[](const Int ix) { return *(ptr_p + ix*step_p); }
+  const T &operator[](const int ix) const { return *(ptr_p + ix*step_p); };
+  T &operator[](const int ix) { return *(ptr_p + ix*step_p); }
   // </group>
   
   // End of index on line
   // <group>
   const T *end() { return end_p; }
-  const T *end(const Int n) { return end_p + n*step_p; }
+  const T *end(const int n) { return end_p + n*step_p; }
   // </group>
 
   // Start of index on line
   // <group>
   const T *begin() { return begin_p; }
-  const T *begin(const Int n) { return begin_p + n*step_p; }
+  const T *begin(const int n) { return begin_p + n*step_p; }
   // </group>
 
   // End when reverse indexing
   // <group>
   const T *rend() { return begin_p-step_p; }
-  const T *rend(const Int n) { return begin_p + (n-1)*step_p; }
+  const T *rend(const int n) { return begin_p + (n-1)*step_p; }
   // </group>
 
   // Begin when reverse indexing
   // <group>
   const T *rbegin() { return end_p-step_p; }
-  const T *rbegin(const Int n) { return end_p + (n-1)*step_p; }
+  const T *rbegin(const int n) { return end_p + (n-1)*step_p; }
   // </group>
 
  protected:
@@ -167,11 +166,11 @@ template <class T> class ArrayBaseAccessor {
   // The pointer to belonging array
   const Array<T> *arrayPtr_p;
   // Current run-time axis
-  uInt axis_p;
+  size_t axis_p;
   // Current access pointer
   T *ptr_p;
   // The increment to go from one point along an axis, to the next.
-  Int step_p;
+  int step_p;
   // The start element of array
   const T *begin_p;
   // The one element beyond last on line
@@ -197,7 +196,7 @@ template <class T> class ArrayBaseAccessor {
 // Accessing a large multi-dimensional array by varying the indices of the
 // array can be a slow process. Timing indications are that for a cube
 // indexing with 3 indices was about seven times slower than using a
-// standard 1D C-like index into an array of basic Int types.
+// standard 1D C-like index into an array of basic int types.
 // Improvements have made this less, partly due to some pre-calculation
 // necessary for this class, but can still be a factor of more than 3
 // slower. There are a variety of ways to access elements
@@ -215,7 +214,7 @@ template <class T> class ArrayBaseAccessor {
 // 	slower than the use of <src>getStorage</src> for contiguous arrays.
 //   <li> Ordered access along memory order can also be achieved by the use
 // 	of the
-//	<linkto class="Array:getStorage(Bool&)">
+//	<linkto class="Array:getStorage(bool&)">
 //		<src>getStorage()</src></linkto> method.
 //	For contiguous arrays this could be slightly faster than the use of 
 //	the <src>STLIterator</src> (about 10% faster), but slower for 
@@ -241,23 +240,23 @@ template <class T> class ArrayBaseAccessor {
 // However, the underlying Array class can be modified at this moment. In
 // future a ConstArrayAccessor class is foreseen. 
 // <srcblock>
-// 	Matrix<Double> mat(1000,500); // A 1000*500 matrix
+// 	Matrix<double> mat(1000,500); // A 1000*500 matrix
 // 	// Fill Matrix ...
 // 	// Loop over index 1, than index 0:
-//	for (ArrayAccessor<Double, Axis<1> > i(mat); i != i.end(); ++i) {
-//	  for (ArrayAccessor<Double, Axis<0> > j(i); j |= j.end(); ++j) {
+//	for (ArrayAccessor<double, Axis<1> > i(mat); i != i.end(); ++i) {
+//	  for (ArrayAccessor<double, Axis<0> > j(i); j |= j.end(); ++j) {
 //	    // Actions on *j (which points to mat(j,i)) or j[n]
 //	    // (which points to mat(j+n,i))
 //	}}
 // </srcblock>
 // For run-time indices it would look like:
 // <srcblock>
-// 	Matrix<Double> mat(1000,500); // A 1000*500 matrix
+// 	Matrix<double> mat(1000,500); // A 1000*500 matrix
 // 	// Fill Matrix ...
 // 	// Loop over index 1, than index 0:
-//	for (ArrayAccessor<Double, AxisN> i(mat, AxisN(1));
+//	for (ArrayAccessor<double, AxisN> i(mat, AxisN(1));
 //           i != i.end(); ++i) {
-//	  for (ArrayAccessor<Double, AxisN> j(i,AxisN(0)); j |= j.end(); ++j) {
+//	  for (ArrayAccessor<double, AxisN> j(i,AxisN(0)); j |= j.end(); ++j) {
 //	    // Actions on *j (which points to mat(j,i)) or j[n]
 //	    // (which points to mat(j+n,i))
 //	}}
@@ -268,11 +267,11 @@ template <class T> class ArrayBaseAccessor {
 // within a loop can slow down processes. For that reason the example above
 // can be better written (about 25% faster) as:
 // <srcblock>
-// 	Matrix<Double> mat(1000,500); // A 1000*500 matrix
-//	ArrayAccessor<Double, Axis<0> > j; // accessor pre-allocated
+// 	Matrix<double> mat(1000,500); // A 1000*500 matrix
+//	ArrayAccessor<double, Axis<0> > j; // accessor pre-allocated
 // 	// Fill Matrix ...
 // 	// Loop over index 1, than index 0:
-//	for (ArrayAccessor<Double, Axis<1> > i(mat); i != i.end(); ++i) {
+//	for (ArrayAccessor<double, Axis<1> > i(mat); i != i.end(); ++i) {
 //	  for (j=i; j |= j.end(); ++j) {
 //	    // Actions on *j (which points to mat(j,i)) or j[n]
 //	    // (which points to mat(j+n,i))
@@ -287,11 +286,11 @@ template <class T> class ArrayBaseAccessor {
 // The demonstrator and test programs have more examples.
 //
 // The accessors can be dereferenced by the dereference operator (<src>*</src>)
-// and by the index operator (<src>[Int]</src>), which can handle negative
+// and by the index operator (<src>[int]</src>), which can handle negative
 // values.
 // Points around the accessor in any axis direction can be addressed
 // along any axis by the templated methods <src>next()</src>,
-// <src>prev()</src> and <src>index(Int)</src>. Either run-time or
+// <src>prev()</src> and <src>index(int)</src>. Either run-time or
 // compile-time axes can be used (see example).
 //
 // An accessor can be re-initialized with the init() function. It can also
@@ -310,11 +309,11 @@ template <class T> class ArrayBaseAccessor {
 // <example>
 // <srcblock>
 //	// get a cube and fill it
-//	Cube<Double> cub(5,2,4);
+//	Cube<double> cub(5,2,4);
 //	indgen(cub);
 //	// Loop over axes 2-0 and use index() over axis 1
-//	for (ArrayAccessor<Double, Axis<2> > i(cub); i != i.end() ; ++i) {
-//	  for (ArrayAccessor<Double, Axis<0> > j(i);
+//	for (ArrayAccessor<double, Axis<2> > i(cub); i != i.end() ; ++i) {
+//	  for (ArrayAccessor<double, Axis<0> > j(i);
 //	    j != j.end(); ++j) {
 //	    // show result
 //	    cout << *j << ", " << j.index<Axis<1> >(1) << endl;
@@ -347,7 +346,7 @@ template <class T> class ArrayBaseAccessor {
 //   <li> add a ConstArrayAccessor class
 // </todo>
 //
-template <class T, uInt U> class ArrayAccessor<T, Axis<U> > :
+template <class T, size_t U> class ArrayAccessor<T, Axis<U> > :
 public ArrayBaseAccessor<T> {
  public:
   // Constructors
@@ -368,7 +367,7 @@ public ArrayBaseAccessor<T> {
   // The accessor will point to the same element (but will be oriented
   // along another axis).
   // <group>
-  template <uInt X>
+  template <size_t X>
     explicit ArrayAccessor(const ArrayAccessor<T, Axis<X> > &other) :
     ArrayBaseAccessor<T>(other) { initStep(); }
   explicit ArrayAccessor(const ArrayAccessor<T, AxisN > &other) :
@@ -388,7 +387,7 @@ public ArrayBaseAccessor<T> {
       this->begin_p = other.begin_p; this->end_p = other.end_p;
     }; return *this; }
   // Assign from other compile-time accessor along another axis
-  template <uInt X>
+  template <size_t X>
     ArrayAccessor &operator=(const ArrayAccessor<T, Axis<X> > &other) {
     ArrayBaseAccessor<T>::operator=(other); initStep();
     return *this; }
@@ -447,14 +446,14 @@ public ArrayBaseAccessor<T> {
   // <src>a.index(5, AxisN(3))</src>.
   // <group>
   template <class X>
-    const T &index(const Int ix) const 
+    const T &index(const int ix) const 
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &index(const Int ix)
+    T &index(const int ix)
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
-  const T &index(const Int ix, const AxisN ax) const 
+  const T &index(const int ix, const AxisN ax) const 
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
-  T &index(const Int ix, const AxisN ax)
+  T &index(const int ix, const AxisN ax)
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
   // </group>
   // </group>
@@ -462,18 +461,18 @@ public ArrayBaseAccessor<T> {
   // Comparison. The comparisons are done for the accessor pointer
   // value. They can be used to control loops.
   // <group>
-  Bool operator==(const ArrayAccessor<T, Axis<U> > &other) const {
+  bool operator==(const ArrayAccessor<T, Axis<U> > &other) const {
     return this->ptr_p == other.ptr_p; }
-  Bool operator!=(const ArrayAccessor<T, Axis<U> > &other) const {
+  bool operator!=(const ArrayAccessor<T, Axis<U> > &other) const {
     return this->ptr_p != other.ptr_p; }
-  Bool operator==(const T *other) const { return this->ptr_p == other; }
-  Bool operator!=(const T *other) const { return this->ptr_p != other; }
+  bool operator==(const T *other) const { return this->ptr_p == other; }
+  bool operator!=(const T *other) const { return this->ptr_p != other; }
   // </group>
   
  private:
   // Get proper offset
-  Int initOff(Int x, uInt ax) {
-    uInt st = this->arrayPtr_p->steps()[ax];
+  int initOff(int x, size_t ax) {
+    size_t st = this->arrayPtr_p->steps()[ax];
     return ((st) ? (ax == Axis<U>::N ? x/st : initOff(x%st, ax-1)) : 0); }
   // Initialize some internal values
   void initStep() {
@@ -514,7 +513,7 @@ public ArrayBaseAccessor<T> {
   explicit ArrayAccessor_RT(ArrayAccessor_RT<T, AxisN> &other,
 			    const AxisN ax) :
     ArrayBaseAccessor<T>(other, ax.N) { initStep(); }
-  template <uInt X>
+  template <size_t X>
     explicit ArrayAccessor_RT(ArrayAccessor_RT<T, Axis<X> > &other,
 			      const AxisN ax=AxisN(0)) :
     ArrayBaseAccessor<T>(other, ax.N) { initStep(); }
@@ -523,7 +522,7 @@ public ArrayBaseAccessor<T> {
       ArrayBaseAccessor<T>::operator=(other);
       initStep();
     }; return *this; }
-  template <uInt X>
+  template <size_t X>
     ArrayAccessor_RT &operator=(const ArrayAccessor_RT<T, Axis<X> > &other) {
     ArrayBaseAccessor<T>::operator=(other);
     initStep(); return *this; }
@@ -570,31 +569,31 @@ public ArrayBaseAccessor<T> {
   T &prev(const AxisN ax)
     { return *(this->ptr_p - this->arrayPtr_p->steps()[ax.N]); }
   template <class X>
-    const T &index(const Int ix) const 
+    const T &index(const int ix) const 
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &index(const Int ix)
+    T &index(const int ix)
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
-  const T &index(const Int ix, const AxisN(ax)) const 
+  const T &index(const int ix, const AxisN(ax)) const 
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
-  T &index(const Int ix, const AxisN(ax))
+  T &index(const int ix, const AxisN(ax))
     { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
   // </group>
 
   // Comparisons
   // <group>
-  Bool operator==(const ArrayAccessor_RT<T, AxisN> &other) const {
+  bool operator==(const ArrayAccessor_RT<T, AxisN> &other) const {
     return this->ptr_p == other.ptr_p; }
-  Bool operator!=(const ArrayAccessor_RT<T, AxisN> &other) const {
+  bool operator!=(const ArrayAccessor_RT<T, AxisN> &other) const {
     return this->ptr_p != other.ptr_p; }
-  Bool operator==(const T *other) const { return this->ptr_p == other; }
-  Bool operator!=(const T *other) const { return this->ptr_p != other; }
+  bool operator==(const T *other) const { return this->ptr_p == other; }
+  bool operator!=(const T *other) const { return this->ptr_p != other; }
   // </group>
 
  private: 
   // Get proper offset
-  Int initOff(Int x, uInt ax) {
-    uInt st = this->arrayPtr_p->steps()[ax];
+  int initOff(int x, size_t ax) {
+    size_t st = this->arrayPtr_p->steps()[ax];
     return ((st) ? (ax == this->axis_p ? x/st : initOff(x%st, ax-1)) : 0); }
   // Initialize some internal values
   void initStep() {

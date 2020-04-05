@@ -35,7 +35,7 @@
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/casa/Arrays/VectorIter.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <iostream>
 

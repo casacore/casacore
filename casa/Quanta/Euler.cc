@@ -30,7 +30,7 @@
 #include <casacore/casa/Quanta/Euler.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/Quanta/QMath.h>
 

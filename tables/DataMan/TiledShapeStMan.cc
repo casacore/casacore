@@ -37,9 +37,8 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Containers/BlockIO.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/tables/DataMan/DataManError.h>
-
-
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -159,7 +158,7 @@ Int TiledShapeStMan::findHypercube (const IPosition& shape)
     // Its last axis is excluded, because it represents the rows.
     uInt n = cubeSet_p.nelements();
     for (uInt i=1; i<n; i++) {
-	if (shape.isEqual (cubeSet_p[i]->cubeShape(), nrdim_p-1)) {
+	if (shape.isEqual (cubeSet_p[i]->cubeShape(), size_t(nrdim_p-1))) {
 	    return i;
 	}
     }

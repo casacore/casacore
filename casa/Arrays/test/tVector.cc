@@ -25,36 +25,32 @@
 //#
 //# $Id: tArray.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
-//# If AIPS_DEBUG is not set, the Assert's won't be called.
-#if !defined(AIPS_DEBUG)
-#define AIPS_DEBUG
-#endif
+//#include "../ArrayIO.h"
+#include "../Vector.h"
 
-//# For extra debugging
-#if !defined(AIPS_ARRAY_INDEX_CHECK)
-#define AIPS_ARRAY_INDEX_CHECK
-#endif
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Exceptions/Error.h>
+#include <sstream>
 
-#include <iostream>
-#include <casacore/casa/namespace.h>
 using namespace std;
+using namespace casacore;
 
-int main()
+BOOST_AUTO_TEST_SUITE(vector)
+
+BOOST_AUTO_TEST_CASE( vector_int_io )
 {
-  try {
-    std::vector<int> svec(4);
-    svec[0]=1; svec[1]=2; svec[2]=4; svec[3]=-2;
-    Vector<int> vvec1(svec);
-    cout << vvec1 << endl;
-    Vector<double> vvec2(svec);
-    cout << vvec2 << endl;
-  } catch (const std::exception&x) {
-    cout << x.what() << endl;
-    return 1;
-  }
-  return 0;
+  Vector<int> vvec1{1,2,4,-2};
+  std::ostringstream str;
+  str << vvec1;
+  BOOST_CHECK_EQUAL(str.str(), "[1, 2, 4, -2]");
 }
+
+BOOST_AUTO_TEST_CASE( vector_double_io )
+{
+  Vector<double> vvec2(std::vector<int>{1,2,4,-2});
+  std::ostringstream str;
+  str << vvec2;
+  BOOST_CHECK_EQUAL(str.str(), "[1, 2, 4, -2]");
+}
+
+BOOST_AUTO_TEST_SUITE_END()

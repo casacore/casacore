@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/TableError.h>
-#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/tables/TaQL/MArrayMath.h>
 #include <casacore/tables/TaQL/MArrayLogical.h>
 #include <vector>

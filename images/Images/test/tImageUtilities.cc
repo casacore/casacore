@@ -28,7 +28,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Quanta/QLogical.h>
 

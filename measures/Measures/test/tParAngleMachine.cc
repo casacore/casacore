@@ -40,7 +40,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/MVEpoch.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>

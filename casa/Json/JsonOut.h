@@ -32,6 +32,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/vector.h>
 #include <iostream>
 #include <fstream>
 

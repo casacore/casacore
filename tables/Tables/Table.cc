@@ -41,7 +41,7 @@
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>

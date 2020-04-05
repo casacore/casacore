@@ -29,13 +29,12 @@
 #define CASA_GENSORT_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/Sort.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations.
-template<class T> class Array;
-template<class T> class Vector;
 template<class T> class Block;
 
 // <summary> General in-place sort functions </summary>

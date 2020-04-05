@@ -26,6 +26,7 @@
 //# $Id: tMVAngle.cc 21335 2013-03-28 14:20:18Z gervandiepen $
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Quanta/MVAngle.h>

@@ -30,15 +30,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Quantum;
-template <class T> class Vector;
-template <class T> class Matrix;
-template <class T> class Array;
 
 // <summary> Get an integer type for a Qunatum<T> </summary>
 

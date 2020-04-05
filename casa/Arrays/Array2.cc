@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/ArrayError.h>
+#include "Array.h"
+#include "IPosition.h"
+#include "ArrayError.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // This probably isn't of interest to normal users. It returns the "volume" of
 // an array (i.e. "nelements").
-size_t ArrayVolume (uInt Ndim, const ssize_t *Shape)
+size_t ArrayVolume (size_t Ndim, const ssize_t *Shape)
 {
-    uInt i;
-    if (aips_debug) {
-	for (i=0; i < Ndim; i++)
-	    if (Shape[i] < 0)
-		throw(ArrayError("::ArrayVolume - negative shape"));
-    }
+    size_t i;
+    /*if (aips_debug) {
+      for (i=0; i < Ndim; i++)
+        if (Shape[i] < 0)
+      throw(ArrayError("::ArrayVolume - negative shape"));
+    }*/
     if (Ndim == 0)
 	return 0;
     size_t total=1;
@@ -54,18 +54,18 @@ size_t ArrayVolume (uInt Ndim, const ssize_t *Shape)
 // array with a non-zero origin, what is the linear index into storage.
 // Here we assume that the Shape is the original length, i.e. has INC
 // in it.
-size_t ArrayIndexOffset (uInt Ndim, const ssize_t *Shape,
+size_t ArrayIndexOffset (size_t Ndim, const ssize_t *Shape,
                          const ssize_t *Origin, const ssize_t *Inc,
                          const IPosition &Index)
 {
-    uInt i;
-    if (aips_debug) {
-	for (i=0; i < Ndim; i++)
+    size_t i;
+    /*if (aips_debug) {
+      for (i=0; i < Ndim; i++)
 	    if (Index(i) < Origin[i] || Index(i) > (Origin[i] + Shape[i] - 1) ||
 		Shape[i] < 0 || Inc[i] < 1)
 		throw(ArrayError("::ArrayIndexOffset - negative shape or inc"
 				 "<1 or out-of-bounds index"));
-    }
+    }*/
     size_t offset = (Index(0) - Origin[0])*Inc[0];
     for (i=1; i < Ndim; i++)
 	offset += (Index(i) - Origin[i])*Inc[i]*ArrayVolume(i, Shape);
@@ -73,17 +73,17 @@ size_t ArrayIndexOffset (uInt Ndim, const ssize_t *Shape,
     return offset;
 }
 
-size_t ArrayIndexOffset (uInt Ndim, const ssize_t *Shape,
+size_t ArrayIndexOffset (size_t Ndim, const ssize_t *Shape,
                          const ssize_t *Inc, const IPosition &Index)
 {
-    uInt i;
-    if (aips_debug) {
+    size_t i;
+    /*if (aips_debug) {
 	for (i=0; i < Ndim; i++)
 	    if (Index(i) < 0 || Index(i) >= Shape[i] ||
 		Shape[i] < 0 || Inc[i] < 1)
 		throw(ArrayError("::ArrayIndexOffset - negative shape or inc"
 				 "<1 or out-of-bounds index"));
-    }
+    }*/
     size_t offset = Index(0)*Inc[0];
     for (i=1; i < Ndim; i++)
 	offset += Index(i)*Inc[i]*ArrayVolume(i, Shape);

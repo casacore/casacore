@@ -25,16 +25,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKEDARRAY_H
-#define CASA_MASKEDARRAY_H
+#ifndef CASA_MASKEDARRAY2_H
+#define CASA_MASKEDARRAY2_H
 
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/casa/Arrays/LogiArrayFwd.h>
-#include <casacore/casa/Arrays/MaskLogiArrFwd.h>
+#include "ArrayFwd.h"
+#include "IPosition.h"
+#include "MaskLogiArrFwd.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -44,7 +42,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //#   from it must be forwarded.  This is why LogicalArrayFwd.h is
 //#   included instead of LogicalArray.h .
 //# </note>
-template <class T> class Array;
 class Slicer;
 
 
@@ -65,9 +62,9 @@ class Slicer;
 // <synopsis>
 // A MaskedArray is an association between an Array and a mask.  The mask
 // selects elements of the Array.  Only elements of the Array where the
-// corresponding element of the mask is True are defined.  Thus, operations
+// corresponding element of the mask is true are defined.  Thus, operations
 // on a MaskedArray only operate on those elements of the Array where the 
-// corresponding element of the mask is True.
+// corresponding element of the mask is true.
 //
 // A MaskedArray should be thought of as a manipulator for an Array, analogous
 // to an iterator.  It allows one to perform whole Array operations on selected
@@ -91,7 +88,7 @@ class Slicer;
 // original MaskedArray and the input mask.
 //
 // Any operation involving a MaskedArray or a set of MaskedArrays is only
-// performed for those elements where the AND of the masks is True.
+// performed for those elements where the AND of the masks is true.
 //
 // Any operation involving a MaskedArray or a set of MaskedArrays results
 // in a MaskedArray whose mask is the AND of the masks of the original
@@ -112,11 +109,11 @@ class Slicer;
 // input MaskedArray is readonly.
 //
 // A given MaskedArray can be set to be readonly.  One specifies
-// this in the constructor with the Bool argument <src>isreadonly</src>,
+// this in the constructor with the bool argument <src>isreadonly</src>,
 // or calls the <src>setReadOnly()</src> member function.
 // A MaskedArray which would default to be readonly cannot be forced to
-// be writeable.  It will remain readonly even if the Bool argument
-// <src>isreadonly</src> is set to be <src>False</src>.
+// be writeable.  It will remain readonly even if the bool argument
+// <src>isreadonly</src> is set to be <src>false</src>.
 //
 // The <src>isReadOnly(),</src> member function is used to test whether
 // the MaskedArray is readonly.
@@ -133,7 +130,7 @@ class Slicer;
 //
 // The copy() member function makes a deep copy of a MaskedArray.
 // By default it returns a writeable MaskedArray, but the MaskedArray
-// returned can be made readonly by using the Bool argument "isreadonly"
+// returned can be made readonly by using the bool argument "isreadonly"
 // to copy() (or by calling setReadOnly() on the new MaskedArray).
 //
 // The valid elements of the MaskedArray can be manipulated as a
@@ -235,9 +232,9 @@ class Slicer;
 // Use an explicit MaskedArray to limit the maximum value of an Array.
 //
 // <srcblock>
-//   Vector<Int> arr (20);
+//   Vector<int> arr (20);
 //      . . .
-//   MaskedArray<Int> marr (arr, (arr > 5));
+//   MaskedArray<int> marr (arr, (arr > 5));
 //   marr = 5;
 // </srcblock>
 //
@@ -248,7 +245,7 @@ class Slicer;
 // Use an implicit MaskedArray to limit the minimum value of an Array.
 //
 // <srcblock>
-//   Vector<Int> arr (20);
+//   Vector<int> arr (20);
 //      . . .
 //   arr (arr < 0) = 0;
 // </srcblock>
@@ -259,7 +256,7 @@ class Slicer;
 // <example>
 // It does not matter where in an expression the MaskedArrays are located.
 // The operation is only performed on those elements where the AND of the
-// masks is True.
+// masks is true.
 //
 // The following expressions are all equivalent.
 // The first (and second) expressions are the most efficient, since the sum
@@ -269,9 +266,9 @@ class Slicer;
 // those elements where ((a > 0) && (b > 0)).
 //
 // <srcblock>
-//   Vector<Int> arr (20);
-//   Vector<Int> a (20);
-//   Vector<Int> b (20);
+//   Vector<int> arr (20);
+//   Vector<int> a (20);
+//   Vector<int> b (20);
 //      . . .
 //   arr = a(a > 0) + b(b > 0);
 //
@@ -287,7 +284,7 @@ class Slicer;
 //
 // All of these expressions set those elements of arr where
 // ((a > 0) && (b > 0)) to a + b.  Those elements of arr where the condition
-// is False are unchanged.
+// is false are unchanged.
 // </example>
 //
 // <example>
@@ -296,10 +293,10 @@ class Slicer;
 // back into the MaskedArray.
 //
 // <srcblock>
-//   Matrix<Int> arr (20,5);
+//   Matrix<int> arr (20,5);
 //      . . .
-//   MaskedArray<Int> marr (arr, (arr>0) && (arr<10));
-//   Vector<Int> vec (marr.getCompressedArray());
+//   MaskedArray<int> marr (arr, (arr>0) && (arr<10));
+//   Vector<int> vec (marr.getCompressedArray());
 //      . . .
 //   marr.setCompressedArray (vec);
 // </srcblock>
@@ -316,16 +313,21 @@ class Slicer;
 //
 // <todo asof="$DATE:$>
 //   <li> Consider whether there should be constructors for masks
-//          specified as Array<Bool>.
+//          specified as Array<bool>.
 //   <li> Change constructors to always do copy construction with
 //          reference semantics when creating the internal mask.
 // </todo>
 
 
-template<class T> class MaskedArray
+template<typename T, typename ArrayAlloc, typename MaskAlloc>
+class MaskedArray
 {
 
 public:
+  typedef Array<T, ArrayAlloc> array_type;
+  typedef Array<LogicalArrayElem, MaskAlloc> mask_type;
+  typedef MaskedArray<T, ArrayAlloc, MaskAlloc> masked_array_type;
+  
   // Default constructor for a MaskedArray does not allocate any memory
   // for the Data array or Mask. Hence the masked array 
   // should not be used until some data is allocated to the object using one
@@ -335,9 +337,9 @@ public:
   // a whole family of setData functions with different arguements,
   // analogous to the constructors. However these are sufficient for the
   // moment. 
-  void setData(const Array<T> & data, const LogicalArray & mask, 
-	  Bool isReadOnly=False);
-  void setData(const MaskedArray<T> & array, Bool isReadOnly=False);
+  void setData(const array_type & data, const mask_type& mask, 
+	  bool isReadOnly=false);
+  void setData(const masked_array_type& array, bool isReadOnly=false);
     // Create a MaskedArray from an Array and a LogicalArray.
     //
     // The internal mask is a total copy of the input mask, and is
@@ -348,7 +350,7 @@ public:
     // Array.
     //
     // By default, the MaskedArray constructed is writeable.  If
-    // <src>isreadonly</src> is <src>True</src>, then the MaskedArray
+    // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
     // returned is readonly.
     //
     // <thrown>
@@ -356,9 +358,9 @@ public:
     // </thrown>
     //
     // <group>
-    MaskedArray(const Array<T> &inarray, const LogicalArray &inmask,
-                Bool isreadonly);
-    MaskedArray(const Array<T> &inarray, const LogicalArray &inmask);
+    MaskedArray(const array_type &inarray, const LogicalArray &inmask,
+                bool isreadonly);
+    MaskedArray(const array_type &inarray, const LogicalArray &inmask);
     // </group>
 
     // Create a MaskedArray from a MaskedArray and a LogicalArray.
@@ -372,9 +374,9 @@ public:
     //
     // By default, the MaskedArray constructed is writeable if the input
     // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.  If <src>isreadonly</src> is <src>True</src>, then
+    // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
     // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
-    // <src>False</src> and the input MaskedArray is readonly, then the
+    // <src>false</src> and the input MaskedArray is readonly, then the
     // constructed MaskedArray is readonly.
     //
     // <thrown>
@@ -382,9 +384,9 @@ public:
     // </thrown>
     //
     // <group>
-    MaskedArray(const MaskedArray<T> &inarray, const LogicalArray &inmask,
-                Bool isreadonly);
-    MaskedArray(const MaskedArray<T> &inarray, const LogicalArray &inmask);
+    MaskedArray(const masked_array_type &inarray, const LogicalArray &inmask,
+                bool isreadonly);
+    MaskedArray(const masked_array_type &inarray, const LogicalArray &inmask);
     // </group>
 
     // Create a MaskedArray from an Array and a MaskedLogicalArray.
@@ -397,7 +399,7 @@ public:
     // Array.
     //
     // By default, the MaskedArray constructed is writeable.  If
-    // <src>isreadonly</src> is <src>True</src>, then the MaskedArray
+    // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
     // returned is readonly.
     //
     // <thrown>
@@ -405,9 +407,9 @@ public:
     // </thrown>
     //
     // <group>
-    MaskedArray(const Array<T> &inarray, const MaskedLogicalArray &inmask,
-                Bool isreadonly);
-    MaskedArray(const Array<T> &inarray, const MaskedLogicalArray &inmask);
+    MaskedArray(const array_type &inarray, const MaskedLogicalArray &inmask,
+                bool isreadonly);
+    MaskedArray(const array_type &inarray, const MaskedLogicalArray &inmask);
     // </group>
 
     // Create a MaskedArray from a MaskedArray and a MaskedLogicalArray.
@@ -422,9 +424,9 @@ public:
     //
     // By default, the MaskedArray constructed is writeable if the input
     // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.  If <src>isreadonly</src> is <src>True</src>, then
+    // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
     // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
-    // <src>False</src> and the input MaskedArray is readonly, then the
+    // <src>false</src> and the input MaskedArray is readonly, then the
     // constructed MaskedArray is readonly.
     //
     // <thrown>
@@ -432,10 +434,10 @@ public:
     // </thrown>
     //
     // <group>
-    MaskedArray(const MaskedArray<T> &inarray,
+    MaskedArray(const masked_array_type &inarray,
                 const MaskedLogicalArray &inmask,
-                Bool isreadonly);
-    MaskedArray(const MaskedArray<T> &inarray,
+                bool isreadonly);
+    MaskedArray(const masked_array_type &inarray,
                 const MaskedLogicalArray &inmask);
     // </group>
 
@@ -450,17 +452,18 @@ public:
     //
     // By default, the MaskedArray constructed is writeable if the input
     // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.  If <src>isreadonly</src> is <src>True</src>, then
+    // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
     // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
-    // <src>False</src> and the input MaskedArray is readonly, then the
+    // <src>false</src> and the input MaskedArray is readonly, then the
     // constructed MaskedArray is readonly.
     //
     // <group>
-    MaskedArray(const MaskedArray<T> &other, Bool isreadonly);
-    MaskedArray(const MaskedArray<T> &other);
+    MaskedArray(const masked_array_type &other, bool isreadonly);
+    MaskedArray(const masked_array_type &other);
+    
+    // The source is left empty after moving
+    MaskedArray(masked_array_type&& source);
     // </group>
-
-    ~MaskedArray();
 
     // Return a MaskedArray.  The new MaskedArray is masked by the input
     // LogicalArray "anded" with the mask of the original MaskedArray.
@@ -470,7 +473,7 @@ public:
     // MaskedArray is writeable, and readonly if the input MaskedArray
     // is readonly.
     //
-    MaskedArray<T> operator() (const LogicalArray &mask) const;
+    masked_array_type operator() (const LogicalArray &mask) const;
 
     // Return a MaskedArray.  The new MaskedArray is masked by the input
     // MaskedLogicalArray "anded" with the mask of the original MaskedArray.
@@ -480,18 +483,18 @@ public:
     // MaskedArray is writeable, and readonly if the input MaskedArray
     // is readonly.
     //
-    MaskedArray<T> operator() (const MaskedLogicalArray &mask) const;
+    masked_array_type operator() (const MaskedLogicalArray &mask) const;
 
     // Get a reference to an array part which extends from "start" to end."
     // <group>
-    MaskedArray<T> operator()(const IPosition &start, const IPosition &end);
+    masked_array_type operator()(const IPosition &start, const IPosition &end);
     // Along the ith axis, every inc[i]'th element is chosen.
-    MaskedArray<T> operator()(const IPosition &start, const IPosition &end,
+    masked_array_type operator()(const IPosition &start, const IPosition &end,
 			      const IPosition &inc);
     // </group>
 
     // Get a reference to an array using a Slicer.
-    MaskedArray<T> operator()(const Slicer&);
+    masked_array_type operator()(const Slicer&);
   
     // Make a copy of the masked array.
     //
@@ -502,16 +505,16 @@ public:
     // the input MaskedArray.
     //
     // By default, the MaskedArray returned is writeable.  If
-    // <src>isreadonly</src> is <src>True</src>, then the MaskedArray
+    // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
     // returned is readonly.
     //
     // <group>
-    MaskedArray<T> copy(Bool isreadonly) const;
-    MaskedArray<T> copy() const;
+    masked_array_type copy(bool isreadonly) const;
+    masked_array_type copy() const;
     // </group>
 
     // Return the internal Array.
-    const Array<T> & getArray() const;
+    const array_type & getArray() const;
 
     // Return the internal Array, writeable.
     //
@@ -519,36 +522,36 @@ public:
     //    <li> ArrayError
     // </thrown>
     //
-    Array<T> & getRWArray() const;
+    array_type & getRWArray() const;
 
     // Return the (const) internal Mask.
-    const LogicalArray & getMask() const;
+    const mask_type & getMask() const;
 
     // The dimensionality of this masked array.
-    uInt ndim() const;
+    size_t ndim() const;
 
     // The number of elements of this masked array.
     // This is the number of elements in the underlying Array.
     // <group>
-    uInt nelements() const;
-    uInt size() const
+    size_t nelements() const;
+    size_t size() const
         { return nelements(); }
     // </group>
 
     // The number of valid elements of this masked array.
     // This is the number of elements of the mask which are TRUE.
-    uInt nelementsValid() const;
+    size_t nelementsValid() const;
 
 
     // Check to see if the masked array is consistent. This is about the same
     // thing as checking for invariants. If AIPS_DEBUG is defined, this is
     // invoked after construction and on entry to most member functions.
-    Bool ok() const;
+    bool ok() const;
 
     // Are the shapes identical?
     // <group>
-    Bool conform(const Array<T> &other) const;
-    Bool conform(const MaskedArray<T> &other) const;
+    bool conform(const array_type &other) const;
+    bool conform(const masked_array_type &other) const;
     // </group>
 
     // The length of each axis.
@@ -556,7 +559,7 @@ public:
       { return pArray->shape(); }
 
     // Is the array read only?
-    Bool isReadOnly() const
+    bool isReadOnly() const
       { return isRO; }
 
     // Set the array to be read only.
@@ -564,18 +567,18 @@ public:
 
 
     // Copy the values in inarray to this, only copying those elements
-    // for which the corresponding mask element is True.
-    //
+    // for which the corresponding mask element is true.
     // <thrown>
     //    <li> ArrayConformanceError
     //    <li> ArrayError
     // </thrown>
-    //
-    MaskedArray<T> &operator=(const Array<T> &inarray);
+    // TODO rename, see copy assignment operator.
+    masked_array_type &operator=(const array_type &inarray);
+    masked_array_type &operator=(array_type&& inarray);
 
-    // Copy the values in other to this, only copying those elements
+    // Copies/moves the values in other to this, only copying those elements
     // for which the logical AND of the corresponding mask elements
-    // of both MaskedArrays is True.
+    // of both MaskedArrays is true.
     //
     // <thrown>
     //    <li> ArrayConformanceError
@@ -583,11 +586,14 @@ public:
     // </thrown>
     //
     // <group>
-    MaskedArray<T> &operator=(const MaskedArray<T> &other);
+    // TODO this should be renamed: assignment operator should make
+    // obervable state equal, which should thus include getArray().
+    masked_array_type &operator=(const masked_array_type &other);
+    masked_array_type &operator=(masked_array_type&& other);
     // </group>
 
     // Set every element of this array to "value", only setting those elements
-    // for which the corresponding mask element is True.
+    // for which the corresponding mask element is true.
     // In other words, a scalar behaves as if it were a constant conformant
     // array.
     //
@@ -595,7 +601,7 @@ public:
     //    <li> ArrayError
     // </thrown>
     //
-    MaskedArray<T> &operator=(const T &value);
+    masked_array_type &operator=(const T &value);
 
     // Return a "compressed" Array containing only the valid
     // elements of the MaskedArray.  The number of elements in the
@@ -604,7 +610,7 @@ public:
     // <group>
 
     // The returned Array will have dimension one.
-    Array<T> getCompressedArray () const;
+    Array<T, ArrayAlloc> getCompressedArray () const;
 
     // The returned Array will have the input shape.  This shape must
     // give the returned Array the required number of elements.
@@ -613,7 +619,7 @@ public:
     //    <li> ArrayError
     // </thrown>
     //
-    Array<T> getCompressedArray (const IPosition & shape) const;
+    Array<T, ArrayAlloc> getCompressedArray (const IPosition & shape) const;
 
     // </group>
 
@@ -627,7 +633,7 @@ public:
     //    <li> ArrayError
     // </thrown>
     //
-    void getCompressedArray (Array<T> & inarr) const;
+    void getCompressedArray (array_type & inarr) const;
 
     // Set only the valid elements of the MaskedArray from the argument
     // "compressed" Array.  The size of the
@@ -639,27 +645,27 @@ public:
     //    <li> ArrayError
     // </thrown>
     //
-    void setCompressedArray (const Array<T> & inarr);
+    void setCompressedArray (const array_type& inarr);
 
     // Manipulate the storage for the underlying Array.
     // See the description of the corresponding Array functions
     // for more information.
     // <group>
-    const T * getArrayStorage (Bool &deleteIt) const;
+    const T * getArrayStorage (bool &deleteIt) const;
     //
     // <thrown>
     //    <li> ArrayError
     // </thrown>
     //
-    T * getRWArrayStorage (Bool &deleteIt) const;
+    T * getRWArrayStorage (bool &deleteIt) const;
     //
-    void freeArrayStorage(const T *&storage, Bool deleteIt) const;
+    void freeArrayStorage(const T *&storage, bool deleteIt) const;
     //
     // <thrown>
     //    <li> ArrayError
     // </thrown>
     //
-    void putArrayStorage(T *&storage, Bool deleteAndCopy) const;
+    void putArrayStorage(T *&storage, bool deleteAndCopy) const;
     // </group>
 
 
@@ -667,28 +673,28 @@ public:
     // See the description of the corresponding Array functions
     // for more information.
     // <group>
-    const LogicalArrayElem *getMaskStorage (Bool &deleteIt) const;
+    const LogicalArrayElem *getMaskStorage (bool &deleteIt) const;
     //
-    void freeMaskStorage(const LogicalArrayElem *&storage, Bool deleteIt) const;
+    void freeMaskStorage(const LogicalArrayElem *&storage, bool deleteIt) const;
     // </group>
 
 
 protected:
     // The array.
-    Array<T> *pArray;
+    std::unique_ptr<array_type> pArray;
 
     // The mask.
-    LogicalArray *pMask;
+    std::unique_ptr<mask_type> pMask;
 
     // Cache the number of valid elements.
-    uInt nelemValid;
+    size_t nelemValid;
 
     // Is the number of valid elements cache OK?
     // i.e. has it been calculated?
-    Bool nelemValidIsOK;
+    bool nelemValidIsOK;
 
     // Is the array read only?
-    Bool isRO;
+    bool isRO;
 
 };
 
@@ -720,21 +726,19 @@ protected:
 //
 //   <group name=conform2>
 //
-template<class T, class U>
-  Bool conform2 (const MaskedArray<T> &left, const Array<U> &right);
-template<class T, class U>
-  Bool conform2 (const Array<T> &left, const MaskedArray<U> &right);
-template<class T, class U>
-  Bool conform2 (const MaskedArray<T> &left, const MaskedArray<U> &right);
+template<typename TL, typename ArrayAllocL, typename MaskAllocL, typename TR, typename ArrayAllocR>
+  bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const Array<TR, ArrayAllocR> &right);
+template<typename TL, typename ArrayAllocL, typename TR, typename ArrayAllocR, typename MaskAllocR>
+  bool conform2 (const Array<TL, ArrayAllocL> &left, const MaskedArray<TR, ArrayAllocR, MaskAllocR> &right);
+template<typename TL, typename ArrayAllocL, typename MaskAllocL, typename TR, typename ArrayAllocR, typename MaskAllocR>
+  bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const MaskedArray<TR, ArrayAllocR, MaskAllocR> &right);
 //
 //   </group>
 
 // </group>
 
-
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/MaskedArray.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "MaskedArray.tcc"
+
 #endif

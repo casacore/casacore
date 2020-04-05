@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Do not use $casa_checktool, because valgrind takes far too long.
-# Valgrinding is not needed because tArrayMathAccessor is the real test program.
-./tCompareBoxedPartial

@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <casacore/casa/Arrays/MaskArrLogi.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/ms/MeasurementSets/StokesConverter.h>
 #include <casacore/casa/iostream.h>

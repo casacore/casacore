@@ -25,508 +25,321 @@
 //#
 //# $Id$
 
-//# If AIPS_DEBUG is not set, the Assert's won't be called.
-#if !defined(AIPS_DEBUG)
-#define AIPS_DEBUG
-#endif
+#include "../IPosition.h"
+#include "../Array.h"
+#include "../ArrayError.h"
+//#include "../ArrayIO.h"
+#include "../ArrayLogical.h"
+#include "../ArrayMath.h"
+#include "../Vector.h"
+#include "../Matrix.h"
+#include "../Cube.h"
+#include "../LogiVector.h"
+#include "../MaskedArray.h"
+#include "../MaskArrIO.h"
+#include "../MaskArrLogi.h"
+#include "../MaskArrMath.h"
 
-//# For extra debugging
-#if !defined(AIPS_ARRAY_INDEX_CHECK)
-#define AIPS_ARRAY_INDEX_CHECK
-#endif
+#include "TestUtilities.h"
 
-#include <casacore/casa/iostream.h>
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/BasicSL/String.h>
+#include <initializer_list>
 
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Cube.h>
-#include <casacore/casa/Arrays/LogiVector.h>
+using namespace casacore;
 
-#include <casacore/casa/Arrays/MaskedArray.h>
-#include <casacore/casa/Arrays/MaskArrIO.h>
-#include <casacore/casa/Arrays/MaskArrLogi.h>
-#include <casacore/casa/Arrays/MaskArrMath.h>
-
-
-#include <casacore/casa/namespace.h>
-
-int main()
+struct Fixture
 {
-    try {
-        cout << endl << "Testing MaskedArray logical operators." << endl;
-
-        Vector<Int> u(10), v(10), w(10), x(10), y(10), z(10);
-        LogicalArray b(IPosition(1,10));
-
-        indgen (u, -2);
-        u(0) = 8;
-        u(1) = 9;
-        cout << endl << "u= " << endl
-             << u << endl;
-
-        v=-1;
-        cout << endl << "v= " << endl
-             << v << endl;
-
-        w=11;
-        cout << endl << "w= " << endl
-             << w << endl;
-
-        x=1;
-        cout << endl << "x= " << endl
-             << x << endl;
-
-        indgen (y);
-        cout << endl << "y= " << endl
-             << y << endl;
-
-        z=5;
-        cout << endl << "z= " << endl
-             << z << endl;
-
-        b = ((y > 3) && (y < 8));
-        cout << endl << "b= " << endl
-             << b << endl;
-
-        {
-            cout << endl << "Test MaskedArray::MaskedArray (MaskedArray," 
-                            " LogicalArray)" << endl;
-
-            Vector<Int> a(x.copy());
-            MaskedArray<Int> ma (a, b);
-            MaskedArray<Int> mma (ma, y>5);
-
-            mma = 75;
-            cout << "mma = 75;" << endl
-                 << a << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator () (LogicalArray)"
-                 << endl;
-
-            Vector<Int> a(x.copy());
-            MaskedArray<Int> ma (a, b);
-
-            ma (y>5) = 75;
-            cout << "ma (y>5) = 75;" << endl
-                 << a << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator <= (MaskedArray, Array)"
-                 << endl;
-
-            cout << "(y(b) <= z).getArray()" << endl
-                 << (y(b) <= z).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator <= (Array, MaskedArray)"
-                 << endl;
-
-            cout << "(y <= z(b)).getArray()" << endl
-                 << (y <= z(b)).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator <= (MaskedArray,"
-                            " MaskedArray)"
-                 << endl;
-
-            cout << "(y(b) <= z(y>4)).getArray()" << endl
-                 << (y(b) <= z(y>4)).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator <= (MaskedArray,"
-                            " Scalar)"
-                 << endl;
-
-            cout << "(y(b) <= 5).getArray()" << endl
-                 << (y(b) <= 5).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator <= (Scalar,"
-                            " MaskedArray)"
-                 << endl;
-
-            cout << "(5 > y(b)).getArray()" << endl
-                 << (5 > y(b)).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator && (MaskedArray,"
-                            " Scalar)"
-                 << endl;
-
-            cout << "((5 > y(b)) && True).getArray()" << endl
-                 << ((5 > y(b)) && True).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator && (MaskedArray,"
-                            " Scalar)"
-                 << endl;
-
-            cout << "((5 > y(b)) && False).getArray()" << endl
-                 << ((5 > y(b)) && False).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator || (MaskedArray,"
-                            " Scalar)"
-                 << endl;
-
-            cout << "((5 > y(b)) || True).getArray()" << endl
-                 << ((5 > y(b)) || True).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator || (MaskedArray,"
-                            " Scalar)"
-                 << endl;
-
-            cout << "((5 > y(b)) || False).getArray()" << endl
-                 << ((5 > y(b)) || False).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator && (Scalar,"
-                            " MaskedArray)"
-                 << endl;
-
-            cout << "(True && (5 > y(b))).getArray()" << endl
-                 << (True && (5 > y(b))).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator && (Scalar,"
-                            " MaskedArray)"
-                 << endl;
-
-            cout << "(False && (5 > y(b))).getArray()" << endl
-                 << (False && (5 > y(b))).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator || (Scalar,"
-                            " MaskedArray)"
-                 << endl;
-
-            cout << "(True || (5 > y(b))).getArray()" << endl
-                 << (True || (5 > y(b))).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator || (Scalar,"
-                            " MaskedArray)"
-                 << endl;
-
-            cout << "(False || (5 > y(b))).getArray()" << endl
-                 << (False || (5 > y(b))).getArray() << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::operator ! (MaskedArray)"
-                 << endl;
-
-            Vector<Int> a_log (10);
-            indgen (a_log);
-
-            LogicalVector b_log ((a_log > 1) && (a_log < 6));
-
-            cout << endl << "a_log= " << endl
-                 << a_log << endl;
-            cout << "b_log= " << endl
-                 << b_log << endl;
-
-            MaskedLogicalArray mla_log ((a_log >= 3), b_log);
-            cout << "mla_log= " << endl
-                 << mla_log << endl;
-
-            cout << endl << "! mla_log = " << endl;
-            cout <<          ! mla_log << endl;
-            cout << "(a_log < 3)(b_log) = " << endl;
-            cout <<  (a_log < 3)(b_log) << endl;
-            cout << "allEQ (!mla_log, (a_log < 3)(b_log)) = "
-                 << allEQ (!mla_log, (a_log < 3)(b_log)) << endl;
-
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allLE (MaskedArray, Array)"
-                 << endl;
-
-            cout << "allLE (y(b), z)= "
-                 << allLE (y(b), z) << endl;
-            cout << "allLE (y(b), w)= "
-                 << allLE (y(b), w) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allGT (Array, MaskedArray)"
-                 << endl;
-
-            cout << "allGT (z, y(b))= "
-                 << allGT (z, y(b)) << endl;
-            cout << "allGT (w, y(b))= "
-                 << allGT (w, y(b)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allLT (MaskedArray, MaskedArray)"
-                 << endl;
-
-            cout << "allLT (u(u<9), y(y<7))= "
-                 << allLT (u(u<9), y(y<7)) << endl;
-            cout << "allLT (u(u<8), y(y<7))= "
-                 << allLT (u(u<8), y(y<7)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyLE (MaskedArray, Array)"
-                 << endl;
-
-            cout << "anyLE (y(b), z)= "
-                 << anyLE (y(b), z) << endl;
-            cout << "anyLE (y(b), v)= "
-                 << anyLE (y(b), v) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyGT (Array, MaskedArray)"
-                 << endl;
-
-            cout << "anyGT (z, y(b))= "
-                 << anyGT (z, y(b)) << endl;
-            cout << "anyGT (v, y(b))= "
-                 << anyGT (v, y(b)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyLT (MaskedArray, MaskedArray)"
-                 << endl;
-
-            cout << "anyLT (u(u<9), y(y<7))= "
-                 << anyLT (u(u<9), y(y<7)) << endl;
-            cout << "anyLT (u(u>8), y(y<7))= "
-                 << anyLT (u(u>8), y(y<7)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyAND (MaskedArray, Array)"
-                 << endl;
-
-            cout << "anyAND (b(y>5), y>4)= "
-                 << anyAND (b(y>5), y>4) << endl;
-            cout << "anyAND (b(y==4), y>4)= "
-                 << anyAND (b(y==4), y>4) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyAND (Array, MaskedArray)"
-                 << endl;
-
-            cout << "anyAND (y>4, b(y>5))= "
-                 << anyAND (y>4, b(y>5)) << endl;
-            cout << "anyAND (y>4, b(y==4))= "
-                 << anyAND (y>4, b(y==4)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyAND (MaskedArray, MaskedArray)"
-                 << endl;
-
-            cout << "anyAND (b(y>4), b(y>5))= "
-                 << anyAND (b(y>4), b(y>5)) << endl;
-            cout << "anyAND (b(y<3), b(y<=3))= "
-                 << anyAND (b(y<3), b(y<=3)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyOR (MaskedArray, Array)"
-                 << endl;
-
-            cout << "anyOR (b(y>5), y>4)= "
-                 << anyOR (b(y>5), y>4) << endl;
-            cout << "anyOR (b(y==3), y>4)= "
-                 << anyOR (b(y==3), y>4) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyOR (Array, MaskedArray)"
-                 << endl;
-
-            cout << "anyOR (y>4, b(y>5))= "
-                 << anyOR (y>4, b(y>5)) << endl;
-            cout << "anyOR (y>4, b(y==3))= "
-                 << anyOR (y>4, b(y==3)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyOR (MaskedArray, MaskedArray)"
-                 << endl;
-
-            cout << "anyOR (b(y>4), b(y>5))= "
-                 << anyOR (b(y>4), b(y>5)) << endl;
-            cout << "anyOR (b(y<3), b(y<=3))= "
-                 << anyOR (b(y<3), b(y<=3)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allLT (MaskedArray, Scalar)"
-                 << endl;
-
-            cout << "allLT (y(y>5), 7)= "
-                 << allLT (y(y>5), 7) << endl;
-            cout << "allLT (y(y>5), 11)= "
-                 << allLT (y(y>5), 11) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allGE (Scalar, MaskedArray)"
-                 << endl;
-
-            cout << "allGE (7, y(y>5))= "
-                 << allGE (7, y(y>5)) << endl;
-            cout << "allGE (11, y(y>5))= "
-                 << allGE (11, y(y>5)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyLT (MaskedArray, Scalar)"
-                 << endl;
-
-            cout << "anyLT (y(y>5), 7)= "
-                 << anyLT (y(y>5), 7) << endl;
-            cout << "anyLT (y(y>5), 5)= "
-                 << anyLT (y(y>5), 5) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyGE (Scalar, MaskedArray)"
-                 << endl;
-
-            cout << "anyGE (7, y(y>5))= "
-                 << anyGE (7, y(y>5)) << endl;
-            cout << "anyGE (5, y(y>5))= "
-                 << anyGE (5, y(y>5)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allAND (MaskedArray, Bool)"
-                 << endl;
-
-            cout << "allAND (b(y>5), True)= "
-                 << allAND (b(y>5), True) << endl;
-            cout << "allAND (b(b), True)= "
-                 << allAND (b(b), True) << endl;
-            cout << "allAND (b(b), False)= "
-                 << allAND (b(b), False) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allAND (Bool, MaskedArray)"
-                 << endl;
-
-            cout << "allAND (True, b(y>5))= "
-                 << allAND (True, b(y>5)) << endl;
-            cout << "allAND (True, b(b))= "
-                 << allAND (True, b(b)) << endl;
-            cout << "allAND (False, b(b))= "
-                 << allAND (False, b(b)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allOR (MaskedArray, Bool)"
-                 << endl;
-
-            cout << "allOR (b(y>5), False)= "
-                 << allOR (b(y>5), False) << endl;
-            cout << "allOR (b(b), False)= "
-                 << allOR (b(b), False) << endl;
-            cout << "allOR (b(y>5), True)= "
-                 << allOR (b(y>5), True) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::allOR (Bool, MaskedArray)"
-                 << endl;
-
-            cout << "allOR (False, b(y>5))= "
-                 << allOR (False, b(y>5)) << endl;
-            cout << "allOR (False, b(b))= "
-                 << allOR (False, b(b)) << endl;
-            cout << "allOR (True, b(y>5))= "
-                 << allOR (True, b(y>5)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyAND (MaskedArray, Bool)"
-                 << endl;
-
-            cout << "anyAND (b(y>5), True)= "
-                 << anyAND (b(y>5), True) << endl;
-            cout << "anyAND (b(y<3), True)= "
-                 << anyAND (b(y<3), True) << endl;
-            cout << "anyAND (b(y>5), False)= "
-                 << anyAND (b(y>5), False) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyAND (Bool, MaskedArray)"
-                 << endl;
-
-            cout << "anyAND (True, b(y>5))= "
-                 << anyAND (True, b(y>5)) << endl;
-            cout << "anyAND (True, b(y<3))= "
-                 << anyAND (True, b(y<3)) << endl;
-            cout << "anyAND (False, b(y>5))= "
-                 << anyAND (False, b(y>5)) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyOR (MaskedArray, Bool)"
-                 << endl;
-
-            cout << "anyOR (b(y>5), False)= "
-                 << anyOR (b(y>5), False) << endl;
-            cout << "anyOR (b(y<3), False)= "
-                 << anyOR (b(y<3), False) << endl;
-            cout << "anyOR (b(y<3), True)= "
-                 << anyOR (b(y<3), True) << endl;
-        }
-
-        {
-            cout << endl << "Test MaskedArray::anyOR (Bool, MaskedArray)"
-                 << endl;
-
-            cout << "anyOR (False, b(y>5))= "
-                 << anyOR (False, b(y>5)) << endl;
-            cout << "anyOR (False, b(y<3))= "
-                 << anyOR (False, b(y<3)) << endl;
-            cout << "anyOR (True, b(y<3))= "
-                 << anyOR (True, b(y<3)) << endl;
-        }
-
-    } catch (AipsError& x) {
-        cout << "\nCaught an exception: " << x.getMesg() << endl;
-    } 
-
-    cout << endl << "OK" << endl;
-    return 0;
+  std::vector<int> ref;
+  Vector<int> u, v, w, x, y, z;
+  LogicalArray b;
+  
+  Fixture() :
+    u(10), v(10), w(10), x(10), y(10), z(10),
+    b(IPosition(1,10))
+  {
+    indgen (u, -2);
+    u(0) = 8;
+    u(1) = 9;
+    v=-1;
+    w=11;
+    x=1;
+    indgen (y);
+    z=5;
+    b = ((y > 3) && (y < 8));
+  }
+};
+
+BOOST_AUTO_TEST_SUITE(mask_array_logical_operators)
+
+BOOST_FIXTURE_TEST_CASE(prologue, Fixture)
+{
+  check(u, {8, 9, 0, 1, 2, 3, 4, 5, 6, 7});
+  check(v, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
+  check(w, {11, 11, 11, 11, 11, 11, 11, 11, 11, 11});
+  check(x, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+  check(y, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  check(z, {5, 5, 5, 5, 5, 5, 5, 5, 5, 5});
+  check(b, {false, false, false, false, true, true, true, true, false, false});
 }
+
+BOOST_FIXTURE_TEST_CASE(constructor, Fixture)
+{
+  Vector<int> a(x.copy());
+  MaskedArray<int> ma (a, b);
+  MaskedArray<int> mma (ma, y>5);
+  
+  mma = 75;
+  check(a, {1, 1, 1, 1, 1, 1, 75, 75, 1, 1});
+}
+
+BOOST_FIXTURE_TEST_CASE(brackets_operator, Fixture)
+{
+  Vector<int> a(x.copy());
+  MaskedArray<int> ma (a, b);
+  
+  ma (y>5) = 75;
+  check(a, {1, 1, 1, 1, 1, 1, 75, 75, 1, 1});
+}
+
+BOOST_FIXTURE_TEST_CASE(le_operator1, Fixture)
+{
+  check((y(b) <= z).getArray(), {0, 0, 0, 0, 1, 1, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(le_operator2, Fixture)
+{
+  check((y <= z(b)).getArray(), {0, 0, 0, 0, 1, 1, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(le_operator3, Fixture)
+{
+  check((y(b) <= z(y>4)).getArray(), {0, 0, 0, 0, 0, 1, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(le_operator4, Fixture)
+{
+  check((y(b) <= 5).getArray(), {0, 0, 0, 0, 1, 1, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(le_operator5, Fixture)
+{
+  check((5 > y(b)).getArray(), {0, 0, 0, 0, 1, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_and1, Fixture)
+{
+  check(((5 > y(b)) && true).getArray(), {0, 0, 0, 0, 1, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_and2, Fixture)
+{
+  check(((5 > y(b)) && false).getArray(), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_or1, Fixture)
+{
+  check(((5 > y(b)) || true).getArray(), {0, 0, 0, 0, 1, 1, 1, 1, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_or2, Fixture)
+{
+  check(((5 > y(b)) || false).getArray(), {0, 0, 0, 0, 1, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_and3, Fixture)
+{
+  check((true && (5 > y(b))).getArray(), {0, 0, 0, 0, 1, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_and4, Fixture)
+{
+  check((false && (5 > y(b))).getArray(), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_or3, Fixture)
+{
+  check((true || (5 > y(b))).getArray(), {0, 0, 0, 0, 1, 1, 1, 1, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(logical_or4, Fixture)
+{
+  check( (false || (5 > y(b))).getArray(), {0, 0, 0, 0, 1, 0, 0, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(negate, Fixture)
+{
+  Vector<int> a_log (10);
+  indgen (a_log);
+  
+  LogicalVector b_log ((a_log > 1) && (a_log < 6));
+  
+  check(a_log, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  check(b_log, {0, 0, 1, 1, 1, 1, 0, 0, 0, 0});
+  
+  MaskedLogicalArray mla_log ((a_log >= 3), b_log);
+  check(mla_log.getArray(), {0, 0, 0, 1, 1, 1, 1, 1, 1, 1});
+  check(mla_log.getMask(), {0, 0, 1, 1, 1, 1, 0, 0, 0, 0});
+  
+  check((!mla_log).getArray(), {0, 0, 1, 0, 0, 0, 1, 1, 1, 1});
+  check((!mla_log).getMask(), {0, 0, 1, 1, 1, 1, 0, 0, 0, 0});
+  
+  check(((a_log < 3)(b_log)).getArray(), {1, 1, 1, 0, 0, 0, 0, 0, 0, 0});
+  check(((a_log < 3)(b_log)).getMask(), {0, 0, 1, 1, 1, 1, 0, 0, 0, 0});
+  
+  BOOST_CHECK_EQUAL(allEQ (!mla_log, (a_log < 3)(b_log)), true);
+}
+
+BOOST_FIXTURE_TEST_CASE(all_le, Fixture)
+{
+  BOOST_CHECK(!allLE (y(b), z));
+  BOOST_CHECK(allLE (y(b), w));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_gt, Fixture)
+{
+  BOOST_CHECK(!allGT (z, y(b)));
+  BOOST_CHECK(allGT (w, y(b)));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_lt1, Fixture)
+{
+  BOOST_CHECK(!allLT (u(u<9), y(y<7)));
+  BOOST_CHECK(allLT (u(u<8), y(y<7)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_le, Fixture)
+{
+  BOOST_CHECK(anyLE (y(b), z));
+  BOOST_CHECK(!anyLE (y(b), v));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_gt, Fixture)
+{
+  BOOST_CHECK(anyGT (z, y(b)));
+  BOOST_CHECK(!anyGT (v, y(b)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_lt1, Fixture)
+{
+  BOOST_CHECK(anyLT (u(u<9), y(y<7)));
+  BOOST_CHECK(!anyLT (u(u>8), y(y<7)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_and1, Fixture)
+{
+  BOOST_CHECK(anyAND (b(y>5), y>4));
+  BOOST_CHECK(!anyAND (b(y==4), y>4));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_and2, Fixture)
+{
+  BOOST_CHECK(anyAND (y>4, b(y>5)));
+  BOOST_CHECK(!anyAND (y>4, b(y==4)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_and3, Fixture)
+{
+  BOOST_CHECK(anyAND (b(y>4), b(y>5)));
+  BOOST_CHECK(!anyAND (b(y<3), b(y<=3)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_or1, Fixture)
+{
+  BOOST_CHECK(anyOR (b(y>5), y>4));
+  BOOST_CHECK(!anyOR (b(y==3), y>4));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_or2, Fixture)
+{
+  BOOST_CHECK(anyOR (y>4, b(y>5)));
+  BOOST_CHECK(!anyOR (y>4, b(y==3)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_or3, Fixture)
+{
+  BOOST_CHECK(anyOR (b(y>4), b(y>5)));
+  BOOST_CHECK(!anyOR (b(y<3), b(y<=3)));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_lt2, Fixture)
+{
+  BOOST_CHECK(!allLT (y(y>5), 7));
+  BOOST_CHECK(allLT (y(y>5), 11));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_ge, Fixture)
+{
+  BOOST_CHECK(!allGE (7, y(y>5)));
+  BOOST_CHECK(allGE (11, y(y>5)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_lt2, Fixture)
+{
+  BOOST_CHECK(anyLT (y(y>5), 7));
+  BOOST_CHECK(!anyLT (y(y>5), 5));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_ge, Fixture)
+{
+  BOOST_CHECK(anyGE (7, y(y>5)));
+  BOOST_CHECK(!anyGE (5, y(y>5)));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_and1, Fixture)
+{
+  BOOST_CHECK(!allAND (b(y>5), true));
+  BOOST_CHECK(allAND (b(b), true));
+  BOOST_CHECK(!allAND (b(b), false));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_and2, Fixture)
+{
+  BOOST_CHECK(!allAND (true, b(y>5)));
+  BOOST_CHECK(allAND (true, b(b)));
+  BOOST_CHECK(!allAND (false, b(b)));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_or1, Fixture)
+{
+  BOOST_CHECK(!allOR (b(y>5), false));
+  BOOST_CHECK(allOR (b(b), false));
+  BOOST_CHECK(allOR (b(y>5), true));
+}
+
+BOOST_FIXTURE_TEST_CASE(all_or2, Fixture)
+{
+  BOOST_CHECK(!allOR (false, b(y>5)));
+  BOOST_CHECK(allOR (false, b(b)));
+  BOOST_CHECK(allOR (true, b(y>5)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_and4, Fixture)
+{
+  BOOST_CHECK(anyAND (b(y>5), true));
+  BOOST_CHECK(!anyAND (b(y<3), true));
+  BOOST_CHECK(!anyAND (b(y>5), false));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_and5, Fixture)
+{
+  BOOST_CHECK(anyAND (true, b(y>5)));
+  BOOST_CHECK(!anyAND (true, b(y<3)));
+  BOOST_CHECK(!anyAND (false, b(y>5)));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_or4, Fixture)
+{
+  BOOST_CHECK(anyOR (b(y>5), false));
+  BOOST_CHECK(!anyOR (b(y<3), false));
+  BOOST_CHECK(anyOR (b(y<3), true));
+}
+
+BOOST_FIXTURE_TEST_CASE(any_or5, Fixture)
+{
+  BOOST_CHECK(anyOR (false, b(y>5)));
+  BOOST_CHECK(!anyOR (false, b(y<3)));
+  BOOST_CHECK(anyOR (true, b(y<3)));
+}
+
+BOOST_AUTO_TEST_SUITE_END()

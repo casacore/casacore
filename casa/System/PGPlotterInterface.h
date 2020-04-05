@@ -30,13 +30,12 @@
 #define CASA_PGPLOTTERINTERFACE_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Record;
 class String;
-template<class T> class Vector;
-template<class T> class Matrix;
 
 // <summary>
 // Abstract base class for PGPLOT style plotting.

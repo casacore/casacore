@@ -25,13 +25,11 @@
 //#
 //# $Id$
 
-#ifndef CASA_VECTORITER_H
-#define CASA_VECTORITER_H
+#ifndef CASA_VECTORITER_2_H
+#define CASA_VECTORITER_2_H
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/ArrayIter.h>
-#include <casacore/casa/Arrays/Vector.h>
+#include "ArrayIter.h"
+#include "Vector.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -58,13 +56,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // have the "sum" function in ArrayMath.h that we should use instead.
 //
 // <srcblock>
-// Array<Float> af;
+// Array<float> af;
 // // set af
 // VectorIterator vi(af);
-// Float sum = 0.0;
-// uInt n = vi.vector().nelements();
+// float sum = 0.0;
+// size_t n = vi.vector().nelements();
 // while (! vi.pastEnd()) {
-//     for (Int i=0; i < n; i++) {   // N.B.; cursor always 0 based.
+//     for (int i=0; i < n; i++) {   // N.B.; cursor always 0 based.
 //         sum += vi.vector()(i);
 //     }
 //     vi.next();
@@ -76,7 +74,7 @@ template<class T> class VectorIterator : public ArrayIterator<T>
 public:
     // Iterate by vector cursors through array "a".
     // The vector cursor is taken for the given axis.
-    explicit VectorIterator(Array<T> &a, uInt axis=0);
+    explicit VectorIterator(Array<T> &a, size_t axis=0);
 
     // Return a Vector at the current position.
     Vector<T> &vector() {return *(Vector<T> *)this->ap_p;}
@@ -104,7 +102,7 @@ template<class T> class ReadOnlyVectorIterator
 {
 public:
     // <group>
-    explicit ReadOnlyVectorIterator(const Array<T> &a, uInt axis=0)
+    explicit ReadOnlyVectorIterator(const Array<T> &a, size_t axis=0)
       : vi(const_cast<Array<T>&>(a), axis) {}
 
     void next()   {vi.next();}
@@ -114,11 +112,11 @@ public:
     const Array<T> &array() {return vi.array();}
     const Vector<T> &vector() {return vi.vector();}
 
-    Bool atStart() const {return vi.atStart();}
-    Bool pastEnd() const {return vi.pastEnd();}
+    bool atStart() const {return vi.atStart();}
+    bool pastEnd() const {return vi.pastEnd();}
     const IPosition &pos() const {return vi.pos();}
     IPosition endPos() const {return vi.endPos();}
-    uInt ndim() const {return vi.ndim();}
+    size_t ndim() const {return vi.ndim();}
     // </group>
 private:
     // Not implemented.
@@ -132,7 +130,6 @@ private:
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/VectorIter.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "VectorIter.tcc"
+
 #endif

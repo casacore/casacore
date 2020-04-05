@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures.h>
 #include <casacore/measures/Measures/MeasJPL.h>
 #include <casacore/casa/Quanta/MVEpoch.h>

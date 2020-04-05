@@ -25,18 +25,13 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKARRIO_H
-#define CASA_MASKARRIO_H
+#ifndef CASA_MASKARRIO_2_H
+#define CASA_MASKARRIO_2_H
 
-#include <casacore/casa/aips.h>
-
-//# Forward declarations
-#include <casacore/casa/iosfwd.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> class MaskedArray;
-template<class T> class MaskedArray;
-
+template<typename T, typename ArrayAlloc, typename MaskAlloc>
+class MaskedArray;
 
 // <summary>
 //    Ascii input/output operations for MaskedArrays.
@@ -63,7 +58,7 @@ template<class T> class MaskedArray;
 //
 // <example>
 // <srcblock>
-//   Vector<Int> a(10);
+//   Vector<int> a(10);
 //   LogicalVector b(10);
 //   MaskedArray m (a,b);
 //      . . .
@@ -91,15 +86,17 @@ template<class T> class MaskedArray;
 // 
 // Write out an ascii representation of a MaskedArray.
 // The component Array and LogicalArray are written out sequentially.
-template<class T> ostream & operator<< (ostream &, const MaskedArray<T> &);
+template<typename T, typename ArrayAlloc, typename MaskAlloc>
+std::ostream & operator<< (std::ostream &, const MaskedArray<T, ArrayAlloc, MaskAlloc> &);
 
 
 // </group>
-
+template<typename T, typename ArrayAlloc, typename MaskAlloc>
+std::string to_string(const MaskedArray<T, ArrayAlloc, MaskAlloc> &);
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/MaskArrIO.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+
+#include "MaskArrIO.tcc"
+
 #endif

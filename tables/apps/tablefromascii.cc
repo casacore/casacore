@@ -28,7 +28,7 @@
 #include <casacore/tables/Tables/ReadAsciiTable.h>
 #include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Inputs/Input.h>
 
 #include <iostream>

@@ -60,6 +60,7 @@
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 #include <casacore/casa/stdexcept.h>
 #include <unistd.h>                 // needed for rmdir, unlink

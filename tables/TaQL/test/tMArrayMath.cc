@@ -28,7 +28,7 @@
 #include <casacore/tables/TaQL/MArrayMath.h>
 #include <casacore/tables/TaQL/MArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayPartMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/OS/Timer.h>
 #include <iostream>

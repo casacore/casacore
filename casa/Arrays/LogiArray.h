@@ -25,14 +25,10 @@
 //#
 //# $Id$
 
-#ifndef CASA_LOGIARRAY_H
-#define CASA_LOGIARRAY_H
+#ifndef CASA_LOGIARRAY_2_H
+#define CASA_LOGIARRAY_2_H
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/LogiArrayFwd.h>
-#include <casacore/casa/Arrays/Array.h>
-
+#include "Array.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -59,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // logical operations on Arrays.  They can also be created in other ways.
 // They are used as masks for MaskedArrays.
 //
-// Array<Bool> would have served the purpose.  However, it is very space
+// Array<bool> would have served the purpose.  However, it is very space
 // inefficient.  Instead, the concept has been abstracted.  Currently,
 // the implementation of LogicalArray is Array<LogicalArrayElem>, done
 // with typedefs.  The type of LogicalArrayElem can be changed at any time.

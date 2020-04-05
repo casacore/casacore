@@ -25,152 +25,105 @@
 //#
 //# $Id$
 
-//# If AIPS_DEBUG is not set, the Assert's won't be called.
-#if !defined(AIPS_DEBUG)
-#define AIPS_DEBUG
-#endif
+#include "../IPosition.h"
+#include "../Array.h"
+#include "../ArrayMath.h"
+#include "../ArrayLogical.h"
+//#include "../ArrayIO.h"
+#include "../Vector.h"
+#include "../Matrix.h"
+#include "../Cube.h"
+#include "../ArrayError.h"
+#include "../LogiVector.h"
 
-//# For extra debugging
-#if !defined(AIPS_ARRAY_INDEX_CHECK)
-#define AIPS_ARRAY_INDEX_CHECK
-#endif
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/iostream.h>
+using namespace casacore;
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Assert.h>
+BOOST_AUTO_TEST_SUITE(array_logical)
 
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Cube.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/LogiVector.h>
-
-
-#include <casacore/casa/namespace.h>
-int main()
+template<typename T>
+void Compare(const T& l, const std::string& str)
 {
-    try {
-        {
-            cout << endl << "Testing Array logical operators." << endl;
-
-            Vector<Int> x(5), y(5);
-            LogicalVector b(5), c(5);
-            x=1;
-            indgen (y);
-
-            cout << endl << "x= " << endl;
-            cout << x << endl;
-            cout << endl << "y= " << endl;
-            cout << y << endl;
-
-            AlwaysAssertExit (allSame(x));
-            AlwaysAssertExit (!allSame(y));
-
-            b = (x <= y);
-            cout << endl << "b= (x <= y) = " << endl;
-            cout << b << endl;
-
-            b = (x < y);
-            cout << endl << "b= (x < y) = " << endl;
-            cout << b << endl;
-
-            b = (x >= y);
-            cout << endl << "b= (x >= y) = " << endl;
-            cout << b << endl;
-
-            b = (x > y);
-            cout << endl << "b= (x > y) = " << endl;
-            cout << b << endl;
-
-            b = (x == y);
-            cout << endl << "b= (x == y) = " << endl;
-            cout << b << endl;
-
-            b = (x != y);
-            cout << endl << "b= (x != y) = " << endl;
-            cout << b << endl;
-
-            b = ((const Array<Int> &)y <= 1);
-            cout << endl << "b= (y <= 1) = " << endl;
-            cout << b << endl;
-
-            b = ((const Array<Int> &)y < 1);
-            cout << endl << "b= (y < 1) = " << endl;
-            cout << b << endl;
-
-            b = ((const Array<Int> &)y >= 1);
-            cout << endl << "b= (y >= 1) = " << endl;
-            cout << b << endl;
-
-            b = ((const Array<Int> &)y > 1);
-            cout << endl << "b= (y > 1) = " << endl;
-            cout << b << endl;
-
-            b = ((const Array<Int> &)y == 1);
-            cout << endl << "b= (y == 1) = " << endl;
-            cout << b << endl;
-
-            b = ((const Array<Int> &)y != 1);
-            cout << endl << "b= (y != 1) = " << endl;
-            cout << b << endl;
-
-            b = (1 <= (const Array<Int> &)y);
-            cout << endl << "b= (1 <= y) = " << endl;
-            cout << b << endl;
-
-            b = (1 < (const Array<Int> &)y);
-            cout << endl << "b= (1 < y) = " << endl;
-            cout << b << endl;
-
-            b = (1 >= (const Array<Int> &)y);
-            cout << endl << "b= (1 >= y) = " << endl;
-            cout << b << endl;
-
-            b = (1 > (const Array<Int> &)y);
-            cout << endl << "b= (1 > y) = " << endl;
-            cout << b << endl;
-
-            b = (1 == (const Array<Int> &)y);
-            cout << endl << "b= (1 == y) = " << endl;
-            cout << b << endl;
-
-            b = (1 != (const Array<Int> &)y);
-            cout << endl << "b= (1 != y) = " << endl;
-            cout << b << endl;
-
-            b = ! ((const Array<Int> &)y >= 3);
-            c =   ((const Array<Int> &)y <  3);
-            cout << endl << "b= ! (y >= 3) = " << endl;
-            cout << b << endl;
-            cout << "c=   (y <  3) = " << endl;
-            cout << c << endl;
-            cout << "allEQ (b, c) = " << allEQ (b, c) << endl;
-
-
-            Vector<Double> x1(2), x2(2);
-            x1 = 10000; x2(0) = 10001; x2(1) = 10002;
-            cout << endl << " near(x1, x2, 0.99e-4) " << near(x1, x2, 0.99e-4);
-            cout << endl << " near(x1, x2, 1.01e-4) " << near(x1, x2, 1.01e-4);
-            cout << endl << " near(x1, x2, 2.01e-4) " << near(x1, x2, 2.01e-4);
-            cout << endl << " nearAbs(x1, x2, 0.99) " << nearAbs(x1, x2, 0.99);
-            cout << endl << " nearAbs(x1, x2, 1.01) " << nearAbs(x1, x2, 1.01);
-            cout << endl << " nearAbs(x1, x2, 2.01) " << nearAbs(x1, x2, 2.01);
-
-            cout << endl << "OK" << endl;
-        }
-    } catch (AipsError& x) {
-        cout << "\nCaught an exception: " << x.getMesg() << endl;
-    } 
-
-    cout << "OK" << endl;
-    return 0;
+  BOOST_CHECK_EQUAL(to_string(l), str);
 }
+
+BOOST_AUTO_TEST_CASE( array_position_iterator )
+{
+  Vector<int> x(5, 1), y(5);
+  LogicalVector b(5), c(5);
+  indgen (y);
+
+  BOOST_CHECK (allSame(x));
+  BOOST_CHECK (!allSame(y));
+
+  b.assign_conforming (x <= y);
+  Compare(b, "[0, 1, 1, 1, 1]");
+
+  b.assign_conforming (x < y);
+  Compare(b, "[0, 0, 1, 1, 1]");
+
+  b.assign_conforming (x >= y);
+  Compare(b, "[1, 1, 0, 0, 0]");
+
+  b.assign_conforming (x > y);
+  Compare(b, "[1, 0, 0, 0, 0]");
+
+  b.assign_conforming (x == y);
+  Compare(b, "[0, 1, 0, 0, 0]");
+
+  b.assign_conforming (x != y);
+  Compare(b, "[1, 0, 1, 1, 1]");
+
+  b.assign_conforming ((const Array<int> &)y <= 1);
+  Compare(b, "[1, 1, 0, 0, 0]");
+
+  b.assign_conforming ((const Array<int> &)y < 1);
+  Compare(b, "[1, 0, 0, 0, 0]");
+
+  b.assign_conforming ((const Array<int> &)y >= 1);
+  Compare(b, "[0, 1, 1, 1, 1]");
+
+  b.assign_conforming ((const Array<int> &)y > 1);
+  Compare(b, "[0, 0, 1, 1, 1]");
+
+  b.assign_conforming ((const Array<int> &)y == 1);
+  Compare(b, "[0, 1, 0, 0, 0]");
+
+  b.assign_conforming ((const Array<int> &)y != 1);
+  Compare(b, "[1, 0, 1, 1, 1]");
+
+  b.assign_conforming (1 <= (const Array<int> &)y);
+  Compare(b, "[0, 1, 1, 1, 1]");
+
+  b.assign_conforming (1 < (const Array<int> &)y);
+  Compare(b, "[0, 0, 1, 1, 1]");
+
+  b.assign_conforming (1 >= (const Array<int> &)y);
+  Compare(b, "[1, 1, 0, 0, 0]");
+
+  b.assign_conforming (1 > (const Array<int> &)y);
+  Compare(b, "[1, 0, 0, 0, 0]");
+
+  b.assign_conforming (1 == (const Array<int> &)y);
+  Compare(b, "[0, 1, 0, 0, 0]");
+
+  b.assign_conforming (1 != (const Array<int> &)y);
+  Compare(b, "[1, 0, 1, 1, 1]");
+
+  b.assign_conforming (! ((const Array<int> &)y >= 3));
+  c.assign_conforming   ((const Array<int> &)y <  3);
+  Compare(b, "[1, 1, 1, 0, 0]");
+  Compare(c, "[1, 1, 1, 0, 0]");
+
+  Vector<double> x1(2, 10000), x2(2);
+  x2(0) = 10001; x2(1) = 10002;
+  Compare(near(x1, x2, 0.99e-4), "[0, 0]");
+  Compare(near(x1, x2, 1.01e-4), "[1, 0]");
+  Compare(near(x1, x2, 2.01e-4), "[1, 1]");
+  Compare(nearAbs(x1, x2, 0.99), "[0, 0]");
+  Compare(nearAbs(x1, x2, 1.01), "[1, 0]");
+  Compare(nearAbs(x1, x2, 2.01), "[1, 1]");
+}
+
+BOOST_AUTO_TEST_SUITE_END()

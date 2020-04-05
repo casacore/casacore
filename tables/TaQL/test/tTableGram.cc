@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>

@@ -24,9 +24,10 @@
 #include <casacore/casa/Json/JsonError.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <iostream>
 #include <cstdlib>
 

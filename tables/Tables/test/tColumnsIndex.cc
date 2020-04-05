@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ColumnsIndex.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordField.h>

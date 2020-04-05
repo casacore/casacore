@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/BlockIO.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/BasicMath/Math.h>

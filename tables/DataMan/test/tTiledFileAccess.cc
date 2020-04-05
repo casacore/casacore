@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/IO/CanonicalIO.h>
 #include <casacore/casa/IO/RawIO.h>

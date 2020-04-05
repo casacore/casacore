@@ -47,7 +47,7 @@
 #include <casacore/casa/Arrays/ArrayPartMath.h>
 #include <casacore/casa/Arrays/MatrixMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 
 #include <casacore/casa/Arrays/LogiArray.h>

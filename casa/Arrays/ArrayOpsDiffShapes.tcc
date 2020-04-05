@@ -25,37 +25,35 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYOPSDIFFSHAPES_TCC
-#define CASA_ARRAYOPSDIFFSHAPES_TCC
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-//#include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/IPosition.h>
-//#include <casacore/casa/Arrays/Slice.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-//#include <casacore/casa/BasicSL/String.h>
+#ifndef CASA_ARRAYOPSDIFFSHAPES_2_TCC
+#define CASA_ARRAYOPSDIFFSHAPES_2_TCC
+
+#include "ArrayMath.h"
+#include "ArrayLogical.h"
+#include "IPosition.h"
+#include "ArrayError.h"
 
 namespace casacore {
 
-template<typename T>
-LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
+template<typename T, typename Alloc>
+LogicalArray reformedMask(const Array<T, Alloc>& data, const T truthvalue,
 			  const IPosition& desiredform)
 {
   if(data.shape().nelements() == desiredform.nelements()
      && data.shape() == desiredform){
     return (data == truthvalue);
   }
-  else if(static_cast<Int>(data.nelements()) == desiredform.product()){
+  else if(static_cast<int>(data.nelements()) == desiredform.product()){
     return (data == truthvalue).reform(desiredform);
   }
   else{
     if(rightExpandableToLeft(data.shape(), desiredform)){
-      uInt n_data_dim = data.shape().nelements();
-      uInt n_desired_dim = desiredform.nelements();
+      size_t n_data_dim = data.shape().nelements();
+      size_t n_desired_dim = desiredform.nelements();
 
       // Create an array with desiredform's shape,
       LogicalArray collapseddata(desiredform);
-      ReadOnlyArrayIterator<T> data_cursor(data,
+      ReadOnlyArrayIterator<T, Alloc> data_cursor(data,
 					   IPosition::otherAxes(n_data_dim,
 					      IPosition::makeAxisPath(n_desired_dim)));
       IPosition collapsedPos;
@@ -79,12 +77,12 @@ LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
       return collapseddata;
     }
     else{
-      ostringstream os;
+      std::ostringstream os;
       
       os << "reformedMask(): Could not reconcile the input shape ("
 	 << data.shape() << ")\n"
 	 << "with the output shape (" << desiredform << ").";
-      throw(ArrayConformanceError(os));
+      throw(ArrayConformanceError(os.str()));
     }
   }
 }
@@ -106,7 +104,7 @@ LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
 //     const IPosition rightShape = right.shape();
 
 //     if(rightExpandableToLeft(leftShape, rightShape)){
-//       uInt n_right_dim = rightShape.nelements();
+//       size_t n_right_dim = rightShape.nelements();
 //       ArrayIterator<L>   left_cursor(left, n_right_dim);
 //       ArrayIterator<RES> res_cursor(res, n_right_dim);
 //       IPosition rightPos;
@@ -135,13 +133,13 @@ LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
 //   return res;
 // }
 
-template<typename L, typename R, typename BinaryOperator>
-void binOpExpandInPlace(Array<L>& leftarr, const Array<R>& rightarr, BinaryOperator op)
+template<typename L, typename AllocL, typename R, typename AllocR, typename BinaryOperator>
+void binOpExpandInPlace(Array<L, AllocL>& leftarr, const Array<R, AllocR>& rightarr, BinaryOperator op)
 {
   const IPosition leftShape  = leftarr.shape();
   const IPosition rightShape = rightarr.shape();
 
-  // leftarr.conform(rightarr) fails if e.g. L == Double and R == Float.
+  // leftarr.conform(rightarr) fails if e.g. L == double and R == float.
   if(leftShape.nelements() == rightShape.nelements() && leftShape == rightShape){
     arrayTransformInPlace(leftarr, rightarr, op);  // Autochecks contiguity.
   }
@@ -149,7 +147,7 @@ void binOpExpandInPlace(Array<L>& leftarr, const Array<R>& rightarr, BinaryOpera
     arrayTransformInPlace(leftarr, rightarr.reform(leftShape), op);
   }
   else{
-    uInt n_right_dim = rightShape.nelements();
+    size_t n_right_dim = rightShape.nelements();
 
     if(rightExpandableToLeft(leftShape, rightShape)){
       IPosition iteraxes(IPosition::otherAxes(leftShape.nelements(),
@@ -168,12 +166,12 @@ void binOpExpandInPlace(Array<L>& leftarr, const Array<R>& rightarr, BinaryOpera
       }
     }
     else{
-      ostringstream os;  // String(rightShape) is not supported.
+      std::ostringstream os;  // String(rightShape) is not supported.
       
       os << "binOpExpandInPlace(): rightarr's shape (" << rightShape << ")\n"
 	 << " has more dimensions than leftarr's (" << leftShape << ")!";
       
-      throw(ArrayConformanceError(os));
+      throw(ArrayConformanceError(os.str()));
     }
   }
 }

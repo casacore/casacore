@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/QMath.h>
 #include <casacore/casa/Quanta/QLogical.h>

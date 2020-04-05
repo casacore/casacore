@@ -39,7 +39,7 @@ Arrays/AxesMapping.cc
 Arrays/AxesSpecifier.cc
 Arrays/ExtendSpecifier.cc
 Arrays/IPosition.cc
-Arrays/IPosition2.cc
+#Arrays/IPosition2.cc
 Arrays/MaskArrMath2.cc
 Arrays/Matrix2Math.cc
 Arrays/Matrix_tmpl.cc
@@ -98,6 +98,7 @@ IO/ConversionIO.cc
 IO/FilebufIO.cc
 IO/FiledesIO.cc
 IO/FileLocker.cc
+IO/IPositionIO.cc
 IO/LECanonicalIO.cc
 IO/LockFile.cc
 IO/MemoryIO.cc
@@ -447,6 +448,8 @@ install (FILES
 IO/AipsIOCarray.h
 IO/AipsIOCarray.tcc
 IO/AipsIO.h
+IO/ArrayIO.h
+IO/ArrayIO.tcc
 IO/BaseSinkSource.h
 IO/BucketBase.h
 IO/BucketBuffered.h

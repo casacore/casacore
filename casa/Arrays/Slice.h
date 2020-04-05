@@ -25,22 +25,18 @@
 //#
 //# $Id$
 
-#ifndef CASA_SLICE_H
-#define CASA_SLICE_H
+#ifndef CASA_SLICE_2_H
+#define CASA_SLICE_2_H
 
-#include <casacore/casa/aips.h>
-#include <unistd.h>         //# for ssize_t
+#include <cstddef>         //# for ssize_t
 
-#if defined(AIPS_DEBUG)
-#include <casacore/casa/Utilities/Assert.h>
-#endif
+#include "ArrayFwd.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations.
 class Slicer;
 class IPosition;
-template<class T> class Vector;
 
 // <summary> define a (start,length,increment) along an axis </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -64,7 +60,7 @@ template<class T> class Vector;
 // syntax and used (start,end,increment) which is generally less convenient.
 // Some simple examples follow:
 // <srcblock> 
-// Vector<Int> vi(100);          // Vector of length 100;
+// Vector<int> vi(100);          // Vector of length 100;
 // //...
 //                               // Copy odd values onto even values
 // vi(Slice(0,50,2)) = vi(Slice(1,50,2));
@@ -99,10 +95,10 @@ public:
     // two default to one if not given.
     Slice(size_t Start, size_t Length=1, size_t Inc=1);
     // Create a Slice with a given start, end or length, and increment.
-    // If <src>endIsLength=False</src>, end is interpreted as length.
-    Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength);
+    // If <src>endIsLength=false</src>, end is interpreted as length.
+    Slice(size_t Start, size_t End, size_t Inc, bool endIsLength);
     // Was the entire range of indices on this axis selected?
-    Bool all() const;
+    bool all() const;
     // Report the selected starting position. If all() is true,
     // start=len=inc=0 is set.
     size_t start() const;
@@ -111,7 +107,7 @@ public:
     // Report the defined increment. If all() is true, start=len=inc=0 is set.
     size_t inc() const;
     // Attempt to report the last element of the slice. If all() is
-    // True, end() returns -1 (which is less than start(), which returns
+    // true, end() returns -1 (which is less than start(), which returns
     // zero  in that case).
     size_t end() const;
 
@@ -126,7 +122,7 @@ public:
 
 private:
     //# Inc of <0 is used as a private flag to mean that the whole axis is
-    //# selected. Users are given a uInt in their interface, so they cannot
+    //# selected. Users are given a size_t in their interface, so they cannot
     //# set it to this. Chose Inc rather than length since it's more likely
     //# that we'd need all bits of length than of inc. The "p" in the names
     //# stands for private to avoid it colliding with the accessor names.
@@ -152,7 +148,7 @@ Slice::Slice(size_t Start, size_t Length, size_t Inc)
 }
 
 inline
-Slice::Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength)
+Slice::Slice(size_t Start, size_t End, size_t Inc, bool endIsLength)
   : startp(Start), incp(Inc), lengthp(endIsLength ? End : 1+(End-Start)/Inc)
 {
 #if defined(AIPS_DEBUG)
@@ -163,7 +159,7 @@ Slice::Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength)
 #endif
 }
 
-inline Bool Slice::all() const
+inline bool Slice::all() const
 {
     return incp<0;
 }

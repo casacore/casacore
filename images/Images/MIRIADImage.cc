@@ -45,7 +45,7 @@
 
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Containers/Record.h>

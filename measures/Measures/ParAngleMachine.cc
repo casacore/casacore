@@ -31,7 +31,7 @@
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/measures/Measures/MeasRef.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>

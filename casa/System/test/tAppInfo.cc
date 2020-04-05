@@ -31,7 +31,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/System/AppInfo.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/System/AipsrcVector.h>
 #include <casacore/casa/Utilities/Regex.h>

@@ -30,12 +30,11 @@
 
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Inputs/Param.h>
 #include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-template<class T> class Vector;
 
 // <summary> 
 // Input.h: A simple command-line argument method for applications.

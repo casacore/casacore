@@ -31,13 +31,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/System/AipsrcValue.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class String;
-template<class T> class Vector;
 
 // <summary>
 // General information for applications.

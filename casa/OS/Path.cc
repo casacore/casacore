@@ -30,6 +30,7 @@
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions.h>
 
@@ -434,10 +435,10 @@ String Path::makeAbsoluteName (const String& inString) const
 String Path::removeDots (const String& inString) const
 {
     // Split the name at the slashes.
-    Vector<String> parts (stringToVector (inString, '/'));
+    Vector<string> parts (strToVector (inString, '/'));
     Vector<uInt> validParts (parts.nelements());
-    String dot(".");
-    String dotdot("..");
+    string dot(".");
+    string dotdot("..");
     uInt nvalid = 0;
     uInt i;
     // Count the number of valid parts and keep their index.

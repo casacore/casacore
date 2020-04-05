@@ -34,6 +34,7 @@
 #include <casacore/tables/Tables/BaseTable.h>
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/DataMan/TSMOption.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
 
@@ -52,7 +53,6 @@ class Record;
 class TableExprNode;
 class DataManager;
 class IPosition;
-template<class T> class Vector;
 template<class T> class Block;
 template<class T> class CountedPtr;
 

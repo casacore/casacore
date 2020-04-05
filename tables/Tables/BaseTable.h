@@ -38,6 +38,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/FileLocker.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -57,7 +58,6 @@ class TableExprNode;
 class BaseTableIterator;
 class DataManager;
 class IPosition;
-template<class T> class Vector;
 template<class T> class Block;
 template<class T> class PtrBlock;
 class AipsIO;

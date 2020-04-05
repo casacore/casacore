@@ -29,6 +29,7 @@
 #define CASA_JSONVALUE_H
 
 //# Includes
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -43,7 +44,6 @@ namespace casacore {
   class JsonKVMap;
   class ValueHolder;
   class IPosition;
-  template<typename T> class Array;
 
   
   // <summary>

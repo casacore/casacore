@@ -25,18 +25,18 @@
 //#
 //# $Id: ArrayPartMath.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
-#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include "ArrayPartMath.h"
 
 namespace casacore {
 
   void fillBoxedShape (const IPosition& shape, const IPosition& boxSize,
                        IPosition& fullBoxSize, IPosition& resultShape)
   {
-    uInt ndim = shape.size();
+    size_t ndim = shape.size();
     // Set missing axes to 1.
     fullBoxSize.resize (ndim);
     fullBoxSize = 1;
-    for (uInt i=0; i<min(ndim,boxSize.size()); ++i) {
+    for (size_t i=0; i<std::min(ndim,boxSize.size()); ++i) {
       // Set unspecified axes to full length.
       if (boxSize[i] <= 0  ||  boxSize[i] > shape[i]) {
         fullBoxSize[i] = shape[i];
@@ -46,33 +46,33 @@ namespace casacore {
     }
     // Determine the output shape.
     resultShape.resize (ndim);
-    for (uInt i=0; i<ndim; ++i) {
+    for (size_t i=0; i<ndim; ++i) {
       resultShape[i] = (shape[i] + fullBoxSize[i] - 1) / fullBoxSize[i];
     }
   }
 
-  Bool fillSlidingShape (const IPosition& shape, const IPosition& halfBoxSize,
+  bool fillSlidingShape (const IPosition& shape, const IPosition& halfBoxSize,
                          IPosition& boxEnd, IPosition& resultShape)
   {
-    uInt ndim = shape.size();
+    size_t ndim = shape.size();
     // Set full box end (is size-1) and resize/fill as needed.
     boxEnd.resize (halfBoxSize.size());
     boxEnd = 2*halfBoxSize;
     if (boxEnd.size() != ndim) {
-      uInt sz = boxEnd.size();
+      size_t sz = boxEnd.size();
       boxEnd.resize (ndim);
-      for (uInt i=sz; i<boxEnd.size(); ++i) {
+      for (size_t i=sz; i<boxEnd.size(); ++i) {
         boxEnd[i] = 0;
       }
     }
     // Determine the output shape. See if anything has to be done.
-    Bool empty = False;
+    bool empty = false;
     resultShape.resize (shape.size());
-    for (uInt i=0; i<ndim; ++i) {
+    for (size_t i=0; i<ndim; ++i) {
       resultShape[i] = shape[i] - boxEnd[i];
       if (resultShape[i] <= 0) {
         resultShape[i] = 0;
-        empty = True;
+        empty = true;
       }
     }
     return empty;

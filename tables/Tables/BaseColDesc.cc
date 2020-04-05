@@ -33,6 +33,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/iostream.h>
 
