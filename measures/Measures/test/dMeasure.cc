@@ -32,7 +32,7 @@
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MCDirection.h>
 #include <casacore/measures/Measures.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>

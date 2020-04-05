@@ -25,16 +25,12 @@
 //#
 //# $Id: ArrayMathBase.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
-#ifndef CASA_ARRAYMATHBASE_H
-#define CASA_ARRAYMATHBASE_H
+#ifndef CASA_ARRAYMATHBASE_2_H
+#define CASA_ARRAYMATHBASE_2_H
 
-#include <casacore/casa/aips.h>
+#include "ArrayFwd.h"
 
 namespace casacore {
-
-  //# Forward declarations.
-  template<typename T> class Array;
-
 
   // <summary>
   // Basic class for math on Array objects

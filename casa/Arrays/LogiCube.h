@@ -25,14 +25,11 @@
 //#
 //# $Id$
 
-#ifndef CASA_LOGICUBE_H
-#define CASA_LOGICUBE_H
+#ifndef CASA_LOGICUBE_2_H
+#define CASA_LOGICUBE_2_H
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/LogiArray.h>
-#include <casacore/casa/Arrays/Cube.h>
-
+#include "LogiArray.h"
+#include "Cube.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

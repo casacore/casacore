@@ -25,69 +25,235 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/MaskArrMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayPartMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/MaskArrIO.h>
+#include "../MaskArrMath.h"
+#include "../ArrayLogical.h"
+#include "../ArrayPartMath.h"
+//#include "../ArrayIO.h"
+#include "../MaskArrIO.h"
 
-#include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/OS/Timer.h>
 #include <iostream>
+#include <initializer_list>
 
+#include <boost/test/unit_test.hpp>
 
 using namespace casacore;
 using namespace std;
 
-void doIt (Bool /*doTiming*/)
+BOOST_AUTO_TEST_SUITE(boxed_array_math)
+
+template<typename T, typename Alloc>
+void check(const Array<T, Alloc>& a, const IPosition& expectedShape, std::initializer_list<T> expectedValues)
 {
+  BOOST_CHECK_EQUAL(a.shape(), expectedShape);
+  if(a.shape() == expectedShape)
   {
-    IPosition shape(2,5,5);
-    Array<Float> arr(shape);
-    indgen (arr);
-    cout << boxedArrayMath(arr, IPosition(2,2), SumFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), SumFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(1,0), SumFunc<Float>()) << endl;
-
-    cout << boxedArrayMath(arr, IPosition(4,2), SumFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(3,1), SumFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(),    SumFunc<Float>()) << endl;
-
-    cout << boxedArrayMath(arr, IPosition(2,2), MedianFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), MedianFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,0), MedianFunc<Float>()) << endl;
+    std::vector<T> v = a.tovector();
+    auto iterE = expectedValues.begin();
+    auto iterV = v.begin();
+    while(iterE != expectedValues.end())
+    {
+      BOOST_CHECK_CLOSE_FRACTION(*iterE, *iterV, 1e-6);
+      ++iterV; ++iterE;
+    }
   }
-
 }
-
-void doItMasked (Bool)
+template<typename Alloc>
+void check(const Array<bool, Alloc>& a, const IPosition& expectedShape, std::initializer_list<bool> expectedValues)
 {
+  BOOST_CHECK_EQUAL(a.shape(), expectedShape);
+  if(a.shape() == expectedShape)
   {
-    IPosition shape(2,5,5);
-    Array<Float> darr(shape);
-    indgen(darr);
-    MaskedArray<Float> arr = darr(darr<=float(10) || darr>float(14));
-    cout << arr.getMask() << endl;
-    cout << sum(arr) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,2), MaskedSumFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), MaskedSumFunc<Float>()) << endl;
-
-    cout << boxedArrayMath(arr, IPosition(4,2), MaskedSumFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(3,1), MaskedSumFunc<Float>()) << endl;
-
-    cout << boxedArrayMath(arr, IPosition(2,2), MaskedMedianFunc<Float>()) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), MaskedMedianFunc<Float>()) << endl;
+    std::vector<bool> v = a.tovector();
+    auto iterE = expectedValues.begin();
+    auto iterV = v.begin();
+    while(iterE != expectedValues.end())
+    {
+      BOOST_CHECK_EQUAL(*iterE, *iterV);
+      ++iterV; ++iterE;
+    }
   }
 }
 
-int main(int argc, const char*[])
+template<typename T>
+void check(const MaskedArray<T>& a, const IPosition& expectedShape, std::initializer_list<T> expectedValues, std::initializer_list<bool> expectedMask)
 {
-  try {
-    doIt (argc>1);
-    doItMasked (argc>1);
-  } catch (exception& x) {
-    cout << "Unexpected exception: " << x.what() << endl;
-    return 1;
-  }
-  return 0;
+  check(a.getArray(), expectedShape, expectedValues);
+  check(a.getMask(), expectedShape, expectedMask);
 }
+
+BOOST_AUTO_TEST_CASE( sumfunc1 )
+{
+  IPosition shape(2,5,5);
+  Array<float> arr(shape);
+  indgen (arr);
+  check(
+    boxedArrayMath(arr, IPosition(2,2), SumFunc<float>()),
+    IPosition{3,3},
+    {12.f, 20.f, 13.f, 52.f, 60.f, 33.f, 41.f, 45.f, 24.f}
+  );
+  check(
+    boxedArrayMath(arr, IPosition(2,1), SumFunc<float>()),
+    IPosition{5, 5},
+      {0.f, 1.f, 2.f, 3.f, 4.f,
+      5.f, 6.f, 7.f, 8.f, 9.f,
+      10.f, 11.f, 12.f, 13.f, 14.f,
+      15.f, 16.f, 17.f, 18.f, 19.f,
+      20.f, 21.f, 22.f, 23.f, 24.f}
+  );
+  check(
+    boxedArrayMath(arr, IPosition(1,0), SumFunc<float>()),
+    IPosition{1, 5},
+    { 10.f, 35.f, 60.f, 85.f, 110.f }
+  );
+}
+
+BOOST_AUTO_TEST_CASE( sumfunc2 )
+{
+  IPosition shape(2,5,5);
+  Array<float> arr(shape);
+  indgen (arr);
+  check(
+    boxedArrayMath(arr, IPosition(4,2), SumFunc<float>()),
+    IPosition{3, 3},
+    { 12.f, 20.f, 13.f, 52.f, 60.f, 33.f, 41.f, 45.f, 24.f }
+  );
+  check(
+    boxedArrayMath(arr, IPosition(3,1), SumFunc<float>()),
+    IPosition{5, 5},
+      {0.f, 1.f, 2.f, 3.f, 4.f,
+      5.f, 6.f, 7.f, 8.f, 9.f,
+      10.f, 11.f, 12.f, 13.f, 14.f,
+      15.f, 16.f, 17.f, 18.f, 19.f,
+      20.f, 21.f, 22.f, 23.f, 24.f}
+  );
+  check(
+    boxedArrayMath(arr, IPosition(),    SumFunc<float>()),
+    IPosition{5, 5},
+      {0.f, 1.f, 2.f, 3.f, 4.f,
+      5.f, 6.f, 7.f, 8.f, 9.f,
+      10.f, 11.f, 12.f, 13.f, 14.f,
+      15.f, 16.f, 17.f, 18.f, 19.f,
+      20.f, 21.f, 22.f, 23.f, 24.f}
+  );
+}
+
+BOOST_AUTO_TEST_CASE( medianfunc )
+{
+  IPosition shape(2,5,5);
+  Array<float> arr(shape);
+  indgen (arr);
+  check(
+    boxedArrayMath(arr, IPosition(2,2), MedianFunc<float>()),
+    IPosition{3, 3},
+    { 3.f, 5.f, 6.5f, 13.f, 15.f, 16.5f, 20.5f, 22.5f, 24.f }
+  );
+  check(
+    boxedArrayMath(arr, IPosition(2,1), MedianFunc<float>()),
+    IPosition{5, 5},
+      {0.f, 1.f, 2.f, 3.f, 4.f,
+      5.f, 6.f, 7.f, 8.f, 9.f,
+      10.f, 11.f, 12.f, 13.f, 14.f,
+      15.f, 16.f, 17.f, 18.f, 19.f,
+      20.f, 21.f, 22.f, 23.f, 24.f}
+  );
+  check(
+    boxedArrayMath(arr, IPosition(2,0), MedianFunc<float>()),
+    IPosition{1, 1},
+      {12.f}
+  );
+}
+
+BOOST_AUTO_TEST_CASE( masked_init )
+{
+  Array<float> darr(IPosition{5, 5});
+  indgen(darr);
+  MaskedArray<float> arr = darr(darr<=float(10) || darr>float(14));
+  check(arr.getMask(), IPosition{5, 5},
+    { true, true, true, true, true,
+      true, true, true, true, true,
+      true, false, false, false, false,
+      true, true, true, true, true,
+      true, true, true, true, true });
+  
+  BOOST_CHECK_CLOSE_FRACTION(sum(arr), 250, 1e-6);
+}
+
+BOOST_AUTO_TEST_CASE( masked_sum1 )
+{
+  Array<float> darr(IPosition{5, 5});
+  indgen(darr);
+  MaskedArray<float> arr = darr(darr<=float(10) || darr>float(14));
+  check(
+    boxedArrayMath(arr, IPosition(2,2), MaskedSumFunc<float>()),
+    IPosition{3, 3},
+    { 12.f, 20.f, 13.f, 41.f, 35.f, 19.f, 41.f, 45.f, 24.f },
+    { true, true, true, true, true, true, true, true, true }
+  );
+  check(
+    boxedArrayMath(arr, IPosition(2,1), MaskedSumFunc<float>()),
+    IPosition{5, 5},
+    {0.f, 1.f, 2.f, 3.f, 4.f,
+    5.f, 6.f, 7.f, 8.f, 9.f,
+    10.f, 0.f, 0.f, 0.f, 0.f,
+    15.f, 16.f, 17.f, 18.f, 19.f,
+    20.f, 21.f, 22.f, 23.f, 24.f},
+    { true, true, true, true, true,
+    true, true, true, true, true,
+    true, false, false, false, false,
+    true, true, true, true, true,
+    true, true, true, true, true });
+}
+
+BOOST_AUTO_TEST_CASE( masked_sum2 )
+{
+  Array<float> darr(IPosition{5, 5});
+  indgen(darr);
+  MaskedArray<float> arr = darr(darr<=float(10) || darr>float(14));
+  check(
+    boxedArrayMath(arr, IPosition(4,2), MaskedSumFunc<float>()),
+    IPosition{3, 3},
+    { 12.f, 20.f, 13.f, 41.f, 35.f, 19.f, 41.f, 45.f, 24.f },
+    { true, true, true, true, true, true, true, true, true }
+  );
+  check(
+    boxedArrayMath(arr, IPosition(3,1), MaskedSumFunc<float>()),
+    IPosition{5, 5},
+    {0.f, 1.f, 2.f, 3.f, 4.f,
+    5.f, 6.f, 7.f, 8.f, 9.f,
+    10.f, 0.f, 0.f, 0.f, 0.f,
+    15.f, 16.f, 17.f, 18.f, 19.f,
+    20.f, 21.f, 22.f, 23.f, 24.f},
+    { true, true, true, true, true,
+    true, true, true, true, true,
+    true, false, false, false, false,
+    true, true, true, true, true,
+    true, true, true, true, true });
+}
+
+BOOST_AUTO_TEST_CASE( masked_median )
+{
+  Array<float> darr(IPosition{5, 5});
+  indgen(darr);
+  MaskedArray<float> arr = darr(darr<=float(10) || darr>float(14));
+  check(
+    boxedArrayMath(arr, IPosition(2,2), MaskedMedianFunc<float>()),
+    IPosition{3, 3},
+    {3.f, 5.f, 6.5f, 15.f, 17.5f, 19.f, 20.5f, 22.5f, 24.f},
+    { true, true, true, true, true, true, true, true, true }
+  );
+  check(
+    boxedArrayMath(arr, IPosition(2,1), MaskedMedianFunc<float>()),
+    IPosition{5, 5},
+    {0.f, 1.f, 2.f, 3.f, 4.f,
+    5.f, 6.f, 7.f, 8.f, 9.f,
+    10.f, 0.f, 0.f, 0.f, 0.f,
+    15.f, 16.f, 17.f, 18.f, 19.f,
+    20.f, 21.f, 22.f, 23.f, 24.f},
+    { true, true, true, true, true,
+    true, true, true, true, true,
+    true, false, false, false, false,
+    true, true, true, true, true,
+    true, true, true, true, true });
+}
+
+BOOST_AUTO_TEST_SUITE_END()

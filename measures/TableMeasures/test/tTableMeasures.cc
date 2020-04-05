@@ -59,7 +59,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Assert.h>

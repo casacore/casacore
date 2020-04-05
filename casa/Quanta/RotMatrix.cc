@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 #include <casacore/casa/Quanta/Euler.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

@@ -25,12 +25,11 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYPOSITER_H
-#define CASA_ARRAYPOSITER_H
+#ifndef CASA_ARRAYPOSITER_2_H
+#define CASA_ARRAYPOSITER_2_H
 
-#include <casacore/casa/aips.h>
 //# Change the following to a forward declare?
-#include <casacore/casa/Arrays/IPosition.h>
+#include "IPosition.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -95,18 +94,18 @@ public:
     // through the remaining axes.
     // <group>
     ArrayPositionIterator(const IPosition &shape, const IPosition &origin,
-			  uInt byDim);
+			  size_t byDim);
     ArrayPositionIterator(const IPosition &shape,
-			  uInt byDim);
+			  size_t byDim);
     // </group>
 
     // Step through an array using the given axes.
     // The axes can be given in two ways:
     // <ol>
-    // <li>axesAreCursor=True means that the axes form the cursor axes.
+    // <li>axesAreCursor=true means that the axes form the cursor axes.
     //     The remaining axes will form the iteration axes.
     //     This is the default.
-    // <li>axesAreCursor=False means the opposite.
+    // <li>axesAreCursor=false means the opposite.
     //     In this case the iteration axes can be given in any order.
     // </ol>
     // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
@@ -118,7 +117,7 @@ public:
     // (1 the fastest varying one).
     ArrayPositionIterator(const IPosition &shape,
 			  const IPosition &axes,
-			  Bool axesAreCursor=True);
+			  bool axesAreCursor=true);
 
     virtual ~ArrayPositionIterator() {};
 
@@ -130,10 +129,10 @@ public:
     // </group>
 
     // Returns true of the cursor is at the origin.
-    Bool atStart() const;
+    bool atStart() const;
 
     // Returns true if the cursor has moved past the end of its volume.
-    Bool pastEnd() const;
+    bool pastEnd() const;
 
     // Return the position of the cursor.
     // This include all axes
@@ -156,7 +155,7 @@ public:
     virtual void set (const IPosition& cursorPos);
 
     // What is the dimensionality of the volume we are iterating through?
-    uInt ndim() const;
+    size_t ndim() const;
 
     // Return the iteration axes.
     const IPosition &iterAxes() const {return iterationAxes;}
@@ -171,32 +170,32 @@ public:
 
 protected:
     // Advance cursor to its next position and tell which dimension stepped.
-    uInt nextStep();
+    size_t nextStep();
     // What is the dimensionality of the "step" the cursor takes, i.e.
     // 0 for scalars, 1 for vector, ....
-    uInt dimIter() const {return cursAxes.nelements();}
+    size_t dimIter() const {return cursAxes.nelements();}
 
 private:
     // Setup the object for the constructor.
     // <group>
-    void setup(uInt byDim);
-    void setup(const IPosition &axes, Bool axesAreCursor);
+    void setup(size_t byDim);
+    void setup(const IPosition &axes, bool axesAreCursor);
     // </group>
 
     //# We should probably have mf's for getting at Start,Shape and End.
     IPosition Start, Shape, End, Cursor;
-    Bool atOrBeyondEnd;
+    bool atOrBeyondEnd;
     IPosition cursAxes, iterationAxes;
 };
 
 // Dimensionality of the array we are iterating through.
-inline uInt ArrayPositionIterator::ndim() const
+inline size_t ArrayPositionIterator::ndim() const
 {
     return Start.nelements();
 }
 
 // We are at the "end" if we cannot advance any more.
-inline Bool ArrayPositionIterator::pastEnd() const
+inline bool ArrayPositionIterator::pastEnd() const
 {
     return atOrBeyondEnd;
 }

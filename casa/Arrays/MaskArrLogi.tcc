@@ -25,46 +25,46 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKARRLOGI_TCC
-#define CASA_MASKARRLOGI_TCC
+#ifndef CASA_MASKARRLOGI_2_TCC
+#define CASA_MASKARRLOGI_2_TCC
 
-#include <casacore/casa/Arrays/MaskArrLogi.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
+#include "MaskArrLogi.h"
+#include "ArrayError.h"
+#include "ArrayLogical.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+  
 #define MARRLOGI_B_ALLFUNC_MA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const MaskedArray<T> &left, const Array<T> &right) \
+bool ALLFUNC (const MaskedArray<T> &left, const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
-         ("Bool ::" STRALLFUNC "(const MaskedArray<T> &, const Array<T> &)" \
+         ("bool ::" STRALLFUNC "(const MaskedArray<T> &, const Array<T> &)" \
           " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage = \
         left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightDelete; \
+    bool rightDelete; \
     const T *rightStorage = right.getStorage(rightDelete); \
     const T *rightS = rightStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = True; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = true; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*leftmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (! (*leftarrS OP *rightS) ) { \
-	        retval = False; \
+	        retval = false; \
 	        break; \
             } \
         } \
@@ -79,7 +79,7 @@ Bool ALLFUNC (const MaskedArray<T> &left, const Array<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRALLFUNC "(const MaskedArray<T> &, const Array<T> &)" \
+          "bool ::" STRALLFUNC "(const MaskedArray<T> &, const Array<T> &)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -89,35 +89,35 @@ Bool ALLFUNC (const MaskedArray<T> &left, const Array<T> &right) \
 
 #define MARRLOGI_B_ALLFUNC_AM(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const Array<T> &left, const MaskedArray<T> &right) \
+bool ALLFUNC (const Array<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
-            ("Bool ::" STRALLFUNC "(Array<T> &, const MaskedArray<T> &)" \
+            ("bool ::" STRALLFUNC "(Array<T> &, const MaskedArray<T> &)" \
              " - arrays do not conform")); \
     } \
 \
-    Bool leftDelete; \
+    bool leftDelete; \
     const T *leftStorage = left.getStorage(leftDelete); \
     const T *leftS = leftStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage = \
         right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = True; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = true; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*rightmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (! (*leftS OP *rightarrS) ) { \
-                retval = False; \
+                retval = false; \
                 break; \
             } \
         } \
@@ -132,7 +132,7 @@ Bool ALLFUNC (const Array<T> &left, const MaskedArray<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRALLFUNC "(const Array<T> &, const MaskedArray<T> &)" \
+          "bool ::" STRALLFUNC "(const Array<T> &, const MaskedArray<T> &)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -142,41 +142,41 @@ Bool ALLFUNC (const Array<T> &left, const MaskedArray<T> &right) \
 
 #define MARRLOGI_B_ALLFUNC_MM(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const MaskedArray<T> &left, const MaskedArray<T> &right) \
+bool ALLFUNC (const MaskedArray<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
-         ("Bool ::" STRALLFUNC "(const MaskedArray<T> &," \
+         ("bool ::" STRALLFUNC "(const MaskedArray<T> &," \
           " const MaskedArray<T> &)" \
           " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage \
         = right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = True; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = true; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*leftmaskS && *rightmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (! (*leftarrS OP *rightarrS) ) { \
-                retval = False; \
+                retval = false; \
                 break; \
             } \
         } \
@@ -193,7 +193,7 @@ Bool ALLFUNC (const MaskedArray<T> &left, const MaskedArray<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRALLFUNC "(const MaskedArray<T> &," \
+          "bool ::" STRALLFUNC "(const MaskedArray<T> &," \
           " const MaskedArray<T> &)" \
           " - AND of MaskedArray masks must have at least 1 element")); \
     } \
@@ -232,35 +232,35 @@ MARRLOGI_B_ALLFUNC_MM ( allOR,  ||, "allOR" )
 
 #define MARRLOGI_B_ANYFUNC_MA(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const MaskedArray<T> &left, const Array<T> &right) \
+bool ANYFUNC (const MaskedArray<T> &left, const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
-         ("Bool ::" STRANYFUNC "(const MaskedArray<T> &, const Array<T> &)" \
+         ("bool ::" STRANYFUNC "(const MaskedArray<T> &, const Array<T> &)" \
           " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage = \
         left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightDelete; \
+    bool rightDelete; \
     const T *rightStorage = right.getStorage(rightDelete); \
     const T *rightS = rightStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = False; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = false; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*leftmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (*leftarrS OP *rightS) { \
-	        retval = True; \
+	        retval = true; \
 	        break; \
             } \
         } \
@@ -275,7 +275,7 @@ Bool ANYFUNC (const MaskedArray<T> &left, const Array<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRANYFUNC "(const MaskedArray<T> &, const Array<T> &)" \
+          "bool ::" STRANYFUNC "(const MaskedArray<T> &, const Array<T> &)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -285,35 +285,35 @@ Bool ANYFUNC (const MaskedArray<T> &left, const Array<T> &right) \
 
 #define MARRLOGI_B_ANYFUNC_AM(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const Array<T> &left, const MaskedArray<T> &right) \
+bool ANYFUNC (const Array<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
-            ("Bool ::" STRANYFUNC "(Array<T> &, const MaskedArray<T> &)" \
+            ("bool ::" STRANYFUNC "(Array<T> &, const MaskedArray<T> &)" \
              " - arrays do not conform")); \
     } \
 \
-    Bool leftDelete; \
+    bool leftDelete; \
     const T *leftStorage = left.getStorage(leftDelete); \
     const T *leftS = leftStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage = \
         right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = False; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = false; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*rightmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (*leftS OP *rightarrS) { \
-                retval = True; \
+                retval = true; \
                 break; \
             } \
         } \
@@ -328,7 +328,7 @@ Bool ANYFUNC (const Array<T> &left, const MaskedArray<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRANYFUNC "(const Array<T> &, const MaskedArray<T> &)" \
+          "bool ::" STRANYFUNC "(const Array<T> &, const MaskedArray<T> &)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -338,41 +338,41 @@ Bool ANYFUNC (const Array<T> &left, const MaskedArray<T> &right) \
 
 #define MARRLOGI_B_ANYFUNC_MM(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const MaskedArray<T> &left, const MaskedArray<T> &right) \
+bool ANYFUNC (const MaskedArray<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
-         ("Bool ::" STRANYFUNC "(const MaskedArray<T> &," \
+         ("bool ::" STRANYFUNC "(const MaskedArray<T> &," \
           " const MaskedArray<T> &)" \
           " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage \
         = right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = False; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = false; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*leftmaskS && *rightmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (*leftarrS OP *rightarrS) { \
-                retval = True; \
+                retval = true; \
                 break; \
             } \
         } \
@@ -389,7 +389,7 @@ Bool ANYFUNC (const MaskedArray<T> &left, const MaskedArray<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRANYFUNC "(const MaskedArray<T> &," \
+          "bool ::" STRANYFUNC "(const MaskedArray<T> &," \
           " const MaskedArray<T> &)" \
           " - AND of MaskedArray masks must have at least 1 element")); \
     } \
@@ -431,7 +431,7 @@ template<class T> \
 MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
                                 const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
                ("MaskedLogicalArray ::" STROP \
                 "(const MaskedArray<T> &, const Array<T> &)" \
@@ -439,28 +439,28 @@ MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
     } \
 \
     LogicalArray resultarr (left.shape()); \
-    resultarr = False; \
+    resultarr = false; \
     MaskedLogicalArray result (resultarr, left.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     LogicalArrayElem *resultarrStorage = \
         result.getRWArrayStorage(resultarrDelete); \
     LogicalArrayElem *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool rightDelete; \
+    bool rightDelete; \
     const T *rightStorage = right.getStorage(rightDelete); \
     const T *rightS = rightStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             *resultarrS = (LogicalArrayElem) (*leftarrS OP *rightS); \
@@ -485,7 +485,7 @@ template<class T> \
 MaskedLogicalArray operator OP (const Array<T> &left, \
                                 const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
                ("MaskLogicalArray ::" STROP \
                 "(const Array<T> &, const MaskedArray<T> &)" \
@@ -493,28 +493,28 @@ MaskedLogicalArray operator OP (const Array<T> &left, \
     } \
 \
     LogicalArray resultarr (left.shape()); \
-    resultarr = False; \
+    resultarr = false; \
     MaskedLogicalArray result (resultarr, right.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     LogicalArrayElem *resultarrStorage = \
         result.getRWArrayStorage(resultarrDelete); \
     LogicalArrayElem *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool leftDelete; \
+    bool leftDelete; \
     const T *leftStorage = left.getStorage(leftDelete); \
     const T *leftS = leftStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             *resultarrS = (LogicalArrayElem) (*leftS OP *rightarrS); \
@@ -539,7 +539,7 @@ template<class T> \
 MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
                                 const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
         throw (ArrayConformanceError \
                ("MaskLogicalArray ::" STROP \
                 "(const MaskedArray<T> &, const MaskedArray<T> &)" \
@@ -547,29 +547,29 @@ MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
     } \
 \
     LogicalArray resultarr (left.shape()); \
-    resultarr = False; \
+    resultarr = false; \
     MaskedLogicalArray result (resultarr, \
                                (left.getMask() && right.getMask())); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     LogicalArrayElem *resultarrStorage = \
         result.getRWArrayStorage(resultarrDelete); \
     LogicalArrayElem *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             *resultarrS = (LogicalArrayElem) (*leftarrS OP *rightarrS); \
@@ -622,24 +622,24 @@ MaskedLogicalArray operator ! (const MaskedArray<T> &marray)
 {
     MaskedLogicalArray result (marray.copy());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     LogicalArrayElem *resultarrStorage =
         result.getRWArrayStorage(resultarrDelete);
     LogicalArrayElem *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage =
         result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    Bool marrayarrDelete;
+    bool marrayarrDelete;
     const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
     const T *marrayarrS = marrayarrStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
-            *resultarrS = ((*marrayarrS) ? False : True);
+            *resultarrS = ((*marrayarrS) ? false : true);
         }
         resultarrS++;
         resultmaskS++;
@@ -656,25 +656,25 @@ MaskedLogicalArray operator ! (const MaskedArray<T> &marray)
 
 #define MARRLOGI_B_ALLFUNC_MS(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const MaskedArray<T> &left, const T &right) \
+bool ALLFUNC (const MaskedArray<T> &left, const T &right) \
 { \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage = \
         left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = True; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = true; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*leftmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (! (*leftarrS OP right) ) { \
-	        retval = False; \
+	        retval = false; \
 	        break; \
             } \
         } \
@@ -687,7 +687,7 @@ Bool ALLFUNC (const MaskedArray<T> &left, const T &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRALLFUNC "(const MaskedArray<T> &, const T)" \
+          "bool ::" STRALLFUNC "(const MaskedArray<T> &, const T)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -697,25 +697,25 @@ Bool ALLFUNC (const MaskedArray<T> &left, const T &right) \
 
 #define MARRLOGI_B_ALLFUNC_SM(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const T &left, const MaskedArray<T> &right) \
+bool ALLFUNC (const T &left, const MaskedArray<T> &right) \
 { \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage = \
         right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = right.nelements(); \
-    Bool retval = True; \
-    Bool foundOne = False; \
+    size_t ntotal = right.nelements(); \
+    bool retval = true; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*rightmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (! (left OP *rightarrS) ) { \
-                retval = False; \
+                retval = false; \
                 break; \
             } \
         } \
@@ -728,7 +728,7 @@ Bool ALLFUNC (const T &left, const MaskedArray<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRALLFUNC "(const T, const MaskedArray<T> &)" \
+          "bool ::" STRALLFUNC "(const T, const MaskedArray<T> &)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -751,29 +751,29 @@ MARRLOGI_B_ALLFUNC_SM ( allNE,  !=, "allNE" )
 
 
 template<class T>
-Bool allAND (const MaskedArray<T> &marray, const T &val)
+bool allAND (const MaskedArray<T> &marray, const T &val)
 {
     if (!val) {
-        return False;
+        return false;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = True;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = true;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (! *marrayarrS) {
-	            retval = False;
+	            retval = false;
 	            break;
                 }
             }
@@ -786,7 +786,7 @@ Bool allAND (const MaskedArray<T> &marray, const T &val)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::allAND(const MaskedArray<T> &, const T)"
+              "bool ::allAND(const MaskedArray<T> &, const T)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -796,29 +796,29 @@ Bool allAND (const MaskedArray<T> &marray, const T &val)
 
 
 template<class T>
-Bool allAND (const T &val, const MaskedArray<T> &marray)
+bool allAND (const T &val, const MaskedArray<T> &marray)
 {
     if (!val) {
-        return False;
+        return false;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = True;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = true;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (! *marrayarrS) {
-	            retval = False;
+	            retval = false;
 	            break;
                 }
             }
@@ -831,7 +831,7 @@ Bool allAND (const T &val, const MaskedArray<T> &marray)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::allAND(const T, const MaskedArray<T> &)"
+              "bool ::allAND(const T, const MaskedArray<T> &)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -841,29 +841,29 @@ Bool allAND (const T &val, const MaskedArray<T> &marray)
 
 
 template<class T>
-Bool allOR (const MaskedArray<T> &marray, const T &val)
+bool allOR (const MaskedArray<T> &marray, const T &val)
 {
     if (val) {
-        return True;
+        return true;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = True;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = true;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (! *marrayarrS) {
-	            retval = False;
+	            retval = false;
 	            break;
                 }
             }
@@ -876,7 +876,7 @@ Bool allOR (const MaskedArray<T> &marray, const T &val)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::allOR(const MaskedArray<T> &, const T)"
+              "bool ::allOR(const MaskedArray<T> &, const T)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -886,29 +886,29 @@ Bool allOR (const MaskedArray<T> &marray, const T &val)
 
 
 template<class T>
-Bool allOR (const T &val, const MaskedArray<T> &marray)
+bool allOR (const T &val, const MaskedArray<T> &marray)
 {
     if (val) {
-        return True;
+        return true;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = True;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = true;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (! *marrayarrS) {
-	            retval = False;
+	            retval = false;
 	            break;
                 }
             }
@@ -921,7 +921,7 @@ Bool allOR (const T &val, const MaskedArray<T> &marray)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::allOR(const T, const MaskedArray<T> &)"
+              "bool ::allOR(const T, const MaskedArray<T> &)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -932,25 +932,25 @@ Bool allOR (const T &val, const MaskedArray<T> &marray)
 
 #define MARRLOGI_B_ANYFUNC_MS(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const MaskedArray<T> &left, const T &right) \
+bool ANYFUNC (const MaskedArray<T> &left, const T &right) \
 { \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage = \
         left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
-    Bool retval = False; \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool retval = false; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*leftmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (*leftarrS OP right) { \
-	        retval = True; \
+	        retval = true; \
 	        break; \
             } \
         } \
@@ -963,7 +963,7 @@ Bool ANYFUNC (const MaskedArray<T> &left, const T &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRANYFUNC "(const MaskedArray<T> &, const T)" \
+          "bool ::" STRANYFUNC "(const MaskedArray<T> &, const T)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -973,25 +973,25 @@ Bool ANYFUNC (const MaskedArray<T> &left, const T &right) \
 
 #define MARRLOGI_B_ANYFUNC_SM(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const T &left, const MaskedArray<T> &right) \
+bool ANYFUNC (const T &left, const MaskedArray<T> &right) \
 { \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage = \
         right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = right.nelements(); \
-    Bool retval = False; \
-    Bool foundOne = False; \
+    size_t ntotal = right.nelements(); \
+    bool retval = false; \
+    bool foundOne = false; \
     while (ntotal--) { \
         if (*rightmaskS) { \
-            foundOne = True; \
+            foundOne = true; \
             if (left OP *rightarrS) { \
-                retval = True; \
+                retval = true; \
                 break; \
             } \
         } \
@@ -1004,7 +1004,7 @@ Bool ANYFUNC (const T &left, const MaskedArray<T> &right) \
 \
     if (!foundOne) { \
         throw (ArrayError( \
-          "Bool ::" STRANYFUNC "(const T, const MaskedArray<T> &)" \
+          "bool ::" STRANYFUNC "(const T, const MaskedArray<T> &)" \
           " - Need at least 1 unmasked element")); \
     } \
 \
@@ -1027,29 +1027,29 @@ MARRLOGI_B_ANYFUNC_SM ( anyNE,  !=, "anyNE" )
 
 
 template<class T>
-Bool anyAND (const MaskedArray<T> &marray, const T &val)
+bool anyAND (const MaskedArray<T> &marray, const T &val)
 {
     if (!val) {
-        return False;
+        return false;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = False;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = false;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (*marrayarrS) {
-	            retval = True;
+	            retval = true;
 	            break;
                 }
             }
@@ -1062,7 +1062,7 @@ Bool anyAND (const MaskedArray<T> &marray, const T &val)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::anyAND(const MaskedArray<T> &, const T)"
+              "bool ::anyAND(const MaskedArray<T> &, const T)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -1072,29 +1072,29 @@ Bool anyAND (const MaskedArray<T> &marray, const T &val)
 
 
 template<class T>
-Bool anyAND (const T &val, const MaskedArray<T> &marray)
+bool anyAND (const T &val, const MaskedArray<T> &marray)
 {
     if (!val) {
-        return False;
+        return false;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = False;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = false;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (*marrayarrS) {
-	            retval = True;
+	            retval = true;
 	            break;
                 }
             }
@@ -1107,7 +1107,7 @@ Bool anyAND (const T &val, const MaskedArray<T> &marray)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::anyAND(const T, const MaskedArray<T> &)"
+              "bool ::anyAND(const T, const MaskedArray<T> &)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -1117,29 +1117,29 @@ Bool anyAND (const T &val, const MaskedArray<T> &marray)
 
 
 template<class T>
-Bool anyOR (const MaskedArray<T> &marray, const T &val)
+bool anyOR (const MaskedArray<T> &marray, const T &val)
 {
     if (val) {
-        return True;
+        return true;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = False;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = false;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (*marrayarrS) {
-	            retval = True;
+	            retval = true;
 	            break;
                 }
             }
@@ -1152,7 +1152,7 @@ Bool anyOR (const MaskedArray<T> &marray, const T &val)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::anyOR(const MaskedArray<T> &, const T)"
+              "bool ::anyOR(const MaskedArray<T> &, const T)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -1162,29 +1162,29 @@ Bool anyOR (const MaskedArray<T> &marray, const T &val)
 
 
 template<class T>
-Bool anyOR (const T &val, const MaskedArray<T> &marray)
+bool anyOR (const T &val, const MaskedArray<T> &marray)
 {
     if (val) {
-        return True;
+        return true;
     } else {
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        Bool marraymaskDelete;
+        bool marraymaskDelete;
         const LogicalArrayElem *marraymaskStorage =
             marray.getMaskStorage(marraymaskDelete);
         const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-        uInt ntotal = marray.nelements();
-        Bool retval = False;
-        Bool foundOne = False;
+        size_t ntotal = marray.nelements();
+        bool retval = false;
+        bool foundOne = false;
         while (ntotal--) {
             if (*marraymaskS) {
-                foundOne = True;
+                foundOne = true;
                 if (*marrayarrS) {
-	            retval = True;
+	            retval = true;
 	            break;
                 }
             }
@@ -1197,7 +1197,7 @@ Bool anyOR (const T &val, const MaskedArray<T> &marray)
 
         if (!foundOne) {
             throw (ArrayError(
-              "Bool ::anyOR(const T, const MaskedArray<T> &)"
+              "bool ::anyOR(const T, const MaskedArray<T> &)"
               " - Need at least 1 unmasked element"));
         }
 
@@ -1212,24 +1212,24 @@ MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
                                 const T &right) \
 { \
     LogicalArray resultarr (left.shape()); \
-    resultarr = False; \
+    resultarr = false; \
     MaskedLogicalArray result (resultarr, left.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     LogicalArrayElem *resultarrStorage = \
         result.getRWArrayStorage(resultarrDelete); \
     LogicalArrayElem *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             *resultarrS = (LogicalArrayElem) (*leftarrS OP right); \
@@ -1253,24 +1253,24 @@ MaskedLogicalArray operator OP (const T &left, \
                                 const MaskedArray<T> &right) \
 { \
     LogicalArray resultarr (right.shape()); \
-    resultarr = False; \
+    resultarr = false; \
     MaskedLogicalArray result (resultarr, right.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     LogicalArrayElem *resultarrStorage = \
         result.getRWArrayStorage(resultarrDelete); \
     LogicalArrayElem *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             *resultarrS = (LogicalArrayElem) (left OP *rightarrS); \
@@ -1307,28 +1307,28 @@ MaskedLogicalArray operator && (const MaskedArray<T> &marray,
                                 const T &val)
 {
     LogicalArray resultarr (marray.shape());
-    resultarr = False;
+    resultarr = false;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
     if (val) {
-        Bool resultarrDelete;
+        bool resultarrDelete;
         LogicalArrayElem *resultarrStorage =
             result.getRWArrayStorage(resultarrDelete);
         LogicalArrayElem *resultarrS = resultarrStorage;
 
-        Bool resultmaskDelete;
+        bool resultmaskDelete;
         const LogicalArrayElem *resultmaskStorage =
             result.getMaskStorage(resultmaskDelete);
         const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        uInt ntotal = result.nelements();
+        size_t ntotal = result.nelements();
         while (ntotal--) {
             if (*resultmaskS) {
-                *resultarrS = ((*marrayarrS) ? True : False);
+                *resultarrS = ((*marrayarrS) ? true : false);
             }
             resultarrS++;
             resultmaskS++;
@@ -1349,28 +1349,28 @@ MaskedLogicalArray operator && (const T &val,
                                 const MaskedArray<T> &marray)
 {
     LogicalArray resultarr (marray.shape());
-    resultarr = False;
+    resultarr = false;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
     if (val) {
-        Bool resultarrDelete;
+        bool resultarrDelete;
         LogicalArrayElem *resultarrStorage =
             result.getRWArrayStorage(resultarrDelete);
         LogicalArrayElem *resultarrS = resultarrStorage;
 
-        Bool resultmaskDelete;
+        bool resultmaskDelete;
         const LogicalArrayElem *resultmaskStorage =
             result.getMaskStorage(resultmaskDelete);
         const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        uInt ntotal = result.nelements();
+        size_t ntotal = result.nelements();
         while (ntotal--) {
             if (*resultmaskS) {
-                *resultarrS = ((*marrayarrS) ? True : False);
+                *resultarrS = ((*marrayarrS) ? true : false);
             }
             resultarrS++;
             resultmaskS++;
@@ -1391,31 +1391,31 @@ MaskedLogicalArray operator || (const MaskedArray<T> &marray,
                                 const T &val)
 {
     LogicalArray resultarr (marray.shape());
-    resultarr = False;
+    resultarr = false;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
     if (val) {
-        result = True;
+        result = true;
     } else {
 
-        Bool resultarrDelete;
+        bool resultarrDelete;
         LogicalArrayElem *resultarrStorage =
             result.getRWArrayStorage(resultarrDelete);
         LogicalArrayElem *resultarrS = resultarrStorage;
 
-        Bool resultmaskDelete;
+        bool resultmaskDelete;
         const LogicalArrayElem *resultmaskStorage =
             result.getMaskStorage(resultmaskDelete);
         const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        uInt ntotal = result.nelements();
+        size_t ntotal = result.nelements();
         while (ntotal--) {
             if (*resultmaskS) {
-                *resultarrS = ((*marrayarrS) ? True : False);
+                *resultarrS = ((*marrayarrS) ? true : false);
             }
             resultarrS++;
             resultmaskS++;
@@ -1436,31 +1436,31 @@ MaskedLogicalArray operator || (const T &val,
                                 const MaskedArray<T> &marray)
 {
     LogicalArray resultarr (marray.shape());
-    resultarr = False;
+    resultarr = false;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
     if (val) {
-        result = True;
+        result = true;
     } else {
 
-        Bool resultarrDelete;
+        bool resultarrDelete;
         LogicalArrayElem *resultarrStorage =
             result.getRWArrayStorage(resultarrDelete);
         LogicalArrayElem *resultarrS = resultarrStorage;
 
-        Bool resultmaskDelete;
+        bool resultmaskDelete;
         const LogicalArrayElem *resultmaskStorage =
             result.getMaskStorage(resultmaskDelete);
         const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-        Bool marrayarrDelete;
+        bool marrayarrDelete;
         const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
         const T *marrayarrS = marrayarrStorage;
 
-        uInt ntotal = result.nelements();
+        size_t ntotal = result.nelements();
         while (ntotal--) {
             if (*resultmaskS) {
-                *resultarrS = ((*marrayarrS) ? True : False);
+                *resultarrS = ((*marrayarrS) ? true : false);
             }
             resultarrS++;
             resultmaskS++;

@@ -31,12 +31,15 @@
 #include <casacore/casa/Utilities/Precision.h>
 
 #include <casacore/casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 void testit(
 		const Vector<Double>& x, const Vector<Double>& y,
 		const uInt expectedPrecision
 ) {
-	ostringstream testStream;
+	std::ostringstream testStream;
 	testStream << "x = " << x[0] << " +/- " << x[1] << ", y ";
 	if (y.size() == 0) {
 		testStream << "nonexistant, ";

@@ -35,6 +35,8 @@
 #include <casacore/tables/Tables/BaseTable.h>
 #include <casacore/tables/Tables/StorageOption.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
+
 #include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -53,8 +55,6 @@ class MultiFile;
 class Record;
 class IPosition;
 class AipsIO;
-template<class T> class Vector;
-
 
 // <summary>
 // Class to manage a set of table columns

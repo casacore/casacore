@@ -28,6 +28,7 @@
 #include <casacore/tables/DataMan/StArrAipsIO.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/BasicSL/Complex.h>

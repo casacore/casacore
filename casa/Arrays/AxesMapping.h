@@ -26,16 +26,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_AXESMAPPING_H
-#define CASA_AXESMAPPING_H
-
+#ifndef CASA_AXESMAPPING_2_H
+#define CASA_AXESMAPPING_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/IPosition.h>
+#include "IPosition.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+ 
 //# Forward Declarations
 class Slicer;
 
@@ -106,11 +104,11 @@ public:
   AxesMapping& operator= (const AxesMapping& other);
 
   // Are axes removed?
-  Bool isRemoved() const
+  bool isRemoved() const
     { return itsRemoved; }
 
   // Is the axes order reordered?
-  Bool isReordered() const
+  bool isReordered() const
     { return itsReordered; }
 
   // Get the mapping of old->new.
@@ -154,8 +152,8 @@ public:
 private:
   IPosition itsToNew;
   IPosition itsToOld;
-  Bool      itsRemoved;
-  Bool      itsReordered;
+  bool      itsRemoved;
+  bool      itsReordered;
 };
 
 

@@ -26,14 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/iostream.h>
+#include "../Array.h"
+#include "../ArrayMath.h"
+#include "../ArrayLogical.h"
 
-#include <casacore/casa/namespace.h>
+#include <boost/test/unit_test.hpp>
 
+using namespace casacore;
+
+BOOST_AUTO_TEST_SUITE(axis_specifier)
 
 template<typename T, typename F>
 void tConvertEQ (const IPosition& shape)
@@ -44,7 +45,7 @@ void tConvertEQ (const IPosition& shape)
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
-  AlwaysAssertExit (allEQ(res, exp));
+  BOOST_CHECK (allEQ(res, exp));
   // Test on non-contiguous array.
   IPosition st(shape.size(), 1);
   IPosition end(shape-2);
@@ -53,8 +54,8 @@ void tConvertEQ (const IPosition& shape)
   Array<T> res1 = res(st,end);
   res1 = 0;
   convertArray (res1, arr1);
-  AlwaysAssertExit (allEQ(res1, exp1));
-  AlwaysAssertExit (allEQ(res, exp));
+  BOOST_CHECK (allEQ(res1, exp1));
+  BOOST_CHECK (allEQ(res, exp));
 }
 
 template<typename T, typename F>
@@ -66,7 +67,7 @@ void tConvertNear (const IPosition& shape)
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
-  AlwaysAssertExit (allNear(res, exp, 1e-5));
+  BOOST_CHECK (allNear(res, exp, 1e-5));
   // Test on non-contiguous array.
   IPosition st(shape.size(), 1);
   IPosition end(shape-2);
@@ -75,23 +76,28 @@ void tConvertNear (const IPosition& shape)
   Array<T> res1 = res(st,end);
   res1 = 0;
   convertArray (res1, arr1);
-  AlwaysAssertExit (allNear(res1, exp1, 1e-5));
-  AlwaysAssertExit (allNear(res, exp, 1e-5));
+  BOOST_CHECK (allNear(res1, exp1, 1e-5));
+  BOOST_CHECK (allNear(res, exp, 1e-5));
 }
 
-int main()
+BOOST_AUTO_TEST_CASE( converteq1 )
 {
-  try {
-    IPosition shape1(3,40,50,6);   // size should fit in Short
-    IPosition shape2(3,40,50,600);
-    tConvertEQ<Int,Short> (shape1);
-    tConvertEQ<Short,Int> (shape1);
-    tConvertNear<Float,Int> (shape2);
-    tConvertNear<Complex,Float> (shape2);
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
-    return 1;
-  }
-  cout << "OK" << endl;
-  return 0;
+  tConvertEQ<int,short> (IPosition{40,50,6}); // size should fit in Short
 }
+
+BOOST_AUTO_TEST_CASE( converteq2 )
+{
+  tConvertEQ<short,int> (IPosition{40,50,6});
+}
+
+BOOST_AUTO_TEST_CASE( convertnear1 )
+{
+  tConvertNear<float,int> (IPosition{40,50,600});
+}
+
+BOOST_AUTO_TEST_CASE( convertnear2 )
+{
+  tConvertNear<std::complex<float>,float> (IPosition{40,50,600});
+}
+
+BOOST_AUTO_TEST_SUITE_END()

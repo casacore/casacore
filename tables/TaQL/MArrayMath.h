@@ -34,6 +34,7 @@
 #include <casacore/tables/TaQL/MArrayMathBase.h>
 #include <casacore/casa/Arrays/ArrayPartMath.h>
 #include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/BasicMath/Functors.h>
 
 namespace casacore {
 

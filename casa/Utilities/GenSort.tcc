@@ -33,6 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Exceptions/Error.h>
 #ifdef _OPENMP
@@ -481,7 +482,7 @@ uInt GenSort<T>::sort (Array<T>& data, Sort::Order ord, int opt)
 template<class T>
 uInt GenSort<T>::sort (Block<T>& data, uInt nr, Sort::Order ord, int opt)
 {
-  return sort (data.storage(), min(nr, data.nelements()), ord, opt);
+  return sort (data.storage(), std::min<uInt>(nr, data.nelements()), ord, opt);
 }
 
 

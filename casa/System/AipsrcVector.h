@@ -29,6 +29,7 @@
 #define CASA_AIPSRCVECTOR_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/System/Aipsrc.h>
@@ -37,7 +38,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
-template<class T> class Vector;
 class Unit;
 
 // <summary> Read multiple values from the  Aipsrc resource files </summary>

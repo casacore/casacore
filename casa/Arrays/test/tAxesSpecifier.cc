@@ -26,107 +26,99 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/AxesSpecifier.h>
-#include <casacore/casa/Arrays/Slicer.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/iostream.h>
+#include "../AxesSpecifier.h"
+#include "../Slicer.h"
 
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/namespace.h>
-void doIt()
+using namespace casacore;
+
+BOOST_AUTO_TEST_SUITE(axis_specifier)
+
+BOOST_AUTO_TEST_CASE( tests )
 {
   AxesMapping map;
   {
     AxesSpecifier as;
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,2));
-    AlwaysAssertExit (map.getToOld() == IPosition(3,0,1,2));
-    AlwaysAssertExit (!map.isRemoved());
-    AlwaysAssertExit (!map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,0,1,2));
+    BOOST_CHECK (map.getToOld() == IPosition(3,0,1,2));
+    BOOST_CHECK (!map.isRemoved());
+    BOOST_CHECK (!map.isReordered());
   }
   {
-    AxesSpecifier as(True);
+    AxesSpecifier as(true);
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,2));
-    AlwaysAssertExit (map.getToOld() == IPosition(3,0,1,2));
-    AlwaysAssertExit (!map.isRemoved());
-    AlwaysAssertExit (!map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,0,1,2));
+    BOOST_CHECK (map.getToOld() == IPosition(3,0,1,2));
+    BOOST_CHECK (!map.isRemoved());
+    BOOST_CHECK (!map.isReordered());
   }
   {
-    AxesSpecifier as(False);
+    AxesSpecifier as(false);
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,-1,0,-1));
-    AlwaysAssertExit (map.getToOld() == IPosition(1,1));
-    AlwaysAssertExit (map.isRemoved());
-    AlwaysAssertExit (!map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,-1,0,-1));
+    BOOST_CHECK (map.getToOld() == IPosition(1,1));
+    BOOST_CHECK (map.isRemoved());
+    BOOST_CHECK (!map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(1,0));
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,-1));
-    AlwaysAssertExit (map.getToOld() == IPosition(2,0,1));
-    AlwaysAssertExit (map.isRemoved());
-    AlwaysAssertExit (!map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,0,1,-1));
+    BOOST_CHECK (map.getToOld() == IPosition(2,0,1));
+    BOOST_CHECK (map.isRemoved());
+    BOOST_CHECK (!map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(4,1,2,1,2));
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,-1,0,1));
-    AlwaysAssertExit (map.getToOld() == IPosition(2,1,2));
-    AlwaysAssertExit (map.isRemoved());
-    AlwaysAssertExit (!map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,-1,0,1));
+    BOOST_CHECK (map.getToOld() == IPosition(2,1,2));
+    BOOST_CHECK (map.isRemoved());
+    BOOST_CHECK (!map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(4,1,0,1,2), IPosition(2,2,0));
     AxesSpecifier as1(IPosition(2,0,2));
     as = as1;
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,2));
-    AlwaysAssertExit (map.getToOld() == IPosition(3,0,1,2));
-    AlwaysAssertExit (!map.isRemoved());
-    AlwaysAssertExit (!map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,0,1,2));
+    BOOST_CHECK (map.getToOld() == IPosition(3,0,1,2));
+    BOOST_CHECK (!map.isRemoved());
+    BOOST_CHECK (!map.isReordered());
   }
   {
     AxesSpecifier as1(IPosition(4,1,0,1,2), IPosition(2,2,0));
     AxesSpecifier as(as1);
     map = as.apply (IPosition(3,1,10,1));
-    AlwaysAssertExit (map.getToNew() == IPosition(3,1,2,0));
-    AlwaysAssertExit (map.getToOld() == IPosition(3,2,0,1));
-    AlwaysAssertExit (!map.isRemoved());
-    AlwaysAssertExit (map.isReordered());
+    BOOST_CHECK (map.getToNew() == IPosition(3,1,2,0));
+    BOOST_CHECK (map.getToOld() == IPosition(3,2,0,1));
+    BOOST_CHECK (!map.isRemoved());
+    BOOST_CHECK (map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(4,1,2,1,2), IPosition(2,1,0));
     map = as.apply (IPosition(3,1,10,1));
     AxesMapping map1(map);
-    AlwaysAssertExit (map1.getToNew() == IPosition(3,-1,1,0));
-    AlwaysAssertExit (map1.getToOld() == IPosition(2,2,1));
-    AlwaysAssertExit (map1.isRemoved());
-    AlwaysAssertExit (map1.isReordered());
-    AlwaysAssertExit (map1.shapeToNew(IPosition(3,1,3,4)) == IPosition(2,4,3));
-    AlwaysAssertExit (map1.posToNew(IPosition(3,0,3,4)) == IPosition(2,4,3));
-    AlwaysAssertExit (map1.shapeToOld(IPosition(2,4,3)) == IPosition(3,1,3,4));
-    AlwaysAssertExit (map1.posToOld(IPosition(2,4,3)) == IPosition(3,0,3,4));
+    BOOST_CHECK (map1.getToNew() == IPosition(3,-1,1,0));
+    BOOST_CHECK (map1.getToOld() == IPosition(2,2,1));
+    BOOST_CHECK (map1.isRemoved());
+    BOOST_CHECK (map1.isReordered());
+    BOOST_CHECK (map1.shapeToNew(IPosition(3,1,3,4)) == IPosition(2,4,3));
+    BOOST_CHECK (map1.posToNew(IPosition(3,0,3,4)) == IPosition(2,4,3));
+    BOOST_CHECK (map1.shapeToOld(IPosition(2,4,3)) == IPosition(3,1,3,4));
+    BOOST_CHECK (map1.posToOld(IPosition(2,4,3)) == IPosition(3,0,3,4));
     Slicer slin(IPosition(3,0,1,2), IPosition(3,1,3,2));
     Slicer slout = map1.slicerToNew (slin);
-    AlwaysAssertExit (slout.start() == IPosition(2,2,1));
-    AlwaysAssertExit (slout.length() == IPosition(2,2,3));
-    AlwaysAssertExit (slout.stride() == IPosition(2,1,1));
+    BOOST_CHECK (slout.start() == IPosition(2,2,1));
+    BOOST_CHECK (slout.length() == IPosition(2,2,3));
+    BOOST_CHECK (slout.stride() == IPosition(2,1,1));
     Slicer slout2 = map1.slicerToOld (slout);
-    AlwaysAssertExit (slout2.start() == slin.start());
-    AlwaysAssertExit (slout2.length() == slin.length());
-    AlwaysAssertExit (slout2.stride() == slin.stride());
+    BOOST_CHECK (slout2.start() == slin.start());
+    BOOST_CHECK (slout2.length() == slin.length());
+    BOOST_CHECK (slout2.stride() == slin.stride());
   }
 }
 
-
-int main()
-{
-  try {
-    doIt();
-  } catch (AipsError& x) {
-    cerr << "Unexpected exception: " << x.getMesg() << endl;
-    return 1;
-  }
-  return 0;
-}
+BOOST_AUTO_TEST_SUITE_END()

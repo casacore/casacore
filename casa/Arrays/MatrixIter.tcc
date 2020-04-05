@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#ifndef CASA_MATRIXITER_TCC
-#define CASA_MATRIXITER_TCC
+#ifndef CASA_MATRIXITER_2_TCC
+#define CASA_MATRIXITER_2_TCC
 
-#include<casacore/casa/Arrays/MatrixIter.h>
+#include "MatrixIter.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -42,9 +42,9 @@ template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
 }
 
 template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a,
-						    uInt cursorAxis1,
-						    uInt cursorAxis2)
-: ArrayIterator<T>(a, IPosition(2, cursorAxis1, cursorAxis2), True)
+						    size_t cursorAxis1,
+						    size_t cursorAxis2)
+: ArrayIterator<T>(a, IPosition(2, cursorAxis1, cursorAxis2), true)
 {
     // We need to ensure that ap points at a Matrix
     Matrix<T> *mp = new Matrix<T>(*this->ap_p); // reference

@@ -836,14 +836,14 @@ BaseTable* BaseTable::select (const Vector<uInt>& rownrs)
 BaseTable* BaseTable::select (const Block<Bool>& mask)
 {
     AlwaysAssert (!isNull(), AipsError);
-    RefTable* rtp = new RefTable(this, Vector<Bool>(mask));
+    RefTable* rtp = new RefTable(this, Vector<Bool>(mask.begin(), mask.end()));
     return rtp;
 }
 
 BaseTable* BaseTable::project (const Block<String>& names)
 {
     AlwaysAssert (!isNull(), AipsError);
-    RefTable* rtp = new RefTable(this, Vector<String>(names));
+    RefTable* rtp = new RefTable(this, Vector<String>(names.begin(), names.end()));
     return rtp;
 }
 

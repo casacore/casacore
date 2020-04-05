@@ -35,6 +35,7 @@
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -46,8 +47,6 @@ class RefRows;
 class IPosition;
 class Slicer;
 class Sort;
-template<class T> class Array;
-template<class T> class Vector;
 
 // <summary>
 // Abstract base class for a table column

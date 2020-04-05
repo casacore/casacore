@@ -41,7 +41,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/Assert.h>

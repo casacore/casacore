@@ -37,7 +37,7 @@
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>

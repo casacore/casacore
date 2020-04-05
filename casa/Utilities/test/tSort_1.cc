@@ -32,6 +32,7 @@
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/stdlib.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 #include <casacore/casa/namespace.h>
 //# Forward Declarations

@@ -696,7 +696,7 @@ void DataManagerColumn::getArrayColumnBase (ArrayBase& arr)
   const IPosition& shp = arr.shape();
   uInt nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (uInt row=0; row<nr; ++row) {
     getArrayV (row, &(iter->getArray()));
     iter->next();
@@ -707,7 +707,7 @@ void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
   const IPosition& shp = arr.shape();
   uInt nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (uInt row=0; row<nr; ++row) {
     putArrayV (row, &(iter->getArray()));
     iter->next();
@@ -715,7 +715,7 @@ void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
 }
 void DataManagerColumn::getArrayColumnCellsBase (const RefRows& rows, ArrayBase& arr)
 {
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
@@ -731,7 +731,7 @@ void DataManagerColumn::getArrayColumnCellsBase (const RefRows& rows, ArrayBase&
 void DataManagerColumn::putArrayColumnCellsBase (const RefRows& rows,
                                                  const ArrayBase& arr)
 {
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
@@ -745,57 +745,57 @@ void DataManagerColumn::putArrayColumnCellsBase (const RefRows& rows,
   DebugAssert (iter->pastEnd(), AipsError);
 }
 void DataManagerColumn::getSliceArr (uInt row, const Slicer& section,
-                                     CountedPtr<ArrayBase>& fullArr,
+                                     ArrayBase& fullArr,
                                      ArrayBase& arr)
 {
   IPosition shp = shape(row);
   if (shp.isEqual (arr.shape())) {
     getArrayV (row, &arr);
   } else {
-    if (! shp.isEqual (fullArr->shape())) {
-      fullArr->resize (shp);
+    if (! shp.isEqual (fullArr.shape())) {
+      fullArr.resize (shp);
     }
-    getArrayV (row, fullArr.get());
-    arr.assignBase (*(fullArr->getSection (section)));
+    getArrayV (row, &fullArr);
+    arr.assignBase (*(fullArr.getSection (section)));
   }
 }
 void DataManagerColumn::putSliceArr (uInt row, const Slicer& section,
-                                     CountedPtr<ArrayBase>& fullArr,
+                                     ArrayBase& fullArr,
                                      const ArrayBase& arr)
 {
   IPosition shp = shape(row);
   if (shp.isEqual (arr.shape())) {
     putArrayV (row, &arr);
   } else {
-    if (! shp.isEqual (fullArr->shape())) {
-      fullArr->resize (shp);
+    if (! shp.isEqual (fullArr.shape())) {
+      fullArr.resize (shp);
     }
-    getArrayV (row, fullArr.get());
-    (fullArr->getSection(section))->assignBase (arr);
-    putArrayV (row, fullArr.get());
+    getArrayV (row, &fullArr);
+    (fullArr.getSection(section))->assignBase (arr);
+    putArrayV (row, &fullArr);
   }
 }
 void DataManagerColumn::getSliceBase (uInt row, const Slicer& section,
                                       ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  getSliceArr (row, section, fullArr, arr);
+  std::unique_ptr<ArrayBase> fullArr = arr.makeArray();
+  getSliceArr (row, section, *fullArr, arr);
 }
 void DataManagerColumn::putSliceBase (uInt row, const Slicer& section,
                                       const ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  putSliceArr (row, section, fullArr, arr);
+  std::unique_ptr<ArrayBase> fullArr = arr.makeArray();
+  putSliceArr (row, section, *fullArr, arr);
 }
 void DataManagerColumn::getColumnSliceBase (const Slicer& section, ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
   uInt nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  std::unique_ptr<ArrayBase> fullArr = arr.makeArray();
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (uInt row=0; row<nr; ++row) {
-    getSliceArr (row, section, fullArr, iter->getArray());
+    getSliceArr (row, section, *fullArr, iter->getArray());
     iter->next();
   }
 }
@@ -805,10 +805,10 @@ void DataManagerColumn::putColumnSliceBase (const Slicer& section,
   const IPosition& shp = arr.shape();
   uInt nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  std::unique_ptr<ArrayBase> fullArr = arr.makeArray();
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (uInt row=0; row<nr; ++row) {
-    putSliceArr (row, section, fullArr, iter->getArray());
+    putSliceArr (row, section, *fullArr, iter->getArray());
     iter->next();
   }
 }
@@ -816,14 +816,14 @@ void DataManagerColumn::getColumnSliceCellsBase (const RefRows& rows,
                                                  const Slicer& section,
                                                  ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  std::unique_ptr<ArrayBase> fullArr = arr.makeArray();
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
          row+=rowsIter.sliceIncr()) {
       DebugAssert (! iter->pastEnd(), AipsError);
-      getSliceArr (row, section, fullArr, iter->getArray());
+      getSliceArr (row, section, *fullArr, iter->getArray());
       iter->next();
     }
     rowsIter.next();
@@ -834,14 +834,14 @@ void DataManagerColumn::putColumnSliceCellsBase (const RefRows& rows,
                                                  const Slicer& section,
                                                  const ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  std::unique_ptr<ArrayBase> fullArr = arr.makeArray();
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
          row+=rowsIter.sliceIncr()) {
       DebugAssert (! iter->pastEnd(), AipsError);
-      putSliceArr (row, section, fullArr, iter->getArray());
+      putSliceArr (row, section, *fullArr, iter->getArray());
       iter->next();
     }
     rowsIter.next();

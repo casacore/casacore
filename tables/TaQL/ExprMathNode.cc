@@ -29,7 +29,7 @@
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Quanta/MVTime.h>
-
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

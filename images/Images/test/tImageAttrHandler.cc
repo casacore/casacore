@@ -31,7 +31,7 @@
 #include <casacore/images/Images/ImageUtilities.h>
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <iostream>
 #include <casacore/casa/Exceptions/Error.h>

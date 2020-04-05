@@ -1,53 +1,58 @@
-set (tests
-dArrayAccessor
-tArrayAccessor
-tArrayBase
-tArray
-tArrayIO2
-tArrayIO3
-tArrayIO
-tArrayIter1
-tArrayIteratorSTL
-tArrayIter
-tArrayLogical
-tArrayMath
-tArrayMathPerf
-tArrayMathTransform
-tArrayOpsDiffShapes
-tArrayPartMath
-tArrayPosIter
-tArrayUtil
-tArrayUtilPerf
-tAxesSpecifier
-tBoxedArrayMath
-tCompareBoxedPartial
-tConvertArray
-tDiagonal
-tExtendSpecifier
-tIPosition
-tLinAlgebra
-tMaskArrExcp
-tMaskArrIO
-tMaskArrLogi
-tMaskArrMath0
-tMaskArrMath1
-tMaskArrMath2
-tMaskedArray
-tMatrixMath
-tMedianSmooth
-tPerfTransform
-tSlice
-tSlicer
-tSlidingArrayMath
-tStringArray
-tSumPerformance
-tVector
-tVectorSTLIterator
+set (testfiles
+  tAllocator
+  tArray.cc
+  tArrayAccessor.cc
+  tArrayBase.cc
+#tArrayIO2.cc
+#tArrayIO3.cc
+#tArrayIO.cc
+  tArrayIter.cc
+  tArrayIter1.cc
+  tArrayIteratorSTL.cc
+  tArrayLogical.cc
+  tArrayMath.cc
+#tArrayMathPerf.cc
+  tArrayMathTransform.cc
+  tArrayOpsDiffShapes.cc
+  tArrayPartMath.cc # very slow atm
+  tArrayPosIter.cc
+  tArrayStr.cc
+  tArrayUtil.cc
+#tArrayUtilPerf.cc
+  tAxesSpecifier.cc
+  tBoxedArrayMath.cc
+#tCompareBoxedPartial.cc
+  tConvertArray.cc
+  tCpp11Features.cc
+  tDiagonal.cc
+  tExtendSpecifier.cc
+  tIPosition.cc
+  tLinAlgebra.cc
+  tMaskArrExcp.cc
+  tMaskArrIO.cc
+  tMaskArrLogi.cc
+  tMaskArrMath0.cc
+  tMaskArrMath1.cc
+  tMaskArrMath2.cc
+  tMaskedArray.cc
+  tMatrixMath.cc
+  tMedianSmooth.cc
+#  tPerfTransform.cc
+  tSlice.cc
+  tSlicer.cc
+  tSlidingArrayMath.cc
+  tStringArray.cc
+#  tSumPerformance.cc
+  tVector.cc
+  tVectorSTLIterator.cc
 )
 
-foreach (test ${tests})
-    add_executable (${test} ${test}.cc)
-    target_link_libraries (${test} casa_casa)
-    add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
-    add_dependencies(check ${test})
-endforeach (test)
+find_package(Boost COMPONENTS filesystem unit_test_framework system)
+if(Boost_FOUND)
+	include_directories(${Boost_INCLUDE_DIR})
+
+	add_executable (arraytest ${testfiles})
+	target_link_libraries(arraytest casa_casa ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+	add_test (arraytest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
+	add_dependencies(check arraytest)
+endif(Boost_FOUND)

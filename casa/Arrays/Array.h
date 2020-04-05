@@ -27,36 +27,26 @@
 //#
 //# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
-#ifndef CASA_ARRAY_H
-#define CASA_ARRAY_H
+#ifndef CASA_ARRAY_2_H
+#define CASA_ARRAY_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/ArrayBase.h>
-#include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/casa/Arrays/MaskLogiArrFwd.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/ostream.h>
-#include <iterator>
-#include <casacore/casa/stdvector.h>
+#include "ArrayBase.h"
+#include "ArrayError.h"
+#include "IPosition.h"
+#include "MaskLogiArrFwd.h"
+#include "Storage.h"
 
+#include <complex>
+#include <iterator>
+#include <initializer_list>
+#include <type_traits>
 
 namespace casacore { //#Begin casa namespace
-//# Forward Declarations
-class AipsIO;
-class Slice;
-class Slicer;
-template<class T> class Matrix;
-template<class T> class ArrayIterator;
-template<class T> class MaskedArray;
-template<class Domain, class Range> class Functional;
-//template <class T, class U> class vector; 
-
 
 // <summary> A templated N-D Array class with zero origin </summary>
 
-// Array<T> is a templated, N-dimensional, Array class. The origin is zero,
+// Array<T, Alloc> is a templated, N-dimensional, Array class. The origin is zero,
 // but by default indices are zero-based. This Array class is the
 // base class for specialized Vector<T>, Matrix<T>, and Cube<T> classes.
 //
@@ -69,10 +59,10 @@ template<class Domain, class Range> class Functional;
 // <srcblock>
 //                                     // axisLengths = [1,2,3,4,5]
 // IPosition axisLengths(5, 1, 2, 3, 4, 5); 
-// Array<Int> ai(axisLengths);         // ai is a 5 dimensional array of
+// Array<int> ai(axisLengths);         // ai is a 5 dimensional array of
 //                                     // integers; indices are 0-based
 //                                     // => ai.nelements() == 120
-// Array<Int> ai2(axisLengths);        // The first element is at index 0
+// Array<int> ai2(axisLengths);        // The first element is at index 0
 // IPosition zero(5); zero = 0;        // [0,0,0,0,0]
 // //...
 // </srcblock>
@@ -104,17 +94,17 @@ template<class Domain, class Range> class Functional;
 // ...).
 // <srcblock>
 // IPosition lengths(3,10,20,30);
-// Array<Int> ai(lengths);         // A 10x20x30 cube
-// Cube<Int> ci;
+// Array<int> ai(lengths);         // A 10x20x30 cube
+// Cube<int> ci;
 // //...
 // ci.reference(ai1);              // ci and ai now reference the same
 //                                 // storage
 // ci(0,0,0) = 123;                // Can use Cube indexing
 // ci.xyPlane(2) = 0;              //     and other member functions
 // IPosition zero(3,0,0,0);
-// assert(ai(zero) == 123);        // True because ai, ci are references
+// assert(ai(zero) == 123);        // true because ai, ci are references
 // //...
-// Array<Int> subArray;
+// Array<int> subArray;
 // IPosition blc(3,0,0,0), trc(3,5,5,5);
 // subArray.reference(ai(blc, trc));
 // subArray = 10;                  // All of subArray, which is the
@@ -143,7 +133,7 @@ template<class Domain, class Range> class Functional;
 // Element by element mathematical and logical operations are available
 // for arrays (defined in aips/ArrayMath.h and aips/ArrayLogical.h).
 // Because arithmetic and logical functions are split out, it is possible
-// to create an Array<T> (and hence Vector<T> etc) for any type T that has
+// to create an Array<T, Alloc> (and hence Vector<T> etc) for any type T that has
 // a default constructor, assignment operator, and copy constructor. In
 // particular, Array<String> works.
 //
@@ -163,13 +153,11 @@ template<class Domain, class Range> class Functional;
 //        base class.
 // </todo>
 
-template<class T> class Array : public ArrayBase
+template<typename T, typename Alloc> class Array : public ArrayBase
 {
 public:
-
     // Result has dimensionality of zero, and  nelements is zero.
-    // Storage will be allocated by <src>DefaultAllocator<T></src>.
-    Array();
+    Array(const Alloc& allocator = Alloc());
 
     // Create an array of the given shape, i.e. after construction
     // array.ndim() == shape.nelements() and array.shape() == shape.
@@ -182,7 +170,7 @@ public:
     // Especially when <src>T</src> is of type <src>Complex</src> or <src>DComplex</src> and it is unnecessary to initialize,
     // provide initPolicy with value <src>NO_INIT</src> to skip the initialization.
     // Therefore, it is strongly recommended to explicitly provide initPolicy parameter,
-    explicit Array(const IPosition &shape);
+    explicit Array(const IPosition &shape, const Alloc& allocator = Alloc());
 
     // Create an array of the given shape, i.e. after construction
     // array.ndim() == shape.nelements() and array.shape() == shape.
@@ -193,25 +181,31 @@ public:
     // initialize elements before they are referred, especially when <src>T</src> is such type like <src>std::string</src>.
     // <srcblock>
     //   IPosition shape(1, 10);
-    //   Array<Int> ai(shape, ArrayInitPolicies::NO_INIT);
-    //   size_t nread = fread(ai.data(), sizeof(Int), ai.nelements(), fp);
+    //   Array<int> ai(shape, ArrayInitPolicies::NO_INIT);
+    //   size_t nread = fread(ai.data(), sizeof(int), ai.nelements(), fp);
     // </srcblock>
-    Array(const IPosition &shape, ArrayInitPolicy initPolicy);
+    //Array(const IPosition &shape, ArrayInitPolicy initPolicy);
 
     // Create an array of the given shape and initialize it with the
     // initial value.
     // Storage is allocated by <src>DefaultAllocator<T></src>.
-    Array(const IPosition &shape, const T &initialValue);
+    Array(const IPosition &shape, const T &initialValue, const Alloc& allocator = Alloc());
+    
+    Array(std::initializer_list<T> list);
 
     // After construction, this and other reference the same storage.
-    Array(const Array<T> &other);
+    Array(const Array<T, Alloc> &other);
 
-    // Create an Array of a given shape from a pointer.
+    // Source will be empty after this call.
+    Array(Array<T, Alloc>&& source) noexcept;
+
+   // Create an Array of a given shape from a pointer.
     // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
     // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>NewDelAllocator<T></src>.
     // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
     // whenever <src>policy</src> == <src>TAKE_OVER</src>
     // to let <src>Array</src> to know how to release the <src>storage</src>.
+    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
     Array(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
 
     // Create an Array of a given shape from a pointer.
@@ -224,31 +218,39 @@ public:
     // the allocator as below.
     // <srcblock>
     //   FILE *fp = ...;
-    //   typedef DefaultAllocator<Int> Alloc;
+    //   typedef DefaultAllocator<int> Alloc;
     //   Alloc::type alloc;
     //   IPosition shape(1, 10);
-    //   Int *ptr = alloc.allocate(shape.product());
-    //   size_t nread = fread(ptr, sizeof(Int), shape.product(), fp);
-    //   Array<Int> ai(shape, ptr, TAKE_OVER, Alloc::value);
+    //   int *ptr = alloc.allocate(shape.product());
+    //   size_t nread = fread(ptr, sizeof(int), shape.product(), fp);
+    //   Array<int> ai(shape, ptr, TAKE_OVER, Alloc::value);
     // </srcblock>
-    Array(const IPosition &shape, T *storage, StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
+    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
+    Array(const IPosition &shape, T *storage, StorageInitPolicy policy, Alloc& allocator);
 
     // Create an Array of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     // The copy is allocated by <src>DefaultAllocator<T></src>.
     Array(const IPosition &shape, const T *storage);
 
+    template<typename InputIterator>
+    Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator = Alloc());
+    
     // Frees up storage only if this array was the last reference to it.
-    virtual ~Array();
+    virtual ~Array() noexcept;
 
     // Make an empty array of the same template type.
-    virtual CountedPtr<ArrayBase> makeArray() const;
+    virtual std::unique_ptr<ArrayBase> makeArray() const override;
 
+    Alloc& allocator() { return *data_p; }
+    const Alloc& allocator() const { return *data_p; }
+    
     // Assign the other array to this array.
     // If the shapes mismatch, this array is resized.
     // <group>
-    virtual void assign (const Array<T>& other);
-    virtual void assignBase (const ArrayBase& other, Bool checkType=True);
+    void assign (const Array<T, Alloc>& other);
+    
+    void assignBase (const ArrayBase& other, bool checkType=true) override;
     // </group>
 
     // Set every element of the array to "value." Also could use the
@@ -257,15 +259,9 @@ public:
 
     // Apply the function to every element of the array. This modifies
     // the array in place.
-    // <group>
-    // This version takes a function which takes a T and returns a T.
-    void apply(T (*function)(T));
-    // This version takes a function which takes a const T reference and
-    // returns a T.
-    void apply(T (*function)(const T &));
-    // This version applies a functional.
-    void apply(const Functional<T,T> &function);
-    // </group>
+    // (TODO this version made the other versions of apply() redundant)
+    template<typename Callable>
+    void apply(Callable function);
 
     // After invocation, this array and other reference the same storage. That
     // is, modifying an element through one will show up in the other. The
@@ -277,7 +273,7 @@ public:
     // Array slices. Otherwise one first needs to use the copy constructor.
     //# The const has been introduced on 2005-Mar-31 because of the hassle
     //# involved in calling the copy ctor before reference.
-    virtual void reference(const Array<T> &other);
+    virtual void reference(const Array<T, Alloc> &other);
 
     // Copy the values in other to this. If the array on the left hand
     // side has no elements, then it is resized to be the same size as
@@ -285,39 +281,41 @@ public:
     // conform (same shapes).
     // <srcblock>
     // IPosition shape(2,10,10);     // some shape
-    // Array<Double> ad(shape);
+    // Array<double> ad(shape);
     // //...
-    // Array<Double> ad2;            // N.B. ad2.nelements() == 0
+    // Array<double> ad2;            // N.B. ad2.nelements() == 0
     // ad2 = ad;                     // ad2 resizes, then elements
     //                               //     are copied.
     // shape = 20;
-    // Array<Double> ad3(shape);
+    // Array<double> ad3(shape);
     // ad3 = ad;                     // Error: arrays do not conform
     // </srcblock>
     // Note that the assign function can be used to assign a
     // non-conforming array.
-    virtual Array<T> &operator=(const Array<T> &other);
+    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& other)
+    {
+      return assign_conforming_implementation(other, std::is_copy_assignable<T>());
+    }
+
+    // TODO we should change the semantics
+    Array<T, Alloc>& operator=(const Array<T, Alloc>& other)
+    { return assign_conforming(other); }
+ 
+    // The move operator takes the storage from the given array. After moving an
+    // Array, the source Array will be left empty.
+    Array<T, Alloc>& operator=(Array<T, Alloc>&& other);
 
     // Set every element of this array to "value". In other words, a scalar
     // behaves as if it were a constant conformant array.
-    Array<T> &operator=(const T &value);
-
-    // Copy to this those values in marray whose corresponding elements
-    // in marray's mask are True.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    // </thrown>
-    //
-    Array<T> &operator= (const MaskedArray<T> &marray);
+    Array<T, Alloc>& operator=(const T& value);
 
     // This makes a copy of the array and returns it. This can be
     // useful for, e.g. making working copies of function arguments
     // that you can write into.
     // <srcblock>
-    // void someFunction(const Array<Int> &arg)
+    // void someFunction(const Array<int> &arg)
     // {
-    //     Array<Int> tmp(arg.copy());
+    //     Array<int> tmp(arg.copy());
     //     // ...
     // }
     // </srcblock>
@@ -325,9 +323,9 @@ public:
     // created used to copy constructor, modifying "tmp" would also
     // modify "arg". Clearly another alternative would simply be:
     // <srcblock>
-    // void someFunction(const Array<Int> &arg)
+    // void someFunction(const Array<int> &arg)
     // {
-    //     Array<Int> tmp;
+    //     Array<int> tmp;
     //     tmp = arg;
     //     // ...
     // }
@@ -335,15 +333,27 @@ public:
     // which likely would be simpler to understand. (Should copy() 
     // be deprecated and removed?)
     //
-    Array<T> copy(ArrayInitPolicy policy = ArrayInitPolicies::NO_INIT) const;                         // Make a copy of this
+    // TODO deprecate
+    Array<T, Alloc> copy() const {                         // Make a copy of this
+      return copy(Alloc());
+    }
+    
+    // Copy to this those values in marray whose corresponding elements
+    // in marray's mask are true.
+    //
+    // <thrown>
+    //    <li> ArrayConformanceError
+    // </thrown>
+    //
+    Array<T, Alloc>& assign_conforming (const MaskedArray<T>& marray);
 
     // This function copies the matching part of from array to this array.
     // The matching part is the part with the minimum size for each axis.
     // E.g. if this array has shape [4,5,6] and from array has shape [7,3],
     // the matching part has shape [4,3].
     // <br>Note it is used by the resize function if
-    // <src>copyValues==True</src>.
-    void copyMatchingPart (const Array<T> &from);
+    // <src>copyValues==true</src>.
+    void copyMatchingPart (const Array<T, Alloc>& from);
 
     // This ensures that this array does not reference any other storage.
     // <note role=tip>
@@ -354,9 +364,9 @@ public:
     //
     //        <srcblock>
     //        IPosition shape(...), blc(...), trc(...), inc(...);
-    //        Array<Float> af(shape);
+    //        Array<float> af(shape);
     //        inc = 2; // or anything > 1
-    //        Array<Float> aSection.reference(af(blc, trc, inc));
+    //        Array<float> aSection.reference(af(blc, trc, inc));
     //        af.reference(anotherArray);
     //        // aSection now references storage that has a stride
     //        // in it, but nothing else is. Storage is wasted.
@@ -373,9 +383,9 @@ public:
     // definition and instantiation.
     // <group>
     template <class U>
-    void tovector(vector<T, U> &out) const;
+    void tovector(std::vector<T, U>& out) const;
 
-    vector<T> tovector() const;
+    std::vector<T> tovector() const;
     // </group>
 
     // It is occasionally useful to have an array which access the same
@@ -387,12 +397,12 @@ public:
     // with length 1.
     // <srcblock>
     // IPosition squareShape(2,5,5);
-    // Array<Float> square(squareShape);
+    // Array<float> square(squareShape);
     // IPosition lineShape(1,25);
-    // Vector<Float> line(square.reform(lineShape));
+    // Vector<float> line(square.reform(lineShape));
     // // "square"'s storage may now be accessed through Vector "line"
     // </srcblock>
-    Array<T> reform(const IPosition &shape) const;
+    Array<T, Alloc> reform(const IPosition& shape) const;
 
     // Having an array that can be reused without requiring reallocation can
     // be useful for large arrays.  The method reformOrResize permits this
@@ -420,8 +430,8 @@ public:
     // Exception thrown if it is shared.
 
     bool reformOrResize (const IPosition & newShape,
-                         uInt resizePercentage = 0,
-                         Bool resizeIfNeeded = True);
+                         size_t resizePercentage = 0,
+                         bool resizeIfNeeded = true);
 
     // Use this method to extend or reduce the last dimension of an array.  If
     // sufficient excess capacity exists then the bookkeeping is adjusted to 
@@ -435,8 +445,8 @@ public:
     // Returns true if the array was extension required a Array<T>::resize operation.
 
     bool adjustLastAxis (const IPosition & newShape,
-		         uInt resizePercentage = 0, 
-                         bool resizeIfNeeded = True);
+		         size_t resizePercentage = 0, 
+                         bool resizeIfNeeded = true);
 
     // Returns the number of elements allocated.  This value is >= to the value returned
     // by size().
@@ -450,7 +460,7 @@ public:
     // let this Array object reference the 'other' array with degenerated axes
     // removed.
     // <br>
-    // Unless throwIfError is False, an exception will be thrown if
+    // Unless throwIfError is false, an exception will be thrown if
     // startingAxis exceeds the array's dimensionality.
     // <br>
     // The functions with argument <src>ignoreAxes</src> do
@@ -462,11 +472,11 @@ public:
     // in a correct number of axes.
     // </note>
     // <group>
-    Array<T> nonDegenerate(uInt startingAxis=0, Bool throwIfError=True) const;
-    Array<T> nonDegenerate(const IPosition& ignoreAxes) const;
-    void nonDegenerate(const Array<T> &other, uInt startingAxis=0,
-		       Bool throwIfError=True);
-    void nonDegenerate(const Array<T> &other, const IPosition &ignoreAxes)
+    Array<T, Alloc> nonDegenerate(size_t startingAxis=0, bool throwIfError=true) const;
+    Array<T, Alloc> nonDegenerate(const IPosition& ignoreAxes) const;
+    void nonDegenerate(const Array<T, Alloc> &other, size_t startingAxis=0,
+		       bool throwIfError=true);
+    void nonDegenerate(const Array<T, Alloc> &other, const IPosition &ignoreAxes)
         { doNonDegenerate (other, ignoreAxes); }
     // </group> 
 
@@ -474,8 +484,8 @@ public:
     // Note it does not make sense to use these functions on a derived object
     // like Matrix, because it is not possible to remove axes from them.
     // <group>
-    void removeDegenerate(uInt startingAxis=0,
-                          Bool throwIfError=True);
+    void removeDegenerate(size_t startingAxis=0,
+                          bool throwIfError=true);
     void removeDegenerate(const IPosition &ignoreAxes);
     // </group>
 
@@ -484,11 +494,11 @@ public:
     // Array. Note that the <src>reform</src> function can also be
     // used to add extra axes.
     // <group>
-    const Array<T> addDegenerate(uInt numAxes) const;
-    Array<T> addDegenerate(uInt numAxes);
+    const Array<T, Alloc> addDegenerate(size_t numAxes) const;
+    Array<T, Alloc> addDegenerate(size_t numAxes);
     // </group>
 
-    // Make this array a different shape. If <src>copyValues==True</src>
+    // Make this array a different shape. If <src>copyValues==true</src>
     // the old values are copied over to the new array.
     // Copying is done on a per axis basis, thus a subsection with the
     // minimum of the old and new shape is copied.
@@ -503,15 +513,14 @@ public:
     // is not referenced by other Array objects, the function unique should
     // be called first.
     // <group>
-    virtual void resize();
-    virtual void resize(const IPosition &newShape, Bool copyValues=False);
-    virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
+    void resize();
+    
+    void resize(const IPosition &newShape, bool copyValues=false) override;
     // </group>
 
     // Access a single element of the array. This is relatively
     // expensive. Extensive indexing should be done through one
-    // of the Array specializations (Vector, Matrix, Cube). If
-    // AIPS_DEBUG is defined, index checking will be performed.
+    // of the Array specializations (Vector, Matrix, Cube).
     // <group>
     T &operator()(const IPosition &);
     const T &operator()(const IPosition &) const;
@@ -520,28 +529,28 @@ public:
     // Get a reference to an array section extending
     // from start to end (inclusive).
     // <group>
-    Array<T> operator()(const IPosition &start,
+    Array<T, Alloc> operator()(const IPosition &start,
                         const IPosition &end);
-    const Array<T> operator()(const IPosition &start,
+    const Array<T, Alloc> operator()(const IPosition &start,
                               const IPosition &end) const;
     // Along the ith axis, every inc[i]'th element is chosen.
-    Array<T> operator()(const IPosition &start,
+    Array<T, Alloc> operator()(const IPosition &start,
                         const IPosition &end,
 			const IPosition &inc);
-    const Array<T> operator()(const IPosition &start,
+    const Array<T, Alloc> operator()(const IPosition &start,
                               const IPosition &end,
                               const IPosition &inc) const;
     // </group>
 
     // Get a reference to an array section using a Slicer.
     // <group>
-    Array<T> operator()(const Slicer&);
-    const Array<T> operator()(const Slicer&) const;
+    Array<T, Alloc> operator()(const Slicer&);
+    const Array<T, Alloc> operator()(const Slicer&) const;
     // </group>
 
     // Get a reference to a section of an array.
     // This is the same as operator(), but can be used in a type-agnostic way.
-    virtual CountedPtr<ArrayBase> getSection (const Slicer&) const;
+    std::unique_ptr<ArrayBase> getSection (const Slicer&) const override;
 
     // Get the subset given by the i-th value of the last axis. So for a cube
     // it returns the i-th xy plane. For a Matrix it returns the i-th row.
@@ -550,12 +559,12 @@ public:
     // <note>This function should not be used in tight loops as it is (much)
     // slower than iterating using begin() and end(), ArrayIter, or
     // ArrayAccessor.</note>
-    Array<T> operator[] (size_t i) const;
+    Array<T, Alloc> operator[] (size_t i) const;
 
     // Get the diagonal of each matrix part in the full array.
     // The matrices are taken using axes firstAxes and firstAxis+1.
     // diag==0 is main diagonal; diag>0 above the main diagonal; diag<0 below.
-    Array<T> diagonals (uInt firstAxis=0, Int64 diag=0) const;
+    Array<T, Alloc> diagonals (size_t firstAxis=0, long long diag=0) const;
 
     // The array is masked by the input LogicalArray.
     // This mask must conform to the array.
@@ -577,18 +586,18 @@ public:
     // It is 1 unless there are outstanding references to the storage (e.g.,
     // through a slice). Normally you have no need to do this since the
     // arrays handle all of the references for you.
-    uInt nrefs() const;
+    size_t nrefs() const;
 
     // Check to see if the Array is consistent. This is about the same thing
     // as checking for invariants. If AIPS_DEBUG is defined, this is invoked
     // after construction and on entry to most member functions.
-    virtual Bool ok() const;
+    virtual bool ok() const override;
 
     // Are the shapes identical?
     // <group>
-    Bool conform (const Array<T> &other) const
+    bool conform (const Array<T, Alloc> &other) const
       { return conform2(other); }
-    Bool conform (const MaskedArray<T> &other) const;
+    bool conform (const MaskedArray<T> &other) const;
     // </group>
 
     // Get a pointer to the beginning of the array.
@@ -609,8 +618,8 @@ public:
     // getStorage followed by freeStorage or putStorage will do the deletion
     // for you (if required). e.g.:
     // <srcblock>
-    // Array<Int> a(shape); ...
-    // Bool deleteIt; Int *storage = a.getStorage(deleteIt);
+    // Array<int> a(shape); ...
+    // bool deleteIt; int *storage = a.getStorage(deleteIt);
     // foo(storage, a.nelements()); a.puStorage(storage, deleteIt);
     // // or a.freeStorage(storage, deleteIt) if a is const.
     // </srcblock>
@@ -621,27 +630,28 @@ public:
     // functions that used a user supplied buffer.
     // Note that deleteIt is set in this function.
     // <group>
-    T *getStorage(Bool &deleteIt);
-    const T *getStorage(Bool &deleteIt) const
+    T *getStorage(bool& deleteIt);
+    const T *getStorage(bool& deleteIt) const
     {
       // The cast is OK because the return pointer will be cast to const
-      return const_cast<Array<T>*>(this)->getStorage(deleteIt);
+      return const_cast<Array<T, Alloc>*>(this)->getStorage(deleteIt);
     }
-    virtual void *getVStorage(Bool &deleteIt);
-    virtual const void *getVStorage(Bool &deleteIt) const;
+    void *getVStorage(bool &deleteIt) override;
+    const void *getVStorage(bool &deleteIt) const override;
     // </group>
 
     // putStorage() is normally called after a call to getStorage() (cf).
     // The "storage" pointer is set to zero.
-    void putStorage(T *&storage, Bool deleteAndCopy);
-    virtual void putVStorage(void *&storage, Bool deleteAndCopy);
+    void putStorage(T *&storage, bool deleteAndCopy);
+    void putVStorage(void *&storage, bool deleteAndCopy) override;
 
     // If deleteIt is set, delete "storage". Normally freeStorage calls
     // will follow calls to getStorage. The reason the pointer is "const"
     // is because only const pointers are released from const arrays.
     // The "storage" pointer is set to zero.
-    void freeStorage(const T *&storage, Bool deleteIt) const;
-    void freeVStorage(const void *&storage, Bool deleteIt) const;
+    // TODO this function can not be const for stateful allocators
+    void freeStorage(const T *&storage, bool deleteIt) const;
+    void freeVStorage(const void *&storage, bool deleteIt) override;
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined if storage does not point at nelements() or
@@ -653,14 +663,18 @@ public:
     // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
     // whenever <src>policy</src> == <src>TAKE_OVER</src>
     // to let <src>Array</src> to know how to release the <src>storage</src>.
+    // TODO:
+    // [[ deprecated("This function copies the value instead of reowning the storage. Better to use one of the other assignment operations instead.") ]]
+    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
     virtual void takeStorage(const IPosition &shape, T *storage,
 		     StorageInitPolicy policy = COPY);
 
     // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>allocator</src>.
     // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>allocator</src>.
     // Otherwise, <src>storage</src> is ignored.
+    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
     virtual void takeStorage(const IPosition &shape, T *storage,
-        StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
+        StorageInitPolicy policy, Alloc& allocator);
 
     // Since the pointer is const, a copy is always taken.
     // Storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
@@ -669,20 +683,16 @@ public:
     // Since the pointer is const, a copy is always taken.
     // Storage of a new copy is allocated by the specified allocator.
     virtual void takeStorage(const IPosition &shape, const T *storage,
-        AbstractAllocator<T> const &allocator);
+        Alloc& allocator);
     // </group>
 
 
     // Used to iterate through Arrays. Derived classes VectorIterator and
     // MatrixIterator are probably more useful.
-    friend class ArrayIterator<T>;
+    friend class ArrayIterator<T, Alloc>;
 
     // Create an ArrayIterator object of the correct type.
-    virtual CountedPtr<ArrayPositionIterator> makeIterator (uInt byDim) const;
-
-    // Needed to be a friend for Matrix<T>::reference()
-    friend class Matrix<T>;
-
+    std::unique_ptr<ArrayPositionIterator> makeIterator(size_t byDim) const override;
 
     // <group name=STL-iterator>
     // See the function begin() and end() for a detailed description
@@ -691,12 +701,12 @@ public:
     {
     public:
       // Create the begin const_iterator object for an Array.
-      explicit BaseIteratorSTL (const Array<T>&);
+      explicit BaseIteratorSTL (const Array<T, Alloc>&);
       // Create the end const_iterator object for an Array.
       // It also acts as the default constructor.
       explicit BaseIteratorSTL (const T* end = 0)
 	: itsPos(end), itsLineEnd(0), itsLineIncr(0), itsLineAxis(0),
-	  itsArray(0), itsContig(False) {}
+	  itsArray(0), itsContig(false) {}
 
       void nextElem()
       {
@@ -721,7 +731,7 @@ public:
       T* getPos()
         { return const_cast<T*>(itsPos); }
 
-      friend ostream& operator<< (ostream& os, const BaseIteratorSTL& iter)
+      friend std::ostream& operator<< (std::ostream& os, const BaseIteratorSTL& iter)
         { os << iter.itsPos; return os; }
 
     protected:
@@ -731,11 +741,11 @@ public:
       const T*  itsPos;
       const T*  itsLineEnd;
       size_t    itsLineIncr;
-      uInt      itsLineAxis;
+      size_t      itsLineAxis;
       IPosition itsCurPos;
       IPosition itsLastPos;
-      const Array<T>* itsArray; 
-      Bool      itsContig;
+      const Array<T, Alloc>* itsArray; 
+      bool      itsContig;
     };
 
     class IteratorSTL: public BaseIteratorSTL
@@ -751,7 +761,7 @@ public:
       // </group>
 
       // Create the begin iterator object for an Array.
-      explicit IteratorSTL (Array<T>& arr)
+      explicit IteratorSTL (Array<T, Alloc>& arr)
 	: BaseIteratorSTL (arr) {}
       // Create the end iterator object for an Array.
       // It also acts as the default constructor.
@@ -789,7 +799,7 @@ public:
       // </group>
 
       // Create the begin const_iterator object for an Array.
-      explicit ConstIteratorSTL (const Array<T>& arr)
+      explicit ConstIteratorSTL (const Array<T, Alloc>& arr)
 	: BaseIteratorSTL (arr) {}
       // Create the end const_iterator object for an Array.
       // It also acts as the default constructor.
@@ -829,9 +839,9 @@ public:
     // as shown in the example below. Furthermore it is very important to
     // use <src>++iter</src>, because <src>iter++</src> is 4 times slower.
     // <srcblock>
-    //  Array<Int> arr(shape);
-    //  Array<Int>::iterator iterend(arr.end());
-    //  for (Array<Int>::iterator iter=arr.begin(); iter!=iterend; ++iter) {
+    //  Array<int> arr(shape);
+    //  Array<int>::iterator iterend(arr.end());
+    //  for (Array<int>::iterator iter=arr.begin(); iter!=iterend; ++iter) {
     //    *iter += 1;
     //  }
     // </srcblock>
@@ -845,7 +855,17 @@ public:
     // <group name=iterator-typedefs>
     // STL-style typedefs.
     // <group>
+    
+    // Type of allocator used to allocate and deallocate space
+    typedef Alloc allocator_type;
+    // Element type
     typedef T                value_type;
+    // TODO This is how std containers define a reference type, but
+    // the name 'reference' is already taken by a method.
+    // typedef T&       reference;
+    typedef const T& const_reference;
+    typedef T* pointer;
+    typedef const T* const_pointer;
     typedef IteratorSTL      iterator;
     typedef ConstIteratorSTL const_iterator;
     typedef T*               contiter;
@@ -879,32 +899,87 @@ public:
 
 
 private:
-    Array(Allocator_private::AllocSpec<T> allocator);
-    Array(const IPosition &shape, ArrayInitPolicy initPolicy, Allocator_private::BulkAllocator<T> *allocator);
+    template<typename InputIterator>
+    Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator, std::true_type /*is_integral*/ );
+    
+    template<typename InputIterator>
+    Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator, std::false_type /*is_integral*/ );
+    
     // Makes a copy using the allocator.
-    Array<T> copy(ArrayInitPolicy policy, Allocator_private::BulkAllocator<T> *allocator) const;
-    // If the current allocator is NewDelAllocator<T>, BulkAllocator for DefaultAllocator<T> is returned,
-    // otherwise BulkAllocator for the current allocator is returned.
-    Allocator_private::BulkAllocator<T> *nonNewDelAllocator() const;
-protected:
-    static ArrayInitPolicy defaultArrayInitPolicy() {
-        return Block<T>::init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT;
+    Array<T, Alloc> copy(const Alloc& allocator) const;
+
+    // Implementation for assign for copyable types
+    Array<T, Alloc>& assign_conforming_implementation (const Array<T, Alloc>& other, std::true_type);
+    // Implementation for assign for non-copyable types: can not be assigned
+    Array<T, Alloc>& assign_conforming_implementation (const Array<T, Alloc>&, std::false_type)
+    {
+      throw ArrayError("Can not assign from non-copyable object");
     }
+    static void copyToContiguousStorage(T *dst, Array<T, Alloc> const& src, std::true_type);
+    static void copyToContiguousStorage(T*, Array<T, Alloc> const&, std::false_type)
+    {
+      throw ArrayError("Can not coy from non-copyable object");      
+    }
+protected:
+     // Source will be empty with given shape after this call.
+    Array(Array<T, Alloc>&& source, const IPosition& shapeForSource) noexcept;
+    
+    template<typename ST, typename SAlloc>
+    friend void swap(Array<ST, SAlloc>& left, Array<ST, SAlloc>& right);
+    
+    void swap(Array<T, Alloc>& other);
+
     // pre/post processing hook of takeStorage() for subclasses.
     virtual void preTakeStorage(const IPosition &) {}
+    
     virtual void postTakeStorage() {}
-    static void copyToContiguousStorage(T *dst, Array<T> const & src, ArrayInitPolicy policy);
+    
+    // This function is called when this array is about to be resized, before
+    // any work is done. Subclasses can throw an exception if the size doesn't
+    // match, e.g. if a Matrix is resized to have 3 dimensions.
+    // Before this function existed, assign-like functions had to be virtual.
+    // However, for non-copyable types, assign can't exist. This is fine for
+    // non-virtual methods (they just can't be called), but virtual methods
+    // cause the who class to fail to be instantiatable.
+    void checkBeforeResize(const IPosition &newShape)
+    {
+      if(fixedDimensionality() !=0 && newShape.size() != fixedDimensionality())
+        throw(ArrayNDimError(fixedDimensionality(), newShape.size(),
+          std::string("Invalid size given to ") + typeid(*this).name() +
+          ": should have dimensionality of " + std::to_string(fixedDimensionality())));
+    }
+
+    // Subclasses can return their dimensionality. The Array class will make sure
+    // that whenever it is resized, the dimensionality is checked.
+    // Array's constructors do not check the dimensionality, because the subclass
+    // hasn't been created yet at that point. Subclasses should therefore make
+    // sure to call the constructors appropriately.
+    // For classes that return 0, any resize will be allowed.
+    virtual size_t fixedDimensionality() const { return 0; }
+    
+    virtual void checkAssignableType(ArrayBase& arrayBase) const
+    {
+      const Array<T, Alloc>* pa = dynamic_cast<const Array<T, Alloc>*>(&arrayBase);
+      if (pa == nullptr) {
+        throw ArrayError("ArrayBase& has incorrect template type");
+      }
+    }
+    
+    static void copyToContiguousStorage(T *dst, Array<T, Alloc> const& src)
+    {
+      copyToContiguousStorage(dst, src, std::is_copy_assignable<T>());
+    }
 
     // Remove the degenerate axes from the Array object.
     // This is the implementation of the nonDegenerate functions.
     // It has a different name to be able to make it virtual without having
     // the "hide virtual function" message when compiling derived classes.
-    virtual void doNonDegenerate(const Array<T> &other,
+    virtual void doNonDegenerate(const Array<T, Alloc> &other,
                                  const IPosition &ignoreAxes);
 
 
     // Reference counted block that contains the storage.
-    CountedPtr<Block<T> > data_p;
+    std::shared_ptr<Storage<T, Alloc>> data_p;
 
     // This pointer is adjusted to point to the first element of the array.
     // It is not necessarily the same thing as data->storage() since
@@ -926,26 +1001,29 @@ protected:
                    begin_p + size_t(length_p(ndim()-1)) * steps_p(ndim()-1))); }
 };
 
+template<typename T, typename Alloc>
+void swap(Array<T, Alloc>& left, Array<T, Alloc>& right)
+{
+  left.swap(right);
+}
 
 //# Declare extern templates for often used types.
-  extern template class Array<Bool>;
-  extern template class Array<Char>;
-  extern template class Array<uChar>;
-  extern template class Array<Short>;
-  extern template class Array<uShort>;
-  extern template class Array<Int>;
-  extern template class Array<uInt>;
-  extern template class Array<Int64>;
-  extern template class Array<Float>;
-  extern template class Array<Double>;
-  extern template class Array<Complex>;
-  extern template class Array<DComplex>;
-  extern template class Array<String>;
+extern template class Array<bool, std::allocator<bool>>;
+extern template class Array<char, std::allocator<char>>;
+extern template class Array<unsigned char, std::allocator<unsigned char>>;
+extern template class Array<short, std::allocator<short>>;
+extern template class Array<unsigned short, std::allocator<unsigned short>>;
+extern template class Array<int, std::allocator<int>>;
+extern template class Array<long long, std::allocator<long long>>;
+extern template class Array<float, std::allocator<float>>;
+extern template class Array<double, std::allocator<double>>;
+extern template class Array<std::complex<float>, std::allocator<float>>;
+extern template class Array<std::complex<double>, std::allocator<double>>;
+extern template class Array<std::string, std::allocator<std::string>>;
 
 }//#End casa namespace
 
+#include "ArrayStr.h"
+#include "Array.tcc"
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/Array.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

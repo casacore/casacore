@@ -25,16 +25,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKLOGIARRFWD_H
-#define CASA_MASKLOGIARRFWD_H
+#ifndef CASA_MASKLOGIARRFWD_2_H
+#define CASA_MASKLOGIARRFWD_2_H
 
 //# There is no source file, so this pragma is not needed.
 #if 0
 #endif
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/LogiArrayFwd.h>
+#include "ArrayFwd.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -87,8 +85,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forwards
 
-template<class T> class Array;
-template<class T> class MaskedArray;
+template<typename T, typename ArrayAlloc=std::allocator<T>, typename MaskAlloc=std::allocator<LogicalArrayElem>> class MaskedArray;
 
 
 // Define MaskedLogicalArray. 

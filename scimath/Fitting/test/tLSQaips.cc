@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/VectorSTLIterator.h>

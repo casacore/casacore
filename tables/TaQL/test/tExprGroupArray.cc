@@ -40,7 +40,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayPartMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>

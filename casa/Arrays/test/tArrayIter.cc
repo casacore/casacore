@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        internet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -27,311 +27,326 @@
 
 //# Includes
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/ArrayIter.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Cube.h>
-#include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/Assert.h>
+#include "../Array.h"
+#include "../ArrayIter.h"
+#include "../ArrayMath.h"
+#include "../ArrayLogical.h"
+//#include "../ArrayIO.h"
+#include "../IPosition.h"
+#include "../Vector.h"
+#include "../Matrix.h"
+#include "../Cube.h"
 
-#include <casacore/casa/iostream.h>
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/namespace.h>
+using namespace casacore;
 
-int main()
+BOOST_AUTO_TEST_SUITE(array_iter1)
+
+BOOST_AUTO_TEST_CASE( arraypositer_zero_dimension )
 {
-  {   
-    cout << "\nBEGIN.  Testing ArrayPositionIterator.  0 dim. ......\n";
-    IPosition shape(2);
-    shape(0) = shape(1) = 5;
-    ArrayPositionIterator ai (shape, 0);
-    IPosition index (2);
-    Int iloop;
+  IPosition shape{5, 5};
+  ArrayPositionIterator ai (shape, 0);
+  IPosition index(2);
 
-    for ( iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
-        index = ai.pos();
-        cout << iloop << " [ " << index (0) << " " << index (1) << " ] \n";
-    }
-    cout << "END.  Testing ArrayPositionIterator.  0 dim. ......\n";
+  for (int iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
+    index = ai.pos();
+    BOOST_CHECK_EQUAL(index (0), iloop%5);
+    BOOST_CHECK_EQUAL(index (1), iloop/5);
   }
-
-  {   
-    cout << "\nBEGIN.  Testing ArrayPositionIterator.  1 dim. ......\n";
-    IPosition shape(2);
-    shape(0) = shape(1) = 5;
-    ArrayPositionIterator ai (shape, 1);
-    Array<Int> arr (shape);
-
-    IPosition index (2);
-    Int iloop;
-
-    for ( iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
-        index = ai.pos();
-        arr (index) = 4 * iloop;
-        cout << iloop << " [ " << index (0) << " " << index (1) << " ] "
-             << arr (index) << "\n";
-    }
-    ai.set (IPosition(1,4));
-    AlwaysAssertExit (ai.pos() == IPosition(2,0,4));
-    ai.set (IPosition(2,2,3));
-    AlwaysAssertExit (ai.pos() == IPosition(2,0,3));
-    for ( iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
-        cout << ai.pos() << endl;
-    }
-    cout << "END.  Testing ArrayPositionIterator.  1 dim. ......\n";
-
-    cout << "\nBEGIN.  Testing ArrayIterator.  1 dim. ......\n";
-    ArrayIterator<Int> arri (arr, 1);
-    IPosition arriindex (1, 0);
-    for ( iloop = 0; ! arri.pastEnd(); arri.next(), iloop++ ) {
-        cout << iloop << "  " << (arri.array ()) (arriindex) << "\n";
-    }
-    cout << "END.  Testing ArrayIterator.  1 dim. ......\n";
-  }
-
-  {   
-    cout << "\nBEGIN.  Testing double ArrayPositionIterator.  1 dim. ......\n";
-    IPosition shape(2);
-    shape(0) = shape(1) = 5;
-    ArrayPositionIterator ai (shape, 1);
-    Array<double> arr (shape);
-
-    IPosition index (2);
-    Int iloop;
-    for ( iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
-        index = ai.pos();
-        arr (index) = double (4 * iloop) + 0.5;
-        cout << iloop << " [ " << index (0) << " " << index (1) << " ] "
-             << arr (index) << "\n";
-    }
-    cout << "END.  Testing double ArrayPositionIterator.  1 dim. ......\n";
-
-    cout << "\nBEGIN.  Testing double ArrayIterator.  1 dim. ......\n";
-    ArrayIterator<double> arri (arr, 1);
-    IPosition arriindex (1, 0);
-    for ( iloop = 0; ! arri.pastEnd(); arri.next(), iloop++ ) {
-        cout << iloop << "  " << (arri.array ()) (arriindex) << "\n";
-    }
-    cout << "END.  Testing double ArrayIterator.  1 dim. ......\n";
-  }
-
-  {
-    cout << "\nBEGIN.  Testing int ArrayIterator.  5 dim. ......\n";
-    // Test that leading degenerate axes do not go away.
-    // Check if each chunk matches.
-    IPosition shape(5, 2,3,4,5,6);
-    Array<Int> ai(shape);
-    indgen(ai);
-    {
-      // Test a regular iterator.
-      ArrayIterator<Int> iter(ai, 2);
-      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(1)));
-      while (!iter.pastEnd()) {
-	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
-	AlwaysAssertExit(iter.array().data() == tmparr.data());
-	AlwaysAssertExit(allEQ (iter.array(), tmparr));
-	iter.next();
-      }
-    }
-    {
-      // Test that a cursor as large as the array works
-      ArrayIterator<Int> aiter(ai, 5);
-      AlwaysAssertExit(allEQ(aiter.array(), ai));
-      aiter.next();
-      AlwaysAssertExit(aiter.pastEnd());
-    }
-    {
-      // Test iterator with arbitrary axes.
-      ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3), False);
-      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(2)));
-      while (!iter.pastEnd()) {
-	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
-	AlwaysAssertExit(allEQ (iter.array(), tmparr));
-	iter.next();
-      }
-      iter.reset();
-      // Check if iteration is in correct order.
-      IPosition blc(5,0);
-      IPosition trc(shape-1);
-      for (Int ax3=0; ax3<shape(3); ++ax3) {
-	blc(3) = trc(3) = ax3;
-	for (Int ax1=0; ax1<shape(1); ++ax1) {
-	  blc(1) = trc(1) = ax1;
-	  for (Int ax4=0; ax4<shape(4); ++ax4) {
-	    blc(4) = trc(4) = ax4;
-	    AlwaysAssertExit(!iter.pastEnd());
-	    AlwaysAssertExit(blc==iter.pos()  &&  trc==iter.endPos());
-	    iter.next();
-	  }
-	}
-      }
-      AlwaysAssertExit(iter.pastEnd());
-    }
-    cout << "END.  Testing int ArrayIterator.  5 dim. ......\n";
-  }
-  {
-    cout << "\nBEGIN.  Testing int ArrayIterator part.  5 dim. ......\n";
-    // Test iterator with arbitrary axes on a part of an array.
-    // Test that leading degenerate axes do not go away.
-    // Check if each chunk matches.
-    IPosition shape1(5, 10,20,16,20,15);
-    Array<Int> ai1(shape1);
-    indgen(ai1);
-    // Take a chunk from it.
-    Array<Int> ai(ai1(IPosition(5,1,2,1,4,3), IPosition(5,7,12,13,16,13),
-		      IPosition(5,6,5,4,3,2)));
-    IPosition shape(5, 2,3,4,5,6);
-    AlwaysAssertExit (ai.shape() == shape);
-    {
-      // Test a regular iterator.
-      ArrayIterator<Int> iter(ai, 2);
-      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(1)));
-      while (!iter.pastEnd()) {
-	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
-	AlwaysAssertExit(iter.array().data() == tmparr.data());
-	AlwaysAssertExit(allEQ (iter.array(), tmparr));
-	iter.next();
-      }
-    }
-    {
-      // Test that a cursor as large as the array works
-      ArrayIterator<Int> aiter(ai, 5);
-      AlwaysAssertExit(allEQ(aiter.array(), ai));
-      aiter.next();
-      AlwaysAssertExit(aiter.pastEnd());
-    }
-    {
-      // Test iterator with arbitrary axes.
-      ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3), False);
-      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(2)));
-      while (!iter.pastEnd()) {
-	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
-	AlwaysAssertExit(allEQ (iter.array(), tmparr));
-	iter.next();
-      }
-      iter.reset();
-      // Check if iteration is in correct order.
-      IPosition blc(5,0);
-      IPosition trc(shape-1);
-      for (Int ax3=0; ax3<shape(3); ++ax3) {
-	blc(3) = trc(3) = ax3;
-	for (Int ax1=0; ax1<shape(1); ++ax1) {
-	  blc(1) = trc(1) = ax1;
-	  for (Int ax4=0; ax4<shape(4); ++ax4) {
-	    blc(4) = trc(4) = ax4;
-	    AlwaysAssertExit(!iter.pastEnd());
-	    AlwaysAssertExit(blc==iter.pos()  &&  trc==iter.endPos());
-	    iter.next();
-	  }
-	}
-      }
-      AlwaysAssertExit(iter.pastEnd());
-      // Check if set works correctly.
-      iter.set (IPosition(3,3,1,2));
-      AlwaysAssertExit(iter.pos() == IPosition(5,0,1,0,2,3));
-      Array<Int> tmparr1 (ai(iter.pos(), iter.endPos()).nonDegenerate());
-      AlwaysAssertExit(allEQ (iter.array(), tmparr1));
-      iter.next();
-      AlwaysAssertExit(iter.pos() == IPosition(5,0,1,0,2,4));
-      Array<Int> tmparr2 (ai(iter.pos(), iter.endPos()).nonDegenerate());
-      AlwaysAssertExit(allEQ (iter.array(), tmparr2));
-    }
-    {
-      ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3));
-      AlwaysAssertExit(iter.array().shape() == IPosition(3,shape(1),shape(3),
-							 shape(4)));
-      while (!iter.pastEnd()) {
-	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
-	AlwaysAssertExit(allEQ (iter.array(), tmparr));
-	iter.next();
-      }
-      iter.reset();
-      // Check if iteration is in correct order.
-      IPosition blc(5,0);
-      IPosition trc(shape-1);
-      for (Int ax2=0; ax2<shape(2); ++ax2) {
-	blc(2) = trc(2) = ax2;
-	for (Int ax0=0; ax0<shape(0); ++ax0) {
-	  blc(0) = trc(0) = ax0;
-	  AlwaysAssertExit(!iter.pastEnd());
-	  AlwaysAssertExit(blc==iter.pos()  &&  trc==iter.endPos());
-	  iter.next();
-	}
-      }
-      AlwaysAssertExit(iter.pastEnd());
-    }
-    cout << "END.  Testing int ArrayIterator part.  5 dim. ......\n";
-  }
-  // Test iterating through an empty array.
-  {
-    Vector<Int> vec(0);
-    {
-      Array<Int> arr(IPosition(2,0,5));
-      ArrayIterator<Int> iter(arr, 1);
-      int nstep=0;
-      while (!iter.pastEnd()) {
-	Array<Int>& darr = iter.array();
-	darr = vec;
-	iter.next();
-	nstep++;
-      }
-      AlwaysAssertExit (nstep==5);
-    }
-    {
-      Array<Int> arr(IPosition(2,5,0));
-      ArrayIterator<Int> iter(arr, 1);
-      int nstep=0;
-      while (!iter.pastEnd()) {
-	Array<Int>& darr = iter.array();
-	darr = vec;
-	iter.next();
-	nstep++;
-      }
-      AlwaysAssertExit (nstep==0);
-    }
-    {
-      Array<Int> arr(IPosition(1,2));
-      ArrayIterator<Int> iter(arr, 1);
-      int nstep=0;
-      while (!iter.pastEnd()) {
-	Array<Int>& darr = iter.array();
-        AlwaysAssertExit (darr.shape() == IPosition(1,2));
-	iter.next();
-	nstep++;
-      }
-      AlwaysAssertExit (nstep==1);
-    }
-    {
-      Array<Int> arr(IPosition(1,0));
-      ArrayIterator<Int> iter(arr, 1);
-      int nstep=0;
-      while (!iter.pastEnd()) {
-	iter.next();
-	nstep++;
-      }
-      AlwaysAssertExit (nstep==0);
-    }
-  }
-  {
-    // Test the virtual iteration function.
-    cout << "\nBEGIN.  Testing makeIterator.  1 dim. ......\n";
-    Array<Int> arr(IPosition(2,4,5));
-    indgen (arr);
-    CountedPtr<ArrayPositionIterator> iter = arr.makeIterator(1);
-    while (!iter->pastEnd()) {
-      ArrayBase& subarrb = iter->getArray();
-      Array<Int>& subarr = dynamic_cast<Array<Int>&>(subarrb);
-      cout << subarr << endl;
-      iter->next();
-    }
-    cout << "END.  Testing makeIterator.  1 dim. ......\n";
-  }
-
-  return 0;
 }
+
+BOOST_AUTO_TEST_CASE( arraypositer_one_dimension )
+{
+  IPosition shape{5, 5};
+  Array<int> arr (shape);
+  ArrayPositionIterator ai (shape, 1);
+
+  IPosition index (2);
+
+  for (int iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
+      index = ai.pos();
+      arr (index) = 4 * iloop;
+      BOOST_CHECK_EQUAL(index(0), 0);
+      BOOST_CHECK_EQUAL(index(1), iloop);
+      BOOST_CHECK_EQUAL(arr (index), iloop*4);
+  }
+  ai.set (IPosition(1,4));
+  BOOST_CHECK_EQUAL (ai.pos(), IPosition(2,0,4));
+  ai.set (IPosition(2,2,3));
+  BOOST_CHECK_EQUAL (ai.pos(), IPosition(2,0,3));
+  
+  BOOST_CHECK(!ai.pastEnd());
+  BOOST_CHECK_EQUAL(ai.pos(), IPosition(2,0,3));
+  ai.next();
+  BOOST_CHECK(!ai.pastEnd());
+  BOOST_CHECK_EQUAL(ai.pos(), IPosition(2,0,4));
+  ai.next();
+  BOOST_CHECK(ai.pastEnd());
+}
+
+BOOST_AUTO_TEST_CASE( arrayiter_one_dimension )
+{
+  IPosition shape{5, 5};
+  Array<int> arr (shape);
+  ArrayIterator<int> arri (arr, 1);
+  IPosition arriindex (1, 0);
+  
+  ArrayPositionIterator ai (shape, 1);
+  for (int iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ )
+    arr (ai.pos()) = 4 * iloop;
+      
+  for (int iloop = 0; ! arri.pastEnd(); arri.next(), iloop++ ) {
+    BOOST_CHECK_EQUAL((arri.array ()) (arriindex), iloop*4);
+  }
+}
+
+BOOST_AUTO_TEST_CASE( double_arraypositer )
+{
+  IPosition shape{5, 5};
+  ArrayPositionIterator ai (shape, 1);
+  Array<double> arr (shape);
+
+  IPosition index (2);
+  for (int  iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
+    index = ai.pos();
+    arr (index) = double (4 * iloop) + 0.5;
+    BOOST_CHECK_EQUAL(index (0), 0);
+    BOOST_CHECK_EQUAL(index (1), iloop);
+    BOOST_CHECK_CLOSE_FRACTION(arr (index), double (4 * iloop) + 0.5, 1e-6);
+  }
+}
+
+BOOST_AUTO_TEST_CASE( double_arrayiter )
+{
+  IPosition shape{5, 5};
+  ArrayPositionIterator ai (shape, 1);
+  Array<double> arr (shape);
+
+  for (int  iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ )
+    arr (ai.pos()) = double (4 * iloop) + 0.5;
+    
+  ArrayIterator<double> arri (arr, 1);
+  IPosition arriindex (1, 0);
+  for (int iloop = 0; ! arri.pastEnd(); arri.next(), iloop++ )
+  {
+    BOOST_CHECK_CLOSE_FRACTION((arri.array ()) (arriindex), double (4 * iloop) + 0.5, 1e-6);
+  }
+}
+
+BOOST_AUTO_TEST_CASE( int_arrayiter )
+{
+  // Test that leading degenerate axes do not go away.
+  // Check if each chunk matches.
+  IPosition shape{2,3,4,5,6};
+  Array<int> ai(shape);
+  indgen(ai);
+
+  // Test a regular iterator.
+  ArrayIterator<int> iter(ai, 2);
+  BOOST_CHECK(iter.array().shape() == IPosition(2,shape(0),shape(1)));
+  while (!iter.pastEnd()) {
+    Array<int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+    BOOST_CHECK(iter.array().data() == tmparr.data());
+    BOOST_CHECK(allEQ (iter.array(), tmparr));
+    iter.next();
+  }
+  {
+      // Test that a cursor as large as the array works
+      ArrayIterator<int> aiter(ai, 5);
+      BOOST_CHECK(allEQ(aiter.array(), ai));
+      aiter.next();
+      BOOST_CHECK(aiter.pastEnd());
+    }
+    {
+      // Test iterator with arbitrary axes.
+      ReadOnlyArrayIterator<int> iter(ai, IPosition(3,4,1,3), false);
+      BOOST_CHECK(iter.array().shape() == IPosition(2,shape(0),shape(2)));
+      while (!iter.pastEnd()) {
+	Array<int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+	BOOST_CHECK(allEQ (iter.array(), tmparr));
+	iter.next();
+      }
+      iter.reset();
+      // Check if iteration is in correct order.
+      IPosition blc(5,0);
+      IPosition trc(shape-1);
+      for (int ax3=0; ax3<shape(3); ++ax3) {
+	blc(3) = trc(3) = ax3;
+	for (int ax1=0; ax1<shape(1); ++ax1) {
+	  blc(1) = trc(1) = ax1;
+	  for (int ax4=0; ax4<shape(4); ++ax4) {
+	    blc(4) = trc(4) = ax4;
+	    BOOST_CHECK(!iter.pastEnd());
+	    BOOST_CHECK(blc==iter.pos()  &&  trc==iter.endPos());
+	    iter.next();
+	  }
+	}
+      }
+      BOOST_CHECK(iter.pastEnd());
+    }
+}
+
+BOOST_AUTO_TEST_CASE( int_arrayiter_part )
+{
+  // Test iterator with arbitrary axes on a part of an array.
+  // Test that leading degenerate axes do not go away.
+  // Check if each chunk matches.
+  IPosition shape1(5, 10,20,16,20,15);
+  Array<int> ai1(shape1);
+  indgen(ai1);
+  // Take a chunk from it.
+  Array<int> ai(ai1(IPosition(5,1,2,1,4,3), IPosition(5,7,12,13,16,13),
+                    IPosition(5,6,5,4,3,2)));
+  IPosition shape(5, 2,3,4,5,6);
+  BOOST_CHECK (ai.shape() == shape);
+  {
+    // Test a regular iterator.
+    ArrayIterator<int> iter(ai, 2);
+    BOOST_CHECK(iter.array().shape() == IPosition(2,shape(0),shape(1)));
+    while (!iter.pastEnd()) {
+      Array<int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+      BOOST_CHECK(iter.array().data() == tmparr.data());
+      BOOST_CHECK(allEQ (iter.array(), tmparr));
+      iter.next();
+    }
+  }
+  {
+    // Test that a cursor as large as the array works
+    ArrayIterator<int> aiter(ai, 5);
+    BOOST_CHECK(allEQ(aiter.array(), ai));
+    aiter.next();
+    BOOST_CHECK(aiter.pastEnd());
+  }
+  {
+    // Test iterator with arbitrary axes.
+    ReadOnlyArrayIterator<int> iter(ai, IPosition(3,4,1,3), false);
+    BOOST_CHECK(iter.array().shape() == IPosition(2,shape(0),shape(2)));
+    while (!iter.pastEnd()) {
+      Array<int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+      BOOST_CHECK(allEQ (iter.array(), tmparr));
+      iter.next();
+    }
+    iter.reset();
+    // Check if iteration is in correct order.
+    IPosition blc(5,0);
+    IPosition trc(shape-1);
+    for (int ax3=0; ax3<shape(3); ++ax3) {
+      blc(3) = trc(3) = ax3;
+      for (int ax1=0; ax1<shape(1); ++ax1) {
+        blc(1) = trc(1) = ax1;
+        for (int ax4=0; ax4<shape(4); ++ax4) {
+          blc(4) = trc(4) = ax4;
+          BOOST_CHECK(!iter.pastEnd());
+          BOOST_CHECK(blc==iter.pos()  &&  trc==iter.endPos());
+          iter.next();
+        }
+      }
+    }
+    BOOST_CHECK(iter.pastEnd());
+    // Check if set works correctly.
+    iter.set (IPosition(3,3,1,2));
+    BOOST_CHECK(iter.pos() == IPosition(5,0,1,0,2,3));
+    Array<int> tmparr1 (ai(iter.pos(), iter.endPos()).nonDegenerate());
+    BOOST_CHECK(allEQ (iter.array(), tmparr1));
+    iter.next();
+    BOOST_CHECK(iter.pos() == IPosition(5,0,1,0,2,4));
+    Array<int> tmparr2 (ai(iter.pos(), iter.endPos()).nonDegenerate());
+    BOOST_CHECK(allEQ (iter.array(), tmparr2));
+  }
+  {
+    ReadOnlyArrayIterator<int> iter(ai, IPosition(3,4,1,3));
+    BOOST_CHECK(iter.array().shape() == IPosition(3,shape(1),shape(3),
+                                                  shape(4)));
+    while (!iter.pastEnd()) {
+      Array<int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+      BOOST_CHECK(allEQ (iter.array(), tmparr));
+      iter.next();
+    }
+    iter.reset();
+    // Check if iteration is in correct order.
+    IPosition blc(5,0);
+    IPosition trc(shape-1);
+    for (int ax2=0; ax2<shape(2); ++ax2) {
+      blc(2) = trc(2) = ax2;
+      for (int ax0=0; ax0<shape(0); ++ax0) {
+        blc(0) = trc(0) = ax0;
+        BOOST_CHECK(!iter.pastEnd());
+        BOOST_CHECK(blc==iter.pos()  &&  trc==iter.endPos());
+        iter.next();
+      }
+    }
+    BOOST_CHECK(iter.pastEnd());
+  }
+}
+
+BOOST_AUTO_TEST_CASE( iterate_empty_array )
+{
+  // Test iterating through an empty array.
+  Vector<int> vec(0);
+  {
+    Array<int> arr(IPosition(2,0,5));
+    ArrayIterator<int> iter(arr, 1);
+    int nstep=0;
+    while (!iter.pastEnd()) {
+      Array<int>& darr = iter.array();
+      darr.assign_conforming( vec );
+      iter.next();
+      nstep++;
+    }
+    BOOST_CHECK (nstep==5);
+  }
+  {
+    Array<int> arr(IPosition(2,5,0));
+    ArrayIterator<int> iter(arr, 1);
+    int nstep=0;
+    while (!iter.pastEnd()) {
+      Array<int>& darr = iter.array();
+      darr.assign_conforming( vec );
+      iter.next();
+      nstep++;
+    }
+    BOOST_CHECK (nstep==0);
+  }
+  {
+    Array<int> arr(IPosition(1,2));
+    ArrayIterator<int> iter(arr, 1);
+    int nstep=0;
+    while (!iter.pastEnd()) {
+      Array<int>& darr = iter.array();
+      BOOST_CHECK (darr.shape() == IPosition(1,2));
+      iter.next();
+      nstep++;
+    }
+    BOOST_CHECK (nstep==1);
+  }
+  {
+    Array<int> arr(IPosition(1,0));
+    ArrayIterator<int> iter(arr, 1);
+    int nstep=0;
+    while (!iter.pastEnd()) {
+      iter.next();
+      nstep++;
+    }
+    BOOST_CHECK (nstep==0);
+  }
+}
+
+BOOST_AUTO_TEST_CASE( virtual_iteration_function )
+{
+  Array<int> arr(IPosition(2,4,5));
+  indgen (arr);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator(1);
+  
+  int count = 0;
+  while (!iter->pastEnd()) {
+    Array<int>& subarr = dynamic_cast<Array<int>&>(iter->getArray());
+    int ref[4] = {count*4, count*4+1, count*4+2, count*4+3};
+    BOOST_CHECK_EQUAL_COLLECTIONS(subarr.begin(), subarr.end(), std::begin(ref), std::end(ref));
+    iter->next();
+    ++count;
+  }
+  BOOST_CHECK_EQUAL(count, 5);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

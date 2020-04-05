@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/IO/FileLocker.h>
 #include <casacore/casa/OS/Mutex.h>
 #include <map>
@@ -39,8 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class PlainTable;
 class TableLock;
-template<class T> class Vector;
-
 
 // <summary>
 // Cache of open tables

@@ -270,7 +270,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     IPosition st(arr.ndim(), 0);
     IPosition sz(arr.shape());
     uInt nlast = arr.ndim() - 1;
-    CountedPtr<ArrayBase> part;
+    std::unique_ptr<ArrayBase> part;
     for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
       uInt nr = refColPtr_p[i]->nrow();
       sz[nlast] = nr;
@@ -295,7 +295,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The row number mapping.
     const ConcatRows& ccRows = refTabPtr_p->rows();
     // The holder for the array part to handle.
-    CountedPtr<ArrayBase> part;
+    std::unique_ptr<ArrayBase> part;
     // The RefRows vector for the rownrs to be handled in an underlying table.
     // Make it as large as needed to avoid resizes.
     Vector<uInt> tabRowNrs(rows.nelements());

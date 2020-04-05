@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ColumnCache.h>
 #include <casacore/tables/DataMan/TSMOption.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
@@ -54,7 +55,6 @@ class ArrayBase;
 class IPosition;
 class Slicer;
 class RefRows;
-template<class T> class Array;
 class AipsIO;
 
 
@@ -1080,13 +1080,13 @@ private:
     // Get a slice from the array in the given row.
     // It reads the full array in the possibly reshaped ArrayBase object.
     void getSliceArr (uInt row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
+                      ArrayBase& fullArr,
                       ArrayBase& arr);
     // Put a slice into the array in the given row.
     // It reads and writes the full array in the possibly reshaped ArrayBase
     // object.
     void putSliceArr (uInt row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
+                      ArrayBase& fullArr,
                       const ArrayBase& arr);
     // </group>
 };

@@ -29,7 +29,7 @@
 #include <casacore/msfits/MSFits/MSFitsIDI.h>
 #include <casacore/msfits/MSFits/FitsIDItoMS.h>
 #include <casacore/fits/FITS/fitsio.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/OS/File.h>

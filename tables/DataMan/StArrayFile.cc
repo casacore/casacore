@@ -420,7 +420,7 @@ uInt StManArrayFile::putRes (const IPosition& shape, Int64& offset,
     if (version_p > 0) {
 	n += put (uInt(1));
     }
-    n += put (shape.nelements());
+    n += put (uInt(shape.nelements()));
     for (uInt i=0; i<shape.nelements(); i++) {
       n += put (Int(shape(i)));
     }

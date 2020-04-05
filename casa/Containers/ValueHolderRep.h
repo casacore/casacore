@@ -32,6 +32,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <iosfwd>
 
@@ -39,7 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
-template<class T> class Array;
 class Record;
 class RecordFieldId;
 

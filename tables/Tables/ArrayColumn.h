@@ -39,7 +39,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RefRows;
-template<class T> class Array;
 template<class T> class BaseSlicesFunctor;
 class IPosition;
 class Slice;

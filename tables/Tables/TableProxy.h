@@ -45,7 +45,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableLock;
   class ColumnDesc;
   class TableExprNode;
-  template<class T> class Vector;
   class Slicer;
 
 

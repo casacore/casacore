@@ -25,13 +25,11 @@
 //#
 //# $Id$
 
-#ifndef CASA_MATRIXITER_H
-#define CASA_MATRIXITER_H
+#ifndef CASA_MATRIXITER_2_H
+#define CASA_MATRIXITER_2_H
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/ArrayIter.h>
-#include <casacore/casa/Arrays/Matrix.h>
+#include "ArrayIter.h"
+#include "Matrix.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -55,15 +53,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // In this example we want to make a "moment" map of a cube, i.e. collapse
 // the "Z" axis by averaging it.
 // <srcblock>
-// Cube<Float> cube;
+// Cube<float> cube;
 // MatrixIterator planeIter(cube);
-// Matrix<Float> average(planeIter.matrix().copy()); // init with first plane
+// Matrix<float> average(planeIter.matrix().copy()); // init with first plane
 // planeIter.next(); // advance the iterator
 // while (! planeIter.pastEnd()) {
 //     average += planeIter.matrix(); // Sum the next plane
 //     planeIter.next();
 // }
-// average /= Float(cube.shape()(2));  // divide by the number of planes
+// average /= float(cube.shape()(2));  // divide by the number of planes
 // </srcblock>
 
 template<class T> class MatrixIterator : public ArrayIterator<T>
@@ -75,7 +73,7 @@ public:
 
     // Iterate by matrices through array "a".
     // The given axes form the cursor axes.
-    MatrixIterator(Array<T> &a, uInt cursorAxis1, uInt cursorAxis2);
+    MatrixIterator(Array<T> &a, size_t cursorAxis1, size_t cursorAxis2);
 
     // Return the matrix at the current position.
     Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap_p);}
@@ -107,7 +105,7 @@ public:
       mi(const_cast<Array<T>&>(a)) {}
 
     ReadOnlyMatrixIterator(const Array<T> &a,
-			   uInt cursorAxis1, uInt cursorAxis2)
+			   size_t cursorAxis1, size_t cursorAxis2)
       : mi(const_cast<Array<T>&>(a), cursorAxis1, cursorAxis2) {}
 
     void next()   {mi.next();}
@@ -117,11 +115,11 @@ public:
     const Array<T> &array() {return mi.array();}
     const Matrix<T> &matrix() {return mi.matrix();}
 
-    Bool atStart() const {return mi.atStart();}
-    Bool pastEnd() const {return mi.pastEnd();}
+    bool atStart() const {return mi.atStart();}
+    bool pastEnd() const {return mi.pastEnd();}
     const IPosition &pos() const {return mi.pos();}
     IPosition endPos() const {return mi.endPos();}
-    uInt ndim() const {return mi.ndim();}
+    size_t ndim() const {return mi.ndim();}
     // </group>
 private:
     // Not implemented.
@@ -135,7 +133,6 @@ private:
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/MatrixIter.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "MatrixIter.tcc"
+
 #endif

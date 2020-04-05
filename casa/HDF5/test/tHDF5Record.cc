@@ -34,6 +34,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/vector.h>
 
 using namespace casacore;
 

@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures.h>
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/casa/Quanta/MVPosition.h>

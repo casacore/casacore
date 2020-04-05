@@ -31,6 +31,7 @@
 #include <casacore/casa/Json/JsonError.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 using namespace std;
 

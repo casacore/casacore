@@ -31,13 +31,11 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations
-template <class T> class Array;
 
 //# Typedefs
 

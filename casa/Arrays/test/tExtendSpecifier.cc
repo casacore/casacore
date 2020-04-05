@@ -26,125 +26,125 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/ExtendSpecifier.h>
-#include <casacore/casa/Arrays/Slicer.h>
-#include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/iostream.h>
+#include "../ExtendSpecifier.h"
+#include "../Slicer.h"
 
-#include <casacore/casa/namespace.h>
-void doIt()
+#include <boost/test/unit_test.hpp>
+
+#include <stdexcept>
+
+using namespace casacore;
+
+BOOST_AUTO_TEST_SUITE(extend_specifier)
+
+BOOST_AUTO_TEST_CASE( construct1 )
 {
-  {
-    IPosition oldShape(4,10,1,3,1);
-    IPosition newShape(5,10,1,5,3,8);
-    ExtendSpecifier spec (oldShape, newShape, IPosition(1,2), IPosition(1,4));
-    cout << "oldShape    " << spec.oldShape() << endl;
-    cout << "newShape    " << spec.newShape() << endl;
-    cout << "newAxes     " << spec.newAxes() << endl;
-    cout << "stretchAxes " << spec.stretchAxes() << endl;
-    cout << "extendAxes  " << spec.extendAxes() << endl;
-    cout << "oldOldAxes  " << spec.oldOldAxes() << endl;
-    cout << "oldNewAxes  " << spec.oldNewAxes() << endl;
+  IPosition oldShape(4,10,1,3,1);
+  IPosition newShape(5,10,1,5,3,8);
+  ExtendSpecifier spec (oldShape, newShape, IPosition(1,2), IPosition(1,4));
 
-    IPosition sh(4,3,4,5,6);
-    cout << sh << " -> " << spec.convertNew(sh) << endl;
+  BOOST_CHECK_EQUAL( spec.oldShape(), IPosition(4, 10, 1, 3, 1) );
+  BOOST_CHECK_EQUAL( spec.newShape(), IPosition(5, 10, 1, 5, 3, 8) );
+  BOOST_CHECK_EQUAL( spec.newAxes(), IPosition(1, 2) );
+  BOOST_CHECK_EQUAL( spec.stretchAxes(), IPosition(1, 4) );
+  BOOST_CHECK_EQUAL( spec.extendAxes(), IPosition(2, 2, 4) );
+  BOOST_CHECK_EQUAL( spec.oldOldAxes(), IPosition(3, 0, 1, 2) );
+  BOOST_CHECK_EQUAL( spec.oldNewAxes(), IPosition(3, 0, 1, 3) );
 
-    Slicer sl(IPosition(5,0,1,2,3,4), IPosition(5,1,2,3,4,5));
-    cout << "Slicer " << sl.start() << ' ' << sl.length() << ' '
-	 << sl.stride() << endl;
-    IPosition shp;
-    Slicer sln = spec.convert (shp, sl);
-    cout << "    -> " << sln.start() << ' ' << sln.length() << ' '
-	 << sln.stride() << "  shp: " << shp << endl;
-  }
-  {
-    IPosition oldShape(4,10,1,1,3);
-    IPosition newShape(5,10,1,5,3,8);
-    ExtendSpecifier spec (oldShape, newShape, IPosition(1,4), IPosition(1,2));
-    cout << "oldShape    " << spec.oldShape() << endl;
-    cout << "newShape    " << spec.newShape() << endl;
-    cout << "newAxes     " << spec.newAxes() << endl;
-    cout << "stretchAxes " << spec.stretchAxes() << endl;
-    cout << "extendAxes  " << spec.extendAxes() << endl;
-    cout << "oldOldAxes  " << spec.oldOldAxes() << endl;
-    cout << "oldNewAxes  " << spec.oldNewAxes() << endl;
+  IPosition sh(4,3,4,5,6);
+  IPosition newsh = spec.convertNew(sh);
+  BOOST_CHECK_EQUAL( newsh, IPosition(5, 3, 4, 1, 5, 1) );
+  
+  Slicer sl(IPosition(5,0,1,2,3,4), IPosition(5,1,2,3,4,5) );
+  BOOST_CHECK_EQUAL( sl.start(), IPosition(5, 0, 1, 2, 3, 4) );
+  BOOST_CHECK_EQUAL( sl.length(), IPosition(5, 1, 2, 3, 4, 5) );
+  BOOST_CHECK_EQUAL( sl.stride(), IPosition(5, 1, 1, 1, 1, 1) );
 
-    IPosition sh(4,3,4,5,6);
-    cout << sh << " -> " << spec.convertNew(sh) << endl;
-
-    Slicer sl(IPosition(5,0,1,2,3,4), IPosition(5,1,2,3,4,5));
-    cout << "Slicer " << sl.start() << ' ' << sl.length() << ' '
-	 << sl.stride() << endl;
-    IPosition shp;
-    Slicer sln = spec.convert (shp, sl);
-    cout << "    -> " << sln.start() << ' ' << sln.length() << ' '
-	 << sln.stride() << "  shp: " << shp << endl;
-  }
-  // Do some erroneous constructions.
-  try {
-    ExtendSpecifier spec (IPosition(1,1), IPosition(1,1),
-			  IPosition(), IPosition());
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // new nor stretch axes
-  }
-  try {
-    ExtendSpecifier spec (IPosition(1,1), IPosition(1,1),
-			  IPosition(), IPosition(1,0));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // no axes remaining
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,2,1), IPosition(2,1,1),
-			  IPosition(), IPosition(1,0));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // length stretch axis > 1
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,3),
-			  IPosition(), IPosition(1,0));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // lengths old axis mismatch
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
-			  IPosition(), IPosition(2,0,0));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // axes multiply given
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
-			  IPosition(1,0), IPosition(1,0));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // axes multiply given
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
-			  IPosition(1,0), IPosition());
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // new shape 1 element too short
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
-			  IPosition(), IPosition(1,-1));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // invalid axis
-  }
-  try {
-    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
-			  IPosition(), IPosition(1,2));
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;     // invalid axis
-  }
+  IPosition shp;
+  Slicer sln = spec.convert (shp, sl);
+  BOOST_CHECK_EQUAL( sln.start(), IPosition(4, 0, 1, 3, 0));
+  BOOST_CHECK_EQUAL( sln.length(), IPosition(4, 1, 2, 4, 1));
+  BOOST_CHECK_EQUAL( sln.stride(), IPosition(4, 1, 1, 1, 1));
+  BOOST_CHECK_EQUAL( shp, IPosition(5, 1, 2, 1, 4, 1));
 }
 
-
-int main()
+BOOST_AUTO_TEST_CASE( construct2 )
 {
-  try {
-    doIt();
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
-    return 1;
-  }
-  return 0;
+  IPosition oldShape(4,10,1,1,3);
+  IPosition newShape(5,10,1,5,3,8);
+  ExtendSpecifier spec (oldShape, newShape, IPosition(1,4), IPosition(1,2));
+  
+  BOOST_CHECK_EQUAL( spec.oldShape(), IPosition(4, 10, 1, 1, 3) );
+  BOOST_CHECK_EQUAL( spec.newShape(), IPosition(5, 10, 1, 5, 3, 8) );
+  BOOST_CHECK_EQUAL( spec.newAxes(), IPosition(1, 4) );
+  BOOST_CHECK_EQUAL( spec.stretchAxes(), IPosition(1, 2) );
+  BOOST_CHECK_EQUAL( spec.extendAxes(), IPosition(2, 2, 4) );
+  BOOST_CHECK_EQUAL( spec.oldOldAxes(), IPosition(3, 0, 1, 3) );
+  BOOST_CHECK_EQUAL( spec.oldNewAxes(), IPosition(3, 0, 1, 3) );
+
+  IPosition sh(4,3,4,5,6);
+  IPosition newsh = spec.convertNew(sh);
+  BOOST_CHECK_EQUAL( newsh, IPosition(5, 3, 4, 1, 6, 1) );
+
+  Slicer sl(IPosition(5,0,1,2,3,4), IPosition(5,1,2,3,4,5));
+  BOOST_CHECK_EQUAL( sl.start(), IPosition(5, 0, 1, 2, 3, 4) );
+  BOOST_CHECK_EQUAL( sl.length(), IPosition(5, 1, 2, 3, 4, 5) );
+  BOOST_CHECK_EQUAL( sl.stride(), IPosition(5, 1, 1, 1, 1, 1) );
+  
+  IPosition shp;
+  Slicer sln = spec.convert (shp, sl);
+  BOOST_CHECK_EQUAL( sln.start(), IPosition(4, 0, 1, 0, 3));
+  BOOST_CHECK_EQUAL( sln.length(), IPosition(4, 1, 2, 1, 4));
+  BOOST_CHECK_EQUAL( sln.stride(), IPosition(4, 1, 1, 1, 1));
+  BOOST_CHECK_EQUAL( shp, IPosition(5, 1, 2, 1, 4, 1));
 }
+
+BOOST_AUTO_TEST_CASE(erroneous_constructions)
+{
+  BOOST_CHECK_THROW(
+    ExtendSpecifier(IPosition(1,1), IPosition(1,1), IPosition(), IPosition()),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier(IPosition(1,1), IPosition(1,1),
+			  IPosition(), IPosition(1,0)),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier(IPosition(2,2,1), IPosition(2,1,1),
+			  IPosition(), IPosition(1,0)),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier(IPosition(2,1,2), IPosition(2,2,3),
+			  IPosition(), IPosition(1,0)),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier(IPosition(2,1,2), IPosition(2,2,2),
+			  IPosition(), IPosition(2,0,0)),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
+			  IPosition(1,0), IPosition(1,0)),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
+			  IPosition(1,0), IPosition()),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
+			  IPosition(), IPosition(1,-1)),
+    std::runtime_error
+  );
+  BOOST_CHECK_THROW(
+    ExtendSpecifier spec (IPosition(2,1,2), IPosition(2,2,2),
+			  IPosition(), IPosition(1,2)),
+    std::runtime_error
+  );
+}
+
+BOOST_AUTO_TEST_SUITE_END()

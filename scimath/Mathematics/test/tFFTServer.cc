@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/Complex.h>

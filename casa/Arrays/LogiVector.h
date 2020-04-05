@@ -25,17 +25,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_LOGIVECTOR_H
-#define CASA_LOGIVECTOR_H
+#ifndef CASA_LOGIVECTOR_2_H
+#define CASA_LOGIVECTOR_2_H
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/LogiArray.h>
-#include <casacore/casa/Arrays/Vector.h>
-
+#include "LogiArray.h"
+#include "Vector.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+ 
 // <summary>
 //    Logical valued Vectors.
 // </summary>
@@ -76,7 +73,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Define LogicalVector.
 //
 typedef Vector<LogicalArrayElem> LogicalVector;
-
 
 // </group>
 

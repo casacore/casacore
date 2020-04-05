@@ -25,355 +25,177 @@
 //#
 //# $Id$
 
-//# If AIPS_DEBUG is not set, the Assert's won't be called.
-#if !defined(AIPS_DEBUG)
-#define AIPS_DEBUG
-#endif
+#include "../IPosition.h"
+#include "../Array.h"
+#include "../ArrayMath.h"
+#include "../ArrayLogical.h"
+//#include "../ArrayIO.h"
+#include "../Vector.h"
+#include "../Matrix.h"
+#include "../Cube.h"
+#include "../ArrayError.h"
+#include "../MaskedArray.h"
+#include "../MaskArrMath.h"
 
-//# For extra debugging
-#if !defined(AIPS_ARRAY_INDEX_CHECK)
-#define AIPS_ARRAY_INDEX_CHECK
-#endif
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/iostream.h>
+#include "TestUtilities.h"
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Assert.h>
+using namespace casacore;
 
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Cube.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/MaskedArray.h>
-#include <casacore/casa/Arrays/MaskArrMath.h>
+BOOST_AUTO_TEST_SUITE(masked_array_math2)
 
+struct Fixture {
+  Vector<double> df, dh;
+  Vector<bool> b;
+  Vector<double> dk;
+  
+  Fixture() :
+    df(10), dh(10),
+    b(10),
+    dk({0., 1., 5., 3., 9., 2., 7., 7., 4., 3.})
+  { 
+    indgen (df);
+  }
+};
 
-#include <casacore/casa/namespace.h>
-
-int main()
+BOOST_FIXTURE_TEST_CASE(fixture, Fixture)
 {
-    try {
-        {
-            cout << endl << "Testing MaskArrMath2." << endl;
-
-// Math
-
-            {
-
-            Vector<Double> df(10), dg(10), dh(10);
-            Vector<Bool> b(10);
-
-            indgen (df);
-            cout << endl << "df=indgen(df) = " << endl;
-            cout << df << endl;
-
-            indgen (dg, 2.0);
-            cout << endl << "dg=indgen(dg) = " << endl;
-            cout << dg << endl;
-
-            Vector<Double> dk(10);
-            indgen (dk);
-            dk (0) = 0.0;
-            dk (1) = 1.0;
-            dk (2) = 5.0;
-            dk (3) = 3.0;
-            dk (4) = 9.0;
-            dk (5) = 2.0;
-            dk (6) = 7.0;
-            dk (7) = 7.0;
-            dk (8) = 4.0;
-            dk (9) = 3.0;
-            cout << endl << "dk=" << endl << dk << endl;
-
-            {
-                cout << endl
-                     << "Test min (MaskedArray<Double>)"
-                     << endl;
-
-                cout << " min (dk ((dk > 2.5) && (dk < 7.5)))= "
-                     <<   min (dk ((dk > 2.5) && (dk < 7.5)))
-                     << endl;
-            }
-
-            {
-                cout << endl
-                     << "Test max (MaskedArray<Double>)"
-                     << endl;
-
-                cout << " max (dk ((dk > 2.5) && (dk < 7.5)))= "
-                     <<   max (dk ((dk > 2.5) && (dk < 7.5)))
-                     << endl;
-            }
-
-            {
-                cout << endl
-                     << "Test minMax (minVal, maxVal, minPos, maxPos,"
-                     << endl
-                     << "             MaskedArray<Double>)"
-                     << endl;
-
-                Double minVal;
-                Double maxVal;
-
-                IPosition minPos (1);
-                IPosition maxPos (1);
-
-                minMax (minVal, maxVal, minPos, maxPos,
-                        dk((dk > 2.5) && (dk < 7.5)));
-
-                cout << "minMax (minVal, maxVal, minPos, maxPos,"
-                     << endl
-                     << "        dk((dk > 2.5) && (dk < 7.5)));"
-                     << endl
-                     << "minVal= " << minVal << endl
-                     << "maxVal= " << maxVal << endl
-                     << "minPos= " << minPos << endl
-                     << "maxPos= " << maxPos << endl
-                     << endl;
-            }
-
-            {
-                cout << endl
-                     << "Test minMax (minVal, maxVal,"
-                     << endl
-                     << "             MaskedArray<Double>)"
-                     << endl;
-
-                Double minVal;
-                Double maxVal;
-
-                minMax (minVal, maxVal,
-                        dk((dk > 2.5) && (dk < 7.5)));
-
-                cout << "minMax (minVal, maxVal,"
-                     << endl
-                     << "        dk((dk > 2.5) && (dk < 7.5)));"
-                     << endl
-                     << "minVal= " << minVal << endl
-                     << "maxVal= " << maxVal << endl
-                     << endl;
-            }
-
-            {
-                cout << endl
-                     << "Test min (MaskedArray<Double>,"
-                     << endl
-                     << "          Array<Double>, Array<Double>);"
-                     << endl;
-
-                dh = 2.0;
-                min (dh((dk > 2.5) && (dk < 7.5)), dk, df);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "min (dh((dk > 2.5) && (dk < 7.5)), dk, df);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test max (MaskedArray<Double>,"
-                     << endl
-                     << "          Array<Double>, Array<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                max (dh((dk > 2.5) && (dk < 7.5)), dk, df);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "max (dh((dk > 2.5) && (dk < 7.5)), dk, df);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test min (MaskedArray<Double>, Array<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = min (dk((dk > 2.5) && (dk < 7.5)), df);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = min (dk((dk > 2.5) && (dk < 7.5)), df);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test max (MaskedArray<Double>, Array<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = max (dk((dk > 2.5) && (dk < 7.5)), df);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = max (dk((dk > 2.5) && (dk < 7.5)), df);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test min (Array<Double>, MaskedArray<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = min (dk((dk > 2.5) && (dk < 7.5)), df);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = min (dk((dk > 2.5) && (dk < 7.5)), df);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test max (Array<Double>, MaskedArray<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = max (df, dk((dk > 2.5) && (dk < 7.5)));
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = max (df, dk((dk > 2.5) && (dk < 7.5)));"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test min (MaskedArray<Double>, MaskedArray<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = min (dk((dk > 2.5) && (dk < 7.5)),
-                          df((df > 2.5) && (df < 7.5)));
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = min (dk((dk > 2.5) && (dk < 7.5)),"
-                     << endl
-                     << "          df((df > 2.5) && (df < 7.5)));"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test max (MaskedArray<Double>, MaskedArray<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = max (dk((dk > 2.5) && (dk < 7.5)),
-                          df((df > 2.5) && (df < 7.5)));
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = max (dk((dk > 2.5) && (dk < 7.5)),"
-                     << endl
-                     << "          df((df > 2.5) && (df < 7.5)));"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test min (MaskedArray<Double>, Double)"
-                     << endl;
-
-                dh = 2.0;
-                dh = min (dk((dk > 2.5) && (dk < 7.5)), 5.0);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = min (dk((dk > 2.5) && (dk < 7.5)), 5.0);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test max (MaskedArray<Double>, Double)"
-                     << endl;
-
-                dh = 2.0;
-                dh = max (dk((dk > 2.5) && (dk < 7.5)), 5.0);
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = max (dk((dk > 2.5) && (dk < 7.5)), 5.0);"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test min (Double, MaskedArray<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = min (5.0, dk((dk > 2.5) && (dk < 7.5)));
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = min (5.0, dk((dk > 2.5) && (dk < 7.5)));"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            {
-                cout << endl
-                     << "Test max (Double, MaskedArray<Double>)"
-                     << endl;
-
-                dh = 2.0;
-                dh = max (5.0, dk((dk > 2.5) && (dk < 7.5)));
-
-                cout << endl << "dh=2.0; "
-                     << endl
-                     << "dh = max (5.0, dk((dk > 2.5) && (dk < 7.5)));"
-                     << endl;
-                cout << dh << endl;
-
-            }
-
-            }
-
-// End Math
-
-            cout << endl << "OK" << endl;
-        }
-    } catch (AipsError& x) {
-        cout << "\nCaught an exception: " << x.getMesg() << endl;
-    } 
-
-    cout << "OK" << endl;
-    return 0;
+  check(dk, {0., 1., 5., 3., 9., 2., 7., 7., 4., 3.});
 }
+
+BOOST_FIXTURE_TEST_CASE(min_ma, Fixture)
+{
+  BOOST_CHECK_CLOSE_FRACTION( min (dk ((dk > 2.5) && (dk < 7.5))),
+                              3, 1e-6);
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma, Fixture)
+{
+  BOOST_CHECK_CLOSE_FRACTION( max (dk ((dk > 2.5) && (dk < 7.5))),
+                              7, 1e-6);
+}
+
+BOOST_FIXTURE_TEST_CASE(minmax_ma1, Fixture)
+{
+  double minVal;
+  double maxVal;
+  
+  IPosition minPos (1);
+  IPosition maxPos (1);
+  
+  minMax (minVal, maxVal, minPos, maxPos,
+          dk((dk > 2.5) && (dk < 7.5)));
+  BOOST_CHECK_CLOSE_FRACTION(minVal, 3, 1e-6);
+  BOOST_CHECK_CLOSE_FRACTION(maxVal, 7, 1e-6);
+  BOOST_CHECK_EQUAL(minPos, IPosition(1, 3));
+  BOOST_CHECK_EQUAL(maxPos, IPosition(1, 6));
+}
+
+BOOST_FIXTURE_TEST_CASE(minmax_ma2, Fixture)
+{
+  double minVal;
+  double maxVal;
+  
+  minMax (minVal, maxVal,
+          dk((dk > 2.5) && (dk < 7.5)));
+  
+  BOOST_CHECK_CLOSE_FRACTION(minVal, 3, 1e-6);
+  BOOST_CHECK_CLOSE_FRACTION(maxVal, 7, 1e-6);
+}
+
+BOOST_FIXTURE_TEST_CASE(min_ma_3pars, Fixture)
+{
+  // min (MaskedArray, Array, Array)
+  dh = 2.0;
+  min (dh((dk > 2.5) && (dk < 7.5)), dk, df);
+
+  // Input:   0., 1., 5., 3., 9., 2., 7., 7., 4., 3.
+  check( dh, {2., 2., 2., 3., 2., 2., 6., 7., 4., 3.});
+  // Output:  2., 2., 0., 0., 2., 2., 0., 0., 0., 0.
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma_3pars, Fixture)
+{
+  dh = 2.0;
+  max (dh((dk > 2.5) && (dk < 7.5)), dk, df);
+  
+  check( dh, {2., 2., 5., 3., 2., 2., 7., 7., 8., 9.});
+}
+
+BOOST_FIXTURE_TEST_CASE(min_ma_2pars_a, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming( min (dk((dk > 2.5) && (dk < 7.5)), df) );
+  check( dh, {2., 2., 2., 3., 2., 2., 6., 7., 4., 3.});
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma_2pars, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming( max (dk((dk > 2.5) && (dk < 7.5)), df) );
+  check( dh, {2., 2., 5., 3., 2., 2., 7., 7., 8., 9.});
+}
+
+BOOST_FIXTURE_TEST_CASE(min_ma_2pars_b, Fixture)
+{
+  dh = 2.0;
+  // min(Array<double>, MaskedArray<double>)
+  dh.assign_conforming( min (dk((dk > 2.5) && (dk < 7.5)), df) );
+  check( dh, {2., 2., 2., 3., 2., 2., 6., 7., 4., 3.});
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma_2pars_b, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming( max (df, dk((dk > 2.5) && (dk < 7.5))) );
+  check( dh, {2., 2., 5., 3., 2., 2., 7., 7., 8., 9.});
+}
+
+BOOST_FIXTURE_TEST_CASE(min_ma_2pars_c, Fixture)
+{
+  // min(MaskedArray<double>, MaskedArray<double>)
+  dh = 2.0;
+  dh.assign_conforming(min (dk((dk > 2.5) && (dk < 7.5)),
+            df((df > 2.5) && (df < 7.5))) );
+  check( dh, {2., 2., 2., 3., 2., 2., 6., 7., 2., 2.});
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma_2pars_c, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming(max (dk((dk > 2.5) && (dk < 7.5)),
+            df((df > 2.5) && (df < 7.5))) );
+  check( dh, {2., 2., 2., 3., 2., 2., 7., 7., 2., 2.});
+}
+
+BOOST_FIXTURE_TEST_CASE(min_ma_2pars_d, Fixture)
+{
+  // min (MaskedArray<double>, double)
+  dh = 2.0;
+  dh.assign_conforming( min (dk((dk > 2.5) && (dk < 7.5)), 5.0) );
+  check( dh, {2., 2., 5., 3., 2., 2., 5., 5., 4., 3.});
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma_2pars_d, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming( max (dk((dk > 2.5) && (dk < 7.5)), 5.0) );
+  check( dh, {2., 2., 5., 5., 2., 2., 7., 7., 5., 5.});
+}
+
+BOOST_FIXTURE_TEST_CASE(min_ma_2pars_e, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming( min (5.0, dk((dk > 2.5) && (dk < 7.5))) );
+  check( dh, {2., 2., 5., 3., 2., 2., 5., 5., 4., 3.});
+}
+
+BOOST_FIXTURE_TEST_CASE(max_ma_2pars_e, Fixture)
+{
+  dh = 2.0;
+  dh.assign_conforming( max (5.0, dk((dk > 2.5) && (dk < 7.5))) );
+  check( dh, {2., 2., 5., 5., 2., 2., 7., 7., 5., 5.});
+}
+
+BOOST_AUTO_TEST_SUITE_END()

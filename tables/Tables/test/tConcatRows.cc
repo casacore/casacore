@@ -27,7 +27,7 @@
 
 #include <casacore/tables/Tables/ConcatRows.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>

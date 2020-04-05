@@ -41,7 +41,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
