@@ -29,6 +29,8 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    # Newer OSX images don't come with python@2 anymore, so this won't be necessary
    brew unlink python@2
+   # boost-python3 requires python@3.8, let's make *that* the default
+   brew unlink python
 
    pip3 install numpy
 
@@ -39,8 +41,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DUSE_HDF5=ON \
         -DBUILD_PYTHON=OFF \
         -DBUILD_PYTHON3=ON \
-        -DPYTHON3_EXECUTABLE=/usr/local/bin/python3 \
-        -DBOOST_PYTHON3_LIBRARY_NAME=python37 \
+        -DPYTHON3_EXECUTABLE=/usr/local/bin/python3.8 \
         -DBoost_NO_BOOST_CMAKE=True \
         -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
         -DDATA_DIR=$PWD \
