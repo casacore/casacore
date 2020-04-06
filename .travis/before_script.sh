@@ -27,6 +27,9 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    ccache -M 80M
 
+   # Newer OSX images don't come with python@2 anymore, so this won't be necessary
+   brew unlink python@2
+
    pip3 install numpy
 
    CXX="ccache $CXX" cmake .. \
