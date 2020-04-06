@@ -6,6 +6,18 @@ set -e
 set -x
 
 if [ "$TRAVIS_OS_NAME" = osx ]; then
+
+    # Setup homebrew packages
+    export HOMEBREW_NO_AUTO_UPDATE=1
+    export HOMEBREW_NO_INSTALL_CLEANUP=1
+
+    brew install fftw hdf5 ccache boost-python3 cfitsio wcslib
+
+    # Newer OSX images don't come with python@2 anymore, so this won't be necessary
+    brew unlink python@2
+
+    pip3 install numpy
+
     SOFA_ARCHIVE=sofa.tgz
     MEASURES_ARCHIVE=WSRT_Measures.ztar
 
@@ -27,13 +39,6 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
 
    ccache -M 80M
 
-   # Newer OSX images don't come with python@2 anymore, so this won't be necessary
-   brew unlink python@2
-   # boost-python3 requires python@3.8, let's make *that* the default
-   brew unlink python
-
-   pip3 install numpy
-
    CXX="ccache $CXX" cmake .. \
         -DUSE_FFTW3=ON \
         -DBUILD_TESTING=ON \
@@ -41,7 +46,6 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         -DUSE_HDF5=ON \
         -DBUILD_PYTHON=OFF \
         -DBUILD_PYTHON3=ON \
-        -DPYTHON3_EXECUTABLE=/usr/local/bin/python3.8 \
         -DBoost_NO_BOOST_CMAKE=True \
         -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
         -DDATA_DIR=$PWD \
