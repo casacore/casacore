@@ -141,7 +141,7 @@ void fullCompare (const Array<int>& darr, const Array<int>& arr, const std::vect
     arr(IPosition(4,0,1,2,1)),
     arr(IPosition(4,1,1,2,1))
   };
-  getDiagRes = getDiag(arr, 1, 1);
+  getDiagRes.assign( getDiag(arr, 1, 1) );
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), arrDiagValues.begin(), arrDiagValues.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), valIter, valIter+8);
   valIter += 8;
@@ -156,7 +156,7 @@ void fullCompare (const Array<int>& darr, const Array<int>& arr, const std::vect
     arr(IPosition(4,0,2,1,1)),
     arr(IPosition(4,1,2,1,1))
   };
-  getDiagRes = getDiag(arr, 1, -1);
+  getDiagRes.assign( getDiag(arr, 1, -1) );
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), arrDiagValues.begin(), arrDiagValues.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), valIter, valIter+8);
   valIter += 8;
@@ -167,7 +167,7 @@ void fullCompare (const Array<int>& darr, const Array<int>& arr, const std::vect
     arr(IPosition(4,0,0,2,1)),
     arr(IPosition(4,1,0,2,1))
   };
-  getDiagRes = getDiag(arr, 1, 2);
+  getDiagRes.assign( getDiag(arr, 1, 2) );
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), arrDiagValues.begin(), arrDiagValues.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), valIter, valIter+4);
   valIter += 4;
@@ -178,7 +178,7 @@ void fullCompare (const Array<int>& darr, const Array<int>& arr, const std::vect
     arr(IPosition(4,0,2,0,1)),
     arr(IPosition(4,1,2,0,1))
   };
-  getDiagRes = getDiag(arr, 1, -2);
+  getDiagRes.assign( getDiag(arr, 1, -2) );
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), arrDiagValues.begin(), arrDiagValues.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(getDiagRes.begin(), getDiagRes.end(), valIter, valIter+4);
   valIter += 4;

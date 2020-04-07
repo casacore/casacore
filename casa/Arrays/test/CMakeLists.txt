@@ -45,6 +45,7 @@ set (testfiles
 #  tSumPerformance.cc
   tVector.cc
   tVectorSTLIterator.cc
+  ../../Containers/test/tRecord.cc
 )
 
 find_package(Boost COMPONENTS filesystem unit_test_framework system)
@@ -53,6 +54,6 @@ if(Boost_FOUND)
 
 	add_executable (arraytest ${testfiles})
 	target_link_libraries(arraytest casa_casa ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-	add_test (arraytest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
+	add_test (arraytest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./arraytest)
 	add_dependencies(check arraytest)
 endif(Boost_FOUND)

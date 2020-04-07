@@ -77,11 +77,18 @@ Vector<T, Alloc>::Vector(const std::vector<T> &other, long long nr)
   assert(ok());
 }
 
-template<>
-inline Vector<bool, std::allocator<bool>>::Vector(const std::vector<bool>&)
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const std::vector<T> &other, const Alloc& allocator)
+: Array<T, Alloc>(IPosition(1, other.size()), const_cast<T*>(other.data()), allocator)
 {
-  // TODO
-  throw std::runtime_error("Not implemented");
+  assert(ok());
+}
+
+template<>
+inline Vector<bool, std::allocator<bool>>::Vector(const std::vector<bool>& input, const std::allocator<bool>& allocator)
+: Array<bool, std::allocator<bool>>(IPosition(1, input.size()), input.begin(), allocator)
+{
+  assert(ok());
 }
 
 template<typename T, typename Alloc>
@@ -103,13 +110,6 @@ template<typename T, typename Alloc>
 template<typename Integral>
 Vector<T, Alloc>::Vector(Integral length, Integral initialValue, const Alloc& allocator, std::true_type) :
 Array<T, Alloc>(IPosition(1, length), initialValue, allocator)
-{
-  assert(ok());
-}
-
-template<typename T, typename Alloc>
-Vector<T, Alloc>::Vector(const std::vector<T> &other)
-: Array<T, Alloc>(IPosition(1, other.size()), const_cast<T*>(other.data()), COPY)
 {
   assert(ok());
 }
@@ -213,14 +213,27 @@ template<typename T, typename Alloc> void Vector<T, Alloc>::resize(const IPositi
   assert(ok());
 }
 
-template<typename T, typename Alloc>
-Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Vector<T, Alloc> &other)
+template<typename T, typename Alloc> Array<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Array<T, Alloc> &a)
+{
+    assert(ok());
+    Vector<T, Alloc> tmp(a);
+    assign_conforming(tmp);
+    return *this;
+}
+
+template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming_implementation(const Vector<T, Alloc> &, std::false_type /*movable?*/)
+{
+  throw std::runtime_error("assign called for which a copy is required, while element type is not copyable");
+}
+
+template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming_implementation(const Vector<T, Alloc> &other, std::true_type /*movable?*/)
 {
     assert(ok());
     if (this != &other) {
         if (! this->copyVectorHelper (other)) {
 	    // Block was empty, so allocate new block.
-	    this->data_p.reset( new Storage<T, Alloc> (this->length_p(0)) );
+          // TODO think about semantics of allocator!
+	    this->data_p.reset( new Storage<T, Alloc>(this->length_p(0), other.data_p->get_allocator()) );
 	    this->begin_p = this->data_p->data();
 	}
 	this->setEndIter();
@@ -230,12 +243,20 @@ Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Vector<T, Alloc> &ot
     return *this;
 }
 
-template<typename T, typename Alloc> Array<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Array<T, Alloc> &a)
+template<typename T, typename Alloc>
+Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(Vector<T, Alloc>&& source)
 {
-    assert(ok());
-    Vector<T, Alloc> tmp(a);
-    assign_conforming(tmp);
-    return *this;
+  assert(ok());
+  if(this->nrefs() > 1)
+    assign_conforming(source);
+  else if(source.ndim() == 0)
+  {
+    Vector<T, Alloc> empty;
+    casacore::swap(empty, *this);
+  }
+  else
+    casacore::swap(source, *this);
+  return *this;
 }
 
 // <thrown>

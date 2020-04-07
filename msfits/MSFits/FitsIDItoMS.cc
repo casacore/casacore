@@ -2981,7 +2981,7 @@ void FITSIDItoMS1::fillFieldTable()
     try{
       foffsetS.attach(suTab,"FREQOFF"); // fq. offset  
     }
-    catch(AipsError x){
+    catch(AipsError& x){
       foffsetSD.attach(suTab,"FREQOFF"); // fq. offset  
       *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }

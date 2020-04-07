@@ -106,7 +106,7 @@ public:
     
     // Create a Vector of length other.size() and copy over its values.
     // This used to take a 'Block'
-    explicit Vector(const std::vector<T> &other);
+    explicit Vector(const std::vector<T> &other, const Alloc& allocator=Alloc());
 
     // Create a Vector from an initializer list.
     Vector(std::initializer_list<T> list);
@@ -173,15 +173,26 @@ public:
     // <br>Note that the assign function can be used to assign a
     // non-conforming vector.
     // <group>
-    Vector<T, Alloc>& assign_conforming(const Vector<T, Alloc>& other);
+    // TODO unlike Array, a Vector assign to an empty Vector does
+    // not create a reference but does a value copy of the source.
+    // This should be made consistent.
+    using Array<T, Alloc>::assign_conforming;
+    Vector<T, Alloc>& assign_conforming(const Vector<T, Alloc>& source)
+    {
+      return assign_conforming_implementation(source, std::is_copy_assignable<T>());
+    }
+    Vector<T, Alloc>& assign_conforming(Vector<T, Alloc>&& source);
     // Other must be a 1-dimensional array.
-    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& other);
+    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& source);
     // </group>
 
     using Array<T, Alloc>::operator=;
-    using Array<T, Alloc>::assign_conforming;
-    Vector<T, Alloc>& operator=(const Vector<T, Alloc>&) = default;
-    Vector<T, Alloc>& operator=(Vector<T, Alloc>&&) = default;
+    Vector<T, Alloc>& operator=(const Vector<T, Alloc>& source)
+    { return assign_conforming(source); }
+    Vector<T, Alloc>& operator=(Vector<T, Alloc>&& source)
+    { return assign_conforming(std::move(source)); }
+    Vector<T, Alloc>& operator=(Array<T, Alloc>&& source)
+    { assign_conforming(source); return *this; } // TODO
 
     // Convert a Vector to a Block, resizing the block and copying values.
     // This is done this way to avoid having the simpler Block class 
@@ -299,6 +310,9 @@ protected:
     virtual size_t fixedDimensionality() const override { return 1; }
 
 private:
+    Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::false_type isCopyable);
+    Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::true_type isCopyable);
+  
     // Helper functions for constructors.
     void initVector(const std::vector<T>&, long long nr);      // copy semantics
     
