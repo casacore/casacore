@@ -144,7 +144,7 @@ void readCellSlices()
 	  ColumnSlicer columnSlicer (shape, dataSlicer, destinationSlicer);
 	  AlwaysAssertExit (False); // shouldn't get here
       }
-      catch (AipsError & e){
+      catch (std::exception & e){
       }
   }
 
@@ -163,7 +163,7 @@ void readCellSlices()
 	  ColumnSlicer columnSlicer (shape, dataSlicer, destinationSlicer);
 	  AlwaysAssertExit (False); // shouldn't get here
       }
-      catch (AipsError & e){
+      catch (std::exception & e){
       }
   }
 
@@ -184,7 +184,7 @@ void readCellSlices()
 	  ColumnSlicer columnSlicer (shape, dataSlicer, destinationSlicer);
 	  AlwaysAssertExit (False); // shouldn't get here
       }
-      catch (AipsError & e){
+      catch (std::exception & e){
       }
   }
   
@@ -502,8 +502,8 @@ int main()
         readCellSlices();
         writeCellSlices();
       }
- } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+ } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

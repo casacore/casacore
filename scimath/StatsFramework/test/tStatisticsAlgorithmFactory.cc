@@ -122,7 +122,7 @@ int main() {
         AlwaysAssert(bd.c == c, AipsError);
 	}
 	catch (const AipsError& x) {
-		cout << x.getMesg() << endl;
+		cout << x.what() << endl;
 		return 1;
 	}
 	return 0;

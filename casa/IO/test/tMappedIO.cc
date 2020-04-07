@@ -154,7 +154,7 @@ int main (int argc, const char* argv[])
     return 0;                           // exit with success status
 
   } catch (const AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }  
 }

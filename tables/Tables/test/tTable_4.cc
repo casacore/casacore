@@ -121,8 +121,8 @@ TableDesc makeDesc (Bool ask)
       } else {
 	break;
       }
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     }
   }
   // Create the hypercolumn descriptions for all tiled columns.
@@ -307,8 +307,8 @@ void doTable (Bool ask, const TableDesc& td)
       } else {
 	break;
       }
-    } catch (AipsError& x) {
-      cout << removeDir(x.getMesg()) << endl;
+    } catch (std::exception& x) {
+      cout << removeDir(x.what()) << endl;
     }
   }
 }
@@ -320,8 +320,8 @@ int main (int argc, const char*[])
     cout << "-----------------------------------------------" << endl;
     Bool ask = argc < 2;
     doTable (ask, makeDesc(ask));
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

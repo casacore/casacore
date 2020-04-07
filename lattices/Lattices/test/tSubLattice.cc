@@ -256,7 +256,7 @@ void testAxes()
       Bool exc = False;
       try {
 	ml2.setPixelMask (ArrayLattice<Bool>(pm2), False);
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	exc = True;
       }
       AlwaysAssertExit (exc);
@@ -455,7 +455,7 @@ int main (int argc, const char* argv[])
                    AipsError);
     }
   } catch (const AipsError& x) {
-    cerr << "Caught exception: " << x.getMesg() << endl;
+    cerr << "Caught exception: " << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

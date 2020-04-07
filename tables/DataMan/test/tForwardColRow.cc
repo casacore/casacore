@@ -71,8 +71,8 @@ int main ()
 	check("tForwardColRow_tmp.data1", 0, 0);
 	check("tForwardColRow_tmp.data2", 0, 0);
 	check("tForwardColRow_tmp.data3", 0, 0);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status

@@ -105,7 +105,7 @@ void LogIO::postLocally()
 void LogIO::preparePostThenThrow (const AipsError& x)
 {
     if (! x.getMesg().empty()) {
-        output() << "; " << x.getMesg();
+        output() << "; " << x.what();
     }
     if (text_p == 0) {
 	output() << "Unknown error!";
@@ -175,7 +175,7 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
 void operator<< (LogIO &os, const AipsError& x)
 {
     if (! x.getMesg().empty()) {
-        os.output() << "; " << x.getMesg();
+        os.output() << "; " << x.what();
     }
     os.postThenThrow (x);
 }

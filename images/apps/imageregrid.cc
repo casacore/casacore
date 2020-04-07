@@ -198,6 +198,6 @@ int main(int argc, const char* argv[]) {
     delete itsTmp;
   } catch (const AipsError &x) {
     cerr << "Exception caught:" << endl;
-    cerr << x.getMesg() << endl;
+    cerr << x.what() << endl;
   } 
 }

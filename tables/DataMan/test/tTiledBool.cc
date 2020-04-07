@@ -126,8 +126,8 @@ int main()
     testAll (IPosition(2,4,256), IPosition(3,4,256,1));
     testAll (IPosition(2,4,256), IPosition(3,4,257,1));
     testAll (IPosition(2,4,256), IPosition(3,4,255,1));
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

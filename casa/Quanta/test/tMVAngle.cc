@@ -101,8 +101,8 @@ int main ()
     AlwaysAssertExit (! testMUS (q, "1d0m["));
     AlwaysAssertExit (testMUS (q, "1d0m[", 1, False));
     AlwaysAssertExit (testMUS (q, "1d1m5.7[", 1+1./60+5.7/3600, False));
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   } 
   return 0;

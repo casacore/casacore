@@ -60,7 +60,7 @@ int main (int argc, const char*[])
         delete mfile;
       }
     } catch (const AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;
@@ -134,7 +134,7 @@ void c(MultiFile* mfile)
 	file1.open();
     } catch (const AipsError& x) {
 	flag = True;
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
     
@@ -148,7 +148,7 @@ void c(MultiFile* mfile)
 	file2.open();
     } catch (const AipsError& x) {
 	flag = True;
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
     
@@ -159,7 +159,7 @@ void c(MultiFile* mfile)
 	file3.open();
     } catch (const AipsError& x) {
 	flag = True;
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
 
@@ -170,7 +170,7 @@ void c(MultiFile* mfile)
 	file4.setRW();
     } catch (const AipsError& x) {
 	flag = True;
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
 

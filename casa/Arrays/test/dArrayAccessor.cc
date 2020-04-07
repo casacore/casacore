@@ -68,8 +68,8 @@ int main() {
 	  cout << "t2: " << *ab << endl;;
 	  ab++;
 	  cout << "t3: " << *ab << endl;;
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   }
 
   try {
@@ -91,8 +91,8 @@ int main() {
 	cout << *j << ", " << j.index<Axis<1> >(1) << endl;
       }
     }
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   }
 
   try {
@@ -349,8 +349,8 @@ int main() {
     }
     timer.show("getStorage    part ");
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
     return 1;
   }
 

@@ -46,7 +46,7 @@ void testErrorCheck()
   try {
     mutex.unlock();
     caught = False;
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << x.what() << endl;
   }
   AlwaysAssertExit (caught);
@@ -58,7 +58,7 @@ void testErrorCheck()
   try {
     mutex.lock();
     caught = False;
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << x.what() << endl;
   }
   AlwaysAssertExit (caught);
@@ -71,7 +71,7 @@ void testErrorCheck()
   try {
     mutex.unlock();
     caught = False;
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << x.what() << endl;
   }
   AlwaysAssertExit (caught);
@@ -89,7 +89,7 @@ void testRecursive()
   try {
     mutex.unlock();
     caught = False;
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << x.what() << endl;
   }
   AlwaysAssertExit (caught);
@@ -110,7 +110,7 @@ void testRecursive()
   try {
     mutex.unlock();
     caught = False;
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << x.what() << endl;
   }
   AlwaysAssertExit (caught);
@@ -132,7 +132,7 @@ void testNormal()
     //  // Usually an an unlock does not fail.
     //  try {
     //    mutex.unlock();
-    //  } catch (AipsError& x) {
+    //  } catch (std::exception& x) {
     //    cout << x.what() << endl;
     //  }
 
@@ -217,8 +217,8 @@ int main()
     testNormal();
     testCallOnceParallel();
 #endif
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   cout << "OK" << endl;

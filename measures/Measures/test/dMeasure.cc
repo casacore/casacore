@@ -120,8 +120,8 @@ int main()
 	    };
 	};	    
 	    
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
     
     return(0);

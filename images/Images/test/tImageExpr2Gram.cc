@@ -380,8 +380,8 @@ int main (int argc, const char* argv[])
       delete tempRegs[i];
     }
 
-  } catch (AipsError& x) {
-    cerr << "aipserror: error " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "aipserror: error " << x.what() << endl;
     foundError = True;
   } 
 

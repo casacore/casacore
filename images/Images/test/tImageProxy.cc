@@ -41,7 +41,7 @@ int main() {
         AlwaysAssert(proxy.coordSysObject().nWorldAxes() == 2, AipsError);
     }
     catch (const AipsError& x) {
-        cout << "Caught error " << x.getMesg() << endl;
+        cout << "Caught error " << x.what() << endl;
         return 1;
     } 
     cout << "OK" << endl;

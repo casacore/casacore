@@ -143,8 +143,8 @@ void doIt()
 int main () {
     try {
 	doIt();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status

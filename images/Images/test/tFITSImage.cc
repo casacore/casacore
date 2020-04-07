@@ -160,8 +160,8 @@ try {
    delete pLoadImage;
 
 
-} catch (AipsError& x) {
-   cout << "aipserror: error " << x.getMesg() << endl;
+} catch (std::exception& x) {
+   cout << "aipserror: error " << x.what() << endl;
    return 1;
 }
   return 0;

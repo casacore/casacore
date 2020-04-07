@@ -131,8 +131,8 @@ int main()
 	doIt (IPosition (2,10,20),
 	      IPosition (2,3,4), IPosition (2,7,8),
 	      IPosition (2,4,16), 5.);
-    } catch (AipsError& x) {
-	cout << "Caught exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl; 

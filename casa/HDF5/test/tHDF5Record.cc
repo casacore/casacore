@@ -292,7 +292,7 @@ int main()
     HDF5Record::writeRecord (file, "test", rec3);
     check (file);
 
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }

@@ -74,8 +74,8 @@ int main()
 
   try {
     solution = fitgauss.fit(pos, f);
-  } catch (AipsError& err) {
-    cout << "ERROR: " << err.getMesg() << endl;
+  } catch (std::exception& err) {
+    cout << "ERROR: " << err.what() << endl;
     fail = 1;
   }
 
@@ -114,8 +114,8 @@ int main()
   errors.resize();
   try {
     solution = fitgauss.fit(pos, f);
-  } catch (AipsError& err) {
-    cout << "ERROR: " << err.getMesg() << endl;
+  } catch (std::exception& err) {
+    cout << "ERROR: " << err.what() << endl;
     fail = 1;
   }
 
@@ -166,8 +166,8 @@ int main()
   errors.resize();
   try {
     solution = fitgauss.fit(pos, f);
-  } catch (AipsError& err) {
-    cout << "ERROR: " << err.getMesg() << endl;
+  } catch (std::exception& err) {
+    cout << "ERROR: " << err.what() << endl;
     fail = 1;
   }
 
@@ -208,8 +208,8 @@ int main()
   errors.resize();
   try {
     solution = fitgauss.fit(pos, f, 0.001);
-  } catch (AipsError& err) {
-    cout << "ERROR: " << err.getMesg() << endl;
+  } catch (std::exception& err) {
+    cout << "ERROR: " << err.what() << endl;
     fail = 1;
   }
 
@@ -266,8 +266,8 @@ int main()
 
   try {
     solution = fitgauss.fit(pos, f, 0.01, 256);
-  } catch (AipsError& err) {
-    cout << "ERROR: " << err.getMesg() << endl;
+  } catch (std::exception& err) {
+    cout << "ERROR: " << err.what() << endl;
     fail = 1;
   }
 

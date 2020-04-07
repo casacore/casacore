@@ -357,7 +357,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
         }
         catch(const AipsError& ex) {
             _log << LogOrigin("MSFitsInput", __func__)
-		        << ex.getMesg()
+		        << ex.what()
 		        << LogIO::EXCEPTION;
         }
     }
@@ -368,7 +368,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
         }
         catch(const AipsError& ex) {
             _log << LogOrigin("MSFitsInput", __func__)
-               << ex.getMesg()
+               << ex.what()
                << LogIO::EXCEPTION;
         }
     }
@@ -537,7 +537,7 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     }
                     catch(const AipsError& ex) {
                         _log << LogOrigin("MSFitsInput", __func__)
-                               << ex.getMesg() 
+                               << ex.what() 
                                << LogIO::EXCEPTION;
                     }
                     //fillPointingTable();
@@ -587,7 +587,7 @@ void MSFitsInput::readFitsFile(Int obsType) {
     		_ms = MeasurementSet();
     		Table::deleteTable(name, True);
     	}
-    	ThrowCc(ex.getMesg());
+    	ThrowCc(ex.what());
     }
 }
 
@@ -2053,9 +2053,9 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
       colIFFreq.getColumn(ifFreq);
       colChWidth.getColumn(chWidth);
       colTotalBandwidth.getColumn(totalBandwidth);
-    }catch(AipsError& x) {
+    }catch(std::exception& x) {
       _log << LogOrigin("MSFitsInput", "fillSpectralWindowTable")
-             << LogIO::DEBUG1 << x.getMesg() << LogIO::POST;
+             << LogIO::DEBUG1 << x.what() << LogIO::POST;
     }
     catch(...) {
       _log << LogOrigin("MSFitsInput", "fillSpectralWindowTable")
@@ -2249,7 +2249,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     	sysvel.getColumn(_sysVel);
     }
     catch (const AipsError& x) {
-    	ThrowIf(throwImmediately, x.getMesg());
+    	ThrowIf(throwImmediately, x.what());
     	if(noif>1){
     		_log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
     				<< x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
@@ -3256,7 +3256,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
         }
         catch (const AipsError& x) {
             _log << LogOrigin("MSFitsInput", "fillMSMainTable")
-                    << "Exception while filling MS main table. " << x.getMesg()
+                    << "Exception while filling MS main table. " << x.what()
                     << LogIO::EXCEPTION;
         }
 

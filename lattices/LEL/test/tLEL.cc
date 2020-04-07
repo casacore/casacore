@@ -2341,8 +2341,8 @@ int main (int argc, const char* argv[])
     cout << endl << "ok" << endl;
   }
 
- } catch (AipsError& x) {
-    cerr << "aipserror: error " << x.getMesg() << endl;
+ } catch (std::exception& x) {
+    cerr << "aipserror: error " << x.what() << endl;
     return 1;
  } 
  
@@ -2384,8 +2384,8 @@ Bool checkFloat (LELInterface<Float>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError& x) {
-        if (!suppress) cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+        if (!suppress) cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     } else {
       if (expr.isScalar()) {
@@ -2404,8 +2404,8 @@ Bool checkFloat (LELInterface<Float>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     }
     expr.prepareScalarExpr();
@@ -2449,8 +2449,8 @@ Bool checkDouble (LELInterface<Double>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     } else {
       if (expr.isScalar()) {
@@ -2469,8 +2469,8 @@ Bool checkDouble (LELInterface<Double>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     }
     expr.prepareScalarExpr();
@@ -2514,8 +2514,8 @@ Bool checkComplex (LELInterface<Complex>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     } else {
       if (expr.isScalar()) {
@@ -2534,8 +2534,8 @@ Bool checkComplex (LELInterface<Complex>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     }
     expr.prepareScalarExpr();
@@ -2579,8 +2579,8 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     } else {
       if (expr.isScalar()) {
@@ -2599,8 +2599,8 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     }
     expr.prepareScalarExpr();
@@ -2645,8 +2645,8 @@ Bool checkBool (LELInterface<Bool>& expr,
       }
       try {
         expr.eval(Arr, region);
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     } else {
       if (expr.isScalar()) {
@@ -2672,8 +2672,8 @@ Bool checkBool (LELInterface<Bool>& expr,
       }
       try {
        expr.getScalar();
-      } catch (AipsError& x) {
-       if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+       if (!suppress)  cout << "      Caught expected exception; message is: " << x.what() << endl;
       } 
     }
     expr.prepareScalarExpr();

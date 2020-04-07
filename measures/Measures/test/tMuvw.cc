@@ -238,8 +238,8 @@ int main()
 	  cout << "---------------------------" << endl;
 	}
 
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
     try {
@@ -248,8 +248,8 @@ int main()
       MEpoch x;
       Muvw::assure(x);
 
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
     try {
@@ -258,8 +258,8 @@ int main()
       MVEpoch x;
       MVuvw::assure(x);
 
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
     cout << "---------------------------" << endl;
 

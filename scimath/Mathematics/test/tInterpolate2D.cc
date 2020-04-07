@@ -116,7 +116,7 @@ int main() {
         }
     }
     catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+        cout << x.what() << endl;
         cout << "FAIL" << endl;
         return 1;
     }

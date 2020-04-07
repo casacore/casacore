@@ -295,8 +295,8 @@ int main (int argc, const char* argv[])
 		   cerr << "File contains quality image: " << fitsImg.has_qualityimg() << "\n";
 		   cerr << "String representation of all extensions with data:\n" << fitsImg.get_extlist_string(String("<A>")) << endl;
 	   }
-	} catch (AipsError& x) {
-	   cerr << "aipserror: error " << x.getMesg() << endl;
+	} catch (std::exception& x) {
+	   cerr << "aipserror: error " << x.what() << endl;
 	   return 1;
 	}
 

@@ -91,7 +91,7 @@ int main()
 	try {
 	    cerr << "=====Expect a single SEVERE level message\n";
 	    file = AppInfo::workFileName(1000000);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             ///caught = True;
 	} 
         // Do not check if it failed or succeeded, because that is

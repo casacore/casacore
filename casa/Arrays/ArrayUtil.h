@@ -158,7 +158,7 @@ Vector<std::string> strToVector (const std::string& string, const std::regex& de
 // try {
 //     concatenateArray (matrix1, matrix2);
 // } catch (ArrayConformanceError x) {
-//     cout << x.getMesg() << endl;
+//     cout << x.what() << endl;
 // }
 // </srcblock>
 // <example>

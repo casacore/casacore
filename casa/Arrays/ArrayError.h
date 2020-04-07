@@ -48,7 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Some lines, functions, ...
 // } catch (ArrayError x) {
 //    // Array specific errors
-// } catch (AipsError x) {
+// } catch (std::exception x) {
 //    // All other errors caught here.
 // }
 // </srcblock>

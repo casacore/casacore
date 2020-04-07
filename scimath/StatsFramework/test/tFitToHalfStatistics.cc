@@ -455,7 +455,7 @@ int main() {
             try {
                 fh.setCalculateAsAdded(True);
             }
-            catch (AipsError& x) {
+            catch (std::exception& x) {
                 exceptionRaised = True;
             }
             AlwaysAssert(exceptionRaised, AipsError);
@@ -1962,7 +1962,7 @@ int main() {
         }
     }
     catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+        cout << x.what() << endl;
         return 1;
     } 
     return 0;

@@ -233,8 +233,8 @@ int main() {
       cout << "LOS 210:       " << fm1(qhgt, "G") << endl;
     }
     
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
   
   return 0;

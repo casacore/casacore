@@ -351,8 +351,8 @@ int main(int argc, const char *argv[])
    cout << "Number of points     = " << fitter.numberPoints() << endl;
 */
 
- } catch (AipsError& x) {
-      cout << "Failed with message " << x.getMesg() << endl;
+ } catch (std::exception& x) {
+      cout << "Failed with message " << x.what() << endl;
  }   
 
 }

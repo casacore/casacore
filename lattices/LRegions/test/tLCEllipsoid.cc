@@ -244,7 +244,7 @@ int main() {
         }
     }
     catch (const AipsError& x) {
-        cout << "Caught exception: " << x.getMesg() << endl;
+        cout << "Caught exception: " << x.what() << endl;
         return 1;
     } 
     cout << "OK" << endl;

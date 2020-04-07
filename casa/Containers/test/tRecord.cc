@@ -206,9 +206,9 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
     if (doExcp) {
 	try {
 	    record1 = record;
-	} catch (AipsError& x) {                    // not conforming
+	} catch (std::exception& x) {                    // not conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
+		 << x.what() << endl
 		 << "<<<" << endl;
 	} 
     }
@@ -362,8 +362,8 @@ BOOST_AUTO_TEST_CASE(tests)
     if (doExcp) {
 	try {
 	    record2a.restructure(subDesc);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;  // fixed, not empty ->impossible
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;  // fixed, not empty ->impossible
 	} 
     }
     record2 = record;                     // non-fixed -> possible
@@ -372,9 +372,9 @@ BOOST_AUTO_TEST_CASE(tests)
     if (doExcp) {
 	try {
 	    record2a = record2b;
-	} catch (AipsError& x) {           // fixed; non-conforming
+	} catch (std::exception& x) {           // fixed; non-conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
+		 << x.what() << endl
 		 << "<<<" << endl;
 	} 
     }
@@ -642,27 +642,27 @@ BOOST_AUTO_TEST_CASE(tests)
     if (doExcp) {
 	try {
 	    record.merge (record, RecordInterface::SkipDuplicates);
-	} catch (AipsError& x) {              // merge of itself
+	} catch (std::exception& x) {              // merge of itself
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
+		 << x.what() << endl
 		 << "<<<" << endl;
 	} 
 	try {
 	    record.mergeField (record5, "TpBool",
 			       RecordInterface::ThrowOnDuplicates);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // duplicate field
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // duplicate field
 	} 
 	try {
 	    record2a.merge (record, RecordInterface::SkipDuplicates);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // fixed structure
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // fixed structure
 	} 
 	try {
 	    record2a.mergeField (record5, "TpBool",
 				 RecordInterface::ThrowOnDuplicates);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // fixed structure
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // fixed structure
 	} 
     }
 	

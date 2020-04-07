@@ -111,8 +111,8 @@ int main (int argc, const char* argv[])
     delete [] buf;
     return 0;                           // exit with success status
 
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }  
 }

@@ -113,8 +113,8 @@ void WCLELMask::processCommand()
   try {
     LatticeExprNode expr = ImageExprParse::command (itsCommand);
     init (expr);
-  } catch (AipsError& x) {
-    throw AipsError (x.getMesg() + "\n  Error in creating WCLELMask");
+  } catch (std::exception& x) {
+    throw AipsError (std::string(x.what()) + "\n  Error in creating WCLELMask");
   }
 }
 

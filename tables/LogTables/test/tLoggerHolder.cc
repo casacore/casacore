@@ -103,8 +103,8 @@ int main()
   try {
     doIt (False);
     doIt (True);
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   } catch (...) {
     cout << "Unexpected unknown exception" << endl;

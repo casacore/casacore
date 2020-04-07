@@ -277,7 +277,7 @@ int main()
     testMask();
     testFill();
     testSlice();
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }

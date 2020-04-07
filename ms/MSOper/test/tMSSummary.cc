@@ -70,7 +70,7 @@ int main(int argc, const char* argv[])
       mss.listHistory(os);
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
   } 
   
   return 0;

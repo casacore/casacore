@@ -160,7 +160,7 @@ int main()
       os << "Libration:  " << val << endl;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
   } 
   
   try {
@@ -190,7 +190,7 @@ int main()
     cout << "Moon  APP:  " << mc2().getValue().getAngle("deg") << endl;
 
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
   } 
   
   return 0;

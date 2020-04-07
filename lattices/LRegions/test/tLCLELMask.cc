@@ -95,8 +95,8 @@ int main ()
 
       AlwaysAssertExit (mask1 != mask2);
     }
-  } catch (AipsError& x) {
-    cerr << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Caught exception: " << x.what() << endl;
     return 1;
   } 
 

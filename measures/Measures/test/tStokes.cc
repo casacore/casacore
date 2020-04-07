@@ -63,8 +63,8 @@ int main() {
 			cout <<  " --- receptor2 = ";
 			cout << Stokes::receptor2(Stokes::type(polint));
 			cout << endl;
-		} catch(AipsError& x) {
-			cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
+		} catch(std::exception& x) {
+			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;
 		}
 
 		polstr="XY";
@@ -100,8 +100,8 @@ int main() {
 			cout <<  " --- receptor2 = ";
 			cout << Stokes::receptor2(Stokes::type(polstr)) ;
 			cout << endl;
-		} catch(AipsError& x) {
-			cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
+		} catch(std::exception& x) {
+			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;
 		}
 		for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
 			if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
@@ -122,7 +122,7 @@ int main() {
 		AlwaysAssert(Stokes::allNames(True).size() == Stokes::NumberOfTypes, AipsError);
 		cout << "ok" << endl;
 	}
-	catch (AipsError&) {
+	catch (std::exception&) {
 		cout << "fail" << endl;
 
 	}

@@ -2593,7 +2593,7 @@ int main() {
         cout << "OK" << endl;
     } 
     catch (const AipsError& x) {
-        cerr << "Exception : " << x.getMesg() << endl;
+        cerr << "Exception : " << x.what() << endl;
         return 1;
     }
     return 0;

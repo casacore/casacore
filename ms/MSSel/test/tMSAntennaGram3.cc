@@ -124,8 +124,8 @@ int main()
   try {
     makeMS();
     selMS();
-  } catch (AipsError& x) {
-    cout << "ERROR: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "ERROR: " << x.what() << endl;
     return 1;
   } 
   return 0;

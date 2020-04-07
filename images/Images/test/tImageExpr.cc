@@ -148,7 +148,7 @@ int main() {
   try {
     testExpr();
   } catch (const AipsError& x) {
-    cerr << x.getMesg() << endl;
+    cerr << x.what() << endl;
     return 1;
   } 
   cout << "OK" << endl;

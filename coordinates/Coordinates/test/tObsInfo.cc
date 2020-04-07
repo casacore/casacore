@@ -259,7 +259,7 @@ int main()
 	rec4.defineRecord("telescop", recnum);
 	try {
 	  rval = oi5.fromFITS(error2, rec4);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	  cerr << (rval==True) << endl;
 	  AlwaysAssertExit(!rval);
 	}

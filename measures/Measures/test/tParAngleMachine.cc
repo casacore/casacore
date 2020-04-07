@@ -178,8 +178,8 @@ int main() {
     cout << "---------------------------------------------" << endl;
 
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
 
   try {
@@ -192,8 +192,8 @@ int main() {
     Double result = pam(52230.0);
     cout << result << endl;
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   }
 
   cout << "---------------------------------------------" << endl;

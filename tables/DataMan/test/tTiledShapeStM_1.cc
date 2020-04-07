@@ -328,8 +328,8 @@ void writeVar (int acc, Bool chk, const IPosition& shape,
     }
     // Sync to measure true IO.
     table.flush(True);
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
   }
   timer.show("Write     ");
 }
@@ -457,8 +457,8 @@ int main (int argc, const char* argv[])
 	ok = False;
       }
     }
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   cout << "<<<" << endl;

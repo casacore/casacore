@@ -176,10 +176,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 36  } catch (AipsIOError x) {
 // 37       ; // nothing - no more data
 // 38  } catch (AllocError x) {
-// 39       cerr << "AllocError : " << x.getMesg() << endl;
+// 39       cerr << "AllocError : " << x.what() << endl;
 // 40       cerr << "Size is : " << x.size() << endl;
-// 41  } catch (AipsError x) {
-// 42       cerr << "aipserror: error " << x.getMesg() << endl;
+// 41  } catch (std::exception x) {
+// 42       cerr << "aipserror: error " << x.what() << endl;
 // 43       return 1;
 // 44  }
 // 45

@@ -246,7 +246,7 @@ int main()
     doTypes();
     doOpens();
   } catch (const AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }
   cout << "OK" << endl;

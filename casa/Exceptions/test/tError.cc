@@ -36,7 +36,7 @@ int main()
     CASATHROW (AipsError, "msg " << 31);
   } catch (const AipsError& x) {
     cout << x.what() << endl;
-    AlwaysAssertExit (x.getMesg() == "msg 31");
+    AlwaysAssertExit (std::string(x.what()) == "msg 31");
   }
 
   ThrowIf (false, "msg1");

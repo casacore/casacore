@@ -420,7 +420,7 @@ Bool ImageInfo::fromFITS(
 			}
 		}
 		catch(const AipsError& x) {
-			error(0) = "ERROR reading BMAJ, BMIN, BPA: " + x.getMesg();
+			error(0) = std::string("ERROR reading BMAJ, BMIN, BPA: ") + x.what();
 			ok = False;
 		}
 	}

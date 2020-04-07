@@ -109,8 +109,8 @@ int main()
          QualityCoordinate lc  = makeCoordinate(whichQuality, qualityStrings);
          doit6(lc, verbose);
       }
-   } catch (AipsError& x) {
-      cerr << "aipserror: error " << x.getMesg() << endl;
+   } catch (std::exception& x) {
+      cerr << "aipserror: error " << x.what() << endl;
       return (1);
    }
 
@@ -494,7 +494,7 @@ void doit4(QualityCoordinate& lc, Bool verbose)
 	Coordinate* pC = 0;
 	try {
 		pC = lc.makeFourierCoordinate (axes, shape);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 		failed = True;
 	}
 	if (!failed) {

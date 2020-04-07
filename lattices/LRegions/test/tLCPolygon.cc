@@ -187,7 +187,7 @@ int main()
             IPosition shape(2, 7, 7);
             try {
               doIt(shape, x, y);
-            } catch (AipsError& x) {
+            } catch (std::exception& x) {
               cout << x.what() << endl;
             }
         }
@@ -200,7 +200,7 @@ int main()
             IPosition shape(2, 5, 3);
             try {
               doIt(shape, x, y);
-            } catch (AipsError& x) {
+            } catch (std::exception& x) {
               cout << x.what() << endl;
             }
         }
@@ -252,7 +252,7 @@ int main()
 	}
 
     } catch (const AipsError& x) {
-	cout << "Caught exception: " << x.getMesg() << endl;
+	cout << "Caught exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

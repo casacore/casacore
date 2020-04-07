@@ -758,8 +758,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           } else {
             msg = "Cannot remove file - unknown file type";
           }
-        } catch (AipsError& x) {
-          msg = x.getMesg();
+        } catch (std::exception& x) {
+          msg = x.what();
         }
         //
         if (outFile.exists()) {

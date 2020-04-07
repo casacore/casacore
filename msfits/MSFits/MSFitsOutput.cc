@@ -411,7 +411,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     catch (const AipsError& x) {
         os << LogOrigin("MSFitsOutput", __func__)
            << LogIO::WARN << "No source table in MS. " 
-           << x.getMesg() << LogIO::POST;
+           << x.what() << LogIO::POST;
     }
     const uInt ndds = ddTable.nrow();
     const uInt nspec = spectralTable.nrow();

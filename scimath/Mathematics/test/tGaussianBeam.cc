@@ -69,8 +69,8 @@ int main() {
             GaussianBeam beam3(majAx, minAx, pa);
 
         }
-        catch (AipsError& x) {
-            cout << "Exception thrown as expected: " << x.getMesg() << endl;
+        catch (std::exception& x) {
+            cout << "Exception thrown as expected: " << x.what() << endl;
             except = True;
         }
         AlwaysAssert(except, AipsError);
@@ -81,8 +81,8 @@ int main() {
             GaussianBeam beam3(majAx, minAx, pa);
 
         }
-        catch (AipsError& x) {
-            cout << "Exception thrown as expected: " << x.getMesg() << endl;
+        catch (std::exception& x) {
+            cout << "Exception thrown as expected: " << x.what() << endl;
             except = True;
         }
         AlwaysAssert(except, AipsError);
@@ -97,8 +97,8 @@ int main() {
             // bogus units
             beam.getArea("arcsec");
         }
-        catch (AipsError& x) {
-            cout << "Exception thrown as expected: " << x.getMesg() << endl;
+        catch (std::exception& x) {
+            cout << "Exception thrown as expected: " << x.what() << endl;
             except = True;
         }
         AlwaysAssert(except, AipsError);
@@ -114,8 +114,8 @@ int main() {
             beam2 = GaussianBeam::fromRecord(rec);
 
         }
-        catch (AipsError& x) {
-            cout << "Exception thrown as expected: " << x.getMesg() << endl;
+        catch (std::exception& x) {
+            cout << "Exception thrown as expected: " << x.what() << endl;
             except = True;
         }
         AlwaysAssert(except, AipsError);
@@ -213,7 +213,7 @@ int main() {
         }
     }
     catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+        cout << x.what() << endl;
         cout << "FAIL" << endl;
         return 1;
     }

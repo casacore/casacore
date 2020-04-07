@@ -128,8 +128,8 @@ void writeData (Bool isSD, Bool autoScale)
   ///  newtab2.bindColumn ("source2", engine1);
   ///  try {
   ///    Table tab2(newtab2, 10);                // bound to incorrect column
-  ///  } catch (AipsError x) {
-  ///    cout << x.getMesg() << endl;
+  ///  } catch (std::exception x) {
+  ///    cout << x.what() << endl;
   ///  } 
 }
 
@@ -487,8 +487,8 @@ int main ()
     writeData (True, True);
     if (!checkDataSD (True)) sts=1;
     testSpeed();
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return sts;

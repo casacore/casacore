@@ -70,7 +70,7 @@ int checkScaBool (const String& func, const String& arg, Bool expResult)
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -98,7 +98,7 @@ int checkScaInt (const String& func, const String& arg, Int expResult)
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -127,7 +127,7 @@ int checkScaDouble (const String& func, const String& arg, Double expResult,
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -155,7 +155,7 @@ int checkScaDComplex (const String& func, const String& arg, DComplex expResult)
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -184,7 +184,7 @@ int checkScaDateTime (const String& func, const String& arg, MVTime expResult)
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -212,7 +212,7 @@ int checkScaString (const String& func, const String& arg, String expResult)
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -242,7 +242,7 @@ int checkArrBool (const String& func, const String& arg, const String& expResult
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -272,7 +272,7 @@ int checkArrInt (const String& func, const String& arg, const String& expResult)
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -302,7 +302,7 @@ int checkArrDouble (const String& func, const String& arg, const String& expResu
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -332,7 +332,7 @@ int checkArrDComplex (const String& func, const String& arg, const String& expRe
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -362,7 +362,7 @@ int checkArrString (const String& func, const String& arg, const String& expResu
       return 1;
     }
   } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -432,9 +432,9 @@ int checkExcp (const String& func, const String& arg,
     tableCommand (comm);
   } catch (const AipsError& x) {
     if (msgPart.empty()) {
-      cout << x.getMesg() << endl;
+      cout << x.what() << endl;
     } else if (x.getMesg().find (msgPart) == String::npos) {
-      cout << x.getMesg() << endl;
+      cout << x.what() << endl;
       cout << "    Expected another exception in: " << comm << endl;
       return 1;
     }
@@ -1817,7 +1817,7 @@ int main()
     nfail += testNoArrArg();
     nfail += testInvUnit();
   } catch (const AipsError& x) {
-    cout << "\nCaught an exception: " << x.getMesg() << endl;
+    cout << "\nCaught an exception: " << x.what() << endl;
     return 1;
   }
   cout << ntest << " tests done of which " << nfail << " failed" << endl;

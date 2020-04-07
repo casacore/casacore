@@ -147,8 +147,8 @@ int main ()
 				  latticeShape-1, latticeShape));
       AlwaysAssertExit (mask3 != mask1);
     }
-  } catch (AipsError& x) {
-    cerr << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Caught exception: " << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

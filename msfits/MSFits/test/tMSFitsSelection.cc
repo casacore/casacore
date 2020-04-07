@@ -124,8 +124,8 @@ int main(int argc, const char* argv[])
           cout << "selected table has rows " << mssel.nrow() << endl;
         }
     }
-    } catch (AipsError& x) {
-        cout << "ERROR: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+        cout << "ERROR: " << x.what() << endl;
     }
 
     return 1;

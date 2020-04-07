@@ -55,9 +55,9 @@ int main()
  	LatticeStepper demented(smallLatticeShape, badCursor);
 	cout << "'more axes than lattice' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
- 	if (!x.getMesg().contains("more axes than lattice")) {
- 	  cout << x.getMesg() << endl << "FAIL" << endl;
+      } catch (std::exception& x) {
+ 	if (!String(x.what()).contains("more axes than lattice")) {
+ 	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
  	}
       } 
@@ -66,9 +66,9 @@ int main()
 	LatticeStepper demented(latticeShape, bigCursor, stepperOrientation);
 	cout << "'upper bound exceeded' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
-	if (!x.getMesg().contains("> latticeShape")) {
-	  cout << x.getMesg() << endl << "FAIL" << endl;
+      } catch (std::exception& x) {
+	if (!String(x.what()).contains("> latticeShape")) {
+	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
       } 
@@ -77,9 +77,9 @@ int main()
 	LatticeStepper demented(latticeShape, zeroCursor,stepperOrientation);
 	cout << "'lower bound exceeded' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
-	if (!x.getMesg().contains("cursorShape <=0")) {
-	  cout << x.getMesg() << endl << "FAIL" << endl;
+      } catch (std::exception& x) {
+	if (!String(x.what()).contains("cursorShape <=0")) {
+	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
       } 
@@ -88,9 +88,9 @@ int main()
 	LatticeStepper demented(latticeShape, stepperShape, badOrientation1);
 	cout << "'bad orientation' exception 1 expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
-	if (!x.getMesg().contains("makeAxisPath")){
-	  cout << x.getMesg() << endl << "FAIL" << endl;
+      } catch (std::exception& x) {
+	if (!String(x.what()).contains("makeAxisPath")){
+	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
       } 
@@ -99,9 +99,9 @@ int main()
 	LatticeStepper demented(latticeShape, stepperShape, badOrientation2);
 	cout << "'bad orientation' exception 2 expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
-	if (!x.getMesg().contains("makeAxisPath")){
-	  cout << x.getMesg() << endl << "FAIL" << endl;
+      } catch (std::exception& x) {
+	if (!String(x.what()).contains("makeAxisPath")){
+	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
       } 
@@ -110,49 +110,49 @@ int main()
 			     IPosition(2,1,2), IPosition());
 	cout << "'no cursor shape' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
       try {
 	LatticeStepper step3(IPosition(4,2,3,4,5), IPosition(5,1),
 			     IPosition(2,1,2), IPosition());
 	cout << "'too long cursor shape' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
       try {
 	LatticeStepper step3(IPosition(4,2,3,4,5), IPosition(2,1),
 			     IPosition(5,1), IPosition());
 	cout << "'too long cursor axes' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
       try {
 	LatticeStepper step3(IPosition(4,2,3,4,5), IPosition(2,1),
 			     IPosition(3,1), IPosition());
 	cout << "'unequal cursor axes' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
       try {
 	LatticeStepper step3(IPosition(4,2,3,4,5), IPosition(2,1),
 			     IPosition(2,4), IPosition());
 	cout << "'too high cursor axes' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
       try {
 	LatticeStepper step3(IPosition(4,2,3,4,5), IPosition(4,2,3,4,1),
 			     IPosition(2,1,2), IPosition());
 	cout << "'> length 1' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
       try {
 	LatticeStepper step3(IPosition(4,2,3,4,5), IPosition(2,1),
 			     IPosition(2,2,1), IPosition());
 	cout << "'non ascending order' exception expected" << endl;
 	return 1;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
       } 
     }
     logger << "End of section which checks error detection" 
@@ -312,7 +312,7 @@ int main()
     delete clonePtr;
     delete stepPtr;
   } catch  (AipsError& x) {
-    cout << x.getMesg() << endl << "FAIL" << endl;
+    cout << x.what() << endl << "FAIL" << endl;
     return 1;
   } 
 

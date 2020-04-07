@@ -107,7 +107,7 @@ int main() {
         cout << "ok" << endl;
     }
     catch (const AipsError& x) {
-        cerr << x.getMesg() << endl;
+        cerr << x.what() << endl;
         return 1;
     }
     return 0;

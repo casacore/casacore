@@ -120,7 +120,7 @@ int main()
       }
 
    } catch (const AipsError& x) {
-      cerr << "aipserror: error " << x.getMesg() << endl;
+      cerr << "aipserror: error " << x.what() << endl;
       return (1);
    }
 
@@ -383,7 +383,7 @@ void doit4(StokesCoordinate& lc)
    Coordinate* pC = 0;
    try {
       pC = lc.makeFourierCoordinate (axes, shape);
-   } catch (AipsError& x) {
+   } catch (std::exception& x) {
      failed = True;
    } 
    if (!failed) {

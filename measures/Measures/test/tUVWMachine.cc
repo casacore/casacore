@@ -209,8 +209,8 @@ int main() {
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
 
   try {
@@ -302,8 +302,8 @@ int main() {
 
     cout << "---------------------------------------" << endl;
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
 
   return 0;

@@ -162,8 +162,8 @@ void b()
     *abool = True;
     try {
         colInx0.getRowNumber(found);
-    } catch (AipsError& x) {
-        cout << x.getMesg() << endl;       // values are not unique
+    } catch (std::exception& x) {
+        cout << x.what() << endl;       // values are not unique
     } 
     rows = colInx0.getRowNumbers();
     AlwaysAssertExit (rows.nelements() == (nrrow+1)/2);
@@ -332,8 +332,8 @@ int main()
 	b();
 	c();
 	d();
-    } catch (AipsError& x) {
-        cout << "Exception caught: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+        cout << "Exception caught: " << x.what() << endl;
 	return 1;
     } 
     return 0;

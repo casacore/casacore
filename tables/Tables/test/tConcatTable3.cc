@@ -106,8 +106,8 @@ int main()
     createTable ("tConcatTable3_tmp.tab3", 30, 5);
     concatTables();
     checkTable (0, 35);
-  } catch (AipsError& x) {
-    cout << "Exception caught: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Exception caught: " << x.what() << endl;
     return 1;
   } 
   return 0;

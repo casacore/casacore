@@ -490,7 +490,7 @@ int main()
 
    }
    catch (const AipsError& x) {
-      cerr << "Error " << x.getMesg() << endl;
+      cerr << "Error " << x.what() << endl;
       return (1);
    }
 
@@ -2449,7 +2449,7 @@ void doit6 ()
       Bool failed = False;
       try {
          pC = cSys.makeFourierCoordinate (axes, shape);
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
         failed = True;
       } 
       if (!failed) {
@@ -2466,7 +2466,7 @@ void doit6 ()
       Vector<Bool> axes2(20, True);
       try {
          pC = cSys.makeFourierCoordinate (axes2, shape);
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
         failed = True;
       } 
       if (!failed) {
@@ -2483,7 +2483,7 @@ void doit6 ()
       Vector<Int> shape2(20, 100);
       try {
          pC = cSys.makeFourierCoordinate (axes, shape2);
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
         failed = True;
       } 
       if (!failed) {

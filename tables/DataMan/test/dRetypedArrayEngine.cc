@@ -206,8 +206,8 @@ int main (int argc, const char*[])
 	a( (argc<2));
 	b();
 	c();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status
@@ -255,8 +255,8 @@ void a (Bool doExcp)
     if (doExcp) {
 ///	try {
 ///	    Table tab2(newtab2, 50);           // bound to incorrect column
-///	} catch (AipsError x) {
-///	    cout << x.getMesg() << endl;
+///	} catch (std::exception x) {
+///	    cout << x.what() << endl;
 ///	} 
     }
 }

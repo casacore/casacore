@@ -54,8 +54,8 @@ int main () {
     testParallel();
     a();
     b();
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

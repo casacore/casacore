@@ -262,7 +262,7 @@ int main(int argc, char **argv)
       }
     catch (MSSelectionError& x)
       {
-    	cout << "###MSSelectionError: " << x.getMesg() << endl;
+    	cout << "###MSSelectionError: " << x.what() << endl;
 	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
       }
     //
@@ -272,9 +272,9 @@ int main(int argc, char **argv)
     // exception handler (which is installed by the CLLIB as the
     // clDefaultErrorHandler).
     //
-    catch (AipsError& x)
+    catch (std::exception& x)
       {
-    	cout << "###AipsError: " << x.getMesg() << endl;
+    	cout << "###AipsError: " << x.what() << endl;
       }
   }
   //

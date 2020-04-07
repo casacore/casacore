@@ -129,8 +129,8 @@ int main(int argc, const char* argv[])
     }
     delete [] writeBuffer;
   }
-  catch (AipsError& x) {
-    cerr << x.getMesg() << endl;
+  catch (std::exception& x) {
+    cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

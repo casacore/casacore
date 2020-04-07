@@ -111,8 +111,8 @@ void doIt (const LCRegion& region,
         LCExtension prism2 (region, axes, LCBox(blc-1, trc, latticeShape));
         AlwaysAssertExit (prism2 != prism);
       }
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 }
 
@@ -150,8 +150,8 @@ int main()
 	// Error; incorrect order of extendAxes
 	doIt (polygon, IPosition(2,1), IPosition(2,2), IPosition(2,3),
 	      IPosition(2,20));
-    } catch (AipsError& x) {
-	cout << "Caught exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

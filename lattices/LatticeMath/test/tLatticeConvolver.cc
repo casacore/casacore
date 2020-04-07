@@ -606,9 +606,9 @@ int main() {
 // 	cout << "result = " << resultArray << endl;
 //       }
       }
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout<< "FAIL"<< endl;
-    cerr << x.getMesg() << endl;
+    cerr << x.what() << endl;
     return 1;
   } 
   cout<< "OK"<< endl;

@@ -257,8 +257,8 @@ int main()
     conB1950(b1950, j2000, 1979.9, &frame);
     conB1950(b1950, j2000, 2000.0, &frame);
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
     
   return(0);

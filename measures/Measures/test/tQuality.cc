@@ -103,8 +103,8 @@ int main() {
 
 		cout << "ok" << endl;
 	}
-	catch (AipsError& x) {
-		cout << "fail "<< x.getMesg()<<endl;
+	catch (std::exception& x) {
+		cout << "fail "<< x.what()<<endl;
 		return 1;
 	}
 	return 0;

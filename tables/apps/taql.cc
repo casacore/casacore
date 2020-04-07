@@ -664,7 +664,7 @@ void showParseError (const TableParseError& x)
   //# Background color codes:
   //# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
   // cerr has fd 2 (per C++ standard)
-  const String& msg(x.getMesg());
+  const String& msg(x.what());
   if (isatty(2)  &&  x.pos() >= 0) {
     // Cater for leading part of the message.
     int errLen = x.token().size();
@@ -1077,7 +1077,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
   } catch (const TableParseError& x) {
     showParseError (x);
   } catch (const AipsError& x) {
-    cerr << x.getMesg() << endl;
+    cerr << x.what() << endl;
   }
   return True;
 }
@@ -1331,7 +1331,7 @@ int main (int argc, const char* argv[])
     }
     executeArgs (args, True, tableMap, options);
   } catch (const AipsError& x) {
-    cerr << "\nCaught an exception: " << x.getMesg() << endl;
+    cerr << "\nCaught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;               // successfully executed

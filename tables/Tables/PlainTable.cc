@@ -159,7 +159,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, uInt nrrow,
     tableCache().define (name_p, this);
     //# Trace if needed.
     itsTraceId = TableTrace::traceTable (name_p, 'n');
-  } catch (AipsError&) {
+  } catch (std::exception&) {
     delete lockPtr_p;
     lockPtr_p = 0;
     delete colSetPtr_p;

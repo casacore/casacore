@@ -294,7 +294,7 @@ matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   try{
     mvdir = referenceDirMeas(row, time).getAngle();
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     return False;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
@@ -311,7 +311,7 @@ matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   try{
     mvdir = delayDirMeas(row, time).getAngle();
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     return False;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
@@ -328,7 +328,7 @@ matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
   try{
     mvdir = phaseDirMeas(row, time).getAngle();
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     return False;
   }
   if (dirVal.separation(mvdir) < sepInRad) {

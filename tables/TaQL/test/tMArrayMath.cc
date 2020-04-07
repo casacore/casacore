@@ -732,7 +732,7 @@ int main()
     doTestNull();
     cout << "doPerf" << endl;
     doPerf();
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }

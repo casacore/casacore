@@ -996,7 +996,7 @@ Bool Table::isReadable (const String& tableName, Bool throwIf)
             }
 	    valid = False;
 	}
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
         if (throwIf) {
             throw;
         }

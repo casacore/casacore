@@ -75,8 +75,8 @@ int main()
       Vector<Float> yv(IPosition(1,sizeof(y)/sizeof(Float)), y, SHARE);
       doIt (shape, xv, yv);
     }
-  } catch (AipsError& x) {
-    cout << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught exception: " << x.what() << endl;
     return 1;
   } 
   cout << "OK" << endl;

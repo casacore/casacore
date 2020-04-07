@@ -165,7 +165,7 @@ int main()
     // Test a compound data type.
     testCompound();
 
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }

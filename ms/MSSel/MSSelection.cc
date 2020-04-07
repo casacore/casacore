@@ -758,7 +758,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	
 	fullTEN_p = condition;
       }
-    catch(AipsError& x)
+    catch(std::exception& x)
       {
 	runErrorHandler();
 	deleteNodes();

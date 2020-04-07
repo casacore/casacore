@@ -40,7 +40,7 @@ int main() {
     	AlwaysAssert(idx == 1565404, AipsError);
     }
     catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+        cout << x.what() << endl;
         return 1;
     } 
     return 0;

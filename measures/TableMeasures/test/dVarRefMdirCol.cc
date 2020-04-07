@@ -114,10 +114,10 @@ int main()
       }
     }
 
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "An error occurred.  The test ended early with the following";
     cout << " message:\n";
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     return 1;
   }
   return 0;

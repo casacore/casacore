@@ -186,8 +186,8 @@ int main()
       delete cl;
     }
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
 
   try {
@@ -197,8 +197,8 @@ int main()
     MeasComet comet;
     cout << "OK:             " << comet.ok() << endl;
     cout << "Name:           " << comet.getName() << endl;
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   }
 
   /*
@@ -240,8 +240,8 @@ int main()
     cout << MVTime(x).string(MVTime::YMD) << " "
 	 << comet.getDisk(y, x) << ": " << y << endl;
   }
-  catch (AipsError x) {
-    cout << x.getMesg() << endl;
+  catch (std::exception x) {
+    cout << x.what() << endl;
   }
   */
   

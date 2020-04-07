@@ -63,7 +63,7 @@ int main()
     Bool caught = False;
     try {
 	(void) qi(); // Should cause an exception - queue is empty
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
 	caught = True;
     } 
     AlwaysAssertExit(caught);

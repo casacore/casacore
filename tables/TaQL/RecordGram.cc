@@ -362,7 +362,7 @@ TableExprNode RecordGram::doParse (const String& expression)
         // otherwise it will be deleted.
         result = *theirNodePtr;
     } catch (const AipsError& x) {
-        message = x.getMesg();
+        message = x.what();
         error = True;
     }
     // Delete possibly non-deleted tokens (usually in case of exception).

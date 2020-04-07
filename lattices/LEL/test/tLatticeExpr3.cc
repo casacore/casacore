@@ -341,8 +341,8 @@ int main(int argc, const char* argv[])
       timer.show ("+= sca mem");
       AlwaysAssertExit (allEQ(pa1.get(), float(12)));
     }
-  } catch (AipsError& x) {
-    cerr << "aipserror: error " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "aipserror: error " << x.what() << endl;
     return 1;
   } 
  

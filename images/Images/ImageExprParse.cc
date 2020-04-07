@@ -228,8 +228,8 @@ LatticeExprNode ImageExprParse::command
 	if (imageExprGramParseCommand(command) != 0) {
 	    throw (AipsError("Parse error in image expression " + str));
 	}
-    } catch (AipsError& x) {
-	message = x.getMesg();
+    } catch (std::exception& x) {
+	message = x.what();
 	error = True;
     } 
     //# Save the resulting expression and clear the common node object.

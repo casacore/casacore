@@ -478,7 +478,7 @@ int main() {
             try {
                 bw.setCalculateAsAdded(True);
             }
-            catch (AipsError& x) {
+            catch (std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -487,7 +487,7 @@ int main() {
             try {
                 bw.setCalculateAsAdded(True);
             }
-            catch (AipsError& x) {
+            catch (std::exception& x) {
                 thrown = True;
             }
         }
@@ -1617,7 +1617,7 @@ int main() {
         }
     }
     catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+        cout << x.what() << endl;
         return 1;
     } 
     return 0;

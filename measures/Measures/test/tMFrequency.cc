@@ -46,7 +46,7 @@ int main() {
 		cout << "ok" << endl;
 	}
 	catch (const AipsError& x) {
-		cout << "tMFrequency failed: " << x.getMesg() << endl;
+		cout << "tMFrequency failed: " << x.what() << endl;
 		return 1;
 	}
 	return 0;
