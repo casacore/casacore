@@ -126,7 +126,7 @@ public:
     // Note that the assign function can be used to assign a
     // non-conforming cube.
     // <group>
-    Cube<T, Alloc> &operator=(const Cube<T, Alloc>& source)
+     Cube<T, Alloc> &operator=(const Cube<T, Alloc>& source)
     { Array<T, Alloc>::operator=(source); return *this; }
      Cube<T, Alloc> &operator=(Cube<T, Alloc>&& source)
     { Array<T, Alloc>::operator=(std::move(source)); return *this; }

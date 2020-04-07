@@ -191,7 +191,7 @@ public:
     // Storage is allocated by <src>DefaultAllocator<T></src>.
     Array(const IPosition &shape, const T &initialValue, const Alloc& allocator = Alloc());
     
-    Array(std::initializer_list<T> list);
+    Array(std::initializer_list<T> list, const Alloc& allocator = Alloc());
 
     // After construction, this and other reference the same storage.
     Array(const Array<T, Alloc> &other);

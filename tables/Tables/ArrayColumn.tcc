@@ -318,13 +318,16 @@ ArrayColumn<T>::getColumnCells (const RefRows & rows,
        // data for this row ([s1, ...,sN, nR] --> [s1,...,sN].
 
       Array<T> destinationRow = destination [i];
+      std::cout << "i=" << i << "Dest=" << destinationRow << '\n';
 
        for (uInt j = 0; j < nSlicers; j++){
 
            Array<T> destinationRowSection = destinationRow (* destinationSlicers[j]);
            if (canAccessSlice_p) {
+             std::cout << "canAccessSlice_p\n";
              baseColPtr_p->getSlice (row, * dataSlicers[j], & destinationRowSection);
            } else {
+             std::cout << "NOT canAccessSlice_p\n";
              getSlice (row, * dataSlicers[j], destinationRowSection);
            }
        }

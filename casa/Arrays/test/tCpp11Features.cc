@@ -113,12 +113,45 @@ BOOST_AUTO_TEST_CASE( array_move_assignment )
   BOOST_CHECK_EQUAL(b.shape(), ip);
   BOOST_CHECK_EQUAL(b.shape(), ip);
   BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+
+  Array<int> c(IPosition{1,1}, 7); // incorrect shape
+  BOOST_CHECK_THROW(c = std::move(b), std::runtime_error); // TODO it is questionable whether we would want this to throw!
+  BOOST_CHECK_EQUAL(c(IPosition(2, 0, 0)), 7);
+  
+  Array<int> d(IPosition(0));
+  Vector<int> e(IPosition{3}, 1982);
+  d = std::move(e); // Move assigning to empty should not validate shape
+  BOOST_CHECK_EQUAL(d.shape(), IPosition(1, 3));
+}
+
+BOOST_AUTO_TEST_CASE( array_move_case1 )
+{
+  Array<int> a(IPosition{2, 3}, 0);
+  Array<int> b = a[1];
+  b = 5;
+  std::vector<int> refa{0, 0, 5, 5, 0, 0};
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), refa.begin(), refa.end());
+  
+  Slicer slicer(IPosition(1,0));
+  Array<int> sliced = b(slicer);
+  sliced = 1982;
+  std::vector<int> refsliced1{0, 0, 1982, 5, 0, 0};
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), refsliced1.begin(), refsliced1.end());
+  
+  Array<int> d(IPosition{3}, 42);
+  sliced = d(IPosition{0}, IPosition{0}, IPosition{1});
+  std::vector<int> refsliced2{0, 0, 42, 5, 0, 0};
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), refsliced2.begin(), refsliced2.end());
+  
+  Array<int> e(IPosition{1}, 16);
+  e = d(IPosition{0}, IPosition{0}, IPosition{1});
+  BOOST_CHECK_EQUAL(e(IPosition(1, 0)), 42);
 }
 
 BOOST_AUTO_TEST_CASE( array_swap )
 {
   IPosition sa{2,3}, sb{4,4,4};
-  Array<int> a(sa, 8), b(sb, 1982), c;
+  Array<int> a(sa, 8), b(sb, 1982), c, d(sa, 37);
   casacore::swap(a, b);
   casacore::swap(b, c);
   BOOST_CHECK_EQUAL(a.shape(), sb);
@@ -126,9 +159,9 @@ BOOST_AUTO_TEST_CASE( array_swap )
   BOOST_CHECK(b.empty());
   BOOST_CHECK_EQUAL(c.shape(), sa);
   BOOST_CHECK(allEQ(c, 8));
-  std::swap(a, c);
-  BOOST_CHECK_EQUAL(a.shape(), sa);
-  BOOST_CHECK(allEQ(a, 8));
+  std::swap(c, d); // Will use moves & temporary, but should still work.
+  BOOST_CHECK_EQUAL(c.shape(), sa);
+  BOOST_CHECK(allEQ(c, 37));
 }
 
 BOOST_AUTO_TEST_CASE( array_can_hold_noncopyable_objects )
@@ -169,16 +202,17 @@ BOOST_AUTO_TEST_CASE( vector_range_constructor )
   Vector<std::string> v2(stdvec2.begin(), stdvec2.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(v2.begin(), v2.end(), stdvec2.begin(), stdvec2.end());
   
-  std::vector<size_t> stdvec3{37, 38};
+  std::vector<size_t> stdvec3{37, 38, 39, 40, 41};
   v1 = Vector<int>(stdvec3.begin(), stdvec3.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), stdvec3.begin(), stdvec3.end());
 
   Vector<std::string> v3(v2.begin(), v2.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(v2.begin(), v2.end(), v3.begin(), v3.end());
-  
+
+  Vector<int> v4;
   int *a=nullptr, *b=nullptr;
-  v1 = Vector<int>(a, b);
-  BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), a, b);
+  v4 = Vector<int>(a, b);
+  BOOST_CHECK_EQUAL_COLLECTIONS(v4.begin(), v4.end(), a, b);
   v1.resize();
 }
 
@@ -230,6 +264,25 @@ BOOST_AUTO_TEST_CASE( masked_array_assign_rvalue_array )
     BOOST_CHECK_EQUAL(ma.getArray()(IPosition(2, i/3, i%3)), 37);
     BOOST_CHECK_EQUAL(ma.getMask()(IPosition(2, i/3, i%3)), true);
   }
+}
+
+BOOST_AUTO_TEST_CASE( pointer_vector )
+{
+  // Testing this because it gave compiling errors at some point
+  // Vector<ptr>(3, 0) was allowed, but is no longer, because 0 is not implicitly convertable to a pointer
+  // Hence now we need this:
+  Vector<Array<int>*> ptrArray(3, nullptr);
+  for(auto iter=ptrArray.begin(); iter!=ptrArray.end(); ++iter)
+    BOOST_CHECK_EQUAL(*iter, nullptr);
+}
+
+BOOST_AUTO_TEST_CASE( bool_vector_constructor )
+{
+  // The bool Vector constructor that takes a std::vector is specialized because
+  // std::vector<bool> is different than other std::vectors. This is tested here.
+  std::vector<bool> stdv{true, false, true};
+  Vector<bool> v(stdv);
+  BOOST_CHECK_EQUAL_COLLECTIONS(stdv.begin(), stdv.end(), v.begin(), v.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

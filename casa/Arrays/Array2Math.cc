@@ -250,7 +250,7 @@ void RealToComplex(Array<std::complex<float>> &carray, const Array<float> &rarra
                      "2*carray.nelements()"));
   }
   if (rarray.contiguousStorage()  &&  carray.contiguousStorage()) {
-    std::copy_n(rarray.data(), rarray.nelements(), const_cast<std::complex<float>*>(carray.data()));
+    std::copy_n(rarray.data(), rarray.nelements(), reinterpret_cast<float*>(const_cast<std::complex<float>*>(carray.data())));
   } else {
     Array<std::complex<float>>::iterator citer=carray.begin();
     Array<float>::const_iterator rend = rarray.end();
@@ -274,7 +274,7 @@ void RealToComplex(Array<std::complex<double>> &carray, const Array<double> &rar
                      "2*carray.nelements()"));
   }
   if (rarray.contiguousStorage()  &&  carray.contiguousStorage()) {
-    std::copy_n(rarray.data(), rarray.nelements(), const_cast<std::complex<double>*>(carray.data()));
+    std::copy_n(rarray.data(), rarray.nelements(), reinterpret_cast<double*>(const_cast<std::complex<double>*>(carray.data())));
   } else {
     Array<std::complex<double>>::iterator citer=carray.begin();
     Array<double>::const_iterator rend = rarray.end();

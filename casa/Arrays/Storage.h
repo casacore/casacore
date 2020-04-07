@@ -14,52 +14,52 @@ template<typename T, typename Alloc>
 class Storage : public Alloc
 {
 public:
-  Storage() :
-    Alloc(),
+  Storage(const Alloc& allocator) :
+    Alloc(allocator),
     _data(nullptr),
-    _end(nullptr)
-  { }
-  
-  Storage(std::size_t n) :
-    Alloc(),
-    _data(construct(n)),
-    _end(_data + n)
+    _end(nullptr),
+    _isShared(false)
   { }
   
   Storage(std::size_t n, const Alloc& allocator) :
     Alloc(allocator),
     _data(construct(n)),
-    _end(_data + n)
-  { }
-  
-  Storage(std::size_t n, const T& val) :
-    Alloc(),
-    _data(construct(n, val)),
-    _end(_data + n)
+    _end(_data + n),
+    _isShared(false)
   { }
   
   Storage(std::size_t n, const T& val, const Alloc& allocator) :
     Alloc(allocator),
     _data(construct(n, val)),
-    _end(_data + n)
+    _end(_data + n),
+    _isShared(false)
   { }
   
   template<typename InputIterator>
-  Storage(InputIterator startIter, InputIterator endIter, const Alloc& allocator=Alloc()) :
+  Storage(InputIterator startIter, InputIterator endIter, const Alloc& allocator) :
     Storage(startIter, endIter, allocator, std::is_integral<InputIterator>())
   { }
   
-  Storage(const Storage&) = delete;
-  Storage(Storage&&) = delete;
+  Storage(const Storage<T, Alloc>&) = delete;
+  Storage(Storage<T, Alloc>&&) = delete;
   
-  static std::unique_ptr<Storage> MakeFromMove(T* startIter, T* endIter, const Alloc& allocator)
+  static std::unique_ptr<Storage<T, Alloc>> MakeFromMove(T* startIter, T* endIter, const Alloc& allocator)
   {
-    return std::unique_ptr<Storage>(new Storage(startIter, endIter, allocator, std::true_type(), std::true_type()));
+    return std::unique_ptr<Storage<T, Alloc>>(new Storage(startIter, endIter, allocator, std::true_type(), std::true_type()));
   }
   
-  ~Storage() noexcept
+  static std::unique_ptr<Storage<T, Alloc>> MakeFromSharedData(T* existingData, size_t n, const Alloc& allocator)
   {
-    if(size())
+    std::unique_ptr<Storage<T, Alloc>> newStorage = std::unique_ptr<Storage>(new Storage<T, Alloc>(allocator));
+    newStorage->_data = existingData;
+    newStorage->_end = existingData + n;
+    newStorage->_isShared = true;
+    return newStorage;
+  }
+  
+ ~Storage() noexcept
+  {
+    if(size() && !_isShared)
     {
       for(size_t i=0; i!=size(); ++i)
         _data[size()-i-1].~T();
@@ -74,6 +74,8 @@ public:
   const T* data() const { return _data; }
   
   size_t size() const { return _end - _data; }
+  
+  const Alloc& get_allocator() const { return static_cast<const Alloc&>(*this); }
   
 private:
   Storage(T* startIter, T* endIter, const Alloc& allocator, std::true_type /*integral*/, std::true_type /*move*/) :
@@ -176,6 +178,7 @@ private:
   
   T* _data;
   T* _end;
+  bool _isShared;
 };
 
 }

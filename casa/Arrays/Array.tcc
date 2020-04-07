@@ -78,9 +78,9 @@ template<typename T, typename Alloc> Array<T, Alloc>::Array(const IPosition &sha
   assert(ok());
 }
 
-template<typename T, typename Alloc> Array<T, Alloc>::Array(std::initializer_list<T> list)
+template<typename T, typename Alloc> Array<T, Alloc>::Array(std::initializer_list<T> list, const Alloc& allocator)
 : ArrayBase (IPosition(1, list.size())),
-  data_p(new Storage<T, Alloc>(list.begin(), list.end())),
+  data_p(new Storage<T, Alloc>(list.begin(), list.end(), allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -203,7 +203,28 @@ std::unique_ptr<ArrayBase> Array<T, Alloc>::makeArray() const
 template<class T, typename Alloc>
 Array<T, Alloc>& Array<T, Alloc>::operator= (Array<T, Alloc>&& other)
 {
-  swap(other);
+  if(nrefs() > 1)
+  {
+    // We can't move: this is a shared array, so we can't
+    // just replace the storage. Non-moveable types will cause
+    // this to throw :-(. TODO should be solved.
+    assign_conforming(other);
+  }
+  else {
+    // There's no good reason to require conformance here, but some of the software seems
+    // to assume that assignment always checks for the shape to fit. :-(
+    if (!conform(other)  &&  nelements() != 0) {
+      validateConformance(other);
+    }
+    else {
+      if(other.fixedDimensionality() != 0 && ndim() != other.ndim())
+      {
+        // We can't directly swap the two, because the lhs doesn't match in rhs requirements
+        resize(IPosition(other.fixedDimensionality(), 0));
+      }
+      swap(other);
+    }
+  }
   return *this;
 }
 
@@ -1049,14 +1070,20 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
   preTakeStorage(shape);
 
   size_t new_nels = shape.product();
-
-  if (data_p==nullptr || data_p.use_count() > 1
-          || data_p->size() != new_nels) {
-    data_p = Storage<T, Alloc>::MakeFromMove(storage, storage+new_nels, allocator);
-  } else {
-      std::move(storage, storage+new_nels, data_p->data());
+  
+  if(policy == SHARE)
+  {
+    data_p = Storage<T, Alloc>::MakeFromSharedData(storage, new_nels, allocator);
   }
-  ArrayBase::assign(ArrayBase(shape));
+  else {
+    if (data_p==nullptr || data_p.use_count() > 1
+            || data_p->size() != new_nels) {
+      data_p = Storage<T, Alloc>::MakeFromMove(storage, storage+new_nels, allocator);
+    } else {
+        std::move(storage, storage+new_nels, data_p->data());
+    }
+    ArrayBase::assign(ArrayBase(shape));
+  }
   
   begin_p = data_p->data();
   setEndIter();
