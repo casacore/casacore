@@ -81,7 +81,7 @@ public:
 
   void virtualconcat(MeasurementSet& otherMS, 
 		     const Bool checkShapeAndCateg=True,
-		     const String& obsidAndScanTableName="");
+		     const String& obsidAndProcAndScanTableName="");
 
   void concatenate(const MeasurementSet& otherMS,
 		   const uInt handling=0,   //# 0 (default): complete concat of all tables
@@ -111,6 +111,8 @@ private:
   Bool copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAndIndices);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
                              //# by default remove redundant observation table rows
+  Int copyProcessor(const MSProcessor& otherObs, const Bool remRedunProcId=True);
+                             //# by default remove redundant processor table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
   Block<uInt> copyState(const MSState& otherState);
@@ -129,6 +131,9 @@ private:
   Bool obsRowsEquivalent(const MSObservationColumns& obsCol, 
 			 const rownr_t& rowi, const rownr_t& rowj);
 
+  Bool procRowsEquivalent(const MSProcessorColumns& procCol, 
+			 const uInt& rowi, const uInt& rowj);
+
 
   void updateModelDataKeywords(MeasurementSet& ms);
 
@@ -145,6 +150,8 @@ private:
   std::map <Int, Int> newObsIndexA_p;
   std::map <Int, Int> newObsIndexB_p;
   std::map <Int, Int> otherObsIdsWithCounterpart_p;
+  std::map <Int, Int> newProcIndexA_p;
+  std::map <Int, Int> newProcIndexB_p;
   std::map <Int, Int> solSystObjects_p;
 
   Bool doSource_p;
@@ -152,6 +159,8 @@ private:
   Bool doSPW_p;
   Bool doObsA_p;
   Bool doObsB_p;
+  Bool doProcA_p;
+  Bool doProcB_p;
 
 };
 

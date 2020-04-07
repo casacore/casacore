@@ -33,23 +33,19 @@
 // Test program for the TableLock class.
 // </summary>
 
-#ifdef AIPS_TABLE_NOLOCKING
-void checkLockOption (const TableLock& lock, TableLock::LockOption,
-                      Bool, Bool)
-{
-    AlwaysAssertExit (lock.option() == TableLock::NoLocking);
-    AlwaysAssertExit (! lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
-}
-#else
 void checkLockOption (const TableLock& lock, TableLock::LockOption opt,
                       Bool readLock, Bool permLock)
 {
+  if (TableLock::lockingDisabled()) {
+    AlwaysAssertExit (lock.option() == TableLock::NoLocking);
+    AlwaysAssertExit (! lock.readLocking());
+    AlwaysAssertExit (! lock.isPermanent());
+  } else {
     AlwaysAssertExit (lock.option() == opt);
     AlwaysAssertExit (lock.readLocking() == readLock);
     AlwaysAssertExit (lock.isPermanent() == permLock);
+  }
 }
-#endif
 
 int main()
 {

@@ -240,7 +240,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
         const Bool useNewStyle) :
     _infile(0), _msc(0), _uniqueAnts(), _nAntRow(0), _restfreq(0),
     _addSourceTable(False), _log(LogOrigin("MSFitsInput", "MSFitsInput")),
-    _newNameStyle(useNewStyle), _msCreated(False), _rotateAnts(False) {
+    _newNameStyle(useNewStyle), _msCreated(False) {
     // First, lets verify that fitsfile exists and that it appears to be a
     // FITS file.
     File f(fitsFile);
@@ -1810,10 +1810,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     // convert to canonical form
     timsys = MEpoch::showType(epochRef);
     rdate = timeVal.second(); // MJD seconds
-    String arrnam = "Unknown";
-    if (btKeywords.isDefined("ARRNAM")) {
-        arrnam = btKeywords.asString("ARRNAM");
-    }
     // store the time keywords
     _ms.antenna().rwKeywordSet().define(String("RDATE"), rdate);
     _ms.antenna().rwKeywordSet().define(String("GSTIA0"), gst);
@@ -1892,37 +1888,39 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     // VLA requires rotation of local coords in some cases
     Bool rotate = False;
     Matrix<Double> posRot = Rot3D(0, 0.0);
-    if (_rotateAnts) {
-        if (_array == "VLA") {
-            // Array position for VLA from aips may be wrong, so use
-            //  authoritative position from measures (station positions
-            //  are from on-line system and are relative to this)
-            MPosition vlaCenter;
-            AlwaysAssert(MeasTable::Observatory(vlaCenter, "VLA"), AipsError);
-            if (allNearAbs(arrayXYZ, vlaCenter.getValue().getValue(), 10)) {
-                arrayXYZ = vlaCenter.getValue().getValue();
-                // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
-                Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
-                posRot = Rot3D(2, vlaLong); // Applied to each ant position below
-                rotate = True;
-            }
-            else {
-                _log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
-                << "Array position from UVFITS file is not near that of the "
-                << "position from the Observatories table. No rotation of "
-                << "antenna positions will be performed." << LogIO::POST;
-            }
+    String arrnam = "Unknown";
+    if (btKeywords.isDefined("ARRNAM")) {
+        arrnam = btKeywords.asString("ARRNAM");
+        arrnam.trim();
+    }
+    if (arrnam == "VLA" && ! btKeywords.isDefined("FRAME")) {
+        _log << LogOrigin("MSFitsInput", __FUNCTION__) << LogIO::NORMAL
+            << "This looks like an old VLA archive UVFITS file"
+            << LogIO::POST;
+        // Array position for VLA from aips may be wrong, so use
+        //  authoritative position from measures (station positions
+        //  are from on-line system and are relative to this)
+        MPosition vlaCenter;
+        AlwaysAssert(MeasTable::Observatory(vlaCenter, "VLA"), AipsError);
+        if (allNearAbs(arrayXYZ, vlaCenter.getValue().getValue(), 10)) {
+            arrayXYZ = vlaCenter.getValue().getValue();
+            // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
+            Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
+            posRot = Rot3D(2, vlaLong); // Applied to each ant position below
+            rotate = True;
+            _log << LogIO::NORMAL << "Performing transformation of antenna "
+                << "positions from coordinate frame used by MODCOMPs to ITRF"
+                << LogIO::POST;
         }
         else {
-            _log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
-                << "Array " + _array + " is not a candidate to have "
-                << "its antenna positions rotated. No rotation of antenna "
-                << "positions will be performed" << LogIO::POST;
+            _log << LogIO::WARN << "Array position from UVFITS file is not "
+                << "near that of the position from the Observatories table. "
+                << "No rotation of antenna positions will be performed."
+                << LogIO::POST;
         }
     }
     // add antenna info to table
     ant.setPositionRef(MPosition::ITRF);
-
     _ms.antenna().addRow(_nAntRow);
     for (Int i = 0; i < _nAntRow; ++i) {
         // This loop initially flags all rows.

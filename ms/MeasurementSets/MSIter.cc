@@ -47,7 +47,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
- 
+
 int MSInterval::comp(const void * obj1, const void * obj2) const
 {
   double v1 = *(const Double*)obj1;
@@ -96,7 +96,7 @@ MSIter::MSIter(const MeasurementSet& ms,
   interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
   allBeamOffsetsZero_p(True)
 {
-  bms_p.resize(1); 
+  bms_p.resize(1);
   bms_p[0]=ms;
   construct(sortColumns,addDefaultSortColumns);
 }
@@ -131,10 +131,10 @@ Bool MSIter::isSubSet (const Vector<rownr_t>& r1, const Vector<rownr_t>& r2) {
   return ok;
 }
 
-void MSIter::construct(const Block<Int>& sortColumns, 
+void MSIter::construct(const Block<Int>& sortColumns,
 		       Bool addDefaultSortColumns)
 {
-  This = (MSIter*)this; 
+  This = (MSIter*)this;
   nMS_p=bms_p.nelements();
   if (nMS_p==0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
   for (Int i=0; i<nMS_p; i++) {
@@ -152,10 +152,10 @@ void MSIter::construct(const Block<Int>& sortColumns,
   // If these columns are not explicitly sorted on, they will be added
   // BEFORE any others, unless addDefaultSortColumns=False
 
-  Block<Int> cols; 
+  Block<Int> cols;
   // try to reuse the existing sorted table if we didn't specify
   // any sortColumns
-  if (sortColumns.nelements()==0 && 
+  if (sortColumns.nelements()==0 &&
       bms_p[0].keywordSet().isDefined("SORT_COLUMNS")) {
     // note that we use the order of the first MS for all MS's
     Vector<String> colNames = bms_p[0].keywordSet().asArrayString("SORT_COLUMNS");
@@ -169,7 +169,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
   Bool timeSeen=False, arraySeen=False, ddSeen=False, fieldSeen=False;
   Int nCol=0;
   for (uInt i=0; i<cols.nelements(); i++) {
-    if (cols[i]>0 && 
+    if (cols[i]>0 &&
 	cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
       if (cols[i]==MS::ARRAY_ID && !arraySeen) { arraySeen=True; nCol++; }
       if (cols[i]==MS::FIELD_ID && !fieldSeen) { fieldSeen=True; nCol++; }
@@ -180,7 +180,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
   }
   Block<String> columns;
-  
+
   Int iCol=0;
   if (addDefaultSortColumns) {
     columns.resize(cols.nelements()+4-nCol);
@@ -217,7 +217,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
       columns[iCol++]=MS::columnName(MS::TIME);
     }
   }
-  
+
   // now find the time column and set the compare function
   Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
   for (uInt i=0; i<columns.nelements(); i++) {
@@ -227,8 +227,8 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
   }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
-  
-  // Store the sorted table for future access if possible, 
+
+  // Store the sorted table for future access if possible,
   // reuse it if already there
   for (Int i=0; i<nMS_p; i++) {
     Bool useIn=False, store=False, useSorted=False;
@@ -247,7 +247,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
       sorted = bms_p[i].keywordSet().asTable("SORTED_TABLE");
       // if sorted table is smaller it can't be useful, remake it
       if (sorted.nrow() < bms_p[i].nrow()) store = bms_p[i].isWritable();
-      else { 
+      else {
 	// if input is a sorted subset of the stored sorted table
 	// we can use the input in the iterator
 	if (isSubSet(bms_p[i].rowNumbers(),sorted.rowNumbers())) {
@@ -271,7 +271,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
       sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
     }
-    
+
     // Only store if globally requested _and_ locally decided
     if (storeSorted_p && store) {
 	// We need to get the name of the base table to add a persistent
@@ -279,7 +279,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 	// There is no table function to get this, so we use the name of
 	// the antenna subtable to get at it.
 	String anttab = bms_p[i].antenna().tableName();
-	sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New); 
+	sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New);
 	sorted.flush();
 	bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
 	bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
@@ -294,11 +294,11 @@ void MSIter::construct(const Block<Int>& sortColumns,
     } else {
       tabIter_p[i] = new TableIterator(sorted,columns,objComp,orders,
 				       TableIterator::NoSort);
-    } 
+    }
     tabIterAtStart_p[i]=True;
   }
   setMSInfo();
-  
+
 }
 
 MSIter::MSIter(const MSIter& other)
@@ -307,13 +307,13 @@ MSIter::MSIter(const MSIter& other)
     operator=(other);
 }
 
-MSIter::~MSIter() 
+MSIter::~MSIter()
 {
   for (Int i=0; i<nMS_p; i++) delete tabIter_p[i];
 }
 
-MSIter& 
-MSIter::operator=(const MSIter& other) 
+MSIter&
+MSIter::operator=(const MSIter& other)
 {
   if (this == &other) return *this;
   This = (MSIter*)this;
@@ -350,15 +350,11 @@ MSIter::operator=(const MSIter& other)
   newSpectralWindow_p = other.newSpectralWindow_p;
   newPolarizationId_p = other.newPolarizationId_p;
   newDataDescId_p = other.newDataDescId_p;
-  preselected_p = other.preselected_p;
   timeDepFeed_p = other.timeDepFeed_p;
   spwDepFeed_p = other.spwDepFeed_p;
   checkFeed_p = other.checkFeed_p;
-  startChan_p = other.startChan_p;
   storeSorted_p = other.storeSorted_p;
   interval_p = other.interval_p;
-  preselectedChanStart_p = other.preselectedChanStart_p;
-  preselectednChan_p = other.preselectednChan_p;
   colArray_p = other.colArray_p;
   colDataDesc_p = other.colDataDesc_p;
   colField_p = other.colField_p;
@@ -394,7 +390,7 @@ const MS& MSIter::ms(const uInt id) const {
   else{
     return bms_p[curMS_p];
   }
-  
+
 }
 
 void MSIter::setInterval(Double timeInterval)
@@ -435,7 +431,7 @@ void MSIter::advance()
     newDataDescId_p=newField_p=checkFeed_p=False;
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
-  
+
   if (tabIter_p[curMS_p]->pastEnd()) {
     if (++curMS_p >= nMS_p) {
       curMS_p--;
@@ -506,15 +502,8 @@ const Vector<Double>& MSIter::frequency() const
   if (!freqCacheOK_p) {
     This->freqCacheOK_p=True;
     Int spw = curSpectralWindow_p;
-    if (preselected_p) {
-      msc_p->spectralWindow().chanFreq().
-	getSlice(spw,Slicer(Slice(preselectedChanStart_p[spw],
-				  preselectednChan_p[spw])),
-		 This->frequency_p,True);
-    } else {
-      msc_p->spectralWindow().chanFreq().
-	get(spw,This->frequency_p,True);
-    }
+    msc_p->spectralWindow().chanFreq().
+      get(spw,This->frequency_p,True);
   }
   return frequency_p;
 }
@@ -550,29 +539,6 @@ void MSIter::setMSInfo()
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
     msc_p = new MSColumns(bms_p[curMS_p]);
-    // check to see if we are attached to a 'reference MS' with a 
-    // DATA column that is a selection of the original DATA
-    if(!msc_p->data().isNull() || !msc_p->floatData().isNull())
-    {
-      const TableRecord & kws = (msc_p->data().isNull() ?
-          msc_p->floatData().keywordSet() :
-          msc_p->data().keywordSet());
-      preselected_p = kws.isDefined("CHANNEL_SELECTION");
-      if (preselected_p) {
-        // get the selection
-        Matrix<Int> selection;
-        kws.get("CHANNEL_SELECTION",selection);
-        Int nSpw = selection.ncolumn();
-        preselectedChanStart_p.resize(nSpw);
-        preselectednChan_p.resize(nSpw);
-        for (Int i = 0; i < nSpw; i++) {
-          preselectedChanStart_p[i] = selection(0,i);
-          preselectednChan_p[i] = selection(1,i);
-        }
-      }
-    }
-    else
-      preselected_p = false;
 
     // determine the reference frame position
     String observatory;
@@ -580,7 +546,7 @@ void MSIter::setMSInfo()
       observatory = msc_p->observation().telescopeName()
 	(msc_p->observationId()(0));
     }
-    if (observatory.length() == 0 || 
+    if (observatory.length() == 0 ||
 	!MeasTable::Observatory(telescopePosition_p,observatory)) {
       // unknown observatory, use first antenna
       telescopePosition_p=msc_p->antenna().positionMeas()(0);
@@ -609,9 +575,9 @@ void MSIter::setArrayInfo()
 }
 
 void MSIter::setFeedInfo()
-{ 
+{
   // Setup CJones and the receptor angle
-  
+
   // Time-dependent feed tables are not yet supported due to a lack of
   // real application. The values for the last time range will be used
   // if such a table is encountered.
@@ -619,7 +585,7 @@ void MSIter::setFeedInfo()
   // A reasonable way (plan) to implement the code for time-dependent feed
   // tables is outlined below
   //  1. Move the detection of the time dependent table into a separate
-  //     method and call it each time the measurement set is changed 
+  //     method and call it each time the measurement set is changed
   //  2. In this method build a vector of critical times when the feed
   //     information is changed
   //  3. Add a set method for MSIterval to be able to access this vector
@@ -644,15 +610,15 @@ void MSIter::setFeedInfo()
     Vector<Double> interval=msc_p->feed().interval().getColumn();
     // Assume time dependence
     timeDepFeed_p=True;
-    // if all interval values are <= zero or very large, 
+    // if all interval values are <= zero or very large,
     // there is no time dependence
     if (allLE(interval,0.0)||allGE(interval,1.e9)) timeDepFeed_p=False;
-    else { 
+    else {
       // check if any antennas appear more than once
       // check for each spectral window and feed in turn..
-      Block<String> cols(2); 
+      Block<String> cols(2);
       cols[0]=MSFeed::columnName(MSFeed::SPECTRAL_WINDOW_ID);
-      cols[1]=MSFeed::columnName(MSFeed::FEED_ID);      
+      cols[1]=MSFeed::columnName(MSFeed::FEED_ID);
       Bool unique = True;
       for (TableIterator tabIter(msc_p->feed().time().table(),cols);
 	   !tabIter.pastEnd(); tabIter.next()) {
@@ -684,31 +650,31 @@ void MSIter::setFeedInfo()
     Vector<Int> feedId=msc_p->feed().feedId().getColumn();
     Int maxAntId=max(antennaId);
     Int maxFeedId=max(feedId);
-    AlwaysAssert((maxAntId>=0 && maxFeedId>=0),AipsError);    
+    AlwaysAssert((maxAntId>=0 && maxFeedId>=0),AipsError);
     CJones_p.resize(maxAntId+1,maxFeedId+1);
     Vector<Int> numRecept=msc_p->feed().numReceptors().getColumn();
     uInt maxNumReceptors=max(numRecept);
     if (maxNumReceptors>2)
-        throw AipsError("Can't handle more than 2 receptors");    
+        throw AipsError("Can't handle more than 2 receptors");
     receptorAngles_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
     receptorAnglesFeed0_p.resize(maxNumReceptors,maxAntId+1);
     beamOffsets_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
-    allBeamOffsetsZero_p=True; 
+    allBeamOffsetsZero_p=True;
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
     const ArrayColumn<Double>& beamOffsetColumn=
 	               msc_p->feed().beamOffset();
     DebugAssert(beamOffsetColumn.nrow()==spwId.nelements(),AipsError);
-    
+
     for (uInt i=0; i<spwId.nelements(); i++) {
       if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)) {
 	Int iAnt=antennaId(i);
 	Int iFeed=feedId(i);
-	if (maxNumReceptors==1) 
+	if (maxNumReceptors==1)
 	  CJones_p(iAnt,iFeed)=SquareMatrix<Complex,2>
 	    ((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0,0));
-        else 
+        else
 	  CJones_p(iAnt,iFeed)=Matrix<Complex>(msc_p->feed().polResponse()(i));
-	
+
 	// Handle variable numRecept
 	IPosition blc(1,0);
 	IPosition trc(1,numRecept(i)-1);
@@ -722,7 +688,7 @@ void MSIter::setFeedInfo()
 		  // required anyway to check for non-zero elements
                   Double beamOffsetBuf=
 			    beamOffsetColumn(i)(IPosition(2,j,rcpt));
-		  if (fabs(beamOffsetBuf)>1e-10) 
+		  if (fabs(beamOffsetBuf)>1e-10)
 	              allBeamOffsetsZero_p=False;
 	          beamOffsets_p(rcpt,iAnt,iFeed)(j)=beamOffsetBuf;
              }
@@ -732,7 +698,7 @@ void MSIter::setFeedInfo()
     // a bit ugly construction
     // to preserve the old interface (feed=0 only)
     receptorAnglesFeed0_p.resize();
-    receptorAnglesFeed0_p=receptorAngles_p.xyPlane(0); 
+    receptorAnglesFeed0_p=receptorAngles_p.xyPlane(0);
     CJonesFeed0_p.resize();
     CJonesFeed0_p=CJones_p.column(0);
     //
@@ -752,10 +718,7 @@ void MSIter::setDataDescInfo()
   newPolarizationId_p=(lastPolarizationId_p!=curPolarizationId_p);
   if (newSpectralWindow_p) {
     lastSpectralWindow_p = curSpectralWindow_p;
-    startChan_p= (preselected_p ? preselectedChanStart_p[curSpectralWindow_p] :
-		  0);
     freqCacheOK_p=False;
-  
   }
   if (newPolarizationId_p) {
     lastPolarizationId_p = curPolarizationId_p;
@@ -774,14 +737,14 @@ void MSIter::setFieldInfo()
     lastField_p = curField_p;
   }
 }
-const String& MSIter::fieldName()  const { 
+const String& MSIter::fieldName()  const {
   if(newField_p)
     This->curFieldName_p = msc_p->field().name()(curField_p);
 
   return curFieldName_p;
 }
 
-const String& MSIter::sourceName()  const { 
+const String& MSIter::sourceName()  const {
   if(newField_p){
     // Retrieve source name, if specified.
     This->curSourceName_p = "";
@@ -798,8 +761,8 @@ const String& MSIter::sourceName()  const {
       }
     }
   }
-  
-  return curSourceName_p;			
+
+  return curSourceName_p;
 }
 const MDirection& MSIter::phaseCenter() const {
   if(msc_p){
@@ -807,7 +770,7 @@ const MDirection& MSIter::phaseCenter() const {
     if(newField_p || (firstTimeStamp != prevFirstTimeStamp_p)){
       This->prevFirstTimeStamp_p=firstTimeStamp;
       This->phaseCenter_p=msc_p->field().phaseDirMeas(curField_p, firstTimeStamp);
-      
+
     }
   }
   return phaseCenter_p;
@@ -817,10 +780,10 @@ const MDirection MSIter::phaseCenter(const Int fldid, const Double timeStamp) co
     return msc_p->field().phaseDirMeas(fldid, timeStamp);
   return phaseCenter_p;
 }
-void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw, 
-				Block<Vector<Int> >& start, 
-				Block<Vector<Int> >& nchan, 
-				Double freqStart, Double freqEnd, 
+void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw,
+				Block<Vector<Int> >& start,
+				Block<Vector<Int> >& nchan,
+				Double freqStart, Double freqEnd,
 				Double freqStep){
 
   spw.resize(nMS_p, True, False);
@@ -829,8 +792,8 @@ void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw,
 
   for (Int k=0; k < nMS_p; ++k){
     MSSpwIndex spwIn(bms_p[k].spectralWindow());
-    
-    spwIn.matchFrequencyRange(freqStart-0.5*freqStep, freqEnd+0.5*freqStep, spw[k], start[k], nchan[k]); 
+
+    spwIn.matchFrequencyRange(freqStart-0.5*freqStep, freqEnd+0.5*freqStep, spw[k], start[k], nchan[k]);
     /*
     Vector<Float> freqlist(4);
     freqlist(0)=freqStart-freqStep;

@@ -43,10 +43,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 BaseTableIterator::BaseTableIterator (BaseTable* btp,
-				      const Block<String>& keys,
-				      const Block<CountedPtr<BaseCompare> >& cmp,
-				      const Block<Int>& order,
-				      int option)
+    const Block<String>& keys,
+    const Block<CountedPtr<BaseCompare> >& cmp,
+    const Block<Int>& order,
+    int option)
 : lastRow_p (0),
   nrkeys_p  (keys.nelements()),
   keyChangeAtLastNext_p(""),
@@ -58,28 +58,30 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
     // If needed sort the table in order of the iteration keys.
     // The passed in compare functions are for the iteration.
     if (option == TableIterator::NoSort) {
-	sortTab_p = btp;
+        sortTab_p = btp;
     }else{
-	Sort::Option sortopt = Sort::QuickSort;
-	if (option == TableIterator::HeapSort) {
-	    sortopt = Sort::HeapSort;
-	} else if (option == TableIterator::InsSort) {
-	    sortopt = Sort::InsSort;
-	}
-	Block<Int> ord(nrkeys_p, Sort::Ascending);
-	for (uInt i=0; i<nrkeys_p; i++) {
-	    if (order[i] == TableIterator::Descending) {
-		ord[i] = Sort::Descending;
-	    }
-	}
-	sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt));
+        Sort::Option sortopt = Sort::QuickSort;
+        if (option == TableIterator::HeapSort) {
+            sortopt = Sort::HeapSort;
+        } else if (option == TableIterator::ParSort) {
+            sortopt = Sort::ParSort;
+        } else if (option == TableIterator::InsSort) {
+            sortopt = Sort::InsSort;
+        }
+        Block<Int> ord(nrkeys_p, Sort::Ascending);
+        for (uInt i=0; i<nrkeys_p; i++) {
+            if (order[i] == TableIterator::Descending) {
+                ord[i] = Sort::Descending;
+            }
+        }
+        sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt));
     }
     sortTab_p->link();
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
     for (uInt i=0; i<nrkeys_p; i++) {
-	colPtr_p[i] = sortTab_p->getColumn (keys[i]);
-	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
+        colPtr_p[i] = sortTab_p->getColumn (keys[i]);
+        colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
 }
 

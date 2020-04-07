@@ -37,15 +37,10 @@ uInt hashFunc(const ObjectID &key)
 {
     // We should check to see if this hash is any good
     uInt result = 0;
-    char c;
-    c = static_cast<char>(key.sequence());
-    result = result | c;
-    c = static_cast<char>(key.pid());
-    result = result | (c << 8);
-    c = static_cast<char>(key.creationTime());
-    result = result | (c << 16);
-    c = key.hostName()[0];
-    result = result | (c << 24);
+    result |= key.sequence() & 0xff;
+    result |= (key.pid() & 0xff) << 8;
+    result |= (key.creationTime() & 0xff) << 16;
+    result |= uInt(key.hostName()[0]) << 24;
     return result;
 }
 

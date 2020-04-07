@@ -833,7 +833,7 @@ void ClassicalStatistics<CASA_STATP>::_accumulate(
     else {
         StatisticsUtilities<AccumType>::waccumulate (
             stats.npts, stats.sumweights, stats.sum, stats.mean,
-            stats.nvariance, stats.sumsq, weight, datum
+            stats.nvariance, stats.sumsq, datum, weight
         );
     }
 }
