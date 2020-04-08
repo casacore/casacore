@@ -50,8 +50,6 @@ int main() {
     DComplex z(0.7, -0.3);
     bool fail = false;
     
-    TESTOP(fabs, z, fail);
-    
     TESTOP(tan, z, fail);
     TESTOP(sin, z, fail);
     TESTOP(cos, z, fail);
