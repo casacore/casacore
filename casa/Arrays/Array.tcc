@@ -203,9 +203,9 @@ std::unique_ptr<ArrayBase> Array<T, Alloc>::makeArray() const
 template<class T, typename Alloc>
 Array<T, Alloc>& Array<T, Alloc>::operator= (Array<T, Alloc>&& other)
 {
-  if(nrefs() > 1)
+  if(nrefs() > 1 || other.nrefs() > 1)
   {
-    // We can't move: this is a shared array, so we can't
+    // We can't move: this or the other is a shared array, so we can't
     // just replace the storage. Non-moveable types will cause
     // this to throw :-(. TODO should be solved.
     assign_conforming(other);
