@@ -49,10 +49,23 @@ int main() {
   {
     DComplex z(0.7, -0.3);
     bool fail = false;
+    
     TESTOP(fabs, z, fail);
+    
+    TESTOP(tan, z, fail);
+    TESTOP(sin, z, fail);
+    TESTOP(cos, z, fail);
+    
+    TESTOP(atan, z, fail);
     TESTOP(asin, z, fail);
     TESTOP(acos, z, fail);
-    TESTOP(atan, z, fail);
+    
+    TESTOP(tanh, z, fail);
+    TESTOP(sinh, z, fail);
+    TESTOP(cosh, z, fail);
+    
+    TESTOP(sqrt, z, fail);
+    
     AlwaysAssert(!fail, AipsError);
   }
 
