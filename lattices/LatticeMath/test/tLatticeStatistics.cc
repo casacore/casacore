@@ -872,7 +872,7 @@ int main()
             }
         }
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cerr << "aipserror: error " << x.what() << endl;
         return 1;
     }

@@ -49,7 +49,7 @@ int main() {
     test_NewMSSimulator_Constructors();
     test_NewMSSimulator_RandomAntenna();
   }
-  catch (const casacore::AipsError& x) {
+  catch (const std::exception& x) {
     std::cerr << "Exception : " << x.what() << std::endl;
     return 1;
   }

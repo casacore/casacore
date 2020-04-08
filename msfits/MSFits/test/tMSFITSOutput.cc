@@ -75,7 +75,7 @@ int main() {
         // clean up
         RegularFile(fitsFile).remove();
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cerr << x.what() << endl;
         cout << "FAIL" << endl;
         return 1;

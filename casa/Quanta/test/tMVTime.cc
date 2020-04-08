@@ -63,7 +63,7 @@ void checkExcp (const String& str)
   Bool ok = False;
   try {
     MVTime::read(q, str, True, True);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
     ok = True;
   }

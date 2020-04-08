@@ -71,7 +71,7 @@ int main()
   try {
     testStdVectorPlus();
     testStdVectorDivide();
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }

@@ -36,13 +36,13 @@ int main() {
         try {
             ImageExprParse::command("''");
         }
-        catch (const AipsError& x) {
+        catch (const std::exception& x) {
             thrown = True;
         }
         AlwaysAssert(thrown, AipsError);
         cout<< "ok"<< endl;
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cerr << "Exception caught: " << x.what() << endl;
         return 1;
     } 

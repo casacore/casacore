@@ -1076,7 +1076,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
     }
   } catch (const TableParseError& x) {
     showParseError (x);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cerr << x.what() << endl;
   }
   return True;
@@ -1330,7 +1330,7 @@ int main (int argc, const char* argv[])
       args.push_back (argv[i]);
     }
     executeArgs (args, True, tableMap, options);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cerr << "\nCaught an exception: " << x.what() << endl;
     return 1;
   } 

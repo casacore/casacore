@@ -115,7 +115,7 @@ int main() {
             AlwaysAssert(near(result_dc, cresults[method]), AipsError);
         }
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cout << x.what() << endl;
         cout << "FAIL" << endl;
         return 1;

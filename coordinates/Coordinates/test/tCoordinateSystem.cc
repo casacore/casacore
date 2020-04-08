@@ -343,7 +343,7 @@ int main()
         	  // expected exception not thrown if we get here
         	  AlwaysAssert(False, AipsError);
     	  }
-    	  catch (const AipsError& x) {}
+    	  catch (const std::exception& x) {}
     	  csys = CoordinateSystem();
     	  CoordinateUtil::addFreqAxis(csys);
     	  try {
@@ -351,7 +351,7 @@ int main()
     		  // expected exception not thrown if we get here
     		  AlwaysAssert(False, AipsError);
     	  }
-    	  catch (const AipsError& x) {}
+    	  catch (const std::exception& x) {}
     	  csys = CoordinateUtil::defaultCoords(4);
     	  indgen(pixelOrder);
     	  pixelOrder[0] = 1;
@@ -489,7 +489,7 @@ int main()
       }
 
    }
-   catch (const AipsError& x) {
+   catch (const std::exception& x) {
       cerr << "Error " << x.what() << endl;
       return (1);
    }
@@ -859,7 +859,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 	   // this should have thrown an exception, if not, its a failure
 	   AlwaysAssert(False, AipsError);
    }
-   catch (const AipsError& x) {}
+   catch (const std::exception& x) {}
 
 //
 //

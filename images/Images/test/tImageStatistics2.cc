@@ -399,7 +399,7 @@ int main() {
         */
 
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
 
         cerr << "Exception caught: " << x.what() << endl;
         return 1;

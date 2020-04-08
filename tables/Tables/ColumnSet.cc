@@ -403,7 +403,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 	col->createDataManagerColumn();
 	dmcol = col->dataManagerColumn();
 	dataManPtr->addColumn (dmcol);
-    } catch (const AipsError& x) {
+    } catch (const std::exception& x) {
 	error = True;
 	msg = x.what();
 	//# Get the column pointer (it may not have been filled yet).
@@ -472,7 +472,7 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 	}
 	// Let the new data manager create space, etc. for its columns.
 	initSomeDataManagers (blockDataMan_p.nelements() - 1, tab);
-    } catch (const AipsError& x) {
+    } catch (const std::exception& x) {
 	error = True;
 	msg = x.what();
 	for (uInt i=0; i<tableDesc.ncolumn(); i++) {

@@ -454,7 +454,7 @@ int main (int argc, const char* argv[])
                    IPosition(3, 1, 5, 11),
                    AipsError);
     }
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cerr << "Caught exception: " << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;

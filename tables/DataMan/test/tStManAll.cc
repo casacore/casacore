@@ -833,7 +833,7 @@ int main (int argc, const char* argv[])
       ExecFunc(checkAll, table, String("vt_"));
     }
     
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
     return 1;
   }

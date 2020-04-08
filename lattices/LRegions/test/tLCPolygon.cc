@@ -251,7 +251,7 @@ int main()
         AlwaysAssert(sl.end() == IPosition(2, 127), AipsError);
 	}
 
-    } catch (const AipsError& x) {
+    } catch (const std::exception& x) {
 	cout << "Caught exception: " << x.what() << endl;
 	return 1;
     } 

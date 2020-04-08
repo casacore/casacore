@@ -53,7 +53,7 @@ try {
     test4();
     test5();
 }
-catch (const AipsError& x) {
+catch (const std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
     return 1;
 }
@@ -706,7 +706,7 @@ void test5() {
         pos = IPosition(1,0);
         form = CoordinateUtil::formatCoordinate(pos, csys);
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         thrown = True;
     }
     AlwaysAssert(thrown, AipsError);

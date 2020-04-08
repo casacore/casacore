@@ -2182,7 +2182,7 @@ void testIt(MSMetaData& md) {
             try {
                 md.getSubScanProperties(sskey);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -2592,7 +2592,7 @@ int main() {
         AlwaysAssert(md2.getCache() == 0, AipsError);
         cout << "OK" << endl;
     } 
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cerr << "Exception : " << x.what() << endl;
         return 1;
     }

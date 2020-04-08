@@ -161,7 +161,7 @@ int main() {
         }
     }
 
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cout << x.what() << endl;
         return 1;
     } 

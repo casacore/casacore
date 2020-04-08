@@ -634,7 +634,7 @@ int main()
           AlwaysAssert(near(world[1], 2.90888e-4, 1e-5), AipsError);
       }
 
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
       cerr << "aipserror: error " << x.what() << endl;
       return (1);
    }

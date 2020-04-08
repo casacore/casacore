@@ -301,7 +301,7 @@ int main() {
             AlwaysAssert(got.minpos == std::pair<Int64 COMMA Int64>(2, 0), AipsError);
         }
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cout << x.what() << endl;
         return 1;
     } 

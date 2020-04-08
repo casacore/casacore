@@ -724,7 +724,7 @@ int main()
 	    MFrequency::showType(MFrequency::Undefined) << " should not be possible." << endl;
 	  isok = False;
 	}
-	catch(const AipsError& x){
+	catch(const std::exception& x){
 	  // expected error
 	  cout << x.what() << endl;
 	}
@@ -736,7 +736,7 @@ int main()
 	  cout << MFrequency::showType(MFrequency::Undefined) << " to " <<
 	    MFrequency::showType(i) << " should not be possible." << endl;
 	}
-	catch(const AipsError& x){
+	catch(const std::exception& x){
 	  // expected error
 	  cout << x.what() << endl;
 	}

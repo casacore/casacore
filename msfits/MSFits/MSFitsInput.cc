@@ -2248,7 +2248,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     	);
     	sysvel.getColumn(_sysVel);
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
     	ThrowIf(throwImmediately, x.what());
     	if(noif>1){
     		_log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
@@ -3254,7 +3254,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             }
             meter.update((group + 1) * 1.0);
         }
-        catch (const AipsError& x) {
+        catch (const std::exception& x) {
             _log << LogOrigin("MSFitsInput", "fillMSMainTable")
                     << "Exception while filling MS main table. " << x.what()
                     << LogIO::EXCEPTION;

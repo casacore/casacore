@@ -185,7 +185,7 @@ try {
     		myinfo.setBeam(1, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (const AipsError& x) {
+    	catch (const std::exception& x) {
     		cout << x.what() << endl;
     	}
     	AlwaysAssert(ok, AipsError);
@@ -277,7 +277,7 @@ try {
     		}
     	}
     }
-} catch (const AipsError& x) {
+} catch (const std::exception& x) {
   cout << "Caught error " << x.what() << endl;
   return 1;
 } 

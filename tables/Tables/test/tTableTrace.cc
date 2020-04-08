@@ -96,7 +96,7 @@ int main()
   try {
     uInt nrrow = 5;
     testTable (nrrow);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 

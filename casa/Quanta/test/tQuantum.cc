@@ -282,7 +282,7 @@ try {
     		Quantum<Double> q(1, "Hz");
     		q.getValue("K");
     	}
-    	catch (const AipsError& x) {
+    	catch (const std::exception& x) {
     		thrown = True;
     	}
     	AlwaysAssert(! thrown, AipsError);
@@ -291,7 +291,7 @@ try {
     		Quantum<Double> q(1, "Hz");
     		q.getValue("K", True);
     	}
-    	catch (const AipsError& x) {
+    	catch (const std::exception& x) {
     		thrown = True;
     	}
     	AlwaysAssert(thrown, AipsError);

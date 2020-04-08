@@ -103,7 +103,7 @@ int main() {
         }
         cout << "OK" << endl;
     } 
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
     	cerr << "Exception : " << x.what() << endl;
     	return 1;
     }

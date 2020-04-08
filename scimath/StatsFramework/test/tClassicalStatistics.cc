@@ -318,7 +318,7 @@ int main() {
             try {
                 cs.setData(v0.begin(), 3, r0);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 expectedFail = True;
             }
             AlwaysAssert(expectedFail, AipsError);
@@ -1121,7 +1121,7 @@ int main() {
             try {
                 cs.getQuantile(0);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -1129,7 +1129,7 @@ int main() {
             try {
                 cs.getQuantile(1);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -1956,7 +1956,7 @@ int main() {
 
         }
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         cout << x.what() << endl;
         return 1;
     } 

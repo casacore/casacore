@@ -66,7 +66,7 @@ int main ()
     }
     cout << "OK" << endl;
   }
-  catch (const AipsError& x) {
+  catch (const std::exception& x) {
     cerr << "Caught exception: " << x.what() << endl;
     cout << "FAIL" << endl;
     ret = 1;

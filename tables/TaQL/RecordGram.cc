@@ -361,7 +361,7 @@ TableExprNode RecordGram::doParse (const String& expression)
         // Make this copy before deleteTokenStorage is done,
         // otherwise it will be deleted.
         result = *theirNodePtr;
-    } catch (const AipsError& x) {
+    } catch (const std::exception& x) {
         message = x.what();
         error = True;
     }

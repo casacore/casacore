@@ -311,7 +311,7 @@ int main()
     AlwaysAssert(stepPtr->endPosition() == IPosition(3,3,1,0), AipsError);
     delete clonePtr;
     delete stepPtr;
-  } catch  (AipsError& x) {
+  } catch  (std::exception& x) {
     cout << x.what() << endl << "FAIL" << endl;
     return 1;
   } 

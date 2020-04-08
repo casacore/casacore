@@ -104,7 +104,7 @@ void LogIO::postLocally()
 
 void LogIO::preparePostThenThrow (const AipsError& x)
 {
-    if (! x.getMesg().empty()) {
+    if (! String(x.what()).empty()) {
         output() << "; " << x.what();
     }
     if (text_p == 0) {
@@ -174,7 +174,7 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
 
 void operator<< (LogIO &os, const AipsError& x)
 {
-    if (! x.getMesg().empty()) {
+    if (! String(x.what()).empty()) {
         os.output() << "; " << x.what();
     }
     os.postThenThrow (x);

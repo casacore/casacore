@@ -330,7 +330,7 @@ int main ()
     }
     cout << "OK" << endl;
     return 0;
-  } catch   (AipsError& x) {
+  } catch   (std::exception& x) {
     cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;

@@ -159,7 +159,7 @@ int main()
       MeasJPL::get(val, MeasJPL::DE405, MeasJPL::LIBRATION, dat);
       os << "Libration:  " << val << endl;
     }
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << x.what() << endl;
   } 
   
@@ -189,7 +189,7 @@ int main()
     cout << "Moon  APP:  " << mc2() << endl;
     cout << "Moon  APP:  " << mc2().getValue().getAngle("deg") << endl;
 
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << x.what() << endl;
   } 
   
