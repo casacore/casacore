@@ -3,7 +3,7 @@
 #
 project(casacore)
 
-cmake_minimum_required (VERSION 2.6.0)
+cmake_minimum_required (VERSION 2.8.10)
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
@@ -260,6 +260,12 @@ check_function_exists(pwrite HAVE_PWRITE)
 if (NOT (HAVE_PREAD AND HAVE_PWRITE))
         message(FATAL_ERROR "Casacore requires pread and pwrite functionality" )
 endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
+
+# Since 2020, we need GCC 4.9 for regex support
+# Additionally we need cmake 2.8.10 for CMAKE_CXX_COMPILER_VERSION
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+    message(FATAL_ERROR "Casacore requires at least gcc-4.9")
+endif()
 
 # FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
