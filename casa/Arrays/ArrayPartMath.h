@@ -117,20 +117,17 @@ template<typename T, typename Alloc> Array<T, Alloc> partialMaxs (const Array<T,
 					const IPosition& collapseAxes);
 template<typename T, typename Alloc> Array<T, Alloc> partialMeans (const Array<T, Alloc>& array,
 					 const IPosition& collapseAxes);
-template<typename T, typename Alloc> inline Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
-                                                    const IPosition& collapseAxes,
-                                                    size_t ddof=1)
+template<typename T, typename Alloc>
+inline Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
+  const IPosition& collapseAxes, size_t ddof=1)
 {
     return partialVariances (array, collapseAxes,
 			     partialMeans (array, collapseAxes), ddof);
 }
 template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
-					     const IPosition& collapseAxes,
-					     const Array<T, Alloc>& means);
+					     const IPosition& collapseAxes, const Array<T, Alloc>& means);
 template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
-					     const IPosition& collapseAxes,
-					     const Array<T, Alloc>& means,
-                                             size_t ddof);
+					     const IPosition& collapseAxes, const Array<T, Alloc>& means, size_t ddof);
 template<typename T, typename Alloc> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
                                                            const IPosition& collapseAxes,
                                                            const Array<std::complex<T>>& means,

@@ -514,10 +514,10 @@ template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Arr
   return result;
 }
 
-template<typename T, typename Alloc> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
-                                                           const IPosition& collapseAxes,
-                                                           const Array<std::complex<T>>& means,
-                                                           size_t ddof)
+template<typename T, typename Alloc>
+Array<std::complex<T>, Alloc> partialVariances (const Array<std::complex<T>, Alloc>& array,
+  const IPosition& collapseAxes, const Array<std::complex<T>, Alloc>& means,
+  size_t ddof)
 {
   const IPosition& shape = array.shape();
   size_t ndim = shape.nelements();
