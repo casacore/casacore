@@ -124,200 +124,240 @@ double myQuartile (const Array<double>& array)
 }
 
 
-bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
+bool doIt1 (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
 {
   bool errFlag = false;
-  {
-    IPosition shape(2,3,4);
-    Array<double> arr(shape);
-    indgen(arr);
-    for (int j=0; j<2; j++) {
-      Vector<double> res(shape(j));
-      IPosition st(2,0);
-      IPosition end(shape-1);
-      for (int i=0; i<shape(j); i++) {
-        st(j) = i;
-        end(j) = i;
-        res(i) = fullFunc(arr(st,end));
-      }
-      Array<double> res2 = partFunc (arr, IPosition(1,1-j));
-      if (! allNear (res, res2, 1.e-5)) {
+  IPosition shape(2,3,4);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<2; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(2,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr, IPosition(1,1-j));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
+    }
+  }
+  if (doExtra) {
+    {
+      Array<double> res2 = partFunc (arr, IPosition());
+      if (! allNear (arr, res2, 1.e-5)) {
         errFlag = true;
       }
     }
-    if (doExtra) {
-      {
-        Array<double> res2 = partFunc (arr, IPosition());
-        if (! allNear (arr, res2, 1.e-5)) {
-          errFlag = true;
-        }
-      }
-      {
-        Array<double> res2 = partFunc (arr, IPosition(2,0,1));
-        Vector<double> res(1, fullFunc(arr));
-        if (! allEQ (res, res2)) {
-          errFlag = true;
-        }
+    {
+      Array<double> res2 = partFunc (arr, IPosition(2,0,1));
+      Vector<double> res(1, fullFunc(arr));
+      if (! allEQ (res, res2)) {
+        errFlag = true;
       }
     }
   }
-  {
-    IPosition shape(3,3,4,5);
-    Array<double> arr(shape);
-    indgen(arr);
-    for (int j=0; j<3; j++) {
-      Vector<double> res(shape(j));
+  return !errFlag;
+}
+
+bool doIt2 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(3,3,4,5);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<3; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(3,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(3, IPosition(1,j)));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
+    }
+  }
+  for (int j=0; j<3; j++) {
+    for (int k=j+1; k<3; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
       IPosition st(3,0);
       IPosition end(shape-1);
-      for (int i=0; i<shape(j); i++) {
-        st(j) = i;
-        end(j) = i;
-        res(i) = fullFunc(arr(st,end));
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
       }
       Array<double> res2 = partFunc (arr,
-                                     IPosition::otherAxes(3, IPosition(1,j)));
+                                      IPosition::otherAxes(3, IPosition(2,j,k)));
       if (! allNear (res, res2, 1.e-5)) {
         errFlag = true;
-      }
-    }
-    for (int j=0; j<3; j++) {
-      for (int k=j+1; k<3; k++) {
-        IPosition resshape(2,shape(j),shape(k));
-        Array<double> res(resshape);
-        IPosition st(3,0);
-        IPosition end(shape-1);
-        for (int i0=0; i0<shape(j); i0++) {
-          st(j) = i0;
-          end(j) = i0;
-          for (int i1=0; i1<shape(k); i1++) {
-            st(k) = i1;
-            end(k) = i1;
-            res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
-          }
-        }
-        Array<double> res2 = partFunc (arr,
-                                       IPosition::otherAxes(3, IPosition(2,j,k)));
-        if (! allNear (res, res2, 1.e-5)) {
-          errFlag = true;
-        }
       }
     }
   }
-  {
-    IPosition shape(4,3,4,5,6);
-    Array<double> arr(shape);
-    indgen(arr);
-    for (int j=0; j<4; j++) {
-      Vector<double> res(shape(j));
+  return !errFlag;
+}
+
+bool doIt3 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(4,3,4,5,6);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<4; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(4,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(4, IPosition(1,j)));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
+    }
+  }
+  for (int j=0; j<4; j++) {
+    for (int k=j+1; k<4; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
       IPosition st(4,0);
       IPosition end(shape-1);
-      for (int i=0; i<shape(j); i++) {
-        st(j) = i;
-        end(j) = i;
-        res(i) = fullFunc(arr(st,end));
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
       }
       Array<double> res2 = partFunc (arr,
-                                     IPosition::otherAxes(4, IPosition(1,j)));
+                                      IPosition::otherAxes(4, IPosition(2,j,k)));
       if (! allNear (res, res2, 1.e-5)) {
         errFlag = true;
       }
     }
-    for (int j=0; j<4; j++) {
-      for (int k=j+1; k<4; k++) {
-        IPosition resshape(2,shape(j),shape(k));
+  }
+  for (int j0=0; j0<4; j0++) {
+    for (int j1=j0+1; j1<4; j1++) {
+      for (int j2=j1+1; j2<4; j2++) {
+        IPosition resshape(3,shape(j0),shape(j1),shape(j2));
         Array<double> res(resshape);
         IPosition st(4,0);
         IPosition end(shape-1);
-        for (int i0=0; i0<shape(j); i0++) {
-          st(j) = i0;
-          end(j) = i0;
-          for (int i1=0; i1<shape(k); i1++) {
-            st(k) = i1;
-            end(k) = i1;
-            res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        for (int i0=0; i0<shape(j0); i0++) {
+          st(j0) = i0;
+          end(j0) = i0;
+          for (int i1=0; i1<shape(j1); i1++) {
+            st(j1) = i1;
+            end(j1) = i1;
+            for (int i2=0; i2<shape(j2); i2++) {
+              st(j2) = i2;
+              end(j2) = i2;
+              res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+            }
           }
         }
         Array<double> res2 = partFunc (arr,
-                                       IPosition::otherAxes(4, IPosition(2,j,k)));
+                                        IPosition::otherAxes(4, IPosition(3,j0,j1,j2)));
         if (! allNear (res, res2, 1.e-5)) {
           errFlag = true;
-        }
-      }
-    }
-    for (int j0=0; j0<4; j0++) {
-      for (int j1=j0+1; j1<4; j1++) {
-        for (int j2=j1+1; j2<4; j2++) {
-          IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-          Array<double> res(resshape);
-          IPosition st(4,0);
-          IPosition end(shape-1);
-          for (int i0=0; i0<shape(j0); i0++) {
-            st(j0) = i0;
-            end(j0) = i0;
-            for (int i1=0; i1<shape(j1); i1++) {
-              st(j1) = i1;
-              end(j1) = i1;
-              for (int i2=0; i2<shape(j2); i2++) {
-                st(j2) = i2;
-                end(j2) = i2;
-                res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
-              }
-            }
-          }
-          Array<double> res2 = partFunc (arr,
-                                         IPosition::otherAxes(4, IPosition(3,j0,j1,j2)));
-          if (! allNear (res, res2, 1.e-5)) {
-            errFlag = true;
-          }
         }
       }
     }
   }
-  {
-    IPosition shape(5,3,4,5,6,7);
-    Array<double> arr(shape);
-    indgen(arr);
-    for (int j=0; j<5; j++) {
-      Vector<double> res(shape(j));
+  return !errFlag;
+}
+
+bool doIt4 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(5,2,2,2,2,2);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<5; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(5,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(5, IPosition(1,j)));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
+    }
+  }
+  for (int j=0; j<5; j++) {
+    for (int k=j+1; k<5; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
       IPosition st(5,0);
       IPosition end(shape-1);
-      for (int i=0; i<shape(j); i++) {
-        st(j) = i;
-        end(j) = i;
-        res(i) = fullFunc(arr(st,end));
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
       }
       Array<double> res2 = partFunc (arr,
-                                     IPosition::otherAxes(5, IPosition(1,j)));
+                                      IPosition::otherAxes(5, IPosition(2,j,k)));
       if (! allNear (res, res2, 1.e-5)) {
         errFlag = true;
       }
     }
-    for (int j=0; j<5; j++) {
-      for (int k=j+1; k<5; k++) {
-        IPosition resshape(2,shape(j),shape(k));
+  }
+  for (int j0=0; j0<5; j0++) {
+    for (int j1=j0+1; j1<5; j1++) {
+      for (int j2=j1+1; j2<5; j2++) {
+        IPosition resshape(3,shape(j0),shape(j1),shape(j2));
         Array<double> res(resshape);
         IPosition st(5,0);
         IPosition end(shape-1);
-        for (int i0=0; i0<shape(j); i0++) {
-          st(j) = i0;
-          end(j) = i0;
-          for (int i1=0; i1<shape(k); i1++) {
-            st(k) = i1;
-            end(k) = i1;
-            res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        for (int i0=0; i0<shape(j0); i0++) {
+          st(j0) = i0;
+          end(j0) = i0;
+          for (int i1=0; i1<shape(j1); i1++) {
+            st(j1) = i1;
+            end(j1) = i1;
+            for (int i2=0; i2<shape(j2); i2++) {
+              st(j2) = i2;
+              end(j2) = i2;
+              res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+            }
           }
         }
         Array<double> res2 = partFunc (arr,
-                                       IPosition::otherAxes(5, IPosition(2,j,k)));
+                                        IPosition::otherAxes(5, IPosition(3,j0,j1,j2)));
         if (! allNear (res, res2, 1.e-5)) {
           errFlag = true;
         }
       }
     }
-    for (int j0=0; j0<5; j0++) {
-      for (int j1=j0+1; j1<5; j1++) {
-        for (int j2=j1+1; j2<5; j2++) {
-          IPosition resshape(3,shape(j0),shape(j1),shape(j2));
+  }
+  for (int j0=0; j0<5; j0++) {
+    for (int j1=j0+1; j1<5; j1++) {
+      for (int j2=j1+1; j2<5; j2++) {
+        for (int j3=j2+1; j3<5; j3++) {
+          IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
           Array<double> res(resshape);
           IPosition st(5,0);
           IPosition end(shape-1);
@@ -330,98 +370,102 @@ bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
               for (int i2=0; i2<shape(j2); i2++) {
                 st(j2) = i2;
                 end(j2) = i2;
-                res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+                for (int i3=0; i3<shape(j3); i3++) {
+                  st(j3) = i3;
+                  end(j3) = i3;
+                  res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
+                }
               }
             }
           }
           Array<double> res2 = partFunc (arr,
-                                         IPosition::otherAxes(5, IPosition(3,j0,j1,j2)));
+                                          IPosition::otherAxes(5, IPosition(4,j0,j1,j2,j3)));
           if (! allNear (res, res2, 1.e-5)) {
             errFlag = true;
           }
         }
       }
     }
-    for (int j0=0; j0<5; j0++) {
-      for (int j1=j0+1; j1<5; j1++) {
-        for (int j2=j1+1; j2<5; j2++) {
-          for (int j3=j2+1; j3<5; j3++) {
-            IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
-            Array<double> res(resshape);
-            IPosition st(5,0);
-            IPosition end(shape-1);
-            for (int i0=0; i0<shape(j0); i0++) {
-              st(j0) = i0;
-              end(j0) = i0;
-              for (int i1=0; i1<shape(j1); i1++) {
-                st(j1) = i1;
-                end(j1) = i1;
-                for (int i2=0; i2<shape(j2); i2++) {
-                  st(j2) = i2;
-                  end(j2) = i2;
-                  for (int i3=0; i3<shape(j3); i3++) {
-                    st(j3) = i3;
-                    end(j3) = i3;
-                    res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
-                  }
-                }
-              }
-            }
-            Array<double> res2 = partFunc (arr,
-                                           IPosition::otherAxes(5, IPosition(4,j0,j1,j2,j3)));
-            if (! allNear (res, res2, 1.e-5)) {
-              errFlag = true;
-            }
-          }
-        }
-      }
+  }
+  return !errFlag;
+}
+
+bool doIt5 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(6,2,2,2,2,2,2);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<6; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(6,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(6, IPosition(1,j)));
+    if (! allNear (res, res2, 5.e-5)) {
+      errFlag = true;
     }
   }
-  {
-    IPosition shape(6,3,4,5,6,7,8);
-    Array<double> arr(shape);
-    indgen(arr);
-    for (int j=0; j<6; j++) {
-      Vector<double> res(shape(j));
+  for (int j=0; j<6; j++) {
+    for (int k=j+1; k<6; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
       IPosition st(6,0);
       IPosition end(shape-1);
-      for (int i=0; i<shape(j); i++) {
-        st(j) = i;
-        end(j) = i;
-        res(i) = fullFunc(arr(st,end));
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
       }
       Array<double> res2 = partFunc (arr,
-                                     IPosition::otherAxes(6, IPosition(1,j)));
-      if (! allNear (res, res2, 5.e-5)) {
+                                      IPosition::otherAxes(6, IPosition(2,j,k)));
+      if (! allNear (res, res2, 1.e-5)) {
         errFlag = true;
       }
     }
-    for (int j=0; j<6; j++) {
-      for (int k=j+1; k<6; k++) {
-        IPosition resshape(2,shape(j),shape(k));
+  }
+  for (int j0=0; j0<6; j0++) {
+    for (int j1=j0+1; j1<6; j1++) {
+      for (int j2=j1+1; j2<6; j2++) {
+        IPosition resshape(3,shape(j0),shape(j1),shape(j2));
         Array<double> res(resshape);
         IPosition st(6,0);
         IPosition end(shape-1);
-        for (int i0=0; i0<shape(j); i0++) {
-          st(j) = i0;
-          end(j) = i0;
-          for (int i1=0; i1<shape(k); i1++) {
-            st(k) = i1;
-            end(k) = i1;
-            res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        for (int i0=0; i0<shape(j0); i0++) {
+          st(j0) = i0;
+          end(j0) = i0;
+          for (int i1=0; i1<shape(j1); i1++) {
+            st(j1) = i1;
+            end(j1) = i1;
+            for (int i2=0; i2<shape(j2); i2++) {
+              st(j2) = i2;
+              end(j2) = i2;
+              res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+            }
           }
         }
         Array<double> res2 = partFunc (arr,
-                                       IPosition::otherAxes(6, IPosition(2,j,k)));
+                                        IPosition::otherAxes(6, IPosition(3,j0,j1,j2)));
         if (! allNear (res, res2, 1.e-5)) {
           errFlag = true;
         }
       }
     }
-    for (int j0=0; j0<6; j0++) {
-      for (int j1=j0+1; j1<6; j1++) {
-        for (int j2=j1+1; j2<6; j2++) {
-          IPosition resshape(3,shape(j0),shape(j1),shape(j2));
+  }
+  for (int j0=0; j0<6; j0++) {
+    for (int j1=j0+1; j1<6; j1++) {
+      for (int j2=j1+1; j2<6; j2++) {
+        for (int j3=j2+1; j3<6; j3++) {
+          IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
           Array<double> res(resshape);
           IPosition st(6,0);
           IPosition end(shape-1);
@@ -434,23 +478,30 @@ bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
               for (int i2=0; i2<shape(j2); i2++) {
                 st(j2) = i2;
                 end(j2) = i2;
-                res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+                for (int i3=0; i3<shape(j3); i3++) {
+                  st(j3) = i3;
+                  end(j3) = i3;
+                  res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
+                }
               }
             }
           }
           Array<double> res2 = partFunc (arr,
-                                         IPosition::otherAxes(6, IPosition(3,j0,j1,j2)));
+                                          IPosition::otherAxes(6, IPosition(4,j0,j1,j2,j3)));
           if (! allNear (res, res2, 1.e-5)) {
             errFlag = true;
           }
         }
       }
     }
-    for (int j0=0; j0<6; j0++) {
-      for (int j1=j0+1; j1<6; j1++) {
-        for (int j2=j1+1; j2<6; j2++) {
-          for (int j3=j2+1; j3<6; j3++) {
-            IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
+  }
+  for (int j0=0; j0<6; j0++) {
+    for (int j1=j0+1; j1<6; j1++) {
+      for (int j2=j1+1; j2<6; j2++) {
+        for (int j3=j2+1; j3<6; j3++) {
+          for (int j4=j3+1; j4<6; j4++) {
+            IPosition resshape(5,shape(j0),shape(j1),shape(j2),shape(j3),
+                                shape(j4));
             Array<double> res(resshape);
             IPosition st(6,0);
             IPosition end(shape-1);
@@ -466,13 +517,22 @@ bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
                   for (int i3=0; i3<shape(j3); i3++) {
                     st(j3) = i3;
                     end(j3) = i3;
-                    res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
+                    for (int i3=0; i3<shape(j3); i3++) {
+                      st(j3) = i3;
+                      end(j3) = i3;
+                      for (int i4=0; i4<shape(j4); i4++) {
+                        st(j4) = i4;
+                        end(j4) = i4;
+                        res(IPosition(5,i0,i1,i2,i3,i4)) =
+                        fullFunc(arr(st,end));
+                      }
+                    }
                   }
                 }
               }
             }
             Array<double> res2 = partFunc (arr,
-                                           IPosition::otherAxes(6, IPosition(4,j0,j1,j2,j3)));
+                                            IPosition::otherAxes(6, IPosition(5,j0,j1,j2,j3,j4)));
             if (! allNear (res, res2, 1.e-5)) {
               errFlag = true;
             }
@@ -480,54 +540,24 @@ bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
         }
       }
     }
-    for (int j0=0; j0<6; j0++) {
-      for (int j1=j0+1; j1<6; j1++) {
-        for (int j2=j1+1; j2<6; j2++) {
-          for (int j3=j2+1; j3<6; j3++) {
-            for (int j4=j3+1; j4<6; j4++) {
-              IPosition resshape(5,shape(j0),shape(j1),shape(j2),shape(j3),
-                                 shape(j4));
-              Array<double> res(resshape);
-              IPosition st(6,0);
-              IPosition end(shape-1);
-              for (int i0=0; i0<shape(j0); i0++) {
-                st(j0) = i0;
-                end(j0) = i0;
-                for (int i1=0; i1<shape(j1); i1++) {
-                  st(j1) = i1;
-                  end(j1) = i1;
-                  for (int i2=0; i2<shape(j2); i2++) {
-                    st(j2) = i2;
-                    end(j2) = i2;
-                    for (int i3=0; i3<shape(j3); i3++) {
-                      st(j3) = i3;
-                      end(j3) = i3;
-                      for (int i3=0; i3<shape(j3); i3++) {
-                        st(j3) = i3;
-                        end(j3) = i3;
-                        for (int i4=0; i4<shape(j4); i4++) {
-                          st(j4) = i4;
-                          end(j4) = i4;
-                          res(IPosition(5,i0,i1,i2,i3,i4)) =
-                          fullFunc(arr(st,end));
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-              Array<double> res2 = partFunc (arr,
-                                             IPosition::otherAxes(6, IPosition(5,j0,j1,j2,j3,j4)));
-              if (! allNear (res, res2, 1.e-5)) {
-                errFlag = true;
-              }
-            }
-          }
-        }
-      }
-    }
   }
   return !errFlag;
+}
+
+bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool extra)
+{
+  bool success = true;
+  if(!doIt1(partFunc, fullFunc, extra))
+    success = false;
+  if(!doIt2(partFunc, fullFunc))
+    success = false;
+  if(!doIt3(partFunc, fullFunc))
+    success = false;
+  if(!doIt4(partFunc, fullFunc))
+    success = false;
+  if(!doIt5(partFunc, fullFunc))
+    success = false;
+  return success;
 }
 
 BOOST_AUTO_TEST_CASE(partial_sums)

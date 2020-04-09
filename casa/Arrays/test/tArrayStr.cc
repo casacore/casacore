@@ -137,4 +137,100 @@ BOOST_AUTO_TEST_CASE( vector_write )
   boost::filesystem::remove("tArrayIO2_tmp.vec");
 }
 
+template<typename Arr>
+void checkExtract(const std::string& str, const Arr& ref, const std::string& outputStr)
+{
+  std::stringstream istr(str);
+  Arr a;
+  istr >> a;
+  BOOST_CHECK(istr);
+  BOOST_CHECK_EQUAL(a.shape().size(), ref.shape().size());
+  BOOST_CHECK_EQUAL(a.shape(), ref.shape());
+  BOOST_CHECK_EQUAL(a.shape(), ref.shape());
+  std::ostringstream astr, refstr;
+  astr << a;
+  refstr << ref;
+  BOOST_CHECK_EQUAL(astr.str(), refstr.str());
+  BOOST_CHECK_EQUAL(astr.str(), outputStr);
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_arr1 )
+{
+  checkExtract(
+    "[1 2 3 4 5 6]",
+    Array<double>{1,2,3,4,5,6},
+    "[1, 2, 3, 4, 5, 6]"
+  );
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_matrix1 )
+{
+  const double data[] = {1,2,3,4,5,6};
+  checkExtract(
+    "[1 2 3 4 5 6]\n",
+    Matrix<double>(IPosition{6, 1}, data),
+    "Axis Lengths: [6, 1]  (NB: Matrix in Row/Column order)\n"
+      "[1\n"
+      " 2\n"
+      " 3\n"
+      " 4\n"
+      " 5\n"
+      " 6]\n"
+  );
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_arr2 )
+{
+  const double data[] = {1,4,2,5,3,6};
+  checkExtract(
+    "{[2 3]}[1 2 3 4 5 6]\n",
+    Array<double>(IPosition{2, 3}, data),
+    "Axis Lengths: [2, 3]  (NB: Matrix in Row/Column order)\n"
+      "[1, 2, 3\n"
+      " 4, 5, 6]\n"
+  );
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_matrix2 )
+{
+  const double data[] = {1,4,2,5,3,6};
+  checkExtract(
+    "{[2 3]}[1 2 3 4 5 6]\n",
+    Matrix<double>(IPosition{2, 3}, data),
+    "Axis Lengths: [2, 3]  (NB: Matrix in Row/Column order)\n"
+      "[1, 2, 3\n"
+      " 4, 5, 6]\n"
+  );
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_arr3 )
+{
+  const double data[] = {1,2,3,4,5,6};
+  checkExtract(
+    "{t[2 3]}[1 2 3 4 5 6]\n",
+    Array<double>(IPosition{2, 3}, data),
+    "Axis Lengths: [2, 3]  (NB: Matrix in Row/Column order)\n"
+      "[1, 3, 5\n"
+      " 2, 4, 6]\n"
+  );
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_string1 )
+{
+  checkExtract(
+    "[ x, y , x]\n",
+    Array<std::string>{"x","y","x"},
+    "[x, y, x]"
+  );
+}
+
+BOOST_AUTO_TEST_CASE( double_istream_extract_string2 )
+{
+  checkExtract(
+    "[x, y]\n",
+    Array<std::string>{"x","y"},
+    "[x, y]"
+  );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
