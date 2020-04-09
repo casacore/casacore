@@ -272,9 +272,13 @@ int main(int argc, char **argv)
     // exception handler (which is installed by the CLLIB as the
     // clDefaultErrorHandler).
     //
-    catch (std::exception& x)
+    catch (AipsError& x)
       {
     	cout << "###AipsError: " << x.what() << endl;
+      }
+    catch (std::exception& x)
+      {
+    	cout << "###std::exception: " << x.what() << endl;
       }
   }
   //

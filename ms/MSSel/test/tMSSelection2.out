@@ -196,5 +196,6 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 1440
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-###AipsError: Field Expression: Partial or no match for Field ID list [20000]
+###MSSelectionError: Field Expression: Partial or no match for Field ID list [20000]
 (near char. 5 in string "20000")
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

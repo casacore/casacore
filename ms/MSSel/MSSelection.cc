@@ -763,7 +763,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	runErrorHandler();
 	deleteNodes();
 	//deleteErrorHandlers();
-	throw(x);
+	throw;
       }	
 
     runErrorHandler();
