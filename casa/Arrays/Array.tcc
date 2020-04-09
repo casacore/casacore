@@ -125,20 +125,8 @@ template<typename T, typename Alloc> Array<T, Alloc>::Array(Array<T, Alloc>&& so
 }
 
 template<class T, typename Alloc>
-Array<T, Alloc>::Array(const IPosition &shape, T *storage, 
-    StorageInitPolicy policy)
-: ArrayBase(shape),
-  data_p(),
-  begin_p(nullptr),
-  end_p(nullptr)
-{
-  takeStorage(shape, storage, policy);
-  assert(ok());
-}
-
-template<class T, typename Alloc>
 Array<T, Alloc>::Array(const IPosition &shape, T *storage,
-                StorageInitPolicy policy, Alloc& allocator)
+                StorageInitPolicy policy, const Alloc& allocator)
 : ArrayBase(shape),
   data_p(),
   begin_p(nullptr),
@@ -155,7 +143,7 @@ Array<T, Alloc>::Array(const IPosition &shape, const T *storage)
   begin_p(nullptr),
   end_p(nullptr)
 {
-  takeStorage(shape, storage);
+  takeStorage(shape, storage, static_cast<Alloc&>(*data_p));
   assert(ok());
 }
 
@@ -1055,17 +1043,9 @@ void Array<T, Alloc>::freeVStorage(const void *&storage, bool deleteAndCopy)
   freeStorage (ptr, deleteAndCopy);
 }
 
-
 template<class T, typename Alloc>
 void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
-  StorageInitPolicy policy)
-{
-  takeStorage(shape, storage, policy, static_cast<Alloc&>(*data_p));
-}
-
-template<class T, typename Alloc>
-void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
-                           StorageInitPolicy policy, Alloc& allocator)
+                           StorageInitPolicy policy, const Alloc& allocator)
 {
   preTakeStorage(shape);
 
@@ -1082,9 +1062,9 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
     } else {
         std::move(storage, storage+new_nels, data_p->data());
     }
-    ArrayBase::assign(ArrayBase(shape));
   }
-  
+  ArrayBase::assign(ArrayBase(shape));
+
   begin_p = data_p->data();
   setEndIter();
   
@@ -1093,7 +1073,7 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
     // TODO this is not consistent with old behaviour
     for(size_t i=0; i!=new_nels; ++i)
       storage[new_nels-i-1].~T();
-    allocator.deallocate(storage, new_nels);
+    Alloc(allocator).deallocate(storage, new_nels);
   }
   
   // Call OK at the end rather than the beginning since this might
@@ -1104,17 +1084,8 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
 }
 
 template<class T, typename Alloc>
-void Array<T, Alloc>::takeStorage(const IPosition &shape, const T *storage)
-{
-    // This cast is safe since a copy will be made
-    T *storagefake = const_cast<T*>(storage);
-    Alloc alloc(static_cast<Alloc&>(*data_p));
-    takeStorage(shape, storagefake, COPY, alloc);
-}
-
-template<class T, typename Alloc>
 void Array<T, Alloc>::takeStorage(const IPosition &shape, const T *storage,
-  Alloc& allocator)
+  const Alloc& allocator)
 {
     // This cast is safe since a copy will be made
     T *storagefake = const_cast<T*>(storage);

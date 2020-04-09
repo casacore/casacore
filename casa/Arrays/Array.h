@@ -199,23 +199,9 @@ public:
     // Source will be empty after this call.
     Array(Array<T, Alloc>&& source) noexcept;
 
-   // Create an Array of a given shape from a pointer.
-    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
-    // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>NewDelAllocator<T></src>.
-    // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
-    // whenever <src>policy</src> == <src>TAKE_OVER</src>
-    // to let <src>Array</src> to know how to release the <src>storage</src>.
-    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
-    Array(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
-
     // Create an Array of a given shape from a pointer.
-    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by the specified allocator.
+    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
     // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by the specified allocator.
-    // Otherwise, <src>allocator</src> is ignored.
-    // It is strongly recommended to allocate and initialize <src>storage</src> with <src>DefaultAllocator<T></src>
-    // rather than new[] or <src>NewDelAllocator<T></src> because new[] can't decouple allocation and initialization.
-    // <src>DefaultAllocator<T></src> is a subclass of std::allocator. You can allocate <src>storage</src> via
-    // the allocator as below.
     // <srcblock>
     //   FILE *fp = ...;
     //   typedef DefaultAllocator<int> Alloc;
@@ -225,8 +211,7 @@ public:
     //   size_t nread = fread(ptr, sizeof(int), shape.product(), fp);
     //   Array<int> ai(shape, ptr, TAKE_OVER, Alloc::value);
     // </srcblock>
-    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
-    Array(const IPosition &shape, T *storage, StorageInitPolicy policy, Alloc& allocator);
+    Array(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY, const Alloc& allocator = Alloc());
 
     // Create an Array of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
@@ -658,32 +643,15 @@ public:
     // more data elements. After takeStorage() is called, <src>nrefs()</src>
     // is 1.
     // <group>
-    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
-    // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>NewDelAllocator<T></src>.
-    // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
-    // whenever <src>policy</src> == <src>TAKE_OVER</src>
-    // to let <src>Array</src> to know how to release the <src>storage</src>.
-    // TODO:
-    // [[ deprecated("This function copies the value instead of reowning the storage. Better to use one of the other assignment operations instead.") ]]
-    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
-    virtual void takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy = COPY);
-
     // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>allocator</src>.
     // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>allocator</src>.
-    // Otherwise, <src>storage</src> is ignored.
-    // TODO this overload should be changed to reflect the fact that policy has no longer any effect
     virtual void takeStorage(const IPosition &shape, T *storage,
-        StorageInitPolicy policy, Alloc& allocator);
-
-    // Since the pointer is const, a copy is always taken.
-    // Storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
-    virtual void takeStorage(const IPosition &shape, const T *storage);
+        StorageInitPolicy policy = COPY, const Alloc& allocator = Alloc());
 
     // Since the pointer is const, a copy is always taken.
     // Storage of a new copy is allocated by the specified allocator.
     virtual void takeStorage(const IPosition &shape, const T *storage,
-        Alloc& allocator);
+        const Alloc& allocator = Alloc());
     // </group>
 
 

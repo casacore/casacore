@@ -802,7 +802,8 @@ bool operator != (const IPosition& left, const IPosition& right)
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator!= "
 				    "(const IPosition&, const IPosition&) - "
-				    "left and right operand do not conform "));
+				    "left and right operand do not conform (left.shape()=" +
+            to_string(left) + ", right.shape()=" + to_string(right) + ")"));
     }
     size_t n=left.nelements();
     bool result = false;
