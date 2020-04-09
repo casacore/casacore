@@ -148,6 +148,57 @@ BOOST_AUTO_TEST_CASE( array_move_case1 )
   BOOST_CHECK_EQUAL(e(IPosition(1, 0)), 42);
 }
 
+BOOST_AUTO_TEST_CASE( array_move_case2 )
+{
+  Array<int> a(IPosition{2, 3}, 2);
+  Array<int> b(a);
+  Array<int> c(IPosition{2, 3}, 3);
+  c = std::move(a);
+  IPosition el{1, 2};
+  BOOST_CHECK_EQUAL(c(el), 2);
+  BOOST_CHECK_EQUAL(b(el), 2);
+  // Since the semantics are that operator= does copy value assignment,
+  // b should not change when we change c
+  c(el) = 4;
+  BOOST_CHECK_EQUAL(b(el), 2);
+  BOOST_CHECK_EQUAL(c(el), 4);
+}
+
+BOOST_AUTO_TEST_CASE( array_move_case3 )
+{
+  int storage = 1988;
+  Array<int> a(IPosition{1, 1}, &storage, SHARE);
+  Array<int> b(IPosition{1, 1}, 3);
+  b = std::move(a);
+  IPosition el{0,0};
+  BOOST_CHECK_EQUAL(storage, 1988);
+  BOOST_CHECK_EQUAL(a(el), 1988);
+  BOOST_CHECK_EQUAL(b(el), 1988);
+  b(el) = 4;
+  BOOST_CHECK_EQUAL(storage, 1988);
+  BOOST_CHECK_EQUAL(a(el), 1988);
+  BOOST_CHECK_EQUAL(b(el), 4);
+  storage = 0;
+  BOOST_CHECK_EQUAL(storage, 0);
+  BOOST_CHECK_EQUAL(a(el), 0);
+  BOOST_CHECK_EQUAL(b(el), 4);
+}
+
+BOOST_AUTO_TEST_CASE( vector_move_case2 )
+{
+  Vector<int> a(IPosition{6}, 2);
+  Vector<int> b(a);
+  Vector<int> c(IPosition{6}, 3);
+  c = std::move(a);
+  BOOST_CHECK_EQUAL(c[5], 2);
+  BOOST_CHECK_EQUAL(b[5], 2);
+  // Since the semantics are that operator= does copy value assignment,
+  // b should not change when we change c
+  c[5] = 4;
+  BOOST_CHECK_EQUAL(b[5], 2);
+  BOOST_CHECK_EQUAL(c[5], 4);
+}
+
 BOOST_AUTO_TEST_CASE( array_swap )
 {
   IPosition sa{2,3}, sb{4,4,4};

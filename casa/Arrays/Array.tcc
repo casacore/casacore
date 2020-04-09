@@ -189,28 +189,28 @@ std::unique_ptr<ArrayBase> Array<T, Alloc>::makeArray() const
 // assigning Matrix to Vector (etc) without being able to throw. Hence, I
 // think it is not possible to do this without changing such semantics.
 template<class T, typename Alloc>
-Array<T, Alloc>& Array<T, Alloc>::operator= (Array<T, Alloc>&& other)
+Array<T, Alloc>& Array<T, Alloc>::operator= (Array<T, Alloc>&& source)
 {
-  if(nrefs() > 1 || other.nrefs() > 1)
+  if(nrefs() > 1 || source.nrefs() > 1 || data_p->is_shared() || source.data_p->is_shared())
   {
-    // We can't move: this or the other is a shared array, so we can't
+    // We can't move: this or the source is a shared array, so we can't
     // just replace the storage. Non-moveable types will cause
     // this to throw :-(. TODO should be solved.
-    assign_conforming(other);
+    assign_conforming(source);
   }
   else {
     // There's no good reason to require conformance here, but some of the software seems
     // to assume that assignment always checks for the shape to fit. :-(
-    if (!conform(other)  &&  nelements() != 0) {
-      validateConformance(other);
+    if (!conform(source)  &&  nelements() != 0) {
+      validateConformance(source);
     }
     else {
-      if(other.fixedDimensionality() != 0 && ndim() != other.ndim())
+      if(source.fixedDimensionality() != 0 && ndim() != source.ndim())
       {
         // We can't directly swap the two, because the lhs doesn't match in rhs requirements
-        resize(IPosition(other.fixedDimensionality(), 0));
+        resize(IPosition(source.fixedDimensionality(), 0));
       }
-      swap(other);
+      swap(source);
     }
   }
   return *this;

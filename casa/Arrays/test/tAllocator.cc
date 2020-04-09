@@ -141,4 +141,36 @@ BOOST_AUTO_TEST_CASE(custom_allocator_array)
   c.assign( a );
 }
 
+BOOST_AUTO_TEST_CASE(array_shared_storage)
+{
+  int storage = 42;
+  
+  Array<int> a(IPosition{1}, &storage, StorageInitPolicy::SHARE);
+  BOOST_CHECK_EQUAL(storage, 42);
+  std::vector<int> ref={42};
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), ref.begin(), ref.end());
+  
+  a.assign_conforming(Array<int>(IPosition{1}, 37));
+  BOOST_CHECK_EQUAL(storage, 37);
+  ref[0] = 37;
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), ref.begin(), ref.end());
+}
+
+BOOST_AUTO_TEST_CASE(array_take_shared_storage)
+{
+  IPosition shape{3, 4, 2, 3};
+  std::vector<int> v(shape.product(), 1982);
+  
+  Array<int> a;
+  a.takeStorage(shape, v.data(), StorageInitPolicy::SHARE);
+  BOOST_CHECK_EQUAL(v.data()[0], 1982);
+  std::vector<int> ref1(shape.product(), 1982);
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), ref1.begin(), ref1.end());
+  
+  a.assign_conforming(Array<int>(shape, 1988));
+  std::vector<int> ref2(shape.product(), 1988);
+  BOOST_CHECK_EQUAL_COLLECTIONS(v.begin(), v.end(), ref2.begin(), ref2.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), ref2.begin(), ref2.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()

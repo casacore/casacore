@@ -51,6 +51,10 @@ foreach (test ${tests})
     add_dependencies(check ${test})
 endforeach (test)
 
+find_package(Boost COMPONENTS filesystem unit_test_framework)
+include_directories(${Boost_INCLUDE_DIR})
+target_link_libraries (tStManAll ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
 if(MPI_FOUND)
     if(ADIOS2_FOUND)
         foreach (test ${tests_mpi})

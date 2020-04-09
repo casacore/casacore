@@ -77,6 +77,8 @@ public:
   
   const Alloc& get_allocator() const { return static_cast<const Alloc&>(*this); }
   
+  bool is_shared() const { return _isShared; }
+  
 private:
   Storage(T* startIter, T* endIter, const Alloc& allocator, std::true_type /*integral*/, std::true_type /*move*/) :
     Alloc(allocator),

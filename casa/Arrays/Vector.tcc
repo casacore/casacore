@@ -247,7 +247,7 @@ template<typename T, typename Alloc>
 Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(Vector<T, Alloc>&& source)
 {
   assert(ok());
-  if(this->nrefs() > 1)
+  if(this->nrefs() > 1 || source.nrefs() > 1 || this->data_p->is_shared() || source.data_p->is_shared())
     assign_conforming(source);
   else if(source.ndim() == 0)
   {
