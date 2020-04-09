@@ -239,7 +239,7 @@ try {
 
 // Plotting things
 
-   std::regex re("[ \n\t\r\v\f,]+", 1);
+   std::regex re("[ \n\t\r\v\f,]+");
    Vector<Int> statisticTypes = LatticeStatsBase::toStatisticTypes(statsToPlot, re);
    Vector<Int> nxy(nxyB.begin(), nxyB.end());
    if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
@@ -454,7 +454,7 @@ try {
       return 1;
    }
 } catch (std::exception& x) {
-     cerr << "aipserror: error " << x.what() << endl;
+     cerr << "exception: error " << x.what() << endl;
      return 1;
   }
 
