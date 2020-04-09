@@ -149,36 +149,16 @@ Complex atan(const Complex &in) {
 		 0.25*std::log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
 }
 DComplex asin(const DComplex &in) {
-  const Double n = norm(in);
-  Double a = 0.5*std::sqrt(1.0+n+2*real(in));
-  const Double c = 0.5*std::sqrt(1.0+n-2*real(in));
-  const Double b = a-c;
-  a += c;
-  return DComplex(std::asin(b), std::log(a+std::sqrt(a*a-1.0)));
+  return std::asin(in);
 }
 Complex asin(const Complex &in) {
-  const Float n = norm(in);
-  Float a = 0.5*std::sqrt(1.0+n+2*real(in));
-  const Float c = 0.5*sqrt(1.0+n-2*real(in));
-  const Float b = a-c;
-  a += c;
-  return Complex(std::asin(b), std::log(a+std::sqrt(a*a-1.0)));
+  return std::asin(in);
 }
 DComplex acos(const DComplex &in) {
-  const Double n = norm(in);
-  Double a = 0.5*std::sqrt(1.0+n+2*real(in));
-  const Double c = 0.5*std::sqrt(1.0+n-2*real(in));
-  const Double b = a-c;
-  a += c;
-  return DComplex(std::acos(b), -std::log(a+std::sqrt(a*a-1.0)));
+  return std::acos(in);
 }
 Complex acos(const Complex &in) {
-  const Float n = norm(in);
-  Float a = 0.5*std::sqrt(1.0+n+2*real(in));
-  const Float c = 0.5*std::sqrt(1.0+n-2*real(in));
-  const Float b = a-c;
-  a += c;
-  return Complex(std::acos(b), -std::log(a+std::sqrt(a*a-1.0)));
+  return std::acos(in);
 }
 DComplex atan2(const DComplex &in, const DComplex &t2) {
   if (norm(t2) == 0) return DComplex(C::pi_2);
