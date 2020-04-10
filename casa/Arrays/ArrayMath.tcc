@@ -794,12 +794,12 @@ template<typename T, typename Alloc> Array<T, Alloc> ceil(const Array<T, Alloc> 
 
 template<typename T, typename Alloc> Array<T, Alloc> fabs(const Array<T, Alloc> &a)
 {
-    return arrayTransformResult (a, std::abs<T>);
+    return arrayTransformResult (a, [](T t){ return std::abs(t); });
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> abs(const Array<T, Alloc> &a)
 {
-    return arrayTransformResult (a, std::abs<T>);
+    return arrayTransformResult (a, [](T t){ return std::abs(t); });
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> floor(const Array<T, Alloc> &a)
