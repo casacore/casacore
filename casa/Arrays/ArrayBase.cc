@@ -846,7 +846,7 @@ void ArrayBase::putVStorage(void*&, bool)
 {
   throw ArrayError ("ArrayBase::putVStorage cannot be used");
 }
-void ArrayBase::freeVStorage(const void*&, bool)
+void ArrayBase::freeVStorage(const void*&, bool) const
 {
   throw ArrayError ("ArrayBase::freeVStorage cannot be used");
 }

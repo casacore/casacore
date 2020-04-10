@@ -179,7 +179,7 @@ public:
   virtual void* getVStorage (bool& deleteIt);
   virtual const void* getVStorage (bool& deleteIt) const;
   virtual void putVStorage(void*& storage, bool deleteAndCopy);
-  virtual void freeVStorage(const void*& storage, bool deleteIt);
+  virtual void freeVStorage(const void*& storage, bool deleteIt) const;
   // <group>
 
 protected:

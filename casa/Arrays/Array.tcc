@@ -1037,7 +1037,7 @@ void Array<T, Alloc>::putVStorage(void *&storage, bool deleteAndCopy)
   putStorage (ptr, deleteAndCopy);
 }
 template<class T, typename Alloc>
-void Array<T, Alloc>::freeVStorage(const void *&storage, bool deleteAndCopy)
+void Array<T, Alloc>::freeVStorage(const void *&storage, bool deleteAndCopy) const
 {
   const T* &ptr = reinterpret_cast<const T*&>(storage);
   freeStorage (ptr, deleteAndCopy);

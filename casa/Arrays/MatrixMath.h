@@ -149,18 +149,6 @@ template <class T>
    Matrix<T> directProduct(const Matrix<T>& A, const Matrix<T>& B);
 
 //
-// The complex conjugate of the complex matrix A.
-//
-[[ deprecated("MatrixMath::conjugate is deprecated, use ArrayMath::conj.") ]]
-Matrix<std::complex<float>> conjugate (const Matrix<std::complex<float>> &A);
-
-//
-// The complex conjugate of the double precision complex matrix A.
-//
-[[ deprecated("MatrixMath::conjugate is deprecated, use ArrayMath::conj.") ]]
-Matrix<std::complex<double>> conjugate (const Matrix<std::complex<double>> &A);
-
-//
 // The conjugate/transpose or adjoint of the complex matrix A.
 //
 Matrix<std::complex<float>> adjoint (const Matrix<std::complex<float>> &A);

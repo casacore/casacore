@@ -165,24 +165,6 @@ public:
     {
       return this->begin_p[index(i1, i2, i3)];
     }
-
-  //# Have function at (temporarily) to check if test on contiguous is
-  //# indeed slower than always using multiplication in operator()
-    [[ deprecated("Use operator() instead") ]]
-    T &at(size_t i1, size_t i2, size_t i3)
-    {
-      return this->contiguous_p ?
-        this->begin_p[index_continuous(i1, i2, i3)] :
-        this->begin_p[index(i1, i2, i3)];
-    }
-
-    [[ deprecated("Use operator() instead") ]]
-    const T &at(size_t i1, size_t i2, size_t i3) const
-    {
-      return this->contiguous_p ?
-        this->begin_p[index_continuous(i1, i2, i3)] :
-        this->begin_p[index(i1, i2, i3)];
-    }
     // </group>
 
     // Take a slice of this cube. Slices are always indexed starting

@@ -636,7 +636,7 @@ public:
     // The "storage" pointer is set to zero.
     // TODO this function can not be const for stateful allocators
     void freeStorage(const T *&storage, bool deleteIt) const;
-    void freeVStorage(const void *&storage, bool deleteIt) override;
+    void freeVStorage(const void *&storage, bool deleteIt) const override;
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined if storage does not point at nelements() or
