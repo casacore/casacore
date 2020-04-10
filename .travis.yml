@@ -2,17 +2,6 @@ language: cpp
 cache: ccache
 sudo: false
 
-addons:
-  homebrew:
-    packages:
-    - fftw
-    - hdf5
-    - ccache
-    - boost-python3
-    - cfitsio
-    - wcslib
-    update: true
-
 env:
   global:
     - CCACHE_COMPRESS=1

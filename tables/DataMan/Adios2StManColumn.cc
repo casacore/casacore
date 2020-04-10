@@ -77,6 +77,11 @@ IPosition Adios2StManColumn::shape(uInt aRowNr)
         }
         else
         {
+            /*
+            throw(std::runtime_error("Shape not defined for Column "
+                        + static_cast<std::string>(itsColumnName)
+                        + " Row " + std::to_string(aRowNr)));
+                        */
             return IPosition();
         }
     }
@@ -102,6 +107,24 @@ void Adios2StManColumn::arrayVToSelection(uInt rownr)
 {
     itsAdiosStart[0] = rownr;
     itsAdiosCount[0] = 1;
+    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+    {
+        itsAdiosStart[i] = 0;
+        itsAdiosCount[i] = itsAdiosShape[i];
+    }
+}
+
+void Adios2StManColumn::scalarColumnCellsVToSelection(const RefRows &rows)
+{
+    RefRowsSliceIter iter(rows);
+    auto row_start = iter.sliceStart();
+    auto row_end = iter.sliceEnd();
+    iter.next();
+    if (!iter.pastEnd()) {
+        throw std::runtime_error("Adios2StManColumn::scalarColumnCellsVToSelection supports single slices");
+    }
+    itsAdiosStart[0] = row_start;
+    itsAdiosCount[0] = row_end - row_start + 1;
     for (size_t i = 1; i < itsAdiosShape.size(); ++i)
     {
         itsAdiosStart[i] = 0;
@@ -142,52 +165,29 @@ void Adios2StManColumn::columnSliceCellsVToSelection(uInt row_start, uInt row_co
     }
 }
 
-void Adios2StManColumn::putBoolV(uInt rownr, const Bool *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putuCharV(uInt rownr, const uChar *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putShortV(uInt rownr, const Short *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putuShortV(uInt rownr, const uShort *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putIntV(uInt rownr, const Int *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putuIntV(uInt rownr, const uInt *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putInt64V(uInt rownr, const Int64 *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putfloatV(uInt rownr, const Float *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putdoubleV(uInt rownr, const Double *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putComplexV(uInt rownr, const Complex *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::putDComplexV(uInt rownr, const DComplex *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
+#define DEFINE_GETPUT_TYPE_V(T) \
+void Adios2StManColumn::put ## T ## V(uInt rownr, const T *dataPtr) \
+{ \
+    putScalarV(rownr, dataPtr); \
+} \
+\
+void Adios2StManColumn::get ## T ## V(uInt rownr, T *dataPtr) \
+{ \
+    getScalarV(rownr, dataPtr); \
 }
 
-#define DEFINE_GETPUTSLICE(T) \
+#define DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V(T) \
+void Adios2StManColumn::getScalarColumnCells ## T ## V(const RefRows& rownrs, Vector<T>* dataPtr) \
+{ \
+    getScalarColumnCellsV(rownrs, dataPtr); \
+} \
+\
+void Adios2StManColumn::putScalarColumnCells ## T ## V(const RefRows& rownrs, const Vector<T>* dataPtr) \
+{ \
+    putScalarColumnCellsV(rownrs, dataPtr); \
+}
+
+#define DEFINE_GETPUT_SLICE_TYPE_V(T) \
 void Adios2StManColumn::putSlice ## T ## V(uInt rownr, const Slicer& ns, const Array<T>* dataPtr) \
 { \
     putSliceV(rownr, ns, dataPtr); \
@@ -198,65 +198,37 @@ void Adios2StManColumn::getSlice ## T ## V(uInt rownr, const Slicer& ns, Array<T
     getSliceV(rownr, ns, dataPtr); \
 }
 
-DEFINE_GETPUTSLICE(Bool)
-DEFINE_GETPUTSLICE(uChar)
-DEFINE_GETPUTSLICE(Short)
-DEFINE_GETPUTSLICE(uShort)
-DEFINE_GETPUTSLICE(Int)
-DEFINE_GETPUTSLICE(uInt)
-DEFINE_GETPUTSLICE(float)
-DEFINE_GETPUTSLICE(double)
-DEFINE_GETPUTSLICE(Complex)
-DEFINE_GETPUTSLICE(DComplex)
-DEFINE_GETPUTSLICE(String)
-#undef DEFINE_PUTSLICE
+#define DEFINE_GETPUT(T) \
+DEFINE_GETPUT_TYPE_V(T) \
+DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V(T) \
+DEFINE_GETPUT_SLICE_TYPE_V(T)
 
-void Adios2StManColumn::getBoolV(uInt rownr, Bool *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getuCharV(uInt rownr, uChar *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getShortV(uInt rownr, Short *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getuShortV(uInt rownr, uShort *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getIntV(uInt rownr, Int *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getuIntV(uInt rownr, uInt *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getInt64V(uInt rownr, Int64 *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getfloatV(uInt rownr, Float *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getdoubleV(uInt rownr, Double *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getComplexV(uInt rownr, Complex *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
-void Adios2StManColumn::getDComplexV(uInt rownr, DComplex *dataPtr)
-{
-    getScalarV(rownr, dataPtr);
-}
+DEFINE_GETPUT(Bool)
+DEFINE_GETPUT(uChar)
+DEFINE_GETPUT(Short)
+DEFINE_GETPUT(uShort)
+DEFINE_GETPUT(Int)
+DEFINE_GETPUT(uInt)
+DEFINE_GETPUT(float)
+DEFINE_GETPUT(double)
+DEFINE_GETPUT(Complex)
+DEFINE_GETPUT(DComplex)
+DEFINE_GETPUT_TYPE_V(Int64)
+DEFINE_GETPUT_SLICE_TYPE_V(String)
+DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V(Int64)
+#undef DEFINE_GETPUT
+#undef DEFINE_GETPUT_TYPE_V
+#undef DEFINE_GETPUT_SCALAR_COLUMN_CELLS_V
+#undef DEFINE_GETPUT_SLICE_TYPE_V
+
 
 // string
+
+template<>
+void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char /*aOpenMode*/)
+{
+    itsAdiosEngine = aAdiosEngine;
+}
 
 void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
 {
@@ -264,7 +236,7 @@ void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
     adios2::Variable<std::string> v = itsAdiosIO->InquireVariable<std::string>(variableName);
     if (!v)
     {
-        v = itsAdiosIO->DefineVariable<std::string>(variableName, {adios2::LocalValueDim});
+        v = itsAdiosIO->DefineVariable<std::string>(variableName);
     }
     itsAdiosEngine->Put(v, reinterpret_cast<const std::string *>(dataPtr), adios2::Mode::Sync);
 }

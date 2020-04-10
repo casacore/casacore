@@ -39,9 +39,9 @@ void assert_hash(const ObjectID &id)
 {
 	if (!id.isNull()) {
 		// Hash bytes are: seq number, pid, creation time and hostname
-		// All except the first will always have at least one bit set
+		// The sequence number starts at zero, and PIDs can be multiples of 256,
+		// but at least the other two fields will always have a bit set
 		auto hash = hashFunc(id);
-		AlwaysAssertExit(((hash >> 8) & 0xff) != 0);
 		AlwaysAssertExit(((hash >> 16) & 0xff) != 0);
 		AlwaysAssertExit(((hash >> 24) & 0xff) != 0);
 	}
