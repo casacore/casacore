@@ -30,6 +30,7 @@
 
 //# Includes
 #include <stdexcept>
+#include <string>
 
 #include "IPosition.h"
 
