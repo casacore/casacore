@@ -278,8 +278,7 @@ Arrays/ArrayBase.h
 Arrays/ArrayError.h
 Arrays/Array.h
 Arrays/Array.tcc
-Arrays/ArrayIO.h
-Arrays/ArrayIO.tcc
+Arrays/ArrayFwd.h
 Arrays/ArrayIter.h
 Arrays/ArrayIter.tcc
 Arrays/ArrayLogical.h
@@ -292,6 +291,8 @@ Arrays/ArrayOpsDiffShapes.tcc
 Arrays/ArrayPartMath.h
 Arrays/ArrayPartMath.tcc
 Arrays/ArrayPosIter.h
+Arrays/ArrayStr.h
+Arrays/ArrayStr.tcc
 Arrays/ArrayUtil.h
 Arrays/ArrayUtil.tcc
 Arrays/AxesMapping.h
@@ -300,7 +301,6 @@ Arrays/Cube.h
 Arrays/Cube.tcc
 Arrays/ExtendSpecifier.h
 Arrays/IPosition.h
-Arrays/LogiArrayFwd.h
 Arrays/LogiArray.h
 Arrays/LogiCube.h
 Arrays/LogiMatrix.h
