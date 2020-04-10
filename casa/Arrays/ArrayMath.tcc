@@ -393,12 +393,12 @@ template<typename T, typename Alloc> void operator%= (Array<T, Alloc> &left, con
 template<typename T, typename Alloc> void operator&= (Array<T, Alloc> &left, const Array<T, Alloc> &other)
 {
     checkArrayShapes (left, other, "&=");
-    arrayTransformInPlace (left, other, std::bit_and<T>());
+    arrayTransformInPlace (left, other, [](T a, T b){ return a&b; });
 }
 
 template<typename T, typename Alloc> void operator&= (Array<T, Alloc> &left, const T &other)
 {
-    arrayTransformInPlace (left, other, std::bit_and<T>());
+    arrayTransformInPlace (left, other, [](T a, T b){ return a&b; });
 }
 
 // <thrown>
@@ -407,12 +407,12 @@ template<typename T, typename Alloc> void operator&= (Array<T, Alloc> &left, con
 template<typename T, typename Alloc> void operator|= (Array<T, Alloc> &left, const Array<T, Alloc> &other)
 {
     checkArrayShapes (left, other, "|=");
-    arrayTransformInPlace (left, other, std::bit_or<T>());
+    arrayTransformInPlace (left, other, [](T a, T b){ return a|b; });
 }
 
 template<typename T, typename Alloc> void operator|= (Array<T, Alloc> &left, const T &other)
 {
-    arrayTransformInPlace (left, other, std::bit_or<T>());
+    arrayTransformInPlace (left, other, [](T a, T b){ return a|b; });
 }
 
 // <thrown>
@@ -421,12 +421,12 @@ template<typename T, typename Alloc> void operator|= (Array<T, Alloc> &left, con
 template<typename T, typename Alloc> void operator^= (Array<T, Alloc> &left, const Array<T, Alloc> &other)
 {
     checkArrayShapes (left, other, "^=");
-    arrayTransformInPlace (left, other, std::bit_xor<T>());
+    arrayTransformInPlace (left, other, [](T a, T b){ return a^b; });
 }
 
 template<typename T, typename Alloc> void operator^= (Array<T, Alloc> &left, const T &other)
 {
-    arrayTransformInPlace (left, other, std::bit_xor<T>());
+    arrayTransformInPlace (left, other, [](T a, T b){ return a^b; });
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> operator+(const Array<T, Alloc> &a)
@@ -441,7 +441,7 @@ template<typename T, typename Alloc> Array<T, Alloc> operator-(const Array<T, Al
 
 template<typename T, typename Alloc> Array<T, Alloc> operator~(const Array<T, Alloc> &a)
 {
-    return arrayTransformResult (a, std::bit_not<T>());
+    return arrayTransformResult (a, [](T val) { return ~val; }); // bit_not would be nicer, but is C++14
 }
 
 // <thrown>
@@ -486,21 +486,21 @@ template<typename T, typename Alloc>
    Array<T, Alloc> operator&(const Array<T, Alloc> &left, const Array<T, Alloc> &right)
 {
     checkArrayShapes (left, right, "%");
-    return arrayTransformResult (left, right, std::bit_and<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a&b; });
 }
 
 template<typename T, typename Alloc>
    Array<T, Alloc> operator|(const Array<T, Alloc> &left, const Array<T, Alloc> &right)
 {
     checkArrayShapes (left, right, "%");
-    return arrayTransformResult (left, right, std::bit_or<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a|b; });
 }
 
 template<typename T, typename Alloc>
    Array<T, Alloc> operator^(const Array<T, Alloc> &left, const Array<T, Alloc> &right)
 {
     checkArrayShapes (left, right, "%");
-    return arrayTransformResult (left, right, std::bit_xor<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a^b; });
 }
 
 template<class T, typename Alloc> 
@@ -532,19 +532,19 @@ Array<T, Alloc> operator% (const Array<T, Alloc> &left, const T &right)
 template<class T, typename Alloc> 
 Array<T, Alloc> operator& (const Array<T, Alloc> &left, const T &right)
 {
-    return arrayTransformResult (left, right, std::bit_and<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a&b; });
 }
 
 template<class T, typename Alloc> 
 Array<T, Alloc> operator| (const Array<T, Alloc> &left, const T &right)
 {
-    return arrayTransformResult (left, right, std::bit_or<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a|b; });
 }
 
 template<class T, typename Alloc> 
 Array<T, Alloc> operator^ (const Array<T, Alloc> &left, const T &right)
 {
-    return arrayTransformResult (left, right, std::bit_xor<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a^b; });
 }
 
 template<class T, typename Alloc> 
@@ -575,19 +575,19 @@ Array<T, Alloc> operator% (const T &left, const Array<T, Alloc> &right)
 template<class T, typename Alloc> 
 Array<T, Alloc> operator& (const T &left, const Array<T, Alloc> &right)
 {
-    return arrayTransformResult (left, right, std::bit_and<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a&b; });
 }
 
 template<class T, typename Alloc> 
 Array<T, Alloc> operator| (const T &left, const Array<T, Alloc> &right)
 {
-    return arrayTransformResult (left, right, std::bit_or<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a|b; });
 }
 
 template<class T, typename Alloc> 
 Array<T, Alloc> operator^ (const T &left, const Array<T, Alloc> &right)
 {
-    return arrayTransformResult (left, right, std::bit_xor<T>());
+    return arrayTransformResult (left, right, [](T a, T b){ return a^b; });
 }
 
 // <thrown>
