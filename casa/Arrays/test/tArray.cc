@@ -1356,6 +1356,9 @@ struct LifecycleChecker {
     }
     ++ctor_count;
   }
+  LifecycleChecker(LifecycleChecker&& src) :
+    LifecycleChecker(src)
+  { }
   ~LifecycleChecker() {
     ++dtor_count;
   }
@@ -1365,6 +1368,9 @@ struct LifecycleChecker {
     }
     ++assign_count;
     return *this;
+  }
+  LifecycleChecker & operator =(LifecycleChecker&& rhs) {
+    return operator=(rhs);
   }
   static void clear() {
     assign_count = ctor_count = dtor_count = 0;
