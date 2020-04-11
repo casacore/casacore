@@ -323,6 +323,7 @@ Arrays/MatrixMath.h
 Arrays/MatrixMath.tcc
 Arrays/Slice.h
 Arrays/Slicer.h
+Arrays/Storage.h
 Arrays/Vector.h
 Arrays/Vector.tcc
 Arrays/Vector2.tcc

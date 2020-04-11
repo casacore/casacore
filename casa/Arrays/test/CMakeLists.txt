@@ -45,7 +45,6 @@ set (testfiles
 #  tSumPerformance.cc
   tVector.cc
   tVectorSTLIterator.cc
-  ../../Containers/test/tRecord.cc
 )
 
 find_package(Boost COMPONENTS filesystem unit_test_framework system)
