@@ -2,6 +2,7 @@ set (tests
 tBlock
 tBlockTrace
 tObjectStack
+tRecord
 tRecordDesc
 tValueHolder
 )
