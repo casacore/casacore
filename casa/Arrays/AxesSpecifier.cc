@@ -56,27 +56,6 @@ AxesSpecifier::AxesSpecifier (const IPosition& keepAxes,
   itsKeep (false)
 {}
 
-AxesSpecifier::AxesSpecifier (const AxesSpecifier& that)
-: itsAxes (that.itsAxes),
-  itsPath (that.itsPath),
-  itsKeep (that.itsKeep)
-{}
-
-AxesSpecifier& AxesSpecifier::operator= (const AxesSpecifier& that)
-{
-  if (this != &that) {
-    itsAxes.resize (that.itsAxes.nelements(), false);
-    itsAxes = that.itsAxes;
-    itsPath.resize (that.itsPath.nelements(), false);
-    itsPath = that.itsPath;
-    itsKeep = that.itsKeep;
-  }
-  return *this;
-}
-
-AxesSpecifier::~AxesSpecifier()
-{}
-
 AxesMapping AxesSpecifier::apply (const IPosition& shape) const
 {
   // Find the axes to be kept.

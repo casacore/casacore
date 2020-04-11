@@ -135,15 +135,6 @@ public:
   // <br>E.g. for a 4-dim lattice axisPath [2,0] means axis order [2,0,1,3].
   AxesSpecifier (const IPosition& keepAxes, const IPosition& axisPath);
 
-  // Copy constructor (copy semantics).
-  AxesSpecifier(const AxesSpecifier& other);
-  
-  ~AxesSpecifier();
-
-  // Assignment (copy semantics).
-  // This and that do not have to have the same length.
-  AxesSpecifier& operator= (const AxesSpecifier& other);
-
   // Apply the specification to a shape.
   // It returns an <linkto class=AxesMapping>AxesMapping</linkto>
   // object which takes care of mapping old to new axes order.
