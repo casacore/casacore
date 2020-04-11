@@ -111,7 +111,11 @@ void a() {
     cout << doMatch (exp5, "",0) << " ";
     cout << doMatch (exp5, "",1) << " ";
     cout << doMatch (exp5, "",2) << " ";
-    cout << doMatch (exp5, "",10) << " ";
+    // This used to be:
+    // cout << doMatch (exp5, "",10) << " "
+    // But I believe that is not a correct test, as it will go out of bounds
+    // (A.O. 2020)
+    cout << doMatch (exp5, "\0\0\0\0\0\0\0\0\0\0",10) << " ";
     cout << doMatch (exp5, "a",1) << " ";
     cout << doMatch (exp5, "a",2) << " ";
     cout << doMatch (exp5, "\0\0",2) << endl;
