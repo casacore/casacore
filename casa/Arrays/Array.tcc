@@ -406,13 +406,11 @@ Array<T, Alloc>& Array<T, Alloc>::assign_conforming(const MaskedArray<T> &marray
 {
     assert(ok());
 
-#ifndef NDEBUG
     if (!conform(marray)) {
         throw(ArrayConformanceError(
             "Array<T> & Array<T, Alloc>::assign_conforming (const MaskedArray<T> &marray)"
             "- Conformance error."));
     }
-#endif
 
     bool deleteThis;
     T *thisStorage = getStorage(deleteThis);
@@ -1056,7 +1054,7 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
     data_p = Storage<T, Alloc>::MakeFromSharedData(storage, new_nels, allocator);
   }
   else {
-    if (data_p==nullptr || data_p.use_count() > 1
+    if (data_p==nullptr || data_p.use_count() > 1 || data_p->is_shared()
             || data_p->size() != new_nels) {
       data_p = Storage<T, Alloc>::MakeFromMove(storage, storage+new_nels, allocator);
     } else {
