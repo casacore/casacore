@@ -148,8 +148,14 @@ void read_array(Array<T, Alloc>& the_array, const std::string& fileName)
 template <typename T, typename Alloc>
 void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* filein)
 {
-  const int      bufSize = 1024, numberSize = 50;
-  char     buf[bufSize], buf2[numberSize];
+  const size_t bufSize = 1024;
+  char buf[bufSize];
+  std::fill_n(buf, bufSize, 0);
+  
+  const size_t numberSize = 50;
+  char buf2[numberSize];
+  std::fill_n(buf2, numberSize, 0);
+  
   size_t     blockSize = 100;
   std::vector<T> temp(blockSize);
   
@@ -163,8 +169,8 @@ void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* filein)
   size_t havePoint = 0;
   
   while (iFile.getline(buf, bufSize)) {
-    int blankLine = 1;
-    for (int j1=0;j1<bufSize;j1++) {
+    size_t blankLine = 1;
+    for (size_t j1=0;j1<bufSize;j1++) {
       if (buf[j1] == '\0')
         break;
       if (buf[j1] != ' ') {
@@ -174,14 +180,15 @@ void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* filein)
     }
     
     if (! blankLine) { 
-      if (havePoint > (blockSize - saveCols - 10)) {
+      if (int(havePoint) > (int(blockSize) - int(saveCols) - 10)) {
         blockSize *= 2;
         temp.resize(blockSize);
       }
       
       rows += 1; cols = 0;
-      int ch = 0, startedNew = 0;
-      for (int i2=0; i2<bufSize; i2++) {
+      size_t ch = 0;
+      bool startedNew = false;
+      for (size_t i2=0; i2<bufSize; i2++) {
         if (buf[i2] == '\0' || buf[i2] == ' ') {
           if (ch > 0) {
             buf2[ch] = ' ';
@@ -190,14 +197,14 @@ void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* filein)
             havePoint += 1;
             ch = 0;
           }
-          startedNew = 0;
+          startedNew = false;
           if (buf[i2] == '\0')
             break;
         }
         
-        if (buf[i2] != ' ' && startedNew == 0) {
+        if (buf[i2] != ' ' && !startedNew) {
           cols += 1;
-          startedNew = 1;
+          startedNew = true;
         }
         
         if (startedNew)
@@ -245,8 +252,14 @@ void writeAsciiMatrix (const Matrix<T, Alloc>& mat, const char* fileout)
 template <typename T, typename Alloc>
 void readAsciiVector (Vector<T, Alloc>& vect, const char* filein) 
 {
-  const int      bufSize = 1024, numberSize = 50;
-  char     buf[bufSize], buf2[numberSize];
+  const size_t bufSize = 1024;
+  char buf[bufSize];
+  std::fill_n(buf, bufSize, 0);
+  
+  const size_t numberSize = 50;
+  char buf2[numberSize];
+  std::fill_n(buf2, numberSize, 0);
+  
   size_t     blockSize = 100;
   std::vector<T> temp(blockSize);
   
@@ -259,8 +272,8 @@ void readAsciiVector (Vector<T, Alloc>& vect, const char* filein)
   size_t havePoint = 0;
   
   while (iFile.getline(buf, bufSize)) {
-    int blankLine = 1;
-    for (int j1=0;j1<bufSize;j1++) {
+    size_t blankLine = 1;
+    for (size_t j1=0;j1<bufSize;j1++) {
       if (buf[j1] == '\0')
         break;
       if (buf[j1] != ' ') {
@@ -270,12 +283,13 @@ void readAsciiVector (Vector<T, Alloc>& vect, const char* filein)
     }
     
     if (! blankLine) { 
-      int ch = 0, startedNew = 0;
-      for (int i2=0; i2<bufSize; i2++) {
+      size_t ch = 0;
+      bool startedNew = false;
+      for (size_t i2=0; i2<bufSize; i2++) {
         if (buf[i2] == '\0' || buf[i2] == ' ') {
           if (ch > 0) {
             buf2[ch] = ' ';
-            if (havePoint > (blockSize - 2)) {
+            if (int(havePoint) > (int(blockSize) - 2)) {
               blockSize *= 2;
               temp.resize(blockSize);
             }
@@ -287,11 +301,11 @@ void readAsciiVector (Vector<T, Alloc>& vect, const char* filein)
           if (buf[i2] == '\0')
             break;
           else
-            startedNew = 0;
+            startedNew = false;
         }
         
-        if (buf[i2] != ' ' && startedNew == 0)
-          startedNew = 1;
+        if (buf[i2] != ' ' && !startedNew)
+          startedNew = true;
         
         if (startedNew)
           buf2[ch++] = buf[i2];
