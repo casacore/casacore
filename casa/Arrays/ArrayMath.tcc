@@ -859,12 +859,12 @@ template<typename T, typename Alloc> Array<T, Alloc> atan2(const Array<T, Alloc>
 
 template<typename T, typename Alloc> Array<T, Alloc> atan2(const T &a, const Array<T, Alloc> &b)
 {
-    return arrayTransformResult (a, b, std::atan2<T,T>);
+    return arrayTransformResult (a, b, [](T l, T r) { return std::atan2(l,r);});
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> atan2(const Array<T, Alloc> &a, const T &b)
 {
-    return arrayTransformResult (a, b, std::atan2<T,T>);
+    return arrayTransformResult (a, b, [](T l, T r) { return std::atan2(l,r);});
 }
 
 // <thrown>
@@ -873,17 +873,17 @@ template<typename T, typename Alloc> Array<T, Alloc> atan2(const Array<T, Alloc>
 template<typename T, typename Alloc> Array<T, Alloc> fmod(const Array<T, Alloc> &a, const Array<T, Alloc> &b)
 {
     checkArrayShapes (a, b, "fmod");
-    return arrayTransformResult (a, b, std::fmod<T,T>);
+    return arrayTransformResult (a, b, [](T l, T r) { return std::fmod(l,r);});
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> fmod(const T &a, const Array<T, Alloc> &b)
 {
-    return arrayTransformResult (a, b, std::fmod<T,T>);
+    return arrayTransformResult (a, b, [](T l, T r) { return std::fmod(l,r);});
 }
 
 template<typename T, typename Alloc> Array<T, Alloc> fmod(const Array<T, Alloc> &a, const T &b)
 {
-    return arrayTransformResult (a, b, std::fmod<T,T>);
+    return arrayTransformResult (a, b, [](T l, T r) { return std::fmod(l,r);});
 }
 
 
