@@ -67,29 +67,6 @@ AxesMapping::AxesMapping (const IPosition& oldToNew)
   itsToOld.resize (nnew);
 }
 
-AxesMapping::AxesMapping (const AxesMapping& that)
-: itsToNew     (that.itsToNew),
-  itsToOld     (that.itsToOld),
-  itsRemoved   (that.itsRemoved),
-  itsReordered (that.itsReordered)
-{}
-
-AxesMapping& AxesMapping::operator= (const AxesMapping& that)
-{
-  if (this != &that) {
-    itsToNew.resize (that.itsToNew.nelements(), false);
-    itsToNew = that.itsToNew;
-    itsToOld.resize (that.itsToOld.nelements(), false);
-    itsToOld = that.itsToOld;
-    itsRemoved   = that.itsRemoved;
-    itsReordered = that.itsReordered;
-  }
-  return *this;
-}
-
-AxesMapping::~AxesMapping()
-{}
-
 IPosition AxesMapping::posToNew (const IPosition& pos) const
 {
   size_t naxes = itsToNew.nelements();

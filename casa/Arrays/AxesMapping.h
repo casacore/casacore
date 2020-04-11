@@ -94,15 +94,6 @@ public:
   // <br>It determines if axes are removed and/or reordered.
   explicit AxesMapping (const IPosition& oldToNew);
 
-  // Copy constructor (copy semantics).
-  AxesMapping(const AxesMapping& other);
-  
-  ~AxesMapping();
-
-  // Assignment (copy semantics).
-  // This and that do not have to have the same length.
-  AxesMapping& operator= (const AxesMapping& other);
-
   // Are axes removed?
   bool isRemoved() const
     { return itsRemoved; }
