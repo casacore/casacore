@@ -44,15 +44,15 @@ inline bool near(float val1, float val2, double tol) {
     return true;
   }
   if (val1 == 0) {
-    return (std::fabs(val2) <= (1+tol)*std::numeric_limits<float>::min());
+    return (std::abs(val2) <= (1+tol)*std::numeric_limits<float>::min());
   }
   else if (val2 == 0) {
-    return (std::fabs(val1) <= (1+tol)*std::numeric_limits<float>::min());
+    return (std::abs(val1) <= (1+tol)*std::numeric_limits<float>::min());
   }
   if ((0<val1) != (0<val2)) {
     return false;
   }
-  return (std::fabs(val1-val2) <= tol*std::max(std::fabs(val1), std::fabs(val2)));
+  return (std::abs(val1-val2) <= tol*std::max(std::abs(val1), std::abs(val2)));
 }
 
 inline bool near(double val1, double val2, double tol) {
@@ -63,15 +63,15 @@ inline bool near(double val1, double val2, double tol) {
     return true;
   }
   if (val1 == 0) {
-    return (std::fabs(val2) <= (1+tol)*std::numeric_limits<double>::min());
+    return (std::abs(val2) <= (1+tol)*std::numeric_limits<double>::min());
   }
   else if (val2 == 0) {
-    return (std::fabs(val1) <= (1+tol)*std::numeric_limits<double>::min());
+    return (std::abs(val1) <= (1+tol)*std::numeric_limits<double>::min());
   }
   if ((0<val1) != (0<val2)) {
     return false;
   }
-  return (std::fabs(val1-val2) <= tol*std::max(std::fabs(val1),std::fabs(val2)));
+  return (std::abs(val1-val2) <= tol*std::max(std::abs(val1),std::abs(val2)));
 }
 
 inline bool near(float val1, double val2, double tol) {
@@ -131,11 +131,11 @@ inline bool nearAbs(int val1, int val2, double tol) {
 }
 
 inline bool nearAbs(float val1, float val2, double tol) {
-  return (tol >= double(std::fabs(val2 - val1)));
+  return (tol >= double(std::abs(val2 - val1)));
 }
 
 inline bool nearAbs(double val1, double val2, double tol) {
-  return (tol >= std::fabs(val2 - val1));
+  return (tol >= std::abs(val2 - val1));
 }
 
 // Define a function to compare all elements of two sequences.

@@ -868,7 +868,7 @@ MARRM_FUNC_M ( log, std::log )
 MARRM_FUNC_M ( log10, std::log10 )
 MARRM_FUNC_M ( sqrt, std::sqrt )
 MARRM_FUNC_M ( abs, std::abs )
-MARRM_FUNC_M ( fabs, std::fabs )
+MARRM_FUNC_M ( fabs, std::abs )
 MARRM_FUNC_M ( ceil, std::ceil )
 MARRM_FUNC_M ( floor, std::floor )
 

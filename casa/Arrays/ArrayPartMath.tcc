@@ -649,12 +649,12 @@ template<typename T, typename Alloc> Array<T, Alloc> partialAvdevs (const Array<
       T tmp = *res;
       T tmpm = *mean;
       for (size_t i=0; i<n0; i++) {
-	tmp += std::fabs(*data++ - tmpm);
+	tmp += std::abs(*data++ - tmpm);
       }
       *res = tmp;
     } else {
       for (size_t i=0; i<n0; i++) {
-	*res += std::fabs(*data++ - *mean);
+	*res += std::abs(*data++ - *mean);
 	res += incr0;
 	mean += incr0;
       }
