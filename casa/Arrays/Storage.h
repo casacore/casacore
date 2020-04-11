@@ -83,21 +83,24 @@ private:
   Storage(T* startIter, T* endIter, const Alloc& allocator, std::true_type /*integral*/, std::true_type /*move*/) :
     Alloc(allocator),
     _data(construct_move(startIter, endIter)),
-    _end(_data + (endIter-startIter))
+    _end(_data + (endIter-startIter)),
+    _isShared(false)
   { }
   
   template<typename InputIterator>
   Storage(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::false_type /*integral*/) :
     Alloc(allocator),
     _data(construct_range(startIter, endIter)),
-    _end(_data + std::distance(startIter, endIter))
+    _end(_data + std::distance(startIter, endIter)),
+    _isShared(false)
   { }
 
   template<typename Integral>
   Storage(Integral n, Integral val, const Alloc& allocator, std::true_type /*integral*/) :
     Alloc(allocator),
     _data(construct(n, val)),
-    _end(_data + n)
+    _end(_data + n),
+    _isShared(false)
   { }
 
   T* construct(size_t n)
