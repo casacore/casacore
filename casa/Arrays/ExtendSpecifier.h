@@ -98,15 +98,6 @@ public:
 		   const IPosition& newAxes,
 		   const IPosition& stretchAxes);
 
-  // Copy constructor (copy semantics).
-  ExtendSpecifier(const ExtendSpecifier& other);
-  
-  ~ExtendSpecifier();
-
-  // Assignment (copy semantics).
-  // This and that do not have to have the same length.
-  ExtendSpecifier& operator= (const ExtendSpecifier& other);
-
   // Return the new shape.
   const IPosition& newShape() const
     { return itsNewShape; }
@@ -147,7 +138,6 @@ private:
   // Fill the flags for the given axes.
   // It throws an exception if the axis is invalid or multiply given.
   void fill (bool* flags, size_t nrdim, const IPosition& axes) const;
-
 
   IPosition itsOldShape;
   IPosition itsNewShape;

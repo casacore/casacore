@@ -97,41 +97,6 @@ ExtendSpecifier::ExtendSpecifier (const IPosition& oldShape,
   }
 }
 
-
-ExtendSpecifier::ExtendSpecifier(const ExtendSpecifier& other)
-: itsOldShape    (other.itsOldShape),
-  itsNewShape    (other.itsNewShape),
-  itsNewAxes     (other.itsNewAxes),
-  itsStretchAxes (other.itsStretchAxes),
-  itsExtendAxes  (other.itsExtendAxes),
-  itsOldOldAxes  (other.itsOldOldAxes),
-  itsOldNewAxes  (other.itsOldNewAxes)
-{}
-  
-ExtendSpecifier::~ExtendSpecifier()
-{}
-
-ExtendSpecifier& ExtendSpecifier::operator= (const ExtendSpecifier& other)
-{
-  if (this != &other) {
-    itsOldShape.resize (other.itsOldShape.nelements());
-    itsNewShape.resize (other.itsNewShape.nelements());
-    itsNewAxes.resize  (other.itsNewAxes.nelements());
-    itsStretchAxes.resize (other.itsStretchAxes.nelements());
-    itsExtendAxes.resize  (other.itsExtendAxes.nelements());
-    itsOldOldAxes.resize  (other.itsOldOldAxes.nelements());
-    itsOldNewAxes.resize  (other.itsOldNewAxes.nelements());
-    itsOldShape    = other.itsOldShape;
-    itsNewShape    = other.itsNewShape;
-    itsNewAxes     = other.itsNewAxes;
-    itsStretchAxes = other.itsStretchAxes;
-    itsExtendAxes  = other.itsExtendAxes;
-    itsOldOldAxes  = other.itsOldOldAxes;
-    itsOldNewAxes  = other.itsOldNewAxes;
-  }
-  return *this;
-}
-
 void ExtendSpecifier::fill (bool* flags, size_t nrdim, const IPosition& axes) const
 {
   for (size_t i=0; i<axes.nelements(); i++) {
