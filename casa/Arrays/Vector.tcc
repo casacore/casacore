@@ -166,11 +166,6 @@ Vector<T, Alloc>::Vector(const IPosition &shape, const T *storage)
   : Array<T, Alloc>(shape, storage)
 { }
 
-template<typename T, typename Alloc> Vector<T, Alloc>::~Vector()
-{
-    // Nothing
-}
-
 // Copy from the block. Copy the number of elements specified or
 // the number of elements in the block if nr <= 0.
 // <thrown>
