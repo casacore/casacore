@@ -571,6 +571,10 @@ public:
     // It is 1 unless there are outstanding references to the storage (e.g.,
     // through a slice). Normally you have no need to do this since the
     // arrays handle all of the references for you.
+    // NB: Even when nrefs()==1, the array might be shared, because the
+    // the storage itself might be shared. Therefore, this function should
+    // not be used outside debugging.
+    // TODO make protected.
     size_t nrefs() const;
 
     // Check to see if the Array is consistent. This is about the same thing
@@ -888,6 +892,13 @@ private:
     {
       throw ArrayError("Can not coy from non-copyable object");      
     }
+    
+    // An Array is unique when the container is shared and when nrefs==1.
+    bool isUnique() const
+    {
+      return !data_p->is_shared() && nrefs()==1;
+    }
+    
 protected:
      // Source will be empty with given shape after this call.
     Array(Array<T, Alloc>&& source, const IPosition& shapeForSource) noexcept;

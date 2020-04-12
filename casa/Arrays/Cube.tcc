@@ -74,8 +74,14 @@ template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &len, 
   this->checkBeforeResize(len);
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Cube<T, Alloc> &other)
-  : Array<T>(other)
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Cube<T, Alloc> &source)
+  : Array<T>(source)
+{
+  assert(ok());
+}
+
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(Cube<T, Alloc>&& source)
+  : Array<T>(std::move(source))
 {
   assert(ok());
 }
@@ -83,8 +89,15 @@ template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Cube<T, Alloc> &
 // <thrown>
 //   <item> ArrayNDimError
 // </thrown>
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Array<T, Alloc> &other)
-: Array<T>(other)
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Array<T, Alloc> &source)
+: Array<T>(source)
+{
+  this->checkCubeShape();
+  assert(ok());
+}
+
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(Array<T, Alloc>&& source)
+: Array<T>(std::move(source))
 {
   this->checkCubeShape();
   assert(ok());

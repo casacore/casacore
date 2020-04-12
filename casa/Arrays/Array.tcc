@@ -191,11 +191,14 @@ std::unique_ptr<ArrayBase> Array<T, Alloc>::makeArray() const
 template<class T, typename Alloc>
 Array<T, Alloc>& Array<T, Alloc>::operator= (Array<T, Alloc>&& source)
 {
-  if(nrefs() > 1 || source.nrefs() > 1 || data_p->is_shared() || source.data_p->is_shared())
+  bool swapWouldClashRequirements =
+    source.fixedDimensionality() != 0 && fixedDimensionality() != 0 &&
+    source.fixedDimensionality() != fixedDimensionality();
+  // If this or the source is a shared array, we can't
+  // just replace the storage. Non-moveable types will cause
+  // this to throw :-(. TODO should be solved.
+  if(!isUnique() || !source.isUnique() || swapWouldClashRequirements)
   {
-    // We can't move: this or the source is a shared array, so we can't
-    // just replace the storage. Non-moveable types will cause
-    // this to throw :-(. TODO should be solved.
     assign_conforming(source);
   }
   else {
@@ -521,13 +524,12 @@ template<class T, typename Alloc> void Array<T, Alloc>::unique()
 {
   assert(ok());
 
-  // short circuit when we are unique and flat
-  if (contiguousStorage()  &&  nrefs() == 1) {
-    return;
+  if (!contiguousStorage() || !isUnique())
+  {
+    // OK, we know we are going to need to copy.
+    Array<T, Alloc> tmp(copy(static_cast<Alloc&>(*data_p)));
+    reference (tmp);
   }
-  // OK, we know we are going to need to copy.
-  Array<T, Alloc> tmp(copy(static_cast<Alloc&>(*data_p)));
-  reference (tmp);
 }
 
 // <thrown>

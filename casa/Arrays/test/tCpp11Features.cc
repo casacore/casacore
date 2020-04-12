@@ -1,4 +1,5 @@
 #include "../Array.h"
+#include "../Cube.h"
 #include "../Slice.h"
 #include "../Slicer.h"
 #include "../Vector.h"
@@ -90,7 +91,6 @@ BOOST_AUTO_TEST_CASE( array_move_constructor )
   Array<int> b(std::move(a));
   Array<int> ref(ip, 42);
   BOOST_CHECK_EQUAL(b.shape(), ip);
-  BOOST_CHECK_EQUAL(b.shape(), ip);
   BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
   Array<int> c(std::move(a));
   Array<int> empty;
@@ -110,7 +110,6 @@ BOOST_AUTO_TEST_CASE( array_move_assignment )
   Array<int> b;
   b = std::move(a);
   Array<int> ref(ip, 42);
-  BOOST_CHECK_EQUAL(b.shape(), ip);
   BOOST_CHECK_EQUAL(b.shape(), ip);
   BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
 
@@ -334,6 +333,50 @@ BOOST_AUTO_TEST_CASE( bool_vector_constructor )
   std::vector<bool> stdv{true, false, true};
   Vector<bool> v(stdv);
   BOOST_CHECK_EQUAL_COLLECTIONS(stdv.begin(), stdv.end(), v.begin(), v.end());
+}
+
+BOOST_AUTO_TEST_CASE( cube_move_constructor )
+{
+  IPosition ip{1, 2, 3};
+  Cube<int> a(ip, 42);
+  Cube<int> b(std::move(a));
+  Cube<int> ref(ip, 42);
+  BOOST_CHECK_EQUAL(b.shape(), ip);
+  BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+  Cube<int> c(std::move(a));
+  Cube<int> empty;
+  BOOST_CHECK_EQUAL_COLLECTIONS(c.begin(), c.end(), empty.begin(), empty.end());
+  
+  BOOST_CHECK_THROW(Cube<int>(Array<int>(IPosition(5))), std::exception);
+  
+  Cube<int> d(Vector<int>(3, 17));
+  BOOST_CHECK_EQUAL(d.shape(), IPosition(3, 3, 1, 1));
+  std::vector<int> dref{17, 17, 17};
+  BOOST_CHECK_EQUAL_COLLECTIONS(d.begin(), d.end(), dref.begin(), dref.end());
+}
+
+BOOST_AUTO_TEST_CASE( cube_move_assign )
+{
+  IPosition ip{1, 2, 3};
+  Cube<int> a(ip, 42);
+  Cube<int> b;
+  b = std::move(a);
+  Cube<int> ref(ip, 42);
+  BOOST_CHECK_EQUAL(b.shape(), ip);
+  BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+
+  Cube<int> c(IPosition{3,2,1}, 7); // incorrect shape
+  BOOST_CHECK_THROW(c = std::move(b), std::runtime_error);
+  BOOST_CHECK_EQUAL(b.shape(), ip);
+  BOOST_CHECK_EQUAL(b(0,0,0), 42);
+  BOOST_CHECK_EQUAL(c.shape(), IPosition(3,3,2,1));
+  BOOST_CHECK_EQUAL(c(0,0,0), 7);
+ 
+  Cube<int> d;
+  Vector<int> e(IPosition{3}, 1982);
+  d = std::move(e);
+  BOOST_CHECK_EQUAL(d.shape(), IPosition(3, 3, 1, 1));
+  BOOST_CHECK_EQUAL(d(0,0,0), 1982);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

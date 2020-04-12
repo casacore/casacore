@@ -99,11 +99,13 @@ public:
 
     // The copy constructor uses reference semantics.
     Cube(const Cube<T, Alloc> &);
+    Cube(Cube<T, Alloc> &&);
 
     // Construct a cube by reference from "other". "other must have
     // ndim() of 3 or less. The warning which applies to the copy constructor
     // is also valid here.
     Cube(const Array<T, Alloc> &);
+    Cube(Array<T, Alloc> &&);
 
     // Create an Cube of a given shape from a pointer.
     Cube(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
