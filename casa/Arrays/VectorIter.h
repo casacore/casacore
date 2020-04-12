@@ -77,7 +77,7 @@ public:
     explicit VectorIterator(Array<T> &a, size_t axis=0);
 
     // Return a Vector at the current position.
-    Vector<T> &vector() {return *(Vector<T> *)this->ap_p;}
+    Vector<T> &vector() {return *(Vector<T> *)this->ap_p.get();}
 
 private:
     // Not implemented.

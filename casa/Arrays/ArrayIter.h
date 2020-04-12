@@ -91,8 +91,6 @@ public:
     ArrayIterator(const Array<T, Alloc> &arr, const IPosition &axes,
 		  bool axesAreCursor = true);
 
-    virtual ~ArrayIterator();
-
     // Move the cursor to the next position.
     virtual void next() override;
 
@@ -120,8 +118,8 @@ public:
 
 
 protected:
-    // A pointer to the cursor.
-    Array<T, Alloc>* ap_p;
+    // The cursor
+    std::unique_ptr<Array<T, Alloc>> ap_p;
 
 private:
     // helper function to centralize construction work

@@ -76,7 +76,7 @@ public:
     MatrixIterator(Array<T> &a, size_t cursorAxis1, size_t cursorAxis2);
 
     // Return the matrix at the current position.
-    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap_p);}
+    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap_p.get());}
 
 private:
     // Not implemented.

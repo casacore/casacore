@@ -36,9 +36,7 @@ template<class T> VectorIterator<T>::VectorIterator(Array<T> &a, size_t axis)
   : ArrayIterator<T>(a, IPosition(1,axis), true)
 {
     // We need to ensure that ap points at a vector
-    Vector<T> *vp = new Vector<T>(*this->ap_p); // reference
-    delete this->ap_p;
-    this->ap_p = vp;
+    this->ap_p.reset( new Vector<T>(*this->ap_p) ); // reference
 }
 
 } //# NAMESPACE CASACORE - END

@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<typename T, typename Alloc> ArrayIterator<T, Alloc>::ArrayIterator(const Array<T, Alloc> &a, size_t byDim)
 : ArrayPositionIterator(a.shape(), byDim),
-  ap_p(0),
+  ap_p(),
   pOriginalArray_p(a.allocator())
 {
     init(a);
@@ -45,17 +45,11 @@ template<typename T, typename Alloc> ArrayIterator<T, Alloc>::ArrayIterator(cons
 						  const IPosition &axes,
 						  bool axesAreCursor)
 : ArrayPositionIterator(a.shape(), axes, axesAreCursor),
-  ap_p(0),
+  ap_p(),
   pOriginalArray_p(a.allocator())
 {
     init(a);
 }
-
-template<typename T, typename Alloc> ArrayIterator<T, Alloc>::~ArrayIterator()
-{
-    delete ap_p;
-}
-
 
 // <thrown>
 //     <item> ArrayIteratorError
@@ -92,10 +86,10 @@ template<typename T, typename Alloc> void ArrayIterator<T, Alloc>::init(const Ar
     // correct shape. We only want to remove the iteration axes, not the
     // possible degenerate axes in the cursor).
     if (dimIter() < pOriginalArray_p.ndim()) {
-        ap_p = new Array<T, Alloc>(pOriginalArray_p(blc,trc).nonDegenerate(cursorAxes()));
+        ap_p.reset( new Array<T, Alloc>(pOriginalArray_p(blc,trc).nonDegenerate(cursorAxes())) );
     } else {
         // Same dimensionality, so no degenerate axes
-        ap_p = new Array<T, Alloc>(pOriginalArray_p);
+        ap_p.reset( new Array<T, Alloc>(pOriginalArray_p) );
     }
 }
 
@@ -136,7 +130,7 @@ template<typename T, typename Alloc> void ArrayIterator<T, Alloc>::next()
 template<typename T, typename Alloc> void ArrayIterator<T, Alloc>::set (const IPosition& cursorPos)
 {
     ArrayPositionIterator::set (cursorPos);
-    if (ap_p == 0)
+    if (ap_p == nullptr)
 	throw(ArrayIteratorError("ArrayIterator<T, Alloc>::apSetPointer()"
 				 " - no iteration array!"));
     if (pastEnd()) {
