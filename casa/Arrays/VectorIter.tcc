@@ -32,11 +32,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> VectorIterator<T>::VectorIterator(Array<T> &a, size_t axis)
-  : ArrayIterator<T>(a, IPosition(1,axis), true)
+template<typename T, typename Alloc> VectorIterator<T, Alloc>::VectorIterator(Array<T, Alloc> &a, size_t axis)
+  : ArrayIterator<T, Alloc>(a, IPosition(1,axis), true)
 {
     // We need to ensure that ap points at a vector
-    this->ap_p.reset( new Vector<T>(*this->ap_p) ); // reference
+    this->ap_p.reset( new Vector<T, Alloc>(*this->ap_p) ); // reference
 }
 
 } //# NAMESPACE CASACORE - END

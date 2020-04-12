@@ -64,25 +64,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // average /= float(cube.shape()(2));  // divide by the number of planes
 // </srcblock>
 
-template<class T> class MatrixIterator : public ArrayIterator<T>
+template<typename T, typename Alloc=std::allocator<T>>
+class MatrixIterator : public ArrayIterator<T, Alloc>
 {
 public:
     // Iterate by matrices through array "a".
     // The first 2 axes form the cursor axes.
-    explicit MatrixIterator(Array<T> &a);
+    explicit MatrixIterator(Array<T, Alloc> &a);
 
     // Iterate by matrices through array "a".
     // The given axes form the cursor axes.
-    MatrixIterator(Array<T> &a, size_t cursorAxis1, size_t cursorAxis2);
+    MatrixIterator(Array<T, Alloc> &a, size_t cursorAxis1, size_t cursorAxis2);
 
     // Return the matrix at the current position.
-    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap_p.get());}
+    Matrix<T, Alloc> &matrix() {return *(Matrix<T, Alloc> *)(this->ap_p.get());}
 
 private:
     // Not implemented.
-    MatrixIterator(const MatrixIterator<T> &);
+    MatrixIterator(const MatrixIterator<T, Alloc> &) = delete;
     // Not implemented.
-    MatrixIterator<T> &operator=(const MatrixIterator<T> &);
+    MatrixIterator<T, Alloc> &operator=(const MatrixIterator<T, Alloc> &) = delete;
 };
 
 // 
@@ -123,9 +124,9 @@ public:
     // </group>
 private:
     // Not implemented.
-    ReadOnlyMatrixIterator(const ReadOnlyMatrixIterator<T> &);
+    ReadOnlyMatrixIterator(const ReadOnlyMatrixIterator<T> &) = delete;
     // Not implemented.
-    ReadOnlyMatrixIterator<T> &operator=(const ReadOnlyMatrixIterator<T> &);
+    ReadOnlyMatrixIterator<T> &operator=(const ReadOnlyMatrixIterator<T> &) = delete;
 
     MatrixIterator<T> mi;
 };

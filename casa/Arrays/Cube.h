@@ -240,12 +240,12 @@ public:
     // Of course you could also use a Matrix
     // iterator on the cube.
     // <group>
-    Matrix<T> xyPlane(size_t zplane); 
-    const  Matrix<T> xyPlane(size_t zplane) const; 
-    Matrix<T> xzPlane(size_t yplane); 
-    const  Matrix<T> xzPlane(size_t yplane) const; 
-    Matrix<T> yzPlane(size_t xplane); 
-    const  Matrix<T> yzPlane(size_t xplane) const; 
+    Matrix<T, Alloc> xyPlane(size_t zplane); 
+    const  Matrix<T, Alloc> xyPlane(size_t zplane) const; 
+    Matrix<T, Alloc> xzPlane(size_t yplane); 
+    const  Matrix<T, Alloc> xzPlane(size_t yplane) const; 
+    Matrix<T, Alloc> yzPlane(size_t xplane); 
+    const  Matrix<T, Alloc> yzPlane(size_t xplane) const; 
     // </group>
 
     // The length of each axis of the cube.

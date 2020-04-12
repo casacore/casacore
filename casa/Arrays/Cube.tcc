@@ -48,13 +48,6 @@ template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, 
   assert(ok());
 }
 
-/*template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3, ArrayInitPolicy initPolicy)
-: Array<T>(IPosition(3, l1, l2, l3), initPolicy)
-{
-    makeIndexingConstants();
-    assert(ok());
-}*/
-
 template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3,
 				const T &initialValue)
 : Array<T>(IPosition(3, l1, l2, l3), initialValue)
@@ -196,7 +189,7 @@ void Cube<T, Alloc>::doNonDegenerate (const Array<T> &other,
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<typename T, typename Alloc> Matrix<T> Cube<T, Alloc>::xyPlane(size_t which)
+template<typename T, typename Alloc> Matrix<T, Alloc> Cube<T, Alloc>::xyPlane(size_t which)
 {
     assert(ok());
     if ((long long)(which) >= this->length_p(2)) {
@@ -208,11 +201,11 @@ template<typename T, typename Alloc> Matrix<T> Cube<T, Alloc>::xyPlane(size_t wh
     tmp.inc_p.resize (2);
     tmp.originalLength_p.resize (2);
     tmp.makeSteps();
-    return tmp; // should match Matrix<T>(const Array<T> &)
+    return Matrix<T, Alloc>(tmp); // should match Matrix<T>(const Array<T> &)
 }
 
 
-template<typename T, typename Alloc> const Matrix<T> Cube<T, Alloc>::xyPlane(size_t which) const
+template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::xyPlane(size_t which) const
 {
     Cube<T, Alloc> *This = const_cast<Cube<T, Alloc>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
@@ -220,7 +213,7 @@ template<typename T, typename Alloc> const Matrix<T> Cube<T, Alloc>::xyPlane(siz
     return This->xyPlane(which);
 }
 
-template<typename T, typename Alloc> Matrix<T> Cube<T, Alloc>::xzPlane(size_t which)
+template<typename T, typename Alloc> Matrix<T, Alloc> Cube<T, Alloc>::xzPlane(size_t which)
 {
     assert(ok());
     if ((long long)(which) >= this->length_p(1)) {
@@ -231,7 +224,7 @@ template<typename T, typename Alloc> Matrix<T> Cube<T, Alloc>::xzPlane(size_t wh
     return tmp.nonDegenerate(IPosition(2,0,2));
 }
 
-template<typename T, typename Alloc> const Matrix<T> Cube<T, Alloc>::xzPlane(size_t which) const
+template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::xzPlane(size_t which) const
 {
     Cube<T, Alloc> *This = const_cast<Cube<T, Alloc>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
@@ -239,7 +232,7 @@ template<typename T, typename Alloc> const Matrix<T> Cube<T, Alloc>::xzPlane(siz
     return This->xzPlane(which);
 }
 
-template<typename T, typename Alloc> Matrix<T> Cube<T, Alloc>::yzPlane(size_t which)
+template<typename T, typename Alloc> Matrix<T, Alloc> Cube<T, Alloc>::yzPlane(size_t which)
 {
     assert(ok());
     if ((long long)(which) >= this->length_p(0)) {
@@ -251,7 +244,7 @@ template<typename T, typename Alloc> Matrix<T> Cube<T, Alloc>::yzPlane(size_t wh
 }
 
 
-template<typename T, typename Alloc> const Matrix<T> Cube<T, Alloc>::yzPlane(size_t which) const
+template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::yzPlane(size_t which) const
 {
     Cube<T, Alloc> *This = const_cast<Cube<T, Alloc>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so

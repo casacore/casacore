@@ -69,21 +69,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // }
 // </srcblock>
 
-template<class T> class VectorIterator : public ArrayIterator<T>
+template<typename T, typename Alloc=std::allocator<T>>
+class VectorIterator : public ArrayIterator<T, Alloc>
 {
 public:
     // Iterate by vector cursors through array "a".
     // The vector cursor is taken for the given axis.
-    explicit VectorIterator(Array<T> &a, size_t axis=0);
+    explicit VectorIterator(Array<T, Alloc> &a, size_t axis=0);
 
     // Return a Vector at the current position.
-    Vector<T> &vector() {return *(Vector<T> *)this->ap_p.get();}
+    Vector<T, Alloc> &vector() {return *(Vector<T, Alloc> *)this->ap_p.get();}
 
 private:
     // Not implemented.
-    VectorIterator(const VectorIterator<T> &);
+    VectorIterator(const VectorIterator<T, Alloc> &) = delete;
     // Not implemented.
-    VectorIterator<T> &operator=(const VectorIterator<T> &);
+    VectorIterator<T, Alloc> &operator=(const VectorIterator<T, Alloc> &) = delete;
 };
 
 // 
@@ -98,19 +99,19 @@ private:
 //        ArrayIterator.
 // </note>
 
-template<class T> class ReadOnlyVectorIterator 
+template<typename T, typename Alloc=std::allocator<T>> class ReadOnlyVectorIterator 
 {
 public:
     // <group>
-    explicit ReadOnlyVectorIterator(const Array<T> &a, size_t axis=0)
+    explicit ReadOnlyVectorIterator(const Array<T, Alloc> &a, size_t axis=0)
       : vi(const_cast<Array<T>&>(a), axis) {}
 
     void next()   {vi.next();}
     void reset() {vi.origin();}
     void origin() {vi.origin();}
     
-    const Array<T> &array() {return vi.array();}
-    const Vector<T> &vector() {return vi.vector();}
+    const Array<T, Alloc> &array() {return vi.array();}
+    const Vector<T, Alloc> &vector() {return vi.vector();}
 
     bool atStart() const {return vi.atStart();}
     bool pastEnd() const {return vi.pastEnd();}
@@ -120,11 +121,11 @@ public:
     // </group>
 private:
     // Not implemented.
-    ReadOnlyVectorIterator(const ReadOnlyVectorIterator<T> &);
+    ReadOnlyVectorIterator(const ReadOnlyVectorIterator<T, Alloc> &) = delete;
     // Not implemented.
-    ReadOnlyVectorIterator<T> &operator=(const ReadOnlyVectorIterator<T> &);
+    ReadOnlyVectorIterator<T, Alloc> &operator=(const ReadOnlyVectorIterator<T, Alloc> &) = delete;
 
-    VectorIterator<T> vi;
+    VectorIterator<T, Alloc> vi;
 };
 
 
