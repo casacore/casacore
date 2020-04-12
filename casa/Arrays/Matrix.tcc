@@ -69,21 +69,20 @@ template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t 
   assert(ok());
 }
 
-//template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, ArrayInitPolicy initPolicy)
-//: Array<T, Alloc>(IPosition(2, l1, l2), initPolicy)
-//{
-//    makeIndexingConstants();
-//  assert(ok());
-//}
-
 template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, const T &initialValue)
 : Array<T, Alloc>(IPosition(2, l1, l2), initialValue)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Matrix<T, Alloc> &other)
-  : Array<T, Alloc>(other)
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Matrix<T, Alloc>& source)
+  : Array<T, Alloc>(source)
+{
+  assert(ok());
+}
+
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(Matrix<T, Alloc>&& source)
+  : Array<T, Alloc>(std::move(source))
 {
   assert(ok());
 }
@@ -91,45 +90,39 @@ template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Matrix<T, Al
 // <thrown>
 //    <item> ArrayNDimError
 // </thrown>
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Array<T, Alloc> &other)
-: Array<T, Alloc>(other)
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Array<T, Alloc>& source)
+: Array<T, Alloc>(source)
 {
   this->checkMatrixShape();
   assert(ok());
+}
+
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(Array<T, Alloc>&& source)
+: Array<T, Alloc>(std::move(source))
+{
+  this->checkMatrixShape();
+  assert(ok());
+}
+
+template<typename T, typename Alloc>
+Matrix<T, Alloc>::Matrix(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy, const Alloc& allocator)
+  : Array<T, Alloc>(shape, storage, policy, allocator)
+{
+  Array<T, Alloc>::checkBeforeResize(shape);
+}
+
+template<typename T, typename Alloc>
+Matrix<T, Alloc>::Matrix(const IPosition &shape, const T *storage)
+  : Array<T, Alloc>(shape, storage)
+{
+  Array<T, Alloc>::checkBeforeResize(shape);
 }
 
 template<typename T, typename Alloc> void Matrix<T, Alloc>::resize(size_t nx, size_t ny, bool copyValues)
 {
   Array<T, Alloc>::resize(IPosition{ssize_t(nx), ssize_t(ny)}, copyValues);
   assert(ok());
-}
-
-template<typename T, typename Alloc> Matrix<T, Alloc> &Matrix<T, Alloc>::assign_conforming(const Matrix<T, Alloc> &other)
-{
-  assert(ok());
-  if (this == &other)
-      return *this;
-
-  bool Conform = this->conform(other);
-  if (Conform == false && this->nelements() != 0)
-    this->validateConformance(other);  // We can't overwrite, so throw exception
-
-  Array<T, Alloc>::assign_conforming(other);
-  
-  return *this;
-}
-
-template<typename T, typename Alloc> Array<T, Alloc>& Matrix<T, Alloc>::assign_conforming(const Array<T, Alloc> &a)
-{
-  assert(ok());
-    if (a.ndim() == 2) {
-	Array<T, Alloc>::assign_conforming(a);
-    } else {
-	// This will work if a is 1D
-	Matrix<T, Alloc> tmp(a);
-	assign_conforming(tmp);
-    }
-    return *this;
 }
 
 // <thrown>
@@ -304,34 +297,6 @@ template<typename T, typename Alloc> bool Matrix<T, Alloc>::ok() const
 {
     return ( (this->ndim() == 2) ? (Array<T, Alloc>::ok()) : false );
 }
-
-
-template<typename T, typename Alloc>
-Matrix<T, Alloc>::Matrix(const IPosition &shape, T *storage, 
-		  StorageInitPolicy policy)
-  : Array<T, Alloc>(shape, storage, policy)
-{
-  if(shape.nelements() != 2)
-    throw ArrayError("shape.nelements() != 2");
-}
-
-template<typename T, typename Alloc>
-Matrix<T, Alloc>::Matrix(const IPosition &shape, T *storage,
-                  StorageInitPolicy policy, Alloc& allocator)
-  : Array<T, Alloc>(shape, storage, policy, allocator)
-{
-  if(shape.nelements() != 2)
-    throw ArrayError("shape.nelements() != 2");
-}
-
-template<typename T, typename Alloc>
-Matrix<T, Alloc>::Matrix(const IPosition &shape, const T *storage)
-  : Array<T, Alloc>(shape, storage)
-{
-  if(shape.nelements() != 2)
-    throw ArrayError("shape.nelements() != 2");
-}
-
 
 template<typename T, typename Alloc>
 void Matrix<T, Alloc>::preTakeStorage(const IPosition &shape)

@@ -111,17 +111,17 @@ public:
     // Fill it with the initial value.
     Matrix(const IPosition &len, const T &initialValue);
 
-    // The copy constructor uses reference semantics.
-    Matrix(const Matrix<T, Alloc> &other);
+    // The copy/move constructor uses reference semantics.
+    Matrix(const Matrix<T, Alloc>& source);
+    Matrix(Matrix<T, Alloc>&& source);
 
-    // Construct a Matrix by reference from "other". "other must have
+    // Construct a Matrix by reference from "source". "source must have
     // ndim() of 2 or less.
-    Matrix(const Array<T, Alloc> &other);
+    Matrix(const Array<T, Alloc>& source);
+    Matrix(Array<T, Alloc>&& source);
 
     // Create an Matrix of a given shape from a pointer.
-    Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
-    // Create an Matrix of a given shape from a pointer.
-    Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy, Alloc& allocator);
+    Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY, const Alloc& allocator = Alloc());
     // Create an Matrix of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Matrix(const IPosition &shape, const T *storage);
@@ -136,15 +136,26 @@ public:
     void resize(size_t nx, size_t ny, bool copyValues=false);
      // </group>
 
+    Matrix<T, Alloc>& operator=(const Matrix<T, Alloc>& source)
+    { return assign_conforming(source); }
+    Matrix<T, Alloc>& operator=(Matrix<T, Alloc>&& source)
+    { return assign_conforming(std::move(source)); }
+    
     // Copy the values from other to this Matrix. If this matrix has zero
     // elements then it will resize to be the same shape as other; otherwise
     // other must conform to this.
     // Note that the assign function can be used to assign a
     // non-conforming matrix.
     // <group>
-    Matrix<T, Alloc>& assign_conforming(const Matrix<T, Alloc> &other);
+    Matrix<T, Alloc>& assign_conforming(const Matrix<T, Alloc>& source)
+    { Array<T, Alloc>::assign_conforming(source); return *this; }
+    Matrix<T, Alloc>& assign_conforming(Matrix<T, Alloc>&& source)
+    { Array<T, Alloc>::assign_conforming(std::move(source)); return *this; }
     
-    virtual Array<T, Alloc>& assign_conforming(const Array<T, Alloc> &other);
+    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& source)
+    { return Array<T, Alloc>::assign_conforming(source); }
+    Array<T, Alloc>& assign_conforming(Array<T, Alloc>&& source)
+    { return Array<T, Alloc>::assign_conforming(std::move(source)); }
     // </group>
 
     // Copy val into every element of this Matrix; i.e. behaves as if

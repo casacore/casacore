@@ -379,4 +379,48 @@ BOOST_AUTO_TEST_CASE( cube_move_assign )
   BOOST_CHECK_EQUAL(d(0,0,0), 1982);
 }
 
+BOOST_AUTO_TEST_CASE( matrix_move_constructor )
+{
+  IPosition ip{2, 3};
+  Matrix<int> a(ip, 42);
+  Matrix<int> b(std::move(a));
+  Matrix<int> ref(ip, 42);
+  BOOST_CHECK_EQUAL(b.shape(), ip);
+  BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+  Matrix<int> c(std::move(a));
+  Matrix<int> empty;
+  BOOST_CHECK_EQUAL_COLLECTIONS(c.begin(), c.end(), empty.begin(), empty.end());
+  
+  BOOST_CHECK_THROW(Matrix<int>(Array<int>(IPosition(3))), std::exception);
+  
+  Matrix<int> d(Vector<int>(3, 17));
+  BOOST_CHECK_EQUAL(d.shape(), IPosition(2, 3, 1));
+  std::vector<int> dref{17, 17, 17};
+  BOOST_CHECK_EQUAL_COLLECTIONS(d.begin(), d.end(), dref.begin(), dref.end());
+}
+
+BOOST_AUTO_TEST_CASE( matrix_move_assign )
+{
+  IPosition ip{2, 3};
+  Matrix<int> a(ip, 42);
+  Matrix<int> b;
+  b = std::move(a);
+  Matrix<int> ref(ip, 42);
+  BOOST_CHECK_EQUAL(b.shape(), ip);
+  BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+
+  Matrix<int> c(IPosition{3,2}, 7); // incorrect shape
+  BOOST_CHECK_THROW(c = std::move(b), std::runtime_error);
+  BOOST_CHECK_EQUAL(b.shape(), ip);
+  BOOST_CHECK_EQUAL(b(0,0), 42);
+  BOOST_CHECK_EQUAL(c.shape(), IPosition(2,3,2));
+  BOOST_CHECK_EQUAL(c(0,0), 7);
+ 
+  Matrix<int> d;
+  Vector<int> e(IPosition{3}, 1982);
+  d = std::move(e);
+  BOOST_CHECK_EQUAL(d.shape(), IPosition(2, 3, 1));
+  BOOST_CHECK_EQUAL(d(0,0), 1982);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
