@@ -74,7 +74,7 @@ template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Cube<T, Alloc> &
 }
 
 template<typename T, typename Alloc> Cube<T, Alloc>::Cube(Cube<T, Alloc>&& source)
-  : Array<T>(std::move(source))
+  : Array<T>(std::move(source), IPosition(3, 0))
 {
   assert(ok());
 }
@@ -255,7 +255,11 @@ template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::yzPl
 
 template<typename T, typename Alloc> bool Cube<T, Alloc>::ok() const
 {
-    return ( (this->ndim() == 3) ? (Array<T>::ok()) : false );
+#ifndef NDEBUG
+  if(this->ndim() != 3)
+    throw std::runtime_error("ndim() == " + std::to_string(this->ndim()));
+#endif
+  return this->ndim() == 3 && Array<T, Alloc>::ok();
 }
 
 template<typename T, typename Alloc>

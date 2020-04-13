@@ -82,7 +82,7 @@ template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Matrix<T, Al
 }
 
 template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(Matrix<T, Alloc>&& source)
-  : Array<T, Alloc>(std::move(source))
+  : Array<T, Alloc>(std::move(source), IPosition(2, 0))
 {
   assert(ok());
 }
