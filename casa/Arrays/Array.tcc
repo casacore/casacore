@@ -78,6 +78,16 @@ template<typename T, typename Alloc> Array<T, Alloc>::Array(const IPosition &sha
   assert(ok());
 }
 
+template<typename T, typename Alloc>
+Array<T, Alloc>::Array(const IPosition& shape, uninitializedType, const Alloc& allocator)
+: ArrayBase(shape),
+  data_p(Storage<T, Alloc>::MakeUninitialized(nelements(), allocator)),
+  begin_p(data_p->data())
+{
+  setEndIter();
+  assert(ok());
+}
+
 template<typename T, typename Alloc> Array<T, Alloc>::Array(std::initializer_list<T> list, const Alloc& allocator)
 : ArrayBase (IPosition(1, list.size())),
   data_p(new Storage<T, Alloc>(list.begin(), list.end(), allocator)),

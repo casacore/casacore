@@ -191,6 +191,16 @@ public:
     // Storage is allocated by <src>DefaultAllocator<T></src>.
     Array(const IPosition &shape, const T &initialValue, const Alloc& allocator = Alloc());
     
+    // This is a tag for the constructor that may be used to construct an uninitialized Array.
+    static struct uninitializedType{} uninitialized;
+    
+    // Constructor to create an uninitialized array. This constructor can for example
+    // be called with:
+    // <srcblock>
+    //   Array<int> a(shape, Array<int>::uninitialized);
+    // </srcblock>
+    Array(const IPosition& shape, uninitializedType, const Alloc& allocator = Alloc());
+    
     Array(std::initializer_list<T> list, const Alloc& allocator = Alloc());
 
     // After construction, this and other reference the same storage.
@@ -996,9 +1006,6 @@ extern template class Array<int, std::allocator<int>>;
 extern template class Array<long long, std::allocator<long long>>;
 extern template class Array<float, std::allocator<float>>;
 extern template class Array<double, std::allocator<double>>;
-extern template class Array<std::complex<float>, std::allocator<float>>;
-extern template class Array<std::complex<double>, std::allocator<double>>;
-extern template class Array<std::string, std::allocator<std::string>>;
 
 }//#End casa namespace
 

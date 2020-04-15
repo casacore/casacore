@@ -173,4 +173,16 @@ BOOST_AUTO_TEST_CASE(array_take_shared_storage)
   BOOST_CHECK_EQUAL_COLLECTIONS(a.begin(), a.end(), ref2.begin(), ref2.end());
 }
 
+BOOST_AUTO_TEST_CASE(array_uninitialized)
+{
+  IPosition shape{1, 2, 3, 4};
+  Array<int> a(shape, Array<int>::uninitialized);
+  BOOST_CHECK_EQUAL(a.shape(), shape);
+  a = 3;
+  BOOST_CHECK(allEQ(a, 3));
+  Array<int> b(shape, Array<int>::uninitialized);
+  b.assign_conforming(a);
+  BOOST_CHECK(allEQ(b, 3));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

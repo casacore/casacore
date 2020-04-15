@@ -42,7 +42,4 @@ namespace casacore {
   template class Array<long long, std::allocator<long long>>;
   template class Array<float, std::allocator<float>>;
   template class Array<double, std::allocator<double>>;
-  template class Array<std::complex<float>, std::allocator<std::complex<float>>>;
-  template class Array<std::complex<double>, std::allocator<std::complex<double>>>;
-  template class Array<std::string, std::allocator<std::string>>;
 }

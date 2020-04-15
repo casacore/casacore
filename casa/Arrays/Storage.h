@@ -57,6 +57,18 @@ public:
     return newStorage;
   }
   
+  static std::unique_ptr<Storage<T, Alloc>> MakeUninitialized(size_t n, const Alloc& allocator)
+  {
+    static_assert(std::is_trivial<T>::value, "Only trivial types can be constructed uninitialized");
+    std::unique_ptr<Storage<T, Alloc>> newStorage = std::unique_ptr<Storage>(new Storage<T, Alloc>(allocator));
+    if(n == 0)
+      newStorage->_data = nullptr;
+    else
+      newStorage->_data = static_cast<Alloc&>(*newStorage).allocate(n);
+    newStorage->_end = newStorage->_data + n;
+    return newStorage;
+  }
+  
  ~Storage() noexcept
   {
     if(size() && !_isShared)

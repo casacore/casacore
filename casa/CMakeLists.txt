@@ -297,8 +297,10 @@ Arrays/ArrayUtil.h
 Arrays/ArrayUtil.tcc
 Arrays/AxesMapping.h
 Arrays/AxesSpecifier.h
+Arrays/Copy.h
 Arrays/Cube.h
 Arrays/Cube.tcc
+Arrays/ElementFunctions.h
 Arrays/ExtendSpecifier.h
 Arrays/IPosition.h
 Arrays/LogiArray.h
