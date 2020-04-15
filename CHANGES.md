@@ -1,3 +1,28 @@
+# 3.3.0
+
+## General
+ - Replace implementation of complex trig functions by std:: (#1010)
+ - Fix bug SciMath / StatsFramework where parameters were passed incorrectly (#984)
+
+## Tables
+ - Pass sorting algorithm optio nthrough to table iterator (#992)
+ - Support for ADIOS2 (#1006)
+ - Add .casarc option to disable table locking (#1002)
+
+## Measurement Set / UVFits
+ - Fix antenna swapping in MSConcat (#977)
+ - Merge PROCESSOR table in MSConcat (#1004)
+ - Fix antenna positions in importing old VLA UVFITS (#1005)
+
+## Images
+ - More efficient WCS batch coordinate lookups (#932)
+
+
+# 3.2.1
+
+ - Increment the SO version, otherwise identical to 3.2 (#981)
+
+
 # 3.2
  
 ## General
