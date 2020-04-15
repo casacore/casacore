@@ -30,7 +30,7 @@
 
 #include <unordered_map>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/Tables/RefRows.h>
 
 #include "Adios2StManImpl.h"
@@ -39,125 +39,109 @@
 namespace casacore
 {
 
-class Adios2StManColumn : public StManColumn
+class Adios2StManColumn : public StManColumnBase
 {
 public:
     Adios2StManColumn(Adios2StMan::impl *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
 
-    virtual Bool canAccessSlice (Bool& reask) const { reask = false; return true; };
-    virtual Bool canAccessColumnSlice (Bool& reask) const { reask = false; return true; };
-
     virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
                         char aOpenMode) = 0;
-    virtual void setShapeColumn(const IPosition &aShape);
-    virtual IPosition shape(uInt aRowNr);
-    Bool canChangeShape() const;
-    void setShape (uInt aRowNr, const IPosition& aShape);
+    virtual void setShapeColumn(const IPosition &aShape) override;
+    virtual IPosition shape(rownr_t aRowNr) override;
+    Bool canChangeShape() const override;
+    void setShape (rownr_t aRowNr, const IPosition& aShape) override;
 
     int getDataTypeSize();
     int getDataType();
     String getColumnName();
 
-    virtual void putScalarV(uInt aRowNr, const void *aDataPtr) = 0;
-    virtual void getScalarV(uInt aRowNr, void *aDataPtr) = 0;
-    virtual void getScalarColumnCellsV(const RefRows &rownrs, void *dataPtr) = 0;
-    virtual void putScalarColumnCellsV(const RefRows &rownrs, const void *dataPtr) = 0;
+protected:
 
-    virtual void putBoolV(uInt aRowNr, const Bool *aDataPtr);
-    virtual void putuCharV(uInt aRowNr, const uChar *aDataPtr);
-    virtual void putShortV(uInt aRowNr, const Short *aDataPtr);
-    virtual void putuShortV(uInt aRowNr, const uShort *aDataPtr);
-    virtual void putIntV(uInt aRowNr, const Int *aDataPtr);
-    virtual void putuIntV(uInt aRowNr, const uInt *aDataPtr);
-    virtual void putInt64V(uInt aRowNr, const Int64 *aDataPtr);
-    virtual void putfloatV(uInt aRowNr, const Float *aDataPtr);
-    virtual void putdoubleV(uInt aRowNr, const Double *aDataPtr);
-    virtual void putComplexV(uInt aRowNr, const Complex *aDataPtr);
-    virtual void putDComplexV(uInt aRowNr, const DComplex *aDataPtr);
-    virtual void putStringV(uInt aRowNr, const String *aDataPtr);
+    // scalar get/put
+    virtual void getBool(rownr_t aRowNr, Bool *aDataPtr) override;
+    virtual void getuChar(rownr_t aRowNr, uChar *aDataPtr) override;
+    virtual void getShort(rownr_t aRowNr, Short *aDataPtr) override;
+    virtual void getuShort(rownr_t aRowNr, uShort *aDataPtr) override;
+    virtual void getInt(rownr_t aRowNr, Int *aDataPtr) override;
+    virtual void getuInt(rownr_t aRowNr, uInt *aDataPtr) override;
+    virtual void getInt64(rownr_t aRowNr, Int64 *aDataPtr) override;
+    virtual void getfloat(rownr_t aRowNr, Float *aDataPtr) override;
+    virtual void getdouble(rownr_t aRowNr, Double *aDataPtr) override;
+    virtual void getComplex(rownr_t aRowNr, Complex *aDataPtr) override;
+    virtual void getDComplex(rownr_t aRowNr, DComplex *aDataPtr) override;
+    virtual void getString(rownr_t aRowNr, String *aDataPtr) override;
 
-    virtual void getBoolV(uInt aRowNr, Bool *aDataPtr);
-    virtual void getuCharV(uInt aRowNr, uChar *aDataPtr);
-    virtual void getShortV(uInt aRowNr, Short *aDataPtr);
-    virtual void getuShortV(uInt aRowNr, uShort *aDataPtr);
-    virtual void getIntV(uInt aRowNr, Int *aDataPtr);
-    virtual void getuIntV(uInt aRowNr, uInt *aDataPtr);
-    virtual void getInt64V(uInt aRowNr, Int64 *aDataPtr);
-    virtual void getfloatV(uInt aRowNr, Float *aDataPtr);
-    virtual void getdoubleV(uInt aRowNr, Double *aDataPtr);
-    virtual void getComplexV(uInt aRowNr, Complex *aDataPtr);
-    virtual void getDComplexV(uInt aRowNr, DComplex *aDataPtr);
-    virtual void getStringV(uInt aRowNr, String *aDataPtr);
+    virtual void putBool(rownr_t aRowNr, const Bool *aDataPtr) override;
+    virtual void putuChar(rownr_t aRowNr, const uChar *aDataPtr) override;
+    virtual void putShort(rownr_t aRowNr, const Short *aDataPtr) override;
+    virtual void putuShort(rownr_t aRowNr, const uShort *aDataPtr) override;
+    virtual void putInt(rownr_t aRowNr, const Int *aDataPtr) override;
+    virtual void putuInt(rownr_t aRowNr, const uInt *aDataPtr) override;
+    virtual void putInt64(rownr_t aRowNr, const Int64 *aDataPtr) override;
+    virtual void putfloat(rownr_t aRowNr, const Float *aDataPtr) override;
+    virtual void putdouble(rownr_t aRowNr, const Double *aDataPtr) override;
+    virtual void putComplex(rownr_t aRowNr, const Complex *aDataPtr) override;
+    virtual void putDComplex(rownr_t aRowNr, const DComplex *aDataPtr) override;
+    virtual void putString(rownr_t aRowNr, const String *aDataPtr) override;
 
-    virtual void getScalarColumnCellsBoolV(const RefRows& rownrs, Vector<Bool>* dataPtr);
-    virtual void getScalarColumnCellsuCharV(const RefRows& rownrs, Vector<uChar>* dataPtr);
-    virtual void getScalarColumnCellsShortV(const RefRows& rownrs, Vector<Short>* dataPtr);
-    virtual void getScalarColumnCellsuShortV(const RefRows& rownrs, Vector<uShort>* dataPtr);
-    virtual void getScalarColumnCellsIntV(const RefRows& rownrs, Vector<Int>* dataPtr);
-    virtual void getScalarColumnCellsuIntV(const RefRows& rownrs, Vector<uInt>* dataPtr);
-    virtual void getScalarColumnCellsInt64V(const RefRows& rownrs, Vector<Int64>* dataPtr);
-    virtual void getScalarColumnCellsfloatV(const RefRows& rownrs, Vector<float>* dataPtr);
-    virtual void getScalarColumnCellsdoubleV(const RefRows& rownrs, Vector<double>* dataPtr);
-    virtual void getScalarColumnCellsComplexV(const RefRows& rownrs, Vector<Complex>* dataPtr);
-    virtual void getScalarColumnCellsDComplexV(const RefRows& rownrs, Vector<DComplex>* dataPtr);
+    // The rest of the get and put functions
+    virtual void getScalarColumnV (ArrayBase& dataPtr) override;
+    virtual void putScalarColumnV (const ArrayBase& dataPtr) override;
+    virtual void getScalarColumnCellsV (const RefRows& rownrs,
+                        ArrayBase& dataPtr) override;
+    virtual void putScalarColumnCellsV (const RefRows& rownrs,
+                        const ArrayBase& dataPtr) override;
+    virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr) override;
+    virtual void putArrayV (rownr_t rownr, const ArrayBase& data) override;
+    virtual void getArrayColumnV (ArrayBase& data) override;
+    virtual void putArrayColumnV (const ArrayBase& data) override;
+    virtual void getArrayColumnCellsV (const RefRows& rownrs,
+                    ArrayBase& data) override;
+    virtual void putArrayColumnCellsV (const RefRows& rownrs,
+                       const ArrayBase& data) override;
+    virtual void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& data) override;
+    virtual void putSliceV (rownr_t rownr, const Slicer& slicer,
+                       const ArrayBase& data) override;
+    virtual void getColumnSliceV (const Slicer& slicer, ArrayBase& data) override;
+    virtual void putColumnSliceV (const Slicer& slicer, const ArrayBase& data) override;
+    virtual void getColumnSliceCellsV (const RefRows& rownrs,
+                       const Slicer& slicer, ArrayBase& data) override;
+    virtual void putColumnSliceCellsV (const RefRows& rownrs,
+                       const Slicer& slicer,
+                       const ArrayBase& data) override;
 
-    virtual void putScalarColumnCellsBoolV(const RefRows& rownrs, const Vector<Bool>* dataPtr);
-    virtual void putScalarColumnCellsuCharV(const RefRows& rownrs, const Vector<uChar>* dataPtr);
-    virtual void putScalarColumnCellsShortV(const RefRows& rownrs, const Vector<Short>* dataPtr);
-    virtual void putScalarColumnCellsuShortV(const RefRows& rownrs, const Vector<uShort>* dataPtr);
-    virtual void putScalarColumnCellsIntV(const RefRows& rownrs, const Vector<Int>* dataPtr);
-    virtual void putScalarColumnCellsuIntV(const RefRows& rownrs, const Vector<uInt>* dataPtr);
-    virtual void putScalarColumnCellsInt64V(const RefRows& rownrs, const Vector<Int64>* dataPtr);
-    virtual void putScalarColumnCellsfloatV(const RefRows& rownrs, const Vector<float>* dataPtr);
-    virtual void putScalarColumnCellsdoubleV(const RefRows& rownrs, const Vector<double>* dataPtr);
-    virtual void putScalarColumnCellsComplexV(const RefRows& rownrs, const Vector<Complex>* dataPtr);
-    virtual void putScalarColumnCellsDComplexV(const RefRows& rownrs, const Vector<DComplex>* dataPtr);
 
-    virtual void putSliceBoolV(uInt rownr, const Slicer& ns, const Array<Bool>* dataPtr);
-    virtual void putSliceuCharV(uInt rownr, const Slicer& ns, const Array<uChar>* dataPtr);
-    virtual void putSliceShortV(uInt rownr, const Slicer& ns, const Array<Short>* dataPtr);
-    virtual void putSliceuShortV(uInt rownr, const Slicer& ns, const Array<uShort>* dataPtr);
-    virtual void putSliceIntV(uInt rownr, const Slicer& ns, const Array<Int>* dataPtr);
-    virtual void putSliceuIntV(uInt rownr, const Slicer& ns, const Array<uInt>* dataPtr);
-    virtual void putSlicefloatV(uInt rownr, const Slicer& ns, const Array<float>* dataPtr);
-    virtual void putSlicedoubleV(uInt rownr, const Slicer& ns, const Array<double>* dataPtr);
-    virtual void putSliceComplexV(uInt rownr, const Slicer& ns, const Array<Complex>* dataPtr);
-    virtual void putSliceDComplexV(uInt rownr, const Slicer& ns, const Array<DComplex>* dataPtr);
-    virtual void putSliceStringV(uInt rownr, const Slicer& ns, const Array<String>* dataPtr);
-
-    virtual void getSliceBoolV(uInt rownr, const Slicer& ns, Array<Bool>* dataPtr);
-    virtual void getSliceuCharV(uInt rownr, const Slicer& ns, Array<uChar>* dataPtr);
-    virtual void getSliceShortV(uInt rownr, const Slicer& ns, Array<Short>* dataPtr);
-    virtual void getSliceuShortV(uInt rownr, const Slicer& ns, Array<uShort>* dataPtr);
-    virtual void getSliceIntV(uInt rownr, const Slicer& ns, Array<Int>* dataPtr);
-    virtual void getSliceuIntV(uInt rownr, const Slicer& ns, Array<uInt>* dataPtr);
-    virtual void getSlicefloatV(uInt rownr, const Slicer& ns, Array<float>* dataPtr);
-    virtual void getSlicedoubleV(uInt rownr, const Slicer& ns, Array<double>* dataPtr);
-    virtual void getSliceComplexV(uInt rownr, const Slicer& ns, Array<Complex>* dataPtr);
-    virtual void getSliceDComplexV(uInt rownr, const Slicer& ns, Array<DComplex>* dataPtr);
-    virtual void getSliceStringV(uInt rownr, const Slicer& ns, Array<String>* dataPtr);
+private:
+    void putScalar(rownr_t rownr, const void *dataPtr);
+    void getScalar(rownr_t rownr, void *dataPtr);
+    virtual void toAdios(const ArrayBase *arrayPtr) = 0;
+    virtual void fromAdios(ArrayBase *arrayPtr) = 0;
+    virtual void toAdios(const void *dataPtr, std::size_t offset=0) = 0;
+    virtual void fromAdios(void *dataPtr, std::size_t offset=0) = 0;
 
 
 protected:
-    void scalarVToSelection(uInt rownr);
-    void arrayVToSelection(uInt rownr);
+    void scalarToSelection(rownr_t rownr);
+    void scalarColumnVToSelection();
     void scalarColumnCellsVToSelection(const RefRows &rownrs);
-    void sliceVToSelection(uInt rownr, const Slicer &ns);
+    void arrayVToSelection(rownr_t rownr);
+    void arrayColumnVToSelection();
+    void sliceVToSelection(rownr_t rownr, const Slicer &ns);
     void columnSliceVToSelection(const Slicer &ns);
     void columnSliceCellsVToSelection(const RefRows &rows, const Slicer &ns);
-    void columnSliceCellsVToSelection(uInt row_start, uInt row_end, const Slicer &ns);
+    void columnSliceCellsVToSelection(rownr_t row_start, rownr_t row_end, const Slicer &ns);
 
     Adios2StMan::impl *itsStManPtr;
 
     String itsColumnName;
     IPosition itsCasaShape;
-    std::unordered_map<uInt, IPosition> itsCasaShapes;
+    std::unordered_map<rownr_t, IPosition> itsCasaShapes;
     Bool isShapeFixed = false;
 
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
     std::string itsAdiosDataType;
-    adios2::Dims itsAdiosShape = {std::numeric_limits<uInt>::max()};
+    adios2::Dims itsAdiosShape = {std::numeric_limits<rownr_t>::max()};
     adios2::Dims itsAdiosStart = {0};
     adios2::Dims itsAdiosCount = {1};
 }; // class Adios2StManColumn
@@ -168,14 +152,7 @@ class Adios2StManColumnT : public Adios2StManColumn
 {
 public:
 
-    Adios2StManColumnT(
-            Adios2StMan::impl *aParent,
-            int aDataType,
-            String aColName,
-            std::shared_ptr<adios2::IO> aAdiosIO)
-    : Adios2StManColumn(aParent, aDataType, aColName, aAdiosIO)
-    {
-    }
+    using Adios2StManColumn::Adios2StManColumn;
 
     void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
     {
@@ -191,179 +168,59 @@ public:
         }
     }
 
-    virtual void putArrayV(uInt rownr, const void *dataPtr)
-    {
-        arrayVToSelection(rownr);
-        toAdios(dataPtr);
-    }
-
-    virtual void getArrayV(uInt rownr, void *dataPtr)
-    {
-        arrayVToSelection(rownr);
-        fromAdios(dataPtr);
-    }
-
-    virtual void putScalarV(uInt rownr, const void *dataPtr)
-    {
-        scalarVToSelection(rownr);
-        toAdios(reinterpret_cast<const T *>(dataPtr));
-    }
-
-    virtual void getScalarV(uInt aRowNr, void *data)
-    {
-        scalarVToSelection(aRowNr);
-        fromAdios(reinterpret_cast<T *>(data));
-    }
-
-    virtual void getScalarColumnCellsV(const RefRows &rownrs, void *dataPtr)
-    {
-        scalarColumnCellsVToSelection(rownrs);
-        fromAdios(dataPtr);
-    }
-
-    virtual void putScalarColumnCellsV(const RefRows &rownrs, const void *dataPtr)
-    {
-        scalarColumnCellsVToSelection(rownrs);
-        toAdios(dataPtr);
-    }
-
-    virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
-    {
-        if(rownrs.isSliced())
-        {
-            rownrs.convert();
-        }
-        Bool deleteIt;
-        auto *arrayPtr = asArrayPtr(dataPtr);
-        const T *data = arrayPtr->getStorage(deleteIt);
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = 0;
-            itsAdiosCount[i] = itsAdiosShape[i];
-        }
-        for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
-        {
-            itsAdiosStart[0] = rownrs.rowVector()[i];
-            toAdios(data + i * itsCasaShape.nelements());
-        }
-        arrayPtr->freeStorage(data, deleteIt);
-    }
-
-    virtual void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
-    {
-        if(rownrs.isSliced())
-        {
-            rownrs.convert();
-        }
-        Bool deleteIt;
-        auto *arrayPtr = asArrayPtr(dataPtr);
-        T *data = arrayPtr->getStorage(deleteIt);
-        itsAdiosCount[0] = 1;
-        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-        {
-            itsAdiosStart[i] = 0;
-            itsAdiosCount[i] = itsAdiosShape[i];
-        }
-        for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
-        {
-            itsAdiosStart[0] = rownrs.rowVector()[i];
-            fromAdios(data + i * itsCasaShape.nelements());
-        }
-        arrayPtr->putStorage(data, deleteIt);
-    }
-
-    virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
-    {
-        sliceVToSelection(aRowNr, ns);
-        fromAdios(dataPtr);
-    }
-
-    virtual void putSliceV(uInt aRowNr, const Slicer &ns, const void *dataPtr)
-    {
-        sliceVToSelection(aRowNr, ns);
-        toAdios(dataPtr);
-    }
-
-    virtual void getArrayColumnV(void *dataPtr)
-    {
-        for(auto &i:itsAdiosStart){
-            i=0;
-        }
-        fromAdios(dataPtr);
-    }
-
-    virtual void putColumnSliceV(const Slicer &ns, const void *dataPtr)
-    {
-        columnSliceVToSelection(ns);
-        toAdios(dataPtr);
-    }
-
-    virtual void getColumnSliceV(const Slicer &ns, void *dataPtr)
-    {
-        columnSliceVToSelection(ns);
-        fromAdios(dataPtr);
-    }
-
-    virtual void getColumnSliceCellsV(const RefRows& rownrs,
-                                      const Slicer& slicer, void* dataPtr)
-    {
-        columnSliceCellsVToSelection(rownrs, slicer);
-        fromAdios(dataPtr);
-    }
-
-    virtual void putColumnSliceCellsV (const RefRows& rownrs,
-                                       const Slicer& slicer, const void* dataPtr)
-    {
-        columnSliceCellsVToSelection(rownrs, slicer);
-        toAdios(dataPtr);
-    }
-
 private:
     adios2::Variable<T> itsAdiosVariable;
-    const String itsStringArrayBarrier = "ADIOS2BARRIER";
 
-    Array<T> *asArrayPtr(void *dataPtr) const
+    void toAdios(const void *data, std::size_t offset)
     {
-        return reinterpret_cast<Array<T>*>(dataPtr);
-    }
-
-    const Array<T> *asArrayPtr(const void *dataPtr) const
-    {
-        return reinterpret_cast<const Array<T>*>(dataPtr);
-    }
-
-    void toAdios(const T *data)
-    {
+        const T *tData = static_cast<const T *>(data);
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Put<T>(itsAdiosVariable, data, adios2::Mode::Sync);
+        itsAdiosEngine->Put<T>(itsAdiosVariable, tData + offset, adios2::Mode::Sync);
     }
 
-    void fromAdios(T *data)
+    void fromAdios(void *data, std::size_t offset)
     {
+        T *tData = static_cast<T *>(data);
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data, adios2::Mode::Sync);
+        itsAdiosEngine->Get<T>(itsAdiosVariable, tData + offset, adios2::Mode::Sync);
     }
 
-    void toAdios(const void *dataPtr)
+    void toAdios(const ArrayBase *arrayPtr)
     {
         Bool deleteIt;
-        auto *arrayPtr = asArrayPtr(dataPtr);
-        const T *data = arrayPtr->getStorage(deleteIt);
-        toAdios(data);
-        arrayPtr->freeStorage (data, deleteIt);
+        const void *data = arrayPtr->getVStorage(deleteIt);
+        toAdios(data, 0);
+        arrayPtr->freeVStorage (data, deleteIt);
     }
 
-    void fromAdios(void *dataPtr)
+    void fromAdios(ArrayBase *arrayPtr)
     {
         Bool deleteIt;
-        auto *arrayPtr = asArrayPtr(dataPtr);
-        T *data = arrayPtr->getStorage(deleteIt);
-        fromAdios(data);
-        arrayPtr->putStorage(data, deleteIt);
+        void *data = arrayPtr->getVStorage(deleteIt);
+        fromAdios(data, 0);
+        arrayPtr->putVStorage(data, deleteIt);
     }
 
 }; // class Adios2StManColumnT
+
+class Adios2StManColumnString : public Adios2StManColumnT<std::string>
+{
+public:
+	using Adios2StManColumnT::Adios2StManColumnT;
+
+protected:
+	void putArrayV(rownr_t rownr, const ArrayBase& data);
+	void getArrayV(rownr_t rownr, ArrayBase& data);
+	void getSliceV(rownr_t /*aRowNr*/, const Slicer &/*ns*/, ArrayBase &/*data*/);
+	void putSliceV(rownr_t /*aRowNr*/, const Slicer &/*ns*/, const ArrayBase &/*data*/);
+	void getColumnSliceV(const Slicer &/*ns*/, ArrayBase &/*data*/);
+	void putColumnSliceV(const Slicer &/*ns*/, const ArrayBase &/*data*/);
+	void getColumnSliceCellsV(const RefRows& /*rownrs*/, const Slicer& /*slicer*/, ArrayBase& /*data*/);
+	void putColumnSliceCellsV(const RefRows& /*rownrs*/, const Slicer& /*slicer*/, const ArrayBase& /*data*/);
+
+private:
+    const String itsStringArrayBarrier = "ADIOS2BARRIER";
+}; // class Adios2StManColumnString
 
 } // namespace casacore
 
