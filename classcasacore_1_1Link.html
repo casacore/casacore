@@ -158,7 +158,7 @@ class casacore::Link&lt; t &gt;</h3>
 <h3>Example</h3>
 <p><a class="anchor" id="Link_example1"></a> This example makes <code><a class="el" href="classcasacore_1_1Link.html" title="doubly linked list primitive ">Link</a></code> behave like a stack: </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Link_8h.html">casacore/casa/Containers/Link.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Containers/Link.h&gt;</span></div>
 <div class="line"></div>
 <div class="line">main() {</div>
 <div class="line">Link&lt;int&gt; *hed = <span class="keyword">new</span> Link&lt;int&gt;(23);</div>
@@ -181,7 +181,7 @@ class casacore::Link&lt; t &gt;</h3>
  </pre><p> As each new link is being created, the new element goes at the beginning of the list because the previous head of the list, <code>hed</code>, is being passed in as the <em>next</em> list element.</p>
 <p>This next example demonstrates how a queue could be created instead of a stack: </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Link_8h.html">casacore/casa/Containers/Link.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Containers/Link.h&gt;</span></div>
 <div class="line"></div>
 <div class="line">main() {</div>
 <div class="line">Link&lt;int&gt; *hed = <span class="keyword">new</span> Link&lt;int&gt;(23);</div>

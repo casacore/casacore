@@ -278,9 +278,9 @@ Additional Inherited Members</h2></td></tr>
 <p>Contains state machinery and caching for actual conversions</p>
 <h3>Example</h3>
 <p><a class="anchor" id="MCFrequency_example1"></a> Get the Doppler shift for an oberved HI frequency of 1380 MHz </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Measures_8h.html">casacore/measures/Measures.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MDoppler_8h.html">casacore/measures/Measures/MDoppler.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MFrequency_8h.html">casacore/measures/Measures/MFrequency.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MDoppler.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MFrequency.h&gt;</span></div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;Redshift for 1380 MHz: &quot;</span> &lt;&lt;</div>
 <div class="line"><a class="code" href="classcasacore_1_1MDoppler.html#a7e157fb7ae851bec999ce92d834ba9aa">MDoppler::Convert</a>(MFrequency(<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(1380., <span class="stringliteral">&quot;MHz&quot;</span>),</div>
 <div class="line"><a class="code" href="classcasacore_1_1MFrequency.html#a5033de7b159a385150bc49326e926164a9c50796c710b02eba283902bbcc3768d">MFrequency::TOPO</a>).toDoppler(<a class="code" href="classcasacore_1_1QC.html#aaa7fbf98687c4b0d8f0699e718379795">QC::HI</a>),</div>

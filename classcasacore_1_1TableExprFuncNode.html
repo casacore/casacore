@@ -460,6 +460,8 @@ Public Types</h2></td></tr>
 <br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929caeb23d5ed9c2f7337d29a54fd915408b1">findcone3FUNC</a>, 
 <br/>
+&#160;&#160;<a class="el" href="classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929cab4741037f5f4cf5f009c02d78ab005a0">normangleFUNC</a>, 
+<br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929ca431f2edcf9951c55dc5b68e1b6111244">boolFUNC</a>, 
 <br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929cac3f532b95f653f4138b38e15ecd500b0">nullarrayFUNC</a>, 
@@ -1510,6 +1512,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a524ddc22719623b2a66a3bd63fbc929caeb23d5ed9c2f7337d29a54fd915408b1"></a>findcone3FUNC</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a524ddc22719623b2a66a3bd63fbc929cab4741037f5f4cf5f009c02d78ab005a0"></a>normangleFUNC</em>&nbsp;</td><td class="fielddoc">
+<p>normalize angle between -pi and pi </p>
+</td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a524ddc22719623b2a66a3bd63fbc929ca431f2edcf9951c55dc5b68e1b6111244"></a>boolFUNC</em>&nbsp;</td><td class="fielddoc">
 <p>for Int, Double, Complex or <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> returning Bool </p>
 </td></tr>
@@ -1747,7 +1752,7 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 
 <p>Get the angular distance between two positions on a sphere. </p>
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00448">448</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00450">450</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
 <p>References <a class="el" href="namespacecasacore.html#a2c8a8987612e4ec3e68d22d3c9b53095">casacore::acos()</a>, <a class="el" href="namespacecasacore.html#ad0ca7b6c4d7470afeb3273a127c94720">casacore::cos()</a>, and <a class="el" href="namespacecasacore.html#a763d957004a4bfed935f5fa6a8be9417">casacore::sin()</a>.</p>
 
@@ -1774,9 +1779,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00399">399</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00401">401</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
-<p>References <a class="el" href="ExprFuncNode_8h_source.html#l00469">argDataType_p</a>.</p>
+<p>References <a class="el" href="ExprFuncNode_8h_source.html#l00471">argDataType_p</a>.</p>
 
 <p>Referenced by <a class="el" href="ExprFuncNodeArray_8h_source.html#l00120">casacore::TableExprFuncNodeArray::argDataType()</a>.</p>
 
@@ -1904,9 +1909,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00397">397</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00399">399</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
-<p>References <a class="el" href="ExprFuncNode_8h_source.html#l00468">funcType_p</a>.</p>
+<p>References <a class="el" href="ExprFuncNode_8h_source.html#l00470">funcType_p</a>.</p>
 
 <p>Referenced by <a class="el" href="ExprFuncNodeArray_8h_source.html#l00118">casacore::TableExprFuncNodeArray::funcType()</a>.</p>
 
@@ -2174,9 +2179,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 
 <p>Get possible unit scale factor (needed for sqrt). </p>
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00388">388</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00390">390</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
-<p>References <a class="el" href="ExprFuncNode_8h_source.html#l00470">scale_p</a>.</p>
+<p>References <a class="el" href="ExprFuncNode_8h_source.html#l00472">scale_p</a>.</p>
 
 </div>
 </div>
@@ -2272,7 +2277,7 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 
 <p>Some functions to be used by TableExprNodeFuncArray. </p>
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00393">393</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00395">395</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
 <p>References <a class="el" href="ExprNodeRep_8h_source.html#l00698">casacore::TableExprNodeMulti::operands_p</a>.</p>
 
@@ -2301,7 +2306,7 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00395">395</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00397">397</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
 <p>References <a class="el" href="ExprNodeRep_8h_source.html#l00698">casacore::TableExprNodeMulti::operands_p</a>.</p>
 
@@ -2969,9 +2974,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00469">469</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00471">471</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ExprFuncNode_8h_source.html#l00399">argDataType()</a>.</p>
+<p>Referenced by <a class="el" href="ExprFuncNode_8h_source.html#l00401">argDataType()</a>.</p>
 
 </div>
 </div>
@@ -2993,9 +2998,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00468">468</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00470">470</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ExprFuncNode_8h_source.html#l00397">funcType()</a>.</p>
+<p>Referenced by <a class="el" href="ExprFuncNode_8h_source.html#l00399">funcType()</a>.</p>
 
 </div>
 </div>
@@ -3017,9 +3022,9 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00470">470</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00472">472</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ExprFuncNode_8h_source.html#l00388">getScale()</a>.</p>
+<p>Referenced by <a class="el" href="ExprFuncNode_8h_source.html#l00390">getScale()</a>.</p>
 
 </div>
 </div>
@@ -3043,7 +3048,7 @@ Add the function to findFunc in TableParse.cc (for TaQL). </li>
 
 <p>(needed for sqrt) </p>
 
-<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00472">472</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
+<p>Definition at line <a class="el" href="ExprFuncNode_8h_source.html#l00474">474</a> of file <a class="el" href="ExprFuncNode_8h_source.html">ExprFuncNode.h</a>.</p>
 
 </div>
 </div>

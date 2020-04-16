@@ -227,7 +227,6 @@ var searchData=
   ['_5fregistry',['_registry',['../classcasacore_1_1python_1_1pyregistry.html#a82ab261a4edf3cda984f975967ea4fb2',1,'casacore::python::pyregistry']]],
   ['_5fresetdataset',['_resetDataset',['../classcasacore_1_1StatisticsAlgorithm.html#a0b431be0798837f16f48718153914739',1,'casacore::StatisticsAlgorithm']]],
   ['_5frestfreq',['_restfreq',['../classcasacore_1_1MSFitsInput.html#a597a10190abec19652f4c4e49d79923e',1,'casacore::MSFitsInput::_restfreq()'],['../classcasacore_1_1MSFitsInput.html#aa40d9ffc3be2441ed9e56ffadde7d021',1,'casacore::MSFitsInput::_restFreq()']]],
-  ['_5frotateants',['_rotateAnts',['../classcasacore_1_1MSFitsInput.html#a5e463fd7094df9e8a0ee84cc150e6097',1,'casacore::MSFitsInput']]],
   ['_5fsaf',['_saf',['../classcasacore_1_1LatticeStatistics.html#a3a50549e54dfb7315897766b5195d00c',1,'casacore::LatticeStatistics']]],
   ['_5fscale',['_scale',['../classcasacore_1_1BiweightStatistics.html#a884e1d86ebd1403fe8e393e717b3cd84',1,'casacore::BiweightStatistics']]],
   ['_5fscankeys',['_scanKeys',['../classcasacore_1_1MSMetaData.html#a6194b2868b85c978b972b1b16d527457',1,'casacore::MSMetaData']]],

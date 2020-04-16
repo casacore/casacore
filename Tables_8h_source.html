@@ -121,43 +121,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">//#   table description</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TableDesc_8h.html">casacore/tables/Tables/TableDesc.h</a>&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ColumnDesc_8h.html">casacore/tables/Tables/ColumnDesc.h</a>&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ScaColDesc_8h.html">casacore/tables/Tables/ScaColDesc.h</a>&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ArrColDesc_8h.html">casacore/tables/Tables/ArrColDesc.h</a>&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ScaRecordColDesc_8h.html">casacore/tables/Tables/ScaRecordColDesc.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TableDesc.h&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ColumnDesc.h&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ScaColDesc.h&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ArrColDesc.h&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ScaRecordColDesc.h&gt;</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">//#   table access</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Table_8h.html">casacore/tables/Tables/Table.h</a>&gt;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TableLock_8h.html">casacore/tables/Tables/TableLock.h</a>&gt;</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="SetupNewTab_8h.html">casacore/tables/Tables/SetupNewTab.h</a>&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ScalarColumn_8h.html">casacore/tables/Tables/ScalarColumn.h</a>&gt;</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ArrayColumn_8h.html">casacore/tables/Tables/ArrayColumn.h</a>&gt;</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TableRow_8h.html">casacore/tables/Tables/TableRow.h</a>&gt;</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TableCopy_8h.html">casacore/tables/Tables/TableCopy.h</a>&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Array_8h.html">casacore/casa/Arrays/Array.h</a>&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Slicer_8h.html">casacore/casa/Arrays/Slicer.h</a>&gt;</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Slice_8h.html">casacore/casa/Arrays/Slice.h</a>&gt;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/Table.h&gt;</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TableLock.h&gt;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/SetupNewTab.h&gt;</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ScalarColumn.h&gt;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ArrayColumn.h&gt;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TableRow.h&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TableCopy.h&gt;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Arrays/Array.h&gt;</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Arrays/Slicer.h&gt;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Arrays/Slice.h&gt;</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">//#   keywords</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TableRecord_8h.html">casacore/tables/Tables/TableRecord.h</a>&gt;</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="RecordField_8h.html">casacore/casa/Containers/RecordField.h</a>&gt;</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TableRecord.h&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Containers/RecordField.h&gt;</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">//#   table lookup</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ColumnsIndex_8h.html">casacore/tables/Tables/ColumnsIndex.h</a>&gt;</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ColumnsIndexArray_8h.html">casacore/tables/Tables/ColumnsIndexArray.h</a>&gt;</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ColumnsIndex.h&gt;</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/ColumnsIndexArray.h&gt;</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">//#   table vectors</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TableVector_8h.html">casacore/tables/Tables/TableVector.h</a>&gt;</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TabVecMath_8h.html">casacore/tables/Tables/TabVecMath.h</a>&gt;</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TabVecLogic_8h.html">casacore/tables/Tables/TabVecLogic.h</a>&gt;</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TableVector.h&gt;</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TabVecMath.h&gt;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/Tables/TabVecLogic.h&gt;</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">//#   data managers</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="DataMan_8h.html">casacore/tables/DataMan.h</a>&gt;</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan.h&gt;</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">//#   table expressions (for selection of rows)</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TaQL_8h.html">casacore/tables/TaQL.h</a>&gt;</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/TaQL.h&gt;</span></div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -1877,31 +1877,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01786"></a><span class="lineno"> 1786</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
 <div class="line"><a name="l01787"></a><span class="lineno"> 1787</span>&#160;</div>
 <div class="line"><a name="l01788"></a><span class="lineno"> 1788</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="Slicer_8h_html"><div class="ttname"><a href="Slicer_8h.html">Slicer.h</a></div></div>
-<div class="ttc" id="ColumnDesc_8h_html"><div class="ttname"><a href="ColumnDesc_8h.html">ColumnDesc.h</a></div></div>
-<div class="ttc" id="ColumnsIndexArray_8h_html"><div class="ttname"><a href="ColumnsIndexArray_8h.html">ColumnsIndexArray.h</a></div></div>
-<div class="ttc" id="SetupNewTab_8h_html"><div class="ttname"><a href="SetupNewTab_8h.html">SetupNewTab.h</a></div></div>
-<div class="ttc" id="TableVector_8h_html"><div class="ttname"><a href="TableVector_8h.html">TableVector.h</a></div></div>
-<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
-<div class="ttc" id="ArrayColumn_8h_html"><div class="ttname"><a href="ArrayColumn_8h.html">ArrayColumn.h</a></div></div>
-<div class="ttc" id="ScaColDesc_8h_html"><div class="ttname"><a href="ScaColDesc_8h.html">ScaColDesc.h</a></div></div>
-<div class="ttc" id="ArrColDesc_8h_html"><div class="ttname"><a href="ArrColDesc_8h.html">ArrColDesc.h</a></div></div>
-<div class="ttc" id="TableRow_8h_html"><div class="ttname"><a href="TableRow_8h.html">TableRow.h</a></div></div>
-<div class="ttc" id="Array_8h_html"><div class="ttname"><a href="Array_8h.html">Array.h</a></div></div>
-<div class="ttc" id="TableLock_8h_html"><div class="ttname"><a href="TableLock_8h.html">TableLock.h</a></div></div>
-<div class="ttc" id="DataMan_8h_html"><div class="ttname"><a href="DataMan_8h.html">DataMan.h</a></div></div>
-<div class="ttc" id="ScaRecordColDesc_8h_html"><div class="ttname"><a href="ScaRecordColDesc_8h.html">ScaRecordColDesc.h</a></div></div>
-<div class="ttc" id="TableDesc_8h_html"><div class="ttname"><a href="TableDesc_8h.html">TableDesc.h</a></div></div>
-<div class="ttc" id="TableRecord_8h_html"><div class="ttname"><a href="TableRecord_8h.html">TableRecord.h</a></div></div>
-<div class="ttc" id="ColumnsIndex_8h_html"><div class="ttname"><a href="ColumnsIndex_8h.html">ColumnsIndex.h</a></div></div>
-<div class="ttc" id="TabVecMath_8h_html"><div class="ttname"><a href="TabVecMath_8h.html">TabVecMath.h</a></div></div>
-<div class="ttc" id="Slice_8h_html"><div class="ttname"><a href="Slice_8h.html">Slice.h</a></div></div>
-<div class="ttc" id="TableCopy_8h_html"><div class="ttname"><a href="TableCopy_8h.html">TableCopy.h</a></div></div>
-<div class="ttc" id="Table_8h_html"><div class="ttname"><a href="Table_8h.html">Table.h</a></div></div>
-<div class="ttc" id="TaQL_8h_html"><div class="ttname"><a href="TaQL_8h.html">TaQL.h</a></div></div>
-<div class="ttc" id="ScalarColumn_8h_html"><div class="ttname"><a href="ScalarColumn_8h.html">ScalarColumn.h</a></div></div>
-<div class="ttc" id="RecordField_8h_html"><div class="ttname"><a href="RecordField_8h.html">RecordField.h</a></div></div>
-<div class="ttc" id="TabVecLogic_8h_html"><div class="ttname"><a href="TabVecLogic_8h.html">TabVecLogic.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

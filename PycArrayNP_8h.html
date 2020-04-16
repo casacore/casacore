@@ -96,10 +96,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><code>#include &lt;boost/python.hpp&gt;</code><br/>
 <code>#include &lt;boost/python/object.hpp&gt;</code><br/>
-<code>#include &lt;<a class="el" href="ValueHolder_8h_source.html">casacore/casa/Containers/ValueHolder.h</a>&gt;</code><br/>
-<code>#include &lt;<a class="el" href="Array_8h_source.html">casacore/casa/Arrays/Array.h</a>&gt;</code><br/>
+<code>#include &lt;casacore/casa/Containers/ValueHolder.h&gt;</code><br/>
+<code>#include &lt;casacore/casa/Arrays/Array.h&gt;</code><br/>
 <code>#include &lt;numpy/arrayobject.h&gt;</code><br/>
-<code>#include &lt;<a class="el" href="PycArrayComH_8h_source.html">casacore/python/Converters/PycArrayComH.h</a>&gt;</code><br/>
+<code>#include &lt;casacore/python/Converters/PycArrayComH.h&gt;</code><br/>
 </div>
 <p><a href="PycArrayNP_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -152,6 +152,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6a4efb28bf31489b2417126cd34ffbb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14123dc96008a7940aaee1ede8edcdf9"><td class="memItemLeft" align="right" valign="top">Array&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore_1_1python_1_1numpy.html#a14123dc96008a7940aaee1ede8edcdf9">casacore::python::numpy::ArrayCopyStr_toArray</a> (const IPosition &amp;shape, void *data, size_t slen)</td></tr>
 <tr class="separator:a14123dc96008a7940aaee1ede8edcdf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cdf6df3323d2b3aa47b94e2ee94d074"><td class="memItemLeft" align="right" valign="top">Array&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore_1_1python_1_1numpy.html#a5cdf6df3323d2b3aa47b94e2ee94d074">casacore::python::numpy::ArrayCopyUnicode_toArray</a> (const IPosition &amp;shape, void *data, size_t slen)</td></tr>
+<tr class="separator:a5cdf6df3323d2b3aa47b94e2ee94d074"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a315caee4082688f59a7b491ddc7f445f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a315caee4082688f59a7b491ddc7f445f"><td class="memTemplItemLeft" align="right" valign="top">boost::python::object&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecasacore_1_1python_1_1numpy.html#a315caee4082688f59a7b491ddc7f445f">casacore::python::numpy::makePyArrayObject</a> (<a class="el" href="classcasacore_1_1Array.html">casacore::Array</a>&lt; T &gt; const &amp;arr)</td></tr>
 <tr class="memdesc:a315caee4082688f59a7b491ddc7f445f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a Casacore array to a Python array object.  <a href="#a315caee4082688f59a7b491ddc7f445f">More...</a><br/></td></tr>

@@ -116,9 +116,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a625eaa54e94fd107ae1db8abbd37ea9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1MSDerivedValues.html">MSDerivedValues</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSDerivedValues.html#a625eaa54e94fd107ae1db8abbd37ea9a">operator=</a> (const <a class="el" href="classcasacore_1_1MSDerivedValues.html">MSDerivedValues</a> &amp;other)</td></tr>
 <tr class="memdesc:a625eaa54e94fd107ae1db8abbd37ea9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment, this will initialize with other's MS.  <a href="#a625eaa54e94fd107ae1db8abbd37ea9a">More...</a><br/></td></tr>
 <tr class="separator:a625eaa54e94fd107ae1db8abbd37ea9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fbbdfa124db5481b90a9513260f3abc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSDerivedValues.html#a9fbbdfa124db5481b90a9513260f3abc">setAntennas</a> (const <a class="el" href="classcasacore_1_1ROMSAntennaColumns.html">ROMSAntennaColumns</a> &amp;ac)</td></tr>
-<tr class="memdesc:a9fbbdfa124db5481b90a9513260f3abc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set antenna position from an antenna table Returns the number of antennas.  <a href="#a9fbbdfa124db5481b90a9513260f3abc">More...</a><br/></td></tr>
-<tr class="separator:a9fbbdfa124db5481b90a9513260f3abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef4f6ed268167e16fec8322424a03f50"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSDerivedValues.html#aef4f6ed268167e16fec8322424a03f50">setAntennas</a> (const <a class="el" href="classcasacore_1_1MSAntennaColumns.html">MSAntennaColumns</a> &amp;ac)</td></tr>
+<tr class="memdesc:aef4f6ed268167e16fec8322424a03f50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set antenna position from an antenna table Returns the number of antennas.  <a href="#aef4f6ed268167e16fec8322424a03f50">More...</a><br/></td></tr>
+<tr class="separator:aef4f6ed268167e16fec8322424a03f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff868d2abfdab796ee505d672c52f52a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1MSDerivedValues.html">MSDerivedValues</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSDerivedValues.html#aff868d2abfdab796ee505d672c52f52a">setAntennaPositions</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1MPosition.html">MPosition</a> &gt; &amp;antPosition)</td></tr>
 <tr class="memdesc:aff868d2abfdab796ee505d672c52f52a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set antenna positions, index in vector is antenna number for calls below.  <a href="#aff868d2abfdab796ee505d672c52f52a">More...</a><br/></td></tr>
 <tr class="separator:aff868d2abfdab796ee505d672c52f52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -269,7 +269,7 @@ some concept </li>
 <div class="line"><span class="comment">// set up </span></div>
 <div class="line"><a class="code" href="classcasacore_1_1MSDerivedValues.html#a432c4d565c8f0fa94b65cd48ad7156ad">MSDerivedValues</a> msd;</div>
 <div class="line"><a class="code" href="namespacecasacore.html#aa5e78960516bef4822a438d3e84c9079">MS</a> myMS(<span class="stringliteral">&quot;myMS&quot;</span>);</div>
-<div class="line">ROMSColumns msc(myMS);</div>
+<div class="line">MSColumns msc(myMS);</div>
 <div class="line">msd.setAntennas(msc.antenna());</div>
 <div class="line">MEpoch ep=MS::epochMeasure(msc.time());</div>
 <div class="line">ep.set(MVEpoch(<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(msc.time()(0),<span class="stringliteral">&quot;s&quot;</span>)));</div>
@@ -564,14 +564,14 @@ probably needs speeding up </li>
 
 </div>
 </div>
-<a class="anchor" id="a9fbbdfa124db5481b90a9513260f3abc"></a>
+<a class="anchor" id="aef4f6ed268167e16fec8322424a03f50"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSDerivedValues::setAntennas </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1ROMSAntennaColumns.html">ROMSAntennaColumns</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MSAntennaColumns.html">MSAntennaColumns</a> &amp;&#160;</td>
           <td class="paramname"><em>ac</em></td><td>)</td>
           <td></td>
         </tr>

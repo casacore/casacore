@@ -144,6 +144,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adf1080b25723aed993facffa2207935d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad28db860e0a81868f33c04968d40cafb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#ad28db860e0a81868f33c04968d40cafb">fit</a> (const <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt; &amp;pos, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; T &gt; &amp;f, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; T &gt; &amp;sigma, T maximumRMS=1.0, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> maxiter=1024, T convcriteria=0.0001)</td></tr>
 <tr class="separator:ad28db860e0a81868f33c04968d40cafb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a181cf7f7326d16842b2693c00b68e4b1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#a181cf7f7326d16842b2693c00b68e4b1">solution</a> ()</td></tr>
+<tr class="memdesc:a181cf7f7326d16842b2693c00b68e4b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow access to the fit parameters from this class.  <a href="#a181cf7f7326d16842b2693c00b68e4b1">More...</a><br/></td></tr>
+<tr class="separator:a181cf7f7326d16842b2693c00b68e4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf0b4574a279ca6d64cf6e21ff9837d9"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#adf0b4574a279ca6d64cf6e21ff9837d9">errors</a> ()</td></tr>
+<tr class="separator:adf0b4574a279ca6d64cf6e21ff9837d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7e2a0e472307a15a8b94863d77ad2db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#ac7e2a0e472307a15a8b94863d77ad2db">correctParameters</a> (<a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt; &amp;parameters)</td></tr>
 <tr class="memdesc:ac7e2a0e472307a15a8b94863d77ad2db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal function for ensuring that parameters stay within their stated domains (see <code><a class="el" href="classcasacore_1_1Gaussian2D.html" title="A two dimensional Gaussian class. ">Gaussian2D</a></code> and <code><a class="el" href="classcasacore_1_1Gaussian3D.html" title="A three dimensional Gaussian class. ">Gaussian3D</a></code>.)  <a href="#ac7e2a0e472307a15a8b94863d77ad2db">More...</a><br/></td></tr>
 <tr class="separator:ac7e2a0e472307a15a8b94863d77ad2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,6 +198,12 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a8d4026ffd8266741a39e015976971891"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ea6813fbdf31c4af831dda87c8ed701"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#a4ea6813fbdf31c4af831dda87c8ed701">itsMask</a></td></tr>
 <tr class="separator:a4ea6813fbdf31c4af831dda87c8ed701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6a59cd0288aadbf44d3cfc405145333"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#af6a59cd0288aadbf44d3cfc405145333">itsSolutionParameters</a></td></tr>
+<tr class="memdesc:af6a59cd0288aadbf44d3cfc405145333"><td class="mdescLeft">&#160;</td><td class="mdescRight">The solutions to the fit.  <a href="#af6a59cd0288aadbf44d3cfc405145333">More...</a><br/></td></tr>
+<tr class="separator:af6a59cd0288aadbf44d3cfc405145333"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a365087c09010a303cba143cf350ca52b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1FitGaussian.html#a365087c09010a303cba143cf350ca52b">itsSolutionErrors</a></td></tr>
+<tr class="memdesc:a365087c09010a303cba143cf350ca52b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The errors on the solution parameters.  <a href="#a365087c09010a303cba143cf350ca52b">More...</a><br/></td></tr>
+<tr class="separator:a365087c09010a303cba143cf350ca52b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class T&gt;<br/>
@@ -230,9 +241,9 @@ class casacore::FitGaussian&lt; T &gt;</h3>
 <div class="line">Matrix&lt;Double&gt; estimate(1,3);</div>
 <div class="line">estimate(0,0) = 1; estimate(0,1) = 1; estimate(0,2) = 1;</div>
 <div class="line">fitgauss.setFirstEstimate(estimate);</div>
-<div class="line">Matrix&lt;Double&gt; solution;</div>
+<div class="line">Matrix&lt;Double&gt; <a class="code" href="classcasacore_1_1FitGaussian.html#a181cf7f7326d16842b2693c00b68e4b1">solution</a>;</div>
 <div class="line">solution = fitgauss.fit(x,y);</div>
-<div class="line">cout &lt;&lt; solution;</div>
+<div class="line">cout &lt;&lt; <a class="code" href="classcasacore_1_1FitGaussian.html#a181cf7f7326d16842b2693c00b68e4b1">solution</a>;</div>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>Fitting multiple Gaussians is required for many different applications, but requires a substantial amount of coding - especially if the dimensionality of the image is not known to the programmer. Furthermore, fitting multiple Gaussians has a very high failure rate. So, a specialized Gaussian fitting class that retries from different initial estimates until an acceptible fit was found was needed.</p>
 <h3>Template Type Argument Requirements (T)</h3>
@@ -442,6 +453,35 @@ template&lt;class T &gt; </div>
 
 <p>Sets the retry matrix to a default value. </p>
 <p>This is done automatically if the retry matrix is not set directly. </p>
+
+</div>
+</div>
+<a class="anchor" id="adf0b4574a279ca6d64cf6e21ff9837d9"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt;T&gt;&amp; <a class="el" href="classcasacore_1_1FitGaussian.html">casacore::FitGaussian</a>&lt; T &gt;::errors </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00182">182</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+
+<p>References <a class="el" href="FitGaussian_8h_source.html#l00227">casacore::FitGaussian&lt; T &gt;::itsSolutionErrors</a>.</p>
 
 </div>
 </div>
@@ -659,7 +699,7 @@ template&lt;class T &gt; </div>
 
 <p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00162">162</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
-<p>References <a class="el" href="FitGaussian_8h_source.html#l00205">casacore::FitGaussian&lt; T &gt;::itsRetryFctr</a>.</p>
+<p>References <a class="el" href="FitGaussian_8h_source.html#l00209">casacore::FitGaussian&lt; T &gt;::itsRetryFctr</a>.</p>
 
 </div>
 </div>
@@ -750,7 +790,7 @@ template&lt;class T &gt; </div>
 
 <p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00147">147</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
-<p>References <a class="el" href="FitGaussian_8h_source.html#l00197">casacore::FitGaussian&lt; T &gt;::itsMaxRetries</a>.</p>
+<p>References <a class="el" href="FitGaussian_8h_source.html#l00201">casacore::FitGaussian&lt; T &gt;::itsMaxRetries</a>.</p>
 
 </div>
 </div>
@@ -783,7 +823,7 @@ template&lt;class T &gt; </div>
 
 <p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00151">151</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
-<p>References <a class="el" href="FitGaussian_8h_source.html#l00198">casacore::FitGaussian&lt; T &gt;::itsMaxTime</a>.</p>
+<p>References <a class="el" href="FitGaussian_8h_source.html#l00202">casacore::FitGaussian&lt; T &gt;::itsMaxTime</a>.</p>
 
 </div>
 </div>
@@ -845,6 +885,37 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a181cf7f7326d16842b2693c00b68e4b1"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt;T&gt;&amp; <a class="el" href="classcasacore_1_1FitGaussian.html">casacore::FitGaussian</a>&lt; T &gt;::solution </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Allow access to the fit parameters from this class. </p>
+
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00181">181</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+
+<p>References <a class="el" href="FitGaussian_8h_source.html#l00224">casacore::FitGaussian&lt; T &gt;::itsSolutionParameters</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="a7a84c0f8322d518feda6b32c1e46787d"></a>
 <div class="memitem">
@@ -866,7 +937,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00199">199</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00203">203</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>
@@ -890,7 +961,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00195">195</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00199">199</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>
@@ -914,7 +985,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00204">204</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00208">208</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>
@@ -938,7 +1009,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00206">206</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00210">210</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>
@@ -962,7 +1033,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00197">197</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00201">201</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 <p>Referenced by <a class="el" href="FitGaussian_8h_source.html#l00147">casacore::FitGaussian&lt; T &gt;::setMaxRetries()</a>.</p>
 
@@ -988,7 +1059,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00198">198</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00202">202</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 <p>Referenced by <a class="el" href="FitGaussian_8h_source.html#l00151">casacore::FitGaussian&lt; T &gt;::setMaxTime()</a>.</p>
 
@@ -1014,7 +1085,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00196">196</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00200">200</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>
@@ -1038,7 +1109,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00205">205</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00209">209</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 <p>Referenced by <a class="el" href="FitGaussian_8h_source.html#l00162">casacore::FitGaussian&lt; T &gt;::nRetryFactors()</a>.</p>
 
@@ -1064,7 +1135,63 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00200">200</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00204">204</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a365087c09010a303cba143cf350ca52b"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt;T&gt; <a class="el" href="classcasacore_1_1FitGaussian.html">casacore::FitGaussian</a>&lt; T &gt;::itsSolutionErrors</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The errors on the solution parameters. </p>
+
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00227">227</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+
+<p>Referenced by <a class="el" href="FitGaussian_8h_source.html#l00182">casacore::FitGaussian&lt; T &gt;::errors()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af6a59cd0288aadbf44d3cfc405145333"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt;T&gt; <a class="el" href="classcasacore_1_1FitGaussian.html">casacore::FitGaussian</a>&lt; T &gt;::itsSolutionParameters</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The solutions to the fit. </p>
+
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00224">224</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+
+<p>Referenced by <a class="el" href="FitGaussian_8h_source.html#l00181">casacore::FitGaussian&lt; T &gt;::solution()</a>.</p>
 
 </div>
 </div>
@@ -1088,7 +1215,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00201">201</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00205">205</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>
@@ -1112,7 +1239,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00202">202</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
+<p>Definition at line <a class="el" href="FitGaussian_8h_source.html#l00206">206</a> of file <a class="el" href="FitGaussian_8h_source.html">FitGaussian.h</a>.</p>
 
 </div>
 </div>

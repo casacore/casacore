@@ -274,9 +274,9 @@ Additional Inherited Members</h2></td></tr>
 <p>Contains state machinery and cashing for actual conversions</p>
 <h3>Example</h3>
 <p><a class="anchor" id="MCRadialVelocity_example1"></a> Get the Doppler shift for an oberved HI RadialVelocity of 100 km/s </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Measures_8h.html">casacore/measures/Measures.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MRadialVelocity_8h.html">casacore/measures/Measures/MRadialVelocity.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MDoppler_8h.html">casacore/measures/Measures/MDoppler.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MRadialVelocity.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MDoppler.h&gt;</span></div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;Redshift for 100 km/s: &quot;</span> &lt;&lt;</div>
 <div class="line"><a class="code" href="classcasacore_1_1MDoppler.html#a7e157fb7ae851bec999ce92d834ba9aa">MDoppler::Convert</a>(MRadialVelocity(<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(100., <span class="stringliteral">&quot;km/s&quot;</span>),</div>
 <div class="line"><a class="code" href="classcasacore_1_1MRadialVelocity.html#a42d02cf6a267b07f66e4c0b2e49d05d3aba0612dd0268e94978c837a82bf66e64">MRadialVelocity::TOPO</a>).toDoppler(<a class="code" href="classcasacore_1_1QC.html#aaa7fbf98687c4b0d8f0699e718379795">QC::HI</a>),</div>

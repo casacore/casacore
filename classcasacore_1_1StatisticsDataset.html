@@ -164,8 +164,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a946491f62e8d73f981578857dd409b01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4b33803327fc973bd729ada99e991b1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structcasacore_1_1StatisticsDataset_1_1ChunkData.html">ChunkData</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StatisticsDataset.html#af4b33803327fc973bd729ada99e991b1">initLoopVars</a> ()</td></tr>
 <tr class="separator:af4b33803327fc973bd729ada99e991b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5591e49b55250b3653a791dbf14f81a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StatisticsDataset.html#a5591e49b55250b3653a791dbf14f81a6">initThreadVars</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;nBlocks, <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a> &amp;extra, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;nthreads, <a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; DataIterator &gt; &amp;dataIter, <a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; MaskIterator &gt; &amp;maskIter, <a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; WeightsIterator &gt; &amp;weightsIter, <a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a> &gt; &amp;offset, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nThreadsMax) const </td></tr>
-<tr class="separator:a5591e49b55250b3653a791dbf14f81a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae60bbf757b08ec2fead8c492b0784520"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StatisticsDataset.html#ae60bbf757b08ec2fead8c492b0784520">initThreadVars</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;nBlocks, <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a> &amp;extra, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;nthreads, std::unique_ptr&lt; DataIterator[]&gt; &amp;dataIter, std::unique_ptr&lt; MaskIterator[]&gt; &amp;maskIter, std::unique_ptr&lt; WeightsIterator[]&gt; &amp;weightsIter, std::unique_ptr&lt; <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a>[]&gt; &amp;offset, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nThreadsMax) const </td></tr>
+<tr class="separator:ae60bbf757b08ec2fead8c492b0784520"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ce163659fbdcdae6397d360f80e5626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StatisticsDataset.html#a1ce163659fbdcdae6397d360f80e5626">reset</a> ()</td></tr>
 <tr class="separator:a1ce163659fbdcdae6397d360f80e5626"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61693ff3b65b748c40c8bdde0d60e500"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StatisticsDataset.html#a61693ff3b65b748c40c8bdde0d60e500">resetIDataset</a> ()</td></tr>
@@ -1143,7 +1143,7 @@ template&lt;class AccumType, class DataIterator, class MaskIterator = const Bool
 
 </div>
 </div>
-<a class="anchor" id="a5591e49b55250b3653a791dbf14f81a6"></a>
+<a class="anchor" id="ae60bbf757b08ec2fead8c492b0784520"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -1170,25 +1170,25 @@ template&lt;class AccumType, class DataIterator, class MaskIterator = const Bool
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; DataIterator &gt; &amp;&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; DataIterator[]&gt; &amp;&#160;</td>
           <td class="paramname"><em>dataIter</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; MaskIterator &gt; &amp;&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; MaskIterator[]&gt; &amp;&#160;</td>
           <td class="paramname"><em>maskIter</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; WeightsIterator &gt; &amp;&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; WeightsIterator[]&gt; &amp;&#160;</td>
           <td class="paramname"><em>weightsIter</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1PtrHolder.html">PtrHolder</a>&lt; <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a>[]&gt; &amp;&#160;</td>
           <td class="paramname"><em>offset</em>, </td>
         </tr>
         <tr>

@@ -29,7 +29,7 @@ var searchData=
   ['re_5fsyntax_5fposix_5fextended',['RE_SYNTAX_POSIX_EXTENDED',['../cregex_8h.html#a18701b3ee3894b158993efa18f3958ec',1,'cregex.h']]],
   ['re_5ftight_5fvbar',['RE_TIGHT_VBAR',['../cregex_8h.html#a70d5578caba5817a05531dcbaa6eb38f',1,'cregex.h']]],
   ['restrict',['restrict',['../aipsdef_8h.html#a080abdcb9c02438f1cd2bb707af25af8',1,'restrict():&#160;aipsdef.h'],['../LatticeStatistics_8h.html',1,'restrict():&#160;LatticeStatistics.h']]],
-  ['rethrow',['Rethrow',['../Error_8h.html#adbd4712ab742651a8c8a0d358b85f428',1,'Rethrow():&#160;Error.h'],['../Error_8h.html#a70571b230c18f74f1158add6311c1b5c',1,'RETHROW():&#160;Error.h']]],
+  ['rethrow',['RETHROW',['../Error_8h.html#a70571b230c18f74f1158add6311c1b5c',1,'RETHROW():&#160;Error.h'],['../Error_8h.html#adbd4712ab742651a8c8a0d358b85f428',1,'Rethrow():&#160;Error.h']]],
   ['roarraycolumn',['ROArrayColumn',['../ArrayColumn_8h.html#ad15d2680c4d77f369cbb1347b0b9ed24',1,'ArrayColumn.h']]],
   ['roarraymeascolumn',['ROArrayMeasColumn',['../ArrayMeasColumn_8h.html#a6f05b00967ccd0d8e262e88f54394b1c',1,'ArrayMeasColumn.h']]],
   ['roarrayquantcolumn',['ROArrayQuantColumn',['../ArrayQuantColumn_8h.html#a6953b0d75c782fbf9a53085da0eb730a',1,'ArrayQuantColumn.h']]],

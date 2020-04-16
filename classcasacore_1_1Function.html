@@ -304,10 +304,10 @@ class casacore::Function&lt; T, U &gt;</h3>
 <h3>Example</h3>
 <p><a class="anchor" id="Function_example1"></a> A complete implementation of say an <code>A.sin(2pi.f.x)</code> with parameters amplitude(<em>A</em>) and frequency(<em>f</em>) and variable time(<em>x</em>) could be: </p>
 <div class="fragment"><div class="line"><span class="comment">//# Sinusoid.h</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Function_8h.html">casacore/scimath/Functionals/Function.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Constants_8h.html">casacore/casa/BasicSL/Constants.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Math_8h.html">casacore/casa/BasicMath/Math.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/scimath/Functionals/Function.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/BasicSL/Constants.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/BasicMath/Math.h&gt;</span></div>
 <div class="line"><span class="comment">// The sinusoid class</span></div>
 <div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span>Sinusoid : <span class="keyword">public</span> <a class="code" href="classcasacore_1_1Function.html#a3bb9eb2367c09060fd1306aa39686a37">Function</a>&lt;T&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
@@ -344,10 +344,10 @@ class casacore::Function&lt; T, U &gt;</h3>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;(val, deriv): &quot;</span> &lt;&lt; soid2(Adif(0.1)) &lt;&lt; endl;</div>
 </div><!-- fragment --><p>A shorter version, where all parameter handling is done at user level could be: </p>
 <div class="fragment"><div class="line"><span class="comment">//# Sinusoid.h</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Function_8h.html">casacore/scimath/Functionals/Function.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Constants_8h.html">casacore/casa/BasicSL/Constants.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Math_8h.html">casacore/casa/BasicMath/Math.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/scimath/Functionals/Function.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/BasicSL/Constants.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/BasicMath/Math.h&gt;</span></div>
 <div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span>Sinusoid : <span class="keyword">public</span> <a class="code" href="classcasacore_1_1Function.html#a3bb9eb2367c09060fd1306aa39686a37">Function</a>&lt;T&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
 <div class="line"><span class="keyword">enum</span> { AMPL=0, FREQ };</div>

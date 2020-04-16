@@ -1,8 +1,0 @@
-var searchData=
-[
-  ['rattype',['RATType',['../classcasacore_1_1ReadAsciiTable.html#aa4aa2582f44a1e99c07f490b3b85e0e6',1,'casacore::ReadAsciiTable']]],
-  ['readycode',['ReadyCode',['../classcasacore_1_1LSQFit.html#ae0cd2ffbb09719e89222e792ffdc267c',1,'casacore::LSQFit']]],
-  ['recordtype',['RecordType',['../classcasacore_1_1RecordInterface.html#ac018d89897ba18dd1bdafc4d1f949f52',1,'casacore::RecordInterface']]],
-  ['reservedname',['ReservedName',['../classcasacore_1_1FITS.html#a2c0d2efeac76cd71c5eab280cf3a9913',1,'casacore::FITS']]],
-  ['routes',['Routes',['../classcasacore_1_1MCBase.html#a6571b5577233e7ca202e23fc17a30af5',1,'casacore::MCBase::Routes()'],['../classcasacore_1_1MCBaseline.html#aa38a9afc17f7d284847165671e28b96d',1,'casacore::MCBaseline::Routes()'],['../classcasacore_1_1MCDirection.html#a6e38d905137b88cd2b9f66d2dfea020f',1,'casacore::MCDirection::Routes()'],['../classcasacore_1_1MCDoppler.html#aa7d1f18df2611ee2024d467627b3bff3',1,'casacore::MCDoppler::Routes()'],['../classcasacore_1_1MCEarthMagnetic.html#a7946f9b49728ede35bcb757aa57d9fbe',1,'casacore::MCEarthMagnetic::Routes()'],['../classcasacore_1_1MCEpoch.html#ab0a0b9d7a31d04a034b5f861a024a146',1,'casacore::MCEpoch::Routes()'],['../classcasacore_1_1MCFrequency.html#a7b19059d8427474c31cf7fc89740b536',1,'casacore::MCFrequency::Routes()'],['../classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16',1,'casacore::MCPosition::Routes()'],['../classcasacore_1_1MCRadialVelocity.html#aec3f2bf9e7ffd2f23bf9c5ccd0dd1097',1,'casacore::MCRadialVelocity::Routes()'],['../classcasacore_1_1MCuvw.html#a5a55669d75314634a74cf437db3d5151',1,'casacore::MCuvw::Routes()']]]
-];

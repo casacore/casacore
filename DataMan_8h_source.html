@@ -121,29 +121,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">//#   storage managers</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="StManAipsIO_8h.html">casacore/tables/DataMan/StManAipsIO.h</a>&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="StandardStMan_8h.html">casacore/tables/DataMan/StandardStMan.h</a>&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="StandardStManAccessor_8h.html">casacore/tables/DataMan/StandardStManAccessor.h</a>&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="IncrementalStMan_8h.html">casacore/tables/DataMan/IncrementalStMan.h</a>&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="IncrStManAccessor_8h.html">casacore/tables/DataMan/IncrStManAccessor.h</a>&gt;</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TiledDataStMan_8h.html">casacore/tables/DataMan/TiledDataStMan.h</a>&gt;</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TiledDataStManAccessor_8h.html">casacore/tables/DataMan/TiledDataStManAccessor.h</a>&gt;</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TiledCellStMan_8h.html">casacore/tables/DataMan/TiledCellStMan.h</a>&gt;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TiledColumnStMan_8h.html">casacore/tables/DataMan/TiledColumnStMan.h</a>&gt;</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TiledShapeStMan_8h.html">casacore/tables/DataMan/TiledShapeStMan.h</a>&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MemoryStMan_8h.html">casacore/tables/DataMan/MemoryStMan.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/StManAipsIO.h&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/StandardStMan.h&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/StandardStManAccessor.h&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/IncrementalStMan.h&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/IncrStManAccessor.h&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/TiledDataStMan.h&gt;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/TiledDataStManAccessor.h&gt;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/TiledCellStMan.h&gt;</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/TiledColumnStMan.h&gt;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/TiledShapeStMan.h&gt;</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/MemoryStMan.h&gt;</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">//#   virtual column engines</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="RetypedArrayEngine_8h.html">casacore/tables/DataMan/RetypedArrayEngine.h</a>&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="RetypedArraySetGet_8h.html">casacore/tables/DataMan/RetypedArraySetGet.h</a>&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ScaledArrayEngine_8h.html">casacore/tables/DataMan/ScaledArrayEngine.h</a>&gt;</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MappedArrayEngine_8h.html">casacore/tables/DataMan/MappedArrayEngine.h</a>&gt;</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ForwardCol_8h.html">casacore/tables/DataMan/ForwardCol.h</a>&gt;</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ForwardColRow_8h.html">casacore/tables/DataMan/ForwardColRow.h</a>&gt;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="CompressComplex_8h.html">casacore/tables/DataMan/CompressComplex.h</a>&gt;</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="CompressFloat_8h.html">casacore/tables/DataMan/CompressFloat.h</a>&gt;</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="VirtualTaQLColumn_8h.html">casacore/tables/DataMan/VirtualTaQLColumn.h</a>&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/RetypedArrayEngine.h&gt;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/RetypedArraySetGet.h&gt;</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/ScaledArrayEngine.h&gt;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/MappedArrayEngine.h&gt;</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/ForwardCol.h&gt;</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/ForwardColRow.h&gt;</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/CompressComplex.h&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/CompressFloat.h&gt;</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/VirtualTaQLColumn.h&gt;</span></div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -186,27 +186,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="VirtualTaQLColumn_8h_html"><div class="ttname"><a href="VirtualTaQLColumn_8h.html">VirtualTaQLColumn.h</a></div></div>
-<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
-<div class="ttc" id="ForwardCol_8h_html"><div class="ttname"><a href="ForwardCol_8h.html">ForwardCol.h</a></div></div>
-<div class="ttc" id="MemoryStMan_8h_html"><div class="ttname"><a href="MemoryStMan_8h.html">MemoryStMan.h</a></div></div>
-<div class="ttc" id="RetypedArraySetGet_8h_html"><div class="ttname"><a href="RetypedArraySetGet_8h.html">RetypedArraySetGet.h</a></div></div>
-<div class="ttc" id="TiledDataStMan_8h_html"><div class="ttname"><a href="TiledDataStMan_8h.html">TiledDataStMan.h</a></div></div>
-<div class="ttc" id="TiledCellStMan_8h_html"><div class="ttname"><a href="TiledCellStMan_8h.html">TiledCellStMan.h</a></div></div>
-<div class="ttc" id="TiledShapeStMan_8h_html"><div class="ttname"><a href="TiledShapeStMan_8h.html">TiledShapeStMan.h</a></div></div>
-<div class="ttc" id="CompressComplex_8h_html"><div class="ttname"><a href="CompressComplex_8h.html">CompressComplex.h</a></div></div>
-<div class="ttc" id="ForwardColRow_8h_html"><div class="ttname"><a href="ForwardColRow_8h.html">ForwardColRow.h</a></div></div>
-<div class="ttc" id="ScaledArrayEngine_8h_html"><div class="ttname"><a href="ScaledArrayEngine_8h.html">ScaledArrayEngine.h</a></div></div>
-<div class="ttc" id="MappedArrayEngine_8h_html"><div class="ttname"><a href="MappedArrayEngine_8h.html">MappedArrayEngine.h</a></div></div>
-<div class="ttc" id="RetypedArrayEngine_8h_html"><div class="ttname"><a href="RetypedArrayEngine_8h.html">RetypedArrayEngine.h</a></div></div>
-<div class="ttc" id="IncrStManAccessor_8h_html"><div class="ttname"><a href="IncrStManAccessor_8h.html">IncrStManAccessor.h</a></div></div>
-<div class="ttc" id="IncrementalStMan_8h_html"><div class="ttname"><a href="IncrementalStMan_8h.html">IncrementalStMan.h</a></div></div>
-<div class="ttc" id="CompressFloat_8h_html"><div class="ttname"><a href="CompressFloat_8h.html">CompressFloat.h</a></div></div>
-<div class="ttc" id="StandardStMan_8h_html"><div class="ttname"><a href="StandardStMan_8h.html">StandardStMan.h</a></div></div>
-<div class="ttc" id="TiledDataStManAccessor_8h_html"><div class="ttname"><a href="TiledDataStManAccessor_8h.html">TiledDataStManAccessor.h</a></div></div>
-<div class="ttc" id="TiledColumnStMan_8h_html"><div class="ttname"><a href="TiledColumnStMan_8h.html">TiledColumnStMan.h</a></div></div>
-<div class="ttc" id="StManAipsIO_8h_html"><div class="ttname"><a href="StManAipsIO_8h.html">StManAipsIO.h</a></div></div>
-<div class="ttc" id="StandardStManAccessor_8h_html"><div class="ttname"><a href="StandardStManAccessor_8h.html">StandardStManAccessor.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

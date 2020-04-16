@@ -59,10 +59,10 @@ var searchData=
   ['uvdistexpr_5fp',['uvDistExpr_p',['../classcasacore_1_1MSSelection.html#a4bf28349305e062920af490f6fc82231',1,'casacore::MSSelection']]],
   ['uvproj_5fp',['uvproj_p',['../classcasacore_1_1UVWMachine.html#af6793d6c1f22004096e0c6c20912ae8f',1,'casacore::UVWMachine']]],
   ['uvrot_5fp',['uvrot_p',['../classcasacore_1_1UVWMachine.html#a175650e4043b118d28f9b2ee088fde2a',1,'casacore::UVWMachine']]],
-  ['uvw2_5fp',['uvw2_p',['../classcasacore_1_1ROMSMainColumns.html#a289a955a767c5b27b74d95d8f43cc2c0',1,'casacore::ROMSMainColumns::uvw2_p()'],['../classcasacore_1_1MSMainColumns.html#aba6f031962aecd9b3f36b2f0beb786b6',1,'casacore::MSMainColumns::uvw2_p()']]],
-  ['uvw2meas_5fp',['uvw2Meas_p',['../classcasacore_1_1ROMSMainColumns.html#ab7a72072c312c75cb98f6322de5a8566',1,'casacore::ROMSMainColumns::uvw2Meas_p()'],['../classcasacore_1_1MSMainColumns.html#afaaf56b047c688d1a8ad94eb42b8c2ab',1,'casacore::MSMainColumns::uvw2Meas_p()']]],
-  ['uvw2quant_5fp',['uvw2Quant_p',['../classcasacore_1_1ROMSMainColumns.html#a6b8b4cc47870f06e343ce25ab45bcd33',1,'casacore::ROMSMainColumns::uvw2Quant_p()'],['../classcasacore_1_1MSMainColumns.html#acec687dcf94f6de390adb5b7434a686d',1,'casacore::MSMainColumns::uvw2Quant_p()']]],
-  ['uvw_5fp',['uvw_p',['../classcasacore_1_1ROMSMainColumns.html#aa1d9b3d8bf55757b0c19348ea13185d3',1,'casacore::ROMSMainColumns::uvw_p()'],['../classcasacore_1_1MSMainColumns.html#a41077c0fa62b4dde4af672bb687d0e7d',1,'casacore::MSMainColumns::uvw_p()']]],
-  ['uvwmeas_5fp',['uvwMeas_p',['../classcasacore_1_1ROMSMainColumns.html#acb833531b971e25c3908f7eb48012b46',1,'casacore::ROMSMainColumns::uvwMeas_p()'],['../classcasacore_1_1MSMainColumns.html#a17cce9de933e5dd9dd8e46334ccf5440',1,'casacore::MSMainColumns::uvwMeas_p()']]],
-  ['uvwquant_5fp',['uvwQuant_p',['../classcasacore_1_1ROMSMainColumns.html#ae67981ead19a56f3b08cba916cf85c6e',1,'casacore::ROMSMainColumns::uvwQuant_p()'],['../classcasacore_1_1MSMainColumns.html#ad56dc853ea5aa596a247f2167bdaad24',1,'casacore::MSMainColumns::uvwQuant_p()']]]
+  ['uvw2_5fp',['uvw2_p',['../classcasacore_1_1MSMainColumns.html#aba6f031962aecd9b3f36b2f0beb786b6',1,'casacore::MSMainColumns']]],
+  ['uvw2meas_5fp',['uvw2Meas_p',['../classcasacore_1_1MSMainColumns.html#afaaf56b047c688d1a8ad94eb42b8c2ab',1,'casacore::MSMainColumns']]],
+  ['uvw2quant_5fp',['uvw2Quant_p',['../classcasacore_1_1MSMainColumns.html#acec687dcf94f6de390adb5b7434a686d',1,'casacore::MSMainColumns']]],
+  ['uvw_5fp',['uvw_p',['../classcasacore_1_1MSMainColumns.html#a41077c0fa62b4dde4af672bb687d0e7d',1,'casacore::MSMainColumns']]],
+  ['uvwmeas_5fp',['uvwMeas_p',['../classcasacore_1_1MSMainColumns.html#a17cce9de933e5dd9dd8e46334ccf5440',1,'casacore::MSMainColumns']]],
+  ['uvwquant_5fp',['uvwQuant_p',['../classcasacore_1_1MSMainColumns.html#ad56dc853ea5aa596a247f2167bdaad24',1,'casacore::MSMainColumns']]]
 ];

@@ -386,12 +386,12 @@ A reference table is a table referencing a plain or memory table. It is the resu
 <p>These "get" functions are used in the same way as the simple "put" functions described in the previous section. </p>
 <p><a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn&lt;T&gt;</a> can be constructed for a non-writable column. However, an exception is thrown if the put function is used for it. The same is true for <a class="el" href="classcasacore_1_1ArrayColumn.html">ArrayColumn&lt;T&gt;</a> and <a class="el" href="classcasacore_1_1TableColumn.html">TableColumn</a>. </p>
 <p>A typical program could look like: </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Table_8h.html">casacore/tables/Tables/Table.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ScalarColumn_8h.html">casacore/tables/Tables/ScalarColumn.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrayColumn_8h.html">casacore/tables/Tables/ArrayColumn.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Vector_8h.html">casacore/casa/Arrays/Vector.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Slicer_8h.html">casacore/casa/Arrays/Slicer.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrayMath_8h.html">casacore/casa/Arrays/ArrayMath.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/Table.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScalarColumn.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ArrayColumn.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/Vector.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/Slicer.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/ArrayMath.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"></div>
 <div class="line">main()</div>
@@ -436,12 +436,12 @@ Create the <a class="el" href="classcasacore_1_1Table.html">Table</a> object fro
 </ol>
 <p>The recipe above is meant for the creation a plain table, but the creation of a memory table is exactly the same. The only difference is that in call to construct the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object the <a class="el" href="classcasacore_1_1Table.html#ac8328c6b0f8cfbe9f75ffdd76c618203a139c2ff29ff642a1372838781a7d82f9" title="table held in memory ">Table::Memory</a> type has to be given. Note that in the <a class="el" href="classcasacore_1_1SetupNewTable.html" title="Create a new table - define shapes, data managers, etc. ">SetupNewTable</a> object the columns can be bound to any data manager. <code><a class="el" href="classcasacore_1_1MemoryTable.html" title="Class for a table held in memory. ">MemoryTable</a></code> will rebind stored columns to the <a class="el" href="classcasacore_1_1MemoryStMan.html">MemoryStMan</a> storage manager, but virtual columns bindings are not changed.</p>
 <p>The following example shows how you can create a table. An example specifically illustrating the creation of the <a href="#Tables:Table Description">table description</a> is given in that section. Other sections discuss the access to the table.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="TableDesc_8h.html">casacore/tables/Tables/TableDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="SetupNewTab_8h.html">casacore/tables/Tables/SetupNewTab.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Table_8h.html">casacore/tables/Tables/Table.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ScaColDesc_8h.html">casacore/tables/Tables/ScaColDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ScaRecordColDesc_8h.html">casacore/tables/Tables/ScaRecordColDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrColDesc_8h.html">casacore/tables/Tables/ArrColDesc.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/TableDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/SetupNewTab.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/Table.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScaColDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScaRecordColDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ArrColDesc.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/StandardStMan.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/IncrementalStMan.h&gt;</span></div>
 <div class="line"></div>
@@ -497,16 +497,16 @@ Create the <a class="el" href="classcasacore_1_1Table.html">Table</a> object fro
 <p>To actually write the data into the table you need the classes <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn&lt;T&gt;</a> and <a class="el" href="classcasacore_1_1ArrayColumn.html">ArrayColumn&lt;T&gt;</a>. For each column you can construct one or more of these objects. Their put(...) functions let you write a value at a time or the entire column in one go. For arrays you can "put" subsections of the arrays.</p>
 <p>As an alternative for scalars of a standard data type (i.e. Bool, uChar, Int, Short, uShort, uInt, float, double, Complex, DComplex and <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a>) you could use the functions <a class="el" href="classcasacore_1_1TableColumn.html">TableColumn::putScalar(...)</a>. These functions offer an extra: automatic data type promotion; so that you can, for example, put a float value in a double column.</p>
 <p>A typical program could look like: </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="TableDesc_8h.html">casacore/tables/Tables/TableDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="SetupNewTab_8h.html">casacore/tables/Tables/SetupNewTab.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Table_8h.html">casacore/tables/Tables/Table.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ScaColDesc_8h.html">casacore/tables/Tables/ScaColDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrColDesc_8h.html">casacore/tables/Tables/ArrColDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ScalarColumn_8h.html">casacore/tables/Tables/ScalarColumn.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrayColumn_8h.html">casacore/tables/Tables/ArrayColumn.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Vector_8h.html">casacore/casa/Arrays/Vector.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Slicer_8h.html">casacore/casa/Arrays/Slicer.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrayMath_8h.html">casacore/casa/Arrays/ArrayMath.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/TableDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/SetupNewTab.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/Table.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScaColDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ArrColDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScalarColumn.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ArrayColumn.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/Vector.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/Slicer.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/ArrayMath.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"></div>
 <div class="line">main()</div>
@@ -747,13 +747,13 @@ The keywords holding subtables can be handled in a special way. Normally the sub
 <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc&lt;T&gt; </a> &ndash; defines a column containing an (in)direct array. </li>
 </ul>
 <p>Here follows a typical example of the construction of a table description. For more specialized things &ndash; like the definition of a default data manager &ndash; we refer to the descriptions of the above mentioned classes.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="TableDesc_8h.html">casacore/tables/Tables/TableDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ScaColDesc_8h.html">casacore/tables/Tables/ScaColDesc.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="ArrColDesc_8h.html">casacore/tables/Tables/ArrColDesc.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/TableDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScaColDesc.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ArrColDesc.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/ScaRecordTabDesc.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="TableRecord_8h.html">casacore/tables/Tables/TableRecord.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="IPosition_8h.html">casacore/casa/Arrays/IPosition.h</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Vector_8h.html">casacore/casa/Arrays/Vector.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/tables/Tables/TableRecord.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/IPosition.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/Vector.h&gt;</span></div>
 <div class="line"></div>
 <div class="line">main()</div>
 <div class="line">{</div>

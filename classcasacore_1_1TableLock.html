@@ -171,7 +171,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a8227f3e85e58f8a61af8ccd801825307"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableLock.html#a8227f3e85e58f8a61af8ccd801825307">lockingDisabled</a> ()</td></tr>
-<tr class="memdesc:a8227f3e85e58f8a61af8ccd801825307"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is table locking disabled (because AIPS_TABLE_NOLOCKING was set)?  <a href="#a8227f3e85e58f8a61af8ccd801825307">More...</a><br/></td></tr>
+<tr class="memdesc:a8227f3e85e58f8a61af8ccd801825307"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is table locking disabled (because AIPS_TABLE_NOLOCKING or table.nolocking is set)?  <a href="#a8227f3e85e58f8a61af8ccd801825307">More...</a><br/></td></tr>
 <tr class="separator:a8227f3e85e58f8a61af8ccd801825307"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
@@ -219,10 +219,11 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 <h3>Synopsis</h3>
 <p>This class keeps the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> lock options. Currently these are the LockingOption and the inspection interval. </p>
 <p>It also keeps the <code><a class="el" href="classcasacore_1_1LockFile.html" title="Class to handle file locking and synchronization. ">LockFile</a></code> object used to do the actual locking/unlocking.</p>
+<p>It is possible to disable locking by building casacore with -DAIPS_TABLE_NOLOCKING or by setting the aipsrc variable table.nolocking=true.</p>
 <h3>Motivation</h3>
 <p>Encapsulate <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> locking info. </p>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00065">65</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00068">68</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a318708fb4ef30014bba5289e7075b9a1"></a>
 <div class="memitem">
@@ -235,7 +236,8 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </div><div class="memdoc">
 
 <p>Define the possible table locking options. </p>
-<p>They offer the user the possibility to lock and synchronize access to the table. A lot of locking degrades table performance; not only because acquiring/releasing locks takes time, but especially because table data has to be synchronized (thus written to disk) when a lock is released. Otherwise the other processes see data which is not up-to-date. </p>
+<p>They offer the user the possibility to lock and synchronize access to the table. A lot of locking degrades table performance; not only because acquiring/releasing locks takes time, but especially because table data has to be synchronized (thus written to disk) when a lock is released. Otherwise the other processes see data which is not up-to-date.</p>
+<p>Building Casacore with -DTABLE_NOLOCKING or setting aipsrc variable table.nolocking=1 forces lock option NoLocking. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a318708fb4ef30014bba5289e7075b9a1a8c67062d384936c97ff757c21127749d"></a>PermanentLocking</em>&nbsp;</td><td class="fielddoc">
 <p>The table is permanently locked. </p>
@@ -270,7 +272,7 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00075">75</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00081">81</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
 </div>
 </div>
@@ -393,9 +395,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 
 <p>Get the inspection interval. </p>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00194">194</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00200">200</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>References <a class="el" href="TableLock_8h_source.html#l00167">itsInterval</a>.</p>
+<p>References <a class="el" href="TableLock_8h_source.html#l00173">itsInterval</a>.</p>
 
 </div>
 </div>
@@ -422,9 +424,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 
 <p>Is permanent locking used? </p>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00188">188</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00194">194</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>References <a class="el" href="TableLock_8h_source.html#l00164">itsOption</a>, <a class="el" href="TableLock_8h_source.html#l00083">PermanentLocking</a>, and <a class="el" href="TableLock_8h_source.html#l00086">PermanentLockingWait</a>.</p>
+<p>References <a class="el" href="TableLock_8h_source.html#l00170">itsOption</a>, <a class="el" href="TableLock_8h_source.html#l00089">PermanentLocking</a>, and <a class="el" href="TableLock_8h_source.html#l00092">PermanentLockingWait</a>.</p>
 
 </div>
 </div>
@@ -449,7 +451,7 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Is table locking disabled (because AIPS_TABLE_NOLOCKING was set)? </p>
+<p>Is table locking disabled (because AIPS_TABLE_NOLOCKING or table.nolocking is set)? </p>
 
 </div>
 </div>
@@ -476,9 +478,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 
 <p>Get the maximum wait period in AutoLocking mode. </p>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00199">199</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00205">205</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>References <a class="el" href="TableLock_8h_source.html#l00166">itsMaxWait</a>.</p>
+<p>References <a class="el" href="TableLock_8h_source.html#l00172">itsMaxWait</a>.</p>
 
 </div>
 </div>
@@ -542,9 +544,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 
 <p>Get the locking option. </p>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00178">178</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00184">184</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>References <a class="el" href="TableLock_8h_source.html#l00164">itsOption</a>.</p>
+<p>References <a class="el" href="TableLock_8h_source.html#l00170">itsOption</a>.</p>
 
 <p>Referenced by <a class="el" href="TableLockData_8h_source.html#l00138">casacore::TableLockData::autoRelease()</a>.</p>
 
@@ -573,9 +575,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 
 <p>Is read locking needed? </p>
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00183">183</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00189">189</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>References <a class="el" href="TableLock_8h_source.html#l00165">itsReadLocking</a>.</p>
+<p>References <a class="el" href="TableLock_8h_source.html#l00171">itsReadLocking</a>.</p>
 
 <p>Referenced by <a class="el" href="ColumnSet_8h_source.html#l00347">casacore::ColumnSet::checkReadLock()</a>.</p>
 
@@ -600,9 +602,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00167">167</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00173">173</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00194">interval()</a>.</p>
+<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00200">interval()</a>.</p>
 
 </div>
 </div>
@@ -624,7 +626,7 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00169">169</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00175">175</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
 </div>
 </div>
@@ -646,7 +648,7 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00168">168</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00174">174</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
 </div>
 </div>
@@ -668,9 +670,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00166">166</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00172">172</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00199">maxWait()</a>.</p>
+<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00205">maxWait()</a>.</p>
 
 </div>
 </div>
@@ -692,9 +694,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00164">164</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00170">170</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00188">isPermanent()</a>, and <a class="el" href="TableLock_8h_source.html#l00178">option()</a>.</p>
+<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00194">isPermanent()</a>, and <a class="el" href="TableLock_8h_source.html#l00184">option()</a>.</p>
 
 </div>
 </div>
@@ -716,9 +718,9 @@ class <a class="el" href="classcasacore_1_1LockFile.html">LockFile</a> </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00165">165</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
+<p>Definition at line <a class="el" href="TableLock_8h_source.html#l00171">171</a> of file <a class="el" href="TableLock_8h_source.html">TableLock.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00183">readLocking()</a>.</p>
+<p>Referenced by <a class="el" href="TableLock_8h_source.html#l00189">readLocking()</a>.</p>
 
 </div>
 </div>

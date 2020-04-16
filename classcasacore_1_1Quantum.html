@@ -432,7 +432,7 @@ Interpret as a value with units </li>
 </p>
 <h3>Example</h3>
 <p><a class="anchor" id="Quantum_example1"></a> An experiment has measured the energy of a photon in keV. The following will output the wavelength and frequency of this photon (see the <a class="el" href="classcasacore_1_1QC.html">QC</a> class for quantity constants): </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Quanta_8h.html">casacore/casa/Quanta.h</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/casa/Quanta.h&gt;</span></div>
 <div class="line"><a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> myval;          <span class="comment">// keV photon energy</span></div>
 <div class="line">Quantity quant(myval,<span class="stringliteral">&quot;keV&quot;</span>);   <span class="comment">// make quantity</span></div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;A photon with energy &quot;</span> &lt;&lt; quant &lt;&lt; endl</div>

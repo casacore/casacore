@@ -146,6 +146,10 @@ Public Types</h2></td></tr>
 <br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a719a6395533390f20a292a39fabbe101">ALPHA</a>, 
 <br/>
+&#160;&#160;<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a210add3f7412e9481883c17a71e8e310">USE_Z</a>, 
+<br/>
+&#160;&#160;<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a3dda899f36e572b6653e714c2e4d8d2c">ISO</a>, 
+<br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413ab1864a6ebfc2309fb8674eca6cc4c3d4">BOOST</a>, 
 <br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413ad044289bf6bce8881b9b90114e2abe53">NO_H</a>, 
@@ -417,7 +421,8 @@ standard output is done in the following format: <code>hh:mm:ss.tt</code>. The n
 <b>Tip:</b><em> The added colons are to enable input checking of the format; Look at the 'clean' types to bypass them; </em><br/>
  The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413ae1eb30fd1716772e86070ab2e3f47c65">MVTime::YMD</a></code> format implies TIME, and will precede the time with 'yyyy/mm/dd/' (or use <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a9dd67bb3eaa9870779f6019703224b5d">MVTime::YMD_ONLY</a></code> to include <code>NO_TIME</code> modifier).<br/>
  The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a40ca4b2fe5dee4ac0a6550b7d0b43b2a">MVTime::DMY</a></code> format implies TIME, and will precede the time with 'dd-Mon-yyyy/'.<br/>
- The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a963bbd6fc74aacc8a6fa8f9ab51fb794">MVTime::FITS</a></code> format implies TIME, and will precede the time with 'ccyy-mm-ddT'. The <code>BOOST</code> format implies DMY and USE_SPACE (space instead of slash between date and time). <br/>
+ The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a963bbd6fc74aacc8a6fa8f9ab51fb794">MVTime::FITS</a></code> format implies TIME, and will precede the time with 'ccyy-mm-ddT'.<br/>
+ The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a3dda899f36e572b6653e714c2e4d8d2c">MVTime::ISO</a></code> format implies <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> followed by a Z for the UTC time zone. The <code>BOOST</code> format implies DMY and USE_SPACE (space instead of slash between date and time). <br/>
  The output format can be modified with modifiers (specify as <a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413acd6273249fe49ad329fff54e35e693a0">MVTime::TIME</a> | MVTime::MOD (or + MVTime::MOD)). <br/>
 <b>Caution:</b><em> For overloading/casting problems with some compilers, the use of modifiers necessitates either the presence of a precision (i;e; <code>(A|B, prec)</code>), or an explicit cast: <code>((<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413" title="Format types. ">MVTime::formatTypes</a>)(A|B))</code>, or make use of the provided <code>TIME[_CLEAN][_NO_H[M]]</code> and <code>ANGLE[_CLEAN][_NO_D[M]]</code>; </em><br/>
 </p>
@@ -450,6 +455,8 @@ Available formats: <ul>
 <a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a92b2d1c067f30c68c9249eb89a6eb1c4">MVTime::CLEAN</a> modifier for suppressing superfluous periods </li>
 <li>
 <a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413ad2fe298295d0e27f2d00441710b7b85e">MVTime::USE_SPACE</a> to use a space instead of a slash as delimiter between date and time. </li>
+<li>
+<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a210add3f7412e9481883c17a71e8e310">MVTime::USE_Z</a> to follow the time by a Z for the UTC time zone. </li>
 <li>
 MVTime::NO_[D|H][M] modifier to suppress first field(s) </li>
 <li>
@@ -499,7 +506,7 @@ ccyy-mm-dd[Ttime[Z|+-hh[:mm]]] &ndash; new <a class="el" href="classcasacore_1_1
 Nothing I know of </li>
 </ul>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00266">266</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00269">269</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413"></a>
 <div class="memitem">
@@ -543,6 +550,10 @@ Nothing I know of </li>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413a719a6395533390f20a292a39fabbe101"></a>ALPHA</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413a210add3f7412e9481883c17a71e8e310"></a>USE_Z</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413a3dda899f36e572b6653e714c2e4d8d2c"></a>ISO</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413ab1864a6ebfc2309fb8674eca6cc4c3d4"></a>BOOST</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413ad044289bf6bce8881b9b90114e2abe53"></a>NO_H</em>&nbsp;</td><td class="fielddoc">
@@ -575,7 +586,7 @@ Nothing I know of </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00272">272</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00275">275</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1755,7 +1766,7 @@ Nothing I know of </li>
 
 <p>Default format. </p>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00438">438</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00443">443</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1779,7 +1790,7 @@ Nothing I know of </li>
 
 <p>Temporary format. </p>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00441">441</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00446">446</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1801,7 +1812,7 @@ Nothing I know of </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00442">442</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00447">447</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1825,7 +1836,7 @@ Nothing I know of </li>
 
 <p>Value. </p>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00436">436</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00441">441</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>

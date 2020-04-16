@@ -154,9 +154,17 @@ A <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a v
 <li>
 Exceptions, which are mapped to a Python <code>RuntimeError</code> exception. Only the <code><a class="el" href="classcasacore_1_1IterError.html" title="Iteration error class. ">casacore::IterError</a></code> exception is mapped to a Python <code>StopIteration</code> exception. </li>
 </ul>
-<p>Elements in a numpy array are called array scalars. They do not have a python type like <code>int</code>, but instead a type like <code>numpy.int32</code>. The converters can handle such types and convert them correctly to a scalar. Of course, the converters also can handle sequences containing such types.</p>
-<p>A numpy or numarray scalar array (e.g. <code>array(1.0)</code> is a somewhat peculiar object that cannot be indexed. It is handled correctly by the converters and handled as a scalar value.</p>
-<p><a class="anchor" id="Converters_module_Class_List"></a> </p>
+<p>The converts from Python to C++ can handle some special numpy objects. Such objects can also be contained in sequences or dicts. </p>
+<ul>
+<li>
+Elements in a numpy array are called array scalars. They do not have a python type such as <code>int</code>, but instead a type as <code>numpy.int32</code>. The converters can handle such types and convert them correctly to a scalar. </li>
+<li>
+A numpy scalar array (e.g. <code>array(1.0)</code> is a somewhat peculiar numpy object. It has an empty shape and cannot be indexed. It is handled correctly by the from converters and handled as a scalar value. </li>
+<li>
+<p class="startli">An empty numpy object (e.g. <code>array([])</code>) is handled as a None value.</p>
+<p class="endli"><a class="anchor" id="Converters_module_Class_List"></a> </p>
+</li>
+</ul>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="gac675a5e0f675d96053ea1da66522ae25"></a>
 <div class="memitem">

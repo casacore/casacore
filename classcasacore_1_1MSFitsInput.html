@@ -114,9 +114,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a34a43dbd22a6e82d7954eb11ac122a0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsInput.html#a34a43dbd22a6e82d7954eb11ac122a0d">readFitsFile</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> obsType=<a class="el" href="classcasacore_1_1MSTileLayout.html#a9260e6feefe0b4ab4007ab98da66a7faa281da609b4d98ee5e274c82f0813dc5b">MSTileLayout::Standard</a>)</td></tr>
 <tr class="memdesc:a34a43dbd22a6e82d7954eb11ac122a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read all the data from the <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> file and create the <a class="el" href="classcasacore_1_1MeasurementSet.html" title="A Table intended to hold astronomical data (a set of Measurements). ">MeasurementSet</a>.  <a href="#a34a43dbd22a6e82d7954eb11ac122a0d">More...</a><br/></td></tr>
 <tr class="separator:a34a43dbd22a6e82d7954eb11ac122a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d3d214b4d372b85c73dee78d6cc7acc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsInput.html#a3d3d214b4d372b85c73dee78d6cc7acc">rotateAntennaPositions</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> b)</td></tr>
-<tr class="memdesc:a3d3d214b4d372b85c73dee78d6cc7acc"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simultaneous change to <a class="el" href="classcasacore_1_1MSFitsOutput.html" title="Write a MeasurementSet to a random group uvfits file. ">MSFitsOutput</a> means that no longer are antenna positions being rotated when written to UVFITS.  <a href="#a3d3d214b4d372b85c73dee78d6cc7acc">More...</a><br/></td></tr>
-<tr class="separator:a3d3d214b4d372b85c73dee78d6cc7acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -296,8 +293,6 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a6c8bb34e6349fcec16d77753f2524827"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad927475aef933b08364ad7e1275acef3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsInput.html#ad927475aef933b08364ad7e1275acef3">_msCreated</a></td></tr>
 <tr class="separator:ad927475aef933b08364ad7e1275acef3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e463fd7094df9e8a0ee84cc150e6097"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsInput.html#a5e463fd7094df9e8a0ee84cc150e6097">_rotateAnts</a></td></tr>
-<tr class="separator:a5e463fd7094df9e8a0ee84cc150e6097"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>UV <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> to <a class="el" href="classcasacore_1_1MeasurementSet.html" title="A Table intended to hold astronomical data (a set of Measurements). ">MeasurementSet</a> filler. </p>
@@ -1214,37 +1209,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3d3d214b4d372b85c73dee78d6cc7acc"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void casacore::MSFitsInput::rotateAntennaPositions </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>b</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>A simultaneous change to <a class="el" href="classcasacore_1_1MSFitsOutput.html" title="Write a MeasurementSet to a random group uvfits file. ">MSFitsOutput</a> means that no longer are antenna positions being rotated when written to UVFITS. </p>
-<p>Calling this method with b=True will perform the reverse of a rotation when converting from uvfits to MS for relevant UVFITS files which were written prior to this change. Else no rotation of antenna positions is done. </p>
-
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00290">290</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
-
-<p>References <a class="el" href="MSFitsInput_8h_source.html#l00433">_rotateAnts</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="afbdc98ec1a9bb43005344db1c12942ac"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1383,7 +1347,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00422">422</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00412">412</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1405,7 +1369,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00409">409</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00399">399</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1427,7 +1391,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00427">427</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00417">417</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1449,7 +1413,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00407">407</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00397">397</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1471,7 +1435,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00405">405</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00395">395</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1493,7 +1457,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00406">406</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00396">396</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1515,7 +1479,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00404">404</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00394">394</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1537,7 +1501,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00408">408</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00398">398</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1559,7 +1523,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00410">410</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00400">400</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1581,7 +1545,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00411">411</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00401">401</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1603,7 +1567,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00420">420</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00410">410</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1625,7 +1589,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00424">424</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00414">414</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1647,7 +1611,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00397">397</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00387">387</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1669,7 +1633,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00423">423</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00413">413</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1691,7 +1655,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00401">401</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00391">391</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1713,7 +1677,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00402">402</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00392">392</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1735,7 +1699,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00433">433</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00423">423</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1757,7 +1721,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00398">398</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00388">388</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1781,7 +1745,7 @@ Private Attributes</h2></td></tr>
 
 <p>number of rows in the created MS ANTENNA table </p>
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00417">417</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00407">407</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1803,7 +1767,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00418">418</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00408">408</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1825,7 +1789,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00428">428</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00418">418</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1847,7 +1811,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00403">403</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00393">393</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1869,7 +1833,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00404">404</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00394">394</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1891,7 +1855,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00409">409</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00399">399</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1913,7 +1877,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00429">429</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00419">419</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1935,7 +1899,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00399">399</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00389">389</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1957,7 +1921,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00400">400</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00390">390</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -1979,7 +1943,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00419">419</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00409">409</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2001,7 +1965,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00425">425</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00415">415</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2023,7 +1987,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00408">408</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00398">398</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2045,7 +2009,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00408">408</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00398">398</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2067,7 +2031,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00421">421</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00411">411</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2089,31 +2053,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00431">431</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a5e463fd7094df9e8a0ee84cc150e6097"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsInput::_rotateAnts</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00433">433</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
-
-<p>Referenced by <a class="el" href="MSFitsInput_8h_source.html#l00290">rotateAntennaPositions()</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00421">421</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2135,7 +2075,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00432">432</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00422">422</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2157,7 +2097,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00409">409</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00399">399</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2182,7 +2122,7 @@ Private Attributes</h2></td></tr>
 <p>determined by epoch_p, hence the name and type. </p>
 <p>unique antennas found in the visibility data NOTE These are 1-based </p>
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00415">415</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00405">405</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
@@ -2204,7 +2144,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00426">426</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
+<p>Definition at line <a class="el" href="MSFitsInput_8h_source.html#l00416">416</a> of file <a class="el" href="MSFitsInput_8h_source.html">MSFitsInput.h</a>.</p>
 
 </div>
 </div>
