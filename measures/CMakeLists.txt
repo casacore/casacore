@@ -60,7 +60,6 @@ Measures/SolarPos.cc
 Measures/Stokes.cc
 Measures/UVWMachine.cc
 Measures/VelocityMachine.cc
-TableMeasures/TableMeas_tmpl.cc
 TableMeasures/TableMeasColumn.cc
 TableMeasures/TableMeasDescBase.cc
 TableMeasures/TableMeasOffsetDesc.cc
