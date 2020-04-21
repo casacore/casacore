@@ -121,13 +121,19 @@ private:
       return nullptr;
     else {
       T* data = Alloc::allocate(n);
-      try {
-        for(size_t i=0; i!=n; ++i)
-          new (&data[i]) T();
+      T* current = data;
+       try {
+        for (; current != data+n; ++current) {
+          new (current) T();
+        }
       } catch(...) {
-        // TODO all already constructed objects should be destructed in reverse
-        // C++17 has uninitialized_default_construct_n to fix this
+        while(current != data)
+        {
+          --current;
+          current->~T();
+        }
         Alloc::deallocate(data, n);
+        throw;
       }
       return data;
     }
@@ -139,13 +145,19 @@ private:
       return nullptr;
     else {
       T* data = Alloc::allocate(n);
+      T* current = data;
       try {
-        for(size_t i=0; i!=n; ++i)
-          new (&data[i]) T(val);
+        for (; current != data+n; ++current) {
+          new (current) T(val);
+        }
       } catch(...) {
-        // TODO all already constructed objects should be destructed in reverse
-        // C++17 has uninitialized_default_construct_n to fix this
+        while(current != data)
+        {
+          --current;
+          current->~T();
+        }
         Alloc::deallocate(data, n);
+        throw;
       }
       return data;
     }
@@ -159,16 +171,20 @@ private:
     else {
       size_t n = std::distance(startIter, endIter);
       T* data = Alloc::allocate(n);
+      T* current = data;
       try {
-        for(size_t i=0; i!=n; ++i)
-        {
-          new (&data[i]) T(*startIter);
+        for (; current != data+n; ++current) {
+          new (current) T(*startIter);
           ++startIter;
         }
       } catch(...) {
-        // TODO all already constructed objects should be destructed in reverse
-        // C++17 has uninitialized_default_construct_n to fix this
+        while(current != data)
+        {
+          --current;
+          current->~T();
+        }
         Alloc::deallocate(data, n);
+        throw;
       }
       return data;
     }
@@ -181,18 +197,25 @@ private:
     else {
       size_t n = endIter - startIter;
       T* data = Alloc::allocate(n);
+      T* current = data;
       try {
-        for(size_t i=0; i!=n; ++i)
-          new (&data[i]) T(std::move(startIter[i]));
+        for (; current != data+n; ++current) {
+          new (current) T(std::move(*startIter));
+          ++startIter;
+        }
       } catch(...) {
-        // TODO all already constructed objects should be destructed in reverse
-        // C++17 has uninitialized_default_construct_n to fix this
+        while(current != data)
+        {
+          --current;
+          current->~T();
+        }
         Alloc::deallocate(data, n);
+        throw;
       }
       return data;
     }
   }
-  
+
   T* _data;
   T* _end;
   bool _isShared;

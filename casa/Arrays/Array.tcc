@@ -34,7 +34,7 @@
 #include "ArrayError.h"
 #include "ArrayIter.h"
 #include "ArrayPosIter.h"
-#include "Copy.h"
+#include "Memory.h"
 #include "MaskedArray.h"
 #include "Slicer.h"
 
@@ -1066,8 +1066,7 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
     data_p = Storage<T, Alloc>::MakeFromSharedData(storage, new_nels, allocator);
   }
   else {
-    if (data_p==nullptr || data_p.use_count() > 1 || data_p->is_shared()
-            || data_p->size() != new_nels) {
+    if (data_p==nullptr || !isUnique() || data_p->size() != new_nels) {
       data_p = Storage<T, Alloc>::MakeFromMove(storage, storage+new_nels, allocator);
     } else {
         std::move(storage, storage+new_nels, data_p->data());

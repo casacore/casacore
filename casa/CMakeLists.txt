@@ -297,7 +297,6 @@ Arrays/ArrayUtil.h
 Arrays/ArrayUtil.tcc
 Arrays/AxesMapping.h
 Arrays/AxesSpecifier.h
-Arrays/Copy.h
 Arrays/Cube.h
 Arrays/Cube.tcc
 Arrays/ElementFunctions.h
@@ -323,6 +322,7 @@ Arrays/MatrixIter.h
 Arrays/MatrixIter.tcc
 Arrays/MatrixMath.h
 Arrays/MatrixMath.tcc
+Arrays/Memory.h
 Arrays/Slice.h
 Arrays/Slicer.h
 Arrays/Storage.h
