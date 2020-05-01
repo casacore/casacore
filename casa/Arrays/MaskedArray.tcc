@@ -26,15 +26,15 @@
 //# $Id$
 
 #ifndef CASA_MASKEDARRAY_2_TCC
-# define CASA_MASKEDARRAY_2_TCC
+#define CASA_MASKEDARRAY_2_TCC
 
-# include "MaskedArray.h"
-# include "Array.h"
-# include "ArrayLogical.h"
-# include "Slicer.h"
-# include "ArrayError.h"
+#include "MaskedArray.h"
+#include "Array.h"
+#include "ArrayLogical.h"
+#include "Slicer.h"
+#include "ArrayError.h"
 
-# include <cassert>
+#include <cassert>
 
 namespace casacore {                                        //# NAMESPACE CASACORE - BEGIN
 

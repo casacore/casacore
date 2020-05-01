@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include "ArrayLogical.h"
 #include "ArrayFwd.h"
 #include "IPosition.h"
 #include "MaskLogiArrFwd.h"

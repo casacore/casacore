@@ -6,6 +6,7 @@ set (testfiles
 #tArrayIO2.cc
 #tArrayIO3.cc
 #tArrayIO.cc
+  tArrayExceptionHandling.cc
   tArrayIter.cc
   tArrayIter1.cc
   tArrayIteratorSTL.cc
@@ -13,8 +14,9 @@ set (testfiles
   tArrayMath.cc
 #tArrayMathPerf.cc
   tArrayMathTransform.cc
+  tArrayOperations.cc
   tArrayOpsDiffShapes.cc
-  tArrayPartMath.cc # very slow atm
+  tArrayPartMath.cc
   tArrayPosIter.cc
   tArrayStr.cc
   tArrayUtil.cc
@@ -24,6 +26,7 @@ set (testfiles
 #tCompareBoxedPartial.cc
   tConvertArray.cc
   tCpp11Features.cc
+  tCube.cc
   tDiagonal.cc
   tExtendSpecifier.cc
   tIPosition.cc
@@ -35,6 +38,7 @@ set (testfiles
   tMaskArrMath1.cc
   tMaskArrMath2.cc
   tMaskedArray.cc
+  tMatrix.cc
   tMatrixMath.cc
   tMedianSmooth.cc
 #  tPerfTransform.cc

@@ -29,9 +29,8 @@
 #define CASA_ARRAYLOGICAL_2_H
 
 //# Includes
-#include "Array.h"
-#include "LogiArray.h"
-#include "ArrayMathBase.h"
+#include "ArrayFwd.h"
+#include "IPosition.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -427,7 +426,11 @@ template<class T> Array<size_t> partialNFalse (const Array<T>& array,
 // </group>
 
 // </group>
+} // end of casacore namespace
 
+#include "ArrayMathBase.h"
+
+namespace casacore {
 // Define logical Functors.
 // <group>
 template<typename T> class AllFunc : public ArrayFunctorBase<T,bool> {
