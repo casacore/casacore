@@ -27,6 +27,7 @@
 
 //# Includes
 
+#include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/IComplex.h>
 
@@ -37,7 +38,34 @@
 #include <unistd.h>
 
 #include <casacore/casa/namespace.h>
+
+#define TESTOP(NAME, Z, FAILVAR) \
+  if(!near(casacore::NAME(Z), std::NAME(Z), 1e-5)) { \
+      cout << "for z=" << Z << ", casacore::" #NAME "(z)=" << casacore::NAME(Z) << ", std::" #NAME "(z)=" << std::NAME(Z) << '\n'; \
+      FAILVAR = true; \
+    }
+
 int main() {
+  {
+    DComplex z(0.7, -0.3);
+    bool fail = false;
+    
+    TESTOP(tan, z, fail);
+    TESTOP(sin, z, fail);
+    TESTOP(cos, z, fail);
+    
+    TESTOP(atan, z, fail);
+    TESTOP(asin, z, fail);
+    TESTOP(acos, z, fail);
+    
+    TESTOP(tanh, z, fail);
+    TESTOP(sinh, z, fail);
+    TESTOP(cosh, z, fail);
+    
+    TESTOP(sqrt, z, fail);
+    
+    AlwaysAssert(!fail, AipsError);
+  }
 
   Complex f1(23.9,1.8), f2(9.2,8.2), f3(2.7,1.8), fo(237.561,0.9312), fi;
   IComplex i1(5,2), i3(Int(f1.real()),Int(f1.imag()));
