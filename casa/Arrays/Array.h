@@ -44,11 +44,11 @@
 
 namespace casacore { //#Begin casa namespace
 
-// <summary> A templated N-D Array class with zero origin </summary>
+// <summary> A templated N-D %Array class with zero origin. </summary>
 
-// Array<T, Alloc> is a templated, N-dimensional, Array class. The origin is zero,
+// Array<T, Alloc> is a templated, N-dimensional, %Array class. The origin is zero,
 // but by default indices are zero-based. This Array class is the
-// base class for specialized Vector<T>, Matrix<T>, and Cube<T> classes.
+// base class for the Vector, Matrix, and Cube subclasses.
 //
 // Indexing into the array, and positions in general, are given with IPosition
 // (essentially a vector of integers) objects. That is, an N-dimensional 
@@ -968,7 +968,7 @@ protected:
 
 
     // Reference counted block that contains the storage.
-    std::shared_ptr<Storage<T, Alloc>> data_p;
+    std::shared_ptr<arrays_internal::Storage<T, Alloc>> data_p;
 
     // This pointer is adjusted to point to the first element of the array.
     // It is not necessarily the same thing as data->storage() since

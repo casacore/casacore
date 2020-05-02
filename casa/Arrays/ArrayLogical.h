@@ -426,37 +426,37 @@ template<class T> Array<size_t> partialNFalse (const Array<T>& array,
 // </group>
 
 // </group>
-} // end of casacore namespace
+} //# end of casacore namespace
 
 #include "ArrayMathBase.h"
 
 namespace casacore {
-// Define logical Functors.
-// <group>
-template<typename T> class AllFunc : public ArrayFunctorBase<T,bool> {
+
+// Logical functor to test if all elements are true
+template<typename T> class AllFunc final : public ArrayFunctorBase<T,bool> {
 public:
-  virtual ~AllFunc() {}
-  virtual bool operator() (const Array<T>& arr) const { return allTrue(arr); }
-};
-template<typename T> class AnyFunc : public ArrayFunctorBase<T,bool> {
-public:
-  virtual ~AnyFunc() {}
-  virtual bool operator() (const Array<T>& arr) const { return anyTrue(arr); }
+  virtual bool operator() (const Array<T>& arr) const override { return allTrue(arr); }
 };
 
-template<typename T, typename RES=size_t>
-class NTrueFunc : public ArrayFunctorBase<T,RES> {
+// Logical functor to test if any elements are true
+template<typename T> class AnyFunc final : public ArrayFunctorBase<T,bool> {
 public:
-  virtual ~NTrueFunc() {}
-  virtual RES operator() (const Array<T>& arr) const { return ntrue(arr); }
+  virtual bool operator() (const Array<T>& arr) const override { return anyTrue(arr); }
 };
+
+// Logical functor to count the number of true elements
 template<typename T, typename RES=size_t>
-class NFalseFunc : public ArrayFunctorBase<T,RES> {
+class NTrueFunc final : public ArrayFunctorBase<T,RES> {
 public:
-  virtual ~NFalseFunc() {}
-  virtual RES operator() (const Array<T>& arr) const { return nfalse(arr); }
+  virtual RES operator() (const Array<T>& arr) const override { return ntrue(arr); }
 };
-// </group>
+
+// Logical functor to count the number of false elements
+template<typename T, typename RES=size_t>
+class NFalseFunc final : public ArrayFunctorBase<T,RES> {
+public:
+  virtual RES operator() (const Array<T>& arr) const override { return nfalse(arr); }
+};
 
 } //# NAMESPACE CASACORE - END
 

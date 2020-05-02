@@ -56,8 +56,6 @@ namespace casacore {
     virtual RES operator() (const Array<T>&) const = 0;
   };
 
-  // </group>
-
 } //# end namespace
 
 #endif

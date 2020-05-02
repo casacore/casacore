@@ -75,8 +75,7 @@ class Slicer;
 
 // <motivation>
 // The class encapsulates the mapping functionality.
-// It is meant as a helper class for
-// <linkto class=SubLattice>SubLattice</linkto>.
+// It is meant as a helper class for casacore's SubLattice.
 // </motivation>
 
 //# <todo asof="yyyy/mm/dd">

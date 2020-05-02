@@ -37,7 +37,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Slicer;
-template<class T> class Block;
 
 // <summary>
 // Specification of new and stretched lattice axes
@@ -53,8 +52,8 @@ template<class T> class Block;
 // </prerequisite>
 
 // <synopsis>
-// ExtendSpecifier is a class internally used by class
-// <linkto class=ExtendLattice>ExtendLattice</linkto>.
+// ExtendSpecifier is a class internally used by casacore class
+// ExtendLattice.
 // It holds the information which axes are stretched and which axes
 // are new. Note that a stretched axis has to have length 1 in the
 // original shape.

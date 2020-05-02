@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <prerequisite>
 //   <li> <linkto class=Vector>Vector</linkto>
-//   <li> <linkto class=std::string>std::string</linkto>
+//   <li> std::string
 // </prerequisite>
 
 // <etymology>
@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // as shown in the example.
 // <p>
 // A more advanced way of splitting a string is by using a
-// <linkto class=Regex>regular expression</linkto> as delimiter.
+// regular expression as delimiter.
 // It makes it, for example, possible to treat whitespace around a comma
 // as part of the delimiter (as shown in an example below).
 // <p>

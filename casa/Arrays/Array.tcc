@@ -44,7 +44,7 @@
 namespace casacore {//#Begin casa namespace
 
 template<typename T, typename Alloc> Array<T, Alloc>::Array(const Alloc& allocator)
-: data_p(new Storage<T, Alloc>(0, allocator)),
+: data_p(new arrays_internal::Storage<T, Alloc>(0, allocator)),
   begin_p(nullptr),
   end_p(nullptr)
 {
@@ -58,7 +58,7 @@ template<class T, typename Alloc>
 Array<T, Alloc>::Array(const IPosition &shape,
         const Alloc& allocator)
 : ArrayBase(shape),
-  data_p(new Storage<T, Alloc>(nelements(), allocator)),
+  data_p(new arrays_internal::Storage<T, Alloc>(nelements(), allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -71,7 +71,7 @@ Array<T, Alloc>::Array(const IPosition &shape,
 template<typename T, typename Alloc> Array<T, Alloc>::Array(const IPosition &shape,
   const T &initialValue, const Alloc& allocator)
 : ArrayBase(shape),
-  data_p(new Storage<T, Alloc>(nelements(), initialValue, allocator)),
+  data_p(new arrays_internal::Storage<T, Alloc>(nelements(), initialValue, allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -81,7 +81,7 @@ template<typename T, typename Alloc> Array<T, Alloc>::Array(const IPosition &sha
 template<typename T, typename Alloc>
 Array<T, Alloc>::Array(const IPosition& shape, uninitializedType, const Alloc& allocator)
 : ArrayBase(shape),
-  data_p(Storage<T, Alloc>::MakeUninitialized(nelements(), allocator)),
+  data_p(arrays_internal::Storage<T, Alloc>::MakeUninitialized(nelements(), allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -90,7 +90,7 @@ Array<T, Alloc>::Array(const IPosition& shape, uninitializedType, const Alloc& a
 
 template<typename T, typename Alloc> Array<T, Alloc>::Array(std::initializer_list<T> list, const Alloc& allocator)
 : ArrayBase (IPosition(1, list.size())),
-  data_p(new Storage<T, Alloc>(list.begin(), list.end(), allocator)),
+  data_p(new arrays_internal::Storage<T, Alloc>(list.begin(), list.end(), allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -167,7 +167,7 @@ template<typename T, typename Alloc>
 template<typename InputIterator>
 Array<T, Alloc>::Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator, std::false_type)
 : ArrayBase(shape),
-  data_p(new Storage<T, Alloc>(startIter, std::next(startIter, nelements()), allocator)),
+  data_p(new arrays_internal::Storage<T, Alloc>(startIter, std::next(startIter, nelements()), allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -178,7 +178,7 @@ template<typename T, typename Alloc>
 template<typename Integral>
 Array<T, Alloc>::Array(const IPosition &shape, Integral initialValue, const Alloc& allocator, std::true_type)
 : ArrayBase(shape),
-  data_p(new Storage<T, Alloc>(nelements(), initialValue, allocator)),
+  data_p(new arrays_internal::Storage<T, Alloc>(nelements(), initialValue, allocator)),
   begin_p(data_p->data())
 {
   setEndIter();
@@ -1063,11 +1063,11 @@ void Array<T, Alloc>::takeStorage(const IPosition &shape, T *storage,
   
   if(policy == SHARE)
   {
-    data_p = Storage<T, Alloc>::MakeFromSharedData(storage, new_nels, allocator);
+    data_p = arrays_internal::Storage<T, Alloc>::MakeFromSharedData(storage, new_nels, allocator);
   }
   else {
     if (data_p==nullptr || !isUnique() || data_p->size() != new_nels) {
-      data_p = Storage<T, Alloc>::MakeFromMove(storage, storage+new_nels, allocator);
+      data_p = arrays_internal::Storage<T, Alloc>::MakeFromMove(storage, storage+new_nels, allocator);
     } else {
         std::move(storage, storage+new_nels, data_p->data());
     }

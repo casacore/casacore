@@ -544,7 +544,7 @@ MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
 // input array.
 // <note> This brute-force method of determining the medians outperforms
 // all kinds of smart implementations. For a vector it is about as fast
-// as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
+// as the casacore class MedianSlider, for a 2D array
 // it is much, much faster.
 // </note>
 template <typename T, typename FuncType>

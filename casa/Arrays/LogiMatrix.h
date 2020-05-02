@@ -41,7 +41,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>
 //   <li> <linkto class=Matrix>Matrix</linkto>
-//   <li> <linkto group="LogiArrayFwd.h#LogicalArray forwards">LogicalArrayFwd</linkto>
 //   <li> <linkto group="LogiArray.h#LogicalArray">LogicalArray</linkto>
 // </prerequisite>
 //

@@ -34,11 +34,6 @@
 
 namespace casacore { //#Begin casa namespace
 
-//# Forward Declarations
-template <class T> class ArrayBaseAccessor;
-//# Next one suffices as declaration: only (part) specialisations allowed
-template <class T, class U> class ArrayAccessor;
-
 //# Hide simple Axis classes names from outside module
 
 namespace {
@@ -346,6 +341,12 @@ template <class T> class ArrayBaseAccessor {
 //   <li> add a ConstArrayAccessor class
 // </todo>
 //
+// \see ArrayAccessor<T, Axis\<U> >
+// \see ArrayAccessor<T, AxisN >
+//# Next one suffices as declaration: only (part) specialisations allowed
+template <class T, class U> class ArrayAccessor;
+
+// Specialization for compile-time axes. \see ArrayAccessor
 template <class T, size_t U> class ArrayAccessor<T, Axis<U> > :
 public ArrayBaseAccessor<T> {
  public:
@@ -484,8 +485,6 @@ public ArrayBaseAccessor<T> {
   
 };
 
-#define ArrayAccessor_RT ArrayAccessor
-
 // <summary> Specialization for run-time axes </summary>
 // <use visibility=export>
 // <synopsis>
@@ -494,42 +493,40 @@ public ArrayBaseAccessor<T> {
 // special indexing operators (<src>prev, next, index</src>) with
 // a parameter <src>AxisN(n)</src> in stead of a template parameter
 // <src><Axis<n> ></src>.
-//
-// Note that the name of the class is <src>ArrayAccessor</src>. The special
-// name is only to bypass cxx2html problems with duplicate class names. 
+// \see ArrayAccessor
 // </synopsis>
 //
-template <class T> class ArrayAccessor_RT<T, AxisN> :
+template <class T> class ArrayAccessor<T, AxisN> :
 public ArrayBaseAccessor<T> {
  public:
   // Constructors
   // <group>
-  explicit ArrayAccessor_RT(const AxisN ax=AxisN(0)) :
+  explicit ArrayAccessor(const AxisN ax=AxisN(0)) :
     ArrayBaseAccessor<T>() { this->axis_p = ax.N; }
-  explicit ArrayAccessor_RT(Array<T> &arr, const AxisN ax=AxisN(0)) :
+  explicit ArrayAccessor(Array<T> &arr, const AxisN ax=AxisN(0)) :
     ArrayBaseAccessor<T>(arr, ax.N) { initStep(); }
-  ArrayAccessor_RT(ArrayAccessor_RT<T, AxisN> &other) :
+  ArrayAccessor(ArrayAccessor<T, AxisN> &other) :
     ArrayBaseAccessor<T>(other) {;}
-  explicit ArrayAccessor_RT(ArrayAccessor_RT<T, AxisN> &other,
+  explicit ArrayAccessor(ArrayAccessor<T, AxisN> &other,
 			    const AxisN ax) :
     ArrayBaseAccessor<T>(other, ax.N) { initStep(); }
   template <size_t X>
-    explicit ArrayAccessor_RT(ArrayAccessor_RT<T, Axis<X> > &other,
+    explicit ArrayAccessor(ArrayAccessor<T, Axis<X> > &other,
 			      const AxisN ax=AxisN(0)) :
     ArrayBaseAccessor<T>(other, ax.N) { initStep(); }
-  ArrayAccessor_RT &operator=(const ArrayAccessor_RT<T, AxisN> &other) {
+  ArrayAccessor &operator=(const ArrayAccessor<T, AxisN> &other) {
     if (&other != this) {
       ArrayBaseAccessor<T>::operator=(other);
       initStep();
     }; return *this; }
   template <size_t X>
-    ArrayAccessor_RT &operator=(const ArrayAccessor_RT<T, Axis<X> > &other) {
+    ArrayAccessor &operator=(const ArrayAccessor<T, Axis<X> > &other) {
     ArrayBaseAccessor<T>::operator=(other);
     initStep(); return *this; }
   // </group>
 
   // Destructor
-  ~ArrayAccessor_RT() {;}
+  ~ArrayAccessor() {;}
 
   // (Re-)initialization to start of array (i.e. element (0,0,0,...)) or
   // re-initialize to an axis.
@@ -582,9 +579,9 @@ public ArrayBaseAccessor<T> {
 
   // Comparisons
   // <group>
-  bool operator==(const ArrayAccessor_RT<T, AxisN> &other) const {
+  bool operator==(const ArrayAccessor<T, AxisN> &other) const {
     return this->ptr_p == other.ptr_p; }
-  bool operator!=(const ArrayAccessor_RT<T, AxisN> &other) const {
+  bool operator!=(const ArrayAccessor<T, AxisN> &other) const {
     return this->ptr_p != other.ptr_p; }
   bool operator==(const T *other) const { return this->ptr_p == other; }
   bool operator!=(const T *other) const { return this->ptr_p != other; }
@@ -604,8 +601,6 @@ public ArrayBaseAccessor<T> {
     this->end_p += this->arrayPtr_p->shape()[this->axis_p]*this->step_p; }
   
 };
-
-#undef ArrayAccessor_RT
 
 } //#End casa namespace
 #endif

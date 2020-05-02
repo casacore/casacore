@@ -228,7 +228,7 @@ template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_
         if (! this->copyVectorHelper (other)) {
 	    // Block was empty, so allocate new block.
           // TODO think about semantics of allocator!
-	    this->data_p.reset( new Storage<T, Alloc>(this->length_p(0), other.data_p->get_allocator()) );
+	    this->data_p.reset( new arrays_internal::Storage<T, Alloc>(this->length_p(0), other.data_p->get_allocator()) );
 	    this->begin_p = this->data_p->data();
 	}
 	this->setEndIter();

@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // shape has to be applied to the AxesSpecifier. The result is
 // a <linkto class=AxesMapping>AxesMapping</linkto> object.
 // This object is (for example) used internally in the
-// <linkto class=SubLattice>SubLattice</linkto> class to know how
+// casacore SubLattice class to know how
 // to map the axes form the original lattice to the sublattice.
 // <note role=caution>
 // Reordering axes is not supported (yet) by the other Casacore classes

@@ -72,7 +72,7 @@ class ArrayBase;
 // <br>The iteration step always "fills up" its dimensionality.
 // E.g., if we are stepping through a cube by matrices, the matrix completely
 // fills up the plane.
-// Class <linkto class=ArrayLattice>ArrayLattice</linkto> in the lattices
+// Casacore class ArrayLattice in the lattices
 // package can be used to iterate with partial volumes.
 //
 // <p>

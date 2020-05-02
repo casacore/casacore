@@ -412,8 +412,8 @@ private:
     ssize_t *data_p;
 };
 
+// Allows a way for IPosition to be used as keys in a std::map
 class IPositionComparator : public std::binary_function<IPosition, IPosition, bool> {
-    // allows a way for IPosition to be used as keys in a std::map
 public:
     // if sizes aren't equal, returns true if lhs.size() < rhs.size(), false
     // otherwise. If sizes are equal, does an element by element comparison. The first

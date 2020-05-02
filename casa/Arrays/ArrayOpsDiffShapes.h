@@ -32,7 +32,7 @@
 #include "ArrayLogical.h"
 #include "IPosition.h"
 
-// Don't forget a .tcc file is included at the end!
+//# Don't forget a .tcc file is included at the end!
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
