@@ -34,89 +34,96 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-VirtualTaQLColumn::VirtualTaQLColumn (const String& expr)
+  VirtualTaQLColumn::VirtualTaQLColumn (const String& expr, const String& style)
 : itsDataType     (TpOther),
   itsIsArray      (False),
-  itsExpr         (expr),
-  itsNode         (0),
+  itsIsConst      (False),
   itsTempWritable (False),
-  itsCurRow       (-1),
-  itsCurResult    (0)
+  itsExpr         (expr),
+  itsStyle        (style),
+  itsNode         (0),
+  itsCurArray     (0),
+  itsCurRow       (-1)
 {}
 
 VirtualTaQLColumn::VirtualTaQLColumn (const Record& spec)
 : itsDataType     (TpOther),
   itsIsArray      (False),
-  itsNode         (0),
+  itsIsConst      (False),
   itsTempWritable (False),
-  itsCurRow       (-1),
-  itsCurResult    (0)
+  itsNode         (0),
+  itsCurArray     (0),
+  itsCurRow       (-1)
 {
   if (spec.isDefined ("TAQLCALCEXPR")) {
     itsExpr = spec.asString ("TAQLCALCEXPR");
+  }
+  if (spec.isDefined ("TAQLSTYLE")) {
+    itsStyle = spec.asString ("TAQLSTYLE");
   }
 }
 
 VirtualTaQLColumn::~VirtualTaQLColumn()
 {
-  delete itsCurResult;
+  delete itsCurArray;
   delete itsNode;
 }
 
-void VirtualTaQLColumn::makeCurResult()
+void VirtualTaQLColumn::makeCurArray()
 {
-  delete itsCurResult;
-  itsCurResult = 0;
+  delete itsCurArray;
+  itsCurArray = 0;
   switch (itsDataType) {
   case TpBool:
-    itsCurResult = new Array<Bool>();
+    itsCurArray = new Array<Bool>();
     break;
   case TpUChar:
-    itsCurResult = new Array<uChar>();
+    itsCurArray = new Array<uChar>();
     break;
   case TpShort:
-    itsCurResult = new Array<Short>();
+    itsCurArray = new Array<Short>();
     break;
   case TpUShort:
-    itsCurResult = new Array<uShort>();
+    itsCurArray = new Array<uShort>();
     break;
   case TpInt:
-    itsCurResult = new Array<Int>();
+    itsCurArray = new Array<Int>();
     break;
   case TpUInt:
-    itsCurResult = new Array<uInt>();
+    itsCurArray = new Array<uInt>();
     break;
   case TpInt64:
-    itsCurResult = new Array<Int64>();
+    itsCurArray = new Array<Int64>();
     break;
   case TpFloat:
-    itsCurResult = new Array<Float>();
+    itsCurArray = new Array<Float>();
     break;
   case TpDouble:
-    itsCurResult = new Array<Double>();
+    itsCurArray = new Array<Double>();
     break;
   case TpComplex:
-    itsCurResult = new Array<Complex>();
+    itsCurArray = new Array<Complex>();
     break;
   case TpDComplex:
-    itsCurResult = new Array<DComplex>();
+    itsCurArray = new Array<DComplex>();
     break;
   case TpString:
-    itsCurResult = new Array<String>();
+    itsCurArray = new Array<String>();
     break;
   default:
-    throw DataManError ("VirtualTaQLColumn::makeCurResult - unknown data type");
+    throw DataManError ("VirtualTaQLColumn::makeCurArray - unknown data type");
   }
 }
 
 DataManager* VirtualTaQLColumn::clone() const
 {
-  DataManager* dmPtr = new VirtualTaQLColumn (itsExpr);
+  DataManager* dmPtr = new VirtualTaQLColumn (itsExpr, itsStyle);
   return dmPtr;
 }
 
@@ -146,10 +153,12 @@ DataManagerColumn* VirtualTaQLColumn::makeIndArrColumn (const String& name,
 void VirtualTaQLColumn::create64 (rownr_t)
 {
   // Define a keyword in the column telling the expression.
+  // The table has to be writable for this operation only; otherwise it is not writable.
   itsTempWritable = True;
   TableColumn tabcol (table(), itsColumnName);
   itsTempWritable = False;
   tabcol.rwKeywordSet().define ("_VirtualTaQLEngine_CalcExpr", itsExpr);
+  tabcol.rwKeywordSet().define ("_VirtualTaQLEngine_Style", itsStyle);
 }
 
 void VirtualTaQLColumn::prepare()
@@ -157,8 +166,15 @@ void VirtualTaQLColumn::prepare()
   // Get the expression.
   TableColumn tabcol (table(), itsColumnName);
   itsExpr = tabcol.keywordSet().asString ("_VirtualTaQLEngine_CalcExpr");
+  if (tabcol.keywordSet().isDefined ("_VirtualTaQLEngine_Style")) {
+    itsStyle = tabcol.keywordSet().asString ("_VirtualTaQLEngine_Style");
+  }
   // Compile the expression.
-  TaQLResult res = tableCommand ("calc from $1 calc " + itsExpr, table());
+  String cmd;
+  if (! itsStyle.empty()) {
+    cmd = "using style " + itsStyle;
+  }
+  TaQLResult res = tableCommand (cmd + " calc from $1 calc " + itsExpr, table());
   itsNode = new TableExprNode(res.node());
   // Check if the expression type matches the column type.
   if (itsNode->isScalar() == itsIsArray) {
@@ -191,7 +207,16 @@ void VirtualTaQLColumn::prepare()
                         " data type mismatch");
   }
   // Create the correct array type.
-  makeCurResult();
+  makeCurArray();
+  // If a constant expression, get the constant value and set cache for scalars.
+  itsIsConst = itsNode->getRep()->isConstant();
+  if (itsIsConst) {
+    if (itsIsArray) {
+      getResult(0);
+    } else {
+      fillColumnCache();
+    }
+  }
 }
 
 DataManager* VirtualTaQLColumn::makeObject (const String&,
@@ -229,6 +254,7 @@ int VirtualTaQLColumn::dataType() const
 
 Bool VirtualTaQLColumn::isWritable() const
 {
+  // This is always False except temporarily in function create64 to define a keyword.
   return itsTempWritable;
 }
 
@@ -248,11 +274,12 @@ IPosition VirtualTaQLColumn::shape (rownr_t rownr)
   if (shp.nelements() > 0) {
     return shp;
   }
-  if (rownr != itsCurRow) {
+  // Value is already available if constant or if current row.
+  if (!itsIsConst  &&  rownr != itsCurRow) {
     getResult (rownr);
     itsCurRow = rownr;
   }
-  return itsCurResult->shape();
+  return itsCurArray->shape();
 }
 
 Bool VirtualTaQLColumn::isShapeDefined (rownr_t)
@@ -314,12 +341,13 @@ void VirtualTaQLColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
   // Usually getShape is called before getArray.
   // To avoid double calculation of the same value, the result is cached
-  // by getShape in itsCurResult (by getResult).
-  if (rownr != itsCurRow) {
+  // by getShape in itsCurArray (by getResult).
+  // Value is also available if constant.
+  if (!itsIsConst  &&  rownr != itsCurRow) {
     getResult (rownr);
     itsCurRow = rownr;
   }
-  arr.assignBase (*itsCurResult);
+  arr.assignBase (*itsCurArray);
 }
 
 void VirtualTaQLColumn::getResult (rownr_t rownr)
@@ -328,14 +356,14 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpBool:
     {
       Array<Bool> arr = itsNode->getArrayBool (rownr);
-      Array<Bool>& out = *static_cast<Array<Bool>*>(itsCurResult);
+      Array<Bool>& out = *static_cast<Array<Bool>*>(itsCurArray);
       out.reference (arr);
       break;
     }
   case TpUChar:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uChar>& out = *static_cast<Array<uChar>*>(itsCurResult);
+      Array<uChar>& out = *static_cast<Array<uChar>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -343,7 +371,7 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpShort:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Short>& out = *static_cast<Array<Short>*>(itsCurResult);
+      Array<Short>& out = *static_cast<Array<Short>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -351,7 +379,7 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpUShort:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uShort>& out = *static_cast<Array<uShort>*>(itsCurResult);
+      Array<uShort>& out = *static_cast<Array<uShort>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -359,7 +387,7 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpInt:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Int>& out = *static_cast<Array<Int>*>(itsCurResult);
+      Array<Int>& out = *static_cast<Array<Int>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -367,7 +395,7 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpUInt:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uInt>& out = *static_cast<Array<uInt>*>(itsCurResult);
+      Array<uInt>& out = *static_cast<Array<uInt>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -375,14 +403,14 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpInt64:
     {
       Array<Int64> arr  = itsNode->getArrayInt (rownr);
-      Array<Int64>& out = *static_cast<Array<Int64>*>(itsCurResult);
+      Array<Int64>& out = *static_cast<Array<Int64>*>(itsCurArray);
       out.reference (arr);
       break;
     }
   case TpFloat:
     {
       Array<Double> arr = itsNode->getArrayDouble (rownr);
-      Array<Float>& out = *static_cast<Array<Float>*>(itsCurResult);
+      Array<Float>& out = *static_cast<Array<Float>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -390,14 +418,14 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpDouble:
     {
       Array<Double> arr  = itsNode->getArrayDouble (rownr);
-      Array<Double>& out = *static_cast<Array<Double>*>(itsCurResult);
+      Array<Double>& out = *static_cast<Array<Double>*>(itsCurArray);
       out.reference (arr);
       break;
     }
   case TpComplex:
     {
       Array<DComplex> arr = itsNode->getArrayDComplex (rownr);
-      Array<Complex>& out = *static_cast<Array<Complex>*>(itsCurResult);
+      Array<Complex>& out = *static_cast<Array<Complex>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
@@ -405,14 +433,14 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   case TpDComplex:
     {
       Array<DComplex> arr  = itsNode->getArrayDComplex (rownr);
-      Array<DComplex>& out = *static_cast<Array<DComplex>*>(itsCurResult);
+      Array<DComplex>& out = *static_cast<Array<DComplex>*>(itsCurArray);
       out.reference (arr);
       break;
     }
   case TpString:
     {
       Array<String> arr  = itsNode->getArrayString (rownr);
-      Array<String>& out = *static_cast<Array<String>*>(itsCurResult);
+      Array<String>& out = *static_cast<Array<String>*>(itsCurArray);
       out.reference (arr);
       break;
     }
@@ -422,26 +450,125 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
 }
 
 void VirtualTaQLColumn::getScalarColumnV (ArrayBase& arr)
-  { getScalarColumnBase (arr); }
+{
+  if (itsIsConst) {
+    // Constant value, so fill the array with the same value.
+    fillArray (arr);
+  } else {
+    getScalarColumnBase (arr);
+  }
+}
 void VirtualTaQLColumn::getScalarColumnCellsV (const RefRows& rownrs,
                                                ArrayBase& arr)
-  { getScalarColumnCellsBase (rownrs, arr); }
-void VirtualTaQLColumn::getArrayColumnV (ArrayBase& arr)
-  { getArrayColumnBase (arr); }
-void VirtualTaQLColumn::getArrayColumnCellsV (const RefRows& rownrs,
-                                              ArrayBase& arr)
-  { getArrayColumnCellsBase (rownrs, arr); }
-void VirtualTaQLColumn::getSliceV (rownr_t rownr,
-                                   const Slicer& slicer,
-                                   ArrayBase& arr)
-  { getSliceBase (rownr, slicer, arr); }
-void VirtualTaQLColumn::getColumnSliceV (const Slicer& slicer,
-                                         ArrayBase& arr)
-  { getColumnSliceBase(slicer, arr); }
-void VirtualTaQLColumn::getColumnSliceCellsV (const RefRows& rownrs,
-                                              const Slicer& slicer,
-                                              ArrayBase& arr)
-  { getColumnSliceCellsBase (rownrs, slicer, arr); }
+{
+  if (itsIsConst) {
+    // Constant value, so fill the array with the same value.
+    fillArray (arr);
+  } else {
+    getScalarColumnCellsBase (rownrs, arr);
+  }
+}
+void VirtualTaQLColumn::fillColumnCache()
+{
+  switch (itsDataType) {
+  case TpBool:
+    getBool (0, &itsBool);
+    columnCache().set (0, table().nrow()-1, &itsBool);
+    break;
+  case TpUChar:
+    getuChar (0, &itsuChar);
+    columnCache().set (0, table().nrow()-1, &itsuChar);
+    break;
+  case TpShort:
+    getShort (0, &itsShort);
+    columnCache().set (0, table().nrow()-1, &itsShort);
+    break;
+  case TpUShort:
+    getuShort (0, &itsuShort);
+    columnCache().set (0, table().nrow()-1, &itsuShort);
+    break;
+  case TpInt:
+    getInt (0, &itsInt);
+    columnCache().set (0, table().nrow()-1, &itsInt);
+    break;
+  case TpUInt:
+    getuInt (0, &itsuInt);
+    columnCache().set (0, table().nrow()-1, &itsuInt);
+    break;
+  case TpInt64:
+    getInt64 (0, &itsInt64);
+    columnCache().set (0, table().nrow()-1, &itsInt64);
+    break;
+  case TpFloat:
+    getfloat (0, &itsFloat);
+    columnCache().set (0, table().nrow()-1, &itsFloat);
+    break;
+  case TpDouble:
+    getdouble (0, &itsDouble);
+    columnCache().set (0, table().nrow()-1, &itsDouble);
+    break;
+  case TpComplex:
+    getComplex (0, &itsComplex);
+    columnCache().set (0, table().nrow()-1, &itsComplex);
+    break;
+  case TpDComplex:
+    getDComplex (0, &itsDComplex);
+    columnCache().set (0, table().nrow()-1, &itsDComplex);
+    break;
+  case TpString:
+    getString (0, &itsString);
+    columnCache().set (0, table().nrow()-1, &itsString);
+    break;
+  default:
+    throw DataManInvDT(itsColumnName);
+  }
+}
 
+void VirtualTaQLColumn::fillArray (ArrayBase& arr)
+{
+  Bool deleteIt;
+  void* ptr = arr.getVStorage (deleteIt);
+  switch (itsDataType) {
+  case TpBool:
+    objset (static_cast<Bool*>(ptr), itsBool, arr.size());
+    break;
+  case TpUChar:
+    objset (static_cast<uChar*>(ptr), itsuChar, arr.size());
+    break;
+  case TpShort:
+    objset (static_cast<Short*>(ptr), itsShort, arr.size());
+    break;
+  case TpUShort:
+    objset (static_cast<uShort*>(ptr), itsuShort, arr.size());
+    break;
+  case TpInt:
+    objset (static_cast<Int*>(ptr), itsInt, arr.size());
+    break;
+  case TpUInt:
+    objset (static_cast<uInt*>(ptr), itsuInt, arr.size());
+    break;
+  case TpInt64:
+    objset (static_cast<Int64*>(ptr), itsInt64, arr.size());
+    break;
+  case TpFloat:
+    objset (static_cast<Float*>(ptr), itsFloat, arr.size());
+    break;
+  case TpDouble:
+    objset (static_cast<Double*>(ptr), itsDouble, arr.size());
+    break;
+  case TpComplex:
+    objset (static_cast<Complex*>(ptr), itsComplex, arr.size());
+    break;
+  case TpDComplex:
+    objset (static_cast<DComplex*>(ptr), itsDComplex, arr.size());
+    break;
+  case TpString:
+    objset (static_cast<String*>(ptr), itsString, arr.size());
+    break;
+  default:
+    throw DataManInvDT(itsColumnName);
+  }
+  arr.putVStorage (ptr, deleteIt);
+}
 
 } //# NAMESPACE CASACORE - END

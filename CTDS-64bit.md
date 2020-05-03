@@ -27,11 +27,15 @@ The main changes at the Tables level are:
    represent a row number.
  * class RowNumbers instead of Vector<uInt> is used to represent a
    vector of row numbers. It can convert automatically from and to a
-   Vector of uInt and uInt64 (giving backward compatibility).
+   Vector of rownr_t and optionally to uInt (giving backward compatibility).
+ * The functions getColumnXXX in class TableExprNode are available
+   for RowNumbers and optionally for Vector<uInt>.
 
-To assure that software is using 64-bit row numbers, conversion from
-and to Vector<uInt> is made explicit. However, if IMPLICIT_CTDS_32BIT
-is #defined, the conversion is implicit (thus automatic).
+To assure that software is using 64-bit row numbers, conversion of
+RowNumbers from and to Vector<uInt> is made explicit. However, if
+IMPLICIT_CTDS_32BIT is defined, the conversion is implicit (thus automatic).
+Similarly, the Vector<uInt> versions of TableExprNode::getColumnXXX
+are only public if IMPLICIT_CTDS_32BIT is defined.
 It means that with this #define existing software can be built against the
 new and an old Casacore version without any change.
 
@@ -43,14 +47,27 @@ However, in this way such storage managers can only support tables
 with less than 2^31 rows. To extend it to 2^63 rows, they should use
 the new interface as depicted in DataManagerColumn.h.
 The main changes are:
- * The canAccess functions have been removed. Formerly the Tables
-   classes ScalarColumn and ArrayColumn contained the default
+ * Several virtual functions in class DataManager got the suffix 64
+   (e.g. create64) to differentiate them from the old function names
+   which still exist for backward compatibility.
+ * DataManager column classes (such as ISMColumn) should be derived from
+   class StManColumnBase which implements some common functionality.
+ * The canAccess functions are obsolete and can be removed. Formerly the
+   Tables classes ScalarColumn and ArrayColumn contained the default
    implementations for getColumn, getSlice, etc.. This has been moved to
-   class DataManagerColumn.
- * The interface of functions handling arrays has changed from void* to
-   ArrayBase&, mainly to have it more clear. The native storage
-   manager classes now often use Array functionality to handle most
-   array data types instead of handling the data types explicitly.
+   class DataManagerColumn making the canAccess functions obsolete
+   in the new interface. Of course, these functions should be kept if
+   backward compatibily is needed.
+ * The interface of get/put functions handling arrays has been changed
+   from void* to ArrayBase&, mainly to have it more clear. The native
+   storage manager classes now often can use Array functionality to
+   handle most array data types instead of having to handle these
+   data types explicitly. 
+
+Although the DataManager interface has changed considerably, it is
+still fully backward compatible. The default implementations of the new
+functions call the old functions in the StManColumn class and convert
+rownr_t to uInt (while checking if its value is < 2^31).
 
 The test programs tExternalStMan.cc and tExternalStManNew.cc show
 how the old and the new interface are used in a data manager. They
@@ -62,7 +79,7 @@ rownr_t and uInt, while only the uInt version is used in these classes
 using the old interface.
 
 Note that a nice side-effect of the DataManager change is that
-libcasa_tables.so  shrunk about 10%. It can even be more if the
+libcasa_tables.so  shrunk about 10%. It will even be more once the
 backward compatibility functionality can be removed.
 
 
@@ -70,10 +87,10 @@ backward compatibility functionality can be removed.
 ---
 As can be expected, the ABI has been changed considerably, so software
 needs to be rebuilt between using the new and old Casacore libraries.
-The change big enough to require a new major Casacore version.
+It results in the new major Casacore version 3.4.0.
 
 
-## Other changes
+## Changes in other software
 ---
 All other software in the Casacore package, notably the MS package,
 has been changed to use the new CTDS interface.
@@ -89,16 +106,18 @@ rownr_t instead of uInt where applicable.
 
 ## Backward compatibility functions
 ---
-Several functions have been added to make the API change backward compatible.
-They should be removed once all software using Casacore uses 64-bit
-row numbers. It consists of the following functions and classes:
+Several functions have been added to make the API change backward
+compatible. They are intended to be temporary, so they should be
+removed once all software using Casacore uses 64-bit row numbers.
+Tables backward compatibility to be removed consists of the following
+functions:
  * In class RowNumbers the Vector<uInt> and std::vector<uInt> constructor
    and the Vector<uInt> operator.
  * In class RefRows the functions using Vector<uInt>.
  * In class TableExprNode the functions getColumnXXX using Vector<uInt>.
 
 Once all external data managers use 64-bit row numbers, the following
-classes and functions can be removed.
+DataMan classes and functions can be removed.
  * In class DataManager the functions create, open, open1, resync, resync1,
    addRow and removeRow.
  * The entire class class StManColumn.

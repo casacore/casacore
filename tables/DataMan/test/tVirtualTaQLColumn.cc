@@ -45,6 +45,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/OS/PrecTimer.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/iostream.h>
 
@@ -60,6 +61,7 @@ TableDesc makeDesc();
 void a (const TableDesc&);
 void check(const Table& table, Bool showname);
 void testSelect();
+void testPerf();
 
 int main ()
 {
@@ -75,6 +77,7 @@ int main ()
 	check (tab2, True);
       }
       testSelect();
+      testPerf();
     } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -332,4 +335,51 @@ void testSelect()
   Table subset = tableCommand("select from tVirtualTaQLColumn_tmp.data0 "
 			      "where acalc > -1000");
   check (subset, False);
+}
+
+// Test how getting a column performs.
+void testPerf()
+{
+  {
+    TableDesc td;
+    td.addColumn (ScalarColumnDesc<Int>("sca"));
+    td.addColumn (ScalarColumnDesc<uInt>("row"));
+    td.addColumn (ArrayColumnDesc<Float>("arr"));
+    SetupNewTable newtab("tVirtualTaQLColumn_tmp.dataperf", td, Table::New);
+    VirtualTaQLColumn sca("0");
+    VirtualTaQLColumn row("rownumber()", "python");   // python -> 0-based
+    VirtualTaQLColumn arr("[1.,2,3,4]");
+    newtab.bindColumn ("sca", sca);
+    newtab.bindColumn ("row", row);
+    newtab.bindColumn ("arr", arr);
+    Table tab(newtab, 1000000);
+  }
+  {
+    Table tab("tVirtualTaQLColumn_tmp.dataperf");
+    ScalarColumn<Int> scacol(tab, "sca");
+    ScalarColumn<uInt> rowcol(tab, "row");
+    ArrayColumn<Float> arrcol(tab, "arr");
+    PrecTimer timer;
+    timer.start();
+    Vector<Int> vec(scacol.getColumn());
+    timer.stop();
+    timer.show (cout, "scacol");
+    timer.reset();
+    timer.start();
+    Vector<uInt> vec2(rowcol.getColumn());
+    timer.stop();
+    timer.show (cout, "rowcol");
+    timer.reset();
+    timer.start();
+    Array<Float> arr(arrcol.getColumn());
+    timer.stop();
+    timer.show (cout, "arrcol");
+    AlwaysAssertExit (vec.size() == tab.nrow());
+    AlwaysAssertExit (allEQ (vec, 0));
+    AlwaysAssertExit (vec2.size() == tab.nrow());
+    for (size_t i=0; i<vec2.size(); ++i) {
+      AlwaysAssertExit (vec2[i] == i);    // rownumber is 1-based
+    }
+    AlwaysAssertExit (arr.shape() == IPosition(2,4,tab.nrow()));
+  }
 }

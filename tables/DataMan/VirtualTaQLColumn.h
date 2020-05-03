@@ -50,13 +50,21 @@ class TableExprNode;
 //
 // <synopsis> 
 // VirtualTaQLColumn is a virtual column engine to define the contents of a
-// column as a TaQL expression in which possibly other columns are used.
+// column as a TaQL CALC expression in which possibly other columns are used.
 // It is (of course) only possible to get data from the column; puts cannot
-// be done.
+// be done. See note 199 for a description of TaQL.
+// The TaQL style can be specified (such as 0- or 1-based indexing).
 // <br>
 // The expression result can be a scalar or array of the basic TaQL data types.
 // The column data type has to be conformant with that TaQL type, thus a
 // column of any integer type has to be used for an integer TaQL result.
+// <br>
+// Constant expressions are precalculated and cached making the retrieval of
+// e.g. the full column much faster (factor 4).
+// <br>
+// A possible use for a virtual TaQL column is a column in a MeasurementSet
+// containing a constant value. It could also be used for on-the-fly calculation
+// of J2000 UVW-values or HADEC using an expression such as "derivedmscal.newuvw()"
 // <note role=caution> One has to be careful with deleting columns. If in an
 // existing table a TaQL expression uses a deleted column, the expression
 // cannot be parsed anymore and the table cannot be opened anymore.
@@ -91,7 +99,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn
 public:
 
   // Construct it with the given TaQL expression.
-  VirtualTaQLColumn (const String& expr);
+  VirtualTaQLColumn (const String& expr, const String& style=String());
 
   // Construct it with the given specification.
   VirtualTaQLColumn (const Record& spec);
@@ -161,12 +169,6 @@ private:
   // Prepare compiles the expression.
   virtual void prepare();
 
-  //# We could also define the getBlockXXV functions, but
-  //# that is not required. The default implementation gets
-  //# one value. Possible optimization can be done by
-  //# implementing it here.
-  //# The same is true for getColumn.
-
   // Get the scalar value in the given row.
   // <group>
   virtual void getBool     (rownr_t rownr, Bool* dataPtr);
@@ -184,43 +186,55 @@ private:
   // </group>
 
   // Get the array value in the given row.
-  // The argument dataPtr is in fact an Array<T>*, but a void*
-  // is needed to be generic.
   // The array given by <src>arr</src> has to have the correct shape
   // (which is guaranteed by the ArrayColumn get function).
   virtual void getArrayV (rownr_t rownr, ArrayBase& arr);
 
-  // Get the array result into itsCurResult.
+  // Get the array result into itsCurArray.
   void getResult (rownr_t rownr);
 
   // Make the result cache.
-  void makeCurResult();
+  void makeCurArray();
 
-  // Get functions implemented by means of their DataMaangerColumn::dmGetXX
-  // counterparts.
+  // Get functions implemented by means of their DataManagerColumn::getXXBase
+  // counterparts, but optimized for constant expressions.
   // <group>
   virtual void getScalarColumnV (ArrayBase& arr);
   virtual void getScalarColumnCellsV (const RefRows& rownrs,
                                       ArrayBase& arr);
-  virtual void getArrayColumnV (ArrayBase& data);
-  virtual void getArrayColumnCellsV (const RefRows& rownrs,
-                                     ArrayBase& data);
-  virtual void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& data);
-  virtual void getColumnSliceV (const Slicer& slicer, ArrayBase& data);
-  virtual void getColumnSliceCellsV (const RefRows& rownrs,
-                                     const Slicer& slicer, ArrayBase& data);
   // </group>
 
+  // Fill the ColumnCache object with a constant scalar value.
+  void fillColumnCache();
+
+  // Fill an array with a constant scalar value.
+  void fillArray (ArrayBase& data);
 
   //# Now define the data members.
   int            itsDataType;
   Bool           itsIsArray;
+  Bool           itsIsConst;          //# Constant expression?
+  Bool           itsTempWritable;
   String         itsColumnName;
   String         itsExpr;             //# TaQL expression
+  String         itsStyle;            //# TaQL style
   TableExprNode* itsNode;             //# compiled TaQL expression
-  Bool           itsTempWritable;
-  rownr_t        itsCurRow;           //# Currently evaluated row
-  ArrayBase*     itsCurResult;        //# result in itsCurRow
+  union {
+    Bool     itsBool;                 //# Constant scalar values
+    uChar    itsuChar;
+    Short    itsShort;
+    uShort   itsuShort;
+    Int      itsInt;
+    uInt     itsuInt;
+    Int64    itsInt64;
+    Float    itsFloat;
+    Double   itsDouble;
+  };
+  Complex    itsComplex;
+  DComplex   itsDComplex;
+  String     itsString;
+  ArrayBase* itsCurArray;             //# array value (constant or in itsCurRow)
+  rownr_t    itsCurRow;               //# Currently evaluated row
 };
 
 
