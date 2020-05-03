@@ -74,19 +74,19 @@ String Adios2StMan::dataManagerName() const
 	return pimpl->dataManagerName();
 }
 
-void Adios2StMan::create(uInt aNrRows)
+void Adios2StMan::create64(rownr_t aNrRows)
 {
-	pimpl->create(aNrRows);
+	pimpl->create64(aNrRows);
 }
 
-void Adios2StMan::open(uInt aRowNr, AipsIO &ios)
+rownr_t Adios2StMan::open64(rownr_t aRowNr, AipsIO &ios)
 {
-	pimpl->open(aRowNr, ios);
+	return pimpl->open64(aRowNr, ios);
 }
 
-void Adios2StMan::resync(uInt aRowNr)
+rownr_t Adios2StMan::resync64(rownr_t aRowNr)
 {
-	pimpl->resync(aRowNr);
+	return pimpl->resync64(aRowNr);
 }
 
 Bool Adios2StMan::flush(AipsIO &ios, Bool doFsync)
@@ -117,9 +117,9 @@ void Adios2StMan::deleteManager()
 	pimpl->deleteManager();
 }
 
-void Adios2StMan::addRow(uInt aNrRows)
+void Adios2StMan::addRow64(rownr_t aNrRows)
 {
-	return pimpl->addRow(aNrRows);
+	return pimpl->addRow64(aNrRows);
 }
 
 DataManager *Adios2StMan::makeObject(
@@ -128,7 +128,7 @@ DataManager *Adios2StMan::makeObject(
 	return impl::makeObject(aDataManType, spec);
 }
 
-uInt Adios2StMan::getNrRows()
+rownr_t Adios2StMan::getNrRows()
 {
 	return pimpl->getNrRows();
 }
@@ -217,7 +217,7 @@ Adios2StMan::impl::~impl()
         itsAdiosEngine->EndStep();
         itsAdiosEngine->Close();
     }
-    for (uInt i=0; i<ncolumn(); ++i) {
+    for (uInt i = 0; i < ncolumn(); ++i) {
       delete itsColumnPtrBlk[i];
     }
 }
@@ -237,12 +237,12 @@ DataManager *Adios2StMan::impl::clone() const
 
 String Adios2StMan::impl::dataManagerType() const { return itsDataManName; }
 
-void Adios2StMan::impl::addRow(uInt aNrRows)
+void Adios2StMan::impl::addRow64(rownr_t aNrRows)
 {
     itsRows += aNrRows;
 }
 
-void Adios2StMan::impl::create(uInt aNrRows)
+void Adios2StMan::impl::create64(rownr_t  aNrRows)
 {
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
@@ -254,7 +254,7 @@ void Adios2StMan::impl::create(uInt aNrRows)
     itsAdiosEngine->BeginStep();
 }
 
-void Adios2StMan::impl::open(uInt aNrRows, AipsIO &ios)
+rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
 {
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
@@ -270,6 +270,7 @@ void Adios2StMan::impl::open(uInt aNrRows, AipsIO &ios)
     ios >> itsStManColumnType;
     ios.getend();
     itsRows = aNrRows;
+    return itsRows;
 }
 
 void Adios2StMan::impl::deleteManager() {}
@@ -356,7 +357,7 @@ DataManagerColumn *Adios2StMan::impl::makeColumnCommon(const String &name,
             break;
         case TpString:
         case TpArrayString:
-            aColumn = new Adios2StManColumnT<std::string>(this, aDataType, name, itsAdiosIO);
+            aColumn = new Adios2StManColumnString(this, aDataType, name, itsAdiosIO);
             break;
         default:
             throw (DataManInvDT (name));
@@ -365,9 +366,9 @@ DataManagerColumn *Adios2StMan::impl::makeColumnCommon(const String &name,
     return aColumn;
 }
 
-uInt Adios2StMan::impl::getNrRows() { return itsRows; }
+rownr_t Adios2StMan::impl::getNrRows() { return itsRows; }
 
-void Adios2StMan::impl::resync(uInt /*aNrRows*/) {}
+rownr_t Adios2StMan::impl::resync64(rownr_t /*aNrRows*/) { return itsRows; }
 
 Bool Adios2StMan::impl::flush(AipsIO &ios, Bool /*doFsync*/)
 {
