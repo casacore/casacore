@@ -142,11 +142,15 @@ void BaseColumnDesc::renameAction (const String&, const String&)
 void BaseColumnDesc::setDefaultDataManager (Bool always)
 {
     // The default data manager for standard types is StandardStMan.
-    // For other types it is the virtual scalar column engine handling
+    // For other types it is the virtual column engine handling
     // that type.
     if (always  ||  dataManType_p.empty()) {
 	if (dtype_p == TpOther) {
+          if (isScalar()) {
 	    dataManType_p = dtypeId_p + "VSCEngine";
+          } else {
+	    dataManType_p = dtypeId_p + "VACEngine";
+          }
 	} else {
 	    dataManType_p = "StandardStMan";
 	}

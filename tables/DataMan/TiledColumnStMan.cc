@@ -55,7 +55,7 @@ TiledColumnStMan::TiledColumnStMan ()
 
 TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
 				    const IPosition& tileShape,
-				    uInt maximumCacheSize)
+				    uInt64 maximumCacheSize)
 : TiledStMan  (hypercolumnName, maximumCacheSize),
   tileShape_p (tileShape)
 {}
@@ -68,7 +68,7 @@ TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
         tileShape_p = IPosition (spec.toArrayInt ("DEFAULTTILESHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
+        setPersMaxCacheSize (spec.asInt64 ("MAXIMUMCACHESIZE"));
     }
 }
 
@@ -95,14 +95,13 @@ String TiledColumnStMan::dataManagerType() const
     return "TiledColumnStMan";
 }
 
-Bool TiledColumnStMan::canAccessColumn (Bool& reask) const
+Bool TiledColumnStMan::canAccessColumn () const
 {
-    reask = False;
     return True;
 }
 
 
-void TiledColumnStMan::create (uInt nrrow)
+void TiledColumnStMan::create64 (rownr_t nrrow)
 {
     // Set up the various things.
     setup(1);
@@ -122,7 +121,7 @@ void TiledColumnStMan::create (uInt nrrow)
     cubeSet_p[0] = makeTSMCube (fileSet_p[0],
 				cubeShape, tileShape_p, emptyRecord);
     // Add the rows for the given number of rows.
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 	    
 
@@ -144,7 +143,7 @@ Bool TiledColumnStMan::flush (AipsIO&, Bool fsync)
     return True;
 }
 
-void TiledColumnStMan::readHeader (uInt tabNrrow, Bool firstTime)
+void TiledColumnStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
@@ -198,7 +197,7 @@ IPosition TiledColumnStMan::defaultTileShape() const
     return tileShape_p;
 }
 
-void TiledColumnStMan::addRow (uInt nrow)
+void TiledColumnStMan::addRow64 (rownr_t nrow)
 {
     cubeSet_p[0]->extend (nrow, emptyRecord, coordColSet_p[nrdim_p - 1]);
     nrrow_p += nrow;
@@ -206,7 +205,7 @@ void TiledColumnStMan::addRow (uInt nrow)
 }
 
 
-TSMCube* TiledColumnStMan::getHypercube (uInt rownr)
+TSMCube* TiledColumnStMan::getHypercube (rownr_t rownr)
 {
     // Check if the row number is correct.
     if (rownr >= nrrow_p) {
@@ -214,7 +213,7 @@ TSMCube* TiledColumnStMan::getHypercube (uInt rownr)
     }
     return cubeSet_p[0];
 }
-TSMCube* TiledColumnStMan::getHypercube (uInt rownr, IPosition& position)
+TSMCube* TiledColumnStMan::getHypercube (rownr_t rownr, IPosition& position)
 {
     // Check if the row number is correct.
     if (rownr >= nrrow_p) {

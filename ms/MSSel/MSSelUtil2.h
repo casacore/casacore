@@ -47,8 +47,8 @@ template <class T> class MSSelUtil2
 
   // reorder data from 4d (corr,chan,ifr,time) to 3d (corr,chan,row) 
   static void reorderData(Array<T>& data, 
-                          const Matrix<Int>& rowIndex,
-                          Int nRow);
+                          const Matrix<Int64>& rowIndex,
+                          Int64 nRow);
 
   // average data (with flags & weights applied) over it's last axis (time or
   // row), return in data (overwritten), dataFlag gives new flags.

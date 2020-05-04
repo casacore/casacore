@@ -94,7 +94,7 @@ public:
     MSState (const String &tableName, TableOption = Table::Old);
     MSState (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSState (SetupNewTable &newTab, uInt nrrow = 0,
+    MSState (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSState (const Table &table);
     MSState (const MSState &other);

@@ -46,8 +46,8 @@ void addRemove()
   Table tab ("tSSMAddRemove_tmp.tab", Table::Update);
   cout << "nrow=" << tab.nrow() << endl;
   tab.addRow (14);
-  Vector<uInt> rows(14);
-  indgen (rows, 28u);
+  Vector<rownr_t> rows(14);
+  indgen (rows, rownr_t(28));
   tab.removeRow (rows);
 }
 

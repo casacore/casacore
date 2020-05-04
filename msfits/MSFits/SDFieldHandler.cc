@@ -219,7 +219,7 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 	    *nameKey_p = name;
 	    *sourceIdKey_p = sourceId;
 	    *timeKey_p = time;
-	    Vector<uInt> rows = index_p->getRowNumbers();
+	    Vector<rownr_t> rows = index_p->getRowNumbers();
 	    uInt i=0;
 	    while (i<rows.nelements() && !found) {
 		uInt thisRow = rows(i);

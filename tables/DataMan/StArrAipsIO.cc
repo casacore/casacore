@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: StArrAipsIO.cc 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #include <casacore/tables/DataMan/StArrAipsIO.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -34,6 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/tables/DataMan/DataManError.h>
+#include <casacore/casa/string.h>                           // for memcpy
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -41,246 +42,94 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 StManColumnArrayAipsIO::StManColumnArrayAipsIO (StManAipsIO* smptr,
 						int dataType)
 : StManColumnAipsIO (smptr, dataType, True),
-  nrelem_p (0)
+  nrelem_p  (0)
 {}
 
 StManColumnArrayAipsIO::~StManColumnArrayAipsIO()
 {
-    uInt nr = stmanPtr_p->nrow();
-    for (uInt i=0; i<nr; i++) {
-	deleteArray (i);
-    }
+  uInt nr = stmanPtr_p->nrow();
+  for (uInt i=0; i<nr; i++) {
+    deleteArray (i);
+  }
 }
-
 
 void StManColumnArrayAipsIO::setShapeColumn (const IPosition& shape)
 {
-    shape_p  = shape;
-    nrelem_p = shape_p.product();
+  shape_p  = shape;
+  nrelem_p = shape.product();
 }
 
 
-void StManColumnArrayAipsIO::addRow (uInt nrnew, uInt nrold)
+void StManColumnArrayAipsIO::addRow (rownr_t nrnew, rownr_t nrold)
 {
-    //# Extend data blocks if needed.
-    StManColumnAipsIO::addRow (nrnew, nrold);
-    //# Allocate the data arrays.
-    void* ptr;
-    for (; nrold<nrnew; nrold++) {
-	ptr = allocData (nrelem_p, False);
-	putArrayPtr (nrold, ptr);
-    }
+  //# Extend data blocks if needed.
+  MSMColumn::addRow (nrnew, nrold);
+  //# Allocate the fixed shape data arrays.
+  void* ptr;
+  for (; nrold<nrnew; nrold++) {
+    ptr = allocData (nrelem_p, False);
+    putArrayPtr (nrold, ptr);
+  }
 }
 
-uInt StManColumnArrayAipsIO::ndim (uInt)
-    { return shape_p.nelements(); }
-
-IPosition StManColumnArrayAipsIO::shape (uInt)
-    { return shape_p; }
-
-
-Bool StManColumnArrayAipsIO::canAccessSlice (Bool& reask) const
+void StManColumnArrayAipsIO::doCreate (rownr_t nrrow)
 {
-    reask = False;
-    return True;
-}
-Bool StManColumnArrayAipsIO::canAccessArrayColumn (Bool& reask) const
-{
-    reask = False;
-    return True;
+  addRow (nrrow, 0);
+  for (uInt i=0; i<nrrow; i++) {
+    initData (getArrayPtr(i), nrelem_p);
+  } 
 }
 
-void StManColumnArrayAipsIO::getArrayfloatV (uInt rownr, Array<float>* arr)
+uInt StManColumnArrayAipsIO::ndim (rownr_t)
+  { return shape_p.nelements(); }
+
+IPosition StManColumnArrayAipsIO::shape (rownr_t)
+  { return shape_p; }
+
+
+void StManColumnArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
+    DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
     Bool deleteIt;
-    float* data = arr->getStorage (deleteIt);
-    objcopy (data, (const float*)(getArrayPtr (rownr)), nrelem_p);
-    arr->putStorage (data, deleteIt);
+    void* data = arr.getVStorage (deleteIt);
+    if (dtype() == TpString) {
+      objcopy (static_cast<String*>(data),
+               static_cast<const String*>(getArrayPtr (rownr)),
+               nrelem_p);
+    } else {
+      memcpy (static_cast<char*>(data),
+              static_cast<const char*>(getArrayPtr (rownr)),
+              elemSize() * nrelem_p);
+    }
+    arr.putVStorage (data, deleteIt);
 }
-void StManColumnArrayAipsIO::putArrayfloatV (uInt rownr,
-					     const Array<float>* arr)
+void StManColumnArrayAipsIO::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
+    DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
     Bool deleteIt;
-    const float* data = arr->getStorage (deleteIt);
-    objcopy ((float*)(getArrayPtr (rownr)), data, nrelem_p);
-    arr->freeStorage (data, deleteIt);
-    stmanPtr_p->setHasPut();
-}
-void StManColumnArrayAipsIO::getSlicefloatV (uInt rownr, const Slicer& ns,
-					     Array<float>* arr)
-{
-    Array<float> tabarr (shape_p, (float*) (getArrayPtr (rownr)), SHARE);
-    IPosition blc, trc, inc;
-    ns.inferShapeFromSource (shape_p, blc, trc, inc);
-    *arr = tabarr(blc, trc, inc);
-}
-void StManColumnArrayAipsIO::putSlicefloatV (uInt rownr, const Slicer& ns,
-					     const Array<float>* arr)
-{
-    Array<float> tabarr (shape_p, (float*) (getArrayPtr (rownr)), SHARE);
-    IPosition blc, trc, inc;
-    ns.inferShapeFromSource (shape_p, blc, trc, inc);
-    tabarr(blc, trc, inc) = *arr;
-    stmanPtr_p->setHasPut();
-}
-
-#define STMANCOLUMNARRAYAIPSIO_GETPUT(T,NM) \
-void StManColumnArrayAipsIO::aips_name2(getArray,NM) (uInt rownr, \
-						      Array<T>* arr) \
-{ \
-    Bool deleteIt; \
-    T* data = arr->getStorage (deleteIt); \
-    objcopy (data, (const T*)(getArrayPtr (rownr)), nrelem_p); \
-    arr->putStorage (data, deleteIt); \
-} \
-void StManColumnArrayAipsIO::aips_name2(putArray,NM) (uInt rownr, \
-						      const Array<T>* arr) \
-{ \
-    Bool deleteIt; \
-    const T* data = arr->getStorage (deleteIt); \
-    objcopy ((T*)(getArrayPtr (rownr)), data, nrelem_p); \
-    arr->freeStorage (data, deleteIt); \
-    stmanPtr_p->setHasPut(); \
-} \
-void StManColumnArrayAipsIO::aips_name2(getSlice,NM) \
-                          (uInt rownr, const Slicer& ns, Array<T>* arr) \
-{ \
-    Array<T> tabarr (shape_p, (T*) (getArrayPtr (rownr)), SHARE); \
-    IPosition blc, trc, inc; \
-    ns.inferShapeFromSource (shape_p, blc, trc, inc); \
-    *arr = tabarr(blc, trc, inc); \
-} \
-void StManColumnArrayAipsIO::aips_name2(putSlice,NM) \
-                          (uInt rownr, const Slicer& ns, const Array<T>* arr) \
-{ \
-    Array<T> tabarr (shape_p, (T*) (getArrayPtr (rownr)), SHARE); \
-    IPosition blc, trc, inc; \
-    ns.inferShapeFromSource (shape_p, blc, trc, inc); \
-    tabarr(blc, trc, inc) = *arr; \
-    stmanPtr_p->setHasPut(); \
-}
-
-STMANCOLUMNARRAYAIPSIO_GETPUT(Bool,BoolV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(uChar,uCharV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(Short,ShortV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(uShort,uShortV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(Int,IntV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(uInt,uIntV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(Int64,Int64V)
-//#//STMANCOLUMNARRAYAIPSIO_GETPUT(float,floatV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(double,doubleV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(Complex,ComplexV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(DComplex,DComplexV)
-STMANCOLUMNARRAYAIPSIO_GETPUT(String,StringV)
-
-
-void StManColumnArrayAipsIO::getArrayColumnfloatV (Array<float>* arr)
-{
-    uInt nrmax = arr->shape()(arr->ndim()-1);
-    Bool deleteItTarget;
-    float* target = arr->getStorage (deleteItTarget);
-    uInt nr;
-    void* ext;
-    uInt extnr = 0;
-    while ((nr = nextExt (ext, extnr, nrmax))  >  0) {
-	const float** dpa = (const float**)ext;
-	for (uInt i=0; i<nr; i++) {
-	    objcopy (target, *dpa, nrelem_p);
-	    target += nrelem_p;
-	    dpa++;
-	}
+    const void* data = arr.getVStorage (deleteIt);
+    if (dtype() == TpString) {
+      objcopy (static_cast<String*>(getArrayPtr (rownr)),
+               static_cast<const String*>(data),
+               nrelem_p);
+    } else {
+      memcpy (static_cast<char*>(getArrayPtr (rownr)),
+              static_cast<const char*>(data),
+              elemSize() * nrelem_p);
     }
-    arr->putStorage (target, deleteItTarget);
-}
-void StManColumnArrayAipsIO::putArrayColumnfloatV (const Array<float>* arr)
-{
-    uInt nrmax = arr->shape()(arr->ndim()-1);
-    Bool deleteItTarget;
-    const float* target = arr->getStorage (deleteItTarget);
-    uInt nr;
-    void* ext;
-    uInt extnr = 0;
-    while ((nr = nextExt (ext, extnr, nrmax))  >  0) {
-	float** dpa = (float**)ext;
-	for (uInt i=0; i<nr; i++) {
-	    objcopy (*dpa, target, nrelem_p);
-	    target += nrelem_p;
-	    dpa++;
-	}
-    }
-    arr->freeStorage (target, deleteItTarget);
+    arr.freeVStorage (data, deleteIt);
     stmanPtr_p->setHasPut();
 }
-#define STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(T,NM) \
-void StManColumnArrayAipsIO::aips_name2(getArrayColumn,NM) \
-						      (Array<T>* arr) \
-{ \
-    uInt nrmax = arr->shape()(arr->ndim()-1); \
-    Bool deleteItTarget; \
-    T* target = arr->getStorage (deleteItTarget); \
-    uInt nr; \
-    void* ext; \
-    uInt extnr = 0; \
-    while ((nr = nextExt (ext, extnr, nrmax))  >  0) { \
-	const T** dpa = (const T**)ext; \
-	for (uInt i=0; i<nr; i++) { \
-	    objcopy (target, *dpa, nrelem_p); \
-	    target += nrelem_p; \
-	    dpa++; \
-	} \
-    } \
-    arr->putStorage (target, deleteItTarget); \
-} \
-void StManColumnArrayAipsIO::aips_name2(putArrayColumn,NM) \
-						      (const Array<T>* arr) \
-{ \
-    uInt nrmax = arr->shape()(arr->ndim()-1); \
-    Bool deleteItTarget; \
-    const T* target = arr->getStorage (deleteItTarget); \
-    uInt nr; \
-    void* ext; \
-    uInt extnr = 0; \
-    while ((nr = nextExt (ext, extnr, nrmax))  >  0) { \
-	T** dpa = (T**)ext; \
-	for (uInt i=0; i<nr; i++) { \
-	    objcopy (*dpa, target, nrelem_p); \
-	    target += nrelem_p; \
-	    dpa++; \
-	} \
-    } \
-    arr->freeStorage (target, deleteItTarget); \
-    stmanPtr_p->setHasPut(); \
-}
-
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(Bool,BoolV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(uChar,uCharV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(Short,ShortV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(uShort,uShortV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(Int,IntV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(uInt,uIntV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(Int64,Int64V)
-//#//STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(float,floatV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(double,doubleV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(Complex,ComplexV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(DComplex,DComplexV)
-STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(String,StringV)
 
 
-
-void StManColumnArrayAipsIO::remove (uInt rownr)
+void StManColumnArrayAipsIO::remove (rownr_t rownr)
 {
-    deleteArray (rownr);
-    StManColumnAipsIO::remove (rownr);
+  deleteArray (rownr);
+  MSMColumn::remove (rownr);
 }
 
 
-Bool StManColumnArrayAipsIO::ok() const
-{
-    return StManColumnAipsIO::ok();
-}
-
-
-void StManColumnArrayAipsIO::deleteArray (uInt rownr)
+void StManColumnArrayAipsIO::deleteArray (rownr_t rownr)
 {
     void* datap = getArrayPtr (rownr);
     deleteData (datap, False);
@@ -288,7 +137,7 @@ void StManColumnArrayAipsIO::deleteArray (uInt rownr)
 
 
 //# Write all data into AipsIO.
-void StManColumnArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
+void StManColumnArrayAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 {
     // Version 2 does not write dtype, shape and nelem anymore.
     // They are automatically set on reconstruction of the storage manager.
@@ -298,14 +147,14 @@ void StManColumnArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
 }
 
 //# Read all data from AipsIO.
-void StManColumnArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
+void StManColumnArrayAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
     uInt version = ios.getstart ("StManColumnArrayAipsIO");
     if (version == 1) {
 	IPosition shape;
 	uInt n;
 	ios >> n;            // data type
-	ios >> shape_p;
+	ios >> shape;
 	ios >> n;            // nelem
     }
     StManColumnAipsIO::getFile (nrval, ios);
@@ -317,7 +166,7 @@ void StManColumnArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
     { \
 	T** dpa = (T**)dp; \
 	while (nrval--) { \
-	    ios.put (nrelem_p, *dpa, False); \
+          ios.put (nrelem_p, *dpa, False);   \
 	    dpa++; \
 	} \
     }
@@ -325,7 +174,7 @@ void StManColumnArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
 void StManColumnArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 {
     ios << nrval * nrelem_p;
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
 	STMANCOLUMNARRAYAIPSIO_PUTDATA(Bool)
 	break;
@@ -362,6 +211,8 @@ void StManColumnArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
     case TpString:
 	STMANCOLUMNARRAYAIPSIO_PUTDATA(String)
 	break;
+    default:
+      throw DataManInvDT("StArrAipsIO::putData");
     }
 }
 
@@ -372,12 +223,12 @@ void StManColumnArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 	T** dparr = (T**)dp + inx; \
         T* dpd; \
 	while (nrval--) { \
-	    dpd = (T*) allocData (nrelem_p, False); \
+            dpd = (T*) allocData (nrelem_p, False);    \
 	    *dparr++ = dpd; \
             if (version == 1) { \
 	        ios >> nr; \
             } \
-	    ios.get (nrelem_p, dpd); \
+	    ios.get (nrelem_p, dpd);            \
 	} \
     }
 
@@ -388,7 +239,7 @@ void StManColumnArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
     if (version > 1) {
 	ios >> nr;
     }
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
 	STMANCOLUMNARRAYAIPSIO_GETDATA(Bool)
 	break;
@@ -425,6 +276,8 @@ void StManColumnArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
     case TpString:
 	STMANCOLUMNARRAYAIPSIO_GETDATA(String)
 	break;
+    default:
+      throw DataManInvDT("StArrAipsIO::getData");
     }
 }
 

@@ -62,14 +62,14 @@ MSWeather::MSWeather(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSWeather"));
 }
 
-MSWeather::MSWeather(SetupNewTable &newTab, uInt nrrow,
+MSWeather::MSWeather(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSWeatherEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSWeather(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSWeather(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSWeather"));
 }
 

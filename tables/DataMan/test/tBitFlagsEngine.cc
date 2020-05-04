@@ -59,14 +59,6 @@
 // Build a description.
 void createTable()
 {
-  {
-    // First ensure it can do the things it should.
-    BitFlagsEngine<Short> engine("", "");
-    Bool reask;
-    AlwaysAssertExit (engine.canAccessArrayColumn(reask));
-    AlwaysAssertExit (engine.canAccessSlice(reask));
-    AlwaysAssertExit (engine.canAccessColumnSlice(reask));
-  }
   // First register the virtual column engine.
   BitFlagsEngine<Short>::registerClass();
   BitFlagsEngine<Int>::registerClass();

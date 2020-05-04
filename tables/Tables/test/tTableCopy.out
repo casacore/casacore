@@ -90,7 +90,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -140,7 +140,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -190,7 +190,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
       }
       SEQNR: uInt 3
@@ -207,7 +207,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -285,7 +285,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [1]
@@ -334,7 +334,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [1]
@@ -383,7 +383,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
       }
       SEQNR: uInt 3
@@ -399,7 +399,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [1]
@@ -476,7 +476,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -503,7 +503,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -530,7 +530,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -557,7 +557,7 @@ testCloneColumn ...
       MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]

@@ -51,6 +51,12 @@ MArray<Bool> TableExprNodeArrayConstBool::getArrayBool (const TableExprId&)
 
 
 TableExprNodeArrayConstInt::TableExprNodeArrayConstInt
+                                                 (const Array<uInt64>& val)
+: TableExprNodeArray (NTInt, OtLiteral, val.shape())
+{
+    value_p.fill (val);
+}
+TableExprNodeArrayConstInt::TableExprNodeArrayConstInt
                                                  (const Array<Int64>& val)
 : TableExprNodeArray (NTInt, OtLiteral, val.shape()),
   value_p            (val)
@@ -81,6 +87,12 @@ TableExprNodeArrayConstInt::TableExprNodeArrayConstInt
 }
 TableExprNodeArrayConstInt::TableExprNodeArrayConstInt
                                                  (const Array<uChar>& val)
+: TableExprNodeArray (NTInt, OtLiteral, val.shape())
+{
+    value_p.fill (val);
+}
+TableExprNodeArrayConstInt::TableExprNodeArrayConstInt
+                                                 (const MArray<uInt64>& val)
 : TableExprNodeArray (NTInt, OtLiteral, val.shape())
 {
     value_p.fill (val);

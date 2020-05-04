@@ -199,19 +199,19 @@ public:
   // The method ephemPath returns the absolute path to the ephemeris table connected to 
   // the field table row, an empty string if there is none.  
   // <group>
-  MDirection delayDirMeas(Int row, Double time = 0) const;
-  MDirection phaseDirMeas(Int row, Double time = 0) const;
-  MDirection referenceDirMeas(Int row, Double time = 0) const;
-  MDirection ephemerisDirMeas(Int row, Double time = 0) const;
-  MRadialVelocity radVelMeas(Int row, Double time = 0) const;
-  Quantity rho(Int row, Double time = 0) const;
-  Bool needInterTime(Int row) const;
-  String ephemPath(Int row) const;
+  MDirection delayDirMeas(rownr_t row, Double time = 0) const;
+  MDirection phaseDirMeas(rownr_t row, Double time = 0) const;
+  MDirection referenceDirMeas(rownr_t row, Double time = 0) const;
+  MDirection ephemerisDirMeas(rownr_t row, Double time = 0) const;
+  MRadialVelocity radVelMeas(rownr_t row, Double time = 0) const;
+  Quantity rho(rownr_t row, Double time = 0) const;
+  Bool needInterTime(rownr_t row) const;
+  String ephemPath(rownr_t row) const;
 
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return name_p.nrow();}
+  rownr_t nrow() const {return name_p.nrow();}
 
   // returns the last row that has a reference direction, phase direction and
   // delay direction that match, to within the specified angular separation,
@@ -223,12 +223,12 @@ public:
   // see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int matchDirection(const MDirection& referenceDirection, 
-		     const MDirection& delayDirection,
-		     const MDirection& phaseDirection,
-		     const Quantum<Double>& maxSeparation, 
-		     Int tryRow=-1,
-		     Double time=0);
+  Int64 matchDirection(const MDirection& referenceDirection, 
+                       const MDirection& delayDirection,
+                       const MDirection& phaseDirection,
+                       const Quantum<Double>& maxSeparation, 
+                       Int64 tryRow=-1,
+                       Double time=0);
 
   // Update the MeasComets objects belonging to this FIELD table.
   // Needed when the entries in the EPHEMERIS_ID column have changed.
@@ -257,18 +257,18 @@ private:
   //# argument is a temporary that is passed in to prevent it from being
   //# created inside these small functions.
   // <group>
-  Bool matchReferenceDir(uInt row, const MVDirection& dirVal,
+  Bool matchReferenceDir(rownr_t row, const MVDirection& dirVal,
 			 const Double& sepInRad, 
 			 MVDirection& mvdir, Double time=0) const;
-  Bool matchDelayDir(uInt row, const MVDirection& dirVal, 
+  Bool matchDelayDir(rownr_t row, const MVDirection& dirVal, 
 		     const Double& sepInRad,
 		     MVDirection& mvdir, Double time=0) const;
-  Bool matchPhaseDir(uInt row, const MVDirection& dirVal,
+  Bool matchPhaseDir(rownr_t row, const MVDirection& dirVal,
 		     const Double& sepInRad,
 		     MVDirection& mvdir, Double time=0) const;
   // </group>
 
-  Int measCometIndex(int row) const;
+  Int measCometIndex(rownr_t row) const;
 
   // Extract the direction Measure from the corresponding ephemeris
   // using the nominal position as an offset.

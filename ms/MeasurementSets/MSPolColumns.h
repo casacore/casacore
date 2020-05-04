@@ -98,7 +98,7 @@ public:
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return corrProduct_p.nrow();}
+  rownr_t nrow() const {return corrProduct_p.nrow();}
 
   // returns the last row that contains the an entry in the CORR_TYPE column
   // that matches, in length and value, the supplied corrType Vector.  Returns
@@ -107,7 +107,7 @@ public:
   // others are tested. Setting tryRow to a positive value greater than the
   // table length will throw an exception (AipsError), when compiled in debug
   // mode.
-  Int match(const Vector<Stokes::StokesTypes>& polType, Int tryRow=-1);
+  Int64 match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -125,8 +125,8 @@ private:
 
   //# Functions which check the supplied values against the relevant column and
   //# the specified row.
-  Bool matchCorrType(uInt row, const Vector<Int>& polType) const;
-  Bool matchCorrProduct(uInt row, const Matrix<Int>& polProduct) const;
+  Bool matchCorrType(rownr_t row, const Vector<Int>& polType) const;
+  Bool matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const;
 
   //# required columns
   ArrayColumn<Int> corrProduct_p;

@@ -68,7 +68,7 @@ MSTable<MSEnum>::MSTable(const String& tableName,
 {}
 
 template <class MSEnum> 
-MSTable<MSEnum>::MSTable(SetupNewTable &newTab, uInt nrrow,
+MSTable<MSEnum>::MSTable(SetupNewTable &newTab, rownr_t nrrow,
                          Bool initialize)
     : Table(MSTableImpl::setupCompression(newTab),
 	    nrrow, initialize)
@@ -77,7 +77,7 @@ MSTable<MSEnum>::MSTable(SetupNewTable &newTab, uInt nrrow,
 template <class MSEnum> 
 MSTable<MSEnum>::MSTable(SetupNewTable &newTab,
                          const TableLock& lockOptions,
-                         uInt nrrow,  Bool initialize)
+                         rownr_t nrrow,  Bool initialize)
     : Table(MSTableImpl::setupCompression(newTab),
 	    lockOptions, nrrow, initialize)
 {}
@@ -85,7 +85,7 @@ MSTable<MSEnum>::MSTable(SetupNewTable &newTab,
 #ifdef HAVE_MPI
 template <class MSEnum>
 MSTable<MSEnum>::MSTable(MPI_Comm comm,
-				  SetupNewTable &newTab, uInt nrrow,
+				  SetupNewTable &newTab, rownr_t nrrow,
 				  Bool initialize)
     : Table(comm, MSTableImpl::setupCompression(newTab),
 	    nrrow, initialize)
@@ -95,7 +95,7 @@ template <class MSEnum>
 MSTable<MSEnum>::MSTable(MPI_Comm comm,
 				  SetupNewTable &newTab,
 				  const TableLock& lockOptions,
-				  uInt nrrow,  Bool initialize)
+				  rownr_t nrrow,  Bool initialize)
     : Table(comm, MSTableImpl::setupCompression(newTab),
 	    lockOptions, nrrow, initialize)
 {}

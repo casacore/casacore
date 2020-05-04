@@ -70,7 +70,7 @@ public:
     // Go to the indicated row in the MAIN table of the MS and point
     // at all of the appropriate rows in each of the subtables as
     // a result of going to this row.
-    void gotoRow(uInt which);
+    void gotoRow(rownr_t which);
 
     const Vector<String> &tables() const {return itsTableNames;}
 
@@ -81,7 +81,7 @@ public:
 
     // Return the current row number in the named table.  This returns
     // -1 if that table has no row as a result of the most recent gotoRow.
-    Int rowNumber(const String &name) const;
+    Int64 rowNumber(const String &name) const;
 
     // Return a reference to the MS
     const MeasurementSet &ms() const {return itsMS;}
@@ -128,7 +128,7 @@ private:
 
     // What row number for each table is the most recent gotoRow call.  Set to
     // -1 if there was no matching row as a result of that call.
-    Block<Int> itsRowNumbers;
+    Block<Int64> itsRowNumbers;
 
     // this empty record is returned by tableRow when the name argument does not exist
     Record emptyRecord;

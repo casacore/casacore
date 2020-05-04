@@ -330,8 +330,8 @@ Bool sort2 (uInt nr)
     bl += vec2;
     cout << "  fill    ";
     timer.show();
-    Vector<uInt> inx;
-    GenSortIndirect<Int>::sort (inx, bl);
+    Vector<uInt64> inx;
+    GenSortIndirect<Int,uInt64>::sort (inx, bl);
     cout << "indsort   ";
     timer.show();
   }

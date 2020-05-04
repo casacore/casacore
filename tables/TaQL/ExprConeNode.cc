@@ -68,7 +68,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       const double ra  = src[0];
       const double dec = src[1];
       Bool res = False;
-      for (uInt i=0; i<coneArr.nelements(); i+=3) {
+      for (size_t i=0; i<coneArr.nelements(); i+=3) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         const double radius  = cone[i+2];
@@ -139,7 +139,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       const double ra  = src[0];
       const double dec = src[1];
       Bool res = False;
-      for (uInt i=0; i<coneArr.nelements(); i+=2) {
+      for (size_t i=0; i<coneArr.nelements(); i+=2) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         double dist = (sin(decCone) * sin(dec) +
@@ -213,8 +213,8 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       const double* cone = coneArr.getStorage (deleteCone);
       const double ra  = src[0];
       const double dec = src[1];
-      Int res = -1;
-      for (uInt i=0; i<coneArr.nelements(); i+=3) {
+      Int64 res = -1;
+      for (size_t i=0; i<coneArr.nelements(); i+=3) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         const double radius  = cone[i+2];
@@ -260,8 +260,8 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       }
       const double ra  = src[0];
       const double dec = src[1];
-      Int res = -1;
-      for (uInt i=0; i<coneArr.nelements(); i+=2) {
+      Int64 res = -1;
+      for (size_t i=0; i<coneArr.nelements(); i+=2) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         double dist = (sin(decCone) * sin(dec) +
@@ -350,7 +350,7 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
 
 Int TableExprConeNode::findNelem (const TENShPtr& node)
 {
-  Int nelem = -1;
+  Int64 nelem = -1;
   if (node->valueType() == VTSet) {
     const TableExprNodeSet* set =
       dynamic_cast<const TableExprNodeSet*>(node.get());
@@ -407,11 +407,11 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       Bool* res = resArr.data();
-      for (uInt j=0; j<srcArr.nelements(); j+=2) {
+      for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double sindec = sin(src[j+1]);
         const double cosdec = cos(src[j+1]);
-        for (uInt i=0; i<coneArr.nelements(); i+=3) {
+        for (size_t i=0; i<coneArr.nelements(); i+=3) {
           const double raCone  = cone[i];
           const double decCone = cone[i+1];
           const double radius  = cone[i+2];
@@ -458,10 +458,10 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
       }
       Array<Bool> resArr(IPosition(3,nrrad,ncone,nsrc));
       Bool* res = resArr.data();
-      for (uInt j=0; j<srcArr.nelements(); j+=2) {
+      for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double dec = src[j+1];
-        for (uInt i=0; i<coneArr.nelements(); i+=2) {
+        for (size_t i=0; i<coneArr.nelements(); i+=2) {
           const double raCone  = cone[i];
           const double decCone = cone[i+1];
           double dist = (sin(decCone) * sin(dec) +
@@ -515,11 +515,11 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       Int64* res = resArr.data();
-      for (uInt j=0; j<srcArr.nelements(); j+=2) {
+      for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double dec = src[j+1];
         *res = -1;
-        for (uInt i=0; i<coneArr.nelements(); i+=3) {
+        for (size_t i=0; i<coneArr.nelements(); i+=3) {
           const double raCone  = cone[i];
           const double decCone = cone[i+1];
           const double radius  = cone[i+2];
@@ -573,11 +573,11 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       const double* rad = radArr.getStorage (deleteRad);
       Array<Int64> resArr(shp);
       Int64* res = resArr.data();
-      for (uInt j=0; j<srcArr.nelements(); j+=2) {
+      for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double dec = src[j+1];
         *res = -1;
-        for (uInt i=0; i<coneArr.nelements(); i+=2) {
+        for (size_t i=0; i<coneArr.nelements(); i+=2) {
           const double raCone  = cone[i];
           const double decCone = cone[i+1];
           double dist = (sin(decCone) * sin(dec) +

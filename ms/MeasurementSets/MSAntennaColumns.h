@@ -145,7 +145,7 @@ public:
   void setOffsetRef(MPosition::Types ref);
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return dishDiameter_p.nrow();}
+  rownr_t nrow() const {return dishDiameter_p.nrow();}
 
   // returns the last row that contains an antenna at the specified position,
   // to within the specified tolerance. The reference frame of the supplied
@@ -154,25 +154,25 @@ public:
   // Table. The tolerance is the maximum allowed distance between the two
   // positions and the supplied Quantum must have dimensions of length. This is
   // checked when compiled in debug mode and an AipsError exception is thrown
-  // if the dimensions are wrong. Returns -1 if no match could be found. Flaged
+  // if the dimensions are wrong. Returns -1 if no match could be found. Flagged
   // rows can never match. If tryRow is non-negative, then that row is tested
   // to see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int matchAntenna(const MPosition& antennaPos,
-		   const Quantum<Double>& tolerance, Int tryRow=-1);
+  Int64 matchAntenna(const MPosition& antennaPos,
+                     const Quantum<Double>& tolerance, Int64 tryRow=-1);
 
   // Same as the previous function except that the antenna name must also
   // match.
-  Int matchAntenna(const String& antName, const MPosition& antennaPos,
-		   const Quantum<Double>& tolerance, Int tryRow=-1);
+  Int64 matchAntenna(const String& antName, const MPosition& antennaPos,
+                     const Quantum<Double>& tolerance, Int64 tryRow=-1);
 
   // Same as the previous function except that the station name must also
   // match.
-  Int matchAntennaAndStation(const String& antName, 
-			     const String& stationName, // ignored when empty 
-			     const MPosition& antennaPos,
-			     const Quantum<Double>& tolerance, Int tryRow=-1);
+  Int64 matchAntennaAndStation(const String& antName, 
+                               const String& stationName, // ignored when empty 
+                               const MPosition& antennaPos,
+                               const Quantum<Double>& tolerance, Int64 tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -193,9 +193,9 @@ private:
   
   //# Functions which check the supplied values against the relevant column and
   //# the specified row.
-  Bool matchName(uInt row, const String& antName) const;
-  Bool matchStation(uInt row, const String& stationName) const;
-  Bool matchPosition(uInt row, const Vector<Double>& antPosInM,	
+  Bool matchName(rownr_t row, const String& antName) const;
+  Bool matchStation(rownr_t row, const String& stationName) const;
+  Bool matchPosition(rownr_t row, const Vector<Double>& antPosInM,	
 		     const Double tolInM) const;
 
   //# required columns

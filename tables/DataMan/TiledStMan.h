@@ -160,11 +160,11 @@ public:
     // <group>
     static IPosition makeTileShape (const IPosition& hypercubeShape,
 				    Double tolerance = 0.5,
-				    uInt maxNrPixelsPerTile = 32768);
+				    uInt64 maxNrPixelsPerTile = 4*1024*1024);
     static IPosition makeTileShape (const IPosition& hypercubeShape,
 				    const Vector<double>& weight,
 				    const Vector<double>& tolerance,
-				    uInt maxNrPixelsPerTile = 32768);
+				    uInt64 maxNrPixelsPerTile = 4*1024*1024);
     // </group>
 
     // Set the maximum cache size (in MiB) in a non-persistent way.
@@ -175,16 +175,16 @@ public:
 
     // Get the current cache size (in buckets) for the hypercube in
     // the given row.
-    uInt cacheSize (uInt rownr) const;
+    uInt cacheSize (rownr_t rownr) const;
 
     // Get the hypercube shape of the data in the given row.
-    const IPosition& hypercubeShape (uInt rownr) const;
+    const IPosition& hypercubeShape (rownr_t rownr) const;
 
     // Get the tile shape of the data in the given row.
-    const IPosition& tileShape (uInt rownr) const;
+    const IPosition& tileShape (rownr_t rownr) const;
 
     // Get the bucket size (in bytes) of the hypercube in the given row.
-    uInt bucketSize (uInt rownr) const;
+    uInt64 bucketSize (rownr_t rownr) const;
 
     // Can the tiled storage manager handle changing array shapes?
     // The default is no (but TiledCellStMan can).
@@ -194,8 +194,7 @@ public:
     // TiledColumnStMan can always do that.
     // The others might be able to do it (for this time).
     // The default implementation returns True if there is only 1 hypercube.
-    // reask is set to True (because next time things might be different).
-    virtual Bool canAccessColumn (Bool& reask) const;
+    virtual Bool canAccessColumn() const;
 
     // The data manager supports use of MultiFile.
     virtual Bool hasMultiFileSupport() const;
@@ -222,14 +221,14 @@ public:
     // new size is smaller.
     // <br>A flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
-    uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
+    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
 			const IPosition& windowStart,
 			const IPosition& windowLength,
 			const IPosition& axisPath) const;
 
     // Set the cache size using the <src>calcCacheSize</src>
     // function mentioned above.
-    void setCacheSize (uInt rownr, const IPosition& sliceShape,
+    void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
 		       const IPosition& windowStart,
 		       const IPosition& windowLength,
 		       const IPosition& axisPath,
@@ -242,14 +241,14 @@ public:
     // new size is smaller.
     // <br>A flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
-    void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller);
+    void setCacheSize (rownr_t rownr, uInt nbuckets, Bool forceSmaller);
 
     // Sets the cache size using the hypercube instead of the row number.
     // Useful for iterating over all hypercubes.
     void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller);
 
     // Determine if the user set the cache size (using setCacheSize).
-    Bool userSetCache (uInt rownr) const;
+    Bool userSetCache (rownr_t rownr) const;
 
     // Empty the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them
@@ -262,15 +261,15 @@ public:
 
     // Get the length of the data for the given number of pixels.
     // This can be used to calculate the length of a tile.
-    uInt getLengthOffset (uInt nrPixels, Block<uInt>& dataOffset,
-			  Block<uInt>& localOffset,
-			  uInt& localTileLength) const;
+    uInt64 getLengthOffset (uInt64 nrPixels, Block<uInt>& dataOffset,
+                            Block<uInt>& localOffset,
+                            uInt& localTileLength) const;
 
     // Get the number of coordinate vectors.
     uInt nrCoordVector() const;
 
     // Get the nr of rows in this storage manager.
-    uInt nrow() const;
+    rownr_t nrow() const;
 
     // Does the storage manager allow to add rows? (yes)
     Bool canAddRow() const;
@@ -294,13 +293,13 @@ public:
     
     // Get the hypercube in which the given row is stored.
     // <group>
-    const TSMCube* getHypercube (uInt rownr) const;
-    virtual TSMCube* getHypercube (uInt rownr) = 0;
+    const TSMCube* getHypercube (rownr_t rownr) const;
+    virtual TSMCube* getHypercube (rownr_t rownr) = 0;
     // </group>
 
     // Get the hypercube in which the given row is stored.
     // It also returns the position of the row in that hypercube.
-    virtual TSMCube* getHypercube (uInt rownr, IPosition& position) = 0;
+    virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position) = 0;
 
     // Make the correct TSMCube type (depending on tsmOption()).
     TSMCube* makeTSMCube (TSMFile* file, const IPosition& cubeShape,
@@ -321,10 +320,10 @@ public:
     TSMFile* getFile (uInt sequenceNumber);
 
     // Open the storage manager for an existing table.
-    virtual void open (uInt nrrow, AipsIO&);
+    virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
-    virtual void resync (uInt nrrow);
+    virtual rownr_t resync64 (rownr_t nrrow);
 
     // Reopen all files used in this storage manager for read/write access.
     virtual void reopenRW();
@@ -358,7 +357,7 @@ public:
 
     // Set the shape and tile shape of a hypercube.
     // By default it throws an "impossible" exception.
-    virtual void setShape (uInt rownr, TSMCube* hypercube,
+    virtual void setShape (rownr_t rownr, TSMCube* hypercube,
 			   const IPosition& shape,
 			   const IPosition& tileShape);
 
@@ -439,7 +438,7 @@ protected:
     
     // Determine how many rows need to be added for an extension
     // (in the last dimension) of a hypercube with the given shape.
-    uInt addedNrrow (const IPosition& shape, uInt incrInLastDim) const;
+    rownr_t addedNrrow (const IPosition& shape, uInt incrInLastDim) const;
 
     // Flush the caches of all hypercubes.
     // If data have put and fsync is set, fsync all files.
@@ -447,7 +446,7 @@ protected:
 
     // Let a derived class read the header info.
     // This is used by the open and resync function.
-    virtual void readHeader (uInt nrrow, Bool firstTime) = 0;
+    virtual void readHeader (rownr_t nrrow, Bool firstTime) = 0;
 
     // Create the TSM header file.
     // It creates an AipsIO object for it.
@@ -459,12 +458,12 @@ protected:
 
     // Write the data into the header file.
     // The given number of TSMCube objects have to be written.
-    void headerFilePut (AipsIO& headerFile, uInt nrCube);
+    void headerFilePut (AipsIO& headerFile, uInt64 nrCube);
 
     // Read the data from the header file.
     // When done for the first time, setup() is called to initialize
     // the various variables (using the extraNdim variable).
-    void headerFileGet (AipsIO& headerFile, uInt tabNrrow, Bool firstTime,
+    void headerFileGet (AipsIO& headerFile, rownr_t tabNrrow, Bool firstTime,
 			Int extraNdim);
 
     // Close the header file.
@@ -490,9 +489,9 @@ protected:
 
     //# Declare all data members.
     // The name of the hypercolumn.
-    String hypercolumnName_p;
+    String  hypercolumnName_p;
     // The number of rows in the columns.
-    uInt  nrrow_p;
+    rownr_t nrrow_p;
     // The assembly of all columns.
     PtrBlock<TSMColumn*>  colSet_p;
     // The assembly of all data columns.
@@ -536,7 +535,7 @@ inline uInt TiledStMan::maximumCacheSize() const
 inline uInt TiledStMan::nrCoordVector() const
     { return nrCoordVector_p; }
 
-inline uInt TiledStMan::nrow() const
+inline rownr_t TiledStMan::nrow() const
     { return nrrow_p; }
 
 inline uInt TiledStMan::nhypercubes() const
@@ -548,7 +547,7 @@ inline void TiledStMan::setDataChanged()
 inline const TSMCube* TiledStMan::getTSMCube (uInt hypercube) const
     { return const_cast<TiledStMan*>(this)->getTSMCube (hypercube); }
 
-inline const TSMCube* TiledStMan::getHypercube (uInt rownr) const
+inline const TSMCube* TiledStMan::getHypercube (rownr_t rownr) const
     { return const_cast<TiledStMan*>(this)->getHypercube (rownr); }
 
 inline void TiledStMan::setPersMaxCacheSize (uInt nMiB)

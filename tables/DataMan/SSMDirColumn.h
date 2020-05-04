@@ -91,44 +91,18 @@ public:
   virtual void setMaxLength (uInt maxLength);
 
   // Get an array value in the given row.
-  // <group>
-  virtual void getArrayBoolV     (uInt rownr, Array<Bool>* dataPtr);
-  virtual void getArrayuCharV    (uInt rownr, Array<uChar>* dataPtr);
-  virtual void getArrayShortV    (uInt rownr, Array<Short>* dataPtr);
-  virtual void getArrayuShortV   (uInt rownr, Array<uShort>* dataPtr);
-  virtual void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
-  virtual void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
-  virtual void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
-  virtual void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
-  virtual void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
-  virtual void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
-  virtual void getArrayDComplexV (uInt rownr, Array<DComplex>* dataPtr);
-  virtual void getArrayStringV   (uInt rownr, Array<String>* dataPtr);
-  // </group>
+  virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
   
   // Put an array value in the given row.
-  // <group>
-  virtual void putArrayBoolV     (uInt rownr, const Array<Bool>* dataPtr);
-  virtual void putArrayuCharV    (uInt rownr, const Array<uChar>* dataPtr);
-  virtual void putArrayShortV    (uInt rownr, const Array<Short>* dataPtr);
-  virtual void putArrayuShortV   (uInt rownr, const Array<uShort>* dataPtr);
-  virtual void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
-  virtual void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
-  virtual void putArrayInt64V    (uInt rownr, const Array<Int64>* dataPtr);
-  virtual void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
-  virtual void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
-  virtual void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);
-  virtual void putArrayDComplexV (uInt rownr, const Array<DComplex>* dataPtr);
-  virtual void putArrayStringV   (uInt rownr, const Array<String>* dataPtr);
-  // </group>
+  virtual void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
   // Remove the given row from the data bucket and possibly string bucket.
-  virtual void deleteRow(uInt aRowNr);
+  virtual void deleteRow (rownr_t aRowNr);
 
 
 protected:
   // Read the array data for the given row into the data buffer.
-  void getValue (uInt aRowNr, void* data);
+  void getValue (rownr_t aRowNr, void* data);
   
 private:
   // Forbid copy constructor.

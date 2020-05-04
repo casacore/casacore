@@ -25,9 +25,6 @@
 //#
 //# $Id$
 
-#ifndef TABLES_ARRCOLDATA_TCC
-#define TABLES_ARRCOLDATA_TCC
-
 #include <casacore/tables/Tables/ArrColData.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ColumnSet.h>
@@ -44,9 +41,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T>
-ArrayColumnData<T>::ArrayColumnData (const ArrayColumnDesc<T>* cd,
-				     ColumnSet* csp)
+ArrayColumnData::ArrayColumnData (const ArrayColumnDescBase* cd,
+                                  ColumnSet* csp)
 : PlainColumn  (cd, csp),
   arrDescPtr_p (cd),
   shapeColDef_p(False),
@@ -55,17 +51,17 @@ ArrayColumnData<T>::ArrayColumnData (const ArrayColumnDesc<T>* cd,
     if (cd->shape().nelements() > 0) {
 	setShapeColumn (cd->shape());
     }
+    checkValueLength_p = (columnDesc().dataType() == TpString  &&
+                          columnDesc().maxLength() > 0);
 }
 
-template<class T>
-ArrayColumnData<T>::~ArrayColumnData()
+ArrayColumnData::~ArrayColumnData()
 {}
 
 
 //# Create the data manager column for this column.
 //# The shape of a fixed shape array has to be defined in advance.
-template<class T>
-void ArrayColumnData<T>::createDataManagerColumn()
+void ArrayColumnData::createDataManagerColumn()
 {
     //# Create the data manager column (direct or indirect).
     if ((colDescPtr_p->options() & ColumnDesc::Direct)
@@ -98,22 +94,18 @@ void ArrayColumnData<T>::createDataManagerColumn()
 
 //# Initialize the array in the given rows.
 //# This removes an array if present.
-template<class T>
-void ArrayColumnData<T>::initialize (uInt, uInt)
+void ArrayColumnData::initialize (rownr_t, rownr_t)
 {}
 
-template<class T>
-uInt ArrayColumnData<T>::ndimColumn() const
+uInt ArrayColumnData::ndimColumn() const
 {
     Int ndim = columnDesc().ndim();
     return (ndim > 0  ?  ndim : shapeCol_p.nelements());
 }
-template<class T>
-IPosition ArrayColumnData<T>::shapeColumn() const
+IPosition ArrayColumnData::shapeColumn() const
     { return shapeCol_p; }
 
-template<class T>
-void ArrayColumnData<T>::setShapeColumn (const IPosition& shp)
+void ArrayColumnData::setShapeColumn (const IPosition& shp)
 {
     if (shapeColDef_p) {
 	if (shp != shapeCol_p) {
@@ -133,39 +125,33 @@ void ArrayColumnData<T>::setShapeColumn (const IPosition& shp)
     shapeColDef_p = True;
 }
 
-template<class T>
-Bool ArrayColumnData<T>::isDefined (uInt rownr) const
+Bool ArrayColumnData::isDefined (rownr_t rownr) const
 {
     return dataColPtr_p->isShapeDefined(rownr);
 }
-template<class T>
-uInt ArrayColumnData<T>::ndim (uInt rownr) const
+uInt ArrayColumnData::ndim (rownr_t rownr) const
 {
     return dataColPtr_p->ndim(rownr);
 }
-template<class T>
-IPosition ArrayColumnData<T>::shape (uInt rownr) const
+IPosition ArrayColumnData::shape (rownr_t rownr) const
 {
     return dataColPtr_p->shape(rownr);
 }
-template<class T>
-IPosition ArrayColumnData<T>::tileShape (uInt rownr) const
+IPosition ArrayColumnData::tileShape (rownr_t rownr) const
 {
     return dataColPtr_p->tileShape(rownr);
 }
 
 
-template<class T>
-void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp)
+void ArrayColumnData::setShape (rownr_t rownr, const IPosition& shp)
 {
     checkShape (shp);
     checkWriteLock (True);
     dataColPtr_p->setShape (rownr, shp);
     autoReleaseLock();
 }
-template<class T>
-void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp,
-				   const IPosition& tileShp)
+void ArrayColumnData::setShape (rownr_t rownr, const IPosition& shp,
+                                const IPosition& tileShp)
 {
     checkShape (shp);
     checkWriteLock (True);
@@ -173,86 +159,64 @@ void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp,
     autoReleaseLock();
 }
 
-template<class T>
-Bool ArrayColumnData<T>::canChangeShape() const
+Bool ArrayColumnData::canChangeShape() const
 {
     return dataColPtr_p->canChangeShape();
 }
 
-template<class T>
-Bool ArrayColumnData<T>::canAccessSlice (Bool& reask) const
-{
-    return dataColPtr_p->canAccessSlice (reask);
-}
-template<class T>
-Bool ArrayColumnData<T>::canAccessArrayColumn (Bool& reask) const
-{
-    return dataColPtr_p->canAccessArrayColumn (reask);
-}
-template<class T>
-Bool ArrayColumnData<T>::canAccessArrayColumnCells (Bool& reask) const
-{
-    return dataColPtr_p->canAccessArrayColumnCells (reask);
-}
-template<class T>
-Bool ArrayColumnData<T>::canAccessColumnSlice (Bool& reask) const
-{
-    return dataColPtr_p->canAccessColumnSlice (reask);
-}
 
-
-template<class T>
-void ArrayColumnData<T>::get (uInt rownr, void* arrayPtr) const
+void ArrayColumnData::getArray (rownr_t rownr, ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr,
-                         static_cast<const Array<T>*>(arrayPtr)->shape());
+                         array.shape());
     }
     checkReadLock (True);
-    dataColPtr_p->getArrayV (rownr, (Array<T>*)arrayPtr);
+    dataColPtr_p->getArrayV (rownr, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::getSlice (uInt rownr, const Slicer& ns,
-				   void* arrayPtr) const
+void ArrayColumnData::getSlice (rownr_t rownr, const Slicer& ns,
+                                ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr,
-                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
     checkReadLock (True);
-    dataColPtr_p->getSliceV (rownr, ns, (Array<T>*)arrayPtr);
+    dataColPtr_p->getSliceV (rownr, ns, array);
     autoReleaseLock();
 }
 
 
-template<class T>
-void ArrayColumnData<T>::put (uInt rownr, const void* arrayPtr)
+void ArrayColumnData::putArray (rownr_t rownr, const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr,
-                         static_cast<const Array<T>*>(arrayPtr)->shape());
+                         array.shape());
     }
-    checkValueLength ((const Array<T>*)arrayPtr);
+    if (checkValueLength_p) {
+      checkValueLength (static_cast<const Array<String>*>(&array));
+    }
     checkWriteLock (True);
-    dataColPtr_p->putArrayV (rownr, (const Array<T>*)arrayPtr);
+    dataColPtr_p->putArrayV (rownr, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
-				   const void* arrayPtr)
+void ArrayColumnData::putSlice (rownr_t rownr, const Slicer& ns,
+                                const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr,
-                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
-    checkValueLength ((const Array<T>*)arrayPtr);
+    if (checkValueLength_p) {
+      checkValueLength (static_cast<const Array<String>*>(&array));
+    }
     checkWriteLock (True);
-    dataColPtr_p->putSliceV (rownr, ns, (const Array<T>*)arrayPtr);
+    dataColPtr_p->putSliceV (rownr, ns, array);
     autoReleaseLock();
 }
 
@@ -261,116 +225,116 @@ void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 //# Get or put the column by iterating through the array and getting the
 //# column array for each row.
 
-template<class T>
-void ArrayColumnData<T>::getArrayColumn (void* arrayPtr) const
+void ArrayColumnData::getArrayColumn (ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r',
-                         static_cast<const Array<T>*>(arrayPtr)->shape());
+                         array.shape());
     }
     checkReadLock (True);
-    dataColPtr_p->getArrayColumnV ((Array<T>*)arrayPtr);
+    dataColPtr_p->getArrayColumnV (array);
     autoReleaseLock();
 }
 
 
-template<class T>
-void ArrayColumnData<T>::getArrayColumnCells (const RefRows& rownrs,
-					      void *arrayPtr) const
+void ArrayColumnData::getArrayColumnCells (const RefRows& rownrs,
+                                           ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs,
-                         static_cast<const Array<T>*>(arrayPtr)->shape());
+                         array.shape());
     }
     checkReadLock (True);
-    dataColPtr_p->getArrayColumnCellsV (rownrs, arrayPtr);
+    dataColPtr_p->getArrayColumnCellsV (rownrs, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::getColumnSlice (const Slicer& ns,
-					 void* arrayPtr) const
+void ArrayColumnData::getColumnSlice (const Slicer& ns,
+                                      ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r',
-                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
     checkReadLock (True);
-    dataColPtr_p->getColumnSliceV (ns, (Array<T>*)arrayPtr);
+    dataColPtr_p->getColumnSliceV (ns, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::getColumnSliceCells (const RefRows& rownrs,
-					      const Slicer& ns,
-					      void* arrayPtr) const
+void ArrayColumnData::getColumnSliceCells (const RefRows& rownrs,
+                                           const Slicer& ns,
+                                           ArrayBase& array) const
 {
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs,
-                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
     checkReadLock (True);
-    dataColPtr_p->getColumnSliceCellsV (rownrs, ns, arrayPtr);
+    dataColPtr_p->getColumnSliceCellsV (rownrs, ns, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::putArrayColumn (const void* arrayPtr)
+void ArrayColumnData::putArrayColumn (const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w',
-                         static_cast<const Array<T>*>(arrayPtr)->shape());
+                         array.shape());
     }
-    checkValueLength ((const Array<T>*)arrayPtr);
+    if (checkValueLength_p) {
+      checkValueLength (static_cast<const Array<String>*>(&array));
+    }
     checkWriteLock (True);
-    dataColPtr_p->putArrayColumnV ((const Array<T>*)arrayPtr);
+    dataColPtr_p->putArrayColumnV (array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::putArrayColumnCells (const RefRows& rownrs,
-					      const void* arrayPtr)
+void ArrayColumnData::putArrayColumnCells (const RefRows& rownrs,
+                                           const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownrs,
-                         static_cast<const Array<T>*>(arrayPtr)->shape());
+                         array.shape());
     }
-    checkValueLength ((const Array<T>*)arrayPtr);
+    if (checkValueLength_p) {
+      checkValueLength (static_cast<const Array<String>*>(&array));
+    }
     checkWriteLock (True);
-    dataColPtr_p->putArrayColumnCellsV (rownrs, arrayPtr);
+    dataColPtr_p->putArrayColumnCellsV (rownrs, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::putColumnSlice (const Slicer& ns,
-					 const void* arrayPtr)
+void ArrayColumnData::putColumnSlice (const Slicer& ns,
+                                      const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w',
-                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
-    checkValueLength ((const Array<T>*)arrayPtr);
+    if (checkValueLength_p) {
+      checkValueLength (static_cast<const Array<String>*>(&array));
+    }
     checkWriteLock (True);
-    dataColPtr_p->putColumnSliceV (ns, (const Array<T>*)arrayPtr);
+    dataColPtr_p->putColumnSliceV (ns, array);
     autoReleaseLock();
 }
 
-template<class T>
-void ArrayColumnData<T>::putColumnSliceCells (const RefRows& rownrs,
-					      const Slicer& ns,
-					      const void* arrayPtr)
+void ArrayColumnData::putColumnSliceCells (const RefRows& rownrs,
+                                           const Slicer& ns,
+                                           const ArrayBase& array)
 {
     if (wtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownrs,
-                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
-    checkValueLength ((const Array<T>*)arrayPtr);
+    if (checkValueLength_p) {
+      checkValueLength (static_cast<const Array<String>*>(&array));
+    }
     checkWriteLock (True);
-    dataColPtr_p->putColumnSliceCellsV (rownrs, ns, arrayPtr);
+    dataColPtr_p->putColumnSliceCellsV (rownrs, ns, array);
     autoReleaseLock();
 }
 
@@ -378,8 +342,7 @@ void ArrayColumnData<T>::putColumnSliceCells (const RefRows& rownrs,
 //# Check if the array shape is set correctly.
 //# It is only possible for non-FixedShape arrays.
 //# Its dimensionality must match the possible #dim in the column description.
-template<class T>
-void ArrayColumnData<T>::checkShape (const IPosition& shape) const
+void ArrayColumnData::checkShape (const IPosition& shape) const
 {
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                               != ColumnDesc::FixedShape) {
@@ -396,8 +359,7 @@ void ArrayColumnData<T>::checkShape (const IPosition& shape) const
 
 //# It was felt that putstart takes too much space, so therefore
 //# the version is put "manually".
-template<class T>
-void ArrayColumnData<T>::putFileDerived (AipsIO& ios)
+void ArrayColumnData::putFileDerived (AipsIO& ios)
 {
     ios << (uInt)1;                  // class version 1
     ios << dataManPtr_p->sequenceNr();
@@ -407,9 +369,8 @@ void ArrayColumnData<T>::putFileDerived (AipsIO& ios)
     }
 }
 
-template<class T>
-void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
-					 const ColumnSet& colset)
+void ArrayColumnData::getFileDerived (AipsIO& ios,
+                                      const ColumnSet& colset)
 {
     uInt version;
     ios >> version;
@@ -425,4 +386,3 @@ void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
 
 } //# NAMESPACE CASACORE - END
 
-#endif

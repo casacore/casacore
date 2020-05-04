@@ -64,14 +64,14 @@ MSDataDescription::MSDataDescription(const String& tableName, const String &tabl
 			 "table is not a valid MSDataDescription"));
 }
 
-MSDataDescription::MSDataDescription(SetupNewTable &newTab, uInt nrrow,
+MSDataDescription::MSDataDescription(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSDataDescriptionEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSDataDescription(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSDataDescription(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSDataDescription"));
 }
 

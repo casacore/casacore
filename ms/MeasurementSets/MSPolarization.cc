@@ -62,14 +62,14 @@ MSPolarization::MSPolarization(const String& tableName, const String &tableDescN
 			 "table is not a valid MSPolarization"));
 }
 
-MSPolarization::MSPolarization(SetupNewTable &newTab, uInt nrrow,
+MSPolarization::MSPolarization(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSPolarizationEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSPolarization(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSPolarization(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSPolarization"));
 }
 

@@ -28,6 +28,8 @@
 
 //# Includes
 #include <casacore/tables/Tables/TableSyncData.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Containers/BlockIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -46,7 +48,7 @@ TableSyncData::~TableSyncData()
     itsAipsIO.close();
 }
 
-void TableSyncData::write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
+void TableSyncData::write (rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
 			   const Block<Bool>& dataManChanged)
 {
     // Increment change counter when the table has changed.
@@ -59,16 +61,15 @@ void TableSyncData::write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
     }
     // Increment a counter when a data manager has changed.
     // Resize and initialize the block when needed.
-    uInt i;
     uInt ndmOld = itsDataManChangeCounter.nelements();
     uInt ndmNew = dataManChanged.nelements();
     if (ndmNew != ndmOld) {
 	itsDataManChangeCounter.resize (ndmNew, True, True);
-	for (i=ndmOld; i<ndmNew; i++) {
+	for (uInt i=ndmOld; i<ndmNew; i++) {
 	    itsDataManChangeCounter[i] = 0;
 	}
     }
-    for (i=0; i<ndmNew; i++) {
+    for (uInt i=0; i<ndmNew; i++) {
 	if (dataManChanged[i]) {
 	    itsDataManChangeCounter[i]++;
 	    changed = True;
@@ -79,10 +80,16 @@ void TableSyncData::write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
 	itsModifyCounter++;
     }
     // Now write the data into the memoryIO object.
+    // Use 32-bit for the row number if it fits.
     // First clear it.
     itsMemIO.clear();
-    itsAipsIO.putstart ("sync" ,1);
-    itsAipsIO << itsNrrow;
+    if (itsNrrow > DataManager::MAXROWNR32) {
+      itsAipsIO.putstart ("sync", 2);
+      itsAipsIO << itsNrrow;
+    } else {
+      itsAipsIO.putstart ("sync", 1);
+      itsAipsIO << uInt(itsNrrow);
+    }
     itsAipsIO << itsNrcolumn;
     itsAipsIO << itsModifyCounter;
     if (itsNrcolumn >= 0) {
@@ -92,32 +99,47 @@ void TableSyncData::write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
     itsAipsIO.putend();
 }
 
-void TableSyncData::write (uInt nrrow)
+void TableSyncData::write (rownr_t nrrow)
 {
     itsModifyCounter++;
     itsNrrow = nrrow;
     itsNrcolumn = -1;
     // Now write the data into the memoryIO object.
+    // Use 32-bit for the row number if it fits.
     // First clear it.
     itsMemIO.clear();
-    itsAipsIO.putstart ("sync" ,1);
-    itsAipsIO << itsNrrow;
+    if (itsNrrow > DataManager::MAXROWNR32) {
+      itsAipsIO.putstart ("sync", 2);
+      itsAipsIO << itsNrrow;
+    } else {
+      itsAipsIO.putstart ("sync", 1);
+      itsAipsIO << uInt(itsNrrow);
+    }
     itsAipsIO << itsNrcolumn;
     itsAipsIO << itsModifyCounter;
     itsAipsIO.putend();
 }
 
-Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
+Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
 			  Block<Bool>& dataManChanged)
 {
     // Read the data into the memoryIO object.
     // When no columns, don't read the remaining part (then it is used
     // by an external filler).
-    uInt i;
     Int nrcol = -1;
     if (itsMemIO.length() > 0) {
-	itsAipsIO.getstart ("sync");
-	itsAipsIO >> nrrow;
+        uint version = itsAipsIO.getstart ("sync");
+        if (version > 2) {
+          throw TableError ("TableSyncData version " + String::toString(version) +
+                            " not supported by this version of Casacore");
+        }
+        if (version == 1) {
+          uInt n;
+          itsAipsIO >> n;
+          nrrow = n;
+        } else {
+          itsAipsIO >> nrrow;
+        }
 	itsAipsIO >> nrcol;
 	itsAipsIO >> itsModifyCounter;
     }
@@ -149,12 +171,12 @@ Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
     dataManChanged.set (False);
     if (ndmNew != ndmOld) {
 	itsDataManChangeCounter.resize (ndmNew, True, True);
-	for (i=ndmOld; i<ndmNew; i++) {
+	for (uInt i=ndmOld; i<ndmNew; i++) {
 	    dataManChanged[i] = True;
 	    itsDataManChangeCounter[i] = dataManChangeCounter[i];
 	}
     }
-    for (i=0; i<ndmNew; i++) {
+    for (uInt i=0; i<ndmNew; i++) {
 	if (dataManChangeCounter[i] != itsDataManChangeCounter[i]) {
 	    dataManChanged[i] = True;
 	    itsDataManChangeCounter[i] = dataManChangeCounter[i];

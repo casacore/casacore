@@ -186,7 +186,7 @@ void TableExprNodeColumn::disableApplySelection()
     applySelection_p = False;
 }
   
-void TableExprNodeColumn::applySelection (const Vector<uInt>& rownrs)
+void TableExprNodeColumn::applySelection (const Vector<rownr_t>& rownrs)
 {
     if (applySelection_p) {
         // Attach the column to the selection of the table.
@@ -241,62 +241,62 @@ Bool TableExprNodeColumn::getColumnDataType (DataType& dt) const
     return True;
 }
 
-Array<Bool>     TableExprNodeColumn::getColumnBool (const Vector<uInt>& rownrs)
+Array<Bool>     TableExprNodeColumn::getColumnBool (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Bool> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<uChar>    TableExprNodeColumn::getColumnuChar (const Vector<uInt>& rownrs)
+Array<uChar>    TableExprNodeColumn::getColumnuChar (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<uChar> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Short>    TableExprNodeColumn::getColumnShort (const Vector<uInt>& rownrs)
+Array<Short>    TableExprNodeColumn::getColumnShort (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Short> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<uShort>   TableExprNodeColumn::getColumnuShort (const Vector<uInt>& rownrs)
+Array<uShort>   TableExprNodeColumn::getColumnuShort (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<uShort> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Int>      TableExprNodeColumn::getColumnInt (const Vector<uInt>& rownrs)
+Array<Int>      TableExprNodeColumn::getColumnInt (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Int> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<uInt>     TableExprNodeColumn::getColumnuInt (const Vector<uInt>& rownrs)
+Array<uInt>     TableExprNodeColumn::getColumnuInt (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<uInt> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Int64>    TableExprNodeColumn::getColumnInt64 (const Vector<uInt>& rownrs)
+Array<Int64>    TableExprNodeColumn::getColumnInt64 (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Int64> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Float>    TableExprNodeColumn::getColumnFloat (const Vector<uInt>& rownrs)
+Array<Float>    TableExprNodeColumn::getColumnFloat (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Float> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Double>   TableExprNodeColumn::getColumnDouble (const Vector<uInt>& rownrs)
+Array<Double>   TableExprNodeColumn::getColumnDouble (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Double> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Complex>  TableExprNodeColumn::getColumnComplex (const Vector<uInt>& rownrs)
+Array<Complex>  TableExprNodeColumn::getColumnComplex (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<Complex> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<DComplex> TableExprNodeColumn::getColumnDComplex (const Vector<uInt>& rownrs)
+Array<DComplex> TableExprNodeColumn::getColumnDComplex (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<DComplex> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<String>   TableExprNodeColumn::getColumnString (const Vector<uInt>& rownrs)
+Array<String>   TableExprNodeColumn::getColumnString (const Vector<rownr_t>& rownrs)
 {
     ScalarColumn<String> col (tabCol_p);
     return col.getColumnCells (rownrs);
@@ -326,19 +326,19 @@ TableExprNodeRowid::TableExprNodeRowid (const Table& table)
 }
 TableExprNodeRowid::~TableExprNodeRowid ()
 {}
-void TableExprNodeRowid::applySelection (const Vector<uInt>& rownrs)
+void TableExprNodeRowid::applySelection (const Vector<rownr_t>& rownrs)
 {
     // Append rows for an insert.
     if (rownrs.size() == 1  &&  rownrs[0] >= rownrs_p.size()) {
-        uInt sz = rownrs_p.size();
+        rownr_t sz = rownrs_p.size();
         rownrs_p.resize (rownrs[0], True);
-        for (uInt i=sz; i<rownrs_p.size(); ++i) {
+        for (rownr_t i=sz; i<rownrs_p.size(); ++i) {
             rownrs_p[i] = i;
         }
     } else {
         // Select the rowid-s of the given rows.
-        Vector<uInt> newRows(rownrs.size());
-        for (uInt i=0; i<rownrs.size(); ++i) {
+        Vector<rownr_t> newRows(rownrs.size());
+        for (rownr_t i=0; i<rownrs.size(); ++i) {
             newRows[i] = rownrs_p[rownrs[i]];
         }
         rownrs_p.reference (newRows);

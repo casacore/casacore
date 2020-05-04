@@ -85,19 +85,19 @@ public:
     // Update the synchronization data and write it into the MemoryIO object.
     // This function is called when a table flush is done to reflect
     // if anything has changed compared to the previous flush.
-    void write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
+    void write (rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
 		const Block<Bool>& dataManChanged);
 
     // Update the synchronization data and write it into the MemoryIO object.
     // This function should be used by an external filler when it flushes
     // its data.
-    void write (uInt nrrow);
+    void write (rownr_t nrrow);
 
     // Read the synchronization data from the MemoryIO object.
     // This function is called when a lock is acquired to see if
     // table data has to be reread.
     // <br>It returns False when the MemoryIO object is empty.
-    Bool read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
+    Bool read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
 	       Block<Bool>& dataManChanged);
 
     // Get the MemoryIO object.
@@ -118,7 +118,7 @@ private:
 
 
     //# Member variables.
-    uInt        itsNrrow;
+    rownr_t     itsNrrow;
     Int         itsNrcolumn;
     uInt        itsModifyCounter;
     uInt        itsTableChangeCounter;

@@ -64,14 +64,14 @@ MSField::MSField(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSField"));
 }
 
-MSField::MSField(SetupNewTable &newTab, uInt nrrow,
+MSField::MSField(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSFieldEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSField(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSField(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSField"));
 }
 
@@ -207,7 +207,7 @@ Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
 	}
 	// initialize to -1
 	ScalarColumn<Int> fld(*this, ephemerisId);
-	for(uInt i=0; i<this->nrow(); i++){
+	for(rownr_t i=0; i<this->nrow(); i++){
 	  fld.put(i,-1);
 	}
 	rval = True;

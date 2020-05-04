@@ -47,7 +47,7 @@ TabVecTemp<T>::TabVecTemp (const Vector<T>& vec)
 
 //# Construct a Vector.
 template<class T>
-TabVecTemp<T>::TabVecTemp (uInt leng)
+TabVecTemp<T>::TabVecTemp (rownr_t leng)
 {
     nrel_p   = leng;
     vecPtr_p = new Vector<T>(nrel_p);
@@ -63,14 +63,14 @@ TabVecTemp<T>::~TabVecTemp ()
 
 //# Get or put a value.
 template<class T>
-T TabVecTemp<T>::value (uInt i) const
+T TabVecTemp<T>::value (rownr_t i) const
     { return (*vecPtr_p)(i); }
 template<class T>
-void TabVecTemp<T>::getVal (uInt i, T& val) const
+void TabVecTemp<T>::getVal (rownr_t i, T& val) const
     { val = (*vecPtr_p)(i); }
 
 template<class T>
-void TabVecTemp<T>::putVal (uInt i, const T& val)
+void TabVecTemp<T>::putVal (rownr_t i, const T& val)
     { (*vecPtr_p)(i) = val; }
 
 template<class T>

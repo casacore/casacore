@@ -81,6 +81,7 @@ public:
     // If it succeeds, it returns the resulting number of elements.
     // Otherwise it returns 0.
     uInt tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const;
+    uInt64 tryGenSort (Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const;
 
     // Get the sort order.
     int order() const
@@ -328,7 +329,9 @@ public:
     // <br> By default it'll try if the faster GenSortIndirect can be used
     // if a sort on a single key is used.
     uInt sort (Vector<uInt>& indexVector, uInt nrrec,
-	       int options = DefaultSort, Bool tryGenSort = True) const;
+               int options = DefaultSort, Bool tryGenSort = True) const;
+    uInt64 sort (Vector<uInt64>& indexVector, uInt64 nrrec,
+                 int options = DefaultSort, Bool tryGenSort = True) const;
 
     // Get all unique records in a sorted array. The array order is
     // given in the indexVector (as possibly returned by the sort function).
@@ -345,72 +348,91 @@ public:
     // <group>
     uInt unique (Vector<uInt>& uniqueVector, uInt nrrec) const;
     uInt unique (Vector<uInt>& uniqueVector,
-		 const Vector<uInt>& indexVector) const;
+                 const Vector<uInt>& indexVector) const;
+    uInt64 unique (Vector<uInt64>& uniqueVector, uInt64 nrrec) const;
+    uInt64 unique (Vector<uInt64>& uniqueVector,
+                   const Vector<uInt64>& indexVector) const;
     // </group>
 
 private:
+    template<typename T>
+    T doSort (Vector<T>& indexVector, T nrrec,
+              int options = DefaultSort, Bool tryGenSort = True) const;
+
+    template <typename T>
+    T doUnique (Vector<T>& uniqueVector, T nrrec) const;
+    template <typename T>
+    T doUnique (Vector<T>& uniqueVector, const Vector<T>& indexVector) const;
+
     // Copy that Sort object to this.
     void copy (const Sort& that);
 
-    // Add a sort key giving a data type or the sort key.
+    // Add a sort key giving a data type and stride or the sort key.
     // <group>
-    void addKey (const void* data, DataType, uInt nr, int options);
+    void addKey (const void* data, DataType, uInt increment, int options);
     void addKey (SortKey*);
     // </group>
 
     // Do an insertion sort, optionally skipping duplicates.
     // <group>
-    uInt insSort (uInt nr, uInt* indices) const;
-    uInt insSortNoDup (uInt nr, uInt* indices) const;
+    template<typename T>
+    T insSort (T nr, T* indices) const;
+    template<typename T>
+    T insSortNoDup (T nr, T* indices) const;
     // </group>
 
     // Do a merge sort, if possible in parallel using OpenMP.
     // Note that the env.var. OMP_NUM_TRHEADS sets the maximum nr of threads
     // to use. It defaults to the number of cores.
-    uInt parSort (int nthr, uInt nrrec, uInt* inx) const;
-    void merge (uInt* inx, uInt* tmp, uInt size, uInt* index,
-                uInt nparts) const;
+    template<typename T>
+    T parSort (int nthr, T nrrec, T* inx) const;
+    template<typename T>
+    void merge (T* inx, T* tmp, T size, T* index,
+                T nparts) const;
 
     // Do a quicksort, optionally skipping duplicates
     // (qkSort is the actual quicksort function).
     // <group>
-    uInt quickSort (uInt nr, uInt* indices) const;
-    uInt quickSortNoDup (uInt nr, uInt* indices) const;
-    void qkSort (Int nr, uInt* indices) const;
+    template<typename T>
+    T quickSort (T nr, T* indices) const;
+    template<typename T>
+    T quickSortNoDup (T nr, T* indices) const;
+    template<typename T>
+    void qkSort (T nr, T* indices) const;
     // </group>
 
     // Do a heapsort, optionally skipping duplicates.
     // <group>
-    uInt heapSort (uInt nr, uInt* indices) const;
-    uInt heapSortNoDup (uInt nr, uInt* indices) const;
+    template<typename T>
+    T heapSort (T nr, T* indices) const;
+    template<typename T>
+    T heapSortNoDup (T nr, T* indices) const;
     // </group>
 
     // Siftdown algorithm for heapsort.
-    void siftDown (Int low, Int up, uInt* indices) const;
+    template<typename T>
+    void siftDown (T low, T up, T* indices) const;
 
     // Compare the keys of 2 records.
-    int compare (uInt index1, uInt index2) const;
+    template<typename T>
+    int compare (T index1, T index2) const;
 
     // Swap 2 indices.
-    inline void swap (Int index1, Int index2, uInt* indices) const;
+    template<typename T>
+    inline void swap (T index1, T index2, T* indices) const
+    {
+      T t = indices[index1];
+      indices[index1] = indices[index2];
+      indices[index2] = t;
+    }
 
-
+    //# Data memebers
     PtrBlock<SortKey*> keys_p;                    //# keys to sort on
     uInt               nrkey_p;                   //# #sort-keys
     const void*        data_p;                    //# pointer to data records
     uInt               size_p;                    //# size of data record
     int                order_p;                   //# -1=asc 0=mixed 1=desc
 };
-
-
-
-inline void Sort::swap (Int i, Int j, uInt* inx) const
-{
-    uInt t = inx[i];
-    inx[i] = inx[j];
-    inx[j] = t;
-}
-
 
 
 } //# NAMESPACE CASACORE - END

@@ -31,6 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/StArrayFile.h>
+#include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
@@ -38,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Slicer;
-template<class T> class Array;
+class ArrayBase;
 
 
 // <summary>
@@ -94,10 +95,9 @@ template<class T> class Array;
 // <motivation>
 // This helper class makes it possible to share equal functionality
 // between various storage managers handling indirect arrays.
-// At the moment it is used by StmanColumnIndArrayAipsIO and
-// StManColumnIndArrayMirAIO (the AipsIO and Miriad-like storage
-// manager, resp.), but it is not limited to them. It can equally
-// well be used for any other storage manager storing (indirect) arrays
+// At the moment it is used by the StManAipsIO, IncrementalStMan, and
+// StandardStMan storage managers, but it is not limited to them. It can
+// equally well be used by any other storage manager storing (indirect) arrays
 // via an StManArrayFile object.
 // </motivation>
 
@@ -130,7 +130,7 @@ template<class T> class Array;
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //   <li> Reuse file storage when an array gets reshaped.
-//        This could be done when the array does not grow.
+//        This could be done if the array does not grow.
 //        It also requires a change in StManArrayFile.
 //   <li> Be smarter when accessing slices by not accessing a vector
 //        at a time, but by determining and accessing the largest
@@ -166,7 +166,7 @@ public:
     // This will define the array and fill in the file offset.
     // If the shape is already defined and does not change,
     // nothing is done and a False value is returned.
-    // When the shape changes, the old file space is lost.
+    // If the shape changes, the old file space is lost.
     Bool setShape (StManArrayFile&, int dataType, const IPosition& shape);
 
     // Read the shape if not read yet.
@@ -188,100 +188,28 @@ public:
     // Get an array value from the file at the offset held in this object.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn get function).
-    // <group>
-    void getArrayBoolV     (StManArrayFile&, Array<Bool>* dataPtr);
-    void getArrayuCharV    (StManArrayFile&, Array<uChar>* dataPtr);
-    void getArrayShortV    (StManArrayFile&, Array<Short>* dataPtr);
-    void getArrayuShortV   (StManArrayFile&, Array<uShort>* dataPtr);
-    void getArrayIntV      (StManArrayFile&, Array<Int>* dataPtr);
-    void getArrayuIntV     (StManArrayFile&, Array<uInt>* dataPtr);
-    void getArrayInt64V    (StManArrayFile&, Array<Int64>* dataPtr);
-    void getArrayfloatV    (StManArrayFile&, Array<float>* dataPtr);
-    void getArraydoubleV   (StManArrayFile&, Array<double>* dataPtr);
-    void getArrayComplexV  (StManArrayFile&, Array<Complex>* dataPtr);
-    void getArrayDComplexV (StManArrayFile&, Array<DComplex>* dataPtr);
-    void getArrayStringV   (StManArrayFile&, Array<String>* dataPtr);
-    // </group>
+    void getArrayV (StManArrayFile& ios, ArrayBase& arr,
+                    DataType dtype);
 
     // Put an array value into the file at the offset held in this object.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn put function).
-    // <group>
-    void putArrayBoolV     (StManArrayFile&, const Array<Bool>* dataPtr);
-    void putArrayuCharV    (StManArrayFile&, const Array<uChar>* dataPtr);
-    void putArrayShortV    (StManArrayFile&, const Array<Short>* dataPtr);
-    void putArrayuShortV   (StManArrayFile&, const Array<uShort>* dataPtr);
-    void putArrayIntV      (StManArrayFile&, const Array<Int>* dataPtr);
-    void putArrayuIntV     (StManArrayFile&, const Array<uInt>* dataPtr);
-    void putArrayInt64V    (StManArrayFile&, const Array<Int64>* dataPtr);
-    void putArrayfloatV    (StManArrayFile&, const Array<float>* dataPtr);
-    void putArraydoubleV   (StManArrayFile&, const Array<double>* dataPtr);
-    void putArrayComplexV  (StManArrayFile&, const Array<Complex>* dataPtr);
-    void putArrayDComplexV (StManArrayFile&, const Array<DComplex>* dataPtr);
-    void putArrayStringV   (StManArrayFile&, const Array<String>* dataPtr);
-    // </group>
+    void putArrayV (StManArrayFile& ios, const ArrayBase& arr,
+                    DataType dtype);
 
     // Get a section of the array from the file at the offset held in
     // this object.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getSlice function).
-    // <group>
-    void getSliceBoolV     (StManArrayFile&, const Slicer&,
-			    Array<Bool>* dataPtr);
-    void getSliceuCharV    (StManArrayFile&, const Slicer&,
-			    Array<uChar>* dataPtr);
-    void getSliceShortV    (StManArrayFile&, const Slicer&,
-			    Array<Short>* dataPtr);
-    void getSliceuShortV   (StManArrayFile&, const Slicer&,
-			    Array<uShort>* dataPtr);
-    void getSliceIntV      (StManArrayFile&, const Slicer&,
-			    Array<Int>* dataPtr);
-    void getSliceuIntV     (StManArrayFile&, const Slicer&,
-			    Array<uInt>* dataPtr);
-    void getSliceInt64V    (StManArrayFile&, const Slicer&,
-			    Array<Int64>* dataPtr);
-    void getSlicefloatV    (StManArrayFile&, const Slicer&,
-			    Array<float>* dataPtr);
-    void getSlicedoubleV   (StManArrayFile&, const Slicer&,
-			    Array<double>* dataPtr);
-    void getSliceComplexV  (StManArrayFile&, const Slicer&,
-			    Array<Complex>* dataPtr);
-    void getSliceDComplexV (StManArrayFile&, const Slicer&,
-			    Array<DComplex>* dataPtr);
-    void getSliceStringV   (StManArrayFile&, const Slicer&,
-			    Array<String>* dataPtr);
-    // </group>
+    void getSliceV (StManArrayFile&, const Slicer&,
+                    ArrayBase& dataPtr, DataType dtype);
 
     // Put a section of the array into the file at the offset held in
     // this object.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn putSlice function).
-    // <group>
-    void putSliceBoolV     (StManArrayFile&, const Slicer&,
-		            const Array<Bool>* dataPtr);
-    void putSliceuCharV    (StManArrayFile&, const Slicer&,
-                            const Array<uChar>* dataPtr);
-    void putSliceShortV    (StManArrayFile&, const Slicer&,
-                            const Array<Short>* dataPtr);
-    void putSliceuShortV   (StManArrayFile&, const Slicer&,
-                            const Array<uShort>* dataPtr);
-    void putSliceIntV      (StManArrayFile&, const Slicer&,
-                            const Array<Int>* dataPtr);
-    void putSliceuIntV     (StManArrayFile&, const Slicer&,
-                            const Array<uInt>* dataPtr);
-    void putSliceInt64V    (StManArrayFile&, const Slicer&,
-                            const Array<Int64>* dataPtr);
-    void putSlicefloatV    (StManArrayFile&, const Slicer&,
-                            const Array<float>* dataPtr);
-    void putSlicedoubleV   (StManArrayFile&, const Slicer&,
-                            const Array<double>* dataPtr);
-    void putSliceComplexV  (StManArrayFile&, const Slicer&,
-                            const Array<Complex>* dataPtr);
-    void putSliceDComplexV (StManArrayFile&, const Slicer&,
-                            const Array<DComplex>* dataPtr);
-    void putSliceStringV   (StManArrayFile&, const Slicer&,
-                            const Array<String>* dataPtr);
-    // </group>
+    void putSliceV (StManArrayFile&, const Slicer&,
+                    const ArrayBase& dataPtr, DataType dtype);
 
 private:
     Int64     fileOffset_p;      //# offset of shape in StManArrayFile
@@ -298,60 +226,60 @@ private:
     void getSliceData (StManArrayFile&, const Slicer& ns, void* value,
 		       const IPosition& userArrayShape,
 		       void (*getVec) (StManArrayFile&,
-				       Int64, uInt, uInt, uInt, uInt,
+				       Int64, uInt64, uInt64, uInt64, uInt64,
 				       void* dataPtr));
 
     // Get a (type-dependent) vector part of a slice.
     // This function is called for each chunk by putSliceData.
     // <group>
     static void getVecBoolV     (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecuCharV    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecShortV    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecuShortV   (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecIntV      (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecuIntV     (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecInt64V    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecfloatV    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecdoubleV   (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecComplexV  (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecDComplexV (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     static void getVecStringV   (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, void* value);
     // </group>
 
     // Put sliced data, i.e. put a section of an array.
@@ -363,60 +291,60 @@ private:
     void putSliceData (StManArrayFile&, const Slicer& ns, const void* value,
 		       const IPosition& userArrayShape,
 		       void (*putVec) (StManArrayFile&,
-				       Int64, uInt, uInt, uInt, uInt,
+				       Int64, uInt64, uInt64, uInt64, uInt64,
 				       const void* dataPtr));
 
     // Put a (type-dependent) vector part of a slice.
     // This function is called for each chunk by putSliceData.
     // <group>
     static void putVecBoolV     (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecuCharV    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecShortV    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecuShortV   (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecIntV      (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecuIntV     (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecInt64V    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecfloatV    (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecdoubleV   (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecComplexV  (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecDComplexV (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     static void putVecStringV   (StManArrayFile&,
-				 Int64 fileOffset, uInt arrayStart,
-				 uInt length, uInt increment,
-				 uInt valueIndex, const void* value);
+				 Int64 fileOffset, uInt64 arrayStart,
+				 uInt64 length, uInt64 increment,
+				 uInt64 valueIndex, const void* value);
     // </group>
 	
     // Throw an exception if the shape of the given array and the table

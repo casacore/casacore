@@ -53,7 +53,7 @@ void select (const String& msin, const String& out, const String& baseline,
   // to be sure there is a RefTable.
   Table mssel = ms(node);
   if (mssel.nrow() == ms.nrow()) {
-    Vector<uInt> allRows(ms.nrow());
+    RowNumbers allRows(ms.nrow());
     indgen (allRows);
     mssel = ms(allRows);
   }

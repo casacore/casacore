@@ -138,7 +138,7 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	    *codeKey_p = "";
 	}
 	uInt rownr = 0;
-	Vector<uInt> foundRows = index_p->getRowNumbers();
+	Vector<rownr_t> foundRows = index_p->getRowNumbers();
 	Bool rowFound, sourceFound;
 	rowFound = sourceFound = False;
 	

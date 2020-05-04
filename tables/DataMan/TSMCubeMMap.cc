@@ -120,7 +120,7 @@ void TSMCubeMMap::setShape (const IPosition& cubeShape,
   makeCache();
 }
 
-void TSMCubeMMap::extend (uInt nr, const Record& coordValues,
+void TSMCubeMMap::extend (uInt64 nr, const Record& coordValues,
                           const TSMColumn* lastCoordColumn)
 {
     if (!extensible_p) {

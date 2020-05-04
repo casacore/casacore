@@ -130,7 +130,7 @@ template<class T> class ScalarColumn;
 // ArrayColumn data (table, "virtualArray");
 // Array<DComplex> someArray(IPosition(2,3,4));
 // someArray = 0;
-// for (uInt i=0, i<10; i++) {          // table will have 10 rows
+// for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
 //     table.addRow();
 //     data.put (i, someArray)
 // }
@@ -204,9 +204,6 @@ public:
     // This includes the names of the template arguments.
     static String className();
 
-    // The engine can access column cells.
-    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
-
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     // The automatically invoked registration function in DataManReg.cc
@@ -234,7 +231,7 @@ private:
 
     // Initialize the object for a new table.
     // It defines the keywords containing the engine parameters.
-    virtual void create (uInt initialNrrow);
+    virtual void create64 (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
@@ -256,32 +253,32 @@ private:
     // the virtual element shape.
     // E.g. in case of a StokesVector a virtual shape of (512,512)
     // results in a stored shape of (4,512,512).
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Get the dimensionality of the array in the given row.
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // This is done by stripping the first dimension from the shape
     // of the underlying stored array.
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // Get an array in the given row.
     // This will scale and offset from the underlying array.
-    virtual void getArray (uInt rownr, Array<VirtualType>& array);
+    virtual void getArray (rownr_t rownr, Array<VirtualType>& array);
 
     // Put an array in the given row.
     // This will scale and offset to the underlying array.
-    virtual void putArray (uInt rownr, const Array<VirtualType>& array);
+    virtual void putArray (rownr_t rownr, const Array<VirtualType>& array);
 
     // Get a section of the array in the given row.
     // This will scale and offset from the underlying array.
-    virtual void getSlice (uInt rownr, const Slicer& slicer,
+    virtual void getSlice (rownr_t rownr, const Slicer& slicer,
 			   Array<VirtualType>& array);
 
     // Put into a section of the array in the given row.
     // This will scale and offset to the underlying array.
-    virtual void putSlice (uInt rownr, const Slicer& slicer,
+    virtual void putSlice (rownr_t rownr, const Slicer& slicer,
 			   const Array<VirtualType>& array);
 
     // Get an entire column.
@@ -386,10 +383,10 @@ private:
     ScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
 
     // Get the scale value for this row.
-    VirtualType getScale (uInt rownr);
+    VirtualType getScale (rownr_t rownr);
 
     // Get the offset value for this row.
-    VirtualType getOffset (uInt rownr);
+    VirtualType getOffset (rownr_t rownr);
 
 public:
     // Define the "constructor" to construct this engine when a

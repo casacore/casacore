@@ -96,26 +96,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { itsRows.resize (ntable+1); }
 
     // Add a table with the given nr of rows.
-    void add (uInt nrow);
+    void add (rownr_t nrow);
 
     // Give the nr of tables.
     uInt ntable() const
       { return itsNTable; }
 
     // Get the total nr of rows.
-    uInt nrow() const
+    rownr_t nrow() const
       { return itsRows[itsNTable]; }
 
     // Give the nr of rows for the i-th table.
-    uInt operator[] (uInt i) const
+    rownr_t operator[] (uInt i) const
       { return itsRows[i+1]; }
 
     // Give the offset for the i-th table.
-    uInt offset (uInt i) const
+    rownr_t offset (uInt i) const
       { return itsRows[i]; }
 
     // Map an overall row number to a table and row number.
-    void mapRownr (uInt& tableNr, uInt& tabRownr, uInt rownr) const
+    void mapRownr (uInt& tableNr, rownr_t& tabRownr, rownr_t rownr) const
     {
       if (rownr < itsLastStRow  ||  rownr >= itsLastEndRow) {
 	findRownr (rownr);
@@ -126,14 +126,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     // Find the row number and fill in the lastXX_p values.
-    void findRownr (uInt rownr) const;
+    void findRownr (rownr_t rownr) const;
 
     //# Data members.
-    Block<uInt>  itsRows;
-    uInt         itsNTable;
-    mutable uInt itsLastStRow;         //# Cached variables to spped up
-    mutable uInt itsLastEndRow;        //# function mapRownr().
-    mutable uInt itsLastTableNr;
+    Block<rownr_t>  itsRows;
+    uInt            itsNTable;
+    mutable rownr_t itsLastStRow;         //# Cached variables to spped up
+    mutable rownr_t itsLastEndRow;        //# function mapRownr().
+    mutable uInt    itsLastTableNr;
   };
 
 
@@ -172,9 +172,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   ConcatRowsSliceIter rowiter(rownrs);
 //   while (! rowiter.pastEnd()) {
 //     // Get start, end, and increment for this slice.
-//     uInt rownr = rowiter.sliceStart();
-//     uInt end = rowiter.sliceEnd();
-//     uInt incr = rowiter.sliceIncr();
+//     rownr_t rownr = rowiter.sliceStart();
+//     rownr_t end = rowiter.sliceEnd();
+//     rownr_t incr = rowiter.sliceIncr();
 //     // Iterate through the row numbers in the slice.
 //     while (rownr <= end) {
 //       rownr += incr;
@@ -199,7 +199,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     explicit ConcatRowsIter (const ConcatRows&);
 
     // Construct the iterator on a ConcatRows object for the given row range.
-    ConcatRowsIter (const ConcatRows&, uInt start, uInt end, uInt incr=1);
+    ConcatRowsIter (const ConcatRows&, rownr_t start, rownr_t end, rownr_t incr=1);
 
     // Is the iterator past the end?
     Bool pastEnd() const
@@ -220,15 +220,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the nr of the table the current chunk is in.
     uInt tableNr() const
-      { return itsPos; }
+      { return itsTabNr; }
 
   private:
     const ConcatRows* itsRows;
-    Vector<uInt>      itsChunk;
-    uInt              itsStart;
-    uInt              itsEnd;
-    uInt              itsIncr;
-    uInt              itsPos;
+    Vector<rownr_t>   itsChunk;
+    rownr_t           itsStart;
+    rownr_t           itsEnd;
+    rownr_t           itsIncr;
+    uInt              itsTabNr;
     Bool              itsPastEnd;
   };
 

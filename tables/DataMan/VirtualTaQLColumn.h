@@ -50,13 +50,21 @@ class TableExprNode;
 //
 // <synopsis> 
 // VirtualTaQLColumn is a virtual column engine to define the contents of a
-// column as a TaQL expression in which possibly other columns are used.
+// column as a TaQL CALC expression in which possibly other columns are used.
 // It is (of course) only possible to get data from the column; puts cannot
-// be done.
+// be done. See note 199 for a description of TaQL.
+// The TaQL style can be specified (such as 0- or 1-based indexing).
 // <br>
 // The expression result can be a scalar or array of the basic TaQL data types.
 // The column data type has to be conformant with that TaQL type, thus a
 // column of any integer type has to be used for an integer TaQL result.
+// <br>
+// Constant expressions are precalculated and cached making the retrieval of
+// e.g. the full column much faster (factor 4).
+// <br>
+// A possible use for a virtual TaQL column is a column in a MeasurementSet
+// containing a constant value. It could also be used for on-the-fly calculation
+// of J2000 UVW-values or HADEC using an expression such as "derivedmscal.newuvw()"
 // <note role=caution> One has to be careful with deleting columns. If in an
 // existing table a TaQL expression uses a deleted column, the expression
 // cannot be parsed anymore and the table cannot be opened anymore.
@@ -91,7 +99,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn
 public:
 
   // Construct it with the given TaQL expression.
-  VirtualTaQLColumn (const String& expr);
+  VirtualTaQLColumn (const String& expr, const String& style=String());
 
   // Construct it with the given specification.
   VirtualTaQLColumn (const Record& spec);
@@ -133,9 +141,9 @@ public:
   // <group>
   virtual int dataType() const;
   virtual Bool isWritable() const;
-  virtual uInt ndim (uInt rownr);
-  virtual IPosition shape (uInt rownr);
-  virtual Bool isShapeDefined (uInt rownr);
+  virtual uInt ndim (rownr_t rownr);
+  virtual IPosition shape (rownr_t rownr);
+  virtual Bool isShapeDefined (rownr_t rownr);
   // </group>
 
 private:
@@ -156,62 +164,77 @@ private:
 
   // Let the engine initialize the object for a new table.
   // It defines a column keyword holding the expression.
-  virtual void create (uInt);
+  virtual void create64 (rownr_t);
 
   // Prepare compiles the expression.
   virtual void prepare();
 
-  //# We could also define the getBlockXXV functions, but
-  //# that is not required. The default implementation gets
-  //# one value. Possible optimization can be done by
-  //# implementing it here.
-  //# The same is true for getColumn.
-
   // Get the scalar value in the given row.
-  // The default implementation throws an "invalid operation" exception.
   // <group>
-  virtual void getBoolV     (uInt rownr, Bool* dataPtr);
-  virtual void getuCharV    (uInt rownr, uChar* dataPtr);
-  virtual void getShortV    (uInt rownr, Short* dataPtr);
-  virtual void getuShortV   (uInt rownr, uShort* dataPtr);
-  virtual void getIntV      (uInt rownr, Int* dataPtr);
-  virtual void getuIntV     (uInt rownr, uInt* dataPtr);
-  virtual void getInt64V    (uInt rownr, Int64* dataPtr);
-  virtual void getfloatV    (uInt rownr, float* dataPtr);
-  virtual void getdoubleV   (uInt rownr, double* dataPtr);
-  virtual void getComplexV  (uInt rownr, Complex* dataPtr);
-  virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
-  virtual void getStringV   (uInt rownr, String* dataPtr);
+  virtual void getBool     (rownr_t rownr, Bool* dataPtr);
+  virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
+  virtual void getShort    (rownr_t rownr, Short* dataPtr);
+  virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
+  virtual void getInt      (rownr_t rownr, Int* dataPtr);
+  virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
+  virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+  virtual void getfloat    (rownr_t rownr, float* dataPtr);
+  virtual void getdouble   (rownr_t rownr, double* dataPtr);
+  virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
+  virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
+  virtual void getString   (rownr_t rownr, String* dataPtr);
   // </group>
 
   // Get the array value in the given row.
-  // The argument dataPtr is in fact an Array<T>*, but a void*
-  // is needed to be generic.
-  // The array pointed to by dataPtr has to have the correct shape
+  // The array given by <src>arr</src> has to have the correct shape
   // (which is guaranteed by the ArrayColumn get function).
-  // The default implementation throws an "invalid operation" exception.
-  virtual void getArrayV (uInt rownr, void* dataPtr);
+  virtual void getArrayV (rownr_t rownr, ArrayBase& arr);
 
-  // Get the array result into itsCurResult.
-  IPosition getResult (uInt rownr);
+  // Get the array result into itsCurArray.
+  void getResult (rownr_t rownr);
 
   // Make the result cache.
-  void makeCurResult();
+  void makeCurArray();
 
-  // Clear the result cache.
-  void clearCurResult();
+  // Get functions implemented by means of their DataManagerColumn::getXXBase
+  // counterparts, but optimized for constant expressions.
+  // <group>
+  virtual void getScalarColumnV (ArrayBase& arr);
+  virtual void getScalarColumnCellsV (const RefRows& rownrs,
+                                      ArrayBase& arr);
+  // </group>
 
+  // Fill the ColumnCache object with a constant scalar value.
+  void fillColumnCache();
+
+  // Fill an array with a constant scalar value.
+  void fillArray (ArrayBase& data);
 
   //# Now define the data members.
   int            itsDataType;
   Bool           itsIsArray;
+  Bool           itsIsConst;          //# Constant expression?
+  Bool           itsTempWritable;
   String         itsColumnName;
   String         itsExpr;             //# TaQL expression
+  String         itsStyle;            //# TaQL style
   TableExprNode* itsNode;             //# compiled TaQL expression
-  Bool           itsTempWritable;
-  Int            itsCurRow;           //# Currently evaluated row
-  void*          itsCurResult;        //# result in itsCurRow
-  IPosition      itsCurShape;         //# shape in itsCurRow
+  union {
+    Bool     itsBool;                 //# Constant scalar values
+    uChar    itsuChar;
+    Short    itsShort;
+    uShort   itsuShort;
+    Int      itsInt;
+    uInt     itsuInt;
+    Int64    itsInt64;
+    Float    itsFloat;
+    Double   itsDouble;
+  };
+  Complex    itsComplex;
+  DComplex   itsDComplex;
+  String     itsString;
+  ArrayBase* itsCurArray;             //# array value (constant or in itsCurRow)
+  rownr_t    itsCurRow;               //# Currently evaluated row
 };
 
 

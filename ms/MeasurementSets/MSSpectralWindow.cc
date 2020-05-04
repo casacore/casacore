@@ -63,14 +63,14 @@ MSSpectralWindow::MSSpectralWindow(const String& tableName, const String &tableD
 			 "table is not a valid MSSpectralWindow"));
 }
 
-MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, uInt nrrow,
+MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSSpectralWindowEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSSpectralWindow(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSSpectralWindow(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSSpectralWindow"));
 }
 

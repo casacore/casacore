@@ -134,7 +134,7 @@ public:
     // Get the data from a particular cell (i.e. table row).
     // The row numbers count from 0 until #rows-1.
     // <group>
-    void get (uInt rownr, T& value) const
+    void get (rownr_t rownr, T& value) const
     {
 	TABLECOLUMNCHECKROW(rownr);
 	Int off = colCachePtr_p->offset(rownr);
@@ -144,13 +144,13 @@ public:
 	    baseColPtr_p->get (rownr, &value);
 	}
     }
-    T get (uInt rownr) const
+    T get (rownr_t rownr) const
     {
 	T value;
 	get (rownr, value);
 	return value;
     }
-    T operator() (uInt rownr) const
+    T operator() (rownr_t rownr) const
     {
 	T value;
 	get (rownr, value);
@@ -195,7 +195,7 @@ public:
 
     // Put the value in a particular cell (i.e. table row).
     // The row numbers count from 0 until #rows-1.
-    void put (uInt rownr, const T& value)
+    void put (rownr_t rownr, const T& value)
         { TABLECOLUMNCHECKROW(rownr); checkWritable();
           baseColPtr_p->put (rownr, &value); }
 
@@ -203,11 +203,11 @@ public:
     // The data types of both columns must be the same.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const ScalarColumn<T>& that)
+    void put (rownr_t rownr, const ScalarColumn<T>& that)
 	{ put (rownr, that, rownr); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    void put (uInt thisRownr, const ScalarColumn<T>& that, uInt thatRownr);
+    void put (rownr_t thisRownr, const ScalarColumn<T>& that, rownr_t thatRownr);
     // </group>
 
     // Copy the value of a cell of that column to a cell of this column.
@@ -216,11 +216,11 @@ public:
     // Otherwise an exception is thrown.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const TableColumn& that, Bool=False)
+    void put (rownr_t rownr, const TableColumn& that, Bool=False)
 	{ put (rownr, that, rownr); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
+    void put (rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
               Bool=False);
     // </group>
 
@@ -253,14 +253,6 @@ public:
 private:
     // Check if the data type matches the column data type.
     void checkDataType() const;
-
-protected:
-    // Keep a switch to determine if an entire column can be accessed.
-    // True = yes;  False = no.
-    mutable Bool canAccessColumn_p;
-    // Keep a switch to know if access knowledge is permanent or has
-    // to be asked again the next time.
-    mutable Bool reaskAccessColumn_p;
 };
 
 

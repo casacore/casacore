@@ -128,7 +128,7 @@ public:
     // It creates the data manager column objects for each column
     // and it allows the data managers to link themselves to the
     // Table object and to initialize themselves.
-    void initDataManagers (uInt nrrow, Bool bigEndian,
+    void initDataManagers (rownr_t nrrow, Bool bigEndian,
                            const TSMOption& tsmOption,
                            Table& tab);
 
@@ -171,11 +171,11 @@ public:
     Bool canRenameColumn (const String& columnName) const;
 
     // Add rows to all data managers.
-    void addRow (uInt nrrow);
+    void addRow (rownr_t nrrow);
 
     // Remove a row from all data managers.
     // It will throw an exception if not possible.
-    void removeRow (uInt rownr);
+    void removeRow (rownr_t rownr);
 
     // Remove the columns from the map and the data manager.
     void removeColumn (const Vector<String>& columnNames);
@@ -200,7 +200,7 @@ public:
     // </group>
 
     // Get nr of rows.
-    uInt nrow() const;
+    rownr_t nrow() const;
 
     // Get the actual table description.
     TableDesc actualTableDesc() const;
@@ -214,7 +214,7 @@ public:
       { return baseTablePtr_p->traceId(); }
 
     // Initialize rows startRownr till endRownr (inclusive).
-    void initialize (uInt startRownr, uInt endRownr);
+    void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Write all the data and let the data managers flush their data.
     // This function is called when a table gets written (i.e. flushed).
@@ -226,8 +226,8 @@ public:
     // This function gets called when an existing table is read back.
     // It returns the number of rows in case a data manager thinks there are
     // more. That is in particular used by LofarStMan.
-    uInt getFile (AipsIO&, Table& tab, uInt nrrow, Bool bigEndian,
-                  const TSMOption& tsmOption);
+    rownr_t getFile (AipsIO&, Table& tab, rownr_t nrrow, Bool bigEndian,
+                     const TSMOption& tsmOption);
 
     // Set the table to being changed.
     void setTableChanged();
@@ -241,7 +241,7 @@ public:
     // <src>forceSync=True</src> means that the data managers are forced
     // to do a sync. Otherwise the contents of the lock file tell if a data
     // manager has to sync.
-    uInt resync (uInt nrrow, Bool forceSync);
+    rownr_t resync (rownr_t nrrow, Bool forceSync);
 
     // Invalidate the column caches for all columns.
     void invalidateColumnCaches();
@@ -316,7 +316,7 @@ private:
     TableDesc*              tdescPtr_p;
     StorageOption           storageOpt_p;
     MultiFileBase*          multiFile_p;
-    Int64                   nrrow_p;          //# #rows
+    rownr_t                 nrrow_p;          //# #rows
     BaseTable*              baseTablePtr_p;
     TableLockData*          lockPtr_p;        //# lock object
     std::map<String,void*>  colMap_p;         //# list of PlainColumns
@@ -328,7 +328,7 @@ private:
 
 
 
-inline uInt ColumnSet::nrow() const
+inline rownr_t ColumnSet::nrow() const
 {
     return nrrow_p;
 }

@@ -94,11 +94,11 @@ public:
   Bool isWritable() const;
 
   // Get values for the given row.
-  Record get (uInt rownr) const;
+  Record get (Int64 rownr) const;
 
   // Put values for the given row.
   // The given record has to conform the fields in the table row.
-  void put (uInt rownr, const Record& values, Bool matchingFields);
+  void put (Int64 rownr, const Record& values, Bool matchingFields);
 
 private:
   Bool       isWritable_p;

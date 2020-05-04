@@ -129,7 +129,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // be moved to that subdirectory when the concatenated table is written
     // (by writeConcatTable).
     // <group>
-    ConcatTable (const Block<BaseTable*>& tables,
+    ConcatTable (const Block<Table>& tables,
 		 const Block<String>& subTables,
                  const String& subDirName);
     ConcatTable (const Block<String>& tableNames,
@@ -142,7 +142,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Create a concat table out of a file (written by writeConcatTable).
     // The referenced tables will also be opened (if not stored in the cache).
-    ConcatTable (AipsIO&, const String& name, uInt nrrow, int option,
+    ConcatTable (AipsIO&, const String& name, rownr_t nrrow, int option,
 		 const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // The destructor flushes (i.e. writes) the table if it is opened
@@ -257,7 +257,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual Bool canRemoveRow() const;
 
     // Remove the given row.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Test if columns can be removed (no).
     virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
@@ -362,7 +362,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members
     Block<String>     subTableNames_p;
     String            subDirName_p;
-    Block<BaseTable*> baseTabPtr_p;           //# pointers to parent tables
+    Block<Table>      tables_p;            //# Tables forming the concat
     std::map<String,ConcatColumn*> colMap_p;  //# map name to column
     TableRecord       keywordSet_p;
     Bool              changed_p;           //# True = changed since last write

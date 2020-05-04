@@ -77,7 +77,7 @@ class IPosition;
 // An StManArrayFile object is connected to one file. It is possible
 // to hold multiple arrays in the file, each with its own shape.
 // An array is stored as its shape followed by the actual data
-// (all in canonical format). An array of strings is written as
+// (all in little or big endian format). An array of strings is written as
 // an array of offsets pointing to the actual strings.
 // When a string gets a new value, the new value is written at the
 // end of the file and the file space with the old value is lost.
@@ -187,8 +187,6 @@ public:
 		   const Float* dummy);
     uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Double* dummy);
-//#//    uInt putShape (const IPosition& shape, Int64& fileOffset,
-//#//                   const long double* dummy);
     uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Complex* dummy);
     uInt putShape (const IPosition& shape, Int64& fileOffset,
@@ -210,21 +208,21 @@ public:
     // The array offset is counted in number of elements. It can be
     // used to put only a (contiguous) section of the array.
     // <group>
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Bool*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Char*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uChar*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Short*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uShort*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Int*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uInt*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Int64*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uInt64*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Float*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Double*);
-//#//    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const long double*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Complex*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const DComplex*);
-    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const String*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Bool*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Char*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uChar*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Short*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uShort*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int64*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt64*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Float*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Double*);
+//#//    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const long double*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Complex*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const DComplex*);
+    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const String*);
     // </group>
 
     // Get the shape at the given file offset.
@@ -238,41 +236,41 @@ public:
     // The array offset is counted in number of elements. It can be
     // used to get only a (contiguous) section of the array.
     // <group>
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Bool*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Char*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uChar*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Short*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uShort*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Int*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uInt*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Int64*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uInt64*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Float*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Double*);
-//#//    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, long double*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Complex*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, DComplex*);
-    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, String*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Bool*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Char*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uChar*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Short*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uShort*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int64*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt64*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Float*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Double*);
+//#//    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, long double*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Complex*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, DComplex*);
+    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, String*);
     // </group>
 
     // Copy the array with <src>nr</src> elements from one file offset
     // to another.
     // <group>
-    void copyArrayBool     (Int64 to, Int64 from, uInt nr);
-    void copyArrayChar     (Int64 to, Int64 from, uInt nr);
-    void copyArrayuChar    (Int64 to, Int64 from, uInt nr);
-    void copyArrayShort    (Int64 to, Int64 from, uInt nr);
-    void copyArrayuShort   (Int64 to, Int64 from, uInt nr);
-    void copyArrayInt      (Int64 to, Int64 from, uInt nr);
-    void copyArrayuInt     (Int64 to, Int64 from, uInt nr);
-    void copyArrayInt64    (Int64 to, Int64 from, uInt nr);
-    void copyArrayuInt64   (Int64 to, Int64 from, uInt nr);
-    void copyArrayFloat    (Int64 to, Int64 from, uInt nr);
-    void copyArrayDouble   (Int64 to, Int64 from, uInt nr);
-//#//    void copyArrayLDouble  (Int64 to, Int64 from, uInt nr);
-    void copyArrayComplex  (Int64 to, Int64 from, uInt nr);
-    void copyArrayDComplex (Int64 to, Int64 from, uInt nr);
-    void copyArrayString   (Int64 to, Int64 from, uInt nr);
+    void copyArrayBool     (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayChar     (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayuChar    (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayShort    (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayuShort   (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayInt      (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayuInt     (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayInt64    (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayuInt64   (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayFloat    (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayDouble   (Int64 to, Int64 from, uInt64 nr);
+//#//    void copyArrayLDouble  (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayComplex  (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayDComplex (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayString   (Int64 to, Int64 from, uInt64 nr);
     // </group>
 
 private:
@@ -314,7 +312,7 @@ private:
     // </group>
 
     // Copy data with the given length from one file offset to another.
-    void copyData (Int64 to, Int64 from, uInt length);
+    void copyData (Int64 to, Int64 from, uInt64 length);
 
     // Position the file on the given offset.
     void setpos (Int64 offset);

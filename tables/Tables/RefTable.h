@@ -118,10 +118,10 @@ public:
     // be disturbed (as will be the case for a sort).
     // A row number vector of the given size is initially allocated.
     // Later this RefTable will be filled in by the select, etc..
-    RefTable (BaseTable*, Bool rowOrder, uInt initialNrrow);
+    RefTable (BaseTable*, Bool rowOrder, rownr_t initialNrrow);
 
     // A RefTable with the given row numbers is constructed.
-    RefTable (BaseTable*, const Vector<uInt>& rowNumbers);
+    RefTable (BaseTable*, const Vector<rownr_t>& rowNumbers);
 
     // Create a reference table object out of a mask.
     // The row number vector will consist of the rows for which the
@@ -136,7 +136,7 @@ public:
 
     // Create a reference table out of a file (written by writeRefTable).
     // The referenced table will also be created (if not stored in the cache).
-    RefTable (AipsIO&, const String& name, uInt nrrow, int option,
+    RefTable (AipsIO&, const String& name, rownr_t nrrow, int option,
 	      const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // The destructor flushes (i.e. writes) the table if it is opened
@@ -245,7 +245,7 @@ public:
     virtual Bool canRemoveRow() const;
 
     // Remove the given row.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Add one or more columns to the table.
     // The column is added to the parent table if told so and if not existing.
@@ -284,58 +284,58 @@ public:
                                           Bool byColumn) const;
 
     // Get a vector of row numbers.
-    virtual Vector<uInt> rowNumbers() const;
+    virtual Vector<rownr_t> rowNumbers() const;
 
     // Get parent of this table.
     virtual BaseTable* root();
 
     // Get rownr in root table.
     // This converts the given row number to the row number in the root table.
-    uInt rootRownr (uInt rownr) const;
+    rownr_t rootRownr (rownr_t rownr) const;
 
     // Get vector of rownrs in root table.
     // This converts the given row numbers to row numbers in the root table.
-    Vector<uInt> rootRownr (const Vector<uInt>& rownrs) const;
+    Vector<rownr_t> rootRownr (const Vector<rownr_t>& rownrs) const;
 
     // Tell if the table is in row order.
     virtual Bool rowOrder() const;
 
     // Get row number vector.
     // This is used by the BaseTable logic and sort routines.
-    virtual Vector<uInt>* rowStorage();
+    virtual Vector<rownr_t>* rowStorage();
 
     // Add a rownr to reference table.
-    void addRownr (uInt rownr);
+    void addRownr (rownr_t rownr);
 
     // Set the exact number of rows in the table.
     // An exception is thrown if more than current nrrow.
-    void setNrrow (uInt nrrow);
+    void setNrrow (rownr_t nrrow);
 
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in row order.
-    virtual Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
+    virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
 			       Bool determineOrder) const;
 
     // And, or, subtract or xor the row numbers of 2 tables.
-    void refAnd (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);
-    void refOr  (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);
-    void refSub (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);
-    void refXor (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);
-    void refNot (uInt nr1, const uInt* rows1, uInt nrmain);
+    void refAnd (rownr_t nr1, const rownr_t* rows1, rownr_t nr2, const rownr_t* rows2);
+    void refOr  (rownr_t nr1, const rownr_t* rows1, rownr_t nr2, const rownr_t* rows2);
+    void refSub (rownr_t nr1, const rownr_t* rows1, rownr_t nr2, const rownr_t* rows2);
+    void refXor (rownr_t nr1, const rownr_t* rows1, rownr_t nr2, const rownr_t* rows2);
+    void refNot (rownr_t nr1, const rownr_t* rows1, rownr_t nrmain);
 
     // Get the internal pointer in a rowStorage vector.
     // It checks whether no copy is made of the data.
-    static uInt* getStorage (Vector<uInt>& rownrs);
+    static rownr_t* getStorage (Vector<rownr_t>& rownrs);
 
 private:
-    BaseTable*   baseTabPtr_p;              //# pointer to parent table
-    Bool         rowOrd_p;                  //# True = table is in row order
-    Vector<uInt> rowStorage_p;              //# row numbers in parent table
-    uInt*        rows_p;                    //# Pointer to rowStorage_p
+    BaseTable*      baseTabPtr_p;           //# pointer to parent table
+    Bool            rowOrd_p;               //# True = table is in row order
+    Vector<rownr_t> rowStorage_p;           //# row numbers in parent table
+    rownr_t*        rows_p;                 //# Pointer to rowStorage_p
     std::map<String,String> nameMap_p;      //# map to column name in parent
     std::map<String,RefColumn*> colMap_p;   //# map name to column
-    Bool         changed_p;                 //# True = changed since last write
+    Bool            changed_p;              //# True = changed since last write
 
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
@@ -389,7 +389,7 @@ private:
 
 
 
-inline uInt RefTable::rootRownr (uInt rnr) const
+inline rownr_t RefTable::rootRownr (rownr_t rnr) const
     { return rows_p[rnr]; }
 
 

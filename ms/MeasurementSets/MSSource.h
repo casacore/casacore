@@ -93,7 +93,7 @@ public:
     MSSource (const String &tableName, TableOption = Table::Old);
     MSSource (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSSource (SetupNewTable &newTab, uInt nrrow = 0,
+    MSSource (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSSource (const Table &table);
     MSSource (const MSSource &other);

@@ -661,7 +661,7 @@ Bool ReadAsciiTable::getValue (char* string1, Int lineSize, char* first,
 void ReadAsciiTable::handleScalar (char* string1, Int lineSize, char* first,
 				   Int& at1, Char separator,
 				   Int type,
-				   TableColumn& tabcol, uInt rownr)
+				   TableColumn& tabcol, rownr_t rownr)
 {
   switch (type) {
   case RATBool:
@@ -974,7 +974,7 @@ void ReadAsciiTable::handleArray (char* string1, Int lineSize, char* first,
 				  Int& at1, Char separator,
 				  const IPosition& shape, Int varAxis,
 				  Int type,
-				  TableColumn& tabcol, uInt rownr)
+				  TableColumn& tabcol, rownr_t rownr)
 {
   switch (type) {
   case RATBool:
@@ -1365,7 +1365,7 @@ Table ReadAsciiTable::makeTab (String& formatString,
     for (Int i=0; i<nrcol; i++) {
 	tabcol[i].reference (TableColumn (tab, nameOfColumn[i]));
     }
-    uInt rownr = 0;
+    rownr_t rownr = 0;
 
 // OK, Now we have real data
 // stringsav may contain the first data line.

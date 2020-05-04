@@ -70,16 +70,6 @@ int main () {
 // First build a description.
 void a()
 {
-    {
-        // First ensure it can do the things it should.
-        ScaledComplexData<Complex,Short> engine("", "", Complex(1.,1.),
-						Complex(0.,0.));
-	Bool reask;
-	AlwaysAssertExit (engine.canAccessArrayColumn(reask));
-	AlwaysAssertExit (engine.canAccessArrayColumnCells(reask));
-	AlwaysAssertExit (engine.canAccessSlice(reask));
-	AlwaysAssertExit (engine.canAccessColumnSlice(reask));
-    }
     // First register the virtual column engine.
     ScaledComplexData<Complex,Short>::registerClass();
     ScaledComplexData<DComplex,Int>::registerClass();

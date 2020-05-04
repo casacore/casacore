@@ -60,7 +60,7 @@ template<class T> class Vector;
 // </etymology>
 
 // <synopsis> 
-// IPosition is "logically" a Vector<Int> constrained so that its origin
+// IPosition is "logically" a Vector<Int64> constrained so that its origin
 // is zero-based, and in fact that used to be the way it was implemented.
 // It was split out into a separate class to make the inheritance from
 // Arrays simpler (since Arrays use IPositions). The
@@ -166,18 +166,21 @@ public:
     // up to the given dimension
     static IPosition otherAxes (uInt nrdim, const IPosition& axes);
 
-    // Convert an IPosition to and from an Array<Int>. In either case, the
-    // array must be one dimensional.
+    // Convert an IPosition to and from an Array<Int or Int64>.
+    // In either case, the array must be one dimensional.
     // <group>
     IPosition(const Array<Int>& other);
+    IPosition(const Array<Int64>& other);
     Vector<Int> asVector() const;
+    Vector<Int64> asVector64() const;
     // </group>
 
-    // Convert an IPosition to and from an Array<Int>. In either case, the
-    // array must be one dimensional.
+    // Convert an IPosition to and from an vector<Int or Int64>.
     // <group>
     IPosition(const std::vector<Int>& other);
+    IPosition(const std::vector<Int64>& other);
     std::vector<Int> asStdVector() const;
+    std::vector<Int64> asStdVector64() const;
     // </group>
 
     // Resize and fill this IPosition object.

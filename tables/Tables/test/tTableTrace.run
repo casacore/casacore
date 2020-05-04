@@ -27,5 +27,5 @@ table.trace.filename: stdout
 table.trace.operation: srw
 table.trace.columntype: s
 EOF
-$casa_checktool ./tTableTrace | sed -e 's/^[0-9][^ ]* /time2 /'
+$casa_checktool ./tTableTrace | sed -e 's/^[0-9][^ ]* /time3 /'
 

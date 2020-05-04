@@ -32,20 +32,13 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/ArrayColumnBase.h>
 #include <casacore/tables/Tables/TableError.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-class RefRows;
-template<class T> class Array;
-template<class T> class BaseSlicesFunctor;
-class IPosition;
-class Slice;
-class Slicer;
 class ColumnSlicer;
-class String;
 
 
 // <summary>
@@ -59,7 +52,7 @@ class String;
 
 // <prerequisite>
 //   <li> Table
-//   <li> TableColumn
+//   <li> ArrayColumnBase
 // </prerequisite>
 
 // <etymology>
@@ -103,7 +96,7 @@ class String;
 
 
 template<class T>
-class ArrayColumn : public TableColumn
+class ArrayColumn : public ArrayColumnBase
 {
 public:
 
@@ -156,13 +149,13 @@ public:
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
     // Use the function isDefined to test if the cell contains an array.
-    uInt ndim (uInt rownr) const
+    uInt ndim (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
 
     // Get the shape of an array in a particular cell.
     // If the cell does not contain an array, a 0-dim shape is returned.
     // Use the function isDefined to test if the cell contains an array.
-    IPosition shape (uInt rownr) const
+    IPosition shape (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->shape (rownr); }
 
     // Get the array value in a particular cell (i.e. table row).
@@ -172,9 +165,9 @@ public:
     // array must be empty or its shape must conform the table array shape.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void get (uInt rownr, Array<T>& array, Bool resize = False) const;
-    Array<T> get (uInt rownr) const;
-    Array<T> operator() (uInt rownr) const;
+    void get (rownr_t rownr, Array<T>& array, Bool resize = False) const;
+    Array<T> get (rownr_t rownr) const;
+    Array<T> operator() (rownr_t rownr) const;
     // </group>
 
     // Get a slice of an N-dimensional array in a particular cell
@@ -189,9 +182,9 @@ public:
     // table array slice.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void getSlice (uInt rownr, const Slicer& arraySection, Array<T>& array,
+    void getSlice (rownr_t rownr, const Slicer& arraySection, Array<T>& array,
 		   Bool resize = False) const;
-    Array<T> getSlice (uInt rownr, const Slicer& arraySection) const;
+    Array<T> getSlice (rownr_t rownr, const Slicer& arraySection) const;
     // </group>
 
     // Get an irregular slice of an N-dimensional array in a particular cell
@@ -219,10 +212,10 @@ public:
     // array.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void getSlice (uInt rownr,
+    void getSlice (rownr_t rownr,
                    const Vector<Vector<Slice> >& arraySlices,
                    Array<T>& arr, Bool resize = False) const;
-    Array<T> getSlice (uInt rownr,
+    Array<T> getSlice (rownr_t rownr,
                        const Vector<Vector<Slice> >& arraySlices) const;
     // </group>
 
@@ -337,21 +330,14 @@ public:
                          Array<T>& destination,
                          Bool resize = False) const;
 
-    // The get() function like above which does not check shapes, etc.
-    // It is faster and can be used for performance reasons if one
-    // knows for sure that the arguments are correct.
-    // E.g. it is used internally in virtual column engines.
-    void baseGet (uInt rownr, Array<T>& array) const
-      { baseColPtr_p->get (rownr, &array); }
-
     // Set the shape of the array in the given row.
     // Setting the shape is needed if the array is put in slices,
     // otherwise the table system would not know the shape.
     // <group>
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Try to store the array in a tiled way using the given tile shape.
-    void setShape (uInt rownr, const IPosition& shape,
+    void setShape (rownr_t rownr, const IPosition& shape,
 		   const IPosition& tileShape);
     // </group>
 
@@ -359,7 +345,7 @@ public:
     // The row numbers count from 0 until #rows-1.
     // If the shape of the table array in that cell has not already been
     // defined, it will be defined implicitly.
-    void put (uInt rownr, const Array<T>& array);
+    void put (rownr_t rownr, const Array<T>& array);
 
     // Copy the value of a cell of that column to a cell of this column.
     // This function uses a generic TableColumn object as input.
@@ -367,13 +353,17 @@ public:
     // exception is thrown.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const TableColumn& that,
+    void put (rownr_t rownr, const TableColumn& that,
               Bool preserveTileShape=False)
       { put (rownr, that, rownr, preserveTileShape); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
+    void put (rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
               Bool preserveTileShape=False);
+    // For backward compatibility (otherwise ambigious with put taking Bool).
+    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
+              Bool preserveTileShape=False)
+      { put (rownr_t(thisRownr), that, rownr_t(thatRownr), preserveTileShape); }
     // </group>
 
     // Put into a slice of an N-dimensional array in a particular cell.
@@ -382,10 +372,10 @@ public:
     // The dimensionality of the slice must match the dimensionality
     // of the table array and the slice definition should not exceed
     // the shape of the table array.
-    void putSlice (uInt rownr, const Slicer& arraySection,
+    void putSlice (rownr_t rownr, const Slicer& arraySection,
 		   const Array<T>& array);
 
-    void putSlice (uInt rownr, const Vector<Vector<Slice> >& arraySlices,
+    void putSlice (rownr_t rownr, const Vector<Vector<Slice> >& arraySlices,
                    const Array<T>& arr);
 
     // Put the array of all values in the column.
@@ -453,157 +443,11 @@ public:
     // In fact, this function is an assignment operator with copy semantics.
     void putColumn (const ArrayColumn<T>& that);
 
-    // The put() function like above which does not check shapes, etc.
-    // It is faster and can be used for performance reasons if one
-    // knows for sure that the arguments are correct.
-    // E.g. it is used internally in virtual column engines.
-    void basePut (uInt rownr, const Array<T>& array)
-      { baseColPtr_p->put (rownr, &array); }
-
 private:
     // Check if the data type matches the column data type.
     void checkDataType() const;
-
-    // Check the shape of the array. If the array is empty or if
-    // <src>resize=True</src>, the array is resized if needed.
-    // An exception is thrown if not conforming.
-    void checkShape (const IPosition& shp,
-                     Array<T>& arr, Bool resize,
-                     const String& where) const;
-    void checkShape (const IPosition& shp,
-                     Array<T>& arr, Bool resize,
-                     const char * where) const;
-
-protected:
-    // A common function used by all functions that can get or put irregular
-    // array slices. The functor performs the get or put operation.
-    void handleSlices (const Vector<Vector<Slice> >& slices,
-                       BaseSlicesFunctor<T>& functor,
-                       const Slicer& slicer,
-                       IPosition& arrEnd,
-                       Array<T>& array) const;
-
-    // Keep switches to determine if a slice or an entire column can
-    // be accessed or the change of an array can be changed.
-    // True = yes;  False = no.
-    mutable Bool canAccessSlice_p;
-    mutable Bool canAccessColumn_p;
-    mutable Bool canAccessColumnSlice_p;
-    // Keep switches to know if access knowledge is permanent or has
-    // to be asked again the next time.
-    mutable Bool reaskAccessSlice_p;
-    mutable Bool reaskAccessColumn_p;
-    mutable Bool reaskAccessColumnSlice_p;
 };
 
-class ColumnSlicer {
-
-public:
-
-    // Create a ColumnSlicer for use in one of the overloads of ArrayColumn::getColumnCells.  That method
-    // takes a potentially complex select of data out of a column cell (e.g., multiple slices along each
-    // axis) and then puts them into a selection of a destination array.  This is most easily represnted
-    // as a set of source,destination slicers where one is applied to the cell and the other to the 
-    // destination array.  
-    // 
-    // The shape paramter is the shape of the destination excluding the row axis.  
-    // 
-    // 
-    //
-    // The Slicer objects provided (by pointer) will be owned by the ColumnSlicer object which will
-    // delete them in its destructor.
-
-
-    ColumnSlicer (const IPosition & shape, Vector<Slicer *> dataSlicers, Vector<Slicer *> destinationSlicers)
-    : dataSlicers_p (dataSlicers),
-      destinationSlicers_p (destinationSlicers),
-      shape_p (shape)
-    {
-	String message = validateParameters ();
-	if (! message.empty()){
-
-	  freeSlicers(); // Call gave them to us; set them free.
-
-	  throw  AipsError (String ("ColumnSlicer (ctor):: ") + message);
-	}
-    }
-
-    // Kill off the Slicer objects.
-
-    ~ColumnSlicer (){
-
-        freeSlicers();
-    }
-
-    // Accessor that returns the dataSlicers.
-
-    const Vector <Slicer *> & getDataSlicers () const
-    {
-        return dataSlicers_p;
-    }
-
-    // Accessor that returns the desintation slicers
-
-    const Vector <Slicer *> & getDestinationSlicers () const
-    {
-        return destinationSlicers_p;
-    }
-
-    // Accessor that returns the shape.
-
-    const IPosition & shape () const
-    {
-        return shape_p;
-    }
-
-private:
-
-    void freeSlicers ()
-    {
-        // The two Vectors contain pointers to objects so they need to be freed.
-        // They should have the same length normally, but during validation it's
-        // possible that they have different lengths.
-
-        for (uInt i = 0; i < dataSlicers_p.size(); i++){
-            delete dataSlicers_p [i];
-	}
-
-        for (uInt i = 0; i < destinationSlicers_p.size(); i++){
-            delete destinationSlicers_p [i];
-        }
-    }
-
-    String validateParameters ()
-    {
-        // Validate the contruction parameters to see if they are consistent.
-
-	if (dataSlicers_p.size() != destinationSlicers_p.size()){
-	    return String::format ("Number of data slicers (%d) and destination slicers (%d) "
-                                   "must match", dataSlicers_p.size(), destinationSlicers_p.size());
-	}
-
-	if (dataSlicers_p.size() == 0){
-	  return String::format ("At least one destination and one data slicer required.");
-	}
-
-	for (uInt i = 0; i < dataSlicers_p.size(); i++){
-
-	    if (dataSlicers_p[i]->length() != destinationSlicers_p[i]->length()){
-
-		return String::format ("Length of data slicer[%d] (%s) and "
-                                       "destination slicer [%d] (%s) must be equal", 
-                                       i, dataSlicers_p[i]->length().toString().c_str(),
-				       i, destinationSlicers_p[i]->length().toString().c_str());
-	    }
-	}
-
-	return String();
-    }
-
-    Vector<Slicer *> dataSlicers_p;
-    Vector<Slicer *> destinationSlicers_p;
-    IPosition shape_p;
-};
 
 
 //# Explicitly instantiate these templates in ArrayColumn_tmpl.cc

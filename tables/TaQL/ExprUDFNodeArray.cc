@@ -79,7 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprUDFNodeArray::disableApplySelection()
     { itsUDF->disableApplySelection(); }
 
-  void TableExprUDFNodeArray::applySelection (const Vector<uInt>& rownrs)
+  void TableExprUDFNodeArray::applySelection (const Vector<rownr_t>& rownrs)
     { itsUDF->applySelection (rownrs); }
 
   CountedPtr<TableExprGroupFuncBase> TableExprUDFNodeArray::makeGroupAggrFunc()

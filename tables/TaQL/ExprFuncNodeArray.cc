@@ -2216,40 +2216,39 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         Bool deleteStr;
         String* str = strings.getStorage (deleteStr);
         size_t n = strings.size();
-        size_t i;
         switch (funcType()) {
         case TableExprFuncNode::upcaseFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].upcase();
             }
             break;
         case TableExprFuncNode::downcaseFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].downcase();
             }
             break;
         case TableExprFuncNode::capitalizeFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].capitalize();
             }
             break;
         case TableExprFuncNode::sreverseFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].reverse();
             }
             break;
         case TableExprFuncNode::trimFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].trim();
             }
             break;
         case TableExprFuncNode::ltrimFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].gsub (leadingWS, String());
             }
             break;
         case TableExprFuncNode::rtrimFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i].gsub (trailingWS, String());
             }
             break;
@@ -2260,7 +2259,7 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
               if (operands().size() > 2) {
                 sz = std::max (Int64(0), operands()[2]->getInt (id));
               }
-              for (i=0; i<n; i++) {
+              for (size_t i=0; i<n; i++) {
                 Int64 st = stv;
                 if (st < 0) st += str[i].size();
                 if (st < 0) st = 0;
@@ -2276,12 +2275,12 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
               }
               if (operands()[1]->dataType() == TableExprNodeRep::NTString) {
                 String patt = operands()[1]->getString(id);
-                for (i=0; i<n; i++) {
+                for (size_t i=0; i<n; i++) {
                   str[i].gsub (patt, repl);
                 }
               } else {
                 Regex patt = operands()[1]->getRegex(id).regex();
-                for (i=0; i<n; i++) {
+                for (size_t i=0; i<n; i++) {
                   str[i].gsub (patt, repl);
                 }
               }
@@ -2308,30 +2307,29 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         const MVTime* val = values.array().getStorage (deleteVal);
         String* str = strings.getStorage (deleteStr);
         size_t n = values.size();
-        size_t i;
         switch (funcType()) {
         case TableExprFuncNode::cmonthFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i] = val[i].monthName();
             }
             break;
         case TableExprFuncNode::cdowFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i] = val[i].dayName();
             }
             break;
         case TableExprFuncNode::ctodFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i] = TableExprFuncNode::stringDateTime (val[i], 9);
             }
             break;
         case TableExprFuncNode::cdateFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i] = TableExprFuncNode::stringDate (val[i]);
             }
             break;
         case TableExprFuncNode::ctimeFUNC:
-            for (i=0; i<n; i++) {
+            for (size_t i=0; i<n; i++) {
                 str[i] = TableExprFuncNode::stringTime (val[i], 9);
             }
             break;

@@ -94,7 +94,7 @@ public:
     MSFlagCmd (const String &tableName, TableOption = Table::Old);
     MSFlagCmd (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSFlagCmd (SetupNewTable &newTab, uInt nrrow = 0,
+    MSFlagCmd (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSFlagCmd (const Table &table);
     MSFlagCmd (const MSFlagCmd &other);

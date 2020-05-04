@@ -119,7 +119,7 @@ public:
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return application_p.nrow();}
+  rownr_t nrow() const {return application_p.nrow();}
 
   // set the epoch type for the TIME column.
   // <note role=tip>

@@ -46,11 +46,11 @@ uInt doSort (Vector<uInt>& inx, const Int* arr, uInt nr,
   inx.resize (nr);
   indgen(inx);
   if ((type & Sort::QuickSort) != 0) {
-    return GenSortIndirect<Int>::quickSort (inx.data(), arr, nr, ord, type);
+    return GenSortIndirect<Int,uInt>::quickSort (inx.data(), arr, nr, ord, type);
   } else if ((type & Sort::HeapSort) != 0) {
-    return GenSortIndirect<Int>::heapSort (inx.data(), arr, nr, ord, type);
+    return GenSortIndirect<Int,uInt>::heapSort (inx.data(), arr, nr, ord, type);
   } else if ((type & Sort::InsSort) != 0) {
-    return GenSortIndirect<Int>::insSort (inx.data(), arr, nr, ord, type);
+    return GenSortIndirect<Int,uInt>::insSort (inx.data(), arr, nr, ord, type);
   }
   return genSort (inx, arr, nr, ord, type);
 }
@@ -149,7 +149,7 @@ int main(int argc, const char* argv[])
         indx[i] = i+1;
     }
     indx[nr - 1] = 0;
-    GenSortIndirect<Int>::quickSort (indx, data, nr, Sort::Ascending, 0);
+    GenSortIndirect<Int,uInt>::quickSort (indx, data, nr, Sort::Ascending, 0);
     for (uInt i=0; i < nr; i++) {
         data[i] = i;
     }
@@ -269,7 +269,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     // First do it indirectly (for smaller arrays only).
     if (nr <= 5000000) {
         tim.mark();
-        uInt kth = GenSortIndirect<Int>::kthLargest (cparr, n, n/2);
+        uInt kth = GenSortIndirect<Int,uInt>::kthLargest (cparr, n, n/2);
         cout << ">>> ind kthLar: ";
         tim.show();
         cout << "<<<" << endl;

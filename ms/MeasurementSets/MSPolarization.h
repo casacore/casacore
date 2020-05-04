@@ -94,7 +94,7 @@ public:
     MSPolarization (const String &tableName, TableOption = Table::Old);
     MSPolarization (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSPolarization (SetupNewTable &newTab, uInt nrrow = 0,
+    MSPolarization (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSPolarization (const Table &table);
     MSPolarization (const MSPolarization &other);

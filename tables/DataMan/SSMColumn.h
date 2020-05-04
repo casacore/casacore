@@ -31,7 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/DataMan/SSMBase.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Containers/Block.h>
@@ -96,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# </todo>
 
 
-class SSMColumn : public StManColumn
+class SSMColumn : public StManColumnBase
 {
 public:
   // Create a SSMColumn object with the given parent.
@@ -113,99 +113,73 @@ public:
 
   // Set the maximum length of a 'fixed length' string.
   // It is only called (right after the constructor) if the string has
-  // a fixed length
+  // a fixed length.
   virtual void setMaxLength (uInt maxLength);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (uInt aRowNr);
+  virtual uInt ndim (rownr_t aRowNr);
   
   // Get the shape of the array in the given row.
-  virtual IPosition shape (uInt aRowNr);
+  virtual IPosition shape (rownr_t aRowNr);
   
   // Let the object initialize itself for a newly created table.
   // It is meant for a derived class.
-  virtual void doCreate (uInt aNrRows);
+  virtual void doCreate (rownr_t aNrRows);
 
   // Let the column object initialize itself for an existing table
-  virtual void getFile (uInt aNrRows);
+  virtual void getFile (rownr_t aNrRows);
 
   // Resync the storage manager with the new file contents.
   // It resets the last rownr put.
-  void resync (uInt aNrRow);
+  void resync (rownr_t aNrRow);
   
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBoolV     (uInt aRowNr, Bool* aDataPtr);
-  virtual void getuCharV    (uInt aRowNr, uChar* aDataPtr);
-  virtual void getShortV    (uInt aRowNr, Short* aDataPtr);
-  virtual void getuShortV   (uInt aRowNr, uShort* aDataPtr);
-  virtual void getIntV      (uInt aRowNr, Int* aDataPtr);
-  virtual void getuIntV     (uInt aRowNr, uInt* aDataPtr);
-  virtual void getInt64V    (uInt aRowNr, Int64* aDataPtr);
-  virtual void getfloatV    (uInt aRowNr, float* aDataPtr);
-  virtual void getdoubleV   (uInt aRowNr, double* aDataPtr);
-  virtual void getComplexV  (uInt aRowNr, Complex* aDataPtr);
-  virtual void getDComplexV (uInt aRowNr, DComplex* aDataPtr);
-  virtual void getStringV   (uInt aRowNr, String* aDataPtr);
+  virtual void getBool     (rownr_t aRowNr, Bool* aDataPtr);
+  virtual void getuChar    (rownr_t aRowNr, uChar* aDataPtr);
+  virtual void getShort    (rownr_t aRowNr, Short* aDataPtr);
+  virtual void getuShort   (rownr_t aRowNr, uShort* aDataPtr);
+  virtual void getInt      (rownr_t aRowNr, Int* aDataPtr);
+  virtual void getuInt     (rownr_t aRowNr, uInt* aDataPtr);
+  virtual void getInt64    (rownr_t aRowNr, Int64* aDataPtr);
+  virtual void getfloat    (rownr_t aRowNr, float* aDataPtr);
+  virtual void getdouble   (rownr_t aRowNr, double* aDataPtr);
+  virtual void getComplex  (rownr_t aRowNr, Complex* aDataPtr);
+  virtual void getDComplex (rownr_t aRowNr, DComplex* aDataPtr);
+  virtual void getString   (rownr_t aRowNr, String* aDataPtr);
   // </group>
   
   // Put the scalar value in the given row.
   // It updates the cache if the row is contained in the cache.
   // <group>
-  virtual void putBoolV     (uInt aRowNr, const Bool* aDataPtr);
-  virtual void putuCharV    (uInt aRowNr, const uChar* aDataPtr);
-  virtual void putShortV    (uInt aRowNr, const Short* aDataPtr);
-  virtual void putuShortV   (uInt aRowNr, const uShort* aDataPtr);
-  virtual void putIntV      (uInt aRowNr, const Int* aDataPtr);
-  virtual void putuIntV     (uInt aRowNr, const uInt* aDataPtr);
-  virtual void putInt64V    (uInt aRowNr, const Int64* aDataPtr);
-  virtual void putfloatV    (uInt aRowNr, const float* aDataPtr);
-  virtual void putdoubleV   (uInt aRowNr, const double* aDataPtr);
-  virtual void putComplexV  (uInt aRowNr, const Complex* aDataPtr);
-  virtual void putDComplexV (uInt aRowNr, const DComplex* aDataPtr);
-  virtual void putStringV   (uInt aRowNr, const String* aDataPtr);
+  virtual void putBool     (rownr_t aRowNr, const Bool* aDataPtr);
+  virtual void putuChar    (rownr_t aRowNr, const uChar* aDataPtr);
+  virtual void putShort    (rownr_t aRowNr, const Short* aDataPtr);
+  virtual void putuShort   (rownr_t aRowNr, const uShort* aDataPtr);
+  virtual void putInt      (rownr_t aRowNr, const Int* aDataPtr);
+  virtual void putuInt     (rownr_t aRowNr, const uInt* aDataPtr);
+  virtual void putInt64    (rownr_t aRowNr, const Int64* aDataPtr);
+  virtual void putfloat    (rownr_t aRowNr, const float* aDataPtr);
+  virtual void putdouble   (rownr_t aRowNr, const double* aDataPtr);
+  virtual void putComplex  (rownr_t aRowNr, const Complex* aDataPtr);
+  virtual void putDComplex (rownr_t aRowNr, const DComplex* aDataPtr);
+  virtual void putString   (rownr_t aRowNr, const String* aDataPtr);
   // </group>
   
   // Get the scalar values of the entire column.
-  // <group>
-  virtual void getScalarColumnBoolV     (Vector<Bool>* aDataPtr);
-  virtual void getScalarColumnuCharV    (Vector<uChar>* aDataPtr);
-  virtual void getScalarColumnShortV    (Vector<Short>* aDataPtr);
-  virtual void getScalarColumnuShortV   (Vector<uShort>* aDataPtr);
-  virtual void getScalarColumnIntV      (Vector<Int>* aDataPtr);
-  virtual void getScalarColumnuIntV     (Vector<uInt>* aDataPtr);
-  virtual void getScalarColumnInt64V    (Vector<Int64>* aDataPtr);
-  virtual void getScalarColumnfloatV    (Vector<float>* aDataPtr);
-  virtual void getScalarColumndoubleV   (Vector<double>* aDataPtr);
-  virtual void getScalarColumnComplexV  (Vector<Complex>* aDataPtr);
-  virtual void getScalarColumnDComplexV (Vector<DComplex>* aDataPtr);
-  virtual void getScalarColumnStringV   (Vector<String>* aDataPtr);
-  // </group>
+  virtual void getScalarColumnV (ArrayBase& aDataPtr);
   
   // Put the scalar values of the entire column.
   // It invalidates the cache.
-  // <group>
-  virtual void putScalarColumnBoolV     (const Vector<Bool>* aDataPtr);
-  virtual void putScalarColumnuCharV    (const Vector<uChar>* aDataPtr);
-  virtual void putScalarColumnShortV    (const Vector<Short>* aDataPtr);
-  virtual void putScalarColumnuShortV   (const Vector<uShort>* aDataPtr);
-  virtual void putScalarColumnIntV      (const Vector<Int>* aDataPtr);
-  virtual void putScalarColumnuIntV     (const Vector<uInt>* aDataPtr);
-  virtual void putScalarColumnInt64V    (const Vector<Int64>* aDataPtr);
-  virtual void putScalarColumnfloatV    (const Vector<float>* aDataPtr);
-  virtual void putScalarColumndoubleV   (const Vector<double>* aDataPtr);
-  virtual void putScalarColumnComplexV  (const Vector<Complex>* aDataPtr);
-  virtual void putScalarColumnDComplexV (const Vector<DComplex>* aDataPtr);
-  virtual void putScalarColumnStringV   (const Vector<String>* aDataPtr);
-  // </group>
+  virtual void putScalarColumnV (const ArrayBase& aDataPtr);
   
   // Add (NewNrRows-OldNrRows) rows to the Column and initialize
   // the new rows when needed.
-  virtual void addRow (uInt aNewNrRows, uInt anOldNrRows, Bool doInit);
+  virtual void addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit);
 
   // Remove the given row from the data bucket and possibly string bucket.
   // If needed, it also removes it from the cache.
-  virtual void deleteRow (uInt aRowNr);
+  virtual void deleteRow (rownr_t aRowNr);
 
   // Get the size of the dataType in bytes!!
   uInt getExternalSizeBytes() const;
@@ -225,33 +199,33 @@ public:
 
 protected:
   // Shift the rows in the bucket one to the left when removing the given row.
-  void shiftRows (char* aValue, uInt rowNr, uInt startRow, uInt endRow);
+  void shiftRows (char* aValue, rownr_t rowNr, rownr_t startRow, rownr_t endRow);
 
   // Fill the cache with data of the bucket containing the given row.
-  void getValue (uInt aRowNr);
+  void getValue (rownr_t aRowNr);
   
   // Get the bucketnr, offset, and length of a variable length string.
   // <src>data</src> must have 3 Ints to hold the values.
   // It returns a pointer to the data in the bucket, which can be used
   // for the case that the data bucket contains the (short) string.
-  Char* getRowValue (Int* data, uInt aRowNr);
+  Char* getRowValue (Int* data, rownr_t aRowNr);
     
   // Put the given value for the row into the correct data bucket.
-  void putValue (uInt aRowNr, const void* aValue);
+  void putValue (rownr_t aRowNr, const void* aValue);
 
   // Put the given string for the row into the correct data bucket.
   // The argument <src>aValue></src> must be 3 Ints (for bucketnr, offset,
   // and length). Only the length is actually used.
-  void putValueShortString (uInt aRowNr, const void* aValue,
+  void putValueShortString (rownr_t aRowNr, const void* aValue,
 			    const String& string);
   
   // Get the values for the entire column.
   // The data from all buckets is copied to the array.
-  void getColumnValue (void* anArray, uInt aNrRows);
+  void getColumnValue (void* anArray, rownr_t aNrRows);
   
   // Put the values from the array in the entire column.
   // Each data bucket is filled with the the appropriate part of the array.
-  void putColumnValue (const void* anArray, uInt aNrRows);
+  void putColumnValue (const void* anArray, rownr_t aNrRows);
 
 
   // Pointer to the parent storage manager.

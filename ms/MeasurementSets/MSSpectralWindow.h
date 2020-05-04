@@ -94,7 +94,7 @@ public:
     MSSpectralWindow (const String &tableName, TableOption = Table::Old);
     MSSpectralWindow (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSSpectralWindow (SetupNewTable &newTab, uInt nrrow = 0,
+    MSSpectralWindow (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSSpectralWindow (const Table &table);
     MSSpectralWindow (const MSSpectralWindow &other);

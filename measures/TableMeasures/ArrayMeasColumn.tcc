@@ -195,7 +195,7 @@ void ArrayMeasColumn<M>::attach (const Table& tab,
 }
 
 template<class M>
-void ArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
+void ArrayMeasColumn<M>::get (rownr_t rownr, Array<M>& meas,
                               Bool resize) const
 {
   // This will fail if array in rownr is undefined.
@@ -333,7 +333,7 @@ void ArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
 }
     	
 template<class M>
-Array<M> ArrayMeasColumn<M>::operator() (uInt rownr) const
+Array<M> ArrayMeasColumn<M>::operator() (rownr_t rownr) const
 {
   Array<M> meas;
   get(rownr, meas);
@@ -341,7 +341,7 @@ Array<M> ArrayMeasColumn<M>::operator() (uInt rownr) const
 }
 
 template<class M>
-Array<M> ArrayMeasColumn<M>::convert (uInt rownr,
+Array<M> ArrayMeasColumn<M>::convert (rownr_t rownr,
                                       const MeasRef<M>& measRef) const
 {
   typename M::Convert conv;
@@ -351,7 +351,7 @@ Array<M> ArrayMeasColumn<M>::convert (uInt rownr,
 
 
 template<class M>
-Array<M> ArrayMeasColumn<M>::convert (uInt rownr, uInt refCode) const
+Array<M> ArrayMeasColumn<M>::convert (rownr_t rownr, uInt refCode) const
 {
   typename M::Convert conv;
   conv.setOut (typename M::Types(refCode));
@@ -359,7 +359,7 @@ Array<M> ArrayMeasColumn<M>::convert (uInt rownr, uInt refCode) const
 }
 
 template<class M>
-Array<M> ArrayMeasColumn<M>::doConvert (uInt rownr,
+Array<M> ArrayMeasColumn<M>::doConvert (rownr_t rownr,
                                         typename M::Convert& conv) const
 {
   Array<M> tmp;
@@ -417,7 +417,7 @@ void ArrayMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
 }
 
 template<class M>
-void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
+void ArrayMeasColumn<M>::put (rownr_t rownr, const Array<M>& meas)
 {
   // If meas has entries then need to resize the dataColArr to conform
   // to meas.Shape() + one dimension for storing the measure's values.

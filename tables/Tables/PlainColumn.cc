@@ -55,7 +55,7 @@ PlainColumn::~PlainColumn()
 {}
 
 
-uInt PlainColumn:: nrow() const
+rownr_t PlainColumn:: nrow() const
     { return colSetPtr_p->nrow(); }
 
 
@@ -147,7 +147,7 @@ void PlainColumn::checkValueLength (const Array<String>* value) const
     ReadOnlyArrayIterator<String> iter (*value, 1);
     while (! iter.pastEnd()) {
 	Vector<String> vec (iter.array());
-	for (uInt i=0; i<vec.nelements(); i++) {
+	for (size_t i=0; i<vec.nelements(); i++) {
 	    if (vec(i).length() > maxlen) {
 		throw (TableError ("Scalar/ArrayColumn::put: string value '" +
 				   vec(i) + "' exceeds maximum length"));

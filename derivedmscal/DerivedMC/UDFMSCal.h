@@ -205,7 +205,7 @@ namespace casacore {
 
     // Let a derived class recreate its column objects in case a selection
     // has to be applied.
-    virtual void recreateColumnObjects (const Vector<uInt>& rownrs);
+    virtual void recreateColumnObjects (const Vector<rownr_t>& rownrs);
 
   private:
     // Setup the Stokes conversion.

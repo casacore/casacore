@@ -109,7 +109,7 @@ template<class T> class Vector;
 // ROTableRow row (table, stringToVector("col1,col2,col3"));
 // cout << row.record().description();
 // // Loop through all rows and get their values.
-// for (uInt i=0; i<table.nrow(); i++) {
+// for (rownr_t i=0; i<table.nrow(); i++) {
 //     const TableRecord& values = row.get (i);
 //     someString = values.asString ("col1");
 //     somedouble = values.asdouble ("col2");
@@ -123,7 +123,7 @@ template<class T> class Vector;
 // RORecordFieldPtr<String> col1(row.record(), "col1");
 // RORecordFieldPtr<double> col2(row.record(), "col2");
 // RORecordFieldPtr<Array<Int> > col3(row.record(), "col3");
-// for (uInt i=0; i<table.nrow(); i++) {
+// for (rownr_t i=0; i<table.nrow(); i++) {
 //     row.get (i);
 //     someString = *col1;
 //     somedouble = *col2;
@@ -205,7 +205,7 @@ public:
     // will be read unless the alwaysRead flag is set to True.
     // <br>The TableRecord& returned is the same one as returned by the
     // record() function. So one can ignore the return value of get().
-    const TableRecord& get (uInt rownr, Bool alwaysRead = False) const;
+    const TableRecord& get (rownr_t rownr, Bool alwaysRead = False) const;
 
     // Get the block telling for each column if its value in the row
     // was indefined in the table.
@@ -233,16 +233,16 @@ protected:
 
     // Put the values found in the internal TableRecord at the given row.
     // This is a helper function for class TableRow.
-    void putRecord (uInt rownr);
+    void putRecord (rownr_t rownr);
 
     // Put a value in the given field in the TableRecord into the
     // given row and column.
     // This is a helper function for class TableRow.
-    void putField (uInt rownr, const TableRecord& record,
+    void putField (rownr_t rownr, const TableRecord& record,
 		   Int whichColumn, Int whichField);
 
     // Set the switch to reread when the current row has been put.
-    void setReread (uInt rownr);
+    void setReread (rownr_t rownr);
 
     //# The record of all fields.
     TableRecord* itsRecord;
@@ -341,7 +341,7 @@ private:
 //         RecordFieldPtr<String> col1(row.record(), "col1");
 //         RecordFieldPtr<double> col2(row.record(), "col2");
 //         RecordFieldPtr<Array<Int> > col3(row.record(), "col3");
-//         for (uInt i=0; i<n; i++) {
+//         for (rownr_t i=0; i<n; i++) {
 //             *col1 = someString;
 //             *col2 = somedouble;
 //             *col3 = someArrayInt;
@@ -378,7 +378,7 @@ private:
 // Table table(newtab, 10);
 // TableRow row (table, stringToVector("col1,col2,col3,col4"));
 // // Loop through all rows and get their values.
-// for (uInt i=0; i<table.nrow(); i++) {
+// for (rownr_t i=0; i<table.nrow(); i++) {
 //     // Some magic filler function returns a filled TableRecord
 //     // (with the correct fields in the correct order).
 //     TableRecord record = fillerFunction();
@@ -456,7 +456,7 @@ public:
     // The values in the TableRecord contained in this object are put.
     // This TableRecord can be accessed and updated using the
     // function <src>record</src>.
-    void put (uInt rownr);
+    void put (rownr_t rownr);
 
     // Put the values found in the TableRecord in the appropriate columns
     // in the given row.
@@ -473,9 +473,9 @@ public:
     // If not, nothing will be written.
     // It is meant for array values which might be undefined in a table.
     // <group>
-    void put (uInt rownr, const TableRecord& record,
+    void put (rownr_t rownr, const TableRecord& record,
 	      Bool checkConformance = True);
-    void put (uInt rownr, const TableRecord& record,
+    void put (rownr_t rownr, const TableRecord& record,
 	      const Block<Bool>& valuesDefined,
 	      Bool checkConformance = True);
     // </group>
@@ -487,7 +487,7 @@ public:
     // record contains fields B and C, only field B will be put.
     // <br>In principle the data types of the matching fields must match,
     // but data type promotion of numeric values will be applied.
-    void putMatchingFields (uInt rownr, const TableRecord& record);
+    void putMatchingFields (rownr_t rownr, const TableRecord& record);
 
 private:
     // Check if the names of the given record match this row.
@@ -519,7 +519,7 @@ inline TableRecord& TableRow::record()
 {
     return *itsRecord;
 }
-inline void TableRow::put (uInt rownr)
+inline void TableRow::put (rownr_t rownr)
 {
     putRecord (rownr);
 }

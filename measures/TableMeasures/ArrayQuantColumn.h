@@ -164,39 +164,39 @@ public:
   // is not correct. Otherwise a "conformance exception" is thrown
   // if the array is not empty and its shape mismatches.
   // <group name="get">
-  void get (uInt rownr, Array<Quantum<T> >& q, Bool resize = False) const;
+  void get (rownr_t rownr, Array<Quantum<T> >& q, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the given unit.
-  void get (uInt rownr, Array<Quantum<T> >& q,
+  void get (rownr_t rownr, Array<Quantum<T> >& q,
 	    const Unit&, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the given units.
-  void get (uInt rownr, Array<Quantum<T> >& q,
+  void get (rownr_t rownr, Array<Quantum<T> >& q,
 	    const Vector<Unit>&, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the unit in other.
-  void get (uInt rownr, Array<Quantum<T> >& q,
+  void get (rownr_t rownr, Array<Quantum<T> >& q,
 	    const Quantum<T>& other, Bool resize = False) const;
   // </group>
 
   // Return the quantum array stored in the specified row.
   // <group>
-  Array<Quantum<T> > operator() (uInt rownr) const;
+  Array<Quantum<T> > operator() (rownr_t rownr) const;
   // Return the quantum array stored in the specified row, converted
   // to the given unit.
-  Array<Quantum<T> > operator() (uInt rownr, const Unit&) const;
+  Array<Quantum<T> > operator() (rownr_t rownr, const Unit&) const;
   // Return the quantum array stored in the specified row, converted
   // to the given units.
-  Array<Quantum<T> > operator() (uInt rownr, const Vector<Unit>&) const;
+  Array<Quantum<T> > operator() (rownr_t rownr, const Vector<Unit>&) const;
   // Return the quantum array stored in the specified row, converted
   // to the unit in other.
-  Array<Quantum<T> > operator() (uInt rownr, const Quantum<T>& other) const;
+  Array<Quantum<T> > operator() (rownr_t rownr, const Quantum<T>& other) const;
   // </group>
 
   // Put an array of quanta into the specified row of the table.
   // If the column supports variable units, the units are stored as well.
   // Otherwise the quanta are converted to the column's units.
-  void put (uInt rownr, const Array<Quantum<T> >& q);
+  void put (rownr_t rownr, const Array<Quantum<T> >& q);
 
   // Test whether the Quantum column has variable units
   Bool isUnitVariable() const
@@ -247,7 +247,7 @@ private:
   void cleanUp();
 
   // Get the data without possible conversion.
-  void getData (uInt rownr, Array<Quantum<T> >& q, Bool resize) const;
+  void getData (rownr_t rownr, Array<Quantum<T> >& q, Bool resize) const;
 
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.

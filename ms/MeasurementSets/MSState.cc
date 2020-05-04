@@ -64,14 +64,14 @@ MSState::MSState(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSState"));
 }
 
-MSState::MSState(SetupNewTable &newTab, uInt nrrow,
+MSState::MSState(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSStateEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSState(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSState(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSState"));
 }
 

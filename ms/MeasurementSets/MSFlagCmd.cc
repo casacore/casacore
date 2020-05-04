@@ -63,7 +63,7 @@ MSFlagCmd::MSFlagCmd(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSFlagCmd"));
 }
 
-MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, uInt nrrow,
+MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSFlagCmdEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)

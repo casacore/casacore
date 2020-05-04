@@ -101,24 +101,24 @@ public:
     TabVecTemp (const Vector<T>&);
 
     // Create table vector containing a Vector with given length.
-    TabVecTemp (uInt leng);
+    TabVecTemp (rownr_t leng);
 
     // Destruct the object.
     ~TabVecTemp();
 
     // Return a reference to a value.
-    inline const T& operator() (uInt index) const;
+    inline const T& operator() (rownr_t index) const;
 
     // Return a reference to a value.
-    inline T& operator() (uInt index);
+    inline T& operator() (rownr_t index);
 
     // Get a value (virtual function).
-    T value (uInt index) const;
+    T value (rownr_t index) const;
     // Get a value (virtual function).
-    void getVal (uInt index, T&) const;
+    void getVal (rownr_t index, T&) const;
 
     // Put a value (virtual function).
-    void putVal (uInt index, const T&);
+    void putVal (rownr_t index, const T&);
 
     // Set entire vector to a value.
     void set (const T&);
@@ -131,10 +131,10 @@ protected:
 
 //# Return a reference to a value.
 template<class T>
-inline const T& TabVecTemp<T>::operator() (uInt index) const
+inline const T& TabVecTemp<T>::operator() (rownr_t index) const
     { return (*vecPtr_p)(index); }
 template<class T>
-inline T& TabVecTemp<T>::operator() (uInt index)
+inline T& TabVecTemp<T>::operator() (rownr_t index)
     { return (*vecPtr_p)(index); }
 
 

@@ -40,23 +40,23 @@ Bool VirtualColumnEngine::isStorageManager() const
 
 Bool VirtualColumnEngine::canAddRow() const
     { return True; }
-void VirtualColumnEngine::addRow (uInt)
+void VirtualColumnEngine::addRow64 (rownr_t)
     {}
 Bool VirtualColumnEngine::canRemoveRow() const
     { return True; }
-void VirtualColumnEngine::removeRow (uInt)
+void VirtualColumnEngine::removeRow64 (rownr_t)
     {}
 
 //# Create, open, prepare and close do nothing unless implemented in the
 // derived class.
 Bool VirtualColumnEngine::flush (AipsIO&, Bool)
 { return False; }
-void VirtualColumnEngine::create (uInt)
+void VirtualColumnEngine::create64 (rownr_t)
 {}
-void VirtualColumnEngine::open (uInt, AipsIO&)
-{}
-void VirtualColumnEngine::resync (uInt)
-{}
+rownr_t VirtualColumnEngine::open64 (rownr_t nrow, AipsIO&)
+  { return nrow; }
+rownr_t VirtualColumnEngine::resync64 (rownr_t nrow)
+  { return nrow; }
 void VirtualColumnEngine::prepare()
 {}
 void VirtualColumnEngine::deleteManager()

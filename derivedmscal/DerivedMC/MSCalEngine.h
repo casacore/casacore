@@ -138,28 +138,28 @@ public:
   void setDirColName (const String& colName);
 
   // Get the hourangle for the given row.
-  double getHA (Int antnr, uInt rownr);
+  double getHA (Int antnr, rownr_t rownr);
 
   // Get the hourangle/DEC for the given row.
-  void getHaDec (Int antnr, uInt rownr, Array<Double>&);
+  void getHaDec (Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the parallatic angle for the given row.
-  double getPA (Int antnr, uInt rownr);
+  double getPA (Int antnr, rownr_t rownr);
 
   // Get the local sidereal time for the given row.
-  double getLAST (Int antnr, uInt rownr);
+  double getLAST (Int antnr, rownr_t rownr);
 
   // Get the azimuth/elevation for the given row.
-  void getAzEl (Int antnr, uInt rownr, Array<Double>&);
+  void getAzEl (Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the ITRF coordinates for the given row.
-  void getItrf (Int antnr, uInt rownr, Array<Double>&);
+  void getItrf (Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the UVW in J2000 or APP for the given row.
-  void getNewUVW (Bool asApp, uInt rownr, Array<Double>&);
+  void getNewUVW (Bool asApp, rownr_t rownr, Array<Double>&);
 
   // Get the delay for the given row.
-  double getDelay (Int antnr, uInt rownr);
+  double getDelay (Int antnr, rownr_t rownr);
 
 private:
   // Copy constructor cannot be used.
@@ -171,7 +171,7 @@ private:
   // Set the data in the measure converter machines.
   // The antenna positions are only filled in antnr>=0 or if fillAnt is set.
   // It returns the mount of the antenna.
-  Int setData (Int antnr, uInt rownr, Bool fillAnt=False);
+  Int setData (Int antnr, rownr_t rownr, Bool fillAnt=False);
 
   // Initialize the column objects, etc.
   void init();

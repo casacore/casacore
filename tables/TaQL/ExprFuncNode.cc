@@ -1346,7 +1346,6 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                                   FunctionType fType,
                                   vector<TENShPtr>& nodes)
 {
-    uInt i;
     // The default returned value type is a scalar.
     resVT = VTScalar;
     // The default datatype is NTDouble.
@@ -1653,7 +1652,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars and arrays.
     // They return an array if one of the input arguments is an array.
     // If a function has no arguments, it results in a scalar.
-    for (i=0; i< nodes.size(); i++) {
+    for (uInt i=0; i< nodes.size(); i++) {
         ValueType vt = nodes[i]->valueType();
         if (vt == VTArray) {
             resVT = vt;
@@ -1909,7 +1908,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         break;
     }
     // The following functions accept scalars only (or no arguments).
-    for (i=0; i< nodes.size(); i++) {
+    for (uInt i=0; i< nodes.size(); i++) {
         if (nodes[i]->valueType() != VTScalar) {
             throw TableInvExpr ("Function nr " + String::toString(fType) +
                                 " has to have a scalar argument");

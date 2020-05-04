@@ -390,7 +390,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Fill the table via the virtual columns.
 //    ArrayColumn<StokesVector> stokesColumn (tab, "Stokes");
 //    Vector<StokesVector> vec(10);
-//    uInt i;
+//    rownr_t i;
 //    for (i=0; i<tab.nrow(); i++) {
 //        stokesColumn.put (i, vec);
 //    }
@@ -515,7 +515,7 @@ private:
 
     // Initialize the object for a new table.
     // It defines the keywords containing the engine parameters.
-    void create (uInt initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
@@ -538,15 +538,15 @@ private:
     // the virtual element shape.
     // E.g. in case of a StokesVector a virtual shape of (512,512)
     // results in a stored shape of (4,512,512).
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Get the dimensionality of the array in the given row.
-    uInt ndim (uInt rownr);
+    uInt ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // This is done by stripping the first dimension(s) from the shape
     // of the underlying stored array.
-    IPosition shape (uInt rownr);
+    IPosition shape (rownr_t rownr);
 
     // Check if the shapes of virtual and stored match.
     // Determine the shape of the virtual elements in the stored.
@@ -555,7 +555,7 @@ private:
 
     // Map the virtual shape to the stored shape.
     // By default is returns the virtual shape.
-    virtual IPosition getStoredShape (uInt rownr,
+    virtual IPosition getStoredShape (rownr_t rownr,
                                       const IPosition& virtualShape);
 
     // Convert the Slicer for a virtual to a Slicer for the stored.

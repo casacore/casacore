@@ -94,7 +94,7 @@ public:
     MSField (const String &tableName, TableOption = Table::Old);
     MSField (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSField (SetupNewTable &newTab, uInt nrrow = 0,
+    MSField (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSField (const Table &table);
     MSField (const MSField &other);

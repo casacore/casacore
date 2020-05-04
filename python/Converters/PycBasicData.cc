@@ -75,6 +75,7 @@ namespace casacore { namespace python {
     casacore::python::register_convert_casa_iposition();
     casacore::python::register_convert_casa_vector<casacore::Bool>();
     casacore::python::register_convert_casa_vector<casacore::Int>();
+    casacore::python::register_convert_casa_vector<casacore::Int64>();
     casacore::python::register_convert_casa_vector<casacore::Double>();
     casacore::python::register_convert_casa_vector<casacore::Float>();
     casacore::python::register_convert_casa_vector<casacore::DComplex>();

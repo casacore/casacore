@@ -105,7 +105,7 @@ public:
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return flagRow_p.nrow();}
+  rownr_t nrow() const {return flagRow_p.nrow();}
 
   // returns the last row that contains the specified entries in the
   // SPECTRAL_WINDOW_ID & POLARIZATION_ID columns. Returns -1 if no match could
@@ -113,7 +113,7 @@ public:
   // that row is tested to see if it matches before any others are
   // tested. Setting tryRow to a positive value greater than the table length
   // will throw an exception (AipsError).
-  Int match(uInt spwId, uInt polId, Int tryRow=-1);
+  Int64 match(uInt spwId, uInt polId, Int64 tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach

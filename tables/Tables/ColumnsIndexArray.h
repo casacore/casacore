@@ -127,7 +127,7 @@ class TableColumn;
 // // NAME is a unique key, so only one row number matches.
 // // Otherwise function getRowNumbers had to be used.
 // *nameFld = "MYNAME";
-// uInt rownr = colInx.getRowNumber (found);
+// rownr_t rownr = colInx.getRowNumber (found);
 // if (!found) {
 //     cout << "Name MYNAME is unknown" << endl;
 // }
@@ -136,7 +136,7 @@ class TableColumn;
 // RecordFieldPtr<String> nameUpp(colInx.accessUpperKey(), "NAME");
 // *nameFld = "LOWER";
 // *nameUpp = "UPPER";
-// Vector<uInt> rownrs = colInx.getRowNumbers (True, True, True);
+// RowNumbers rownrs = colInx.getRowNumbers (True, True, True);
 // </srcblock>
 
 // <motivation>
@@ -203,8 +203,8 @@ public:
   // functions. Note that the given Record will be copied to the internal
   // record, thus overwrites it.
   // <group>
-  uInt getRowNumber (Bool& found);
-  uInt getRowNumber (Bool& found, const Record& key);
+  rownr_t getRowNumber (Bool& found);
+  rownr_t getRowNumber (Bool& found, const Record& key);
   // </group>
 
   // Find the row numbers matching the key. It should be used instead
@@ -219,8 +219,8 @@ public:
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  Vector<uInt> getRowNumbers (Bool unique=False);
-  Vector<uInt> getRowNumbers (const Record& key, Bool unique=False);
+  RowNumbers getRowNumbers (Bool unique=False);
+  RowNumbers getRowNumbers (const Record& key, Bool unique=False);
   // </group>
 
   // Find the row numbers matching the key range. The boolean arguments
@@ -236,11 +236,11 @@ public:
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  Vector<uInt> getRowNumbers (Bool lowerInclusive, Bool upperInclusive,
-			      Bool unique=False);
-  Vector<uInt> getRowNumbers (const Record& lower, const Record& upper,
-			      Bool lowerInclusive, Bool upperInclusive,
-			      Bool unique=False);
+  RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive,
+                            Bool unique=False);
+  RowNumbers getRowNumbers (const Record& lower, const Record& upper,
+                            Bool lowerInclusive, Bool upperInclusive,
+                            Bool unique=False);
   // </group>
 
 protected:
@@ -269,19 +269,19 @@ protected:
   // in <src>itsUniqueIndexArray</src> is returned.
   // If not found, <src>found</src> is set to False and the index
   // of the next higher key is returned.
-  uInt bsearch (Bool& found, void* fieldPtr) const;
+  rownr_t bsearch (Bool& found, void* fieldPtr) const;
 
   // Compare the key in <src>fieldPtr</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
   static Int compare (void* fieldPtr,
 		      void* dataPtr,
 		      Int dataType,
-		      Int index);
+		      rownr_t index);
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
   // If <src>unique</src> is True, the row numbers will be made unique.
-  void fillRowNumbers (Vector<uInt>& rows, uInt start, uInt end,
+  void fillRowNumbers (Vector<rownr_t>& rows, rownr_t start, rownr_t end,
 		       Bool unique) const;
 
   // Get the data if the column is an array.
@@ -295,11 +295,11 @@ protected:
   // </group>
 
   // Fill the rownrs belonging to each array value.
-  void fillRownrs (uInt npts, const Block<uInt>& nrel);
+  void fillRownrs (rownr_t npts, const Block<rownr_t>& nrel);
 
 private:
-  Table  itsTable;
-  uInt   itsNrrow;
+  Table   itsTable;
+  rownr_t itsNrrow;
   Record* itsLowerKeyPtr;
   Record* itsUpperKeyPtr;
   Int     itsDataType;
@@ -309,13 +309,13 @@ private:
   //# They are used for fast access to the records.
   void*   itsLowerField;
   void*   itsUpperField;
-  Bool         itsChanged;
-  Vector<uInt> itsDataIndex;         //# Row numbers of all keys
+  Bool            itsChanged;
+  Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
   //# Indices in itsDataIndex for each unique key
-  Vector<uInt> itsUniqueIndex;
-  Block<uInt>  itsRownrs;            //# rownr for each value
-  uInt*        itsDataInx;           //# pointer to data in itsDataIndex
-  uInt*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
+  Vector<rownr_t> itsUniqueIndex;
+  Block<rownr_t>  itsRownrs;            //# rownr for each value
+  rownr_t*        itsDataInx;           //# pointer to data in itsDataIndex
+  rownr_t*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
 };
 
 

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMDirColumn.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_MSMDIRCOLUMN_H
 #define TABLES_MSMDIRCOLUMN_H
@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/MSMColumn.h>
-#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Array.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -69,178 +69,82 @@ public:
   MSMDirColumn (MSMBase* smptr, int dataType);
 
   // Frees up the storage.
-  ~MSMDirColumn();
-
-  // It can handle access to a slice in a cell.
-  Bool canAccessSlice (Bool& reask) const;
-
-  // It can handle access to an entire column.
-  Bool canAccessArrayColumn (Bool& reask) const;
+  virtual ~MSMDirColumn();
 
   // Set the (fixed) shape of the arrays in the entire column.
-  void setShapeColumn (const IPosition& shape);
+  virtual void setShapeColumn (const IPosition& shape);
 
   // Add (newNrrow-oldNrrow) rows to the column.
   // Allocate the data arrays in these rows if the shape is fixed.
-  void addRow (uInt newNrrow, uInt oldNrrow);
+  virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  uInt ndim (uInt rownr);
+  virtual uInt ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
-  IPosition shape (uInt rownr);
+  virtual IPosition shape (rownr_t rownr);
 
   // Get an array value in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn get function).
-  // <group>
-  void getArrayBoolV     (uInt rownr, Array<Bool>* dataPtr);
-  void getArrayuCharV    (uInt rownr, Array<uChar>* dataPtr);
-  void getArrayShortV    (uInt rownr, Array<Short>* dataPtr);
-  void getArrayuShortV   (uInt rownr, Array<uShort>* dataPtr);
-  void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
-  void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
-  void getArrayInt64V    (uInt rownr, Array<Int64>* dataPtr);
-  void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
-  void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
-  void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
-  void getArrayDComplexV (uInt rownr, Array<DComplex>* dataPtr);
-  void getArrayStringV   (uInt rownr, Array<String>* dataPtr);
-  // </group>
-
+  virtual void getArrayV (rownr_t rownr, ArrayBase& arr);
+  
   // Put an array value into the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn put function).
-  // <group>
-  void putArrayBoolV     (uInt rownr, const Array<Bool>* dataPtr);
-  void putArrayuCharV    (uInt rownr, const Array<uChar>* dataPtr);
-  void putArrayShortV    (uInt rownr, const Array<Short>* dataPtr);
-  void putArrayuShortV   (uInt rownr, const Array<uShort>* dataPtr);
-  void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
-  void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
-  void putArrayInt64V    (uInt rownr, const Array<Int64>* dataPtr);
-  void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
-  void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
-  void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);
-  void putArrayDComplexV (uInt rownr, const Array<DComplex>* dataPtr);
-  void putArrayStringV   (uInt rownr, const Array<String>* dataPtr);
-  // </group>
+  virtual void putArrayV (rownr_t rownr, const ArrayBase& arr);
 
   // Get a section of the array in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn getSlice function).
-  // <group>
-  void getSliceBoolV     (uInt rownr, const Slicer&, Array<Bool>* dataPtr);
-  void getSliceuCharV    (uInt rownr, const Slicer&, Array<uChar>* dataPtr);
-  void getSliceShortV    (uInt rownr, const Slicer&, Array<Short>* dataPtr);
-  void getSliceuShortV   (uInt rownr, const Slicer&, Array<uShort>* dataPtr);
-  void getSliceIntV      (uInt rownr, const Slicer&, Array<Int>* dataPtr);
-  void getSliceuIntV     (uInt rownr, const Slicer&, Array<uInt>* dataPtr);
-  void getSliceInt64V    (uInt rownr, const Slicer&, Array<Int64>* dataPtr);
-  void getSlicefloatV    (uInt rownr, const Slicer&, Array<float>* dataPtr);
-  void getSlicedoubleV   (uInt rownr, const Slicer&, Array<double>* dataPtr);
-  void getSliceComplexV  (uInt rownr, const Slicer&, Array<Complex>* dataPtr);
-  void getSliceDComplexV (uInt rownr, const Slicer&, Array<DComplex>* dataPtr);
-  void getSliceStringV   (uInt rownr, const Slicer&, Array<String>* dataPtr);
-  // </group>
+  virtual void getSliceV (rownr_t rownr, const Slicer&, ArrayBase& arr);
 
   // Put into a section of the array in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn putSlice function).
-  // <group>
-  void putSliceBoolV     (uInt rownr, const Slicer&,
-			  const Array<Bool>* dataPtr);
-  void putSliceuCharV    (uInt rownr, const Slicer&,
-			  const Array<uChar>* dataPtr);
-  void putSliceShortV    (uInt rownr, const Slicer&,
-			  const Array<Short>* dataPtr);
-  void putSliceuShortV   (uInt rownr, const Slicer&,
-			  const Array<uShort>* dataPtr);
-  void putSliceIntV      (uInt rownr, const Slicer&,
-			  const Array<Int>* dataPtr);
-  void putSliceuIntV     (uInt rownr, const Slicer&,
-			  const Array<uInt>* dataPtr);
-  void putSliceInt64V    (uInt rownr, const Slicer&,
-			  const Array<Int64>* dataPtr);
-  void putSlicefloatV    (uInt rownr, const Slicer&,
-			  const Array<float>* dataPtr);
-  void putSlicedoubleV   (uInt rownr, const Slicer&,
-			  const Array<double>* dataPtr);
-  void putSliceComplexV  (uInt rownr, const Slicer&,
-			  const Array<Complex>* dataPtr);
-  void putSliceDComplexV (uInt rownr, const Slicer&,
-			  const Array<DComplex>* dataPtr);
-  void putSliceStringV   (uInt rownr, const Slicer&,
-			  const Array<String>* dataPtr);
-  // </group>
-
-  // Get all array values in the column.
-  // The buffer pointed to by dataPtr has to have the correct length
-  // (which is guaranteed by the ArrayColumn getColumn function).
-  // <group>
-  void getArrayColumnBoolV     (Array<Bool>* dataPtr);
-  void getArrayColumnuCharV    (Array<uChar>* dataPtr);
-  void getArrayColumnShortV    (Array<Short>* dataPtr);
-  void getArrayColumnuShortV   (Array<uShort>* dataPtr);
-  void getArrayColumnIntV      (Array<Int>* dataPtr);
-  void getArrayColumnuIntV     (Array<uInt>* dataPtr);
-  void getArrayColumnInt64V    (Array<Int64>* dataPtr);
-  void getArrayColumnfloatV    (Array<float>* dataPtr);
-  void getArrayColumndoubleV   (Array<double>* dataPtr);
-  void getArrayColumnComplexV  (Array<Complex>* dataPtr);
-  void getArrayColumnDComplexV (Array<DComplex>* dataPtr);
-  void getArrayColumnStringV   (Array<String>* dataPtr);
-  // </group>
-
-  // Put all arrays in the column.
-  // The buffer pointed to by dataPtr has to have the correct length
-  // (which is guaranteed by the ArrayColumn putColumn function).
-  // <group>
-  void putArrayColumnBoolV     (const Array<Bool>* dataPtr);
-  void putArrayColumnuCharV    (const Array<uChar>* dataPtr);
-  void putArrayColumnShortV    (const Array<Short>* dataPtr);
-  void putArrayColumnuShortV   (const Array<uShort>* dataPtr);
-  void putArrayColumnIntV      (const Array<Int>* dataPtr);
-  void putArrayColumnuIntV     (const Array<uInt>* dataPtr);
-  void putArrayColumnInt64V    (const Array<Int64>* dataPtr);
-  void putArrayColumnfloatV    (const Array<float>* dataPtr);
-  void putArrayColumndoubleV   (const Array<double>* dataPtr);
-  void putArrayColumnComplexV  (const Array<Complex>* dataPtr);
-  void putArrayColumnDComplexV (const Array<DComplex>* dataPtr);
-  void putArrayColumnStringV   (const Array<String>* dataPtr);
-  // </group>
+  virtual void putSliceV (rownr_t rownr, const Slicer&, const ArrayBase& arr);
 
   // Remove the value in the given row.
-  void remove (uInt rownr);
+  void remove (rownr_t rownr);
 
   // Let the column create its arrays.
-  void doCreate (uInt nrrow);
-
-  // Check if the class invariants still hold.
-  Bool ok() const;
+  void doCreate (rownr_t nrrow);
 
 private:
-  // The (unique) sequence number of the column.
-  uInt seqnr_p;
-  // The shape of the array.
-  IPosition shape_p;
-  // The nr of elements in the array.
-  uInt nrelem_p;
+  template<typename T>
+  inline void doGetSlice (rownr_t rownr, const Slicer& slicer, Array<T>& data)
+  {
+    Array<T> arr(shape_p, static_cast<T*>(getArrayPtr (rownr)), SHARE);
+    data = arr(slicer);
+  }
 
+  template<typename T>
+  inline void doPutSlice (rownr_t rownr, const Slicer& slicer, const Array<T>& data)
+  {
+    Array<T> arr(shape_p, static_cast<T*>(getArrayPtr (rownr)), SHARE);
+    arr(slicer) = data;
+  }
 
   // Delete the array in the given row.
-  void deleteArray (uInt rownr);
+  void deleteArray (rownr_t rownr);
 
   // Forbid copy constructor.
   MSMDirColumn (const MSMDirColumn&);
 
   // Forbid assignment.
   MSMDirColumn& operator= (const MSMDirColumn&);
+
+
+  // The (unique) sequence number of the column.
+  uInt seqnr_p;
+  // The shape of the array.
+  IPosition shape_p;
+  // The nr of elements in the array.
+  rownr_t nrelem_p;
+
 };
-
-
 
 
 } //# NAMESPACE CASACORE - END

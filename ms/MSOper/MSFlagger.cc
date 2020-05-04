@@ -742,8 +742,8 @@ Bool MSFlagger::createFlagHistory(Int nHis)
       values1.define("FLAG_CATEGORY_HYPERCUBE_ID",hypercubeId(0));
       Int cube;
       for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(0)) break;
-      Int nRow=tab.nrow();
-      for (Int i=0; i<nRow; i++) {
+      Int64 nRow=tab.nrow();
+      for (Int64 i=0; i<nRow; i++) {
 	// add new hyperCube
 	if (i>0 && hypercubeId(i)!=hypercubeId(i-1)) {
 	  values1.define("FLAG_CATEGORY_HYPERCUBE_ID",hypercubeId(i));
@@ -803,7 +803,7 @@ void MSFlagger::fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab)
 {
   // fill the first two levels of flagging with the flags present 
   // in the MS columns FLAG and FLAG_ROW.
-  const Int maxRow=1000000/(numCorr*numChan); // of order 1 MB chunks
+  const rownr_t maxRow=1000000/(numCorr*numChan); // of order 1 MB chunks
   ArrayColumn<Bool> flagCol(tab,MS::columnName(MS::FLAG));
   ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
   Array<Bool> flagHis(IPosition(4,nHis,numCorr,numChan,maxRow));
@@ -816,12 +816,12 @@ void MSFlagger::fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab)
 			  IPosition(4,1,numCorr-1,numChan-1,maxRow-1)).
 			  reform(IPosition(3,numCorr,numChan,maxRow)));
   flagHis.set(False);
-  Int nRow=tab.nrow();
+  rownr_t nRow=tab.nrow();
   ScalarColumn<Bool> flagRowCol(tab,MS::columnName(MS::FLAG_ROW));
   Array<Bool> flagCube;
   Vector<Bool> flagRowVec;
-  for (Int i=0; i<=(nRow/maxRow); i+=maxRow) {
-    Int n=min(maxRow,nRow-maxRow*i);
+  for (rownr_t i=0; i<=(nRow/maxRow); i+=maxRow) {
+    rownr_t n=min(maxRow,nRow-maxRow*i);
     if (n<maxRow) {
       flagHis.resize(IPosition(4,nHis,numCorr,numChan,n));
       flagHis.set(False);
@@ -838,7 +838,7 @@ void MSFlagger::fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab)
     flagRowCol.getColumnRange(rowSlice,flagRowVec,True);
     flagCol.getColumnRange(rowSlice,flagCube,True);
     ref0=flagCube;
-    for (Int j=0; j<n; j++) {
+    for (rownr_t j=0; j<n; j++) {
       if (flagRowVec(j)) {
 	ref0.xyPlane(j).set(True);
       }
@@ -898,22 +898,22 @@ void MSFlagger::saveToFlagHist(Int level, Table& tab)
   ArrayColumn<Bool> flagCol(tab,MS::columnName(MS::FLAG));
   Int numCorr=flagCol.shape(0)(0);
   Int numChan=flagCol.shape(0)(1);
-  const Int maxRow=1000000/(numCorr*numChan); // of order 1 MB chunks
+  const rownr_t maxRow=1000000/(numCorr*numChan); // of order 1 MB chunks
   Array<Bool> flagHis(IPosition(4,1,numCorr,numChan,maxRow));
   Cube<Bool> ref(flagHis.reform(IPosition(3,numCorr,numChan,maxRow)));
-  Int nRow=tab.nrow();
+  rownr_t nRow=tab.nrow();
   Array<Bool> flagCube;
   Vector<Bool> flagRowVec;
   Slicer slicer(Slice(level,1),Slice(0,numCorr),Slice(0,numChan));
-  for (Int i=0; i<=(nRow/maxRow); i+=maxRow) {
-    Int n=min(maxRow,nRow-maxRow*i);
+  for (rownr_t i=0; i<=(nRow/maxRow); i+=maxRow) {
+    rownr_t n=min(maxRow,nRow-maxRow*i);
     if (n<maxRow) {
       flagHis.resize(IPosition(4,1,numCorr,numChan,n));
       Array<Bool> tmp(flagHis.reform(IPosition(3,numCorr,numChan,n)));
       ref.reference(tmp);
     }
-    Vector<uInt> rows(n);
-    indgen(rows,uInt(i*maxRow));
+    RowNumbers rows(n);
+    indgen(rows, i*maxRow);
     Table sel=tab(rows);
     ArrayColumn<Bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
     ArrayColumn<Bool> flagCol(sel,MS::columnName(MS::FLAG));
@@ -921,7 +921,7 @@ void MSFlagger::saveToFlagHist(Int level, Table& tab)
     flagCol.getColumn(flagCube,True);
     flagRowCol.getColumn(flagRowVec,True);
     ref=flagCube;
-    for (Int j=0; j<n; j++) {
+    for (rownr_t j=0; j<n; j++) {
       if (flagRowVec(j)) {
 	ref.xyPlane(j).set(True);
       }
@@ -969,15 +969,15 @@ Bool MSFlagger::restoreFlags(Int level)
 
 void MSFlagger::applyFlagHist(Int level, Table& tab)
 {
-  Int nRow=tab.nrow();
+  rownr_t nRow=tab.nrow();
   ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
   IPosition shape=flagHisCol.shape(0); shape(0)=1;
-  const Int maxRow=1000000/(shape(1)*shape(2)); // of order 1 MB chunks
+  const rownr_t maxRow=1000000/(shape(1)*shape(2)); // of order 1 MB chunks
   Slicer slicer(Slice(level,1),Slice(0,shape(1)),Slice(0,shape(2)));
-  for (Int i=0; i<=nRow/maxRow; i++) {
-    Int n=min(maxRow,nRow-i*maxRow);
-    Vector<uInt> rows(n);
-    indgen(rows,uInt(i*maxRow));
+  for (rownr_t i=0; i<=nRow/maxRow; i++) {
+    rownr_t n=min(maxRow,nRow-i*maxRow);
+    RowNumbers rows(n);
+    indgen(rows, i*maxRow);
     Table sel=tab(rows);
     ArrayColumn<Bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
     Cube<Bool> flag(flagHisCol.getColumn(slicer).
@@ -985,7 +985,7 @@ void MSFlagger::applyFlagHist(Int level, Table& tab)
     ArrayColumn<Bool> flagCol(sel,MS::columnName(MS::FLAG));
     ScalarColumn<Bool> flagRowCol(sel,MS::columnName(MS::FLAG_ROW));
     flagCol.putColumn(flag);
-    for (Int j=0; j<n; j++) {
+    for (rownr_t j=0; j<n; j++) {
       if (allEQ(flag.xyPlane(j),True)) {
 	flagRowCol.put(j,True);
       } else {

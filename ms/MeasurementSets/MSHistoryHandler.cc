@@ -69,7 +69,7 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, const String& message,
     return;
   }
   MSHistory &histTable=ms.history();
-  Int row = histTable.nrow();
+  rownr_t row = histTable.nrow();
   MSHistoryColumns msHistCol(histTable);
   histTable.addRow();
   Time date;
@@ -102,7 +102,7 @@ void MSHistoryHandler::addMessage(const String& message, const String& cliComm,
     return;
   }
 
-  Int row = histTable_p.nrow();
+  rownr_t row = histTable_p.nrow();
   histTable_p.addRow();
   Time date;
   MEpoch now(MVEpoch(date.modifiedJulianDay()), MEpoch::Ref(MEpoch::UTC));
@@ -125,8 +125,8 @@ void MSHistoryHandler::addMessage(const String& message, const String& cliComm,
 
 void MSHistoryHandler::addMessage(LogSinkInterface& sink, const String& cliComm){
 
-  Int row = histTable_p.nrow();
-  uInt newrows = sink.nelements();
+  rownr_t row = histTable_p.nrow();
+  rownr_t newrows = sink.nelements();
   if (newrows == 0 && cliComm.length() == 0) {
     // No need to record an entry
     return;
@@ -137,7 +137,7 @@ void MSHistoryHandler::addMessage(LogSinkInterface& sink, const String& cliComm)
     this->addMessage(m,cliComm,o);
   }
   histTable_p.addRow(newrows);
-  for (uInt k=0; k< newrows; ++k){
+  for (rownr_t k=0; k< newrows; ++k){
     
     msHistCol_p->time().put(row, sink.getTime(k));
     msHistCol_p->observationId().put(row, -1);
@@ -179,7 +179,7 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
    return;
 
  String emptyMessage("");
- Int row = histTable_p.nrow();
+ rownr_t row = histTable_p.nrow();
  histTable_p.addRow();
  Vector<String> cliComm(numCliComm);
  for (uInt k=0; k< numCliComm; ++k){

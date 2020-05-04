@@ -305,7 +305,7 @@ const GaussianBeam& ImageBeamSet::getMedianAreaBeamForPol(
     }
     // Do an indirect sort to find the location of the median.
     Vector<uInt> indices;
-    GenSortIndirect<Double>::sort(indices,
+    GenSortIndirect<Double,uInt>::sort(indices,
             _areas(IPosition(2, 0, pos[1]), IPosition(2, nchan() - 1, pos[1])));
     pos[0] = indices[indices.size() / 2];
     return _beams(pos[0], pos[1]);
@@ -315,11 +315,11 @@ GaussianBeam ImageBeamSet::getMedianAreaBeam() const {
     Vector<uInt> indices;
     IPosition shape = _beams.shape();
     if (shape[0] > 1 && shape[1] > 1) {
-        GenSortIndirect<Double>::sort(indices, Vector<Double>(_areas.tovector()));
+      GenSortIndirect<Double,uInt>::sort(indices, Vector<Double>(_areas.tovector()));
         return _beams.tovector()[indices[indices.size()/2]];
     }
     else {
-        GenSortIndirect<Double>::sort(indices, _areas);
+      GenSortIndirect<Double,uInt>::sort(indices, _areas);
         GaussianBeam medbeam = shape[0] > 1
             ? _beams(indices[indices.size()/2], 0)
             : _beams(0, indices[indices.size()/2]);

@@ -118,7 +118,7 @@ namespace casacore {
 //  ScalarColumn<double> ha2(tab, "HA2");
 //  ScalarColumn<double> pa1(tab, "PA1");
 //  ScalarColumn<double> pa2(tab, "PA2");
-//  for (uInt row=0; row<tab.nrow(); ++row) {
+//  for (rownr_t row=0; row<tab.nrow(); ++row) {
 //    cout << ha1(row)<<' '<<ha2(row)<<' '<<pa1(row)<<' '<<pa2(row)<<endl;
 //  }
 // </srcblock>

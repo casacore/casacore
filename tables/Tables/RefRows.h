@@ -30,7 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/RowNumbers.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -89,14 +89,21 @@ public:
     // Create the object from a Vector containing the row numbers.
     // When <src>isSliced==False</src>, the vector is treated as
     // containing individual row numbers, otherwise as containing
-    // slices in the form start,end,incr.
+    // (possibly multiple) slices in the form start,end,incr.
     // When <src>collapse==True</src>, it will try to collapse the
     // individual row numbers to the slice form (to save memory).
+    RefRows (const Vector<rownr_t>& rowNumbers, Bool isSliced = False,
+             Bool collapse = False);
+#ifdef IMPLICIT_CTDS_32BIT
     RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
-	     Bool collapse = False);
+             Bool collapse = False);
+#else
+    explicit RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
+                      Bool collapse = False);
+#endif
 
     // Create the object from a single start,end,incr slice.
-    RefRows (uInt start, uInt end, uInt incr=1);
+    RefRows (rownr_t start, rownr_t end, rownr_t incr=1);
 
     // Copy constructor (reference semantics).
     RefRows (const RefRows& other);
@@ -109,27 +116,26 @@ public:
     // Do this and the other object reference the same rows?
     Bool operator== (const RefRows& other) const;
 
-    // Convert this object to a Vector<uInt> by applying the given row numbers.
+    // Convert this object to a RowNumbers object by applying the given row numbers.
     // It is used to convert the RefRows object with row numbers in a
     // RefTable to row numbers in the original root table.
-    Vector<uInt> convert (const Vector<uInt>& rootRownrs) const;
+    RowNumbers convert (const RowNumbers& rootRownrs) const;
 
-    // Convert this object to a Vector<uInt> by de-slicing it.
+    // Convert this object to a RowNumbers object by de-slicing it.
     // I.e. it linearizes the row numbers.
-    Vector<uInt> convert() const;
+    RowNumbers convert() const;
 
     // Return the number of rows given by this object.
     // If the object contains slices, it counts the number of rows
-    // represented by each slice.
-    // <group>
-    uInt nrows() const
+    // represented by each slice. // <group>
+    rownr_t nrows() const
         { return (itsNrows == 0  ?  fillNrows() : itsNrows); }
-    uInt nrow() const
+    rownr_t nrow() const
         { return (itsNrows == 0  ?  fillNrows() : itsNrows); }
     // </group>
 
     // Return the first row in the object.
-    uInt firstRow() const
+    rownr_t firstRow() const
         { return itsRows(0); }
 
     // Represents the vector a slice?
@@ -139,15 +145,19 @@ public:
     // Get the row vector as is (thus sliced if the object contains slices).
     // It is mainly useful to get all row numbers when the object does not
     // contain slices.
-    const Vector<uInt>& rowVector() const
+    const Vector<rownr_t>& rowVector() const
         { return itsRows; }
 
 private:
-    // Fill the itsNrows variable.
-    uInt fillNrows() const;
+    // Initialize the object.
+    void init (const Vector<rownr_t>& rowNumbers, Bool isSliced,
+               Bool collapse);
 
-    Vector<uInt> itsRows;
-    uInt         itsNrows;            //# 0 = still unknown
+    // Fill the itsNrows variable.
+    rownr_t fillNrows() const;
+
+    Vector<rownr_t> itsRows;
+    rownr_t         itsNrows;            //# 0 = still unknown
     Bool         itsSliced;           //# True = vector contains slices
 };
 
@@ -186,9 +196,9 @@ private:
 //   RefRowsSliceIter rowiter(rownrs);
 //   while (! rowiter.pastEnd()) {
 //     // Get start, end, and increment for this slice.
-//     uInt rownr = rowiter.sliceStart();
-//     uInt end = rowiter.sliceEnd();
-//     uInt incr = rowiter.sliceIncr();
+//     rownr_t rownr = rowiter.sliceStart();
+//     rownr_t end = rowiter.sliceEnd();
+//     rownr_t incr = rowiter.sliceIncr();
 //     // Iterate through the row numbers in the slice.
 //     while (rownr <= end) {
 //       rownr += incr;
@@ -230,22 +240,22 @@ public:
 
     // Get the current slice start, end, or increment.
     // <group>
-    uInt sliceStart() const
+    rownr_t sliceStart() const
         { return itsStart; }
-    uInt sliceEnd() const
+    rownr_t sliceEnd() const
         { return itsEnd; }
-    uInt sliceIncr() const
+    rownr_t sliceIncr() const
         { return itsIncr; }
     // </group>
 
 private:
-    Vector<uInt> itsRows;
-    Bool         itsSliced;
-    uInt         itsStart;
-    uInt         itsEnd;
-    uInt         itsIncr;
-    uInt         itsPos;
-    Bool         itsPastEnd;
+    Vector<rownr_t> itsRows;
+    Bool            itsSliced;
+    rownr_t         itsStart;
+    rownr_t         itsEnd;
+    rownr_t         itsIncr;
+    rownr_t         itsPos;
+    Bool            itsPastEnd;
 };
 
 

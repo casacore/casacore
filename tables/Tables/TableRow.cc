@@ -436,7 +436,7 @@ void ROTableRow::makeObjects (const RecordDesc& description)
     }
 }
 
-const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
+const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 {
     // Only read when needed.
     if (Int64(rownr) == itsLastRow  &&  !itsReread  &&  !alwaysRead) {
@@ -640,7 +640,7 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 
 // The values (might) have changed, which is not reflected in the
 // internal record. Be sure to reread when the same row is asked for.
-void ROTableRow::setReread (uInt rownr)
+void ROTableRow::setReread (rownr_t rownr)
 {
     if (Int64(rownr) == itsLastRow) {
 	itsReread = True;
@@ -660,7 +660,7 @@ void ROTableRow::setReread (uInt rownr)
 		} \
 	} while (0)
 
-void ROTableRow::putField (uInt rownr, const TableRecord& record,
+void ROTableRow::putField (rownr_t rownr, const TableRecord& record,
 			   Int whichColumn, Int whichField)
 {
     switch (itsRecord->description().type(whichColumn)) {
@@ -750,7 +750,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
     }
 }
 
-void ROTableRow::putRecord (uInt rownr)
+void ROTableRow::putRecord (rownr_t rownr)
 {
     const RecordDesc& desc = itsRecord->description();
     uInt nrfield = desc.nfields();
@@ -897,7 +897,7 @@ TableRow& TableRow::operator= (const TableRow& that)
     return *this;
 }
 
-void TableRow::putMatchingFields (uInt rownr, const TableRecord& record)
+void TableRow::putMatchingFields (rownr_t rownr, const TableRecord& record)
 {
     const RecordDesc& thisDesc = itsRecord->description();
     const RecordDesc& thatDesc = record.description();
@@ -922,7 +922,7 @@ void TableRow::put()
     put (rowNumber());
 }
 
-void TableRow::put (uInt rownr, const TableRecord& record,
+void TableRow::put (rownr_t rownr, const TableRecord& record,
 		    Bool checkConformance)
 {
     if (checkConformance) {
@@ -940,7 +940,7 @@ void TableRow::put (uInt rownr, const TableRecord& record,
     setReread (rownr);
 }
 
-void TableRow::put (uInt rownr, const TableRecord& record,
+void TableRow::put (rownr_t rownr, const TableRecord& record,
 		    const Block<Bool>& valuesDefined,
 		    Bool checkConformance)
 {

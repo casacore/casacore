@@ -54,6 +54,20 @@ IPosition::IPosition (const Array<Int> &other)
     DebugAssert(ok(), AipsError);
 }
 
+IPosition::IPosition (const Array<Int64> &other)
+  : size_p (0),
+    data_p (0)
+{
+    if (other.size() > 0) {
+        if (other.ndim() != 1) {
+            throw(AipsError("IPosition::IPosition(const Array<Int64> &other) - "
+                            "other is not one-dimensional"));
+        }
+        fill (other.size(), other.begin());
+    }
+    DebugAssert(ok(), AipsError);
+}
+
 Vector<Int> IPosition::asVector() const
 {
     DebugAssert(ok(), AipsError);
@@ -62,7 +76,23 @@ Vector<Int> IPosition::asVector() const
     return retval;
 }
 
-  IPosition::IPosition (const std::vector<Int> &other)
+Vector<Int64> IPosition::asVector64() const
+{
+    DebugAssert(ok(), AipsError);
+    Vector<Int64> retval(nelements());
+    copy (retval.begin());
+    return retval;
+}
+
+IPosition::IPosition (const std::vector<Int> &other)
+  : size_p (0),
+    data_p (0)
+{
+    fill (other.size(), other.begin());
+    DebugAssert(ok(), AipsError);
+}
+
+IPosition::IPosition (const std::vector<Int64> &other)
   : size_p (0),
     data_p (0)
 {
@@ -74,6 +104,14 @@ std::vector<Int> IPosition::asStdVector() const
 {
     DebugAssert(ok(), AipsError);
     std::vector<Int> retval(nelements());
+    copy (retval.begin());
+    return retval;
+}
+
+std::vector<Int64> IPosition::asStdVector64() const
+{
+    DebugAssert(ok(), AipsError);
+    std::vector<Int64> retval(nelements());
     copy (retval.begin());
     return retval;
 }

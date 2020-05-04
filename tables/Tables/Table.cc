@@ -37,7 +37,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/TableError.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -126,7 +126,7 @@ Table::Table (const String& name, const String& type,
     baseTabPtr_p->link();
 }
 
-Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize,
+Table::Table (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -137,7 +137,7 @@ Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, Table::TableType type,
-	      uInt nrrow, Bool initialize,
+	      rownr_t nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -153,7 +153,7 @@ Table::Table (SetupNewTable& newtab, Table::TableType type,
 }
 Table::Table (SetupNewTable& newtab, Table::TableType type,
 	      const TableLock& lockOptions,
-	      uInt nrrow, Bool initialize,
+	      rownr_t nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -168,7 +168,7 @@ Table::Table (SetupNewTable& newtab, Table::TableType type,
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
-	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+	      rownr_t nrrow, Bool initialize, Table::EndianFormat endianFormat,
               const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -180,7 +180,7 @@ Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
-	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+	      rownr_t nrrow, Bool initialize, Table::EndianFormat endianFormat,
               const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -209,7 +209,7 @@ Table::Table (MPI_Comm mpiComm, Table::TableType type, Table::EndianFormat endia
     baseTabPtr_p->link();
 }
 
-Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow, Bool initialize,
+Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -221,7 +221,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow, Bool initiali
 }
 
 Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
-	      uInt nrrow, Bool initialize,
+	      rownr_t nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -238,7 +238,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
 
 Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
 	      const TableLock& lockOptions,
-	      uInt nrrow, Bool initialize,
+	      rownr_t nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -254,7 +254,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
 }
 
 Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, TableLock::LockOption lockOption,
-	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+	      rownr_t nrrow, Bool initialize, Table::EndianFormat endianFormat,
               const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -267,7 +267,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, TableLock::LockOption loc
 }
 
 Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, const TableLock& lockOptions,
-	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+	      rownr_t nrrow, Bool initialize, Table::EndianFormat endianFormat,
               const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
@@ -287,11 +287,7 @@ Table::Table (const Block<Table>& tables,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    Block<BaseTable*> btab(tables.nelements());
-    for (uInt i=0; i<tables.nelements(); ++i) {
-      btab[i] = tables[i].baseTablePtr();
-    }
-    baseTabPtr_p = new ConcatTable (btab, subTables, subDirName);
+    baseTabPtr_p = new ConcatTable (tables, subTables, subDirName);
     baseTabPtr_p->link();
 }
 
@@ -506,19 +502,30 @@ Table::EndianFormat Table::endianFormat() const
 
 Bool Table::isNativeDataType (DataType dtype)
 {
-    return StManColumn::isNativeDataType (dtype);
+    return StManColumnBase::isNativeDataType (dtype);
 }
 
 
 //# The logic is similar to that in open.
-uInt Table::getLayout (TableDesc& desc, const String& tableName)
+rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
 {
     String tabName = Path(tableName).absoluteName();
-    uInt nrow, format;
+    rownr_t nrow;
+    uInt format;
     String tp;
     AipsIO ios (Table::fileName(tabName));
-    ios.getstart ("Table");
-    ios >> nrow;
+    uInt version = ios.getstart ("Table");
+    if (version > 3) {
+      throw TableError ("Table version " + String::toString(version) +
+                        " not supported by this version of Casacore");
+    }
+    if (version > 2) {
+      ios >> nrow;
+    } else {
+      uInt n;
+      ios >> n;
+      nrow = n;
+    }
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
@@ -637,8 +644,19 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
     //# Determine the kind of table by reading the type.
     String tp;
     uInt version = ios.getstart ("Table");
-    uInt nrrow, format;
-    ios >> nrrow;
+    if (version > 3) {
+      throw TableError ("Table version " + String::toString(version) +
+                        " not supported by this version of Casacore");
+    }
+    uInt format;
+    rownr_t nrrow;
+    if (version > 2) {
+      ios >> nrrow;
+    } else {
+      uInt n;
+      ios >> n;
+      nrrow = n;
+    }
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
@@ -736,24 +754,24 @@ void Table::removeColumn (const String& columnName)
     baseTabPtr_p->removeColumn (Vector<String>(1, columnName));
 }
 
-Vector<uInt> Table::rowNumbers () const
+RowNumbers Table::rowNumbers () const
     { return baseTabPtr_p->rowNumbers(); }
 
-Vector<uInt> Table::rowNumbers (const Table& that, Bool tryFast) const
+RowNumbers Table::rowNumbers (const Table& that, Bool tryFast) const
 {
-    Vector<uInt> thisRows(rowNumbers());
-    const uInt highValue = 4294967295u;
+    Vector<rownr_t> thisRows(rowNumbers());
+    const rownr_t highValue = std::numeric_limits<rownr_t>::max();
     // If that is the root table of this, we can simply use rowNumbers().
     // The same is true if empty.
     if (that.baseTabPtr_p == baseTabPtr_p->root()  ||  nrow() == 0) {
       return thisRows;
     }
     // Get the rowNumbers of that.
-    Vector<uInt> thatRows(that.rowNumbers());
+    Vector<rownr_t> thatRows(that.rowNumbers());
     // Try if a fast conversion can be done.
     // That is the case if this is not a superset of that and if orders match.
     if (tryFast) {
-      Vector<uInt> outRows;
+      Vector<rownr_t> outRows;
       if (fastRowNumbers (thisRows, thatRows, outRows)) {
         return outRows;
       }
@@ -761,24 +779,24 @@ Vector<uInt> Table::rowNumbers (const Table& that, Bool tryFast) const
     // Alas, we have to do it the hard way.
     // Transform the rowNumbers of that to a vector
     // mapping rownr in root to rownr in that.
-    uInt nrthat = thatRows.nelements();
-    uInt maxv = nrthat;
-    Vector<uInt> rownrs(thatRows);
+    rownr_t nrthat = thatRows.nelements();
+    rownr_t maxv = nrthat;
+    Vector<rownr_t> rownrs(thatRows);
     // That mapping only needs to be done if that is not a root table.
     // Non-used rownrs are initialized with a very high value.
     if (! that.isRootTable()) {
         maxv = max(thatRows);
-        Vector<uInt> tmp(maxv+1, highValue);
+        Vector<rownr_t> tmp(maxv+1, highValue);
 	rownrs.reference (tmp);
     }
     Bool deleteIt;
-    uInt* rownrsData = rownrs.getStorage (deleteIt);
+    rownr_t* rownrsData = rownrs.getStorage (deleteIt);
     // Now make the mapping.
     // thatRows is not needed anymore, so resize at the end to reclaim memory.
     if (! that.isRootTable()) {
         Bool deleteThat;
-        const uInt* thatRowData = thatRows.getStorage (deleteThat);
-	for (uInt i=0; i<nrthat; i++) {
+        const rownr_t* thatRowData = thatRows.getStorage (deleteThat);
+	for (rownr_t i=0; i<nrthat; i++) {
 	    rownrsData[thatRowData[i]] = i;
 	}
 	thatRows.freeStorage (thatRowData, deleteThat);
@@ -789,9 +807,9 @@ Vector<uInt> Table::rowNumbers (const Table& that, Bool tryFast) const
     // Use a very high value if the rownr is too high.
     thisRows.unique();
     Bool deleteThis;
-    uInt* thisRowData = thisRows.getStorage (deleteThis);
-    uInt nrthis = thisRows.nelements();
-    for (uInt i=0; i<nrthis; i++) {
+    rownr_t* thisRowData = thisRows.getStorage (deleteThis);
+    rownr_t nrthis = thisRows.nelements();
+    for (rownr_t i=0; i<nrthis; i++) {
         if (thisRowData[i] > maxv) {
 	    thisRowData[i] = highValue;
 	} else {
@@ -799,14 +817,15 @@ Vector<uInt> Table::rowNumbers (const Table& that, Bool tryFast) const
 	}
     }
     thisRows.putStorage (thisRowData, deleteThis);
-    const uInt *dummy(rownrsData);      // Need to const the pointer to get
-                                        // by the SGI compiler.
+    // rownrsData is not used, so don't need to be put.
+    // freeStorage requires const pointer though.
+    const rownr_t *dummy(rownrsData);
     rownrs.freeStorage (dummy, deleteIt);
     return thisRows;
 }
 
-Bool Table::fastRowNumbers (const Vector<uInt>& v1, const Vector<uInt>& v2,
-                            Vector<uInt>& rows) const
+Bool Table::fastRowNumbers (const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
+                            Vector<rownr_t>& rows) const
 {
   // v1 cannot be a superset of v2.
   if (v1.size() > v2.size()) {
@@ -817,12 +836,12 @@ Bool Table::fastRowNumbers (const Vector<uInt>& v1, const Vector<uInt>& v2,
     return True;
   }
   Bool d1,d2,d3;
-  const uInt* r1 = v1.getStorage (d1);
-  const uInt* r2 = v2.getStorage (d2);
-  uInt* routc = rows.getStorage (d3);
-  uInt* rout = routc;
-  uInt i1=0;
-  uInt i2=0;
+  const rownr_t* r1 = v1.getStorage (d1);
+  const rownr_t* r2 = v2.getStorage (d2);
+  rownr_t* routc = rows.getStorage (d3);
+  rownr_t* rout = routc;
+  rownr_t i1=0;
+  rownr_t i2=0;
   Bool ok = True;
   while (ok) {
     if (r1[i1] == r2[i2]) {
@@ -914,7 +933,7 @@ TableExprNode Table::keyCol (const String& name,
     }
 }
 
-TableExprNode Table::nodeRownr(uInt origin) const
+TableExprNode Table::nodeRownr(rownr_t origin) const
 {
     return TableExprNode::newRownrNode (*this, origin);
 }
@@ -927,10 +946,10 @@ TableExprNode Table::nodeRandom () const
 
 //# Select rows based on an expression.
 Table Table::operator() (const TableExprNode& expr,
-                         uInt maxRow, uInt offset) const
+                         rownr_t maxRow, rownr_t offset) const
     { return Table (baseTabPtr_p->select (expr, maxRow, offset)); }
 //# Select rows based on row numbers.
-Table Table::operator() (const Vector<uInt>& rownrs) const
+Table Table::operator() (const RowNumbers& rownrs) const
     { return Table (baseTabPtr_p->select (rownrs)); }
 //# Select rows based on a mask.
 Table Table::operator() (const Block<Bool>& mask) const
@@ -1074,10 +1093,8 @@ ostream& operator<< (ostream& ios, const Table& tab)
     ios << "Table ";
     ios << tab.tableName();
     ios << "  (";
-    ios << tab.tableDesc().ncolumn();
-    ios << " columns, ",
-    ios << tab.nrow();
-    ios << " rows)";
+    ios << tab.tableDesc().ncolumn() << " columns, ";
+    ios << uInt(tab.nrow()) << " rows)";
     ios << endl;
     return ios;
 }

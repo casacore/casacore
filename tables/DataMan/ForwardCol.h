@@ -148,18 +148,6 @@ private:
     // This data manager may be able to handle changing array shapes.
     Bool canChangeShape() const;
 
-    // This data manager may be able to do get/putScalarColumn.
-    Bool canAccessScalarColumn (Bool& reask) const;
-
-    // This data manager may be able to do get/putArrayColumn.
-    Bool canAccessArrayColumn (Bool& reask) const;
-
-    // This data manager may be able to do get/putSlice.
-    Bool canAccessSlice (Bool& reask) const;
-
-    // This data manager may be able to do get/putColumnSlice.
-    Bool canAccessColumnSlice (Bool& reask) const;
-
     // Get the data type of the column as defined in DataType.h.
     int dataType() const;
 
@@ -176,173 +164,173 @@ private:
     void setShapeColumn (const IPosition& shape);
 
     // Set the shape of an (indirect) array in the given row.
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (uInt rownr);
+    Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
-    uInt ndim (uInt rownr);
+    uInt ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
-    IPosition shape (uInt rownr);
+    IPosition shape (rownr_t rownr);
 
     // Get the scalar value with a standard data type in the given row.
     // <group>
-    void getBoolV     (uInt rownr, Bool* dataPtr);
-    void getuCharV    (uInt rownr, uChar* dataPtr);
-    void getShortV    (uInt rownr, Short* dataPtr);
-    void getuShortV   (uInt rownr, uShort* dataPtr);
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getInt64V    (uInt rownr, Int64* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
-    void getStringV   (uInt rownr, String* dataPtr);
+    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
+    virtual void getShort    (rownr_t rownr, Short* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
+    virtual void getInt      (rownr_t rownr, Int* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
+    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getfloat    (rownr_t rownr, float* dataPtr);
+    virtual void getdouble   (rownr_t rownr, double* dataPtr);
+    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
+    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
+    virtual void getString   (rownr_t rownr, String* dataPtr);
     // </group>
 
     // Get the scalar value with a non-standard data type in the given row.
-    void getOtherV    (uInt rownr, void* dataPtr);
+    virtual void getOther    (rownr_t rownr, void* dataPtr);
 
     // Put the scalar value with a standard data type into the given row.
     // <group>
-    void putBoolV     (uInt rownr, const Bool* dataPtr);
-    void putuCharV    (uInt rownr, const uChar* dataPtr);
-    void putShortV    (uInt rownr, const Short* dataPtr);
-    void putuShortV   (uInt rownr, const uShort* dataPtr);
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putInt64V    (uInt rownr, const Int64* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    void putStringV   (uInt rownr, const String* dataPtr);
+    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
+    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
+    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
+    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
+    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
+    virtual void putString   (rownr_t rownr, const String* dataPtr);
     // </group>
 
     // Put the scalar value with a non-standard data type into the given row.
-    void putOtherV    (uInt rownr, const void* dataPtr);
+    virtual void putOther    (rownr_t rownr, const void* dataPtr);
 
     // Get all scalar values in the column.
-    // The argument dataPtr is in fact a Vector<T>*, but a void*
+    // The argument dataPtr is in fact a Vector<T>&, but a ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
-    void getScalarColumnV (void* dataPtr);
+    void getScalarColumnV (ArrayBase& dataPtr);
 
     // Put all scalar values in the column.
-    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
+    // The argument dataPtr is in fact a const Vector<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn putColumn function).
-    void putScalarColumnV (const void* dataPtr);
+    void putScalarColumnV (const ArrayBase& dataPtr);
 
     // Get some scalar values in the column.
-    // The argument dataPtr is in fact a Vector<T>*, but a void*
+    // The argument dataPtr is in fact a Vector<T>&, but a ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
     virtual void getScalarColumnCellsV (const RefRows& rownrs,
-					void* dataPtr);
+					ArrayBase& dataPtr);
 
     // Put some scalar values in the column.
-    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
+    // The argument dataPtr is in fact a const Vector<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
     virtual void putScalarColumnCellsV (const RefRows& rownrs,
-					const void* dataPtr);
+					const ArrayBase& dataPtr);
 
     // Get the array value in the given row.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
+    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn get function).
-    void getArrayV (uInt rownr, void* dataPtr);
+    void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
 
     // Put the array value into the given row.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // The argument dataPtr is in fact a const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn put function).
-    void putArrayV (uInt rownr, const void* dataPtr);
+    void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
     // Get a section of the array in the given row.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
+    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getSlice function).
-    void getSliceV (uInt rownr, const Slicer& slicer, void* dataPtr);
+    void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
     // Put into a section of the array in the given row.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // The argument dataPtr is in fact a const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putSlice function).
-    void putSliceV (uInt rownr, const Slicer& slicer, const void* dataPtr);
+    void putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Get all scalar values in the column.
-    // The argument dataPtr is in fact a Vector<T>*, but a void*
+    // The argument dataPtr is in fact a Vector<T>&, but a ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
-    void getArrayColumnV (void* dataPtr);
+    void getArrayColumnV (ArrayBase& dataPtr);
 
     // Put all scalar values in the column.
-    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
+    // The argument dataPtr is in fact a const Vector<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn putColumn function).
-    void putArrayColumnV (const void* dataPtr);
+    void putArrayColumnV (const ArrayBase& dataPtr);
 
     // Get some array values in the column.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // The argument dataPtr is in fact an Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getColumn function).
     virtual void getArrayColumnCellsV (const RefRows& rownrs,
-				       void* dataPtr);
+				       ArrayBase& dataPtr);
 
     // Put some array values in the column.
-    // The argument dataPtr is in fact an const Array<T>*, but a const void*
+    // The argument dataPtr is in fact an const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getColumn function).
     virtual void putArrayColumnCellsV (const RefRows& rownrs,
-				       const void* dataPtr);
+				       const ArrayBase& dataPtr);
 
     // Get a section of all arrays in the column.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
+    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getColumn function).
-    void getColumnSliceV (const Slicer& slicer, void* dataPtr);
+    void getColumnSliceV (const Slicer& slicer, ArrayBase& dataPtr);
 
     // Put a section into all arrays in the column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // The argument dataPtr is in fact a const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putColumn function).
-    void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
+    void putColumnSliceV (const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Get a section of some arrays in the column.
-    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // The argument dataPtr is in fact an Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getColumn function).
     virtual void getColumnSliceCellsV (const RefRows& rownrs,
-				       const Slicer& slicer, void* dataPtr);
+				       const Slicer& slicer, ArrayBase& dataPtr);
 
     // Put into a section of some arrays in the column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // The argument dataPtr is in fact a const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putColumn function).
     virtual void putColumnSliceCellsV (const RefRows& rownrs,
 				       const Slicer& slicer,
-				       const void* dataPtr);
+				       const ArrayBase& dataPtr);
 
 
     //# Now define the data members.
@@ -490,11 +478,11 @@ private:
 
     // Add rows to all columns.
     // This is not doing anything (but needed to override the default).
-    void addRow (uInt nrrow);
+    void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
     // This is not doing anything (but needed to override the default).
-    void removeRow (uInt rownr);
+    void removeRow64 (rownr_t rownr);
 
     // This data manager allows to add columns.
     Bool canAddColumn() const;
@@ -521,7 +509,7 @@ private:
     // Initialize the object for a new table.
     // It defines the column keywords containing the name of the
     // original table, which can be the parent of the referenced table.
-    void create (uInt initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Initialize the engine.
     // It gets the name of the original table(s) from the column keywords,

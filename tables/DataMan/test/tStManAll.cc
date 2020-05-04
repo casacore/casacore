@@ -683,7 +683,7 @@ void checknewtab (const Table& table, uInt nrrow, Bool tiled)
   AlwaysAssertExit (tab.nrow() == nrrow);
   // Make a subset of all except the last row, because the float and DComplex
   // column contain an empty array in the last row.
-  Vector<uInt> rows(nrrow-1);
+  Vector<rownr_t> rows(nrrow-1);
   indgen(rows);
   Table subtab(tab(rows));
   // Check the columns for defined and content.
@@ -807,7 +807,7 @@ int main (int argc, const char* argv[])
       cout << "Testing RefTable ..." << endl;
       StandardStMan stman(2000);
       Table tab = maketab (nrrow, stman, False);
-      Vector<uInt> rows(tab.nrow());
+      Vector<rownr_t> rows(tab.nrow());
       indgen (rows);
       // Note that the second argument does not matter.
       doTest (tab.nrow(), stman, True, False, tab(rows));

@@ -284,9 +284,9 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
   Bool deleteArr, deleteBuf;
   const uChar* arrPtr = arr.getStorage (deleteArr);
   Float* bufPtr = buffer.getStorage (deleteBuf);
-  uInt n = arr.nelements();
+  uInt64 n = arr.nelements();
   if (examineForDeleteValues) {
-    for (uInt i=0; i<n; i++) {
+    for (uInt64 i=0; i<n; i++) {
       if (arrPtr[i] == deleteValue) {
         setNaN (bufPtr[i]);
       } else {
@@ -294,7 +294,7 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
       }
     }
   } else {
-    for (uInt i=0; i<n; i++) {
+    for (uInt64 i=0; i<n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
@@ -311,9 +311,9 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
   Bool deleteArr, deleteBuf;
   const Short* arrPtr = arr.getStorage (deleteArr);
   Float* bufPtr = buffer.getStorage (deleteBuf);
-  uInt n = arr.nelements();
+  uInt64 n = arr.nelements();
   if (examineForDeleteValues) {
-    for (uInt i=0; i<n; i++) {
+    for (uInt64 i=0; i<n; i++) {
       if (arrPtr[i] == deleteValue) {
         setNaN (bufPtr[i]);
       } else {
@@ -321,7 +321,7 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
       }
     }
   } else {
-    for (uInt i=0; i<n; i++) {
+    for (uInt64 i=0; i<n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
@@ -338,9 +338,9 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
   Bool deleteArr, deleteBuf;
   const Int* arrPtr = arr.getStorage (deleteArr);
   Float* bufPtr = buffer.getStorage (deleteBuf);
-  uInt n = arr.nelements();
+  uInt64 n = arr.nelements();
   if (examineForDeleteValues) {
-    for (uInt i=0; i<n; i++) {
+    for (uInt64 i=0; i<n; i++) {
       if (arrPtr[i] == deleteValue) {
         setNaN (bufPtr[i]);
       } else {
@@ -348,7 +348,7 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
       }
     }
   } else {
-    for (uInt i=0; i<n; i++) {
+    for (uInt64 i=0; i<n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
@@ -479,12 +479,12 @@ void TiledFileAccess::put (const Array<DComplex>& buffer,
 }
 
 
-void TiledFileAccess::setMaximumCacheSize (uInt nbytes)
+void TiledFileAccess::setMaximumCacheSize (uInt64 nbytes)
 {
   itsTSM->setMaximumCacheSize (nbytes);
 }
 
-uInt TiledFileAccess::maximumCacheSize() const
+uInt64 TiledFileAccess::maximumCacheSize() const
 {
   return itsTSM->maximumCacheSize();
 }
@@ -496,20 +496,20 @@ IPosition TiledFileAccess::makeTileShape (const IPosition& arrayShape,
   uInt ndim = arrayShape.nelements();
   IPosition tileShape (ndim, 1);
   for (uInt i=0; i<ndim; i++) {
-    uInt leng = arrayShape(i);
+    uInt64 leng = arrayShape(i);
     if (leng <= nrPixels) {
       tileShape(i) = leng;
       nrPixels /= tileShape(i);
     } else {
       // Take a part of the axis as the tile shape.
       // The part must be exactly divisible, so we may have some work to do.
-      uInt tileLeng = Int(nrPixels + 0.5);
+      uInt64 tileLeng = Int(nrPixels + 0.5);
       if (leng % tileLeng  ==  0) {
 	tileShape(i) = tileLeng;
       } else {
 	// Not exact, so try around this value until we find something.
-	uInt nr = min (tileLeng, leng - tileLeng + 1);
-	for (uInt j=1; j<nr; j++) {
+	uInt64 nr = min (tileLeng, leng - tileLeng + 1);
+	for (uInt64 j=1; j<nr; j++) {
 	  if (leng % (tileLeng-j) == 0) {
 	    tileShape(i) = tileLeng-j;
 	    break;

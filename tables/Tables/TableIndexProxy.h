@@ -93,16 +93,16 @@ public:
   // Find the row number matching the key. All keys have to be unique,
   // otherwise an exception is thrown.
   // If no match is found, -1 is returned.
-  Int getRowNumber (const Record& key);
+  Int64 getRowNumber (const Record& key);
 
   // Find the row numbers matching the key. It should be used instead
   // of <src>getRowNumber</src> if the same key can exist multiple times.
-  Vector<Int> getRowNumbers (const Record& key);
-
+  Vector<Int64> getRowNumbers (const Record& key);
+  
   // Find the row numbers matching the key range. The boolean arguments
   // tell if the lower and upper key are part of the range.
-  Vector<Int> getRowNumbersRange (const Record& lower, const Record& upper,
-				  Bool lowerInclusive, Bool upperInclusive);
+  Vector<Int64> getRowNumbersRange (const Record& lower, const Record& upper,
+                                    Bool lowerInclusive, Bool upperInclusive);
 
 private:
   // Assignment is forbidden.
