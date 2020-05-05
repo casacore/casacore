@@ -100,13 +100,18 @@ TableDesc makeDesc()
     td.addColumn (ScalarColumnDesc<float>("ae"));
     td.addColumn (ScalarColumnDesc<String>("af"));
     td.addColumn (ScalarColumnDesc<DComplex>("ag"));
+    td.addColumn (ScalarColumnDesc<Int>("acalcc"));
     td.addColumn (ScalarColumnDesc<float>("acalc"));
     td.addColumn (ScalarColumnDesc<Complex>("acalc2"));
     td.addColumn (ScalarColumnDesc<short>("acalc3"));
+    ScalarColumnDesc<String> acalcaf("acalcaf");
+    acalcaf.setMaxLength (4);
+    td.addColumn (acalcaf);
     td.addColumn (ArrayColumnDesc<float>("arr1",3,ColumnDesc::Direct));
     td.addColumn (ArrayColumnDesc<float>("arr2",0));
     td.addColumn (ArrayColumnDesc<float>("arr3",0,ColumnDesc::Direct));
     td.addColumn (ArrayColumnDesc<float>("arrcalc",0));
+    td.addColumn (ArrayColumnDesc<uInt>("arrcalcc",IPosition(1,3)));
     return td;
 }
 
@@ -116,14 +121,20 @@ void a (const TableDesc& td)
     SetupNewTable newtab("tVirtualTaQLColumn_tmp.data0", td, Table::New);
     newtab.setShapeColumn("arr1",IPosition(3,2,3,4));
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
+    VirtualTaQLColumn vtcc("10");
     VirtualTaQLColumn vtc("ab+10.");
     VirtualTaQLColumn vtc2("ag+max(arr3)");
     VirtualTaQLColumn vtc3("ab*ac");
+    VirtualTaQLColumn vtcaf("af + '1234'"); 
     VirtualTaQLColumn vtac("ab*arr3");
+    VirtualTaQLColumn vtacc("[1,2,3]");
+    newtab.bindColumn ("acalcc", vtcc);
     newtab.bindColumn ("acalc", vtc);
     newtab.bindColumn ("acalc2", vtc2);
     newtab.bindColumn ("acalc3", vtc3);
+    newtab.bindColumn ("acalcaf", vtcaf);
     newtab.bindColumn ("arrcalc", vtac);
+    newtab.bindColumn ("arrcalcc", vtacc);
     Table tab(newtab, 10);
 
     ScalarColumn<Int> ab1(tab,"ab");
@@ -146,7 +157,7 @@ void a (const TableDesc& td)
 	ac.put (i, i+1);
 	ad.put (i, i+2);
 	ae.put (i, i+3);
-	sprintf (str, "V%i", i);
+	sprintf (str, "V%i_", i);
 	af.put (i, str);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
@@ -169,26 +180,32 @@ void check(const Table& tab, Bool showname)
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     ScalarColumn<DComplex> ag(tab,"ag");
+    ScalarColumn<Int> acalcc(tab,"acalcc");
     ScalarColumn<float> acalc(tab,"acalc");
     ScalarColumn<Complex> acalc2(tab,"acalc2");
     ScalarColumn<short> acalc3(tab,"acalc3");
     ScalarColumn<float> acalc4(tab,"acalc4");
+    ScalarColumn<String> acalcaf(tab,"acalcaf");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
     ArrayColumn<float> arrcalc(tab,"arrcalc");
+    ArrayColumn<uInt> arrcalcc(tab,"arrcalcc");
     Int i;
     Short acalc3val;
     Int abval, acval;
     uInt adval;
     float aeval, acalcval, acalc4val;
-    String afval;
+    Int acalccval;
+    String afval, acalcafval;
     DComplex agval;
     Complex acalc2val;
     char str[8];
     Cube<float> arrf(IPosition(3,2,3,4));
     Cube<float> arrval(IPosition(3,2,3,4));
     Cube<float> arrvalslice(arrval(Slice(0,1),Slice(0,1,2),Slice(0,2,2)));
+    Vector<uInt> arrcexp(3);
+    indgen (arrcexp, 1u);
     Slice tmp;
     Slicer nslice (tmp, tmp, tmp,  Slicer::endIsLength);
     Slicer nslice2(Slice(0,1), Slice(0,1,2), Slice(0,2,2),
@@ -201,20 +218,26 @@ void check(const Table& tab, Bool showname)
 	ae.get (i, aeval);
 	af.get (i, afval);
 	ag.get (i, agval);
+	acalcc.get (i, acalccval);
 	acalc.get (i, acalcval);
 	acalc2.get (i, acalc2val);
 	acalc3.get (i, acalc3val);
 	acalc4.get (i, acalc4val);
-	sprintf (str, "V%i", i);
+	acalcaf.get (i, acalcafval);
+	sprintf (str, "V%i_", i);
 	if (abval != i  ||  acval != i+1
         ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)
+        ||  acalccval != 10  ||  acalcafval != (afval+"1234").substr(0,4)
 	||  acalcval != abval+10  ||  acalc3val != abval*acval) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << acval << ", " << adval
 		 << ", " << aeval << ", " << afval
 		 << ", " << agval << ", " << acalcval
 		 << ", " << acalc3val << endl;
+	}
+	if (!allEQ (arrcalcc(i), arrcexp)) {
+	    cout << "error in arrcalcc in row " << i << endl;
 	}
 	arr1.get (i, arrval);
 	if (!allEQ (arrval, arrf)) {
