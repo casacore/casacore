@@ -745,7 +745,7 @@ int testScaString()
   nfail += checkScaString ("str", "11sep18/3h2m4.36, 'dmy|USE_SPACE'", "11-Sep-2018 03:02:04");
   nfail += checkScaString ("str", "11sep18 3h2m4.36, 'yMD|no_time'", "2018/09/11");
   nfail += checkScaString ("str", "11sep18T3h2m4.36Z, 'FITS'", "2018-09-11T03:02:04");
-  nfail += checkScaString ("str", "11sep18 3h2m4.36, 'ISO|9'", "2018-09-11T03:02:04.360Z");
+  nfail += checkScaString ("str", "11sep18 3h2m4.36, 'ISO|9'", "2018-09-11 03:02:04.360Z");
   nfail += checkScaString ("hms", "3h2m4.16", "03h02m04.160");
   nfail += checkScaString ("dms", "3h2m4.16", "+045d31m02.400");
   nfail += checkScaString ("iif", "T, 'abc', '1234'", "abc");
