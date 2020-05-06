@@ -137,6 +137,16 @@ public:
   const String& expression() const
     { return itsExpr; }
 
+  // Set the shape of an array in the column.
+  // It is only called (right after the constructor) if the array has
+  // a fixed shape.
+  virtual void setShapeColumn (const IPosition& aShape);
+
+  // Set the maximum length of a 'fixed length' string.
+  // It is only called (right after the constructor) if the string has
+  // a fixed length.
+  virtual void setMaxLength (uInt maxLength);
+
   // Functions to return column info.
   // <group>
   virtual int dataType() const;
@@ -219,6 +229,8 @@ private:
   String         itsExpr;             //# TaQL expression
   String         itsStyle;            //# TaQL style
   TableExprNode* itsNode;             //# compiled TaQL expression
+  IPosition      itsShape;            //# The shape of the column.
+  uInt           itsMaxLen;           //# The maximum length of a 'fixed length' string.
   union {
     Bool     itsBool;                 //# Constant scalar values
     uChar    itsuChar;
@@ -234,7 +246,7 @@ private:
   DComplex   itsDComplex;
   String     itsString;
   ArrayBase* itsCurArray;             //# array value (constant or in itsCurRow)
-  rownr_t    itsCurRow;               //# Currently evaluated row
+  rownr_t    itsCurRow;               //# row of current array value
 };
 
 

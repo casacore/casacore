@@ -247,6 +247,16 @@ Record VirtualTaQLColumn::dataManagerSpec() const
   return spec;
 }
 
+void VirtualTaQLColumn::setShapeColumn (const IPosition& aShape)
+{
+  itsShape = aShape;
+}
+
+void VirtualTaQLColumn::setMaxLength (uInt maxLength)
+{
+  itsMaxLen = maxLength;
+}
+
 int VirtualTaQLColumn::dataType() const
 {
   return itsDataType;
@@ -335,6 +345,9 @@ void VirtualTaQLColumn::getDComplex (rownr_t rownr, DComplex* dataPtr)
 void VirtualTaQLColumn::getString (rownr_t rownr, String* dataPtr)
 {
   *dataPtr = itsNode->getString (rownr);
+  if (itsMaxLen > 0  &&  dataPtr->size() > itsMaxLen) {
+    *dataPtr = dataPtr->substr (0, itsMaxLen);
+  }
 }
 
 void VirtualTaQLColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
@@ -447,6 +460,10 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   default:
     throw DataManError ("VirtualTaQLColumn::getResult - unknown data type");
   }
+  if (! itsShape.empty()  &&  ! itsShape.isEqual(itsCurArray->shape())) {
+    throw DataManError ("VirtualTaQLColumn::getResult - shape of result mismatches fixed "
+                        "shape of column " + columnName());
+  }
 }
 
 void VirtualTaQLColumn::getScalarColumnV (ArrayBase& arr)
@@ -470,6 +487,7 @@ void VirtualTaQLColumn::getScalarColumnCellsV (const RefRows& rownrs,
 }
 void VirtualTaQLColumn::fillColumnCache()
 {
+  columnCache().setIncrement (0);
   switch (itsDataType) {
   case TpBool:
     getBool (0, &itsBool);
