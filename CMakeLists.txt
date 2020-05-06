@@ -386,6 +386,8 @@ if (ADIOS2_FOUND)
     add_definitions(-DHAVE_ADIOS2)
 endif (ADIOS2_FOUND)
 if (HDF5_FOUND)
+    # Use BEFORE to achieve that HDF5 is not taken from /usr/local/include
+    ##include_directories (BEFORE ${HDF5_INCLUDE_DIRS})
     include_directories (${HDF5_INCLUDE_DIRS})
     add_definitions(-DHAVE_HDF5)
 endif (HDF5_FOUND)

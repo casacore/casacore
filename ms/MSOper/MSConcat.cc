@@ -711,8 +711,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     // if we change the order of the antennas.  This is done by
     // creating a mapping that makes sure the receptor numbers remain
     // correct when the antennas are swapped.
-    uInt d = otherDDId(r);
-    uInt p = otherDDCols.polarizationId()(otherDDId(r));
+    /////uInt d = otherDDId(r);
+    Int p = otherDDCols.polarizationId()(otherDDId(r));
     if (p != polId) {
       const Matrix<Int> &products = otherPolCols.corrProduct()(p);
       polSwap.resize(products.shape()(1));
@@ -1502,8 +1502,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     // if we change the order of the antennas.  This is done by
     // creating a mapping that makes sure the receptor numbers remain
     // correct when the antennas are swapped.
-    uInt d = otherDDId(r);
-    uInt p = otherDDCols.polarizationId()(otherDDId(r));
+    /////uInt d = otherDDId(r);
+    Int p = otherDDCols.polarizationId()(otherDDId(r));
     if (p != polId) {
       const Matrix<Int> &products = otherPolCols.corrProduct()(p);
       polSwap.resize(products.shape()(1));
