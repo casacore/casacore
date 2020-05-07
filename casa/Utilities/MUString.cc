@@ -467,35 +467,30 @@ void MUString::setLast(Int st) {
 
 uInt MUString::minimaxNC(const String &in, Int N_name, 
 			const String tname[]) {
-    String a;
-    String b;
     Int i;
-    a = upcase(in);
+    String a = upcase(in);
 // Exact fit?
     for (i=0; i<N_name; i++) {
 	if (a == upcase(tname[i])) break;
     }
 // Now look for partial
     if (i >= N_name) {
-	Int ia, ib;
-	ia = a.length();
+	size_t ia = a.length();
 	for (i=0; i<N_name; i++) {
-	    ib = tname[i].length();
-	    ib = ia < ib ? ia : ib;
-	    b = upcase(tname[i]);
-	    if (a.at(0,ib) == b.at(0,ib)) {
+          if (ia < tname[i].length()) {
+	    String b = upcase(tname[i]);
+	    if (a == b.at(0,ia)) {
 		Int j;
 // Look for more partials
 		for (j=i+1; j<N_name; j++) {
-		    ib = tname[j].length();
-		    ib = ia < ib ? ia : ib;
 		    b = upcase(tname[j]);
-		    if (a.at(0,ib) == b.at(0,ib)) break;
+		    if (a == b.at(0,ia)) break;
 		}
 // Found duplicate
 		if (j<N_name) i=N_name;
 		break;
 	    }
+          }
 	}
     }
     return i;

@@ -1167,8 +1167,12 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
   int prec = 6;
   if (! fmt.empty()) {
     // The format can consist of the various MVTime/Angle format specifiers
-    // (separated by vertical bars with optional spaces).
-    Vector<String> fmts = stringToVector(fmt, '|');
+    // (separated by vertical bars or commas with optional spaces).
+    char separator = ',';
+    if (fmt.find('|') != String::npos) {
+      separator = '|';
+    }
+    Vector<String> fmts = stringToVector(fmt, separator);
     Bool ok = True;
     for (uInt i=0; i<fmts.size(); ++i) {
       fmts[i].trim();

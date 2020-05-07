@@ -137,7 +137,8 @@ class Time;
 //	The <src>MVTime::FITS</src> format implies TIME, and will
 //	precede the time with 'ccyy-mm-ddT'.<br>
 //	The <src>MVTime::ISO</src> format implies FITS followed by a Z
-//      for the UTC time zone.
+//      for the UTC time zone. It uses a space instead of T as separator.
+//      It also implies CLEAN.
 //      The <src>BOOST</src> format implies DMY and USE_SPACE (space instead
 //      of slash between date and time).
 //	<br>
@@ -289,7 +290,7 @@ class MVTime {
         USE_SPACE               = 8192,
         ALPHA                   = 16384,
         USE_Z                   = 32768,
-        ISO                     = FITS + USE_Z,
+        ISO                     = FITS + USE_Z + USE_SPACE + CLEAN,
         BOOST                   = DMY + USE_SPACE,
 	NO_H 			= NO_D,
 	NO_HM 			= NO_DM,
