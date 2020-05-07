@@ -2216,7 +2216,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	      }
 	      fftOut[nChan] = 0.0;
 
-	      // Cosine trandorm back to frequency domain
+	      // Cosine transform back to frequency domain
 	      redftPlan.Execute(fftOut.data(), fftIn.data());
 
 	      for (Int chan=0; chan<nChan; chan++)

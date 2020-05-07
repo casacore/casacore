@@ -84,18 +84,22 @@ public:
   class Plan
   {
     public:
-      Plan(FFTWPlan* plan);
-      Plan(FFTWPlanf* plan);
       ~Plan() noexcept;
       Plan(const Plan&) = delete;
       Plan(Plan&&);
       Plan& operator=(const Plan&) = delete;
       Plan& operator=(Plan&&);
     
+      // Perform the FFT associated with this plan with the given
+      // in data, and store it in the given out data.
+      // <group>
       void Execute(float* in, float* out);
       void Execute(double* in, double* out);
+      // </group>
     private:
       friend FFTW;
+      Plan(FFTWPlan* plan);
+      Plan(FFTWPlanf* plan);
       std::unique_ptr<FFTWPlan> _plan;
       std::unique_ptr<FFTWPlanf> _planf;
   };

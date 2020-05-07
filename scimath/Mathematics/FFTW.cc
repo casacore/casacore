@@ -237,6 +237,8 @@ std::mutex FFTW::theirMutex;
 
   FFTW::Plan FFTW::plan_redft00(const IPosition &size, float *in, float *out)
   {
+    initialize_fftw();
+    
     std::vector<fftwf_r2r_kind> kinds(size.nelements(), FFTW_REDFT00);
     
     return Plan( new FFTWPlanf(
@@ -246,7 +248,10 @@ std::mutex FFTW::theirMutex;
   
   FFTW::Plan FFTW::plan_redft00(const IPosition &size, double *in, double *out)
   {
+    initialize_fftw();
+    
     std::vector<fftw_r2r_kind> kinds(size.nelements(), FFTW_REDFT00);
+    
     return Plan( new FFTWPlan(
       fftw_plan_r2r(size.nelements(), size.asStdVector().data(),
                     in, out, kinds.data(), FFTW_ESTIMATE)) );
