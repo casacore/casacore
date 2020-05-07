@@ -29,11 +29,11 @@
 #define SCIMATH_FFTW_H
 
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/VectorIter.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/OS/Mutex.h>
+#include <casacore/casa/Arrays/IPosition.h>
+
+#include <complex>
+#include <memory>
+#include <mutex>
 
 namespace casacore {
 
@@ -61,43 +61,78 @@ public:
   
   ~FFTW() ;
 
-  // polymorphic interface to fftw[f]_plan...
-  void plan_r2c(const IPosition &size, Float *in, Complex *out) ;
-  void plan_r2c(const IPosition &size, Double *in, DComplex *out) ;
-  void plan_c2r(const IPosition &size, Complex *in, Float *out) ;
-  void plan_c2r(const IPosition &size, DComplex *in, Double *out) ;
-  void plan_c2c_forward(const IPosition &size, DComplex *in) ;
-  void plan_c2c_forward(const IPosition &size, Complex *in) ;
-  void plan_c2c_backward(const IPosition &size, DComplex *in) ;
-  void plan_c2c_backward(const IPosition &size, Complex *in) ;
+  // overloaded interface to fftw[f]_plan...
+  void plan_r2c(const IPosition &size, float *in, std::complex<float> *out) ;
+  void plan_r2c(const IPosition &size, double *in, std::complex<double> *out) ;
+  void plan_c2r(const IPosition &size, std::complex<float> *in, float *out) ;
+  void plan_c2r(const IPosition &size, std::complex<double> *in, double *out) ;
+  void plan_c2c_forward(const IPosition &size, std::complex<double> *in) ;
+  void plan_c2c_forward(const IPosition &size, std::complex<float> *in) ;
+  void plan_c2c_backward(const IPosition &size, std::complex<double> *in) ;
+  void plan_c2c_backward(const IPosition &size, std::complex<float> *in) ;
   
-  // polymorphic interface to fftw[f]_execute...
-  void r2c(const IPosition &size, Float *in, Complex *out) ;
-  void r2c(const IPosition &size, Double *in, DComplex *out) ;
-  void c2r(const IPosition &size, Complex *in, Float *out);
-  void c2r(const IPosition &size, DComplex *in, Double *out);
-  void c2c(const IPosition &size, Complex *in, Bool forward);
-  void c2c(const IPosition &size, DComplex *in, Bool forward);
+  // TODO These overloads do not use their parameters at all. This should
+  // be written to use an interface like plan_redft00().
+  // overloaded interface to fftw[f]_execute...
+  void r2c(const IPosition &size, float *in, std::complex<float> *out) ;
+  void r2c(const IPosition &size, double *in, std::complex<double> *out) ;
+  void c2r(const IPosition &size, std::complex<float> *in, float *out);
+  void c2r(const IPosition &size, std::complex<double> *in, double *out);
+  void c2c(const IPosition &size, std::complex<float> *in, bool forward);
+  void c2c(const IPosition &size, std::complex<double> *in, bool forward);
 
+  class Plan
+  {
+    public:
+      Plan(FFTWPlan* plan);
+      Plan(FFTWPlanf* plan);
+      ~Plan() noexcept;
+      Plan(const Plan&) = delete;
+      Plan(Plan&&);
+      Plan& operator=(const Plan&) = delete;
+      Plan& operator=(Plan&&);
+    
+      void Execute(float* in, float* out);
+      void Execute(double* in, double* out);
+    private:
+      friend FFTW;
+      std::unique_ptr<FFTWPlan> _plan;
+      std::unique_ptr<FFTWPlanf> _planf;
+  };
+  
+  static Plan plan_redft00(const IPosition &size, float *in, float *out);
+  static Plan plan_redft00(const IPosition &size, double *in, double *out);
+  
 private:
-  FFTWPlanf* itsPlanR2Cf;
-  FFTWPlan*  itsPlanR2C;
+  static void initialize_fftw();
   
-  FFTWPlanf* itsPlanC2Rf;
-  FFTWPlan*  itsPlanC2R;
+  std::unique_ptr<FFTWPlanf> itsPlanR2Cf;
+  std::unique_ptr<FFTWPlan>  itsPlanR2C;
   
-  FFTWPlanf* itsPlanC2CFf;   // forward
-  FFTWPlan*  itsPlanC2CF;
+  std::unique_ptr<FFTWPlanf> itsPlanC2Rf;
+  std::unique_ptr<FFTWPlan>  itsPlanC2R;
   
-  FFTWPlanf* itsPlanC2CBf;   // backward
-  FFTWPlan*  itsPlanC2CB;
+  std::unique_ptr<FFTWPlanf> itsPlanC2CFf;   // forward
+  std::unique_ptr<FFTWPlan>  itsPlanC2CF;
+  
+  std::unique_ptr<FFTWPlanf> itsPlanC2CBf;   // backward
+  std::unique_ptr<FFTWPlan>  itsPlanC2CB;
+  
+  std::unique_ptr<FFTWPlanf> itsPlanR2Rf;
+  std::unique_ptr<FFTWPlan>  itsPlanR2R;
   
   unsigned flags;
 
-  static volatile Bool is_initialized_fftw;  // FFTW needs initialization
+  static bool is_initialized_fftw;  // FFTW needs initialization
                                              // only once per process,
                                              // not once per object
-  static Mutex theirMutex;          // Initialization mutex
+                                             
+  // TODO this mutex does not make FFTW thread safe, because
+  // planning an FFT with FFTW is not thread safe either.
+  // So either the plan..() methods should take the mutex, or
+  // FFTW should leave synchronization fully to the user of
+  // this class: currently it's halfway in between.
+  static std::mutex theirMutex;          // Initialization mutex
 };    
     
 } //# NAMESPACE CASACORE - END
