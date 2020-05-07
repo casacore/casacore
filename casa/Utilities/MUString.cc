@@ -96,8 +96,7 @@ void MUString::skipBlank() {
 }
 
 Bool MUString::testBlank() const {
-  static Regex ex("[ \t]");
-  return (ptr >= len || testChar(ex));
+  return (ptr >= len || str[ptr] == ' ' || str[ptr] == '\t');
 }
 
 Bool MUString::tSkipBlank() {
@@ -105,8 +104,7 @@ Bool MUString::tSkipBlank() {
 }
 
 Bool MUString::testSign() const {
-  static Regex ex("[-+]");
-  return testChar(ex);
+  return (ptr < len && (str[ptr] == '-' || str[ptr] == '+'));
 }
 
 void MUString::skipSign() {

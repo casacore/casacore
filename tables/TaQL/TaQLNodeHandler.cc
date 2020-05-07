@@ -134,7 +134,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (node.itsCaseInsensitive) {
       str = Regex::makeCaseInsensitive(str);
     }
-    return new TaQLNodeHRValue (TableExprNode(TaqlRegex(Regex(str))));
+    return new TaQLNodeHRValue (TableExprNode(TaqlRegex(Regex(str, True))));
   }
 
   TaQLNodeResult TaQLNodeHandler::visitUnaryNode (const TaQLUnaryNodeRep& node)

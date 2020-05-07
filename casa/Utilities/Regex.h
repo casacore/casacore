@@ -30,8 +30,9 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/BasicSL/RegexBase.h>
 #include <casacore/casa/iosfwd.h>
+#include <regex>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -40,7 +41,7 @@ struct re_pattern_buffer;
 struct re_registers;
 
 // <summary>
-// Regular expression class
+// Regular expression class (based on std::regex)
 // </summary>
 
 // <use visibility=export>
@@ -51,15 +52,24 @@ struct re_registers;
 // <synopsis> 
 // This class provides regular expression functionality, such as
 // matching and searching in strings, comparison of expressions, and
-// input/output. It is built on the regular expression functions in the
-// GNU library (see files cregex.h and cregex.cc).
-// <br> Apart from proper regular expressions, it also supports glob patterns
-// (UNIX file name patterns) by means of a conversion to a proper regex.
-// Also ordinary strings can be converted to a proper regex.
+// input/output. It is built on the standard C++ regular expression class
+// using the ECMAScript syntax. It is almost the same as the regular expression
+// syntax used until March 2019 which used GNU's cregex.cc.
+// ECMAScript offers more functionality (such as non-greedy matching),
+// but there is a slight difference how brackets are used. In the old
+// regex they did not need to be escaped, while they have to for ECMAScript.
+// Furthermore, in the old Regex up to 9 backreferences could be given, so
+// \15 meant the first backreference followed by a 5. In ECMAScript it means
+// the 15th and parentheses are needed to get the old meaning.
+// These differences are solved in the Regex constructor which adds escape
+// characters as needed. Thus existing code using Regex does not need to be changed.
+//
+// Apart from proper regular expressions, it also supports glob patterns
+// (UNIX file name patterns) by means of a conversion to a proper regex string.
+// Also ordinary strings and SQL-style patterns can be converted to a proper
+// regex string.
 // <p>
-// cregex.cc supports many syntaxes. Regex supports
-// only one syntax, the extended regular expression with { and not \\{
-// as a special character. The special characters are:
+// See http://www.cplusplus.com/reference/regex/ECMAScript for the syntax.
 // <dl>
 //  <dt> ^
 //  <dd> matches the beginning of a line.
@@ -189,142 +199,106 @@ struct re_registers;
 // </srcblock>
 // </example>
 
-// <todo asof="2001/07/15">
-//   <li> Let sgi ifdef go
-//   <li> Decide on documentation of GNU stuff (cregex.h, cregex.cc)
-// </todo>
+//# <todo asof="2001/07/15">
+//# </todo>
 
 
-class Regex : public RegexBase {
+class Regex: std::regex
+{
 public:
-    // Default constructor uses a zero-length regular expression.
-    // <thrown>
-    //  <li> invalid_argument
-    // </thrown>
-    Regex();
+  // Default constructor uses a zero-length regular expression.
+  Regex();
     
-    // Construct a regular expression.
-    // Optionally a fast map can be created, a buffer size can be given
-    // and a translation table (of 256 chars) can be applied.
-    // The translation table can, for instance, be used to map
-    // lowercase characters to uppercase.
-    // See cregex.cc (the extended regular expression matching and search
-    // library) for detailed information.
-    // <thrown>
-    //  <li> invalid_argument
-    // </thrown>
-    Regex(const String &exp, Bool fast = False, Int sz = 40, 
-	  const Char *translation = 0);
+  // Construct a regular expression from the string.
+  // If toECMAScript=True, function toEcma is called to convert the old cregex
+  // syntax to the new ECMAScript syntax.
+  // If fast=True, Matching efficiency is preferred over efficiency constructing
+  // the regex object.
+  explicit Regex(const String& exp, Bool fast=False, Bool toECMAScript=True);
 
-    // Copy constructor (copy semantics).
-    // <thrown>
-    //  <li> invalid_argument
-    // </thrown>
-    Regex(const Regex &that);
+  // Construct a new regex (using the default Regex constructor arguments).
+  void operator=(const String& str);
+
+  // Convert the possibly old-style regex to the Ecma regex which means
+  // that unescaped [ and ] inside a bracket expression will be escaped and
+  // that a numeric character after a backreference is enclosed in brackets
+  // (otherwise the backreference uses multiple characters).
+  static String toEcma(const String& rx);
+
+  // Convert a shell-like pattern to a regular expression string.
+  // This is useful for people who are more familiar with patterns
+  // than with regular expressions.
+  static String fromPattern(const String& pattern);
+
+  // Convert an SQL-like pattern to a regular expression string.
+  // This is useful TaQL which mimics SQL.
+  static String fromSQLPattern(const String& pattern);
+
+  // Convert a normal string to a regular expression string.
+  // This consists of escaping the special characters.
+  // This is useful when one wants to provide a normal string
+  // (which may contain special characters) to a function working
+  // on regular expressions.
+  static String fromString(const String& str);
+
+  // Create a case-insensitive regular expression string from the given
+  // regular expression string.
+  // It does it by inserting the lowercase and uppercase version of
+  // characters in the input string into the output string.
+  static String makeCaseInsensitive (const String& str);
+
+  // Get the regular expression string.
+  const String& regexp() const
+    { return itsStr; }
     
-    virtual ~Regex();
-    
-    // Assignment (copy semantics).
-    // <thrown>
-    //  <li> invalid_argument
-    // </thrown>
-    // <group>
-    Regex &operator=(const Regex &that);
-    Regex &operator=(const String &strng);
-    // </group>
+  // Test if the regular expression matches (part of) string <src>s</src>.
+  // The return value gives the length of the matching string part,
+  // or String::npos if there is no match or an error.
+  // The string has <src>len</src> characters and the test starts at
+  // position <src>pos</src>. The string may contain null characters.
+  // Negative p is allowed to match at end.
+  //
+  // <note role=tip>
+  // Use the appropriate <linkto class=String>String</linkto> functions
+  // to test if a string matches a regular expression. 
+  // <src>Regex::match</src> is pretty low-level.
+  // </note>
+  String::size_type match(const Char* s,
+                          String::size_type len,
+                          String::size_type pos=0) const;
 
-    // Convert a shell-like pattern to a regular expression.
-    // This is useful for people who are more familiar with patterns
-    // than with regular expressions.
-    static String fromPattern(const String &pattern);
+  // Test if the regular expression occurs in string <src>s</src>.
+  // The return value gives the position of the first substring
+  // matching the regular expression. The length of that substring
+  // is returned in <src>matchlen</src>.
+  // The string has <src>len</src> characters and the test starts at
+  // position <src>pos</src>. The string may contain null characters.
+  // If the pos given is less than 0, the search starts -pos from the end.
+  // <note role=tip>
+  // Use the appropriate <linkto class=String>String</linkto> functions
+  // to test if a regular expression occurs in a string.
+  // <src>Regex::search</src> is pretty low-level.
+  // </note>
+  // <group>
+  String::size_type search(const Char* s,
+                           String::size_type len,
+                           Int& matchlen,
+                           Int pos=0) const;
+  String::size_type find(const Char* s, String::size_type len,
+                         Int& matchlen,
+                         String::size_type pos=0) const;
+  // </group>
 
-    // Convert an SQL-like pattern to a regular expression.
-    // This is useful TaQL which mimics SQL.
-    static String fromSQLPattern(const String &pattern);
+  // Search backwards.
+  String::size_type searchBack(const Char* s, String::size_type len,
+                               Int& matchlen,
+                               uInt pos) const;
 
-    // Convert a normal string to a regular expression.
-    // This consists of escaping the special characters.
-    // This is useful when one wants to provide a normal string
-    // (which may contain special characters) to a function working
-    // on regular expressions.
-    static String fromString(const String &strng);
-
-    // Create a case-insensitive reular expression string from the given
-    // regular expression string.
-    // It does it by inserting the lowercase and uppercase version of
-    // characters in the input string into the output string.
-    static String makeCaseInsensitive (const String &strng);
-
-    // Get the regular expression string.
-    const String &regexp() const
-      { return str; }
-    
-    // Get the translation table (can be a zero pointer).
-    const Char *transtable() const
-      { return trans; }
-    
-    // Test if the regular expression matches (part of) string <src>s</src>.
-    // The return value gives the length of the matching string part,
-    // or String::npos if there is no match or an error.
-    // The string has <src>len</src> characters and the test starts at
-    // position <src>pos</src>. The string may contain null characters.
-    // Negative p is allowed to match at end.
-    //
-    // <note role=tip>
-    // Use the appropriate <linkto class=String>String</linkto> functions
-    // to test if a string matches a regular expression. 
-    // <src>Regex::match</src> is pretty low-level.
-    // </note>
-    virtual String::size_type match(const Char *s,
-				    String::size_type len,
-				    String::size_type pos=0) const;
-    
-    // Test if the regular expression occurs in string <src>s</src>.
-    // The return value gives the position of the first substring
-    // matching the regular expression. The length of that substring
-    // is returned in <src>matchlen</src>.
-    // The string has <src>len</src> characters and the test starts at
-    // position <src>pos</src>. The string may contain null characters.
-    // The search will do a reverse search if the pos given is less than 0.
-    // <note role=tip>
-    // Use the appropriate <linkto class=String>String</linkto> functions
-    // to test if a regular expression occurs in a string.
-    // <src>Regex::search</src> is pretty low-level.
-    // </note>
-    // <group>
-    virtual String::size_type search(const Char *s, String::size_type len,
-				     Int &matchlen,
-				     Int pos=0) const;
-    virtual String::size_type find(const Char *s, String::size_type len,
-				   Int &matchlen,
-				   String::size_type pos=0) const;
-    // </group>
-
-    // Return some internal <src>cregex</src> info.
-    Int match_info(Int& start, Int& length, Int nth = 0) const;
-
-    // Does it contain a valid Regex?
-    Bool OK() const;
-    
-    // Write as ASCII.
-    friend ostream &operator<<(ostream &ios, const Regex &exp);
+  // Write the regex string.
+  friend ostream& operator<<(ostream& ios, const Regex& exp);
     
 protected:
-    String             str;                 // the reg. exp. string
-    Int                fastval;             // fast flag
-    Int                bufsz;               // buffer size given
-    Char*              trans;               // possible translation table
-    re_pattern_buffer* buf;                 // compiled reg.exp.
-    re_registers*      reg;                 // internal reg.exp. stuff
-    
-    // Compile the regular expression
-    // <thrown>
-    //  <li> invalid_argument
-    // </thrown>
-    void create(const String&, Int, Int, const Char*);
-    
-    // Deallocate the stuff allocated by <src>create</src>.
-    void dealloc();
+  String itsStr;                 // the reg. exp. string
 };
 
 

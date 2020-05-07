@@ -167,7 +167,7 @@ void doIt (Bool doExcp)
 
     {
         // Directory::find
-        Vector<String> found = tmp.find (Regex::fromString("test1"));
+        Vector<String> found = tmp.find (Regex(Regex::fromString("test1")));
 	genSort (found);
 	cout << found << endl;
         Vector<String> found1 = tmp.find (Regex("test[12]"), True);

@@ -32,6 +32,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -52,20 +53,24 @@ int main () {
   try {
     // Test parallel first to ensure initialization works fine.
     testParallel();
+    AlwaysAssertExit (Regex::toEcma("[][]") == String("[\\]\\[]"));
+    AlwaysAssertExit (Regex::toEcma("[\\]\\[]") == String("[\\]\\[]"));
+    AlwaysAssertExit (Regex::toEcma("[[:alpha:]]") == String("[[:alpha:]]"));
+    AlwaysAssertExit (Regex::toEcma("(the)\\15a") == String("(the)\\1[5]a"));
     a();
     b();
-  } catch (AipsError& x) {
+  } catch (const AipsError& x) {
     cout << x.getMesg() << endl;
     return 1;
-  } 
+  }
   return 0;                           // exit with success status
 }
 
 // Make sure the return value for a non-match is the same
 // for 32 and 64 bit machines.
-String::size_type doMatch (const Regex& exp, const char* str, uInt pos)
+String::size_type doMatch (const Regex& exp, const char* str, uInt len)
 {
-  String::size_type k = exp.match (str, pos);
+  String::size_type k = exp.match (str, len);
   if (k == String::npos) {
     return 4294967295u;
   }

@@ -1,5 +1,5 @@
 //# Regex.cc: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2002,2003
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2002,2003,2019
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,161 +27,186 @@
 
 // Regex class implementation
 
-#include <casacore/casa/Utilities/cregex.h>
-
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/stdexcept.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/vector.h>
-#include <cstring>                  //# for memcpy with gcc-4.3
 #include <stdlib.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Regex::Regex() {
-  create("",0,0,0);
-}
+Regex::Regex()
+{}
 
-void Regex::create(const String& exp, Int fast, Int bufsize, 
-		    const Char* transtable) {
-  str     = exp;
-  fastval = fast;
-  bufsz   = bufsize;
-  trans   = 0;
-  if (transtable) {
-    trans = new Char[256];
-    memcpy(trans, transtable, 256);
-  }
-  Int tlen = exp.length();
-  buf = new re_pattern_buffer;
-  reg = new re_registers;
-  if (fast) buf->fastmap = new Char[256];
-  else buf->fastmap = 0;
-  buf->translate = trans;
-  if (tlen > bufsize)
-    bufsize = tlen;
-  buf->allocated = bufsize;
-  buf->buffer = (Char *) malloc(buf->allocated);
-  /*
-  Int orig = a2_re_set_syntax(RE_NO_BK_PARENS+     // use () for grouping
-			    RE_NO_BK_VBAR+         // use | for OR
-			    RE_INTERVALS+          // intervals are possible
-			    RE_NO_BK_CURLY_BRACES+ // use {} for interval
-			    RE_CHAR_CLASSES+       // [:upper:], etc. possible
-			    RE_NO_EMPTY_BK_REF+    // backreferences possible
-			    RE_NO_EMPTY_RANGES+    // e.g. [z-a] is empty set
-			    RE_CONTEXTUAL_INVALID_OPS);
-  */
-  const char* msg = a2_re_compile_pattern((Char*)(exp.chars()), tlen, buf);
-  ///a2_re_set_syntax(orig);
-  if (msg != 0) {
-    throw(invalid_argument("Regex: invalid regular expression " + exp +
-			   " given (" + String(msg) + ')'));
-  } else if (fast) a2_re_compile_fastmap(buf);
-}
-
-void Regex::dealloc() {
-  if ( buf != 0 ) {
-    free(buf->buffer);
-    delete [] buf->fastmap;
-    delete buf;
-    buf= 0;
-  }
-  delete reg;
-  reg=0;
-  delete [] trans;
-  trans=0;
-}
-
-Int Regex::match_info(Int& start, Int& length, Int nth) const {
-  if ((unsigned)(nth) >= RE_NREGS) return 0;
-  else {
-    start = reg->start[nth];
-    length = reg->end[nth] - start;
-    return start >= 0 && length >= 0;
+  Regex::Regex(const String& str, Bool fast, Bool toECMAScript)
+    : itsStr (str)
+{
+  // Make the possible exception thrown by regex a bit more clear.
+  try {
+    std::regex::flag_type flags = std::regex::ECMAScript;
+    if (fast) {
+      flags |= std::regex::optimize;
+    }
+    if (toECMAScript) {
+      std::regex::operator= (std::regex(toEcma(str), flags));
+    } else {
+      std::regex::operator= (std::regex(str, flags));
+    }
+  } catch (const std::exception& x) {
+    throw AipsError ("Error in regex " + str + ": " + x.what());
   }
 }
 
-Bool Regex::OK() const {
-  Bool v = buf != 0;             // have a regex buf
-  v &= buf->buffer != 0;         // with a pat
-  return v;
+void Regex::operator=(const String& str)
+{
+  std::regex::operator= (Regex(str));
+  itsStr = str;
 }
 
-ostream &operator<<(ostream &ios, const Regex &exp) {
-  return ios << exp.str;
+String::size_type Regex::match(const Char* s,
+			       String::size_type len,
+			       String::size_type pos) const
+{
+  Int ps = static_cast<Int>(pos);
+  if (ps < 0) {
+    ps += len;
+  }
+  if (ps >= static_cast<Int>(len)) return String::npos;
+  if (! std::regex_match(s+ps, s+len, *this)) return String::npos;
+  return len-ps;
 }
 
-String::size_type Regex::find(const Char *s, String::size_type len,
-				Int &matchlen,
-				String::size_type pos) const {
+String::size_type Regex::search(const Char* s, String::size_type len,
+                                Int& matchlen,
+                                Int pos) const
+{
+  // Searching from the end means trying to match from the end on.
+  if (pos < 0) {
+    return searchBack (s, len, matchlen, -pos);
+  }
+  std::cmatch result;
+  if (std::regex_search(s+pos, s+len, result, *this)) {
+    matchlen = result.length(0);
+    return pos + result.position(0);     // start position of match
+  }
+  matchlen = 0;
+  return String::npos;                   // no match
+}
+
+String::size_type Regex::searchBack(const Char* s, String::size_type len,
+                                    Int& matchlen,
+                                    uInt pos) const
+{
+  if (pos >= len) {
+    return String::npos;
+  }
+  for (Int p = len-pos; p>=0; --p) {
+    if (match(s, len, p) != String::npos) {
+      matchlen = len-p;
+      return p;
+    }
+  }
+  matchlen = 0;
+  return String::npos;             // no match
+}
+
+String::size_type Regex::find(const Char* s, String::size_type len,
+                              Int& matchlen,
+                              String::size_type pos) const {
   Int xpos = pos;
   if (xpos<0) return String::npos;
   return search(s, len, matchlen, xpos);
 }
 
-String::size_type Regex::search(const Char *s, String::size_type len,
-                                Int &matchlen,
-                                Int pos) const {
-  Int matchpos, xpos, range;
-  if (pos >= 0) {
-    xpos = pos;
-    range = len - pos;
-  } else {
-    xpos = len + pos;
-    range = -xpos;
+ostream& operator<<(ostream& ios, const Regex& exp) {
+  return ios << exp.itsStr;
+}
+
+String Regex::toEcma(const String& rx)
+{
+  Int inbrcount = -1;
+  Bool inBracket = False;
+  Bool charClass = False;
+  Bool escaped = False;
+  uInt pattLeng = rx.length();
+  String result;
+  result.reserve (rx.size());
+  for (uInt i=0; i<pattLeng; i++) {
+    Char c = rx[i];
+    if (escaped) {
+      escaped = False;
+      if (c >= '1'  &&  c <= '9') {
+        // This is a backreference.
+        // Put brackets around the next character if numeric as well.
+        // Note backreferences cannot be used in a bracket expression.
+        if (i+1 < pattLeng  &&  rx[i+1] >= '0'  &&  rx[i+1] <= '9') {
+          result.push_back (c);
+          result.push_back ('[');
+          result.push_back (rx[i+1]);
+          c = ']';
+          i++;
+        }
+      }
+    } else if (c == '\\') {
+      escaped = True;
+      inbrcount = 1;      // in case escaped inside bracket expression
+    } else if (!inBracket) {
+      if (c == '[') {
+        // Opening bracket puts us in a bracket expression.
+        inBracket = True;
+        charClass = False;
+        inbrcount = -1;       // to know if ] is normal or end of br.expr.
+      } else if (c == ']') {
+        // Outside a bracket expression ] has to be escaped as well.
+        result.push_back ('\\');
+      }
+    } else if (c == ']') {
+      if (inbrcount > 0) {
+        // A closing bracket puts us back in the normal state.
+        // But a closing bracket immediately after the start of a bracket
+        // expression is a literal ] and not the end of the expression.
+        // It has to be escaped in Ecma.
+        inBracket = False;
+      } else {
+        result.push_back ('\\');
+        inbrcount = 0;
+      }
+    } else if (c != '^') {
+      // A starting ^ is a not and does not count yet.
+      // I.e., a ] given hereafter is not the end of bracket expression yet.
+      // Some character is found.
+      inbrcount = 0;
+      // An opening bracket followed by a colon is the start of a
+      // Posix character class.
+      // Go to next char, so closing bracket in [[:] is end of
+      // bracket and not end of character class.
+      // Otherwise [ has to be escaped.
+      if (c == '[') {
+        if (i+1<pattLeng  &&  rx[i+1] == ':') {
+          result.push_back (c);
+          c = rx[++i];
+          charClass = True;
+        } else {
+          result.push_back ('\\');
+        }
+      } else if (charClass  &&
+                 c == ':'  &&  i+1<pattLeng  && rx[i+1] == ']') {
+        // End of Posix character class.
+        result.push_back (c);
+        c = rx[++i];
+        charClass = False;
+      }
+    }
+    inbrcount++;
+    // Write the character.
+    result.push_back (c);
   }
-  matchpos = a2_re_search_2(buf, 0, 0, (Char*)s, len, xpos, range, reg, len);
-  if (matchpos >= 0) matchlen = reg->end[0] - reg->start[0];
-  else {
-    matchlen = 0;
-    return String::npos;
-  }
-  return matchpos;
+  return result;
 }
 
-String::size_type Regex::match(const Char *s,
-			       String::size_type len,
-			       String::size_type pos) const {
-  Int res;
-  Int ps = static_cast<Int>(pos);
-  if (ps < 0) {
-    ps += len;
-    if (ps > static_cast<Int>(len)) return String::npos;
-    res = a2_re_match_2(buf, 0, 0, (Char*)s, ps, 0, reg, ps);
-  } else if (ps > static_cast<Int>(len)) return String::npos;
-  else res = a2_re_match_2(buf, 0, 0, (Char*)s, len, ps, reg, len);
-  if (res < 0) return String::npos;
-  return static_cast<String::size_type>(res);
-}
-
-Regex::Regex(const String &exp, Bool fast, Int sz,
-	      const Char *translation) {
-  create(exp, fast, sz, translation);
-}
-
-Regex::~Regex() {
-  dealloc();
-}
-
-Regex::Regex(const Regex &that) : RegexBase() {
-  create(that.str, that.fastval, that.bufsz, that.trans);
-}
-
-Regex &Regex::operator=(const Regex &that) {
-  dealloc();
-  create(that.str, that.fastval, that.bufsz, that.trans);
-  return *this;
-}
-
-Regex &Regex::operator=(const String &strng) {
-  dealloc();
-  create(strng, 0, 40, 0);
-  return *this;
-}
-
-String Regex::fromPattern(const String &pattern)
+String Regex::fromPattern(const String& pattern)
 {
     enum CState{stream, bracketopen, escapechar};
     uInt bracecount = 0;
@@ -266,7 +291,7 @@ String Regex::fromPattern(const String &pattern)
 	    // leave all other chars unchanged
 	    }
 	    break;
-	    
+
 	case bracketopen:
             if (c == ']'  &&  inbrcount > 0) {
                 // A closing bracket immediately after the start of a bracket
@@ -299,7 +324,7 @@ String Regex::fromPattern(const String &pattern)
             }
             inbrcount++;
 	    break;
-	    
+
 	case escapechar:
 	    // An escaped comma can be turned into a normal comma, thus
 	    // does not need the backslash.
@@ -322,7 +347,7 @@ String Regex::fromPattern(const String &pattern)
     return result;
 }
 
-String Regex::fromSQLPattern(const String &pattern)
+String Regex::fromSQLPattern(const String& pattern)
 {
     // In SQL a % is 0 or more characters and _ is a single character.
     // AFAIK there are no special escape characters.
@@ -364,13 +389,13 @@ String Regex::fromSQLPattern(const String &pattern)
     return result;
 }
 
-String Regex::fromString (const String& strng)
+String Regex::fromString (const String& str)
 {
-    uInt strLeng = strng.length();
+    uInt strLeng = str.length();
     String result;
     result.reserve(2*strLeng);
     for (uInt i=0; i<strLeng; i++) {
-	Char c = strng[i];
+	Char c = str[i];
 	// Escape special characters.
 	switch (c) {
 	case '^':
@@ -394,9 +419,9 @@ String Regex::fromString (const String& strng)
     return result;
 }
 
-String Regex::makeCaseInsensitive (const String &strng)
+String Regex::makeCaseInsensitive (const String& str)
 {
-  uInt strLeng = strng.length();
+  uInt strLeng = str.length();
   String result;
   result.reserve(4*strLeng);
   Bool inBracket = False;
@@ -404,7 +429,7 @@ String Regex::makeCaseInsensitive (const String &strng)
   Bool escaped = False;
   Bool charClass = False;
   for (uInt i=0; i<strLeng; i++) {
-    Char c = strng[i];
+    Char c = str[i];
     if (escaped) {
       result.push_back (c);
       escaped = False;
@@ -427,13 +452,13 @@ String Regex::makeCaseInsensitive (const String &strng)
     } else {
       // Character classes like [:alpha:] should not be changed.
       if (inBracket) {
-        if (c=='['  &&  i+1<strLeng  &&  strng[i+1] == ':') {
+        if (c=='['  &&  i+1<strLeng  &&  str[i+1] == ':') {
           result.push_back (c);
-          c = strng[++i];
+          c = str[++i];
           charClass = True;
-        } else if (charClass && c==':' && i+1<strLeng  &&  strng[i+1] == ']') {
+        } else if (charClass && c==':' && i+1<strLeng  &&  str[i+1] == ']') {
           result.push_back (c);
-          c = strng[++i];
+          c = str[++i];
           charClass = False;
         }
       }
@@ -451,9 +476,9 @@ String Regex::makeCaseInsensitive (const String &strng)
       if (c2 >= 0) {
         if (inBracket) {
           // If a range, the entire range must be copied if both ends are alpha.
-          if (i+2 < strLeng  &&  strng[i+1] == '-'  &&  isalpha(strng[i+2])) {
+          if (i+2 < strLeng  &&  str[i+1] == '-'  &&  isalpha(str[i+2])) {
             i += 2;
-            int ec = strng[i];
+            int ec = str[i];
             result.push_back (c1);
             result.push_back ('-');
             result.push_back (ec);
@@ -490,14 +515,14 @@ String Regex::makeCaseInsensitive (const String &strng)
 
 // some built-in Regular expressions
 
-const Regex RXwhite("[ \n\t\r\v\f]+", 1);
-const Regex RXint("-?[0-9]+", 1);
-const Regex RXdouble("-?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?", 1, 200);
-const Regex RXalpha("[A-Za-z]+", 1);
-const Regex RXlowercase("[a-z]+", 1);
-const Regex RXuppercase("[A-Z]+", 1);
-const Regex RXalphanum("[0-9A-Za-z]+", 1);
-const Regex RXidentifier("[A-Za-z_][A-Za-z0-9_]*", 1);
+const Regex RXwhite("[ \n\t\r\v\f]+");
+const Regex RXint("[-+]?[0-9]+");
+const Regex RXdouble("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
+const Regex RXalpha("[A-Za-z]+");
+const Regex RXlowercase("[a-z]+");
+const Regex RXuppercase("[A-Z]+");
+const Regex RXalphanum("[0-9A-Za-z]+");
+const Regex RXidentifier("[A-Za-z_][A-Za-z0-9_]*");
 
 } //# NAMESPACE CASACORE - END
 

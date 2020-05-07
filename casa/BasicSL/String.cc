@@ -27,7 +27,7 @@
 
 #include <casacore/casa/BasicSL/String.h>
 
-#include <casacore/casa/BasicSL/RegexBase.h>
+#include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <algorithm>
@@ -336,15 +336,10 @@ void String::capitalize() {
   }
 }
 
-// RegexBase related functions
-String::size_type String::find(const RegexBase &r, size_type pos) const {
+// Regex related functions
+String::size_type String::find(const Regex &r, size_type pos) const {
   Int unused;
   return r.find(c_str(), length(), unused, pos);
-}
-
-String::size_type String::rfind(const RegexBase &r, size_type pos) const {
-  Int unused;
-  return r.rfind(c_str(), length(), unused, pos-length());
 }
 
 Bool String::matches(const string &str, Int pos) const {
@@ -366,62 +361,64 @@ Bool String::matches(const string &str, Int pos) const {
   return rstat;
 }
 
-Bool String::contains(const RegexBase &r) const {
+Bool String::contains(const Regex &r) const {
   Int unused;
   return (r.find(c_str(), length(), unused, 0)) != npos;
 }
 
-Bool String::matches(const RegexBase &r, Int pos) const {
+Bool String::matches(const Regex &r, Int pos) const {
   String::size_type l = (pos < 0) ? -pos : length() - pos;
   if (l>length()) return False;
   if (pos<0) return r.match(c_str(), l, 0) == l;
   return r.match(c_str(), length(), pos) == l;
 }
 
-String::size_type String::index(const RegexBase &r, Int startpos) const {
+String::size_type String::index(const Regex &r, Int startpos) const {
   Int unused;
   return r.search(c_str(), length(), unused, startpos);
 }
 
-SubString String::at(const RegexBase &r, Int startpos) {
+SubString String::at(const Regex &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(first, mlen);
 }
 
-SubString String::before(const RegexBase &r, size_type startpos) const {
+SubString String::before(const Regex &r, size_type startpos) const {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(0, first);
 }
 
-SubString String::through(const RegexBase &r, size_type startpos) {
+SubString String::through(const Regex &r, size_type startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
   return _substr(0, first);
 }
 
-SubString String::from(const RegexBase &r, size_type startpos) {
+SubString String::from(const Regex &r, size_type startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(first, length()-first);
 }
 
-SubString String::after(const RegexBase &r, size_type startpos) {
+SubString String::after(const Regex &r, size_type startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
   return _substr(first, length()-first);
 }
 
-void String::del(const RegexBase &r, size_type startpos) {
+void String::del(const Regex &r, size_type startpos) {
   Int mlen;
   size_type first = r.find(c_str(), length(), mlen, startpos);
-  erase(first, mlen);
+  if (mlen > 0) {
+    erase(first, mlen);
+  }
 }
 
-Int String::gsub(const RegexBase &pat, const string &repl) {
+Int String::gsub(const Regex &pat, const string &repl) {
   Int nmatches(0);
   if (length() == 0) return nmatches;
   Int pl;
@@ -505,7 +502,7 @@ Int split(const string &str, string res[], Int maxn,
 }
 
 Int split(const string &str, string res[], Int maxn,
-	  const RegexBase &sep) {
+	  const Regex &sep) {
   Int i(0);
   String::size_type pos(0);
   Int matchlen;
