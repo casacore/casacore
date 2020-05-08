@@ -257,20 +257,6 @@ std::mutex FFTW::theirMutex;
                     in, out, kinds.data(), FFTW_ESTIMATE)) );
   }
   
-  FFTW::Plan::Plan(Plan&&) = default;
-  
-  FFTW::Plan::Plan(FFTWPlan* plan)
-    : _plan(plan)
-  { }
-  
-  FFTW::Plan::Plan(FFTWPlanf* plan)
-    : _planf(plan)
-  { }
-  
-  FFTW::Plan::~Plan() noexcept { }
-  
-  FFTW::Plan& FFTW::Plan::operator=(Plan&&) = default;
-      
   void FFTW::Plan::Execute(float *in, float *out)
   {
     fftwf_execute_r2r(_planf->getPlan(), in, out);
@@ -283,6 +269,9 @@ std::mutex FFTW::theirMutex;
   
 #else
 
+  class FFTWPlan { };
+  class FFTWPlanf { };
+  
   FFTW::FFTW()
   {}
   FFTW::~FFTW()
@@ -316,6 +305,32 @@ std::mutex FFTW::theirMutex;
   void FFTW::c2c(const IPosition&, std::complex<double>*, Bool)
   {}
 
+  FFTW::Plan FFTW::plan_redft00(const IPosition &, float *, float *)
+  { throw std::runtime_error("FFTW not available"); }
+  
+  FFTW::Plan FFTW::plan_redft00(const IPosition &, double *, double *)
+  { throw std::runtime_error("FFTW not available"); }
+  
+  void FFTW::Plan::Execute(float *, float *)
+  { throw std::runtime_error("FFTW not available"); }
+  
+  void FFTW::Plan::Execute(double *, double *)
+  { throw std::runtime_error("FFTW not available"); }
+  
 #endif
+
+FFTW::Plan::Plan(Plan&&) = default;
+
+FFTW::Plan::Plan(FFTWPlan* plan)
+  : _plan(plan)
+{ }
+
+FFTW::Plan::Plan(FFTWPlanf* plan)
+  : _planf(plan)
+{ }
+
+FFTW::Plan::~Plan() noexcept { }
+
+FFTW::Plan& FFTW::Plan::operator=(Plan&&) = default;
 
 } //# NAMESPACE CASACORE - END
