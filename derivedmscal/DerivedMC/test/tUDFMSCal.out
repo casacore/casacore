@@ -7,3 +7,7 @@
 2 3
 2 4
 3 4
+Error in TaQL command: 'select from tUDFMSCal_tmp.tab where mscal.xxx('RT[2-4]')'
+  Error in select expression: TaQL function mscal.xxx (=derivedmscal.xxx) is unknown
+  Library derivedmscal was successfully loaded; taql 'show func derivedmscal' shows its functions
+  Maybe check if (DY)LD_LIBRARY_PATH and CASACORE_LDPATH match the libraries used during the build of derivedmscal

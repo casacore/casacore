@@ -167,7 +167,14 @@ namespace casacore {
   {
     String fname(name);
     fname.downcase();
-
+    // The library name is the first part.
+    Int j = fname.index('.');
+    String libname;
+    if (j > 0  &&  j < Int(fname.size())-1) {
+      libname = fname.substr(0,j);
+    } else {
+      throw TableInvExpr("UDF " + name + " has an invalid name (no dot)");
+    }
     ScopedMutexLock lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter == theirRegistry.end()) {
@@ -178,6 +185,13 @@ namespace casacore {
         throw TableInvExpr ("User defined TaQL function " + fname +
                             " already exists");
       }
+    }
+    // Also register the library with null pointer (if not done yet).
+    // Note that a libname is different from a function name because
+    // it does not contain dots.
+    iter = theirRegistry.find (libname);
+    if (iter == theirRegistry.end()) {
+      theirRegistry[libname] = 0;
     }
   }
 
@@ -204,6 +218,11 @@ namespace casacore {
       libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
       fname   = libname + fname.substr(j);
+      // Try to find the function with the synonym.
+      iter = theirRegistry.find (fname);
+      if (iter != theirRegistry.end()) {
+        return iter->second (fname);
+      }
 
       ScopedMutexLock lock(theirMutex);
       // See if the library is already loaded.
@@ -214,18 +233,11 @@ namespace casacore {
                   "register_"+libname, False);
         if (dl.getHandle()) {
           // Add to map to indicate library has been loaded.
-          // Note that a libname is different from a function name because
-          // it does not contain dots.
           theirRegistry[libname] = 0;
         }
       }
       // Try to find the function.
       iter = theirRegistry.find (fname);
-      if (iter != theirRegistry.end()) {
-        return iter->second (fname);
-      }
-      // Look up 'libname.*' to see if the UDF supports any function.
-      iter = theirRegistry.find (libname + ".*");
       if (iter != theirRegistry.end()) {
         return iter->second (fname);
       }
