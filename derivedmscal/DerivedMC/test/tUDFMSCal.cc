@@ -75,6 +75,13 @@ void testUDF()
   for (uInt i=0; i<tab.nrow(); ++i) {
     cout << a1[i] << ' '<< a2[i] << endl;
   }
+  // Try with an invalid function.
+  try {
+    tab = tableCommand("select from tUDFMSCal_tmp.tab "
+                       "where mscal.xxx('RT[2-4]')").table();
+  } catch (const AipsError& x) {
+    cout << x.what() << endl;
+  }
 }
 
 
