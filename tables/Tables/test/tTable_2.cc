@@ -199,7 +199,7 @@ void doIt (const String& tableName)
     cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
 
     // Get a subset of the table via row numbers.
-    Vector<uInt> rownrs(4);
+    Vector<rownr_t> rownrs(4);
     rownrs(0)=3;
     rownrs(1)=1;
     rownrs(2)=9;

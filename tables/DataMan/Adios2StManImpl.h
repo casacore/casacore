@@ -51,9 +51,9 @@ public:
     DataManager *clone() const;
     String dataManagerType() const;
     String dataManagerName() const;
-    void create(uInt aNrRows);
-    void open(uInt aRowNr, AipsIO &ios);
-    void resync(uInt aRowNr);
+    void create64(rownr_t aNrRows);
+    rownr_t open64(rownr_t aRowNr, AipsIO &ios);
+    rownr_t resync64(rownr_t aRowNr);
     Bool flush(AipsIO &ios, Bool doFsync);
     DataManagerColumn *makeColumnCommon(const String &aName, int aDataType,
                                         const String &aDataTypeID);
@@ -67,15 +67,15 @@ public:
                                         int aDataType,
                                         const String &aDataTypeID);
     void deleteManager();
-    void addRow(uInt aNrRows);
+    void addRow64(rownr_t aNrRows);
     static DataManager *makeObject(const String &aDataManType,
                                    const Record &spec);
-    uInt getNrRows();
+    rownr_t getNrRows();
 
 private:
     Adios2StMan &parent;
     String itsDataManName = "Adios2StMan";
-    uInt itsRows;
+    rownr_t itsRows;
     int itsStManColumnType;
     PtrBlock<Adios2StManColumn *> itsColumnPtrBlk;
 

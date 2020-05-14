@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // ArrayColumn data (table, "virtualArray");
 // Array<double> someArray(IPosition(4,2,3,4));
 // someArray = 0;
-// for (uInt i=0, i<10; i++) {          // table will have 10 rows
+// for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
 //     table.addRow();
 //     data.put (i, someArray)
 // }

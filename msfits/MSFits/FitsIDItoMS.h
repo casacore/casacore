@@ -281,7 +281,7 @@ protected:
   //# FitsInput &infile_p;
   String msFile_p;
   Vector<Int> nPixel_p,corrType_p;
-  Block<Int> corrIndex_p;
+  Block<Int> corrIndex_p, corrSwapIndex_p;
   Matrix<Int> corrProduct_p;
   Vector<String> coordType_p;
   Vector<Double> refVal_p, refPix_p, delta_p; 

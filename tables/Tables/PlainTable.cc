@@ -49,19 +49,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Initialize the static TableCache object.
 TableCache PlainTable::theirTableCache;
 
-PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
-        const TableLock& lockOptions, int endianFormat,
-        const TSMOption& tsmOption)
-    : BaseTable (newtab.name(), newtab.option(), 0)
+PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
+                        const TableLock& lockOptions, int endianFormat,
+                        const TSMOption& tsmOption)
+  : BaseTable (newtab.name(), newtab.option(), 0)
 {
     PlainTableCommon(newtab, nrrow, initialize, lockOptions,
-            endianFormat, tsmOption);
+                     endianFormat, tsmOption);
 }
 
 #ifdef HAVE_MPI
-PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow,
-        Bool initialize, const TableLock& lockOptions, int endianFormat,
-        const TSMOption& tsmOption)
+PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow,
+                        Bool initialize, const TableLock& lockOptions,
+                        int endianFormat, const TSMOption& tsmOption)
     : BaseTable (mpiComm, newtab.name(), newtab.option(), 0)
 {
     PlainTableCommon(newtab, nrrow, initialize, lockOptions,
@@ -69,16 +69,15 @@ PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow,
 }
 #endif
 
-void PlainTable::PlainTableCommon (SetupNewTable& newtab, uInt nrrow,
-        Bool initialize, const TableLock& lockOptions, int endianFormat,
-        const TSMOption& tsmOption)
+void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
+                                   Bool initialize, const TableLock& lockOptions,
+                                   int endianFormat, const TSMOption& tsmOption)
 {
-    colSetPtr_p = 0;
+    colSetPtr_p    = 0;
     tableChanged_p = True;
-    addToCache_p = True;
-    lockPtr_p = 0;
-    tsmOption_p = tsmOption;
-
+    addToCache_p   = True;
+    lockPtr_p      = 0;
+    tsmOption_p    = tsmOption;
     try {
     // Determine and set the endian option.
     setEndian (endianFormat);
@@ -162,19 +161,16 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, uInt nrrow,
   } catch (std::exception&) {
     delete lockPtr_p;
     lockPtr_p = 0;
-    delete colSetPtr_p;
-    colSetPtr_p = 0;
     throw;
   }
 }
 
 PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
-			const String& type, uInt nrrow, int opt,
+			const String& type, rownr_t nrrow, int opt,
 			const TableLock& lockOptions,
                         const TSMOption& tsmOption,
 			Bool addToCache, uInt locknr)
 : BaseTable      (tabname, opt, nrrow),
-  colSetPtr_p    (0),
   tableChanged_p (False),
   addToCache_p   (addToCache),
   lockPtr_p      (0),
@@ -213,8 +209,18 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     AipsIO ios (Table::fileName(tabname), ByteIO::Old);
     String tp;
     version = ios.getstart ("Table");
+    if (version > 3) {
+      throw TableError ("PlainTable version " + String::toString(version) +
+                        " not supported by this version of Casacore");
+    }
+    if (version > 2) {
+      ios >> nrrow;
+    } else {
+      uInt n;
+      ios >> n;
+      nrrow = n;
+    }
     uInt format;
-    ios >> nrrow;
     ios >> format;
     bigEndian_p = (format==0);
     ios >> tp;
@@ -249,7 +255,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
-    colSetPtr_p = new ColumnSet (tdescPtr_p);
+    colSetPtr_p = new ColumnSet (tdescPtr_p.get());
     colSetPtr_p->linkToTable (this);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {
@@ -331,7 +337,6 @@ void PlainTable::closeObject()
     //# Trace if needed.
     TableTrace::traceClose (name_p);
     //# Delete everything.
-    delete colSetPtr_p;
     delete lockPtr_p;
 }
 
@@ -435,7 +440,7 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 	    // Older readonly table files may have empty locksync data.
 	    // Skip the sync-ing in that case.
 	    uInt ncolumn;
-            uInt nrrow;
+            rownr_t nrrow;
 	    if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
 				   colSetPtr_p->dataManChanged())) {
 		tableChanged = False;
@@ -519,7 +524,7 @@ void PlainTable::resync()
     // Older readonly table files may have empty locksync data.
     // Skip the sync-ing in that case.
     uInt ncolumn;
-    uInt nrrow;
+    rownr_t nrrow;
     if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
 			   colSetPtr_p->dataManChanged())) {
         tableChanged = False;
@@ -665,7 +670,7 @@ Bool PlainTable::canRenameColumn (const String& columnName) const
 
 
 //# Add rows.
-void PlainTable::addRow (uInt nrrw, Bool initialize)
+void PlainTable::addRow (rownr_t nrrw, Bool initialize)
 {
     if (nrrw > 0) {
         checkWritable("addRow");
@@ -683,7 +688,7 @@ void PlainTable::addRow (uInt nrrw, Bool initialize)
     }
 }
 
-void PlainTable::removeRow (uInt rownr)
+void PlainTable::removeRow (rownr_t rownr)
 {
     checkWritable("rowmoveRow");
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date

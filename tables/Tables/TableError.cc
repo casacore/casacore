@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -145,6 +146,13 @@ TableInvOper::~TableInvOper () noexcept
 
 TableArrayConformanceError::TableArrayConformanceError (const String& s,Category c)
 : TableError (s + ": Table array conformance error",c)
+{}
+TableArrayConformanceError::TableArrayConformanceError (const String& s,
+                                                        const IPosition& shape,
+                                                        const IPosition& exp,
+                                                        Category c)
+: TableError (std::string(s) + ": Table array conformance error (shape=" +
+              shape.toString() + ", expected " + exp.toString() + ')', c)
 {}
 TableArrayConformanceError::~TableArrayConformanceError () noexcept
 {}

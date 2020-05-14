@@ -39,25 +39,31 @@ class VSCExample
 {
 public:
     VSCExample(): x_p(0), y_p(0) {}
-    VSCExample(Int x, float y) : x_p(x), y_p(y) {}
-    VSCExample(const VSCExample& that): x_p(that.x_p), y_p(that.y_p) {}
+    VSCExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
+    VSCExample(const VSCExample& that): x_p(that.x_p), y_p(that.y_p), z_p(that.z_p) {}
     static String dataTypeId()
 	{ return "VSCExample"; }
     Int x() const
 	{ return x_p; }
     float y() const
 	{ return y_p; }
+    const String& z() const
+	{ return z_p; }
     Int& x()
 	{ return x_p; }
     float& y()
 	{ return y_p; }
+    String& z()
+	{ return z_p; }
     int operator== (const VSCExample& that) const
-	{ return x_p==that.x_p && y_p==that.y_p; }
+	{ return x_p==that.x_p && y_p==that.y_p && z_p==that.z_p; }
     int operator< (const VSCExample& that) const
-	{ return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p); }
+	{ return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p) ||
+            (x_p==that.x_p && y_p==that.y_p && z_p<that.z_p); }
 private:
-    Int   x_p;
-    float y_p;
+    Int    x_p;
+    float  y_p;
+    String z_p;
 };
 
 
@@ -105,7 +111,8 @@ public:
     // x and y of class VSCExample.
     VSCExampleVSCEngine (const String& sourceColumnName,
 			 const String& xTargetColumnName,
-			 const String& yTargetColumnname);
+			 const String& yTargetColumnname,
+			 const String& zTargetColumnname);
 
     // Destructor is mandatory.
     ~VSCExampleVSCEngine();
@@ -114,17 +121,17 @@ public:
     DataManager* clone() const;
 
     // Store the target column names in the source column keywords.
-    void create (uInt);
+    void create64 (rownr_t);
 
     // Prepare the engine by allocating column objects
     // for the target columns.
     void prepare();
 
     // Get the data from a row.
-    void get (uInt rownr, VSCExample& value);
+    void get (rownr_t rownr, VSCExample& value);
 
     // Put the data in a row.
-    void put (uInt rownr, const VSCExample& value);
+    void put (rownr_t rownr, const VSCExample& value);
 
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
@@ -143,9 +150,11 @@ private:
     // The target column names.
     String xTargetName_p;
     String yTargetName_p;
+    String zTargetName_p;
     // Objects for the target columns.
-    ScalarColumn<Int>   colx;
-    ScalarColumn<float> coly;
+    ScalarColumn<Int>    colx;
+    ScalarColumn<float>  coly;
+    ScalarColumn<String> colz;
 
 public:
     //*display 4

@@ -87,8 +87,8 @@ Table TableCopy::makeEmptyMemoryTable (const String& newName,
   return Table(newtab, Table::Memory, (noRows ? 0 : tab.nrow()));
 }
 
-void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
-			  uInt startin, uInt nrrow, Bool flush)
+void TableCopy::copyRows (Table& out, const Table& in, rownr_t startout,
+			  rownr_t startin, rownr_t nrrow, Bool flush)
 {
   // Check if startin and nrrow are correct for input.
   if (startin + nrrow > in.nrow()) {
@@ -115,7 +115,7 @@ void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
     }
     ROTableRow inrow(in, cols);
     outrow = TableRow(out, cols);
-    for (uInt i=0; i<nrrow; i++) {
+    for (rownr_t i=0; i<nrrow; i++) {
       inrow.get (startin + i);
       outrow.put (startout + i, inrow.record(), inrow.getDefined(), False);
     }
@@ -239,7 +239,7 @@ void TableCopy::copyColumnData (const Table& tabFrom, const String& colFrom,
   AlwaysAssert (tabFrom.nrow() == tabTo.nrow(), AipsError);
   TableColumn incol(tabFrom, colFrom);
   TableColumn outcol(tabTo, colTo);
-  for (uInt i=0; i<tabFrom.nrow(); i++) {
+  for (rownr_t i=0; i<tabFrom.nrow(); i++) {
     outcol.put (i, incol, preserveTileShape);
   }
 }

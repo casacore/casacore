@@ -94,7 +94,7 @@ public:
     MSObservation (const String &tableName, TableOption = Table::Old);
     MSObservation (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSObservation (SetupNewTable &newTab, uInt nrrow = 0,
+    MSObservation (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSObservation (const Table &table);
     MSObservation (const MSObservation &other);

@@ -45,6 +45,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>

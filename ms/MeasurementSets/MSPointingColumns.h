@@ -176,20 +176,20 @@ public:
   // Access to interpolated directions, the default time of zero will
   // return the 0th order element of the polynomial.
   // <group>
-  MDirection directionMeas(Int row, Double time = 0) const;
-  MDirection targetMeas(Int row, Double time = 0) const;
-  MDirection pointingOffsetMeas(Int row, Double time = 0) const;
-  MDirection sourceOffsetMeas(Int row, Double time = 0) const;
+  MDirection directionMeas(rownr_t row, Double time = 0) const;
+  MDirection targetMeas(rownr_t row, Double time = 0) const;
+  MDirection pointingOffsetMeas(rownr_t row, Double time = 0) const;
+  MDirection sourceOffsetMeas(rownr_t row, Double time = 0) const;
   // </group>
 
   // return the first matching row index for this time and antenna, 
   // returns -1 if no match was found
   // For long tables you may give a guess row...the last return
   // is usually a good one.
-  Int pointingIndex(Int antenna, Double time, Int guessRow=0) const;
+  Int64 pointingIndex(Int antenna, Double time, Int64 guessRow=0) const;
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return antennaId_p.nrow();}
+  rownr_t nrow() const {return antennaId_p.nrow();}
 
   // set the epoch reference type for the TIME & TIME_ORIGIN column.
   // <note role=tip>

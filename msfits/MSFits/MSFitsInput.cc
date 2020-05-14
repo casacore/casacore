@@ -1135,8 +1135,25 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     Int iTime1 = getIndex(pType, "DATE", 1);
     // get index for source
     Int iSource = getIndex(pType, "SOURCE");
+    if ( iSource == -1 ) {
+        _log << LogOrigin("MSFitsInput", __func__)
+             << LogIO::NORMAL
+             << "SOURCE not found in";
+        for ( auto p = pType.begin( ); p != pType.end( ); ++p )
+            _log << " " << *p ;
+        _log << LogIO::POST;
+    }
+
     // get index for Freq
     Int iFreq = getIndex(pType, "FREQSEL");
+    if ( iFreq == -1 ) {
+        _log << LogOrigin("MSFitsInput", __func__)
+             << LogIO::NORMAL
+             << "FREQSEL not found in";
+        for ( auto p = pType.begin( ); p != pType.end( ); ++p )
+            _log << " " << *p ;
+        _log << LogIO::POST;
+    }
 
     // get index for Integration time
     Int iInttim = getIndex(pType, "INTTIM");
@@ -1198,7 +1215,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
         time *= C::day;
 
         // Extract fqid
-        Int freqId = Int(_priGroup.parm(iFreq));
+        Int freqId = iFreq > 0 ? Int(_priGroup.parm(iFreq)) : 1;
 
         // Extract field Id
         Int fieldId = 0;
@@ -1441,8 +1458,24 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     Int iTime1 = getIndex(pType, "DATE", 1);
     // get index for source
     Int iSource = getIndex(pType, "SOURCE");
+    if ( iSource == -1 ) {
+        _log << LogOrigin("MSFitsInput", __func__)
+             << LogIO::NORMAL
+             << "SOURCE not found in";
+        for ( auto p = pType.begin( ); p != pType.end( ); ++p )
+            _log << " " << *p ;
+        _log << LogIO::POST;
+    }
     // get index for Freq
     Int iFreq = getIndex(pType, "FREQSEL");
+    if ( iFreq == -1 ) {
+        _log << LogOrigin("MSFitsInput", __func__)
+             << LogIO::NORMAL
+             << "FREQSEL not found in";
+        for ( auto p = pType.begin( ); p != pType.end( ); ++p )
+            _log << " " << *p ;
+        _log << LogIO::POST;
+    }
 
     // get index for Integration time
     Int iInttim = getIndex(pType, "INTTIM");
@@ -1498,7 +1531,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
         time *= C::day;
 
         // Extract fqid
-        Int freqId = Int(_priGroup.parm(iFreq));
+        Int freqId = iFreq > 0 ? Int(_priGroup.parm(iFreq)) : 1;
 
         // Extract field Id
         Int fieldId = 0;
@@ -3453,7 +3486,7 @@ void MSFitsInput::fillSourceTable() {
                 sourceIndex.sourceId() = fid;
                 sourceIndex.spectralWindowId() = spwIds(spwId);
 
-                Vector<uInt> rows = sourceIndex.getRowNumbers();
+                Vector<rownr_t> rows = sourceIndex.getRowNumbers();
                 if (rows.nelements() == 0) {
                     _ms.source().addRow();
                     Int j = _ms.source().nrow() - 1;
@@ -3526,7 +3559,7 @@ void MSFitsInput::fillSourceTable() {
                 MSSourceIndex sourceIndex(_ms.source());
                 sourceIndex.sourceId() = lastFieldId;
                 sourceIndex.spectralWindowId() = spwId;
-                Vector<uInt> rows = sourceIndex.getRowNumbers();
+                Vector<rownr_t> rows = sourceIndex.getRowNumbers();
                 if (rows.nelements() == 0) {
                     _ms.source().addRow();
                     Int j = _ms.source().nrow() - 1;

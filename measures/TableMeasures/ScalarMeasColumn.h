@@ -114,7 +114,7 @@ template <class T> class ScalarColumn;
 //
 //     // Add tab.nrow() measures to the column.	
 //     MEpoch tm(Quantity(MeasData::MJD2000, "d"), MEpoch::TAI);
-//     for (uInt i=0; i<tab.nrow(); i++) {
+//     for (rownr_t i=0; i<tab.nrow(); i++) {
 //         timeCol.put(i, tm);
 //     }
 //
@@ -168,20 +168,20 @@ public:
   // Get the Measure contained in the specified row.
   // It returns the Measure as found in the table.
   // <group name=get>
-  void get (uInt rownr, M& meas) const;
-  M operator() (uInt rownr) const;
+  void get (rownr_t rownr, M& meas) const;
+  M operator() (rownr_t rownr) const;
   // </group>
 
   // Get the Measure contained in the specified row and convert
   // it to the reference and offset found in the given measure.
-  M convert (uInt rownr, const M& meas) const
+  M convert (rownr_t rownr, const M& meas) const
     { return convert (rownr, meas.getRef()); }
 
   // Get the Measure contained in the specified row and convert
   // it to the given reference.
   // <group>
-  M convert (uInt rownr, const MeasRef<M>& measRef) const;
-  M convert (uInt rownr, uInt refCode) const;
+  M convert (rownr_t rownr, const MeasRef<M>& measRef) const;
+  M convert (rownr_t rownr, uInt refCode) const;
   // </group>
 
   // Returns the column's fixed reference or the reference of the last
@@ -210,12 +210,12 @@ public:
 
   // Put a Measure into the given row.
   // <group name=put>
-  void put (uInt rownr, const M& meas);
+  void put (rownr_t rownr, const M& meas);
   // </group>
 
 protected:
   // Make a MeasRef for the given row.
-  MeasRef<M> makeMeasRef (uInt rownr) const;
+  MeasRef<M> makeMeasRef (rownr_t rownr) const;
 
 private:
   //# Whether conversion is needed during a put.  True if either

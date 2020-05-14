@@ -420,7 +420,7 @@ private:
   static void handleScalar (char* string1, Int lineSize, char* first,
 			    Int& at1, Char separator,
 			    Int type,
-			    TableColumn& tabcol, uInt rownr);
+			    TableColumn& tabcol, rownr_t rownr);
 
   // Get the next array with the given type from string1.
   // It returns the shape (for variable shaped arrays).
@@ -435,7 +435,7 @@ private:
 			   Int& at1, Char separator,
 			   const IPosition& shape, Int varAxis,
 			   Int type,
-			   TableColumn& tabcol, uInt rownr);
+			   TableColumn& tabcol, rownr_t rownr);
 };
 
 

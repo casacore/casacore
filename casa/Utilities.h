@@ -51,7 +51,6 @@
 #include <casacore/casa/Utilities/SortError.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/ValType.h>
-#include <casacore/casa/Utilities/cregex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -120,9 +119,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=DynBuffer>Dynamic buffers</linkto>
 //    are used to store data in dynamically allocated buffers.
 //   <li> <linkto class=Regex>Regular expressions</linkto>
-//    are supported by the class <linkto class=Regex>Regex</linkto> and
-//    the associated function library 
-//    <a href="Utilities/cregex.html">cregex</a>.
+//    are supported by the class <linkto class=Regex>Regex</linkto>
+//    built on top of std::regex.
 //   <li> <linkto class=Sequence>Sequences</linkto>
 //    of any datatype can be derived from the base class
 //    <linkto class=Sequence>Sequence</linkto>.

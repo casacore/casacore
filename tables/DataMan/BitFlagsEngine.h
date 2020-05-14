@@ -154,7 +154,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // ArrayColumn data (table, "virtualArray");
   // Array<Bool> someArray(IPosition(4,2,3,4));
   // someArray = True;
-  // for (uInt i=0, i<10; i++) {          // table will have 10 rows
+  // for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
   //     table.addRow();
   //     data.put (i, someArray)
   // }
@@ -260,7 +260,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Initialize the object for a new table.
     // It defines the keywords containing the engine parameters.
-    void create (uInt initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
@@ -269,19 +269,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get an array in the given row.
     // This will scale and offset from the underlying array.
-    void getArray (uInt rownr, Array<Bool>& array);
+    void getArray (rownr_t rownr, Array<Bool>& array);
 
     // Put an array in the given row.
     // This will scale and offset to the underlying array.
-    void putArray (uInt rownr, const Array<Bool>& array);
+    void putArray (rownr_t rownr, const Array<Bool>& array);
 
     // Get a section of the array in the given row.
     // This will scale and offset from the underlying array.
-    void getSlice (uInt rownr, const Slicer& slicer, Array<Bool>& array);
+    void getSlice (rownr_t rownr, const Slicer& slicer, Array<Bool>& array);
 
     // Put into a section of the array in the given row.
     // This will scale and offset to the underlying array.
-    void putSlice (uInt rownr, const Slicer& slicer,
+    void putSlice (rownr_t rownr, const Slicer& slicer,
 		   const Array<Bool>& array);
 
     // Get an entire column.

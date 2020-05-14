@@ -35,6 +35,7 @@
 #include <casacore/tables/TaQL/ExprFuncNode.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/TaQL/MArray.h>
+#include <casacore/tables/Tables/RowNumbers.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -200,9 +201,10 @@ public:
     // is not done automatically.
     // <group>
     TableExprNode (const Bool& value);
-    TableExprNode (const Int64& value);
     TableExprNode (const Int& value);
     TableExprNode (const uInt& value);
+    TableExprNode (const Int64& value);
+    TableExprNode (const uInt64& value);
     TableExprNode (const Float& value);
     TableExprNode (const Double& value);
     TableExprNode (const Complex& value);
@@ -221,6 +223,11 @@ public:
     TableExprNode (const Array<Int>& value);
     TableExprNode (const Array<uInt>& value);
     TableExprNode (const Array<Int64>& value);
+    //# The following constructor has to be explicit, othwerwise
+    //#    Table(Vector<rownr_t>)
+    //# gives an ambiguous error as the preferred class RowNumbers
+    //# has a similar constructor.
+    explicit TableExprNode (const Array<uInt64>& value);
     TableExprNode (const Array<Float>& value);
     TableExprNode (const Array<Double>& value);
     TableExprNode (const Array<Complex>& value);
@@ -234,6 +241,7 @@ public:
     TableExprNode (const MArray<Int>& value);
     TableExprNode (const MArray<uInt>& value);
     TableExprNode (const MArray<Int64>& value);
+    TableExprNode (const MArray<uInt64>& value);
     TableExprNode (const MArray<Float>& value);
     TableExprNode (const MArray<Double>& value);
     TableExprNode (const MArray<Complex>& value);
@@ -270,7 +278,7 @@ public:
 
     // Re-create the column object for a selection of rows.
     // Nothing is done if the node does not represent a column object.
-    void applySelection (const Vector<uInt>& rownrs)
+    void applySelection (const Vector<rownr_t>& rownrs)
       { node_p->applySelection (rownrs); }
 
     // Get the unit of the expression.
@@ -294,7 +302,7 @@ public:
     // Get the number of rows in the table associated with this expression.
     // One is returned if the expression is a constant.
     // Zero is returned if no table is associated with it.
-    uInt nrow() const
+    rownr_t nrow() const
       { return node_p->nrow(); }
 
     // Get a value for this node in the given row.
@@ -357,19 +365,54 @@ public:
     // The data of function called should match the data type as
     // returned by function <src>getColumnDataType</src>.
     // <group>
-    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs) const;
-    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs) const;
-    Array<Short>    getColumnShort (const Vector<uInt>& rownrs) const;
-    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs) const;
-    Array<Int>      getColumnInt (const Vector<uInt>& rownrs) const;
-    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const;
-    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const;
-    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const;
-    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs) const;
-    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs) const;
-    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs) const;
-    Array<String>   getColumnString (const Vector<uInt>& rownrs) const;
+    Array<Bool>     getColumnBool (const RowNumbers& rownrs) const;
+    Array<uChar>    getColumnuChar (const RowNumbers& rownrs) const;
+    Array<Short>    getColumnShort (const RowNumbers& rownrs) const;
+    Array<uShort>   getColumnuShort (const RowNumbers& rownrs) const;
+    Array<Int>      getColumnInt (const RowNumbers& rownrs) const;
+    Array<uInt>     getColumnuInt (const RowNumbers& rownrs) const;
+    Array<Int64>    getColumnInt64 (const RowNumbers& rownrs) const;
+    Array<Float>    getColumnFloat (const RowNumbers& rownrs) const;
+    Array<Double>   getColumnDouble (const RowNumbers& rownrs) const;
+    Array<Complex>  getColumnComplex (const RowNumbers& rownrs) const;
+    Array<DComplex> getColumnDComplex (const RowNumbers& rownrs) const;
+    Array<String>   getColumnString (const RowNumbers& rownrs) const;
     // </group>
+
+    // The same functions as above for the old Vector<uInt>.
+    // They are primarily meant for CASA's SplatalogueTable class.
+    // Normally they should not be used, hence declared private
+    // unless told otherwise.
+#ifndef IMPLICIT_CTDS_32BIT
+private:
+#endif
+    // <group>
+    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs) const
+      { return getColumnBool (RowNumbers(rownrs)); }
+    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs) const
+      { return getColumnuChar (RowNumbers(rownrs)); }
+    Array<Short>    getColumnShort (const Vector<uInt>& rownrs) const
+      { return getColumnShort (RowNumbers(rownrs)); }
+    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs) const
+      { return getColumnuShort (RowNumbers(rownrs)); }
+    Array<Int>      getColumnInt (const Vector<uInt>& rownrs) const
+      { return getColumnInt (RowNumbers(rownrs)); }
+    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const
+      { return getColumnuInt (RowNumbers(rownrs)); }
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const 
+      { return getColumnInt64 (RowNumbers(rownrs)); }
+    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const
+      { return getColumnFloat (RowNumbers(rownrs)); }
+    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs) const
+      { return getColumnDouble (RowNumbers(rownrs)); }
+    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs) const
+      { return getColumnComplex (RowNumbers(rownrs)); }
+    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs) const
+      { return getColumnDComplex (RowNumbers(rownrs)); }
+    Array<String>   getColumnString (const Vector<uInt>& rownrs) const
+      { return getColumnString (RowNumbers(rownrs)); }
+    // </group>
+public:
 
     // Show the tree.
     void show (ostream&) const;
@@ -616,29 +659,29 @@ inline MArray<String> TableExprNode::getStringAS (const TableExprId& id) const
 inline MArray<MVTime> TableExprNode::getDateAS (const TableExprId& id) const
     { return node_p->getDateAS (id); }
 
-inline Array<Bool>      TableExprNode::getColumnBool (const Vector<uInt>& rownrs) const
+inline Array<Bool>      TableExprNode::getColumnBool (const RowNumbers& rownrs) const
     { return node_p->getColumnBool (rownrs); }
-inline Array<uChar>     TableExprNode::getColumnuChar (const Vector<uInt>& rownrs) const
+inline Array<uChar>     TableExprNode::getColumnuChar (const RowNumbers& rownrs) const
     { return node_p->getColumnuChar (rownrs); }
-inline Array<Short>     TableExprNode::getColumnShort (const Vector<uInt>& rownrs) const
+inline Array<Short>     TableExprNode::getColumnShort (const RowNumbers& rownrs) const
     { return node_p->getColumnShort (rownrs); }
-inline Array<uShort>    TableExprNode::getColumnuShort (const Vector<uInt>& rownrs) const
+inline Array<uShort>    TableExprNode::getColumnuShort (const RowNumbers& rownrs) const
     { return node_p->getColumnuShort (rownrs); }
-inline Array<Int>       TableExprNode::getColumnInt (const Vector<uInt>& rownrs) const
+inline Array<Int>       TableExprNode::getColumnInt (const RowNumbers& rownrs) const
     { return node_p->getColumnInt (rownrs); }
-inline Array<uInt>      TableExprNode::getColumnuInt (const Vector<uInt>& rownrs) const
+inline Array<uInt>      TableExprNode::getColumnuInt (const RowNumbers& rownrs) const
     { return node_p->getColumnuInt (rownrs); }
-inline Array<Int64>     TableExprNode::getColumnInt64 (const Vector<uInt>& rownrs) const
+inline Array<Int64>     TableExprNode::getColumnInt64 (const RowNumbers& rownrs) const
     { return node_p->getColumnInt64 (rownrs); }
-inline Array<Float>     TableExprNode::getColumnFloat (const Vector<uInt>& rownrs) const
+inline Array<Float>     TableExprNode::getColumnFloat (const RowNumbers& rownrs) const
     { return node_p->getColumnFloat (rownrs); }
-inline Array<Double>    TableExprNode::getColumnDouble (const Vector<uInt>& rownrs) const
+inline Array<Double>    TableExprNode::getColumnDouble (const RowNumbers& rownrs) const
     { return node_p->getColumnDouble (rownrs); }
-inline Array<Complex>   TableExprNode::getColumnComplex (const Vector<uInt>& rownrs) const
+inline Array<Complex>   TableExprNode::getColumnComplex (const RowNumbers& rownrs) const
     { return node_p->getColumnComplex (rownrs); }
-inline Array<DComplex>  TableExprNode::getColumnDComplex (const Vector<uInt>& rownrs) const
+inline Array<DComplex>  TableExprNode::getColumnDComplex (const RowNumbers& rownrs) const
     { return node_p->getColumnDComplex (rownrs); }
-inline Array<String>    TableExprNode::getColumnString (const Vector<uInt>& rownrs) const
+inline Array<String>    TableExprNode::getColumnString (const RowNumbers& rownrs) const
     { return node_p->getColumnString (rownrs); }
 
 inline void TableExprNode::show (ostream& os) const

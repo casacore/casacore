@@ -52,7 +52,6 @@ BasicMath/Random.cc
 BasicSL/Complex.cc
 BasicSL/Constants.cc
 BasicSL/IComplex.cc
-BasicSL/RegexBase.cc
 BasicSL/STLMath.cc
 BasicSL/String.cc
 Containers/Allocator.cc
@@ -213,7 +212,6 @@ Utilities/CountedPtr2.cc
 Utilities/Compare.cc
 Utilities/CompositeNumber.cc
 Utilities/Copy2.cc
-Utilities/cregex.cc
 Utilities/DataType.cc
 Utilities/DynBuffer.cc
 Utilities/Fallible2.cc
@@ -352,7 +350,6 @@ BasicSL/Complexfwd.h
 BasicSL/Complex.h
 BasicSL/Constants.h
 BasicSL/IComplex.h
-BasicSL/RegexBase.h
 BasicSL/String.h
 BasicSL/STLMath.h
 BasicSL/STLIO.h
@@ -623,7 +620,6 @@ Utilities/CountedPtr.h
 Utilities/CountedPtr.tcc
 Utilities/COWPtr.h
 Utilities/COWPtr.tcc
-Utilities/cregex.h
 Utilities/DataType.h
 Utilities/DefaultValue.h
 Utilities/DynBuffer.h

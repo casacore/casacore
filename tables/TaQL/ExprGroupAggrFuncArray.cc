@@ -501,7 +501,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       MArray<Double> arr0 = itsOperand->getArrayDouble(ids[0]);
       std::vector<Double> values(ids.size() * arr0.size());
       nr += arr0.flatten (&(values[0]), values.size());
-      for (uInt i=1; i<ids.size(); ++i) {
+      for (size_t i=1; i<ids.size(); ++i) {
         // Get value and make contiguous if needed.
         MArray<Double> arr = itsOperand->getArrayDouble(ids[i]);
         if (arr.size() > values.size()-nr) {
@@ -511,7 +511,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       return GenSort<Double>::kthLargest
         (&(values[0]), nr,
-         static_cast<Int64>((nr - 1)*itsFrac + 0.001));
+         static_cast<Int64>((nr - 1.)*itsFrac + 0.001));
     } catch (const std::exception& x) {
       throw TableInvExpr ("Cannot compute gfractile; "
                           "probably too many data - " + String(x.what()));

@@ -411,11 +411,11 @@ void MVTime::print(ostream &oss,
 	  setw(2) << e << "-" << 
 	  setw(2) << a;
       }
-    if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-	if (i1 == MVTime::FITS) {
-	  oss << "T";
-        } else if (intyp & MVTime::USE_SPACE) {
+      if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
+        if (intyp & MVTime::USE_SPACE) {
           oss << ' ';
+	} else if (i1 == MVTime::FITS) {
+	  oss << "T";
 	} else {
 	  oss << "/";
 	}

@@ -53,7 +53,7 @@ void doIt()
 
   // Check if rownr mapping is fine.
   uInt tabnr;
-  uInt rownr;
+  rownr_t rownr;
   for (uInt i=0; i<10; ++i) {
     rows.mapRownr (tabnr, rownr, i);
     AlwaysAssertExit (tabnr == 0);

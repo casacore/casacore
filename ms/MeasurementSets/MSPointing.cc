@@ -62,14 +62,14 @@ MSPointing::MSPointing(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSPointing"));
 }
 
-MSPointing::MSPointing(SetupNewTable &newTab, uInt nrrow,
+MSPointing::MSPointing(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSPointingEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSPointing(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSPointing(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSPointing"));
 }
 

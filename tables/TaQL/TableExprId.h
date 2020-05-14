@@ -101,7 +101,7 @@ public:
     TableExprId();
 
     // Construct it from a row number.
-    TableExprId (uInt rowNumber);
+    TableExprId (rownr_t rowNumber);
 
     // Construct it from a Record object.
     TableExprId (const RecordInterface&);
@@ -131,7 +131,7 @@ public:
     const TableExprData& data() const;
     // Set the row number.
 
-    void setRownr (uInt rownr);
+    void setRownr (rownr_t rownr);
 
     // Set the record.
     void setRecord (const RecordInterface&);
@@ -152,7 +152,7 @@ inline TableExprId::TableExprId()
     row_p  (-1)
 {}
 
-inline TableExprId::TableExprId (uInt rowNumber)
+inline TableExprId::TableExprId (rownr_t rowNumber)
   : type_p (0),
     row_p  (rowNumber)
 {}
@@ -182,7 +182,7 @@ inline const TableExprData& TableExprId::data() const
     return *data_p;
 }
 
-inline void TableExprId::setRownr (uInt rownr)
+inline void TableExprId::setRownr (rownr_t rownr)
 {
     row_p = rownr;
 }

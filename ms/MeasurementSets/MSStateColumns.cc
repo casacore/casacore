@@ -54,15 +54,15 @@ void MSStateColumns::attach(const MSState& msState)
   loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 
-Int MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
-                               const Quantum<Double>& stateLoadQ,
-                               const String& stateObsMode,
-                               const Bool& stateRef,
-                               const Bool& stateSig,
-                               const Int& stateSubScan,
-                               const Quantum<Double>& tolerance,
-                               Int tryRow){
-  uInt r = nrow();
+Int64 MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
+                                 const Quantum<Double>& stateLoadQ,
+                                 const String& stateObsMode,
+                                 const Bool& stateRef,
+                                 const Bool& stateSig,
+                                 const Int& stateSubScan,
+                                 const Quantum<Double>& tolerance,
+                                 Int64 tryRow){
+  rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the temperatures and tolerance to Kelvin
   const Unit k("K");
@@ -74,10 +74,11 @@ Int MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
   const Double loadInK = stateLoadQ.getValue(k);
   // Main matching loop
   if (tryRow >= 0) {
-    const uInt tr = tryRow;
+    const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSStateColumns::matchState(...) - "
-                      "the row you suggest is too big"));
+                      "row " + String::toString(tr) +
+                      " you suggest is too big"));
     }
     if (!flagRow()(tr)
 	&& std::fabs(calQuant()(tr).getValue(k) - calInK) < tolInK

@@ -156,8 +156,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::writeRefRows (const RefRows& rownrs)
   {
-    const Vector<uInt> rows = rownrs.rowVector();
-    for (uInt i=0; i<rows.size(); ++i) {
+    const Vector<rownr_t> rows = rownrs.rowVector();
+    for (rownr_t i=0; i<rows.size(); ++i) {
       if (i>0) *theirStream << ',';
       *theirStream << rows[i];
       if (rownrs.isSliced()) {

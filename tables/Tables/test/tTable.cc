@@ -465,7 +465,7 @@ void b (Bool doExcp)
     }
 
     // Get a subset of the table via row numbers.
-    Vector<uInt> rownrs(4);
+    Vector<rownr_t> rownrs(4);
     rownrs(0)=3;
     rownrs(1)=1;
     rownrs(2)=9;
@@ -870,9 +870,8 @@ void d (const StorageOption& stopt)
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
 	indgen (arrf);
 	indgen (arri);
-	uInt i;
-	uInt nrow = tab.nrow();
-	for (i=0; i<nrow; i++) {
+	rownr_t nrow = tab.nrow();
+	for (rownr_t i=0; i<nrow; i++) {
 	    ab.get (i, abval);
 	    if (i == 0) {
 		abval--;

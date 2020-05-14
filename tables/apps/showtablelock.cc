@@ -43,7 +43,8 @@ void showVerbose (const String& lockFileName)
   // Read the lock info from the file into a buffer.
   // Thereafter interpret the data read.
   lfile.getInfo (data.memoryIO());
-  uInt nrrow, nrcolumn;
+  rownr_t nrrow;
+  uInt nrcolumn;
   Bool tableChanged;
   Block<Bool> dataManChanged;
   data.read (nrrow, nrcolumn, tableChanged, dataManChanged);

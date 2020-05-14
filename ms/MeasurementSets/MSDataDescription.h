@@ -94,7 +94,7 @@ public:
     MSDataDescription (const String &tableName, TableOption = Table::Old);
     MSDataDescription (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSDataDescription (SetupNewTable &newTab, uInt nrrow = 0,
+    MSDataDescription (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSDataDescription (const Table &table);
     MSDataDescription (const MSDataDescription &other);

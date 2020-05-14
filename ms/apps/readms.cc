@@ -328,7 +328,7 @@ void readRows (ArrayColumn<Complex>& dataCol,
                ArrayColumn<float>& weightCol)
 {
   if (myReadRowWise) {
-    for (Int64 row=0; row<flagCol.nrow(); ++row) {
+    for (rownr_t row=0; row<flagCol.nrow(); ++row) {
       if (myReadData) {
         dataCol.get (row);
       }
@@ -365,7 +365,7 @@ void readRows (ArrayColumn<Complex>& dataCol,
                const Slicer& slicer)
 {
   if (myReadRowWise) {
-    for (Int64 row=0; row<flagCol.nrow(); ++row) {
+    for (rownr_t row=0; row<flagCol.nrow(); ++row) {
       if (myReadData) {
         dataCol.getSlice (row, slicer);
       }
@@ -409,7 +409,7 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
   ArrayColumn<Float> weightSpectrumCol;
   if (myReadWeightSpectrum) weightSpectrumCol.attach(tab, "WEIGHT_SPECTRUM");
   const RecordInterface& attr = tab.keywordSet().asRecord ("ATTR");
-  Int64 ntoread = attr.asInt("NBaseline");
+  rownr_t ntoread = attr.asInt("NBaseline");
   if (attr.asInt("NTimeField") == 0) ntoread *= attr.asInt("NField");
   // Determine if to read by channel groups.
   niter = 0;
@@ -424,7 +424,7 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
   }
   for (int fchan=myStartChan; fchan<lastchan; fchan+=chansize) {
     int lchan = fchan + chansize;
-    for (Int64 row=0; row<tab.nrow(); row+=ntoread) {
+    for (rownr_t row=0; row<tab.nrow(); row+=ntoread) {
       Slicer rowRange(IPosition(1,row),
                       IPosition(1,std::min(ntoread, tab.nrow()-row)));
       if (fchan > 0  ||  lchan < shape[1]  ||  myNPol < shape[0]) {
@@ -455,7 +455,7 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
     }
   }
   // Do not iterate, but read the data per time step.
-  for (Int64 row=0; row<tab.nrow(); row+=ntoread) {
+  for (rownr_t row=0; row<tab.nrow(); row+=ntoread) {
   }
   return tab.nrow();
 }

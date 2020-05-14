@@ -249,17 +249,19 @@ FListElements: FreqRange
 FreqList: FListElements
            {
 	     $$ = new Vector<Float>(0);
-	     Int N0=(*($$)).nelements(),N1=4; 
-	     (*($$)).resize(N0+N1,True);  // Resize the existing list
-	      for(Int i=N0;i<N0+N1;i++)
+	     Int N0=(*($$)).nelements();
+             Int N1=N0+4; 
+	     (*($$)).resize(N1,True);  // Resize the existing list
+	      for(Int i=N0;i<N1;i++)
 		(*($$))(i) = (Float)($1[i-N0]);
 	   } 
         | FreqList SEMICOLON FListElements
            {
              $$ = $1;
-	     Int N0=(*($$)).nelements(), N1=4;
-	      (*($$)).resize(N0+N1,True);  // Resize the existing list
-	      for(Int i=N0;i<N0+N1;i++)
+	     Int N0=(*($$)).nelements();
+             Int N1=N0+4;
+	      (*($$)).resize(N1,True);  // Resize the existing list
+	      for(Int i=N0;i<N1;i++)
 		(*($$))(i) = $3[i-N0];
 	   }
         ;

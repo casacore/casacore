@@ -98,8 +98,8 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 	    MSSourceIndex sourceIndex (ms_p.source());
 	    sourceIndex.sourceId() = srcId;
 	    sourceIndex.spectralWindowId() = spwId;
-	    Vector<uInt> rows = sourceIndex.getRowNumbers();
-	    for (uInt irow=0; irow<rows.nelements(); irow++) {
+	    Vector<rownr_t> rows = sourceIndex.getRowNumbers();
+	    for (rownr_t irow=0; irow<rows.nelements(); irow++) {
 	      Vector<Double> restFrq = msc.source().restFrequency()(irow);
 	      if(restFrq.nelements() >0){
 		// Does this already exist in the output rest frequency array ?
@@ -126,9 +126,9 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
       MSSourceIndex sourceIndex(ms_p.source());
       sourceIndex.sourceId()= msc.field().sourceId()(fieldId);
       sourceIndex.spectralWindowId()=spwId;
-      Vector<uInt> rows = sourceIndex.getRowNumbers();
+      Vector<rownr_t> rows = sourceIndex.getRowNumbers();
       if (!msc.source().restFrequency().isNull()){
-	for (uInt irow=0; irow<rows.nelements(); irow++) {
+	for (rownr_t irow=0; irow<rows.nelements(); irow++) {
 	  if ( msc.source().restFrequency().isDefined(rows(irow))) {
 	    Vector<Double> restFrq = msc.source().restFrequency()(rows(irow));
 	    // Does this already exist in the output rest frequency array ?

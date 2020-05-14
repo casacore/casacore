@@ -70,10 +70,10 @@ void init (uInt aMode);
 void deleteRow(const uInt aRow);
 
 // reopen table, and throw away a few rows
-void deleteRows(const Vector<uInt>& aNrRows);
+void deleteRows(const Vector<rownr_t>& aNrRows);
 
 // delete a Column
-void deleteColumn(const String aColumn);
+void deleteColumn(const String& aColumn);
 
 // delete a column && put it back again
 void deleteAndRestore();
@@ -125,7 +125,7 @@ int main ()
 	addDirectArrays ();
 	addIndStringArray();
 	addIndArray     ();
-        Vector<uInt> aNrRows(3);
+        Vector<rownr_t> aNrRows(3);
 	for (uInt i=0; i< 3; i++) {
 	  aNrRows(i) = i+3;
 	}
@@ -133,7 +133,7 @@ int main ()
 	deleteColumn    ("Col-7");
        	addColumn(TpString);
 	// remove all remaining rows to check freebucket performance
-        Vector<uInt> aNewNrRows(15);
+        Vector<rownr_t> aNewNrRows(15);
 	for (uInt i=0; i< 15; i++) {
 	  aNewNrRows(i) = i;
 	}
@@ -429,7 +429,7 @@ void deleteRow(const uInt aRow)
   saveData(aTable);
 }
 
-void deleteRows(const Vector<uInt>& aNrRows)
+void deleteRows(const Vector<rownr_t>& aNrRows)
 {
   Table aTable = Table("tMemoryStMan_tmp.data", Table::Update);
   restoreData(aTable);
@@ -448,7 +448,7 @@ void deleteRows(const Vector<uInt>& aNrRows)
   saveData(aTable);
 }
 
-void deleteColumn(const String aColumn)
+void deleteColumn(const String& aColumn)
 {
   Table aTable = Table("tMemoryStMan_tmp.data", Table::Update);
   restoreData(aTable);

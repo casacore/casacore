@@ -42,6 +42,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/OS/Timer.h>

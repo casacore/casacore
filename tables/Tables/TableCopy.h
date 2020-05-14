@@ -118,7 +118,7 @@ public:
   static void copyRows (Table& out, const Table& in, Bool flush=True)
     { copyRows (out, in, 0, 0, in.nrow(), flush); }
   static void copyRows (Table& out, const Table& in,
-			uInt startout, uInt startin, uInt nrrow,
+			rownr_t startout, rownr_t startin, rownr_t nrrow,
                         Bool flush=True);
   // </group>
 

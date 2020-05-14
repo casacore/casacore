@@ -113,15 +113,12 @@ Vector<Int> MSSourceIndex::matchSourceCode(const String& code)
   }
   return retval;
 } 
-Vector<uInt> MSSourceIndex::getRowNumbersOfSourceID(const Int sid){
+RowNumbers MSSourceIndex::getRowNumbersOfSourceID(const Int sid){
 
-  Vector<uInt> retval;
   ColumnsIndex sidIndx(table(), MSSource::columnName(MSSource::SOURCE_ID));
   RecordFieldPtr<Int> sourceId (sidIndx.accessKey(), MSSource::columnName(MSSource::SOURCE_ID));
   *sourceId=sid;
-  retval.resize();
-  retval=sidIndx.getRowNumbers(); 
-  return retval;
+  return sidIndx.getRowNumbers(); 
 
 }
 Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
@@ -150,7 +147,7 @@ Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
 Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
                             const Block<void*>& dataPtrs,
                             const Block<Int>& dataTypes,
-                            Int index)
+                            rownr_t index)
 {
   // this implementation has been adapted from the default compare function in 
   // ColumnsIndex.cc.  The support for data types other than Integer have been

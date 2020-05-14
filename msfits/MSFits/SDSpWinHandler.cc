@@ -183,10 +183,10 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 	}
 	Bool found = False;
 	// find any potential matches
-	Vector<uInt> cacheRows = index_p->getRowNumbers();
+	Vector<rownr_t> cacheRows = index_p->getRowNumbers();
 	if (cacheRows.nelements()>0) {
 	    // do the fN, f0, and bw also match
-	    const uInt *rowPtr;
+	    const rownr_t *rowPtr;
 	    Bool deleteItRows;
 	    rowPtr = cacheRows.getStorage(deleteItRows);
 	    uInt i = 0;

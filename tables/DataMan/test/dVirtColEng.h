@@ -109,18 +109,18 @@ private:
 
     // Get a value.
     //+grp
-    void get (uInt rownr, double& data);
+    void get (rownr_t rownr, double& data);
     // We also implement the getdoubleV, because that saves a
     // virtual function call.
-    void getdoubleV (uInt rownr, double* dataPtr);
+    void getdoubleV (rownr_t rownr, double* dataPtr);
     //-grp
 
     // Put a value.
     //+grp
-    void put (uInt rownr, const double& data);
+    void put (rownr_t rownr, const double& data);
     // We also implement the putdoubleV, because that saves a
     // virtual function call.
-    void putdoubleV (uInt rownr, const double* dataPtr);
+    void putdoubleV (rownr_t rownr, const double* dataPtr);
     //-grp
 
     //# We could also define the get/putBlockDoubleV functions, but
@@ -207,22 +207,22 @@ private:
 
     // Define the shape of the array.
     // This will define the shape of the underlying Int array.
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Test if the (underlying) array is defined.
-    Bool isShapeDefined (uInt rownr);
+    Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the (underlying) array.
-    uInt ndim (uInt rownr);
+    uInt ndim (rownr_t rownr);
 
     // Get the shape of the (underlying) array.
-    IPosition shape (uInt rownr);
+    IPosition shape (rownr_t rownr);
 
     // Get an array.
-    void getArray (uInt rownr, Array<double>& array);
+    void getArray (rownr_t rownr, Array<double>& array);
 
     // Put an array.
-    void putArray (uInt rownr, const Array<double>& array);
+    void putArray (rownr_t rownr, const Array<double>& array);
 
     //# We could also define the get/putSlice functions, but
     //# that is not required. Possible optimization can be done by
@@ -338,12 +338,12 @@ private:
     // Intially the table has the given number of rows.
     // This function does not have to do anything; the real initialization
     // is done by prepare.
-    void create (uInt initialNrrow);
+    void create64 (rownr_t initialNrrow);
 
     // Initialize the object for an existing table with the given number
     // of rows.
     // It will read back the data written by close.
-    void open (uInt nrrow, AipsIO& ios);
+    rownr_t open64 (rownr_t nrrow, AipsIO& ios);
 
     // Initialize the engine.
     void prepare();

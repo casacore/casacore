@@ -98,7 +98,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // If needed, let the UDF re-create column objects for a selection of rows.
     // It calls the function recreateColumnObjects.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     // UDFs do not need a TableExprGroupFuncBase,
     // so TableExprGroupNull is returned.

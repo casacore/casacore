@@ -35,6 +35,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+  // Get the intersection or union of IDs (such as FieldId).
   Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2);
   Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2);
 

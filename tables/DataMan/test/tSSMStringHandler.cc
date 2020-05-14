@@ -62,7 +62,7 @@ void init (uInt aBucketSize,uInt aMode);
 void deleteRow(const uInt aRow);
 
 // reopen table, and throw away a few rows
-void deleteRows(const Vector<uInt>& aNrRows);
+void deleteRows(const Vector<rownr_t>& aNrRows);
 
 // delete a column
 void deleteColumn(const String aColumn);
@@ -100,7 +100,7 @@ int main (int argc, const char* argv[])
 	replaceStrings     ();
 	deleteRow          (2);
 	deleteRow          (40);
-        Vector<uInt> aNrRows(35);
+        Vector<rownr_t> aNrRows(35);
 	for (uInt i=0; i< 35; i++) {
 	  aNrRows(i) = i+3;
 	}
@@ -348,7 +348,7 @@ void deleteRow(const uInt aRow)
   info(aTable);
 }
 
-void deleteRows(const Vector<uInt>& aNrRows)
+void deleteRows(const Vector<rownr_t>& aNrRows)
 {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
 

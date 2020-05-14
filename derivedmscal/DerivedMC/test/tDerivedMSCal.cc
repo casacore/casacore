@@ -201,9 +201,9 @@ int main(int argc, char* argv[])
     mdv.setObservatoryPosition (arrayPos);
     // Now loop through quite some rows and compare result of DerivedMSCal
     // with MSDerivedValues.
-    uInt nr = std::max(tab.nrow(), 1000u);
+    rownr_t nr = std::max(tab.nrow(), rownr_t(1000));
     Int lastFldId = -1;
-    for (uInt i=0; i<nr; ++i) {
+    for (rownr_t i=0; i<nr; ++i) {
       Int fldId = fld(i);
       if (fldId != lastFldId) {
         mdv.setFieldCenter (fldId);

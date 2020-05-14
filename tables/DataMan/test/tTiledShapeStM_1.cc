@@ -35,6 +35,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/CanonicalConversion.h>
 #include <casacore/casa/OS/LECanonicalConversion.h>
 #include <casacore/casa/OS/Timer.h>

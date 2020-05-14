@@ -94,7 +94,7 @@ public:
     MSFreqOffset (const String &tableName, TableOption = Table::Old);
     MSFreqOffset (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSFreqOffset (SetupNewTable &newTab, uInt nrrow = 0,
+    MSFreqOffset (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSFreqOffset (const Table &table);
     MSFreqOffset (const MSFreqOffset &other);

@@ -119,7 +119,7 @@ protected:
   static Int compare (const Block<void*>& fieldPtrs,
                       const Block<void*>& dataPtrs,
                       const Block<Int>& dataTypes,
-                      Int index);
+                      rownr_t index);
   
 private:
   RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;

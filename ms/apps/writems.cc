@@ -1193,7 +1193,7 @@ void MSCreateCasa::updateTimes()
     Vector<Double> timeRange(2);
     timeRange(0) = itsStartTime;
     timeRange(1) = itsStartTime + itsNrTimes*itsStepTime;
-    for (uInt i=0; i<msobs.nrow(); i++) {
+    for (rownr_t i=0; i<msobs.nrow(); i++) {
       msobsCol.timeRange().put (i, timeRange);
     }
   }
@@ -1201,7 +1201,7 @@ void MSCreateCasa::updateTimes()
 
 void MSCreateCasa::addRows (int nbasel, int nfield)
 {
-  int nrow = nbasel*nfield*itsNSpw;
+  rownr_t nrow = rownr_t(nbasel)*nfield*itsNSpw;
   itsMS.addRow (nrow);
 }
 
@@ -1509,7 +1509,7 @@ void MSCreateHDF5::makeMetaType()
 
 void MSCreateHDF5::addRows (int nbasel, int nfield)
 {
-  int nrow = nbasel*nfield;
+  rownr_t nrow = rownr_t(nbasel)*nfield;
   for (int band=itsSpw; band<itsSpw+itsNSpw; ++band) {
     // Define the new shape of the data arrays.
     IPosition newShape3(3, itsNPol[band], itsNFreq[band], itsNrRow+nrow);
@@ -1962,7 +1962,7 @@ bool readParms (int argc, char* argv[])
     if (nant == 0  ||  nant >= tab.nrow()) {
       nant = tab.nrow();
     } else {
-      Vector<uInt> rows(nant);
+      RowNumbers rows(nant);
       indgen (rows);
       tab = tab(rows);
     }

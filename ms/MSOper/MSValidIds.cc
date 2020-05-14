@@ -74,7 +74,7 @@ void MSValidIds::attach(const MeasurementSet &ms)
     hasSource_p = ms_p.keywordSet().isDefined("SOURCE");
 }
 
-Int MSValidIds::antenna1(uInt rownr) const
+Int MSValidIds::antenna1(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -83,7 +83,7 @@ Int MSValidIds::antenna1(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::antenna2(uInt rownr) const
+Int MSValidIds::antenna2(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -92,7 +92,7 @@ Int MSValidIds::antenna2(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::dataDescId(uInt rownr) const
+Int MSValidIds::dataDescId(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -101,7 +101,7 @@ Int MSValidIds::dataDescId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::fieldId(uInt rownr) const
+Int MSValidIds::fieldId(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -110,7 +110,7 @@ Int MSValidIds::fieldId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::observationId(uInt rownr) const
+Int MSValidIds::observationId(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -119,7 +119,7 @@ Int MSValidIds::observationId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::processorId(uInt rownr) const
+Int MSValidIds::processorId(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -128,7 +128,7 @@ Int MSValidIds::processorId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::stateId(uInt rownr) const
+Int MSValidIds::stateId(rownr_t rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -137,7 +137,7 @@ Int MSValidIds::stateId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::polarizationId(uInt rownr) const
+Int MSValidIds::polarizationId(rownr_t rownr) const
 {
     Int result = dataDescId(rownr);
     if (result >= 0) {
@@ -146,7 +146,7 @@ Int MSValidIds::polarizationId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::spectralWindowId(uInt rownr) const
+Int MSValidIds::spectralWindowId(rownr_t rownr) const
 {
     Int result = dataDescId(rownr);
     if (result >= 0) {
@@ -155,7 +155,7 @@ Int MSValidIds::spectralWindowId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::dopplerId(uInt rownr) const
+Int MSValidIds::dopplerId(rownr_t rownr) const
 {
     Int result = hasDoppler_p ? spectralWindowId(rownr) : -1;
     if (result >= 0) {
@@ -165,7 +165,7 @@ Int MSValidIds::dopplerId(uInt rownr) const
     return result;
 }
 
-Int MSValidIds::sourceId(uInt rownr) const
+Int MSValidIds::sourceId(rownr_t rownr) const
 {
     Int result = hasSource_p ? fieldId(rownr) : -1;
     if (result >= 0) {

@@ -200,9 +200,9 @@ void ScaledArrayEngine<S,T>::registerClass()
 
 
 template<class S, class T>
-void ScaledArrayEngine<S,T>::create (uInt initialNrrow)
+void ScaledArrayEngine<S,T>::create64 (rownr_t initialNrrow)
 {
-    BaseMappedArrayEngine<S,T>::create (initialNrrow);
+    BaseMappedArrayEngine<S,T>::create64 (initialNrrow);
     // Store the various parameters as keywords in this column.
     TableColumn thisCol (table(), virtualName());
     thisCol.rwKeywordSet().define ("_ScaledArrayEngine_Scale",
@@ -241,7 +241,7 @@ void ScaledArrayEngine<S,T>::prepare()
 
 
 template<class S, class T>
-S ScaledArrayEngine<S,T>::getScale (uInt rownr)
+S ScaledArrayEngine<S,T>::getScale (rownr_t rownr)
 {
     if (fixedScale_p) {
 	return scale_p;
@@ -249,7 +249,7 @@ S ScaledArrayEngine<S,T>::getScale (uInt rownr)
     return (*scaleColumn_p)(rownr);
 }
 template<class S, class T>
-S ScaledArrayEngine<S,T>::getOffset (uInt rownr)
+S ScaledArrayEngine<S,T>::getOffset (rownr_t rownr)
 {
     if (fixedOffset_p) {
 	return offset_p;
@@ -341,7 +341,7 @@ void ScaledArrayEngine<S,T>::scaleColumnOnGet (Array<S>& array,
     }else{
 	ArrayIterator<S> arrayIter (array, array.ndim() - 1);
 	ReadOnlyArrayIterator<T> targetIter (target, target.ndim() - 1);
-	uInt rownr = 0;
+	rownr_t rownr = 0;
 	while (! arrayIter.pastEnd()) {
 	    scaleOnGet (getScale(rownr), getOffset(rownr),
 			arrayIter.array(), targetIter.array());
@@ -361,7 +361,7 @@ void ScaledArrayEngine<S,T>::scaleColumnOnPut (const Array<S>& array,
     }else{
 	ReadOnlyArrayIterator<S> arrayIter (array, array.ndim() - 1);
 	ArrayIterator<T> targetIter (target, target.ndim() - 1);
-	uInt rownr = 0;
+	rownr_t rownr = 0;
 	while (! arrayIter.pastEnd()) {
 	    scaleOnPut (getScale(rownr), getOffset(rownr),
 			arrayIter.array(), targetIter.array());
@@ -374,14 +374,14 @@ void ScaledArrayEngine<S,T>::scaleColumnOnPut (const Array<S>& array,
 
 
 template<class S, class T>
-void ScaledArrayEngine<S,T>::getArray (uInt rownr, Array<S>& array)
+void ScaledArrayEngine<S,T>::getArray (rownr_t rownr, Array<S>& array)
 {
     Array<T> target(array.shape());
     column().get (rownr, target);
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
-void ScaledArrayEngine<S,T>::putArray (uInt rownr, const Array<S>& array)
+void ScaledArrayEngine<S,T>::putArray (rownr_t rownr, const Array<S>& array)
 {
     Array<T> target(array.shape());
     scaleOnPut (getScale(rownr), getOffset(rownr), array, target);
@@ -389,7 +389,7 @@ void ScaledArrayEngine<S,T>::putArray (uInt rownr, const Array<S>& array)
 }
 
 template<class S, class T>
-void ScaledArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
+void ScaledArrayEngine<S,T>::getSlice (rownr_t rownr, const Slicer& slicer,
 				       Array<S>& array)
 {
     Array<T> target(array.shape());
@@ -397,7 +397,7 @@ void ScaledArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
-void ScaledArrayEngine<S,T>::putSlice (uInt rownr, const Slicer& slicer,
+void ScaledArrayEngine<S,T>::putSlice (rownr_t rownr, const Slicer& slicer,
 				       const Array<S>& array)
 {
     Array<T> target(array.shape());

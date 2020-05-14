@@ -80,7 +80,7 @@ namespace casacore { //#Begin namespace casacore
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<typename T, typename Alloc> class Vector final : public Array<T, Alloc>
+template<typename T, typename Alloc> class Vector : public Array<T, Alloc>
 {
 public:
     // A zero-length Vector.
@@ -161,7 +161,7 @@ public:
     using Array<T, Alloc>::resize;
     void resize(size_t len, bool copyValues=false)
       { if (len != this->nelements()) resize(IPosition(1,len), copyValues); }
-    virtual void resize(const IPosition &len, bool copyValues=false) override;
+    virtual void resize(const IPosition &len, bool copyValues=false) final override;
     // </group>
     
     // Assign to this Vector. If this Vector is zero-length, then resize
@@ -295,16 +295,16 @@ public:
       { Shape = this->length_p(0); }
 
     // Verify that dimensionality is 1 and then call Array<T>::ok()
-    virtual bool ok() const override;
+    virtual bool ok() const final override;
 
 protected:
     // Remove the degenerate axes from other and store result in this vector.
     // An exception is thrown if removing degenerate axes does not result
     // in a vector.
     virtual void doNonDegenerate(const Array<T> &other,
-                                 const IPosition &ignoreAxes) override;
+                                 const IPosition &ignoreAxes) final override;
                                  
-    virtual size_t fixedDimensionality() const override { return 1; }
+    virtual size_t fixedDimensionality() const final override { return 1; }
 
 private:
     Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::false_type isCopyable);

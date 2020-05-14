@@ -108,7 +108,7 @@ class ColumnHolder; //# Only in the .cc file
 //    RowCopier copier(full, singleRowTab);
 //    // loop over all remaining rows
 //    // since full was just created, we start filling it at row 0.
-//    for (uInt outRow = 0, fitsRow = currrow(); fitsRow < nrows();
+//    for (rownr_t outRow = 0, fitsRow = currrow(); fitsRow < nrows();
 //         outRow++, fitsRow++) {
 //        // copy the only row from currRowTab (row 0) to the outRow of full
 //        copier.copy(outRow, 0);
@@ -179,9 +179,9 @@ public:
     // The things that actually do the copying when requested.
     // <group>
     // Copy different row numbers.
-    Bool copy (uInt toRow, uInt fromRow);
+    Bool copy (rownr_t toRow, rownr_t fromRow);
     // Copy to and from the same row number
-    Bool copy (uInt rownr);
+    Bool copy (rownr_t rownr);
     // </group>
 
     ~RowCopier();
@@ -200,7 +200,7 @@ private:
 };
 
 
-inline Bool RowCopier::copy (uInt rownr)
+inline Bool RowCopier::copy (rownr_t rownr)
     { return copy (rownr, rownr); }
 
 

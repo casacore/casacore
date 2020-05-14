@@ -228,7 +228,7 @@ public:
 
     // Re-create the column object for a selection of rows.
     // The default implementation does nothing.
-    virtual void applySelection (const Vector<uInt>& rownrs);
+    virtual void applySelection (const Vector<rownr_t>& rownrs);
 
     // Get the unit conversion factor.
     // Default 1 is returned.
@@ -346,7 +346,7 @@ public:
     // Get the number of rows in the table associated with this expression.
     // One is returned if the expression is a constant.
     // Zero is returned if no table is associated with it.
-    uInt nrow() const;
+    rownr_t nrow() const;
 
     // Get the data type of the column.
     // It returns True when it could set the data type (which it can
@@ -358,18 +358,18 @@ public:
     // The data of function called should match the data type as
     // returned by function <src>getColumnDataType</src>.
     // <group>
-    virtual Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
-    virtual Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
-    virtual Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
-    virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
-    virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
-    virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
-    virtual Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs);
-    virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
-    virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
-    virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
-    virtual Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
-    virtual Array<String>   getColumnString (const Vector<uInt>& rownrs);
+    virtual Array<Bool>     getColumnBool (const Vector<rownr_t>& rownrs);
+    virtual Array<uChar>    getColumnuChar (const Vector<rownr_t>& rownrs);
+    virtual Array<Short>    getColumnShort (const Vector<rownr_t>& rownrs);
+    virtual Array<uShort>   getColumnuShort (const Vector<rownr_t>& rownrs);
+    virtual Array<Int>      getColumnInt (const Vector<rownr_t>& rownrs);
+    virtual Array<uInt>     getColumnuInt (const Vector<rownr_t>& rownrs);
+    virtual Array<Int64>    getColumnInt64 (const Vector<rownr_t>& rownrs);
+    virtual Array<Float>    getColumnFloat (const Vector<rownr_t>& rownrs);
+    virtual Array<Double>   getColumnDouble (const Vector<rownr_t>& rownrs);
+    virtual Array<Complex>  getColumnComplex (const Vector<rownr_t>& rownrs);
+    virtual Array<DComplex> getColumnDComplex (const Vector<rownr_t>& rownrs);
+    virtual Array<String>   getColumnString (const Vector<rownr_t>& rownrs);
     // </group>
 
     // Convert the tree to a number of range vectors which at least

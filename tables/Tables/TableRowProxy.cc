@@ -82,12 +82,12 @@ Bool TableRowProxy::isNull() const
   return (rorow_p.isAttached()  ?  False : True);
 }
 
-Record TableRowProxy::get (uInt rownr) const
+Record TableRowProxy::get (Int64 rownr) const
 {
   return rorow_p.get(rownr, True).toRecord();
 }
 
-void TableRowProxy::put (uInt rownr, const Record& record,
+void TableRowProxy::put (Int64 rownr, const Record& record,
 			 Bool matchingFields)
 {
   if (!isWritable_p) {

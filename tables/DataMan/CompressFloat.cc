@@ -162,9 +162,9 @@ void CompressFloat::registerClass()
 }
 
 
-void CompressFloat::create (uInt initialNrrow)
+void CompressFloat::create64 (rownr_t initialNrrow)
 {
-  BaseMappedArrayEngine<Float,Short>::create (initialNrrow);
+  BaseMappedArrayEngine<Float,Short>::create64 (initialNrrow);
   // Store the various parameters as keywords in this column.
   TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressFloat_Scale",      scale_p);
@@ -197,11 +197,11 @@ void CompressFloat::prepare()
 void CompressFloat::reopenRW()
 {}
 
-void CompressFloat::addRowInit (uInt startRow, uInt nrrow)
+void CompressFloat::addRowInit (rownr_t startRow, rownr_t nrrow)
 {
   BaseMappedArrayEngine<Float,Short>::addRowInit (startRow, nrrow);
   if (autoScale_p) {
-    for (uInt i=0; i<nrrow; i++) {
+    for (rownr_t i=0; i<nrrow; i++) {
       scaleColumn_p->put (startRow++, 0.);
     }
   }
@@ -215,9 +215,9 @@ void CompressFloat::findMinMax (Float& minVal, Float& maxVal,
   setNaN (maxVal);
   Bool deleteIt;
   const Float* data = array.getStorage (deleteIt);
-  const uInt nr = array.nelements();
+  const Int64 nr = array.nelements();
   Bool firstTime = True;
-  for (uInt i=0; i<nr; i++) {
+  for (Int64 i=0; i<nr; i++) {
     if (isFinite (data[i])) {
       if (firstTime) {
 	minVal = data[i];
@@ -260,8 +260,8 @@ void CompressFloat::scaleOnGet (Float scale, Float offset,
   Bool deleteIn, deleteOut;
   Float* out = array.getStorage (deleteOut);
   const Short* in = target.getStorage (deleteIn);
-  const uInt nr = array.nelements();
-  for (uInt i=0; i<nr; i++) {
+  const Int64 nr = array.nelements();
+  for (Int64 i=0; i<nr; i++) {
     if (in[i] == -32768) {
       setNaN (out[i]);
     } else {
@@ -280,8 +280,8 @@ void CompressFloat::scaleOnPut (Float scale, Float offset,
   Bool deleteIn, deleteOut;
   const Float* in = array.getStorage (deleteIn);
   Short* out = target.getStorage (deleteOut);
-  const uInt nr = array.nelements();
-  for (uInt i=0; i<nr; i++) {
+  const Int64 nr = array.nelements();
+  for (Int64 i=0; i<nr; i++) {
     if (isFinite (in[i])) {
       Float tmp = (in[i] - offset) / scale;
       if (tmp < 0) {
@@ -306,7 +306,7 @@ void CompressFloat::scaleColumnOnGet (Array<Float>& array,
   }else{
     ArrayIterator<Float> arrayIter (array, array.ndim() - 1);
     ReadOnlyArrayIterator<Short> targetIter (target, target.ndim() - 1);
-    uInt rownr = 0;
+    rownr_t rownr = 0;
     while (! arrayIter.pastEnd()) {
       scaleOnGet (getScale(rownr), getOffset(rownr),
 		  arrayIter.array(), targetIter.array());
@@ -325,7 +325,7 @@ void CompressFloat::scaleColumnOnPut (const Array<Float>& array,
   }else{
     ReadOnlyArrayIterator<Float> arrayIter (array, array.ndim() - 1);
     ArrayIterator<Short> targetIter (target, target.ndim() - 1);
-    uInt rownr = 0;
+    rownr_t rownr = 0;
     while (! arrayIter.pastEnd()) {
       scaleOnPut (getScale(rownr), getOffset(rownr),
 		  arrayIter.array(), targetIter.array());
@@ -337,7 +337,7 @@ void CompressFloat::scaleColumnOnPut (const Array<Float>& array,
 }
 
 
-void CompressFloat::getArray (uInt rownr, Array<Float>& array)
+void CompressFloat::getArray (rownr_t rownr, Array<Float>& array)
 {
   if (! array.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (array.shape());
@@ -346,7 +346,7 @@ void CompressFloat::getArray (uInt rownr, Array<Float>& array)
   scaleOnGet (getScale(rownr), getOffset(rownr), array, buffer_p);
 }
 
-void CompressFloat::putArray (uInt rownr, const Array<Float>& array)
+void CompressFloat::putArray (rownr_t rownr, const Array<Float>& array)
 {
   if (! array.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (array.shape());
@@ -365,7 +365,7 @@ void CompressFloat::putArray (uInt rownr, const Array<Float>& array)
   column().basePut (rownr, buffer_p);
 }
 
-void CompressFloat::getSlice (uInt rownr, const Slicer& slicer,
+void CompressFloat::getSlice (rownr_t rownr, const Slicer& slicer,
 			      Array<Float>& array)
 {
   if (! array.shape().isEqual (buffer_p.shape())) {
@@ -375,7 +375,7 @@ void CompressFloat::getSlice (uInt rownr, const Slicer& slicer,
   scaleOnGet (getScale(rownr), getOffset(rownr), array, buffer_p);
 }
 
-void CompressFloat::putPart (uInt rownr, const Slicer& slicer,
+void CompressFloat::putPart (rownr_t rownr, const Slicer& slicer,
 			     const Array<Float>& array,
 			     Float scale, Float offset)
 {
@@ -386,7 +386,7 @@ void CompressFloat::putPart (uInt rownr, const Slicer& slicer,
   column().putSlice (rownr, slicer, buffer_p);
 }
 
-void CompressFloat::putFullPart (uInt rownr, const Slicer& slicer,
+void CompressFloat::putFullPart (rownr_t rownr, const Slicer& slicer,
 				 Array<Float>& fullArray,
 				 const Array<Float>& partArray,
 				 Float minVal, Float maxVal)
@@ -405,7 +405,7 @@ void CompressFloat::putFullPart (uInt rownr, const Slicer& slicer,
   column().basePut (rownr, buffer_p);
 }
 
-void CompressFloat::putSlice (uInt rownr, const Slicer& slicer,
+void CompressFloat::putSlice (rownr_t rownr, const Slicer& slicer,
 			      const Array<Float>& array)
 {
   // If the slice is the entire array, write it as such.
@@ -469,8 +469,8 @@ void CompressFloat::putArrayColumn (const Array<Float>& array)
     column().putColumn (target);
   } else {
     ReadOnlyArrayIterator<Float> iter(array, array.ndim()-1);
-    uInt nrrow = table().nrow();
-    for (uInt rownr=0; rownr<nrrow; rownr++) {
+    rownr_t nrrow = table().nrow();
+    for (rownr_t rownr=0; rownr<nrrow; rownr++) {
       CompressFloat::putArray (rownr, iter.array());
       iter.next();
     }
@@ -483,9 +483,9 @@ void CompressFloat::getArrayColumnCells (const RefRows& rownrs,
   ArrayIterator<Float> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressFloat::getArray (rownr, arrIter.array());
       arrIter.next();
@@ -500,9 +500,9 @@ void CompressFloat::putArrayColumnCells (const RefRows& rownrs,
   ReadOnlyArrayIterator<Float> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressFloat::putArray (rownr, arrIter.array());
       arrIter.next();
@@ -529,8 +529,8 @@ void CompressFloat::putColumnSlice (const Slicer& slicer,
     column().putColumn (slicer, target);
   } else {
     ReadOnlyArrayIterator<Float> iter(array, array.ndim()-1);
-    uInt nrrow = table().nrow();
-    for (uInt rownr=0; rownr<nrrow; rownr++) {
+    rownr_t nrrow = table().nrow();
+    for (rownr_t rownr=0; rownr<nrrow; rownr++) {
       CompressFloat::putSlice (rownr, slicer, iter.array());
       iter.next();
     }
@@ -544,9 +544,9 @@ void CompressFloat::getColumnSliceCells (const RefRows& rownrs,
   ArrayIterator<Float> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressFloat::getSlice (rownr, slicer, arrIter.array());
       arrIter.next();
@@ -562,9 +562,9 @@ void CompressFloat::putColumnSliceCells (const RefRows& rownrs,
   ReadOnlyArrayIterator<Float> arrIter(array, array.ndim()-1);
   RefRowsSliceIter rowsIter(rownrs);
   while (! rowsIter.pastEnd()) {
-    uInt rownr = rowsIter.sliceStart();
-    uInt end   = rowsIter.sliceEnd();
-    uInt incr  = rowsIter.sliceIncr();
+    rownr_t rownr = rowsIter.sliceStart();
+    rownr_t end   = rowsIter.sliceEnd();
+    rownr_t incr  = rowsIter.sliceIncr();
     while (rownr <= end) {
       CompressFloat::putSlice (rownr, slicer, arrIter.array());
       arrIter.next();

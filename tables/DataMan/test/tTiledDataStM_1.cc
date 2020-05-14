@@ -39,6 +39,7 @@
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/ArrayPosIter.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>

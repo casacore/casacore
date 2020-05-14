@@ -191,7 +191,7 @@ typedef MeasurementSet MS;
 //      // fill MeasurementSet via its Table interface
 //      // For example, construct one of the columns
 //      TableColumn feed(simpleMS, MS::columnName(MS::FEED1));
-//      uInt rownr = 0;
+//      rownr_t rownr = 0;
 //      // add a row
 //      simpleMS.addRow();
 //      // set the values in that row, e.g. the feed column
@@ -269,17 +269,17 @@ public:
 		  TableOption = Table::Old);
   MeasurementSet (const String &tableName, const String &tableDescName,
 		  const TableLock& lockOptions, TableOption = Table::Old);
-  MeasurementSet (SetupNewTable &newTab, uInt nrrow = 0,
+  MeasurementSet (SetupNewTable &newTab, rownr_t nrrow = 0,
 		  Bool initialize = False);
   MeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
-		  uInt nrrow = 0, Bool initialize = False);
+		  rownr_t nrrow = 0, Bool initialize = False);
   MeasurementSet (const Table &table, const MeasurementSet * otherMs = NULL);
 
 #ifdef HAVE_MPI
-  MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, uInt nrrow = 0,
+  MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, rownr_t nrrow = 0,
 		  Bool initialize = False);
   MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions,
-		  uInt nrrow = 0, Bool initialize = False);
+		  rownr_t nrrow = 0, Bool initialize = False);
 #endif // HAVE_MPI
 
   MeasurementSet (const MeasurementSet &other);

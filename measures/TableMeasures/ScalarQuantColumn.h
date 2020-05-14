@@ -154,29 +154,29 @@ public:
 
   // Get the quantum stored in the specified row.
   // <group name="get">
-  void get (uInt rownr, Quantum<T>& q) const;
+  void get (rownr_t rownr, Quantum<T>& q) const;
   // Get the quantum in the specified row, converted to the given unit.
-  void get (uInt rownr, Quantum<T>& q, const Unit&) const;
+  void get (rownr_t rownr, Quantum<T>& q, const Unit&) const;
   // Get the quantum in the specified row, converted to the unit in other.
-  void get (uInt rownr, Quantum<T>& q, const Quantum<T>& other) const;
+  void get (rownr_t rownr, Quantum<T>& q, const Quantum<T>& other) const;
   // </group>
 
   // Return the quantum stored in the specified row.
   // <group>
-  Quantum<T> operator() (uInt rownr) const;
+  Quantum<T> operator() (rownr_t rownr) const;
   // Return the quantum stored in the specified row, converted to the
   // given unit.
-  Quantum<T> operator() (uInt rownr, const Unit&) const;
+  Quantum<T> operator() (rownr_t rownr, const Unit&) const;
   // Return the quantum in the specified row, converted to the unit in
   // other.
-  Quantum<T> operator() (uInt rownr, const Quantum<T>& other) const;
+  Quantum<T> operator() (rownr_t rownr, const Quantum<T>& other) const;
   // </group>
 
   // Put a quantum into the table.  If the column supports variable units
   // the q's unit is stored into the unit column defined in the
   // TableQuantumDesc object.  If units are fixed for the column, the
   // quantum is converted as needed.
-  void put (uInt rownr, const Quantum<T>& q);
+  void put (rownr_t rownr, const Quantum<T>& q);
 
   // Test whether the Quantum column has variable units
   Bool isUnitVariable() const
@@ -236,7 +236,7 @@ private:
   void cleanUp();
 
   // Get the data without possible conversion.
-  void getData (uInt rownr, Quantum<T>& q) const;
+  void getData (rownr_t rownr, Quantum<T>& q) const;
 };
 
 } //# NAMESPACE CASACORE - END

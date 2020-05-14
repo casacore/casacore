@@ -106,7 +106,7 @@ DataManagerColumn* ForwardColumnIndexedRowEngine::makeIndArrColumn
 }
 
 
-void ForwardColumnIndexedRowEngine::create (uInt)
+void ForwardColumnIndexedRowEngine::create64 (rownr_t)
 {
     // The table is new.
     baseCreate();
@@ -182,55 +182,40 @@ void ForwardColumnIndexedRow::prepare (const Table& thisTable)
 }
 
 
-void ForwardColumnIndexedRow::setShape (uInt, const IPosition&)
+void ForwardColumnIndexedRow::setShape (rownr_t, const IPosition&)
 {
     throw (DataManInvOper
            ("setShape not supported by data manager ForwardColumnIndexedRow"));
 }
 
-uInt ForwardColumnIndexedRow::ndim (uInt rownr)
+uInt ForwardColumnIndexedRow::ndim (rownr_t rownr)
     { return colPtr()->ndim (convertRownr(rownr)); }
 
-IPosition ForwardColumnIndexedRow::shape(uInt rownr)
+IPosition ForwardColumnIndexedRow::shape(rownr_t rownr)
     { return colPtr()->shape (convertRownr(rownr)); }
 
-Bool ForwardColumnIndexedRow::isShapeDefined (uInt rownr)
+Bool ForwardColumnIndexedRow::isShapeDefined (rownr_t rownr)
     { return colPtr()->isDefined (convertRownr(rownr)); }
 
 Bool ForwardColumnIndexedRow::canChangeShape() const
 {
     return False;       // put is not supported
 }
-Bool ForwardColumnIndexedRow::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool ForwardColumnIndexedRow::canAccessArrayColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool ForwardColumnIndexedRow::canAccessColumnSlice (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
 
-void ForwardColumnIndexedRow::getArrayV (uInt rownr, void* dataPtr)
-    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
+    { colPtr()->getArray (convertRownr(rownr), dataPtr); }
 
-void ForwardColumnIndexedRow::getSliceV (uInt rownr, const Slicer& ns,
-					 void* dataPtr)
+void ForwardColumnIndexedRow::getSliceV (rownr_t rownr, const Slicer& ns,
+					 ArrayBase& dataPtr)
     { colPtr()->getSlice (convertRownr(rownr), ns, dataPtr); }
 
-void ForwardColumnIndexedRow::putArrayV (uInt, const void*)
+void ForwardColumnIndexedRow::putArrayV (rownr_t, const ArrayBase&)
 {
     throw (DataManInvOper
            ("putArray not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::putSliceV (uInt, const Slicer&, const void*)
+void ForwardColumnIndexedRow::putSliceV (rownr_t, const Slicer&, const ArrayBase&)
 {
     throw (DataManInvOper
            ("putSlice not supported by data manager ForwardColumnIndexedRow"));
@@ -238,27 +223,27 @@ void ForwardColumnIndexedRow::putSliceV (uInt, const Slicer&, const void*)
 
 
 #define FORWARDCOLUMNINDEXEDROW_GETPUT(T,NM) \
-void ForwardColumnIndexedRow::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
+void ForwardColumnIndexedRow::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
     { colPtr()->get (convertRownr(rownr), dataPtr); } \
-void ForwardColumnIndexedRow::aips_name2(put,NM) (uInt, const T*) \
+void ForwardColumnIndexedRow::aips_name2(put,NM) (rownr_t, const T*) \
 { \
     throw (DataManInvOper \
            ("put not supported by data manager ForwardColumnIndexedRow")); \
 }
 
-FORWARDCOLUMNINDEXEDROW_GETPUT(Bool,BoolV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uChar,uCharV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Short,ShortV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uShort,uShortV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Int,IntV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uInt,uIntV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Int64,Int64V)
-FORWARDCOLUMNINDEXEDROW_GETPUT(float,floatV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(double,doubleV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Complex,ComplexV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(DComplex,DComplexV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(String,StringV)
-FORWARDCOLUMNINDEXEDROW_GETPUT(void,OtherV)
+FORWARDCOLUMNINDEXEDROW_GETPUT(Bool,Bool)
+FORWARDCOLUMNINDEXEDROW_GETPUT(uChar,uChar)
+FORWARDCOLUMNINDEXEDROW_GETPUT(Short,Short)
+FORWARDCOLUMNINDEXEDROW_GETPUT(uShort,uShort)
+FORWARDCOLUMNINDEXEDROW_GETPUT(Int,Int)
+FORWARDCOLUMNINDEXEDROW_GETPUT(uInt,uInt)
+FORWARDCOLUMNINDEXEDROW_GETPUT(Int64,Int64)
+FORWARDCOLUMNINDEXEDROW_GETPUT(float,float)
+FORWARDCOLUMNINDEXEDROW_GETPUT(double,double)
+FORWARDCOLUMNINDEXEDROW_GETPUT(Complex,Complex)
+FORWARDCOLUMNINDEXEDROW_GETPUT(DComplex,DComplex)
+FORWARDCOLUMNINDEXEDROW_GETPUT(String,String)
+FORWARDCOLUMNINDEXEDROW_GETPUT(void,Other)
 
 } //# NAMESPACE CASACORE - END
 

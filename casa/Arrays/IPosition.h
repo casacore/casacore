@@ -172,18 +172,22 @@ public:
     // up to the given dimension
     static IPosition otherAxes (size_t nrdim, const IPosition& axes);
 
-    // Convert an IPosition to and from an Array<int>. In either case, the
+    // Convert an IPosition to and from an Array<int/int64>. In either case, the
     // array must be one dimensional.
     // <group>
     IPosition(const Array<int>& other);
+    IPosition(const Array<long long>& other);
     Vector<int> asVector() const;
+    Vector<long long> asVector64() const;
     // </group>
 
-    // Convert an IPosition to and from an Array<int>. In either case, the
+    // Convert an IPosition to and from an Array<int/int64>. In either case, the
     // array must be one dimensional.
     // <group>
     IPosition(const std::vector<int>& other);
+    IPosition(const std::vector<long long>& other);
     std::vector<int> asStdVector() const;
+    std::vector<long long> asStdVector64() const;
     // </group>
 
     // Resize and fill this IPosition object.

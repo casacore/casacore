@@ -61,9 +61,9 @@ attach(const MSPolarization& msPolarization)
 		   columnName(MSPolarization::NUM_CORR));
 }
 
-Int MSPolarizationColumns::
-match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
-  uInt r = nrow();
+Int64 MSPolarizationColumns::
+match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow) {
+  rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the corrType to Integers.
   const Int nCorr = polType.nelements();
@@ -73,10 +73,11 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
   }
   // Main matching loop
   if (tryRow >= 0) {
-    const uInt tr = tryRow;
+    const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSPolarszationColumns::match(...) - "
-                      "the row you suggest is too big"));
+                      "row " + String::toString(tr) +
+                      " you suggest is too big"));
     }
     if (!flagRow()(tr) &&
 	numCorr()(tr) == nCorr && 
@@ -97,13 +98,13 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
 }
 
 Bool MSPolarizationColumns::
-matchCorrType(uInt row, const Vector<Int>& polType) const {
+matchCorrType(rownr_t row, const Vector<Int>& polType) const {
   DebugAssert(row < nrow(), AipsError);
   return allEQ(corrType()(row), polType);
 }
 
 Bool MSPolarizationColumns::
-matchCorrProduct(uInt row, const Matrix<Int>& polProduct) const {
+matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const {
   DebugAssert(row < nrow(), AipsError);
     // The static cast is a work around for an SGI compiler Bug
   return allEQ(corrProduct()(row), static_cast< const Matrix<Int> &>(polProduct));

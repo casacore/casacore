@@ -6,6 +6,8 @@ nISMBucket
 tBitFlagsEngine
 tCompressComplex
 tCompressFloat
+tExternalStMan
+tExternalStManNew
 tForwardCol
 tForwardColRow
 tIncrementalStMan
@@ -34,6 +36,7 @@ tTiledStMan
 tTSMShape
 tVirtColEng
 tVirtualTaQLColumn
+tVACEngine
 tVSCEngine
 )
 

@@ -83,7 +83,7 @@ const String& TableMeasColumn::columnName() const
   return itsDescPtr->columnName();
 }
 
-Bool TableMeasColumn::isDefined (uInt rownr) const
+Bool TableMeasColumn::isDefined (rownr_t rownr) const
 {
   return itsTabDataCol.isDefined (rownr);
 }

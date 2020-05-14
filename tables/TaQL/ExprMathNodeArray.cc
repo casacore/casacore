@@ -122,20 +122,6 @@ MArray<String> TableExprNodeArrayPlusString::getArrayString
     }
     return lnode_p->getArrayString (id) + rnode_p->getArrayString (id);
 }
-void TableExprNodeArrayPlusString::concString (String* to,
-                                               const String* left,
-                                               Int incrLeft,
-                                               const String* right,
-                                               Int incrRight,
-                                               uInt nr) const
-{
-    String* end = to + nr;
-    while (to < end) {
-        *to++ = *left + *right;
-        left  += incrLeft;
-        right += incrRight;
-    }
-}
 
 TableExprNodeArrayPlusDate::TableExprNodeArrayPlusDate
                                             (const TableExprNodeRep& node)

@@ -1479,6 +1479,29 @@ void FITSIDItoMS1::getAxisInfo()
       if (corrType_p(j) == tmp(i)) corrIndex_p[i] = j;
     }
   }
+  // Get the sort indexes to rearrange the data in swapped
+  // cross-polarization order
+  corrSwapIndex_p.resize(numCorr);
+  for (uInt i = 0; i < numCorr; i++) {
+    Int tmpType = tmp(i);
+    switch (tmpType) {
+    case Stokes::XY:
+      tmpType = Stokes::YX;
+      break;
+    case Stokes::YX:
+      tmpType = Stokes::XY;
+      break;
+    case Stokes::RL:
+      tmpType = Stokes::LR;
+      break;
+    case Stokes::LR:
+      tmpType = Stokes::RL;
+      break;
+    }
+    for (uInt j = 0; j < numCorr; j++) {
+      if (corrType_p(j) == tmpType) corrSwapIndex_p[i] = j;
+    }
+  }
 
   // Figure out the correlation products from the polarizations
   corrProduct_p.resize(2, numCorr); corrProduct_p = 0;
@@ -2098,7 +2121,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
 	  //const Float wt = priGroup_p(count++); 
 
-	  const Int p = corrIndex_p[pol];
+	  const Int p = doConjugateVis ? corrSwapIndex_p[pol] : corrIndex_p[pol];
 
  	  if (visWeight <= 0.0) {
 	    weightSpec(p, chan) = -visWeight;

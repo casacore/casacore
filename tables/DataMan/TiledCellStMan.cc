@@ -49,7 +49,7 @@ TiledCellStMan::TiledCellStMan ()
 
 TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
 				const IPosition& defaultTileShape,
-				uInt maximumCacheSize)
+				uInt64 maximumCacheSize)
 : TiledStMan         (hypercolumnName, maximumCacheSize),
   defaultTileShape_p (defaultTileShape)
 {}
@@ -62,7 +62,7 @@ TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
         defaultTileShape_p = IPosition (spec.toArrayInt ("DEFAULTTILESHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
+        setPersMaxCacheSize (spec.asInt64 ("MAXIMUMCACHESIZE"));
     }
 }
 
@@ -98,7 +98,7 @@ Bool TiledCellStMan::canChangeShape() const
     return True;
 }
 
-void TiledCellStMan::setShape (uInt, TSMCube* hypercube,
+void TiledCellStMan::setShape (rownr_t, TSMCube* hypercube,
 			       const IPosition& shape,
 			       const IPosition& tileShape)
 {
@@ -130,14 +130,14 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 }
 
 
-void TiledCellStMan::create (uInt nrrow)
+void TiledCellStMan::create64 (rownr_t nrrow)
 {
     // Set up the various things.
     setup(0);
     // Create the one and single TSMFile object.
     createFile (0);
     // Add the rows for the given number of rows.
-    addRow (nrrow);
+    addRow64 (nrrow);
 }
 	    
 
@@ -164,7 +164,7 @@ Bool TiledCellStMan::flush (AipsIO&, Bool fsync)
     return True;
 }
 
-void TiledCellStMan::readHeader (uInt tabNrrow, Bool firstTime)
+void TiledCellStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
@@ -177,21 +177,21 @@ void TiledCellStMan::readHeader (uInt tabNrrow, Bool firstTime)
 }
 
 
-void TiledCellStMan::addRow (uInt nrow)
+void TiledCellStMan::addRow64 (rownr_t nrow)
 {
     // Resize block when needed.
-    uInt size = cubeSet_p.nelements();
+    uInt64 size = cubeSet_p.nelements();
     if (size < nrrow_p + nrow) {
 	size += 32;
 	if (size < nrrow_p + nrow) {
 	    size = nrrow_p + nrow;
 	}
 	cubeSet_p.resize (size);
-	for (uInt i=nrrow_p; i<cubeSet_p.nelements(); i++) {
+	for (uInt64 i=nrrow_p; i<cubeSet_p.nelements(); i++) {
 	    cubeSet_p[i] = 0;
 	}
     }
-    for (uInt i=nrrow_p; i<nrrow_p+nrow; i++) {
+    for (rownr_t i=nrrow_p; i<nrrow_p+nrow; i++) {
         TSMCube* hypercube = makeTSMCube (fileSet_p[0], IPosition(),
                                           IPosition(), Record());
 	cubeSet_p[i] = hypercube;
@@ -204,7 +204,7 @@ void TiledCellStMan::addRow (uInt nrow)
 }
 
 
-TSMCube* TiledCellStMan::getHypercube (uInt rownr)
+TSMCube* TiledCellStMan::getHypercube (rownr_t rownr)
 {
     // Check if the row number is correct.
     if (rownr >= nrrow_p) {
@@ -212,7 +212,7 @@ TSMCube* TiledCellStMan::getHypercube (uInt rownr)
     }
     return cubeSet_p[rownr];
 }
-TSMCube* TiledCellStMan::getHypercube (uInt rownr, IPosition& position)
+TSMCube* TiledCellStMan::getHypercube (rownr_t rownr, IPosition& position)
 {
     // Check if the row number is correct.
     if (rownr >= nrrow_p) {

@@ -140,7 +140,7 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     // the resulting index vector.
     Vector<uInt> reginx(ndreg);
     std::vector<Int> tmp(regOutOrd.begin(), regOutOrd.end());
-    GenSortIndirect<Int>::sort (reginx, &(tmp[0]), ndreg);
+    GenSortIndirect<Int,uInt>::sort (reginx, &(tmp[0]), ndreg);
     for (i=0; i<ndreg; i++) {
 	regOutOrd(reginx(i)) = i;
     }

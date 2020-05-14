@@ -63,7 +63,7 @@ void init (uInt aMode, Table&);
 void deleteRow(const uInt aRow, Table&);
 
 // reopen table, and throw away a few rows
-void deleteRows(const Vector<uInt>& aNrRows, Table&);
+void deleteRows(const Vector<rownr_t>& aNrRows, Table&);
 
 // delete a Column
 void deleteColumn(const String aColumn, Table&);
@@ -152,7 +152,7 @@ int main ()
 	addDirectArrays (tab);
 	addIndStringArray(tab);
 	addIndArray     (tab);
-        Vector<uInt> aNrRows(3);
+        Vector<rownr_t> aNrRows(3);
 	for (uInt i=0; i< 3; i++) {
 	  aNrRows(i) = i+3;
 	}
@@ -160,7 +160,7 @@ int main ()
 	deleteColumn    ("Col-7", tab);
        	addColumn       (TpString, tab);
 	// remove all remaining rows to check freebucket performance
-        Vector<uInt> aNewNrRows(15);
+        Vector<rownr_t> aNewNrRows(15);
 	for (uInt i=0; i< 15; i++) {
 	  aNewNrRows(i) = i;
 	}
@@ -366,7 +366,7 @@ void deleteRow(const uInt aRow, Table& aTable)
   info(aTable);
 }
 
-void deleteRows(const Vector<uInt>& aNrRows, Table& aTable)
+void deleteRows(const Vector<rownr_t>& aNrRows, Table& aTable)
 {
   ScalarColumn<DComplex> ae(aTable,"Col-5");
 

@@ -202,52 +202,52 @@ private:
 // Another advantage is that this sort is always stable (i.e. equal
 // values are kept in their original order).
 
-template<class T> class GenSortIndirect
+template<class T, class INX=uInt> class GenSortIndirect
 {
 public:
 
     // Sort a C-array containing <src>nr</src> <src>T</src>-type objects.
     // The resulting index vector gives the sorted indices.
-    static uInt sort (Vector<uInt>& indexVector, const T* data, uInt nr,
+    static INX sort (Vector<INX>& indexVector, const T* data, INX nr,
 		      Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
 
     // Sort a C-array containing <src>nr</src> <src>T</src>-type objects.
     // The resulting index vector gives the sorted indices.
-    static uInt sort (Vector<uInt>& indexVector, const Array<T>& data,
+    static INX sort (Vector<INX>& indexVector, const Array<T>& data,
 		      Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
 
     // Sort a C-array containing <src>nr</src> <src>T</src>-type objects.
     // The resulting index vector gives the sorted indices.
-    static uInt sort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
+    static INX sort (Vector<INX>& indexVector, const Block<T>& data, INX nr,
 		      Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
 
     // Find the index of the k-th largest value.
-    static uInt kthLargest (T* data, uInt nr, uInt k);
+    static INX kthLargest (T* data, INX nr, INX k);
 
     // Sort container using quicksort.
     // The argument <src>inx</src> gives the index defining the order of the
     // values in the data array. Its length must be at least <src>nr</src>
     // and it must be filled with the index values of the data.
     // Usually this is 0..nr, but it could contain a selection of the data.
-    static uInt quickSort (uInt* inx, const T* data,
-			   uInt nr, Sort::Order, int options);
+    static INX quickSort (INX* inx, const T* data,
+			   INX nr, Sort::Order, int options);
     // Sort container using heapsort.
-    static uInt heapSort (uInt* inx, const T* data,
-			  uInt nr, Sort::Order, int options);
+    static INX heapSort (INX* inx, const T* data,
+			  INX nr, Sort::Order, int options);
     // Sort container using insertion sort.
-    static uInt insSort (uInt* inx, const T* data,
-			 uInt nr, Sort::Order, int options);
+    static INX insSort (INX* inx, const T* data,
+			 INX nr, Sort::Order, int options);
     // Sort container using parallel merge sort (using OpenMP).
     // By default the maximum number of threads is used.
-    static uInt parSort (uInt* inx, const T* data,
-			 uInt nr, Sort::Order, int options, int nthreads=0);
+    static INX parSort (INX* inx, const T* data,
+			 INX nr, Sort::Order, int options, int nthreads=0);
 
 private:
     // Swap 2 indices.
-    static inline void swapInx (uInt& index1, uInt& index2);
+    static inline void swapInx (INX& index1, INX& index2);
 
     // The<src>data</src> buffer is divided in <src>nparts</src> parts.
     // In each part the values are in ascending order.
@@ -257,31 +257,31 @@ private:
     // are used for the merge result. The pointer containing the final result
     // is returned.
     // <br>If possible, merging the parts is done in parallel (using OpenMP).
-    static uInt* merge (const T* data, uInt* inx, uInt* tmp, uInt nrrec,
-                        uInt* index, uInt nparts);
+    static INX* merge (const T* data, INX* inx, INX* tmp, INX nrrec,
+                        INX* index, INX nparts);
 
     // Check if 2 values are in ascending order.
     // When equal, the order is correct if index1<index2.
-    static inline int isAscending (const T* data, Int index1, Int index2);
+    static inline int isAscending (const T* data, INX index1, INX index2);
 
 
     // Quicksort in ascending order.
-    static void quickSortAsc (uInt* inx, const T*, Int nr,
+    static void quickSortAsc (INX* inx, const T*, INX nr,
                               Bool multiThread=False, Int rec_lim=128);
 
     // Heapsort in ascending order.
-    static void heapSortAsc (uInt* inx, const T*, Int nr);
+    static void heapSortAsc (INX* inx, const T*, INX nr);
     // Helper function for ascending heapsort.
-    static void heapAscSiftDown (uInt* inx, Int, Int, const T*);
+    static void heapAscSiftDown (INX* inx, INX, INX, const T*);
 
     // Insertion sort in ascending order.
-    static uInt insSortAsc (uInt* inx, const T*, Int nr, int option);
+    static INX insSortAsc (INX* inx, const T*, INX nr, int option);
     // Insertion sort in ascending order allowing duplicates.
     // This is also used by quicksort for its last steps.
-    static uInt insSortAscDup (uInt* inx, const T*, Int nr);
+    static INX insSortAscDup (INX* inx, const T*, INX nr);
     // Insertion sort in ascending order allowing no duplicates.
     // This is also used by the other sort algorithms to skip duplicates.
-    static uInt insSortAscNoDup (uInt* inx, const T*, Int nr);
+    static INX insSortAscNoDup (INX* inx, const T*, INX nr);
 };
 
 
@@ -352,30 +352,30 @@ uInt genSort (Block<T>& data, uInt nr,
 
 // <group name=genSortIndirect>
 
-template<class T>
+template<class T, class INX=uInt>
 inline
-uInt genSort (Vector<uInt>& indexVector, const T* data, uInt nr,
+uInt genSort (Vector<INX>& indexVector, const T* data, INX nr,
               Sort::Order order = Sort::Ascending, int options=0)
-  { return GenSortIndirect<T>::sort (indexVector, data, nr, order, options); }
+  { return GenSortIndirect<T,INX>::sort (indexVector, data, nr, order, options); }
 
-template<class T>
+template<class T, class INX=uInt>
 inline
-uInt genSort (Vector<uInt>& indexVector, const Array<T>& data,
+uInt genSort (Vector<INX>& indexVector, const Array<T>& data,
               Sort::Order order = Sort::Ascending, int options=0)
-  { return GenSortIndirect<T>::sort (indexVector, data, order, options); }
+  { return GenSortIndirect<T,INX>::sort (indexVector, data, order, options); }
 
-template<class T>
+template<class T, class INX=uInt>
 inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
+uInt genSort (Vector<INX>& indexVector, const Block<T>& data,
               Sort::Order order = Sort::Ascending, int options=0)
-  { return GenSortIndirect<T>::sort (indexVector, data, data.nelements(),
-                                     order, options); }
+  { return GenSortIndirect<T,INX>::sort (indexVector, data, data.nelements(),
+                                         order, options); }
 
-template<class T>
+template<class T, class INX=uInt>
 inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
+uInt genSort (Vector<INX>& indexVector, const Block<T>& data, INX nr,
               Sort::Order order = Sort::Ascending, int options=0)
-  { return GenSortIndirect<T>::sort (indexVector, data, nr, order, options); }
+  { return GenSortIndirect<T,INX>::sort (indexVector, data, nr, order, options); }
 // </group>
 
 
@@ -389,15 +389,16 @@ inline void GenSort<T>::swap (T& l, T& r)
     l = r;
     r = t;
 }
-template<class T>
-inline void GenSortIndirect<T>::swapInx (uInt& i, uInt& j)
+
+template<class T, class INX>
+inline void GenSortIndirect<T,INX>::swapInx (INX& i, INX& j)
 {
-    uInt t = i;
+    INX t = i;
     i = j;
     j = t;
 }
-template<class T>
-inline int GenSortIndirect<T>::isAscending (const T* data, Int i, Int j)
+template<class T, class INX>
+inline int GenSortIndirect<T,INX>::isAscending (const T* data, INX i, INX j)
 {
     return (data[i] > data[j]  ||  (data[i] == data[j]  &&  i > j));
 }

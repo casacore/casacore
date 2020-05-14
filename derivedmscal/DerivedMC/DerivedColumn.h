@@ -48,7 +48,7 @@ namespace casacore {
         itsAntNr  (antnr)
     {}
     virtual ~HourangleColumn();
-    virtual void get (uInt rowNr, Double& data);
+    virtual void get (rownr_t rowNr, Double& data);
   private:
     MSCalEngine* itsEngine;
     Int          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
@@ -65,7 +65,7 @@ namespace casacore {
         itsAntNr  (antnr)
     {}
     virtual ~LASTColumn();
-    virtual void get (uInt rowNr, Double& data);
+    virtual void get (rownr_t rowNr, Double& data);
   private:
     MSCalEngine* itsEngine;
     Int          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
@@ -82,7 +82,7 @@ namespace casacore {
         itsAntNr  (antnr)
     {}
     virtual ~ParAngleColumn();
-    virtual void get (uInt rowNr, Double& data);
+    virtual void get (rownr_t rowNr, Double& data);
   private:
     MSCalEngine* itsEngine;
     Int          itsAntNr;    //# 0=antenna1 1=antenna2
@@ -99,9 +99,9 @@ namespace casacore {
         itsAntNr  (antnr)
     {}
     virtual ~HaDecColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual Bool isShapeDefined (uInt rownr);
-    virtual void getArray (uInt rowNr, Array<Double>& data);
+    virtual IPosition shape (rownr_t rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
     Int          itsAntNr;    //# 0=antenna1 1=antenna2
@@ -118,9 +118,9 @@ namespace casacore {
         itsAntNr  (antnr)
     {}
     virtual ~AzElColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual Bool isShapeDefined (uInt rownr);
-    virtual void getArray (uInt rowNr, Array<Double>& data);
+    virtual IPosition shape (rownr_t rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
     Int          itsAntNr;    //# 0=antenna1 1=antenna2
@@ -137,9 +137,9 @@ namespace casacore {
         itsAntNr  (antnr)
     {}
     virtual ~ItrfColumn();
-    virtual IPosition shape (uInt rownr);
-    virtual Bool isShapeDefined (uInt rownr);
-    virtual void getArray (uInt rowNr, Array<Double>& data);
+    virtual IPosition shape (rownr_t rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
     Int          itsAntNr;    //# 0=antenna1 1=antenna2
@@ -155,9 +155,9 @@ namespace casacore {
       : itsEngine (engine)
     {}
     virtual ~UVWJ2000Column();
-    virtual IPosition shape (uInt rownr);
-    virtual Bool isShapeDefined (uInt rownr);
-    virtual void getArray (uInt rowNr, Array<Double>& data);
+    virtual IPosition shape (rownr_t rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
   };

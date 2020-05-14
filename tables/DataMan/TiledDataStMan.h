@@ -212,10 +212,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  ArrayColumn<float> data (table, "Data");
 //  ArrayColumn<float> weight (table, "Weight");
 //  Matrix<float> array(IPosition(2,12,20));
-//  uInt i;
 //  indgen (array);
 //  // Write some data into the data columns.
-//  for (i=0; i<30*42; i++) {
+//  for (uInt i=0; i<30*42; i++) {
 //	data.put (i, array);
 //	weight.put (i, array+float(100));
 //	array += float(200);
@@ -230,7 +229,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  ScalarColumn<String> id (table, "Id");
 //  float fValue;
 //  String sValue;
-//  for (i=0; i<table.nrow(); i++) {
+//  for (rownr_t i=0; i<table.nrow(); i++) {
 //      data.get (i, array);
 //      weight.get (i, array);
 //      pol.get (i, polValues);
@@ -308,14 +307,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  // Alternately line and continuum is written.
 //  // Each hypercube requires 30 rows to be added (i.e. nr of baselines).
 //  // The last dimension of each hypercube is extended with 1.
-//  uInt i, j;
-//  uInt rownr = 0;
-//  for (i=0; i<42; i++) {
+//  rownr_t rownr = 0;
+//  for (uInt i=0; i<42; i++) {
 //      if (i%2 == 0) {
 //          table.addRow (30);
 //          accessor.extendHypercube (1, hyperDefLine);
 //          time.put (rownr, float(i));
-//          for (j=0; j<30; j++) {
+//          for (uInt j=0; j<30; j++) {
 //              data.put (rownr, arrayLine);
 //              weight.put (rownr, arrayLine);
 //              rownr++;
@@ -327,7 +325,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //          hyperDefCont.define ("Time", timeValue);
 //          accessor.extendHypercube (1, hyperDefCont);
 //          time.put (rownr, float(i));
-//          for (j=0; j<30; j++) {
+//          for (uInt j=0; j<30; j++) {
 //              data.put (rownr, arrayCont);
 //              weight.put (rownr, arrayCont);
 //              rownr++;
@@ -363,7 +361,7 @@ public:
     // default value is used.
     // <group>
     TiledDataStMan (const String& hypercolumnName,
-		    uInt maximumCacheSize = 0);
+		    uInt64 maximumCacheSize = 0);
     TiledDataStMan (const String& hypercolumnName,
 		    const Record& spec);
     // </group>
@@ -398,7 +396,7 @@ private:
     // This will only increase the number of rows. When a hypercube is
     // added or extended, it will be checked whether the number of rows
     // is sufficient.
-    void addRow (uInt nrrow);
+    void addRow64 (rownr_t nrrow);
 
     // Add a hypercube.
     // The number of rows in the table must be large enough to
@@ -416,14 +414,14 @@ private:
     // the last dimension.
     // The record should contain the id values (to get the correct
     // hypercube) and optionally coordinate values for the elements added.
-    void extendHypercube (uInt incrInLastDim, const Record& values);
+    void extendHypercube (uInt64 incrInLastDim, const Record& values);
 
     // Get the hypercube in which the given row is stored.
-    virtual TSMCube* getHypercube (uInt rownr);
+    virtual TSMCube* getHypercube (rownr_t rownr);
 
     // Get the hypercube in which the given row is stored.
     // It also returns the position of the row in that hypercube.
-    virtual TSMCube* getHypercube (uInt rownr, IPosition& position);
+    virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position);
 
     // Flush and optionally fsync the data.
     // It returns a True status if it had to flush (i.e. if data have changed).
@@ -431,18 +429,18 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create64 (rownr_t nrrow);
 
     // Read the header info.
-    virtual void readHeader (uInt nrrow, Bool firstTime);
+    virtual void readHeader (rownr_t nrrow, Bool firstTime);
 
     // Update the map of row numbers to cube number plus offset.
-    void updateRowMap (uInt cubeNr, uInt incrInLastDim);
+    void updateRowMap (uInt cubeNr, uInt64 incrInLastDim);
 
     // Check if the table is large enough to hold this
     // hypercube extension.
     void checkNrrow (const IPosition& cubeShape,
-		     uInt incrInLastDim) const;
+		     uInt64 incrInLastDim) const;
 
 
     //# Declare the data members.
@@ -453,7 +451,7 @@ private:
     // The nr of elements used in the map blocks.
     uInt nrUsedRowMap_p;
     // The row number since the last hypercube extension.
-    uInt nrrowLast_p;
+    rownr_t nrrowLast_p;
 };
 
 

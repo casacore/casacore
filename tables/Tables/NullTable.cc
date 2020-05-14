@@ -157,7 +157,7 @@ Bool NullTable::canAddRow() const
   throw makeError ("canAddRow");
 }
 
-void NullTable::addRow (uInt, Bool)
+void NullTable::addRow (rownr_t, Bool)
 {
   throw makeError ("addRow");
 }
@@ -167,7 +167,7 @@ Bool NullTable::canRemoveRow() const
   throw makeError ("canRemoveRow");
 }
 
-void NullTable::removeRow (uInt)
+void NullTable::removeRow (rownr_t)
 {
   throw makeError ("removeRow");
 }
@@ -225,7 +225,7 @@ void NullTable::renameHypercolumn (const String&, const String&)
   throw makeError ("renameHypercolumn");
 }
 
-Vector<uInt> NullTable::rowNumbers() const
+Vector<rownr_t> NullTable::rowNumbers() const
 {
   throw makeError ("rowNumbers");
 }
@@ -237,15 +237,15 @@ BaseTable* NullTable::root()
 
 Bool NullTable::rowOrder() const
 {
-  throw makeError ("rowOrde");
+  throw makeError ("rowOrder");
 }
 
-Vector<uInt>* NullTable::rowStorage()
+Vector<rownr_t>* NullTable::rowStorage()
 {
   throw makeError ("rowStorage");
 }
 
-Bool NullTable::adjustRownrs (uInt, Vector<uInt>&,
+Bool NullTable::adjustRownrs (rownr_t, Vector<rownr_t>&,
 			      Bool) const
 {
   throw makeError ("adjustRownrs");

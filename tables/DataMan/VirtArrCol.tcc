@@ -1,4 +1,4 @@
-//# VirtArrCol.cc: Base virtual column data manager class
+//# VirtArrCol.tcc: Base virtual column data manager class
 //# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,13 +41,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+
 template<class T>
 VirtualArrayColumn<T>::~VirtualArrayColumn()
 {}
-
-template<class T>
-Bool VirtualArrayColumn<T>::isWritable() const
-    { return False; }
 
 template<class T>
 int VirtualArrayColumn<T>::dataType() const
@@ -61,103 +58,67 @@ String VirtualArrayColumn<T>::dataTypeId() const
 
 
 template<class T>
-Bool VirtualArrayColumn<T>::canAccessSlice (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
+void VirtualArrayColumn<T>::getArrayV (rownr_t rownr, ArrayBase& array)
+    { getArray (rownr, static_cast<Array<T>&>(array)); }
 template<class T>
-Bool VirtualArrayColumn<T>::canAccessArrayColumn (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
+void VirtualArrayColumn<T>::putArrayV (rownr_t rownr, const ArrayBase& array)
+    { putArray (rownr, static_cast<const Array<T>&>(array)); }
 template<class T>
-Bool VirtualArrayColumn<T>::canAccessColumnSlice (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
-
+void VirtualArrayColumn<T>::getSliceV (rownr_t rownr, const Slicer& slicer,
+				       ArrayBase& array)
+    { getSlice (rownr, slicer, static_cast<Array<T>&>(array)); }
 template<class T>
-void VirtualArrayColumn<T>::getArrayV (uInt rownr, void* dataPtr)
-    { getArray (rownr, *static_cast<Array<T>*>(dataPtr)); }
+void VirtualArrayColumn<T>::putSliceV (rownr_t rownr, const Slicer& slicer,
+				       const ArrayBase& array)
+    { putSlice (rownr, slicer, static_cast<const Array<T>&>(array)); }
 template<class T>
-void VirtualArrayColumn<T>::putArrayV (uInt rownr, const void* dataPtr)
-    { putArray (rownr, *static_cast<const Array<T>*>(dataPtr)); }
+void VirtualArrayColumn<T>::getArrayColumnV (ArrayBase& array)
+    { getArrayColumn (static_cast<Array<T>&>(array)); }
 template<class T>
-void VirtualArrayColumn<T>::getSliceV (uInt rownr, const Slicer& slicer,
-				       void* dataPtr)
-    { getSlice (rownr, slicer, *static_cast<Array<T>*>(dataPtr)); }
-template<class T>
-void VirtualArrayColumn<T>::putSliceV (uInt rownr, const Slicer& slicer,
-				       const void* dataPtr)
-    { putSlice (rownr, slicer, *static_cast<const Array<T>*>(dataPtr)); }
-template<class T>
-void VirtualArrayColumn<T>::getArrayColumnV (void* dataPtr)
-    { getArrayColumn (*static_cast<Array<T>*>(dataPtr)); }
-template<class T>
-void VirtualArrayColumn<T>::putArrayColumnV (const void* dataPtr)
-    { putArrayColumn (*static_cast<const Array<T>*>(dataPtr)); }
+void VirtualArrayColumn<T>::putArrayColumnV (const ArrayBase& array)
+    { putArrayColumn (static_cast<const Array<T>&>(array)); }
 template<class T>
 void VirtualArrayColumn<T>::getArrayColumnCellsV (const RefRows& rownrs,
-						  void* dataPtr)
-    { getArrayColumnCells (rownrs, *static_cast<Array<T>*>(dataPtr)); }
+						  ArrayBase& array)
+    { getArrayColumnCells (rownrs, static_cast<Array<T>&>(array)); }
 template<class T>
 void VirtualArrayColumn<T>::putArrayColumnCellsV (const RefRows& rownrs,
-						  const void* dataPtr)
-    { putArrayColumnCells (rownrs, *static_cast<const Array<T>*>(dataPtr)); }
+						  const ArrayBase& array)
+    { putArrayColumnCells (rownrs, static_cast<const Array<T>&>(array)); }
 template<class T>
 void VirtualArrayColumn<T>::getColumnSliceV (const Slicer& slicer,
-					     void* dataPtr)
-    { getColumnSlice (slicer, *static_cast<Array<T>*>(dataPtr)); }
+					     ArrayBase& array)
+    { getColumnSlice (slicer, static_cast<Array<T>&>(array)); }
 template<class T>
 void VirtualArrayColumn<T>::putColumnSliceV (const Slicer& slicer,
-					     const void* dataPtr)
-    { putColumnSlice (slicer, *static_cast<const Array<T>*>(dataPtr)); }
+					     const ArrayBase& array)
+    { putColumnSlice (slicer, static_cast<const Array<T>&>(array)); }
 template<class T>
 void VirtualArrayColumn<T>::getColumnSliceCellsV (const RefRows& rownrs,
 						  const Slicer& slicer,
-						  void* dataPtr)
-    { getColumnSliceCells (rownrs, slicer, *static_cast<Array<T>*>(dataPtr)); }
+						  ArrayBase& array)
+    { getColumnSliceCells (rownrs, slicer, static_cast<Array<T>&>(array)); }
 template<class T>
 void VirtualArrayColumn<T>::putColumnSliceCellsV (const RefRows& rownrs,
 						  const Slicer& slicer,
-						  const void* dataPtr)
-    { putColumnSliceCells (rownrs, slicer, *static_cast<const Array<T>*>(dataPtr)); }
+						  const ArrayBase& array)
+    { putColumnSliceCells (rownrs, slicer, static_cast<const Array<T>&>(array)); }
 
 
 
 //# The default implementations of get/putSlice get the entire array
 //# and access the required slice.
 template<class T>
-void VirtualArrayColumn<T>::getSlice (uInt rownr, const Slicer& slicer,
+void VirtualArrayColumn<T>::getSlice (rownr_t rownr, const Slicer& slicer,
 				      Array<T>& arraySlice)
 {
-    //# Get the entire array and take the slice required.
-    //# Infer the exact slice shape from the array shape.
-    IPosition shp = shape(rownr);
-    Array<T> arr(shp);
-    getArray (rownr, arr);
-    IPosition start, end, stride;
-    slicer.inferShapeFromSource (shp, start, end, stride);
-    arraySlice = arr(start, end, stride);
+  getSliceBase (rownr, slicer, arraySlice);
 }
 template<class T>
-void VirtualArrayColumn<T>::putSlice (uInt rownr, const Slicer& slicer,
+void VirtualArrayColumn<T>::putSlice (rownr_t rownr, const Slicer& slicer,
 				      const Array<T>& arraySlice)
 {
-    //# Get the entire array, store the slice required and put
-    //# the entire array back.
-    //# Infer the exact slice shape from the array shape.
-    IPosition shp = shape(rownr);
-    Array<T> arr(shp);
-    getArray (rownr, arr);
-    IPosition start, end, stride;
-    slicer.inferShapeFromSource (shp, start, end, stride);
-    arr(start, end, stride) = arraySlice;
-    putArray (rownr, arr);
+  putSliceBase (rownr, slicer, arraySlice);
 }
 
 //# The default implementations of get/putArrayColumn handle the
@@ -165,24 +126,12 @@ void VirtualArrayColumn<T>::putSlice (uInt rownr, const Slicer& slicer,
 template<class T>
 void VirtualArrayColumn<T>::getArrayColumn (Array<T>& array)
 {
-    ArrayIterator<T> iter(array, array.ndim()-1);
-    uInt rownr = 0;
-    while (! iter.pastEnd()) {
-	getArray (rownr, iter.array());
-	rownr++;
-	iter.next();
-    }
+  getArrayColumnBase (array);
 }
 template<class T>
 void VirtualArrayColumn<T>::putArrayColumn (const Array<T>& array)
 {
-    ReadOnlyArrayIterator<T> iter(array, array.ndim()-1);
-    uInt rownr = 0;
-    while (! iter.pastEnd()) {
-	putArray (rownr, iter.array());
-	rownr++;
-	iter.next();
-    }
+  putArrayColumnBase (array);
 }
 
 //# The default implementations of get/putColumnSlice take a slice
@@ -191,25 +140,13 @@ template<class T>
 void VirtualArrayColumn<T>::getColumnSlice (const Slicer& slicer,
 					    Array<T>& array)
 {
-    ArrayIterator<T> iter(array, array.ndim()-1);
-    uInt rownr = 0;
-    while (! iter.pastEnd()) {
-	getSlice (rownr, slicer, iter.array());
-	rownr++;
-	iter.next();
-    }
+  getColumnSliceBase (slicer, array);
 }
 template<class T>
 void VirtualArrayColumn<T>::putColumnSlice (const Slicer& slicer,
 					    const Array<T>& array)
 {
-    ReadOnlyArrayIterator<T> iter(array, array.ndim()-1);
-    uInt rownr = 0;
-    while (! iter.pastEnd()) {
-	putSlice (rownr, slicer, iter.array());
-	rownr++;
-	iter.next();
-    }
+  putColumnSliceBase (slicer, array);
 }
 
 //# The default implementations of the Cells functions throw an exception.
@@ -217,121 +154,35 @@ template<class T>
 void VirtualArrayColumn<T>::getArrayColumnCells (const RefRows& rownrs,
                                                  Array<T>& value)
 {
-    ArrayIterator<T> iter(value, value.ndim()-1);
-    RefRowsSliceIter rowiter(rownrs);
-    while (! rowiter.pastEnd()) {
-        uInt rownr = rowiter.sliceStart();
-        uInt end = rowiter.sliceEnd();
-        uInt incr = rowiter.sliceIncr();
-        while (rownr <= end) {
-            if (! isFixedShape()) {
-                if (! iter.array().shape().isEqual (shape(rownr))) {
-                    throw DataManError("getArrayColumnCells shape mismatch"
-                                       " for column " + columnName());
-                }
-            }
-  	    getArray (rownr, iter.array());
-            rownr += incr;
-	    iter.next();
-	}
-        rowiter++;
-    }
+  getArrayColumnCellsBase (rownrs, value);
 }
 template<class T>
 void VirtualArrayColumn<T>::putArrayColumnCells (const RefRows& rownrs,
 						 const Array<T>& value)
 {
-    ReadOnlyArrayIterator<T> iter(value, value.ndim()-1);
-    RefRowsSliceIter rowiter(rownrs);
-    while (! rowiter.pastEnd()) {
-        uInt rownr = rowiter.sliceStart();
-        uInt end = rowiter.sliceEnd();
-        uInt incr = rowiter.sliceIncr();
-        while (rownr <= end) {
-  	    putArray (rownr, iter.array());
-            rownr += incr;
-	    iter.next();
-	}
-        rowiter++;
-    }
+  putArrayColumnCellsBase (rownrs, value);
 }
 template<class T>
 void VirtualArrayColumn<T>::getColumnSliceCells (const RefRows& rownrs,
 						 const Slicer& ns,
 						 Array<T>& value)
 {
-    ArrayIterator<T> iter(value, value.ndim()-1);
-    RefRowsSliceIter rowiter(rownrs);
-    while (! rowiter.pastEnd()) {
-        uInt rownr = rowiter.sliceStart();
-        uInt end = rowiter.sliceEnd();
-        uInt incr = rowiter.sliceIncr();
-        while (rownr <= end) {
-	    getSlice (rownr, ns, iter.array());
-            rownr += incr;
-	    iter.next();
-	}
-        rowiter++;
-    }
+  getColumnSliceCellsBase (rownrs, ns, value);
 }
 template<class T>
 void VirtualArrayColumn<T>::putColumnSliceCells (const RefRows& rownrs,
 						 const Slicer& ns,
 						 const Array<T>& value)
 {
-    ReadOnlyArrayIterator<T> iter(value, value.ndim()-1);
-    RefRowsSliceIter rowiter(rownrs);
-    while (! rowiter.pastEnd()) {
-        uInt rownr = rowiter.sliceStart();
-        uInt end = rowiter.sliceEnd();
-        uInt incr = rowiter.sliceIncr();
-        while (rownr <= end) {
-	    putSlice (rownr, ns, iter.array());
-            rownr += incr;
-	    iter.next();
-	}
-        rowiter++;
-    }
+  putColumnSliceCellsBase (rownrs, ns, value);
 }
 
 //# The default implementation of the put function throws
 //# an exception.
 template<class T>
-void VirtualArrayColumn<T>::putArray (uInt, const Array<T>&)
+void VirtualArrayColumn<T>::putArray (rownr_t, const Array<T>&)
 { 
     throw DataManInvOper ("VirtualArrayColumn::putArray not possible"
-                          " for column " + columnName());
-}
-
-//# The default implementations of the shape functions throw
-//# an exception.
-template<class T>
-void VirtualArrayColumn<T>::setShapeColumn (const IPosition&)
-{ 
-    throw DataManInvOper ("VirtualArrayColumn::setShapeColumn not possible"
-                          " for column " + columnName());
-}
-template<class T>
-void VirtualArrayColumn<T>::setShape (uInt, const IPosition&)
-{
-    throw DataManInvOper ("VirtualArrayColumn::setShape not possible"
-                          " for column " + columnName());
-}
-template<class T>
-Bool VirtualArrayColumn<T>::isShapeDefined (uInt)
-{
-    throw DataManInvOper ("VirtualArrayColumn::isShapeDefined not possible"
-                          " for column " + columnName());
-}
-template<class T>
-uInt VirtualArrayColumn<T>::ndim (uInt rownr)
-{
-    return shape(rownr).size();
-}
-template<class T>
-IPosition VirtualArrayColumn<T>::shape (uInt)
-{
-    throw DataManInvOper ("VirtualArrayColumn::shape not possible"
                           " for column " + columnName());
 }
 

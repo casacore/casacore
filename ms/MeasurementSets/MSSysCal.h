@@ -94,7 +94,7 @@ public:
     MSSysCal (const String &tableName, TableOption = Table::Old);
     MSSysCal (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSSysCal (SetupNewTable &newTab, uInt nrrow = 0,
+    MSSysCal (SetupNewTable &newTab, rownr_t nrrow = 0,
 		    Bool initialize = False);
     MSSysCal (const Table &table);
     MSSysCal (const MSSysCal &other);

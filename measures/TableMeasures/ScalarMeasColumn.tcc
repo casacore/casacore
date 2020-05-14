@@ -180,7 +180,7 @@ void ScalarMeasColumn<M>::attach (const Table& tab,
 }
     
 template<class M>
-void ScalarMeasColumn<M>::get (uInt rownr, M& meas) const
+void ScalarMeasColumn<M>::get (rownr_t rownr, M& meas) const
 {
   Vector<Quantum<Double> > qvec(itsNvals);
   const Vector<Unit>& units = measDesc().getUnits();
@@ -202,7 +202,7 @@ void ScalarMeasColumn<M>::get (uInt rownr, M& meas) const
 }
     	
 template<class M> 
-M ScalarMeasColumn<M>::convert (uInt rownr, const MeasRef<M>& measRef) const
+M ScalarMeasColumn<M>::convert (rownr_t rownr, const MeasRef<M>& measRef) const
 {
   M tmp;
   get (rownr, tmp);
@@ -210,7 +210,7 @@ M ScalarMeasColumn<M>::convert (uInt rownr, const MeasRef<M>& measRef) const
 }
 
 template<class M> 
-M ScalarMeasColumn<M>::convert (uInt rownr, uInt refCode) const
+M ScalarMeasColumn<M>::convert (rownr_t rownr, uInt refCode) const
 {
   M tmp;
   get (rownr, tmp);
@@ -218,7 +218,7 @@ M ScalarMeasColumn<M>::convert (uInt rownr, uInt refCode) const
 }
 
 template<class M> 
-M ScalarMeasColumn<M>::operator() (uInt rownr) const
+M ScalarMeasColumn<M>::operator() (rownr_t rownr) const
 {
   M meas;
   get (rownr, meas);
@@ -226,7 +226,7 @@ M ScalarMeasColumn<M>::operator() (uInt rownr) const
 }
 
 template<class M>
-MeasRef<M> ScalarMeasColumn<M>::makeMeasRef (uInt rownr) const
+MeasRef<M> ScalarMeasColumn<M>::makeMeasRef (rownr_t rownr) const
 {
   // Fixed reference can be returned immediately.
   if (!itsVarRefFlag  &&  itsOffsetCol == 0) {
@@ -292,7 +292,7 @@ void ScalarMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
 }
  
 template<class M>
-void ScalarMeasColumn<M>::put (uInt rownr, const M& meas)
+void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
 {
   // A few things about put:
   // 1. No support for storage of frames so if the meas has a frame and

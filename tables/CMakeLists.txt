@@ -29,7 +29,10 @@ if (ADIOS2_FOUND)
 endif (ADIOS2_FOUND)
 
 add_library (casa_tables
+Tables/ArrayColumnBase.cc
 Tables/ArrayColumn_tmpl.cc
+Tables/ArrColData.cc
+Tables/ArrColDesc.cc
 Tables/ArrColDesc_tmpl.cc
 Tables/BaseColDesc.cc
 Tables/BaseColumn.cc
@@ -54,6 +57,7 @@ Tables/RefColumn.cc
 Tables/RefRows.cc
 Tables/RefTable.cc
 Tables/RowCopier.cc
+Tables/RowNumbers.cc
 Tables/ScaColDesc_tmpl.cc
 Tables/ScalarColumn_tmpl.cc
 Tables/ScaRecordColData.cc
@@ -91,6 +95,7 @@ DataMan/DataManAccessor.cc
 DataMan/DataManError.cc
 DataMan/DataManInfo.cc
 DataMan/DataManager.cc
+DataMan/DataManagerColumn.cc
 DataMan/ForwardCol.cc
 DataMan/ForwardColRow.cc
 DataMan/ISMBase.cc
@@ -118,6 +123,7 @@ DataMan/StIndArrAIO.cc
 DataMan/StIndArray.cc
 DataMan/StManAipsIO.cc
 DataMan/StManColumn.cc
+DataMan/StManColumnBase.cc
 DataMan/StandardStMan.cc
 DataMan/StandardStManAccessor.cc
 DataMan/TSMColumn.cc
@@ -139,6 +145,8 @@ DataMan/TiledFileHelper.cc
 DataMan/TiledShapeStMan.cc
 DataMan/TiledStMan.cc
 DataMan/TiledStManAccessor.cc
+DataMan/VirtArrCol.cc
+DataMan/VirtScaCol.cc
 DataMan/VirtColEng.cc
 DataMan/VirtualTaQLColumn.cc
 TaQL/ExprAggrNode.cc
@@ -212,11 +220,11 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 
 install (FILES
 Tables/ArrColData.h
-Tables/ArrColData.tcc
 Tables/ArrColDesc.h
 Tables/ArrColDesc.tcc
 Tables/ArrayColumn.h
 Tables/ArrayColumn.tcc
+Tables/ArrayColumnBase.h
 Tables/ArrayColumnFunc.h
 Tables/BaseColDesc.h
 Tables/BaseColumn.h
@@ -243,6 +251,7 @@ Tables/RefColumn.h
 Tables/RefRows.h
 Tables/RefTable.h
 Tables/RowCopier.h
+Tables/RowNumbers.h
 Tables/ScaColData.h
 Tables/ScaColData.tcc
 Tables/ScaColDesc.h
@@ -308,6 +317,7 @@ DataMan/DataManAccessor.h
 DataMan/DataManError.h
 DataMan/DataManInfo.h
 DataMan/DataManager.h
+DataMan/DataManagerColumn.h
 DataMan/ForwardCol.h
 DataMan/ForwardColRow.h
 DataMan/ISMBase.h
@@ -345,6 +355,7 @@ DataMan/StIndArrAIO.h
 DataMan/StIndArray.h
 DataMan/StManAipsIO.h
 DataMan/StManColumn.h
+DataMan/StManColumnBase.h
 DataMan/StandardStMan.h
 DataMan/StandardStManAccessor.h
 DataMan/TSMColumn.h
@@ -366,6 +377,8 @@ DataMan/TiledFileHelper.h
 DataMan/TiledShapeStMan.h
 DataMan/TiledStMan.h
 DataMan/TiledStManAccessor.h
+DataMan/VACEngine.h
+DataMan/VACEngine.tcc
 DataMan/VSCEngine.h
 DataMan/VSCEngine.tcc
 DataMan/VirtArrCol.h

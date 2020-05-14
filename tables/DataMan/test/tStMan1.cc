@@ -51,6 +51,29 @@
 // </summary>
 
 
+// Read the table back.
+void readtab()
+{
+  Timer timer;
+  {
+    Table tab("tStMan1_tmp.data");
+    uInt nrrow = tab.nrow();
+    timer.show ("table open          ");
+    ScalarColumn<uInt> int1 (tab, "int1");
+    for (uInt i=0; i<nrrow; i++) {
+      AlwaysAssertExit (int1(i) == i);
+    }
+    timer.show ("table get rows      ");
+    Vector<uInt> vec = int1.getColumn();
+    timer.show ("table get column    ");
+    for (uInt i=0; i<nrrow; i++) {
+      AlwaysAssertExit (vec(i) == i);
+    }
+    timer.show ("table check column  ");
+  }
+  timer.show ("total + destructor  ");
+}
+
 // Create and fill a new table.
 void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
 {
@@ -78,8 +101,6 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
   timer.mark();
   {
     // Now create a new table from the description.
-    // Use copy constructor to test if it works fine.
-    // (newtab and newtabcp have the same underlying object).
     SetupNewTable newtab("tStMan1_tmp.data", td, Table::New);
     // Create a storage manager for it.
     newtab.bindAll (stman);
@@ -96,8 +117,6 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
   timer.mark();
   {
     // Now create a new table from the description.
-    // Use copy constructor to test if it works fine.
-    // (newtab and newtabcp have the same underlying object).
     SetupNewTable newtab("tStMan1_tmp.data", td, Table::New);
     // Create a storage manager for it.
     newtab.bindAll (stman);
@@ -111,29 +130,6 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
       }
     }
     timer.show ("table put/fl non-add");
-  }
-  timer.show ("total + destructor  ");
-}
-
-// Read the table back.
-void readtab()
-{
-  Timer timer;
-  {
-    Table tab("tStMan1_tmp.data");
-    uInt nrrow = tab.nrow();
-    timer.show ("table open          ");
-    ScalarColumn<uInt> int1 (tab, "int1");
-    for (uInt i=0; i<nrrow; i++) {
-      AlwaysAssertExit (int1(i) == i);
-    }
-    timer.show ("table get rows      ");
-    Vector<uInt> vec = int1.getColumn();
-    timer.show ("table get column    ");
-    for (uInt i=0; i<nrrow; i++) {
-      AlwaysAssertExit (vec(i) == i);
-    }
-    timer.show ("table check column  ");
   }
   timer.show ("total + destructor  ");
 }

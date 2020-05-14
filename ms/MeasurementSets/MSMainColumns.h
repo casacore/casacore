@@ -251,7 +251,7 @@ public:
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return antenna1_p.nrow();}
+  rownr_t nrow() const {return antenna1_p.nrow();}
   
   // Returns the category labels for the FLAG_CATEGORY column.
   Vector<String> flagCategories() const;

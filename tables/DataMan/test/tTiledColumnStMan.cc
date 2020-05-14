@@ -43,6 +43,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
@@ -59,6 +60,7 @@
 void writeFixed(const TSMOption&);
 void readTable(const TSMOption&, Bool readKeys);
 void writeNoHyper(const TSMOption&);
+void extendOnly(const TSMOption&);
 
 int main () {
     try {
@@ -68,6 +70,7 @@ int main () {
 	readTable(TSMOption::Buffer, False);
         writeFixed(TSMOption::Buffer);
 	readTable(TSMOption::Cache, False);
+        extendOnly(TSMOption::Cache);
     } catch (std::exception& x) {
 	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
@@ -426,6 +429,39 @@ void writeNoHyper(const TSMOption& tsmOpt)
 	}
 	array += float(200);
 	timeValue += 5;
+    }
+    ROTiledStManAccessor accessor (table, "TSMExample");
+    accessor.showCacheStatistics (cout);
+    AlwaysAssertExit (accessor.nhypercubes() == 1);
+    AlwaysAssertExit (accessor.hypercubeShape(2) == IPosition(3,16,20,
+							      table.nrow()));
+    AlwaysAssertExit (accessor.tileShape(2) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.getHypercubeShape(0) == IPosition(3,16,20,
+								table.nrow()));
+    AlwaysAssertExit (accessor.getTileShape(0) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.getBucketSize(0) == accessor.bucketSize(2));
+    AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
+}
+
+// First build a description.
+void extendOnly(const TSMOption& tsmOpt)
+{
+    // Build the table description.
+    TableDesc td ("", "1", TableDesc::Scratch);
+    td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,20),
+					   ColumnDesc::FixedShape));
+    
+    // Now create a new table from the description.
+    SetupNewTable newtab("tTiledColumnStMan_tm2p.data", td, Table::New);
+    // Create a storage manager for it.
+    TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,1));
+    newtab.bindColumn ("Weight", sm1);
+    Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
+
+    ArrayColumn<float> weight (table, "Weight");
+    uInt i;
+    for (i=0; i<51; i++) {
+	table.addRow();
     }
     ROTiledStManAccessor accessor (table, "TSMExample");
     accessor.showCacheStatistics (cout);

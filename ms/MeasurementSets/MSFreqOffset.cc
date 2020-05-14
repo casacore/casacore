@@ -63,14 +63,14 @@ MSFreqOffset::MSFreqOffset(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSFreqOffset"));
 }
 
-MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, uInt nrrow,
+MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
   : MSTable<MSFreqOffsetEnums>(newTab, nrrow, initialize),
     hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSFreqOffset(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSFreqOffset(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSFreqOffset"));
 }
 

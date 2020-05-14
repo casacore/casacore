@@ -50,7 +50,7 @@ void doIt (const String& str)
   TableExprNode expr = RecordGram::parse (tab, str);
   cout << str << ": ";
   if (expr.isScalar()) {
-    Vector<uInt> rownrs(expr.nrow());
+    Vector<rownr_t> rownrs(expr.nrow());
     indgen (rownrs);
     switch (expr.getColumnDataType()) {
     case TpBool:
@@ -94,7 +94,7 @@ void doIt (const String& str)
     }
     cout << endl;
   } else {
-    for (uInt i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
       cout << "  row " << i << ":" << endl;
       switch (expr.dataType()) {
       case TpBool:

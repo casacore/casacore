@@ -62,14 +62,14 @@ MSFeed::MSFeed(const String& tableName, const String &tableDescName,
 			 "table is not a valid MSFeed"));
 }
 
-MSFeed::MSFeed(SetupNewTable &newTab, uInt nrrow,
+MSFeed::MSFeed(SetupNewTable &newTab, rownr_t nrrow,
 			       Bool initialize)
     : MSTable<MSFeedEnums>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSFeed(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSFeed(SetupNewTable &, rownr_t, Bool) - "
 			 "table is not a valid MSFeed"));
 }
 

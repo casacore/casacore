@@ -61,6 +61,7 @@
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/Logging/LogIO.h>
 
+#include <limits>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -94,6 +95,10 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
                                  Double sensitivity)
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFitsFile"));
+  // A FITS table can handle only Int nrows.
+  if (ms.nrow() > std::numeric_limits<Int>::max()) {
+    throw AipsError("MS " + ms.tableName() + " is too big (#rows exceeds MAX_INT)");
+  }
   const uInt nrow = ms.nrow();
   String msfile=ms.tableName();
   String outfile;
@@ -465,9 +470,9 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // stokes(0) >= 0, or descending order if < 0.
   Vector<uInt> stokesIndex(numcorr0);
   if (stokes(0) >= 0) {
-    GenSortIndirect<Int>::sort(stokesIndex, stokes);
+    GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes);
   } else {
-    GenSortIndirect<Int>::sort(stokesIndex, stokes, Sort::Descending);
+    GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes, Sort::Descending);
   }
 
   // OK, make sure that we can represent the stokes in FITS
@@ -1506,7 +1511,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
       //  Optional access to SOURCE table 
       if (sourceTable) {
       	**srcInxFld = insrcid(fieldnum);
-      	Vector<uInt> rownrs = srcInx->getRowNumbers();
+      	Vector<rownr_t> rownrs = srcInx->getRowNumbers();
       	if (rownrs.nelements() > 0) {
       	  uInt rownr = rownrs(0);
 	  // Name in SOURCE table overides name in FIELD table

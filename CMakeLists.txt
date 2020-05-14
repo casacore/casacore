@@ -3,7 +3,7 @@
 #
 project(casacore)
 
-cmake_minimum_required (VERSION 2.6.0)
+cmake_minimum_required (VERSION 2.8.10)
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
@@ -20,9 +20,9 @@ if (POLICY CMP0074)
 endif()
 
 set(PROJECT_VERSION_MAJOR 3)
-set(PROJECT_VERSION_MINOR 3)
+set(PROJECT_VERSION_MINOR 4)
 set(PROJECT_VERSION_PATCH 0)
-set(PROJECT_VERSION 
+set(PROJECT_VERSION
   "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
@@ -251,8 +251,8 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     endif()
 else()
     # Ensure clang is not complaining about unused arguments.
-    set(CMAKE_CXX_FLAGS "-Qunused-arguments ${CMAKE_CXX_FLAGS}")    
-    set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")    
+    set(CMAKE_CXX_FLAGS "-Qunused-arguments ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")
 endif()
 
 # Since 2015, we need pwrite and pwrite (POSIX 2001)
@@ -261,6 +261,12 @@ check_function_exists(pwrite HAVE_PWRITE)
 if (NOT (HAVE_PREAD AND HAVE_PWRITE))
         message(FATAL_ERROR "Casacore requires pread and pwrite functionality" )
 endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
+
+# Since 2020, we need GCC 4.9 for regex support
+# Additionally we need cmake 2.8.10 for CMAKE_CXX_COMPILER_VERSION
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+    message(FATAL_ERROR "Casacore requires at least gcc-4.9")
+endif()
 
 # FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
@@ -366,7 +372,7 @@ if (_usewcs STREQUAL YES)
       message(WARNING "Casacore is not compatible with wcslib 5.14, see issue gh-384.")
     endif (WCSLIB_VERSION_STRING STREQUAL "5.14")
 endif (_usewcs STREQUAL YES)
- 
+
 # Set the include directories and HAVE compiler variables
 include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 if (WCSLIB_FOUND)
@@ -386,6 +392,8 @@ if (ADIOS2_FOUND)
     add_definitions(-DHAVE_ADIOS2)
 endif (ADIOS2_FOUND)
 if (HDF5_FOUND)
+    # Use BEFORE to achieve that HDF5 is not taken from /usr/local/include
+    ##include_directories (BEFORE ${HDF5_INCLUDE_DIRS})
     include_directories (${HDF5_INCLUDE_DIRS})
     add_definitions(-DHAVE_HDF5)
 endif (HDF5_FOUND)
@@ -526,8 +534,8 @@ add_subdirectory (build-tools)
 foreach (module ${_modules})
     add_subdirectory (${module})
     set_target_properties(
-      casa_${module} 
-      PROPERTIES 
+      casa_${module}
+      PROPERTIES
           VERSION "${LIB_VERSION}"
           SOVERSION "${LIB_SOVERSION}"
     )
@@ -615,7 +623,7 @@ endif (BUILD_PYTHON3)
 #                                or msfits  (fits,ms,msfits,derivedmscal)
 #                                or images  (fits,lattices,mirlib,coordinates,images)
 #                                - all
-# 
+#
 # List of possibly used external packages and where
 #  CFITSIO      fits
 #  WCSLIB       coordinates

@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // An example of a virtual column engine can be found in dVirtColEng.{h,cc}
 // in the test directory of the Tables module.
-// Another exanple is class ScaledArray.
+// Another exanple is class ScaledComplexData.
 // </synopsis> 
 
 // <motivation>
@@ -139,11 +139,11 @@ private:
 
     // Add rows to all columns.
     // The default implementation does nothing.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
     // The default implementation does nothing.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow64 (rownr_t rownr);
 
     // Flush the data in the engine object.
     // If the object contains persistent data, this is the place to write them.
@@ -172,20 +172,20 @@ private:
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
     // The default implementation does nothing.
-    virtual void resync (uInt nrrow);
+    virtual rownr_t resync64 (rownr_t nrrow);
 
     // Initialize the object for a new table containing initially nrrow rows.
     // It can be used to initialize variables (possibly using data
     // from other columns in the table).
     // The default implementation does nothing.
-    virtual void create (uInt initialNrrow);
+    virtual void create64 (rownr_t initialNrrow);
 
     // Initialize the object for an existing table containing nrrow rows.
     // It can be used to read values back (written by close) and/or
     // to initialize variables (possibly using data from other columns
     // in the table).
     // The default implementation does nothing.
-    virtual void open (uInt nrrow, AipsIO& mainTableFile);
+    virtual rownr_t open64 (rownr_t nrrow, AipsIO& mainTableFile);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all

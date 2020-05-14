@@ -1,3 +1,4 @@
+Expected exception: Table DataManager error: Invalid operation: VSCEngine with source column colA bound to column x; must be the same
 get row 0
 get row 1
 get row 2

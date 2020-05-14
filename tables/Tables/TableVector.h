@@ -147,7 +147,7 @@ public:
     TableVector (const Vector<T>&);
 
     // Create a table vector containing a Vector with the given length.
-    TableVector (uInt leng);
+    TableVector (rownr_t leng);
 
     // Destruct the object.
     ~TableVector();
@@ -173,7 +173,7 @@ public:
     Vector<T> makeVector() const;
 
     // Get the value of a single pixel.
-    T operator() (uInt index) const;
+    T operator() (rownr_t index) const;
 
     //# Get a slice.
 //#    TableVector<T> operator() (const NSlice&) const;
@@ -186,13 +186,13 @@ public:
 
     // Put a value into a single pixel.
     // <br><src> tabvec(i) = value; </src>
-    void set (uInt index, const T& value);
+    void set (rownr_t index, const T& value);
 
     // Get nr of dimensions (is always 1).
     uInt ndim() const;
 
     // Get nr of elements (ie. vector length).
-    uInt nelements() const;
+    rownr_t nelements() const;
 
     // Test if the shape of the given table vector conforms.
     Bool conform (const TableVector<T>&) const;
@@ -229,7 +229,7 @@ inline uInt TableVector<T>::ndim () const
     { return tabVecPtr_p->ndim(); }
 
 template<class T>
-inline uInt TableVector<T>::nelements() const
+inline rownr_t TableVector<T>::nelements() const
     { return tabVecPtr_p->nelements(); }
 
 //# Check if 2 table vectors are conformant.
@@ -242,7 +242,7 @@ inline Bool TableVector<T>::conform (const Vector<T>& vec) const
 
 //# Get the ith pixel.
 template<class T>
-inline T TableVector<T>::operator() (uInt index) const
+inline T TableVector<T>::operator() (rownr_t index) const
     { return tabVecPtr_p->value (index); }
 
 //# Return the TabVecRep (for TabVecMath and Logic).
@@ -268,7 +268,7 @@ inline TableVector<T>& TableVector<T>::operator= (const TableVector<T>& that)
 }
 
 template<class T>
-inline void TableVector<T>::set (uInt index, const T& value)
+inline void TableVector<T>::set (rownr_t index, const T& value)
 {
     tabVecPtr_p->putVal (index, value);
 }

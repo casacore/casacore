@@ -2426,11 +2426,11 @@ void testIt(MSMetaData& md) {
             key.obsID = 0;
             key.scan = 1;
             key.fieldID = 0;
-            std::shared_ptr<const std::map<SubScanKey, uInt> > both = md.getNRowMap(MSMetaData::BOTH);
+            std::shared_ptr<const std::map<SubScanKey, rownr_t> > both = md.getNRowMap(MSMetaData::BOTH);
             AlwaysAssert(both->find(key)->second == 367, AipsError);
-            std::shared_ptr<const std::map<SubScanKey, uInt> > ac = md.getNRowMap(MSMetaData::AUTO);
+            std::shared_ptr<const std::map<SubScanKey, rownr_t> > ac = md.getNRowMap(MSMetaData::AUTO);
             AlwaysAssert(ac->find(key)->second == 51, AipsError);
-            std::shared_ptr<const std::map<SubScanKey, uInt> > xc = md.getNRowMap(MSMetaData::CROSS);
+            std::shared_ptr<const std::map<SubScanKey, rownr_t> > xc = md.getNRowMap(MSMetaData::CROSS);
             AlwaysAssert(xc->find(key)->second == 316, AipsError);
         }
         {

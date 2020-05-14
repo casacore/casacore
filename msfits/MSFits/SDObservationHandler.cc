@@ -168,7 +168,7 @@ void SDObservationHandler::fill(const Record &, const String &telescopeName,
 
 	// if there is a time range field, there may be more than one matching row
 	if (timeRange_p.isAttached()) {
-	    Vector<uInt> rows = index_p->getRowNumbers();
+	    Vector<rownr_t> rows = index_p->getRowNumbers();
 	    uInt whichElement = 0;
 	    while (!found && whichElement < rows.nelements()) {
 		whichRow = rows(whichElement++);

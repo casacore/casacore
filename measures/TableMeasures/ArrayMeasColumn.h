@@ -196,20 +196,20 @@ public:
   // Get the Measure array in the specified row.  For get() the supplied
   // array's shape should match the shape in the row unless resize is True.
   // <group name=get>
-  void get (uInt rownr, Array<M>& meas, Bool resize = False) const;
-  Array<M> operator() (uInt rownr) const;
+  void get (rownr_t rownr, Array<M>& meas, Bool resize = False) const;
+  Array<M> operator() (rownr_t rownr) const;
   // </group>
 
   // Get the Measure array contained in the specified row and convert
   // it to the reference and offset found in the given measure.
-  Array<M> convert (uInt rownr, const M& meas) const
+  Array<M> convert (rownr_t rownr, const M& meas) const
     { return convert (rownr, meas.getRef()); }
 
   // Get the Measure array contained in the specified row and convert
   // it to the given reference.
   // <group>
-  Array<M> convert (uInt rownr, const MeasRef<M>& measRef) const;
-  Array<M> convert (uInt rownr, uInt refCode) const;
+  Array<M> convert (rownr_t rownr, const MeasRef<M>& measRef) const;
+  Array<M> convert (rownr_t rownr, uInt refCode) const;
   // </group>
 
   // Get the column's reference.
@@ -237,7 +237,7 @@ public:
 
   // Add a Measure array to the specified row.
   // <group name=put>
-  void put (uInt rownr, const Array<M>&);
+  void put (rownr_t rownr, const Array<M>&);
   // </group>
 
 protected:
@@ -268,7 +268,7 @@ private:
   void cleanUp();
 
   // Get the data and convert using conversion engine.
-  Array<M> doConvert (uInt rownr, typename M::Convert& conv) const;
+  Array<M> doConvert (rownr_t rownr, typename M::Convert& conv) const;
 };
 
 

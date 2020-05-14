@@ -57,7 +57,7 @@ void doAddColumn(const Table &tab)
   Table tabrw(tab);
   tabrw.reopenRW();
 
-  uInt nrows = tab.nrow();
+  rownr_t nrows = tab.nrow();
   AlwaysAssertExit(!tabrw.canAddRow());
 
   auto newName = "new_col";
@@ -223,7 +223,7 @@ void doIt (const Table& tab)
   cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
 
   // Get a subset of the table via row numbers.
-  Vector<uInt> rownrs(4);
+  Vector<rownr_t> rownrs(4);
   rownrs(0)=3;
   rownrs(1)=1;
   rownrs(2)=9;
@@ -311,7 +311,7 @@ void doIt1 (const String& tableName)
   cout << "<<<" << endl;
   Table tab(tableName);
   cout << "end reading Tables" << endl;
-  uInt nr = tab.nrow();
+  rownr_t nr = tab.nrow();
   if (nr < 3) {
     cout << "Table must have at least 3 rows" << endl;
     return;

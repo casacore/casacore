@@ -40,6 +40,64 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class PlainColumn;
 class ColumnSet;
 
+
+// <summary>
+// Abstract base class for description of table array columns
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> BaseColumnDesc (and its prerequisites)
+//   <li> TableDesc
+// </prerequisite>
+
+// <synopsis> 
+// This class contains the common functionality for the templated class
+// ArrayColumnDesc which describes an array column.
+// </synopsis>
+
+class ArrayColumnDescBase : public BaseColumnDesc
+{
+public:
+    // Construct with given parameters.
+    ArrayColumnDescBase (const String& name, const String& comment,
+                         const String& dataManagerType,
+                         const String& dataManagerGroup,
+                         DataType, const String& dataTypeId,
+                         Int options, uInt ndim, const IPosition& shape);
+
+    // Copy constructor (copy semantics);
+    ArrayColumnDescBase (const ArrayColumnDescBase&);
+
+    ~ArrayColumnDescBase();
+
+    // Assignment (copy semantics);
+    ArrayColumnDescBase& operator= (const ArrayColumnDescBase&);
+
+    // Get the name of this class. It is used by the registration process.
+    // The template argument gets part of the name.
+    String className() const;
+
+    // Create a Column object out of this.
+    // This is used by class ColumnSet to construct a table column object.
+    virtual PlainColumn* makeColumn (ColumnSet*) const;
+
+    // Show the column.
+    void show (ostream& os) const;
+
+protected:
+    // Put the object.
+    virtual void putDesc (AipsIO&) const;
+
+    // Get the object.
+    virtual void getDesc (AipsIO&);
+};
+
+
 // <summary>
 // Templated class for description of table array columns
 // </summary>
@@ -50,7 +108,7 @@ class ColumnSet;
 // </reviewed>
 
 // <prerequisite>
-//   <li> BaseColumnDesc (and its prerequisites)
+//   <li> ArrayColumnDescBase (and its prerequisites)
 //   <li> TableDesc
 // </prerequisite>
 
@@ -125,7 +183,7 @@ class ColumnSet;
 // of the above mentioned attributes. Others, like the default keyword
 // set, have to be defined explicitly.
 //
-// This class is derived from BaseColumnDesc, thus the functions
+// This class is derived from ArrayColumnDescBase, thus the functions
 // in there also apply to this class.
 //
 // Once a column description is set up satisfactorily, it must be added
@@ -175,7 +233,7 @@ class ColumnSet;
 //# </todo>
 
 template<class T>
-class ArrayColumnDesc : public BaseColumnDesc
+class ArrayColumnDesc : public ArrayColumnDescBase
 {
 friend class ColumnDesc;
 
@@ -252,29 +310,11 @@ public:
     // Clone this column description to another.
     BaseColumnDesc* clone() const;
 
-    // Get the name of this class. It is used by the registration process.
-    // The template argument gets part of the name.
-    String className() const;
-
-    // Create a Column object out of this.
-    // This is used by class ColumnSet to construct a table column object.
-    virtual PlainColumn* makeColumn (ColumnSet*) const;
-
-    // Show the column.
-    void show (ostream& os) const;
-
     // Register the construction function of this class.
     void registerClass() const;
 
     // Create the object from AipsIO (this function is registered).
     static BaseColumnDesc* makeDesc(const String& name);
-
-protected:
-    // Put the object.
-    virtual void putDesc (AipsIO&) const;
-
-    // Get the object.
-    virtual void getDesc (AipsIO&);
 };
 
 

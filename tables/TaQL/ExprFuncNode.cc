@@ -1095,11 +1095,13 @@ TaqlRegex TableExprFuncNode::getRegex (const TableExprId& id)
 {
     switch (funcType_p) {
     case regexFUNC:
-      return TaqlRegex(Regex(operands_p[0]->getString (id)));
+      return TaqlRegex(Regex(operands_p[0]->getString (id), True));
     case patternFUNC:
-      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString (id))));
+      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString (id)),
+                             True));
     case sqlpatternFUNC:
-      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString (id))));
+      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString (id)),
+                             True));
     case iifFUNC:
       return operands_p[0]->getBool(id)  ?
         operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
@@ -1167,8 +1169,12 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
   int prec = 6;
   if (! fmt.empty()) {
     // The format can consist of the various MVTime/Angle format specifiers
-    // (separated by vertical bars with optional spaces).
-    Vector<String> fmts = stringToVector(fmt, '|');
+    // (separated by vertical bars or commas with optional spaces).
+    char separator = ',';
+    if (fmt.find('|') != String::npos) {
+      separator = '|';
+    }
+    Vector<String> fmts = stringToVector(fmt, separator);
     Bool ok = True;
     for (uInt i=0; i<fmts.size(); ++i) {
       fmts[i].trim();
@@ -1346,7 +1352,6 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                                   FunctionType fType,
                                   vector<TENShPtr>& nodes)
 {
-    uInt i;
     // The default returned value type is a scalar.
     resVT = VTScalar;
     // The default datatype is NTDouble.
@@ -1653,7 +1658,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars and arrays.
     // They return an array if one of the input arguments is an array.
     // If a function has no arguments, it results in a scalar.
-    for (i=0; i< nodes.size(); i++) {
+    for (uInt i=0; i< nodes.size(); i++) {
         ValueType vt = nodes[i]->valueType();
         if (vt == VTArray) {
             resVT = vt;
@@ -1909,7 +1914,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         break;
     }
     // The following functions accept scalars only (or no arguments).
-    for (i=0; i< nodes.size(); i++) {
+    for (uInt i=0; i< nodes.size(); i++) {
         if (nodes[i]->valueType() != VTScalar) {
             throw TableInvExpr ("Function nr " + String::toString(fType) +
                                 " has to have a scalar argument");

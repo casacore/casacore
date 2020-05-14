@@ -247,12 +247,12 @@ template<class T> inline
 // Fills all elements of the table vector with a sequence starting with
 // "start" and incrementing by "inc" for each element.
 template<class T> inline
-    void indgen (TableVector<T>&, Int start, Int inc);
+    void indgen (TableVector<T>&, T start, T inc);
 
 // Fills all elements of the table vector with a sequence starting with
 // "start" incremented by one for each position in the table vector.
 template<class T> inline
-    void indgen (TableVector<T>&, Int start);
+    void indgen (TableVector<T>&, T start);
 
 // Fills all elements of the table vector with a sequence starting with
 // 0 and ending with nelements() - 1.
@@ -397,14 +397,14 @@ T max (const TableVector<T>& tv)
     { T Min,Max; tabVecRepminmax (Min, Max, tv.tabVec()); return Max; }
 			       
 template<class T> inline
-void indgen (TableVector<T>& tv, Int start, Int inc)
+void indgen (TableVector<T>& tv, T start, T inc)
     { tabVecRepindgen (tv.tabVec(), start, inc); }
 template<class T> inline
-void indgen (TableVector<T>& tv, Int start)
-    { tabVecRepindgen (tv.tabVec(), start, 1); }
+void indgen (TableVector<T>& tv, T start)
+    { tabVecRepindgen (tv.tabVec(), start, T(1)); }
 template<class T> inline
 void indgen (TableVector<T>& tv)
-    { tabVecRepindgen (tv.tabVec(), 0, 1); }
+    { tabVecRepindgen (tv.tabVec(), T(0), T(1)); }
 
 
 template<class T> inline

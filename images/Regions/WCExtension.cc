@@ -168,20 +168,20 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     // the resulting index vector.
     Vector<uInt> reginx(ndreg);
     std::vector<Int> tmpreg(regOutOrd.begin(), regOutOrd.end());
-    GenSortIndirect<Int>::sort (reginx, &(tmpreg[0]), ndreg);
+    GenSortIndirect<Int,uInt>::sort (reginx, &(tmpreg[0]), ndreg);
     for (uInt i=0; i<ndreg; i++) {
 	regOutOrd(reginx(i)) = i;
     }
     Vector<uInt> extinx(ndext);
     std::vector<Int> tmpext(extOutOrd.begin(), extOutOrd.end());
-    GenSortIndirect<Int>::sort (extinx, &(tmpext[0]), ndext);
+    GenSortIndirect<Int,uInt>::sort (extinx, &(tmpext[0]), ndext);
     for (uInt i=0; i<ndext; i++) {
         extendAxes(i) = extOutOrd(extinx(i));
 	extOutOrd(extinx(i)) = i;
     }
     Vector<uInt> strinx(ndstr);
     std::vector<Int> tmpstr(strOutOrd.begin(), strOutOrd.end());
-    GenSortIndirect<Int>::sort (strinx, &(tmpstr[0]), ndstr);
+    GenSortIndirect<Int,uInt>::sort (strinx, &(tmpstr[0]), ndstr);
     for (uInt i=0; i<ndstr; i++) {
         stretchAxes(i) = regOutOrd(stretchRegAxes(i));
 	strOutOrd(strinx(i)) = i;
@@ -189,7 +189,7 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     // The box axes get already reordered by its toLCRegion.
     // So the stretched axis must be region axis in the new order.
     std::vector<Int> tmpstretch(stretchAxes.begin(), stretchAxes.end());
-    GenSortIndirect<Int>::sort (strinx, &(tmpstretch[0]), ndstr);
+    GenSortIndirect<Int,uInt>::sort (strinx, &(tmpstretch[0]), ndstr);
     for (uInt i=0; i<ndstr; i++) {
         stretchRegAxes(i) = stretchAxes(strinx(i));
     }

@@ -99,16 +99,16 @@ public:
     ~TabVecScaCol ();
 
     // Nr of elements (ie. #rows in table).
-    uInt nelem() const;
+    rownr_t nelem() const;
 
     // Get a value.
-    T value (uInt index) const;
+    T value (rownr_t index) const;
 
     // Get a value.
-    void getVal (uInt index, T&) const;
+    void getVal (rownr_t index, T&) const;
 
     // Put a value.
-    void putVal (uInt index, const T&);
+    void putVal (rownr_t index, const T&);
 
     // Set entire vector to a value.
     void set (const T&);

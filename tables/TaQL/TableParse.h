@@ -424,7 +424,7 @@ public:
   // It will be used as the default value for the LIMIT clause.
   // 0 = no maximum.
   void execute (Bool showTimings, Bool setInGiving,
-                Bool mustSelect, uInt maxRow, Bool doTracing=False);
+                Bool mustSelect, rownr_t maxRow, Bool doTracing=False);
 
   // Execute a query in a from clause resulting in a Table.
   Table doFromQuery (Bool showTimings);
@@ -654,7 +654,7 @@ private:
   // Rows 0,1,2,.. in UpdTable are updated from the expression result
   // for the rows in the given rownrs vector.
   void doUpdate (Bool showTimings, const Table& origTable,
-                 Table& updTable, const Vector<uInt>& rownrs,
+                 Table& updTable, const Vector<rownr_t>& rownrs,
                  const CountedPtr<TableExprGroupResult>& groups =
                  CountedPtr<TableExprGroupResult>());
 
@@ -733,31 +733,31 @@ private:
   // Update the values in the columns (helpers of doUpdate).
   // <group>
   template<typename TCOL, typename TNODE>
-  void updateValue (uInt row, const TableExprId& rowid,
+  void updateValue (rownr_t row, const TableExprId& rowid,
                     Bool isScalarCol, const TableExprNode& node,
                     const Array<Bool>& mask, Bool maskFirst,
                     TableColumn& col, const Slicer* slicerPtr,
                     ArrayColumn<Bool>& maskCol);
   template<typename TCOL, typename TNODE>
-  void updateScalar (uInt row, const TableExprId& rowid,
+  void updateScalar (rownr_t row, const TableExprId& rowid,
                      const TableExprNode& node,
                      TableColumn& col);
   template<typename TCOL, typename TNODE>
-  void updateArray (uInt row, const TableExprId& rowid,
+  void updateArray (rownr_t row, const TableExprId& rowid,
                     const TableExprNode& node,
                     const Array<TNODE>& res,
                     ArrayColumn<TCOL>& col);
   template<typename TCOL, typename TNODE>
-  void updateSlice (uInt row, const TableExprId& rowid,
+  void updateSlice (rownr_t row, const TableExprId& rowid,
                     const TableExprNode& node,
                     const Array<TNODE>& res,
                     const Slicer& slice,
                     ArrayColumn<TCOL>& col);
   template<typename TCOL, typename TNODE>
-  void copyMaskedValue (uInt row, ArrayColumn<TCOL>& acol,
+  void copyMaskedValue (rownr_t row, ArrayColumn<TCOL>& acol,
                         const Slicer* slicerPtr,
                         const TNODE* val,
-                        uInt incr, const Array<Bool>& mask);
+                        size_t incr, const Array<Bool>& mask);
   Array<Bool> makeMaskSlice (const Array<Bool>& mask,
                              Bool maskFirst,
                              const IPosition& shapeCol,
@@ -846,7 +846,7 @@ private:
     // For each row generate the key to get the right entry.
     TableExprId rowid(0);
     T key;
-    for (uInt i=0; i<rownrs_p.size(); ++i) {
+    for (rownr_t i=0; i<rownrs_p.size(); ++i) {
       rowid.setRownr (rownrs_p[i]);
       groupbyNodes_p[0].get (rowid, key);
       if (key != lastKey) {
@@ -949,7 +949,7 @@ private:
   Block<uInt>  projectExprSubset_p;
   Block<Bool>  projectExprSelColumn_p;
   //# The resulting row numbers.
-  Vector<uInt> rownrs_p;
+  Vector<rownr_t> rownrs_p;
 };
 
 

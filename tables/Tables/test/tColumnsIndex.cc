@@ -122,7 +122,7 @@ void b()
     RecordFieldPtr<DComplex> adcomplex (colInx8.accessKey(), "adcomplex");
     RecordFieldPtr<String> astring (colInx9.accessKey(), "astring");
     Record rec;
-    Vector<uInt> rows;
+    RowNumbers rows;
     Bool found;
     char str[8];
     // Test each individual type.
@@ -194,7 +194,7 @@ void b()
 }
 
 Int tcompare (const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
-	      const Block<Int>& dataTypes, Int index)
+	      const Block<Int>& dataTypes, rownr_t index)
 {
     AlwaysAssert (dataTypes.nelements() == 2, AipsError);
     AlwaysAssert (dataTypes[0] == TpDouble  &&  dataTypes[1] == TpFloat,

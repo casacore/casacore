@@ -485,10 +485,9 @@ void TableExprNodeOR::ranges (Block<TableExprRange>& blrange)
     //# to be removed. Only equal columns can be combined and what
     //# gets created is a superset of the original blocks.
     blrange.resize(0,True);
-    uInt nr=0;
-    uInt i,j;
-    for (i=0; i<left.nelements(); i++) {
-        for (j=0; j<right.nelements(); j++) {
+    size_t nr=0;
+    for (size_t i=0; i<left.nelements(); i++) {
+        for (size_t j=0; j<right.nelements(); j++) {
             if (right[j].getColumn().columnDesc().name() ==
                                 left[i].getColumn().columnDesc().name()) {
                 blrange.resize(nr+1, True);
@@ -522,9 +521,8 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     //# Keep a vector with flags for non-processed other ones.
     Vector<Int> vec(other.nelements());
     vec = 0;
-    uInt i,j;
-    for (i=0; i<blrange.nelements(); i++) {
-        for (j=0; j<other.nelements(); j++) {
+    for (size_t i=0; i<blrange.nelements(); i++) {
+        for (size_t j=0; j<other.nelements(); j++) {
             if (other[j].getColumn().columnDesc().name() ==
                                 blrange[i].getColumn().columnDesc().name()) {
                 blrange[i].mixAnd (other[j]);
@@ -533,8 +531,8 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
         }
     }
     //# Now add the non-processed other ones to the result.
-    uInt nr = blrange.nelements();
-    for (i=0; i<other.nelements(); i++) {
+    size_t nr = blrange.nelements();
+    for (size_t i=0; i<other.nelements(); i++) {
         if (vec(i) == 0) {
             blrange.resize(nr+1, True);
             blrange[nr++] = other[i];

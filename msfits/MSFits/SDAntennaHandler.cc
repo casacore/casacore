@@ -164,7 +164,7 @@ void SDAntennaHandler::fill(const Record &row)
 	if (flagRowKey_p.isAttached()) {
 	    *flagRowKey_p = *flagRowField_p;
 	}
-	Vector<uInt> foundRows = index_p->getRowNumbers();
+	Vector<rownr_t> foundRows = index_p->getRowNumbers();
 	Bool found = False;
 	MPosition pos;
 	Vector<Double> offset(3,0.0);

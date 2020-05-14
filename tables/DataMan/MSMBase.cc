@@ -39,7 +39,8 @@ MSMBase::MSMBase()
 : DataManager   (),
   nrrow_p       (0),
   nrrowCreate_p (0),
-  colSet_p      (0)
+  colSet_p      (0),
+  hasPut_p      (False)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName)
@@ -47,7 +48,8 @@ MSMBase::MSMBase (const String& storageManagerName)
   stmanName_p   (storageManagerName),
   nrrow_p       (0),
   nrrowCreate_p (0),
-  colSet_p      (0)
+  colSet_p      (0),
+  hasPut_p      (False)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName, const Record&)
@@ -55,7 +57,8 @@ MSMBase::MSMBase (const String& storageManagerName, const Record&)
   stmanName_p   (storageManagerName),
   nrrow_p       (0),
   nrrowCreate_p (0),
-  colSet_p      (0)
+  colSet_p      (0),
+  hasPut_p      (False)
 {}
 
 MSMBase::~MSMBase()
@@ -185,7 +188,7 @@ void MSMBase::prepare()
   // Create the rows if needed.
   if (nrrowCreate_p > 0) {
     AlwaysAssert (nrrow_p == 0, AipsError);
-    addRow (nrrowCreate_p);
+    addRow64 (nrrowCreate_p);
     nrrowCreate_p = 0;
   }
 }
@@ -198,6 +201,7 @@ void MSMBase::addColumn (DataManagerColumn* colp)
   for (uInt i=0; i<ncolumn(); i++) {
     if (colp == colSet_p[i]) {
       colSet_p[i]->doCreate (nrrow_p);
+      setHasPut();
       return;
     }
   }
@@ -214,6 +218,7 @@ void MSMBase::removeColumn (DataManagerColumn* colp)
       for (uInt j=i; j<ncolumn(); j++) {
 	colSet_p[j] = colSet_p[j+1];
       }
+      setHasPut();
       return;
     }
   }
@@ -222,22 +227,24 @@ void MSMBase::removeColumn (DataManagerColumn* colp)
                               " does not exist");
 }
 
-void MSMBase::addRow (uInt nr)
+void MSMBase::addRow64 (rownr_t nr)
 {
   //# Add the number of rows to each column.
   for (uInt i=0; i<ncolumn(); i++) {
     colSet_p[i]->addRow (nrrow_p+nr, nrrow_p);
   }
   nrrow_p += nr;
+  setHasPut();
 }
 
 
-void MSMBase::removeRow (uInt rownr)
+void MSMBase::removeRow64 (rownr_t rownr)
 {
   for (uInt i=0; i<ncolumn(); i++) {
     colSet_p[i]->remove (rownr);
   }
   nrrow_p--;
+  setHasPut();
 }
 
 
@@ -246,37 +253,39 @@ Bool MSMBase::flush (AipsIO&, Bool)
   return False;
 }
 
-void MSMBase::create (uInt nrrow)
+void MSMBase::create64 (rownr_t nrrow)
 {
   //# Do not add the required nr of rows yet.
   // It is done later in reallocateColumn to avoid that all row data
-  // have to be deleted and allocated again if a IndArrColumn is turned
+  // have to be deleted and allocated again if an IndArrColumn is turned
   // into a DirArrColumn.
   nrrowCreate_p = nrrow;
 }
 
-void MSMBase::open (uInt tabNrrow, AipsIO&)
+rownr_t MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
 {
   nrrow_p = tabNrrow;
   //# Create the required nr of rows and initialize them.
   for (uInt i=0; i<ncolumn(); i++) {
     colSet_p[i]->doCreate (tabNrrow);
   }
+  return nrrow_p;
 }
 
-void MSMBase::resync (uInt nrrow)
+rownr_t MSMBase::resync64 (rownr_t nrrow)
 {
   // Add or remove rows if it has changed.
   // Note that removing decreases the row number, so the same row number
   // is always used.
   if (nrrow > nrrow_p) {
-    addRow (nrrow-nrrow_p);
+    addRow64 (nrrow-nrrow_p);
   } else {
-    uInt nr=nrrow_p-nrrow;
-    for (uInt i=0; i<nr; i++) {
-      removeRow (nrrow);
+    rownr_t nr=nrrow_p-nrrow;
+    for (rownr_t i=0; i<nr; i++) {
+      removeRow64 (nrrow);
     }
   }
+  return nrrow_p;
 }
 
 void MSMBase::deleteManager()

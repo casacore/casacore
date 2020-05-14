@@ -482,7 +482,7 @@ TableExprNode RecordGram::handleRegex (const TableExprNode& left,
   if (caseInsensitive) {
     str = Regex::makeCaseInsensitive (str);
   }
-  TableExprNode rnode((Regex(str)));
+  TableExprNode rnode((Regex(str, True)));
   if (negate) {
     lnode = (lnode != rnode);
   } else {

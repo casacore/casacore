@@ -177,17 +177,17 @@ public:
     // <br>Note that it does NOT set match values to False; it is assumed they
     // are initialized that way.
     // <group>
-    void matchBool     (Bool* match, const Bool* value, uInt nval,
+    void matchBool     (Bool* match, const Bool* value, size_t nval,
                         const TableExprId& id) const;
-    void matchInt      (Bool* match, const Int64* value, uInt nval,
+    void matchInt      (Bool* match, const Int64* value, size_t nval,
                         const TableExprId& id) const;
-    void matchDouble   (Bool* match, const Double* value, uInt nval,
+    void matchDouble   (Bool* match, const Double* value, size_t nval,
                         const TableExprId& id) const;
-    void matchDComplex (Bool* match, const DComplex* value, uInt nval,
+    void matchDComplex (Bool* match, const DComplex* value, size_t nval,
                         const TableExprId& id) const;
-    void matchString   (Bool* match, const String* value, uInt nval,
+    void matchString   (Bool* match, const String* value, size_t nval,
                         const TableExprId& id) const;
-    void matchDate     (Bool* match, const MVTime* value, uInt nval,
+    void matchDate     (Bool* match, const MVTime* value, size_t nval,
                         const TableExprId& id) const;
     // </group>
 
@@ -329,7 +329,7 @@ public:
     // of rows.
     // Element i is constructed by evaluating the input element
     // for row rownr[i].
-    TableExprNodeSet (const Vector<uInt>& rownrs, const TableExprNodeSet&);
+    TableExprNodeSet (const Vector<rownr_t>& rownrs, const TableExprNodeSet&);
 
     TableExprNodeSet(const TableExprNodeSet&);
 
@@ -369,12 +369,12 @@ public:
     Bool isBounded() const;
 
     // Get the number of elements.
-    uInt size() const;
+    size_t size() const;
     // For backward compatibility.
-    uInt nelements() const {return size();}
+    size_t nelements() const {return size();}
 
     // Get the i-th element.
-    const TableExprNodeSetElem& operator[] (uInt index) const;
+    const TableExprNodeSetElem& operator[] (size_t index) const;
 
     // Contains the set array values?
     Bool hasArrays() const;
@@ -492,12 +492,12 @@ inline Bool TableExprNodeSet::isBounded() const
 {
     return itsBounded;
 }
-inline uInt TableExprNodeSet::size() const
+inline size_t TableExprNodeSet::size() const
 {
     return itsElems.size();
 }
 inline const TableExprNodeSetElem&
-                           TableExprNodeSet::operator[] (uInt index) const
+                           TableExprNodeSet::operator[] (size_t index) const
 {
     return *castItsElem(index);
 }

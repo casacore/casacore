@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: StManAipsIO.cc 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/StArrAipsIO.h>
@@ -36,6 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/OS/DOos.h>
 #include <casacore/tables/DataMan/DataManError.h>
@@ -47,452 +48,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManColumnAipsIO::StManColumnAipsIO (StManAipsIO* smptr,
 				      int dataType, Bool byPtr)
-: StManColumn(dataType),
-  stmanPtr_p (smptr),
-  dtype_p    (dataType),
-  byPtr_p    (byPtr),
-  nralloc_p  (0),
-  nrext_p    (0),
-  data_p     (EXTBLSZ,static_cast<void*>(0)),
-  ncum_p     (EXTBLSZ,(uInt)0)
+  : MSMColumn(smptr, dataType, byPtr)
 {}
 
 StManColumnAipsIO::~StManColumnAipsIO()
-    { deleteAll(); }
-
-
-void StManColumnAipsIO::doCreate (uInt nrrow)
-    { addRow (nrrow, 0); }
-
-void StManColumnAipsIO::reopenRW()
 {}
 
-void StManColumnAipsIO::addRow (uInt nrnew, uInt)
-{
-    //# Extend the column sizes if needed.
-    if (nrnew > nralloc_p) {
-	uInt n = nralloc_p + 4096;
-	if (n < nrnew) {
-	    n = nrnew;
-	}
-	resize (n);
-    }
-}
-
-void StManColumnAipsIO::resize (uInt nr)
-{
-    //# Extend internal blocks if needed.
-    if (nrext_p+1 >= data_p.nelements()) {
-//#	cout << "resize internal blocks " << nrext_p << endl;
-	data_p.resize(nrext_p + 1+EXTBLSZ);
-	ncum_p.resize(nrext_p + 1+EXTBLSZ);
-    }
-    //# Allocate another block of the correct data type.
-    data_p[nrext_p+1] = allocData (nr-nralloc_p, byPtr_p);
-//#    cout << "allocated new block " << nr-nralloc_p << endl;
-    nrext_p++;
-    ncum_p[nrext_p] = nr;
-    nralloc_p = nr;
-    return;
-}
-
-
-uInt StManColumnAipsIO::findExt (uInt index, Bool setCache)
-{
-    //# Use a binary search to get the block containing the index.
-    Int st = 0;
-    Int ent= nrext_p;
-    Int i  = 0;
-    while (st<=ent) {
-        i = (st+ent)/2;
-        if (index < ncum_p[i]) {
-            ent = i-1;
-        }else{
-	    if (index > ncum_p[i]) {
-		i++;
-                st = i;
-            }else{
-                ent = -1;             // found
-		i++;
-            }
-        }
-    }
-    if (i > Int(nrext_p)) {
-	throw indexError<uInt>(index, "StManColumnAipsIO::findExt - "
-                               "rownr " + String::toString(index) +
-                               " in column " + columnName() +
-                               " out of range");
-    }
-    if (setCache) {
-	columnCache().set (ncum_p[i-1], ncum_p[i]-1, data_p[i]);
-    }
-    return i;
-}
-
-uInt StManColumnAipsIO::nextExt (void*& ext, uInt& extnr, uInt nrmax) const
-{
-    if (++extnr > nrext_p) {
-	return 0;
-    }
-    ext = data_p[extnr];
-    uInt n = ncum_p[extnr];
-    if (n > nrmax) {
-	n = nrmax;
-    }
-    if (n < ncum_p[extnr-1]) {
-	return 0;
-    }
-    return n - ncum_p[extnr-1];
-}
-
-
-#define STMANCOLUMNAIPSIO_GETPUT(T,NM) \
-void StManColumnAipsIO::aips_name2(get,NM) (uInt rownr, T* value) \
-{ \
-    uInt extnr = findExt(rownr, True); \
-    *value = ((T*)(data_p[extnr])) [rownr-ncum_p[extnr-1]]; \
-} \
-void StManColumnAipsIO::aips_name2(put,NM) (uInt rownr, const T* value) \
-{ \
-    uInt extnr = findExt(rownr, True); \
-    ((T*)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = *value; \
-    stmanPtr_p->setHasPut(); \
-} \
-uInt StManColumnAipsIO::aips_name2(getBlock,NM) (uInt rownr, uInt nrmax, T* value) \
-{ \
-    uInt nr; \
-    uInt extnr = findExt(rownr, True); \
-    nrmax = min (nrmax, nralloc_p-rownr); \
-    uInt nrm = nrmax; \
-    while (nrmax > 0) { \
-        nr = min (nrmax, ncum_p[extnr]-rownr); \
-	objcopy (value, ((T*)(data_p[extnr])) +rownr-ncum_p[extnr-1], nr); \
-	nrmax -= nr; \
-	value += nr; \
-	rownr  = ncum_p[extnr]; \
-	extnr++; \
-    } \
-    return nrm; \
-} \
-void StManColumnAipsIO::aips_name2(putBlock,NM) (uInt rownr, uInt nrmax, const T* value) \
-{ \
-    uInt nr; \
-    uInt extnr = findExt(rownr, True); \
-    nrmax = min (nrmax, nralloc_p-rownr); \
-    while (nrmax > 0) { \
-        nr = min (nrmax, ncum_p[extnr]-rownr); \
-	objcopy (((T*)(data_p[extnr])) +rownr-ncum_p[extnr-1], value, nr); \
-	nrmax -= nr; \
-	value += nr; \
-	rownr  = ncum_p[extnr]; \
-	extnr++; \
-    } \
-    stmanPtr_p->setHasPut(); \
-} \
-void StManColumnAipsIO::aips_name2(getScalarColumnCells,NM) \
-                                             (const RefRows& rownrs, \
-					      Vector<T>* values) \
-{ \
-    Bool delV; \
-    T* value = values->getStorage (delV); \
-    T* valptr = value; \
-    const ColumnCache& cache = columnCache(); \
-    if (rownrs.isSliced()) { \
-        RefRowsSliceIter iter(rownrs); \
-        while (! iter.pastEnd()) { \
-            uInt rownr = iter.sliceStart(); \
-            uInt end = iter.sliceEnd(); \
-            uInt incr = iter.sliceIncr(); \
-            while (rownr <= end) { \
-                if (rownr < cache.start()  ||  rownr > cache.end()) { \
-                    aips_name2(get,NM) (rownr, valptr); \
-                } \
-	        uInt inx = rownr - cache.start(); \
-                const T* cacheValue = (const T*)(cache.dataPtr()) + inx; \
-                uInt endrow = min (end, cache.end()); \
-                while (rownr <= endrow) { \
-	            *valptr++ = *cacheValue; \
-                    rownr += incr; \
-		    cacheValue += incr; \
-	        } \
-     	    } \
-	    iter++; \
-        } \
-    } else { \
-        const Vector<uInt>& rowvec = rownrs.rowVector(); \
-        uInt nr = rowvec.nelements(); \
-        if (nr > 0) { \
-            Bool delR; \
-            const uInt* rows = rowvec.getStorage (delR); \
-            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-                findExt(rows[0], True); \
-            } \
-            const T* cacheValue = (const T*)(cache.dataPtr()); \
-            uInt strow = cache.start(); \
-            uInt endrow = cache.end(); \
-            for (uInt i=0; i<nr; i++) { \
-	        uInt rownr = rows[i]; \
-                if (rownr >= strow  &&  rownr <= endrow) { \
-	            value[i] = cacheValue[rownr-strow]; \
-	        } else { \
-	            aips_name2(get,NM) (rownr, &(value[i])); \
-                    cacheValue = (const T*)(cache.dataPtr()); \
-                    strow = cache.start(); \
-                    endrow = cache.end(); \
-                } \
-	    } \
-            rowvec.freeStorage (rows, delR); \
-	} \
-    } \
-    values->putStorage (value, delV); \
-}
-
-STMANCOLUMNAIPSIO_GETPUT(Bool,BoolV)
-STMANCOLUMNAIPSIO_GETPUT(uChar,uCharV)
-STMANCOLUMNAIPSIO_GETPUT(Short,ShortV)
-STMANCOLUMNAIPSIO_GETPUT(uShort,uShortV)
-STMANCOLUMNAIPSIO_GETPUT(Int,IntV)
-STMANCOLUMNAIPSIO_GETPUT(uInt,uIntV)
-STMANCOLUMNAIPSIO_GETPUT(Int64,Int64V)
-STMANCOLUMNAIPSIO_GETPUT(float,floatV)
-STMANCOLUMNAIPSIO_GETPUT(double,doubleV)
-STMANCOLUMNAIPSIO_GETPUT(Complex,ComplexV)
-STMANCOLUMNAIPSIO_GETPUT(DComplex,DComplexV)
-STMANCOLUMNAIPSIO_GETPUT(String,StringV)
-
-
-void StManColumnAipsIO::remove (uInt index)
-{
-    //# Find the extension.
-    uInt extnr  = findExt(index, False);
-    uInt nrval  = ncum_p[extnr] - ncum_p[extnr-1];
-    void* datap = data_p[extnr];
-    //# If the extension contains only this element, remove the extension.
-    if (nrval == 1) {
-	deleteData (datap, byPtr_p);
-	for (uInt i=extnr; i<nrext_p; i++) {
-	    data_p[i] = data_p[i+1];
-	    ncum_p[i] = ncum_p[i+1];
-	}
-	ncum_p[nrext_p] = 0;
-	nrext_p--;
-    }else{
-	removeData (datap, index-ncum_p[extnr-1], nrval-1);
-    }
-    nralloc_p--;
-//#    cout << "Remove " << nrext_p << " " << nralloc_p << " " << extnr <<" "<<nrval<< endl;
-    for (uInt i=extnr; i<=nrext_p; i++) {
-	ncum_p[i]--;
-    }
-    columnCache().invalidate();
-//#    for (i=1; i<=nrext_p; i++) {
-//#	cout << " " << ncum_p[i] << " ";
-//#    }
-//#    cout << endl;
-}
-
-
-Bool StManColumnAipsIO::ok() const
-{
-    //# Internal blocks cannot be empty and must be equal in length.
-    //# Their lengths must be >= nr of extensions.
-    //# Their first elements must be zero.
-    if (data_p.nelements() == 0  ||  data_p.nelements() < nrext_p)
-	return False;
-    if (data_p.nelements() != ncum_p.nelements())
-	return False;
-    if (data_p[0] != 0  || ncum_p[0] != 0)
-	return False;
-    //# If no points, there should be no extensions (and vice versa).
-    if ((nralloc_p == 0)  !=  (nrext_p == 0))
-	return False;
-    //# If no extensions, first length must also be zero.
-    if (nrext_p == 0  &&  ncum_p[1] != 0)
-	return False;
-    //# All extension pointers must be filled in.
-    //# The ncum_p array must be increasing.
-    for (uInt i=1; i<=nrext_p; i++) {
-	if (data_p[i] == 0  ||  ncum_p[i] <= ncum_p[i-1])
-	    return False;
-    }
-    return True;
-}
-
-
-void StManColumnAipsIO::deleteAll()
-{
-    for (uInt i=1; i<=nrext_p; i++) {
-	deleteData (data_p[i], byPtr_p);
-    }
-    nralloc_p = 0;
-    nrext_p   = 0;
-    ncum_p[1] = 0;
-}
-
-void StManColumnAipsIO::deleteData (void* datap, Bool byPtr)
-{
-    if (byPtr) {
-	delete [] (void**)datap;
-    }else{
-	switch (dtype_p) {
-	case TpBool:
-	    delete [] (Bool*)datap;
-	    break;
-	case TpUChar:
-	    delete [] (uChar*)datap;
-	    break;
-	case TpShort:
-	    delete [] (Short*)datap;
-	    break;
-	case TpUShort:
-	    delete [] (uShort*)datap;
-	    break;
-	case TpInt:
-	    delete [] (Int*)datap;
-	    break;
-	case TpUInt:
-	    delete [] (uInt*)datap;
-	    break;
-	case TpInt64:
-	    delete [] (Int64*)datap;
-	    break;
-	case TpFloat:
-	    delete [] (float*)datap;
-	    break;
-	case TpDouble:
-	    delete [] (double*)datap;
-	    break;
-	case TpComplex:
-	    delete [] (Complex*)datap;
-	    break;
-	case TpDComplex:
-	    delete [] (DComplex*)datap;
-	    break;
-	case TpString:
-	    delete [] (String*)datap;
-	    break;
-	default:
-	    throw DataManInvDT();
-	}
-    }
-    datap = 0;
-}
-
-
-void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
-{
-    void* datap = 0;
-    if (byPtr) {
-	datap = new void*[nrval];
-	if (datap != 0) {
-	    void** dp = (void**)datap;
-	    for (uInt i=0; i<nrval; i++)  {
-		*dp++ = 0;
-	    }
-	}
-    }else{
-	switch (dtype_p) {
-	case TpBool:
-	    datap = new Bool[nrval];
-	    break;
-	case TpUChar:
-	    datap = new uChar[nrval];
-	    break;
-	case TpShort:
-	    datap = new Short[nrval];
-	    break;
-	case TpUShort:
-	    datap = new uShort[nrval];
-	    break;
-	case TpInt:
-	    datap = new Int[nrval];
-	    break;
-	case TpUInt:
-	    datap = new uInt[nrval];
-	    break;
-	case TpInt64:
-	    datap = new Int64[nrval];
-	    break;
-	case TpFloat:
-	    datap = new float[nrval];
-	    break;
-	case TpDouble:
-	    datap = new double[nrval];
-	    break;
-	case TpComplex:
-	    datap = new Complex[nrval];
-	    break;
-	case TpDComplex:
-	    datap = new DComplex[nrval];
-	    break;
-	case TpString:
-	    datap = new String[nrval];
-	    break;
-	default:
-	    throw DataManInvDT();
-	}
-    }
-    return datap;
-}
-	
-
-void StManColumnAipsIO::removeData (void* dp, uInt inx, uInt nrvalAfter)
-{
-    if (inx >= nrvalAfter) {
-	return;
-    }
-    if (byPtr_p) {
-	objmove (((void**)dp) + inx,  ((void**)dp) + inx+1 ,nrvalAfter-inx);
-	return;
-    }
-    switch (dtype_p) {
-    case TpBool:
-	objmove (((Bool*)dp) + inx,   ((Bool*)dp) + inx+1,  nrvalAfter-inx);
-	break;
-    case TpUChar:
-	objmove (((uChar*)dp) + inx,  ((uChar*)dp) + inx+1, nrvalAfter-inx);
-	break;
-    case TpShort:
-	objmove (((Short*)dp) + inx,  ((Short*)dp) + inx+1, nrvalAfter-inx);
-	break;
-    case TpUShort:
-	objmove (((uShort*)dp) + inx, ((uShort*)dp) + inx+1,nrvalAfter-inx);
-	break;
-    case TpInt:
-	objmove (((Int*)dp) + inx,    ((Int*)dp) + inx+1,   nrvalAfter-inx);
-	break;
-    case TpUInt:
-	objmove (((uInt*)dp) + inx,   ((uInt*)dp) + inx+1,  nrvalAfter-inx);
-	break;
-    case TpInt64:
-	objmove (((Int64*)dp) + inx,  ((Int64*)dp) + inx+1, nrvalAfter-inx);
-	break;
-    case TpFloat:
-	objmove (((float*)dp) + inx,  ((float*)dp) + inx+1, nrvalAfter-inx);
-	break;
-    case TpDouble:
-	objmove (((double*)dp) + inx, ((double*)dp) + inx+1,nrvalAfter-inx);
-	break;
-    case TpComplex:
-	objmove (((Complex*)dp)+inx,  ((Complex*)dp)+inx+1, nrvalAfter-inx);
-	break;
-    case TpDComplex:
-	objmove (((DComplex*)dp)+inx, ((DComplex*)dp)+inx+1,nrvalAfter-inx);
-	break;
-    case TpString:
-	objmove (((String*)dp) + inx, ((String*)dp) + inx+1,nrvalAfter-inx);
-	break;
-    default:
-	throw DataManInvDT();
-    }
-}
-
+void StManColumnAipsIO::initData (void*, rownr_t)
+{}
 
 //# Write all data into AipsIO.
-void StManColumnAipsIO::putFile (uInt nrval, AipsIO& ios)
+void StManColumnAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 {
     ios.putstart ("StManColumnAipsIO", 2);     // class version 2
-    ios << nrval;
+    ios << uInt(nrval);
     uInt nr;
     for (uInt i=1; i<=nrext_p; i++) {
 	nr = ncum_p[i] - ncum_p[i-1];
@@ -500,7 +69,7 @@ void StManColumnAipsIO::putFile (uInt nrval, AipsIO& ios)
 	    nr = nrval;
 	}
 	if (nr > 0) {
-	    ios << nr;
+            ios << nr;
 	    putData (data_p[i], nr, ios);
 	    nrval -= nr;
 	}
@@ -510,7 +79,7 @@ void StManColumnAipsIO::putFile (uInt nrval, AipsIO& ios)
 	
 void StManColumnAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 {
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
 	ios.put (nrval, (Bool*)dp);
 	break;
@@ -547,20 +116,22 @@ void StManColumnAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
     case TpString:
 	ios.put (nrval, (String*)dp);
 	break;
+    default:
+      throw DataManInvDT("StManAipsIO::putData");
     }
 }
 
 
 //# Read all data from AipsIO.
-void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
+void StManColumnAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
     uInt version = ios.getstart ("StManColumnAipsIO");
     uInt nr;
     //# Get and check nr of values.
     ios >> nr;
     if (nr != nrval) {
-	throw DataManInternalError
-          ("StManColumnAipsIO::getFile: mismatch in #values");
+	throw (DataManInternalError
+	                ("StManColumnAipsIO::getFile: mismatch in #values"));
     }
     deleteAll();
     if (nrval > 0) {
@@ -573,7 +144,7 @@ void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
 	        nr = nrval - nrd;
 	    }
 	    if (nr+nrd > nrval) {
-		throw DataManInternalError ("StManColumnAipsIO::getFile");
+		throw (DataManInternalError ("StManColumnAipsIO::getFile"));
 	    }
 	    getData (datap, nrd, nr, ios, version);
 	    nrd += nr;
@@ -589,7 +160,7 @@ void StManColumnAipsIO::getData (void* datap, uInt inx, uInt nrval,
 {
     uInt nr;
     ios >> nr;
-    switch (dtype_p) {
+    switch (dtype()) {
     case TpBool:
 	ios.get (nrval, (Bool*)datap + inx);
 	break;
@@ -626,59 +197,34 @@ void StManColumnAipsIO::getData (void* datap, uInt inx, uInt nrval,
     case TpString:
 	ios.get (nrval, (String*)datap + inx);
 	break;
+    default:
+      throw DataManInvDT("StManAipsIO::getData");
     }
-}
-
-
-void* StManColumnAipsIO::getArrayPtr (uInt rownr)
-{
-    uInt extnr = findExt(rownr, False);
-    return ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]];
-}
-void StManColumnAipsIO::putArrayPtr (uInt rownr, void* ptr)
-{
-    uInt extnr = findExt(rownr, False);
-    ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = ptr;
-    stmanPtr_p->setHasPut();
 }
 
 
 
 
 StManAipsIO::StManAipsIO ()
-: DataManager (),
+: MSMBase(),
   uniqnr_p    (0),
-  nrrow_p     (0),
-  colSet_p    (0),
-  hasPut_p    (False),
   iosfile_p   (0)
 {}
 
 StManAipsIO::StManAipsIO (const String& storageManagerName)
-: DataManager (),
-  stmanName_p (storageManagerName),
+: MSMBase (storageManagerName),
   uniqnr_p    (0),
-  nrrow_p     (0),
-  colSet_p    (0),
-  hasPut_p    (False),
   iosfile_p   (0)
 {}
 
-StManAipsIO::StManAipsIO (const String& storageManagerName, const Record&)
-: DataManager (),
-  stmanName_p (storageManagerName),
+StManAipsIO::StManAipsIO (const String& storageManagerName, const Record& rec)
+: MSMBase (storageManagerName, rec),
   uniqnr_p    (0),
-  nrrow_p     (0),
-  colSet_p    (0),
-  hasPut_p    (False),
   iosfile_p   (0)
 {}
 
 StManAipsIO::~StManAipsIO()
 {
-    for (uInt i=0; i<ncolumn(); i++) {
-	delete colSet_p[i];
-    }
     delete iosfile_p;
 }
 
@@ -697,26 +243,6 @@ DataManager* StManAipsIO::makeObject (const String& storageManagerName,
 
 String StManAipsIO::dataManagerType() const
     { return "StManAipsIO"; }
-
-String StManAipsIO::dataManagerName() const
-    { return stmanName_p; }
-
-//# Does the storage manager allow to add rows? (yes)
-Bool StManAipsIO::canAddRow() const
-    { return True; }
-
-//# Does the storage manager allow to delete rows? (yes)
-Bool StManAipsIO::canRemoveRow() const
-    { return True; }
-
-//# Does the storage manager allow to add columns? (yes)
-Bool StManAipsIO::canAddColumn() const
-    { return True; }
-
-//# Does the storage manager allow to delete columns? (yes)
-Bool StManAipsIO::canRemoveColumn() const
-    { return True; }
-
 
 DataManagerColumn* StManAipsIO::makeScalarColumn (const String& columnName,
 						  int dataType, const String&)
@@ -758,60 +284,6 @@ DataManagerColumn* StManAipsIO::makeIndArrColumn (const String& columnName,
     return colp;
 }
 
-
-// Note that the column has already been added by makeXXColumn.
-// This function is merely for initializing the added column.
-void StManAipsIO::addColumn (DataManagerColumn* colp)
-{
-    for (uInt i=0; i<ncolumn(); i++) {
-	if (colp == colSet_p[i]) {
-	    colSet_p[i]->doCreate (nrrow_p);
-	    setHasPut();
-	    return;
-	}
-    }
-    throw DataManInternalError ("StManAipsIO::addColumn");
-}
-
-void StManAipsIO::removeColumn (DataManagerColumn* colp)
-{
-    for (uInt i=0; i<ncolumn(); i++) {
-	if (colSet_p[i] == colp) {
-	    delete colSet_p[i];
-	    decrementNcolumn();
-	    for (uInt j=i; j<ncolumn(); j++) {
-		colSet_p[j] = colSet_p[j+1];
-	    }
-	    setHasPut();
-	    return;
-	}
-    }
-    throw DataManInternalError ("StManAipsIO::removeColumn: "
-                                " column " + colp->columnName() +
-                                " does not exist");
-}
-
-void StManAipsIO::addRow (uInt nr)
-{
-    //# Add the number of rows to each column.
-    for (uInt i=0; i<ncolumn(); i++) {
-	colSet_p[i]->addRow (nrrow_p+nr, nrrow_p);
-    }
-    nrrow_p += nr;
-    setHasPut();
-}
-
-
-void StManAipsIO::removeRow (uInt rownr)
-{
-    for (uInt i=0; i<ncolumn(); i++) {
-	colSet_p[i]->remove (rownr);
-    }
-    nrrow_p--;
-    setHasPut();
-}
-
-
 Bool StManAipsIO::flush (AipsIO&, Bool)
 {
     //# Do not write if nothing has been put.
@@ -823,10 +295,12 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     ios.putstart ("StManAipsIO", 2);           // version 2
     //# Write the number of rows and columns and the column types.
     //# This is only done to check it when reading back.
+    //# Note that an AipsIO object cannot exceed 4 GB, so nrrow_p always
+    //# fits in 32 bits.
     ios << stmanName_p;                        // this is added in version 2
     ios << sequenceNr();
     ios << uniqnr_p;
-    ios << nrrow_p;
+    ios << uInt(nrrow_p);
     ios << ncolumn();
     for (i=0; i<ncolumn(); i++) {
 	ios << colSet_p[i]->dataType();
@@ -839,7 +313,7 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     return True;
 }
 
-void StManAipsIO::create (uInt nrrow)
+void StManAipsIO::create64 (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     //# Let the column create something if needed.
@@ -849,11 +323,11 @@ void StManAipsIO::create (uInt nrrow)
     setHasPut();
 }
 
-void StManAipsIO::open (uInt tabNrrow, AipsIO&)
+rownr_t StManAipsIO::open64 (rownr_t tabNrrow, AipsIO&)
 {
-    resync (tabNrrow);
+    return resync64 (tabNrrow);
 }
-void StManAipsIO::resync (uInt nrrow)
+rownr_t StManAipsIO::resync64 (rownr_t nrrow)
 {
     if (iosfile_p != 0) {
         iosfile_p->resync();
@@ -861,54 +335,56 @@ void StManAipsIO::resync (uInt nrrow)
     AipsIO ios(fileName());
     uInt version = ios.getstart ("StManAipsIO");
     //# Get and check the number of rows and columns and the column types.
-    uInt i, nrc, snr;
+    uInt i, nrr, nrc, snr;
     int  dt;
     if (version > 1) {
 	ios >> stmanName_p;
     }
     ios >> snr;
     ios >> uniqnr_p;
-    ios >> nrrow_p;
+    ios >> nrr;
     ios >> nrc;
     if (snr != sequenceNr()  ||  nrc != ncolumn()) {
-	throw DataManInternalError
-          ("StManAipsIO::open: mismatch in seqnr,#col");
+	throw (DataManInternalError
+	                 ("StManAipsIO::open: mismatch in seqnr,#col"));
     }
-    if (nrrow != nrrow_p) {
+    if (nrrow != nrr) {
 #if defined(TABLEREPAIR)
         cerr << "StManAipsIO::open: mismatch in #row (expected " << nrrow
-	     << ", found " << nrrow_p << ")" << endl;
+	     << ", found " << nrr << ")" << endl;
 	cerr << "Remainder will be added or discarded" << endl;
 	setHasPut();
 #else
-	throw DataManInternalError
-          ("StManAipsIO::open: mismatch in #row; expected " +
-           String::toString(nrrow) + ", found " + String::toString(nrrow_p));
+	throw (DataManInternalError
+	                 ("StManAipsIO::open: mismatch in #row; expected " +
+			  String::toString(nrrow) + ", found " +
+			  String::toString(nrr)));
 #endif
     }
     for (i=0; i<ncolumn(); i++) {
 	ios >> dt;
 	if (dt != colSet_p[i]->dataType()) {
-	    throw DataManInternalError
-              ("StManAipsIO::open: mismatch in data type");
+	    throw (DataManInternalError
+		         ("StManAipsIO::open: mismatch in data type"));
 	}
     }
     //# Now read in all the columns.
     for (i=0; i<ncolumn(); i++) {
-	colSet_p[i]->getFile (nrrow_p, ios);
+	colSet_p[i]->getFile (nrr, ios);
 	//# The following can only be executed in case of TABLEREPAIR.
 	//# Add rows if storage manager has fewer rows than table.
 	//# Remove rows if storage manager has more rows than table.
-	if (nrrow > nrrow_p) {
-	    colSet_p[i]->addRow (nrrow, nrrow_p);
-	} else if (nrrow < nrrow_p) {
-	    for (uInt r=nrrow; r<nrrow_p; r++) {
+	if (nrrow > nrr) {
+	    colSet_p[i]->addRow (nrrow, nrr);
+	} else if (nrrow < nrr) {
+	    for (uInt r=nrrow; r<nrr; r++) {
 	        colSet_p[i]->remove (nrrow);
 	    }
 	}
     }
     nrrow_p = nrrow;
     ios.getend();
+    return nrrow_p;
 }
 
 

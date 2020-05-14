@@ -77,7 +77,7 @@ class BaseTable;
 // The classes ScalarColumn<T> and ArrayColumn<T> have to be
 // used to get/put the data in the column cells.
 // However, TableColumn has get functions for the basic data types
-// (Bool, uChar, Short, uSort, Int, uInt, float, double,
+// (Bool, uChar, Short, uSort, Int, uInt, Int64, float, double,
 //  Complex, DComplex and String).
 // Opposite to the get functions in ScalarColumn<T>, the
 // TableColumn get functions support data type promotion.
@@ -194,7 +194,7 @@ public:
     Table table() const;
 
     // Get the number of rows in the column.
-    uInt nrow() const
+    rownr_t nrow() const
 	{ return baseColPtr_p->nrow(); }
 
     // Can the shape of an already existing non-FixedShape array be changed?
@@ -216,70 +216,70 @@ public:
 	{ return baseColPtr_p->shapeColumn(); }
 
     // Test if the given cell contains a defined value.
-    Bool isDefined (uInt rownr) const
+    Bool isDefined (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->isDefined (rownr); }
 
     // Does the column has content in the given row (default is the first row)?
     // It has if it is defined and does not contain an empty array.
-    Bool hasContent (uInt rownr=0) const;
+    Bool hasContent (rownr_t rownr=0) const;
 
     // Get the #dimensions of an array in a particular cell.
-    uInt ndim (uInt rownr) const
+    uInt ndim (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
 
     // Get the shape of an array in a particular cell.
-    IPosition shape (uInt rownr) const
+    IPosition shape (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->shape (rownr); }
 
     // Get the tile shape of an array in a particular cell.
-    IPosition tileShape (uInt rownr) const
+    IPosition tileShape (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->tileShape (rownr); }
 
     // Get the value of a scalar in the given row.
     // Data type promotion is possible.
     // These functions only work for the standard data types.
     // <group>
-    void getScalar (uInt rownr, Bool& value) const
+    void getScalar (rownr_t rownr, Bool& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, uChar& value) const
+    void getScalar (rownr_t rownr, uChar& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, Short& value) const
+    void getScalar (rownr_t rownr, Short& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, uShort& value) const
+    void getScalar (rownr_t rownr, uShort& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, Int& value) const
+    void getScalar (rownr_t rownr, Int& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, uInt& value) const
+    void getScalar (rownr_t rownr, uInt& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, Int64& value) const
+    void getScalar (rownr_t rownr, Int64& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, float& value) const
+    void getScalar (rownr_t rownr, float& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, double& value) const
+    void getScalar (rownr_t rownr, double& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, Complex& value) const
+    void getScalar (rownr_t rownr, Complex& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, DComplex& value) const
+    void getScalar (rownr_t rownr, DComplex& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (uInt rownr, String& value) const
+    void getScalar (rownr_t rownr, String& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
     // </group>
 
     // Get the value from the row and convert it to the required type.
     // This can only be used for scalar columns with a standard data type.
     // <group>
-    Bool     asBool     (uInt rownr) const;
-    uChar    asuChar    (uInt rownr) const;
-    Short    asShort    (uInt rownr) const;
-    uShort   asuShort   (uInt rownr) const;
-    Int      asInt      (uInt rownr) const;
-    uInt     asuInt     (uInt rownr) const;
-    Int64    asInt64    (uInt rownr) const;
-    float    asfloat    (uInt rownr) const;
-    double   asdouble   (uInt rownr) const;
-    Complex  asComplex  (uInt rownr) const;
-    DComplex asDComplex (uInt rownr) const;
-    String   asString   (uInt rownr) const;
+    Bool     asBool     (rownr_t rownr) const;
+    uChar    asuChar    (rownr_t rownr) const;
+    Short    asShort    (rownr_t rownr) const;
+    uShort   asuShort   (rownr_t rownr) const;
+    Int      asInt      (rownr_t rownr) const;
+    uInt     asuInt     (rownr_t rownr) const;
+    Int64    asInt64    (rownr_t rownr) const;
+    float    asfloat    (rownr_t rownr) const;
+    double   asdouble   (rownr_t rownr) const;
+    Complex  asComplex  (rownr_t rownr) const;
+    DComplex asDComplex (rownr_t rownr) const;
+    String   asString   (rownr_t rownr) const;
     // </group>
 
     // Get the value of a scalar in the given row.
@@ -287,31 +287,31 @@ public:
     // Data type promotion is possible for the standard data types.
     // The functions are primarily meant for ScalarColumn<T>.
     // <group>
-    void getScalarValue (uInt rownr, Bool* value, const String&) const
+    void getScalarValue (rownr_t rownr, Bool* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, uChar* value, const String&) const
+    void getScalarValue (rownr_t rownr, uChar* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, Short* value, const String&) const
+    void getScalarValue (rownr_t rownr, Short* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, uShort* value, const String&) const
+    void getScalarValue (rownr_t rownr, uShort* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, Int* value, const String&) const
+    void getScalarValue (rownr_t rownr, Int* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, uInt* value, const String&) const
+    void getScalarValue (rownr_t rownr, uInt* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, Int64* value, const String&) const
+    void getScalarValue (rownr_t rownr, Int64* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, float* value, const String&) const
+    void getScalarValue (rownr_t rownr, float* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, double* value, const String&) const
+    void getScalarValue (rownr_t rownr, double* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, Complex* value, const String&) const
+    void getScalarValue (rownr_t rownr, Complex* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, DComplex* value, const String&) const
+    void getScalarValue (rownr_t rownr, DComplex* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, String* value, const String&) const
+    void getScalarValue (rownr_t rownr, String* value, const String&) const
         { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (uInt rownr, void* value,
+    void getScalarValue (rownr_t rownr, void* value,
 			 const String& dataTypeId) const
         { TABLECOLUMNCHECKROW(rownr);
 	  baseColPtr_p->getScalar (rownr,value,dataTypeId); }
@@ -324,13 +324,13 @@ public:
     // the data cannot be converted.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const TableColumn& that,
+    void put (rownr_t rownr, const TableColumn& that,
               Bool preserveTileShape=False)
       { put (rownr, that, rownr, preserveTileShape); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    virtual void put (uInt thisRownr, const TableColumn& that,
-		      uInt thatRownr, Bool preserveTileShape=False);
+    virtual void put (rownr_t thisRownr, const TableColumn& that,
+		      rownr_t thatRownr, Bool preserveTileShape=False);
     // </group>
 
     // Copy the values of that column to this column.
@@ -346,37 +346,37 @@ public:
     // Data type promotion is possible.
     // These functions only work for the standard data types.
     // <group>
-    void putScalar (uInt rownr, const Bool& value)
+    void putScalar (rownr_t rownr, const Bool& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const uChar& value)
+    void putScalar (rownr_t rownr, const uChar& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const Short& value)
+    void putScalar (rownr_t rownr, const Short& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const uShort& value)
+    void putScalar (rownr_t rownr, const uShort& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const Int& value)
+    void putScalar (rownr_t rownr, const Int& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const uInt& value)
+    void putScalar (rownr_t rownr, const uInt& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const Int64& value)
+    void putScalar (rownr_t rownr, const Int64& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const float& value)
+    void putScalar (rownr_t rownr, const float& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const double& value)
+    void putScalar (rownr_t rownr, const double& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const Complex& value)
+    void putScalar (rownr_t rownr, const Complex& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const DComplex& value)
+    void putScalar (rownr_t rownr, const DComplex& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const String& value)
+    void putScalar (rownr_t rownr, const String& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (uInt rownr, const Char* value)
+    void putScalar (rownr_t rownr, const Char* value)
 	{ putScalar (rownr, String(value)); }
     // </group>
 
     // Check if the row number is valid.
     // It throws an exception if out of range.
-    void checkRowNumber (uInt rownr) const
+    void checkRowNumber (rownr_t rownr) const
         { baseTabPtr_p->checkRowNumber (rownr); }
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
