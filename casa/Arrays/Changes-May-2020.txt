@@ -1,0 +1,66 @@
+Casacore Arrays underwent a large refactoring operation around May 2020.
+(Andre Offringa)
+
+This file contains a short summary of the changes and the changes that might be required for Casacore 'users', in particular for Casa. While the changes were done with as little implications as possible, they do require changes. 
+
+== A summary of the changes ==
+
+* The Array directory is now completely independent of all other casa headers: it can be compiled and tested by itself, and doesn't include any other casacore header.
+* An Array now supports moving its elements. Therefore, it can now contain uncopyable classes like std::unique_ptr
+* Move constructors and move assignments were added to the most relevant types
+* Removed the use of CountedPtr, used unique_ptr instead.
+* I've added iterator constructors (i.e. Array(begin, end)), and removed constructors taken a 'Block'.
+* I've for now removed the option to skip initialization. I doubt the way it is done was standard C++ compliant due to rules of type aliasing -- and it is in any case not always allowed. This also didn't seem used anywhere in casacore.
+* I've removed the allocators from Array. They were not used anywhere in casacore, and at least to me highly confusing. Instead, I've added the possibility for C++STL-like allocators, i.e. you can define something like an Array<int, PoolAllocator>. It wasn't hard to add, but not sure if ever useful.
+* I've added support for initializer lists, like Vector a{1,2,3} and IPosition ip{2,5}.
+* Added fast swap operators for some of the classes like IPosition and Array.
+* Added to_string() implementations for Array, IPosition.
+* I rewrote the Array tests using Boost unit testing platform. This makes the tests more debuggable.
+* Array-exceptions are now based on std::runtime_error instead of AipsError.
+* Casacore's "Uppercase-types" like Int, Char, Bool etc. were replaced by their lower-case C++ counterparts. Array indices now use size_t instead of uInt. Use of String was replaced by std::string, use of Regex was replaced by std::regex.
+* There were many other small things like sorting and medium calculation that had manual implementation, which I replaced by calls to equivalent std calls.
+* Add final and override to methods/classes where appropriate
+
+The corresponding pull request is https://github.com/casacore/casacore/pull/1012.
+
+== Changes required to CASA ==
+
+=== Headers ===
+* By far the most significant change is that Arrays does not include files outside the Arrays directory anymore. Previously, headers from e.g. BasicMath, BasicSL and Utilities were immediately included when (almost) any header from Arrays was used. In particular missing math headers that define operators can cause confusing compilations errors that seem to state that parameters don't match, where the actual cause is just that the correct overload is not included.
+* Also internally inside the Arrays directory less headers are included, and e.g. Arrays/Array.h no longer includes Arrays/Vector.h.
+* Include header 'casa/Arrays/ArrayIO.h' no longer exist. Array string operations are now in Arrays/ArrayStr.h, which gets automatically included from Arrays/Array.h. The logging and AipsIO operations (like '<<') are now in casa/IO/ArrayIO.h , as well as stringToVector() (latter should be deprecated over strToVector() ).
+* Include header 'casa/Arrays/LogiArrayFwd.h' does not exist anymore. Include ArrayFwd.h instead.
+* Generally, fewer std:: items are included in the casacore namespace because fewer of the headers like casa/vector.h are included. While these can be included, I recommend adding 'std::' where possible instead.
+
+=== Type changes ===
+* Because the template parameters for several Arrays classes (Array, Vector, Matrix, ..) changed, forward declarations such as `template<class T> class Vector;` are not correct. Instead, header casa/Arrays/ArrayFwd.h can be included instead. NB: despite that template parameters changed, declarations like 'Array<int> a;' still continue to work of course.
+* Array classes now throw exceptions of type std::runtime_error or derived types. This means that a catch(AipsError) won't catch such errors, and should instead be written as catch(std::exception). I suggest a search-replace for these catch statements, or the removal of AipsError altogether.
+* String returning functions such as `IPosition::toString()` now return a std::string instead of a String. In some cases this requires explicit casts or changing casts.
+* Sizes of arrays etc. are now of type 'size_t' instead of UInt. This can at times cause overload mismatch and therefore compilation error when e.g. the result of Array::nelements() is a parameter to a function. NB: The format of Arrays on disk did of course not change.
+
+=== Related to Block ===
+* There is no longer a Vector constructor that takes a Block. There is however a iterator constructor now, and statements such as `Vector<string> a(block);` can be rewritten as `Vector<string> a(block.begin(), block.end());`
+* Method `Array::toBlock(block)` was removed. Instead, the global method `makeBlock(array)` can be used instead. Therefore, this:
+
+  Vector<String> namlst = ...;
+  Block<String> nl;
+  namlst.toBlock(nl);
+
+Can be rewritten as:
+
+  #include <casacore/casa/IO/ArrayIO.h>
+  ...
+  Vector<String> namlst = ...;
+  Block<String> nl = makeBlock(namlst);
+
+* Because a new overload of the Array was added (taking two iterators), compilation errors can arise for constructors calls that specify two parameters that did not match exactly. For example:
+
+    Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0);
+
+causes a compilation error, because 0.0 is a double. The compiler then has to chose between two overloads that don't match exactly, Array(IPosition, float) and Array(template, template), and refuses to do this. This can therefore be rewritten as
+
+    Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
+
+(Despite the triviality of the mismatch, this unfortunately can cause long, highly confusing compilation errors).
+
+* `ArrayBase::makeIterator` returns a std::unique_ptr instead of a CountedPtr. Since a unique_ptr can be converted to a shared_ptr, which in turn converts to a CountedPtr, statements like Countedtr<..> a = arr.makeIterator() can be changed to CountedPtr<..> a(arr.makeIterator()), although I would advise to use unique_ptr over CountedPtr if possible.
