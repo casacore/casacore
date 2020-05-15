@@ -21,7 +21,7 @@ This file contains a short summary of the changes and the changes that might be 
 * There were many other small things like sorting and medium calculation that had manual implementation, which I replaced by calls to equivalent std calls.
 * Add final and override to methods/classes where appropriate
 
-The corresponding pull request is https://github.com/casacore/casacore/pull/1012.
+The corresponding pull request is https://github.com/casacore/casacore/pull/1012. A new testset was added (tCpp11Features.cc), which is also a demonstration of the new features available.
 
 == Changes required to CASA ==
 
@@ -35,11 +35,28 @@ The corresponding pull request is https://github.com/casacore/casacore/pull/1012
 === Type changes ===
 * Because the template parameters for several Arrays classes (Array, Vector, Matrix, ..) changed, forward declarations such as `template<class T> class Vector;` are not correct. Instead, header casa/Arrays/ArrayFwd.h can be included instead. NB: despite that template parameters changed, declarations like 'Array<int> a;' still continue to work of course.
 * Array classes now throw exceptions of type std::runtime_error or derived types. This means that a catch(AipsError) won't catch such errors, and should instead be written as catch(std::exception). I suggest a search-replace for these catch statements, or the removal of AipsError altogether.
-* String returning functions such as `IPosition::toString()` now return a std::string instead of a String. In some cases this requires explicit casts or changing casts.
 * Sizes of arrays etc. are now of type 'size_t' instead of UInt. This can at times cause overload mismatch and therefore compilation error when e.g. the result of Array::nelements() is a parameter to a function. NB: The format of Arrays on disk did of course not change.
 
+=== Function changes ===
+* `ArrayBase::makeIterator` returns a std::unique_ptr instead of a CountedPtr. Since a unique_ptr can be converted to a shared_ptr, which in turn converts to a CountedPtr, statements like Countedtr<..> a = arr.makeIterator() can be changed to CountedPtr<..> a(arr.makeIterator()), although I would advise to use unique_ptr over CountedPtr if possible.
+* String returning functions such as `IPosition::toString()` now return a std::string instead of a String. In some cases this requires explicit casts or changing casts.
+* Because a new overload of the Array was added (taking two iterators), compilation errors can arise for constructors calls that specify two parameters that did not match exactly. For example:
+
+    Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0);
+
+causes a compilation error, because 0.0 is a double. The compiler then has to chose between two overloads that don't match exactly, Array(IPosition, float) and Array(template, template), and refuses to do this. This can therefore be rewritten as
+
+    Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
+
+(Despite the triviality of the mismatch, this unfortunately can cause long, highly confusing compilation errors).
+* Constructor 'Array(const IPosition &shape, ArrayInitPolicy initPolicy)' was removed. To skip initialization, a new constructor was added, which can be called like this:
+
+    Array arr(shape, Array::uninitialized);
+
+This constructor is only available for trivial types, as it is undefined behaviour to not initialize a non-trivial type. The constructor optionally takes an allocator as third parameter, like many of the Array constructors have now. Casacore does not make use of the non-initializing constructor, but maybe Casa does.
+
 === Related to Block ===
-* There is no longer a Vector constructor that takes a Block. There is however a iterator constructor now, and statements such as `Vector<string> a(block);` can be rewritten as `Vector<string> a(block.begin(), block.end());`
+* There is no longer a Vector constructor that takes a Block. There is however a begin/end iterator constructor now, and statements such as `Vector<string> a(block);` can be rewritten as `Vector<string> a(block.begin(), block.end());`
 * Method `Array::toBlock(block)` was removed. Instead, the global method `makeBlock(array)` can be used instead. Therefore, this:
 
   Vector<String> namlst = ...;
@@ -52,15 +69,3 @@ Can be rewritten as:
   ...
   Vector<String> namlst = ...;
   Block<String> nl = makeBlock(namlst);
-
-* Because a new overload of the Array was added (taking two iterators), compilation errors can arise for constructors calls that specify two parameters that did not match exactly. For example:
-
-    Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0);
-
-causes a compilation error, because 0.0 is a double. The compiler then has to chose between two overloads that don't match exactly, Array(IPosition, float) and Array(template, template), and refuses to do this. This can therefore be rewritten as
-
-    Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
-
-(Despite the triviality of the mismatch, this unfortunately can cause long, highly confusing compilation errors).
-
-* `ArrayBase::makeIterator` returns a std::unique_ptr instead of a CountedPtr. Since a unique_ptr can be converted to a shared_ptr, which in turn converts to a CountedPtr, statements like Countedtr<..> a = arr.makeIterator() can be changed to CountedPtr<..> a(arr.makeIterator()), although I would advise to use unique_ptr over CountedPtr if possible.
