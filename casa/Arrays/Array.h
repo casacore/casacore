@@ -201,6 +201,11 @@ public:
     // </srcblock>
     Array(const IPosition& shape, uninitializedType, const Alloc& allocator = Alloc());
     
+    // Construct a one-dimensional array from an initializer list.
+    // Example:
+    // <srcblock>
+    //   Array<int> a({5, 6, 7, 8});
+    // </srcblock>
     Array(std::initializer_list<T> list, const Alloc& allocator = Alloc());
 
     // After construction, this and other reference the same storage.
@@ -228,6 +233,7 @@ public:
     // The copy is allocated by <src>DefaultAllocator<T></src>.
     Array(const IPosition &shape, const T *storage);
 
+    // Construct an array from an iterator and a shape.
     template<typename InputIterator>
     Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator = Alloc());
     
@@ -237,8 +243,11 @@ public:
     // Make an empty array of the same template type.
     virtual std::unique_ptr<ArrayBase> makeArray() const override;
 
+    // Retrieve the allocator associated with this array.
+    // @{
     Alloc& allocator() { return *data_p; }
     const Alloc& allocator() const { return *data_p; }
+    // @}
     
     // Assign the other array to this array.
     // If the shapes mismatch, this array is resized.
@@ -379,7 +388,6 @@ public:
     // <group>
     template <class U>
     void tovector(std::vector<T, U>& out) const;
-
     std::vector<T> tovector() const;
     // </group>
 
@@ -841,12 +849,14 @@ public:
     // Type of allocator used to allocate and deallocate space
     typedef Alloc allocator_type;
     // Element type
-    typedef T                value_type;
+    typedef T value_type;
     // TODO This is how std containers define a reference type, but
     // the name 'reference' is already taken by a method.
     // typedef T&       reference;
     typedef const T& const_reference;
+    // Pointer to an element type
     typedef T* pointer;
+    // Constant pointer to the element type
     typedef const T* const_pointer;
     typedef IteratorSTL      iterator;
     typedef ConstIteratorSTL const_iterator;
@@ -881,33 +891,39 @@ public:
 
 
 private:
-    template<typename InputIterator>
-    Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator, std::true_type /*is_integral*/ );
-    
-    template<typename InputIterator>
-    Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator, std::false_type /*is_integral*/ );
-    
-    // Makes a copy using the allocator.
-    Array<T, Alloc> copy(const Alloc& allocator) const;
+  // Implementation of constructor taking a Shape, a Templated parameter and an allocator.
+  // This method implements it for when T is integral, in which case the templated parameter
+  // is the initial value.
+  template<typename Integral>
+  Array(const IPosition &shape, Integral startIter, const Alloc& allocator, std::true_type /*is_integral*/ );
+  
+  // Implementation of constructor taking a Shape, a Templated parameter and an allocator.
+  // This method implements it for when T is NOT integral, in which case the templated parameter
+  // is an iterator.
+  template<typename InputIterator>
+  Array(const IPosition &shape, InputIterator startIter, const Alloc& allocator, std::false_type /*is_integral*/ );
+  
+  // Makes a copy using the allocator.
+  Array<T, Alloc> copy(const Alloc& allocator) const;
 
-    // Implementation for assign for copyable types
-    Array<T, Alloc>& assign_conforming_implementation (const Array<T, Alloc>& other, std::true_type);
-    // Implementation for assign for non-copyable types: can not be assigned
-    Array<T, Alloc>& assign_conforming_implementation (const Array<T, Alloc>&, std::false_type)
-    {
-      throw ArrayError("Can not assign from non-copyable object");
-    }
-    static void copyToContiguousStorage(T *dst, Array<T, Alloc> const& src, std::true_type);
-    static void copyToContiguousStorage(T*, Array<T, Alloc> const&, std::false_type)
-    {
-      throw ArrayError("Can not coy from non-copyable object");      
-    }
-    
-    // An Array is unique when the container is shared and when nrefs==1.
-    bool isUnique() const
-    {
-      return !data_p->is_shared() && nrefs()==1;
-    }
+  // Implementation for assign for copyable types
+  Array<T, Alloc>& assign_conforming_implementation (const Array<T, Alloc>& other, std::true_type);
+  // Implementation for assign for non-copyable types: can not be assigned
+  Array<T, Alloc>& assign_conforming_implementation (const Array<T, Alloc>&, std::false_type)
+  {
+    throw ArrayError("Can not assign from non-copyable object");
+  }
+  static void copyToContiguousStorage(T *dst, Array<T, Alloc> const& src, std::true_type);
+  static void copyToContiguousStorage(T*, Array<T, Alloc> const&, std::false_type)
+  {
+    throw ArrayError("Can not coy from non-copyable object");      
+  }
+  
+  // An Array is unique when the container is shared and when nrefs==1.
+  bool isUnique() const
+  {
+    return !data_p->is_shared() && nrefs()==1;
+  }
     
 protected:
      // Source will be empty with given shape after this call.
@@ -916,6 +932,8 @@ protected:
     template<typename ST, typename SAlloc>
     friend void swap(Array<ST, SAlloc>& left, Array<ST, SAlloc>& right);
     
+    // Swap this array with another array.
+    // Normally, casacore::swap() should be used instead.
     void swap(Array<T, Alloc>& other);
 
     // pre/post processing hook of takeStorage() for subclasses.
@@ -967,7 +985,7 @@ protected:
                                  const IPosition &ignoreAxes);
 
 
-    // Reference counted block that contains the storage.
+    // Shared pointer to a Storage that contains the data.
     std::shared_ptr<arrays_internal::Storage<T, Alloc>> data_p;
 
     // This pointer is adjusted to point to the first element of the array.
@@ -990,10 +1008,12 @@ protected:
                    begin_p + size_t(length_p(ndim()-1)) * steps_p(ndim()-1))); }
 };
 
+// Swap the first array with the second.
+// This is more efficient than std::swap()
 template<typename T, typename Alloc>
-void swap(Array<T, Alloc>& left, Array<T, Alloc>& right)
+void swap(Array<T, Alloc>& first, Array<T, Alloc>& second)
 {
-  left.swap(right);
+  first.swap(second);
 }
 
 //# Declare extern templates for often used types.
