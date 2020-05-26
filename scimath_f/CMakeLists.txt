@@ -9,9 +9,7 @@ absmax.f
 ADDGRD.f
 atmroutines.f
 convolvegridder.f
-#dfftpak.f
 dqags.f
-#fftpak.f
 fgridft.f
 fgridsd.f
 fmosft.f
