@@ -62,12 +62,11 @@ if (HAVE_O_DIRECT)
     add_definitions(-DHAVE_O_DIRECT)
 endif()
 
-# By default do not use ADIOS2, HDF5, FFTW3
+# By default do not use ADIOS2, HDF5
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_READLINE "Build readline support" YES)
 option (USE_ADIOS2 "Build ADIOS2 " NO)
 option (USE_HDF5 "Build HDF5 " NO)
-option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
 option (USE_THREADS "Use Mutex thread synchronization" YES)
 option (USE_OPENMP "Use OpenMP threading" NO)
 option (USE_MPI "Use MPI for parallel IO" NO)
@@ -95,7 +94,6 @@ if( CASA_BUILD )
    if( NOT DATA_DIR )
       set(DATA_DIR "%CASAROOT%/data")
    endif( )
-   set(USE_FFTW3 ON)
    set(USE_OPENMP ON)
    set(USE_THREADS ON)
    set(BUILD_PYTHON OFF)
@@ -353,13 +351,11 @@ endif (_usebison STREQUAL YES)
 if (_uselapack STREQUAL YES)
     find_package (BLAS REQUIRED)
     find_package (LAPACK REQUIRED)
-    if (USE_FFTW3)
-        if (FFTW3_DISABLE_THREADS)
-            find_package (FFTW3 COMPONENTS single double REQUIRED)
-        else()
-            find_package (FFTW3 COMPONENTS single double threads)
-        endif (FFTW3_DISABLE_THREADS)
-    endif (USE_FFTW3)
+    if (FFTW3_DISABLE_THREADS)
+        find_package (FFTW3 COMPONENTS single double REQUIRED)
+    else()
+        find_package (FFTW3 COMPONENTS single double threads REQUIRED)
+    endif (FFTW3_DISABLE_THREADS)
 endif (_uselapack STREQUAL YES)
 if (_usefits STREQUAL YES)
     find_package (CFITSIO 3.030 REQUIRED) # Should pad to three decimal digits
@@ -397,13 +393,13 @@ if (HDF5_FOUND)
     include_directories (${HDF5_INCLUDE_DIRS})
     add_definitions(-DHAVE_HDF5)
 endif (HDF5_FOUND)
-if (FFTW3_FOUND)
-    include_directories (${FFTW3_INCLUDE_DIRS})
-    add_definitions(-DHAVE_FFTW3)
-    if (NOT FFTW3_DISABLE_THREADS)
-        add_definitions(-DHAVE_FFTW3_THREADS)
-    endif (NOT FFTW3_DISABLE_THREADS)
-endif (FFTW3_FOUND)
+
+include_directories (${FFTW3_INCLUDE_DIRS})
+add_definitions(-DHAVE_FFTW3)
+if (NOT FFTW3_DISABLE_THREADS)
+    add_definitions(-DHAVE_FFTW3_THREADS)
+endif (NOT FFTW3_DISABLE_THREADS)
+
 if (DL_FOUND)
     add_definitions(-DHAVE_DL)
 endif (DL_FOUND)
@@ -608,7 +604,6 @@ endif (BUILD_PYTHON3)
 #  ENABLE_TABLELOCKING           YES
 #  USE_ADIOS2                    NO
 #  USE_HDF5                      NO
-#  USE_FFTW3                     NO
 #  USE_THREADS                   YES
 #  USE_OPENMP                    NO
 #  USE_MPI                       NO
@@ -636,7 +631,7 @@ endif (BUILD_PYTHON3)
 #  ADIOS2       tables (optional)
 #  LAPACK       scimath
 #  BLAS         scimath
-#  FFTW         scimath (optional)
+#  FFTW         scimath
 #  BOOST        python (Boost-Python only)
 #  PYTHON       python
 #  NUMPY        python
