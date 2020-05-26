@@ -28,6 +28,8 @@
 
 #include "AxesSpecifier.h"
 
+#include <stdexcept>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 AxesSpecifier::AxesSpecifier()

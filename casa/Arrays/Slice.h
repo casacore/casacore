@@ -28,6 +28,7 @@
 #ifndef CASA_SLICE_2_H
 #define CASA_SLICE_2_H
 
+#include <cassert>
 #include <cstddef>         //# for ssize_t
 
 #include "ArrayFwd.h"
@@ -143,7 +144,7 @@ Slice::Slice(size_t Start, size_t Length, size_t Inc)
   : startp(Start), incp(Inc), lengthp(Length)
 {
 #if defined(AIPS_DEBUG)
-    DebugAssert(incp > 0, AipsError);
+    assert(incp > 0);
 #endif
 }
 
@@ -153,9 +154,9 @@ Slice::Slice(size_t Start, size_t End, size_t Inc, bool endIsLength)
 {
 #if defined(AIPS_DEBUG)
     if (! endIsLength) {
-        DebugAssert(End >= Start, AipsError);
+        assert(End >= Start);
     }
-    DebugAssert(incp > 0, AipsError);
+    assert(incp > 0);
 #endif
 }
 
