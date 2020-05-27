@@ -139,10 +139,7 @@ void MSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time) {
 
 void MSFitsOutput::write() const {
     MSObservationColumns obsCols(_ms.observation());
-    if (
-        obsCols.nrow() > 0 && (obsCols.telescopeName()(0) == "WSRT"
-        || obsCols.telescopeName()(0) == "LOFAR")
-    ) {
+    if (obsCols.nrow() > 0 && obsCols.telescopeName()(0) == "WSRT") {
         ThrowIf(
             ! MSFitsOutputAstron::writeFitsFile(_fitsfile, _ms, _column,
                 _startChan, _nchan, _stepChan, _writeSysCal, _asMultiSource,

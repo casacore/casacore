@@ -104,7 +104,7 @@
 
 #include <casacore/casa/iomanip.h>
 
-#include <casacore/scimath/Mathematics/FFTPack.h>
+#include <casacore/scimath/Mathematics/FFTW.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -1850,11 +1850,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   Matrix<Float> sigmaSpec(nCorr, nChan);
   Matrix<Float> weightSpec(nCorr, nChan);
 
-  Vector<Float> tmp(nChan + 1);
-  Vector<Float> work(3 * (nChan + 1) + 15);
-  Bool worksave;
-  Float *workptr = work.getStorage(worksave);
-  FFTPack::costi(nChan + 1, workptr);
+  std::vector<float> fftIn(nChan + 1), fftOut(nChan + 1);
+  FFTW::Plan redftPlan = FFTW::plan_redft00( IPosition(1, nChan+1), fftIn.data(), fftOut.data() );
 
   const Int nCat = 3; // three initial categories
   // define the categories
@@ -2198,38 +2195,32 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  // Auto-correlations
 	  for (Int p=0; p<nCorr; p++) {
 	    if (corrProduct_p(0, p) == corrProduct_p(1, p)) {
-	      Bool tmpsave;
-	      Float *tmpptr;
 
 	      for (Int chan=0; chan<nChan; chan++)
-		tmp(chan) = bfacta * vis(p, chan).real();
+		fftIn[chan] = bfacta * vis(p, chan).real();
 
-	      if (abs(tmp(0)) < 1e-20)
+	      if (std::abs(fftIn[0]) < 1e-20)
 		continue;
 
 	      // Extrapolate spectrum as this point has been thrown
 	      // away by the correlator.
-	      tmp(nChan) = 2 * tmp(nChan-1) - tmp(nChan-2);
+	      fftIn[nChan] = 2 * fftIn[nChan-1] - fftIn[nChan-2];
 
 	      // Cosine transform to lag domain
-	      tmpptr = tmp.getStorage(tmpsave);
-	      FFTPack::cost(nChan + 1, tmpptr, workptr);
-	      tmp.putStorage(tmpptr, tmpsave);
+              redftPlan.Execute(fftIn.data(), fftOut.data());
 
 	      // Apply digital correction.
 	      for (Int chan = 1; chan<nChan; chan++) {
-		Float wt = 1.0 - ((Float)chan / nChan);
-		tmp(chan) = (wt * tmp(0)) * rho(tmp(chan) / (wt * tmp(0)));
+                Float wt = 1.0 - ((Float)chan / nChan);
+                fftOut[chan] = (wt * fftOut[0]) * rho(fftOut[chan] / (wt * fftOut[0]));
 	      }
-	      tmp(nChan) = 0.0;
+	      fftOut[nChan] = 0.0;
 
-	      // Cosine trandorm back to frequency domain
-	      tmpptr = tmp.getStorage(tmpsave);
-	      FFTPack::cost(nChan + 1, tmpptr, workptr);
-	      tmp.putStorage(tmpptr, tmpsave);
+	      // Cosine transform back to frequency domain
+	      redftPlan.Execute(fftOut.data(), fftIn.data());
 
 	      for (Int chan=0; chan<nChan; chan++)
-		vis(p, chan) = tmp(chan) / (2*nChan);
+		vis(p, chan) = fftIn[chan] / (2*nChan);
 	    } else {
 	      for (Int chan=0; chan<nChan; chan++)
 		vis(p, chan) *= Complex(bfactc);
@@ -2283,11 +2274,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.observationId().put(putrow,0);
       msc.stateId().put(putrow,-1);
 
-      Vector<Float> tmp(nCorr);
-      tmp=1.0;
-      msc.sigma().put(putrow,tmp);
-      tmp=0.0;
-      msc.weight().put(putrow,tmp);
+      Vector<Float> tmpValue(nCorr);
+      tmpValue=1.0;
+      msc.sigma().put(putrow,tmpValue);
+      tmpValue=0.0;
+      msc.weight().put(putrow,tmpValue);
 
       msc.interval().put(putrow,interval);
       msc.exposure().put(putrow,interval);
@@ -2335,9 +2326,6 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
   // fill the receptorAngle with defaults, just in case there is no AN table
   receptorAngle_p=0;
-
-  // Free FFTPack work buffer
-  work.putStorage(workptr, worksave);
 }
 
 // fill Observation table
