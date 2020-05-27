@@ -29,7 +29,7 @@
 #define CASA_SLICE_2_H
 
 #include <cassert>
-#include <cstddef>         //# for ssize_t
+#include <unistd.h>         //# for ssize_t
 
 #include "ArrayFwd.h"
 

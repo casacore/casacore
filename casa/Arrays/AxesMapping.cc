@@ -31,6 +31,7 @@
 #include "Slicer.h"
 
 #include <cassert>
+#include <stdexcept>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
