@@ -219,6 +219,9 @@ LogIO& operator<< (LogIO& os, const IPosition& ip);
 template<typename T, typename Alloc>
 Block<T> makeBlock(const Array<T, Alloc>& array);
 
+template<typename T>
+Vector<T> makeVector(const Block<T>& block);
+
 Vector<String> stringToVector (const String& string, char delim = ',');
 Vector<String> stringToVector (const String& string, const std::regex& delim);
 

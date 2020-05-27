@@ -217,6 +217,12 @@ Block<T> makeBlock(const Array<T, Alloc>& array)
 	return block;
 }
 
+template<typename T>
+Vector<T> makeVector(const Block<T>& block)
+{
+	return Vector<T>(block.begin(), block.end());
+}
+
 inline Vector<String> stringToVector (const String& string, char delim)
 {
 	Vector<std::string> vec = strToVector(string, delim);
