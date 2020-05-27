@@ -81,8 +81,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 						   const Array<Range>& yin,
 						   Int method)
 {
-  Vector<Domain> vxout(xout);
-  Vector<Domain> vxin(xin);
+  Vector<Domain> vxout(xout.begin(), xout.end());
+  Vector<Domain> vxin(xin.begin(), xin.end());
   interpolate(yout,vxout,vxin,yin,method);
 }
 
