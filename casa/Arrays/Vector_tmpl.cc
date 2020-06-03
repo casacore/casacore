@@ -39,7 +39,4 @@ namespace casacore {
   template class Vector<long long>;
   template class Vector<float>;
   template class Vector<double>;
-  template class Vector<std::complex<float>>;
-  template class Vector<std::complex<double>>;
-  template class Vector<std::string>;
 }

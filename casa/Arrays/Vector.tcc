@@ -57,16 +57,29 @@ template<typename T, typename Alloc> Vector<T, Alloc>::Vector(const IPosition& l
   Array<T, Alloc>::checkBeforeResize(len);
 }
 
-template<typename T, typename Alloc> Vector<T, Alloc>::Vector(size_t Length, const T &initialValue)
-: Array<T, Alloc>(IPosition(1, Length), initialValue)
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector(size_t length, const T &initialValue)
+: Array<T, Alloc>(IPosition(1, length), initialValue)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Vector<T, Alloc>::Vector(const IPosition& len, const T &initialValue)
-  : Array<T, Alloc>(len, initialValue)
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector(const IPosition& length, const T &initialValue)
+  : Array<T, Alloc>(length, initialValue)
 {
-  Array<T, Alloc>::checkBeforeResize(len);
+  Array<T, Alloc>::checkBeforeResize(length);
+}
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(size_t length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+  : Array<T, Alloc>(IPosition(1, length), Array<T, Alloc>::uninitialized, allocator)
+{
+}
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const IPosition& length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+  : Array<T, Alloc>(length, Array<T, Alloc>::uninitialized, allocator)
+{
+  Array<T, Alloc>::checkBeforeResize(length);
 }
 
 template<typename T, typename Alloc>
@@ -333,9 +346,6 @@ extern template class Vector<unsigned int>;
 extern template class Vector<long long>;
 extern template class Vector<float>;
 extern template class Vector<double>;
-extern template class Vector<std::complex<float>>;
-extern template class Vector<std::complex<double>>;
-extern template class Vector<std::string>;
 
 } //#End casa namespace
 

@@ -120,6 +120,22 @@ BOOST_AUTO_TEST_CASE( init_constructor )
 	BOOST_CHECK (allEQ(y1, 4));
 }
 
+BOOST_AUTO_TEST_CASE( uninitialized_constructor_a )
+{
+	Vector<int> y1(7, Vector<int>::uninitialized);
+  BOOST_CHECK_EQUAL (*y1.shape().begin(), 7);
+  y1 = 3;
+	BOOST_CHECK (allEQ(y1, 3));
+}
+
+BOOST_AUTO_TEST_CASE( uninitialized_constructor_b )
+{
+	Vector<int> y1(IPosition{7}, Vector<int>::uninitialized);
+  BOOST_CHECK_EQUAL (*y1.shape().begin(), 7);
+  y1 = 3;
+	BOOST_CHECK (allEQ(y1, 3));
+}
+
 BOOST_AUTO_TEST_CASE( slice_constructor )
 {
   Vector<int> x(10, 5);

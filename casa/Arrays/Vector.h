@@ -99,6 +99,12 @@ public:
     Vector(const IPosition& Length, const T &initialValue);
     // </group>
 
+    // An uninitialized Vector with a defined length.
+    // <group>
+    Vector(size_t Length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    Vector(const IPosition& Length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    // </group>
+    
     // Create a Vector from the given std::vector "other." Make it length "nr"
     // and copy over that many elements.
     // This used to take a 'Block'

@@ -51,9 +51,13 @@ causes a compilation error, because 0.0 is a double. The compiler then has to ch
 (Despite the triviality of the mismatch, this unfortunately can cause long, highly confusing compilation errors).
 * Constructor 'Array(const IPosition &shape, ArrayInitPolicy initPolicy)' was removed. To skip initialization, a new constructor was added, which can be called like this:
 
-    Array arr(shape, Array::uninitialized);
+    Array<int> arr(shape, Array<int>::uninitialized);
+    
+or
 
-This constructor is only available for trivial types, as it is undefined behaviour to not initialize a non-trivial type. The constructor optionally takes an allocator as third parameter, like many of the Array constructors have now. Casacore does not make use of the non-initializing constructor, but maybe Casa does.
+    Vector<int> arr(length, Array<int>::uninitialized);
+
+This constructor is only available for trivial types, as it is undefined behaviour to not initialize a non-trivial type. The constructor optionally takes an allocator as third parameter, like many of the Array constructors have now. At the time of writing Casacore itself does not make use of the non-initializing constructor, but Casa may.
 
 === Related to Block ===
 * There is no longer a Vector constructor that takes a Block. There is however a begin/end iterator constructor now, and statements such as `Vector<string> a(block);` can be rewritten as `Vector<string> a(block.begin(), block.end());`
