@@ -252,52 +252,52 @@ inline void arrayContTransform (const Array<T, Alloc>& arr,
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename L, typename AllocL, typename R, typename AllocR, typename RES, typename AllocRES, typename BinaryOperator>
+template<typename L, typename R, typename RES, typename BinaryOperator, typename AllocL, typename AllocR, typename AllocRES>
 void arrayTransform (const Array<L, AllocL>& left, const Array<R, AllocR>& right,
                      Array<RES, AllocRES>& result, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename L, typename Alloc, typename R, typename RES, typename AllocRES, typename BinaryOperator>
+template<typename L, typename R, typename RES, typename BinaryOperator, typename Alloc, typename AllocRES>
 void arrayTransform (const Array<L, Alloc>& left, R right,
                      Array<RES, AllocRES>& result, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename L, typename R, typename Alloc, typename RES, typename AllocRES, typename BinaryOperator>
+template<typename L, typename R, typename RES, typename BinaryOperator, typename Alloc, typename AllocRES>
 void arrayTransform (L left, const Array<R, Alloc>& right,
                      Array<RES, AllocRES>& result, BinaryOperator op);
 
 // Transform array to a result using the unary operator.
 // Result need not be a contiguous array.
-template<typename T, typename Alloc, typename RES, typename AllocRES, typename UnaryOperator>
+template<typename T, typename RES, typename UnaryOperator, typename Alloc, typename AllocRES>
 void arrayTransform (const Array<T, Alloc>& arr,
                      Array<RES, AllocRES>& result, UnaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename Alloc, typename BinaryOperator>
+template<typename T, typename BinaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, const Array<T, Alloc>& right,
                                BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename Alloc, typename BinaryOperator>
+template<typename T, typename BinaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, T right, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename Alloc, typename BinaryOperator>
+template<typename T, typename BinaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (T left, const Array<T, Alloc>& right, BinaryOperator op);
 
 // Transform array to a result using the unary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename Alloc, typename UnaryOperator>
+template<typename T, typename UnaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& arr, UnaryOperator op);
 
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
-template<typename L, typename AllocL, typename R, typename AllocR, typename BinaryOperator>
+template<typename L, typename R, typename BinaryOperator, typename AllocL, typename AllocR>
 inline void arrayTransformInPlace (Array<L, AllocL>& left, const Array<R, AllocR>& right,
                                    BinaryOperator op)
 {
@@ -310,7 +310,7 @@ inline void arrayTransformInPlace (Array<L, AllocL>& left, const Array<R, AllocR
 
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
-template<typename L, typename Alloc, typename R, typename BinaryOperator>
+template<typename L, typename R, typename BinaryOperator, typename Alloc>
 inline void arrayTransformInPlace (Array<L, Alloc>& left, R right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
@@ -325,7 +325,7 @@ inline void arrayTransformInPlace (Array<L, Alloc>& left, R right, BinaryOperato
 // Transform the array in place using the unary operator.
 // E.g. doing <src>arrayTransformInPlace(array, Sin<T>())</src> is faster than
 // <src>array=sin(array)</src> as it does not need to create a temporary array.
-template<typename T, typename Alloc, typename UnaryOperator>
+template<typename T, typename UnaryOperator, typename Alloc>
 inline void arrayTransformInPlace (Array<T, Alloc>& arr, UnaryOperator op)
 {
   if (arr.contiguousStorage()) {
@@ -893,11 +893,11 @@ Array<std::complex<T> > makeComplex(const Array<T, Alloc> &real, const T& imag);
 // </group>
 
 // Set the real part of the left complex array to the right real array.
-template<typename C, typename AllocC, typename R, typename AllocR>
+template<typename C, typename R, typename AllocC, typename AllocR>
 void setReal(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray);
 
 // Set the imaginary part of the left complex array to right real array.
-template<typename C, typename AllocC, typename R, typename AllocR>
+template<typename C, typename R, typename AllocC, typename AllocR>
 void setImag(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray);
 
 // Extracts the real part of a complex array into an array of floats.
@@ -971,7 +971,7 @@ void  RealToComplex(Array<std::complex<double>> &carray, const Array<double> &ra
 // of doubles from an array of floats. Arrays to and from must be conformant
 // (same shape). Also, it must be possible to convert a scalar of type U 
 // to type T.
-template<typename T, typename AllocT, typename U, typename AllocU>
+template<typename T, typename U, typename AllocT, typename AllocU>
 void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from);
 
 // Returns an array where every element is squared.

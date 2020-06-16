@@ -44,7 +44,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<typename L, typename AllocL, typename R, typename AllocR, typename RES, typename AllocRES, typename BinaryOperator>
+template<typename L, typename R, typename RES, typename BinaryOperator, typename AllocL, typename AllocR, typename AllocRES>
 void arrayTransform (const Array<L, AllocL>& left, const Array<R, AllocR>& right,
                      Array<RES, AllocRES>& result, BinaryOperator op)
 {
@@ -61,7 +61,7 @@ void arrayTransform (const Array<L, AllocL>& left, const Array<R, AllocR>& right
   }
 }
 
-template<typename L, typename AllocL, typename R, typename RES, typename AllocRES, typename BinaryOperator>
+template<typename L, typename R, typename RES, typename BinaryOperator, typename AllocL, typename AllocRES>
 void arrayTransform (const Array<L, AllocL>& left, R right,
                      Array<RES, AllocRES>& result, BinaryOperator op)
 {
@@ -76,7 +76,7 @@ void arrayTransform (const Array<L, AllocL>& left, R right,
   }
 }
 
-template<typename L, typename R, typename AllocR, typename RES, typename AllocRES, typename BinaryOperator>
+template<typename L, typename R, typename RES, typename BinaryOperator, typename AllocR, typename AllocRES>
 void arrayTransform (L left, const Array<R, AllocR>& right,
                      Array<RES, AllocRES>& result, BinaryOperator op)
 {
@@ -91,7 +91,7 @@ void arrayTransform (L left, const Array<R, AllocR>& right,
   }
 }
 
-template<typename T, typename AllocL, typename RES,  typename AllocRES, typename UnaryOperator>
+template<typename T, typename RES, typename UnaryOperator, typename AllocL, typename AllocRES>
 void arrayTransform (const Array<T, AllocL>& arr,
                      Array<RES, AllocRES>& result, UnaryOperator op)
 {
@@ -106,7 +106,7 @@ void arrayTransform (const Array<T, AllocL>& arr,
   }
 }
 
-template<typename T, typename Alloc, typename BinaryOperator>
+template<typename T, typename BinaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, const Array<T, Alloc>& right,
                                BinaryOperator op)
 {
@@ -115,7 +115,7 @@ Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, const Array<T
   return res;
 }
 
-template<typename T, typename Alloc, typename BinaryOperator>
+template<typename T, typename BinaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, T right, BinaryOperator op)
 {
   Array<T, Alloc> res(left.shape());
@@ -123,7 +123,7 @@ Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, T right, Bina
   return res;
 }
 
-template<typename T, typename Alloc, typename BinaryOperator>
+template<typename T, typename BinaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (T left, const Array<T, Alloc>& right, BinaryOperator op)
 {
   Array<T, Alloc> res(right.shape());
@@ -131,7 +131,7 @@ Array<T, Alloc> arrayTransformResult (T left, const Array<T, Alloc>& right, Bina
   return res;
 }
 
-template<typename T, typename Alloc, typename UnaryOperator>
+template<typename T, typename UnaryOperator, typename Alloc>
 Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& arr, UnaryOperator op)
 {
   Array<T, Alloc> res(arr.shape());
@@ -1211,7 +1211,7 @@ Array<std::complex<T> > makeComplex(const Array<T, Alloc> &left, const T& right)
   return res;
 }
 
-template<typename C, typename AllocC, typename R, typename AllocR>
+template<typename C, typename R, typename AllocC, typename AllocR>
 void setReal(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray)
 {
   checkArrayShapes (carray, rarray, "setReal");
@@ -1220,7 +1220,7 @@ void setReal(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray)
                   [](R l, C r)->C { return C(l, std::imag(r)); });
 }
 
-template<typename C, typename AllocC, typename R, typename AllocR>
+template<typename C, typename R, typename AllocC, typename AllocR>
 void setImag(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray)
 {
   checkArrayShapes (carray, rarray, "setImag");
@@ -1228,7 +1228,7 @@ void setImag(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray)
                   [](C l, R r)->C { return C(std::real(l), r); });
 }
 
-template<typename T, typename AllocT, typename U, typename AllocU>
+template<typename T, typename U, typename AllocT, typename AllocU>
 void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from)
 {
     if (to.nelements() == 0 && from.nelements() == 0) {
@@ -1236,20 +1236,20 @@ void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from)
     }
     if (to.shape() != from.shape()) {
 	throw(ArrayConformanceError("void ::convertArray(Array<T, Alloc> &to, "
-				    "const Array<U> &from)"
+				    "const Array<U, AllocU> &from)"
 				    " - arrays do not conform"));
     }
     if (to.contiguousStorage()  &&  from.contiguousStorage()) {
-      typename Array<U>::const_contiter endFrom = from.cend();
-      typename Array<U>::const_contiter iterFrom = from.cbegin();
+      typename Array<U, AllocU>::const_contiter endFrom = from.cend();
+      typename Array<U, AllocU>::const_contiter iterFrom = from.cbegin();
       for (typename Array<T, AllocT>::contiter iterTo = to.cbegin();
 	   iterFrom != endFrom;
 	   ++iterFrom, ++iterTo) {
 	arrays_internal::convertScalar (*iterTo, *iterFrom);
       }
     } else {
-      typename Array<U>::const_iterator endFrom = from.end();
-      typename Array<U>::const_iterator iterFrom = from.begin();
+      typename Array<U, AllocU>::const_iterator endFrom = from.end();
+      typename Array<U, AllocU>::const_iterator iterFrom = from.begin();
       for (typename Array<T, AllocT>::iterator iterTo = to.begin();
 	   iterFrom != endFrom;
 	   ++iterFrom, ++iterTo) {

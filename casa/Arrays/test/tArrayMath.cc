@@ -723,4 +723,17 @@ BOOST_AUTO_TEST_CASE( all )
   testExpand();
 }
 
+BOOST_AUTO_TEST_CASE( convert_array )
+{
+  Array<int> a(IPosition{3, 2}, 7);
+  Array<unsigned int> b(IPosition{3, 2}, 1), c(IPosition{3, 2}, 1);
+  std::vector<unsigned> ref(6, 1);
+  
+  convertArray(a, b);
+  BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+  
+  convertArray<int, unsigned>(a, c);
+  BOOST_CHECK_EQUAL_COLLECTIONS(b.begin(), b.end(), ref.begin(), ref.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
