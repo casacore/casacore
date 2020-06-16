@@ -38,16 +38,10 @@
 
 namespace casacore { //#Begin casa namespace
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix()
-: Array<T, Alloc>(IPosition(2, 0))
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Alloc& allocator)
+: Array<T, Alloc>(IPosition(2, 0), allocator)
 {
   assert(ok());
-}
-
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &len)
-  : Array<T, Alloc>(len)
-{
-  Array<T, Alloc>::checkBeforeResize(len);
 }
 
 /*template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &len, ArrayInitPolicy initPolicy)
@@ -57,20 +51,26 @@ template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &l
     AlwaysAssert(len.nelements() == 2, ArrayError);
 }*/
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &len, const T &initialValue)
-  : Array<T, Alloc>(len, initialValue)
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &length, const T &initialValue, const Alloc& allocator)
+  : Array<T, Alloc>(length, initialValue, allocator)
 {
-  Array<T, Alloc>::checkBeforeResize(len);
+  Array<T, Alloc>::checkBeforeResize(length);
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2)
-: Array<T, Alloc>(IPosition(2, l1, l2))
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+  : Array<T, Alloc>(length, Array<T, Alloc>::uninitialized, allocator)
+{
+  Array<T, Alloc>::checkBeforeResize(length);
+}
+
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, const T &initialValue, const Alloc& allocator)
+: Array<T, Alloc>(IPosition(2, l1, l2), initialValue, allocator)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, const T &initialValue)
-: Array<T, Alloc>(IPosition(2, l1, l2), initialValue)
+template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+: Array<T, Alloc>(IPosition(2, l1, l2), Array<T, Alloc>::uninitialized, allocator)
 {
   assert(ok());
 }

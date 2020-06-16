@@ -89,27 +89,21 @@ template<typename T, typename Alloc> class Matrix final : public Array<T, Alloc>
 {
 public:
     // A Matrix of length zero in each dimension; zero origin.
-    Matrix();
-
-    // A Matrix with "l1" rows and "l2" columns.
-    Matrix(size_t l1, size_t l2);
-
-    // A Matrix with "l1" rows and "l2" columns.
-    //Matrix(size_t l1, size_t l2, ArrayInitPolicy initPolicy);
+    Matrix(const Alloc& allocator = Alloc());
 
     // A Matrix with "l1" rows and "l2" columns.
     // Fill it with the initial value.
-    Matrix(size_t l1, size_t l2, const T &initialValue);
+    Matrix(size_t l1, size_t l2, const T &initialValue = T(), const Alloc& allocator = Alloc());
 
-    // A matrix of shape with shape "len".
-    Matrix(const IPosition &len);
-
-    // A matrix of shape with shape "len".
-    //Matrix(const IPosition &len, ArrayInitPolicy initPolicy);
+    // An uninitialized Matrix with "l1" rows and "l2" columns.
+    Matrix(size_t l1, size_t l2, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator = Alloc());
 
     // A matrix of shape with shape "len".
     // Fill it with the initial value.
-    Matrix(const IPosition &len, const T &initialValue);
+    Matrix(const IPosition &len, const T &initialValue = T(), const Alloc& allocator = Alloc());
+
+    // An uninitialized matrix of shape with shape "len".
+    Matrix(const IPosition &len, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator = Alloc());
 
     // The copy/move constructor uses reference semantics.
     Matrix(const Matrix<T, Alloc>& source);
@@ -312,8 +306,6 @@ private:
   extern template class Matrix<bool>;
   extern template class Matrix<float>;
   extern template class Matrix<double>;
-  extern template class Matrix<std::complex<float>>;
-  extern template class Matrix<std::complex<double>>;
 
 } //#End casa namespace
 

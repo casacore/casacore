@@ -34,6 +34,4 @@ namespace casacore {
   template class Matrix<bool>;
   template class Matrix<float>;
   template class Matrix<double>;
-  template class Matrix<std::complex<float>>;
-  template class Matrix<std::complex<double>>;
 }

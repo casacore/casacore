@@ -75,28 +75,22 @@ template<typename T, typename Alloc> class Cube final : public Array<T, Alloc>
 public:
 
     // A Cube of length zero in each dimension; zero origin.
-    Cube();
-
-    // A l1xl2xl3 sized cube.
-    Cube(size_t l1, size_t l2, size_t l3);
-
-    // A l1xl2xl3 sized cube.
-    //Cube(size_t l1, size_t l2, size_t l3, ArrayInitPolicy initPolicy);
+    Cube(const Alloc& allocator=Alloc());
 
     // A l1xl2xl3 sized cube.
     // Fill it with the initial value.
-    Cube(size_t l1, size_t l2, size_t l3, const T &initialValue);
-
-    // A Cube where the shape ("len") is defined with IPositions.
-    Cube(const IPosition &len);
-
-    // A Cube where the shape ("len") is defined with IPositions.
-    //Cube(const IPosition &len, ArrayInitPolicy initPolicy);
+    Cube(size_t l1, size_t l2, size_t l3, const T &initialValue=T(), const Alloc& allocator=Alloc());
+    
+    // An uninitialized l1xl2xl3 sized cube.
+    Cube(size_t l1, size_t l2, size_t l3, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
 
     // A Cube where the shape ("len") is defined with IPositions.
     // Fill it with the initial value.
-    Cube(const IPosition &len, const T &initialValue);
+    Cube(const IPosition &length, const T &initialValue = T(), const Alloc& allocator=Alloc());
 
+    // An uninitialized Cube where the shape ("len") is defined with IPositions.
+    Cube(const IPosition& length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    
     // The copy constructor uses reference semantics.
     Cube(const Cube<T, Alloc> &);
     Cube(Cube<T, Alloc> &&);

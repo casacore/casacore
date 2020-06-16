@@ -243,4 +243,22 @@ BOOST_AUTO_TEST_CASE( array_assign )
   BOOST_CHECK(allEQ(ai, 2));
 }
 
+BOOST_AUTO_TEST_CASE( uninitialized_constructor_a )
+{
+	Matrix<int> y1(5, 4, Matrix<int>::uninitialized);
+  BOOST_CHECK_EQUAL (y1.shape()[0], 5);
+  BOOST_CHECK_EQUAL (y1.shape()[1], 4);
+  y1 = 7;
+	BOOST_CHECK (allEQ(y1, 7));
+}
+
+BOOST_AUTO_TEST_CASE( uninitialized_constructor_b )
+{
+	Matrix<int> y1(IPosition{5, 4}, Matrix<int>::uninitialized);
+  BOOST_CHECK_EQUAL (y1.shape()[0], 5);
+  BOOST_CHECK_EQUAL (y1.shape()[1], 4);
+  y1 = 7;
+	BOOST_CHECK (allEQ(y1, 7));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

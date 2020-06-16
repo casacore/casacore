@@ -36,35 +36,38 @@
 
 namespace casacore {
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube()
-: Array<T>(IPosition(3, 0))
-{
-  assert(ok());
-}
-
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3)
-: Array<T>(IPosition(3, l1, l2, l3))
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Alloc& allocator)
+: Array<T>(IPosition(3, 0), allocator)
 {
   assert(ok());
 }
 
 template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3,
-				const T &initialValue)
-: Array<T>(IPosition(3, l1, l2, l3), initialValue)
+    const T &initialValue, const Alloc& allocator)
+: Array<T>(IPosition(3, l1, l2, l3), initialValue, allocator)
 {
-    assert(ok());
+  assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &len)
-  : Array<T>(len)
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3,
+    typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+: Array<T>(IPosition(3, l1, l2, l3), Array<T, Alloc>::uninitialized, allocator)
 {
-  this->checkBeforeResize(len);
+  assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &len, const T &initialValue)
-  : Array<T>(len, initialValue)
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &length,
+    const T &initialValue, const Alloc& allocator)
+  : Array<T>(length, initialValue, allocator)
 {
-  this->checkBeforeResize(len);
+  this->checkBeforeResize(length);
+}
+
+template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &length,
+    typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+  : Array<T>(length, Array<T, Alloc>::uninitialized, allocator)
+{
+  this->checkBeforeResize(length);
 }
 
 template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Cube<T, Alloc> &source)

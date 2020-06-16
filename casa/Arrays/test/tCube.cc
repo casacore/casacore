@@ -116,4 +116,24 @@ BOOST_AUTO_TEST_CASE( non_degenerate )
   BOOST_CHECK (cr.shape() == IPosition(3,1,2,3));
 }
 
+BOOST_AUTO_TEST_CASE( uninitialized_constructor_a )
+{
+	Cube<int> y1(5, 4, 3, Cube<int>::uninitialized);
+  BOOST_CHECK_EQUAL (y1.shape()[0], 5);
+  BOOST_CHECK_EQUAL (y1.shape()[1], 4);
+  BOOST_CHECK_EQUAL (y1.shape()[2], 3);
+  y1 = 2;
+	BOOST_CHECK (allEQ(y1, 2));
+}
+
+BOOST_AUTO_TEST_CASE( uninitialized_constructor_b )
+{
+	Cube<int> y1(IPosition{5, 4, 3}, Cube<int>::uninitialized);
+  BOOST_CHECK_EQUAL (y1.shape()[0], 5);
+  BOOST_CHECK_EQUAL (y1.shape()[1], 4);
+  BOOST_CHECK_EQUAL (y1.shape()[2], 3);
+  y1 = 2;
+	BOOST_CHECK (allEQ(y1, 2));
+}
+  
 BOOST_AUTO_TEST_SUITE_END()
