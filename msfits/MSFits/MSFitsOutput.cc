@@ -217,31 +217,29 @@ void MSFitsOutput::write() const {
     // Write main table. Get freq and channel-width back.
     Int refPixelFreq;
     Double refFreq, chanbw;
-    FitsOutput* fitsOutput = _writeMain(
+    auto fitsOutput = _writeMain(
         refPixelFreq, refFreq, chanbw, outfile,
         spwidMap, nrspw, fieldidMap, doMultiSource
     );
-
-    Bool ok = fitsOutput;
     ThrowIf (
-        ! ok, "Could not write main table\n"
+        ! fitsOutput, "Could not write main table\n"
     );
     os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
     ThrowIf(
-        ! writeFQ(
+        ! _writeFQ(
             fitsOutput, _ms, spwidMap, nrspw, refFreq, refPixelFreq,
             chanbw, _combineSpw, _startChan, _nchan, _stepChan, _avgChan
         ), "Could not write FQ table"
     );
     os << LogIO::NORMAL << "Writing AIPS AN table" << LogIO::POST;
     ThrowIf(
-        ! writeAN(fitsOutput, _ms, refFreq, _writeStation),
+        ! _writeAN(fitsOutput, _ms, refFreq, _writeStation),
         "Could not write AN table"
     );
     if (doMultiSource) {
         os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
         if (
-            ! writeSU(fitsOutput, _ms, fieldidMap, nrfield, spwidMap, nrspw)
+            ! _writeSU(fitsOutput, _ms, fieldidMap, nrfield, spwidMap, nrspw)
         ) {
             os << LogIO::NORMAL << "Could not write SU table" << LogIO::POST;
         }
@@ -264,7 +262,7 @@ void MSFitsOutput::write() const {
         else {
             Table syscal = handleSysCal(_ms, spwids, isSubset);
             os << LogIO::NORMAL << "writing AIPS TY table" << LogIO::POST;
-            Bool bk = writeTY(
+            Bool bk = _writeTY(
                 fitsOutput, _ms, syscal, spwidMap, nrspw, _combineSpw
             );
             if (! bk) {
@@ -273,7 +271,7 @@ void MSFitsOutput::write() const {
             }
             else {
                 os << LogIO::NORMAL << "Writing AIPS GC table" << LogIO::POST;
-                bk = writeGC(
+                bk = _writeGC(
                     fitsOutput, _ms, syscal, spwidMap, nrspw,
                     _combineSpw, _sensitivity, refPixelFreq, refFreq, chanbw
                 );
@@ -286,14 +284,12 @@ void MSFitsOutput::write() const {
     }
     if (_ms.weather().tableDesc().ncolumn() != 0) {
         os << LogIO::NORMAL << "Writing AIPS WX table" << LogIO::POST;
-        Bool bk = writeWX(fitsOutput, _ms);
+        Bool bk = _writeWX(fitsOutput, _ms);
         if (!bk) {
             os << LogIO::WARN << "Could not write WX table"
                 << LogIO::POST;
         }
     }
-    // flush output to disk
-    delete fitsOutput;
 }
 
 Bool MSFitsOutput::writeFitsFile(
@@ -347,14 +343,14 @@ uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,
     return tbfend;
 }
 
-FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
+std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     Double& chanbw, const String &outFITSFile,
     const Block<Int>& spwidMap, Int nrspw,
     const Block<Int>& fieldidMap,
     Bool asMultiSource
 ) const {
     Int avgchan = _avgChan < 0 ? 1 : _avgChan;
-    FitsOutput *outfile = 0;
+    std::shared_ptr<FitsOutput> outfile(nullptr);
     LogIO os(LogOrigin("MSFitsOutput", __func__));
     const uInt nrow = _ms.nrow();
     if (nrow == 0) {
@@ -1009,7 +1005,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     // Finally, make the writer.  If it breaks past this point, the user gets to
     // look at the pieces.
     FITSGroupWriter writer(outFITSFile, desc, nOutRow, ek, False);
-    outfile = writer.writer();
+    outfile.reset(writer.writer());
 
     // DATA - out
     RecordFieldPtr<Array<Float> > odata(writer.row(), "data");
@@ -1407,7 +1403,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     return outfile;
 }
 
-Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
+Bool MSFitsOutput::_writeFQ(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms,
         const Block<Int>& spwidMap, Int nrspw, Double refFreq,
         Int refPixelFreq, Double chanbw, Bool combineSpw,
         Int chanstart, Int nchan, Int chanstep, Int avgchan) {
@@ -1463,7 +1459,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     units.define("TOTAL BANDWIDTH", "HZ");
     desc.addField("SIDEBAND", TpArrayInt, shape); // SIDEBAND
 
-    FITSTableWriter writer(output, desc, stringLengths, nentr, header, units,
+    FITSTableWriter writer(output.get(), desc, stringLengths, nentr, header, units,
             False);
     RecordFieldPtr<Int> freqsel(writer.row(), "FRQSEL");
     RecordFieldPtr<Array<Double> > iffreq(writer.row(), "IF FREQ");
@@ -1555,7 +1551,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     return True;
 }
 
-Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
+Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms,
         Double refFreq, Bool writeStation) {
     LogIO os(LogOrigin("MSFitsOutput", "writeAN"));
     MSObservation obsTable(ms.observation());
@@ -1707,7 +1703,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         std::set<uInt> uSpws = msmd.getUniqueSpwIDs();
         ArrayQuantColumn<Double> receptorAngle(feedCols.receptorAngleQuant());
 
-        FITSTableWriter writer(output, desc, strlengths, nant, header, units, False);
+        FITSTableWriter writer(output.get(), desc, strlengths, nant, header, units, False);
         RecordFieldPtr<String> anname(writer.row(), "ANNAME");
         RecordFieldPtr<Array<Double> > stabxyz(writer.row(), "STABXYZ");
         RecordFieldPtr<Array<Double> > orbparm(writer.row(), "ORBPARM");
@@ -1864,7 +1860,7 @@ void MSFitsOutput::_checkReceptorAngles(
     }
 }
 
-Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
+Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms,
         const Block<Int>& fieldidMap, Int nrfield,
         const Block<Int>& /*spwidMap*/, Int nrspw) {
     LogIO os(LogOrigin("MSFitsOutput", "writeSU"));
@@ -1969,7 +1965,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     desc.addField("PMDEC", TpDouble);
     units.define("PMDEC", "DEG/DAY");
 
-    FITSTableWriter writer(output, desc, strlengths, nrfield, header, units,
+    FITSTableWriter writer(output.get(), desc, strlengths, nrfield, header, units,
             False);
 
     RecordFieldPtr<Int> idno(writer.row(), "ID. NO.");
@@ -2120,7 +2116,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     return True;
 }
 
-Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
+Bool MSFitsOutput::_writeTY(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms,
         const Table& syscal, const Block<Int>& spwidMap, uInt nrif,
         Bool combineSpw) {
     LogIO os(LogOrigin("MSFitsOutput", "writeTY"));
@@ -2180,7 +2176,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
         units.define("TANT 2", "KELVINS");
     }
 
-    FITSTableWriter writer(output, desc, stringLengths, nentries, header,
+    FITSTableWriter writer(output.get(), desc, stringLengths, nentries, header,
             units, False);
     RecordFieldPtr<Float> time(writer.row(), "TIME");
     RecordFieldPtr<Float> interval(writer.row(), "TIME INTERVAL");
@@ -2240,7 +2236,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
     return True;
 }
 
-Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
+Bool MSFitsOutput::_writeGC(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms,
         const Table& syscal, const Block<Int>& /*spwidMap*/, uInt nrif,
         Bool combineSpw, Double sensitivity, Int refPixelFreq, Double refFreq,
         Double chanbw) {
@@ -2372,7 +2368,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
         units.define("SENS_2", "K/JY");
     }
 
-    FITSTableWriter writer(output, desc, stringLengths, nentries, header,
+    FITSTableWriter writer(output.get(), desc, stringLengths, nentries, header,
             units, False);
     RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA_NO");
     RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
@@ -2452,7 +2448,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
     return True;
 }
 
-Bool MSFitsOutput::writeWX(FitsOutput *output, const MeasurementSet &ms) {
+Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms) {
     LogIO os(LogOrigin("MSFitsOutput", "writeWX"));
     const MSWeather subtable(ms.weather());
     MSWeatherColumns weatherColumns(subtable);
@@ -2504,7 +2500,7 @@ Bool MSFitsOutput::writeWX(FitsOutput *output, const MeasurementSet &ms) {
     desc.addField("IONOS_ELECTRON", TpFloat); //sometimes labeled as ELECTRON COL.
     units.define("IONOS_ELECTRON", "m-2");
 
-    FITSTableWriter writer(output, desc, stringLengths, nrow, header, units,
+    FITSTableWriter writer(output.get(), desc, stringLengths, nrow, header, units,
             False);
     RecordFieldPtr<Double> time(writer.row(), "TIME");
     RecordFieldPtr<Float> interval(writer.row(), "TIME_INTERVAL");
