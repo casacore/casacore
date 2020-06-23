@@ -42,7 +42,7 @@ template<class T> class ScalarColumn;
 class Table;
 template<class T> class Block;
 template<class T> class Vector;
-
+class File;
 // <summary>
 // Write a MeasurementSet to a random group uvfits file.
 // </summary>
@@ -198,6 +198,12 @@ private:
     // Write the WX table.
     static Bool _writeWX(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms);
 
+    // Write the SY table.
+    static Bool _writeSY(
+        std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
+        const File& syspower, Int nrspw
+    );
+
     // Convert time to day and fraction.
     static void timeToDay(Int& day, Double& dayFraction, Double time);
 
@@ -209,7 +215,7 @@ private:
     );
 
     // Discern the antenna numbers that go into UVFITS
-    static void handleAntNumbers(const MeasurementSet& ms,Vector<Int>& antnumbers);
+    static void _handleAntNumbers(const MeasurementSet& ms,Vector<Int>& antnumbers);
 
     // Handle the SYSCAL table.
     // It skips the entries not needed and sorts it in the correct order.

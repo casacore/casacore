@@ -290,6 +290,14 @@ void MSFitsOutput::write() const {
                 << LogIO::POST;
         }
     }
+    // support for adhoc NRAO SYSPOWER table
+    File syspower = _ms.tableName() + "/SYSPOWER";
+    if (syspower.exists() && syspower.isDirectory()) {
+        os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
+        if (! _writeSY(fitsOutput, _ms, syspower, nrspw)) {
+            os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
+        }
+    }
 }
 
 Bool MSFitsOutput::writeFitsFile(
@@ -1043,7 +1051,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     }
 
     Vector<Int> antnumbers;
-    handleAntNumbers(_ms, antnumbers);
+    _handleAntNumbers(_ms, antnumbers);
 
     // Loop through all rows.
     ProgressMeter meter(0.0, nOutRow * 1.0, "UVFITS Writer", "Rows copied", "",
@@ -1728,7 +1736,7 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
         *polcalb = 0.0;
 
         Vector<Int> id;
-        handleAntNumbers(ms, id);
+        _handleAntNumbers(ms, id);
 
         // A hack for old WSRT observations which stored the antenna name
         // in the STATION column instead of the NAME column.
@@ -2194,7 +2202,7 @@ Bool MSFitsOutput::_writeTY(std::shared_ptr<FitsOutput> output, const Measuremen
     }
 
     Vector<Int> antnums;
-    handleAntNumbers(ms, antnums);
+    _handleAntNumbers(ms, antnums);
 
     Vector<Float> tsysval;
     for (uInt i = 0; i < nrow; i += nrif) {
@@ -2402,7 +2410,7 @@ Bool MSFitsOutput::_writeGC(std::shared_ptr<FitsOutput> output, const Measuremen
 
     // The antenna numbers
     Vector<Int> antnums;
-    handleAntNumbers(ms, antnums);
+    _handleAntNumbers(ms, antnums);
 
     // Iterate through the table.
     // Each chunk should have the same size.
@@ -2449,7 +2457,7 @@ Bool MSFitsOutput::_writeGC(std::shared_ptr<FitsOutput> output, const Measuremen
 }
 
 Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const MeasurementSet &ms) {
-    LogIO os(LogOrigin("MSFitsOutput", "writeWX"));
+    LogIO os(LogOrigin("MSFitsOutput", __func__));
     const MSWeather subtable(ms.weather());
     MSWeatherColumns weatherColumns(subtable);
     const uInt nrow = subtable.nrow();
@@ -2515,7 +2523,7 @@ Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const Measuremen
     RecordFieldPtr<Float> ionoselectron(writer.row(), "IONOS_ELECTRON");
 
     Vector<Int> antnums;
-    handleAntNumbers(ms, antnums);
+    _handleAntNumbers(ms, antnums);
     //check optional columns
     Bool hasTemperature = !(weatherColumns.temperature().isNull());
     Bool hasPressure = !(weatherColumns.pressure().isNull());
@@ -2579,6 +2587,102 @@ Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const Measuremen
     return True;
 }
 
+Bool MSFitsOutput::_writeSY(
+    std::shared_ptr<FitsOutput> output, const MeasurementSet &ms, const File& syspower,
+    Int nspw
+) {
+    LogIO os(LogOrigin("MSFitsOutput", __func__));
+    const Table subtable(syspower.path().originalName());
+    const auto td = subtable.tableDesc();
+    const auto nrows = subtable.nrow();
+    static const std::vector<String> expColNames {
+        "ANTENNA_ID", "FEED_ID", "SPECTRAL_WINDOW_ID", "TIME", "INTERVAL",
+        "SWITCHED_DIFF", "SWITCHED_SUM", "REQUANTIZER_GAIN"
+    };
+    for (const auto cname: expColNames) {
+        if (! td.isColumn(cname)) {
+            os << LogIO::WARN << "Required column " << cname
+                << " not found in SYSPOWER table" << LogIO::POST;
+            return False;
+        }
+    }
+    os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
+    const ArrayColumn<Float> switchedDiff (subtable, "SWITCHED_DIFF");
+    const Int npol = switchedDiff.shape(0)[0];
+    Record header;
+    header.define("EXTNAME", "AIPS SY");
+    header.define("NO_IF", nspw);
+    header.define("NO_POL", npol);
+    header.define("NO_ANT", (Int)ms.antenna().nrow());
+    cout << "header " << header << endl;
+    // Get reference time (i.e. start time) from the main table.
+    Double refTime;
+    { // get starttime (truncated to days)
+        MSColumns mscol(ms);
+        refTime = floor(mscol.time()(0) / C::day) * C::day;
+    }
+    cout << "C::day " << C::day << endl;
+    cout << "refTime " << refTime << endl;
+    const IPosition shape(1, nspw);
+    RecordDesc desc;
+    Record stringLengths; // no strings
+    Record units;
+    cout << __FILE__ << " " << __LINE__ << endl;
+    desc.addField("TIME", TpDouble);
+    units.define("TIME", "DAYS");
+    desc.addField("TIME INTERVAL", TpFloat);
+    units.define("TIME INTERVAL", "DAYS");
+    desc.addField("SOURCE ID", TpInt);
+    desc.addField("ANTENNA NO.", TpInt);
+    cout << __FILE__ << " " << __LINE__ << endl;
+    desc.addField("SUBARRAY", TpInt);
+    desc.addField("FREQ ID", TpInt);
+    desc.addField("POWER DIF1", TpArrayFloat, shape);
+    units.define("POWER DIF1", "counts");
+    desc.addField("POWER SUM1", TpArrayFloat, shape);
+    units.define("POWER SUM1", "counts");
+    desc.addField("POST GAIN1", TpArrayFloat, shape);
+    cout << __FILE__ << " " << __LINE__ << endl;
+    if (npol == 2) {
+        desc.addField("POWER DIF2", TpArrayFloat, shape);
+        units.define("POWER DIF2", "counts");
+        desc.addField("POWER SUM2", TpArrayFloat, shape);
+        units.define("POWER SUM2", "counts");
+        desc.addField("POST GAIN2", TpArrayFloat, shape);
+    }
+    cout << __FILE__ << " " << __LINE__ << endl;
+    FITSTableWriter writer(
+        output.get(), desc, stringLengths, nrows, header,
+        units, False
+    );
+    cout << __FILE__ << " " << __LINE__ << endl;
+    RecordFieldPtr<Double> time(writer.row(), "TIME");
+    RecordFieldPtr<Float> interval(writer.row(), "TIME INTERVAL");
+    RecordFieldPtr<Int> sourceId(writer.row(), "SOURCE ID");
+    RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA NO.");
+    RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
+    RecordFieldPtr<Int> spwId(writer.row(), "FREQ ID");
+    RecordFieldPtr<Array<Float>> powerDif1(writer.row(), "POWER DIF1");
+    RecordFieldPtr<Array<Float>> powerSum1(writer.row(), "POWER SUM1");
+    cout << __FILE__ << " " << __LINE__ << endl;
+    RecordFieldPtr<Array<Float>> postGain1(writer.row(), "POST GAIN1");
+    RecordFieldPtr<Array<Float>> powerDif2;
+    RecordFieldPtr<Array<Float>> powerSum2;
+    RecordFieldPtr<Array<Float>> postGain2;
+    cout << __FILE__ << " " << __LINE__ << endl;
+    if (npol == 2) {
+        powerDif2 = RecordFieldPtr<Array<Float>>(writer.row(), "POWER DIF2");
+        powerSum2 = RecordFieldPtr<Array<Float>>(writer.row(), "POWER SUM2");
+        postGain2 = RecordFieldPtr<Array<Float>>(writer.row(), "POST GAIN2");
+    }
+    cout << __FILE__ << " " << __LINE__ << endl;
+
+    Vector<Int> antnums;
+    _handleAntNumbers(ms, antnums);
+    cout << "return True" << endl;
+    return True;
+}
+    
 void MSFitsOutput::getStartHA(Double& startTime, Double& startHA,
         const MeasurementSet& ms, uInt rownr) {
     MSColumns mscol(ms);
@@ -2746,7 +2850,7 @@ Int MSFitsOutput::_makeIdMap(Block<Int>& map, Vector<Int>& selids, const Vector<
     return nr;
 }
 
-void MSFitsOutput::handleAntNumbers(const MeasurementSet& ms,
+void MSFitsOutput::_handleAntNumbers(const MeasurementSet& ms,
         Vector<Int>& antnumbers) {
 
     // This method parses the MS ANTENNA NAME into a antenna
