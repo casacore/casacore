@@ -269,12 +269,18 @@ class MSFitsInput
   // This is an implementation helper class used to store 'local' data
   // during the filling process.
 public:
+  MSFitsInput() = delete;
+
   // Create from output and input file names. This function opens the input
   // file, and checks the output file is writable.
   MSFitsInput(const String& msFile, const String& fitsFile, const Bool NewNameStyle=False);
+  
+  MSFitsInput(const MSFitsInput& other) = delete;
 
   // The destructor is fairly trivial.
   ~MSFitsInput();
+
+  MSFitsInput& operator=(const MSFitsInput& other) = delete;
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
@@ -377,13 +383,6 @@ protected:
   void readPrimaryTableUVFits(Int obsType);
 
 private:
-  //# The default constructor is private and undefined
-  MSFitsInput();
-  //# The copy constructor is private and undefined
-  MSFitsInput(const MSFitsInput& other);
-  //# The assignment operator is private and undefined
-  MSFitsInput& operator=(const MSFitsInput& other);
-
   FitsInput* _infile;
   String _msFile;
   MSPrimaryGroupHolder _priGroup;
