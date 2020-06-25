@@ -287,7 +287,44 @@ public:
   // 
   void readFitsFile(Int obsType = MSTileLayout::Standard);
 
-protected:
+private:
+  FitsInput* _infile;
+  String _msFile;
+  MSPrimaryGroupHolder _priGroup;
+  MSPrimaryTableHolder _priTable;
+  MeasurementSet _ms;
+  MSColumns* _msc;
+  Int _nIF;
+  Vector<Int> _nPixel, _corrType;
+  Block<Int> _corrIndex;
+  Matrix<Int> _corrProduct;
+  Vector<String> _coordType;
+  Vector<Double> _refVal, _refPix, _delta;
+  String _array, _object, _timsys;
+  Double _epoch;
+  MDirection::Types _epochRef; // This is a direction measure reference code
+                                // determined by epoch_p, hence the name and type.
+  // unique antennas found in the visibility data
+  // NOTE These are 1-based
+  std::set<Int> _uniqueAnts;
+  // number of rows in the created MS ANTENNA table
+  Int _nAntRow;
+  Int _nArray;
+  Vector<Double> _receptorAngle;
+  MFrequency::Types _freqsys;
+  Double _restfreq; // used for images
+  Bool _addSourceTable;
+  LogIO _log;
+  Record _header;
+  Double _refFreq;
+  Bool _useAltrval;
+  Vector<Double> _chanFreq;
+  Bool _newNameStyle;
+  Vector<Double> _obsTime;
+
+  Matrix<Double> _restFreq; // used for UVFITS
+  Matrix<Double> _sysVel;
+  Bool _msCreated;
 
   // Check that the input is a UV fits file with required contents.
   // Returns False if not ok.
@@ -376,50 +413,12 @@ protected:
   
   // Check the frame if there is an SU table
   void setFreqFrameVar(BinaryTable& binTab);
+
   // update a the Spectral window post filling if necessary
   void updateSpectralWindowTable();
 
   void readRandomGroupUVFits(Int obsType);
   void readPrimaryTableUVFits(Int obsType);
-
-private:
-  FitsInput* _infile;
-  String _msFile;
-  MSPrimaryGroupHolder _priGroup;
-  MSPrimaryTableHolder _priTable;
-  MeasurementSet _ms;
-  MSColumns* _msc;
-  Int _nIF;
-  Vector<Int> _nPixel, _corrType;
-  Block<Int> _corrIndex;
-  Matrix<Int> _corrProduct;
-  Vector<String> _coordType;
-  Vector<Double> _refVal, _refPix, _delta;
-  String _array, _object, _timsys;
-  Double _epoch;
-  MDirection::Types _epochRef; // This is a direction measure reference code
-                                // determined by epoch_p, hence the name and type.
-  // unique antennas found in the visibility data
-  // NOTE These are 1-based
-  std::set<Int> _uniqueAnts;
-  // number of rows in the created MS ANTENNA table
-  Int _nAntRow;
-  Int _nArray;
-  Vector<Double> _receptorAngle;
-  MFrequency::Types _freqsys;
-  Double _restfreq; // used for images
-  Bool _addSourceTable;
-  LogIO _log;
-  Record _header;
-  Double _refFreq;
-  Bool _useAltrval;
-  Vector<Double> _chanFreq;
-  Bool _newNameStyle;
-  Vector<Double> _obsTime;
-
-  Matrix<Double> _restFreq; // used for UVFITS
-  Matrix<Double> _sysVel;
-  Bool _msCreated;
 
   std::pair<Int, Int> _extractAntennas(Float baseline);
 
