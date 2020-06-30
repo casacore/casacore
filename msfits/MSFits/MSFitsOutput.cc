@@ -452,7 +452,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     ScalarColumn<Int> measFreq(spectralTable, MSSpectralWindow::columnName(
             MSSpectralWindow::MEAS_FREQ_REF));
     Double restFreq(0.0);
-    if (nsrc > 0) {
+    if (nsrc > 0 && srcTable.isColumn(MSSource::REST_FREQUENCY)) {
         ArrayColumn<Double> restfreqcol(srcTable, MSSource::columnName(
             MSSource::REST_FREQUENCY));
         if (restfreqcol.isDefined(0) && restfreqcol(0).nelements() > 0) {
@@ -2069,7 +2069,10 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                             *lsrvel = sv(0);
                         }
                     }
-                    if (sourceColumns->restFrequency().isDefined(rownr)) {
+                    if (
+                        sourceTable->isColumn(MSSource::REST_FREQUENCY)
+                        && sourceColumns->restFrequency().isDefined(rownr)
+                    ) {
                         Vector<Double>
                                 rf(sourceColumns->restFrequency()(rownr));
                         if (rf.nelements() > 0) {
