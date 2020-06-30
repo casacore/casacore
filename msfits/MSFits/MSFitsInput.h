@@ -328,7 +328,7 @@ private:
 
   // Check that the input is a UV fits file with required contents.
   // Returns False if not ok.
-  Bool checkInput(FitsInput& infile);
+  Bool _checkInput(FitsInput& infile);
 
   // Read the axis info of the primary group, throws an exception if required
   // axes are missing.
@@ -419,6 +419,8 @@ private:
 
   void readRandomGroupUVFits(Int obsType);
   void readPrimaryTableUVFits(Int obsType);
+  
+  void _fillSysPowerTable(BinaryTable& bt);
 
   std::pair<Int, Int> _extractAntennas(Float baseline);
 

@@ -294,7 +294,7 @@ void MSFitsOutput::write() const {
     File syspower = _ms.tableName() + "/SYSPOWER";
     if (syspower.exists() && syspower.isDirectory()) {
         os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
-        if (! _writeSY(fitsOutput, _ms, syspower, nrspw)) {
+        if (! _writeSY(fitsOutput, _ms, syspower, nrspw, spwidMap, _combineSpw)) {
             os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
         }
     }
@@ -2137,7 +2137,6 @@ Bool MSFitsOutput::_writeTY(std::shared_ptr<FitsOutput> output, const Measuremen
     }
     // Get #pol by taking shape of first tsys from the column.
     const Int npol = sysCalColumns.tsys().shape(0)(0);
-
     if (!combineSpw) {
         nrif = 1;
     }
@@ -2589,14 +2588,22 @@ Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const Measuremen
 
 Bool MSFitsOutput::_writeSY(
     std::shared_ptr<FitsOutput> output, const MeasurementSet &ms, const File& syspower,
-    Int nspw
+    Int nspw, const Block<Int>& spwIDMap, Bool combineSpw
 ) {
     LogIO os(LogOrigin("MSFitsOutput", __func__));
-    const Table subtable(syspower.path().originalName());
+    static const String TIME = "TIME";
+    static const String ANTENNA_ID = "ANTENNA_ID";
+    static const String FEED_ID = "FEED_ID";
+    static const String SPECTRAL_WINDOW_ID = "SPECTRAL_WINDOW_ID";
+    Table subtable(syspower.path().originalName());
     const auto td = subtable.tableDesc();
     const auto nrows = subtable.nrow();
+    if (nrows == 0) {
+        os << LogIO::WARN << "SYSPOWER table is empty." << LogIO::POST;
+        return False;
+    }
     static const std::vector<String> expColNames {
-        "ANTENNA_ID", "FEED_ID", "SPECTRAL_WINDOW_ID", "TIME", "INTERVAL",
+        ANTENNA_ID, FEED_ID, SPECTRAL_WINDOW_ID, TIME, "INTERVAL",
         "SWITCHED_DIFF", "SWITCHED_SUM", "REQUANTIZER_GAIN"
     };
     for (const auto cname: expColNames) {
@@ -2606,79 +2613,191 @@ Bool MSFitsOutput::_writeSY(
             return False;
         }
     }
-    os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
+    const ScalarColumn<Int> feedID(subtable, FEED_ID);
+    const auto fv = feedID.getColumn();
+    if (! allEQ(fv[0], fv)) {
+        os << LogIO::WARN << "All FEED_IDs in SYSPOWER table are not identical"
+            << LogIO::POST;
+        return False;
+    }
+    // What to do based on the value of combineSpw follows the pattern
+    // in _writeTy()
+    Int nrif = 1;
+    if (combineSpw) {
+        if (nrows % nspw == 0) {
+            nrif = nspw;
+        }
+        else {
+            nrif = 1;
+            combineSpw = False;
+            os << LogIO::WARN << "Number of rows (" << nrows << ") in SYSPOWER "
+                << "table is not a multiple of the number of spectral windows ("
+                << nspw << "). Cannot combine spectral windows in the UVFITS "
+                << "SY table. Will instead write one spw per row."
+                << LogIO::POST;
+        }
+    }
+    IPosition ifShape(1, nrif);
+    const uInt nentries = nrows/nrif;
+    os << LogIO::NORMAL << "Found " << nentries << " SY table entries ("
+        << nrif << " IFs)" << LogIO::POST;
+    if (combineSpw) {
+        // ensure that the table is sorted correctly
+        Block<String> sortNames(3);
+        sortNames[0] = TIME;
+        sortNames[1] = ANTENNA_ID;
+        sortNames[2] = SPECTRAL_WINDOW_ID;
+        subtable = subtable.sort(sortNames);
+    }
     const ArrayColumn<Float> switchedDiff (subtable, "SWITCHED_DIFF");
     const Int npol = switchedDiff.shape(0)[0];
     Record header;
     header.define("EXTNAME", "AIPS SY");
-    header.define("NO_IF", nspw);
+    header.define("NO_IF", nrif);
     header.define("NO_POL", npol);
     header.define("NO_ANT", (Int)ms.antenna().nrow());
     cout << "header " << header << endl;
+    /*
     // Get reference time (i.e. start time) from the main table.
     Double refTime;
     { // get starttime (truncated to days)
         MSColumns mscol(ms);
         refTime = floor(mscol.time()(0) / C::day) * C::day;
     }
-    cout << "C::day " << C::day << endl;
     cout << "refTime " << refTime << endl;
-    const IPosition shape(1, nspw);
+    */
     RecordDesc desc;
     Record stringLengths; // no strings
     Record units;
-    cout << __FILE__ << " " << __LINE__ << endl;
-    desc.addField("TIME", TpDouble);
-    units.define("TIME", "DAYS");
+    desc.addField(TIME, TpDouble);
+    units.define(TIME, "DAYS");
     desc.addField("TIME INTERVAL", TpFloat);
     units.define("TIME INTERVAL", "DAYS");
     desc.addField("SOURCE ID", TpInt);
     desc.addField("ANTENNA NO.", TpInt);
-    cout << __FILE__ << " " << __LINE__ << endl;
     desc.addField("SUBARRAY", TpInt);
     desc.addField("FREQ ID", TpInt);
-    desc.addField("POWER DIF1", TpArrayFloat, shape);
+    desc.addField("POWER DIF1", TpArrayFloat, ifShape);
     units.define("POWER DIF1", "counts");
-    desc.addField("POWER SUM1", TpArrayFloat, shape);
+    desc.addField("POWER SUM1", TpArrayFloat, ifShape);
     units.define("POWER SUM1", "counts");
-    desc.addField("POST GAIN1", TpArrayFloat, shape);
-    cout << __FILE__ << " " << __LINE__ << endl;
+    desc.addField("POST GAIN1", TpArrayFloat, ifShape);
     if (npol == 2) {
-        desc.addField("POWER DIF2", TpArrayFloat, shape);
+        desc.addField("POWER DIF2", TpArrayFloat, ifShape);
         units.define("POWER DIF2", "counts");
-        desc.addField("POWER SUM2", TpArrayFloat, shape);
+        desc.addField("POWER SUM2", TpArrayFloat, ifShape);
         units.define("POWER SUM2", "counts");
-        desc.addField("POST GAIN2", TpArrayFloat, shape);
+        desc.addField("POST GAIN2", TpArrayFloat, ifShape);
     }
-    cout << __FILE__ << " " << __LINE__ << endl;
     FITSTableWriter writer(
-        output.get(), desc, stringLengths, nrows, header,
+        output.get(), desc, stringLengths, nentries, header,
         units, False
     );
-    cout << __FILE__ << " " << __LINE__ << endl;
-    RecordFieldPtr<Double> time(writer.row(), "TIME");
+    RecordFieldPtr<Double> time(writer.row(), TIME);
     RecordFieldPtr<Float> interval(writer.row(), "TIME INTERVAL");
     RecordFieldPtr<Int> sourceId(writer.row(), "SOURCE ID");
     RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA NO.");
     RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
-    RecordFieldPtr<Int> spwId(writer.row(), "FREQ ID");
+    RecordFieldPtr<Int> freqId(writer.row(), "FREQ ID");
     RecordFieldPtr<Array<Float>> powerDif1(writer.row(), "POWER DIF1");
     RecordFieldPtr<Array<Float>> powerSum1(writer.row(), "POWER SUM1");
-    cout << __FILE__ << " " << __LINE__ << endl;
     RecordFieldPtr<Array<Float>> postGain1(writer.row(), "POST GAIN1");
     RecordFieldPtr<Array<Float>> powerDif2;
     RecordFieldPtr<Array<Float>> powerSum2;
     RecordFieldPtr<Array<Float>> postGain2;
-    cout << __FILE__ << " " << __LINE__ << endl;
     if (npol == 2) {
         powerDif2 = RecordFieldPtr<Array<Float>>(writer.row(), "POWER DIF2");
         powerSum2 = RecordFieldPtr<Array<Float>>(writer.row(), "POWER SUM2");
         postGain2 = RecordFieldPtr<Array<Float>>(writer.row(), "POST GAIN2");
     }
-    cout << __FILE__ << " " << __LINE__ << endl;
 
     Vector<Int> antnums;
     _handleAntNumbers(ms, antnums);
+    MSMetaData md(&ms, 100);
+    const ScalarColumn<Double> timeCol(subtable, TIME);
+    const ScalarColumn<Double> intervalCol(subtable, "INTERVAL");
+    const ScalarColumn<Int> antCol(subtable, ANTENNA_ID);
+    const ScalarColumn<Int> spwCol(subtable, SPECTRAL_WINDOW_ID);
+    const ArrayColumn<Float> switchedSum (subtable, "SWITCHED_SUM");
+    const ArrayColumn<Float> qGDiff (subtable, "REQUANTIZER_GAIN");
+    Vector<Float> pdv, psv, pgv;
+    for (uInt i = 0; i < nrows; i += nrif) {
+        const auto myTime = timeCol(i);
+        *time = myTime/C::day;
+        const auto myInterval = intervalCol(i);
+        *interval = myInterval/C::day;
+        const auto fields = md.getFieldsForTimes(*time, *interval/2);
+        const auto nfields = fields.size();
+        if (nfields > 1) {
+            os << LogIO::SEVERE << "Multiple fields found for time " << myTime
+                << " and interval " << myInterval << ". Please file a bug report "
+                << LogIO::POST;
+            return False;
+        }
+        else if (nfields == 0) {
+            os << LogIO::SEVERE << "No fields found for time " << myTime
+                << " and interval " << myInterval << ". Please file a bug report "
+                << LogIO::POST;
+            return False;
+        }
+        *sourceId = *(fields.cbegin()) + 1;
+        *antenna = antnums(antCol(i));
+        // FIXME arrayid
+        *arrayId = 1;
+        *freqId = combineSpw ? 1 : 1 + spwIDMap[spwCol(i)];
+        Vector<Float> pd1(nrif);
+        Vector<Float> pd2(nrif);
+        Vector<Float> ps1(nrif);
+        Vector<Float> ps2(nrif);
+        Vector<Float> pg1(nrif);
+        Vector<Float> pg2(nrif);
+        std::set<Int> spwSet;
+        for (Int j = 0; j < nrif; ++j) {
+            /*
+            cout << std::setprecision(12) << "i " << i << " j " << j << " timeCol(i+j) "
+                << timeCol(i+j) << " myTime " << myTime << " got ant " << antnums(antCol(i + j))
+                << " exp ant " << *antenna << endl;
+                */
+            if (j > 0) {
+                if (timeCol(i + j) != myTime) {
+                    os << LogIO::SEVERE << "Irregularities in time values "
+                        << "in the SYSPOWER subtable, so spectral window "
+                        << "data cannot be combined when writing UVFITS "
+                        << "SY table. Perhaps try combineSpw=False" 
+                        << LogIO::POST;
+                    return False;
+                }
+                else if (antnums(antCol(i + j)) != *antenna) {
+                    os << LogIO::SEVERE << "Irregularities in antenna_id "
+                        << "values in the SYSPOWER subtable, so spectral "
+                        << "window data cannot be combined when writing "
+                        << "UVFITS SY table. Perhaps try combineSpw=False"
+                        << LogIO::POST;
+                    return False;
+                }                
+            }
+            switchedDiff.get(i + j, pdv);
+            pd1[j] = pdv[0];
+            switchedSum.get(i + j, psv);
+            ps1[j] = psv[0];
+            qGDiff.get(i + j, pgv);
+            pg1[j] = pgv[0];
+            if (npol == 2) {
+                pd2[j] = pdv[1];
+                ps2[j] = psv[1];
+                pg2[j] = pgv[1];
+            }
+        }
+        *powerDif1 = pd1;
+        *powerSum1 = ps1;
+        *postGain1 = pg1;
+        if (npol == 2) {
+            *powerDif2 = pd2;
+            *powerSum2 = ps2;
+            *postGain2 = pg2;
+        }
+        writer.write();
+    }
     cout << "return True" << endl;
     return True;
 }

@@ -201,7 +201,8 @@ private:
     // Write the SY table.
     static Bool _writeSY(
         std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
-        const File& syspower, Int nrspw
+        const File& syspower, Int nspw, const Block<Int>& spwIDMap,
+        Bool combineSpw
     );
 
     // Convert time to day and fraction.

@@ -62,6 +62,7 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/DataMan/IncrementalStMan.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -291,7 +292,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
         }
         else {
 
-            if (checkInput(*_infile)) {
+            if (_checkInput(*_infile)) {
                 if (_infile->hdutype() == FITS::PrimaryGroupHDU) {
                     _priGroup.attach(*_infile);
                 }
@@ -373,7 +374,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
         }
     }
     // now handle the BinaryTable extensions for the subtables
-    Bool haveAn = False, haveField = False, haveSpW = False;
+    Bool haveAn = False, haveField = False, haveSpW = False, haveSysPower = False;
     while (_infile->rectype() != FITS::EndOfFile && !_infile->err()) {
         if (_infile->hdutype() != FITS::BinaryTableHDU) {
             _log << LogOrigin("MSFitsInput", __func__)
@@ -410,6 +411,11 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
                 if (haveSpW) {
                     updateSpectralWindowTable();
                 }
+            }
+            else if (type.contains("SY") && ! haveSysPower) {
+                haveSysPower = True;
+                cout << "Found syspower " << __FILE__ << " " << __LINE__ << endl;
+                _fillSysPowerTable(binTab);
             }
             else {
                 _log << LogOrigin("MSFitsInput", __func__)
@@ -516,6 +522,10 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     //    updateSpectralWindowTable();
                     //}
                 } 
+                else if (type.contains("SY")) {
+                    cout << "Found SY table " << __FILE__ << " " << __LINE__ << endl;
+                    _fillSysPowerTable(*bt);
+                }
                 else if (type.contains("UV")) {
                     //showBinaryTable(*bt);
                     //fillOtherUVTables(*bt, *fqTab);
@@ -545,7 +555,7 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     fillFeedTable();
 
                     moreToDo = false;
-        }
+                }
                 else {
                     _infile->skip_hdu();
                     _log << LogOrigin("MSFitsInput", __func__)
@@ -596,14 +606,14 @@ MSFitsInput::~MSFitsInput() {
     delete _msc;
 }
 
-Bool MSFitsInput::checkInput(FitsInput& infile) {
+Bool MSFitsInput::_checkInput(FitsInput& infile) {
     // Check that we have a valid UV fits file
     if (infile.rectype() != FITS::HDURecord) {
-        _log << LogOrigin("MSFitsInput", "checkInput")
+        _log << LogOrigin("MSFitsInput", __func__)
                << "file does not start with standard hdu record."
                << LogIO::EXCEPTION;
     }
-    _log << LogOrigin("MSFitsInput", "checkInput")
+    _log << LogOrigin("MSFitsInput", __func__)
            << LogIO::DEBUG1
            << "infile.hdutype(): " << infile.hdutype() 
            << LogIO::POST;
@@ -612,7 +622,7 @@ Bool MSFitsInput::checkInput(FitsInput& infile) {
     if (infile.hdutype() != FITS::PrimaryGroupHDU &&
         infile.hdutype() != FITS::PrimaryArrayHDU &&
          infile.hdutype() != FITS::PrimaryTableHDU) {
-        _log << LogOrigin("MSFitsInput", "checkInput")
+        _log << LogOrigin("MSFitsInput", __func__)
                << "Error, neither primary group nor primary table"
                << LogIO::EXCEPTION;
     }
@@ -621,7 +631,7 @@ Bool MSFitsInput::checkInput(FitsInput& infile) {
          dataType != FITS::SHORT &&
          dataType != FITS::LONG &&
          dataType != FITS::BYTE) {
-        _log << LogOrigin("MSFitsInput", "checkInput")
+        _log << LogOrigin("MSFitsInput", __func__)
                << "Error, this class handles only FLOAT, SHORT, LONG and BYTE data "
                << "(BITPIX=-32,16,32,8) at present" << LogIO::EXCEPTION;
     }
@@ -1720,6 +1730,72 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
 
     // fill the receptorAngle with defaults, just in case there is no AN table
     _receptorAngle = 0;
+}
+
+void MSFitsInput::_fillSysPowerTable(BinaryTable& bt) {
+    static const Regex trailing(" *$"); // trailing blanks
+    const TableRecord btKeywords = bt.getKeywords();
+    const auto nIF = btKeywords.asInt("NO_IF");
+    ThrowIf(nIF == 0, "Number of IFs in SY table cannot be 0");
+    const auto nPol = btKeywords.asInt("NO_POL");
+    Int nrows = bt.nrows();
+    Table syTab = bt.fullTable();
+    syTab.tableDesc().show();
+    cout << "keyw " << btKeywords << endl;
+    cout << "nrows " << nrows << endl;
+    cout << "nIF " << nIF << endl;
+    cout << "nPol " << nPol << endl;
+    const static String name = "SYSPOWER";
+    const String casaTableName = _ms.tableName() + "/" + name;
+    {
+        // table creation code copied from casa ASDM2MSFiller.cc
+        TableDesc tableDesc;
+    
+        //
+        // Key columns.
+        //
+        tableDesc.comment() = "System calibration from Cal diode demodulation (EVLA).";
+        tableDesc.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier."));
+        tableDesc.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed's index."));
+        tableDesc.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier."));
+        tableDesc.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time measurement."));
+        tableDesc.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval of measurement."));
+    
+        //
+        // Data columns.
+        //
+        tableDesc.addColumn(ArrayColumnDesc<Float>("SWITCHED_DIFF", "Switched power difference (cal on - off)."));
+        tableDesc.addColumn(ArrayColumnDesc<Float>("SWITCHED_SUM", "Switched power sum (cal on + off)."));
+        tableDesc.addColumn(ArrayColumnDesc<Float>("REQUANTIZER_GAIN", "Requantizer gain."));
+    
+        SetupNewTable tableSetup(casaTableName, tableDesc, Table::New);
+        _ms.rwKeywordSet().defineTable(name, Table(tableSetup));
+        _ms.rwKeywordSet().asTable(name).flush();
+    }
+    Table casaTable(casaTableName, Table::Update);
+    casaTable.addRow(syTab.nrow() * nIF);
+
+    ScalarColumn<Double> timeCol(syTab, "TIME");
+    ScalarColumn<Float> timeIntCol(syTab, "TIME INTERVAL");
+    ScalarColumn<Int> sourceIDCol(syTab, "SOURCE ID");
+    ScalarColumn<Int> antNoCol(syTab, "ANTENNA NO.");
+    ScalarColumn<Int> aubarrayCol(syTab, "SUBARRAY");
+    ScalarColumn<Int> freqIDCol(syTab, "FREQ ID");
+    if (nIF == 1) {
+        ScalarColumn<Float> powerDif1Col(syTab, "POWER DIF1");
+        ScalarColumn<Float> powerSum1Col(syTab, "POWER SUM1");
+        ScalarColumn<Float> postGain1Col(syTab, "POST GAIN1");
+    }
+    else {
+        ArrayColumn<Float> powerDif1Col(syTab, "POWER DIF1");
+        ArrayColumn<Float> powerSum1Col(syTab, "POWER SUM1");
+        ArrayColumn<Float> postGain1Col(syTab, "POST GAIN1");
+    }
+
+
+
+
+        
 }
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
