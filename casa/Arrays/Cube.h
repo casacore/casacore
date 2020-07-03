@@ -70,7 +70,7 @@ namespace casacore { //#Begin casa namespace
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<typename T, typename Alloc> class Cube final : public Array<T, Alloc>
+template<typename T, typename Alloc> class Cube : public Array<T, Alloc>
 {
 public:
 

@@ -85,7 +85,7 @@ namespace casacore { //#Begin casa namespace
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<typename T, typename Alloc> class Matrix final : public Array<T, Alloc>
+template<typename T, typename Alloc> class Matrix : public Array<T, Alloc>
 {
 public:
     // A Matrix of length zero in each dimension; zero origin.
