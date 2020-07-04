@@ -415,13 +415,14 @@ Array<T, Alloc> &Array<T, Alloc>::operator=(const T &val)
 }
 
 template<typename T, typename Alloc>
-Array<T, Alloc>& Array<T, Alloc>::assign_conforming(const MaskedArray<T> &marray)
+template<typename MaskAlloc>
+Array<T, Alloc>& Array<T, Alloc>::assign_conforming(const MaskedArray<T, Alloc, MaskAlloc>& marray)
 {
     assert(ok());
 
     if (!conform(marray)) {
         throw(ArrayConformanceError(
-            "Array<T> & Array<T, Alloc>::assign_conforming (const MaskedArray<T> &marray)"
+            "Array<T> & Array<T, Alloc>::assign_conforming (const MaskedArray<T, Alloc, MaskAlloc>& marray)"
             "- Conformance error."));
     }
 

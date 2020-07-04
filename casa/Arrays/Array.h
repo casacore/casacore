@@ -300,11 +300,25 @@ public:
     {
       return assign_conforming_implementation(other, std::is_copy_assignable<T>());
     }
+    
+    // Copy to this those values in marray whose corresponding elements
+    // in marray's mask are true.
+    // <thrown>
+    //    <li> ArrayConformanceError
+    // </thrown>
+    //
+    template<typename MaskAlloc>
+    Array<T, Alloc>& assign_conforming (const MaskedArray<T, Alloc, MaskAlloc>& marray);
 
     // TODO we should change the semantics
     Array<T, Alloc>& operator=(const Array<T, Alloc>& other)
     { return assign_conforming(other); }
  
+    // Calls assign_conforming().
+    template<typename MaskAlloc>
+    Array<T, Alloc>& operator=(const MaskedArray<T, Alloc, MaskAlloc>& marray)
+    { return assign_conforming(marray); }
+    
     // The move operator takes the storage from the given array. After moving an
     // Array, the source Array will be left empty.
     Array<T, Alloc>& operator=(Array<T, Alloc>&& other);
@@ -342,15 +356,6 @@ public:
       return copy(Alloc());
     }
     
-    // Copy to this those values in marray whose corresponding elements
-    // in marray's mask are true.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    // </thrown>
-    //
-    Array<T, Alloc>& assign_conforming (const MaskedArray<T>& marray);
-
     // This function copies the matching part of from array to this array.
     // The matching part is the part with the minimum size for each axis.
     // E.g. if this array has shape [4,5,6] and from array has shape [7,3],

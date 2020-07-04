@@ -37,6 +37,7 @@
 #include "../MaskedArray.h"
 #include "../MaskArrIO.h"
 #include "../LogiCube.h"
+#include "../LogiVector.h"
 
 #include "TestUtilities.h"
 
@@ -88,6 +89,16 @@ BOOST_AUTO_TEST_CASE(assignment)
   check(z, {0, 7, 7, 7, 7});
   z (x <= y) = 8;
   check(z, {0, 8, 8, 8, 8});
+}
+
+BOOST_AUTO_TEST_CASE(assignment_to_vector)
+{
+  Vector<float> vec1{1, 2, 3, 4, 5};
+  Vector<float> vec2{6, 7, 8, 9, 10};
+  LogicalVector lvec{true, true, false, true, true};
+  vec1 = vec2(lvec);
+  Vector<float> ref{6, 7, 3, 9, 10};
+  BOOST_CHECK_EQUAL_COLLECTIONS(vec1.begin(), vec1.end(), ref.begin(), ref.end());
 }
 
 BOOST_AUTO_TEST_CASE(array_operations1)
