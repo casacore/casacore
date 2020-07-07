@@ -1741,62 +1741,102 @@ void MSFitsInput::_fillSysPowerTable(BinaryTable& bt) {
     Int nrows = bt.nrows();
     Table syTab = bt.fullTable();
     syTab.tableDesc().show();
-    cout << "keyw " << btKeywords << endl;
-    cout << "nrows " << nrows << endl;
-    cout << "nIF " << nIF << endl;
-    cout << "nPol " << nPol << endl;
     const static String name = "SYSPOWER";
     const String casaTableName = _ms.tableName() + "/" + name;
     {
         // table creation code copied from casa ASDM2MSFiller.cc
         TableDesc tableDesc;
-    
-        //
         // Key columns.
-        //
         tableDesc.comment() = "System calibration from Cal diode demodulation (EVLA).";
         tableDesc.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier."));
         tableDesc.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed's index."));
         tableDesc.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier."));
         tableDesc.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time measurement."));
-        tableDesc.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval of measurement."));
-    
-        //
+        tableDesc.addColumn(ScalarColumnDesc<Float>("INTERVAL", "Interval of measurement."));
         // Data columns.
-        //
         tableDesc.addColumn(ArrayColumnDesc<Float>("SWITCHED_DIFF", "Switched power difference (cal on - off)."));
         tableDesc.addColumn(ArrayColumnDesc<Float>("SWITCHED_SUM", "Switched power sum (cal on + off)."));
         tableDesc.addColumn(ArrayColumnDesc<Float>("REQUANTIZER_GAIN", "Requantizer gain."));
-    
         SetupNewTable tableSetup(casaTableName, tableDesc, Table::New);
         _ms.rwKeywordSet().defineTable(name, Table(tableSetup));
         _ms.rwKeywordSet().asTable(name).flush();
     }
     Table casaTable(casaTableName, Table::Update);
     casaTable.addRow(syTab.nrow() * nIF);
-
     ScalarColumn<Double> timeCol(syTab, "TIME");
     ScalarColumn<Float> timeIntCol(syTab, "TIME INTERVAL");
-    ScalarColumn<Int> sourceIDCol(syTab, "SOURCE ID");
     ScalarColumn<Int> antNoCol(syTab, "ANTENNA NO.");
-    ScalarColumn<Int> aubarrayCol(syTab, "SUBARRAY");
     ScalarColumn<Int> freqIDCol(syTab, "FREQ ID");
     if (nIF == 1) {
         ScalarColumn<Float> powerDif1Col(syTab, "POWER DIF1");
         ScalarColumn<Float> powerSum1Col(syTab, "POWER SUM1");
         ScalarColumn<Float> postGain1Col(syTab, "POST GAIN1");
+        ScalarColumn<Float> powerDif2Col;
+        ScalarColumn<Float> powerSum2Col;
+        ScalarColumn<Float> postGain2Col;
+        if (nPol == 2) {
+            powerDif2Col = ScalarColumn<Float>(syTab, "POWER DIF2");
+            powerSum2Col = ScalarColumn<Float>(syTab, "POWER SUM2");
+            postGain2Col = ScalarColumn<Float>(syTab, "POST GAIN2");
+        }
+        _doFillSysPowerSingleIF(
+            casaTableName, timeCol, timeIntCol,
+            antNoCol, freqIDCol, powerDif1Col,
+            powerSum1Col, postGain1Col, powerDif2Col,
+            powerSum2Col, postGain2Col 
+        );
     }
     else {
         ArrayColumn<Float> powerDif1Col(syTab, "POWER DIF1");
         ArrayColumn<Float> powerSum1Col(syTab, "POWER SUM1");
         ArrayColumn<Float> postGain1Col(syTab, "POST GAIN1");
     }
-
-
-
-
-        
 }
+
+void MSFitsInput::_doFillSysPowerSingleIF(
+    const String& casaTableName, const ScalarColumn<Double>& timeCol,
+    const ScalarColumn<Float>& intervalCol,
+    const ScalarColumn<Int>& antNoCol, const ScalarColumn<Int>& freqIDCol,
+    const ScalarColumn<Float>& powerDif1Col,
+    const ScalarColumn<Float>& powerSum1Col,
+    const ScalarColumn<Float>& postGain1Col,
+    const ScalarColumn<Float>& powerDif2Col,
+    const ScalarColumn<Float>& powerSum2Col,
+    const ScalarColumn<Float>& postGain2Col
+) {
+    Table casaTable(casaTableName, Table::Update);
+    {
+        ScalarColumn<Double> sysPowerTime(casaTable, "TIME");
+        const auto timeVals = timeCol.getColumn() * C::day;
+        sysPowerTime.putColumn(timeVals);
+    }
+    {
+        ScalarColumn<Float> sysPowerInterval(casaTable, "INTERVAL");
+        const auto intervalVals = intervalCol.getColumn() * (float)C::day;
+        sysPowerInterval.putColumn(intervalVals);
+    }
+    {
+        ScalarColumn<Float> sysPowerInterval(casaTable, "INTERVAL");
+        const auto intervalVals = intervalCol.getColumn() * (float)C::day;
+        sysPowerInterval.putColumn(intervalVals);
+    }
+    {
+        ScalarColumn<Int> sysPowerAnt(casaTable, "ANTENNA_ID");
+        const auto antVals = antNoCol.getColumn() - 1;
+        sysPowerAnt.putColumn(antVals);
+    }
+    {
+        ScalarColumn<Int> sysPowerSpw(casaTable, "SPECTRAL_WINDOW_ID");
+        const auto spwVals = freqIDCol.getColumn() - 1;
+        sysPowerSpw.putColumn(spwVals);
+    }
+    {
+        ScalarColumn<Int> sysPowerSpw(casaTable, "SPECTRAL_WINDOW_ID");
+        const auto spwVals = freqIDCol.getColumn() - 1;
+        sysPowerSpw.putColumn(spwVals);
+    }
+
+}  
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     static const Regex trailing(" *$"); // trailing blanks
@@ -3860,6 +3900,7 @@ void MSFitsInput::fillFieldTable(double ra, double dec, String source) {
     msField.flagRow().put(0, False);
 
 }
+        
 
 } //# NAMESPACE CASACORE - END
 

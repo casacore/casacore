@@ -48,6 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class FitsInput;
 class BinaryTable;
 class MSColumns;
+template <class T> class ScalarColumn;
 
 // <summary>
 // A helper class for MSFitsInput
@@ -419,10 +420,22 @@ private:
 
   void readRandomGroupUVFits(Int obsType);
   void readPrimaryTableUVFits(Int obsType);
+
+  std::pair<Int, Int> _extractAntennas(Float baseline);
   
   void _fillSysPowerTable(BinaryTable& bt);
 
-  std::pair<Int, Int> _extractAntennas(Float baseline);
+  void _doFillSysPowerSingleIF(
+      const String& casaTableName, const ScalarColumn<Double>& timeCol,
+      const ScalarColumn<Float>& intervalCol,
+      const ScalarColumn<Int>& antNoCol, const ScalarColumn<Int>& freqIDCol,
+      const ScalarColumn<Float>& powerDif1Col,
+      const ScalarColumn<Float>& powerSum1Col,
+      const ScalarColumn<Float>& postGain1Col,
+      const ScalarColumn<Float>& powerDif2Col,
+      const ScalarColumn<Float>& powerSum2Col,
+      const ScalarColumn<Float>& postGain2Col
+  );
 
 };
 
