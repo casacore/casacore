@@ -61,6 +61,23 @@ BOOST_AUTO_TEST_CASE( multidim_construct )
   BOOST_CHECK_EQUAL(x.shape(), shape);
 }
 
+BOOST_AUTO_TEST_CASE( string_construct )
+{
+  class CasaStringLike : public std::string {
+  public:
+    CasaStringLike() : std::string() { }
+    CasaStringLike(char c) : std::string(1, c) { }
+    CasaStringLike(const char* c) : std::string(c) { }
+  };
+  IPosition shape(2, 2, 2);
+  Array<CasaStringLike> x(shape, CasaStringLike("some_string"));
+  //Array<CasaStringLike> x(shape, "some_string"); // <-- This should not compile
+  BOOST_CHECK_EQUAL(x.ndim(), 2);
+  BOOST_CHECK_EQUAL(x.shape(), shape);
+  std::vector<CasaStringLike> ref(2*2, CasaStringLike("some_string"));
+  BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), x.begin(), x.end());
+}
+
 BOOST_AUTO_TEST_CASE( index )
 {
   Array<int> x(IPosition(2, 5, 5));

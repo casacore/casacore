@@ -50,7 +50,14 @@ public:
   // whether T is an integral.
   template<typename InputIterator>
   Storage(InputIterator startIter, InputIterator endIter, const Alloc& allocator) :
-    Storage(startIter, endIter, allocator, std::is_integral<InputIterator>())
+    Storage(startIter, endIter, allocator,
+      disjunction<
+        std::is_integral<InputIterator>,
+        conjunction<
+          std::is_same<InputIterator, const char*>,
+          std::is_base_of<std::string, T>
+        >
+      >())
   { }
   
   // Construct Storage from a range by moving.
@@ -252,6 +259,20 @@ private:
   }
   
   // @}
+
+  // Used by template code above
+  // These are already in C++17, but currently only using C++11...
+    template<class...> struct disjunction : std::false_type { };
+    template<class B1> struct disjunction<B1> : B1 { };
+    template<class B1, class... Bn>
+    struct disjunction<B1, Bn...> 
+    : std::conditional<bool(B1::value), B1, disjunction<Bn...>>::type { };
+
+    template<class...> struct conjunction : std::true_type { };
+    template<class B1> struct conjunction<B1> : B1 { };
+    template<class B1, class... Bn>
+    struct conjunction<B1, Bn...> 
+    : std::conditional<bool(B1::value), conjunction<Bn...>, B1>::type {};
 
   T* _data;
   T* _end;

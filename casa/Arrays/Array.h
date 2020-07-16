@@ -172,20 +172,6 @@ public:
     // Therefore, it is strongly recommended to explicitly provide initPolicy parameter,
     explicit Array(const IPosition &shape, const Alloc& allocator = Alloc());
 
-    // Create an array of the given shape, i.e. after construction
-    // array.ndim() == shape.nelements() and array.shape() == shape.
-    // The origin of the Array is zero.
-    // Storage is allocated by <src>DefaultAllocator<T></src>.
-    // When initPolicy parameter is <src>INIT</src>, elements are initialized with the default value of <src>T()</src>.
-    // When initPolicy parameter is <src>NO_INIT</src>, elements are NOT initialized and programmers are responsible to
-    // initialize elements before they are referred, especially when <src>T</src> is such type like <src>std::string</src>.
-    // <srcblock>
-    //   IPosition shape(1, 10);
-    //   Array<int> ai(shape, ArrayInitPolicies::NO_INIT);
-    //   size_t nread = fread(ai.data(), sizeof(int), ai.nelements(), fp);
-    // </srcblock>
-    //Array(const IPosition &shape, ArrayInitPolicy initPolicy);
-
     // Create an array of the given shape and initialize it with the
     // initial value.
     // Storage is allocated by <src>DefaultAllocator<T></src>.
