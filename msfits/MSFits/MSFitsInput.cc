@@ -414,7 +414,6 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
             }
             else if (type.contains("SY") && ! haveSysPower) {
                 haveSysPower = True;
-                cout << "Found syspower " << __FILE__ << " " << __LINE__ << endl;
                 _fillSysPowerTable(binTab);
             }
             else {
@@ -523,7 +522,6 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     //}
                 } 
                 else if (type.contains("SY")) {
-                    cout << "Found SY table " << __FILE__ << " " << __LINE__ << endl;
                     _fillSysPowerTable(*bt);
                 }
                 else if (type.contains("UV")) {
@@ -1740,7 +1738,7 @@ void MSFitsInput::_fillSysPowerTable(BinaryTable& bt) {
     const auto nPol = btKeywords.asInt("NO_POL");
     Int nrows = bt.nrows();
     Table syTab = bt.fullTable();
-    syTab.tableDesc().show();
+    //syTab.tableDesc().show();
     const static String name = "SYSPOWER";
     const String casaTableName = _ms.tableName() + "/" + name;
     {
@@ -1805,6 +1803,23 @@ void MSFitsInput::_doFillSysPowerSingleIF(
     const ScalarColumn<Float>& postGain2Col
 ) {
     Table casaTable(casaTableName, Table::Update);
+    const auto nrow = timeCol.nrow();
+    const auto npol = powerDif2Col.nrow() == 0 ? 1 : 2;
+    {
+        ScalarColumn<Int> sysPowerAnt(casaTable, "ANTENNA_ID");
+        const auto antVals = antNoCol.getColumn() - 1;
+        sysPowerAnt.putColumn(antVals);
+    }
+    {
+        ScalarColumn<Int> sysPowerFeed(casaTable, "FEED_ID");
+        const Vector<Int> feedVals(nrow, 0);
+        sysPowerFeed.putColumn(feedVals);
+    }
+    {
+        ScalarColumn<Int> sysPowerSpw(casaTable, "SPECTRAL_WINDOW_ID");
+        const auto spwVals = freqIDCol.getColumn() - 1;
+        sysPowerSpw.putColumn(spwVals);
+    }
     {
         ScalarColumn<Double> sysPowerTime(casaTable, "TIME");
         const auto timeVals = timeCol.getColumn() * C::day;
@@ -1816,26 +1831,38 @@ void MSFitsInput::_doFillSysPowerSingleIF(
         sysPowerInterval.putColumn(intervalVals);
     }
     {
-        ScalarColumn<Float> sysPowerInterval(casaTable, "INTERVAL");
-        const auto intervalVals = intervalCol.getColumn() * (float)C::day;
-        sysPowerInterval.putColumn(intervalVals);
+        ArrayColumn<Float> sysPowerDiff(casaTable, "SWITCHED_DIFF");
+        Array<Float> diffs(IPosition(2, npol, nrow));
+        for (uInt i=0; i<nrow; ++i) {
+            diffs(IPosition(2, 0, i)) = powerDif1Col(i);
+            if (npol == 2) {
+                diffs(IPosition(2, 1, i)) = powerDif2Col(i);
+            }
+        }
+        sysPowerDiff.putColumn(diffs);
     }
     {
-        ScalarColumn<Int> sysPowerAnt(casaTable, "ANTENNA_ID");
-        const auto antVals = antNoCol.getColumn() - 1;
-        sysPowerAnt.putColumn(antVals);
+        ArrayColumn<Float> sysPowerSum(casaTable, "SWITCHED_SUM");
+        Array<Float> sums(IPosition(2, npol, nrow));
+        for (uInt i=0; i<nrow; ++i) {
+            sums(IPosition(2, 0, i)) = powerSum1Col(i);
+            if (npol == 2) {
+                sums(IPosition(2, 1, i)) = powerSum2Col(i);
+            }
+        }
+        sysPowerSum.putColumn(sums);
     }
     {
-        ScalarColumn<Int> sysPowerSpw(casaTable, "SPECTRAL_WINDOW_ID");
-        const auto spwVals = freqIDCol.getColumn() - 1;
-        sysPowerSpw.putColumn(spwVals);
+        ArrayColumn<Float> sysPowerGain(casaTable, "REQUANTIZER_GAIN");
+        Array<Float> gains(IPosition(2, npol, nrow));
+        for (uInt i=0; i<nrow; ++i) {
+            gains(IPosition(2, 0, i)) = postGain1Col(i);
+            if (npol == 2) {
+                gains(IPosition(2, 1, i)) = postGain2Col(i);
+            }
+        }
+        sysPowerGain.putColumn(gains);
     }
-    {
-        ScalarColumn<Int> sysPowerSpw(casaTable, "SPECTRAL_WINDOW_ID");
-        const auto spwVals = freqIDCol.getColumn() - 1;
-        sysPowerSpw.putColumn(spwVals);
-    }
-
 }  
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt) {

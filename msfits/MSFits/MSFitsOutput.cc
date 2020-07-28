@@ -2659,7 +2659,7 @@ Bool MSFitsOutput::_writeSY(
     header.define("NO_IF", nrif);
     header.define("NO_POL", npol);
     header.define("NO_ANT", (Int)ms.antenna().nrow());
-    cout << "header " << header << endl;
+    // cout << "header " << header << endl;
     /*
     // Get reference time (i.e. start time) from the main table.
     Double refTime;
@@ -2680,12 +2680,14 @@ Bool MSFitsOutput::_writeSY(
     desc.addField("ANTENNA NO.", TpInt);
     desc.addField("SUBARRAY", TpInt);
     desc.addField("FREQ ID", TpInt);
+    // cout << "ifShape " << ifShape << endl;
     desc.addField("POWER DIF1", TpArrayFloat, ifShape);
     units.define("POWER DIF1", "counts");
     desc.addField("POWER SUM1", TpArrayFloat, ifShape);
     units.define("POWER SUM1", "counts");
     desc.addField("POST GAIN1", TpArrayFloat, ifShape);
     if (npol == 2) {
+        // cout << "2 polarizations" << endl;
         desc.addField("POWER DIF2", TpArrayFloat, ifShape);
         units.define("POWER DIF2", "counts");
         desc.addField("POWER SUM2", TpArrayFloat, ifShape);
@@ -2696,6 +2698,7 @@ Bool MSFitsOutput::_writeSY(
         output.get(), desc, stringLengths, nentries, header,
         units, False
     );
+    // cout << "writer.row() " << writer.row() << endl;
     RecordFieldPtr<Double> time(writer.row(), TIME);
     RecordFieldPtr<Float> interval(writer.row(), "TIME INTERVAL");
     RecordFieldPtr<Int> sourceId(writer.row(), "SOURCE ID");
@@ -2725,10 +2728,11 @@ Bool MSFitsOutput::_writeSY(
     const ArrayColumn<Float> qGDiff (subtable, "REQUANTIZER_GAIN");
     Vector<Float> pdv, psv, pgv;
     for (uInt i = 0; i < nrows; i += nrif) {
+        // cout << "i " << i << endl;
         const auto myTime = timeCol(i);
         *time = myTime/C::day;
         const auto myInterval = intervalCol(i);
-        *interval = myInterval/C::day;
+        *interval = myInterval/(float)C::day;
         const auto fields = md.getFieldsForTimes(*time, *interval/2);
         const auto nfields = fields.size();
         if (nfields > 1) {
@@ -2792,16 +2796,17 @@ Bool MSFitsOutput::_writeSY(
             }
         }
         *powerDif1 = pd1;
+        // cout << "powerDif1 " << *powerDif1 << endl;
         *powerSum1 = ps1;
         *postGain1 = pg1;
         if (npol == 2) {
             *powerDif2 = pd2;
+            // cout << "powerDif2 " << *powerDif2 << endl;
             *powerSum2 = ps2;
             *postGain2 = pg2;
         }
         writer.write();
     }
-    cout << "return True" << endl;
     return True;
 }
     
