@@ -14,7 +14,6 @@ Functionals/FunctionFactoryErrors.cc
 Functionals/FunctionalProxy.cc
 Functionals/SerialHelper.cc
 Mathematics/Combinatorics.cc
-#Mathematics/FFTPack.cc
 Mathematics/FFTServer.cc
 Mathematics/FFTW.cc
 Mathematics/GaussianBeam.cc
