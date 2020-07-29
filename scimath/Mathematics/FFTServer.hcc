@@ -35,11 +35,12 @@
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-//# This file contains the templated functions dependent on using FFTW3
-//# or FFTPack.
+//# This file contains the templated functions dependent on using FFTW3.
+//# It used to use FFTPack as alternative implementation, but this has
+//# been removed in 2020 because FFTPack did not compile with new compilers.
 //# Note that the file is called .hcc (and not. tcc) to emphasize that it
 //# should not be used for automatic template instantiation (that knowledge
-//# about using FFTW3 or FFTPack is only needed when building casacore).
+//# about using FFTW3 is only needed when building casacore).
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

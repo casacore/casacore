@@ -393,7 +393,7 @@ private:
   // going faster. 
   // This buffer is also used as temporary storage when flipping the data.
   Block<S> itsBuffer;
-  // FFTW specific members. Do not harm if FFTPack is used.
+  // FFTW specific members.
   FFTW           itsFFTW;
   std::vector<T> itsWorkIn;
   std::vector<S> itsWorkOut;
