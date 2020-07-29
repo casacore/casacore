@@ -33,14 +33,14 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
-#include <casacore/scimath/Mathematics/FFTPack.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-//# This file contains the templated functions dependent on using FFTW3
-//# or FFTPack.
+//# This file contains the templated functions dependent on using FFTW3.
+//# It used to use FFTPack as alternative implementation, but this has
+//# been removed in 2020 because FFTPack did not compile with new compilers.
 //# Note that the file is called .hcc (and not. tcc) to emphasize that it
 //# should not be used for automatic template instantiation (that knowledge
-//# about using FFTW3 or FFTPack is only needed when building casacore).
+//# about using FFTW3 is only needed when building casacore).
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -67,19 +67,12 @@ FFTServer(const FFTServer<T,S> & other)
 template<class T, class S> FFTServer<T,S>::
 ~FFTServer()
 {
-  for (uInt i=0; i<itsWork.nelements(); ++i) {
-    delete itsWork[i];
-  }
 }
 
 template<class T, class S> FFTServer<T,S> & FFTServer<T,S>::
 operator=(const FFTServer<T,S> & other)
 {
   if (this != &other) {
-    for (uInt i=0; i<itsWork.nelements(); ++i) {
-      delete itsWork[i];
-      itsWork[i] = 0;
-    }
     resize (other.itsSize, other.itsTransformType);
   }
   return *this;
@@ -99,7 +92,6 @@ resize(const IPosition & fftSize,
     itsSize.resize (ndim, False);  // to make assignment work!
     itsSize = fftSize;
 
-#ifdef HAVE_FFTW3
     size_t nelem = itsSize.product();
     itsWorkIn.resize (nelem);
     itsWorkOut.resize (nelem / itsSize[0] * (itsSize[0]/2+1));
@@ -124,68 +116,6 @@ resize(const IPosition & fftSize,
     case FFTEnums::REALSYMMETRIC:
       AlwaysAssert(itsTransformType != FFTEnums::REALSYMMETRIC, AipsError);
     }
- 
-#else
-    // FFTPack uses a work array per dimension.
-    // Delete unused work arrays.
-    for (uInt i=ndim; i<itsWork.size(); ++i) {
-      delete itsWork[i];
-      itsWork[i] = 0;
-    }
-    // Create work arrays as needed.
-    uInt oldSize = itsWork.size();
-    itsWork.resize (ndim);
-    for (uInt i=0; i<ndim; ++i) {
-      if (i >= oldSize  ||  itsWork[i] == 0) {
-        itsWork[i] = new Block<T>;
-      }
-    }
-    // Now size the work arrays. There is one for each dimension.
-    // Initialize the FFT.
-    // Only along the first dimension a real <-> complex transform is done,
-    // so it is treated separately.
-    uInt fftLen = fftSize[0];
-    uInt workSize = 0;
-    uInt bufferLength = itsBuffer.nelements();
-    switch (transformType) {
-    case FFTEnums::COMPLEX:
-    case FFTEnums::INVCOMPLEX:
-      workSize = 4 * fftLen + 15;
-      bufferLength = std::max(bufferLength, fftLen);
-      break;
-    case FFTEnums::REALTOCOMPLEX:
-    case FFTEnums::COMPLEXTOREAL:
-      workSize = 2 * fftLen + 15;
-      break;
-    case FFTEnums::REALSYMMETRIC:
-      workSize = 3 * fftLen + 15;
-      break;
-    }
-    itsWork[0]->resize (workSize); 
-    switch (transformType) {
-    case FFTEnums::COMPLEX:
-    case FFTEnums::INVCOMPLEX:
-      FFTPack::cffti(fftLen, itsWork[0]->storage());
-      break;
-    case FFTEnums::REALTOCOMPLEX:
-    case FFTEnums::COMPLEXTOREAL:
-      FFTPack::rffti(fftLen, itsWork[0]->storage());
-      break;
-    case FFTEnums::REALSYMMETRIC:
-      FFTPack::costi(fftLen, itsWork[0]->storage());
-      break;
-    }
-    // Allocate the work arrays for the other dimensions.
-    for (uInt i=1; i<ndim; ++i) {
-      fftLen = fftSize[i];
-      workSize = 4 * fftLen + 15;
-      itsWork[i]->resize (workSize); 
-      FFTPack::cffti(fftLen, itsWork[i]->storage());
-      bufferLength = std::max(bufferLength, fftLen);
-    }
-    // Resize the buffer.
-    itsBuffer.resize (bufferLength, False, False);
-#endif
   }
 }
 
@@ -275,83 +205,11 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool)
   S * resultPtr = cResult.getStorage(resultIsAcopy);
   const T* dataPtr = rData.getStorage(dataIsAcopy);
 
-#ifdef HAVE_FFTW3
-
   IPosition fftwShape(resultShape);
   objcopy(&(itsWorkIn[0]), dataPtr, itsWorkIn.size());
   itsFFTW.r2c(itsSize, &(itsWorkIn[0]), &(itsWorkOut[0]));
   objcopy(resultPtr, &(itsWorkOut[0]), itsWorkOut.size());
 
-#else
-
-  // Do real to complex transforms along all the rows
-  {
-    T * workPtr = itsWork[0]->storage();
-    T * resPtr = (T *) resultPtr;
-    uInt fftLen = shape(0);
-    Bool even = True;
-    if (fftLen%2 == 1) even = False;
-    uInt resultRowLen = resultShape(0)*2;
-    const T * inputRowPtr = dataPtr;
-    T * resultRowPtr = resPtr;
-    const uInt nrows = shape.product()/fftLen;
-    // Iterate over all the rows
-    for (uInt r = 0; r < nrows; ++r) {
-      // Copy data to the complex array
-      objcopy(resultRowPtr, inputRowPtr, fftLen);
-      // Do the Real->Complex row transforms
-      FFTPack::rfftf(fftLen, resultRowPtr, workPtr);
-      // Shuffle elements along
-      if (fftLen > 1) {
-	objmove(resultRowPtr+2, resultRowPtr+1, fftLen-1);
-      }
-      // put zero into imaginary part of the first element
-      *(resultRowPtr+1) = T(0.0);
-      if (even) {
-	// Stick zero into imaginary part of the nyquist sample
-	*(resultRowPtr+resultRowLen-1) = T(0.0);
-      } 
-      // Increment the pointers
-      inputRowPtr += fftLen;
-      resultRowPtr += resultRowLen;
-    }
-  }
-  // Do complex to complex transforms along all the remaining axes.
-  const uInt ndim = shape.nelements();
-  if (ndim > 1) {
-    T * workPtr = 0;
-    S * buffPtr = 0;
-    S * rowPtr = 0;
-    const uInt cElements = resultShape.product();
-    uInt nffts, r, stride = resultShape(0);
-    for (uInt n = 1; n < ndim; ++n) {
-      uInt fftLen = resultShape(n);
-      nffts = cElements/fftLen;
-      workPtr = itsWork[n]->storage();
-      buffPtr = itsBuffer.storage();
-      rowPtr = resultPtr;
-      r = 0;
-      while (r < nffts) {
-	// Copy the data into a temporary buffer. This makes it contiguous and
-	// hence it is more likely to fit into cache. With current computers
-	// this speeds up access to the data by a factors of about ten!
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
-	// Do the transform
-	FFTPack::cfftf(fftLen, buffPtr, workPtr);
-	// copy the data back
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
-	// indexing calculations
-	r++;
-	rowPtr++;
-	if (r%stride == 0) {
-	  rowPtr += stride*(fftLen-1);
-        }
-      }
-      stride *= fftLen;
-    }
-  }
-
-#endif
   rData.freeStorage(dataPtr, dataIsAcopy);
   cResult.putStorage(resultPtr, resultIsAcopy);
 }
@@ -387,8 +245,6 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput)
   S * dataPtr = cCopy.getStorage(dataIsAcopy);
   T *resultPtr = rResult.getStorage(resultIsAcopy);
 
-#ifdef HAVE_FFTW3
-
   objcopy(&(itsWorkOut[0]), dataPtr, itsWorkOut.size());
   itsFFTW.c2r(itsSize, &(itsWorkOut[0]), &(itsWorkIn[0]));
   for (uInt i = 0; i < itsWorkIn.size(); i++) {
@@ -396,69 +252,6 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput)
   }
   objcopy(resultPtr, &(itsWorkIn[0]), itsWorkIn.size());
 
-#else
-
-  T * workPtr = 0;
-  // Do complex to complex transforms along all other dimensions
-  const uInt ndim = rShape.nelements();
-  if (ndim > 1) {
-    S * buffPtr = itsBuffer.storage();
-    S * rowPtr = 0;
-    const uInt cElements = cShape.product();
-    uInt n, r, nffts, stride = cShape(0);
-    for (n = 1; n < ndim; ++n) {
-      workPtr = itsWork[n]->storage();
-      rowPtr = dataPtr;
-      uInt fftLen = rShape(n);
-      nffts = cElements/fftLen;
-      r = 0;
-      while (r < nffts) {
-	// Copy the data into a temporary buffer. This makes it contiguous and
-	// hence it is more likely to fit into cache. With current computers
-	// this speeds up access to the data by a factors of about ten!
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
-	// Do the FFT
-	FFTPack::cfftb(fftLen, buffPtr, workPtr);
-	// copy the data back
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
-	// indexing calculations
-	r++;
-	rowPtr++;
-	if (r%stride == 0) {
-	  rowPtr += stride*(fftLen-1);
-        }
-      }
-      stride *= fftLen;
-    }
-  }
-  // Do complex to real transforms along all the rows
-  T * realDataPtr = (T *) dataPtr;
-  workPtr = itsWork[0]->storage();
-
-  T * resultRowPtr = resultPtr;
-  const uInt cStride = cShape(0)*2;
-  uInt fftLen = rShape(0);
-  const uInt nffts = rShape.product()/fftLen;
-  // Iterate over all the rows
-  for (uInt r = 0; r < nffts; ++r) {
-    // Copy the data to the real array
-    *resultRowPtr = *realDataPtr;
-    objcopy(resultRowPtr+1, realDataPtr+2, fftLen-1);
-    // Do the Complex->Real row transform
-      FFTPack::rfftb(fftLen, resultRowPtr, workPtr);
-    // Increment the pointers
-    realDataPtr += cStride;
-    resultRowPtr += fftLen;
-  }
-  // While we have a raw pointer handy do the scaling
-  uInt nelem = rResult.nelements();
-  T scale = T(1)/T(nelem);
-  T * endPtr = resultPtr + nelem;
-  for (resultRowPtr = resultPtr; resultRowPtr < endPtr; resultRowPtr++) {
-    *resultRowPtr *= scale;
-  }
-
-#endif
   rResult.putStorage(resultPtr, resultIsAcopy);
   cCopy.freeStorage((const S*&)dataPtr, dataIsAcopy);
 }
@@ -491,8 +284,6 @@ fft0(Array<S> & cValues, const Bool toFrequency)
   Bool valuesIsAcopy;
   S * complexPtr = cValues.getStorage(valuesIsAcopy);
 
-#ifdef HAVE_FFTW3
-
   objcopy(&(itsWorkC2C[0]), complexPtr, itsWorkC2C.size());
   itsFFTW.c2c(itsSize, &(itsWorkC2C[0]), toFrequency);
   if (!toFrequency) {
@@ -502,65 +293,6 @@ fft0(Array<S> & cValues, const Bool toFrequency)
   }
   objcopy(complexPtr, &(itsWorkC2C[0]), itsWorkC2C.size());
 
-#else
-
-  const uInt ndim = shape.nelements();
-  T * workPtr = 0;
-  // Do complex to complex transforms along all the dimensions
-  S * buffPtr = itsBuffer.storage();
-  T * realBuffPtr = 0;
-  T * endRowPtr = 0;
-  S * rowPtr = 0;
-  const uInt nElements = shape.product();
-  const T scale = T(1)/T(nElements);
-  const uInt shape0t2 = shape(0) * 2;
-  uInt n, r, nffts, stride = 1u;
-  for (n = 0; n < ndim; ++n) {
-    workPtr = itsWork[n]->storage();
-    rowPtr = complexPtr;
-    uInt fftLen = shape(n);
-    nffts = nElements/fftLen;
-    r = 0;
-    buffPtr = itsBuffer.storage();
-    while (r < nffts) {
-      // Copy the data into a temporary buffer. This makes it contiguous and
-      // hence it is more likely to fit into cache. With current computers
-      // this speeds up access to the data by a factors of about ten!
-      if (n != 0) {
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
-      } else {
-	buffPtr = rowPtr;
-      }
-      // Do the FFT
-      if (toFrequency == True) {
-	FFTPack::cfftf(fftLen, buffPtr, workPtr);
-      } else {
-	FFTPack::cfftb(fftLen, buffPtr, workPtr);
-	if (n == 0) {  // Scale by 1/N while things are (hopefully) in cache
-	  realBuffPtr = (T *) buffPtr;
-	  // No need to do complex multiplications when real ones will do. 
-	  // This saves two multiplies and additions per complex element.
-	  for (endRowPtr = realBuffPtr+shape0t2; 
-	       realBuffPtr < endRowPtr; realBuffPtr++) {
-	    *realBuffPtr *= scale;
-	  }
-	}
-      }
-      // copy the data back
-      if (n != 0) {
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
-      }
-      // indexing calculations
-      r++;
-      rowPtr++;
-      if (r%stride == 0) {
-	rowPtr += stride*(fftLen-1);
-      }
-    }
-    stride *= fftLen;
-  }
-
-#endif
   cValues.putStorage(complexPtr, valuesIsAcopy);
 }
 

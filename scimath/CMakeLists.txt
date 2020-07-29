@@ -14,7 +14,6 @@ Functionals/FunctionFactoryErrors.cc
 Functionals/FunctionalProxy.cc
 Functionals/SerialHelper.cc
 Mathematics/Combinatorics.cc
-Mathematics/FFTPack.cc
 Mathematics/FFTServer.cc
 Mathematics/FFTW.cc
 Mathematics/GaussianBeam.cc
@@ -236,7 +235,6 @@ Mathematics/Convolver.h
 Mathematics/Convolver.tcc
 Mathematics/DFTServer.h
 Mathematics/DFTServer.tcc
-Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
 Mathematics/GaussianBeam.h
