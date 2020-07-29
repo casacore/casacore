@@ -67,19 +67,12 @@ FFTServer(const FFTServer<T,S> & other)
 template<class T, class S> FFTServer<T,S>::
 ~FFTServer()
 {
-  for (uInt i=0; i<itsWork.nelements(); ++i) {
-    delete itsWork[i];
-  }
 }
 
 template<class T, class S> FFTServer<T,S> & FFTServer<T,S>::
 operator=(const FFTServer<T,S> & other)
 {
   if (this != &other) {
-    for (uInt i=0; i<itsWork.nelements(); ++i) {
-      delete itsWork[i];
-      itsWork[i] = 0;
-    }
     resize (other.itsSize, other.itsTransformType);
   }
   return *this;
