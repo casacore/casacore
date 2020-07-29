@@ -1734,6 +1734,7 @@ void MSFitsInput::_fillSysPowerTable(BinaryTable& bt) {
     static const Regex trailing(" *$"); // trailing blanks
     const TableRecord btKeywords = bt.getKeywords();
     const auto nIF = btKeywords.asInt("NO_IF");
+    ThrowIf(nIF > 1, "Currently SYSPOWER tables with only a single IF may be imported");
     ThrowIf(nIF == 0, "Number of IFs in SY table cannot be 0");
     const auto nPol = btKeywords.asInt("NO_POL");
     Int nrows = bt.nrows();

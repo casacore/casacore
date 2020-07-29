@@ -2589,9 +2589,10 @@ Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const Measuremen
     return True;
 }
 
+// TODO uncommoment nspw when multiple IFs are supported
 Bool MSFitsOutput::_writeSY(
     std::shared_ptr<FitsOutput> output, const MeasurementSet &ms, const File& syspower,
-    Int nspw, const Block<Int>& spwIDMap, Bool combineSpw
+    Int /*nspw*/, const Block<Int>& spwIDMap, Bool combineSpw
 ) {
     LogIO os(LogOrigin("MSFitsOutput", __func__));
     static const String TIME = "TIME";
@@ -2625,7 +2626,17 @@ Bool MSFitsOutput::_writeSY(
     }
     // What to do based on the value of combineSpw follows the pattern
     // in _writeTy()
+    // TODO currently not supporting writing multiple IFs. This code has been written in
+    // a way that should make supporting multiple IFs fairly straight forward (the issue will
+    // be adding support to MSFitsInput.cc)
     Int nrif = 1;
+    if (combineSpw) {
+        os << LogIO::WARN << "Combining spectral windows (multiple IFs) is currently not supported "
+            << "for the SYSPOWER table" << LogIO::POST;
+        combineSpw = False;
+    }
+    /*
+    // this code is for when multiple IFs are supported
     if (combineSpw) {
         if (nrows % nspw == 0) {
             nrif = nspw;
@@ -2640,6 +2651,7 @@ Bool MSFitsOutput::_writeSY(
                 << LogIO::POST;
         }
     }
+    */
     IPosition ifShape(1, nrif);
     const uInt nentries = nrows/nrif;
     os << LogIO::NORMAL << "Found " << nentries << " SY table entries ("
@@ -2659,16 +2671,6 @@ Bool MSFitsOutput::_writeSY(
     header.define("NO_IF", nrif);
     header.define("NO_POL", npol);
     header.define("NO_ANT", (Int)ms.antenna().nrow());
-    // cout << "header " << header << endl;
-    /*
-    // Get reference time (i.e. start time) from the main table.
-    Double refTime;
-    { // get starttime (truncated to days)
-        MSColumns mscol(ms);
-        refTime = floor(mscol.time()(0) / C::day) * C::day;
-    }
-    cout << "refTime " << refTime << endl;
-    */
     RecordDesc desc;
     Record stringLengths; // no strings
     Record units;
@@ -2680,14 +2682,12 @@ Bool MSFitsOutput::_writeSY(
     desc.addField("ANTENNA NO.", TpInt);
     desc.addField("SUBARRAY", TpInt);
     desc.addField("FREQ ID", TpInt);
-    // cout << "ifShape " << ifShape << endl;
     desc.addField("POWER DIF1", TpArrayFloat, ifShape);
     units.define("POWER DIF1", "counts");
     desc.addField("POWER SUM1", TpArrayFloat, ifShape);
     units.define("POWER SUM1", "counts");
     desc.addField("POST GAIN1", TpArrayFloat, ifShape);
     if (npol == 2) {
-        // cout << "2 polarizations" << endl;
         desc.addField("POWER DIF2", TpArrayFloat, ifShape);
         units.define("POWER DIF2", "counts");
         desc.addField("POWER SUM2", TpArrayFloat, ifShape);
@@ -2698,7 +2698,6 @@ Bool MSFitsOutput::_writeSY(
         output.get(), desc, stringLengths, nentries, header,
         units, False
     );
-    // cout << "writer.row() " << writer.row() << endl;
     RecordFieldPtr<Double> time(writer.row(), TIME);
     RecordFieldPtr<Float> interval(writer.row(), "TIME INTERVAL");
     RecordFieldPtr<Int> sourceId(writer.row(), "SOURCE ID");
@@ -2728,7 +2727,6 @@ Bool MSFitsOutput::_writeSY(
     const ArrayColumn<Float> qGDiff (subtable, "REQUANTIZER_GAIN");
     Vector<Float> pdv, psv, pgv;
     for (uInt i = 0; i < nrows; i += nrif) {
-        // cout << "i " << i << endl;
         const auto myTime = timeCol(i);
         *time = myTime/C::day;
         const auto myInterval = intervalCol(i);
@@ -2760,11 +2758,6 @@ Bool MSFitsOutput::_writeSY(
         Vector<Float> pg2(nrif);
         std::set<Int> spwSet;
         for (Int j = 0; j < nrif; ++j) {
-            /*
-            cout << std::setprecision(12) << "i " << i << " j " << j << " timeCol(i+j) "
-                << timeCol(i+j) << " myTime " << myTime << " got ant " << antnums(antCol(i + j))
-                << " exp ant " << *antenna << endl;
-                */
             if (j > 0) {
                 if (timeCol(i + j) != myTime) {
                     os << LogIO::SEVERE << "Irregularities in time values "
@@ -2796,12 +2789,10 @@ Bool MSFitsOutput::_writeSY(
             }
         }
         *powerDif1 = pd1;
-        // cout << "powerDif1 " << *powerDif1 << endl;
         *powerSum1 = ps1;
         *postGain1 = pg1;
         if (npol == 2) {
             *powerDif2 = pd2;
-            // cout << "powerDif2 " << *powerDif2 << endl;
             *powerSum2 = ps2;
             *postGain2 = pg2;
         }
