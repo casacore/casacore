@@ -2628,7 +2628,11 @@ Bool MSFitsOutput::_writeSY(
     // in _writeTy()
     // TODO currently not supporting writing multiple IFs. This code has been written in
     // a way that should make supporting multiple IFs fairly straight forward (the issue will
-    // be adding support to MSFitsInput.cc)
+    // be adding support to MSFitsInput.cc, and in fact the reason I'm not supporting writing multiple
+    // IFs to the uvfits table currently is because the only way to test that is to read the uvfits file
+    // back in which requires support for multiple IFs in MSFitsInput.cc. The current requirement is to
+    // write the SYSPOWER table to uvfits, not read it from uvfits, so the current implementation is 
+    // sufficient CAS-11860 )
     Int nrif = 1;
     if (combineSpw) {
         os << LogIO::WARN << "Combining spectral windows (multiple IFs) is currently not supported "
