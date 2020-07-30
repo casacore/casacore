@@ -241,7 +241,7 @@ public:
 
   // Return the current MS Id (according to the order in which
   // they appeared in the constructor)
-  Int msId() const;
+  size_t msId() const;
 
   // Return true if msId has changed since last iteration
   Bool newMS() const;
@@ -338,12 +338,12 @@ public:
 			 Double freqStep);
 
   //Get the number of actual ms's associated wth this iterator
-  Int numMS() const;
+  size_t numMS() const;
 
   //Get a reference to the nth ms in the list of ms associated with this
   // iterator. If larger than the list of ms's current ms is returned
   // So better check wth numMS() before making the call
-  const MS& ms(const uInt n) const;
+  const MS& ms(const size_t n) const;
 
   //Returns the phasecenter for the first time stamp of the iteration
   //The time is important for field tables that have polynomial or ephemerides
@@ -382,10 +382,10 @@ protected:
   PtrBlock<TableIterator* > tabIter_p;
   Block<Bool> tabIterAtStart_p;
 
-  Int nMS_p;
+  size_t nMS_p, curMS_p;
   CountedPtr<MSColumns> msc_p;
   Table curTable_p;
-  Int curMS_p, lastMS_p, curArray_p, lastArray_p, curSource_p;
+  Int lastMS_p, curArray_p, lastArray_p, curSource_p;
   String curFieldName_p, curSourceName_p;
   Int curField_p, lastField_p, curSpectralWindow_p, lastSpectralWindow_p;
   Int curPolarizationId_p, lastPolarizationId_p;
@@ -443,8 +443,8 @@ inline Bool MSIter::newArray() const {return newArray_p;}
 inline Bool MSIter::newField() const { return newField_p;}
 inline Bool MSIter::newSpectralWindow() const
 { return newSpectralWindow_p;}
-inline Int MSIter::msId() const { return curMS_p;}
-inline Int MSIter::numMS() const { return nMS_p;}
+inline size_t MSIter::msId() const { return curMS_p;}
+inline size_t MSIter::numMS() const { return nMS_p;}
 inline Int MSIter::arrayId() const {return curArray_p;}
 inline Int MSIter::fieldId() const { return curField_p;}
 inline Int MSIter::spectralWindowId() const
