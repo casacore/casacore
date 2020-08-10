@@ -58,6 +58,9 @@
 #include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
 #include <casacore/ms/MeasurementSets/MSTileLayout.h>
 
+#include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasDesc.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/measures/Measures/MEpoch.h>
@@ -155,6 +158,7 @@ static Int getIndexContains(Vector<String>& map, const String& key,
 Bool FITSIDItoMS1::firstMain = True; // initialize the class variable firstMain
 Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSyscal
 Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWeather
+Bool FITSIDItoMS1::firstGainCurve = True; // initialize the class variable firstGainCurve
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 std::map<Int,Int> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
@@ -192,6 +196,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int&
       firstMain = True;
       firstSyscal = True;
       firstWeather = True;
+      firstGainCurve = True;
       weather_hasWater_p = False;
       weather_hasElectron_p = False;
       antIdFromNo.clear();
@@ -1571,7 +1576,8 @@ void FITSIDItoMS1::getAxisInfo()
 
 void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM, 
 				       Bool mainTbl, Bool addCorrMod,
-				       Bool addSyscal, Bool addWeather) {
+				       Bool addSyscal, Bool addWeather,
+				       Bool addGainCurve) {
   
   Int nCorr = 0;
   Int nChan = 0;
@@ -1761,6 +1767,33 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     SetupNewTable tabSetup(ms.weatherTableName(), td, option);
     ms.rwKeywordSet().defineTable(MS::keywordName(MS::WEATHER),
 				  Table(tabSetup));
+  }
+
+  if(addGainCurve){
+    TableDesc td;
+    String name = "GAIN_CURVE";
+
+    td.comment() = "Gain curve table";
+    td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
+    td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
+    td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+    td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<String>("TYPE", "Gain curve type"));
+    td.addColumn(ScalarColumnDesc<Int>("NUM_POLY", "Number of terms in polynomial"));
+    td.addColumn(ArrayColumnDesc<Float>("GAIN", "Gain polynomial"));
+    td.addColumn(ArrayColumnDesc<Float>("SENSITIVITY", "Antenna sensitivity"));
+    TableMeasValueDesc measVal(td, "TIME");
+    TableMeasDesc<MEpoch> measCol(measVal);
+    measCol.write(td);
+    TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+    timeTqd.write(td);
+    TableQuantumDesc intervalTqd(td, "INTERVAL", Unit("s"));
+    intervalTqd.write(td);
+    TableQuantumDesc sensTqd(td, "SENSITIVITY", Unit("K/Jy"));
+    sensTqd.write(td);
+    SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
+    ms.rwKeywordSet().defineTable("GAIN_CURVE", Table(tableSetup));
   }
 
   // update the references to the subtable keywords
@@ -3449,12 +3482,154 @@ Bool FITSIDItoMS1::fillWeatherTable()
 
 Bool FITSIDItoMS1::handleGainCurve()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "handleGainCurve");
-  // convert the GAIN_CURVE table to a calibration table
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int nIF = 1;
+  int nTabs = 1;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "NO_BAND") {
+      nIF = fkw->asInt();
+    }
+    if (kwname == "NO_TABS") {
+      nTabs = fkw->asInt();
+    }
+  }
+
+  TableDesc td;
+  String name = "GAIN_CURVE";
+
+  td.comment() = "Gain curve table";
+  td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
+  td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
+  td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+  td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<String>("TYPE", "Gain curve type"));
+  td.addColumn(ScalarColumnDesc<Int>("NUM_POLY", "Number of terms in polynomial"));
+  td.addColumn(ArrayColumnDesc<Float>("GAIN", "Gain polynomial"));
+  td.addColumn(ArrayColumnDesc<Float>("SENSITIVITY", "Antenna sensitivity"));
+  TableMeasValueDesc measVal(td, "TIME");
+  TableMeasDesc<MEpoch> measCol(measVal);
+  measCol.write(td);
+  TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+  timeTqd.write(td);
+  TableQuantumDesc intervalTqd(td, "INTERVAL", Unit("s"));
+  intervalTqd.write(td);
+  TableQuantumDesc sensTqd(td, "SENSITIVITY", Unit("K/Jy"));
+  sensTqd.write(td);
+  SetupNewTable tableSetup(ms_p.tableName() + "/" + name, td, Table::New);
+  ms_p.rwKeywordSet().defineTable("GAIN_CURVE", Table(tableSetup));
+
+  Int nVal=nrows();
+  Bool dualPol=False;
+
+  Table gcTab = oldfullTable("");
+  ScalarColumn<Int> anNo(gcTab, "ANTENNA_NO");
+  ScalarColumn<Int> array(gcTab, "ARRAY");
+  ScalarColumn<Int> fqid(gcTab, "FREQID");
+  ArrayColumn<Int> type_1(gcTab, "TYPE_1");
+  ArrayColumn<Int> nterm_1(gcTab, "NTERM_1");
+  ArrayColumn<Int> xtyp_1(gcTab, "X_TYP_1");
+  ArrayColumn<Int> ytyp_1(gcTab, "Y_TYP_1");
+  ArrayColumn<Float> gain_1(gcTab, "GAIN_1");
+  ArrayColumn<Float> sens_1(gcTab, "SENS_1");
+  ArrayColumn<Int> type_2;
+  ArrayColumn<Int> nterm_2;
+  ArrayColumn<Int> xtyp_2;
+  ArrayColumn<Int> ytyp_2;
+  ArrayColumn<Float> gain_2;
+  ArrayColumn<Float> sens_2;
+  if (gcTab.tableDesc().isColumn("TYPE_2")) {
+      type_2.attach(gcTab, "TYPE_2");
+      nterm_2.attach(gcTab, "NTERM_2");
+      xtyp_2.attach(gcTab, "X_TYP_2");
+      ytyp_2.attach(gcTab, "Y_TYP_2");
+      gain_2.attach(gcTab, "GAIN_2");
+      sens_2.attach(gcTab, "SENS_2");
+      dualPol=True;
+    }
+
+  Table msgc = ms_p.rwKeywordSet().asTable("GAIN_CURVE");
+  Vector<Float> sens(dualPol ? 2 : 1);
+
+  Int outRow=-1;
+  for (Int inRow=0; inRow<nVal; inRow++) {
+    for (Int inIF=0; inIF<nIF; inIF++) {
+      msgc.addRow(); outRow++;
+
+      ScalarColumn<Int> antennaIdCol(msgc, "ANTENNA_ID");
+      ScalarColumn<Int> feedIdCol(msgc, "FEED_ID");
+      ScalarColumn<Int> spwIdCol(msgc, "SPECTRAL_WINDOW_ID");
+      ScalarColumn<Double> timeCol(msgc, "TIME");
+      ScalarColumn<Double> intervalCol(msgc, "INTERVAL");
+      ScalarColumn<String> typeCol(msgc, "TYPE");
+      ScalarColumn<Int> npolyCol(msgc, "NUM_POLY");
+      ArrayColumn<Float>  gainCol(msgc,"GAIN");
+      ArrayColumn<Float> sensCol(msgc, "SENSITIVITY");
+
+      IPosition thisIF = IPosition(1,inIF);
+      if (dualPol &&
+	  (type_1(inRow)(thisIF) != type_2(inRow)(thisIF) ||
+	   xtyp_1(inRow)(thisIF) != xtyp_2(inRow)(thisIF) ||
+	   ytyp_1(inRow)(thisIF) != ytyp_2(inRow)(thisIF) ||
+	   nterm_1(inRow)(thisIF) != nterm_2(inRow)(thisIF))) {
+	*itsLog << "Distinct gain curve types per polarisation" << LogIO::POST;
+	continue;
+      }
+      if (type_1(inRow)(thisIF) != 2) {
+	*itsLog << "Unsupported gain curve type "
+		<< type_1(inRow)(thisIF) << LogIO::POST;
+	continue;
+      }
+      switch (ytyp_1(inRow)(thisIF)) {
+      case 1:
+      case 2:
+	break;
+      default:
+	*itsLog << "Unsupported gain curve coordinate type "
+		<< ytyp_1(inRow)(thisIF) << LogIO::POST;
+	continue;
+      }
+
+      if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
+	antennaIdCol.put(outRow, antIdFromNo[anNo(inRow)]);
+      } else {
+    	*itsLog << LogIO::SEVERE << "Internal error: no mapping for ANTENNA_NO "
+		<< anNo(inRow) << LogIO::EXCEPTION;
+      }
+      feedIdCol.put(outRow,-1);
+      spwIdCol.put(outRow,inIF);
+      switch (ytyp_1(inRow)(thisIF)) {
+      case 1:
+	typeCol.put(outRow,"POWER(EL)");
+	break;
+      case 2:
+	typeCol.put(outRow,"POWER(ZA)");
+	break;
+      }
+      timeCol.put(outRow, (startTime_p + lastTime_p) / 2);
+      intervalCol.put(outRow, lastTime_p - startTime_p);
+      npolyCol.put(outRow,nterm_1(inRow)(thisIF));
+      Matrix<Float> gain(dualPol ? 2 : 1, nterm_1(inRow)(thisIF));
+      gain.row(0)=gain_1(inRow)(Slice(inIF * nTabs, nterm_1(inRow)(thisIF)));
+      if (dualPol)
+	gain.row(1)=gain_2(inRow)(Slice(inIF * nTabs, nterm_2(inRow)(thisIF)));
+      gainCol.put(outRow,gain);
+      sens(0)=sens_1(inRow)(thisIF);
+      if (dualPol)
+	sens(1)=sens_2(inRow)(thisIF);
+      sensCol.put(outRow,sens);
+    }
+  }
+
+  ms_p.rwKeywordSet().asTable("GAIN_CURVE").flush();
+
+  return True;
 }
 
 Bool FITSIDItoMS1::handlePhaseCal()
@@ -3591,6 +3766,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     Bool addCorrMode=False;
     Bool addSyscal=False;
     Bool addWeather=False;
+    Bool addGainCurve=False;
 
     if (firstSyscal && extname == "SYSTEM_TEMPERATURE") {
       addSyscal=True;
@@ -3602,8 +3778,13 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
       firstWeather=False;
     }
 
+    if (firstWeather && extname == "GAIN_CURVE") {
+      addGainCurve=True;
+      firstGainCurve=False;
+    }
+
     setupMeasurementSet(msFile, useTSM, mainTbl, addCorrMode, addSyscal,
-			addWeather);
+			addWeather, addGainCurve);
     
     Bool success = True; // for the optional tables, we have a return value permitting us
                          // to skip them if they cannot be read
