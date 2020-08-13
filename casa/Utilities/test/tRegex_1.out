@@ -33,6 +33,7 @@ a\,b --> a,b
 __3%a%* --> __3%a%.*
 *.{h,hpp,c,cc,cpp} --> .*\.(h|hpp|c|cc|cpp)
 *.{[hc]{,pp},cc} --> .*\.([hc](pp)?|cc)
+* --> .*
 
 Pattern --> Case Insensitive Regular Expression
 -----------------------------------------------
@@ -69,6 +70,7 @@ a\,b --> [aA],[bB]
 __3%a%* --> __3%[aA]%.*
 *.{h,hpp,c,cc,cpp} --> .*\.([hH]|[hH][pP][pP]|[cC]|[cC][cC]|[cC][pP][pP])
 *.{[hc]{,pp},cc} --> .*\.([hHcC]([pP][pP])?|[cC][cC])
+* --> .*
 
 SQLPattern --> Regular Expression
 ---------------------------------
@@ -105,6 +107,7 @@ a\,b --> a\\,b
 __3%a%* --> ..3.*a.*\*
 *.{h,hpp,c,cc,cpp} --> \*\.\{h,hpp,c,cc,cpp\}
 *.{[hc]{,pp},cc} --> \*\.\{\[hc\]\{,pp\},cc\}
+* --> \*
 
 String --> Regular Expression
 -----------------------------
@@ -141,3 +144,4 @@ a\,b --> a\\,b
 __3%a%* --> __3%a%\*
 *.{h,hpp,c,cc,cpp} --> \*\.\{h,hpp,c,cc,cpp\}
 *.{[hc]{,pp},cc} --> \*\.\{\[hc\]\{,pp\},cc\}
+* --> \*
