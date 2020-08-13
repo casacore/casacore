@@ -34,7 +34,7 @@
 
 int main ()
 {
-    const Int ntests = 31;
+    const Int ntests = 32;
     String p[ntests];
     p[0]  = "^().+|$";
     p[1]  = "\\,";
@@ -67,6 +67,7 @@ int main ()
     p[28] = "__3%a%*";
     p[29] = "*.{h,hpp,c,cc,cpp}";
     p[30] = "*.{[hc]{,pp},cc}";
+    p[31] = "*";
 
     cout << "Pattern --> Regular Expression" << endl;
     cout << "------------------------------" << endl;
@@ -184,6 +185,8 @@ int main ()
     CHECKNPATT(26, "?xxx");
     CHECKPATT (27, "\\");
     CHECKPATT (28, "__3%a%");
+    CHECKNPATT(30, "");
+    CHECKPATT (31, "");
 
     CHECKPATTCI (0,  "^().+|$");
     CHECKPATTCI (1,  ",");
