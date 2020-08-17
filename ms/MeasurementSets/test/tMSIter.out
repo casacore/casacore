@@ -94,3 +94,8 @@ nrow=1 a1=1 a2=2 time=[270]
 nrow=2 a1=2 a2=2 time=[30, 90]
 nrow=2 a1=2 a2=2 time=[150, 210]
 nrow=1 a1=2 a2=2 time=[270]
+########
+nrow=30
+########
+nrow=25
+nrow=5

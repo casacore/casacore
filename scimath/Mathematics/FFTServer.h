@@ -134,13 +134,11 @@ public:
 // first axis.
 // </ul>
 
-// This class does transforms using the widely used FORTRAN fftpack
-// package or the highly optimized FFTW package (to be chosen at build time).
+// This class does transforms using 
+// the highly optimized FFTW package.
 // <br>
 // <em> P.N. Swarztrauber, Vectorizing the FFTs, in Parallel Computations
 // (G. Rodrigue, ed.), Academic Press, 1982, pp. 51--83. </em><br>
-// The fftpack package only does one dimensional transforms and this class
-// decomposes multi-dimensional transforms into a series of 1-dimensional ones.
 // <br>If at build time it is chosen to use FFTW in a multi-threaded way,
 // it will try to use as many cores as possible.
 
@@ -384,14 +382,12 @@ private:
   IPosition itsSize;
   // Whether the last FFT was complex<->complex or not
   FFTEnums::TransformType itsTransformType;
-  //# twiddle factors and factorisations used by fftpack
-  PtrBlock<Block<T> *> itsWork;
   // buffer for copying non-contigious arrays to contigious ones. This is done
   // so that the FFT's have a better chance of fitting into cache and hence
   // going faster. 
   // This buffer is also used as temporary storage when flipping the data.
   Block<S> itsBuffer;
-  // FFTW specific members. Do not harm if FFTPack is used.
+  // FFTW specific members.
   FFTW           itsFFTW;
   std::vector<T> itsWorkIn;
   std::vector<S> itsWorkOut;
