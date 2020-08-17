@@ -10,6 +10,9 @@ ADDGRD.f
 atmroutines.f
 convolvegridder.f
 dqags.f
+dfftpak.f
+dqags.f
+fftpak.f
 fgridft.f
 fgridsd.f
 fmosft.f
