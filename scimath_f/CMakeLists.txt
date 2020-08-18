@@ -32,7 +32,6 @@ vvroutines.f
 if (BUILD_FFTPACK_DEPRECATED)
     list (APPEND buildfiles
          dfftpak.f
-         dqags.f
          fftpak.f
     )
 endif ()
