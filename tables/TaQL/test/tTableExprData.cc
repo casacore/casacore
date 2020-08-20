@@ -141,8 +141,8 @@ int main()
     Vector<uInt> m = findMatches (fld1, fld2);
     AlwaysAssertExit (m.nelements() == 1);
     AlwaysAssertExit (m(0) == 3);
-  } catch (AipsError x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   } catch (...) {
     cout << "Unexpected unknown exception" << endl;

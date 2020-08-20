@@ -31,6 +31,7 @@
 #include <casacore/measures/Measures/Quality.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -102,8 +103,8 @@ int main() {
 
 		cout << "ok" << endl;
 	}
-	catch (AipsError& x) {
-		cout << "fail "<< x.getMesg()<<endl;
+	catch (std::exception& x) {
+		cout << "fail "<< x.what()<<endl;
 		return 1;
 	}
 	return 0;

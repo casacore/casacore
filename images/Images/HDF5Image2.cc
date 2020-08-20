@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	HDF5File file(fileName);
 	HDF5Group gid(file, "/", true);
 	retval = HDF5DataSet::getDataType (gid.getHid(), "map");
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	// Nothing
       } 
     }
@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	HDF5Group gid1(file, "/", true);
 	HDF5Group gid2(gid1, "coordinfo", true);
 	retval = True;
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	// Nothing
       } 
     }

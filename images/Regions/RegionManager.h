@@ -34,7 +34,7 @@
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/tables/Tables/Table.h>
-
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore {
 
@@ -50,7 +50,6 @@ namespace casacore {
   class LogIO;
   class String;
   class Record;
-  template<class T> class Vector;
   class WCRegion;
   class WCBox;
   template<class T> class PtrBlock;

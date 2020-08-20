@@ -30,7 +30,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
@@ -144,8 +144,8 @@ void docomm()
       break;
     try {
       doIt (str);
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
   }
 }
@@ -158,8 +158,8 @@ int main (int argc, const char* argv[])
   }
   try {
     doIt(argv[1]);
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   } catch (...) {
     cout << "Unexpected unknown exception" << endl;

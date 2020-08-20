@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <casacore/msfits/MSFits/FitsIDItoMS.h> 
-#include <casacore/casa/Arrays/ArrayIO.h> 
+#include <casacore/casa/IO/ArrayIO.h> 
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayPartMath.h>
@@ -2670,7 +2670,7 @@ void FITSIDItoMS1::fillFeedTable() {
   try{
     timeint.attach(anTab, "TIME_INTERVAL");
   }
-  catch(AipsError&){
+  catch(std::exception&){
     timeintd.attach(anTab, "TIME_INTERVAL");
     *itsLog << LogIO::NORMAL << "Note: this ANTENNA table uses double precision for TIME_INTERVAL. Convention is single."
 	    << LogIO::POST;
@@ -2693,7 +2693,7 @@ void FITSIDItoMS1::fillFeedTable() {
     polaa.attach(anTab, "POLAA");
     polab.attach(anTab, "POLAB");
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     polaaS.attach(anTab, "POLAA");
     polabS.attach(anTab, "POLAB");
     POLAisScalar = True;
@@ -3009,14 +3009,14 @@ void FITSIDItoMS1::fillFieldTable()
     try{
       foffset.attach(suTab,"FREQOFF"); // fq. offset  
     }
-    catch(AipsError& x){
+    catch(std::exception& x){
       foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
       *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     ifluxS.attach(suTab,"IFLUX"); // I (Jy)
     qfluxS.attach(suTab,"QFLUX"); // Q 
     ufluxS.attach(suTab,"UFLUX"); // U 
@@ -3025,7 +3025,7 @@ void FITSIDItoMS1::fillFieldTable()
     try{
       foffsetS.attach(suTab,"FREQOFF"); // fq. offset  
     }
-    catch(AipsError x){
+    catch(std::exception& x){
       foffsetSD.attach(suTab,"FREQOFF"); // fq. offset  
       *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
@@ -3218,7 +3218,7 @@ Bool FITSIDItoMS1::fillSysCalTable()
       dualPol=True;
     }
   }
-  catch(AipsError&){
+  catch(std::exception&){
     tsys_1S.attach(tyTab, "TSYS_1");
     if(tyTab.tableDesc().isColumn("TSYS_2")) {
       tsys_2S.attach(tyTab, "TSYS_2"); // this column is optional
@@ -3308,7 +3308,7 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
   try {
     bands.attach(flagTab, "BANDS");
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     bandsS.attach(flagTab, "BANDS");
     BANDSisScalar = True;
   }

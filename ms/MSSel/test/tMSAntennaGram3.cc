@@ -29,7 +29,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/ms/MSSel/MSAntennaGram.h>
@@ -124,8 +124,8 @@ int main()
   try {
     makeMS();
     selMS();
-  } catch (AipsError& x) {
-    cout << "ERROR: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "ERROR: " << x.what() << endl;
     return 1;
   } 
   return 0;

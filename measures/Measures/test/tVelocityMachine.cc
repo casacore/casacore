@@ -37,7 +37,7 @@
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -131,7 +131,7 @@ int main() {
         	// exception should be thrown before we get here
         	AlwaysAssert(False, AipsError);
         }
-        catch (const AipsError& x) {}
+        catch (const std::exception& x) {}
         MVFrequency restfrq3(-1);
         VelocityMachine bogus2(
         	frqref, Unit("GHz"), restfrq3, velref, Unit("km/s")
@@ -140,14 +140,14 @@ int main() {
         	bogus2.makeVelocity(20);
         	AlwaysAssert(False, AipsError);
         }
-        catch (const AipsError& x) {}
+        catch (const std::exception& x) {}
 
 
 
     }
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
   
   return 0;

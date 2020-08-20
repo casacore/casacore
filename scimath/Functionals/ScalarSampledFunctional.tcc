@@ -39,7 +39,7 @@ ScalarSampledFunctional(){
 
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(const Block<T> & data)
-  :refData(data) {
+  :refData(data.begin(), data.end()) {
 }
 
 template<class T> ScalarSampledFunctional<T>::

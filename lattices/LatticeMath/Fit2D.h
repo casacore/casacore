@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Functionals/CompoundFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/scimath/Fitting/NonLinearFitLM.h>
@@ -37,9 +38,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> class Array;
-template<class T> class Matrix;
-template<class T> class Vector;
 template<class T> class Lattice;
 template<class T> class MaskedLattice;
 

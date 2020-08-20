@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Block.h>
 #include <vector>
 
@@ -41,8 +42,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TableExprNode;
 class IPosition;
 class Slicer;
-template<class T> class Vector;
-
 
 // <summary>
 // Class to hold the table expression nodes for an element in a set.

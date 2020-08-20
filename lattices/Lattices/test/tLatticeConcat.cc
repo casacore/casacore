@@ -639,7 +639,7 @@ int main() {
          try {
             lc.pixelMask();
             ok = False;
-         } catch (AipsError& x) {
+         } catch (std::exception& x) {
             ok = True;
          } 
          if (!ok) {
@@ -728,7 +728,7 @@ int main() {
          try {
             lc.setLattice(ml1);
             ok = False;
-         } catch (AipsError&x) {
+         } catch (std::exception&x) {
          } 
          if (!ok) {
             throw (AipsError("setLattice forced failure did not work - this was unexpected"));  
@@ -740,14 +740,14 @@ int main() {
             SubLattice<Float> ml4(l4, True);
             lc.setLattice(ml4);
             ok = False;
-         } catch (AipsError& x) {;} 
+         } catch (std::exception& x) {;} 
          if (!ok) {
             throw (AipsError("setLattice forced failure did not work - this was unexpected"));  
          }
       }
 
-  } catch(AipsError& x) {
-    cerr << x.getMesg() << endl;
+  } catch(std::exception& x) {
+    cerr << x.what() << endl;
     return 1;
   } 
   cout << "OK" << endl;

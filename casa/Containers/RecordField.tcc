@@ -100,7 +100,7 @@ void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
     // Cast to correct type, because a void* is returned.
     // This cast is fully safe.
     fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, whichField, 
-					    whatType(static_cast<T*>(0)), static_cast<T*>(0)));
+					    whatType(static_cast<T*>(nullptr)), static_cast<T*>(nullptr)));
     attach (record);
 }
 

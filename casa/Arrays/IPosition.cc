@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        internet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -25,23 +25,67 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/iostream.h>
-#include <casacore/casa/sstream.h>
+#include "IPosition.h"
+#include "ArrayError.h"
+#include "Array.h"
+
+#include <cassert>
+#include <sstream>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-IPosition::IPosition (uInt length)
+IPosition::IPosition (size_t length)
 : size_p (length),
   data_p (buffer_p)
 {
     if (length > BufferLength) {
 	allocateBuffer();
     }
+}
+
+IPosition::IPosition(std::initializer_list<ssize_t> list)
+: size_p (list.size()),
+  data_p (buffer_p)
+{
+  if (list.size() > BufferLength) {
+    allocateBuffer();
+  }
+  std::initializer_list<ssize_t>::const_iterator list_iter = list.begin();
+  size_t i = 0;
+  while(list_iter != list.end())
+  {
+    data_p[i] = *list_iter;
+    ++list_iter;
+    ++i;
+  }
+}
+
+IPosition::IPosition (const Array<int> &other)
+  : size_p (0),
+    data_p (buffer_p)
+{
+    if (other.size() > 0) {
+        if (other.ndim() != 1) {
+            throw(ArrayError("IPosition::IPosition(const Array<int> &other) - "
+                            "other is not one-dimensional"));
+        }
+        fill (other.size(), other.begin());
+    }
+    assert(ok());
+}
+
+IPosition::IPosition (const Array<long long> &other)
+  : size_p (0),
+    data_p (0)
+{
+    if (other.size() > 0) {
+        if (other.ndim() != 1) {
+            throw(ArrayError("IPosition::IPosition(const Array<Int64> &other) - "
+                            "other is not one-dimensional"));
+        }
+        fill (other.size(), other.begin());
+    }
+    assert(ok());
 }
 
 IPosition::~IPosition()
@@ -58,25 +102,25 @@ void IPosition::allocateBuffer()
     } else {
 	data_p = new ssize_t[size_p];
     }
-    DebugAssert(ok(), AipsError);
+    assert(ok());
 }
 
-IPosition::IPosition (uInt length, ssize_t val)
+IPosition::IPosition (size_t length, ssize_t val)
 : size_p (length),
   data_p (buffer_p)
 {
     if (size_p > BufferLength) {
 	allocateBuffer();
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] = val;
     }
 }
 
 // <thrown>
-//    <item> AipsError
+//    <item> std::runtime_error
 // </thrown>
-IPosition::IPosition (uInt length, ssize_t val0, ssize_t val1, ssize_t val2,
+IPosition::IPosition (size_t length, ssize_t val0, ssize_t val1, ssize_t val2,
                       ssize_t val3, ssize_t val4, ssize_t val5, ssize_t val6,
                       ssize_t val7, ssize_t val8, ssize_t val9)
 : size_p (length),
@@ -86,7 +130,7 @@ IPosition::IPosition (uInt length, ssize_t val0, ssize_t val1, ssize_t val2,
 	allocateBuffer();
     }
     if (size_p > 10  ||  length < 1) {
-	throw(AipsError("IPosition::IPosition(uInt length, val0, ...) - "
+	throw(std::runtime_error("IPosition::IPosition(size_t length, val0, ...) - "
 			 "Can only initialize from 1 to 10 elements"));
     }
     switch (length) {
@@ -101,17 +145,17 @@ IPosition::IPosition (uInt length, ssize_t val0, ssize_t val1, ssize_t val2,
 	 case 2:  data_p[1] = val1;    // Fall through
 	 case 1:  data_p[0] = val0; break;
 	 default:
-             throw(AipsError("IPosition::IPosition(uInt length, val0, ...) - "
+             throw(std::runtime_error("IPosition::IPosition(size_t length, val0, ...) - "
 			     "Can only initialize from 1 to 10 elements"));
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	if (data_p[i] == MIN_INT) {
-	    throw(AipsError("IPosition::IPosition(uInt length, val0, ...) - "
+	    throw(std::runtime_error("IPosition::IPosition(size_t length, val0, ...) - "
 		    "One or more valn == INT_MIN. Probably haven't defined "
 		    "enough values. Otherwise specify after construction."));
 	}
     }
-    DebugAssert(ok(), AipsError);
+    assert(ok());
 }
 
 IPosition::IPosition (const IPosition& other)
@@ -121,39 +165,98 @@ IPosition::IPosition (const IPosition& other)
     if (size_p > BufferLength) {
 	allocateBuffer();
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] = other.data_p[i];
     }
-    DebugAssert(ok(), AipsError);
+    assert(ok());
 }
 
-IPosition IPosition::nonDegenerate (uInt startingAxis) const
+IPosition::IPosition (IPosition&& source) noexcept
+: size_p (source.size_p),
+  data_p (size_p > BufferLength ? source.data_p : buffer_p)
+{
+  for(size_t i=0; i!=size_p; ++i)
+    data_p[i] = source.data_p[i];
+  
+  source.size_p = 0;
+  source.data_p = source.buffer_p;
+}
+
+Vector<int> IPosition::asVector() const
+{
+    assert(ok());
+    Vector<int> retval(nelements());
+    copy (retval.begin());
+    return retval;
+}
+
+Vector<long long> IPosition::asVector64() const
+{
+    assert(ok());
+    Vector<long long> retval(nelements());
+    copy (retval.begin());
+    return retval;
+}
+
+IPosition::IPosition (const std::vector<int> &other)
+: size_p (0),
+  data_p (buffer_p)
+{
+    fill (other.size(), other.begin());
+    assert(ok());
+}
+
+IPosition::IPosition (const std::vector<long long> &other)
+  : size_p (0),
+    data_p (0)
+{
+    fill (other.size(), other.begin());
+    assert(ok());
+}
+
+std::vector<int> IPosition::asStdVector() const
+{
+    assert(ok());
+    std::vector<int> retval(nelements());
+    copy (retval.begin());
+    return retval;
+}
+
+std::vector<long long> IPosition::asStdVector64() const
+{
+    assert(ok());
+    std::vector<long long> retval(nelements());
+    copy (retval.begin());
+    return retval;
+}
+
+IPosition IPosition::nonDegenerate (size_t startingAxis) const
 {
     if (startingAxis >= size_p) {
         return *this;
     }
     IPosition ignoreAxes(startingAxis);
-    for (uInt i=0; i<startingAxis; i++) {
+    for (size_t i=0; i<startingAxis; i++) {
 	ignoreAxes(i) = i;
     }
     return nonDegenerate (ignoreAxes);
 }
 IPosition IPosition::nonDegenerate (const IPosition& ignoreAxes) const
 {
-    DebugAssert(ok(), AipsError);
+    assert(ok());
     // First determine which axes have to be ignored, thus always be kept.
     // Do not count here, because in theory ignoreAxes can contain the
     // same axis more than once.
     // To remove degenerate axes use two passes - first find out how many axes
     // have to be kept.
-    uInt i;
+    size_t i;
     IPosition keepAxes(size_p, 0);
     for (i=0; i<ignoreAxes.nelements(); i++) {
-	AlwaysAssert (ignoreAxes(i) < ssize_t(size_p), AipsError);
-	keepAxes(ignoreAxes(i)) = 1;
+      if(ignoreAxes(i) >= ssize_t(size_p)) throw std::runtime_error("ignoreAxes(i) >= ssize_t(size_p)");
+      keepAxes(ignoreAxes(i)) = 1;
     }
     // Now count all axes to keep.
-    uInt count=0;
+    size_t count=0;
     for (i=0; i<size_p; i++) {
 	if (keepAxes(i) == 1) {
 	    count++;
@@ -176,19 +279,19 @@ IPosition IPosition::nonDegenerate (const IPosition& ignoreAxes) const
     return nondegenerateIP;
 }
 
-void IPosition::resize (uInt newSize, Bool copy)
+void IPosition::resize (size_t newSize, bool copy)
 {
-    DebugAssert(ok(), AipsError);
+    assert(ok());
     // If the size is unchanged, just return (more efficient)
     if (newSize == size_p) {
 	return;
     }
     ssize_t* oldData = data_p;
-    uInt oldSize = size_p;
+    size_t oldSize = size_p;
     size_p = newSize;
     allocateBuffer();
     if (oldData != data_p  &&  copy) {
-	for (uInt i=0; i<min(size_p, oldSize); i++) {
+	for (size_t i=0; i<std::min(size_p, oldSize); i++) {
 	    data_p[i] = oldData[i];
 	}
     }
@@ -196,7 +299,7 @@ void IPosition::resize (uInt newSize, Bool copy)
     if (oldData != &buffer_p[0]) {
 	delete [] oldData;
     }
-    DebugAssert(ok(), AipsError);
+    assert(ok());
 }
 
 // <thrown>
@@ -204,27 +307,37 @@ void IPosition::resize (uInt newSize, Bool copy)
 // </thrown>
 IPosition& IPosition::operator= (const IPosition& other)
 {
-    DebugAssert(ok(), AipsError);
-    if (&other == this) {
-	return *this;
-    }
-    if (size_p == 0) {
-	this->resize (other.nelements(), False);
-    } else if (! conform(other)) {
-	throw(ArrayConformanceError("IPosition::operator=(const IPosition&  - "
-				    "this and other differ in length"));
-    }
-    for (uInt i=0; i<size_p; i++) {
-	data_p[i] = other.data_p[i];
-    }
-    DebugAssert(ok(), AipsError);
+  assert(ok());
+  if (&other == this) {
     return *this;
+  }
+  if (size_p != other.size_p) {
+    resize (other.nelements(), false);
+  }
+  for (size_t i=0; i<size_p; i++) {
+    data_p[i] = other.data_p[i];
+  }
+  assert(ok());
+  return *this;
+}
+
+IPosition& IPosition::operator=(IPosition&& source)
+{
+  size_p = source.size_p;
+  data_p = size_p > BufferLength ? source.data_p : buffer_p;
+  for(size_t i=0; i!=size_p; ++i)
+    data_p[i] = source.data_p[i];
+  
+  source.size_p = 0;
+  source.data_p = source.buffer_p;
+  
+  return *this;
 }
 
 IPosition& IPosition::operator= (ssize_t value)
 {
-    DebugAssert(ok(), AipsError);
-    for (uInt i=0; i<size_p; i++) {
+    assert(ok());
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] = value;
     }
     return *this;
@@ -233,11 +346,11 @@ IPosition& IPosition::operator= (ssize_t value)
 IPosition IPosition::operator() (const IPosition& axes) const
 {
   IPosition ipos(axes.nelements());
-  uInt i = 0;
+  size_t i = 0;
   for (IPosition::const_iterator iter=axes.begin();
        iter!=axes.end(); ++iter, ++i) {
-    if (*iter >= Int(size_p)) {
-      throw AipsError("IPosition::operator()(const IPosition&): "
+    if (*iter >= int(size_p)) {
+      throw std::runtime_error("IPosition::operator()(const IPosition&): "
                       "Axis number must be less than size of current object");
     }
     ipos[i] = data_p[*iter];
@@ -247,17 +360,17 @@ IPosition IPosition::operator() (const IPosition& axes) const
 
 void IPosition::append (const IPosition& other)
 {
-    uInt j = size_p;
+    size_t j = size_p;
     resize (size_p + other.size_p);
-    for (uInt i=0; i<other.size_p; i++) {
+    for (size_t i=0; i<other.size_p; i++) {
 	data_p[j++] = other.data_p[i];
     }
 }
 
 void IPosition::prepend (const IPosition& other)
 {
-    uInt i;
-    uInt j = size_p;
+    size_t i;
+    size_t j = size_p;
     resize (size_p + other.size_p);
     for (i=size_p; j>0;) {
 	data_p[--i] = data_p[--j];
@@ -277,9 +390,9 @@ IPosition IPosition::concatenate (const IPosition& other) const
 void IPosition::setFirst (const IPosition& other)
 {
     if (size_p < other.size_p) {
-	throw (AipsError ("IPosition::setFirst(other); other is too long"));
+	throw (std::runtime_error ("IPosition::setFirst(other); other is too long"));
     }
-    for (uInt i=0; i<other.size_p; i++) {
+    for (size_t i=0; i<other.size_p; i++) {
 	data_p[i] = other.data_p[i];
     }
 }
@@ -287,34 +400,34 @@ void IPosition::setFirst (const IPosition& other)
 void IPosition::setLast (const IPosition& other)
 {
     if (size_p < other.size_p) {
-	throw (AipsError ("IPosition::setLast(other); other is too long"));
+	throw (std::runtime_error ("IPosition::setLast(other); other is too long"));
     }
-    uInt j = size_p - other.size_p;
-    for (uInt i=0; i<other.size_p; i++) {
+    size_t j = size_p - other.size_p;
+    for (size_t i=0; i<other.size_p; i++) {
 	data_p[j++] = other.data_p[i];
     }
 }
 
-IPosition IPosition::getFirst (uInt n) const
+IPosition IPosition::getFirst (size_t n) const
 {
     if (size_p < n) {
-	throw (AipsError ("IPosition::getFirst(n); n is too high"));
+	throw (std::runtime_error ("IPosition::getFirst(n); n is too high"));
     }
     IPosition tmp(n);
-    for (uInt i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
 	tmp.data_p[i] = data_p[i];
     }
     return tmp;
 }
 
-IPosition IPosition::getLast (uInt n) const
+IPosition IPosition::getLast (size_t n) const
 {
     if (size_p < n) {
-	throw (AipsError ("IPosition::getLast(n); n is too high"));
+	throw (std::runtime_error ("IPosition::getLast(n); n is too high"));
     }
     IPosition tmp(n);
-    uInt j = size_p - n;
-    for (uInt i=0; i<n; i++) {
+    size_t j = size_p - n;
+    for (size_t i=0; i<n; i++) {
 	tmp.data_p[i] = data_p[j++];
     }
     return tmp;
@@ -325,14 +438,14 @@ IPosition IPosition::removeAxes (const IPosition& axes) const
   // Get the axes to keep.
   // It also checks if axes are specified correctly.
   IPosition resAxes = IPosition::otherAxes (size_p, axes);
-  uInt ndimRes = resAxes.nelements();
+  size_t ndimRes = resAxes.nelements();
   // Create the result shape.
   IPosition resShape(ndimRes);
   if (ndimRes == 0) {
     resShape.resize(1);
     resShape[0] = 1;
   } else {
-    for (uInt i=0; i<ndimRes; ++i) {
+    for (size_t i=0; i<ndimRes; ++i) {
       resShape[i] = data_p[resAxes[i]];
     }
   }
@@ -349,13 +462,13 @@ IPosition IPosition::keepAxes (const IPosition& axes) const
 // </thrown>
 void IPosition::operator += (const IPosition& other)
 {
-    DebugAssert(ok(), AipsError);
+    assert(ok());
     if (! conform(other)) {
 	throw(ArrayConformanceError("IPosition::operator += "
 				    "(const IPosition&) - "
 				    "this and other differ in length"));
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] += other.data_p[i];
     }
 }
@@ -365,13 +478,13 @@ void IPosition::operator += (const IPosition& other)
 // </thrown>
 void IPosition::operator -= (const IPosition& other)
 {
-    DebugAssert(ok(), AipsError);
+    assert(ok());
     if (! conform(other)) {
 	throw(ArrayConformanceError("IPosition::operator -= "
 				    "(const IPosition&) - "
 				    "this and other differ in length"));
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] -= other.data_p[i];
     }
 }
@@ -381,13 +494,13 @@ void IPosition::operator -= (const IPosition& other)
 // </thrown>
 void IPosition::operator *= (const IPosition& other)
 {
-    DebugAssert(ok(), AipsError);
+    assert(ok());
     if (! conform(other)) {
 	throw(ArrayConformanceError("IPosition::operator *= "
 				    "(const IPosition&) - "
 				    "this and other differ in length"));
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] *= other.data_p[i];
     }
 }
@@ -397,64 +510,64 @@ void IPosition::operator *= (const IPosition& other)
 // </thrown>
 void IPosition::operator /= (const IPosition& other)
 {
-    DebugAssert(ok(), AipsError);
+    assert(ok());
     if (! conform(other)) {
 	throw(ArrayConformanceError("IPosition::operator /= "
 				    "(const IPosition&) - "
 				    "this and other differ in length"));
     }
-    for (uInt i=0; i<size_p; i++) {
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] /= other.data_p[i];
     }
 }
 
 void IPosition::operator += (ssize_t val)
 {
-    DebugAssert(ok(), AipsError);
-    for (uInt i=0; i<size_p; i++) {
+    assert(ok());
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] += val;
     }
 }
 
 void IPosition::operator -= (ssize_t val)
 {
-    DebugAssert(ok(), AipsError);
-    for (uInt i=0; i<size_p; i++) {
+    assert(ok());
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] -= val;
     }
 }
 
 void IPosition::operator *= (ssize_t val)
 {
-    DebugAssert(ok(), AipsError);
-    for (uInt i=0; i<size_p; i++) {
+    assert(ok());
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] *= val;
     }
 }
 
 void IPosition::operator /= (ssize_t val)
 {
-    DebugAssert(ok(), AipsError);
-    for (uInt i=0; i<size_p; i++) {
+    assert(ok());
+    for (size_t i=0; i<size_p; i++) {
 	data_p[i] /= val;
     }
 }
 
-Bool IPosition::isEqual (const IPosition& other) const
+bool IPosition::isEqual (const IPosition& other) const
 {
     return isEqual (other, nelements());
 }
 
-Bool IPosition::isEqual (const IPosition& other,
-			 Bool skipDegeneratedAxes) const
+bool IPosition::isEqual (const IPosition& other,
+			 bool skipDegeneratedAxes) const
 {
     if (!skipDegeneratedAxes) {
 	return isEqual (other, nelements());
     }
-    uInt nrthis = nelements();
-    uInt nrthat = other.nelements();
-    uInt i;
-    uInt j=0;
+    size_t nrthis = nelements();
+    size_t nrthat = other.nelements();
+    size_t i;
+    size_t j=0;
     for (i=0; i<nrthis; i++) {
 	if (data_p[i] != 1) {
 	    while (j < nrthat  &&  other(j) == 1) {
@@ -464,47 +577,47 @@ Bool IPosition::isEqual (const IPosition& other,
 		break;
 	    }
 	    if (data_p[i] != other(j)) {
-		return False;
+		return false;
 	    }
 	    j++;
 	}
     }
     for (; i<nrthis; i++) {
 	if (data_p[i] != 1) {
-	    return False;
+	    return false;
 	}
     }
     for (; j<nrthat; j++) {
 	if (other(j) != 1) {
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
-Bool IPosition::isEqual (const IPosition& other, uInt nrCompare) const
+bool IPosition::isEqual (const IPosition& other, size_t nrCompare) const
 {
     if (! conform (other)) {
-	return False;
+	return false;
     }
     if (nrCompare > nelements()) {
 	nrCompare = nelements();
     }
-    for (uInt i=0; i<nrCompare; i++) {
+    for (size_t i=0; i<nrCompare; i++) {
 	if (data_p[i] != other(i)) {
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
 
-Bool IPosition::isSubSet (const IPosition& other) const
+bool IPosition::isSubSet (const IPosition& other) const
 {
-    uInt nrthis = nelements();
-    uInt nrthat = other.nelements();
-    uInt j=0;
-    for (uInt i=0; i<nrthis; i++) {
+    size_t nrthis = nelements();
+    size_t nrthat = other.nelements();
+    size_t j=0;
+    for (size_t i=0; i<nrthis; i++) {
       if (j < nrthat) {
 	if (other(j) == data_p[i]  ||  other(j) == 1) {
 	  j++;
@@ -643,9 +756,9 @@ IPosition max (const IPosition& left, const IPosition& right)
                         "left and right operand do not conform "));
     }
     IPosition result(left);
-    const uInt ndim = result.nelements();
+    const size_t ndim = result.nelements();
     ssize_t max;
-    for (uInt i = 0; i < ndim; i++) {
+    for (size_t i = 0; i < ndim; i++) {
       if (result(i) < (max = right(i))) {
         result(i) = max;
       }
@@ -664,9 +777,9 @@ IPosition min (const IPosition& left, const IPosition& right)
                         "left and right operand do not conform "));
     }
     IPosition result(left);
-    const uInt ndim = result.nelements();
+    const size_t ndim = result.nelements();
     ssize_t min;
-    for (uInt i = 0; i < ndim; i++) {
+    for (size_t i = 0; i < ndim; i++) {
       if (result(i) > (min = right(i))) {
         result(i) = min;
       }
@@ -674,45 +787,45 @@ IPosition min (const IPosition& left, const IPosition& right)
     return result;
 }
 
-Int64 IPosition::product() const
+long long IPosition::product() const
 {
     if (nelements() ==  0) {
 	return 0;
     }
-    Int64 total = 1;
-    for (uInt i=0; i<nelements(); i++) {
+    long long total = 1;
+    for (size_t i=0; i<nelements(); i++) {
 	total *= data_p[i];
     }
     return total;
 }
 
-Bool IPosition::allOne() const
+bool IPosition::allOne() const
 {
-    for (uInt i=0; i<nelements(); ++i) {
+    for (size_t i=0; i<nelements(); ++i) {
         if (data_p[i] != 1) {
-            return False;
+            return false;
         }
     }
-    return True;
+    return true;
 }
 
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-Bool operator == (const IPosition& left, const IPosition& right)
+bool operator == (const IPosition& left, const IPosition& right)
 {
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator== "
 				    "(const IPosition&, const IPosition&) - "
 				    "left and right operand do not conform "));
     }
-    uInt n=left.nelements();
-    Bool result = True;
-    for (uInt i=0; i<n; i++) {
+    size_t n=left.nelements();
+    bool result = true;
+    for (size_t i=0; i<n; i++) {
 	if (left(i) == right(i)) {
 	    // Nothing - written to make cut and paste easier
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
@@ -722,18 +835,19 @@ Bool operator == (const IPosition& left, const IPosition& right)
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-Bool operator != (const IPosition& left, const IPosition& right)
+bool operator != (const IPosition& left, const IPosition& right)
 {
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator!= "
 				    "(const IPosition&, const IPosition&) - "
-				    "left and right operand do not conform "));
+				    "left and right operand do not conform (left.shape()=" +
+            to_string(left) + ", right.shape()=" + to_string(right) + ")"));
     }
-    uInt n=left.nelements();
-    Bool result = False;
-    for (uInt i=0; i<n; i++) {
+    size_t n=left.nelements();
+    bool result = false;
+    for (size_t i=0; i<n; i++) {
 	if (left(i) != right(i)) {
-	    result = True;
+	    result = true;
 	    break;
 	} else {
 	    // Nothing - written to make cut and paste easier
@@ -745,20 +859,20 @@ Bool operator != (const IPosition& left, const IPosition& right)
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-Bool operator < (const IPosition& left, const IPosition& right)
+bool operator < (const IPosition& left, const IPosition& right)
 {
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator< "
 			"(const IPosition&, const IPosition&) - "
 			"left and right operand do not conform "));
     }
-    uInt n=left.nelements();
-    Bool result = True;
-    for (uInt i=0; i<n; i++) {
+    size_t n=left.nelements();
+    bool result = true;
+    for (size_t i=0; i<n; i++) {
 	if (left(i) < right(i)) {
 	    // Nothing - written to make cut and paste easier
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
@@ -768,20 +882,20 @@ Bool operator < (const IPosition& left, const IPosition& right)
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-Bool operator <= (const IPosition& left, const IPosition& right)
+bool operator <= (const IPosition& left, const IPosition& right)
 {
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator<= "
 				    "(const IPosition&, const IPosition&) - "
 				    "left and right operand do not conform "));
     }
-    uInt n=left.nelements();
-    Bool result = True;
-    for (uInt i=0; i<n; i++) {
+    size_t n=left.nelements();
+    bool result = true;
+    for (size_t i=0; i<n; i++) {
 	if (left(i) <= right(i)) {
 	    // Nothing - written to make cut and paste easier
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
@@ -791,20 +905,20 @@ Bool operator <= (const IPosition& left, const IPosition& right)
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-Bool operator > (const IPosition& left, const IPosition& right)
+bool operator > (const IPosition& left, const IPosition& right)
 {
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator> "
 				    "(const IPosition&, const IPosition&) - "
 				    "left and right operand do not conform "));
     }
-    uInt n=left.nelements();
-    Bool result = True;
-    for (uInt i=0; i<n; i++) {
+    size_t n=left.nelements();
+    bool result = true;
+    for (size_t i=0; i<n; i++) {
 	if (left(i) > right(i)) {
 	    // Nothing - written to make cut and paste easier
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
@@ -814,48 +928,48 @@ Bool operator > (const IPosition& left, const IPosition& right)
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-Bool operator >= (const IPosition& left, const IPosition& right)
+bool operator >= (const IPosition& left, const IPosition& right)
 {
     if (! left.conform(right)) {
 	throw(ArrayConformanceError("::operator>= "
 				    "(const IPosition&, const IPosition&) - "
 				    "left and right operand do not conform "));
     }
-    uInt n=left.nelements();
-    Bool result = True;
-    for (uInt i=0; i<n; i++) {
+    size_t n=left.nelements();
+    bool result = true;
+    for (size_t i=0; i<n; i++) {
 	if (left(i) >= right(i)) {
 	    // Nothing - written to make cut and paste easier
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator == (const IPosition& left, ssize_t val)
+bool operator == (const IPosition& left, ssize_t val)
 {
-    Bool result = True;
-    uInt n = left.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = left.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (left(i) == val) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator != (const IPosition& left, ssize_t val)
+bool operator != (const IPosition& left, ssize_t val)
 {
-    Bool result = False;
-    uInt n = left.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = false;
+    size_t n = left.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (left(i) != val) {
-	    result = True;
+	    result = true;
 	    break;
 	} else {
 	    // Nothing
@@ -864,88 +978,88 @@ Bool operator != (const IPosition& left, ssize_t val)
     return result;
 }
 
-Bool operator < (const IPosition& left, ssize_t val)
+bool operator < (const IPosition& left, ssize_t val)
 {
-    Bool result = True;
-    uInt n = left.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = left.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (left(i) < val) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator <= (const IPosition& left, ssize_t val)
+bool operator <= (const IPosition& left, ssize_t val)
 {
-    Bool result = True;
-    uInt n = left.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = left.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (left(i) <= val) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator > (const IPosition& left, ssize_t val)
+bool operator > (const IPosition& left, ssize_t val)
 {
-    Bool result = True;
-    uInt n = left.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = left.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (left(i) > val) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator >= (const IPosition& left, ssize_t val)
+bool operator >= (const IPosition& left, ssize_t val)
 {
-    Bool result = True;
-    uInt n = left.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = left.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (left(i) >= val) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator == (ssize_t val, const IPosition& right)
+bool operator == (ssize_t val, const IPosition& right)
 {
-    Bool result = True;
-    uInt n = right.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = right.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (val == right(i)) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator != (ssize_t val, const IPosition& right)
+bool operator != (ssize_t val, const IPosition& right)
 {
-    Bool result = False;
-    uInt n = right.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = false;
+    size_t n = right.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (val != right(i)) {
-	    result = True;
+	    result = true;
 	    break;
 	} else {
 	    // Nothing
@@ -954,77 +1068,82 @@ Bool operator != (ssize_t val, const IPosition& right)
     return result;
 }
 
-Bool operator < (ssize_t val, const IPosition& right)
+bool operator < (ssize_t val, const IPosition& right)
 {
-    Bool result = True;
-    uInt n = right.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = right.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (val < right(i)) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator <= (ssize_t val, const IPosition& right)
+bool operator <= (ssize_t val, const IPosition& right)
 {
-    Bool result = True;
-    uInt n = right.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = right.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (val <= right(i)) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator > (ssize_t val, const IPosition& right)
+bool operator > (ssize_t val, const IPosition& right)
 {
-    Bool result = True;
-    uInt n = right.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = right.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (val > right(i)) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-Bool operator >= (ssize_t val, const IPosition& right)
+bool operator >= (ssize_t val, const IPosition& right)
 {
-    Bool result = True;
-    uInt n = right.nelements();
-    for (uInt i=0; i<n; i++) {
+    bool result = true;
+    size_t n = right.nelements();
+    for (size_t i=0; i<n; i++) {
 	if (val >= right(i)) {
 	    // Nothing
 	} else {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
     return result;
 }
 
-String IPosition::toString() const
+std::string to_string(const IPosition& ip)
 {
-  ostringstream oss;
-  oss << *this;
+  std::ostringstream oss;
+  oss << ip;
   return oss.str();
+}
+
+std::string IPosition::toString() const
+{
+  return to_string(*this);
 }
 
 std::ostream& operator<< (std::ostream& os, const IPosition& ip)
 {
     os << "[";
-    for (uInt i=0; i<ip.nelements(); i++) {
+    for (size_t i=0; i<ip.nelements(); i++) {
 	if (i > 0) {
 	    os << ", ";
 	}
@@ -1034,29 +1153,31 @@ std::ostream& operator<< (std::ostream& os, const IPosition& ip)
     return os;
 }
 
-Bool IPosition::ok() const
+bool IPosition::ok() const
 {
-    Bool retval = True;
-    if (size_p <= BufferLength && data_p != &buffer_p[0]) { retval = False; }
-    if (data_p == 0) { retval = False; }
-    return retval;
+  assert(size_p > BufferLength || data_p == &buffer_p[0]);
+  assert(data_p != nullptr);
+  bool retval = true;
+  if (size_p <= BufferLength && data_p != &buffer_p[0]) { retval = false; }
+  if (data_p == nullptr) { retval = false; }
+  return retval;
 }
 
 
-IPosition toIPositionInArray (Int64 offset, const IPosition& shape)
+IPosition toIPositionInArray (long long offset, const IPosition& shape)
 {
     if (! isInsideArray (offset, shape) ) {
 	throw (ArrayIndexError(
-            "IPosition ::toIPositionInArray (Int64 offset,"
+            "IPosition ::toIPositionInArray (long long offset,"
             " const IPosition& shape)"
              " - Invalid offset."));
     }
 
     IPosition iposition (shape.nelements());
-    Int64 divisor = 1;
+    long long divisor = 1;
 
-    uInt ndim = shape.nelements();
-    for (uInt idim = 0; idim < ndim; idim++) {
+    size_t ndim = shape.nelements();
+    for (size_t idim = 0; idim < ndim; idim++) {
         iposition(idim) = ((offset / divisor) % shape(idim));
         divisor *= shape(idim);
     }
@@ -1065,27 +1186,27 @@ IPosition toIPositionInArray (Int64 offset, const IPosition& shape)
 
 }
 
-Int64 toOffsetInArray (const IPosition& iposition, const IPosition& shape)
+long long toOffsetInArray (const IPosition& iposition, const IPosition& shape)
 {
     if (! (iposition.conform(shape)) ) {
 	throw (ArrayConformanceError(
-            "Int64 ::toOffsetInArray (const IPosition& iposition,"
+            "long long ::toOffsetInArray (const IPosition& iposition,"
             " const IPosition& shape)"
              " - IPositions do not conform"));
     }
 
     if (! isInsideArray (iposition, shape) ) {
 	throw (ArrayIndexError(
-            "Int64 ::toOffsetInArray (const IPosition& iposition,"
+            "long long ::toOffsetInArray (const IPosition& iposition,"
             " const IPosition& shape)"
              " - Invalid iposition."));
     }
 
-    Int64 offset = 0;
-    Int64 multiplier = 1;
+    long long offset = 0;
+    long long multiplier = 1;
 
-    uInt ndim = shape.nelements();
-    for (uInt idim = 0; idim < ndim; idim++) {
+    size_t ndim = shape.nelements();
+    for (size_t idim = 0; idim < ndim; idim++) {
         offset += (iposition(idim) * multiplier);
         multiplier *= shape(idim);
     }
@@ -1094,29 +1215,29 @@ Int64 toOffsetInArray (const IPosition& iposition, const IPosition& shape)
 }
 
 
-Bool isInsideArray (Int64 offset, const IPosition& shape)
+bool isInsideArray (long long offset, const IPosition& shape)
 {
-    return (offset < shape.product()) ? True : False;
+    return (offset < shape.product()) ? true : false;
 }
 
 
-Bool isInsideArray (const IPosition& iposition, const IPosition& shape)
+bool isInsideArray (const IPosition& iposition, const IPosition& shape)
 {
     if (! (iposition.conform(shape)) ) {
 	throw (ArrayConformanceError(
-            "Bool ::isInsideArray (const IPosition& iposition,"
+            "bool ::isInsideArray (const IPosition& iposition,"
             " const IPosition& shape)"
              " - IPositions do not conform"));
     }
 
-    Bool result = True;
+    bool result = true;
     ssize_t ioff;
 
-    uInt ndim = shape.nelements();
-    for (uInt idim = 0; idim < ndim; idim++) {
+    size_t ndim = shape.nelements();
+    for (size_t idim = 0; idim < ndim; idim++) {
         ioff = iposition(idim);
         if ( (ioff < 0) || (ioff >= shape(idim)) ) {
-            result = False;
+            result = false;
             break;
         }
     }
@@ -1126,17 +1247,17 @@ Bool isInsideArray (const IPosition& iposition, const IPosition& shape)
 }
 
 
-IPosition IPosition::makeAxisPath (uInt nrdim, const IPosition& partialPath)
+IPosition IPosition::makeAxisPath (size_t nrdim, const IPosition& partialPath)
 {
     // Check if the specified traversal axes are correct and unique.
-    AlwaysAssert (partialPath.nelements() <= nrdim, AipsError);
+    if (partialPath.nelements() > nrdim)  std::runtime_error("partialPath.nelements() > nrdim");
     IPosition path(nrdim);
     IPosition done(nrdim, 0);
-    uInt i,j;
+    size_t i,j;
     for (i=0; i<partialPath.nelements(); i++) {
         path(i) = partialPath(i);
-        if (path(i) >= Int(nrdim)  ||  done(path(i)) != 0) {
-            throw (AipsError ("IPosition::makeAxisPath: invalid defined axes"));
+        if (path(i) >= int(nrdim)  ||  done(path(i)) != 0) {
+            throw (std::runtime_error ("IPosition::makeAxisPath: invalid defined axes"));
         }
         done(path(i)) = 1;
     }
@@ -1149,17 +1270,17 @@ IPosition IPosition::makeAxisPath (uInt nrdim, const IPosition& partialPath)
     return path;
 }
 
-IPosition IPosition::otherAxes (uInt nrdim, const IPosition& axes)
+IPosition IPosition::otherAxes (size_t nrdim, const IPosition& axes)
 {
-   AlwaysAssert (nrdim>=axes.nelements(),AipsError);
+   if (nrdim<axes.nelements()) throw std::runtime_error("nrdim<axes.nelements()");
    return makeAxisPath(nrdim, axes).getLast(nrdim-axes.nelements());
 }
 
 void IPosition::throwIndexError() const
 {
-    // This should be an IndexError<uInt> - but that causes multiply
+    // This should be an IndexError<size_t> - but that causes multiply
     // defined symbols with the current objectcenter.
-    throw(AipsError("IPosition::operator() - index error"));
+    throw(std::runtime_error("IPosition::operator() - index error"));
 }
 
 bool IPositionComparator::operator ()(const IPosition& lhs, const IPosition& rhs) const {
@@ -1168,7 +1289,7 @@ bool IPositionComparator::operator ()(const IPosition& lhs, const IPosition& rhs
     if (lhsSize == rhsSize) {
         ssize_t *lp = lhs.data_p;
         ssize_t *rp = rhs.data_p;
-        for (uInt i=0; i<lhsSize; ++i, ++lp, ++rp) {
+        for (size_t i=0; i<lhsSize; ++i, ++lp, ++rp) {
             if (*lp != *rp) {
                 return *lp < *rp;
             }
@@ -1177,8 +1298,8 @@ bool IPositionComparator::operator ()(const IPosition& lhs, const IPosition& rhs
     else {
         return lhsSize < rhsSize;
     }
-    // same size and all elements equal, return False
-    return False;
+    // same size and all elements equal, return false
+    return false;
 }
 
 } //# NAMESPACE CASACORE - END

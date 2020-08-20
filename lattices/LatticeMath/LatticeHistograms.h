@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/lattices/LatticeMath/TiledCollapser.h>
 #include <casacore/lattices/LatticeMath/LatticeStatistics.h>
 #include <casacore/lattices/LatticeMath/LatticeProgress.h>
@@ -44,7 +45,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
-template <class T> class Vector;
 class IPosition;
 class PGPlotter;
 

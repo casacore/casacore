@@ -34,13 +34,14 @@
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/version.h>
@@ -49,6 +50,7 @@
 #include <fstream>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
+#include <unistd.h>
 
 #ifdef HAVE_READLINE
 # include <readline/readline.h>
@@ -661,7 +663,7 @@ void showParseError (const TableParseError& x)
   //# Background color codes:
   //# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
   // cerr has fd 2 (per C++ standard)
-  const String& msg(x.getMesg());
+  const String& msg(x.what());
   if (isatty(2)  &&  x.pos() >= 0) {
     // Cater for leading part of the message.
     int errLen = x.token().size();
@@ -1073,8 +1075,8 @@ Bool execCommand (const String& command, TableMap& tableMap,
     }
   } catch (const TableParseError& x) {
     showParseError (x);
-  } catch (const AipsError& x) {
-    cerr << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cerr << x.what() << endl;
   }
   return True;
 }
@@ -1327,8 +1329,8 @@ int main (int argc, const char* argv[])
       args.push_back (argv[i]);
     }
     executeArgs (args, True, tableMap, options);
-  } catch (const AipsError& x) {
-    cerr << "\nCaught an exception: " << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cerr << "\nCaught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;               // successfully executed

@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <casacore/casa/Arrays/MaskArrLogi.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/ms/MeasurementSets/StokesConverter.h>
 #include <casacore/casa/iostream.h>
@@ -120,8 +120,8 @@ int main()
 	}
       }
     }
-  } catch (AipsError& x) {
-    cout << "Exception: "<< x.getMesg() <<endl;
+  } catch (std::exception& x) {
+    cout << "Exception: "<< x.what() <<endl;
   } 
   if (err==0) cout<<"OK"<<endl;
   else cout << err << " errors encountered"<<endl;

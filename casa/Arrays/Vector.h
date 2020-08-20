@@ -25,16 +25,11 @@
 //#
 //# $Id$
 
-#ifndef CASA_VECTOR_H
-#define CASA_VECTOR_H
+#ifndef CASA_VECTOR_2_H
+#define CASA_VECTOR_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Array.h>
-
-//# Forward declarations
-//template <class T, class U> class vector; 
-#include <casacore/casa/stdvector.h>
+#include "Array.h"
 
 namespace casacore { //#Begin namespace casacore
 
@@ -52,17 +47,17 @@ namespace casacore { //#Begin namespace casacore
 // is one-dimensional, the IPositions are overkill, although you may
 // use those versions if you want to.
 // <srcblock>
-// Vector<Int> vi(100);  // Vector 100 elements long.
+// Vector<int> vi(100);  // Vector 100 elements long.
 // vi.resize(50);        // Now only 50 long.
 // </srcblock>
 //
 // Slices may be taken with the Slice class. To take a slice, one "indexes" 
 // with Slice(start, length, inc) where end and inc are optional.
 // <srcblock>
-// Vector<Float> vf(100);
+// Vector<float> vf(100);
 // //...
 // vf(Slice(0,50,2)) = vf(Slice(1,50,2));  // Copy values from odd onto even
-// Vector<Float> firstHalf, secondHalf;
+// Vector<float> firstHalf, secondHalf;
 // firstHalf.reference(vf(Slice(0,50)));
 // secondHalf.reference(vf(Slice(50,50)));
 // // Now we have aliases for two slices into the Vector
@@ -85,7 +80,7 @@ namespace casacore { //#Begin namespace casacore
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<class T> class Vector : public Array<T>
+template<typename T, typename Alloc> class Vector : public Array<T, Alloc>
 {
 public:
     // A zero-length Vector.
@@ -94,9 +89,7 @@ public:
     // A Vector with a defined length and origin of zero.
     // <group>
     explicit Vector(size_t Length);
-    Vector(size_t Length, ArrayInitPolicy initPolicy);
     explicit Vector(const IPosition& Length);
-    Vector(const IPosition& Length, ArrayInitPolicy initPolicy);
     // </group>
 
     // A Vector with a defined length and origin of zero.
@@ -106,36 +99,54 @@ public:
     Vector(const IPosition& Length, const T &initialValue);
     // </group>
 
-    // Create a Vector from the given Block "other." Make it length "nr"
+    // An uninitialized Vector with a defined length.
+    // <group>
+    Vector(size_t Length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    Vector(const IPosition& Length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    // </group>
+    
+    // Create a Vector from the given std::vector "other." Make it length "nr"
     // and copy over that many elements.
-    Vector(const Block<T> &other, Int64 nr);
-    // Create a Vector of length other.nelements() and copy over its values.
-    explicit Vector(const Block<T> &other);
+    // This used to take a 'Block'
+    Vector(const std::vector<T> &other, long long nr);
+    
+    // Create a Vector of length other.size() and copy over its values.
+    // This used to take a 'Block'
+    explicit Vector(const std::vector<T> &other, const Alloc& allocator=Alloc());
+
+    // Create a Vector from an initializer list.
+    Vector(std::initializer_list<T> list);
 
     // Create a reference to other.
-    Vector(const Vector<T> &other);
+    Vector(const Vector<T, Alloc> &other);
+    
+    // Move
+    Vector(Vector<T, Alloc>&& source) noexcept;
     
     // Create a reference to the other array.
     // It is always possible if the array has zero or one axes.
     // If it has > 1 axes, it is only possible if the array has at most
     // one axis with length > 1. In that case the degenerated axes are removed.
-    Vector(const Array<T> &other);
+    Vector(const Array<T, Alloc> &other);
 
     // Create an Vector of a given shape from a pointer.
     Vector(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
     // Create an Vector of a given shape from a pointer.
-    Vector(const IPosition &shape, T *storage, StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
+    Vector(const IPosition &shape, T *storage, StorageInitPolicy policy, Alloc& allocator);
     // Create an Vector of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Vector(const IPosition &shape, const T *storage);
+
+    template<typename InputIterator>
+    Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator = Alloc());
 
     // Create a Vector from an STL vector (see <src>tovector()</src> in
     // <linkto class=Array>Array</linkto>  for the reverse operation).
     // <note role=tip> Both this constructor and the tovector() are
     // defined in <src>Vector2.cc</src>. </note>
     // It does implicit promotion/demotion of the type U if different from T.
-    template <class U, class V>
-        Vector(const vector<U, V> &other);
+    template <typename U, typename V>
+    Vector(const std::vector<U, V> &other);
 
     // Create a Vector from a container iterator and its length.
     // <note> The length is used instead of last, because the distance
@@ -146,56 +157,50 @@ public:
     template<typename Iterator>
     Vector(Iterator first, size_t size, int dummy);
 
-    // Define a destructor, otherwise the compiler makes a static one.
-    virtual ~Vector();
-
-    // Assign the other array (which must be of dimension one) to this vector.
-    // If the shapes mismatch, this array is resized.
-    virtual void assign (const Array<T>& other);
-
-    // Create a reference to "other", which must be of dimension one.
-    virtual void reference(const Array<T> &other);
-
     // Resize this Vector to the given length.
-    // The default copyValues flag is False.
+    // The default copyValues flag is false.
     //# Note that the 3rd resize function is necessary, because that
     //# function is virtual in the base class (otherwise it would
     //# be hidden).
-    // Resize without argument is equal to resize(0, False).
+    // Resize without argument is equal to resize(0, false).
     // <group>
-    using Array<T>::resize;
-    void resize(size_t len, Bool copyValues=False)
-      { Vector<T>::resize(len, copyValues, Array<T>::defaultArrayInitPolicy()); }
-    void resize(size_t len, Bool copyValues, ArrayInitPolicy policy)
-      { if (len != this->nelements()) resize (IPosition(1,len), copyValues, policy); }
-    virtual void resize();
-    virtual void resize(const IPosition &len, Bool copyValues, ArrayInitPolicy policy);
+    using Array<T, Alloc>::resize;
+    void resize(size_t len, bool copyValues=false)
+      { if (len != this->nelements()) resize(IPosition(1,len), copyValues); }
+    virtual void resize(const IPosition &len, bool copyValues=false) final override;
     // </group>
-
+    
     // Assign to this Vector. If this Vector is zero-length, then resize
     // to be the same size as other. Otherwise this and other have to be
     // conformant (same size).
     // <br>Note that the assign function can be used to assign a
     // non-conforming vector.
     // <group>
-    Vector<T> &operator=(const Vector<T> &other);
+    // TODO unlike Array, a Vector assign to an empty Vector does
+    // not create a reference but does a value copy of the source.
+    // This should be made consistent.
+    using Array<T, Alloc>::assign_conforming;
+    Vector<T, Alloc>& assign_conforming(const Vector<T, Alloc>& source)
+    {
+      return assign_conforming_implementation(source, std::is_copy_assignable<T>());
+    }
+    Vector<T, Alloc>& assign_conforming(Vector<T, Alloc>&& source);
     // Other must be a 1-dimensional array.
-    virtual Array<T> &operator=(const Array<T> &other);
+    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& source);
     // </group>
 
-    // Set every element of this Vector to Val.
-    Array<T> &operator=(const T &val)
-      { return Array<T>::operator=(val); }
-
-    // Copy to this those values in marray whose corresponding elements
-    // in marray's mask are True.
-    Vector<T> &operator= (const MaskedArray<T> &marray)
-      { Array<T> (*this) = marray; return *this; }
+    using Array<T, Alloc>::operator=;
+    Vector<T, Alloc>& operator=(const Vector<T, Alloc>& source)
+    { return assign_conforming(source); }
+    Vector<T, Alloc>& operator=(Vector<T, Alloc>&& source)
+    { return assign_conforming(std::move(source)); }
+    Vector<T, Alloc>& operator=(Array<T, Alloc>&& source)
+    { assign_conforming(source); return *this; } // TODO
 
     // Convert a Vector to a Block, resizing the block and copying values.
     // This is done this way to avoid having the simpler Block class 
     // containing dependencies on the Vector class.
-    void toBlock(Block<T> &other) const;
+    //void toBlock(Block<T> &other) const;
 
     // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
     // bounds checking is performed (not for [])..
@@ -229,32 +234,32 @@ public:
     // at zero. This uses reference semantics, i.e. changing a value
     // in the slice changes the original.
     // <srcblock>
-    // Vector<Double> vd(100);
+    // Vector<double> vd(100);
     // //...
     // vd(Slice(0,10)) = -1.0; // First 10 elements of vd set to -1
     // </srcblock>
     // <group>
-    Vector<T> operator()(const Slice &slice);
-    const Vector<T> operator()(const Slice &slice) const;
+    Vector<T, Alloc> operator()(const Slice &slice);
+    const Vector<T, Alloc> operator()(const Slice &slice) const;
     // </group>
 
     // Slice using IPositions. Required to be defined, otherwise the base
     // class versions are hidden.
     // <group>
-    Array<T> operator()(const IPosition &blc, const IPosition &trc,
+    Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc,
 			const IPosition &incr)
-      { return Array<T>::operator()(blc,trc,incr); }
-    const Array<T> operator()(const IPosition &blc, const IPosition &trc,
+      { return Array<T, Alloc>::operator()(blc,trc,incr); }
+    const Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc,
                               const IPosition &incr) const
-      { return Array<T>::operator()(blc,trc,incr); }
-    Array<T> operator()(const IPosition &blc, const IPosition &trc)
-      { return Array<T>::operator()(blc,trc); }
-    const Array<T> operator()(const IPosition &blc, const IPosition &trc) const
-      { return Array<T>::operator()(blc,trc); }
-    Array<T> operator()(const Slicer& slicer)
-      { return Array<T>::operator()(slicer); }
-    const Array<T> operator()(const Slicer& slicer) const
-      { return Array<T>::operator()(slicer); }
+      { return Array<T, Alloc>::operator()(blc,trc,incr); }
+    Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc)
+      { return Array<T, Alloc>::operator()(blc,trc); }
+    const Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc) const
+      { return Array<T, Alloc>::operator()(blc,trc); }
+    Array<T, Alloc> operator()(const Slicer& slicer)
+      { return Array<T, Alloc>::operator()(slicer); }
+    const Array<T, Alloc> operator()(const Slicer& slicer) const
+      { return Array<T, Alloc>::operator()(slicer); }
     // </group>
 
     // The array is masked by the input LogicalArray.
@@ -292,45 +297,42 @@ public:
     // The length of the Vector.
     const IPosition &shape() const
       { return this->length_p; }
-    void shape(Int &Shape) const
+    void shape(int &Shape) const
       { Shape = this->length_p(0); }
 
     // Verify that dimensionality is 1 and then call Array<T>::ok()
-    virtual Bool ok() const;
+    virtual bool ok() const final override;
 
 protected:
-    virtual void preTakeStorage(const IPosition &shape);
     // Remove the degenerate axes from other and store result in this vector.
     // An exception is thrown if removing degenerate axes does not result
     // in a vector.
     virtual void doNonDegenerate(const Array<T> &other,
-                                 const IPosition &ignoreAxes);
+                                 const IPosition &ignoreAxes) final override;
+                                 
+    virtual size_t fixedDimensionality() const final override { return 1; }
 
 private:
+    Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::false_type isCopyable);
+    Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::true_type isCopyable);
+  
     // Helper functions for constructors.
-    void initVector(const Block<T> &, Int64 nr);      // copy semantics
+    void initVector(const std::vector<T>&, long long nr);      // copy semantics
+    
+    // The following two constructors are used to make distinguish between
+    // Vector<literal>(literal size, literal value)
+    // and
+    // Vector<literal>(iterator, iterator)
+    template<typename InputIterator>
+    Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::false_type /* T is not a literal */);
+    
+    template<typename InputIterator>
+    Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::true_type /* T is literal */);
 };
-
-
-//# Declare extern templates for often used types.
-  extern template class Vector<Bool>;
-  extern template class Vector<Char>;
-  extern template class Vector<Short>;
-  extern template class Vector<uShort>;
-  extern template class Vector<Int>;
-  extern template class Vector<uInt>;
-  extern template class Vector<Int64>;
-  extern template class Vector<Float>;
-  extern template class Vector<Double>;
-  extern template class Vector<Complex>;
-  extern template class Vector<DComplex>;
-  extern template class Vector<String>;
 
 } //#End namespace casacore
 
+#include "Vector.tcc"
+#include "Vector2.tcc"
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/Vector.tcc>
-#include <casacore/casa/Arrays/Vector2.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

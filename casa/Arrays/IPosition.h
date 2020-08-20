@@ -25,15 +25,16 @@
 //#
 //# $Id$
 
-#ifndef CASA_IPOSITION_H
-#define CASA_IPOSITION_H
+#ifndef CASA_IPOSITION_2_H
+#define CASA_IPOSITION_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/iosfwd.h>
-#include <casacore/casa/BasicSL/String.h>
+#include "ArrayFwd.h"
+
 #include <vector>
 #include <cstddef>                  // for ptrdiff_t
+#include <initializer_list>
+
 #include <sys/types.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -41,8 +42,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class AipsIO;
 class LogIO;
-template<class T> class Array;
-template<class T> class Vector;
 
 // <summary> A Vector of integers, for indexing into Array<T> objects. </summary>
 
@@ -60,7 +59,7 @@ template<class T> class Vector;
 // </etymology>
 
 // <synopsis> 
-// IPosition is "logically" a Vector<Int64> constrained so that its origin
+// IPosition is "logically" a Vector<int> constrained so that its origin
 // is zero-based, and in fact that used to be the way it was implemented.
 // It was split out into a separate class to make the inheritance from
 // Arrays simpler (since Arrays use IPositions). The
@@ -111,7 +110,7 @@ template<class T> class Vector;
 // }
 // //...
 // trc += 5;           // make the box 5 larger in all dimensions
-// std::vector<Int> vec(trc.toStdVector());
+// std::vector<int> vec(trc.toStdVector());
 // </srcblock>
 // </example>
 
@@ -119,76 +118,84 @@ template<class T> class Vector;
 class IPosition
 {
     friend class IPositionComparator;
+    
 public:
     enum {MIN_INT = -2147483647};
     // A zero-length IPosition.
-    IPosition();
+    IPosition() noexcept;
 
     // An IPosition of size "length." The values in the object are undefined.
-    explicit IPosition(uInt length);
+    explicit IPosition(size_t length);
 
+    // An IPosition initialized from the given list
+    IPosition(std::initializer_list<ssize_t> list);
+    
     // An IPosition of size "length." The values in the object get
     // initialized to val.
-    IPosition(uInt length, ssize_t val);
+    IPosition(size_t length, ssize_t val);
 
     // An IPosition of size "length" with defined values. You need to supply
     // a value for each element of the IPosition (up to 10). [Unfortunately
     // varargs might not be sufficiently portable.]
-    IPosition (uInt length, ssize_t val0, ssize_t val1, ssize_t val2=MIN_INT, 
+    IPosition (size_t length, ssize_t val0, ssize_t val1, ssize_t val2=MIN_INT, 
 	       ssize_t val3=MIN_INT, ssize_t val4=MIN_INT, ssize_t val5=MIN_INT,
 	       ssize_t val6=MIN_INT, ssize_t val7=MIN_INT, ssize_t val8=MIN_INT,
 	       ssize_t val9=MIN_INT);
 
-    // Makes a copy (copy, NOT reference, semantics) of other.
-    IPosition(const IPosition& other);
+    // Makes a copy (copy, NOT reference, semantics) of source.
+    IPosition(const IPosition& source);
+    
+    IPosition(IPosition&& source) noexcept;
     
     ~IPosition();
 
-    // Makes this a copy of other. "this" and "other" must either be conformant
-    // (same size) or this must be 0-length, in which case it will
-    // resize itself to be the same length as other.
-    IPosition& operator=(const IPosition& other);
+    // Makes this a copy of other. When the dest is not of the same
+    // size, it will resize itself to be the same length as the source.
+    IPosition& operator=(const IPosition& source);
 
+    IPosition& operator=(IPosition&& source);
+    
     // Copy "value" into every position of this IPosition.
     IPosition& operator=(ssize_t value);
 
     // Construct a default axis path consisting of the values 0 .. nrdim-1.
-    static IPosition makeAxisPath (uInt nrdim);
+    static IPosition makeAxisPath (size_t nrdim);
 
     // Construct a full axis path from a (partially) given axis path.
     // It fills the path with the non-given axis.
     // It is checked if the given axis path is valid (i.e. if the axis are
     // < nrdim and if they are not doubly defined).
     // E.g.: in the 4D case an axis path [0,2] is returned as [0,2,1,3].
-    static IPosition makeAxisPath (uInt nrdim, const IPosition& partialPath);
+    static IPosition makeAxisPath (size_t nrdim, const IPosition& partialPath);
 
     // Make a list of axes which are the axes not given in <src>axes</src>
     // up to the given dimension
-    static IPosition otherAxes (uInt nrdim, const IPosition& axes);
+    static IPosition otherAxes (size_t nrdim, const IPosition& axes);
 
-    // Convert an IPosition to and from an Array<Int or Int64>.
-    // In either case, the array must be one dimensional.
+    // Convert an IPosition to and from an Array<int/int64>. In either case, the
+    // array must be one dimensional.
     // <group>
-    IPosition(const Array<Int>& other);
-    IPosition(const Array<Int64>& other);
-    Vector<Int> asVector() const;
-    Vector<Int64> asVector64() const;
+    IPosition(const Array<int>& other);
+    IPosition(const Array<long long>& other);
+    Vector<int> asVector() const;
+    Vector<long long> asVector64() const;
     // </group>
 
-    // Convert an IPosition to and from an vector<Int or Int64>.
+    // Convert an IPosition to and from an Array<int/int64>. In either case, the
+    // array must be one dimensional.
     // <group>
-    IPosition(const std::vector<Int>& other);
-    IPosition(const std::vector<Int64>& other);
-    std::vector<Int> asStdVector() const;
-    std::vector<Int64> asStdVector64() const;
+    IPosition(const std::vector<int>& other);
+    IPosition(const std::vector<long long>& other);
+    std::vector<int> asStdVector() const;
+    std::vector<long long> asStdVector64() const;
     // </group>
 
     // Resize and fill this IPosition object.
     template<typename InputIterator>
-    void fill (uInt size, InputIterator iter)
+    void fill (size_t size, InputIterator iter)
     {
       resize (size);
-      for (uInt i=0; i<size; ++i, ++iter) {
+      for (size_t i=0; i<size; ++i, ++iter) {
         data_p[i] = *iter;
       }
     }
@@ -198,7 +205,7 @@ public:
     template<typename OutputIterator>
     void copy (OutputIterator iter) const
     {
-      for (uInt i=0; i<size_p; ++i, ++iter) {
+      for (size_t i=0; i<size_p; ++i, ++iter) {
         *iter = data_p[i];
       }
     }
@@ -213,23 +220,23 @@ public:
     // The functions with argument <src>ignoreAxes</src> do
     // not consider the axes given in that argument.
     // <group>
-    IPosition nonDegenerate(uInt startingAxis=0) const;
+    IPosition nonDegenerate(size_t startingAxis=0) const;
     IPosition nonDegenerate(const IPosition& ignoreAxes) const;
     // </group>
 
-    // Old values are copied on resize if copy==True.
+    // Old values are copied on resize if copy==true.
     // If the size increases, values beyond the former size are undefined.
-    void resize(uInt newSize, Bool copy=True);
+    void resize(size_t newSize, bool copy=true);
 
     // Index into the IPosition. Indices are zero-based. If the preprocessor
     // symbol AIPS_ARRAY_INDEX_CHECK is defined, operator() will check
     // "index" to ensure it is not out of bounds. If this check fails, an
     // AipsError will be thrown.
     // <group>
-    ssize_t& operator[] (uInt index);
-    ssize_t operator[]  (uInt index) const;
-    ssize_t& operator() (uInt index);
-    ssize_t operator()  (uInt index) const;
+    ssize_t& operator[] (size_t index);
+    ssize_t operator[]  (size_t index) const;
+    ssize_t& operator() (size_t index);
+    ssize_t operator()  (size_t index) const;
     // </group>
 
     // Make an IPosition by using only the specified elements of the current
@@ -251,8 +258,8 @@ public:
     // If the preprocessor symbol AIPS_ARRAY_INDEX_CHECK is defined, it will
     // check if the index is not out of bounds.
     // <group>
-    ssize_t& last (uInt index=0);
-    ssize_t last (uInt index=0) const;
+    ssize_t& last (size_t index=0);
+    ssize_t last (size_t index=0) const;
     // </group>
 
     // Get the storage.
@@ -278,12 +285,12 @@ public:
     // Construct an IPosition from the first <src>n</src> values of this
     // IPosition.
     // An exception is thrown if <src>n</src> is too high.
-    IPosition getFirst (uInt n) const;
+    IPosition getFirst (size_t n) const;
 
     // Construct an IPosition from the last <src>n</src> values of this
     // IPosition.
     // An exception is thrown if <src>n</src> is too high.
-    IPosition getLast (uInt n) const;
+    IPosition getLast (size_t n) const;
 
     // Return an IPosition where the given axes are reoved.
     IPosition removeAxes (const IPosition& axes) const;
@@ -295,15 +302,15 @@ public:
     // objects use zero-based indexing, the maximum available index is
     // nelements() - 1.
     // <group>
-    uInt nelements() const;
-    uInt size() const;
+    size_t nelements() const;
+    size_t size() const;
     // </group>
 
     // Is the IPosition empty (i.e. no elements)?
-    Bool empty() const;
+    bool empty() const;
 
     // conform returns true if nelements() == other.nelements().
-    Bool conform(const IPosition& other) const;
+    bool conform(const IPosition& other) const;
 
     // Element-by-element arithmetic.
     // <group>
@@ -319,56 +326,46 @@ public:
 
     // Returns 0 if nelements() == 0, otherwise it returns the product of
     // its elements.
-    Int64 product() const;
+    long long product() const;
 
     // Are all elements equal to 1?
     // Useful to check if a given stride is really a stride.
-    Bool allOne() const;
+    bool allOne() const;
 
     // Element-by-element comparison for equality.
-    // It returns True if the lengths and all elements are equal.
+    // It returns true if the lengths and all elements are equal.
     // <br>
     // Note that an important difference between this function and operator==()
     // is that if the two IPositions have different lengths, this function
-    // returns False, instead of throwing an exception as operator==() does.
-    Bool isEqual (const IPosition& other) const;
+    // returns false, instead of throwing an exception as operator==() does.
+    bool isEqual (const IPosition& other) const;
 
     // Element-by-element comparison for equality.
-    // It returns True if all elements are equal.
-    // When <src>skipDegeneratedAxes</src> is True, axes with
+    // It returns true if all elements are equal.
+    // When <src>skipDegeneratedAxes</src> is true, axes with
     // length 1 are skipped in both operands.
-    Bool isEqual (const IPosition& other, Bool skipDegeneratedAxes) const;
+    bool isEqual (const IPosition& other, bool skipDegeneratedAxes) const;
 
     // Element-by-element comparison for (partial) equality.
-    // It returns True if the lengths and the first <src>nrCompare</src>
+    // It returns true if the lengths and the first <src>nrCompare</src>
     // elements are equal.
-    Bool isEqual (const IPosition& other, uInt nrCompare) const;
+    bool isEqual (const IPosition& other, size_t nrCompare) const;
 
     // Is the other IPosition a subset of (or equal to) this IPosition?
     // It is a subset if zero or more axes of this IPosition do not occur
     // or are degenerated in the other and if the remaining axes are
     // in the same order.
-    Bool isSubSet (const IPosition& other) const;
+    bool isSubSet (const IPosition& other) const;
 
-    // Write the IPosition into a String.
-    String toString() const;
+    // Write the IPosition into a string.
+    // TODO deprecate in favour of to_string(const IPosition&)
+    std::string toString() const;
 
     // Write an IPosition to an ostream in a simple text form.
     friend std::ostream& operator<<(std::ostream& os, const IPosition& ip);
 
-    // Write an IPosition to an AipsIO stream in a binary format.
-    friend AipsIO& operator<<(AipsIO& aio, const IPosition& ip);
-
-    // Write an IPosition to a LogIO stream.
-    friend LogIO& operator<<(LogIO& io, const IPosition& ip);
-
-    // Read an IPosition from an AipsIO stream in a binary format.
-    // Will throw an AipsError if the current IPosition Version does not match
-    // that of the one on disk.
-    friend AipsIO& operator>>(AipsIO& aio, IPosition& ip);
-
     // Is this IPosition consistent?
-    Bool ok() const;
+    bool ok() const;
 
     // Define the STL-style iterators.
     // It makes it possible to iterate through all data elements.
@@ -412,20 +409,20 @@ private:
     void throwIndexError() const;
 
     enum { BufferLength = 4 };
-    uInt size_p;
+    size_t size_p;
     ssize_t buffer_p[BufferLength];
     // When the iposition is length BufferSize or less data is just buffer_p,
     // avoiding calls to new and delete.
     ssize_t *data_p;
 };
 
+// Allows a way for IPosition to be used as keys in a std::map
 class IPositionComparator : public std::binary_function<IPosition, IPosition, bool> {
-    // allows a way for IPosition to be used as keys in a std::map
 public:
-    // if sizes aren't equal, returns True if lhs.size() < rhs.size(), false
+    // if sizes aren't equal, returns true if lhs.size() < rhs.size(), false
     // otherwise. If sizes are equal, does an element by element comparison. The first
-    // corresponding elements that are not equal, returns True if the rhs element is
-    // less than the lhs element, False otherwise. Returns False if all elements are
+    // corresponding elements that are not equal, returns true if the rhs element is
+    // less than the lhs element, false otherwise. Returns false if all elements are
     // equal.
     bool operator()(const IPosition& lhs, const IPosition& rhs) const;
 };
@@ -450,7 +447,7 @@ IPosition operator - (const IPosition& left, ssize_t val);
 IPosition operator * (const IPosition& left, ssize_t val);
 IPosition operator / (const IPosition& left, ssize_t val);
 // </group>
-// Same functions as above but with with the Int argument on the left side.
+// Same functions as above but with with the int argument on the left side.
 // <group>
 IPosition operator + (ssize_t val, const IPosition& right);
 IPosition operator - (ssize_t val, const IPosition& right);
@@ -473,30 +470,30 @@ IPosition min (const IPosition& left, const IPosition& right);
 // two IPositions must have the same number of elements otherwise an
 // exception (ArrayConformanceError) will be thrown.
 // <group>
-Bool operator == (const IPosition& left, const IPosition& right);
-Bool operator != (const IPosition& left, const IPosition& right);
-Bool operator <  (const IPosition& left, const IPosition& right);
-Bool operator <= (const IPosition& left, const IPosition& right);
-Bool operator >  (const IPosition& left, const IPosition& right);
-Bool operator >= (const IPosition& left, const IPosition& right);
+bool operator == (const IPosition& left, const IPosition& right);
+bool operator != (const IPosition& left, const IPosition& right);
+bool operator <  (const IPosition& left, const IPosition& right);
+bool operator <= (const IPosition& left, const IPosition& right);
+bool operator >  (const IPosition& left, const IPosition& right);
+bool operator >= (const IPosition& left, const IPosition& right);
 // </group>
 // Each operation is done by appliying the integer argument to all elements
 // <group>
-Bool operator == (const IPosition& left, ssize_t val);
-Bool operator != (const IPosition& left, ssize_t val);
-Bool operator <  (const IPosition& left, ssize_t val);
-Bool operator <= (const IPosition& left, ssize_t val);
-Bool operator >  (const IPosition& left, ssize_t val);
-Bool operator >= (const IPosition& left, ssize_t val);
+bool operator == (const IPosition& left, ssize_t val);
+bool operator != (const IPosition& left, ssize_t val);
+bool operator <  (const IPosition& left, ssize_t val);
+bool operator <= (const IPosition& left, ssize_t val);
+bool operator >  (const IPosition& left, ssize_t val);
+bool operator >= (const IPosition& left, ssize_t val);
 // </group>
-// Same functions as above but with with the Int argument on the left side.
+// Same functions as above but with with the int argument on the left side.
 // <group>
-Bool operator == (ssize_t val, const IPosition& right);
-Bool operator != (ssize_t val, const IPosition& right);
-Bool operator <  (ssize_t val, const IPosition& right);
-Bool operator <= (ssize_t val, const IPosition& right);
-Bool operator >  (ssize_t val, const IPosition& right);
-Bool operator >= (ssize_t val, const IPosition& right);
+bool operator == (ssize_t val, const IPosition& right);
+bool operator != (ssize_t val, const IPosition& right);
+bool operator <  (ssize_t val, const IPosition& right);
+bool operator <= (ssize_t val, const IPosition& right);
+bool operator >  (ssize_t val, const IPosition& right);
+bool operator >= (ssize_t val, const IPosition& right);
 // </group>
 // </group>
 
@@ -514,70 +511,60 @@ Bool operator >= (ssize_t val, const IPosition& right);
 
 // <group name="IPosition Indexing">
 // Convert from offset to IPosition in an array.
-IPosition toIPositionInArray (Int64 offset, const IPosition& shape);
+IPosition toIPositionInArray (long long offset, const IPosition& shape);
 
 // Convert from IPosition to offset in an array.
-Int64 toOffsetInArray (const IPosition& iposition, const IPosition& shape);
+long long toOffsetInArray (const IPosition& iposition, const IPosition& shape);
 
 // Determine if the given offset or IPosition is inside the array. Returns
-// True if it is inside the Array.
+// true if it is inside the Array.
 // <thrown>
 //   <li> ArrayConformanceError: If all the IPositions are not the same length
 // </thrown>
 // <group>
-Bool isInsideArray (const Int64 offset, const IPosition& shape);
-Bool isInsideArray (const IPosition& iposition, const IPosition& shape);
+bool isInsideArray (const long long offset, const IPosition& shape);
+bool isInsideArray (const IPosition& iposition, const IPosition& shape);
 // </group>
 // </group>
 
-
+std::string to_string(const IPosition& ip);
     
 //# Inlined member functions for IPosition
 
-inline IPosition::IPosition()
+inline IPosition::IPosition() noexcept
 : size_p (0),
   data_p (buffer_p)
 {}
 
-inline IPosition IPosition::makeAxisPath (uInt nrdim)
+inline IPosition IPosition::makeAxisPath (size_t nrdim)
 {
     return makeAxisPath (nrdim, IPosition());
 }
 
-inline uInt IPosition::nelements() const
+inline size_t IPosition::nelements() const
 {
     return size_p;
 }
-inline uInt IPosition::size() const
+inline size_t IPosition::size() const
 {
     return size_p;
 }
-inline Bool IPosition::empty() const
+inline bool IPosition::empty() const
 {
     return size_p == 0;
 }
 
-inline ssize_t& IPosition::operator[](uInt index)
+inline ssize_t& IPosition::operator[](size_t index)
 {
     return data_p[index];
 }
 
-inline ssize_t IPosition::operator[](uInt index) const
+inline ssize_t IPosition::operator[](size_t index) const
 {
     return data_p[index];
 }
 
-inline ssize_t& IPosition::operator()(uInt index)
-{
-#if defined(AIPS_ARRAY_INDEX_CHECK)
-    if (index >= nelements()) {
-	throwIndexError();
-    }
-#endif
-    return data_p[index];
-}
-
-inline ssize_t IPosition::operator()(uInt index) const
+inline ssize_t& IPosition::operator()(size_t index)
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if (index >= nelements()) {
@@ -587,7 +574,17 @@ inline ssize_t IPosition::operator()(uInt index) const
     return data_p[index];
 }
 
-inline ssize_t& IPosition::last (uInt index)
+inline ssize_t IPosition::operator()(size_t index) const
+{
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+    if (index >= nelements()) {
+	throwIndexError();
+    }
+#endif
+    return data_p[index];
+}
+
+inline ssize_t& IPosition::last (size_t index)
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if (size_p - index <= 0) {
@@ -597,7 +594,7 @@ inline ssize_t& IPosition::last (uInt index)
     return data_p[size_p-index-1];
 }
 
-inline ssize_t IPosition::last (uInt index) const
+inline ssize_t IPosition::last (size_t index) const
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if (size_p - index <= 0) {
@@ -612,7 +609,7 @@ inline const ssize_t *IPosition::storage() const
     return data_p;
 }
 
-inline Bool IPosition::conform(const IPosition& other) const
+inline bool IPosition::conform(const IPosition& other) const
 {
     return  (size_p == other.size_p);
 }

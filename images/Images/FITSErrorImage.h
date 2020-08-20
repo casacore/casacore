@@ -32,14 +32,12 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/FITSImage.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template <class T> class Array;
-
-//
 class MaskSpecifier;
 class IPosition;
 class Slicer;

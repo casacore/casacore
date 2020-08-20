@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Block.h>
 
@@ -39,7 +40,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Regex;
-template <class T> class Vector; 
 
 // <summary>
 // Pointed String class to aid analysis of quantity strings

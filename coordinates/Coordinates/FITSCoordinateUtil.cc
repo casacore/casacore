@@ -44,6 +44,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/casa/Quanta/Quantum.h>
@@ -878,8 +879,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
-		} catch (AipsError& x) {
-		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
+		} catch (std::exception& x) {
+		    os << LogIO::WARN << x.what() << LogIO::POST;
 		    ok = False;
 		}
 	    }
@@ -932,8 +933,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
-		} catch (AipsError& x) {
-		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
+		} catch (std::exception& x) {
+		    os << LogIO::WARN << x.what() << LogIO::POST;
 		    ok = False;
 		}
 	    }
@@ -1098,8 +1099,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 		try {
 		    cSys.addCoordinate(c);
-		} catch (AipsError& x) {
-		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
+		} catch (std::exception& x) {
+		    os << LogIO::WARN << x.what() << LogIO::POST;
 		    ok = False;
 		}     
 	    }
@@ -1159,8 +1160,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		
 		try {
 		    cSys.addCoordinate(c);
-		} catch (AipsError& x) {
-		    os << LogIO::WARN << x.getMesg() << LogIO::POST;
+		} catch (std::exception& x) {
+		    os << LogIO::WARN << x.what() << LogIO::POST;
 		    ok = False;
 		}     
 	    }
@@ -1237,8 +1238,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			
 			fixCoordinate (c, os);
 			cSys.addCoordinate(c);
-		    } catch (AipsError& x) {
-			os << LogIO::WARN << x.getMesg() << LogIO::POST;
+		    } catch (std::exception& x) {
+			os << LogIO::WARN << x.what() << LogIO::POST;
 			ok = False;
 		    }     
 		}
@@ -1598,8 +1599,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	try {
 	    coord = StokesCoordinate(stokes);
-	} catch (AipsError& x) {
-	    errMsg = x.getMesg();
+	} catch (std::exception& x) {
+	    errMsg = x.what();
 	    return False;
 	} 
 //

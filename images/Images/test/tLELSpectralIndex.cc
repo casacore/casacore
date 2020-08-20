@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -177,8 +177,8 @@ int main ()
   Bool ok = True;
   try {
     ok = doIt();
-  } catch (AipsError& x) {
-    cerr << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Caught exception: " << x.what() << endl;
     ok = False;
   } 
   if (!ok) {

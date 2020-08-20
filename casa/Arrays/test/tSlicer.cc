@@ -27,187 +27,287 @@
 
 //# Includes
 
-#include <casacore/casa/Arrays/Slicer.h>
-#include <casacore/casa/Arrays/Slice.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/iostream.h>
+#include "../Slicer.h"
+#include "../Slice.h"
+#include "../IPosition.h"
+#include "../ArrayError.h"
 
-#include <casacore/casa/namespace.h>
+#include <boost/test/unit_test.hpp>
+
+#include "TestUtilities.h"
+
 // <summary> Test the Slicer class </summary>
 
-//# Forward Declarations
+using namespace casacore;
 
-void a();
+BOOST_AUTO_TEST_SUITE(slicer)
 
-int main()
+struct Fixture
 {
-    try {
-	a();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
-	return 1;
-    } 
-    return 0;                           // exit with success status
+  // Define the shape of an array.
+  // Also define an origin.
+  IPosition shape;
+  IPosition blc,trc,inc;
+  Fixture() :
+    shape (2,20,30)
+  { }
+};
+
+BOOST_FIXTURE_TEST_CASE( define, Fixture )
+{
+  // The following (outcommented) constructor results in a compile
+  // error, because this private constructor prevents an automatic
+  // conversion of int to IPosition.
+  //# Slicer xxx(0);
+
+  // Now define some Slicer's and apply the shape.
+  Slicer ns0 (IPosition(2,0,24));
+  check(ns0.inferShapeFromSource (shape, blc, trc, inc), {1, 1});
+  check(blc, {0, 24});
+  check(trc, {0, 24});
+  check(inc, {1, 1});
+  
+  Slicer ns1 (IPosition(2,3,5), IPosition(2,13,21),
+  Slicer::endIsLast);
+  check(ns1.inferShapeFromSource (shape,blc,trc,inc), {11, 17});
+  check(blc, {3, 5});
+  check(trc, {13, 21});
+  check(inc, {1, 1});
+  
+  Slicer ns2 (IPosition(2,3,5), IPosition(2,13,21), IPosition(2,3,2),
+  Slicer::endIsLast);
+  check(ns2.inferShapeFromSource (shape, blc,trc,inc), {4, 9});
+  check(blc, {3, 5});
+  check(trc, {12, 21});
+  check(inc, {3, 2});
+  
+  BOOST_CHECK_EQUAL(ns2.ndim(), 2);
+  check(ns2.start(), {3, 5});
+  check(ns2.end(), {13, 21});
+  check(ns2.stride(), {3, 2});
+  check(ns2.length(), {4, 9});
+  BOOST_CHECK_EQUAL(to_string(ns2), "[3, 5] to [13, 21] with stride [3, 2], length [4, 9]");
 }
 
-void a()
+BOOST_FIXTURE_TEST_CASE( from_output_length, Fixture )
 {
-    // The following (outcommented) constructor results in a compile
-    // error, because this private constructor prevents an automatic
-    // conversion of Int to IPosition.
-    //# Slicer xxx(0);
-
-    // Define the shape of an array.
-    // Also define an origin.
-    IPosition shape(2,20,30);
-    // Now define some Slicer's and apply the shape.
-    IPosition blc,trc,inc;
-    Slicer ns0 (IPosition(2,0,24));
-    cout << ns0.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns1 (IPosition(2,3,5), IPosition(2,13,21),
-		Slicer::endIsLast);
-    cout << ns1.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns2 (IPosition(2,3,5), IPosition(2,13,21), IPosition(2,3,2),
-		Slicer::endIsLast);
-    cout << ns2.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns2.ndim() << ns2.start() << ns2.end() << ns2.stride()
-	 << ns2.length() << endl;
-    cout << ns2 << endl;
-
-    // Define some Slicer's via an output length.
-    Slicer ns10 (IPosition(2,0,24));
-    cout << ns10.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns11 (IPosition(2,3,5), IPosition(2,13,21));
-    cout << ns11.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns12 (IPosition(2,3,5), IPosition(2,4,11), IPosition(2,3,2));
-    cout << ns12.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns12.ndim() << ns12.start() << ns12.end() << ns12.stride()
-	 << ns12.length() << endl;
-
-    // Define some Slicer's with an undetermined blc and/or trc.
-    Slicer ns20 (IPosition(2,Slicer::MimicSource,24));
-    cout << ns20.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns21 (IPosition(2,3,5), IPosition(2,13,Slicer::MimicSource),
-		 Slicer::endIsLast);
-    cout << ns21.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns22 (IPosition(2,Slicer::MimicSource,5), IPosition(2,13,21),
-		 IPosition(2,3,2), Slicer::endIsLast);
-    cout << ns22.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns22.ndim() << ns22.start() << ns22.end() << ns22.stride()
-	 << ns22.length() << endl;
-
-    // Define some Slicer's with an undetermined blc and/or length.
-    Slicer ns30 (IPosition(2,Slicer::MimicSource,24));
-    cout << ns30.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns31 (IPosition(2,3,5), IPosition(2,13,Slicer::MimicSource));
-    cout << ns31.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns32 (IPosition(2,Slicer::MimicSource,5), IPosition(2,5,11),
-		 IPosition(2,3,2));
-    cout << ns32.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns32.ndim() << ns32.start() << ns32.end() << ns32.stride()
-	 << ns32.length() << endl;
-
-    Slicer ns40 (Slice(0), Slice(24));
-    cout << ns40.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns41 (Slice(3,13), Slice(5,21));
-    cout << ns41.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    Slicer ns42 (Slice(3,5,3), Slice(5,11,2));
-    cout << ns42.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns42.ndim() << ns42.start() << ns42.end() << ns42.stride()
-	 << ns42.length() << endl;
-    Slice tmp1, tmp2(5,11,2);
-    Slicer ns43(tmp1, tmp2);
-    cout << ns43.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns43.ndim() << ns43.start() << ns43.end() << ns43.stride()
-	 << ns43.length() << endl;
-
-    // Try length 0.
-    Slicer ns50 (Slice(0,5,2), Slice(24,0,3));
-    cout << ns50.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns50.ndim() << ns50.start() << ns50.end() << ns50.stride()
-	 << ns50.length() << endl;
-
-    // Define some Slicers with a negative start or end.
-    Slicer ns60 (IPosition(2,-13,10), IPosition(2,15,-3), Slicer::endIsLast);
-    cout << ns60.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-
-    // Try copy constructor.
-    Slicer ns3(ns2);
-    cout << ns3.ndim() << ns3.start() << ns3.end() << ns3.stride()
-	 << ns3.length() << endl;
-    // Try assignment (the difference in ndim should work fine).
-    Slicer ns4(IPosition(1,0));
-    cout << ns4.ndim() << endl;
-    ns4 = ns3;
-    cout << ns4.ndim() << ns4.start() << ns4.end() << ns4.stride()
-	 << ns4.length() << endl;
-
-    // Try equality
-    cout << (ns4==ns3) << endl;
-    cout << (ns4==ns50) << endl;
-
-    // Do some erroneous constructions.
-    try {
-	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0));
-    }catch (AipsError& x) {                   // different lengths
-	cout << x.getMesg() << endl;
-    } 
-    try {
-	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0), Slicer::endIsLast);
-    }catch (AipsError& x) {                   // different lengths
-	cout << x.getMesg() << endl;
-    } 
-    try {
-	Slicer ns(IPosition(2,0,1), IPosition(2,0,0), Slicer::endIsLast);
-    }catch (AipsError& x) {                   // trc < blc
-	cout << x.getMesg() << endl;
-    } 
-    try {
-	Slicer ns(IPosition(2,0,1), IPosition(2,0,-1), Slicer::endIsLength);
-    }catch (AipsError& x) {                   // length < 0
-	cout << x.getMesg() << endl;
-    } 
-    try {
-	Slicer ns(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,-1,0));
-    }catch (AipsError& x) {                   // inc < 0
-	cout << x.getMesg() << endl;
-    } 
-    try {
-	Slicer ns(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,0,0));
-    }catch (AipsError& x) {                   // inc < 0
-	cout << x.getMesg() << endl;
-    } 
-
-    // Check if changing length of trc,blc,inc works fine.
-    Slicer ns90;
-    cout << ns90.inferShapeFromSource (IPosition(1,10), blc, trc, inc)
-	 << blc << trc << inc << endl;
-    cout << ns90.ndim() << ns90.start() << ns90.end() << ns90.stride()
-	 << ns90.length() << endl;
-    // Do some erroneous infers.
-    try {
-	ns90.inferShapeFromSource (shape, blc, trc, inc);
-    }catch (AipsError& x) {                   // shape length invalid
-	cout << x.getMesg() << endl;
-    } 
-    
+  IPosition blc,trc,inc;
+  // Define some Slicer's via an output length.
+  Slicer ns10 (IPosition(2,0,24));
+  check(ns10.inferShapeFromSource (shape, blc, trc, inc), {1, 1});
+  check(blc, {0, 24});
+  check(trc, {0, 24});
+  check(inc, {1, 1});
+  
+  Slicer ns11 (IPosition(2,3,5), IPosition(2,13,21));
+  check(ns11.inferShapeFromSource (shape, blc,trc,inc), {13, 21});
+  check(blc, {3, 5});
+  check(trc, {15, 25});
+  check(inc, {1, 1});
+  
+  Slicer ns12 (IPosition(2,3,5), IPosition(2,4,11), IPosition(2,3,2));
+  check(ns12.inferShapeFromSource (shape, blc,trc,inc), {4, 11});
+  check(blc, {3, 5});
+  check(trc, {12, 25});
+  check(inc, {3, 2});
+  
+  BOOST_CHECK_EQUAL(ns12.ndim(), 2);
+  check(ns12.start(), {3, 5});
+  check(ns12.end(), {12, 25});
+  check(ns12.stride(), {3, 2});
+  check(ns12.length(), {4, 11});
 }
+
+BOOST_FIXTURE_TEST_CASE( undetermined_blc_trc, Fixture )
+{
+  // Define some Slicer's with an undetermined blc and/or trc.
+  Slicer ns20 (IPosition(2,Slicer::MimicSource,24));
+  check(ns20.inferShapeFromSource (shape, blc,trc,inc), {1, 1});
+  check(blc, {0, 24});
+  check(trc, {0, 24});
+  check(inc, {1, 1});
+  
+  Slicer ns21 (IPosition(2,3,5), IPosition(2,13,Slicer::MimicSource),
+    Slicer::endIsLast);
+  check(ns21.inferShapeFromSource (shape, blc,trc,inc), {11, 25});
+  check(blc, {3, 5});
+  check(trc, {13, 29});
+  check(inc, {1, 1});
+  
+  Slicer ns22 (IPosition(2,Slicer::MimicSource,5), IPosition(2,13,21),
+    IPosition(2,3,2), Slicer::endIsLast);
+  check(ns22.inferShapeFromSource (shape, blc,trc,inc), {5, 9});
+  check(blc, {0, 5});
+  check(trc, {12, 21});
+  check(inc, {3, 2});
+  
+  BOOST_CHECK_EQUAL(ns22.ndim(), 2);
+  check(ns22.start(), {-2147483646, 5});
+  check(ns22.end(), {13, 21});
+  check(ns22.stride(), {3, 2});
+  check(ns22.length(), {-2147483646, 9});
+}
+
+BOOST_FIXTURE_TEST_CASE( undetermined_blc_length, Fixture )
+{
+  // Define some Slicer's with an undetermined blc and/or length.
+  Slicer ns30 (IPosition(2,Slicer::MimicSource,24));
+  check(ns30.inferShapeFromSource (shape, blc,trc,inc), {1, 1});
+  check(blc, {0, 24});
+  check(trc, {0, 24});
+  check(inc, {1, 1});
+  
+  Slicer ns31 (IPosition(2,3,5), IPosition(2,13,Slicer::MimicSource));
+  check(ns31.inferShapeFromSource (shape, blc,trc,inc), {13, 25});
+  check(blc, {3, 5});
+  check(trc, {15, 29});
+  check(inc, {1, 1});
+  
+  Slicer ns32 (IPosition(2,Slicer::MimicSource,5), IPosition(2,5,11),
+    IPosition(2,3,2));
+  check(ns32.inferShapeFromSource (shape, blc,trc,inc), {5, 11});
+  check(blc, {0, 5});
+  check(trc, {12, 25});
+  check(inc, {3, 2});
+  
+  BOOST_CHECK_EQUAL(ns32.ndim(), 2);
+  check(ns32.start(), {-2147483646, 5});
+  check(ns32.end(), {-2147483634, 25});
+  check(ns32.stride(), {3, 2});
+  check(ns32.length(), {5, 11});
+
+  Slicer ns40 (Slice(0), Slice(24));
+  check(ns40.inferShapeFromSource (shape, blc,trc,inc), {1, 1});
+  check(blc, {0, 24});
+  check(trc, {0, 24});
+  check(inc, {1, 1});
+  
+  Slicer ns41 (Slice(3,13), Slice(5,21));
+  check(ns41.inferShapeFromSource (shape, blc,trc,inc), {13, 21});
+  check(blc, {3, 5});
+  check(trc, {15, 25});
+  check(inc, {1, 1});
+  
+  Slicer ns42 (Slice(3,5,3), Slice(5,11,2));
+  check(ns42.inferShapeFromSource (shape, blc,trc,inc), {5, 11});
+  check(blc, {3, 5});
+  check(trc, {15, 25});
+  check(inc, {3, 2});
+  
+  BOOST_CHECK_EQUAL(ns42.ndim(), 2);
+  check(ns42.start(), {3, 5});
+  check(ns42.end(), {15, 25});
+  check(ns42.stride(), {3, 2});
+  check(ns42.length(), {5, 11});
+  
+  Slice tmp1, tmp2(5,11,2);
+  Slicer ns43(tmp1, tmp2);
+  check(ns43.inferShapeFromSource (shape, blc,trc,inc), {20, 11});
+  check(blc, {0, 5});
+  check(trc, {19, 25});
+  check(inc, {1, 2});
+  
+  BOOST_CHECK_EQUAL(ns43.ndim(), 2);
+  check(ns43.start(), {-2147483646, 5});
+  check(ns43.end(), {-2147483646, 25});
+  check(ns43.stride(), {1, 2});
+  check(ns43.length(), {-2147483646, 11});
+}
+
+BOOST_FIXTURE_TEST_CASE( zero_length, Fixture )
+{
+  // Try length 0.
+  Slicer ns50 (Slice(0,5,2), Slice(24,0,3));
+  check(ns50.inferShapeFromSource (shape, blc,trc,inc), {5, 0});
+  check(blc, {0, 24});
+  check(trc, {8, 23});
+  check(inc, {2, 3});
+  
+  BOOST_CHECK_EQUAL(ns50.ndim(), 2);
+  check(ns50.start(), {0, 24});
+  check(ns50.end(), {8, 21});
+  check(ns50.stride(), {2, 3});
+  check(ns50.length(), {5, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE( negative_start_or_end, Fixture )
+{
+  // Define some Slicers with a negative start or end.
+  Slicer ns60 (IPosition(2,-13,10), IPosition(2,15,-3), Slicer::endIsLast);
+  check(ns60.inferShapeFromSource (shape, blc,trc,inc), {9, 18});
+  check(blc, {7, 10});
+  check(trc, {15, 27});
+  check(inc, {1, 1});
+}
+
+BOOST_FIXTURE_TEST_CASE( copy_constructor, Fixture )
+{
+  // Try copy constructor.
+  Slicer ns2 (IPosition(2,3,5), IPosition(2,13,21), IPosition(2,3,2),
+  Slicer::endIsLast);
+  ns2.inferShapeFromSource (shape, blc,trc,inc);
+  Slicer ns3(ns2);
+  BOOST_CHECK_EQUAL(ns3.ndim(), 2);
+  check(ns3.start(), {3, 5});
+  check(ns3.end(), {13, 21});
+  check(ns3.stride(), {3, 2});
+  check(ns3.length(), {4, 9});
+  
+  // Try assignment (the difference in ndim should work fine).
+  Slicer ns4(IPosition(1,0));
+  BOOST_CHECK_EQUAL(ns4.ndim(), 1);
+  ns4 = ns3;
+  BOOST_CHECK_EQUAL(ns4.ndim(), 2);
+  check(ns4.start(), {3, 5});
+  check(ns4.end(), {13, 21});
+  check(ns4.stride(), {3, 2});
+  check(ns4.length(), {4, 9});
+}
+
+BOOST_FIXTURE_TEST_CASE( equality, Fixture )
+{
+  Slicer ns2 (IPosition(2,3,5), IPosition(2,13,21), IPosition(2,3,2),
+  Slicer::endIsLast);
+  ns2.inferShapeFromSource (shape, blc,trc,inc);
+  Slicer ns3(ns2);
+  Slicer ns50 (Slice(0,5,2), Slice(24,0,3));
+  check(ns50.inferShapeFromSource (shape, blc,trc,inc), {5, 0});
+  // Try equality
+  BOOST_CHECK(ns2==ns3);
+  BOOST_CHECK(!(ns2==ns50));
+}
+
+BOOST_AUTO_TEST_CASE( errors )
+{
+  // Do some erroneous constructions.
+   // different lengths
+  BOOST_CHECK_THROW(Slicer(IPosition(2,0,0), IPosition(3,0,0,0)), ArrayError);
+  BOOST_CHECK_THROW(Slicer(IPosition(2,0,0), IPosition(3,0,0,0), Slicer::endIsLast), ArrayError);
+  // trc < blc
+  BOOST_CHECK_THROW(Slicer(IPosition(2,0,1), IPosition(2,0,0), Slicer::endIsLast), ArrayError);
+  // length < 0
+  BOOST_CHECK_THROW(Slicer(IPosition(2,0,1), IPosition(2,0,-1), Slicer::endIsLength), ArrayError);
+  // inc <= 0
+  BOOST_CHECK_THROW(Slicer(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,-1,0)), ArrayError);
+  BOOST_CHECK_THROW(Slicer(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,0,0)), ArrayError);
+}
+
+BOOST_FIXTURE_TEST_CASE( change_length, Fixture )
+{
+  // Check if changing length of trc,blc,inc works fine.
+  Slicer ns90;
+  check(ns90.inferShapeFromSource (IPosition(1,10), blc, trc, inc), {10});
+  check(blc, {0});
+  check(trc, {9});
+  check(inc, {1});
+  BOOST_CHECK_EQUAL(ns90.ndim(), 1);
+  check(ns90.start(), {-2147483646});
+  check(ns90.end(), {-2147483646});
+  check(ns90.stride(), {1});
+  check(ns90.length(), {-2147483646});
+  
+  // shape length invalid
+  BOOST_CHECK_THROW(ns90.inferShapeFromSource (shape, blc, trc, inc), ArrayError);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

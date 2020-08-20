@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/StArrayFile.h>
 #include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
@@ -40,7 +41,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class Slicer;
 class ArrayBase;
-
 
 // <summary>
 // Read/write indirect arrays

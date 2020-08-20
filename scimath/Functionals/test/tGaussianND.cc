@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/scimath/Mathematics/MatrixMathLA.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/iostream.h>
@@ -425,8 +425,8 @@ int main(){
     return 0;
   }
 
-  catch (AipsError& x) {
-    cerr << x.getMesg() << endl;
+  catch (std::exception& x) {
+    cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

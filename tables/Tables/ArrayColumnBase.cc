@@ -567,7 +567,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
   }
   // Put the destination array one row at a time.
   RefRowsSliceIter rowIter(rows);
-  CountedPtr<ArrayPositionIterator> arrIter =
+  std::unique_ptr<ArrayPositionIterator> arrIter =
     source.makeIterator (source.ndim()-1);
   while (! rowIter.pastEnd()) {
     for (rownr_t rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
@@ -597,7 +597,7 @@ void ArrayColumnBase::acbGetColumnCells (const RefRows& rows,
               "ArrayColumn::getColumnCells (rows, columnSlicer, ...)");
   // Fill the destination array one row at a time.
   RefRowsSliceIter rowIter(rows);
-  CountedPtr<ArrayPositionIterator> arrIter =
+  std::unique_ptr<ArrayPositionIterator> arrIter =
     destination.makeIterator (destination.ndim()-1);
   while (! rowIter.pastEnd()) {
     for (rownr_t rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
@@ -605,7 +605,7 @@ void ArrayColumnBase::acbGetColumnCells (const RefRows& rows,
       ArrayBase& destArray = arrIter->getArray();
       // Iterate through the slicers.
       for (uInt j=0; j<destSlicers.size(); ++j){
-        CountedPtr<ArrayBase> destPart = destArray.getSection (*destSlicers[j]);
+        std::unique_ptr<ArrayBase> destPart = destArray.getSection (*destSlicers[j]);
         baseGetSlice (rownr, *dataSlicers[j], *destPart);
       }
       arrIter->next();
@@ -631,7 +631,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
               "ArrayColumn::putColumnCells (rows, columnSlicer, ...)");
   // Fill the source array one row at a time.
   RefRowsSliceIter rowIter(rows);
-  CountedPtr<ArrayPositionIterator> arrIter =
+  std::unique_ptr<ArrayPositionIterator> arrIter =
     source.makeIterator (source.ndim()-1);
   while (! rowIter.pastEnd()) {
     for (rownr_t rownr = rowIter.sliceStart(); rownr <= rowIter.sliceEnd();
@@ -639,7 +639,7 @@ void ArrayColumnBase::acbPutColumnCells (const RefRows& rows,
       ArrayBase& destArray = arrIter->getArray();
       // Iterate through the slicers.
       for (uInt j=0; j<destSlicers.size(); ++j){
-        CountedPtr<ArrayBase> destPart = destArray.getSection (*destSlicers[j]);
+        std::unique_ptr<ArrayBase> destPart = destArray.getSection (*destSlicers[j]);
         basePutSlice (rownr, *dataSlicers[j], *destPart);
       }
       arrIter->next();

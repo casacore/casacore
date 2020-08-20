@@ -27,7 +27,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Inputs/Input.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -154,8 +154,8 @@ try {
 //
    cerr << "ok " << endl;
 
-} catch (AipsError& x) {
-   cerr << "aipserror: error " << x.getMesg() << endl;
+} catch (std::exception& x) {
+   cerr << "aipserror: error " << x.what() << endl;
    return 1;
 }
   return 0;

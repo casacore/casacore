@@ -26,129 +26,86 @@
 //# $Id$
 
 //# Includes
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayOpsDiffShapes.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/iostream.h>
+#include "../Array.h"
+#include "../ArrayOpsDiffShapes.h"
+#include "../ArrayLogical.h"
+#include "../IPosition.h"
 
-#include <casacore/casa/namespace.h>
+#include <boost/test/unit_test.hpp>
 
-void test_reformedMask(Bool truthval, uInt ni = 3,
-		       uInt nj = 4, uInt nk = 5, uInt nl = 6)
+using namespace casacore;
+
+BOOST_AUTO_TEST_SUITE(array_ops_diff_shapes)
+
+void test_reformedMask(bool truthval, size_t ni = 3,
+		       size_t nj = 4, size_t nk = 5, size_t nl = 6)
 {
-  cout << "test_reformedMask(" << truthval << ", "
-       << ni << ", " << nj << ", " << nk << ", " << nl << "):" << endl;
-  
-  Array<Bool> data(IPosition(4, ni, nj, nk, nl));
+  Array<bool> data(IPosition(4, ni, nj, nk, nl));
   const IPosition expectedShape(2, ni, nj);
-  Array<Bool> expected(expectedShape);
+  Array<bool> expected(expectedShape);
 
-  for(uInt i = 0; i < ni; ++i){
-    for(uInt j = 0; j < nj; ++j){
-      Bool expected_val = (i + j) % 2 ? true : false;
+  for(size_t i = 0; i < ni; ++i){
+    for(size_t j = 0; j < nj; ++j){
+      bool expected_val = (i + j) % 2 ? true : false;
 
       expected(IPosition(2, i, j)) = expected_val;
-      for(uInt k = 0; k < nk; ++k){
-	for(uInt l = 0; l < nl; ++l){
-	  if(expected_val)	// Make sure [0, 0] gets truthval in case nk ==
-				// nl == 1.
-	    data(IPosition(4, i, j, k, l)) = (k + l) % 2 ? !truthval : truthval;
-	  else
-	    data(IPosition(4, i, j, k, l)) = !truthval;
-	}
+      for(size_t k = 0; k < nk; ++k){
+        for(size_t l = 0; l < nl; ++l){
+          if(expected_val)	// Make sure [0, 0] gets truthval in case nk ==
+            // nl == 1.
+            data(IPosition(4, i, j, k, l)) = (k + l) % 2 ? !truthval : truthval;
+          else
+            data(IPosition(4, i, j, k, l)) = !truthval;
+        }
       }
     }
   }
 
-  Bool allequal = allEQ(reformedMask(data, truthval, expectedShape), expected);
+  bool allequal = allEQ(reformedMask(data, truthval, expectedShape), expected);
   
-  cout << "\t" << (allequal ? "OK" : "FAILURE")
-       << ":\tallEQ(reformedMask(data, " << truthval << ", " << expectedShape
-       << "), expected) = " << allequal << endl;
-  
-  AlwaysAssertExit (allequal);
+  BOOST_CHECK (allequal);
 }
 
-void test_binOpExpanders(uInt ni = 2, uInt nj = 3, uInt nk = 4)
+void test_binOpExpanders(size_t ni = 2, size_t nj = 3, size_t nk = 4)
 {
-  cout << "test_binOpExpanders(" << ni << ", " << nj << ", "
-       << nk << "):" << endl;
-
   const IPosition leftShape(3, ni, nj, nk);
-  Array<Double> left(leftShape);
-  Array<Float> right(IPosition(2, ni, nj));
-  Array<Double> expected(leftShape);
+  Array<double> left(leftShape);
+  Array<float> right(IPosition(2, ni, nj));
+  Array<double> expected(leftShape);
   
-  for(uInt i = 0; i < ni; ++i){
-    for(uInt j = 0; j < nj; ++j){
-      Double rightval = 2.0 + 10.0 * (i + 10.0 * j);	// [  2 102 202 ]
+  for(size_t i = 0; i < ni; ++i){
+    for(size_t j = 0; j < nj; ++j){
+      double rightval = 2.0 + 10.0 * (i + 10.0 * j);	// [  2 102 202 ]
                                                         // [ 12 112 212 ]
       right(IPosition(2, i, j)) = rightval;             // [ 22 122 222 ]
-      for(uInt k = 0; k < nk; ++k){
+      for(size_t k = 0; k < nk; ++k){
 	const IPosition ijk(3, i, j, k);
-	Double leftval = 1.0 + 0.1 * (i + 0.1 * (j + 0.1 * k));
+	double leftval = 1.0 + 0.1 * (i + 0.1 * (j + 0.1 * k));
 
 	left(ijk)     = leftval;
 	expected(ijk) = leftval + rightval;
-
-	Double leftcheck = left(ijk);
-	Double rightcheck = expected(ijk);
-	Double diff = rightcheck - leftcheck - rightval;
-	    
-	if(diff > 1e-6 || diff < -1e-6){
-	  cout << "(" << i << ", " << j << ", " << k << "):\n"
-	       << "\tlv, lc = " << leftval << ", " << leftcheck << endl;
-	  cout << "\trv, rc = " << rightval << ", " << rightcheck << endl;
-	}
       }
     }
   }
-  //const Array<Double> constleft(left);
-  //AlwaysAssertExit(allEQ(binOpExpandR(left, right, std::plus<Double>()),
+  //const Array<double> constleft(left);
+  //BOOST_CHECK(allEQ(binOpExpandR(left, right, std::plus<double>()),
   //			 expected));
-  binOpExpandInPlace(left, right, std::plus<Double>());
+  binOpExpandInPlace(left, right, std::plus<double>());
 
-  Bool allequal = allEQ(left, expected);
+  bool allequal = allEQ(left, expected);
   
-  cout << "\t" << (allequal ? "OK" : "FAILURE")
-       << ":\tallEQ(left, expected) = " << allequal << endl;
-
-  if(!allequal){
-    for(uInt i = 0; i < ni; ++i){
-      cout << i << endl;
-      for(uInt j = 0; j < nj; ++j){
-	cout << "\t" << j << endl;
-	for(uInt k = 0; k < nk; ++k){
-	  const IPosition ijk(3, i, j, k);
-
-	  cout << "\t\t" << k << "\t" << left(ijk) << "\t" << expected(ijk) << endl;
-	}
-      }
-    }
-  }  
-  
-  AlwaysAssertExit (allequal);
+  BOOST_CHECK (allequal);
 }
 
-int main()
+BOOST_AUTO_TEST_CASE(test)
 {
-  try {
-    for(uInt i = 0; i <= 1; ++i){
-      for(uInt j = 0; j <= 1; ++j){
-	test_reformedMask(true, 3, 4, 1 + 3 * i, 1 + 4 * i);
-	test_reformedMask(false, 1 + 4 * j, 1 + 2 * j, 1 + 4 * i, 1 + 3 * i);
-	test_binOpExpanders(1 + i, 2 + j, 4);
-      }
+  for(size_t i = 0; i <= 1; ++i){
+    for(size_t j = 0; j <= 1; ++j){
+      test_reformedMask(true, 3, 4, 1 + 3 * i, 1 + 4 * i);
+      test_reformedMask(false, 1 + 4 * j, 1 + 2 * j, 1 + 4 * i, 1 + 3 * i);
+      test_binOpExpanders(1 + i, 2 + j, 4);
     }
-  } catch (AipsError& x) {
-    cout << "Error: " << x.getMesg() << endl;
-    return 1;
-  } catch (...) {
-    cout << "Unknown exception caught." << endl;
-    return 2;
   }
-  cout << "All tests passed!" << endl;
-  return 0;
 }
+
+BOOST_AUTO_TEST_SUITE_END()

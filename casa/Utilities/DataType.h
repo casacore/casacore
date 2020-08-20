@@ -29,6 +29,7 @@
 #define CASA_DATATYPE_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/String.h>
 
@@ -36,7 +37,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Table;
-template<class T> class Array;
 template<class T> class Quantum;
 class String;
 class Record;

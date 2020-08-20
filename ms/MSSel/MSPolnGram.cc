@@ -87,7 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	String newMesgs;
 	newMesgs = constructMessage(msPolnGramPosition(), command);
 	x.addMessage(newMesgs);
-	MSPolnGramerror((char *)(x.getMesg().c_str()));
+	MSPolnGramerror((char *)(x.what()));
 	throw;
       }
   }

@@ -168,8 +168,8 @@ int main()
 	    }
 
 	}
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     }
     try { // same as above, however with wavelength spectral axis
@@ -269,8 +269,8 @@ int main()
 	AlwaysAssertExit(refFrame==refFrameOut);
 	AlwaysAssertExit(near(restFreq,restFreqOut));
 	
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     }
     try { // same as above, however with air wavelength spectral axis
@@ -370,8 +370,8 @@ int main()
     	AlwaysAssertExit(refFrame==refFrameOut);
     	AlwaysAssertExit(near(restFreq,restFreqOut));
 
-    } catch (AipsError& x) {
-    	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+    	cout << "Caught an exception: " << x.what() << endl;
     	return 1;
     }
     return 0;

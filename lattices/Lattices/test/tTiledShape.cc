@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
-
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -123,8 +123,8 @@ int main (int argc, const char* argv[])
 {
     try {
 	testClass();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;
@@ -142,8 +142,8 @@ int main (int argc, const char* argv[])
 	istringstream istr1(argv[1]);
 	istr1 >> tileSize;
 	testTiling (tileSize);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status

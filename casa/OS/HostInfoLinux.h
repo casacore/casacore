@@ -249,7 +249,7 @@ void HostMachineInfo::update_info( )
 		      sys_mem_avail, sys_swap_total, sys_swap_free;
 
 	fd = open(MEMINFO, O_RDONLY);
-	len = read(fd, buffer, sizeof(buffer)-1);
+	len = ::read(fd, buffer, sizeof(buffer)-1);
 	close(fd);
 	buffer[len] = '\0';
 

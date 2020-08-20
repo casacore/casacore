@@ -165,8 +165,8 @@ int main()
       RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
       doIt (reghdf5);
     }
-  } catch (AipsError& x) {
-    cerr << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Unexpected exception: " << x.what() << endl;
     return 1;
   } 
   cout << "ok" << endl;

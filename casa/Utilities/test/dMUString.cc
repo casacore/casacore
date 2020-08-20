@@ -74,8 +74,8 @@ int main()
 	in = "15 s";
 	cout << MVAngle::read(res, in) << endl;
 	cout << in << " = " << res << endl;
-   } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+   } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
      try {
@@ -83,8 +83,8 @@ int main()
 	Quantity res;
 	cout << MVAngle::read(res, in) << endl;
 	cout << in << " = " << res << endl;
-  } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
      try {
@@ -111,8 +111,8 @@ int main()
 	 cout << "Pos1: " << instr.tellg()-stt << endl;
 	 cout << in << " = " << res << " : " << bb << endl;
        }
-     } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+     } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
   
    return(0);

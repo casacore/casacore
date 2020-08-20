@@ -33,10 +33,10 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> class Vector;
 template <class T> class Lattice;
 
 // <summary>Functions for Fourier transforming Lattices</summary>

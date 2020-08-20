@@ -314,7 +314,7 @@ Bool ConvolveGridder<Domain, Range>::grid(Array<Range> &gridded,
     Bool del;
     posVec=this->position(posVec, p);
     const IPosition& fs = gridded.shape();
-    vector<Int> s(fs.begin(), fs.end());
+    std::vector<Int> s(fs.begin(), fs.end());
     switch(loc.nelements()) {
     case 1:
       grd1d(&s[0], &loc(0), gridded.getStorage(del), &value, &support,
@@ -353,7 +353,7 @@ Bool ConvolveGridder<Domain, Range>::degrid(const Array<Range> &gridded,
     Bool del;
     posVec=this->position(posVec, p);
     const IPosition& fs = gridded.shape();
-    vector<Int> s(fs.begin(), fs.end());
+    std::vector<Int> s(fs.begin(), fs.end());
     switch(loc.nelements()) {
     case 1:
       dgrd1d(&s[0], &loc(0), gridded.getStorage(del), &value, &support,

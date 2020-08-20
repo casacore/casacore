@@ -33,11 +33,11 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/iosfwd.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // forward declarations:
-template <class T> class Array;
 template <class T> class Block;
 class String;
 

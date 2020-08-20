@@ -36,10 +36,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template<class T> class Vector;
-
-
 // <summary>
 // Base table column storage manager class
 // </summary>

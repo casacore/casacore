@@ -69,8 +69,8 @@ int main(int argc, const char* argv[])
       MSSummary mss(ms);
       mss.listHistory(os);
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
   } 
   
   return 0;

@@ -27,7 +27,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -305,8 +305,8 @@ int main() {
       SEPAR();
     }
 
-  } catch (AipsError x) {
-    cerr << x.getMesg() << endl;
+  } catch (std::exception x) {
+    cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } catch (...) {

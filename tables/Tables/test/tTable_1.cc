@@ -52,8 +52,8 @@ int main (int argc, const char* argv[])
     }
     try {
 	a(nr);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status
@@ -86,12 +86,12 @@ void a(uInt nrrow) {
     //# Do some erroneous things.
     try {
 	newtab.bindColumn ("ab", sm1);     // newtab is already in use
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 ///    try {
 ///	Table tab2(newtab, 10);            // newtab is already in use
-///    } catch (AipsError x) {
-///	cout << x.getMesg() << endl;
+///    } catch (std::exception x) {
+///	cout << x.what() << endl;
 ///    } 
 }

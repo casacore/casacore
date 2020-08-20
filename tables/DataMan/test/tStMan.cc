@@ -682,8 +682,8 @@ int main (int argc, const char* argv[])
     doTest (nrrow, st2);
     IncrementalStMan st3(max(bucketSize,1000u), False);
     doTest (nrrow, st3);
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   }
   return 0;                           // exit with success status

@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -147,8 +147,8 @@ int main ()
 				  latticeShape-1, latticeShape));
       AlwaysAssertExit (mask3 != mask1);
     }
-  } catch (AipsError& x) {
-    cerr << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Caught exception: " << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

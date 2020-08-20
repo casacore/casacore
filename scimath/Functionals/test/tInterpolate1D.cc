@@ -28,7 +28,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -139,8 +139,8 @@ int main()
     Vector<DComplex> y(5); indgen(y); 
     const DComplex j(0.,1.);  
     y = y+j*y*y;
-    Block<Double> bx; x.toBlock(bx);
-    Block<DComplex> by; y.toBlock(by);
+    Block<Double> bx = makeBlock(x);
+    Block<DComplex> by = makeBlock(y);
     ScalarSampledFunctional<Double> fx(bx);
     ScalarSampledFunctional<DComplex> fy(by);
     Interpolate1D<Double,DComplex> value(fx, fy);

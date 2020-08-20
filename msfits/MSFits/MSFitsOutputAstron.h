@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -39,7 +40,6 @@ class FitsOutput;
 class MeasurementSet;
 class Table;
 template<class T> class Block;
-template<class T> class Vector;
 
 
 // <summary>

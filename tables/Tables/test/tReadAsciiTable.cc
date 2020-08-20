@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
@@ -95,8 +95,8 @@ int main (int argc, const char* argv[])
 	b3 (dir, IPosition(2,3,5));
 	b3 (dir, IPosition(2,0,5));
 	erroneous();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status
@@ -475,8 +475,8 @@ void tryerror()
   try {
     readAsciiTable ("tReadAsciiTable_tmp.header", "",
 		    "tReadAsciiTable_tmp.data_try");
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
     ok = False;
   }
   AlwaysAssertExit (ok==False);

@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicMath/Random.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -351,8 +351,8 @@ int main(int argc, const char *argv[])
    cout << "Number of points     = " << fitter.numberPoints() << endl;
 */
 
- } catch (AipsError& x) {
-      cout << "Failed with message " << x.getMesg() << endl;
+ } catch (std::exception& x) {
+      cout << "Failed with message " << x.what() << endl;
  }   
 
 }

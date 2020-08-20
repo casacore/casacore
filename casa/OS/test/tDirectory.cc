@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/iostream.h>
 
@@ -187,8 +187,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    newDir.create();
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // not writable
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // not writable
 	} 
     }
     tmp.setPermissions (0755);
@@ -204,21 +204,21 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    Directory file1("tDirectory_tmp/test1/testLink2");
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // symlink, no directory
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // symlink, no directory
 	} 
 	try {
 	    Directory file1("tDirectory_tmp/test1/testFile2");
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // symlink, no directory
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // symlink, no directory
 	} 
     }
     tmp.setPermissions (0555);
     if (doExcp) {
 	try {
 	    Directory file1("tDirectory_tmp/something");
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // not writable
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // not writable
 	} 
     }
     tmp.setPermissions (0755);
@@ -252,8 +252,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test3.remove();
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // not empty
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // not empty
 	} 
     }
     test3.removeRecursive();
@@ -294,8 +294,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test6.create (False);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // already existing
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // already existing
 	} 
     }
     test6.create (True);
@@ -307,8 +307,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    test7.create (False);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // already existing
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // already existing
 	} 
     }
     rfile.remove();
@@ -341,8 +341,8 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

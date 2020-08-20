@@ -27,7 +27,7 @@
 
 
 #include <casacore/lattices/Lattices/PixelCurve1D.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/scimath/Functionals/Sinusoid1D.h>
 #include <casacore/scimath/Functionals/Polynomial.h>

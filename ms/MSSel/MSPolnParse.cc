@@ -418,7 +418,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  }
 	catch (MSSelectionSpwError &x)
 	  {
-	    throw(MSSelectionPolnParseError(x.getMesg()));
+	    throw(MSSelectionPolnParseError(x.what()));
 	  }
 	//
 	// Parse the POLN part.

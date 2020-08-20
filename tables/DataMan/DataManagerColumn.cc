@@ -31,8 +31,9 @@
 #include <casacore/tables/Tables/RefRows.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <casacore/tables/DataMan/DataManError.h>
-
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -525,7 +526,7 @@ void DataManagerColumn::getArrayColumnBase (ArrayBase& arr)
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     getArrayV (row, iter->getArray());
     iter->next();
@@ -536,7 +537,7 @@ void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     putArrayV (row, iter->getArray());
     iter->next();
@@ -544,7 +545,7 @@ void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
 }
 void DataManagerColumn::getArrayColumnCellsBase (const RefRows& rows, ArrayBase& arr)
 {
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
@@ -560,7 +561,7 @@ void DataManagerColumn::getArrayColumnCellsBase (const RefRows& rows, ArrayBase&
 void DataManagerColumn::putArrayColumnCellsBase (const RefRows& rows,
                                                  const ArrayBase& arr)
 {
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
@@ -607,13 +608,13 @@ void DataManagerColumn::putSliceArr (rownr_t row, const Slicer& section,
 void DataManagerColumn::getSliceBase (rownr_t row, const Slicer& section,
                                       ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
+  CountedPtr<ArrayBase> fullArr(arr.makeArray());
   getSliceArr (row, section, fullArr, arr);
 }
 void DataManagerColumn::putSliceBase (rownr_t row, const Slicer& section,
                                       const ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
+  CountedPtr<ArrayBase> fullArr(arr.makeArray());
   putSliceArr (row, section, fullArr, arr);
 }
 void DataManagerColumn::getColumnSliceBase (const Slicer& section, ArrayBase& arr)
@@ -621,8 +622,8 @@ void DataManagerColumn::getColumnSliceBase (const Slicer& section, ArrayBase& ar
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     getSliceArr (row, section, fullArr, iter->getArray());
     iter->next();
@@ -634,8 +635,8 @@ void DataManagerColumn::putColumnSliceBase (const Slicer& section,
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
+  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     putSliceArr (row, section, fullArr, iter->getArray());
     iter->next();
@@ -645,8 +646,8 @@ void DataManagerColumn::getColumnSliceCellsBase (const RefRows& rows,
                                                  const Slicer& section,
                                                  ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
@@ -663,8 +664,8 @@ void DataManagerColumn::putColumnSliceCellsBase (const RefRows& rows,
                                                  const Slicer& section,
                                                  const ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr = arr.makeArray();
-  CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
+  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
     for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();

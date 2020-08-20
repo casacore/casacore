@@ -33,6 +33,7 @@
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -41,8 +42,6 @@ class CopyRecordToTable;
 class MeasurementSet;
 class Record;
 class Table;
-
-template <class T> class Vector;
 
 // <summary>
 // </summary>

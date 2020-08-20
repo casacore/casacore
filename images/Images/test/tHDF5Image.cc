@@ -33,7 +33,7 @@
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -337,8 +337,8 @@ int main()
     }
 
     cout<< "ok"<< endl;
-  } catch (AipsError& x) {
-    cerr << "Exception caught: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Exception caught: " << x.what() << endl;
     return 1;
   } 
 

@@ -34,13 +34,13 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/scimath/Functionals/FuncExprData.h>
 #include <casacore/casa/stdvector.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MUString;
-template <class T> class Vector;
 
 // <summary> An expression executable as function
 // </summary>

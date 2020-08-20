@@ -32,14 +32,13 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
 #include <casacore/casa/Arrays/IPosition.h>
-
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class PlainColumn;
 class ColumnSet;
-template<class T> class Array;
 
 
 // <summary>

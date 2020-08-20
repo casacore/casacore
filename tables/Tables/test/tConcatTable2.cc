@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/TaQL/ExprNode.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -253,8 +253,8 @@ int main()
     cout<< "done check" << endl;
     checkFull("tConcatTable2_tmp.data", 0);
     cout<< "done checkFull" << endl;
-  } catch (AipsError& x) {
-    cout << "Exception caught: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Exception caught: " << x.what() << endl;
     return 1;
   } 
   return 0;

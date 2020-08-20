@@ -142,8 +142,8 @@ int main(int argc, const char* argv[])
 	}
 
 	cout << "done." << endl;
-    } catch (AipsError& x) {
-	cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;

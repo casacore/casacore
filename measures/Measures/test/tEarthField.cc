@@ -36,7 +36,7 @@
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -127,8 +127,8 @@ int main() {
 
 	cout << "------------------------------------------" << endl;
 
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
     return 0;

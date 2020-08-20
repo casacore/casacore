@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MEarthMagnetic.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasRef.h>
@@ -46,7 +47,6 @@ class MCEarthMagnetic;
 class MVPosition;
 class EarthField;
 class String;
-template <class T> class Vector;
 
 //# Typedefs
 

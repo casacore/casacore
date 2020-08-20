@@ -35,6 +35,7 @@
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -215,7 +216,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String path = EnvironmentVariable::get(casapath);
     if (! path.empty()) {
       // Split using : as delimiter.
-      Vector<String> parts = stringToVector (path, ':');
+      Vector<string> parts = strToVector (path, ':');
       for (uInt j=0; j<parts.size(); ++j) {
         if (! parts[j].empty()) {
           string libDir = parts[j] + '/';

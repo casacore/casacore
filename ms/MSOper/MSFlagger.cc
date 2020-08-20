@@ -440,7 +440,7 @@ void MSFlagger::diffMedian(Array<Float>& out, const Array<Float>& in,
       for (Int l=0, offin=offk; l<nAxis; l++, offin+=nLess) {
 	if (!pflag[offin]) values[count++]=pin[offin];
       }
-      if (count>0) pout[offout]=median(Vector<Float>(values,count));
+      if (count>0) pout[offout]=median(Vector<Float>(values.begin(),values.begin()+count));
       else pout[offout]=0;
     }
   }

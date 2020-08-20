@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures.h>
 #include <casacore/measures/Measures/MeasJPL.h>
 #include <casacore/casa/Quanta/MVEpoch.h>
@@ -159,8 +159,8 @@ int main()
       MeasJPL::get(val, MeasJPL::DE405, MeasJPL::LIBRATION, dat);
       os << "Libration:  " << val << endl;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
   } 
   
   try {
@@ -189,8 +189,8 @@ int main()
     cout << "Moon  APP:  " << mc2() << endl;
     cout << "Moon  APP:  " << mc2().getValue().getAngle("deg") << endl;
 
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
   } 
   
   return 0;

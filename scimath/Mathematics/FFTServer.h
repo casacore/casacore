@@ -32,14 +32,12 @@
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/FFTW.h>
 #include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Block.h>
 #include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class Array;
-template <class S> class Matrix;
 // <summary>Lists the different types of FFT's that can be done</summary>
 // <synopsis>This enumerator is brought out as a separate class because g++
 // currently cannot handle enumerators in a templated class. When it can this

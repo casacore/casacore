@@ -399,9 +399,9 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 	col->createDataManagerColumn();
 	dmcol = col->dataManagerColumn();
 	dataManPtr->addColumn (dmcol);
-    } catch (const AipsError& x) {
+    } catch (const std::exception& x) {
 	error = True;
-	msg = x.getMesg();
+	msg = x.what();
 	//# Get the column pointer (it may not have been filled yet).
 	//# When #columns has grown, the column has been already added.
 	//# In that case remove it, which will also delete the column.
@@ -468,9 +468,9 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 	}
 	// Let the new data manager create space, etc. for its columns.
 	initSomeDataManagers (blockDataMan_p.nelements() - 1, tab);
-    } catch (const AipsError& x) {
+    } catch (const std::exception& x) {
 	error = True;
-	msg = x.getMesg();
+	msg = x.what();
 	for (uInt i=0; i<tableDesc.ncolumn(); i++) {
 	    const String& name = tableDesc[i].name();
 	    if (colMap_p.find(name) != colMap_p.end()) {

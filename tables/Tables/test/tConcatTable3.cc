@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/TaQL/ExprNode.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -106,8 +106,8 @@ int main()
     createTable ("tConcatTable3_tmp.tab3", 30, 5);
     concatTables();
     checkTable (0, 35);
-  } catch (AipsError& x) {
-    cout << "Exception caught: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Exception caught: " << x.what() << endl;
     return 1;
   } 
   return 0;

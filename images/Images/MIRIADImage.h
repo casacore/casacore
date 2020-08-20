@@ -35,6 +35,7 @@
 #include <casacore/images/Images/MaskSpecifier.h>
 #include <casacore/tables/DataMan/TiledFileAccess.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -43,7 +44,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template <class T> class Array;
 template <class T> class Lattice;
 //
 class MaskSpecifier;

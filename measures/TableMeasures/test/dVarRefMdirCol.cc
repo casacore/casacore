@@ -60,7 +60,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -114,10 +114,10 @@ int main()
       }
     }
 
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "An error occurred.  The test ended early with the following";
     cout << " message:\n";
-    cout << x.getMesg() << endl;
+    cout << x.what() << endl;
     return 1;
   }
   return 0;

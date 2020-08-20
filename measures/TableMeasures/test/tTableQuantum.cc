@@ -42,7 +42,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -141,17 +141,17 @@ int main (int argc, const char* argv[])
       try {
 	// no such column
 	TableQuantumDesc taexcep(td, "SillyName");
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	cout << "A no such column message should follow\n";
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
       } 
 
       try {
 	// variable unit's column doesn't exist.
 	TableQuantumDesc taexcep(td, "ScaQuantComplex", "SillyName");
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	cout << "A no such unit's column message should follow\n";
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
       } 
 
       try {
@@ -160,9 +160,9 @@ int main (int argc, const char* argv[])
 		  "variable units column with incorrect type");
 	td.addColumn(eucol);
 	TableQuantumDesc taexcep(td, "ScaQuantComplex", "testvarcolumn");
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	cout << "A message about an incorrect variable unit's type...\n";
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
       } 
     }
     // ...and make them persistent.
@@ -223,9 +223,9 @@ int main (int argc, const char* argv[])
 	  // test isnull exception
 	  try {
 	    sqCol.throwIfNull();
-	  } catch (AipsError& x) {
+	  } catch (std::exception& x) {
 	    cout << "Catch an AipsError. Column is null...\n";
-	    cout << x.getMesg() << endl;
+	    cout << x.what() << endl;
 	  } 
 	}
 	cout << "Object says it is null...attach a column\n";
@@ -365,9 +365,9 @@ int main (int argc, const char* argv[])
       if (doExcep) {
 	try {
 	  tmpCol.throwIfNull();
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	  cout << "Catch an AipsError. Array column is null...\n";
-	  cout << x.getMesg() << endl;
+	  cout << x.what() << endl;
 	} 
 
 	// test attaching a bogus quantum column
@@ -375,7 +375,7 @@ int main (int argc, const char* argv[])
 	  // create with a real column but not a quantum column
           // It will succeed because the QuantumDesc does not require a unit.
 	  ArrayQuantColumn<Double> testCol(qtab, "BogusQuantCol");
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	  cout << "Exception should not occur" << endl;
 	} 
       }
@@ -408,10 +408,10 @@ int main (int argc, const char* argv[])
 	try {
 	  Array<Quantum<Double> > badShapeArr(IPosition(2,2));
 	  roaqCol.get(0, badShapeArr, False);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	  cout << "The following line should be a ";
 	  cout << "Table array conformance error exception.\n";
-	  cout << x.getMesg() << endl;
+	  cout << x.what() << endl;
 	} 
       }
       {
@@ -527,8 +527,8 @@ int main (int argc, const char* argv[])
         }
     }
 
-  } catch (AipsError& x) {
-    cout << "Unexpected exception1: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception1: " << x.what() << endl;
     return 1;
   } 
 
@@ -548,8 +548,8 @@ int main (int argc, const char* argv[])
     for (i=0; i<qtab.nrow(); i++) {
       cout << "Quantum " << i << ": " << rosqCol(i) << endl;
     }
-  } catch (AipsError& x) {
-    cout << "Unexpected exception2: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception2: " << x.what() << endl;
     return 1;
   } 
 
@@ -597,8 +597,8 @@ int main (int argc, const char* argv[])
     }
     timer.show ("get tab    arrays");
     cout << "<<<" << endl;
-  } catch (AipsError& x) {
-    cout << "Unexpected exception3: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception3: " << x.what() << endl;
     return 1;
   } 
 

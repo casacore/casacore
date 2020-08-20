@@ -38,8 +38,8 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/BinarySearch.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/tables/DataMan/DataManError.h>
-
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

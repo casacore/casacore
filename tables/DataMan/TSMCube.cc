@@ -40,6 +40,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/IO/BucketCache.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/string.h>                           // for memcpy

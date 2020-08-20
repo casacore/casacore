@@ -47,7 +47,7 @@ int main()
 	message.message("This is another LogMessage stored in the sink to be transfered to FITS");
 	logger.sink().post(message);
 	
-	vector<String> history;
+	std::vector<String> history;
 	Bool aipsppFormat = True;
 	uInt nstrings, nread;
 	nstrings = nread = 0;
@@ -65,7 +65,7 @@ int main()
 	}
 	
 	// add some other other history, to a different group
-	vector<String> otherHistory(3);
+	std::vector<String> otherHistory(3);
 	otherHistory[0] = "I like cats.";
 	otherHistory[1] = "This is a longer history message to see how it handles that sort of thing.";
 	otherHistory[2] = "This is part of the OTHER group.";
@@ -73,7 +73,7 @@ int main()
 					 otherHistory.size(), "OTHER");
 	
 	// and add some things without a group
-	vector<String> moreHistory(4);
+	std::vector<String> moreHistory(4);
 	moreHistory[0] = "More history.";
 	moreHistory[1] = "Still more history.";
 	moreHistory[2] = "And still more history.";
@@ -127,8 +127,8 @@ int main()
 		}
 	    }
 	}
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     }
     return 0;

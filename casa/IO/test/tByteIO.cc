@@ -184,7 +184,7 @@ void checkReopen()
     Bool flag = False;
     try {
 	fio2.reopenRW();
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
 	flag = True;
     } 
     AlwaysAssertExit (flag);
@@ -213,13 +213,13 @@ void testMemoryIO()
 	}
 	try {
 	    membuf.read (1, &val);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;         // read beyond object
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;         // read beyond object
 	} 
 	try {
 	    membuf.seek (Int(-(length + incr + 1)), ByteIO::Current);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;         // negative seek
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;         // negative seek
 	} 
 	membuf.seek (Int(-(length + incr)), ByteIO::Current);
     }
@@ -228,13 +228,13 @@ void testMemoryIO()
 	MemoryIO membuf (buf, sizeof(buf), ByteIO::New, 0);
 	try {
 	    doIt (membuf);
-	} catch (AipsError& x) {                   // not expandable
-	    cout << x.getMesg() << endl;
+	} catch (std::exception& x) {                   // not expandable
+	    cout << x.what() << endl;
 	} 
 	try {
 	    membuf.seek (10, ByteIO::End);
-	} catch (AipsError& x) {                   // not expandable
-	    cout << x.getMesg() << endl;
+	} catch (std::exception& x) {                   // not expandable
+	    cout << x.what() << endl;
 	} 
 	AlwaysAssertExit (membuf.getBuffer() == (const uChar*)buf);
     }
@@ -243,13 +243,13 @@ void testMemoryIO()
 	MemoryIO membuf (buf, 10, ByteIO::Scratch, 0, True);
 	try {
 	    doIt (membuf);
-	} catch (AipsError& x) {                   // not expandable
-	    cout << x.getMesg() << endl;
+	} catch (std::exception& x) {                   // not expandable
+	    cout << x.what() << endl;
 	} 
 	try {
 	    membuf.seek (10, ByteIO::End);
-	} catch (AipsError& x) {                   // not expandable
-	    cout << x.getMesg() << endl;
+	} catch (std::exception& x) {                   // not expandable
+	    cout << x.what() << endl;
 	} 
 	AlwaysAssertExit (membuf.getBuffer() == (const uChar*)buf);
     }
@@ -267,8 +267,8 @@ int main()
 	MemoryIO file3 (file2.getBuffer(), file2.length());
 	try {
 	    file3.write (0, 0);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;          // readonly
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;          // readonly
 	} 
 	checkValues (file3, 100);
 	
@@ -321,8 +321,8 @@ int main()
 	}
 	FiledesIO file6 (fd2, "");
 	close (fd2);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status

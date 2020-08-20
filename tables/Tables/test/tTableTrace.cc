@@ -98,8 +98,8 @@ int main()
   try {
     rownr_t nrrow = 5;
     testTable (nrrow);
-  } catch (const AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

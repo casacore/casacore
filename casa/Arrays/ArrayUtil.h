@@ -25,44 +25,42 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYUTIL_H
-#define CASA_ARRAYUTIL_H
+#ifndef CASA_ARRAYUTIL_2_H
+#define CASA_ARRAYUTIL_2_H
 
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/BasicSL/String.h>
+#include "Vector.h"
+
+#include <regex>
+#include <string>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-class Regex;
-
 // <summary>
-// Split a String into its elements.
+// Split a std::string into its elements.
 // </summary>
 
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayUtil">
 
 // <prerequisite>
 //   <li> <linkto class=Vector>Vector</linkto>
-//   <li> <linkto class=String>String</linkto>
+//   <li> std::string
 // </prerequisite>
 
 // <etymology>
-// stringToVector converts a String to a Vector of Strings.
+// stringToVector converts a std::string to a Vector of Strings.
 // </etymology>
 
 // <synopsis>
 // The function stringToVector splits a string into its elements
-// using the given delimiter and returns them in a <src>Vector<String></src>.
+// using the given delimiter and returns them in a <src>Vector<std::string></src>.
 // The default delimiter is a comma (,).
 // It is very useful when using a function taking a vector of strings
 // as shown in the example.
 // <p>
 // A more advanced way of splitting a string is by using a
-// <linkto class=Regex>regular expression</linkto> as delimiter.
+// regular expression as delimiter.
 // It makes it, for example, possible to treat whitespace around a comma
 // as part of the delimiter (as shown in an example below).
 // <p>
@@ -82,7 +80,7 @@ class Regex;
 // "abc", "def ", "", and "gh". The vector is passed to someFunction.
 // This is far easier than having to do it as:
 // <srcblock>
-// Vector<String> vector(4);
+// Vector<std::string> vector(4);
 // vector(0) = "abc";
 // vector(1) = "def ";
 // vector(2) = "";
@@ -93,13 +91,13 @@ class Regex;
 // The following example shows how to use a delimiter consisting of a comma
 // surrounded by possible whitespace.
 // <srcblock>
-// Vector<String> result = stringToVector (source, Regex(" *, *"));
+// Vector<std::string> result = stringToVector (source, Regex(" *, *"));
 // </srcblock>
 // <example>
 
 // <group name=stringToVector>
-Vector<String> stringToVector (const String& string, char delim = ',');
-Vector<String> stringToVector (const String& string, const Regex& delim);
+Vector<std::string> strToVector (const std::string& string, char delim = ',');
+Vector<std::string> strToVector (const std::string& string, const std::regex& delim);
 // </group>
 
 
@@ -134,11 +132,11 @@ Vector<String> stringToVector (const String& string, const Regex& delim);
 
 // <example>
 // <srcblock>
-// Vector<Int> vector1(5);
-// Vector<Int> vector2(10);
+// Vector<int> vector1(5);
+// Vector<int> vector2(10);
 // indgen (vector1);             // fill with values 0..4
 // indgen (vector2);             // fill with values 0..9
-// Vector<Int> result = concatenateVector (vector1, vector2);
+// Vector<int> result = concatenateVector (vector1, vector2);
 // </srcblock>
 // The example above results in a vector with length 15 and values
 // 0,1,2,3,4,0,1,2,3,4,5,6,7,8,9.
@@ -146,12 +144,12 @@ Vector<String> stringToVector (const String& string, const Regex& delim);
 // It can also be used with matrices or arrays with higher dimensionality
 // as long as all dimensions but the last one have equal length.
 // <srcblock>
-// Matrix<Int> matrix1 (3,4);
-// Matrix<Int> matrix2 (3,5);
-// Matrix<Int> matrix3 (4,4);
+// Matrix<int> matrix1 (3,4);
+// Matrix<int> matrix2 (3,5);
+// Matrix<int> matrix3 (4,4);
 // // Concatenation of matrix1 and matrix 2 will succeed and result
 // // in a 3x9 matrix.
-// Matrix<Int> matrixConc = concatenateArray (matrix1, matrix2);
+// Matrix<int> matrixConc = concatenateArray (matrix1, matrix2);
 // if (matrixConc.shape() != IPosition(2,3,9)) {
 //     cout << "Error in shape of concatenated matrices" << endl;
 // }
@@ -160,7 +158,7 @@ Vector<String> stringToVector (const String& string, const Regex& delim);
 // try {
 //     concatenateArray (matrix1, matrix2);
 // } catch (ArrayConformanceError x) {
-//     cout << x.getMesg() << endl;
+//     cout << x.what() << endl;
 // }
 // </srcblock>
 // <example>
@@ -183,7 +181,7 @@ Array<T> concatenateArray (const Array<T>& left, const Array<T>& right);
 // returned in nelemCont.
 // </synopsis>
 // <group name=partialFuncHelper>
-uInt partialFuncHelper (Int& nelemCont,
+size_t partialFuncHelper (int& nelemCont,
 			IPosition& resultShape, IPosition& incr,
 			const IPosition& sourceShape,
 			const IPosition& collapseAxes);
@@ -219,10 +217,10 @@ uInt partialFuncHelper (Int& nelemCont,
 template<class T>
 Array<T> reverseArray (const Array<T>& array,
                        const IPosition& reversedAxes,
-                       Bool alwaysCopy = True);
+                       bool alwaysCopy = true);
 template<class T>
-Array<T> reverseArray (const Array<T>& array, uInt axis,
-                       Bool alwaysCopy = True);
+Array<T> reverseArray (const Array<T>& array, size_t axis,
+                       bool alwaysCopy = true);
 // </group>
 
 
@@ -251,7 +249,7 @@ Array<T> reverseArray (const Array<T>& array, uInt axis,
 
 // <example>
 // <srcblock>
-//   Array<Int> result = reorderArray (someArray, IPosition(2,1,3));
+//   Array<int> result = reorderArray (someArray, IPosition(2,1,3));
 // </srcblock>
 // Say that someArray is a 4D array with shape [3,4,5,6].
 // The non-specified axes get appended to the axis order
@@ -270,7 +268,7 @@ Array<T> reverseArray (const Array<T>& array, uInt axis,
 template<class T>
 Array<T> reorderArray (const Array<T>& array,
 		       const IPosition& newAxisOrder,
-		       Bool alwaysCopy = True);
+		       bool alwaysCopy = true);
 // </group>
 
 
@@ -294,7 +292,7 @@ Array<T> reorderArray (const Array<T>& array,
 // </motivation>
 
 // <group name=reorderArrayHelper>
-uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
+size_t reorderArrayHelper (IPosition& newShape, IPosition& incr,
 			 const IPosition& shape, const IPosition& newAxisOrder);
 // </group>
 
@@ -302,7 +300,6 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/ArrayUtil.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "ArrayUtil.tcc"
+
 #endif

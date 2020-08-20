@@ -25,233 +25,256 @@
 //#
 //# $Id$
 
-#ifndef CASA_VECTOR_TCC
-#define CASA_VECTOR_TCC
+#ifndef CASA_VECTOR_2_TCC
+#define CASA_VECTOR_2_TCC
 
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/Slice.h>
-#include <casacore/casa/Arrays/MaskedArray.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Copy.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/iostream.h>
+#include "Vector.h"
+#include "ArrayError.h"
+#include "Slice.h"
+#include "MaskedArray.h"
+
+#include <cassert>
+#include <iterator>
 
 namespace casacore { //#Begin casa namespace
 
-template<class T> Vector<T>::Vector()
-  : Array<T>(IPosition(1,0))
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector()
+  : Array<T, Alloc>(IPosition(1,0))
 {
-    DebugAssert(ok(), ArrayError);
+  assert(ok());
 }
 
 
-template<class T> Vector<T>::Vector(size_t Length)
-: Array<T>(IPosition(1, Length))
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector(size_t Length)
+: Array<T, Alloc>(IPosition(1, Length))
 {
-    DebugAssert(ok(), ArrayError);
+  assert(ok());
 }
 
-template<class T> Vector<T>::Vector(size_t Length, ArrayInitPolicy initPolicy)
-: Array<T>(IPosition(1, Length), initPolicy)
-{
-    DebugAssert(ok(), ArrayError);
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector(const IPosition& len)
+  : Array<T, Alloc>(len)
+{ 
+  Array<T, Alloc>::checkBeforeResize(len);
 }
 
-template<class T> Vector<T>::Vector(const IPosition& len)
-  : Array<T>(len)
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector(size_t length, const T &initialValue)
+: Array<T, Alloc>(IPosition(1, length), initialValue)
 {
-    if (len.nelements() != 1) this->throwNdimVector();
+  assert(ok());
 }
 
-template<class T> Vector<T>::Vector(const IPosition& len, ArrayInitPolicy initPolicy)
-  : Array<T>(len, initPolicy)
+template<typename T, typename Alloc> Vector<T, Alloc>::Vector(const IPosition& length, const T &initialValue)
+  : Array<T, Alloc>(length, initialValue)
 {
-    if (len.nelements() != 1) this->throwNdimVector();
+  Array<T, Alloc>::checkBeforeResize(length);
 }
 
-template<class T> Vector<T>::Vector(size_t Length, const T &initialValue)
-: Array<T>(IPosition(1, Length), initialValue)
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(size_t length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+  : Array<T, Alloc>(IPosition(1, length), Array<T, Alloc>::uninitialized, allocator)
 {
-    DebugAssert(ok(), ArrayError);
 }
 
-template<class T> Vector<T>::Vector(const IPosition& len, const T &initialValue)
-  : Array<T>(len, initialValue)
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const IPosition& length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
+  : Array<T, Alloc>(length, Array<T, Alloc>::uninitialized, allocator)
 {
-    if (len.nelements() != 1) this->throwNdimVector();
+  Array<T, Alloc>::checkBeforeResize(length);
 }
 
-template<class T> Vector<T>::Vector(const Block<T> &other, Int64 nr)
-: Array<T>(IPosition(1, other.nelements()), ArrayInitPolicies::INIT)
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const std::vector<T> &other, long long nr)
+: Array<T, Alloc>(IPosition(1, other.size()))
 {
-    initVector (other, nr);
-    DebugAssert(ok(), ArrayError);
+  initVector (other, nr);
+  assert(ok());
 }
 
-template<class T> Vector<T>::Vector(const Block<T> &other)
-: Array<T>(IPosition(1, other.nelements()), const_cast<T *>(other.storage()), COPY)
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const std::vector<T> &other, const Alloc& allocator)
+: Array<T, Alloc>(IPosition(1, other.size()), const_cast<T*>(other.data()), allocator)
 {
-    DebugAssert(ok(), ArrayError);
+  assert(ok());
 }
+
+template<>
+inline Vector<bool, std::allocator<bool>>::Vector(const std::vector<bool>& input, const std::allocator<bool>& allocator)
+: Array<bool, std::allocator<bool>>(IPosition(1, input.size()), input.begin(), allocator)
+{
+  assert(ok());
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+Vector<T, Alloc>::Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator) : Vector<T, Alloc>(startIter, endIter, allocator, std::is_integral<InputIterator>())
+{ }
+
+// Constructor for Vector(nonintegral, nonintegral, allocator)
+template<typename T, typename Alloc>
+template<typename InputIterator>
+Vector<T, Alloc>::Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::false_type) :
+  Array<T, Alloc>(IPosition(1, std::distance(startIter, endIter)), startIter, allocator)
+{
+  assert(ok());
+} 
+
+// Constructor for Vector(integral, integral, allocator)
+template<typename T, typename Alloc>
+template<typename Integral>
+Vector<T, Alloc>::Vector(Integral length, Integral initialValue, const Alloc& allocator, std::true_type) :
+Array<T, Alloc>(IPosition(1, length), initialValue, allocator)
+{
+  assert(ok());
+}
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(std::initializer_list<T> list)
+: Array<T, Alloc>(list)
+{
+  assert(ok());
+}
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const Vector<T, Alloc> &other)
+: Array<T, Alloc>(other)
+{
+  assert(ok());
+}
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(Vector<T, Alloc>&& source) noexcept
+: Array<T, Alloc>(std::move(source), IPosition(1, 0))
+{
+  assert(ok());
+}
+
+// <thrown>
+//    <item> ArrayNDimError
+// </thrown>
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const Array<T, Alloc> &other)
+: Array<T, Alloc>(other)
+{
+    // If not 1 dimension, adjust shape if possible.
+    if (this->ndim() != 1) {
+        this->checkVectorShape();
+    }
+    assert(ok());
+}
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const IPosition &shape, T *storage, 
+		  StorageInitPolicy policy)
+  : Array<T, Alloc>(shape, storage, policy)
+{ }
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy, Alloc& allocator)
+  : Array<T, Alloc>(shape, storage, policy, allocator)
+{ }
+
+template<typename T, typename Alloc>
+Vector<T, Alloc>::Vector(const IPosition &shape, const T *storage)
+  : Array<T, Alloc>(shape, storage)
+{ }
 
 // Copy from the block. Copy the number of elements specified or
 // the number of elements in the block if nr <= 0.
 // <thrown>
 //    <item> ArrayError
 // </thrown>
-template<class T> void Vector<T>::initVector(const Block<T> &other, Int64 nr)
+template<typename T, typename Alloc>
+void Vector<T, Alloc>::initVector(const std::vector<T> &other, long long nr)
 {
     size_t n = nr;
     if (nr <= 0) {
-	n = other.nelements();
+      n = other.size();
     }
-    if (n > other.nelements())
-	throw(ArrayError("Vector<T>::initVector(const Block<T> &other"
-				   ", Int64 nr) - nr > other.nelements()"));
+    if (n > other.size())
+      throw(ArrayError("Vector<T, Alloc>::initVector(const Block<T> &other"
+        ", long long nr) - nr > other.nelements()"));
     if (this->nelements() != n) {
-	this->resize(n);
+      this->resize(n);
     }
     for (size_t i=0; i < n; i++) {
-	this->begin_p[i] = other[i];
+      this->begin_p[i] = other[i];
     }
     return;
-}
-
-template<class T> Vector<T>::Vector(const Vector<T> &other)
-: Array<T>(other)
-{
-    DebugAssert(ok(), ArrayError);
-}
-
-// <thrown>
-//    <item> ArrayNDimError
-// </thrown>
-template<class T> Vector<T>::Vector(const Array<T> &other)
-: Array<T>(other)
-{
-    // If not 1 dimension, adjust shape if possible.
-    if (this->ndim() != 1) {
-        this->checkVectorShape();
-    }
-    DebugAssert(ok(), ArrayError);
-}
-
-template<class T>
-Vector<T>::Vector(const IPosition &shape, T *storage, 
-		  StorageInitPolicy policy)
-  : Array<T>(shape, storage, policy)
-{
-    if (shape.nelements() != 1) this->throwNdimVector();
-}
-
-template<class T>
-Vector<T>::Vector(const IPosition &shape, T *storage,
-                  StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
-  : Array<T>(shape, storage, policy, allocator)
-{
-    if (shape.nelements() != 1) this->throwNdimVector();
-}
-
-template<class T>
-Vector<T>::Vector(const IPosition &shape, const T *storage)
-  : Array<T>(shape, storage)
-{
-    if (shape.nelements() != 1) this->throwNdimVector();
-}
-
-template<class T> Vector<T>::~Vector()
-{
-    // Nothing
-}
-
-
-template<class T> void Vector<T>::resize()
-{
-    resize (IPosition(1,0), False);
 }
 
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues, ArrayInitPolicy policy)
+template<typename T, typename Alloc> void Vector<T, Alloc>::resize(const IPosition& l, bool copyValues)
 {
-    DebugAssert(ok(), ArrayError);
-    if (l.nelements() != 1) this->throwNdimVector();
-    if (copyValues) {
-        Vector<T> oldref(*this);
-	Array<T>::resize(l, False, policy);
-	size_t minNels = std::min(this->nelements(), oldref.nelements());
-	objcopy(this->begin_p, oldref.begin_p, minNels,
-		this->inc_p(0), oldref.inc_p(0));
-    } else {
-	Array<T>::resize(l, False, policy);
-    }
-    DebugAssert(ok(), ArrayError);
+  assert(ok());
+  if (copyValues) {
+    Vector<T, Alloc> oldref(*this);
+    Array<T, Alloc>::resize(l, false);
+    size_t minNels = std::min(this->nelements(), oldref.nelements());
+    move_n_with_stride(oldref.begin_p, minNels, this->begin_p,
+    this->inc_p(0), oldref.inc_p(0));
+  } else {
+    Array<T, Alloc>::resize(l, false);
+  }
+  assert(ok());
 }
 
-
-// <thrown>
-//    <item> ArrayError
-// </thrown>
-template<class T> void Vector<T>::assign (const Array<T>& other)
+template<typename T, typename Alloc> Array<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Array<T, Alloc> &a)
 {
-    DebugAssert(ok(), ArrayError);
-    if (other.ndim() != 1) this->throwNdimVector();
-    Array<T>::assign (other);
+    assert(ok());
+    Vector<T, Alloc> tmp(a);
+    assign_conforming(tmp);
+    return *this;
 }
 
-// <thrown>
-//    <item> ArrayError
-// </thrown>
-template<class T> void Vector<T>::reference(const Array<T> &other)
+template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming_implementation(const Vector<T, Alloc> &, std::false_type /*movable?*/)
 {
-    DebugAssert(ok(), ArrayError);
-    if (other.ndim() != 1) this->throwNdimVector();
-    Array<T>::reference(other);
+  throw std::runtime_error("assign called for which a copy is required, while element type is not copyable");
 }
 
-template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
+template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming_implementation(const Vector<T, Alloc> &other, std::true_type /*movable?*/)
 {
-    DebugAssert(ok(), ArrayError);
+    assert(ok());
     if (this != &other) {
         if (! this->copyVectorHelper (other)) {
 	    // Block was empty, so allocate new block.
-	    this->data_p  = new Block<T> (this->length_p(0));
-	    this->begin_p = this->data_p->storage();
+          // TODO think about semantics of allocator!
+	    this->data_p.reset( new arrays_internal::Storage<T, Alloc>(this->length_p(0), other.data_p->get_allocator()) );
+	    this->begin_p = this->data_p->data();
 	}
 	this->setEndIter();
-	objcopy (this->begin_p, other.begin_p, this->nels_p,
+	copy_n_with_stride (other.begin_p, this->nels_p, this->begin_p,
 		 this->inc_p(0), other.inc_p(0));
     }
     return *this;
 }
 
-// Copy a vector to a block. 
-template<class T> void Vector<T>::toBlock(Block<T> & other) const
+template<typename T, typename Alloc>
+Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(Vector<T, Alloc>&& source)
 {
-    DebugAssert(ok(), ArrayError);
-    size_t vec_length = this->nelements();
-    // Make sure the block has enough space, but there is no need to copy elements
-    other.resize(vec_length, True, False);
-    objcopy(other.storage(), this->begin_p, this->nels_p, 1U, this->inc_p(0));
-}
-
-template<class T> Array<T> &Vector<T>::operator=(const Array<T> &a)
-{
-    DebugAssert(ok(), ArrayError);
-    Vector<T> tmp(a);
-    (*this) = tmp;
-    return *this;
+  assert(ok());
+  if(this->nrefs() > 1 || source.nrefs() > 1 || this->data_p->is_shared() || source.data_p->is_shared())
+    assign_conforming(source);
+  else if(source.ndim() == 0)
+  {
+    Vector<T, Alloc> empty;
+    casacore::swap(empty, *this);
+  }
+  else
+    casacore::swap(source, *this);
+  return *this;
 }
 
 // <thrown>
 //    <item> ArrayError
 // </thrown>
-template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
+template<typename T, typename Alloc>
+Vector<T, Alloc> Vector<T, Alloc>::operator()(const Slice &slice)
 {
-    DebugAssert(ok(), ArrayError);
-    Int64 b, l, s;       // begin length step
+    assert(ok());
+    long long b, l, s;       // begin length step
     if (slice.all()) {
 	b = 0;
 	l = this->length_p(0);
@@ -264,14 +287,14 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
 
     // Check that the selected slice is valid
     if (s < 1) {
-	throw(ArrayError("Vector<T>::operator()(Slice) : step < 1"));
+	throw(ArrayError("Vector<T, Alloc>::operator()(Slice) : step < 1"));
     } else if (l < 0) {
-	throw(ArrayError("Vector<T>::operator()(Slice) : length < 0"));
+	throw(ArrayError("Vector<T, Alloc>::operator()(Slice) : length < 0"));
     } else if (b+(l-1)*s >= this->length_p(0)) {
-	throw(ArrayError("Vector<T>::operator()(Slice) : Desired slice extends"
+	throw(ArrayError("Vector<T, Alloc>::operator()(Slice) : Desired slice extends"
 			 " beyond the end of the array"));
     } else if (b < 0) {
-	throw(ArrayError("Vector<T>::operator()(Slice) : start of slice before "
+	throw(ArrayError("Vector<T, Alloc>::operator()(Slice) : start of slice before "
 			 "beginning of vector"));
     }
 
@@ -280,7 +303,7 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     // more efficient.
 
     // Create the vector that will be the slice into this
-    Vector<T> vp(*this);
+    Vector<T, Alloc> vp(*this);
 
     // Increment vp's begin so that it is at the selected position
     vp.begin_p += b*this->steps()[0];
@@ -293,34 +316,36 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     return vp;
 }
 
-template<class T> const Vector<T> Vector<T>::operator()
+template<typename T, typename Alloc> const Vector<T, Alloc> Vector<T, Alloc>::operator()
   (const Slice &slice) const
 {
-    return const_cast<Vector<T>*>(this)->operator() (slice);
+    return const_cast<Vector<T, Alloc>*>(this)->operator() (slice);
 }
 
-template<class T>
-void Vector<T>::doNonDegenerate (const Array<T> &other,
+template<typename T, typename Alloc>
+void Vector<T, Alloc>::doNonDegenerate (const Array<T> &other,
                                  const IPosition &ignoreAxes)
 {
-    Array<T> tmp(*this);
+    Array<T, Alloc> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);
-    if (tmp.ndim() != 1) this->throwNdimVector();
-    reference (tmp);
+    Array<T, Alloc>::reference (tmp);
 }
 
-template<class T>
-void Vector<T>::preTakeStorage(const IPosition &shape)
-{
-    Array<T>::preTakeStorage(shape);
-    if (shape.nelements() != 1)
-        this->throwNdimVector();
-}
-
-template<class T> Bool Vector<T>::ok() const
+template<typename T, typename Alloc> bool Vector<T, Alloc>::ok() const
 {
     return  this->ndim() == 1  &&  Array<T>::ok();
 }
+
+//# Declare extern templates for often used types.
+extern template class Vector<bool>;
+extern template class Vector<char>;
+extern template class Vector<short>;
+extern template class Vector<unsigned short>;
+extern template class Vector<int>;
+extern template class Vector<unsigned int>;
+extern template class Vector<long long>;
+extern template class Vector<float>;
+extern template class Vector<double>;
 
 } //#End casa namespace
 

@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
@@ -59,8 +59,8 @@ int main () {
     AlwaysAssertExit (Regex::toEcma("(the)\\15a") == String("(the)\\1[5]a"));
     a();
     b();
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
     return 1;
   }
   return 0;                           // exit with success status
@@ -116,7 +116,11 @@ void a() {
     cout << doMatch (exp5, "",0) << " ";
     cout << doMatch (exp5, "",1) << " ";
     cout << doMatch (exp5, "",2) << " ";
-    cout << doMatch (exp5, "",10) << " ";
+    // This used to be:
+    // cout << doMatch (exp5, "",10) << " "
+    // But I believe that is not a correct test, as it will go out of bounds
+    // (A.O. 2020)
+    cout << doMatch (exp5, "\0\0\0\0\0\0\0\0\0\0",10) << " ";
     cout << doMatch (exp5, "a",1) << " ";
     cout << doMatch (exp5, "a",2) << " ";
     cout << doMatch (exp5, "\0\0",2) << endl;

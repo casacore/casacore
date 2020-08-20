@@ -43,6 +43,7 @@
 #include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 /*
 #include <casacore/casa/Arrays/ArrayIO.h>

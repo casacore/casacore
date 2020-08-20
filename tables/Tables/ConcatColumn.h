@@ -34,6 +34,7 @@
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/Tables/ColumnCache.h>
 #include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -43,8 +44,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableRecord;
   class Slicer;
   class IPosition;
-  template<class T> class Vector;
-
 
   // <summary>
   // A column in a concatenated table

@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/BasicSL/Complexfwd.h>
@@ -42,8 +43,6 @@ class String;
 class RecordInterface;
 class Record;
 template <class Qtype> class Quantum;
-template <class T> class Vector;
-template <class T> class Array;
 
 // <summary> A holder for Quantums to enable record conversions </summary>
 

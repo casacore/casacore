@@ -217,8 +217,8 @@ int main (int argc, const char* argv[])
 		 << endl;
 	    cout << "Default inspection interval is 5 seconds." << endl;
 	}
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

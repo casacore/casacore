@@ -31,6 +31,7 @@
 
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/RecordField.h>
 
@@ -43,7 +44,6 @@ class TableDesc;
 class RecordInterface;
 class RecordDesc;
 class String;
-template <class T> class Vector;
 template <class T> class ScalarColumn;
 template <class T> class ArrayColumn;
 

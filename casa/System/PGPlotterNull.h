@@ -30,12 +30,12 @@
 #define GRAPHICS_PGPLOTTERNULL_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/System/PGPlotter.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
-template<class T> class Vector;
 
 // <summary>
 // Plot to a PGPLOT device "local" to this process.

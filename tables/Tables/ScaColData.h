@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/tables/Tables/PlainColumn.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -38,8 +39,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class ColumnSet;
 template<class T> class ScalarColumnDesc;
 class AipsIO;
-template<class T> class Vector;
-
 
 // <summary>
 // Access to a table column containing scalars

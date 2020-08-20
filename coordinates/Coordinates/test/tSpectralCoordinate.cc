@@ -1044,8 +1044,8 @@ int main()
       }
 
    }
-   catch (const AipsError& x) {
-      cerr << "aipserror: error " << x.getMesg() << endl;
+   catch (const std::exception& x) {
+      cerr << "aipserror: error " << x.what() << endl;
       return (1);
    }
 

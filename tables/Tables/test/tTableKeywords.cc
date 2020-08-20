@@ -105,7 +105,7 @@ void renameTables (const String& newName, const String& oldName)
     Bool excp = False;
     try {
 	Table tab1(oldName);
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
 	excp = True;
     } 
     AlwaysAssertExit (excp);
@@ -169,8 +169,8 @@ int main()
 	readTables ("main3data", True);
 	readTables ("main4data", False);
 	readFromOtherDir();
-    } catch (AipsError& x) {
-        cout << "Caught an exception : " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+        cout << "Caught an exception : " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

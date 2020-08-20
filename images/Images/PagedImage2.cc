@@ -42,7 +42,7 @@ DataType imagePixelType(const String &fileName)
 	    Table::getLayout(desc, fileName);
 	    ColumnDesc cdesc = desc["map"];
 	    retval = cdesc.dataType();
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	    // Nothing
 	} 
     }

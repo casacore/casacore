@@ -29,6 +29,7 @@
 #define MS_MSMAINCOLUMNS_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/Muvw.h>
 #include <casacore/measures/Measures/MCEpoch.h>
@@ -43,8 +44,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 class String;
-template <class T> class Vector;
-
 
 // <summary>
 // A class for easy access to MeasurementSet main table columns

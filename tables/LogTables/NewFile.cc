@@ -106,10 +106,10 @@ Bool NewFile::valueOK(const String &value, String &error) const
 			    try {
 				Table::deleteTable(value);
 				removed = True;
-			    } catch (AipsError& xxx) {
+			    } catch (std::exception& xxx) {
 				removed = False;
 				extra_error = String("Error deleting table ")
-				    + value + ":" + xxx.getMesg();
+				    + value + ":" + xxx.what();
 			    } 
 			}
 		    }
@@ -118,8 +118,8 @@ Bool NewFile::valueOK(const String &value, String &error) const
 		    sfile.remove();
 		    removed = True;
 		}
-	    } catch (AipsError& x) {
-		extra_error = x.getMesg();
+	    } catch (std::exception& x) {
+		extra_error = x.what();
 		removed = False;
 	    } 
 	    if (!removed) {

@@ -36,8 +36,7 @@
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/IO/AipsIO.h>
-
-
+#include <casacore/casa/IO/ArrayIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

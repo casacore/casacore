@@ -97,7 +97,7 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 		  }
 		}
 		if (count>0) {
-		  pdiff[offset]=median(Vector<Float>(buf,count));
+		  pdiff[offset]=median(Vector<Float>(buf.begin(),buf.begin()+count));
 	        }
 	      }
 	    }
@@ -143,7 +143,7 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 		    }
 		  }
 		  if (count>0) {
-		    pdiff[offset]=median(Vector<Float>(buf,count));
+		    pdiff[offset]=median(Vector<Float>(buf.begin(),buf.begin()+count));
 		  }
 		}
 	      }

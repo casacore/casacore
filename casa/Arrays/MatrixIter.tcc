@@ -25,31 +25,29 @@
 //#
 //# $Id$
 
-#ifndef CASA_MATRIXITER_TCC
-#define CASA_MATRIXITER_TCC
+#ifndef CASA_MATRIXITER_2_TCC
+#define CASA_MATRIXITER_2_TCC
 
-#include<casacore/casa/Arrays/MatrixIter.h>
+#include "MatrixIter.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
-: ArrayIterator<T>(a, 2)
+template<typename T, typename Alloc>
+MatrixIterator<T, Alloc>::MatrixIterator(Array<T, Alloc> &a)
+: ArrayIterator<T, Alloc>(a, 2)
 {
     // We need to ensure that ap points at a Matrix
-    Matrix<T> *mp = new Matrix<T>(*this->ap_p); // reference
-    delete this->ap_p;
-    this->ap_p = mp;
+    this->ap_p.reset( new Matrix<T, Alloc>(*this->ap_p) ); // reference
 }
 
-template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a,
-						    uInt cursorAxis1,
-						    uInt cursorAxis2)
-: ArrayIterator<T>(a, IPosition(2, cursorAxis1, cursorAxis2), True)
+template<typename T, typename Alloc>
+MatrixIterator<T, Alloc>::MatrixIterator(Array<T, Alloc> &a,
+						    size_t cursorAxis1,
+						    size_t cursorAxis2)
+: ArrayIterator<T, Alloc>(a, IPosition(2, cursorAxis1, cursorAxis2), true)
 {
     // We need to ensure that ap points at a Matrix
-    Matrix<T> *mp = new Matrix<T>(*this->ap_p); // reference
-    delete this->ap_p;
-    this->ap_p = mp;
+    this->ap_p.reset( new Matrix<T, Alloc>(*this->ap_p) );  // reference
 }
 
 } //# NAMESPACE CASACORE - END

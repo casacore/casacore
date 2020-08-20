@@ -28,17 +28,15 @@
 #ifndef CASA_VECTORITER_TCC
 #define CASA_VECTORITER_TCC
 
-#include<casacore/casa/Arrays/VectorIter.h>
+#include "VectorIter.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> VectorIterator<T>::VectorIterator(Array<T> &a, uInt axis)
-  : ArrayIterator<T>(a, IPosition(1,axis), True)
+template<typename T, typename Alloc> VectorIterator<T, Alloc>::VectorIterator(Array<T, Alloc> &a, size_t axis)
+  : ArrayIterator<T, Alloc>(a, IPosition(1,axis), true)
 {
     // We need to ensure that ap points at a vector
-    Vector<T> *vp = new Vector<T>(*this->ap_p); // reference
-    delete this->ap_p;
-    this->ap_p = vp;
+    this->ap_p.reset( new Vector<T, Alloc>(*this->ap_p) ); // reference
 }
 
 } //# NAMESPACE CASACORE - END

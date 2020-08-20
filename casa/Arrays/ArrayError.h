@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYERROR_H
-#define CASA_ARRAYERROR_H
+#ifndef CASA_ARRAYERROR_2_H
+#define CASA_ARRAYERROR_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/Arrays/IPosition.h>
+#include <stdexcept>
+#include <string>
 
+#include "IPosition.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -49,23 +49,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Some lines, functions, ...
 // } catch (ArrayError x) {
 //    // Array specific errors
-// } catch (AipsError x) {
+// } catch (std::exception x) {
 //    // All other errors caught here.
 // }
 // </srcblock>
 //
 //# There are too many Array related error classes. Some should be deleted.
 
-class ArrayError : public AipsError
+class ArrayError : public std::runtime_error
 {
 public:
-    // Initialize with the message "ArrayError."
-    ArrayError(Category c=GENERAL);
-    // Initialize with the supplied message.
-    ArrayError(const Char *m,Category c=GENERAL);
-    // Initialize with the supplied message.
-    ArrayError(const String &m,Category c=GENERAL);
-    ~ArrayError() noexcept;
+  // Initialize with the message "ArrayError"
+  ArrayError();
+  // Initialize with the supplied message.
+  ArrayError(const char *m);
+  // Initialize with the supplied message.
+  ArrayError(const std::string& m);
+  ~ArrayError() noexcept;
 };
 
 
@@ -82,15 +82,15 @@ class ArrayIndexError : public ArrayError
 {
 public:
     // Initialize with the message "ArrayIndexError".
-    ArrayIndexError(Category c=BOUNDARY);
+    ArrayIndexError();
     // Initialize with the supplied message, the index and shape are null.
-    ArrayIndexError(const Char *m,Category c=BOUNDARY);
+    ArrayIndexError(const char *m);
     // Initialize with the supplied message, the index and shape are null.
-    ArrayIndexError(const String &m,Category c=BOUNDARY);
+    ArrayIndexError(const std::string &m);
     // Initialize with a given out-of-bounds index, as well as the shape
     // of the array and a supplied message.
     ArrayIndexError(const IPosition &index, const IPosition &shape, 
-		    const Char *m="ArrayIndexError",Category c=BOUNDARY);
+		    const char *m="ArrayIndexError");
     ~ArrayIndexError() noexcept;
     // The out-of-bounds index.
     IPosition index() const;
@@ -115,11 +115,11 @@ class ArrayConformanceError : public ArrayError
 {
 public:
     // Initialize the message with "ArrayConformanceError".
-    ArrayConformanceError(Category c=CONFORMANCE);
+    ArrayConformanceError();
     // Initialize with a supplied message.
-    ArrayConformanceError(const Char *m,Category c=CONFORMANCE);
+    ArrayConformanceError(const char *m);
     // Initialize with a supplied message.
-    ArrayConformanceError(const String &m,Category c=CONFORMANCE);
+    ArrayConformanceError(const std::string& m);
     ~ArrayConformanceError() noexcept;
 };
 
@@ -136,12 +136,13 @@ class ArrayNDimError : public ArrayConformanceError
 public:
     // Define the two (presumably different) messages and optionally
     // supply a message.
-    ArrayNDimError(Int dim1, Int dim2, const Char *m="ArrayNDimError",Category c=CONFORMANCE);
+    ArrayNDimError(int dim1, int dim2, const char *m="ArrayNDimError");
+    ArrayNDimError(int dim1, int dim2, const std::string& m);
     ~ArrayNDimError() noexcept;
     // Return the stored dimensions. NB modifies arguments.
-    void ndims(Int &dim1, Int &dim2) const; // modifies arguments
+    void ndims(int &dim1, int &dim2) const; // modifies arguments
 private:
-    Int r1, r2;
+    int r1, r2;
 };
 
 
@@ -158,7 +159,7 @@ public:
     // Define an ArrayShapeError with the two (presumably different) shapes
     // and an optional supplied message.
     ArrayShapeError(const IPosition &shape1, const IPosition &shape2,
-		     const Char *m="ArrayShapeError",Category c=CONFORMANCE);
+		     const char *m="ArrayShapeError");
     ~ArrayShapeError() noexcept;
     // Get back the stored shapes. NB modifies arguments.
     void shapes(IPosition &, IPosition &) const;  // modifies arguments
@@ -177,11 +178,11 @@ class ArrayIteratorError : public ArrayError
 {
 public:    
     // Initialize with the message "ArrayIteratorError.
-    ArrayIteratorError(Category c=BOUNDARY);
+    ArrayIteratorError();
     // Initialize with the supplied message
-    ArrayIteratorError(const Char *m,Category c=BOUNDARY);
+    ArrayIteratorError(const char *m);
     // Initialize with the supplied message
-    ArrayIteratorError(const String &m,Category c=BOUNDARY);
+    ArrayIteratorError(const std::string &m);
     ~ArrayIteratorError() noexcept;
 };
 
@@ -195,9 +196,9 @@ class ArraySlicerError : public ArrayError
 {
 public:    
     // Initialize with the message "Slicer error."
-    ArraySlicerError(Category c=GENERAL);
+    ArraySlicerError();
     // Initialize with ArraySlicerError plus the supplied message
-    ArraySlicerError(const String &m,Category c=GENERAL);
+    ArraySlicerError(const std::string &m);
     ~ArraySlicerError() noexcept;
 };
 

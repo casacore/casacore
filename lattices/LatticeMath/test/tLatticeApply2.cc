@@ -366,8 +366,8 @@ int main (int argc, const char* argv[])
 	doIt (argc,argv);
 	cout<< "OK"<< endl;
 	return 0;
-    } catch (AipsError& x) {
-	cerr << "Caught exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cerr << "Caught exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

@@ -31,7 +31,7 @@
 #include <casacore/lattices/Lattices/LatticeIterator.h> 
 #include <casacore/lattices/Lattices/LatticeStepper.h> 
 
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/Matrix.h>
@@ -324,7 +324,7 @@ int main()
     Bool caught = False;
     try {
       al6ROIter.matrixCursor();
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
       caught = True;
     } 
     AlwaysAssert(caught, AipsError);
@@ -332,7 +332,7 @@ int main()
     caught = False;
     try {
       al6ROIter.cubeCursor();
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
       caught = True;
     } 
     AlwaysAssert(caught, AipsError);
@@ -378,7 +378,7 @@ int main()
     caught = False;
     try {
       al6Iter.vectorCursor();
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
       caught = True;
     } 
     AlwaysAssert(caught, AipsError);
@@ -386,7 +386,7 @@ int main()
     caught = False;
     try {
       al6Iter.cubeCursor();
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
       caught = True;
     } 
     AlwaysAssert(caught, AipsError);
@@ -885,8 +885,8 @@ int main()
       AlwaysAssertExit (to.asArray()(IPosition(4,0,0,0,1)) == 960);
       AlwaysAssertExit (allEQ(arr, to.asArray()));
     }
-  } catch (AipsError& x) {
-    cerr << x.getMesg () << endl;
+  } catch (std::exception& x) {
+    cerr << x.what() << endl;
     cout << "FAIL" << endl; 
     return 1;
   } 

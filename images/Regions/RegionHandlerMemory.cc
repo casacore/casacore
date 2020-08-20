@@ -191,9 +191,9 @@ Bool RegionHandlerMemory::removeRegion (const String& name,
       Bool error = False;
       try {
 	lcPtr->handleDelete();
-      } catch (AipsError& x) {
+      } catch (std::exception& x) {
 	error = True;
-	msg = x.getMesg();
+	msg = x.what();
       }
       delete lcPtr;
       if (error) {

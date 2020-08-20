@@ -25,53 +25,53 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/Slice.h>
-#include <casacore/casa/Arrays/Slicer.h>
-#include <casacore/casa/Arrays/Vector.h>
+#include "Slice.h"
+#include "Slicer.h"
+#include "Vector.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  IPosition Slice::checkSlices (Vector<Vector<Slice> >& slices, Slicer& first,
-                                const IPosition& shape)
-  {
-    // In principle the shape defines the dimensionality, but it can be empty.
-    // In that case use the slices definition.
-    uInt ndim = shape.size();
-    if (ndim == 0) {
-      ndim = slices.size();
-    }
-    if (slices.size() > ndim) {
-      throw AipsError ("Slice::checkSlices - "
-                       "slices size exceeds dimensionality");
-    }
-    // Extend slices if needed.
-    slices.resize (ndim, True);
-    // Initialize the result shape and first Slicer start,end,incr.
-    IPosition result(ndim, 0);
-    IPosition start(ndim);
-    IPosition length(ndim);
-    IPosition incr(ndim);
-    for (uInt i=0; i<ndim; ++i) {
-      Vector<Slice>& sliceVec = slices[i];
-      if (sliceVec.size() == 0) {
-        sliceVec.resize (1);
-        sliceVec[0] = Slice(0, shape[i]);
-      }
-      // Get total slices length if slices are given.
-      // Check if slice does not exceed shape.
-      for (uInt j=0; j<sliceVec.size(); ++j) {
-        if (sliceVec[j].end() >= size_t(shape[i])) {
-          throw AipsError("Slice::checkSlices - "
-                          "slice exceeds array shape");
-        }
-        result[i] += sliceVec[j].length();
-      }
-      start[i]  = sliceVec[0].start();
-      length[i] = sliceVec[0].length();
-      incr[i]   = sliceVec[0].inc();
-    }
-    first = Slicer(start, length, incr);
-    return result;
+IPosition Slice::checkSlices (Vector<Vector<Slice> >& slices, Slicer& first,
+                              const IPosition& shape)
+{
+  // In principle the shape defines the dimensionality, but it can be empty.
+  // In that case use the slices definition.
+  size_t ndim = shape.size();
+  if (ndim == 0) {
+    ndim = slices.size();
   }
+  if (slices.size() > ndim) {
+    throw ArrayError ("Slice::checkSlices - "
+                      "slices size exceeds dimensionality");
+  }
+  // Extend slices if needed.
+  slices.resize (ndim, true);
+  // Initialize the result shape and first Slicer start,end,incr.
+  IPosition result(ndim, 0);
+  IPosition start(ndim);
+  IPosition length(ndim);
+  IPosition incr(ndim);
+  for (size_t i=0; i<ndim; ++i) {
+    Vector<Slice>& sliceVec = slices[i];
+    if (sliceVec.size() == 0) {
+      sliceVec.resize (1);
+      sliceVec[0] = Slice(0, shape[i]);
+    }
+    // Get total slices length if slices are given.
+    // Check if slice does not exceed shape.
+    for (size_t j=0; j<sliceVec.size(); ++j) {
+      if (sliceVec[j].end() >= size_t(shape[i])) {
+        throw ArrayError("Slice::checkSlices - "
+                        "slice exceeds array shape");
+      }
+      result[i] += sliceVec[j].length();
+    }
+    start[i]  = sliceVec[0].start();
+    length[i] = sliceVec[0].length();
+    incr[i]   = sliceVec[0].inc();
+  }
+  first = Slicer(start, length, incr);
+  return result;
+}
 
 } //# NAMESPACE CASACORE - END

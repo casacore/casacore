@@ -30,13 +30,13 @@
 #define CASA_PGPLOTTER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/System/PGPlotterInterface.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
-template<class T> class Vector;
 
 // <summary>
 // Standard plotting object for application programmers.

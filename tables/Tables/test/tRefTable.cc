@@ -115,8 +115,8 @@ int main()
     makeRef();
     readTab ("tRefTable_tmp.data", 10, 5);
     readTab ("tRefTable_tmp.dataref", 10, 4);
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

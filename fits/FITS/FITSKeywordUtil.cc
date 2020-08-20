@@ -42,6 +42,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iomanip.h>

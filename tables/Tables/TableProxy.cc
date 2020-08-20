@@ -57,7 +57,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Logging/LogIO.h>
@@ -970,7 +970,8 @@ String TableProxy::tableName()
 
 Vector<String> TableProxy::getPartNames (Bool recursive)
 {
-  return Vector<String>(table_p.getPartNames (recursive));
+	Block<String> partNames(table_p.getPartNames (recursive));
+  return Vector<String>(partNames.begin(), partNames.end());
 }
 
 String TableProxy::getAsciiFormat() const

@@ -86,8 +86,8 @@ int main(int argc, const char* argv[])
       ImageProxy img(imgin, String(), vector<ImageProxy>());
       img.saveAs (outName, True, hdf5, True);
     }
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
     return 1;
   } 
   return 0;

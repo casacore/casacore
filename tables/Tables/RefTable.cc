@@ -32,9 +32,9 @@
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/TableTrace.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/BasicMath/Math.h>

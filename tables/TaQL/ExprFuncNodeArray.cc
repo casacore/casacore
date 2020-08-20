@@ -1235,7 +1235,7 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
     case TableExprFuncNode::arrntruesFUNC:
       {
         MArray<Bool> arr (operands()[0]->getArrayBool(id));
-        MArray<uInt> res(partialNTrue (arr, getAxes(id, arr.ndim())));
+        MArray<size_t> res(partialNTrue (arr, getAxes(id, arr.ndim())));
         Array<Int64> resd(res.shape());
         convertArray (resd, res.array());
         return MArray<Int64> (resd, res);
@@ -1259,7 +1259,7 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
     case TableExprFuncNode::arrnfalsesFUNC:
       {
         MArray<Bool> arr (operands()[0]->getArrayBool(id));
-        MArray<uInt> res(partialNFalse (arr, getAxes(id, arr.ndim())));
+        MArray<size_t> res(partialNFalse (arr, getAxes(id, arr.ndim())));
         Array<Int64> resd(res.shape());
         convertArray (resd, res.array());
         return MArray<Int64> (resd, res);

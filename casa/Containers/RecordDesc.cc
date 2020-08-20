@@ -28,7 +28,7 @@
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/IO/AipsIO.h>
-
+#include <casacore/casa/IO/ArrayIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

@@ -42,7 +42,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Utilities/Sort.h>
@@ -115,9 +115,9 @@ void a (const StorageOption& stopt, Bool doExcp)
     if (doExcp) {
 	try {
 	    newtab.setShapeColumn("arr2",IPosition(3,2,3,4));
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // not FixedShape
-	    cout << "Expected exception: "<< x.getMesg() << endl;
+	    cout << "Expected exception: "<< x.what() << endl;
 	} 
     }
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
@@ -209,15 +209,15 @@ void a (const StorageOption& stopt, Bool doExcp)
     if (doExcp) {
 	try {
 	    af.put (0, "12345678901");
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // value too long
-	    cout << "Expected exception: " << x.getMesg() << endl;
+	    cout << "Expected exception: " << x.what() << endl;
 	} 
 	try {
 	    arr1.put (0, vec2);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // shape cannot change
-	    cout << "Expected exception: " << x.getMesg() << endl;
+	    cout << "Expected exception: " << x.what() << endl;
 	} 
     }
 }
@@ -257,9 +257,9 @@ void b (Bool doExcp)
     if (doExcp) {
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // table not writable
-            cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
+            cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
     }
     ScalarColumn<Int> ab2(tab,"ab");
@@ -616,27 +616,27 @@ void c (const StorageOption& stopt, Bool doExcp)
 	    RegularFile file("tTable_tmp.file");
 	    file.create();
 	    tab.rename ("tTable_tmp.file", Table::NewNoReplace);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // exists as file
-	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
+	    cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
 	try {
 	    tab.rename ("tTable_tmp.data", Table::NewNoReplace);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // already exists
-	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
+	    cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
 	try {
 	    tab.rename ("tTable.datx", Table::Update);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // does not exist
-	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
+	    cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // column already exists
-	    cout << "Expected exception: " << x.getMesg() << endl;
+	    cout << "Expected exception: " << x.what() << endl;
 	} 
     }
 
@@ -712,9 +712,9 @@ void c (const StorageOption& stopt, Bool doExcp)
     if (doExcp) {
 	try {
 	    tab.removeRow (7);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             // row does not exist
-	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
+	    cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
     }
     cout << ab2.getColumn() << endl;
@@ -924,8 +924,8 @@ int main (int argc,const char*[])
 	b ( (argc<2));
 	c ( stopt, (argc<2));
         d ( stopt);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status

@@ -133,7 +133,7 @@ void doIt()
     Bool caught = False;
     try {
       LELAttribute attr3 (attr2, attr1);
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
       caught = True;              // mismatching axes
     }
     AlwaysAssertExit (caught);

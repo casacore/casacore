@@ -38,7 +38,7 @@
 #include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -84,8 +84,8 @@ int main (int argc, const char* argv[])
 	a (nr, 0);
 	f();
         testWithLocking();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status
@@ -497,13 +497,13 @@ void f()
     //# Try to change some arrays (which cannot be done).
     try {
 	arr1.put (0, vecf);
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;         // shape cannot change
+    } catch (std::exception& x) {
+	cout << x.what() << endl;         // shape cannot change
     } 
     try {
 	arr7.put (0, vecb);
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;         // shape cannot change
+    } catch (std::exception& x) {
+	cout << x.what() << endl;         // shape cannot change
     } 
     Vector<Bool> removedRows(20);
     removedRows.set (False);

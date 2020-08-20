@@ -26,20 +26,17 @@
 //# $Id: Vector.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 //# Includes
-#include <casacore/casa/Arrays/Vector.h>
+#include "Vector.h"
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class Vector<Bool>;
-  template class Vector<Char>;
-  template class Vector<Short>;
-  template class Vector<uShort>;
-  template class Vector<Int>;
-  template class Vector<uInt>;
-  template class Vector<Int64>;
-  template class Vector<Float>;
-  template class Vector<Double>;
-  template class Vector<Complex>;
-  template class Vector<DComplex>;
-  template class Vector<String>;
+  template class Vector<bool>;
+  template class Vector<char>;
+  template class Vector<short>;
+  template class Vector<unsigned short>;
+  template class Vector<int>;
+  template class Vector<unsigned int>;
+  template class Vector<long long>;
+  template class Vector<float>;
+  template class Vector<double>;
 }

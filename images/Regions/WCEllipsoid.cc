@@ -592,9 +592,9 @@ void WCEllipsoid::_checkUnits() const {
 	try {
 		checkAxes(_pixelAxes, _csys, units);
 	}
-	catch (AipsError& x) {
+	catch (std::exception& x) {
 		throw AipsError(
-			x.getMesg() + " Checking radii units"
+			std::string(x.what()) + " Checking radii units"
 		);
 	}
 	for (uInt i=0; i<units.size(); i++) {
@@ -603,9 +603,9 @@ void WCEllipsoid::_checkUnits() const {
 	try {
 		checkAxes(_pixelAxes, _csys, units);
 	}
-	catch (AipsError& x) {
+	catch (std::exception& x) {
 		throw AipsError(
-			x.getMesg() + " Checking center units"
+			std::string(x.what()) + " Checking center units"
 		);
 	}
 }

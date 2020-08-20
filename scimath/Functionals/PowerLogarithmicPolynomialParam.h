@@ -33,11 +33,10 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
+#include <casacore/casa/vector.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations
-template<class T> class Vector;
 
 // <summary>  Parameter handling for one-dimensional power logarithmic polynomials
 // </summary>

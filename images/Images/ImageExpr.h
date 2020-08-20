@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/casa/Containers/Record.h>
@@ -42,7 +43,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class JsonKVMap;
 class IPosition;
 class Slicer;
-template <class T> class Array;
 class LatticeNavigator;
 template <class T> class LatticeIterInterface;
 class String;

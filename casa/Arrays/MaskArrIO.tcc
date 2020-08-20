@@ -25,34 +25,34 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKARRIO_TCC
-#define CASA_MASKARRIO_TCC
+#ifndef CASA_MASKARRIO_2_TCC
+#define CASA_MASKARRIO_2_TCC
 
-#include <casacore/casa/iostream.h>
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/MaskArrIO.h>
-#include <casacore/casa/Arrays/MaskedArray.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include "MaskArrIO.h"
+#include "MaskedArray.h"
+//#include "ArrayIO.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+  
 template<class T>
-ostream & operator<< (ostream &s, const MaskedArray<T> &a)
+std::ostream & operator<< (std::ostream &s, const MaskedArray<T> &a)
 {
-    // Print the Array.
-    s << "Array: " << a.getArray();
-
-    s << "\n";
-
-    // Print the Mask.
-    s << "Mask:  " << a.getMask();
-
-    return s;
+  // Print the Array.
+  s << "Array: " << a.getArray();
+  s << "\n";
+  // Print the Mask.
+  s << "Mask:  " << a.getMask();
+  return s;
 }
 
+template<typename T>
+std::string to_string(const MaskedArray<T> &maskedArray)
+{
+  std::ostringstream str;
+  str << maskedArray;
+  return str.str();
+}
 
 } //# NAMESPACE CASACORE - END
-
 
 #endif

@@ -30,15 +30,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Functionals/Gaussian2DParam.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 #include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations
-template<class T> class Vector;
 
 // <summary> A two dimensional Gaussian class.</summary>
 

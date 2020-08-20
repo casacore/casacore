@@ -147,7 +147,7 @@ enum StatisticsTypes {
 // and "flux" is present.  An empty vector results if there are no matches
 // <group>
    static Vector<Int> toStatisticTypes (const String& statistics, 
-                                        const Regex& delimiter);
+                                        const std::regex& delimiter);
    static Vector<Int> toStatisticTypes (const Vector<String>& statistics);
 // </group>
 

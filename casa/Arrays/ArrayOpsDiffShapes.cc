@@ -24,19 +24,18 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <casacore/casa/Arrays/ArrayOpsDiffShapes.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-//#include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/IPosition.h>
+#include "ArrayOpsDiffShapes.h"
+#include "ArrayMath.h"
+#include "IPosition.h"
 
 namespace casacore {
 
-Bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightShape)
+bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightShape)
 {
-  uInt n_desired_dim = rightShape.nelements();
-  Bool expandable = (leftShape.nelements() > n_desired_dim);
+  size_t n_desired_dim = rightShape.nelements();
+  bool expandable = (leftShape.nelements() > n_desired_dim);
     
-  for(uInt axnum = 0; expandable && axnum < n_desired_dim; ++axnum)
+  for(size_t axnum = 0; expandable && axnum < n_desired_dim; ++axnum)
     expandable = (leftShape[axnum] == rightShape[axnum]);
 
   return expandable;

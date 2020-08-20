@@ -1,4 +1,4 @@
-//# tStringArray.cc: This program tests Array<String> and related classes
+//# tStringArray.cc: This program tests Array<std::string> and related classes
 //# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,31 +28,30 @@
 //# Includes
 
 
-#include <casacore/casa/iostream.h>
+#include "../Array.h"
+#include "../Vector.h"
+#include "../Matrix.h"
+#include "../Cube.h"
+#include "../ArrayError.h"
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Cube.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/BasicSL/String.h>
+#include <string>
 
-#include <casacore/casa/namespace.h>
-int main()
+#include <boost/test/unit_test.hpp>
+
+using namespace casacore;
+
+BOOST_AUTO_TEST_SUITE(string_array)
+
+BOOST_AUTO_TEST_CASE( vector_string )
 {
-    Vector<String> vs(5);
-    vs(0) = "Every";vs(1) = "Good";vs(2) = "Boy";vs(3) = "Deserves";
-    vs(4) = "Fudge";
-    AlwaysAssertExit(vs(0) == "Every");
-    AlwaysAssertExit(vs(1) == "Good");
-    AlwaysAssertExit(vs(2) == "Boy");
-    AlwaysAssertExit(vs(3) == "Deserves");
-    AlwaysAssertExit(vs(4) == "Fudge");
-
-    cout << "OK\n";
-    return 0;
-
+  Vector<std::string> vs(5);
+  vs(0) = "Every";vs(1) = "Good";vs(2) = "Boy";vs(3) = "Deserves";
+  vs(4) = "Fudge";
+  BOOST_CHECK_EQUAL(vs(0), "Every");
+  BOOST_CHECK_EQUAL(vs(1), "Good");
+  BOOST_CHECK_EQUAL(vs(2), "Boy");
+  BOOST_CHECK_EQUAL(vs(3), "Deserves");
+  BOOST_CHECK_EQUAL(vs(4), "Fudge");
 }
+
+BOOST_AUTO_TEST_SUITE_END()

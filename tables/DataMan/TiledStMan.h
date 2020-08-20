@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -46,8 +47,6 @@ class TSMCube;
 class TSMFile;
 class TableDesc;
 class Record;
-template<class T> class Vector;
-
 
 // <summary>
 // Base class for Tiled Storage Manager classes

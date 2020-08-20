@@ -31,7 +31,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/Quanta/MVTime.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/namespace.h>
 int main()
@@ -115,9 +115,9 @@ int main()
     }
     */
 
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
 	cout << "Caught exception " << endl;
-	cout << x.getMesg() << endl;
+	cout << x.what() << endl;
 	return 1;
     } 
     cout << "Done." << endl;
