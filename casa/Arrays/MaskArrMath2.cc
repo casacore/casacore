@@ -25,28 +25,25 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/MaskArrMath.h>
-#include <casacore/casa/Arrays/ArrayError.h>
+#include "MaskArrMath.h"
+#include "ArrayError.h"
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//#include <casacore/casa/Arrays/VectorIter.h>
-//#include <casacore/casa/Arrays/Matrix.h>
-//#include <casacore/casa/BasicMath/Math.h>
-
-MaskedArray<Complex> operator * (const MaskedArray<Complex> &left, 
-					 const Float &right) 
+MaskedArray<std::complex<float>> operator * (const MaskedArray<std::complex<float>> &left, 
+					 const float &right) 
 { 
-  MaskedArray<Complex> retval;
+  MaskedArray<std::complex<float>> retval;
   retval = left;
-  Bool zapIt;
-  Complex* storage = retval.getRWArrayStorage(zapIt);
-  Int ntotal = retval.nelements();
+  bool zapIt;
+  std::complex<float>* storage = retval.getRWArrayStorage(zapIt);
+  int ntotal = retval.nelements();
 
-  Bool leftmaskDelete; 
+  bool leftmaskDelete; 
   const LogicalArrayElem *leftmaskStorage 
     = left.getMaskStorage(leftmaskDelete); 
 
-  for (Int i=0; i< ntotal; i++) {
+  for (int i=0; i< ntotal; i++) {
     if (leftmaskStorage[i]) storage[i] *= right;
   }
   retval.putArrayStorage(storage, zapIt);
@@ -54,16 +51,11 @@ MaskedArray<Complex> operator * (const MaskedArray<Complex> &left,
   return retval;
 }
 
-MaskedArray<Complex> operator*(const Float& left, 
-			       const MaskedArray<Complex> &right)
+MaskedArray<std::complex<float>> operator*(const float& left, 
+			       const MaskedArray<std::complex<float>> &right)
 {
   return operator*(right,left);
 }
-
-
-
-
-
 
 } //# NAMESPACE CASACORE - END
 

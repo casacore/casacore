@@ -30,6 +30,7 @@
 #include <casacore/ms/MSOper/MSMetaData.h>
 
 #include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/BasicMath/StdLogical.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/OS/Directory.h>
@@ -2181,7 +2182,7 @@ void testIt(MSMetaData& md) {
             try {
                 md.getSubScanProperties(sskey);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -2591,8 +2592,8 @@ int main() {
         AlwaysAssert(md2.getCache() == 0, AipsError);
         cout << "OK" << endl;
     } 
-    catch (const AipsError& x) {
-        cerr << "Exception : " << x.getMesg() << endl;
+    catch (const std::exception& x) {
+        cerr << "Exception : " << x.what() << endl;
         return 1;
     }
     return 0;

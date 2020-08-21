@@ -27,7 +27,7 @@
 
 #include <casacore/scimath/Functionals/FunctionWrapper.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/scimath/Functionals/CombiFunction.h>

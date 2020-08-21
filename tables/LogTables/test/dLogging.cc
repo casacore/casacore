@@ -36,6 +36,7 @@
 #include <casacore/casa/Logging.h>
 #include <casacore/tables/LogTables/TableLogSink.h>
 #include <casacore/casa/Arrays.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iostream.h>

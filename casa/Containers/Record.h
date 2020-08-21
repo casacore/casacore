@@ -32,6 +32,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Containers/RecordRep.h>
 #include <casacore/casa/Containers/RecordDesc.h>
@@ -40,7 +41,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template<class T> class Array;
 class IPosition;
 class AipsIO;
 

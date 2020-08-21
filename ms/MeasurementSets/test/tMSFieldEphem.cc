@@ -340,8 +340,8 @@ int main() {
 
 	try{
 	  MDirection xDir = msfc.delayDirMeas(row, 12345.); // time outside validity range
-	} catch (AipsError& x) {
-	  //cout <<  x.getMesg() <<endl;
+	} catch (std::exception& x) {
+	  //cout <<  x.what() <<endl;
 	  didThrow = True;
 	}
 	AlwaysAssertExit(didThrow);
@@ -349,8 +349,8 @@ int main() {
 	didThrow = False;
 	try{
 	  MRadialVelocity xmradvel = msfc.radVelMeas(row, 12345.); // time outside validity range
-	} catch (AipsError& x) {
-	  //cout <<  x.getMesg() <<endl;
+	} catch (std::exception& x) {
+	  //cout <<  x.what() <<endl;
 	  didThrow = True;
 	}
 	AlwaysAssertExit(didThrow);
@@ -358,8 +358,8 @@ int main() {
 	didThrow = False;
 	try{
 	  MRadialVelocity xrho = msfc.rho(row, 12345.); // time outside validity range
-	} catch (AipsError& x) {
-	  //cout <<  x.getMesg() <<endl;
+	} catch (std::exception& x) {
+	  //cout <<  x.what() <<endl;
 	  didThrow = True;
 	}
 	AlwaysAssertExit(didThrow);
@@ -384,8 +384,8 @@ int main() {
       ms.markForDelete();
     }
     return 0;  
-  } catch (AipsError& x) {
-    cerr << x.getMesg() <<endl;
+  } catch (std::exception& x) {
+    cerr << x.what() <<endl;
     return 1;
   } 
 }

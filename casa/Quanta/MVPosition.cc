@@ -38,7 +38,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/MatrixMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

@@ -25,48 +25,45 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKARRMATH_TCC
-#define CASA_MASKARRMATH_TCC
+#ifndef CASA_MASKARRMATH_2_TCC
+#define CASA_MASKARRMATH_2_TCC
 
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/MaskArrMath.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/ArrayIter.h>
-#include <casacore/casa/Arrays/VectorIter.h>
-#include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Exceptions/Error.h>
+#include "ArrayLogical.h"
+#include "MaskArrMath.h"
+#include "Array.h"
+#include "ArrayError.h"
+#include "ArrayIter.h"
+#include "VectorIter.h"
+
+#include <algorithm>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
 
 #define MARRM_IOP_MA(IOP,STRIOP) \
 template<class T> \
 const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
                                     const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
             ("::operator" STRIOP "(const MaskedArray<T> &, const Array<T> &)" \
              " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     T *leftarrStorage = left.getRWArrayStorage(leftarrDelete); \
     T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage = \
         left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightDelete; \
+    bool rightDelete; \
     const T *rightStorage = right.getStorage(rightDelete); \
     const T *rightS = rightStorage; \
 \
-    uInt ntotal = left.nelements(); \
+    size_t ntotal = left.nelements(); \
     while (ntotal--) { \
         if (*leftmaskS) { \
 	    *leftarrS IOP *rightS; \
@@ -88,26 +85,26 @@ const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
 template<class T> \
 Array<T> & operator IOP (Array<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
               ("::operator" STRIOP "(Array<T> &, const MaskedArray<T> &)" \
                " - arrays do not conform")); \
     } \
 \
-    Bool leftDelete; \
+    bool leftDelete; \
     T *leftStorage = left.getStorage(leftDelete); \
     T *leftS = leftStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage = \
         right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
+    size_t ntotal = left.nelements(); \
     while (ntotal--) { \
         if (*rightmaskS) { \
 	    *leftS IOP *rightarrS; \
@@ -130,31 +127,31 @@ template<class T> \
 const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
                                      const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
    ("::operator" STRIOP "(const MaskedArray<T> &, const MaskedArray<T> &)" \
     " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     T *leftarrStorage = left.getRWArrayStorage(leftarrDelete); \
     T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage \
         = right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
+    size_t ntotal = left.nelements(); \
     while (ntotal--) { \
         if (*leftmaskS && *rightmaskS) { \
 	    *leftarrS IOP *rightarrS; \
@@ -184,25 +181,25 @@ const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
     " - arrays do not conform")); \
     } \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     T *leftarrStorage = left.getRWArrayStorage(leftarrDelete); \
     T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const S *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const S *rightarrS = rightarrStorage; \
 \
-    Bool rightmaskDelete; \
+    bool rightmaskDelete; \
     const LogicalArrayElem *rightmaskStorage \
         = right.getMaskStorage(rightmaskDelete); \
     const LogicalArrayElem *rightmaskS = rightmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
+    size_t ntotal = left.nelements(); \
     while (ntotal--) { \
         if (*leftmaskS && *rightmaskS) { \
 	    *leftarrS IOP *rightarrS; \
@@ -227,16 +224,16 @@ template<class T> \
 const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
                                      const T &right) \
 { \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     T *leftarrStorage = left.getRWArrayStorage(leftarrDelete); \
     T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    uInt ntotal = left.nelements(); \
+    size_t ntotal = left.nelements(); \
     while (ntotal--) { \
         if (*leftmaskS) { \
 	    *leftarrS IOP right; \
@@ -284,16 +281,16 @@ template<class T> MaskedArray<T> operator- (const MaskedArray<T> &left)
 {
     MaskedArray<T> result (left.copy());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage
         = result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
 	    *resultarrS = -(*resultarrS);
@@ -314,7 +311,7 @@ template<class T> \
 MaskedArray<T> operator OP (const MaskedArray<T> &left, \
                             const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
           ("::operator" STROP "(const MaskedArray<T> &, const Array<T> &)" \
            " - arrays do not conform")); \
@@ -333,7 +330,7 @@ template<class T> \
 MaskedArray<T> operator OP (const Array<T> &left, \
                             const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
           ("::operator" STROP "(const Array<T> &, const MaskedArray<T> &)" \
            " - arrays do not conform")); \
@@ -352,7 +349,7 @@ template<class T> \
 MaskedArray<T> operator OP (const MaskedArray<T> &left, \
                             const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
         ("::operator" STROP "(const MaskedArray<T> &," \
          " const MaskedArray<T> &)" \
@@ -424,16 +421,16 @@ MARRM_OP_SM ( /, /= )
 template<class T> void indgen(MaskedArray<T> &left,
                               T start, T inc)
 {
-    Bool leftarrDelete;
+    bool leftarrDelete;
     T *leftarrStorage = left.getRWArrayStorage(leftarrDelete);
     T *leftarrS = leftarrStorage;
 
-    Bool leftmaskDelete;
+    bool leftmaskDelete;
     const LogicalArrayElem *leftmaskStorage
         = left.getMaskStorage(leftmaskDelete);
     const LogicalArrayElem *leftmaskS = leftmaskStorage;
 
-    uInt ntotal = left.nelements();
+    size_t ntotal = left.nelements();
     T ind = start;
     while (ntotal--) {
         if (*leftmaskS) {
@@ -462,7 +459,7 @@ template<class T> void indgen(MaskedArray<T> &a, T start)
 template<class T, class U>
 MaskedArray<T> pow (const MaskedArray<T> &left, const Array<U> &right)
 {
-//    if (conform2(left, right) == False) {
+//    if (conform2(left, right) == false) {
     if (left.shape() != right.shape()) {
 	throw (ArrayConformanceError
                ("::" "pow"
@@ -472,23 +469,23 @@ MaskedArray<T> pow (const MaskedArray<T> &left, const Array<U> &right)
 
     MaskedArray<T> result (left.copy());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage =
         result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    Bool rightDelete;
+    bool rightDelete;
     const U *rightStorage = right.getStorage(rightDelete);
     const U *rightS = rightStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
-	    *resultarrS = pow (*resultarrS, *rightS);
+	    *resultarrS = std::pow (*resultarrS, *rightS);
         }
         resultarrS++;
         resultmaskS++;
@@ -506,7 +503,7 @@ MaskedArray<T> pow (const MaskedArray<T> &left, const Array<U> &right)
 template<class T, class U>
 MaskedArray<T> pow (const Array<T> &left, const MaskedArray<U> &right)
 {
-//    if (conform2(left, right) == False) {
+//    if (conform2(left, right) == false) {
     if (left.shape() != right.shape()) {
 	throw (ArrayConformanceError
                ("::" "pow"
@@ -516,23 +513,23 @@ MaskedArray<T> pow (const Array<T> &left, const MaskedArray<U> &right)
 
     MaskedArray<T> result (left.copy(), right.getMask());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage =
         result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    Bool rightarrDelete;
+    bool rightarrDelete;
     const U *rightarrStorage = right.getArrayStorage(rightarrDelete);
     const U *rightarrS = rightarrStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
-	    *resultarrS = pow (*resultarrS, *rightarrS);
+	    *resultarrS = std::pow (*resultarrS, *rightarrS);
         }
         resultarrS++;
         resultmaskS++;
@@ -550,7 +547,7 @@ MaskedArray<T> pow (const Array<T> &left, const MaskedArray<U> &right)
 template<class T, class U>
 MaskedArray<T> pow (const MaskedArray<T> &left, const MaskedArray<U> &right)
 {
-//    if (conform2(left, right) == False) {
+//    if (conform2(left, right) == false) {
     if (left.shape() != right.shape()) {
 	throw (ArrayConformanceError
                ("::" "pow"
@@ -561,23 +558,23 @@ MaskedArray<T> pow (const MaskedArray<T> &left, const MaskedArray<U> &right)
     MaskedArray<T> result ( left.getArray().copy(),
                          (left.getMask() && right.getMask()) );
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage
         = result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    Bool rightarrDelete;
+    bool rightarrDelete;
     const U *rightarrStorage = right.getArrayStorage(rightarrDelete);
     const U *rightarrS = rightarrStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
-	    *resultarrS = pow (*resultarrS, *rightarrS);
+	    *resultarrS = std::pow (*resultarrS, *rightarrS);
         }
         resultarrS++;
         resultmaskS++;
@@ -593,23 +590,23 @@ MaskedArray<T> pow (const MaskedArray<T> &left, const MaskedArray<U> &right)
 
 
 template<class T>
-MaskedArray<T> pow (const MaskedArray<T> &left, const Double &right)
+MaskedArray<T> pow (const MaskedArray<T> &left, const double &right)
 {
     MaskedArray<T> result (left.copy());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage
         = result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
-	    *resultarrS = pow (*resultarrS, right);
+	    *resultarrS = std::pow (*resultarrS, right);
         }
         resultarrS++;
         resultmaskS++;
@@ -621,23 +618,22 @@ MaskedArray<T> pow (const MaskedArray<T> &left, const Double &right)
     return result;
 }
 
-
-#define MARRM_FUNC_M(FUNC,STRFUNC) \
+#define MARRM_FUNC_M(DEFNAME, FUNC) \
 template<class T> \
-MaskedArray<T> FUNC (const MaskedArray<T> &left) \
+MaskedArray<T> DEFNAME (const MaskedArray<T> &left) \
 { \
     MaskedArray<T> result (left.copy()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
 	    *resultarrS = FUNC (*resultarrS); \
@@ -653,11 +649,11 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left) \
 }
 
 
-#define MARRM_FUNC_MA(FUNC,STRFUNC) \
+#define MARRM_FUNC_MA(DEFNAME,FUNC,STRFUNC) \
 template<class T> \
-MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
+MaskedArray<T> DEFNAME (const MaskedArray<T> &left, const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
                ("::" STRFUNC \
                 "(const MaskedArray<T> &, const Array<T> &)" \
@@ -666,20 +662,20 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
 \
     MaskedArray<T> result (left.copy()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightDelete; \
+    bool rightDelete; \
     const T *rightStorage = right.getStorage(rightDelete); \
     const T *rightS = rightStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
 	    *resultarrS = T(FUNC (*resultarrS, *rightS)); \
@@ -697,11 +693,11 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
 }
 
 
-#define MARRM_FUNC_AM(FUNC,STRFUNC) \
+#define MARRM_FUNC_AM(DEFNAME, FUNC,STRFUNC) \
 template<class T> \
-MaskedArray<T> FUNC (const Array<T> &left, const MaskedArray<T> &right) \
+MaskedArray<T> DEFNAME (const Array<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
                ("::" STRFUNC \
                 "(const Array<T> &, const MaskedArray<T> &)" \
@@ -710,20 +706,20 @@ MaskedArray<T> FUNC (const Array<T> &left, const MaskedArray<T> &right) \
 \
     MaskedArray<T> result (left.copy(), right.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
 	    *resultarrS = T(FUNC (*resultarrS, *rightarrS)); \
@@ -741,12 +737,12 @@ MaskedArray<T> FUNC (const Array<T> &left, const MaskedArray<T> &right) \
 }
 
 
-#define MARRM_FUNC_MM(FUNC,STRFUNC) \
+#define MARRM_FUNC_MM(DEFNAME, FUNC,STRFUNC) \
 template<class T> \
-MaskedArray<T> FUNC (const MaskedArray<T> &left, \
+MaskedArray<T> DEFNAME (const MaskedArray<T> &left, \
                      const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
                ("::" STRFUNC\
                 "(const MaskedArray<T> &, const MaskedArray<T> &)" \
@@ -756,20 +752,20 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, \
     MaskedArray<T> result ( left.getArray().copy(), \
                          (left.getMask() && right.getMask()) ); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
 	    *resultarrS = T(FUNC (*resultarrS, *rightarrS)); \
@@ -787,22 +783,22 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, \
 }
 
 
-#define MARRM_FUNC_MS(FUNC) \
+#define MARRM_FUNC_MS(DEFNAME, FUNC) \
 template<class T> \
-MaskedArray<T> FUNC (const MaskedArray<T> &left, const T &right) \
+MaskedArray<T> DEFNAME (const MaskedArray<T> &left, const T &right) \
 { \
     MaskedArray<T> result (left.copy()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
 	    *resultarrS = FUNC (*resultarrS, right); \
@@ -818,29 +814,29 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const T &right) \
 }
 
 
-#define MARRM_FUNC_SM(FUNC) \
+#define MARRM_FUNC_SM(DEFNAME, FUNC) \
 template<class T> \
-MaskedArray<T> FUNC (const T &left, const MaskedArray<T> &right) \
+MaskedArray<T> DEFNAME (const T &left, const MaskedArray<T> &right) \
 { \
     Array<T> resultarray (right.shape()); \
     resultarray = left; \
 \
     MaskedArray<T> result (resultarray, right.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
 	    *resultarrS = FUNC (*resultarrS, *rightarrS); \
@@ -858,38 +854,38 @@ MaskedArray<T> FUNC (const T &left, const MaskedArray<T> &right) \
 }
 
 
-MARRM_FUNC_M ( sin, "sin" )
-MARRM_FUNC_M ( cos, "cos" )
-MARRM_FUNC_M ( tan, "tan" )
-MARRM_FUNC_M ( asin, "asin" )
-MARRM_FUNC_M ( acos, "acos" )
-MARRM_FUNC_M ( atan, "atan" )
-MARRM_FUNC_M ( sinh, "sinh" )
-MARRM_FUNC_M ( cosh, "cosh" )
-MARRM_FUNC_M ( tanh, "tanh" )
-MARRM_FUNC_M ( exp, "exp" )
-MARRM_FUNC_M ( log, "log" )
-MARRM_FUNC_M ( log10, "log10" )
-MARRM_FUNC_M ( sqrt, "sqrt" )
-MARRM_FUNC_M ( abs, "abs" )
-MARRM_FUNC_M ( fabs, "fabs" )
-MARRM_FUNC_M ( ceil, "ceil" )
-MARRM_FUNC_M ( floor, "floor" )
+MARRM_FUNC_M ( sin, std::sin )
+MARRM_FUNC_M ( cos, std::cos )
+MARRM_FUNC_M ( tan, std::tan )
+MARRM_FUNC_M ( asin, std::sin )
+MARRM_FUNC_M ( acos, std::acos )
+MARRM_FUNC_M ( atan, std::atan )
+MARRM_FUNC_M ( sinh, std::sinh )
+MARRM_FUNC_M ( cosh, std::cosh )
+MARRM_FUNC_M ( tanh, std::tanh )
+MARRM_FUNC_M ( exp, std::exp )
+MARRM_FUNC_M ( log, std::log )
+MARRM_FUNC_M ( log10, std::log10 )
+MARRM_FUNC_M ( sqrt, std::sqrt )
+MARRM_FUNC_M ( abs, std::abs )
+MARRM_FUNC_M ( fabs, std::abs )
+MARRM_FUNC_M ( ceil, std::ceil )
+MARRM_FUNC_M ( floor, std::floor )
 
-MARRM_FUNC_MA ( atan2, "atan2" )
-MARRM_FUNC_MA ( fmod, "fmod" )
+MARRM_FUNC_MA ( atan2, std::atan2, "atan2" )
+MARRM_FUNC_MA ( fmod, std::fmod, "fmod" )
 
-MARRM_FUNC_AM ( atan2, "atan2" )
-MARRM_FUNC_AM ( fmod, "fmod" )
+MARRM_FUNC_AM ( atan2, std::atan2, "atan2" )
+MARRM_FUNC_AM ( fmod, std::fmod, "fmod" )
 
-MARRM_FUNC_MM ( atan2, "atan2" )
-MARRM_FUNC_MM ( fmod, "fmod" )
+MARRM_FUNC_MM ( atan2, std::atan2, "atan2" )
+MARRM_FUNC_MM ( fmod, std::fmod, "fmod" )
 
-MARRM_FUNC_MS ( atan2 )
-MARRM_FUNC_MS ( fmod )
+MARRM_FUNC_MS ( atan2, std::atan2 )
+MARRM_FUNC_MS ( fmod, std::fmod )
 
-MARRM_FUNC_SM ( atan2 )
-MARRM_FUNC_SM ( fmod )
+MARRM_FUNC_SM ( atan2, std::atan2 )
+MARRM_FUNC_SM ( fmod, std::fmod )
 
 
 template<class T>
@@ -905,21 +901,21 @@ void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,
             " - minPos, maxPos dimensionality inconsistent with marray"));
     }
 
-    Bool marrayarrDelete;
+    bool marrayarrDelete;
     const T *marrayarrStorage = marray.getArrayStorage(marrayarrDelete);
     const T *marrayarrS = marrayarrStorage;
 
-    Bool marraymaskDelete;
+    bool marraymaskDelete;
     const LogicalArrayElem *marraymaskStorage
         = marray.getMaskStorage(marraymaskDelete);
     const LogicalArrayElem *marraymaskS = marraymaskStorage;
 
-    uInt ntotal = marray.nelements();
-    Bool foundOne = False;
+    size_t ntotal = marray.nelements();
+    bool foundOne = false;
     T minLocal = T();
     T maxLocal = T();
-    uInt minNtotal=0;
-    uInt maxNtotal=0;
+    size_t minNtotal=0;
+    size_t maxNtotal=0;
 
     while (ntotal--) {
         if (*marraymaskS) {
@@ -929,7 +925,7 @@ void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,
             maxNtotal = minNtotal;
             marrayarrS++;
             marraymaskS++;
-            foundOne = True;
+            foundOne = true;
             break;
         } else {
             marrayarrS++;
@@ -994,25 +990,25 @@ void minMax(T &minVal, T &maxVal,
 #define MARRM_MINORMAX_M(FUNC,OP,STRFUNC) \
 template<class T> T FUNC (const MaskedArray<T> &left) \
 { \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool leftmaskDelete; \
+    bool leftmaskDelete; \
     const LogicalArrayElem *leftmaskStorage \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
     T result = *leftarrS; \
-    uInt ntotal = left.nelements(); \
-    Bool foundOne = False; \
+    size_t ntotal = left.nelements(); \
+    bool foundOne = false; \
 \
     while (ntotal--) { \
         if (*leftmaskS) { \
             result = *leftarrS; \
             leftarrS++; \
             leftmaskS++; \
-            foundOne = True; \
+            foundOne = true; \
             break; \
         } else { \
             leftarrS++; \
@@ -1049,7 +1045,7 @@ template<class T> T FUNC (const MaskedArray<T> &left) \
 template<class T> \
 MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
                ("::" STRFUNC \
                 "(const MaskedArray<T> &, const Array<T> &)" \
@@ -1058,20 +1054,20 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
 \
     MaskedArray<T> result (left.copy()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightDelete; \
+    bool rightDelete; \
     const T *rightStorage = right.getStorage(rightDelete); \
     const T *rightS = rightStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             if (*rightS OP *resultarrS) { \
@@ -1095,7 +1091,7 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
 template<class T> \
 MaskedArray<T> FUNC (const Array<T> &left, const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
                ("::" STRFUNC \
                 "(const Array<T> &, const MaskedArray<T> &)" \
@@ -1104,20 +1100,20 @@ MaskedArray<T> FUNC (const Array<T> &left, const MaskedArray<T> &right) \
 \
     MaskedArray<T> result (left.copy(), right.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             if (*rightarrS OP *resultarrS) { \
@@ -1142,7 +1138,7 @@ template<class T> \
 MaskedArray<T> FUNC (const MaskedArray<T> &left, \
                      const MaskedArray<T> &right) \
 { \
-    if (left.conform(right) == False) { \
+    if (left.conform(right) == false) { \
 	throw (ArrayConformanceError \
                ("MaskedArray<T> ::" STRFUNC\
                 "(const MaskedArray<T> &, const MaskedArray<T> &)" \
@@ -1152,20 +1148,20 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, \
     MaskedArray<T> result ( left.getArray().copy(), \
                          (left.getMask() && right.getMask()) ); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             if (*rightarrS OP *resultarrS) { \
@@ -1191,16 +1187,16 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const T &right) \
 { \
     MaskedArray<T> result (left.copy()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             if (right OP *resultarrS) { \
@@ -1227,20 +1223,20 @@ MaskedArray<T> FUNC (const T &left, const MaskedArray<T> &right) \
 \
     MaskedArray<T> result (resultarray, right.getMask()); \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage \
         = result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             if (*rightarrS OP *resultarrS) { \
@@ -1272,24 +1268,24 @@ void FUNC (const MaskedArray<T> &result, \
              " - arrays do not conform")); \
     } \
 \
-    Bool resultarrDelete; \
+    bool resultarrDelete; \
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete); \
     T *resultarrS = resultarrStorage; \
 \
-    Bool resultmaskDelete; \
+    bool resultmaskDelete; \
     const LogicalArrayElem *resultmaskStorage = \
         result.getMaskStorage(resultmaskDelete); \
     const LogicalArrayElem *resultmaskS = resultmaskStorage; \
 \
-    Bool leftarrDelete; \
+    bool leftarrDelete; \
     const T *leftarrStorage = left.getStorage(leftarrDelete); \
     const T *leftarrS = leftarrStorage; \
 \
-    Bool rightarrDelete; \
+    bool rightarrDelete; \
     const T *rightarrStorage = right.getStorage(rightarrDelete); \
     const T *rightarrS = rightarrStorage; \
 \
-    uInt ntotal = result.nelements(); \
+    size_t ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
             *resultarrS = (*leftarrS OP *rightarrS) ? *leftarrS : *rightarrS; \
@@ -1338,17 +1334,17 @@ template<class T> T sum(const MaskedArray<T> &left)
                          "Need at least 1 unmasked element"));
     }
 
-    Bool leftarrDelete;
+    bool leftarrDelete;
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete);
     const T *leftarrS = leftarrStorage;
 
-    Bool leftmaskDelete;
+    bool leftmaskDelete;
     const LogicalArrayElem *leftmaskStorage
         = left.getMaskStorage(leftmaskDelete);
     const LogicalArrayElem *leftmaskS = leftmaskStorage;
 
     T sum = 0;
-    uInt ntotal = left.nelements();
+    size_t ntotal = left.nelements();
     while (ntotal--) {
         if (*leftmaskS) {
             sum += *leftarrS;
@@ -1370,17 +1366,17 @@ template<class T> T sumsquares(const MaskedArray<T> &left)
                          "Need at least 1 unmasked element"));
     }
 
-    Bool leftarrDelete;
+    bool leftarrDelete;
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete);
     const T *leftarrS = leftarrStorage;
 
-    Bool leftmaskDelete;
+    bool leftmaskDelete;
     const LogicalArrayElem *leftmaskStorage
         = left.getMaskStorage(leftmaskDelete);
     const LogicalArrayElem *leftmaskS = leftmaskStorage;
 
     T sumsquares = 0;
-    uInt ntotal = left.nelements();
+    size_t ntotal = left.nelements();
     while (ntotal--) {
         if (*leftmaskS) {
             sumsquares += (*leftarrS * *leftarrS);
@@ -1402,17 +1398,17 @@ template<class T> T product(const MaskedArray<T> &left)
                           "Need at least 1 unmasked element"));
     }
 
-    Bool leftarrDelete;
+    bool leftarrDelete;
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete);
     const T *leftarrS = leftarrStorage;
 
-    Bool leftmaskDelete;
+    bool leftmaskDelete;
     const LogicalArrayElem *leftmaskStorage
         = left.getMaskStorage(leftmaskDelete);
     const LogicalArrayElem *leftmaskS = leftmaskStorage;
 
     T product = 1;
-    uInt ntotal = left.nelements();
+    size_t ntotal = left.nelements();
     while (ntotal--) {
         if (*leftmaskS) {
             product *= *leftarrS;
@@ -1441,12 +1437,12 @@ template<class T> T mean(const MaskedArray<T> &left)
 // </thrown>
 // Similar to numpy the ddof argument can be used to get the population
 // variance (ddof=0) or the sample variance (ddof=1).
-template<class T> T pvariance(const MaskedArray<T> &a, T mean, uInt ddof)
+template<class T> T pvariance(const MaskedArray<T> &a, T mean, size_t ddof)
 {
   size_t nr = a.nelementsValid();
   if (nr < ddof+1) {
     throw(ArrayError("::variance(const MaskedArray<T> &) - Need at least " +
-                     String::toString(ddof+1) + 
+                     std::to_string(ddof+1) + 
                      " unmasked elements"));
   }
   MaskedArray<T> deviations (abs(a - mean));    // abs is needed for Complex
@@ -1457,7 +1453,7 @@ template<class T> T variance(const MaskedArray<T> &a, T mean)
 {
   return pvariance (a, mean, 1);
 }
-template<class T> T pvariance(const MaskedArray<T> &a, uInt ddof)
+template<class T> T pvariance(const MaskedArray<T> &a, size_t ddof)
 {
   return pvariance(a, mean(a), ddof);
 }
@@ -1469,20 +1465,20 @@ template<class T> T variance(const MaskedArray<T> &a)
 // <thrown>
 //    </item> ArrayError
 // </thrown>
-template<class T> T pstddev(const MaskedArray<T> &a, T mean, uInt ddof)
+template<class T> T pstddev(const MaskedArray<T> &a, T mean, size_t ddof)
 {
   if (a.nelements() < ddof+1) {
     throw(ArrayError("::stddev(const Array<T> &) - Need at least " +
-                     String::toString(ddof+1) + 
+                     std::to_string(ddof+1) + 
                      " unmasked elements"));
   }
-  return sqrt(pvariance(a, mean, ddof));
+  return std::sqrt(pvariance(a, mean, ddof));
 }
 template<class T> T stddev(const MaskedArray<T> &a, T mean)
 {
   return pstddev (a, mean, 1);
 }
-template<class T> T pstddev(const MaskedArray<T> &a, uInt ddof)
+template<class T> T pstddev(const MaskedArray<T> &a, size_t ddof)
 {
   return pstddev (a, mean(a), ddof);
 }
@@ -1513,106 +1509,96 @@ template<class T> T rms(const MaskedArray<T> &left)
         throw (ArrayError("T ::rms(const MaskedArray<T> &left) - "
                           "Need at least 1 unmasked element"));
     }
-    return T(sqrt(sumsquares(left)/(1.0*left.nelementsValid())));
+    return T(std::sqrt(sumsquares(left)/(1.0*left.nelementsValid())));
 }
 
-template<class T> T median(const MaskedArray<T> &left, Bool sorted,
-			   Bool takeEvenMean)
+template<class T> T median(const MaskedArray<T> &left, bool sorted,
+			   bool takeEvenMean)
 {
-    uInt nelem = left.nelementsValid();
-    if (nelem < 1) {
-        throw (ArrayError("T ::median(const MaskedArray<T> &) - "
-                          "Need at least 1 unmasked element"));
+  size_t nelem = left.nelementsValid();
+  if (nelem < 1) {
+    throw (ArrayError("T ::median(const MaskedArray<T> &) - "
+    "Need at least 1 unmasked element"));
+  }
+  //# Mean does not have to be taken for odd number of elements.
+  if (nelem%2 != 0) {
+    takeEvenMean = false;
+  }
+  T medval;
+  
+  bool leftarrDelete;
+  const T *leftarrStorage = left.getArrayStorage(leftarrDelete);
+  const T *leftarrS = leftarrStorage;
+  
+  bool leftmaskDelete;
+  const LogicalArrayElem *leftmaskStorage
+  = left.getMaskStorage(leftmaskDelete);
+  const LogicalArrayElem *leftmaskS = leftmaskStorage;
+  
+  size_t n2 = (nelem - 1)/2;
+  
+  if (! sorted) {
+    // Make a copy of the masked elements.
+    
+    std::unique_ptr<T[]> copy(new T[nelem]);
+    T *copyS = copy.get();
+    
+    size_t ntotal = nelem;
+    while (ntotal) {
+      if (*leftmaskS) {
+        *copyS = *leftarrS;
+        copyS++;
+        ntotal--;
+      }
+      leftarrS++;
+      leftmaskS++;
     }
-    //# Mean does not have to be taken for odd number of elements.
-    if (nelem%2 != 0) {
-	takeEvenMean = False;
-    }
-    T medval;
-
-    Bool leftarrDelete;
-    const T *leftarrStorage = left.getArrayStorage(leftarrDelete);
-    const T *leftarrS = leftarrStorage;
-
-    Bool leftmaskDelete;
-    const LogicalArrayElem *leftmaskStorage
-        = left.getMaskStorage(leftmaskDelete);
-    const LogicalArrayElem *leftmaskS = leftmaskStorage;
-
-    uInt n2 = (nelem - 1)/2;
-
-    if (! sorted) {
-	// Make a copy of the masked elements.
-
-	T *copy = new T[nelem];
-        T *copyS = copy;
-
-        uInt ntotal = nelem;
-        while (ntotal) {
-            if (*leftmaskS) {
-                *copyS = *leftarrS;
-                copyS++;
-                ntotal--;
-            }
-            leftarrS++;
-            leftmaskS++;
-        }
-
-	// Use a faster algorithm when the array is big enough.
-	// If needed take the mean for an even number of elements.
-	// Sort a small array in ascending order.
-	if (nelem > 50) {
-	    if (takeEvenMean) {
-		medval = T(0.5 * (GenSort<T>::kthLargest (copy, nelem, n2) +
-				  GenSort<T>::kthLargest (copy, nelem, n2+1)));
-	    } else {
-		medval = GenSort<T>::kthLargest (copy, nelem, n2);
-	    }
-	} else {
-	    GenSort<T>::sort (copy, nelem);
-	    if (takeEvenMean) {
-		medval = T(0.5 * (copy[n2] + copy[n2+1]));
-	    } else {
-		medval = copy[n2];
-	    }
-	}
-	delete [] copy;
-
+    
+    std::nth_element(&copy[0], &copy[n2], &copy[nelem]);
+    if (takeEvenMean) {
+      T a = copy[n2];
+      std::nth_element(&copy[0], &copy[n2+1], &copy[nelem]);
+      medval = T(0.5 * (a + copy[n2+1]));
     } else {
-        // Sorted.
-	// When mean has to be taken, we need one more element.
-        if (takeEvenMean) {
-	    n2++;
-	}
-	const T* prev = 0;
-	for (;;) {
-	    if (*leftmaskS) {
-		if (n2 == 0) break;
-		prev = leftarrS;
-		n2--;
-	    }
-	    leftarrS++;
-	    leftmaskS++;
-	}
-        if (takeEvenMean) {
-            medval = T(0.5 * (*prev + *leftarrS));
-        } else {
-            medval = *leftarrS;
-        }
+      medval = copy[n2];
     }
-
-    left.freeArrayStorage(leftarrStorage, leftarrDelete);
-    left.freeMaskStorage(leftmaskStorage, leftmaskDelete);
-
-    return medval;
+    copy.reset();
+    
+  } else {
+    // Sorted.
+    // When mean has to be taken, we need one more element.
+    if (takeEvenMean) {
+      n2++;
+    }
+    const T* prev = 0;
+    for (;;) {
+      if (*leftmaskS) {
+        if (n2 == 0) break;
+        prev = leftarrS;
+        n2--;
+      }
+      leftarrS++;
+      leftmaskS++;
+    }
+    if (takeEvenMean) {
+      medval = T(0.5 * (*prev + *leftarrS));
+    } else {
+      medval = *leftarrS;
+    }
+  }
+  
+  left.freeArrayStorage(leftarrStorage, leftarrDelete);
+  left.freeMaskStorage(leftmaskStorage, leftmaskDelete);
+  
+  return medval;
 }
 
-template<class T> T madfm(const MaskedArray<T> &a, Bool sorted,
-                          Bool takeEvenMean)
+template<class T> T madfm(const MaskedArray<T> &a, bool sorted,
+                          bool takeEvenMean)
 {
     T med = median(a, sorted, takeEvenMean);
     MaskedArray<T> absdiff = abs(a - med);
-    return median(absdiff, False, takeEvenMean);
+    return median(absdiff, false, takeEvenMean);
 }
 
 
@@ -1620,16 +1606,16 @@ template<class T> MaskedArray<T> square(const MaskedArray<T> &left)
 {
     MaskedArray<T> result (left.copy());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage
         = result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
 	    *resultarrS *= *resultarrS;
@@ -1650,16 +1636,16 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &left)
 {
     MaskedArray<T> result (left.copy());
 
-    Bool resultarrDelete;
+    bool resultarrDelete;
     T *resultarrStorage = result.getRWArrayStorage(resultarrDelete);
     T *resultarrS = resultarrStorage;
 
-    Bool resultmaskDelete;
+    bool resultmaskDelete;
     const LogicalArrayElem *resultmaskStorage
         = result.getMaskStorage(resultmaskDelete);
     const LogicalArrayElem *resultmaskS = resultmaskStorage;
 
-    uInt ntotal = result.nelements();
+    size_t ntotal = result.nelements();
     while (ntotal--) {
         if (*resultmaskS) {
 	    *resultarrS *= (*resultarrS * *resultarrS);
@@ -1680,20 +1666,20 @@ MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
 			       const IPosition& boxSize,
 			       const FuncType& funcObj)
 {
-  uInt ndim = array.ndim();
+  size_t ndim = array.ndim();
   const IPosition& shape = array.shape();
   // Set missing axes to 1.
   IPosition boxsz (boxSize);
   if (boxsz.size() != ndim) {
-    uInt sz = boxsz.size();
+    size_t sz = boxsz.size();
     boxsz.resize (ndim);
-    for (uInt i=sz; i<ndim; ++i) {
+    for (size_t i=sz; i<ndim; ++i) {
       boxsz[i] = 1;
     }
   }
   // Determine the output shape.
   IPosition resShape(ndim);
-  for (uInt i=0; i<ndim; ++i) {
+  for (size_t i=0; i<ndim; ++i) {
     // Set unspecified axes to full length.
     if (boxsz[i] <= 0  ||  boxsz[i] > shape[i]) {
       boxsz[i] = shape[i];
@@ -1703,22 +1689,22 @@ MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
   // Need to make shallow copy because operator() is non-const.
   MaskedArray<T> arr (array);
   Array<T> result (resShape);
-  Array<Bool> resultMask(resShape);
+  Array<bool> resultMask(resShape);
   T* res = result.data();
-  Bool* resMask = resultMask.data();
+  bool* resMask = resultMask.data();
   // Loop through all data and assemble as needed.
   IPosition blc(ndim, 0);
   IPosition trc(boxsz-1);
-  while (True) {
+  while (true) {
     MaskedArray<T> subarr (arr(blc,trc));
     if (subarr.nelementsValid() == 0) {
-      *resMask++ = False;
+      *resMask++ = false;
       *res++ = T();
     } else {
-      *resMask++ = True;
+      *resMask++ = true;
       *res++ = funcObj (arr(blc,trc));
     }
-    uInt ax;
+    size_t ax;
     for (ax=0; ax<ndim; ++ax) {
       blc[ax] += boxsz[ax];
       if (blc[ax] < shape[ax]) {
@@ -1742,22 +1728,22 @@ template <typename T, typename FuncType>
 Array<T> slidingArrayMath (const MaskedArray<T>& array,
 			   const IPosition& halfBoxSize,
 			   const FuncType& funcObj,
-			   Bool fillEdge)
+			   bool fillEdge)
 {
-  uInt ndim = array.ndim();
+  size_t ndim = array.ndim();
   const IPosition& shape = array.shape();
   // Set full box size (-1) and resize/fill as needed.
   IPosition hboxsz (2*halfBoxSize);
   if (hboxsz.size() != array.ndim()) {
-    uInt sz = hboxsz.size();
+    size_t sz = hboxsz.size();
     hboxsz.resize (array.ndim());
-    for (uInt i=sz; i<hboxsz.size(); ++i) {
+    for (size_t i=sz; i<hboxsz.size(); ++i) {
       hboxsz[i] = 0;
     }
   }
   // Determine the output shape. See if anything has to be done.
   IPosition resShape(ndim);
-  for (uInt i=0; i<ndim; ++i) {
+  for (size_t i=0; i<ndim; ++i) {
     resShape[i] = shape[i] - hboxsz[i];
     if (resShape[i] <= 0) {
       if (!fillEdge) {
@@ -1771,15 +1757,15 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
   // Need to make shallow copy because operator() is non-const.
   MaskedArray<T> arr (array);
   Array<T> result (resShape);
-  DebugAssert (result.contiguousStorage(), AipsError);
+  assert (result.contiguousStorage() );
   T* res = result.data();
   // Loop through all data and assemble as needed.
   IPosition blc(ndim, 0);
   IPosition trc(hboxsz);
   IPosition pos(ndim, 0);
-  while (True) {
+  while (true) {
     *res++ = funcObj (arr(blc,trc));
-    uInt ax;
+    size_t ax;
     for (ax=0; ax<ndim; ax++) {
       if (++pos[ax] < resShape[ax]) {
 	blc[ax]++;
@@ -1800,12 +1786,11 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
   Array<T> fullResult(shape);
   fullResult = T();
   hboxsz /= 2;
-  fullResult(hboxsz, resShape+hboxsz-1) = result;
+  fullResult(hboxsz, resShape+hboxsz-1).assign_conforming( result );
   return fullResult;
 }
 
 
 } //# NAMESPACE CASACORE - END
-
 
 #endif

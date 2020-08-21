@@ -263,8 +263,8 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
 	    try{
 	      sink.writeLocally(dtime, msg, priority, location, objid);
 	    }
-	    catch (const AipsError& x) {
-	      os << LogIO::WARN << "Problem while parsing image HISTORY: " << x.getMesg() 
+	    catch (const std::exception& x) {
+	      os << LogIO::WARN << "Problem while parsing image HISTORY: " << x.what() 
 		 << endl << "Will try to continue ... " << LogIO::POST; 
 	    }
 	}

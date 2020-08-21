@@ -369,8 +369,8 @@ int main ()
   try {
     doIt();
     testAll();
-  } catch (AipsError& x) {
-    cout << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught exception: " << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

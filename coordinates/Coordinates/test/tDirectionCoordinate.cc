@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Containers/Record.h>
@@ -634,8 +634,8 @@ int main()
           AlwaysAssert(near(world[1], 2.90888e-4, 1e-5), AipsError);
       }
 
-  } catch (const AipsError& x) {
-      cerr << "aipserror: error " << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+      cerr << "aipserror: error " << x.what() << endl;
       return (1);
    }
 

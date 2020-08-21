@@ -73,7 +73,7 @@ String::size_type Regex::match(const Char* s,
   if (ps < 0) {
     ps += len;
   }
-  if (ps >= static_cast<Int>(len)) return String::npos;
+  if (ps > static_cast<Int>(len)) return String::npos;
   if (! std::regex_match(s+ps, s+len, *this)) return String::npos;
   return len-ps;
 }

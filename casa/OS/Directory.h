@@ -30,12 +30,12 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/File.h>
    
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> class Vector;
 class Regex;
 class String;
 

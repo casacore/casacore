@@ -31,15 +31,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations
-template<class T> class Vector;
 
 // <summary> Define a Sort key </summary>
 // <use visibility=local>

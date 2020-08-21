@@ -50,7 +50,7 @@ int main() {
             try {
                 Combinatorics::choose(3,5);
             }
-            catch (AipsError&) {
+            catch (std::exception&) {
                 res = True;
             }
             AlwaysAssert(res, AipsError);
@@ -59,8 +59,8 @@ int main() {
 
         cout << "ok" << endl;
     }
-    catch (AipsError& x) {
-        cerr << x.getMesg() << endl;
+    catch (std::exception& x) {
+        cerr << x.what() << endl;
         return 1;
     }
     return 0;

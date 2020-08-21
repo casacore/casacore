@@ -44,7 +44,7 @@
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Logging/LogOrigin.h>

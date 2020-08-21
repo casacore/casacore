@@ -34,6 +34,7 @@
 #include <casacore/measures/Measures/MRBase.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/iosfwd.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

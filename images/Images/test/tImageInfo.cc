@@ -185,8 +185,8 @@ try {
     		myinfo.setBeam(1, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (const AipsError& x) {
-    		cout << x.getMesg() << endl;
+    	catch (const std::exception& x) {
+    		cout << x.what() << endl;
     	}
     	AlwaysAssert(ok, AipsError);
     	myinfo = ImageInfo();
@@ -196,9 +196,9 @@ try {
     		myinfo.setBeam(2, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (AipsError& x) {
+    	catch (std::exception& x) {
     		cout << "Exception thrown as expected: "
-    			<< x.getMesg() << endl;
+    			<< x.what() << endl;
     	}
     	AlwaysAssert(ok, AipsError);
     	myinfo = ImageInfo();
@@ -208,9 +208,9 @@ try {
     		myinfo.setBeam(0, 0, minAx, majAx, pa);
     		ok = False;
     	}
-    	catch (AipsError& x) {
+    	catch (std::exception& x) {
     		cout << "Exception thrown as expected: "
-    			<< x.getMesg() << endl;
+    			<< x.what() << endl;
     	}
     	AlwaysAssert(ok, AipsError);
     	myinfo = ImageInfo();
@@ -277,8 +277,8 @@ try {
     		}
     	}
     }
-} catch (const AipsError& x) {
-  cout << "Caught error " << x.getMesg() << endl;
+} catch (const std::exception& x) {
+  cout << "Caught error " << x.what() << endl;
   return 1;
 } 
   

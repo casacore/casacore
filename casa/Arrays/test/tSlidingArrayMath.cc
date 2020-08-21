@@ -25,47 +25,44 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/MaskArrMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayPartMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include "../MaskArrMath.h"
+#include "../ArrayLogical.h"
+#include "../ArrayPartMath.h"
+//#include "../ArrayIO.h"
 
-#include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/OS/Timer.h>
-#include <iostream>
+#include <algorithm>
 
-
-#ifdef AIPS_NO_TEMPLATE_SRC
-#include <casacore/casa/Arrays/ArrayMath.tcc>
-#include <casacore/casa/Arrays/MaskArrMath.tcc>
-namespace casacore {
-  template Array<Float> slidingArrayMath (const Array<Float>&,
-					  const IPosition&,
-					  Float (*) (const Array<Float>&),
-					  Bool);
-  template Array<Float> slidingArrayMath (const MaskedArray<Float>&,
-					  const IPosition&,
-					  Float (*) (const MaskedArray<Float>&),
-					  Bool);
-}
-#endif //# AIPS_NO_TEMPLATE_SRC
-
+#include <boost/test/unit_test.hpp>
 
 using namespace casacore;
-using namespace std;
 
-Float smartMedian (const Array<Float>& arr)
+BOOST_AUTO_TEST_SUITE(sliding_array_math)
+
+template<typename InitListT>
+void check(const Array<float>& arr, std::initializer_list<InitListT> ref)
 {
-  Block<Float> bbuf(arr.size());
-  Float* buf = bbuf.storage();
-  Int nl = 0;
-  Int nr = arr.size();
-  Float pivot = arr(arr.shape()/2);
-  Array<Float>::const_iterator iterEnd=arr.end();
-  for (Array<Float>::const_iterator iter=arr.begin();
+  BOOST_CHECK_EQUAL(arr.nelements(), ref.size());
+  Array<float>::const_iterator arrIter = arr.begin();
+  typename std::initializer_list<InitListT>::const_iterator refIter = ref.begin();
+  while(arrIter!=arr.end() && refIter!=ref.end())
+  {
+    BOOST_CHECK_CLOSE_FRACTION(*arrIter, *refIter, 1e-6);
+    ++arrIter; ++refIter;
+  }
+}
+
+float smartMedian (const Array<float>& arr)
+{
+  std::vector<float> bbuf(arr.size());
+  float* buf = bbuf.data();
+  int nl = 0;
+  int nr = arr.size();
+  float pivot = arr(arr.shape()/2);
+  Array<float>::const_iterator iterEnd=arr.end();
+  for (Array<float>::const_iterator iter=arr.begin();
        iter!=iterEnd;
        ++iter) {
-    Float val = *iter;
+    float val = *iter;
     if (val <= pivot) {
       buf[nl++] = val;
     } else {
@@ -73,122 +70,74 @@ Float smartMedian (const Array<Float>& arr)
     }
   }
   if (nl >= nr/2) {
-    return GenSort<Float>::kthLargest (buf, nl, nr/2);
+    std::nth_element(buf, buf+nr/2, buf+nl);
+    return buf[nr/2];
   } else {
-    return GenSort<Float>::kthLargest (buf+nl, nr-nl, nr/2-nl);
+    std::nth_element(buf+nl, buf+nr/2-nl, buf+nr-nl);
+    return buf[nr/2-nl];
   }
 }
 
-void doIt (Bool doTiming)
+BOOST_AUTO_TEST_CASE( standard )
 {
-  {
-    IPosition shape(2,5,5);
-    Array<Float> arr(shape);
-    indgen (arr);
-    cout << slidingArrayMath(arr, IPosition(2,2), SumFunc<Float>(), False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), SumFunc<Float>(), False) << endl;
-    cout << slidingArrayMath(arr, IPosition(1,0), SumFunc<Float>(), False) << endl;
-
-    cout << slidingArrayMath(arr, IPosition(4,2), SumFunc<Float>(), True) << endl;
-    cout << slidingArrayMath(arr, IPosition(3,1), SumFunc<Float>(), True) << endl;
-    cout << slidingArrayMath(arr, IPosition(),    SumFunc<Float>(), True) << endl;
-
-    cout << slidingArrayMath(arr, IPosition(2,2), MedianFunc<Float>(), False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), MedianFunc<Float>(), False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,0), MedianFunc<Float>(), False) << endl;
-  }
-
-  if (doTiming) {
-    Array<Float> arr(IPosition(2,1000,1000));
-    indgen(arr);
-    Timer timer;
-    Array<Float> res = slidingArrayMath(arr, IPosition(2,25), MedianFunc<Float>());
-    timer.show();
-    timer.mark();
-    {
-      IPosition blc(2,0);
-      IPosition trc(2,30);
-      for (Int i=0; i<100000; i++) {
-	median(arr(blc,trc));
-      }
-    }
-    timer.show();
-    timer.mark();
-    {
-      IPosition blc(2,0);
-      IPosition trc(2,30);
-      for (Int i=0; i<100000; i++) {
-	smartMedian(arr(blc,trc));
-      }
-    }
-    timer.show();
-    timer.mark();
-    {
-      IPosition blc(2,0);
-      IPosition trc(2,1,31*31-1);
-      for (Int i=0; i<100000; i++) {
-	median(arr(blc,trc));
-      }
-    }
-    timer.show();
-    timer.mark();
-    {
-      IPosition blc(2,0);
-      IPosition trc(2,1,31*31-1);
-      for (Int i=0; i<100000; i++) {
-	smartMedian(arr(blc,trc));
-      }
-    }
-    timer.show();
-    timer.mark();
-    {
-      IPosition blc(2,0);
-      IPosition trc(2,31*31-1,1);
-      for (Int i=0; i<100000; i++) {
-	median(arr(blc,trc));
-      }
-    }
-    timer.show();
-    timer.mark();
-    {
-      IPosition blc(2,0);
-      IPosition trc(2,31*31-1,1);
-      for (Int i=0; i<100000; i++) {
-	smartMedian(arr(blc,trc));
-      }
-    }
-    timer.show();
-  }
+  IPosition shape(2,5,5);
+  Array<float> arr(shape);
+  indgen (arr);
+  check(slidingArrayMath(arr, IPosition(2,2), SumFunc<float>(), false),
+        {300});
+  check(slidingArrayMath(arr, IPosition(2,1), SumFunc<float>(), false),
+        {54, 63, 72, 99, 108, 117, 144, 153, 162});
+  check(slidingArrayMath(arr, IPosition(1,0), SumFunc<float>(), false),
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24});
+  check(slidingArrayMath(arr, IPosition(4,2), SumFunc<float>(), true),
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          300,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+  check(slidingArrayMath(arr, IPosition(3,1), SumFunc<float>(), true),
+        { 0, 0, 0, 0, 0,
+          0, 54, 63, 72, 0,
+          0, 99, 108, 117, 0,
+          0, 144, 153, 162, 0,
+          0, 0, 0, 0, 0 });
+  check(slidingArrayMath(arr, IPosition(),    SumFunc<float>(), true),
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24});
+  check(slidingArrayMath(arr, IPosition(2,2), MedianFunc<float>(), false),
+        { 12 });
+  check(slidingArrayMath(arr, IPosition(2,1), MedianFunc<float>(), false),
+        { 6, 7, 8, 11, 12, 13, 16, 17, 18 });
+  check(slidingArrayMath(arr, IPosition(2,0), MedianFunc<float>(), false),
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24});
 }
 
-void doItMasked (Bool)
+BOOST_AUTO_TEST_CASE( masked )
 {
-  {
-    IPosition shape(2,5,5);
-    Array<Float> darr(shape);
-    indgen(darr);
-    MaskedArray<Float> arr = darr(darr<=float(10) || darr>float(14));
-    cout << arr.getMask() << endl;
-    cout << sum(arr) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,2), MaskedSumFunc<Float>(), False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), MaskedSumFunc<Float>(), False) << endl;
-
-    cout << slidingArrayMath(arr, IPosition(4,2), MaskedSumFunc<Float>(), True) << endl;
-    cout << slidingArrayMath(arr, IPosition(3,1), MaskedSumFunc<Float>(), True) << endl;
-
-    cout << slidingArrayMath(arr, IPosition(2,2), MaskedMedianFunc<Float>(), False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), MaskedMedianFunc<Float>(), False) << endl;
-  }
+  IPosition shape(2,5,5);
+  Array<float> darr(shape);
+  indgen(darr);
+  MaskedArray<float> arr = darr(darr<=float(10) || darr>float(14));
+  BOOST_CHECK_CLOSE_FRACTION( sum(arr), 250, 1e-6);
+  
+  check(slidingArrayMath(arr, IPosition(2,2), MaskedSumFunc<float>(), false),
+        { 250 });
+  check(slidingArrayMath(arr, IPosition(2,1), MaskedSumFunc<float>(), false),
+        {31, 27, 33, 76, 72, 78, 121, 117, 123 });
+  check(slidingArrayMath(arr, IPosition(4,2), MaskedSumFunc<float>(), true),
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          250,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+  check(slidingArrayMath(arr, IPosition(3,1), MaskedSumFunc<float>(), true),
+        { 0, 0, 0, 0, 0,
+          0, 31, 27, 33, 0,
+          0, 76, 72, 78, 0,
+          0, 121, 117, 123, 0,
+          0, 0, 0, 0, 0 });
+  check(slidingArrayMath(arr, IPosition(2,2), MaskedMedianFunc<float>(), false),
+        { 10 });
+  check(slidingArrayMath(arr, IPosition(2,1), MaskedMedianFunc<float>(), false),
+        {5.0, 4.5, 5.5, 10.0, 12.0, 13.0, 17.0, 19.5, 20.5 });
 }
 
-int main(int argc, const char*[])
-{
-  try {
-    doIt (argc>1);
-    doItMasked (argc>1);
-  } catch (exception& x) {
-    cout << "Unexpected exception: " << x.what() << endl;
-    return 1;
-  }
-  return 0;
-}
+BOOST_AUTO_TEST_SUITE_END()

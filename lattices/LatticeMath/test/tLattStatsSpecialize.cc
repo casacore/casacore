@@ -28,6 +28,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/namespace.h>
 #include <casacore/lattices/LatticeMath/LattStatsSpecialize.h>
 
@@ -121,8 +123,8 @@ int main() {
 			*/
 		}
 	}
-	catch (AipsError& x) {
-		cerr << "aipserror: error " << x.getMesg() << endl;
+	catch (std::exception& x) {
+		cerr << "aipserror: error " << x.what() << endl;
 		return 1;
 	}
 	return 0;

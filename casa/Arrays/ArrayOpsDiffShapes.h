@@ -25,18 +25,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYOPSDIFFSHAPES_H
-#define CASA_ARRAYOPSDIFFSHAPES_H
+#ifndef CASA_ARRAYOPSDIFFSHAPES_2_H
+#define CASA_ARRAYOPSDIFFSHAPES_2_H
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-//#include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/IPosition.h>
-//#include <casacore/casa/Arrays/Slice.h>
-//#include <casacore/casa/BasicSL/String.h>
+#include "ArrayMath.h"
+#include "ArrayLogical.h"
+#include "IPosition.h"
 
-// Don't forget a .tcc file is included at the end!
+//# Don't forget a .tcc file is included at the end!
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -71,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 //   Array<Complex> a(10, 6);
-//   Vector<Int>    b(10);
+//   Vector<int>    b(10);
 //   Array<Complex> c(10, 6);
 //   
 //   c = binOpExpandR(a, b, std::plus<Complex>());
@@ -87,13 +83,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Returns a LogicalArray with elements (at pos) set to (data(pos) ==
 // truthvalue).  data is effectively collapsed using anyEQ if necessary to
 // fit desiredform.  Throws an exception if that does not work.
-template<typename T>
-LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
+template<typename T, typename Alloc>
+LogicalArray reformedMask(const Array<T, Alloc>& data, const T truthvalue,
 			  const IPosition& desiredform);
 
 // Can arrays left and right with respective shapes leftShape and rightShape be
 // used in function(left, right, ...) for the other functions declared here?
-Bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightShape);
+bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightShape);
 
 // Apply op elementwise to left and right, replicating elements of right as
 // necessary (see example above).  Throws an ArrayConformanceError exception if
@@ -108,14 +104,13 @@ Bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightSha
 //# 			BinaryOperator op);
 
 // Like binOpExpandR(left, right, res, op), but work on left in place.
-template<typename L, typename R, typename BinaryOperator>
-void binOpExpandInPlace(Array<L>& left, const Array<R>& right, BinaryOperator op);
+template<typename L, typename AllocL, typename R, typename AllocR, typename BinaryOperator>
+void binOpExpandInPlace(Array<L, AllocL>& left, const Array<R, AllocR>& right, BinaryOperator op);
 
 // </group>
 
 } //#End casa namespace
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/ArrayOpsDiffShapes.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "ArrayOpsDiffShapes.tcc"
+
 #endif

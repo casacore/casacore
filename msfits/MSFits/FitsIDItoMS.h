@@ -236,7 +236,8 @@ protected:
   // DATA, FLAG and WEIGHT_SPECTRUM
   void setupMeasurementSet(const String& MSFileName, Bool useTSM=True, 
 			   Bool mainTbl=False, Bool addCorrMod=False,
-			   Bool addSyscal=False, Bool addWeather=False);
+			   Bool addSyscal=False, Bool addWeather=False,
+			   Bool addGainCurve=False);
   
   // Fill the main table from the Primary group data
   void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
@@ -304,6 +305,7 @@ protected:
   static Bool firstMain;
   static Bool firstSyscal;
   static Bool firstWeather;
+  static Bool firstGainCurve;
   Bool weather_hasWater_p;
   Bool weather_hasElectron_p;
   Bool uv_data_hasWeights_p;

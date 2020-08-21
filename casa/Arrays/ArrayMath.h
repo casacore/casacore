@@ -25,23 +25,17 @@
 //#
 //# $Id$
 
-#ifndef CASA_ARRAYMATH_H
-#define CASA_ARRAYMATH_H
+#ifndef CASA_ARRAYMATH_2_H
+#define CASA_ARRAYMATH_2_H
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/BasicMath/Functors.h>
-#include <casacore/casa/Arrays/Array.h>
-//# Needed to get the proper Complex typedef's
-#include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Exceptions/Error.h>
-#include <numeric>
+#include "Array.h"
+
+#include <algorithm>
+#include <cassert>
 #include <functional>
+#include <numeric>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-template<class T> class Matrix;
 
 // <summary>
 //    Mathematical operations for Arrays.
@@ -76,9 +70,9 @@ template<class T> class Matrix;
 //
 // <example>
 // <srcblock>
-//   Vector<Int> a(10);
-//   Vector<Int> b(10);
-//   Vector<Int> c(10);
+//   Vector<int> a(10);
+//   Vector<int> b(10);
+//   Vector<int> c(10);
 //      . . .
 //   c = a + b;
 // </srcblock>
@@ -89,7 +83,7 @@ template<class T> class Matrix;
 //
 // <example>
 // <srcblock>
-//   c = arrayTransformResult (a, b, std::plus<Double>());
+//   c = arrayTransformResult (a, b, std::plus<double>());
 // </srcblock>
 // This example does the same as the previous example, but expressed using
 // the transform function (which, in fact, is used by the + operator above).
@@ -98,7 +92,7 @@ template<class T> class Matrix;
 
 // <example>
 // <srcblock>
-//   arrayContTransform (a, b, c, std::plus<Double>());
+//   arrayContTransform (a, b, c, std::plus<double>());
 // </srcblock>
 // This example does the same as the previous example, but is faster because
 // the result array already exists and does not need to be allocated.
@@ -107,9 +101,9 @@ template<class T> class Matrix;
 
 // <example>
 // <srcblock>
-//   Vector<Double> a(10);
-//   Vector<Double> b(10);
-//   Vector<Double> c(10);
+//   Vector<double> a(10);
+//   Vector<double> b(10);
+//   Vector<double> c(10);
 //      . . .
 //   c = atan2 (a, b);
 // </srcblock>
@@ -119,8 +113,8 @@ template<class T> class Matrix;
 //
 // <example>
 // <srcblock>
-//   Vector<Int> a(10);
-//   Int result;
+//   Vector<int> a(10);
+//   int result;
 //      . . .
 //   result = sum (a);
 // </srcblock>
@@ -142,7 +136,7 @@ template<class T> class Matrix;
   // The myxtransform functions are defined to avoid a bug in g++-4.3.
   // That compiler generates incorrect code when only -g is used for
   // a std::transform with a bind1st or bind2nd for a complex<float>.
-  // So, for example, the multiplication of a Complex array and Complex scalar
+  // So, for example, the multiplication of a std::complex<float> array and std::complex<float> scalar
   // would fail (see g++ bug 39678).
   // <group>
   // sequence = scalar OP sequence
@@ -188,11 +182,11 @@ template<class T> class Matrix;
 // <group>
 // Transform left and right to a result using the binary operator.
 // Result MUST be a contiguous array.
-template<typename L, typename R, typename RES, typename BinaryOperator>
-inline void arrayContTransform (const Array<L>& left, const Array<R>& right,
-                                Array<RES>& result, BinaryOperator op)
+template<typename L, typename AllocL, typename R, typename AllocR, typename RES, typename AllocRES, typename BinaryOperator>
+inline void arrayContTransform (const Array<L, AllocL>& left, const Array<R, AllocR>& right,
+                                Array<RES, AllocRES>& result, BinaryOperator op)
 {
-  DebugAssert (result.contiguousStorage(), AipsError);
+  assert (result.contiguousStorage());
   if (left.contiguousStorage()  &&  right.contiguousStorage()) {
     std::transform (left.cbegin(), left.cend(), right.cbegin(),
                     result.cbegin(), op);
@@ -204,11 +198,11 @@ inline void arrayContTransform (const Array<L>& left, const Array<R>& right,
 
 // Transform left and right to a result using the binary operator.
 // Result MUST be a contiguous array.
-template<typename L, typename R, typename RES, typename BinaryOperator>
-inline void arrayContTransform (const Array<L>& left, R right,
-                                Array<RES>& result, BinaryOperator op)
+template<typename L, typename AllocL, typename R, typename RES, typename AllocRES, typename BinaryOperator>
+inline void arrayContTransform (const Array<L, AllocL>& left, R right,
+                                Array<RES, AllocRES>& result, BinaryOperator op)
 {
-  DebugAssert (result.contiguousStorage(), AipsError);
+  assert (result.contiguousStorage());
   if (left.contiguousStorage()) {
     myrtransform (left.cbegin(), left.cend(),
                  result.cbegin(), right, op);
@@ -224,11 +218,11 @@ inline void arrayContTransform (const Array<L>& left, R right,
 
 // Transform left and right to a result using the binary operator.
 // Result MUST be a contiguous array.
-template<typename L, typename R, typename RES, typename BinaryOperator>
-inline void arrayContTransform (L left, const Array<R>& right,
-                                Array<RES>& result, BinaryOperator op)
+template<typename L, typename R, typename AllocR, typename RES, typename AllocRES, typename BinaryOperator>
+inline void arrayContTransform (L left, const Array<R, AllocR>& right,
+                                Array<RES, AllocRES>& result, BinaryOperator op)
 {
-  DebugAssert (result.contiguousStorage(), AipsError);
+  assert (result.contiguousStorage());
   if (right.contiguousStorage()) {
     myltransform (right.cbegin(), right.cend(),
                   result.cbegin(), left, op);
@@ -244,11 +238,11 @@ inline void arrayContTransform (L left, const Array<R>& right,
 
 // Transform array to a result using the unary operator.
 // Result MUST be a contiguous array.
-template<typename T, typename RES, typename UnaryOperator>
-inline void arrayContTransform (const Array<T>& arr,
-                                Array<RES>& result, UnaryOperator op)
+template<typename T, typename Alloc, typename RES, typename AllocRES, typename UnaryOperator>
+inline void arrayContTransform (const Array<T, Alloc>& arr,
+                                Array<RES, AllocRES>& result, UnaryOperator op)
 {
-  DebugAssert (result.contiguousStorage(), AipsError);
+  assert (result.contiguousStorage());
   if (arr.contiguousStorage()) {
     std::transform (arr.cbegin(), arr.cend(), result.cbegin(), op);
   } else {
@@ -258,66 +252,66 @@ inline void arrayContTransform (const Array<T>& arr,
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename L, typename R, typename RES, typename BinaryOperator>
-void arrayTransform (const Array<L>& left, const Array<R>& right,
-                     Array<RES>& result, BinaryOperator op);
+template<typename L, typename R, typename RES, typename BinaryOperator, typename AllocL, typename AllocR, typename AllocRES>
+void arrayTransform (const Array<L, AllocL>& left, const Array<R, AllocR>& right,
+                     Array<RES, AllocRES>& result, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename L, typename R, typename RES, typename BinaryOperator>
-void arrayTransform (const Array<L>& left, R right,
-                     Array<RES>& result, BinaryOperator op);
+template<typename L, typename R, typename RES, typename BinaryOperator, typename Alloc, typename AllocRES>
+void arrayTransform (const Array<L, Alloc>& left, R right,
+                     Array<RES, AllocRES>& result, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename L, typename R, typename RES, typename BinaryOperator>
-void arrayTransform (L left, const Array<R>& right,
-                     Array<RES>& result, BinaryOperator op);
+template<typename L, typename R, typename RES, typename BinaryOperator, typename Alloc, typename AllocRES>
+void arrayTransform (L left, const Array<R, Alloc>& right,
+                     Array<RES, AllocRES>& result, BinaryOperator op);
 
 // Transform array to a result using the unary operator.
 // Result need not be a contiguous array.
-template<typename T, typename RES, typename UnaryOperator>
-void arrayTransform (const Array<T>& arr,
-                     Array<RES>& result, UnaryOperator op);
+template<typename T, typename RES, typename UnaryOperator, typename Alloc, typename AllocRES>
+void arrayTransform (const Array<T, Alloc>& arr,
+                     Array<RES, AllocRES>& result, UnaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename BinaryOperator>
-Array<T> arrayTransformResult (const Array<T>& left, const Array<T>& right,
+template<typename T, typename BinaryOperator, typename Alloc>
+Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, const Array<T, Alloc>& right,
                                BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename BinaryOperator>
-Array<T> arrayTransformResult (const Array<T>& left, T right, BinaryOperator op);
+template<typename T, typename BinaryOperator, typename Alloc>
+Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& left, T right, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename BinaryOperator>
-Array<T> arrayTransformResult (T left, const Array<T>& right, BinaryOperator op);
+template<typename T, typename BinaryOperator, typename Alloc>
+Array<T, Alloc> arrayTransformResult (T left, const Array<T, Alloc>& right, BinaryOperator op);
 
 // Transform array to a result using the unary operator.
 // The created and returned result array is contiguous.
-template<typename T, typename UnaryOperator>
-Array<T> arrayTransformResult (const Array<T>& arr, UnaryOperator op);
+template<typename T, typename UnaryOperator, typename Alloc>
+Array<T, Alloc> arrayTransformResult (const Array<T, Alloc>& arr, UnaryOperator op);
 
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
-template<typename L, typename R, typename BinaryOperator>
-inline void arrayTransformInPlace (Array<L>& left, const Array<R>& right,
+template<typename L, typename R, typename BinaryOperator, typename AllocL, typename AllocR>
+inline void arrayTransformInPlace (Array<L, AllocL>& left, const Array<R, AllocR>& right,
                                    BinaryOperator op)
 {
   if (left.contiguousStorage()  &&  right.contiguousStorage()) {
-    transformInPlace (left.cbegin(), left.cend(), right.cbegin(), op);
+    std::transform(left.cbegin(), left.cend(), right.cbegin(), left.cbegin(), op);
   } else {
-    transformInPlace (left.begin(), left.end(), right.begin(), op);
+    std::transform(left.begin(), left.end(), right.begin(), left.begin(), op);
   }
 }
 
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
-template<typename L, typename R, typename BinaryOperator>
-inline void arrayTransformInPlace (Array<L>& left, R right, BinaryOperator op)
+template<typename L, typename R, typename BinaryOperator, typename Alloc>
+inline void arrayTransformInPlace (Array<L, Alloc>& left, R right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
     myiptransform (left.cbegin(), left.cend(), right, op);
@@ -331,13 +325,13 @@ inline void arrayTransformInPlace (Array<L>& left, R right, BinaryOperator op)
 // Transform the array in place using the unary operator.
 // E.g. doing <src>arrayTransformInPlace(array, Sin<T>())</src> is faster than
 // <src>array=sin(array)</src> as it does not need to create a temporary array.
-template<typename T, typename UnaryOperator>
-inline void arrayTransformInPlace (Array<T>& arr, UnaryOperator op)
+template<typename T, typename UnaryOperator, typename Alloc>
+inline void arrayTransformInPlace (Array<T, Alloc>& arr, UnaryOperator op)
 {
   if (arr.contiguousStorage()) {
-    transformInPlace (arr.cbegin(), arr.cend(), op);
+    std::transform(arr.cbegin(), arr.cend(), arr.cbegin(), op);
   } else {
-    transformInPlace (arr.begin(), arr.end(), op);
+    std::transform(arr.begin(), arr.end(), arr.begin(), op);
   }
 }
 // </group>
@@ -346,117 +340,143 @@ inline void arrayTransformInPlace (Array<T>& arr, UnaryOperator op)
 // Element by element arithmetic modifying left in-place. left and other
 // must be conformant.
 // <group>
-template<class T> void operator+= (Array<T> &left, const Array<T> &other);
-template<class T> void operator-= (Array<T> &left, const Array<T> &other);
-template<class T> void operator*= (Array<T> &left, const Array<T> &other);
-template<class T> void operator/= (Array<T> &left, const Array<T> &other);
-template<class T> void operator%= (Array<T> &left, const Array<T> &other);
-template<class T> void operator&= (Array<T> &left, const Array<T> &other);
-template<class T> void operator|= (Array<T> &left, const Array<T> &other);
-template<class T> void operator^= (Array<T> &left, const Array<T> &other);
+template<typename T, typename Alloc> void operator+= (Array<T, Alloc> &left, const Array<T, Alloc> &other);
+template<typename T, typename Alloc> void operator-= (Array<T, Alloc> &left, const Array<T, Alloc> &other);
+template<typename T, typename Alloc> void operator*= (Array<T, Alloc> &left, const Array<T, Alloc> &other)
+{
+    checkArrayShapes (left, other, "*=");
+    arrayTransformInPlace (left, other, std::multiplies<T>());
+}
+
+template<typename T, typename Alloc> void operator/= (Array<T, Alloc> &left, const Array<T, Alloc> &other)
+{
+    checkArrayShapes (left, other, "/=");
+    arrayTransformInPlace (left, other, std::divides<T>());
+}
+template<typename T, typename Alloc> void operator%= (Array<T, Alloc> &left, const Array<T, Alloc> &other);
+template<typename T, typename Alloc> void operator&= (Array<T, Alloc> &left, const Array<T, Alloc> &other);
+template<typename T, typename Alloc> void operator|= (Array<T, Alloc> &left, const Array<T, Alloc> &other);
+template<typename T, typename Alloc> void operator^= (Array<T, Alloc> &left, const Array<T, Alloc> &other);
 // </group>
 
 // 
 // Element by element arithmetic modifying left in-place. The scalar "other"
 // behaves as if it were a conformant Array to left filled with constant values.
 // <group>
-template<class T> void operator+= (Array<T> &left, const T &other);
-template<class T> void operator-= (Array<T> &left, const T &other);
-template<class T> void operator*= (Array<T> &left, const T &other);
-template<class T> void operator/= (Array<T> &left, const T &other);
-template<class T> void operator%= (Array<T> &left, const T &other);
-template<class T> void operator&= (Array<T> &left, const T &other);
-template<class T> void operator|= (Array<T> &left, const T &other);
-template<class T> void operator^= (Array<T> &left, const T &other);
+template<typename T, typename Alloc> void operator+= (Array<T, Alloc> &left, const T &other);
+template<typename T, typename Alloc> void operator-= (Array<T, Alloc> &left, const T &other);
+template<typename T, typename Alloc> void operator*= (Array<T, Alloc> &left, const T &other)
+{
+    arrayTransformInPlace (left, other, std::multiplies<T>());
+}
+template<typename T, typename Alloc> void operator/= (Array<T, Alloc> &left, const T &other)
+{
+    arrayTransformInPlace (left, other, std::divides<T>());
+}
+template<typename T, typename Alloc> void operator%= (Array<T, Alloc> &left, const T &other);
+template<typename T, typename Alloc> void operator&= (Array<T, Alloc> &left, const T &other);
+template<typename T, typename Alloc> void operator|= (Array<T, Alloc> &left, const T &other);
+template<typename T, typename Alloc> void operator^= (Array<T, Alloc> &left, const T &other);
 // </group>
 
 // Unary arithmetic operation.
 // 
 // <group>
-template<class T> Array<T> operator+(const Array<T> &a);
-template<class T> Array<T> operator-(const Array<T> &a);
-template<class T> Array<T> operator~(const Array<T> &a);
+template<typename T, typename Alloc> Array<T, Alloc> operator+(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> operator-(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> operator~(const Array<T, Alloc> &a);
 // </group>
 
 // 
 // Element by element arithmetic on two arrays, returning an array.
 // <group>
-template<class T> 
-  Array<T> operator+ (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator- (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator* (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator/ (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator% (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator| (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator& (const Array<T> &left, const Array<T> &right);
-template<class T> 
-  Array<T> operator^ (const Array<T> &left, const Array<T> &right);
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator+ (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator- (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc>
+  Array<T, Alloc> operator*(const Array<T, Alloc> &left, const Array<T, Alloc> &right)
+{
+    checkArrayShapes (left, right, "*");
+    return arrayTransformResult (left, right, std::multiplies<T>());
+}
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator/ (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator% (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator| (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator& (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc> 
+  Array<T, Alloc> operator^ (const Array<T, Alloc> &left, const Array<T, Alloc> &right);
 // </group>
 
 // 
 // Element by element arithmetic between an array and a scalar, returning
 // an array.
 // <group>
-template<class T> 
-    Array<T> operator+ (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator- (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator* (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator/ (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator% (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator| (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator& (const Array<T> &left, const T &right);
-template<class T> 
-    Array<T> operator^ (const Array<T> &left, const T &right);
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator+ (const Array<T, Alloc> &left, const T &right);
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator- (const Array<T, Alloc> &left, const T &right);
+template<class T, typename Alloc>
+Array<T, Alloc> operator* (const Array<T, Alloc> &left, const T &right)
+{
+    return arrayTransformResult (left, right, std::multiplies<T>());
+}
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator/ (const Array<T, Alloc> &left, const T &right);
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator% (const Array<T, Alloc> &left, const T &right);
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator| (const Array<T, Alloc> &left, const T &right);
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator& (const Array<T, Alloc> &left, const T &right);
+template<typename T, typename Alloc> 
+    Array<T, Alloc> operator^ (const Array<T, Alloc> &left, const T &right);
 // </group>
 
 // 
 // Element by element arithmetic between a scalar and an array, returning
 // an array.
 // <group>
-template<class T>  
-    Array<T> operator+ (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator- (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator* (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator/ (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator% (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator| (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator& (const T &left, const Array<T> &right);
-template<class T>  
-    Array<T> operator^ (const T &left, const Array<T> &right);
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator+ (const T &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator- (const T &left, const Array<T, Alloc> &right);
+template<class T, typename Alloc> 
+Array<T, Alloc> operator* (const T &left, const Array<T, Alloc> &right)
+{
+    return arrayTransformResult (left, right, std::multiplies<T>());
+}
+
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator/ (const T &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator% (const T &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator| (const T &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator& (const T &left, const Array<T, Alloc> &right);
+template<typename T, typename Alloc>  
+    Array<T, Alloc> operator^ (const T &left, const Array<T, Alloc> &right);
 // </group>
 
 // 
 // Transcendental function that can be applied to essentially all numeric
 // types. Works on an element-by-element basis.
 // <group>
-template<class T> Array<T> cos(const Array<T> &a);
-template<class T> Array<T> cosh(const Array<T> &a);
-template<class T> Array<T> exp(const Array<T> &a);
-template<class T> Array<T> log(const Array<T> &a);
-template<class T> Array<T> log10(const Array<T> &a);
-template<class T> Array<T> pow(const Array<T> &a, const Array<T> &b);
-template<class T> Array<T> pow(const T &a, const Array<T> &b);
-template<class T> Array<T> sin(const Array<T> &a);
-template<class T> Array<T> sinh(const Array<T> &a);
-template<class T> Array<T> sqrt(const Array<T> &a);
+template<typename T, typename Alloc> Array<T, Alloc> cos(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> cosh(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> exp(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> log(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> log10(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> pow(const Array<T, Alloc> &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> pow(const T &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> sin(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> sinh(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> sqrt(const Array<T, Alloc> &a);
 // </group>
 
 // 
@@ -464,49 +484,49 @@ template<class T> Array<T> sqrt(const Array<T> &a);
 // basis. Although a template function, this does not make sense for all
 // numeric types.
 // <group>
-template<class T> Array<T> acos(const Array<T> &a);
-template<class T> Array<T> asin(const Array<T> &a);
-template<class T> Array<T> atan(const Array<T> &a);
-template<class T> Array<T> atan2(const Array<T> &y, const Array<T> &x);
-template<class T> Array<T> atan2(const T &y, const Array<T> &x);
-template<class T> Array<T> atan2(const Array<T> &y, const T &x);
-template<class T> Array<T> ceil(const Array<T> &a);
-template<class T> Array<T> fabs(const Array<T> &a);
-template<class T> Array<T> abs(const Array<T> &a);
-template<class T> Array<T> floor(const Array<T> &a);
-template<class T> Array<T> round(const Array<T> &a);
-template<class T> Array<T> sign(const Array<T> &a);
-template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b);
-template<class T> Array<T> fmod(const T &a, const Array<T> &b);
-template<class T> Array<T> fmod(const Array<T> &a, const T &b);
-template<class T> Array<T> floormod(const Array<T> &a, const Array<T> &b);
-template<class T> Array<T> floormod(const T &a, const Array<T> &b);
-template<class T> Array<T> floormod(const Array<T> &a, const T &b);
-template<class T> Array<T> pow(const Array<T> &a, const Double &b);
-template<class T> Array<T> tan(const Array<T> &a);
-template<class T> Array<T> tanh(const Array<T> &a);
+template<typename T, typename Alloc> Array<T, Alloc> acos(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> asin(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> atan(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> atan2(const Array<T, Alloc> &y, const Array<T, Alloc> &x);
+template<typename T, typename Alloc> Array<T, Alloc> atan2(const T &y, const Array<T, Alloc> &x);
+template<typename T, typename Alloc> Array<T, Alloc> atan2(const Array<T, Alloc> &y, const T &x);
+template<typename T, typename Alloc> Array<T, Alloc> ceil(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> fabs(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> abs(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> floor(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> round(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> sign(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> fmod(const Array<T, Alloc> &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> fmod(const T &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> fmod(const Array<T, Alloc> &a, const T &b);
+template<typename T, typename Alloc> Array<T, Alloc> floormod(const Array<T, Alloc> &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> floormod(const T &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> floormod(const Array<T, Alloc> &a, const T &b);
+template<typename T, typename Alloc> Array<T, Alloc> pow(const Array<T, Alloc> &a, const double &b);
+template<typename T, typename Alloc> Array<T, Alloc> tan(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> Array<T, Alloc> tanh(const Array<T, Alloc> &a);
 // N.B. fabs is deprecated. Use abs.
-template<class T> Array<T> fabs(const Array<T> &a);
+template<typename T, typename Alloc> Array<T, Alloc> fabs(const Array<T, Alloc> &a);
 // </group>
 
 // 
 // <group>
 // Find the minimum and maximum values of an array, including their locations.
-template<class ScalarType>
+template<typename ScalarType, typename Alloc>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos, 
-	    IPosition &maxPos, const Array<ScalarType> &array);
+	    IPosition &maxPos, const Array<ScalarType, Alloc> &array);
 // The array is searched at locations where the mask equals <src>valid</src>.
 // (at least one such position must exist or an exception will be thrown).
-// MaskType should be an Array of Bool.
-template<class ScalarType>
+// MaskType should be an Array of bool.
+template<typename ScalarType, typename Alloc>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
-	    IPosition &maxPos, const Array<ScalarType> &array, 
-	    const Array<Bool> &mask, Bool valid=True);
+	    IPosition &maxPos, const Array<ScalarType, Alloc> &array, 
+	    const Array<bool> &mask, bool valid=true);
 // The array * weight is searched 
-template<class ScalarType>
+template<typename ScalarType, typename Alloc>
 void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
-		  IPosition &maxPos, const Array<ScalarType> &array, 
-		  const Array<ScalarType> &weight);
+		  IPosition &maxPos, const Array<ScalarType, Alloc> &array, 
+		  const Array<ScalarType, Alloc> &weight);
 // </group>
 
 // 
@@ -516,52 +536,52 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
 //
 // This sets min and max to the minimum and maximum of the array to 
 // avoid having to do two passes with max() and min() separately.
-template<class T> void minMax(T &min, T &max, const Array<T> &a);
+template<typename T, typename Alloc> void minMax(T &min, T &max, const Array<T, Alloc> &a);
 //
 // The minimum element of the array.
 // Requires that the type "T" has comparison operators.
-template<class T>  T min(const Array<T> &a);
+template<typename T, typename Alloc>  T min(const Array<T, Alloc> &a);
 // The maximum element of the array.
 // Requires that the type "T" has comparison operators.
-template<class T>  T max(const Array<T> &a);
+template<typename T, typename Alloc>  T max(const Array<T, Alloc> &a);
 
 // "result" contains the maximum of "a" and "b" at each position. "result",
 // "a", and "b" must be conformant.
-template<class T> void max(Array<T> &result, const Array<T> &a, 
-			   const Array<T> &b);
+template<typename T, typename Alloc> void max(Array<T, Alloc> &result, const Array<T, Alloc> &a, 
+			   const Array<T, Alloc> &b);
 // "result" contains the minimum of "a" and "b" at each position. "result",
 // "a", and "b" must be conformant.
-template<class T> void min(Array<T> &result, const Array<T> &a, 
-			   const Array<T> &b);
+template<typename T, typename Alloc> void min(Array<T, Alloc> &result, const Array<T, Alloc> &a, 
+			   const Array<T, Alloc> &b);
 // Return an array that contains the maximum of "a" and "b" at each position.
 // "a" and "b" must be conformant.
-template<class T> Array<T> max(const Array<T> &a, const Array<T> &b);
-template<class T> Array<T> max(const T &a, const Array<T> &b);
+template<typename T, typename Alloc> Array<T, Alloc> max(const Array<T, Alloc> &a, const Array<T, Alloc> &b);
+template<typename T, typename Alloc> Array<T, Alloc> max(const T &a, const Array<T, Alloc> &b);
 // Return an array that contains the minimum of "a" and "b" at each position.
 // "a" and "b" must be conformant.
-template<class T> Array<T> min(const Array<T> &a, const Array<T> &b);
+template<typename T, typename Alloc> Array<T, Alloc> min(const Array<T, Alloc> &a, const Array<T, Alloc> &b);
 
 // "result" contains the maximum of "a" and "b" at each position. "result",
 // and "a" must be conformant.
-template<class T> void max(Array<T> &result, const Array<T> &a, 
+template<typename T, typename Alloc> void max(Array<T, Alloc> &result, const Array<T, Alloc> &a, 
 			   const T &b);
-template<class T> inline void max(Array<T> &result, const T &a, 
-                                  const Array<T> &b)
+template<typename T, typename Alloc> inline void max(Array<T, Alloc> &result, const T &a, 
+                                  const Array<T, Alloc> &b)
   { max (result, b, a); }
 // "result" contains the minimum of "a" and "b" at each position. "result",
 // and "a" must be conformant.
-template<class T> void min(Array<T> &result, const Array<T> &a, 
+template<typename T, typename Alloc> void min(Array<T, Alloc> &result, const Array<T, Alloc> &a, 
 			   const T &b);
-template<class T> inline void min(Array<T> &result, const T &a, 
-                                  const Array<T> &b)
+template<typename T, typename Alloc> inline void min(Array<T, Alloc> &result, const T &a, 
+                                  const Array<T, Alloc> &b)
   { min (result, b, a); }
 // Return an array that contains the maximum of "a" and "b" at each position.
-template<class T> Array<T> max(const Array<T> &a, const T &b);
-template<class T> inline Array<T> max(const T &a, const Array<T> &b)
+template<typename T, typename Alloc> Array<T, Alloc> max(const Array<T, Alloc> &a, const T &b);
+template<typename T, typename Alloc> inline Array<T, Alloc> max(const T &a, const Array<T, Alloc> &b)
   { return max(b, a); }
 // Return an array that contains the minimum of "a" and "b" at each position.
-template<class T> Array<T> min(const Array<T> &a, const T &b);
-template<class T> inline Array<T> min(const T &a, const Array<T> &b)
+template<typename T, typename Alloc> Array<T, Alloc> min(const Array<T, Alloc> &a, const T &b);
+template<typename T, typename Alloc> inline Array<T, Alloc> min(const T &a, const Array<T, Alloc> &b)
   { return min(b, a); }
 // </group>
 
@@ -569,44 +589,44 @@ template<class T> inline Array<T> min(const T &a, const Array<T> &b)
 // Fills all elements of "array" with a sequence starting with "start"
 // and incrementing by "inc" for each element. The first axis varies
 // most rapidly.
-template<class T> void indgen(Array<T> &a, T start, T inc);
+template<typename T, typename Alloc> void indgen(Array<T, Alloc> &a, T start, T inc);
 // 
 // Fills all elements of "array" with a sequence starting with 0
 // and ending with nelements() - 1. The first axis varies
 // most rapidly.
-template<class T> inline void indgen(Array<T> &a)
+template<typename T, typename Alloc> inline void indgen(Array<T, Alloc> &a)
   { indgen(a, T(0), T(1)); }
 // 
 // Fills all elements of "array" with a sequence starting with start
 // incremented by one for each position in the array. The first axis varies
 // most rapidly.
-template<class T> inline void indgen(Array<T> &a, T start)
+template<typename T, typename Alloc> inline void indgen(Array<T, Alloc> &a, T start)
   { indgen(a, start, T(1)); }
 
 // Create a Vector of the given length and fill it with the start value
 // incremented with <code>inc</code> for each element.
-template<class T> inline Vector<T> indgen(uInt length, T start, T inc)
+template<typename T, typename Alloc=std::allocator<T>> inline Vector<T, Alloc> indgen(size_t length, T start, T inc)
 {
-  Vector<T> x(length);
+  Vector<T, Alloc> x(length);
   indgen(x, start, inc);
   return x;
 }
 
 
 // Sum of every element of the array.
-template<class T> T sum(const Array<T> &a);
+template<typename T, typename Alloc> T sum(const Array<T, Alloc> &a);
 // 
 // Sum the square of every element of the array.
-template<class T> T sumsqr(const Array<T> &a);
+template<typename T, typename Alloc> T sumsqr(const Array<T, Alloc> &a);
 // 
 // Product of every element of the array. This could of course easily
 // overflow.
-template<class T> T product(const Array<T> &a);
+template<typename T, typename Alloc> T product(const Array<T, Alloc> &a);
 
 // 
 // The mean of "a" is the sum of all elements of "a" divided by the number
 // of elements of "a".
-template<class T> T mean(const Array<T> &a);
+template<typename T, typename Alloc> T mean(const Array<T, Alloc> &a);
 
 // The variance of "a" is the sum of (a(i) - mean(a))**2/(a.nelements() - ddof).
 // Similar to numpy the argument ddof (delta degrees of freedom) tells if the
@@ -615,31 +635,31 @@ template<class T> T mean(const Array<T> &a);
 // <br>Note that for a complex valued T the absolute values are used; in that way
 // the variance is equal to the sum of the variances of the real and imaginary parts.
 // Hence the imaginary part in the return value is 0.
-template<class T> T variance(const Array<T> &a);
-template<class T> T pvariance(const Array<T> &a, uInt ddof=0);
+template<typename T, typename Alloc> T variance(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> T pvariance(const Array<T, Alloc> &a, size_t ddof=0);
 // Rather than using a computed mean, use the supplied value.
-template<class T> T variance(const Array<T> &a, T mean);
-template<class T> T pvariance(const Array<T> &a, T mean, uInt ddof=0);
+template<typename T, typename Alloc> T variance(const Array<T, Alloc> &a, T mean);
+template<typename T, typename Alloc> T pvariance(const Array<T, Alloc> &a, T mean, size_t ddof=0);
 
 // The standard deviation of "a" is the square root of its variance.
-template<class T> T stddev(const Array<T> &a);
-template<class T> T pstddev(const Array<T> &a, uInt ddof=0);
-template<class T> T stddev(const Array<T> &a, T mean);
-template<class T> T pstddev(const Array<T> &a, T mean, uInt ddof=0);
+template<typename T, typename Alloc> T stddev(const Array<T, Alloc> &a);
+template<typename T, typename Alloc> T pstddev(const Array<T, Alloc> &a, size_t ddof=0);
+template<typename T, typename Alloc> T stddev(const Array<T, Alloc> &a, T mean);
+template<typename T, typename Alloc> T pstddev(const Array<T, Alloc> &a, T mean, size_t ddof=0);
 
 // 
 // The average deviation of "a" is the sum of abs(a(i) - mean(a))/N. (N.B.
 // N, not N-1 in the denominator).
-template<class T> T avdev(const Array<T> &a);
+template<typename T, typename Alloc> T avdev(const Array<T, Alloc> &a);
 // 
 // The average deviation of "a" is the sum of abs(a(i) - mean(a))/N. (N.B.
 // N, not N-1 in the denominator).
 // Rather than using a computed mean, use the supplied value.
-template<class T> T avdev(const Array<T> &a,T mean);
+template<typename T, typename Alloc> T avdev(const Array<T, Alloc> &a,T mean);
 
 //
 // The root-mean-square of "a" is the sqrt of sum(a*a)/N.
-template<class T> T rms(const Array<T> &a);
+template<typename T, typename Alloc> T rms(const Array<T, Alloc> &a);
 
 
 // The median of "a" is a(n/2).
@@ -647,9 +667,9 @@ template<class T> T rms(const Array<T> &a);
 // the median is 0.5*(a(n/2) + a((n+1)/2)).
 // According to Numerical Recipes (2nd edition) it makes little sense to take
 // the mean if the array is large enough (> 100 elements). Therefore
-// the default for takeEvenMean is False if the array has > 100 elements,
-// otherwise it is True.
-// <br>If "sorted"==True we assume the data is already sorted and we
+// the default for takeEvenMean is false if the array has > 100 elements,
+// otherwise it is true.
+// <br>If "sorted"==true we assume the data is already sorted and we
 // compute the median directly. Otherwise the function GenSort::kthLargest
 // is used to find the median (kthLargest is about 6 times faster
 // than a full quicksort).
@@ -660,33 +680,39 @@ template<class T> T rms(const Array<T> &a);
 // <note>The function kthLargest in class GenSortIndirect can be used to
 // obtain the index of the median in an array. </note>
 // <group>
-template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
-			   Bool takeEvenMean, Bool inPlace=False);
-template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean,
-			   Bool inPlace=False)
-    { Block<T> tmp; return median (a, tmp, sorted, takeEvenMean, inPlace); }
-template<class T> inline T median(const Array<T> &a, Bool sorted)
-    { return median (a, sorted, (a.nelements() <= 100), False); }
-template<class T> inline T median(const Array<T> &a)
-    { return median (a, False, (a.nelements() <= 100), False); }
-template<class T> inline T medianInPlace(const Array<T> &a, Bool sorted=False)
-    { return median (a, sorted, (a.nelements() <= 100), True); }
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T median(const Array<T, Alloc> &a, std::vector<T> &scratch, bool sorted,
+			   bool takeEvenMean, bool inPlace=false);
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T median(const Array<T, Alloc> &a, bool sorted, bool takeEvenMean,
+			   bool inPlace=false)
+    { std::vector<T> scratch; return median (a, scratch, sorted, takeEvenMean, inPlace); }
+template<typename T, typename Alloc> inline T median(const Array<T, Alloc> &a, bool sorted)
+    { return median (a, sorted, (a.nelements() <= 100), false); }
+template<typename T, typename Alloc> inline T median(const Array<T, Alloc> &a)
+    { return median (a, false, (a.nelements() <= 100), false); }
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> inline T medianInPlace(const Array<T, Alloc> &a, bool sorted=false)
+    { return median (a, sorted, (a.nelements() <= 100), true); }
 // </group>
 
 // The median absolute deviation from the median. Interface is as for
 // the median functions
 // <group>
-template<class T> T madfm(const Array<T> &a, Block<T> &tmp, Bool sorted, 
-                         Bool takeEvenMean, Bool inPlace = False);
-template<class T> T madfm(const Array<T> &a, Bool sorted, Bool takeEvenMean,
-                          Bool inPlace=False)
-    { Block<T> tmp; return madfm(a, tmp, sorted, takeEvenMean, inPlace); }
-template<class T> inline T madfm(const Array<T> &a, Bool sorted)
-    { return madfm(a, sorted, (a.nelements() <= 100), False); }
-template<class T> inline T madfm(const Array<T> &a)
-    { return madfm(a, False, (a.nelements() <= 100), False); }
-template<class T> inline T madfmInPlace(const Array<T> &a, Bool sorted=False)
-    { return madfm(a, sorted, (a.nelements() <= 100), True); }
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T madfm(const Array<T, Alloc> &a, std::vector<T> &tmp, bool sorted, 
+                         bool takeEvenMean, bool inPlace = false);
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T madfm(const Array<T, Alloc> &a, bool sorted, bool takeEvenMean,
+                          bool inPlace=false)
+    { std::vector<T> tmp; return madfm(a, tmp, sorted, takeEvenMean, inPlace); }
+template<typename T, typename Alloc> inline T madfm(const Array<T, Alloc> &a, bool sorted)
+    { return madfm(a, sorted, (a.nelements() <= 100), false); }
+template<typename T, typename Alloc> inline T madfm(const Array<T, Alloc> &a)
+    { return madfm(a, false, (a.nelements() <= 100), false); }
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> inline T madfmInPlace(const Array<T, Alloc> &a, bool sorted=false)
+    { return madfm(a, sorted, (a.nelements() <= 100), true); }
 // </group>
 
 // Return the fractile of an array.
@@ -696,21 +722,25 @@ template<class T> inline T madfmInPlace(const Array<T> &a, Bool sorted=False)
 // It uses kthLargest if the array is not sorted yet.
 // <note>The function kthLargest in class GenSortIndirect can be used to
 // obtain the index of the fractile in an array. </note>
-template<class T> T fractile(const Array<T> &a, Block<T> &tmp, Float fraction,
-			     Bool sorted=False, Bool inPlace=False);
-template<class T> T fractile(const Array<T> &a, Float fraction,
-			     Bool sorted=False, Bool inPlace=False)
-  { Block<T> tmp; return fractile (a, tmp, fraction, sorted, inPlace); }
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T fractile(const Array<T, Alloc> &a, std::vector<T> &tmp, float fraction,
+			     bool sorted=false, bool inPlace=false);
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T fractile(const Array<T, Alloc> &a, float fraction,
+			     bool sorted=false, bool inPlace=false)
+  { std::vector<T> tmp; return fractile (a, tmp, fraction, sorted, inPlace); }
 
 // Return the inter-fractile range of an array.  
 // This is the full range between the bottom and the top fraction.
 // <group>
-template<class T> T interFractileRange(const Array<T> &a, Block<T> &tmp,
-                                       Float fraction,
-                                       Bool sorted=False, Bool inPlace=False);
-template<class T> T interFractileRange(const Array<T> &a, Float fraction,
-                                       Bool sorted=False, Bool inPlace=False)
-  { Block<T> tmp; return interFractileRange(a, tmp, fraction, sorted, inPlace); }
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T interFractileRange(const Array<T, Alloc> &a, std::vector<T> &tmp,
+                                       float fraction,
+                                       bool sorted=false, bool inPlace=false);
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T interFractileRange(const Array<T, Alloc> &a, float fraction,
+                                       bool sorted=false, bool inPlace=false)
+  { std::vector<T> tmp; return interFractileRange(a, tmp, fraction, sorted, inPlace); }
 // </group>
 
 // Return the inter-hexile range of an array.  
@@ -720,11 +750,13 @@ template<class T> T interFractileRange(const Array<T> &a, Float fraction,
 // sensitive to the tails of extended distributions." (Condon et al
 // 1998)
 // <group>
-template<class T> T interHexileRange(const Array<T> &a, Block<T> &tmp,
-                                     Bool sorted=False, Bool inPlace=False)
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T interHexileRange(const Array<T, Alloc> &a, std::vector<T> &tmp,
+                                     bool sorted=false, bool inPlace=false)
   { return interFractileRange(a, tmp, 1./6., sorted, inPlace); }
-template<class T> T interHexileRange(const Array<T> &a, Bool sorted=False,
-                                     Bool inPlace=False)
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T interHexileRange(const Array<T, Alloc> &a, bool sorted=false,
+                                     bool inPlace=false)
   { return interFractileRange(a, 1./6., sorted, inPlace); }
 // </group>
 
@@ -732,96 +764,159 @@ template<class T> T interHexileRange(const Array<T> &a, Bool sorted=False,
 // This is the full range between the bottom quarter and the top
 // quarter of ordered array values.
 // <group>
-template<class T> T interQuartileRange(const Array<T> &a, Block<T> &tmp,
-                                       Bool sorted=False, Bool inPlace=False)
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T interQuartileRange(const Array<T, Alloc> &a, std::vector<T> &tmp,
+                                       bool sorted=false, bool inPlace=false)
   { return interFractileRange(a, tmp, 0.25, sorted, inPlace); }
-template<class T> T interQuartileRange(const Array<T> &a, Bool sorted=False,
-                                       Bool inPlace=False)
+// TODO shouldn't take a const Array for in place sorting
+template<typename T, typename Alloc> T interQuartileRange(const Array<T, Alloc> &a, bool sorted=false,
+                                       bool inPlace=false)
   { return interFractileRange(a, 0.25, sorted, inPlace); }
 // </group>
 
 
 // Methods for element-by-element scaling of complex and real.
-// Note that Complex and DComplex are typedefs for std::complex.
+// Note that std::complex<float> and std::complex<double> are typedefs for std::complex.
 //<group>
-template<typename T>
-void operator*= (Array<std::complex<T> > &left, const Array<T> &other);
-template<typename T>
-void operator*= (Array<std::complex<T> > &left, const T &other);
-template<typename T>
-void operator/= (Array<std::complex<T> > &left, const Array<T> &other);
-template<typename T>
-void operator/= (Array<std::complex<T> > &left, const T &other);
-template<typename T>
-Array<std::complex<T> > operator* (const Array<std::complex<T> > &left,
-                                   const Array<T> &right);
-template<typename T>
-Array<std::complex<T> > operator* (const Array<std::complex<T> > &left,
-                                   const T &right);
-template<typename T>
-Array<std::complex<T> > operator* (const std::complex<T> &left,
-                                   const Array<T> &right);
-template<typename T>
-Array<std::complex<T> > operator/ (const Array<std::complex<T> > &left,
-                                   const Array<T> &right);
-template<typename T>
-Array<std::complex<T> > operator/ (const Array<std::complex<T> > &left,
-                                   const T &right);
-template<typename T>
-Array<std::complex<T> > operator/ (const std::complex<T> &left,
-                                   const Array<T> &right);
+template<typename T, typename AllocC, typename AllocR>
+void operator*= (Array<std::complex<T>, AllocC> &left, const Array<T, AllocR> &other)
+{
+  checkArrayShapes (left, other, "*=");
+  arrayTransformInPlace (left, other,
+                         [](std::complex<T> left, T right) { return left*right; });
+}
+
+template<typename T, typename Alloc>
+void operator*= (Array<std::complex<T>, Alloc> &left, const T &other)
+{
+  arrayTransformInPlace (left, other,
+                         [](std::complex<T> left, T right) { return left*right; });
+}
+
+template<typename T, typename AllocC, typename AllocR>
+void operator/= (Array<std::complex<T>, AllocC> &left, const Array<T, AllocR> &other)
+{
+  checkArrayShapes (left, other, "/=");
+  arrayTransformInPlace (left, other,
+                         [](std::complex<T> left, T right) { return left/right; });
+}
+
+template<typename T, typename Alloc>
+void operator/= (Array<std::complex<T>, Alloc> &left, const T &other)
+{
+  arrayTransformInPlace (left, other,
+                         [](std::complex<T> left, T right) { return left/right; });
+}
+
+template<typename T, typename AllocC, typename AllocR>
+Array<std::complex<T>, AllocC> operator* (const Array<std::complex<T>, AllocC> &left,
+                                   const Array<T, AllocR> &right)
+{
+  checkArrayShapes (left, right, "*");
+  Array<std::complex<T>, AllocC> result(left.shape());
+  arrayContTransform (left, right, result,
+                      [](std::complex<T> left, T right) { return left*right; });
+  return result;
+}
+template<typename T, typename Alloc>
+Array<std::complex<T> > operator* (const Array<std::complex<T>, Alloc> &left,
+                                   const T &other)
+{
+  Array<std::complex<T> > result(left.shape());
+  arrayContTransform (left, other, result,
+                      [](std::complex<T> left, T right) { return left*right; });
+  return result;
+}
+template<typename T, typename Alloc>
+Array<std::complex<T> > operator*(const std::complex<T> &left,
+                                  const Array<T, Alloc> &other)
+{
+  Array<std::complex<T> > result(other.shape());
+  arrayContTransform (left, other, result,
+                      [](std::complex<T> left, T right) { return left*right; });
+  return result;
+}
+
+template<typename T, typename AllocC, typename AllocR>
+Array<std::complex<T>, AllocC> operator/ (const Array<std::complex<T>, AllocC> &left,
+                                   const Array<T, AllocR> &right)
+{
+  checkArrayShapes (left, right, "/");
+  Array<std::complex<T>, AllocC> result(left.shape());
+  arrayContTransform (left, right, result,
+                      [](std::complex<T> l, T r) { return l/r; });
+  return result;
+}
+template<typename T, typename Alloc>
+Array<std::complex<T>, Alloc> operator/ (const Array<std::complex<T>, Alloc> &left,
+                                   const T &other)
+{
+  Array<std::complex<T>, Alloc> result(left.shape());
+  arrayContTransform (left, other, result,
+                      [](std::complex<T> left, T right) { return left/right; });
+  return result;
+}
+template<typename T, typename Alloc>
+Array<std::complex<T>> operator/(const std::complex<T> &left,
+                                  const Array<T, Alloc> &other)
+{
+  Array<std::complex<T>> result(other.shape());
+  arrayContTransform (left, other, result,
+                      [](std::complex<T> left, T right) { return left/right; });
+  return result;
+}
 // </group>
 
 // Returns the complex conjugate of a complex array.
 //<group>
-Array<Complex> conj(const Array<Complex> &carray);
-Array<DComplex> conj(const Array<DComplex> &carray);
+Array<std::complex<float>> conj(const Array<std::complex<float>> &carray);
+Array<std::complex<double>> conj(const Array<std::complex<double>> &carray);
 // Modifies rarray in place. rarray must be conformant.
-void         conj(Array<Complex> &rarray, const Array<Complex> &carray);
-void         conj(Array<DComplex> &rarray, const Array<DComplex> &carray);
+void conj(Array<std::complex<float>> &rarray, const Array<std::complex<float>> &carray);
+void conj(Array<std::complex<double>> &rarray, const Array<std::complex<double>> &carray);
 //# The following are implemented to make the compiler find the right conversion
 //# more often.
-Matrix<Complex> conj(const Matrix<Complex> &carray);
-Matrix<DComplex> conj(const Matrix<DComplex> &carray);
+Matrix<std::complex<float>> conj(const Matrix<std::complex<float>> &carray);
+Matrix<std::complex<double>> conj(const Matrix<std::complex<double>> &carray);
 //</group>
 
 // Form an array of complex numbers from the given real arrays.
-// Note that Complex and DComplex are simply typedefs for std::complex<float>
+// Note that std::complex<float> and std::complex<double> are simply typedefs for std::complex<float>
 // and std::complex<double>, so the result is in fact one of these types.
 // <group>
-template<typename T>
-Array<std::complex<T> > makeComplex(const Array<T> &real, const Array<T>& imag);
-template<typename T>
-Array<std::complex<T> > makeComplex(const T &real, const Array<T>& imag);
-template<typename T>
-Array<std::complex<T> > makeComplex(const Array<T> &real, const T& imag);
+template<typename T, typename Alloc>
+Array<std::complex<T> > makeComplex(const Array<T, Alloc> &real, const Array<T, Alloc>& imag);
+template<typename T, typename Alloc>
+Array<std::complex<T> > makeComplex(const T &real, const Array<T, Alloc>& imag);
+template<typename T, typename Alloc>
+Array<std::complex<T> > makeComplex(const Array<T, Alloc> &real, const T& imag);
 // </group>
 
 // Set the real part of the left complex array to the right real array.
-template<typename L, typename R>
-void setReal(Array<L> &carray, const Array<R> &rarray);
+template<typename C, typename R, typename AllocC, typename AllocR>
+void setReal(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray);
 
 // Set the imaginary part of the left complex array to right real array.
-template<typename R, typename L>
-void setImag(Array<R> &carray, const Array<L> &rarray);
+template<typename C, typename R, typename AllocC, typename AllocR>
+void setImag(Array<C, AllocC> &carray, const Array<R, AllocR> &rarray);
 
 // Extracts the real part of a complex array into an array of floats.
 // <group>
-Array<Float>  real(const Array<Complex> &carray);
-Array<Double> real(const Array<DComplex> &carray);
+Array<float>  real(const Array<std::complex<float>> &carray);
+Array<double> real(const Array<std::complex<double>> &carray);
 // Modifies rarray in place. rarray must be conformant.
-void         real(Array<Float> &rarray, const Array<Complex> &carray);
-void         real(Array<Double> &rarray, const Array<DComplex> &carray);
+void         real(Array<float> &rarray, const Array<std::complex<float>> &carray);
+void         real(Array<double> &rarray, const Array<std::complex<double>> &carray);
 // </group>
 
 // 
 // Extracts the imaginary part of a complex array into an array of floats.
 // <group>
-Array<Float>  imag(const Array<Complex> &carray);
-Array<Double> imag(const Array<DComplex> &carray);
+Array<float>  imag(const Array<std::complex<float>> &carray);
+Array<double> imag(const Array<std::complex<double>> &carray);
 // Modifies rarray in place. rarray must be conformant.
-void         imag(Array<Float> &rarray, const Array<Complex> &carray);
-void         imag(Array<Double> &rarray, const Array<DComplex> &carray);
+void         imag(Array<float> &rarray, const Array<std::complex<float>> &carray);
+void         imag(Array<double> &rarray, const Array<std::complex<double>> &carray);
 // </group>
 
 // 
@@ -829,11 +924,11 @@ void         imag(Array<Double> &rarray, const Array<DComplex> &carray);
 // of complex numbers. N.B. this is presently called "fabs" for a single
 // complex number.
 // <group>
-Array<Float>  amplitude(const Array<Complex> &carray);
-Array<Double> amplitude(const Array<DComplex> &carray);
+Array<float>  amplitude(const Array<std::complex<float>> &carray);
+Array<double> amplitude(const Array<std::complex<double>> &carray);
 // Modifies rarray in place. rarray must be conformant.
-void         amplitude(Array<Float> &rarray, const Array<Complex> &carray);
-void         amplitude(Array<Double> &rarray, const Array<DComplex> &carray);
+void         amplitude(Array<float> &rarray, const Array<std::complex<float>> &carray);
+void         amplitude(Array<double> &rarray, const Array<std::complex<double>> &carray);
 // </group>
 
 // 
@@ -841,50 +936,97 @@ void         amplitude(Array<Double> &rarray, const Array<DComplex> &carray);
 // of complex numbers. N.B. this is presently called "arg"
 // for a single complex number.
 // <group>
-Array<Float>  phase(const Array<Complex> &carray);
-Array<Double> phase(const Array<DComplex> &carray);
+Array<float>  phase(const Array<std::complex<float>> &carray);
+Array<double> phase(const Array<std::complex<double>> &carray);
 // Modifies rarray in place. rarray must be conformant.
-void         phase(Array<Float> &rarray, const Array<Complex> &carray);
-void         phase(Array<Double> &rarray, const Array<DComplex> &carray);
+void         phase(Array<float> &rarray, const Array<std::complex<float>> &carray);
+void         phase(Array<double> &rarray, const Array<std::complex<double>> &carray);
 // </group>
 
 // Copy an array of complex into an array of real,imaginary pairs. The
 // first axis of the real array becomes twice as long as the complex array.
 // In the future versions which work by reference will be available; presently
 // a copy is made.
-Array<Float> ComplexToReal(const Array<Complex> &carray);
-Array<Double> ComplexToReal(const Array<DComplex> &carray);
+Array<float> ComplexToReal(const Array<std::complex<float>> &carray);
+Array<double> ComplexToReal(const Array<std::complex<double>> &carray);
 // Modify the array "rarray" in place. "rarray" must be the correct shape.
 // <group>
-void ComplexToReal(Array<Float> &rarray, const Array<Complex> &carray);
-void ComplexToReal(Array<Double> &rarray, const Array<DComplex> &carray);
+void ComplexToReal(Array<float> &rarray, const Array<std::complex<float>> &carray);
+void ComplexToReal(Array<double> &rarray, const Array<std::complex<double>> &carray);
 // </group>
 
 // Copy an array of real,imaginary pairs into a complex array. The first axis
 // must have an even length.
 // In the future versions which work by reference will be available; presently
 // a copy is made.
-Array<Complex>  RealToComplex(const Array<Float> &rarray);
-Array<DComplex> RealToComplex(const Array<Double> &rarray);
+Array<std::complex<float>>  RealToComplex(const Array<float> &rarray);
+Array<std::complex<double>> RealToComplex(const Array<double> &rarray);
 // Modify the array "carray" in place. "carray" must be the correct shape.
 // <group>
-void  RealToComplex(Array<Complex> &carray, const Array<Float> &rarray);
-void  RealToComplex(Array<DComplex> &carray, const Array<Double> &rarray);
+void  RealToComplex(Array<std::complex<float>> &carray, const Array<float> &rarray);
+void  RealToComplex(Array<std::complex<double>> &carray, const Array<double> &rarray);
 // </group>
 
 // Make a copy of an array of a different type; for example make an array
 // of doubles from an array of floats. Arrays to and from must be conformant
 // (same shape). Also, it must be possible to convert a scalar of type U 
 // to type T.
-template<class T, class U> void convertArray(Array<T> &to,
-					     const Array<U> &from);
-
+template<typename T, typename U, typename AllocT, typename AllocU>
+void convertArray(Array<T, AllocT> &to, const Array<U, AllocU> &from);
 
 // Returns an array where every element is squared.
-template<class T> Array<T> square(const Array<T> &val);
+template<typename T, typename Alloc> Array<T, Alloc> square(const Array<T, Alloc> &val);
 
 // Returns an array where every element is cubed.
-template<class T> Array<T> cube(const Array<T> &val);
+template<typename T, typename Alloc> Array<T, Alloc> cube(const Array<T, Alloc> &val);
+
+// Helper function for expandArray using recursion for each axis.
+template<typename T>
+T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
+                    const IPosition& inSteps,
+                    const T* in, T* out, const IPosition& alternate)
+{
+  if (axis == 0) {
+    if (alternate[0]) {
+      // Copy as 1,2,3 1,2,3, etc.
+      for (ssize_t j=0; j<mult[0]; ++j) {
+        const T* pin = in;
+        for (ssize_t i=0; i<shp[0]; ++i) {
+          *out++ = *pin;
+          pin += inSteps[0];
+        }
+      }
+    } else {
+      // Copy as 1,1,1 2,2,2 etc.
+      for (ssize_t i=0; i<shp[0]; ++i) {
+        for (ssize_t j=0; j<mult[0]; ++j) {
+          *out++ = *in;
+        }
+        in += inSteps[0];
+      }
+    }
+  } else {
+    if (alternate[axis]) {
+      for (ssize_t j=0; j<mult[axis]; ++j) {
+        const T* pin = in;
+        for (ssize_t i=0; i<shp[axis]; ++i) {
+          out = expandRecursive (axis-1, shp, mult, inSteps,
+                                 pin, out, alternate);
+          pin += inSteps[axis];
+        }
+      }
+    } else {
+      for (ssize_t i=0; i<shp[axis]; ++i) {
+        for (ssize_t j=0; j<mult[axis]; ++j) {
+          out = expandRecursive (axis-1, shp, mult, inSteps,
+                                 in, out, alternate);
+        }
+        in += inSteps[axis];
+      }
+    }
+  }
+  return out;
+}
 
 // Expand the values of an array. The arrays can have different dimensionalities.
 // Missing input axes have length 1; missing output axes are discarded.
@@ -897,13 +1039,25 @@ template<class T> Array<T> cube(const Array<T> &val);
 // This choice can be made for each axis; a value 0 means linearly,
 // another value means alternately. If the length of alternate is less than
 // the dimensionality of the output array, the missing ones default to 0.
-template<class T> void expandArray (Array<T>& out, const Array<T>& in,
-                                    const IPosition& alternate=IPosition());
-// Helper function for expandArray using recursion for each axis.
-template<class T>
-T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
-                    const IPosition& inSteps,
-                    const T* in, T* out, const IPosition& alternate);
+template<typename T, typename Alloc>
+void expandArray (Array<T, Alloc>& out, const Array<T, Alloc>& in,
+                  const IPosition& alternate=IPosition())
+{
+  IPosition mult, inshp, outshp;
+  IPosition alt = checkExpandArray (mult, inshp,
+                                    in.shape(), out.shape(), alternate);
+  Array<T, Alloc> incp(in);
+  if (in.ndim() < inshp.size()) {
+    incp.reference (in.reform(inshp));
+  }
+  // Make sure output is contiguous.
+  bool deleteIt;
+  T* outPtr = out.getStorage (deleteIt);
+  expandRecursive (out.ndim()-1, inshp, mult, incp.steps(),
+                   incp.data(), outPtr, alt);
+  out.putStorage (outPtr, deleteIt);
+}
+
 // Check array shapes for expandArray. It returns the alternate argument,
 // where possibly missing values are appended (as 0).
 // It fills in mult and inshp (with possibly missing axes of length 1).
@@ -924,7 +1078,6 @@ IPosition checkExpandArray (IPosition& mult, IPosition& newInShape,
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/ArrayMath.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "ArrayMath.tcc"
+
 #endif

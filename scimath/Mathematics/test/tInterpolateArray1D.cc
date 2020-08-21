@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/Complex.h>
@@ -314,8 +314,8 @@ int main()
       run_nearest_tests<Double,Float>();
 
   }
-  catch (AipsError& x) {
-    cerr << x.getMesg() << endl;
+  catch (std::exception& x) {
+    cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

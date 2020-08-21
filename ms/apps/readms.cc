@@ -41,7 +41,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Inputs/Input.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/OS/OMP.h>

@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/measures/Measures/UVWMachine.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
@@ -209,8 +209,8 @@ int main() {
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
 
   try {
@@ -302,8 +302,8 @@ int main() {
 
     cout << "---------------------------------------" << endl;
 
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
   } 
 
   return 0;

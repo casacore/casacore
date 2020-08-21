@@ -84,8 +84,8 @@ int main()
     assert_hash(ID1);
     ID1.toString(copied);
 
-  } catch (AipsError& x) {
-    cerr << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << x.what() << endl;
     return 1;
   } 
 

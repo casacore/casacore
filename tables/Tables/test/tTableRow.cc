@@ -42,6 +42,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/OS/Timer.h>
@@ -197,13 +198,13 @@ void b (Bool doExcp)
     if (doExcp) {
 	try {
 	    TableRow row (tab);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;             // not writable
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;             // not writable
 	} 
 	try {
 	    ROTableRow row (tab, stringToVector("ab,abb"));
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;             // abb not exists
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;             // abb not exists
 	} 
     }
     ROTableRow rowx (tab, stringToVector("ab,arr1"));
@@ -356,8 +357,8 @@ int main (int argc, const char* argv[])
 	a ( (argc<2));
 	b ( (argc<2));
 	c (nr);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

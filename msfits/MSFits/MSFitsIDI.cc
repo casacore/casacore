@@ -29,7 +29,7 @@
 #include <casacore/msfits/MSFits/MSFitsIDI.h>
 #include <casacore/msfits/MSFits/FitsIDItoMS.h>
 #include <casacore/fits/FITS/fitsio.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/OS/File.h>
@@ -408,6 +408,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/WEATHER",Table::Update);
       mssub.rename (itsMSOut+"/WEATHER",Table::New);
       msmain.rwKeywordSet().defineTable("WEATHER",mssub);
+    }
+    if (subTableName(isub)=="GAIN_CURVE") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/GAIN_CURVE",Table::Update);
+      mssub.rename (itsMSOut+"/GAIN_CURVE",Table::New);
+      msmain.rwKeywordSet().defineTable("GAIN_CURVE",mssub);
     }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);

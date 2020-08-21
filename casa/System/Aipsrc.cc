@@ -563,8 +563,8 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
       vla[n-1] = vl[i];
     }
   }
-  namlst = Vector<String>(nla);
-  vallst = Vector<String>(vla);
+  namlst = Vector<String>(nla.begin(), nla.end());
+  vallst = Vector<String>(vla.begin(), vla.end());
   return namlst.nelements();
 }
 
@@ -589,14 +589,13 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
 
 void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
 		    const String &nam, const String &val) {
-  Block<String> nl;
-  namlst.toBlock(nl);
+  Block<String> nl = makeBlock(namlst);
   uInt n = Aipsrc::registerRC(nam, nl);
   if (n > vallst.nelements()) vallst.resize(n, True);
   vallst(n-1) = val;
 //   if (n > namlst.nelements()) namlst.resize(n, True);
   namlst.resize(0);
-  namlst = Vector<String>(nl);
+  namlst = Vector<String>(nl.begin(), nl.end());
 }
 
 Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst,

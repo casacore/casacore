@@ -414,10 +414,10 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
         srcTable = _ms.source();
         nsrc = srcTable.nrow();
     }
-    catch (const AipsError& x) {
+    catch (const std::exception& x) {
         os << LogOrigin("MSFitsOutput", __func__)
            << LogIO::WARN << "No source table in MS. " 
-           << x.getMesg() << LogIO::POST;
+           << x.what() << LogIO::POST;
     }
     const uInt ndds = ddTable.nrow();
     const uInt nspec = spectralTable.nrow();

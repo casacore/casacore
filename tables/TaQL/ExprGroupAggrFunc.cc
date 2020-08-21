@@ -33,6 +33,7 @@
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <limits>
 
 

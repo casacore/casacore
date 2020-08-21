@@ -186,8 +186,8 @@ try {
    doit3();
 
 
-} catch (AipsError& x) {
-     cerr << "aipserror: error " << x.getMesg() << endl;
+} catch (std::exception& x) {
+     cerr << "aipserror: error " << x.what() << endl;
      return 1;
 } 
 

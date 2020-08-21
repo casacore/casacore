@@ -42,8 +42,8 @@ int main() {
 			cout << dataProvider.getCount() << endl;
 		}
 	}
-	catch (const AipsError& x) {
-		cerr << x.getMesg () << endl;
+	catch (const std::exception& x) {
+		cerr << x.what() << endl;
 		cout << "FAIL" << endl;
 		return 1;
 	}

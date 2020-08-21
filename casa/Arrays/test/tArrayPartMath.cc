@@ -26,734 +26,601 @@
 //# $Id$
 
 //# Includes
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayPartMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/OS/Timer.h>
-#include <casacore/casa/iostream.h>
+#include "../Array.h"
+#include "../Vector.h"
+#include "../ArrayPartMath.h"
+#include "../ArrayLogical.h"
+#include "../ArrayStr.h"
 
-// If an argument is given, some performance tests will also be done.
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/namespace.h>
-typedef Array<Double> PartFunc (const Array<Double>&, const IPosition& axes);
-typedef Double FullFunc (const Array<Double>&);
+using namespace casacore;
 
-Array<Double> myPartialVariances (const Array<Double>& array,
+BOOST_AUTO_TEST_SUITE(array_part_math)
+
+typedef Array<double> PartFunc (const Array<double>&, const IPosition& axes);
+typedef double FullFunc (const Array<double>&);
+
+Array<double> myPartialVariances (const Array<double>& array,
 				  const IPosition& axes)
 {
   return partialVariances (array, axes, 1);
 }
-Double myVariance (const Array<Double>& array)
+double myVariance (const Array<double>& array)
 {
   return pvariance (array, 1);
 }
-Array<Double> myPartialStddevs (const Array<Double>& array,
+Array<double> myPartialStddevs (const Array<double>& array,
                                 const IPosition& axes)
 {
   return partialStddevs (array, axes, 0);
 }
-Double myStddev (const Array<Double>& array)
+double myStddev (const Array<double>& array)
 {
   return pstddev (array, 0);
 }
-Array<Double> myMeanPartialMedians (const Array<Double>& array,
+Array<double> myMeanPartialMedians (const Array<double>& array,
 				    const IPosition& axes)
 {
-  return partialMedians (array, axes, True, False);
+  return partialMedians (array, axes, true, false);
 }
-Double myMeanMedian (const Array<Double>& array)
+double myMeanMedian (const Array<double>& array)
 {
-  return median (array, False, True, False);
+  return median (array, false, true, false);
 }
-Array<Double> myNomeanPartialMedians (const Array<Double>& array,
+Array<double> myNomeanPartialMedians (const Array<double>& array,
 				      const IPosition& axes)
 {
-  return partialMedians (array, axes, False, False);
+  return partialMedians (array, axes, false, false);
 }
-Double myNomeanMedian (const Array<Double>& array)
+double myNomeanMedian (const Array<double>& array)
 {
-  return median (array, False, False, False);
+  return median (array, false, false, false);
 }
-Array<Double> myMeanPartialMadfms (const Array<Double>& array,
+Array<double> myMeanPartialMadfms (const Array<double>& array,
                                    const IPosition& axes)
 {
-  return partialMadfms (array, axes, True, False);
+  return partialMadfms (array, axes, true, false);
 }
-Double myMeanMadfm (const Array<Double>& array)
+double myMeanMadfm (const Array<double>& array)
 {
-  return madfm (array, False, True, False);
+  return madfm (array, false, true, false);
 }
-Array<Double> myNomeanPartialMadfms (const Array<Double>& array,
+Array<double> myNomeanPartialMadfms (const Array<double>& array,
 				      const IPosition& axes)
 {
-  return partialMadfms (array, axes, False, False);
+  return partialMadfms (array, axes, false, false);
 }
-Double myNomeanMadfm (const Array<Double>& array)
+double myNomeanMadfm (const Array<double>& array)
 {
-  return madfm (array, False, False, False);
+  return madfm (array, false, false, false);
 }
-Array<Double> myPartialFractiles (const Array<Double>& array,
+Array<double> myPartialFractiles (const Array<double>& array,
 				  const IPosition& axes)
 {
-  return partialFractiles (array, axes, 0.3, False);
+  return partialFractiles (array, axes, 0.3, false);
 }
-Double myFractile (const Array<Double>& array)
+double myFractile (const Array<double>& array)
 {
-  return fractile (array, 0.3, False, False);
+  return fractile (array, 0.3, false, false);
 }
-Array<Double> myPartialHexiles (const Array<Double>& array,
+Array<double> myPartialHexiles (const Array<double>& array,
                                 const IPosition& axes)
 {
-  return partialInterHexileRanges (array, axes, False);
+  return partialInterHexileRanges (array, axes, false);
 }
-Double myHexile (const Array<Double>& array)
+double myHexile (const Array<double>& array)
 {
-  return interHexileRange (array, False, False);
+  return interHexileRange (array, false, false);
 }
-Array<Double> myPartialQuartiles (const Array<Double>& array,
+Array<double> myPartialQuartiles (const Array<double>& array,
                                   const IPosition& axes)
 {
-  return partialInterQuartileRanges (array, axes, False);
+  return partialInterQuartileRanges (array, axes, false);
 }
-Double myQuartile (const Array<Double>& array)
+double myQuartile (const Array<double>& array)
 {
-  return interQuartileRange (array, False, False);
+  return interQuartileRange (array, false, false);
 }
 
 
-Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
+bool doIt1 (PartFunc* partFunc, FullFunc* fullFunc, bool doExtra)
 {
-  Bool errFlag = False;
-  {
-    IPosition shape(2,3,4);
-    Array<Double> arr(shape);
-    indgen(arr);
-    for (Int j=0; j<2; j++) {
-      Vector<Double> res(shape(j));
-      IPosition st(2,0);
-      IPosition end(shape-1);
-      for (Int i=0; i<shape(j); i++) {
-	st(j) = i;
-	end(j) = i;
-	res(i) = fullFunc(arr(st,end));
-      }
-      Array<Double> res2 = partFunc (arr, IPosition(1,1-j));
-      if (! allNear (res, res2, 1.e-5)) {
-	errFlag = True;
-	cout << "for shape " << shape << ", collapse axis " << j << endl;
-	cout << " result is " << res2 << endl;
-	cout << " expected  " << res << endl;
-      }
+  bool errFlag = false;
+  IPosition shape(2,3,4);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<2; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(2,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
     }
-    if (doExtra) {
-      {
-	Array<Double> res2 = partFunc (arr, IPosition());
-	if (! allNear (arr, res2, 1.e-5)) {
-	  errFlag = True;
-	  cout << "for shape " << shape << ", no collapse axis " << endl;
-	  cout << " result is " << res2 << endl;
-	  cout << " expected  " << arr << endl;
-	}
-      }
-      {
-	Array<Double> res2 = partFunc (arr, IPosition(2,0,1));
-	Vector<Double> res(1, fullFunc(arr));
-	if (! allEQ (res, res2)) {
-	  errFlag = True;
-	  cout << "for shape " << shape << ", collapse axis 0,1" << endl;
-	  cout << " result is " << res2 << endl;
-	  cout << " expected  " << res << endl;
-	}
-      }
+    Array<double> res2 = partFunc (arr, IPosition(1,1-j));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
     }
   }
-  {
-    IPosition shape(3,3,4,5);
-    Array<Double> arr(shape);
-    indgen(arr);
-    for (Int j=0; j<3; j++) {
-      Vector<Double> res(shape(j));
-      IPosition st(3,0);
-      IPosition end(shape-1);
-      for (Int i=0; i<shape(j); i++) {
-	st(j) = i;
-	end(j) = i;
-	res(i) = fullFunc(arr(st,end));
-      }
-      Array<Double> res2 = partFunc (arr,
-				     IPosition::otherAxes(3, IPosition(1,j)));
-      if (! allNear (res, res2, 1.e-5)) {
-	errFlag = True;
-	cout << "for shape " << shape << ", collapse axis " << j << endl;
-	cout << " result is " << res2 << endl;
-	cout << " expected  " << res << endl;
+  if (doExtra) {
+    {
+      Array<double> res2 = partFunc (arr, IPosition());
+      if (! allNear (arr, res2, 1.e-5)) {
+        errFlag = true;
       }
     }
-    for (Int j=0; j<3; j++) {
-      for (Int k=j+1; k<3; k++) {
-	IPosition resshape(2,shape(j),shape(k));
-	Array<Double> res(resshape);
-	IPosition st(3,0);
-	IPosition end(shape-1);
-	for (Int i0=0; i0<shape(j); i0++) {
-	  st(j) = i0;
-	  end(j) = i0;
-	  for (Int i1=0; i1<shape(k); i1++) {
-	    st(k) = i1;
-	    end(k) = i1;
-	    res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
-	  }
-	}
-	Array<Double> res2 = partFunc (arr,
-				   IPosition::otherAxes(3, IPosition(2,j,k)));
-	if (! allNear (res, res2, 1.e-5)) {
-	  errFlag = True;
-	  cout << "for shape " << shape
-	       << ", collapse axes " << j << ',' << k << endl;
-	  cout << " result is " << res2 << endl;
-	  cout << " expected  " << res << endl;
-	}
-      }
-    }
-  }
-  {
-    IPosition shape(4,3,4,5,6);
-    Array<Double> arr(shape);
-    indgen(arr);
-    for (Int j=0; j<4; j++) {
-      Vector<Double> res(shape(j));
-      IPosition st(4,0);
-      IPosition end(shape-1);
-      for (Int i=0; i<shape(j); i++) {
-	st(j) = i;
-	end(j) = i;
-	res(i) = fullFunc(arr(st,end));
-      }
-      Array<Double> res2 = partFunc (arr,
-				    IPosition::otherAxes(4, IPosition(1,j)));
-      if (! allNear (res, res2, 1.e-5)) {
-	errFlag = True;
-	cout << "for shape " << shape
-	     << ", collapse axis " << j << endl;
-	cout << " result is " << res2 << endl;
-	cout << " expected  " << res << endl;
-      }
-    }
-    for (Int j=0; j<4; j++) {
-      for (Int k=j+1; k<4; k++) {
-	IPosition resshape(2,shape(j),shape(k));
-	Array<Double> res(resshape);
-	IPosition st(4,0);
-	IPosition end(shape-1);
-	for (Int i0=0; i0<shape(j); i0++) {
-	  st(j) = i0;
-	  end(j) = i0;
-	  for (Int i1=0; i1<shape(k); i1++) {
-	    st(k) = i1;
-	    end(k) = i1;
-	    res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
-	  }
-	}
-	Array<Double> res2 = partFunc (arr,
-				   IPosition::otherAxes(4, IPosition(2,j,k)));
-	if (! allNear (res, res2, 1.e-5)) {
-	  errFlag = True;
-	  cout << "for shape " << shape
-	       << ", collapse axes " << j << ',' << k << endl;
-	  cout << " result is " << res2 << endl;
-	  cout << " expected  " << res << endl;
-	}
-      }
-    }
-    for (Int j0=0; j0<4; j0++) {
-      for (Int j1=j0+1; j1<4; j1++) {
-	for (Int j2=j1+1; j2<4; j2++) {
-	  IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-	  Array<Double> res(resshape);
-	  IPosition st(4,0);
-	  IPosition end(shape-1);
-	  for (Int i0=0; i0<shape(j0); i0++) {
-	    st(j0) = i0;
-	    end(j0) = i0;
-	    for (Int i1=0; i1<shape(j1); i1++) {
-	      st(j1) = i1;
-	      end(j1) = i1;
-	      for (Int i2=0; i2<shape(j2); i2++) {
-		st(j2) = i2;
-		end(j2) = i2;
-		res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
-	      }
-	    }
-	  }
-	  Array<Double> res2 = partFunc (arr,
-			       IPosition::otherAxes(4, IPosition(3,j0,j1,j2)));
-	  if (! allNear (res, res2, 1.e-5)) {
-	    errFlag = True;
-	    cout << "for shape " << shape
-		 << ", collapse axes " << j0 << ','
-		 << j1 << ',' << j2 << endl;
-	    cout << " result is " << res2 << endl;
-	    cout << " expected  " << res << endl;
-	  }
-	}
-      }
-    }
-  }
-  {
-    IPosition shape(5,3,4,5,6,7);
-    Array<Double> arr(shape);
-    indgen(arr);
-    for (Int j=0; j<5; j++) {
-      Vector<Double> res(shape(j));
-      IPosition st(5,0);
-      IPosition end(shape-1);
-      for (Int i=0; i<shape(j); i++) {
-	st(j) = i;
-	end(j) = i;
-	res(i) = fullFunc(arr(st,end));
-      }
-      Array<Double> res2 = partFunc (arr,
-				     IPosition::otherAxes(5, IPosition(1,j)));
-      if (! allNear (res, res2, 1.e-5)) {
-	errFlag = True;
-	cout << "for shape " << shape << ", collapse axis " << j << endl;
-	cout << " result is " << res2 << endl;
-	cout << " expected  " << res << endl;
-      }
-    }
-    for (Int j=0; j<5; j++) {
-      for (Int k=j+1; k<5; k++) {
-	IPosition resshape(2,shape(j),shape(k));
-	Array<Double> res(resshape);
-	IPosition st(5,0);
-	IPosition end(shape-1);
-	for (Int i0=0; i0<shape(j); i0++) {
-	  st(j) = i0;
-	  end(j) = i0;
-	  for (Int i1=0; i1<shape(k); i1++) {
-	    st(k) = i1;
-	    end(k) = i1;
-	    res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
-	  }
-	}
-	Array<Double> res2 = partFunc (arr,
-				   IPosition::otherAxes(5, IPosition(2,j,k)));
-	if (! allNear (res, res2, 1.e-5)) {
-	  errFlag = True;
-	  cout << "for shape " << shape
-	       << ", collapse axes " << j << ',' << k << endl;
-	  cout << " result is " << res2 << endl;
-	  cout << " expected  " << res << endl;
-	}
-      }
-    }
-    for (Int j0=0; j0<5; j0++) {
-      for (Int j1=j0+1; j1<5; j1++) {
-	for (Int j2=j1+1; j2<5; j2++) {
-	  IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-	  Array<Double> res(resshape);
-	  IPosition st(5,0);
-	  IPosition end(shape-1);
-	  for (Int i0=0; i0<shape(j0); i0++) {
-	    st(j0) = i0;
-	      end(j0) = i0;
-	      for (Int i1=0; i1<shape(j1); i1++) {
-		st(j1) = i1;
-		end(j1) = i1;
-		for (Int i2=0; i2<shape(j2); i2++) {
-		  st(j2) = i2;
-		  end(j2) = i2;
-		  res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
-		}
-	      }
-	  }
-	  Array<Double> res2 = partFunc (arr,
-			      IPosition::otherAxes(5, IPosition(3,j0,j1,j2)));
-	  if (! allNear (res, res2, 1.e-5)) {
-	    errFlag = True;
-	    cout << "for shape " << shape 
-		 << ", collapse axes " << j0 << ','
-		 << j1 << ',' << j2 << endl;
-	    cout << " result is " << res2 << endl;
-	    cout << " expected  " << res << endl;
-	  }
-	}
-      }
-    }
-    for (Int j0=0; j0<5; j0++) {
-      for (Int j1=j0+1; j1<5; j1++) {
-	for (Int j2=j1+1; j2<5; j2++) {
-	  for (Int j3=j2+1; j3<5; j3++) {
-	    IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
-	    Array<Double> res(resshape);
-	    IPosition st(5,0);
-	    IPosition end(shape-1);
-	    for (Int i0=0; i0<shape(j0); i0++) {
-	      st(j0) = i0;
-	      end(j0) = i0;
-	      for (Int i1=0; i1<shape(j1); i1++) {
-		st(j1) = i1;
-		end(j1) = i1;
-		for (Int i2=0; i2<shape(j2); i2++) {
-		  st(j2) = i2;
-		  end(j2) = i2;
-		  for (Int i3=0; i3<shape(j3); i3++) {
-		    st(j3) = i3;
-		    end(j3) = i3;
-		    res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
-		  }
-		}
-		}
-	    }
-	    Array<Double> res2 = partFunc (arr,
-			    IPosition::otherAxes(5, IPosition(4,j0,j1,j2,j3)));
-	    if (! allNear (res, res2, 1.e-5)) {
-	      errFlag = True;
-	      cout << "for shape " << shape
-		   << ", collapse axes " << j0 << ','
-		   << j1 << ',' << j2 << ',' << j3 << endl;
-	      cout << " result is " << res2 << endl;
-	      cout << " expected  " << res << endl;
-	    }
-	  }
-	}
-      }
-    }
-  }
-  {
-    IPosition shape(6,3,4,5,6,7,8);
-    Array<Double> arr(shape);
-    indgen(arr);
-    for (Int j=0; j<6; j++) {
-      Vector<Double> res(shape(j));
-      IPosition st(6,0);
-      IPosition end(shape-1);
-      for (Int i=0; i<shape(j); i++) {
-	st(j) = i;
-	end(j) = i;
-	res(i) = fullFunc(arr(st,end));
-      }
-      Array<Double> res2 = partFunc (arr,
-				     IPosition::otherAxes(6, IPosition(1,j)));
-      if (! allNear (res, res2, 5.e-5)) {
-	errFlag = True;
-	cout << "for shape " << shape << ", collapse axis " << j << endl;
-	cout << " result is " << res2 << endl;
-	cout << " expected  " << res << endl;
-      }
-    }
-    for (Int j=0; j<6; j++) {
-      for (Int k=j+1; k<6; k++) {
-	IPosition resshape(2,shape(j),shape(k));
-	Array<Double> res(resshape);
-	IPosition st(6,0);
-	IPosition end(shape-1);
-	for (Int i0=0; i0<shape(j); i0++) {
-	  st(j) = i0;
-	  end(j) = i0;
-	  for (Int i1=0; i1<shape(k); i1++) {
-	    st(k) = i1;
-	    end(k) = i1;
-	      res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
-	  }
-	}
-	Array<Double> res2 = partFunc (arr,
-				   IPosition::otherAxes(6, IPosition(2,j,k)));
-	if (! allNear (res, res2, 1.e-5)) {
-	  errFlag = True;
-	  cout << "for shape " << shape
-	       << ", collapse axes " << j << ',' << k << endl;
-	  cout << " result is " << res2 << endl;
-	  cout << " expected  " << res << endl;
-	}
-      }
-    }
-    for (Int j0=0; j0<6; j0++) {
-      for (Int j1=j0+1; j1<6; j1++) {
-	for (Int j2=j1+1; j2<6; j2++) {
-	  IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-	  Array<Double> res(resshape);
-	  IPosition st(6,0);
-	  IPosition end(shape-1);
-	  for (Int i0=0; i0<shape(j0); i0++) {
-	    st(j0) = i0;
-	    end(j0) = i0;
-	    for (Int i1=0; i1<shape(j1); i1++) {
-	      st(j1) = i1;
-	      end(j1) = i1;
-	      for (Int i2=0; i2<shape(j2); i2++) {
-		st(j2) = i2;
-		end(j2) = i2;
-		res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
-	      }
-	    }
-	  }
-	  Array<Double> res2 = partFunc (arr,
-			       IPosition::otherAxes(6, IPosition(3,j0,j1,j2)));
-	  if (! allNear (res, res2, 1.e-5)) {
-	    errFlag = True;
-	    cout << "for shape " << shape
-		 << ", collapse axes " << j0 << ','
-		 << j1 << ',' << j2 << endl;
-	    cout << " result is " << res2 << endl;
-	    cout << " expected  " << res << endl;
-	  }
-	}
-      }
-    }
-    for (Int j0=0; j0<6; j0++) {
-      for (Int j1=j0+1; j1<6; j1++) {
-	for (Int j2=j1+1; j2<6; j2++) {
-	  for (Int j3=j2+1; j3<6; j3++) {
-	    IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
-	    Array<Double> res(resshape);
-	    IPosition st(6,0);
-	    IPosition end(shape-1);
-	    for (Int i0=0; i0<shape(j0); i0++) {
-	      st(j0) = i0;
-	      end(j0) = i0;
-	      for (Int i1=0; i1<shape(j1); i1++) {
-		st(j1) = i1;
-		end(j1) = i1;
-		for (Int i2=0; i2<shape(j2); i2++) {
-		  st(j2) = i2;
-		  end(j2) = i2;
-		  for (Int i3=0; i3<shape(j3); i3++) {
-		    st(j3) = i3;
-		    end(j3) = i3;
-		    res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
-		  }
-		}
-	      }
-	    }
-	    Array<Double> res2 = partFunc (arr,
-			   IPosition::otherAxes(6, IPosition(4,j0,j1,j2,j3)));
-	    if (! allNear (res, res2, 1.e-5)) {
-	      errFlag = True;
-	      cout << "for shape " << shape
-		   << ", collapse axes " << j0 << ','
-		   << j1 << ',' << j2 << ',' << j3 << endl;
-	      cout << " result is " << res2 << endl;
-	      cout << " expected  " << res << endl;
-	    }
-	  }
-	}
-      }
-    }
-    for (Int j0=0; j0<6; j0++) {
-      for (Int j1=j0+1; j1<6; j1++) {
-	for (Int j2=j1+1; j2<6; j2++) {
-	  for (Int j3=j2+1; j3<6; j3++) {
-	    for (Int j4=j3+1; j4<6; j4++) {
-	      IPosition resshape(5,shape(j0),shape(j1),shape(j2),shape(j3),
-				 shape(j4));
-	      Array<Double> res(resshape);
-	      IPosition st(6,0);
-	      IPosition end(shape-1);
-	      for (Int i0=0; i0<shape(j0); i0++) {
-		st(j0) = i0;
-		end(j0) = i0;
-		for (Int i1=0; i1<shape(j1); i1++) {
-		  st(j1) = i1;
-		  end(j1) = i1;
-		  for (Int i2=0; i2<shape(j2); i2++) {
-		    st(j2) = i2;
-		    end(j2) = i2;
-		    for (Int i3=0; i3<shape(j3); i3++) {
-		      st(j3) = i3;
-		      end(j3) = i3;
-		      for (Int i3=0; i3<shape(j3); i3++) {
-			st(j3) = i3;
-			end(j3) = i3;
-			for (Int i4=0; i4<shape(j4); i4++) {
-			  st(j4) = i4;
-			  end(j4) = i4;
-			  res(IPosition(5,i0,i1,i2,i3,i4)) =
-                                                    fullFunc(arr(st,end));
-			}
-		      }
-		    }
-		  }
-		}
-	      }
-	      Array<Double> res2 = partFunc (arr,
-		        IPosition::otherAxes(6, IPosition(5,j0,j1,j2,j3,j4)));
-	      if (! allNear (res, res2, 1.e-5)) {
-		errFlag = True;
-		cout << "for shape " << shape
-		     << ", collapse axes " << j0 << ','
-		     << j1 << ',' << j2 << ',' << j3 << ',' << j4 << endl;
-		cout << " result is " << res2 << endl;
-		cout << " expected  " << res << endl;
-	      }
-	    }
-	  }
-	}
+    {
+      Array<double> res2 = partFunc (arr, IPosition(2,0,1));
+      Vector<double> res(1, fullFunc(arr));
+      if (! allEQ (res, res2)) {
+        errFlag = true;
       }
     }
   }
   return !errFlag;
 }
 
-int main (int argc, char* [])
+bool doIt2 (PartFunc* partFunc, FullFunc* fullFunc)
 {
-  Bool errFlag = False;
-  try {
-    cout << "Testing partialSums ..." << endl;
-    if (! doIt (&partialSums, &sum, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
+  bool errFlag = false;
+  IPosition shape(3,3,4,5);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<3; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(3,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
     }
-    cout << "Testing partialMeans ..." << endl;
-    if (! doIt (&partialMeans, &mean, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(3, IPosition(1,j)));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
     }
-    cout << "Testing partialVariances ..." << endl;
-    if (! doIt (&myPartialVariances, &myVariance, False)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialStddevs ..." << endl;
-    if (! doIt (&myPartialStddevs, &myStddev, False)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialAvdevs ..." << endl;
-    if (! doIt (&partialAvdevs, &avdev, False)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialRmsss ..." << endl;
-    if (! doIt (&partialRmss, &rms, False)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialMins ..." << endl;
-    if (! doIt (&partialMins, &min, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialMaxs ..." << endl;
-    if (! doIt (&partialMaxs, &max, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialMedians (takeEvenMean=True) ..." << endl;
-    if (! doIt (&myMeanPartialMedians, &myMeanMedian, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialMedians (takeEvenMean=False)..." << endl;
-    if (! doIt (&myNomeanPartialMedians, &myNomeanMedian, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialMadfms (takeEvenMean=True) ..." << endl;
-    if (! doIt (&myMeanPartialMadfms, &myMeanMadfm, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialMadfms (takeEvenMean=False)..." << endl;
-    if (! doIt (&myNomeanPartialMadfms, &myNomeanMadfm, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialFractiles ..." << endl;
-    if (! doIt (&myPartialFractiles, &myFractile, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialHexile ..." << endl;
-    if (! doIt (&myPartialHexiles, &myHexile, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    cout << "Testing partialQuartile ..." << endl;
-    if (! doIt (&myPartialQuartiles, &myQuartile, True)) {
-      cout << "  erroneous" << endl;
-      errFlag = True;
-    }
-    if (argc > 1) {
-      // Test performance.
-      for (Int cnt=0; cnt<2; cnt++) {
-        cout << ">>>" << endl;
-        IPosition shape;
-        if (cnt == 0) {
-          shape = IPosition(2,3000,3000);
-          cout << " Performance on [3000,3000]";
-        } else if (cnt == 1) {
-          shape = IPosition(2,300,30000);
-          cout << " Performance on [300,30000]";
-        } else {
-          shape = IPosition(2,30000,300);
-          cout << " Performance on [30000,300]";
+  }
+  for (int j=0; j<3; j++) {
+    for (int k=j+1; k<3; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
+      IPosition st(3,0);
+      IPosition end(shape-1);
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
         }
-        cout << " for collapseaxis 1 and 0..." << endl;
-        Timer timer;
-        Array<Double> arr(shape);
-        indgen(arr);
-        for (Int j=0; j<2; j++) {
-          {
-            timer.mark();
-            Array<Double> res2 = partialSums (arr, IPosition(1,1-j));
-            timer.show("partialSums   ");
-            timer.mark();
-            Vector<Double> res(shape(j));
-            IPosition st(2,0);
-            IPosition end(shape-1);
-            for (Int i=0; i<shape(j); i++) {
-              st(j) = i;
-              end(j) = i;
-              res(i) = sum(arr(st,end));
-            }
-            timer.show("Using sum     ");
-            Array<Double> rs = abs(res-res2)/res2;
-            Double mn,mx;
-            IPosition mnpos, mxpos;
-            minMax(mn, mx, mnpos, mxpos, rs);
-            cout << "Maximum result diff = " << rs(mxpos) << " at "
-                 << mxpos << " (" << res(mxpos) << " and "
-                 << res2(mxpos) << ')' << endl;
-            AlwaysAssertExit (allNear (res, res2, 1.e-7));
-          }
-          {
-            timer.mark();
-            Array<Double> res2 = partialMedians (arr, IPosition(1,1-j));
-            timer.show("partialMedians");
-            timer.mark();
-            Vector<Double> res(shape(j));
-            IPosition st(2,0);
-            IPosition end(shape-1);
-            for (Int i=0; i<shape(j); i++) {
-              st(j) = i;
-              end(j) = i;
-              res(i) = median(arr(st,end), False, False);
-            }
-            timer.show("Using median  ");
-            Array<Double> rs = abs(res-res2)/res2;
-            Double mn,mx;
-            IPosition mnpos, mxpos;
-            minMax(mn, mx, mnpos, mxpos, rs);
-            cout << "Maximum result diff = " << rs(mxpos) << " at " << mxpos
-                 << " (" << res(mxpos) << " and " << res2(mxpos) << ')' << endl;
-            AlwaysAssertExit (allNear (res, res2, 1.e-6));
-          }
-        }
-        cout << "<<<" << endl;
+      }
+      Array<double> res2 = partFunc (arr,
+                                      IPosition::otherAxes(3, IPosition(2,j,k)));
+      if (! allNear (res, res2, 1.e-5)) {
+        errFlag = true;
       }
     }
-  } catch (const AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
-    return 1;
   }
-  if (errFlag) {
-    cout << "  erroneous run" << endl;
-    return 1;
-  }
-  cout << "OK" << endl;
-  return 0;
+  return !errFlag;
 }
+
+bool doIt3 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(4,3,4,5,6);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<4; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(4,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(4, IPosition(1,j)));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
+    }
+  }
+  for (int j=0; j<4; j++) {
+    for (int k=j+1; k<4; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
+      IPosition st(4,0);
+      IPosition end(shape-1);
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
+      }
+      Array<double> res2 = partFunc (arr,
+                                      IPosition::otherAxes(4, IPosition(2,j,k)));
+      if (! allNear (res, res2, 1.e-5)) {
+        errFlag = true;
+      }
+    }
+  }
+  for (int j0=0; j0<4; j0++) {
+    for (int j1=j0+1; j1<4; j1++) {
+      for (int j2=j1+1; j2<4; j2++) {
+        IPosition resshape(3,shape(j0),shape(j1),shape(j2));
+        Array<double> res(resshape);
+        IPosition st(4,0);
+        IPosition end(shape-1);
+        for (int i0=0; i0<shape(j0); i0++) {
+          st(j0) = i0;
+          end(j0) = i0;
+          for (int i1=0; i1<shape(j1); i1++) {
+            st(j1) = i1;
+            end(j1) = i1;
+            for (int i2=0; i2<shape(j2); i2++) {
+              st(j2) = i2;
+              end(j2) = i2;
+              res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+            }
+          }
+        }
+        Array<double> res2 = partFunc (arr,
+                                        IPosition::otherAxes(4, IPosition(3,j0,j1,j2)));
+        if (! allNear (res, res2, 1.e-5)) {
+          errFlag = true;
+        }
+      }
+    }
+  }
+  return !errFlag;
+}
+
+bool doIt4 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(5,2,2,2,2,2);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<5; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(5,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(5, IPosition(1,j)));
+    if (! allNear (res, res2, 1.e-5)) {
+      errFlag = true;
+    }
+  }
+  for (int j=0; j<5; j++) {
+    for (int k=j+1; k<5; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
+      IPosition st(5,0);
+      IPosition end(shape-1);
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
+      }
+      Array<double> res2 = partFunc (arr,
+                                      IPosition::otherAxes(5, IPosition(2,j,k)));
+      if (! allNear (res, res2, 1.e-5)) {
+        errFlag = true;
+      }
+    }
+  }
+  for (int j0=0; j0<5; j0++) {
+    for (int j1=j0+1; j1<5; j1++) {
+      for (int j2=j1+1; j2<5; j2++) {
+        IPosition resshape(3,shape(j0),shape(j1),shape(j2));
+        Array<double> res(resshape);
+        IPosition st(5,0);
+        IPosition end(shape-1);
+        for (int i0=0; i0<shape(j0); i0++) {
+          st(j0) = i0;
+          end(j0) = i0;
+          for (int i1=0; i1<shape(j1); i1++) {
+            st(j1) = i1;
+            end(j1) = i1;
+            for (int i2=0; i2<shape(j2); i2++) {
+              st(j2) = i2;
+              end(j2) = i2;
+              res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+            }
+          }
+        }
+        Array<double> res2 = partFunc (arr,
+                                        IPosition::otherAxes(5, IPosition(3,j0,j1,j2)));
+        if (! allNear (res, res2, 1.e-5)) {
+          errFlag = true;
+        }
+      }
+    }
+  }
+  for (int j0=0; j0<5; j0++) {
+    for (int j1=j0+1; j1<5; j1++) {
+      for (int j2=j1+1; j2<5; j2++) {
+        for (int j3=j2+1; j3<5; j3++) {
+          IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
+          Array<double> res(resshape);
+          IPosition st(5,0);
+          IPosition end(shape-1);
+          for (int i0=0; i0<shape(j0); i0++) {
+            st(j0) = i0;
+            end(j0) = i0;
+            for (int i1=0; i1<shape(j1); i1++) {
+              st(j1) = i1;
+              end(j1) = i1;
+              for (int i2=0; i2<shape(j2); i2++) {
+                st(j2) = i2;
+                end(j2) = i2;
+                for (int i3=0; i3<shape(j3); i3++) {
+                  st(j3) = i3;
+                  end(j3) = i3;
+                  res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
+                }
+              }
+            }
+          }
+          Array<double> res2 = partFunc (arr,
+                                          IPosition::otherAxes(5, IPosition(4,j0,j1,j2,j3)));
+          if (! allNear (res, res2, 1.e-5)) {
+            errFlag = true;
+          }
+        }
+      }
+    }
+  }
+  return !errFlag;
+}
+
+bool doIt5 (PartFunc* partFunc, FullFunc* fullFunc)
+{
+  bool errFlag = false;
+  IPosition shape(6,2,2,2,2,2,2);
+  Array<double> arr(shape);
+  indgen(arr);
+  for (int j=0; j<6; j++) {
+    Vector<double> res(shape(j));
+    IPosition st(6,0);
+    IPosition end(shape-1);
+    for (int i=0; i<shape(j); i++) {
+      st(j) = i;
+      end(j) = i;
+      res(i) = fullFunc(arr(st,end));
+    }
+    Array<double> res2 = partFunc (arr,
+                                    IPosition::otherAxes(6, IPosition(1,j)));
+    if (! allNear (res, res2, 5.e-5)) {
+      errFlag = true;
+    }
+  }
+  for (int j=0; j<6; j++) {
+    for (int k=j+1; k<6; k++) {
+      IPosition resshape(2,shape(j),shape(k));
+      Array<double> res(resshape);
+      IPosition st(6,0);
+      IPosition end(shape-1);
+      for (int i0=0; i0<shape(j); i0++) {
+        st(j) = i0;
+        end(j) = i0;
+        for (int i1=0; i1<shape(k); i1++) {
+          st(k) = i1;
+          end(k) = i1;
+          res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
+        }
+      }
+      Array<double> res2 = partFunc (arr,
+                                      IPosition::otherAxes(6, IPosition(2,j,k)));
+      if (! allNear (res, res2, 1.e-5)) {
+        errFlag = true;
+      }
+    }
+  }
+  for (int j0=0; j0<6; j0++) {
+    for (int j1=j0+1; j1<6; j1++) {
+      for (int j2=j1+1; j2<6; j2++) {
+        IPosition resshape(3,shape(j0),shape(j1),shape(j2));
+        Array<double> res(resshape);
+        IPosition st(6,0);
+        IPosition end(shape-1);
+        for (int i0=0; i0<shape(j0); i0++) {
+          st(j0) = i0;
+          end(j0) = i0;
+          for (int i1=0; i1<shape(j1); i1++) {
+            st(j1) = i1;
+            end(j1) = i1;
+            for (int i2=0; i2<shape(j2); i2++) {
+              st(j2) = i2;
+              end(j2) = i2;
+              res(IPosition(3,i0,i1,i2)) = fullFunc(arr(st,end));
+            }
+          }
+        }
+        Array<double> res2 = partFunc (arr,
+                                        IPosition::otherAxes(6, IPosition(3,j0,j1,j2)));
+        if (! allNear (res, res2, 1.e-5)) {
+          errFlag = true;
+        }
+      }
+    }
+  }
+  for (int j0=0; j0<6; j0++) {
+    for (int j1=j0+1; j1<6; j1++) {
+      for (int j2=j1+1; j2<6; j2++) {
+        for (int j3=j2+1; j3<6; j3++) {
+          IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
+          Array<double> res(resshape);
+          IPosition st(6,0);
+          IPosition end(shape-1);
+          for (int i0=0; i0<shape(j0); i0++) {
+            st(j0) = i0;
+            end(j0) = i0;
+            for (int i1=0; i1<shape(j1); i1++) {
+              st(j1) = i1;
+              end(j1) = i1;
+              for (int i2=0; i2<shape(j2); i2++) {
+                st(j2) = i2;
+                end(j2) = i2;
+                for (int i3=0; i3<shape(j3); i3++) {
+                  st(j3) = i3;
+                  end(j3) = i3;
+                  res(IPosition(4,i0,i1,i2,i3)) = fullFunc(arr(st,end));
+                }
+              }
+            }
+          }
+          Array<double> res2 = partFunc (arr,
+                                          IPosition::otherAxes(6, IPosition(4,j0,j1,j2,j3)));
+          if (! allNear (res, res2, 1.e-5)) {
+            errFlag = true;
+          }
+        }
+      }
+    }
+  }
+  for (int j0=0; j0<6; j0++) {
+    for (int j1=j0+1; j1<6; j1++) {
+      for (int j2=j1+1; j2<6; j2++) {
+        for (int j3=j2+1; j3<6; j3++) {
+          for (int j4=j3+1; j4<6; j4++) {
+            IPosition resshape(5,shape(j0),shape(j1),shape(j2),shape(j3),
+                                shape(j4));
+            Array<double> res(resshape);
+            IPosition st(6,0);
+            IPosition end(shape-1);
+            for (int i0=0; i0<shape(j0); i0++) {
+              st(j0) = i0;
+              end(j0) = i0;
+              for (int i1=0; i1<shape(j1); i1++) {
+                st(j1) = i1;
+                end(j1) = i1;
+                for (int i2=0; i2<shape(j2); i2++) {
+                  st(j2) = i2;
+                  end(j2) = i2;
+                  for (int i3=0; i3<shape(j3); i3++) {
+                    st(j3) = i3;
+                    end(j3) = i3;
+                    for (int i3=0; i3<shape(j3); i3++) {
+                      st(j3) = i3;
+                      end(j3) = i3;
+                      for (int i4=0; i4<shape(j4); i4++) {
+                        st(j4) = i4;
+                        end(j4) = i4;
+                        res(IPosition(5,i0,i1,i2,i3,i4)) =
+                        fullFunc(arr(st,end));
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            Array<double> res2 = partFunc (arr,
+                                            IPosition::otherAxes(6, IPosition(5,j0,j1,j2,j3,j4)));
+            if (! allNear (res, res2, 1.e-5)) {
+              errFlag = true;
+            }
+          }
+        }
+      }
+    }
+  }
+  return !errFlag;
+}
+
+bool doIt (PartFunc* partFunc, FullFunc* fullFunc, bool extra)
+{
+  bool success = true;
+  if(!doIt1(partFunc, fullFunc, extra))
+    success = false;
+  if(!doIt2(partFunc, fullFunc))
+    success = false;
+  if(!doIt3(partFunc, fullFunc))
+    success = false;
+  if(!doIt4(partFunc, fullFunc))
+    success = false;
+  if(!doIt5(partFunc, fullFunc))
+    success = false;
+  return success;
+}
+
+BOOST_AUTO_TEST_CASE(partial_sums)
+{
+  BOOST_CHECK(doIt (&partialSums, &sum, true));
+}
+
+BOOST_AUTO_TEST_CASE(partial_means)
+{
+  BOOST_CHECK(doIt (&partialMeans, &mean, true));
+}
+
+BOOST_AUTO_TEST_CASE(partial_variances)
+{
+  BOOST_CHECK(doIt (&myPartialVariances, &myVariance, false));
+}
+BOOST_AUTO_TEST_CASE(partial_avdevs)
+{
+  BOOST_CHECK(doIt (&partialAvdevs, &avdev, false));
+}
+BOOST_AUTO_TEST_CASE(partial_stddevs)
+{
+  BOOST_CHECK(doIt (&myPartialStddevs, &myStddev, false));
+}
+BOOST_AUTO_TEST_CASE(partial_rmss)
+{
+  BOOST_CHECK(doIt (&partialRmss, &rms, false));
+}
+BOOST_AUTO_TEST_CASE(partial_mins)
+{
+  BOOST_CHECK(doIt (&partialMins, &min, true));
+}
+BOOST_AUTO_TEST_CASE(partial_max)
+{
+  BOOST_CHECK(doIt (&partialMaxs, &max, true));
+}
+BOOST_AUTO_TEST_CASE(partial_medians_even)
+{
+  BOOST_CHECK(doIt (&myMeanPartialMedians, &myMeanMedian, true));
+}
+BOOST_AUTO_TEST_CASE(partial_medians_noteven)
+{
+  BOOST_CHECK(doIt (&myNomeanPartialMedians, &myNomeanMedian, true));
+}
+BOOST_AUTO_TEST_CASE(partial_madfms_even)
+{
+  BOOST_CHECK(doIt (&myMeanPartialMadfms, &myMeanMadfm, true));
+}
+BOOST_AUTO_TEST_CASE(partial_madfms_noteven)
+{
+  BOOST_CHECK(doIt (&myNomeanPartialMadfms, &myNomeanMadfm, true));
+}
+BOOST_AUTO_TEST_CASE(partial_fractiles)
+{
+  BOOST_CHECK(doIt (&myPartialFractiles, &myFractile, true));
+}
+BOOST_AUTO_TEST_CASE(partial_hexile)
+{
+  BOOST_CHECK(doIt (&myPartialHexiles, &myHexile, true));
+}
+BOOST_AUTO_TEST_CASE(partial_quartile)
+{
+  BOOST_CHECK(doIt (&myPartialQuartiles, &myQuartile, true));
+}
+
+BOOST_AUTO_TEST_SUITE_END()

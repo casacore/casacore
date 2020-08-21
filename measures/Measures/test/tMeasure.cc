@@ -398,8 +398,8 @@ int main()
 	
     };	
 
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
     try {
@@ -412,8 +412,8 @@ int main()
         MeasFrame mftbm(tbm);
 	cout << mftbm << endl;
 
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
     try {
@@ -724,9 +724,9 @@ int main()
 	    MFrequency::showType(MFrequency::Undefined) << " should not be possible." << endl;
 	  isok = False;
 	}
-	catch(const AipsError& x){
+	catch(const std::exception& x){
 	  // expected error
-	  cout << x.getMesg() << endl;
+	  cout << x.what() << endl;
 	}
         try {
 	  MFrequency::Convert backw;
@@ -736,9 +736,9 @@ int main()
 	  cout << MFrequency::showType(MFrequency::Undefined) << " to " <<
 	    MFrequency::showType(i) << " should not be possible." << endl;
 	}
-	catch(const AipsError& x){
+	catch(const std::exception& x){
 	  // expected error
-	  cout << x.getMesg() << endl;
+	  cout << x.what() << endl;
 	}
 	  
       };
@@ -819,8 +819,8 @@ int main()
       };
     }
 
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
 
     return 0;

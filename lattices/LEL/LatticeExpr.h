@@ -35,11 +35,11 @@
 #include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template <class T> class Array;
 template <class T> class LELArray;
 
 

@@ -197,6 +197,21 @@ public:
   virtual int comp(const void * obj1, const void * obj2) const;
 };
 
+// <summary>Comparison class that is always true</summary>
+
+// <synopsis>
+// This class is meant to always give true and can be used to ensure
+// that all the values of a given column are grouped together.
+// </synopsis>
+class CompareAlwaysTrue : public BaseCompare
+{
+public:
+  virtual ~CompareAlwaysTrue();
+
+  // Comparison function that gives always true
+  virtual int comp(const void * obj1, const void * obj2) const;
+};
+
 
 } //# NAMESPACE CASACORE - END
 

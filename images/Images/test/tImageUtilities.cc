@@ -28,7 +28,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Quanta/QLogical.h>
 
@@ -245,8 +245,8 @@ int main()
     doBin();
     doTypes();
     doOpens();
-  } catch (const AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }
   cout << "OK" << endl;

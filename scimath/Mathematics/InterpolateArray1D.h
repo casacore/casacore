@@ -28,16 +28,13 @@
 #ifndef SCIMATH_INTERPOLATEARRAY1D_H
 #define SCIMATH_INTERPOLATEARRAY1D_H
 
-
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class PtrBlock;
 template <class T> class Block;
-template <class T> class Array;
-template <class T> class Vector;
-template <class T> class Cube;
 
 // <summary> Interpolate in one dimension </summary>
  

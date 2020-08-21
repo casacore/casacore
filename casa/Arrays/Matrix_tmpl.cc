@@ -26,14 +26,12 @@
 //# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 //# Includes
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/MatrixMath.h>
+#include "Matrix.h"
+#include "MatrixMath.h"
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class Matrix<Bool>;
-  template class Matrix<Float>;
-  template class Matrix<Double>;
-  template class Matrix<Complex>;
-  template class Matrix<DComplex>;
+  template class Matrix<bool>;
+  template class Matrix<float>;
+  template class Matrix<double>;
 }

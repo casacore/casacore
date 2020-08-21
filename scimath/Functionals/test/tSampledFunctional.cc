@@ -34,6 +34,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/iostream.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 #include <casacore/casa/namespace.h>
 int main() {

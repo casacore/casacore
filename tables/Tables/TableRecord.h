@@ -36,11 +36,11 @@
 #include <casacore/tables/Tables/TableRecordRep.h>
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-template<class T> class Array;
 class IPosition;
 class AipsIO;
 class TableLock;

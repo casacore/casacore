@@ -25,16 +25,14 @@
 //#
 //# $Id$
 
-#ifndef CASA_LOGIMATRIX_H
-#define CASA_LOGIMATRIX_H
+#ifndef CASA_LOGIMATRIX_2_H
+#define CASA_LOGIMATRIX_2_H
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/LogiArray.h>
-#include <casacore/casa/Arrays/Matrix.h>
-
+#include "LogiArray.h"
+#include "Matrix.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+ 
 // <summary>
 //    Logical valued Matrices.
 // </summary>
@@ -43,7 +41,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>
 //   <li> <linkto class=Matrix>Matrix</linkto>
-//   <li> <linkto group="LogiArrayFwd.h#LogicalArray forwards">LogicalArrayFwd</linkto>
 //   <li> <linkto group="LogiArray.h#LogicalArray">LogicalArray</linkto>
 // </prerequisite>
 //

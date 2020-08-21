@@ -724,7 +724,7 @@ namespace casacore {
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
@@ -812,7 +812,7 @@ void readTable()
   // Create and initialize expected data and weight.
   Array<Complex> dataExp(IPosition(2,npol,nchan));
   indgen (dataExp, Complex(0, 0.5));
-  Array<Float> weightExp(IPosition(2,1,nchan), 0.);
+  Array<Float> weightExp(IPosition(2,1,nchan), 0.f);
   // Loop through all rows in the table and check the data.
   uInt row=0;
   for (uInt i=0; i<ntime; ++i) {

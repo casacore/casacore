@@ -2,7 +2,7 @@
 # CASA Scimath
 #
 
-add_library (casa_scimath
+set (buildfiles
 Fitting/FittingProxy.cc
 Fitting/LSQFit.cc
 Fitting/LSQFit3.cc
@@ -14,7 +14,6 @@ Functionals/FunctionFactoryErrors.cc
 Functionals/FunctionalProxy.cc
 Functionals/SerialHelper.cc
 Mathematics/Combinatorics.cc
-Mathematics/FFTPack.cc
 Mathematics/FFTServer.cc
 Mathematics/FFTW.cc
 Mathematics/GaussianBeam.cc
@@ -35,6 +34,18 @@ StatsFramework/ClassicalStatisticsData.cc
 StatsFramework/StatisticsData.cc
 StatsFramework/ZScoreCalculator.cc
 )
+
+if (BUILD_FFTPACK_DEPRECATED)
+    list (APPEND buildfiles
+         Mathematics/FFTPack.cc
+    )
+    install (FILES
+       Mathematics/FFTPack.h
+       DESTINATION include/casacore/scimath/Mathematics
+    )
+endif ()
+
+add_library (casa_scimath ${buildfiles})
 
 if (FFTW3_FOUND)
     target_link_libraries (casa_scimath casa_scimath_f ${FFTW3_LIBRARIES} ${CASACORE_ARCH_LIBS})
@@ -236,7 +247,6 @@ Mathematics/Convolver.h
 Mathematics/Convolver.tcc
 Mathematics/DFTServer.h
 Mathematics/DFTServer.tcc
-Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
 Mathematics/GaussianBeam.h

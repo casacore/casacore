@@ -36,6 +36,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/LinearSearch.h>
 #include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 #include <casacore/casa/sstream.h>
 
@@ -198,7 +199,7 @@ Quality::QualityTypes QualityCoordinate::toWorld (Double world)
 Vector<Int> QualityCoordinate::quality() const
 {
 	// tested: tQualityCoordinate: 257, 435
-    return Vector<Int>(values_p);
+    return Vector<Int>(values_p.begin(), values_p.end());
 }
 
 
@@ -219,7 +220,7 @@ void QualityCoordinate::setQuality (const Vector<Int> &whichQuality)
 
     //
     values_p.resize(whichQuality.nelements());
-    whichQuality.toBlock(values_p);
+    values_p = makeBlock(whichQuality);
     nValues_p = values_p.nelements();
 
     //

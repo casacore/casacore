@@ -38,12 +38,12 @@
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/ObsInfo.h>
 #include <casacore/images/Images/ImageInfo.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ImageInterface;
-template <class T> class Vector;
 class IPosition;
 class Unit;
 class LogIO;

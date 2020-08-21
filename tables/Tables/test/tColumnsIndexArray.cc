@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/OS/Timer.h>
@@ -122,8 +122,8 @@ void b()
   // Test a not unique index in an erroneous way.
   try {
     colInx9.getRowNumber(found);
-  } catch (AipsError& x) {
-    cout << x.getMesg() << endl;       // values are not unique
+  } catch (std::exception& x) {
+    cout << x.what() << endl;       // values are not unique
   } 
   // Test a range.
   Record lower, upper;
@@ -176,8 +176,8 @@ int main()
     a();
     b();
     c();
-  } catch (AipsError& x) {
-    cout << "Exception caught: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Exception caught: " << x.what() << endl;
     return 1;
   } 
   return 0;

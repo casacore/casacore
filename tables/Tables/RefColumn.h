@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/Tables/ColumnCache.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -42,7 +43,6 @@ class BaseColumnDesc;
 class TableRecord;
 class Slicer;
 class IPosition;
-template<class T> class Vector;
 
 
 // <summary>

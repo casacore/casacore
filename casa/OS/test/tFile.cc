@@ -101,8 +101,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    exist2.userID();
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;
 	} 
     }
 
@@ -179,8 +179,8 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

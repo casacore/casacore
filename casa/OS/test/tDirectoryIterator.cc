@@ -86,13 +86,13 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    iter.name();
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // past end
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // past end
 	} 
 	try {
 	    iter++;
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // past end
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // past end
 	} 
     }
     iter.reset();
@@ -115,8 +115,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    DirectoryIterator iter1 (Directory("tDirectoryIterator_tmp/sub"));
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;               // not existing
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;               // not existing
 	} 
     }
 }
@@ -126,8 +126,8 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

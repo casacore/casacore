@@ -272,8 +272,8 @@ int main() {
       AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
     }
     testTempClose();
-  } catch (AipsError& x) {
-    cerr << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << x.what() << endl;
     return 1;
   } 
   cout<< "OK"<< endl;

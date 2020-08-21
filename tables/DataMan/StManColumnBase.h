@@ -32,13 +32,10 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManagerColumn.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/DataType.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations
-template<class T> class Vector;
-
 
 // <summary>
 // Base table column storage manager class

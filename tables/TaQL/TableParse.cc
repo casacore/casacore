@@ -57,7 +57,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Sort.h>
 #include <casacore/casa/Utilities/GenSort.h>
@@ -2852,8 +2852,8 @@ Table TableParseSelect::doInsert (Bool showTimings, Table& table)
   Vector<rownr_t> rownrs(sel.nrow());
   indgen (rownrs, rownr);     // fill with rownr, rownr+1, etc.
   Table tab = table(rownrs);
-  TableRow rowto (tab, Vector<String>(columnNames_p));
-  ROTableRow rowfrom (sel, Vector<String>(sourceNames));
+  TableRow rowto (tab, Vector<String>(columnNames_p.begin(), columnNames_p.end()));
+  ROTableRow rowfrom (sel, Vector<String>(sourceNames.begin(), sourceNames.end()));
   for (rownr_t i=0; i<sel.nrow(); i++) {
     rowto.put (i, rowfrom.get(i), False);
   }

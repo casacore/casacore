@@ -39,7 +39,7 @@
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <iostream>
 #include <sstream>
 
@@ -226,6 +226,73 @@ void iter2MSMemory (double binwidth)
   }
 }
 
+// This test exercises the generic sorting function constructor
+// with a trivial comparison which always compares two values equal.
+// The result is that all the rows are grouped together.
+void iterMSGenericSortFuncAlwaysTrue ()
+{
+  MeasurementSet ms("tMSIter_tmp.ms");
+  CountedPtr<BaseCompare> alwaysTrue(new CompareAlwaysTrue());
+  std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+  sortCols.push_back(std::make_pair("ANTENNA1", alwaysTrue));
+  MSIter msIter(ms, sortCols);
+  size_t niter = 0;
+  for (msIter.origin(); msIter.more(); msIter++) {
+    cout << "nrow=" << msIter.table().nrow()<<endl;
+    niter++;
+  }
+  AlwaysAssertExit(niter == 1);
+}
+
+class CompareAntennaGrouping : public BaseCompare
+{
+public:
+  virtual ~CompareAntennaGrouping()
+  {
+  }
+
+  // Comparison function that groups together antenna 0 and 1
+  // and antenna 2 on a different group
+  virtual int comp(const void * obj1, const void * obj2) const
+  {
+    const Int& v1 = *static_cast<const Int*>(obj1);
+    const Int& v2 = *static_cast<const Int*>(obj2);
+    double v1_c, v2_c;
+    if( v1 == 0 || v1 == 1)
+      v1_c = 0.5;
+    else
+      v1_c = v1;
+    if( v2 == 0 || v2 == 1)
+      v2_c = 0.5;
+    else
+      v2_c = v2;
+    return (v1_c == v2_c ? 0 : (v1_c < v2_c ? -1 : 1));
+  }
+};
+
+// This test exercises the generic sorting function constructor
+// with a comparison function that groups together antennas 0 and 1
+// and leaves antenna 2 in a different group
+void iterMSGenericSortFuncAntennaGrouping ()
+{
+  MeasurementSet ms("tMSIter_tmp.ms");
+  CountedPtr<BaseCompare> antennaCluster(new CompareAntennaGrouping());
+  std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+  sortCols.push_back(std::make_pair("ANTENNA1", antennaCluster));
+  MSIter msIter(ms, sortCols);
+  size_t nAnt01 = 0;
+  size_t nAnt2 = 0;
+  for (msIter.origin(); msIter.more(); msIter++) {
+    cout << "nrow=" << msIter.table().nrow()<<endl;
+    Int antenna =  ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0);
+    if(antenna == 0 || antenna == 1)
+      nAnt01 += msIter.table().nrow();
+    else
+      nAnt2 += msIter.table().nrow();
+  }
+  AlwaysAssertExit(nAnt01 == 25);
+  AlwaysAssertExit(nAnt2 == 5);
+}
 
 int main (int argc, char* argv[])
 {
@@ -258,6 +325,10 @@ int main (int argc, char* argv[])
     iter2MS(binwidth);
     cout << "########" << endl;
     iter2MSMemory(binwidth);
+    cout << "########" << endl;
+    iterMSGenericSortFuncAlwaysTrue();
+    cout << "########" << endl;
+    iterMSGenericSortFuncAntennaGrouping();
   } catch (std::exception& x) {
     cerr << "Unexpected exception: " << x.what() << endl;
     return 1;

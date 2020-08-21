@@ -42,8 +42,8 @@ int main() {
     		x *= 10;
     	}
     }
-    catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+    catch (const std::exception& x) {
+        cout << x.what() << endl;
         return 1;
     } 
     return 0;

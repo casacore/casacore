@@ -35,6 +35,7 @@
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/TaQLResult.h>
 #include <casacore/tables/TaQL/ExprGroup.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Sort.h>
 #include <casacore/casa/Containers/Record.h>
@@ -51,7 +52,6 @@ class TableExprNodeSetElem;
 class TableExprNodeIndex;
 class TableColumn;
 class AipsIO;
-template<class T> class Vector;
 template<class T> class ArrayColumn;
 
 

@@ -30,13 +30,12 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
-template <typename T> class Vector;
-template <typename T> class Matrix;
 class String;
 
 // <summary>

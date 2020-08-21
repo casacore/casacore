@@ -25,211 +25,149 @@
 //#
 //# $Id$
 
-//# If AIPS_DEBUG is not set, the Assert's won't be called.
-#if !defined(AIPS_DEBUG)
-#define AIPS_DEBUG
-#endif
+#include "../IPosition.h"
+#include "../Array.h"
+#include "../ArrayMath.h"
+#include "../ArrayLogical.h"
+//#include "../ArrayIO.h"
+#include "../Vector.h"
+#include "../Matrix.h"
+#include "../Cube.h"
+#include "../ArrayError.h"
+#include "../MaskedArray.h"
+#include "../MaskArrMath.h"
 
-//# For extra debugging
-#if !defined(AIPS_ARRAY_INDEX_CHECK)
-#define AIPS_ARRAY_INDEX_CHECK
-#endif
+#include "TestUtilities.h"
 
-#include <casacore/casa/iostream.h>
+#include <boost/test/unit_test.hpp>
 
-#include <casacore/casa/aips.h>
-#include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Assert.h>
+#include <initializer_list>
 
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Cube.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/MaskedArray.h>
-#include <casacore/casa/Arrays/MaskArrMath.h>
+using namespace casacore;
 
+BOOST_AUTO_TEST_SUITE(masked_array_math0)
 
-#include <casacore/casa/namespace.h>
-
-int main()
+struct Fixture
 {
-    try {
-        {
-            cout << endl << "Testing MaskArrMath0." << endl;
+  Vector<int> f, g, h;
+  Vector<bool> b;
+  
+  Fixture() : f(10), g(10), h(10), b(10)
+  {
+    indgen (f);
+  }
+};
 
-// Math
-
-            {
-
-            Vector<Int> f(10), g(10), h(10);
-            Vector<Bool> b(10);
-
-            indgen (f);
-            cout << endl << "f=indgen(f) = " << endl;
-            cout << f << endl;
-
-
-            {
-
-                b = (f<3);
-                cout << endl << "b=(f<3) = " << endl;
-                cout << b << endl;
-
-                MaskedArray<Int> m(h,b);
-
-                h = 0;
-                indgen (m);
-                cout << endl << "h=0; indgen( m(h,b) ); h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                cout << endl << "((f>3) && (f<7)) = " << endl;
-                cout << ((f>3) && (f<7)) << endl;
-
-		MaskedArray<Int> m( h( ((f>3) && (f<7)) ) );
-
-                h = 0;
-		indgen (m, 10);
-                cout << endl << "h=0; indgen( h( ((f>3) && (f<7)) ), 10 ); h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>2);
-                cout << endl << "b=(f>2) = " << endl;
-                cout << b << endl;
-
-                MaskedArray<Int> m(h,b);
-
-                h = 1;
-                m += 5;
-                cout << endl << "h=1; m(h,b) += 5; h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>2);
-                cout << endl << "b=(f>2) = " << endl;
-                cout << b << endl;
-
-                h = 1;
-                h(b) += 5;
-                cout << endl << "h=1; h(b) += 5; h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>2);
-                cout << endl << "b=(f>2) = " << endl;
-                cout << b << endl;
-
-                MaskedArray<Int> m(h,b);
-
-                h = -1;
-                m += f;
-                cout << endl << "h=-1; m(h,b) += f; h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>2);
-                cout << endl << "b=(f>2) = " << endl;
-                cout << b << endl;
-
-                h = -1;
-                h(b) += f;
-                cout << endl << "h=-1; h(b) += f; h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>4);
-                cout << endl << "b=(f>4) = " << endl;
-                cout << b << endl;
-
-                MaskedArray<Int> m(f,b);
-
-                indgen (h);
-                cout << endl << "h=indgen(h) = " << endl;
-                cout << h << endl;
-
-                h += m;
-                cout << endl << "h += m(f,b); h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>3);
-                cout << endl << "b=(f>3) = " << endl;
-                cout << b << endl;
-
-                Vector<Bool> c(10);
-                c = (f<8);
-                cout << endl << "c=(f<8) = " << endl;
-                cout << c << endl;
-
-                MaskedArray<Int> m(h,b), n(f,c);
-
-                h = -1;
-                m += n;
-                cout << endl << "h=-1; m(h,b) += n(f,c); h= " << endl;
-                cout << h << endl;
-
-            }
-
-            {
-
-                b = (f>3);
-                cout << endl << "b=(f>3) = " << endl;
-                cout << b << endl;
-
-                Vector<Bool> c(10);
-                c = (f<8);
-                cout << endl << "c=(f<8) = " << endl;
-                cout << c << endl;
-
-                MaskedArray<Int> n(f,c);
-
-                h = -1;
-                h(b) += n;
-                cout << endl << "h=-1; h(b) += n(f,c); h= " << endl;
-                cout << h << endl;
-
-            }
-
-
-            }
-
-// End Math
-
-            cout << endl << "OK" << endl;
-        }
-    } catch (AipsError& x) {
-        cout << "\nCaught an exception: " << x.getMesg() << endl;
-    } 
-
-    cout << "OK" << endl;
-    return 0;
+BOOST_FIXTURE_TEST_CASE(less_than, Fixture)
+{
+  b = (f<3);
+  check(b, {1, 1, 1, 0, 0, 0, 0, 0, 0, 0});
+  
+  MaskedArray<int> m(h,b);
+  h = 0;
+  indgen (m);
+  check(h, {0, 1, 2, 0, 0, 0, 0, 0, 0, 0});
 }
+
+BOOST_FIXTURE_TEST_CASE(larger_and_less, Fixture)
+{
+  check(((f>3) && (f<7)), {0, 0, 0, 0, 1, 1, 1, 0, 0, 0});
+  
+  MaskedArray<int> m( h( ((f>3) && (f<7)) ) );
+  h = 0;
+  indgen (m, 10);
+  check(h, {0, 0, 0, 0, 10, 11, 12, 0, 0, 0});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign1, Fixture)
+{
+  b = (f>2);
+  check(b, {0, 0, 0, 1, 1, 1, 1, 1, 1, 1});
+  
+  MaskedArray<int> m(h,b);
+  
+  h = 1;
+  m += 5;
+  check(h, {1, 1, 1, 6, 6, 6, 6, 6, 6, 6});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign2, Fixture)
+{
+  
+  b = (f>2);
+  check(b, {0, 0, 0, 1, 1, 1, 1, 1, 1, 1});
+  
+  h = 1;
+  h(b) += 5;
+  check(h, {1, 1, 1, 6, 6, 6, 6, 6, 6, 6});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign3, Fixture)
+{
+  
+  b = (f>2);
+  check(b, {0, 0, 0, 1, 1, 1, 1, 1, 1, 1});
+  
+  MaskedArray<int> m(h,b);
+  
+  h = -1;
+  m += f;
+  check(h, {-1, -1, -1, 2, 3, 4, 5, 6, 7, 8});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign4, Fixture)
+{
+  b = (f>2);
+  check(b, {0, 0, 0, 1, 1, 1, 1, 1, 1, 1});
+  
+  h = -1;
+  h(b) += f;
+  check(h, {-1, -1, -1, 2, 3, 4, 5, 6, 7, 8});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign5, Fixture)
+{
+  b = (f>4);
+  check(b, {0, 0, 0, 0, 0, 1, 1, 1, 1, 1});
+  
+  MaskedArray<int> m(f,b);
+  
+  indgen (h);
+  check(h, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  
+  h += m;
+  check(h, {0, 1, 2, 3, 4, 10, 12, 14, 16, 18});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign6, Fixture)
+{
+  b = (f>3);
+  check(b, {0, 0, 0, 0, 1, 1, 1, 1, 1, 1});
+  
+  Vector<bool> c(10);
+  c = (f<8);
+  check(c, {1, 1, 1, 1, 1, 1, 1, 1, 0, 0});
+  
+  MaskedArray<int> m(h,b), n(f,c);
+  h = -1;
+  m += n;
+  check(h, {-1, -1, -1, -1, 3, 4, 5, 6, -1, -1});
+}
+
+BOOST_FIXTURE_TEST_CASE(sum_assign7, Fixture)
+{
+  b = (f>3);
+  check(b, {0, 0, 0, 0, 1, 1, 1, 1, 1, 1});
+  
+  Vector<bool> c(10);
+  c = (f<8);
+  check(c, {1, 1, 1, 1, 1, 1, 1, 1, 0, 0});
+  
+  MaskedArray<int> n(f,c);
+  
+  h = -1;
+  h(b) += n;
+  check(h, {-1, -1, -1, -1, 3, 4, 5, 6, -1, -1});
+}
+
+BOOST_AUTO_TEST_SUITE_END()

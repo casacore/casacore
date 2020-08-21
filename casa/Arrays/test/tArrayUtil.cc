@@ -25,18 +25,13 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/ArrayIO.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayError.h>
-#include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Utilities/Regex.h>
-#include <casacore/casa/OS/Timer.h>
-#include <casacore/casa/iostream.h>
+//#include "../ArrayIO.h"
+#include "../ArrayMath.h"
+#include "../ArrayError.h"
+#include "../ArrayUtil.h"
+#include "../Matrix.h"
+#include "../Vector.h"
 
-#include <casacore/casa/Arrays/ArrayUtil.h>
-
-#include <casacore/casa/namespace.h>
 // <summary>
 // Test of functions in ArrayUtil.h.
 // </summary>
@@ -46,280 +41,219 @@
 // function resulting in an exception. This mode can be used to do
 // proper detection of memory leaks using tools like TestCenter.
 
+#include <boost/test/unit_test.hpp>
 
-Bool testStringToVector (Bool)
+using namespace casacore;
+
+BOOST_AUTO_TEST_SUITE(array_util)
+
+BOOST_AUTO_TEST_CASE( string_to_vector )
 {
-    cout << "stringToVector..." << endl;
-    Bool ok = True;
+    Vector<std::string> vec1 = strToVector ("");
+    BOOST_CHECK_EQUAL (vec1.nelements(), 0);
 
-    Vector<String> vec1 = stringToVector ("");
-    if (vec1.nelements() != 0) {
-	cout << "Empty string should result in vector length 0" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec2 = strToVector ("abc");
+    BOOST_CHECK_EQUAL(vec2.nelements(), 1);
+    BOOST_CHECK_EQUAL(vec2(0), "abc");
 
-    Vector<String> vec2 = stringToVector ("abc");
-    if (vec2.nelements() != 1  ||  vec2(0) != "abc") {
-	cout << "<abc> should result in vector length 1" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec3 = strToVector (",");
+    BOOST_CHECK_EQUAL(vec3.nelements(), 2);
+    BOOST_CHECK_EQUAL(vec3(0), "");
+    BOOST_CHECK_EQUAL(vec3(1), "");
 
-    Vector<String> vec3 = stringToVector (",");
-    if (vec3.nelements() != 2  ||  vec3(0) != ""  ||  vec3(1) != "") {
-	cout << "<,> should result in vector length 2" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec4 = strToVector ("abc,defg,,h");
+    BOOST_CHECK_EQUAL(vec4.nelements(), 4);
+    BOOST_CHECK_EQUAL(vec4(0), "abc");
+    BOOST_CHECK_EQUAL(vec4(1), "defg");
+    BOOST_CHECK_EQUAL(vec4(2), "");
+    BOOST_CHECK_EQUAL(vec4(3), "h");
 
-    Vector<String> vec4 = stringToVector ("abc,defg,,h");
-    if (vec4.nelements() != 4  ||  vec4(0) != "abc"  ||  vec4(1) != "defg"
-    ||  vec4(2) != ""  ||  vec4(3) != "h") {
-	cout << "<abc,defg,,h> should result in vector length 4" << endl;
-	ok = False;
-    }
-
-    Vector<String> vec5 = stringToVector (",abc,defg,");
-    if (vec5.nelements() != 4  ||  vec5(0) != ""  ||  vec5(1) != "abc"
-    ||  vec5(2) != "defg"  ||  vec5(3) != "") {
-	cout << "<,abc,defg,> should result in vector length 4" << endl;
-	ok = False;
-    }
-
-    return ok;
+    Vector<std::string> vec5 = strToVector (",abc,defg,");
+    BOOST_CHECK_EQUAL(vec5.nelements(), 4);
+    BOOST_CHECK_EQUAL(vec5(0), "");
+    BOOST_CHECK_EQUAL(vec5(1), "abc");
+    BOOST_CHECK_EQUAL(vec5(2), "defg");
+    BOOST_CHECK_EQUAL(vec5(3), "");
 }
 
-
-Bool testStringToVectorRegex (Bool)
+BOOST_AUTO_TEST_CASE( string_to_vector_regex )
 {
-    cout << "stringToVectorRegex..." << endl;
     // Test using multiple spaces and a single comma as delimiter.
-    Regex delim(" *, *");
-    Bool ok = True;
+    std::regex delim(" *, *");
+ 
+    Vector<std::string> vec1 = strToVector ("", delim);
+    BOOST_CHECK_EQUAL (vec1.nelements(), 0);
 
-    Vector<String> vec1 = stringToVector ("", delim);
-    if (vec1.nelements() != 0) {
-	cout << "Empty string should result in vector length 0" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec2 = strToVector ("abc", delim);
+    BOOST_CHECK_EQUAL(vec2.nelements(), 1);
+    BOOST_CHECK_EQUAL(vec2(0), "abc" );
 
-    Vector<String> vec2 = stringToVector ("abc", delim);
-    if (vec2.nelements() != 1  ||  vec2(0) != "abc") {
-	cout << "<abc> should result in vector length 1" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec3 = strToVector (",", delim);
+    BOOST_CHECK_EQUAL(vec3.nelements(), 2 );
+    BOOST_CHECK_EQUAL(vec3(0), ""); 
+    BOOST_CHECK_EQUAL(vec3(1), "");
 
-    Vector<String> vec3 = stringToVector (",", delim);
-    if (vec3.nelements() != 2  ||  vec3(0) != ""  ||  vec3(1) != "") {
-	cout << "<,> should result in vector length 2" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec4 = strToVector ("abc,defg,,h", delim);
+    BOOST_CHECK_EQUAL(vec4.nelements(), 4);
+    BOOST_CHECK_EQUAL(vec4(0), "abc");
+    BOOST_CHECK_EQUAL(vec4(1), "defg");
+    BOOST_CHECK_EQUAL(vec4(2), "");
+    BOOST_CHECK_EQUAL(vec4(3), "h");
 
-    Vector<String> vec4 = stringToVector ("abc,defg,,h", delim);
-    if (vec4.nelements() != 4  ||  vec4(0) != "abc"  ||  vec4(1) != "defg"
-    ||  vec4(2) != ""  ||  vec4(3) != "h") {
-	cout << "<abc,defg,,h> should result in vector length 4" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec5 = strToVector (",abc,defg,", delim);
+    BOOST_CHECK_EQUAL(vec5.nelements(), 4);
+    BOOST_CHECK_EQUAL(vec5(0), "");
+    BOOST_CHECK_EQUAL(vec5(1), "abc");
+    BOOST_CHECK_EQUAL(vec5(2), "defg");
+    BOOST_CHECK_EQUAL(vec5(3), "");
 
-    Vector<String> vec5 = stringToVector (",abc,defg,", delim);
-    if (vec5.nelements() != 4  ||  vec5(0) != ""  ||  vec5(1) != "abc"
-    ||  vec5(2) != "defg"  ||  vec5(3) != "") {
-	cout << "<,abc,defg,> should result in vector length 4" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec6 = strToVector ("  ,  ", delim);
+    BOOST_CHECK_EQUAL(vec6.nelements(), 2);
+    BOOST_CHECK_EQUAL(vec6(0), "");
+    BOOST_CHECK_EQUAL(vec6(1), "");
 
-    Vector<String> vec6 = stringToVector ("  ,  ", delim);
-    if (vec6.nelements() != 2  ||  vec6(0) != ""  ||  vec6(1) != "") {
-	cout << "<  ,  > should result in vector length 2" << endl;
-	ok = False;
-    }
+    Vector<std::string> vec7 = strToVector ("abc  ,  defg  ,  ,  h", delim);
+    BOOST_CHECK_EQUAL(vec7.nelements(), 4);
+    BOOST_CHECK_EQUAL(vec7(0), "abc");
+    BOOST_CHECK_EQUAL(vec7(1), "defg");
+    BOOST_CHECK_EQUAL(vec7(2), "");
+    BOOST_CHECK_EQUAL(vec7(3), "h");
 
-    Vector<String> vec7 = stringToVector ("abc  ,  defg  ,  ,  h", delim);
-    if (vec7.nelements() != 4  ||  vec7(0) != "abc"  ||  vec7(1) != "defg"
-    ||  vec7(2) != ""  ||  vec7(3) != "h") {
-	cout << "<abc  ,  defg  ,  ,  h> should result in vector length 4" << endl;
-	ok = False;
-    }
-
-    Vector<String> vec8 = stringToVector (" abc  ", delim);
-    if (vec8.nelements() != 1  ||  vec8(0) != " abc  ") {
-	cout << "< abc  > should result in vector length 1" << endl;
-	ok = False;
-    }
-
-    return ok;
+    Vector<std::string> vec8 = strToVector (" abc  ", delim);
+    BOOST_CHECK_EQUAL(vec8.nelements(), 1);
+    BOOST_CHECK_EQUAL(vec8(0), " abc  ");
 }
 
-
-Bool testConcatenateArray (Bool doExcp)
+BOOST_AUTO_TEST_CASE( concatenate_array )
 {
-    cout << "concatenateArray..." << endl;
-    Bool ok = True;
-    Matrix<Int> matrix1 (3u,4u);
-    Matrix<Int> matrix2 (3u,5u);
-    Matrix<Int> matrix3 (4u,4u);
-    Vector<Int> vector1 (4);
-    Vector<Int> vector2 (6);
+    bool doExcp = true;
+    Matrix<int> matrix1 (3u,4u);
+    Matrix<int> matrix2 (3u,5u);
+    Matrix<int> matrix3 (4u,4u);
+    Vector<int> vector1 (4);
+    Vector<int> vector2 (6);
     indgen (matrix1);
-    indgen (matrix2, Int(matrix1.nelements()));
+    indgen (matrix2, int(matrix1.nelements()));
     indgen (matrix3);
     indgen (vector1);
-    indgen (vector2, Int(vector1.nelements()));
-    Matrix<Int> matrixConc = concatenateArray (matrix1, matrix2);
-    if (matrixConc.shape() != IPosition(2,3,9)) {
-	cout << "Error in shape of concatenated matrices" << endl;
-	ok = False;
-    }
-    uInt i, j;
-    Int value = 0;
+    indgen (vector2, int(vector1.nelements()));
+    Matrix<int> matrixConc(concatenateArray (matrix1, matrix2));
+    BOOST_CHECK_EQUAL (matrixConc.shape(), IPosition(2,3,9));
+    size_t i, j;
+    int value = 0;
     for (j=0; j<9; j++) {
 	for (i=0; i<3; i++) {
-	    if (matrixConc(i,j) != value++) {
-		cout << "Error in matrix on " << i << "," << j << endl;
-		ok = False;
-	    }
+      BOOST_CHECK_EQUAL(matrixConc(i,j), value);
+      ++value;
 	}
     }
 
-    Vector<Int> vectorConc = concatenateArray (vector1, vector2);
-    if (vectorConc.shape() != IPosition(1,10)) {
-	cout << "Error in shape of concatenated vectors" << endl;
-	ok = False;
-    }
+    Vector<int> vectorConc = concatenateArray (vector1, vector2);
+    BOOST_CHECK_EQUAL(vectorConc.shape(), IPosition(1,10));
     value = 0;
     for (i=0; i<10; i++) {
-	if (vectorConc(i) != value++) {
-	    cout << "Error in vector on " << i << endl;
-	    ok = False;
-	}
+	BOOST_CHECK_EQUAL(vectorConc(i), value);
+  ++value;
     }
     
     if (doExcp) {
-	try {
-	    concatenateArray (matrix1, matrix3);
-	    ok = False;             // should not get here
-	    cout << "1st concatenateArray exception not thrown" << endl;
-	} catch (ArrayConformanceError& x) {
-	} 
-	try {
-	    concatenateArray (matrix1, vector1);
-	    ok = False;             // should not get here
-	    cout << "2nd concatenateArray exception not thrown" << endl;
-	} catch (ArrayConformanceError& x) {
-	} 
+      BOOST_CHECK_THROW(concatenateArray (matrix1, matrix3), ArrayConformanceError);
+      BOOST_CHECK_THROW(concatenateArray (matrix1, vector1), ArrayConformanceError);
     }
-
-    return ok;
 }
 
-
-Bool testReorderArray (Bool doExcp)
+BOOST_AUTO_TEST_CASE( reorder_array_2d )
 {
-  Bool ok = True;
-  {
-    cout << "arrayReorder 2D..." << endl;
-    IPosition shape(2,3,4);
-    Array<Int> arr(shape);
-    indgen(arr);
-    for (Int j0=0; j0<2; j0++) {
-      for (Int j1=0; j1<2; j1++) {
-	if (j1 != j0) {
-	  IPosition axisOrder(2, j0, j1);
-	  Array<Int> res = reorderArray (arr, axisOrder);
-	  const IPosition& resShape = res.shape();
-	  IPosition posOld(2);
-	  IPosition posNew(2);
-	  for (Int i1=0; i1<resShape(1); i1++) {
-	    posNew(1) = i1;
-	    posOld(axisOrder(1)) = i1;
-	    for (Int i0=0; i0<resShape(0); i0++) {
-	      posNew(0) = i0;
-	      posOld(axisOrder(0)) = i0;
-	      if (arr(posOld) != res(posNew)) {
-		ok = False;
-		cout << "for shape " << shape << resShape
-		     << ", axisorder " << axisOrder << endl;
-		cout << " result is " << res << endl;
-	      }
-	    }
-	  }
-	}
+  IPosition shape(2,3,4);
+  Array<int> arr(shape);
+  indgen(arr);
+  for (int j0=0; j0<2; j0++) {
+    for (int j1=0; j1<2; j1++) {
+if (j1 != j0) {
+  IPosition axisOrder(2, j0, j1);
+  Array<int> res = reorderArray (arr, axisOrder);
+  const IPosition& resShape = res.shape();
+  IPosition posOld(2);
+  IPosition posNew(2);
+  for (int i1=0; i1<resShape(1); i1++) {
+    posNew(1) = i1;
+    posOld(axisOrder(1)) = i1;
+    for (int i0=0; i0<resShape(0); i0++) {
+      posNew(0) = i0;
+      posOld(axisOrder(0)) = i0;
+      BOOST_CHECK_EQUAL(arr(posOld), res(posNew));
+    }
+  }
       }
     }
   }
-  {
-    cout << "arrayReorder 3D..." << endl;
+}
+  
+BOOST_AUTO_TEST_CASE( reorder_array_3d )
+{
     IPosition shape(3,3,4,5);
-    Array<Int> arr(shape);
+    Array<int> arr(shape);
     indgen(arr);
-    for (Int j0=0; j0<3; j0++) {
-      for (Int j1=0; j1<3; j1++) {
+    for (int j0=0; j0<3; j0++) {
+      for (int j1=0; j1<3; j1++) {
 	if (j1 != j0) {
-	  for (Int j2=0; j2<3; j2++) {
+	  for (int j2=0; j2<3; j2++) {
 	    if (j2 != j0  &&  j2 != j1) {
 	      IPosition axisOrder(3, j0, j1, j2);
-	      Array<Int> res = reorderArray (arr, axisOrder);
+	      Array<int> res = reorderArray (arr, axisOrder);
 	      const IPosition& resShape = res.shape();
 	      IPosition posOld(3);
 	      IPosition posNew(3);
-	      for (Int i2=0; i2<resShape(2); i2++) {
+	      for (int i2=0; i2<resShape(2); i2++) {
 		posNew(2) = i2;
 		posOld(axisOrder(2)) = i2;
-		for (Int i1=0; i1<resShape(1); i1++) {
+		for (int i1=0; i1<resShape(1); i1++) {
 		  posNew(1) = i1;
 		  posOld(axisOrder(1)) = i1;
-		  for (Int i0=0; i0<resShape(0); i0++) {
+		  for (int i0=0; i0<resShape(0); i0++) {
 		    posNew(0) = i0;
 		    posOld(axisOrder(0)) = i0;
-		    if (arr(posOld) != res(posNew)) {
-		      ok = False;
-		      cout << "for shape " << shape << resShape
-			   << ", axisorder " << axisOrder << endl;
-		      cout << " result is " << res << endl;
-		    }
+        BOOST_CHECK_EQUAL(arr(posOld), res(posNew));
 		  }
 		}
 	      }
 	    }
 	  }
 	}
-      }
     }
   }
-  {
-    cout << "arrayReorder 4D..." << endl;
+}
+  
+BOOST_AUTO_TEST_CASE( reorder_array_4d )
+{
     IPosition shape(4,3,4,5,6);
-    Array<Int> arr(shape);
+    Array<int> arr(shape);
     indgen(arr);
-    for (Int j0=0; j0<4; j0++) {
-      for (Int j1=0; j1<4; j1++) {
+    for (int j0=0; j0<4; j0++) {
+      for (int j1=0; j1<4; j1++) {
 	if (j1 != j0) {
-	  for (Int j2=0; j2<4; j2++) {
+	  for (int j2=0; j2<4; j2++) {
 	    if (j2 != j0  &&  j2 != j1) {
-	      for (Int j3=0; j3<4; j3++) {
+	      for (int j3=0; j3<4; j3++) {
 		if (j3 != j0  &&  j3 != j1  &&  j3 != j2) {
 		  IPosition axisOrder(4, j0, j1, j2, j3);
-		  Array<Int> res = reorderArray (arr, axisOrder);
+		  Array<int> res = reorderArray (arr, axisOrder);
 		  const IPosition& resShape = res.shape();
 		  IPosition posOld(4);
 		  IPosition posNew(4);
-		  for (Int i3=0; i3<resShape(3); i3++) {
+		  for (int i3=0; i3<resShape(3); i3++) {
 		    posNew(3) = i3;
 		    posOld(axisOrder(3)) = i3;
-		    for (Int i2=0; i2<resShape(2); i2++) {
+		    for (int i2=0; i2<resShape(2); i2++) {
 		      posNew(2) = i2;
 		      posOld(axisOrder(2)) = i2;
-		      for (Int i1=0; i1<resShape(1); i1++) {
+		      for (int i1=0; i1<resShape(1); i1++) {
 			posNew(1) = i1;
 			posOld(axisOrder(1)) = i1;
-			for (Int i0=0; i0<resShape(0); i0++) {
+			for (int i0=0; i0<resShape(0); i0++) {
 			  posNew(0) = i0;
 			  posOld(axisOrder(0)) = i0;
-			  if (arr(posOld) != res(posNew)) {
-			    ok = False;
-			    cout << "for shape " << shape << resShape
-				 << ", axisorder " << axisOrder << endl;
-			    cout << " result is " << res << endl;
-			  }
+        BOOST_CHECK_EQUAL(arr(posOld), res(posNew));
 			}
 		      }
 		    }
@@ -331,122 +265,110 @@ Bool testReorderArray (Bool doExcp)
 	}
       }
     }
-  }
-  if (doExcp) {
-    try {
-      reorderArray (Array<Int>(IPosition(2,3,4)), IPosition(2,1,1));
-      ok = False;        // should not get here
-      cout << "1st reorderArray exception not thrown" << endl;
-    } catch (AipsError& x) {
-    } 
-    try {
-      reorderArray (Array<Int>(IPosition(2,3,4)), IPosition(2,1,2));
-      ok = False;        // should not get here
-      cout << "2nd reorderArray exception not thrown" << endl;
-    } catch (AipsError& x) {
-    } 
-  }
-  return ok;
+  BOOST_CHECK_THROW(
+    reorderArray (Array<int>(IPosition(2,3,4)), IPosition(2,1,1)),
+                  std::runtime_error);
+  BOOST_CHECK_THROW(
+    reorderArray (Array<int>(IPosition(2,3,4)), IPosition(2,1,2)),
+                  std::runtime_error);
 }
 
-Bool testReverseArray()
+BOOST_AUTO_TEST_CASE( reverse_array )
 {
-  cout << "reverseArray..." << endl;
   IPosition shape(3, 2, 3, 4);
-  Array<Int> arr(shape);
-  Bool res = True;
+  Array<int> arr(shape);
   indgen(arr);
   // Test if no reversal is fine.
   IPosition axes(0);
-  Array<Int> rev = reverseArray(arr, axes);
-  res = res && allEQ(arr, rev);
+  Array<int> rev = reverseArray(arr, axes);
+  BOOST_CHECK( allEQ(arr, rev) );
   // Test if reversal of axis 0 is fine.
   rev = reverseArray(arr, 0);
-  for (Int i=0; i<shape[2]; i++) {
-    for (Int j=0; j<shape[1]; j++) {
-      for (Int k=0; k<shape[0]; k++) {
-        res = res  &&  (arr(IPosition(3, k, j, i))
-                        == rev(IPosition(3, shape[0] - 1 - k, j, i)));
+  for (int i=0; i<shape[2]; i++) {
+    for (int j=0; j<shape[1]; j++) {
+      for (int k=0; k<shape[0]; k++) {
+        BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                        rev(IPosition(3, shape[0] - 1 - k, j, i)));
       }
     }
   }
   // Test if reversing axis 1 in both ways works fine.
-  for (uInt x=0; x<2; x++) {
+  for (size_t x=0; x<2; x++) {
     rev = (x==0 ? reverseArray(arr, 1) : reverseArray(arr, IPosition(1, 1)));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, k, shape[1] - 1 - j, i)));
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, k, shape[1] - 1 - j, i)));
         }
       }
     }
   }
   // Test if reversing axis 2 in both ways works fine.
-  for (uInt x=0; x<2; x++) {
+  for (size_t x=0; x<2; x++) {
     rev = (x==0 ? reverseArray(arr, 2) : reverseArray(arr, IPosition(1,2)));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, k, j, shape[2] - 1 - i)));
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, k, j, shape[2] - 1 - i)));
         }
       }
     }
   }
   // Test if reversing axes 0 and 1 together is the same as first 0 and than 1
   // and vice-versa.
-  for (uInt x=0; x<3; x++) {
+  for (size_t x=0; x<3; x++) {
     rev = (x==0 ? reverseArray(reverseArray(arr, 0), 1)
            : (x==1 ? reverseArray(arr, IPosition(2, 0, 1))
               : reverseArray(arr, IPosition(2, 1, 0))));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, shape[0] - 1 - k,
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, shape[0] - 1 - k,
                                            shape[1] - 1 - j, i)));
         }
       }
     }
   }
   // Test if reversing axes 0 and 2 works fine.
-  for (uInt x=0; x<2; x++) {
+  for (size_t x=0; x<2; x++) {
     rev = (x==0 ? reverseArray(reverseArray(arr, 0), 2)
            : reverseArray(arr, IPosition(2, 0, 2)));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, shape[0] - 1 - k,
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, shape[0] - 1 - k,
                                            j, shape[2] - 1 - i)));
         }
       }
     }
   }
   // Test if reversing axes 1 and 2 works fine.
-  for (uInt x=0; x<2; x++) {
+  for (size_t x=0; x<2; x++) {
     rev = (x==0 ? reverseArray(reverseArray(arr, 1), 2)
            : reverseArray(arr, IPosition(2, 1, 2)));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, k, shape[1] - 1 - j,
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, k, shape[1] - 1 - j,
                                            shape[2] - 1 - i)));
         }
       }
     }
   }
   // Test reversing of all axes.
-  for (uInt x=0; x<2; x++) {
+  for (size_t x=0; x<2; x++) {
     rev = (x==0 ? reverseArray(reverseArray(reverseArray(arr, 0), 1), 2)
            : reverseArray(arr, IPosition(3, 0, 1, 2)));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, shape[0] - 1 - k,
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, shape[0] - 1 - k,
                                            shape[1] - 1 - j,
                                            shape[2] - 1 - i)));
         }
@@ -454,49 +376,20 @@ Bool testReverseArray()
     }
   }
   // Reversing of all axes in different order should have the same result.
-  for (uInt x=0; x<2; x++) {
+  for (size_t x=0; x<2; x++) {
     rev = (x==0 ? reverseArray(reverseArray(reverseArray(arr, 2), 0), 1)
            : reverseArray(arr, IPosition(3, 2, 0, 1)));
-    for (Int i=0; i<shape[2]; i++) {
-      for (Int j=0; j<shape[1]; j++) {
-        for (Int k=0; k<shape[0]; k++) {
-          res = res  &&  (arr(IPosition(3, k, j, i))
-                          == rev(IPosition(3, shape[0] - 1 - k,
+    for (int i=0; i<shape[2]; i++) {
+      for (int j=0; j<shape[1]; j++) {
+        for (int k=0; k<shape[0]; k++) {
+          BOOST_CHECK_EQUAL(arr(IPosition(3, k, j, i)),
+                          rev(IPosition(3, shape[0] - 1 - k,
                                            shape[1] - 1 - j,
                                            shape[2] - 1 - i)));
         }
       }
     }
   }
-  return res;
 }
 
-int main (int argc, const char*[])
-{
-  Bool ok = True;
-  try {
-    if (! testStringToVector ( (argc < 2))) {
-      ok = False;
-    }
-    if (! testStringToVectorRegex ( (argc < 2))) {
-      ok = False;
-    }
-    if (! testConcatenateArray( (argc < 2))) {
-      ok = False;
-    }
-    if (! testReorderArray( (argc < 2))) {
-      ok = False;
-    }
-    if (! testReverseArray()) {
-    	ok = False;
-    }
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
-    ok = False;
-  } 
-  if (!ok) {
-    return 1;
-  }
-  cout << "OK" << endl;
-  return 0;               // successfully executed
-}
+BOOST_AUTO_TEST_SUITE_END()

@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Quanta/QLogical.h>
 #include <casacore/casa/IO/AipsIO.h>
@@ -217,7 +217,7 @@ void testTempCloseDelete()
   tIm.tempClose();
   IPosition blc(4,0 , 0, 0, nchan);
   IPosition trc(4, nx-1, ny-1, 0, nchan);
-  Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0);
+  Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
   for (Int k=0; k < nchan ; ++k){
     blc(3)=k; trc(3)=k;
     Slicer sl(blc, trc, Slicer::endIsLast);
@@ -262,15 +262,15 @@ int main()
     	try {
     		temp.setImageInfo(info);
     	}
-    	catch (AipsError& x) {
+    	catch (std::exception& x) {
     		cout << "Exception thrown as expected: "
-    			<< x.getMesg() << endl;
+    			<< x.what() << endl;
     	}
     	info.setBeam(0, 0, maj, min, pa);
     	try {
     		temp.setImageInfo(info);
     	}
-    	catch (AipsError& x) {}
+    	catch (std::exception& x) {}
     	for (uInt i=0; i<4; i++) {
     		for (uInt j=0; j<16; j++) {
     			info.setBeam(j, i, maj, min, pa);
@@ -279,8 +279,8 @@ int main()
     	AlwaysAssert(temp.setImageInfo(info), AipsError);
     }
     testTempCloseDelete();
-  } catch (AipsError& x) {
-    cerr << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 

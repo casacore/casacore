@@ -28,7 +28,7 @@
 #include <casacore/casa/Utilities/StringDistance.h>
 #include <iostream>
 #include <stdexcept>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 
 using namespace std;
 using namespace casacore;

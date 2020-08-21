@@ -32,6 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -41,7 +42,6 @@ class Unit;
 class MeasValue;
 class MRBase;
 template <class T> class Quantum;
-template <class T> class Vector;
 
 // <summary>
 // Physical quantities within reference frame

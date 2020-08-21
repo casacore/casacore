@@ -39,6 +39,8 @@
 #include <casacore/casa/BasicSL/Complexfwd.h>
 #endif
 
+#warning "FFTPack is deprecated and will be removed in a future version of casacore. Please use FFTW."
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>C++ interface to the Fortran FFTPACK library</summary>

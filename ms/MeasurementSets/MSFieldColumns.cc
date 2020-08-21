@@ -39,6 +39,7 @@
 #include <casacore/tables/Tables/ColDescSet.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/iomanip.h>
@@ -293,7 +294,7 @@ matchReferenceDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad
   try{
     mvdir = referenceDirMeas(row, time).getAngle();
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     return False;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
@@ -310,7 +311,7 @@ matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
   try{
     mvdir = delayDirMeas(row, time).getAngle();
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     return False;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
@@ -327,7 +328,7 @@ matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
   try{
     mvdir = phaseDirMeas(row, time).getAngle();
   }
-  catch(AipsError& x){
+  catch(std::exception& x){
     return False;
   }
   if (dirVal.separation(mvdir) < sepInRad) {

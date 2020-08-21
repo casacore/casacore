@@ -32,7 +32,6 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/scimath/Mathematics/Convolver.h>
-#include <casacore/scimath/Mathematics/FFTPack.h>
 #include <casacore/scimath/Mathematics/FFTServer.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
@@ -83,10 +82,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      between different numerical data types.
 // <li> Multi-dimensional Fourier transforms are done in the 
 //      <linkto class="FFTServer">FFTServer</linkto> class.  This decomposes
-//      the transforms into a one-dimensional transforms which are done using
-//      the functions in the <linkto class="FFTPack">FFTPack</linkto>
-//      class. The FFTPack class also contains functions for doing
-//      one-dimensional sine, cosine, and real-symmetric transforms.
+//      the transforms into a one-dimensional transforms.
 // <li> Numerical <linkto class="Convolver">Convolution</linkto> 
 //      (both linear and circular) of multi-dimensional Arrays.
 // <li> <linkto file="Random.h">Random</linkto> numbers in a wide 

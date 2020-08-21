@@ -25,18 +25,12 @@
 //#
 //# $Id$
 
-#ifndef CASA_MASKARRMATH_H
-#define CASA_MASKARRMATH_H
+#ifndef CASA_MASKARRMATH_2_H
+#define CASA_MASKARRMATH_2_H
 
-
-#include <casacore/casa/aips.h>
-#include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/MaskedArray.h>
-#include <casacore/casa/Arrays/IPosition.h>
-//# Needed to get the proper Complex typedef's
-#include <casacore/casa/BasicSL/Complex.h>
-
+#include "Array.h"
+#include "MaskedArray.h"
+#include "IPosition.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -58,14 +52,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // These functions perform element by element mathematical operations on
 // masked arrays.  With two arrays, they must both conform, and the result
 // is done element by element, for those locations where the mask of the
-// MaskedArray is True.  For two MaskedArrays, the "and" of the masks is used.
+// MaskedArray is true.  For two MaskedArrays, the "and" of the masks is used.
 // </synopsis>
 //
 // <example>
 // <srcblock>
-//   Vector<Int> a(10);
-//   Vector<Int> b(10);
-//   Vector<Int> c(10);
+//   Vector<int> a(10);
+//   Vector<int> b(10);
+//   Vector<int> c(10);
 //      . . .
 //   c = a(a>0) + b(b>0);
 // </srcblock>
@@ -73,14 +67,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Elements of c where !((a>0) && (b>0)) are unchanged.  The result of
 // this operation is a MaskedArray.  The assignment from this
 // MaskedArray to the Vector c only assigns those elements
-// where the mask is True.
+// where the mask is true.
 // </example>
 //
 // <example>
 // <srcblock>
-//   Vector<Double> a(10);
-//   Vector<Double> b(10);
-//   Vector<Double> c(10);
+//   Vector<double> a(10);
+//   Vector<double> b(10);
+//   Vector<double> c(10);
 //      . . .
 //   c = atan2 (a, b(b>0);
 // </srcblock>
@@ -88,13 +82,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Elements of c where !(b>0) are unchanged.  The result of
 // this operation is a MaskedArray.  The assignment from this
 // MaskedArray to the Vector c only assigns those elements
-// where the mask is True.
+// where the mask is true.
 // </example>
 //
 // <example>
 // <srcblock>
-//   Vector<Int> a(10);
-//   Int result;
+//   Vector<int> a(10);
+//   int result;
 //      . . .
 //   result = sum (a(a>0));
 // </srcblock>
@@ -104,7 +98,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <motivation>
 // One wants to be able to mask arrays and perform mathematical operations on
 // those masked arrays.  Since the masked arrays are only defined where
-// the masks are True, the result must be a MaskedArray, or a simple number.
+// the masks are true, the result must be a MaskedArray, or a simple number.
 // </motivation>
 //
 // <linkfrom anchor="MaskedArray mathematical operations" classes="MaskedArray Array Vector Matrix Cube">
@@ -184,7 +178,7 @@ template<class T> MaskedArray<T> operator+ (const MaskedArray<T> &left, const T 
 template<class T> MaskedArray<T> operator- (const MaskedArray<T> &left, const T &right);
 template<class T> MaskedArray<T> operator* (const MaskedArray<T> &left, const T &right);
 template<class T> MaskedArray<T> operator/ (const MaskedArray<T> &left, const T &right);
-                  MaskedArray<Complex> operator* (const MaskedArray<Complex> &left, const Float &right);
+                  MaskedArray<std::complex<float>> operator* (const MaskedArray<std::complex<float>> &left, const float &right);
 // </group>
 
 // 
@@ -195,7 +189,7 @@ template<class T>  MaskedArray<T> operator+ (const T &left, const MaskedArray<T>
 template<class T>  MaskedArray<T> operator- (const T &left, const MaskedArray<T> &right);
 template<class T>  MaskedArray<T> operator* (const T &left, const MaskedArray<T> &right);
 template<class T>  MaskedArray<T> operator/ (const T &left, const MaskedArray<T> &right);
-                   MaskedArray<Complex> operator* (const Float &left, const MaskedArray<Complex> &right);
+                   MaskedArray<std::complex<float>> operator* (const float &left, const MaskedArray<std::complex<float>> &right);
 // </group>
 
 // 
@@ -243,7 +237,7 @@ template<class T> MaskedArray<T> fmod(const T &left, const MaskedArray<T> &right
 template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left, const Array<U> &right);
 template<class T, class U> MaskedArray<T> pow(const Array<T> &left, const MaskedArray<U> &right);
 template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left,const MaskedArray<U> &right);
-template<class T> MaskedArray<T> pow(const MaskedArray<T> &left, const Double &right);
+template<class T> MaskedArray<T> pow(const MaskedArray<T> &left, const double &right);
 // </group>
 
 
@@ -338,23 +332,23 @@ template<class T> MaskedArray<T> max(const MaskedArray<T> &left, const T &right)
 template<class T> void max(const MaskedArray<T> &result,const Array<T> &left, const Array<T> &right);
 
 // 
-// Fills all elements of "array" where the mask is True with a sequence
+// Fills all elements of "array" where the mask is true with a sequence
 // starting with "start" and incrementing by "inc" for each element
-// where the mask is True.
+// where the mask is true.
 // The first axis varies most rapidly.
 template<class T> void indgen(MaskedArray<T> &a, T start, T inc);
 
 // 
-// Fills all elements of "array" where the mask is True with a sequence
+// Fills all elements of "array" where the mask is true with a sequence
 // starting with 0 and incremented by one for each element
-// where the  mask is True.
+// where the  mask is true.
 // The first axis varies most rapidly.
 template<class T>  void indgen(MaskedArray<T> &a);
 
 // 
-// Fills all elements of "array" where the mask is True with a sequence
+// Fills all elements of "array" where the mask is true with a sequence
 // starting with "start" and incremented by one for each element
-// where the  mask is True.
+// where the  mask is true.
 // The first axis varies most rapidly.
 template<class T>  void indgen(MaskedArray<T> &a, T start);
 
@@ -363,15 +357,15 @@ template<class T>  void indgen(MaskedArray<T> &a, T start);
 //    <li> ArrayError
 // </thrown>
 //
-// Sum of every element of the MaskedArray where the Mask is True.
+// Sum of every element of the MaskedArray where the Mask is true.
 template<class T> T sum(const MaskedArray<T> &a);
 
 // 
-// Sum of the squares of every element of the MaskedArray where the Mask is True.
+// Sum of the squares of every element of the MaskedArray where the Mask is true.
 template<class T> T sumsquares(const MaskedArray<T> &a);
 
 // 
-// Product of every element of the MaskedArray where the Mask is True.
+// Product of every element of the MaskedArray where the Mask is true.
 // This could of course easily overflow.
 template<class T> T product(const MaskedArray<T> &a);
 
@@ -389,16 +383,16 @@ template<class T> T mean(const MaskedArray<T> &a);
 // the variance is equal to the sum of the variances of the real and imaginary parts.
 // Hence the imaginary part in the return value is 0.
 template<class T> T variance(const MaskedArray<T> &a);
-template<class T> T pvariance(const MaskedArray<T> &a, uInt ddof=0);
+template<class T> T pvariance(const MaskedArray<T> &a, size_t ddof=0);
 // Rather than using a computed mean, use the supplied value.
 template<class T> T variance(const MaskedArray<T> &a, T mean);
-template<class T> T pvariance(const MaskedArray<T> &a, T mean, uInt ddof=0);
+template<class T> T pvariance(const MaskedArray<T> &a, T mean, size_t ddof=0);
 
 // The standard deviation of "a" is the square root of its variance.
 template<class T> T stddev(const MaskedArray<T> &a);
-template<class T> T pstddev(const MaskedArray<T> &a, uInt ddof=0);
+template<class T> T pstddev(const MaskedArray<T> &a, size_t ddof=0);
 template<class T> T stddev(const MaskedArray<T> &a, T mean);
-template<class T> T pstddev(const MaskedArray<T> &a, T mean, uInt ddof=0);
+template<class T> T pstddev(const MaskedArray<T> &a, T mean, size_t ddof=0);
 
 // 
 // The average deviation of "a" is the sum of abs(a(i) - mean(a))/N. (N.B.
@@ -421,26 +415,26 @@ template<class T> T rms(const MaskedArray<T> &a);
 // the median is 0.5*(a(n/2) + a((n+1)/2)).
 // According to Numerical Recipes (2nd edition) it makes little sense to take
 // the mean when the array is large enough (> 100 elements). Therefore
-// the default for takeEvenMean is False when the array has > 100 elements,
-// otherwise it is True.
-// <br>If "sorted"==True we assume the data is already sorted and we
+// the default for takeEvenMean is false when the array has > 100 elements,
+// otherwise it is true.
+// <br>If "sorted"==true we assume the data is already sorted and we
 // compute the median directly. Otherwise the function GenSort::kthLargest
 // is used to find the median (kthLargest is about 6 times faster
 // than a full quicksort).
 // <group>
-template<class T> inline T median(const MaskedArray<T> &a, Bool sorted=False)
+template<class T> inline T median(const MaskedArray<T> &a, bool sorted=false)
     { return median (a, sorted, (a.nelements() <= 100)); }
-template<class T> T median(const MaskedArray<T> &a, Bool sorted,
-			   Bool takeEvenMean);
+template<class T> T median(const MaskedArray<T> &a, bool sorted,
+			   bool takeEvenMean);
 // </group>
 
 // The median absolute deviation from the median. Interface is as for
 // the median functions
 // <group>
-template<class T> inline T madfm(const MaskedArray<T> &a, Bool sorted=False)
+template<class T> inline T madfm(const MaskedArray<T> &a, bool sorted=false)
     { return madfm (a, sorted, (a.nelements() <= 100)); }
-template<class T> T madfm(const MaskedArray<T> &a, Bool sorted,
-                          Bool takeEvenMean);
+template<class T> T madfm(const MaskedArray<T> &a, bool sorted,
+                          bool takeEvenMean);
 // </group>
  
 
@@ -491,25 +485,25 @@ public:
 };
 template<typename T> class MaskedMedianFunc {
 public:
-  explicit MaskedMedianFunc (Bool sorted=False, Bool takeEvenMean=True)
+  explicit MaskedMedianFunc (bool sorted=false, bool takeEvenMean=true)
     : itsSorted(sorted), itsTakeEvenMean(takeEvenMean) {}
   T operator() (const MaskedArray<T>& arr) const
     { return median(arr, itsSorted, itsTakeEvenMean); }
 private:
-  Bool     itsSorted;
-  Bool     itsTakeEvenMean;
-  Bool     itsInPlace;
+  bool     itsSorted;
+  bool     itsTakeEvenMean;
+  bool     itsInPlace;
 };
 template<typename T> class MaskedMadfmFunc {
 public:
-  explicit MaskedMadfmFunc(Bool sorted=False, Bool takeEvenMean=True)
+  explicit MaskedMadfmFunc(bool sorted=false, bool takeEvenMean=true)
     : itsSorted(sorted), itsTakeEvenMean(takeEvenMean) {}
-  Float operator()(const MaskedArray<Float>& arr) const
+  float operator()(const MaskedArray<float>& arr) const
     { return madfm(arr, itsSorted, itsTakeEvenMean); }
 private:
-  Bool     itsSorted;
-  Bool     itsTakeEvenMean;
-  Bool     itsInPlace;
+  bool     itsSorted;
+  bool     itsTakeEvenMean;
+  bool     itsInPlace;
 };
 
 // Apply the given ArrayMath reduction function objects
@@ -517,8 +511,8 @@ private:
 // <example>
 // Downsample an array by taking the mean of every [25,25] elements.
 // <srcblock>
-//    Array<Float> downArr = boxedArrayMath(in, IPosition(2,25,25),
-//                                          MaskedMeanFunc<Float>());
+//    Array<float> downArr = boxedArrayMath(in, IPosition(2,25,25),
+//                                          MaskedMeanFunc<float>());
 // </srcblock>
 // </example>
 // The dimensionality of the array can be larger than the box; in that
@@ -537,32 +531,31 @@ MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
 // Determine for each element in the array the median of a box
 // with size [51,51] around that element:
 // <srcblock>
-//    Array<Float> medians = slidingArrayMath(in, IPosition(2,25,25),
-//                                            MaskedMedianFunc<Float>());
+//    Array<float> medians = slidingArrayMath(in, IPosition(2,25,25),
+//                                            MaskedMedianFunc<float>());
 // </srcblock>
 // This is a potentially expensive operation. On a high-end PC it took
 // appr. 27 seconds to get the medians for an array of [1000,1000] using
 // a halfBoxSize of [50,50].
 // </example>
 // <br>The fillEdge argument determines how the edge is filled where
-// no full boxes can be made. True means it is set to zero; False means
+// no full boxes can be made. true means it is set to zero; false means
 // that the edge is removed, thus the output array is smaller than the
 // input array.
 // <note> This brute-force method of determining the medians outperforms
 // all kinds of smart implementations. For a vector it is about as fast
-// as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
+// as the casacore class MedianSlider, for a 2D array
 // it is much, much faster.
 // </note>
 template <typename T, typename FuncType>
 Array<T> slidingArrayMath (const MaskedArray<T>& array,
 			   const IPosition& halfBoxSize,
 			   const FuncType& funcObj,
-			   Bool fillEdge=True);
+			   bool fillEdge=true);
 
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/casa/Arrays/MaskArrMath.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include "MaskArrMath.tcc"
+
 #endif

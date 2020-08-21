@@ -34,13 +34,12 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableColumn;
-template<class T> class Vector;
-
 
 // <summary>
 // Readonly access to a table row

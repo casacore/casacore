@@ -26,19 +26,17 @@
 //#
 //# $Id$
 
-#ifndef CASA_EXTENDSPECIFIER_H
-#define CASA_EXTENDSPECIFIER_H
+#ifndef CASA_EXTENDSPECIFIER_2_H
+#define CASA_EXTENDSPECIFIER_2_H
 
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/IPosition.h>
+#include "IPosition.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Slicer;
-template<class T> class Block;
 
 // <summary>
 // Specification of new and stretched lattice axes
@@ -54,8 +52,8 @@ template<class T> class Block;
 // </prerequisite>
 
 // <synopsis>
-// ExtendSpecifier is a class internally used by class
-// <linkto class=ExtendLattice>ExtendLattice</linkto>.
+// ExtendSpecifier is a class internally used by casacore class
+// ExtendLattice.
 // It holds the information which axes are stretched and which axes
 // are new. Note that a stretched axis has to have length 1 in the
 // original shape.
@@ -99,15 +97,6 @@ public:
 		   const IPosition& newAxes,
 		   const IPosition& stretchAxes);
 
-  // Copy constructor (copy semantics).
-  ExtendSpecifier(const ExtendSpecifier& other);
-  
-  ~ExtendSpecifier();
-
-  // Assignment (copy semantics).
-  // This and that do not have to have the same length.
-  ExtendSpecifier& operator= (const ExtendSpecifier& other);
-
   // Return the new shape.
   const IPosition& newShape() const
     { return itsNewShape; }
@@ -147,8 +136,7 @@ public:
 private:
   // Fill the flags for the given axes.
   // It throws an exception if the axis is invalid or multiply given.
-  void fill (Block<Bool>& flags, const IPosition& axes) const;
-
+  void fill (bool* flags, size_t nrdim, const IPosition& axes) const;
 
   IPosition itsOldShape;
   IPosition itsNewShape;
@@ -158,8 +146,6 @@ private:
   IPosition itsOldOldAxes;
   IPosition itsOldNewAxes;
 };
-
-
 
 } //# NAMESPACE CASACORE - END
 

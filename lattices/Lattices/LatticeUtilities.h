@@ -29,13 +29,12 @@
 #define LATTICES_LATTICEUTILITIES_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> class Array;
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
-template <class T> class MaskedArray;
 class IPosition;
 class LogIO;
 class Slicer;

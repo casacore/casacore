@@ -39,6 +39,7 @@
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/ArrayPosIter.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
@@ -76,8 +77,8 @@ int main (int argc, const char* argv[])
     try {
 	a (argv);
 	b ();
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status
@@ -225,7 +226,7 @@ void b()
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	ArrayColumn<float> data (table, "Data");
 	Array<float> result;
-	ArrayPositionIterator iter (cellShape, origin, 1u);
+	ArrayPositionIterator iter (cellShape, origin, size_t(1));
 	timer.mark();
 	uInt nr = 0;
 	while (! iter.pastEnd()) {
@@ -243,7 +244,7 @@ void b()
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	ArrayColumn<float> data (table, "Data");
 	Array<float> result;
-	ArrayPositionIterator iter (cellShape, origin, 0u);
+	ArrayPositionIterator iter (cellShape, origin, size_t(0));
 	length(0) = 1;
 	uInt nr = 0;
 	timer.mark();

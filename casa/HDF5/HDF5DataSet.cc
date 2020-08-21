@@ -351,7 +351,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       } else {
         throw HDF5Error("Shape of slicer " + shp.toString() +
                         " and array " + arr.shape().toString() +
-                        " mismatch in get of dataset " + getName());
+                        " mismatch in get of dataset " + std::string(getName()));
       }
     }
     Bool deleteIt;
@@ -392,7 +392,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (! shp.isEqual (arr.shape())) {
       throw HDF5Error("Shape of slicer " + shp.toString() +
                       " and array " + arr.shape().toString() +
-                      " mismatch in put of dataset " + getName());
+                      " mismatch in put of dataset " + std::string(getName()));
     }
     Bool deleteIt;
     const void* buf = arr.getVStorage (deleteIt);

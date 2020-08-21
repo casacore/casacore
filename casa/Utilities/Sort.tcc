@@ -34,6 +34,10 @@
 #include <casacore/casa/Utilities/SortError.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>

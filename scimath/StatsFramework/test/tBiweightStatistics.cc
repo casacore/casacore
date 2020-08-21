@@ -80,7 +80,7 @@ int main() {
                 try {
                     bws.getStatistic(stat);
                 }
-                catch (const AipsError& x) {
+                catch (const std::exception& x) {
                     thrown = True;
                 }
                 AlwaysAssert(thrown, AipsError);
@@ -109,7 +109,7 @@ int main() {
             try {
                 bws.getStatisticIndex(StatisticsData::MAX);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -117,7 +117,7 @@ int main() {
             try {
                 bws.getStatisticIndex(StatisticsData::MIN);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -128,7 +128,7 @@ int main() {
             try {
                 bws.getStatistic(StatisticsData::RMS);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -174,7 +174,7 @@ int main() {
             try {
                 bws.getStatisticIndex(StatisticsData::MAX);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -182,7 +182,7 @@ int main() {
             try {
                 bws.getStatisticIndex(StatisticsData::MIN);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -193,7 +193,7 @@ int main() {
             try {
                 bws.getStatistic(StatisticsData::RMS);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -241,7 +241,7 @@ int main() {
                 try {
                     bw1.getStatistic(stat);
                 }
-                catch (const AipsError& x) {
+                catch (const std::exception& x) {
                     thrown = True;
                 }
                 AlwaysAssert(thrown, AipsError);
@@ -269,7 +269,7 @@ int main() {
             try {
                 bw1.getStatisticIndex(StatisticsData::MAX);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -277,7 +277,7 @@ int main() {
             try {
                 bw1.getStatisticIndex(StatisticsData::MIN);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -288,7 +288,7 @@ int main() {
             try {
                 bw1.getStatistic(StatisticsData::RMS);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -336,7 +336,7 @@ int main() {
             try {
                 bw.getStatisticIndex(StatisticsData::MAX);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -344,7 +344,7 @@ int main() {
             try {
                 bw.getStatisticIndex(StatisticsData::MIN);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -355,7 +355,7 @@ int main() {
             try {
                 bw.getStatistic(StatisticsData::RMS);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -396,7 +396,7 @@ int main() {
             try {
                 bw.getStatisticIndex(StatisticsData::MAX);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -404,7 +404,7 @@ int main() {
             try {
                 bw.getStatisticIndex(StatisticsData::MIN);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -415,7 +415,7 @@ int main() {
             try {
                 bw.getStatistic(StatisticsData::RMS);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -478,7 +478,7 @@ int main() {
             try {
                 bw.setCalculateAsAdded(True);
             }
-            catch (AipsError& x) {
+            catch (std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -487,7 +487,7 @@ int main() {
             try {
                 bw.setCalculateAsAdded(True);
             }
-            catch (AipsError& x) {
+            catch (std::exception& x) {
                 thrown = True;
             }
         }
@@ -545,7 +545,7 @@ int main() {
             try {
                 bw.setData(v0.begin(), 3, r0);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -1520,7 +1520,7 @@ int main() {
             try {
                 bw.getQuantile(0.1);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -1528,7 +1528,7 @@ int main() {
             try {
                 bw.getMedian();
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -1539,14 +1539,14 @@ int main() {
                 qs.insert(0.1);
                 bw.getMedianAndQuantiles(qToV, qs);
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
             try {
                 bw.getMedianAbsDevMed();
             }
-            catch (const AipsError& x) {
+            catch (const std::exception& x) {
                 thrown = True;
             }
             AlwaysAssert(thrown, AipsError);
@@ -1616,8 +1616,8 @@ int main() {
             AlwaysAssert(bw.getNPts() == expec, AipsError);
         }
     }
-    catch (const AipsError& x) {
-        cout << x.getMesg() << endl;
+    catch (const std::exception& x) {
+        cout << x.what() << endl;
         return 1;
     } 
     return 0;

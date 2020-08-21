@@ -34,9 +34,9 @@ int main()
 {
   try {
     CASATHROW (AipsError, "msg " << 31);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << x.what() << endl;
-    AlwaysAssertExit (x.getMesg() == "msg 31");
+    AlwaysAssertExit (std::string(x.what()) == "msg 31");
   }
 
   ThrowIf (false, "msg1");
@@ -44,7 +44,7 @@ int main()
   bool caught = false;
   try {
     ThrowIf (true, "msg2");
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << x.what() << endl;
     caught = true;
   }
@@ -55,7 +55,7 @@ int main()
   caught = false;
   try {
     ThrowIfError (10, "msg2");
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     cout << x.what() << endl;
     caught = true;
   }

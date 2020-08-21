@@ -347,7 +347,7 @@ int main() {
       onePd++;
     }
   } catch (IterError& xx) {
-    cout << endl << "IterError: " << xx.getMesg() << endl;
+    cout << endl << "IterError: " << xx.what() << endl;
   } 
 
   try {
@@ -357,7 +357,7 @@ int main() {
       onePd--;
     }
   } catch (IterError& xx) {
-    cout << endl << "IterError: " << xx.getMesg() << endl;
+    cout << endl << "IterError: " << xx.what() << endl;
   } 
 
   ConstListIter<int> t5,t6;
@@ -384,7 +384,7 @@ int main() {
     }
   } catch (IterError& xx) {
     cout << endl << ">>> Instance-specific assertion error message:" << endl
-         << "#X# IterError: " << xx.getMesg() << endl
+         << "#X# IterError: " << xx.what() << endl
          << "<<< End of assertion error message." << endl;
   } 
 
@@ -405,7 +405,7 @@ int main() {
     show(t4);
   } catch (IterError& xx) {
     cout << endl
-         << "#X# IterError: " << xx.getMesg() << endl
+         << "#X# IterError: " << xx.what() << endl
          << "<<< End of assertion error message." << endl;
   } 
 

@@ -301,6 +301,10 @@ Bool ImageInfo::toRecord(
     		error = x.getLastMessage();
     		return False;
     	}
+    	catch (const std::exception& x) {
+        error = x.what();
+        return False;
+      }
     }
     return ok;
 }
@@ -419,8 +423,8 @@ Bool ImageInfo::fromFITS(
 				ok = False;
 			}
 		}
-		catch(const AipsError& x) {
-			error(0) = "ERROR reading BMAJ, BMIN, BPA: " + x.getMesg();
+		catch(const std::exception& x) {
+			error(0) = std::string("ERROR reading BMAJ, BMIN, BPA: ") + x.what();
 			ok = False;
 		}
 	}

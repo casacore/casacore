@@ -266,8 +266,8 @@ Bool Interpolate2D::interpLanczos(T &result,
     const IPosition& shape = data.shape();
     const Double x = where[0];
     const Double y = where[1];
-    const T floorx = floor(x);
-    const T floory = floor(y);
+    const T floorx = std::floor(x);
+    const T floory = std::floor(y);
 
     // Handle mask
     if (anyBadMaskPixels(maskPtr, x-a+1, x+a, y-a+1, y+a)) return False;

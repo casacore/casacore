@@ -28,6 +28,7 @@
 
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 #include <casacore/casa/namespace.h>
 
@@ -105,8 +106,8 @@ int main() {
     	}
         cout << "ok" << endl;
     }
-    catch (const AipsError& x) {
-        cerr << x.getMesg() << endl;
+    catch (const std::exception& x) {
+        cerr << x.what() << endl;
         return 1;
     }
     return 0;

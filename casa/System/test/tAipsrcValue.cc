@@ -29,7 +29,7 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/System/AipsrcVector.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Utilities/Assert.h>

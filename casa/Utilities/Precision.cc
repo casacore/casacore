@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casacore/casa/Utilities/Precision.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

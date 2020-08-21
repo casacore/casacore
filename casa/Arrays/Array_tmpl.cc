@@ -26,23 +26,20 @@
 //# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 //# Includes
-#include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/MaskedArray.h>
+#include "Array.h"
+#include "ArrayMath.h"
+#include "MaskedArray.h"
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class Array<Bool>;
-  template class Array<Char>;
-  template class Array<uChar>;
-  template class Array<Short>;
-  template class Array<uShort>;
-  template class Array<Int>;
-  template class Array<uInt>;
-  template class Array<Int64>;
-  template class Array<Float>;
-  template class Array<Double>;
-  template class Array<Complex>;
-  template class Array<DComplex>;
-  template class Array<String>;
+  template class Array<bool, std::allocator<bool>>;
+  template class Array<char, std::allocator<char>>;
+  template class Array<unsigned char, std::allocator<unsigned char>>;
+  template class Array<short, std::allocator<short>>;
+  template class Array<unsigned short, std::allocator<unsigned short>>;
+  template class Array<int, std::allocator<int>>;
+  template class Array<unsigned int, std::allocator<unsigned int>>;
+  template class Array<long long, std::allocator<long long>>;
+  template class Array<float, std::allocator<float>>;
+  template class Array<double, std::allocator<double>>;
 }

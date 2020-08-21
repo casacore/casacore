@@ -44,7 +44,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
@@ -833,8 +833,8 @@ int main (int argc, const char* argv[])
       ExecFunc(checkAll, table, String("vt_"));
     }
     
-  } catch (const AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   }
   return 0;                           // exit with success status

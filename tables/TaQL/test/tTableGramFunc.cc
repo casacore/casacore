@@ -69,8 +69,8 @@ int checkScaBool (const String& func, const String& arg, Bool expResult)
            << node.unit().getName() << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -97,8 +97,8 @@ int checkScaInt (const String& func, const String& arg, Int expResult)
            << node.unit().getName() << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -126,8 +126,8 @@ int checkScaDouble (const String& func, const String& arg, Double expResult,
            << node.unit().getName() << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -154,8 +154,8 @@ int checkScaDComplex (const String& func, const String& arg, DComplex expResult)
            << node.unit().getName() << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -183,8 +183,8 @@ int checkScaDateTime (const String& func, const String& arg, MVTime expResult)
            << node.unit().getName() << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -211,8 +211,8 @@ int checkScaString (const String& func, const String& arg, String expResult)
            << node.unit().getName() << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm << endl;
     return 1;
   }
@@ -241,8 +241,8 @@ int checkArrBool (const String& func, const String& arg, const String& expResult
       cout << " found    " << node1.getArrayBool(0) << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -271,8 +271,8 @@ int checkArrInt (const String& func, const String& arg, const String& expResult)
       cout << " found    " << node1.getArrayInt(0) << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -301,8 +301,8 @@ int checkArrDouble (const String& func, const String& arg, const String& expResu
       cout << " found    " << node1.getArrayDouble(0) << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -331,8 +331,8 @@ int checkArrDComplex (const String& func, const String& arg, const String& expRe
       cout << " found    " << node1.getArrayDComplex(0) << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -361,8 +361,8 @@ int checkArrString (const String& func, const String& arg, const String& expResu
       cout << " found    " << node1.getArrayString(0) << endl;
       return 1;
     }
-  } catch (const AipsError& x) {
-    cout << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
     cout << "    Unexpected exception in: " << comm1 << endl;
     return 1;
   }
@@ -430,11 +430,11 @@ int checkExcp (const String& func, const String& arg,
   String comm = "using style python calc " + func + '(' + arg + ')';
   try {
     tableCommand (comm);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     if (msgPart.empty()) {
-      cout << x.getMesg() << endl;
-    } else if (x.getMesg().find (msgPart) == String::npos) {
-      cout << x.getMesg() << endl;
+      cout << x.what() << endl;
+    } else if (String(x.what()).find (msgPart) == String::npos) {
+      cout << x.what() << endl;
       cout << "    Expected another exception in: " << comm << endl;
       return 1;
     }
@@ -1816,8 +1816,8 @@ int main()
     nfail += testInvScaArg();
     nfail += testNoArrArg();
     nfail += testInvUnit();
-  } catch (const AipsError& x) {
-    cout << "\nCaught an exception: " << x.getMesg() << endl;
+  } catch (const std::exception& x) {
+    cout << "\nCaught an exception: " << x.what() << endl;
     return 1;
   }
   cout << ntest << " tests done of which " << nfail << " failed" << endl;

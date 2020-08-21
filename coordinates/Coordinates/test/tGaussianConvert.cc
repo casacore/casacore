@@ -127,8 +127,8 @@ int main()
          Vector<Double> pixel(cSys.referencePixel().copy());
          doit2 (pixel, cSys, worldAxes);
       }
-   } catch (AipsError& x) {
-      cerr << "aipserror: error " << x.getMesg() << endl;
+   } catch (std::exception& x) {
+      cerr << "aipserror: error " << x.what() << endl;
       return 1;
    }
 

@@ -32,7 +32,7 @@
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/lattices/LEL/LELLattCoordBase.h>
 #include <casacore/tables/Tables/TableRecord.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
@@ -113,8 +113,8 @@ void WCLELMask::processCommand()
   try {
     LatticeExprNode expr = ImageExprParse::command (itsCommand);
     init (expr);
-  } catch (AipsError& x) {
-    throw AipsError (x.getMesg() + "\n  Error in creating WCLELMask");
+  } catch (std::exception& x) {
+    throw AipsError (std::string(x.what()) + "\n  Error in creating WCLELMask");
   }
 }
 

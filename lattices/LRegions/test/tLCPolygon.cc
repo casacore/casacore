@@ -28,7 +28,7 @@
 #include <casacore/lattices/LRegions/LCPolygon.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
@@ -187,7 +187,7 @@ int main()
             IPosition shape(2, 7, 7);
             try {
               doIt(shape, x, y);
-            } catch (AipsError& x) {
+            } catch (std::exception& x) {
               cout << x.what() << endl;
             }
         }
@@ -200,7 +200,7 @@ int main()
             IPosition shape(2, 5, 3);
             try {
               doIt(shape, x, y);
-            } catch (AipsError& x) {
+            } catch (std::exception& x) {
               cout << x.what() << endl;
             }
         }
@@ -251,8 +251,8 @@ int main()
         AlwaysAssert(sl.end() == IPosition(2, 127), AipsError);
 	}
 
-    } catch (const AipsError& x) {
-	cout << "Caught exception: " << x.getMesg() << endl;
+    } catch (const std::exception& x) {
+	cout << "Caught exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

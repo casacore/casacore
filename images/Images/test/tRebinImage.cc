@@ -148,16 +148,16 @@ try {
 	   try {
 		   RebinImage<Float> rb1(image, axes);
 	   }
-	   catch (AipsError& x) {
-		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
+	   catch (std::exception& x) {
+		   cout << "Exception thrown as expected: " << x.what() << endl;
 		   exception = True;
 	   }
 	   AlwaysAssert(exception, AipsError);
    }
     delete pIm;
 
-} catch (AipsError& x) {
-     cerr << "aipserror: error " << x.getMesg() << endl;
+} catch (std::exception& x) {
+     cerr << "aipserror: error " << x.what() << endl;
      cout << "FAIL" << endl;
      return 1;
 } 

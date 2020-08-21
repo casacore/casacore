@@ -31,7 +31,7 @@
 #include <casacore/lattices/LRegions/LCPolygon.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
@@ -116,8 +116,8 @@ void doIt (const LCRegion& region,
         LCStretch prism2 (ext2, axes, LCBox(blc-1, trc, latticeShape));
         AlwaysAssertExit (prism2 != prism);
       }
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 }
 
@@ -130,8 +130,8 @@ void doItError (const LCRegion& region,
 {
     try {
 	LCStretch prism (region, axes, LCBox(blc, trc, latticeShape));
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 }
 
@@ -175,8 +175,8 @@ int main()
 	// Error; stretched axis has not length 1
 	doItError (polygon, IPosition(1,0), IPosition(1,2), IPosition(1,3),
 		   IPosition(1,20));
-    } catch (AipsError& x) {
-	cout << "Caught exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

@@ -37,7 +37,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -118,8 +118,8 @@ void writeData (Bool autoScale)
   ///  newtab2.bindColumn ("source2", engine1);
   ///  try {
   ///    Table tab2(newtab2, 10);                // bound to incorrect column
-  ///  } catch (AipsError x) {
-  ///    cout << x.getMesg() << endl;
+  ///  } catch (std::exception x) {
+  ///    cout << x.what() << endl;
   ///  } 
 }
 
@@ -339,8 +339,8 @@ int main ()
     writeData (True);
     if (! checkData (True)) sts=1;
     testSpeed();
-  } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return sts;

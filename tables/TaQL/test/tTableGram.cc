@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -134,8 +134,8 @@ int main (int argc, const char* argv[])
     // Do some interactive tests.
       docomm();
     }
-  } catch (AipsError& x) {
-    cout << "\nCaught an exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "\nCaught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;               // successfully executed
@@ -154,8 +154,8 @@ void docomm()
       break;
     try {
       seltab (str);
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
   }
 }

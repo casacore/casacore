@@ -29,7 +29,7 @@
 #include <casacore/tables/TaQL/MArrayMath.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <iostream>
 
@@ -43,7 +43,7 @@ void testExcp()
   Bool err = False;
   try {
     MArray<Int> a1(arr, Array<Bool>(IPosition(1,2)));
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     err = True;
     cout << x.what() << endl;
   }
@@ -51,7 +51,7 @@ void testExcp()
   err = False;
   try {
     MArray<Int> a1(arr, Array<Bool>(IPosition(1,1)), True);
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     err = True;
     cout << x.what() << endl;
   }
@@ -60,7 +60,7 @@ void testExcp()
   try {
     MArray<Int> a1(arr);
     a1.setMask (Array<Bool>(IPosition(1,2)));
-  } catch (const AipsError& x) {
+  } catch (const std::exception& x) {
     err = True;
     cout << x.what() << endl;
   }
@@ -277,7 +277,7 @@ int main()
     testMask();
     testFill();
     testSlice();
-  } catch (AipsError& x) {
+  } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }

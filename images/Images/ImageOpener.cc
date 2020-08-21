@@ -38,7 +38,7 @@
 #include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/casa/HDF5/HDF5File.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Json/JsonKVMap.h>
 #include <casacore/casa/Json/JsonParser.h>
 #include <casacore/casa/OS/File.h>

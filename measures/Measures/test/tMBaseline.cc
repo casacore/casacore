@@ -39,7 +39,7 @@
 #include <casacore/measures/Measures/MBaseline.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -213,8 +213,8 @@ int main()
 	  delete mbc;
 	}
       
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << x.what() << endl;
     } 
 
     return 0;

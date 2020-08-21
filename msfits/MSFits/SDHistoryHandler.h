@@ -30,6 +30,7 @@
 #define MS_SDHISTORYHANDLER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/RecordField.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -39,8 +40,6 @@ class MeasurementSet;
 class MSHistory;
 class MSHistoryColumns;
 class Record;
-
-template <class T> class Vector;
 
 // <summary>
 // </summary>

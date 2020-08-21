@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/IO/CanonicalIO.h>
 #include <casacore/casa/IO/RawIO.h>
@@ -76,8 +76,8 @@ int main()
 							 shape))));
       tfa.showCacheStatistics (cout);
       cout << tfa.cacheSize() << endl;
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
   }
@@ -117,8 +117,8 @@ int main()
 							 shape))));
       tfa.showCacheStatistics (cout);
       cout << tfa.cacheSize() << endl;
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
   }
@@ -156,8 +156,8 @@ int main()
       AlwaysAssertExit (allEQ (arr, tfal.getDComplex (slicer)));
       tfac.put (tfac.getDComplex(slicer) + DComplex(1,2), slicer);
       tfal.put (tfal.getDComplex(slicer) + DComplex(3,5), slicer);
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
     try {
@@ -181,8 +181,8 @@ int main()
 				 tfal.getDComplex (Slicer(st,leng))));
       }
       cout << end << endl;
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
   }
@@ -215,8 +215,8 @@ int main()
 						    uChar(255))));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,10,5));
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
   }
@@ -249,8 +249,8 @@ int main()
 						    short(-32768))));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,4));
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
   }
@@ -264,8 +264,8 @@ int main()
       cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 33) << endl;
       cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 15) << endl;
       cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 3) << endl;
-    } catch (AipsError& x) {
-      cout << "Exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << "Exception: " << x.what() << endl;
       return 1;
     }
   }

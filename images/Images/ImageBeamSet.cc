@@ -29,6 +29,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 #include <casacore/coordinates/Coordinates/StokesCoordinate.h>

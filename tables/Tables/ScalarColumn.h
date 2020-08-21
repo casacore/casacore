@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/ColumnCache.h>
 
@@ -39,7 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class BaseColumn;
 class RefRows;
-template<class T> class Vector;
 class String;
 
 

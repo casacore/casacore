@@ -75,8 +75,8 @@ int main (int argc, const char* argv[])
 	    cout << "Loaded " << tab.nrow() << " rows" << endl;
 	    calc (tab, argv[3]);
 	}
-    } catch (AipsError& x) {
-	cout << "\nCaught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "\nCaught an exception: " << x.what() << endl;
         return 1;
     } 
     return 0;          // successfully executed

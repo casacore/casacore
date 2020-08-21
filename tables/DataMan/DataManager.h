@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/TSMOption.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/OS/Mutex.h>

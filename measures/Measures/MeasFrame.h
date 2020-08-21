@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/casa/iosfwd.h>
@@ -44,7 +45,6 @@ class MVRadialVelocity;
 class MeasComet;
 class FrameRep;
 class MCFrame;
-template <class T> class Vector;
 template <class Qtype> class Quantum;
 
 // <summary> Container for Measure frame </summary>

@@ -28,6 +28,7 @@
 #ifndef MS_MSFITSOUTPUT_H
 #define MS_MSFITSOUTPUT_H
 
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
@@ -37,12 +38,11 @@
 namespace casacore {
 
 //# Forward Declarations
+class File;
 class FitsOutput;
 template<class T> class ScalarColumn;
 class Table;
 template<class T> class Block;
-template<class T> class Vector;
-class File;
 // <summary>
 // Write a MeasurementSet to a random group uvfits file.
 // </summary>

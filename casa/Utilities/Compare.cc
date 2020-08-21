@@ -40,6 +40,16 @@ int CompareNoCase::comp(const void * obj1, const void * obj2) const
   return fcompare (v1, v2);
 }
 
+CompareAlwaysTrue::~CompareAlwaysTrue()
+{}
+
+int CompareAlwaysTrue::comp(const void * obj1, const void * obj2) const
+{
+  (void)obj1; // Avoid compiler warning
+  (void)obj2;
+  return 0;
+}
+
 
 } //# NAMESPACE CASACORE - END
 

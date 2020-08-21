@@ -144,7 +144,7 @@ void readCellSlices()
 	  ColumnSlicer columnSlicer (shape, dataSlicer, destinationSlicer);
 	  AlwaysAssertExit (False); // shouldn't get here
       }
-      catch (AipsError & e){
+      catch (std::exception & e){
       }
   }
 
@@ -153,8 +153,8 @@ void readCellSlices()
       //
       // Slicer lists must be same length
 
-      Vector <Slicer *> dataSlicer (3, 0);
-      Vector <Slicer *> destinationSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (3, nullptr);
+      Vector <Slicer *> destinationSlicer (2, nullptr);
       IPosition shape (1, 0);
 
 
@@ -163,7 +163,7 @@ void readCellSlices()
 	  ColumnSlicer columnSlicer (shape, dataSlicer, destinationSlicer);
 	  AlwaysAssertExit (False); // shouldn't get here
       }
-      catch (AipsError & e){
+      catch (std::exception & e){
       }
   }
 
@@ -172,8 +172,8 @@ void readCellSlices()
       //
       // Slicer elements must have same length
 
-      Vector <Slicer *> dataSlicer (1, 0);
-      Vector <Slicer *> destinationSlicer (1, 0);
+      Vector <Slicer *> dataSlicer (1, nullptr);
+      Vector <Slicer *> destinationSlicer (1, nullptr);
       IPosition shape (1, 0);
 
       dataSlicer (0) = new Slicer (IPosition (1, 0), IPosition (1, 2), IPosition (1, 1));
@@ -184,7 +184,7 @@ void readCellSlices()
 	  ColumnSlicer columnSlicer (shape, dataSlicer, destinationSlicer);
 	  AlwaysAssertExit (False); // shouldn't get here
       }
-      catch (AipsError & e){
+      catch (std::exception & e){
       }
   }
   
@@ -193,8 +193,8 @@ void readCellSlices()
       //
       // Read the whole thing at once.
 
-      Vector <Slicer *> dataSlicer (1, 0);
-      Vector <Slicer *> destinationSlicer (1, 0);
+      Vector <Slicer *> dataSlicer (1, nullptr);
+      Vector <Slicer *> destinationSlicer (1, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, nChannels), IPosition (2, 1));
@@ -215,8 +215,8 @@ void readCellSlices()
       //
       // Do read in two halves
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> destinationSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> destinationSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt n1 = nChannels / 2;
@@ -243,8 +243,8 @@ void readCellSlices()
       //
       // Do read in two halves the other way.
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> destinationSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> destinationSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt n1 = nCorrelations / 2;
@@ -273,8 +273,8 @@ void readCellSlices()
       //
       // Do it with two interleaving slices.
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> destinationSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> destinationSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt nChannels1 = nChannels / 2;
@@ -302,8 +302,8 @@ void readCellSlices()
       //
       // Do it with two interleaving slices doing it the other way
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> destinationSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> destinationSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt nCorrelations1 = nCorrelations / 2;
@@ -338,8 +338,8 @@ void writeCellSlices()
       //
       // Read the whole thing at once.
 
-      Vector <Slicer *> dataSlicer (1, 0);
-      Vector <Slicer *> sourceSlicer (1, 0);
+      Vector <Slicer *> dataSlicer (1, nullptr);
+      Vector <Slicer *> sourceSlicer (1, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, nChannels), IPosition (2, 1));
@@ -360,8 +360,8 @@ void writeCellSlices()
       //
       // Do read in two halves
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> sourceSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> sourceSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt n1 = nChannels / 2;
@@ -388,8 +388,8 @@ void writeCellSlices()
       //
       // Do read in two halves the other way.
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> sourceSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> sourceSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt n1 = nCorrelations / 2;
@@ -418,8 +418,8 @@ void writeCellSlices()
       //
       // Do it with two interleaving slices.
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> sourceSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> sourceSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt nChannels1 = nChannels / 2;
@@ -447,8 +447,8 @@ void writeCellSlices()
       //
       // Do it with two interleaving slices doing it the other way
 
-      Vector <Slicer *> dataSlicer (2, 0);
-      Vector <Slicer *> sourceSlicer (2, 0);
+      Vector <Slicer *> dataSlicer (2, nullptr);
+      Vector <Slicer *> sourceSlicer (2, nullptr);
       IPosition shape (2, nCorrelations, nChannels);
 
       uInt nCorrelations1 = nCorrelations / 2;
@@ -502,8 +502,8 @@ int main()
         readCellSlices();
         writeCellSlices();
       }
- } catch (AipsError& x) {
-    cout << "Caught an exception: " << x.getMesg() << endl;
+ } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
     return 1;
   } 
   return 0;                           // exit with success status

@@ -26,14 +26,12 @@
 //#
 //# $Id$
 
-#ifndef CASA_AXESSPECIFIER_H
-#define CASA_AXESSPECIFIER_H
-
+#ifndef CASA_AXESSPECIFIER_2_H
+#define CASA_AXESSPECIFIER_2_H
 
 //# Includes
-#include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Arrays/AxesMapping.h>
+#include "IPosition.h"
+#include "AxesMapping.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -69,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // shape has to be applied to the AxesSpecifier. The result is
 // a <linkto class=AxesMapping>AxesMapping</linkto> object.
 // This object is (for example) used internally in the
-// <linkto class=SubLattice>SubLattice</linkto> class to know how
+// casacore SubLattice class to know how
 // to map the axes form the original lattice to the sublattice.
 // <note role=caution>
 // Reordering axes is not supported (yet) by the other Casacore classes
@@ -82,14 +80,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The axes are reordered to 1,0,2. Thus the first and second axes are
 // swapped.
 // <srcblock>
-// AxesSpecifier spec(True, IPosition(3,1,0,2));
+// AxesSpecifier spec(true, IPosition(3,1,0,2));
 // AxesMapping map = spec.apply (IPosition(3,4,1,5));
 // AlwaysAssertExit (map.posToNew (IPosition(3,2,0,3)) == IPosition(3,0,2,3));
 // AlwaysAssertExit (map.posToOld (IPosition(3,0,2,3)) == IPosition(3,2,0,3));
 //
 // The following specification would have the same effect, because the
 // unspecified axes are kept in their natural order.
-// AxesSpecifier spec(True, IPosition(1,1));
+// AxesSpecifier spec(true, IPosition(1,1));
 // </srcblock>
 //
 // The same example as above, but now degenerated axes are removed.
@@ -98,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <br>Also note the difference between the functions <src>posToOld</src>
 // and <src>shapeToOld</src>.
 // <srcblock>
-// AxesSpecifier spec(False, IPosition(1,1));
+// AxesSpecifier spec(false, IPosition(1,1));
 // AxesMapping map = spec.apply (IPosition(3,4,1,5));
 // AlwaysAssertExit (map.posToNew (IPosition(3,2,0,3)) == IPosition(2,3,2));
 // AlwaysAssertExit (map.posToOld (IPosition(3,3,2)) == IPosition(3,2,0,3);
@@ -116,14 +114,14 @@ public:
   AxesSpecifier();
 
   // Tell if no or all degenerate axes have to be removed.
-  explicit AxesSpecifier (Bool keepDegenerate);
+  explicit AxesSpecifier (bool keepDegenerate);
 
   // Tell if no or all degenerate axes have to be removed.
   // <br>The argument <src>axisPath</src> makes it possible to specify in
   // which order the KEPT axes have to be used. Unspecified axes are
   // appended to the end. It gives a means to reorder the axes of a lattice.
   // <br>E.g. for a 4-dim lattice axisPath [2,0] means axis order [2,0,1,3].
-  explicit AxesSpecifier (Bool keepDegenerate, const IPosition& axisPath);
+  explicit AxesSpecifier (bool keepDegenerate, const IPosition& axisPath);
 
   // Tell which (degenerate) axes have to be kept.
   // Non-degenerate axes will always be kept.
@@ -137,27 +135,18 @@ public:
   // <br>E.g. for a 4-dim lattice axisPath [2,0] means axis order [2,0,1,3].
   AxesSpecifier (const IPosition& keepAxes, const IPosition& axisPath);
 
-  // Copy constructor (copy semantics).
-  AxesSpecifier(const AxesSpecifier& other);
-  
-  ~AxesSpecifier();
-
-  // Assignment (copy semantics).
-  // This and that do not have to have the same length.
-  AxesSpecifier& operator= (const AxesSpecifier& other);
-
   // Apply the specification to a shape.
   // It returns an <linkto class=AxesMapping>AxesMapping</linkto>
   // object which takes care of mapping old to new axes order.
   AxesMapping apply (const IPosition& shape) const;
 
   // Are we keeping all degenerate axes ?
-  Bool keep() const {return itsKeep;};
+  bool keep() const {return itsKeep;};
 
 private:
   IPosition itsAxes;
   IPosition itsPath;
-  Bool      itsKeep;
+  bool      itsKeep;
 };
 
 

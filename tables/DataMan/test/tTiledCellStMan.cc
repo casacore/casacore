@@ -38,6 +38,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
@@ -66,8 +67,8 @@ int main () {
 	readTable(TSMOption::Buffer);
 	writeNoHyper(TSMOption::MMap);
 	readTable(TSMOption::Cache);
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     return 0;                           // exit with success status

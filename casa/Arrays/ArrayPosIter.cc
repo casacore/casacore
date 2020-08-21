@@ -25,36 +25,36 @@
 //#
 //# $Id$
 
-#include <casacore/casa/Arrays/ArrayPosIter.h>
-#include <casacore/casa/Arrays/ArrayError.h>
+#include "ArrayPosIter.h"
+#include "ArrayError.h"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &origin,
-					     uInt byDim)
+					     size_t byDim)
 : Start(origin),
   Shape(shape),
-  atOrBeyondEnd(False)
+  atOrBeyondEnd(false)
 {
     setup(byDim);
 }
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
-					     uInt byDim)
+					     size_t byDim)
 : Start(shape.nelements(), 0),
   Shape(shape),
-  atOrBeyondEnd(False)
+  atOrBeyondEnd(false)
 {
     setup(byDim);
 }
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &iterAxes,
-					     Bool axesAreCursor)
+					     bool axesAreCursor)
 : Start(shape.nelements(), 0),
   Shape(shape),
-  atOrBeyondEnd(False)
+  atOrBeyondEnd(false)
 {
     setup(iterAxes, axesAreCursor);
 }
@@ -62,21 +62,21 @@ ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape,
 // <thrown>
 //     <item> ArrayIteratorError
 // </thrown>
-void ArrayPositionIterator::setup(uInt byDim)
+void ArrayPositionIterator::setup(size_t byDim)
 {
     if (byDim > ndim()) {
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 	    " - Stepping by dimension > Array dimension"));
     }
     IPosition cursorAxes(byDim);
-    for (uInt i=0; i<byDim; i++) {
+    for (size_t i=0; i<byDim; i++) {
       cursorAxes(i) = i;
     }
-    setup (cursorAxes, True);
+    setup (cursorAxes, true);
 }
 
 void ArrayPositionIterator::setup(const IPosition &axes,
-				  Bool axesAreCursor)
+				  bool axesAreCursor)
 {
     // Note that IPosition::otherAxes checks if axes are unique.
     // Get the iteration axes.
@@ -86,7 +86,7 @@ void ArrayPositionIterator::setup(const IPosition &axes,
         iterationAxes = axes;
     }
     // Get the cursorAxes.
-    // Do this also if axesAreCursor=True, so we are sure they are
+    // Do this also if axesAreCursor=true, so we are sure they are
     // in the correct order.
     cursAxes = IPosition::otherAxes (ndim(), iterationAxes);
     // Check shape.
@@ -94,7 +94,7 @@ void ArrayPositionIterator::setup(const IPosition &axes,
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				 " - ndim of origin and shape differ"));
     }
-    for (uInt i=0; i < ndim(); i++) {
+    for (size_t i=0; i < ndim(); i++) {
 	if (Shape(i) < 0)
          throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				     " - Shape(i) < 0"));
@@ -108,14 +108,14 @@ void ArrayPositionIterator::reset()
     Cursor = Start;
     // Immediately at end if first iteration axis is empty.
     if (iterationAxes.nelements() > 0) {
-      Int ax = iterationAxes[0];
+      int ax = iterationAxes[0];
       atOrBeyondEnd = End[ax] < Start[ax];
     } else {
       atOrBeyondEnd = Shape.nelements() == 0  ||  Shape[0] == 0;
     }
 }
 
-Bool ArrayPositionIterator::atStart() const
+bool ArrayPositionIterator::atStart() const
 {
     // Too expensive - we should set variables in next/previous
     return Cursor == Start;
@@ -131,23 +131,23 @@ void ArrayPositionIterator::next()
 
 void ArrayPositionIterator::set (const IPosition& cursorPos)
 {
-    Bool all = False;
+    bool all = false;
     if (cursorPos.nelements() != iterationAxes.nelements()) {
-        all = True;
+        all = true;
 	if (cursorPos.nelements() != ndim()) {
 	    throw ArrayIteratorError ("ArrayPositionIterator::set - "
 				      "length of cursorPos is invalid");
 	}
     }
-    atOrBeyondEnd = False;
-    for (uInt i=0; i<cursorPos.nelements(); ++i) {
+    atOrBeyondEnd = false;
+    for (size_t i=0; i<cursorPos.nelements(); ++i) {
         // Only take the axis into account if it is an iteration axis.
-        Int axis = -1;
+        int axis = -1;
 	if (!all) {
 	  axis = iterationAxes(i);
 	} else {
-	  for (uInt j=0; j<iterationAxes.nelements(); ++j) {
-	    if (i == uInt(iterationAxes[j])) {
+	  for (size_t j=0; j<iterationAxes.nelements(); ++j) {
+	    if (i == size_t(iterationAxes[j])) {
 	      axis = i;
 	      break;
 	    }
@@ -156,13 +156,13 @@ void ArrayPositionIterator::set (const IPosition& cursorPos)
 	if (axis >= 0) {
 	  Cursor[axis] = cursorPos[i];
 	  if (Cursor[axis] > End[axis]) {
-	    atOrBeyondEnd = True;
+	    atOrBeyondEnd = true;
 	  }
 	}
     }
 }
 
-uInt ArrayPositionIterator::nextStep()
+size_t ArrayPositionIterator::nextStep()
 {
     // This could and should be made more efficient. 
     // next will step past the end (as it needs to for pastEnd to trigger).
@@ -170,22 +170,14 @@ uInt ArrayPositionIterator::nextStep()
     // Short circuit if we are iterating by the same dimensionality
     // as the array.
     if (iterationAxes.nelements() == 0){
-        atOrBeyondEnd = True;
+        atOrBeyondEnd = true;
         Cursor = End;
 	return ndim();
     }
 
-    if (aips_debug) {
-	// We can go past the end, but we should never be before the
-	// start!
-	if ((Start <= Cursor) == False)
-	    throw(ArrayIteratorError("ArrayPositionIterator::next()"
-				     " - Cursor before array start"));
-    }
-
     // Increment the cursor.
-    Int axis = 0;
-    for (uInt i=0; i<iterationAxes.nelements(); i++) {
+    int axis = 0;
+    for (size_t i=0; i<iterationAxes.nelements(); i++) {
         axis = iterationAxes(i);
 	Cursor(axis)++;
 	if (Cursor(axis) <= End(axis)) {
@@ -195,7 +187,7 @@ uInt ArrayPositionIterator::nextStep()
 	if (i < iterationAxes.nelements()-1) {
 	    Cursor(axis) = Start(axis);
 	} else {
-	    atOrBeyondEnd = True;
+	    atOrBeyondEnd = true;
 	}
     }
     return axis;
@@ -204,8 +196,8 @@ uInt ArrayPositionIterator::nextStep()
 IPosition ArrayPositionIterator::endPos() const
 {
   IPosition endp = pos();
-  for (uInt i=0; i<cursAxes.nelements(); i++) {
-    uInt axis = cursAxes(i);
+  for (size_t i=0; i<cursAxes.nelements(); i++) {
+    size_t axis = cursAxes(i);
     endp(axis) = Shape(axis)-1;
   }
   return endp;

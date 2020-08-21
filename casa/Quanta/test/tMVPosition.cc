@@ -133,8 +133,8 @@ int main ()
 
     test_parallel(); 
 
-  } catch (AipsError& x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   } 
   return 0;

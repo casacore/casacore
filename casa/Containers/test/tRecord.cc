@@ -32,11 +32,11 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -61,8 +61,8 @@ int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));
-    } catch (AipsError& x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+    } catch (std::exception& x) {
+	cout << "Caught an exception: " << x.what() << endl;
 	return 1;
     } 
     cout << "OK" << endl;
@@ -110,13 +110,13 @@ void doDefineAssign (const Record& inrecord)
 			     stringToVector ("abc,dghij,klmn")));
     try {
 	*rfstr2 = stringToVector ("abc");
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;           // incorrect shape
+    } catch (std::exception& x) {
+	cout << x.what() << endl;           // incorrect shape
     } 
     try {
 	*rfstr3 = stringToVector ("abc");
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;           // incorrect shape
+    } catch (std::exception& x) {
+	cout << x.what() << endl;           // incorrect shape
     } 
     record.get (record.fieldNumber ("TpArrayString2"), vec);
     AlwaysAssertExit (allEQ (vec,
@@ -127,13 +127,13 @@ void doDefineAssign (const Record& inrecord)
 
     try {
 	*rfstr2 = stringToVector ("abc");
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;           // incorrect shape
+    } catch (std::exception& x) {
+	cout << x.what() << endl;           // incorrect shape
     } 
     try {
 	*rfstr3 = stringToVector ("abc");
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;           // incorrect shape
+    } catch (std::exception& x) {
+	cout << x.what() << endl;           // incorrect shape
     } 
     record.get (record.fieldNumber ("TpArrayString2"), vec);
     AlwaysAssertExit (allEQ (vec,
@@ -144,8 +144,8 @@ void doDefineAssign (const Record& inrecord)
 
     try {
 	rfstr2.define (stringToVector ("abc"));
-    } catch (AipsError& x) {
-	cout << x.getMesg() << endl;           // incorrect shape
+    } catch (std::exception& x) {
+	cout << x.what() << endl;           // incorrect shape
     } 
     rfstr3.define (stringToVector ("a"));
     record.get (record.fieldNumber ("TpArrayString2"), vec);
@@ -178,8 +178,8 @@ void doDefineAssign (const Record& inrecord)
 
     try {
         record.define ("TpBool", Vector<Bool>(2, False));
-    } catch (AipsError& x) {
-        cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+        cout << x.what() << endl;
     } 
     // Do an erronous get.
     try {
@@ -229,9 +229,9 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
     if (doExcp) {
 	try {
 	    record1 = record;
-	} catch (AipsError& x) {                    // not conforming
+	} catch (std::exception& x) {                    // not conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
+		 << x.what() << endl
 		 << "<<<" << endl;
 	} 
     }
@@ -306,37 +306,37 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record.define (record.nfields()+1, (Int)0);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;           // index too high
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;           // index too high
 	} 
 	try {
 	    record.define ("", (Int)0);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;           // empty name
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;           // empty name
 	} 
 	try {
 	    record.define ("aB", (Int)0);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;           // first no uppercase
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;           // first no uppercase
 	} 
 	extraArgument = 10;
 	try {
 	    record.define ("A", (Int)0);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;           // extra argument = 10
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;           // extra argument = 10
 	} 
 	extraArgument = 0;
 	try {
 	    record.define ("TpShort", (Int)0);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;           // invalid type
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;           // invalid type
 	} 
 	RecordDesc rd1;
 	rd1.addField ("TpTable", TpTable);
 	try {
 	    Record rec(rd1);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;           // invalid field type
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;           // invalid field type
 	} 
     }
     AlwaysAssertExit(record.nfields() == rd.nfields() &&
@@ -410,8 +410,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record2a.restructure(subDesc);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;  // fixed, not empty ->impossible
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;  // fixed, not empty ->impossible
 	} 
     }
     record2 = record;                     // non-fixed -> possible
@@ -420,9 +420,9 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record2a = record2b;
-	} catch (AipsError& x) {           // fixed; non-conforming
+	} catch (std::exception& x) {           // fixed; non-conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
+		 << x.what() << endl
 		 << "<<<" << endl;
 	} 
     }
@@ -509,8 +509,8 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record.asComplex ("TpBool");
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // fixed -> add not possible
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // fixed -> add not possible
 	} 
     }
 
@@ -696,27 +696,27 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    record.merge (record, RecordInterface::SkipDuplicates);
-	} catch (AipsError& x) {              // merge of itself
+	} catch (std::exception& x) {              // merge of itself
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
+		 << x.what() << endl
 		 << "<<<" << endl;
 	} 
 	try {
 	    record.mergeField (record5, "TpBool",
 			       RecordInterface::ThrowOnDuplicates);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // duplicate field
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // duplicate field
 	} 
 	try {
 	    record2a.merge (record, RecordInterface::SkipDuplicates);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // fixed structure
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // fixed structure
 	} 
 	try {
 	    record2a.mergeField (record5, "TpBool",
 				 RecordInterface::ThrowOnDuplicates);
-	} catch (AipsError& x) {
-	    cout << x.getMesg() << endl;     // fixed structure
+	} catch (std::exception& x) {
+	    cout << x.what() << endl;     // fixed structure
 	} 
     }
 	

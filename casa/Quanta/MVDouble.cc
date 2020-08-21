@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/MVDouble.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicMath/Math.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

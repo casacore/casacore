@@ -254,17 +254,17 @@ void doit()
       try {
         ba.replaceStorage(20, p, True);
         AlwaysAssertExit(False);
-      } catch (AipsError const &) {
+      } catch (std::exception const &) {
       }
       try {
         ba.replaceStorage(20, p, False);
         AlwaysAssertExit(False);
-      } catch (AipsError const &) {
+      } catch (std::exception const &) {
       }
       ba.permitChangingAllocator();
       try {
         ba.replaceStorage(20, p, True);
-      } catch (AipsError const &) {
+      } catch (std::exception const &) {
         AlwaysAssertExit(False);
       }
       AlwaysAssertExit(0 == p);
@@ -273,7 +273,7 @@ void doit()
       p = DefaultAllocator<Int>::type().allocate(20);
       try {
         ba.replaceStorage(20, p, True, AllocSpec<DefaultAllocator<Int> >::value);
-      } catch (AipsError const &) {
+      } catch (std::exception const &) {
         AlwaysAssertExit(False);
       }
       AlwaysAssertExit(0 == p);

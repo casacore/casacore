@@ -31,7 +31,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/System/AppInfo.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/System/AipsrcVector.h>
 #include <casacore/casa/Utilities/Regex.h>
@@ -91,7 +91,7 @@ int main()
 	try {
 	    cerr << "=====Expect a single SEVERE level message\n";
 	    file = AppInfo::workFileName(1000000);
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
             ///caught = True;
 	} 
         // Do not check if it failed or succeeded, because that is

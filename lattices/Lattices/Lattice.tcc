@@ -252,7 +252,7 @@ void Lattice<T>::apply (const Functional<T,T>& function)
 {
   LatticeIterator<T> iter(*this, True);
   for (iter.reset(); !iter.atEnd(); iter++) {
-    iter.rwCursor().apply(function);
+    iter.rwCursor().apply([&function](T t){ return function(t); });
   }
 }
 

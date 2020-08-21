@@ -119,7 +119,7 @@ enum KernelTypes {
 // substrings "boxcar", "gaussian" or "hanning" (actually "box", "gauss", and "hann"
 // will do) is present.
    static Vector<Int> toKernelTypes (const String& kernels,
-                                     const Regex& delimiter);
+                                     const std::regex& delimiter);
    static Vector<Int> toKernelTypes (const Vector<String>& kernels);
    static VectorKernel::KernelTypes toKernelType (const String& kernel);
    static String fromKernelType (KernelTypes kernelType);

@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>

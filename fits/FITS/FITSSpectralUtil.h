@@ -31,6 +31,7 @@
 #define FITS_FITSSPECTRALUTIL_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/measures/Measures/MFrequency.h>
 
@@ -38,7 +39,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class RecordInterface;
 class String;
-template<class T> class Vector;
 class LogIO;
 
 // <summary>

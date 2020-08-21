@@ -65,7 +65,7 @@ void tSPtr()
 	    Int *ip = new Int;
 	    SPtrHolder<Int> ph(ip);
 	    throw(AipsError("testing..."));
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	    isCaught = True;
 	} 
 	AlwaysAssertExit(isCaught);
@@ -115,7 +115,7 @@ int main()
 	    Int *ip = new Int[1000];
 	    PtrHolder<Int> ph(ip, True);
 	    throw(AipsError("testing..."));
-	} catch (AipsError& x) {
+	} catch (std::exception& x) {
 	    isCaught = True;
 	} 
 	AlwaysAssertExit(isCaught);

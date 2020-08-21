@@ -32,13 +32,13 @@
 #include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasColumn.h>
 #include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
-template <class T> class Array;
 template <class M> class ScalarMeasColumn;
 
 

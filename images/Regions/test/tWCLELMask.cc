@@ -127,8 +127,8 @@ int main ()
       try {
 	LCRegion* lc = mask.toLCRegion (cSys, latticeShape-1);
 	delete lc;
-      } catch (AipsError& x) {
-	cout << "Expected exception: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+	cout << "Expected exception: " << x.what() << endl;
       }
     }
     {
@@ -146,8 +146,8 @@ int main ()
       try {
 	LCRegion* lc = mask.toLCRegion (cSys, latticeShape-1);
 	delete lc;
-      } catch (AipsError& x) {
-	cout << "Expected exception: " << x.getMesg() << endl;
+      } catch (std::exception& x) {
+	cout << "Expected exception: " << x.what() << endl;
       }
     }
     {
@@ -174,8 +174,8 @@ int main ()
       testVectorROIter (*lc, True, True);
       delete lc;
     }
-  } catch (AipsError& x) {
-    cerr << "Caught exception: " << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cerr << "Caught exception: " << x.what() << endl;
     return 1;
   } 
 

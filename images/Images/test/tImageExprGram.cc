@@ -37,7 +37,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
@@ -168,28 +168,28 @@ int main (int argc, const char* argv[])
     cout << endl;
     try {
       doExpr ("xxx", Record());
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/a1"));
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("a1/b"));
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/b*"));
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("min(b,b,b)"));
-    } catch (AipsError& x) {
-      cout << x.getMesg() << endl;
+    } catch (std::exception& x) {
+      cout << x.what() << endl;
     } 
   }
   {
@@ -688,8 +688,8 @@ int main (int argc, const char* argv[])
 
   cout << endl;
 
- } catch (AipsError& x) {
-    cerr << "aipserror: error " << x.getMesg() << endl;
+ } catch (std::exception& x) {
+    cerr << "aipserror: error " << x.what() << endl;
     foundError = True;
  } 
 

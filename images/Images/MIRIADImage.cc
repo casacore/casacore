@@ -45,7 +45,7 @@
 
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Containers/Record.h>
@@ -671,9 +671,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
     try {
       projn = Projection(ptype, projp);
-    } catch (AipsError& x) {
+    } catch (std::exception& x) {
       os << LogIO::SEVERE << "Error forming projection, maybe the "
-	"wrong number of parameters\n(" << x.getMesg() << ")" << 
+	"wrong number of parameters\n(" << x.what() << ")" << 
 	LogIO::POST;
       //return False;
     } 
@@ -1022,8 +1022,8 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       try {
 	StokesCoordinate sc(stokes);
 	cSys.addCoordinate(sc);
-      } catch (AipsError& x) {
-	os << LogIO::SEVERE << "Error forming stokes axis : " << x.getMesg() << LogIO::POST;
+      } catch (std::exception& x) {
+	os << LogIO::SEVERE << "Error forming stokes axis : " << x.what() << LogIO::POST;
 	//return False;
       } 
   }

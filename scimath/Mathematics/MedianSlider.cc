@@ -212,7 +212,7 @@ Bool MedianSlider::assure ()
       if( buf[i] <= m ) c1++;
       if( buf[i] >= m ) c2++;
     }
-  if( abs(c1-c2) > 1  )
+  if( std::abs(c1-c2) > 1  )
   {
     throw(AipsError("MedianSlider::assure() failed"));
     return False;

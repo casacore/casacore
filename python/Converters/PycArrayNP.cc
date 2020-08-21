@@ -31,6 +31,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/vector.h>
 #include <boost/python/dict.hpp>
 
 
