@@ -39,6 +39,10 @@ if (BUILD_FFTPACK_DEPRECATED)
     list (APPEND buildfiles
          Mathematics/FFTPack.cc
     )
+    install (FILES
+       Mathematics/FFTPack.h
+       DESTINATION include/casacore/scimath/Mathematics
+    )
 endif ()
 
 add_library (casa_scimath ${buildfiles})
