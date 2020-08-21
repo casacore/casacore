@@ -323,7 +323,7 @@ BOOST_AUTO_TEST_CASE( pointer_vector )
   // Hence now we need this:
   Vector<Array<int>*> ptrArray(3, nullptr);
   for(auto iter=ptrArray.begin(); iter!=ptrArray.end(); ++iter)
-    BOOST_CHECK_EQUAL(*iter, nullptr);
+    BOOST_CHECK(*iter == nullptr);
 }
 
 BOOST_AUTO_TEST_CASE( bool_vector_constructor )

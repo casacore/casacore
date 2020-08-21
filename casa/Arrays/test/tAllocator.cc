@@ -98,9 +98,9 @@ BOOST_AUTO_TEST_CASE(poolallocator)
   int* b = alloc.allocate(5);
   int* c = alloc.allocate(1);
   int* n = alloc.allocate(0);
-  BOOST_CHECK_NE(a, nullptr);
-  BOOST_CHECK_NE(b, nullptr);
-  BOOST_CHECK_NE(c, nullptr);
+  BOOST_CHECK(a != nullptr);
+  BOOST_CHECK(b != nullptr);
+  BOOST_CHECK(c != nullptr);
   BOOST_CHECK_NE(a, b);
   BOOST_CHECK_NE(b, c);
   BOOST_CHECK_NE(a, c);
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(poolallocator)
   
   alloc.deallocate(b, 5);
   int* d = alloc.allocate(3);
-  BOOST_CHECK_NE(d, nullptr);
+  BOOST_CHECK(d != nullptr);
   BOOST_CHECK_NE(a, d);
   BOOST_CHECK_NE(c, d);
   d[0] = 8; d[1] = 9; d[2] = 10;
