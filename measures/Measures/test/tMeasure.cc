@@ -210,6 +210,12 @@ int main()
 	    " to " << tgsref << endl <<
 		" as " << tconv6() << endl;
 
+    {
+        MDirection j2000;
+        bool success = j2000.setRefString("J2000 ");
+        cout << boolalpha << success << endl;
+    }
+
     {	
 	MeasFrame b1900((MEpoch(Quantity(MeasData::MJDB1900,"d"))));
 	MDirection lsr1900(Quantity(270,"deg"),
