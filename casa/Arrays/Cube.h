@@ -122,17 +122,49 @@ public:
     // Note that the assign function can be used to assign a
     // non-conforming cube.
     // <group>
-     Cube<T, Alloc> &operator=(const Cube<T, Alloc>& source)
+    Cube<T, Alloc> &operator=(const Cube<T, Alloc>& source)
     { Array<T, Alloc>::operator=(source); return *this; }
-     Cube<T, Alloc> &operator=(Cube<T, Alloc>&& source)
+    Cube<T, Alloc> &operator=(Cube<T, Alloc>&& source)
     { Array<T, Alloc>::operator=(std::move(source)); return *this; }
+    
+    Cube<T, Alloc>& operator=(const Array<T, Alloc>& source)
+    {
+      // TODO is it highly confusing that operator= is specialized for Cube, e.g.
+      // this is allowed:
+      //   Cube<int> cube(5,1,1);
+      //   Vector<int> v(5,0);
+      //   cube = v;
+      // But this is not:
+      //   Array arr(IPosition{5,1,1});
+      //   Vector<int> v(5,0);
+      //   arr = v;
+      // If it should be allowed to assign from dim(5,1,1) to dim(5), this should
+      // be supported already by the Array class so that the semantics are the
+      // same!
+      
+      if (source.ndim() == 3) {
+        Array<T, Alloc>::operator=(source);
+      } else {
+        // This might work if a.ndim == 1 or 2
+        (*this) = Cube<T, Alloc>(source);
+      }
+      return *this;
+    }
    
-    //virtual Array<T> &assign_conforming(const Array<T> &other);
+    Cube<T, Alloc>& operator=(Array<T, Alloc>&& source)
+    {
+      if (source.ndim() == 3) {
+        Array<T, Alloc>::operator=(std::move(source));
+      } else {
+        (*this) = Cube<T, Alloc>(std::move(source));
+      }
+      return *this;
+    }
+   
     // </group>
 
     // Copy val into every element of this cube; i.e. behaves as if
     // val were a constant conformant cube.
-    using Array<T, Alloc>::operator=;
     Array<T, Alloc> &operator=(const T &val)
       { return Array<T>::operator=(val); }
 
