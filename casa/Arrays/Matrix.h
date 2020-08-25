@@ -134,7 +134,11 @@ public:
     { return assign_conforming(source); }
     Matrix<T, Alloc>& operator=(Matrix<T, Alloc>&& source)
     { return assign_conforming(std::move(source)); }
-    
+    Matrix<T, Alloc>& operator=(const Array<T, Alloc>& source)
+    { return assign_conforming(source); }
+    Matrix<T, Alloc>& operator=(Array<T, Alloc>&& source)
+    { return assign_conforming(std::move(source)); }
+   
     // Copy the values from other to this Matrix. If this matrix has zero
     // elements then it will resize to be the same shape as other; otherwise
     // other must conform to this.
@@ -146,10 +150,29 @@ public:
     Matrix<T, Alloc>& assign_conforming(Matrix<T, Alloc>&& source)
     { Array<T, Alloc>::assign_conforming(std::move(source)); return *this; }
     
-    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& source)
-    { return Array<T, Alloc>::assign_conforming(source); }
-    Array<T, Alloc>& assign_conforming(Array<T, Alloc>&& source)
-    { return Array<T, Alloc>::assign_conforming(std::move(source)); }
+    Matrix<T, Alloc>& assign_conforming(const Array<T, Alloc>& source)
+    {
+      // TODO Should be supported by the Array class,
+      // see Cube::operator=(const Array&)
+      
+      if (source.ndim() == 2) {
+        Array<T, Alloc>::assign_conforming(source);
+      } else {
+        // This might work if a.ndim == 1 or 2
+        (*this) = Matrix<T, Alloc>(source);
+      }
+      return *this;
+    }
+   
+    Matrix<T, Alloc>& assign_conforming(Array<T, Alloc>&& source)
+    {
+      if (source.ndim() == 2) {
+        Array<T, Alloc>::assign_conforming(std::move(source));
+      } else {
+        (*this) = Matrix<T, Alloc>(std::move(source));
+      }
+      return *this;
+    }
     // </group>
 
     // Copy val into every element of this Matrix; i.e. behaves as if

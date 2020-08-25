@@ -475,20 +475,22 @@ uInt MUString::minimaxNC(const String &in, Int N_name,
     if (i >= N_name) {
 	size_t ia = a.length();
 	for (i=0; i<N_name; i++) {
-          if (ia < tname[i].length()) {
 	    String b = upcase(tname[i]);
-	    if (a == b.at(0,ia)) {
+	    size_t ib = b.length();
+	    ib = ia < ib ? ia : ib;
+	    if (a.at(0,ib) == b.at(0,ib)) {
 		Int j;
 // Look for more partials
 		for (j=i+1; j<N_name; j++) {
 		    b = upcase(tname[j]);
-		    if (a == b.at(0,ia)) break;
+		    ib = b.length();
+		    ib = ia < ib ? ia : ib;
+		    if (a(0,ib) == b.at(0,ib)) break;
 		}
 // Found duplicate
 		if (j<N_name) i=N_name;
 		break;
 	    }
-          }
 	}
     }
     return i;
