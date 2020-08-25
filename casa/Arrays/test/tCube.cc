@@ -136,4 +136,23 @@ BOOST_AUTO_TEST_CASE( uninitialized_constructor_b )
 	BOOST_CHECK (allEQ(y1, 2));
 }
   
+BOOST_AUTO_TEST_CASE( assign_unmatched )
+{
+  Cube<float> lhs(IPosition{10, 1, 1}, 1.0f);
+  Vector<float> rhs(10, 13.0f);
+  lhs = rhs;
+  std::vector<float> ref(10, 13.0f);
+  BOOST_CHECK_EQUAL_COLLECTIONS (lhs.begin(), lhs.end(), ref.begin(), ref.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS (lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+BOOST_AUTO_TEST_CASE( move_assign_unmatched )
+{
+  Cube<float> lhs(IPosition{10, 1, 1}, 1.0f);
+  Vector<float> rhs(10, 27.0f);
+  lhs = std::move(rhs);
+  std::vector<float> ref(10, 27.0f);
+  BOOST_CHECK_EQUAL_COLLECTIONS (lhs.begin(), lhs.end(), ref.begin(), ref.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
