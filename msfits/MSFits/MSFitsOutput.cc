@@ -291,8 +291,9 @@ void MSFitsOutput::write() const {
         }
     }
     // support for adhoc NRAO SYSPOWER table
-    File syspower = _ms.tableName() + "/SYSPOWER";
-    if (syspower.exists() && syspower.isDirectory()) {
+    File syspower_f = _ms.tableName() + "/SYSPOWER";
+    if (syspower_f.exists() && syspower_f.isDirectory()) {
+        Table syspower(syspower_f.path().originalName());
         os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
         if (! _writeSY(fitsOutput, _ms, syspower, nrspw, spwidMap, _combineSpw)) {
             os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
@@ -2591,7 +2592,7 @@ Bool MSFitsOutput::_writeWX(std::shared_ptr<FitsOutput> output, const Measuremen
 
 // TODO uncommoment nspw when multiple IFs are supported
 Bool MSFitsOutput::_writeSY(
-    std::shared_ptr<FitsOutput> output, const MeasurementSet &ms, const File& syspower,
+    std::shared_ptr<FitsOutput> output, const MeasurementSet &ms, Table& syspower,
     Int /*nspw*/, const Block<Int>& spwIDMap, Bool combineSpw
 ) {
     LogIO os(LogOrigin("MSFitsOutput", __func__));
@@ -2599,9 +2600,9 @@ Bool MSFitsOutput::_writeSY(
     static const String ANTENNA_ID = "ANTENNA_ID";
     static const String FEED_ID = "FEED_ID";
     static const String SPECTRAL_WINDOW_ID = "SPECTRAL_WINDOW_ID";
-    Table subtable(syspower.path().originalName());
-    const auto td = subtable.tableDesc();
-    const auto nrows = subtable.nrow();
+    //Table subtable(syspower.path().originalName());
+    const auto td = syspower.tableDesc();
+    const auto nrows = syspower.nrow();
     if (nrows == 0) {
         os << LogIO::WARN << "SYSPOWER table is empty." << LogIO::POST;
         return False;
@@ -2617,7 +2618,7 @@ Bool MSFitsOutput::_writeSY(
             return False;
         }
     }
-    const ScalarColumn<Int> feedID(subtable, FEED_ID);
+    const ScalarColumn<Int> feedID(syspower, FEED_ID);
     const auto fv = feedID.getColumn();
     if (! allEQ(fv[0], fv)) {
         os << LogIO::WARN << "All FEED_IDs in SYSPOWER table are not identical"
@@ -2666,9 +2667,9 @@ Bool MSFitsOutput::_writeSY(
         sortNames[0] = TIME;
         sortNames[1] = ANTENNA_ID;
         sortNames[2] = SPECTRAL_WINDOW_ID;
-        subtable = subtable.sort(sortNames);
+        syspower = syspower.sort(sortNames);
     }
-    const ArrayColumn<Float> switchedDiff (subtable, "SWITCHED_DIFF");
+    const ArrayColumn<Float> switchedDiff (syspower, "SWITCHED_DIFF");
     const Int npol = switchedDiff.shape(0)[0];
     Record header;
     header.define("EXTNAME", "AIPS SY");
@@ -2723,12 +2724,12 @@ Bool MSFitsOutput::_writeSY(
     Vector<Int> antnums;
     _handleAntNumbers(ms, antnums);
     MSMetaData md(&ms, 100);
-    const ScalarColumn<Double> timeCol(subtable, TIME);
-    const ScalarColumn<Double> intervalCol(subtable, "INTERVAL");
-    const ScalarColumn<Int> antCol(subtable, ANTENNA_ID);
-    const ScalarColumn<Int> spwCol(subtable, SPECTRAL_WINDOW_ID);
-    const ArrayColumn<Float> switchedSum (subtable, "SWITCHED_SUM");
-    const ArrayColumn<Float> qGDiff (subtable, "REQUANTIZER_GAIN");
+    const ScalarColumn<Double> timeCol(syspower, TIME);
+    const ScalarColumn<Double> intervalCol(syspower, "INTERVAL");
+    const ScalarColumn<Int> antCol(syspower, ANTENNA_ID);
+    const ScalarColumn<Int> spwCol(syspower, SPECTRAL_WINDOW_ID);
+    const ArrayColumn<Float> switchedSum (syspower, "SWITCHED_SUM");
+    const ArrayColumn<Float> qGDiff (syspower, "REQUANTIZER_GAIN");
     Vector<Float> pdv, psv, pgv;
     for (uInt i = 0; i < nrows; i += nrif) {
         const auto myTime = timeCol(i);
