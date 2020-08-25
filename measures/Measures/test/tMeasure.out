@@ -228,6 +228,7 @@ Converted Epoch: 50082::00:00:00.0000
 Converted back Epoch: 56791::06:35:48.7519
  to Reference for an Epoch with Type: UT1
  as Epoch: 50081::23:59:60.0000
+true
 LSR (B1900): [-90, 30] deg
 LSR (B1950): [-89.5206, 30.0012] deg
 LSR (J2000): [-89.0406, 30.0047] deg
