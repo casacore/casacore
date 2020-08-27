@@ -390,4 +390,12 @@ BOOST_AUTO_TEST_CASE( multi_dimensional_copy )
   BOOST_CHECK (vec.shape() == IPosition(1,0));
 }
 
+BOOST_AUTO_TEST_CASE( assign_empty_to_zero_len )
+{
+  Vector<int> vec;
+  vec = Array<int>();
+  BOOST_CHECK_EQUAL( vec.shape().size(), 1);
+  BOOST_CHECK( vec.shape() == IPosition{0} );
+}
+
 BOOST_AUTO_TEST_SUITE_END()

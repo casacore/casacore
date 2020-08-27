@@ -278,8 +278,9 @@ template<class T, typename Alloc> void Array<T, Alloc>::reference(const Array<T,
     IPosition newShape(fixedDimensionality());
     for(size_t i=0; i!=other.ndim(); ++i)
       newShape[i] = other.shape()[i];
+    const int newValue = (other.nelements() == 0) ? 0 : 1;
     for(size_t i=other.ndim(); i!=fixedDimensionality(); ++i)
-      newShape[i] = 1;
+      newShape[i] = newValue;
     Array<T, Alloc> tmp(*other.data_p);
     tmp.reference(other);
     other.baseReform(tmp, newShape);

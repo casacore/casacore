@@ -155,4 +155,28 @@ BOOST_AUTO_TEST_CASE( move_assign_unmatched )
   BOOST_CHECK_EQUAL_COLLECTIONS (lhs.begin(), lhs.end(), ref.begin(), ref.end());
 }
 
+BOOST_AUTO_TEST_CASE( assign_from_empty_array )
+{
+  Cube<int> cube;
+  cube = Array<int>();
+  BOOST_CHECK_EQUAL( cube.shape().size(), 3);
+  BOOST_CHECK_EQUAL( cube.shape(), (IPosition{0,0,0}) );
+}
+
+BOOST_AUTO_TEST_CASE( assign_from_empty_vector )
+{
+  Cube<int> cube;
+  cube = Vector<int>();
+  BOOST_CHECK_EQUAL( cube.shape().size(), 3);
+  BOOST_CHECK_EQUAL( cube.shape(), (IPosition{0,0,0}) );
+}
+
+BOOST_AUTO_TEST_CASE( assign_from_empty_matrix )
+{
+  Cube<int> cube;
+  cube = Matrix<int>();
+  BOOST_CHECK_EQUAL( cube.shape().size(), 3);
+  BOOST_CHECK_EQUAL( cube.shape(), (IPosition{0,0,0}) );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
