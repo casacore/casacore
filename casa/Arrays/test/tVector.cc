@@ -398,4 +398,25 @@ BOOST_AUTO_TEST_CASE( assign_empty_to_zero_len )
   BOOST_CHECK( vec.shape() == IPosition{0} );
 }
 
+BOOST_AUTO_TEST_CASE( assign_dimensional )
+{
+  Vector<int> vec(16, 1);
+  Array<int> arr(IPosition{1, 1, 1, 16}, 2);
+  vec = arr;
+  BOOST_CHECK_EQUAL( vec.shape().size(), 1);
+  BOOST_CHECK( vec.shape() == IPosition{16} );
+  std::vector<int> ref(16, 2);
+  BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), vec.begin(), vec.end());
+}
+
+BOOST_AUTO_TEST_CASE( move_assign_dimensional )
+{
+  Vector<int> vec(16, 1);
+  vec = Array<int>(IPosition{1, 1, 1, 16}, 2);
+  BOOST_CHECK_EQUAL( vec.shape().size(), 1);
+  BOOST_CHECK( vec.shape() == IPosition{16} );
+  std::vector<int> ref(16, 2);
+  BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), vec.begin(), vec.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()

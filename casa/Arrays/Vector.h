@@ -185,8 +185,9 @@ public:
       return assign_conforming_implementation(source, std::is_copy_assignable<T>());
     }
     Vector<T, Alloc>& assign_conforming(Vector<T, Alloc>&& source);
-    // Other must be a 1-dimensional array.
-    Array<T, Alloc>& assign_conforming(const Array<T, Alloc>& source);
+    // source must be a 1-dimensional array.
+    Vector<T, Alloc>& assign_conforming(const Array<T, Alloc>& source);
+    Vector<T, Alloc>& assign_conforming(Array<T, Alloc>&& source);
     // </group>
 
     using Array<T, Alloc>::operator=;
@@ -194,8 +195,10 @@ public:
     { return assign_conforming(source); }
     Vector<T, Alloc>& operator=(Vector<T, Alloc>&& source)
     { return assign_conforming(std::move(source)); }
+    Vector<T, Alloc>& operator=(const Array<T, Alloc>& source)
+    { assign_conforming(source); return *this; }
     Vector<T, Alloc>& operator=(Array<T, Alloc>&& source)
-    { assign_conforming(source); return *this; } // TODO
+    { assign_conforming(std::move(source)); return *this; }
 
     // Convert a Vector to a Block, resizing the block and copying values.
     // This is done this way to avoid having the simpler Block class 

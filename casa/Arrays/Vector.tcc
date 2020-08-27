@@ -221,12 +221,20 @@ template<typename T, typename Alloc> void Vector<T, Alloc>::resize(const IPositi
   assert(ok());
 }
 
-template<typename T, typename Alloc> Array<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Array<T, Alloc> &a)
+template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(const Array<T, Alloc>& a)
 {
-    assert(ok());
-    Vector<T, Alloc> tmp(a);
-    assign_conforming(tmp);
-    return *this;
+  assert(ok());
+  Vector<T, Alloc> tmp(a);
+  assign_conforming(tmp);
+  return *this;
+}
+
+template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming(Array<T, Alloc>&& a)
+{
+  assert(ok());
+  Vector<T, Alloc> tmp(std::move(a));
+  assign_conforming(tmp);
+  return *this;
 }
 
 template<typename T, typename Alloc> Vector<T, Alloc>& Vector<T, Alloc>::assign_conforming_implementation(const Vector<T, Alloc> &, std::false_type /*movable?*/)
