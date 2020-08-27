@@ -280,4 +280,28 @@ BOOST_AUTO_TEST_CASE( move_assign_from_vector )
   BOOST_CHECK_EQUAL_COLLECTIONS (lhs.begin(), lhs.end(), ref.begin(), ref.end());
 }
 
+BOOST_AUTO_TEST_CASE( assign_from_empty_array )
+{
+  Matrix<int> matrix;
+  matrix = Array<int>();
+  BOOST_CHECK_EQUAL( matrix.shape().size(), 2);
+  BOOST_CHECK_EQUAL( matrix.shape(), (IPosition{0,0}) );
+}
+
+BOOST_AUTO_TEST_CASE( assign_from_empty_vector )
+{
+  Matrix<int> matrix;
+  matrix = Vector<int>();
+  BOOST_CHECK_EQUAL( matrix.shape().size(), 2);
+  BOOST_CHECK_EQUAL( matrix.shape(), (IPosition{0,0}) );
+}
+
+BOOST_AUTO_TEST_CASE( reference_empty_vector )
+{
+  Matrix<int> matrix;
+  matrix.reference(Vector<int>());
+  BOOST_CHECK_EQUAL( matrix.shape().size(), 2);
+  BOOST_CHECK_EQUAL( matrix.shape(), (IPosition{0,0}) );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
