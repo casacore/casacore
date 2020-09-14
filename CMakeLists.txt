@@ -288,13 +288,6 @@ endif (BUILD_PYTHON3)
 # Determine which external packages to use.
 include (CTest)
 
-# Decrease test timeout. Valgrind times are excessive and need much more.
-#set (CTEST_TEST_TIMEOUT 150 CACHE STRING
-#    "Maximum ctest -S time allowed before CTest will kill the test." FORCE)
-# Already a cache var. It can be overridden using ctest --timeout N
-#set (DART_TESTING_TIMEOUT 150 CACHE STRING
-#    "Maximum ctest time allowed before CTest will kill the test." FORCE)
-
 if (_usefortran)
   enable_language (Fortran)
 
