@@ -40,7 +40,6 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
    ccache -M 80M
 
    CXX="ccache $CXX" cmake .. \
-        -DUSE_FFTW3=ON \
         -DBUILD_TESTING=ON \
         -DUSE_OPENMP=OFF \
         -DUSE_HDF5=ON \
