@@ -49,13 +49,6 @@ MVEarthMagnetic::MVEarthMagnetic() :
 MVEarthMagnetic::MVEarthMagnetic(const MVPosition &other) : 
   MVPosition(other) {}
 
-MVEarthMagnetic &MVEarthMagnetic::operator=(const MVEarthMagnetic &other) {
-  if (this != &other) {
-    xyz = other.xyz;
-  }
-  return *this;
-}
-
 MVEarthMagnetic::MVEarthMagnetic(Double in) :
   MVPosition(in) {}
 
@@ -161,9 +154,6 @@ MVEarthMagnetic::MVEarthMagnetic(const Vector<Quantity> &other) :
       throw (AipsError("Illegal quantity vector in MVEarthMagnetic constructor"));
     }
   }
-
-//# Destructor
-MVEarthMagnetic::~MVEarthMagnetic() {}
 
 //# Operators
 Bool MVEarthMagnetic::
