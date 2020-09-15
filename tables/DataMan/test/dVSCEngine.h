@@ -40,7 +40,6 @@ class VSCExample
 public:
     VSCExample(): x_p(0), y_p(0) {}
     VSCExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
-    VSCExample(const VSCExample& that): x_p(that.x_p), y_p(that.y_p), z_p(that.z_p) {}
     static String dataTypeId()
 	{ return "VSCExample"; }
     Int x() const

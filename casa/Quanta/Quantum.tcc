@@ -50,12 +50,6 @@ Quantum<Qtype>::Quantum() :
     QBase() { qVal = Qtype();}
 
 template <class Qtype>
-Quantum<Qtype>::Quantum(const Quantum<Qtype> &other) :
-    QBase(other) {
-  qVal = other.qVal;
-}
-
-template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor) : 
   QBase() {
   qVal = factor;
@@ -73,19 +67,7 @@ Quantum<Qtype>::Quantum(const Qtype &factor, const QBase &other) :
   qVal = factor;
 }
 
-template <class Qtype>
-Quantum<Qtype>::~Quantum() {}
-
 //# Quantum operators
-
-template <class Qtype>
-Quantum<Qtype> &Quantum<Qtype>::operator=(const Quantum<Qtype> &other) {
-    if (this != &other) {
-      qVal=other.qVal;
-      qUnit=other.qUnit;
-    }
-    return *this;
-}
 
 template <class Qtype>
 const Quantum<Qtype> &Quantum<Qtype>::operator+() const{

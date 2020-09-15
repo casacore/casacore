@@ -73,10 +73,6 @@ template <class T> class QVector : public Quantum<Vector<T> > {
 	// to the same unit.
 	QVector(const Vector<Quantum<T> >& q);
 
-	// Copy constructor (deep copy)
-	QVector(const QVector& other);
-
-	~QVector();
 	// access single element
 	Quantum<T> operator[](uInt index) const;
 
