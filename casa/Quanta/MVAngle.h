@@ -286,8 +286,6 @@ class MVAngle {
     // Construct from type and precision (present due to overlaoding problems)
     Format(uInt intyp, uInt inprec) :
       typ((MVAngle::formatTypes) intyp), prec(inprec) {;};
-    Format(const Format &other) :
-      typ(other.typ), prec(other.prec) {;};
   private:
     MVAngle::formatTypes typ;
     uInt prec;
