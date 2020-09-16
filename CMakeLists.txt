@@ -39,8 +39,6 @@ set(CPACK_PACKAGE_CONTACT "Malte Marquarding") #required
 set(CPACK_PACKAGE_VENDOR "https://github.com/casacore/casacore")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 
-enable_language (Fortran)
-
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 # By default build only Python2 bindings
@@ -214,44 +212,8 @@ else()
     message(FATAL_ERROR "Casacore build requires a c++11 compatible compiler")
 endif (HAS_CXX11)
 
-# use faster fortran rules for complex operations, removes restoring complex
-# infinities if naive computation results in NAN + NAN * I
-#Handling complex multiplication and division with correct treating of complex
-#infinities (one element Inf regardless of the other) according to the C is
-#complicated.
-#E.g. a = NaN + 1e30 i; a * a is not NaN but a complex infinity (-Inf - NaN).
-#
-#Treating this situation correctly has large performance impact. In GCC's
-#implementation it is about 4 times slower than the naive implementation, with
-#vectorization enabled the impact is even larger.
-#As correct treatment of complex infinities when NaN appear in results is seldom
-#accounted for, or not required and most other languages do not have these
-#rules, the correct treatmeant can be disabled with the -fcx-fortran-rules flag.
-#This changes the semantics to those of the FORTRAN language which is removes
-#the need for rescuing the result when NaN appear. Python also follows FORTRAN
-#rules.
-#Additionally the correct behavior is not implemented in all compilers,
-#most notably clang which is the default compiler on MacOS. So turning off
-#correct treatment with GCC does not only make our code faster but also behave
-#the same on more compilers.
-#
-#This has measurable impact on e.g. applycal where the cpu performance improves
-#by about 20%.
-# For one reason or another the check on the compiler flag has no
-# effect; it still adds the option which fails for clang.
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    check_cxx_compiler_flag(-fcx-fortran-rules HAS_GXX_FORTRAN_RULES)
-    check_c_compiler_flag(-fcx-fortran-rules HAS_GCC_FORTRAN_RULES)
-    # added before cmake flags so it can be disabled with
-    # -fno-cx-fortran-rules for testing
-    if (HAS_GXX_FORTRAN_RULES)
-        set(CMAKE_CXX_FLAGS "-fcx-fortran-rules ${CMAKE_CXX_FLAGS}")
-    endif()
-    if (HAS_GCC_FORTRAN_RULES)
-        set(CMAKE_C_FLAGS "-fcx-fortran-rules ${CMAKE_C_FLAGS}")
-    endif()
-else()
-    # Ensure clang is not complaining about unused arguments.
+# Ensure clang is not complaining about unused arguments.
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "-Qunused-arguments ${CMAKE_CXX_FLAGS}")
     set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")
 endif()
@@ -278,8 +240,9 @@ endif (HDF5_ROOT_DIR)
 if (NOT MODULE)
    set (MODULE all)
 endif (NOT MODULE)
-set (_usebison YES)
-set (_uselapack YES)
+set (_usebison NO)
+set (_uselapack NO)
+set (_usefortran NO)
 set (_usefits NO)
 set (_usewcs NO)
 set (_modules casa)
@@ -290,6 +253,7 @@ if (NOT ${MODULE} STREQUAL "casa")
     if (NOT ${MODULE} STREQUAL "tables")
         set (_modules ${_modules} scimath_f scimath measures meas)
         set (_uselapack YES)
+        set (_usefortran YES)
         if (NOT ${MODULE} STREQUAL "measures")
             if (${MODULE} STREQUAL "ms")
                 set (_modules ${_modules} ms derivedmscal)
@@ -324,12 +288,47 @@ endif (BUILD_PYTHON3)
 # Determine which external packages to use.
 include (CTest)
 
-# Decrease test timeout. Valgrind times are excessive and need much more.
-#set (CTEST_TEST_TIMEOUT 150 CACHE STRING
-#    "Maximum ctest -S time allowed before CTest will kill the test." FORCE)
-# Already a cache var. It can be overridden using ctest --timeout N
-#set (DART_TESTING_TIMEOUT 150 CACHE STRING
-#    "Maximum ctest time allowed before CTest will kill the test." FORCE)
+if (_usefortran)
+  enable_language (Fortran)
+
+  # use faster fortran rules for complex operations, removes restoring complex
+  # infinities if naive computation results in NAN + NAN * I
+  #Handling complex multiplication and division with correct treating of complex
+  #infinities (one element Inf regardless of the other) according to the C is
+  #complicated.
+  #E.g. a = NaN + 1e30 i; a * a is not NaN but a complex infinity (-Inf - NaN).
+  #
+  #Treating this situation correctly has large performance impact. In GCC's
+  #implementation it is about 4 times slower than the naive implementation, with
+  #vectorization enabled the impact is even larger.
+  #As correct treatment of complex infinities when NaN appear in results is seldom
+  #accounted for, or not required and most other languages do not have these
+  #rules, the correct treatmeant can be disabled with the -fcx-fortran-rules flag.
+  #This changes the semantics to those of the FORTRAN language which is removes
+  #the need for rescuing the result when NaN appear. Python also follows FORTRAN
+  #rules.
+  #Additionally the correct behavior is not implemented in all compilers,
+  #most notably clang which is the default compiler on MacOS. So turning off
+  #correct treatment with GCC does not only make our code faster but also behave
+  #the same on more compilers.
+  #
+  #This has measurable impact on e.g. applycal where the cpu performance improves
+  #by about 20%.
+  # For one reason or another the check on the compiler flag has no
+  # effect; it still adds the option which fails for clang.
+  if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      check_cxx_compiler_flag(-fcx-fortran-rules HAS_GXX_FORTRAN_RULES)
+      check_c_compiler_flag(-fcx-fortran-rules HAS_GCC_FORTRAN_RULES)
+      # added before cmake flags so it can be disabled with
+      # -fno-cx-fortran-rules for testing
+      if (HAS_GXX_FORTRAN_RULES)
+          set(CMAKE_CXX_FLAGS "-fcx-fortran-rules ${CMAKE_CXX_FLAGS}")
+      endif()
+      if (HAS_GCC_FORTRAN_RULES)
+          set(CMAKE_C_FLAGS "-fcx-fortran-rules ${CMAKE_C_FLAGS}")
+      endif()
+  endif()
+endif()
 
 find_package (DL)
 if (USE_READLINE)
