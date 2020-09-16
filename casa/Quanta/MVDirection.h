@@ -61,6 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ul>
 //   <li> MVDirection() creates direction cosines for pole: (0,0,1)
 //   <li> MVDirection(MVDirection) creates a copy
+//   <li> MVDirection(MVPosition) creates (x,y,z) from the given position
 //   <li> MVDirection(Double, Double, Double) creates with
 //		specified values and adjust to length of 1.
 //   <li> MVDirection(Double, Double) creates a MVDirection assuming that the two
@@ -112,7 +113,7 @@ public:
   //# Constructors
   // Default constructor generates a direction to the pole (i.e. (0,0,1))
   MVDirection();
-  // Copy constructor
+  // Creates from an MVPosition
   MVDirection(const MVPosition &other);
   // Constructs with elevation = 0.
   // <group>
@@ -146,11 +147,7 @@ public:
   MVDirection(const Vector<Double> &other);
   MVDirection(const Vector<Quantity> &other);
   // </group>
-  // Copy assignment
-  MVDirection &operator=(const MVDirection &other);
   
-  // Destructor
-  ~MVDirection();
   //# Operators
   // Addition and subtraction
   // <group>

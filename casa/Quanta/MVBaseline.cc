@@ -46,13 +46,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MVBaseline::MVBaseline() :
   MVPosition() {}
 
-MVBaseline &MVBaseline::operator=(const MVBaseline &other) {
-  if (this != &other) {
-    xyz = other.xyz;
-  }
-  return *this;
-}
-
 MVBaseline::MVBaseline(Double in) :
   MVPosition(in) {}
 
@@ -93,9 +86,6 @@ MVBaseline::MVBaseline(const MVPosition &pos, const MVPosition &base) :
 
 MVBaseline::MVBaseline(const MVPosition &other) :
   MVPosition(other) {}
-
-//# Destructor
-MVBaseline::~MVBaseline() {}
 
 //# Operators
 Bool MVBaseline::
