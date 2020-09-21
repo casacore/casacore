@@ -53,13 +53,6 @@ MVDirection::MVDirection() :
 MVDirection::MVDirection(const MVPosition &other) : 
   MVPosition(other) {}
 
-MVDirection &MVDirection::operator=(const MVDirection &other) {
-  if (this != &other) {
-    xyz = other.xyz;
-  }
-  return *this;
-}
-
 MVDirection::MVDirection(Double in0, Double in1, Double in2) : 
   MVPosition(in0,in1,in2) {
     adjust();
@@ -110,9 +103,6 @@ MVDirection::MVDirection(const Vector<Quantity> &angle) :
       throw (AipsError("Illegal quantum vector in MVDirection constructor"));
     }
   }
-
-//# Destructor
-MVDirection::~MVDirection() {}
 
 //# Operators
 MVDirection &MVDirection::operator+=(const MVDirection &right) {

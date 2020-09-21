@@ -167,9 +167,10 @@ void ArrayBase::swap(ArrayBase& source) noexcept
 void ArrayBase::baseReform (ArrayBase& tmp, const IPosition& len, bool strict) const
 {
   // Check if reform can be done.
-  if (strict && len.product() != (long long)(nelements())) {
+  long long prod = len.nelements()==0 ? 0 : len.product();
+  if (strict && prod != (long long)(nelements())) {
     throw(ArrayConformanceError("ArrayBase::reform() - "
-				"total elements differ"));
+          "total elements differ: " + to_string(len) + " vs " + to_string(shape())));
   }
   // Return if the new shape equals the current one.
   if (len.isEqual(length_p)) {
@@ -768,16 +769,19 @@ void ArrayBase::checkMatrixShape()
     length_p.resize(2); 
     inc_p.resize(2);
     originalLength_p.resize(2);
-    int len = 1;
     if (ndim() == 0) {
-      len = 0;
       length_p(0) = 0;
+      length_p(1) = 0;
       inc_p(0) = 1;
+      inc_p(1) = 1;
       originalLength_p(0) = 0;
+      originalLength_p(1) = 0;
     }
-    length_p(1) = len;
-    inc_p(1) = 1;
-    originalLength_p(1) = len;
+    else {
+      length_p(1) = (nelements() == 0) ? 0 : 1;
+      originalLength_p(1) = length_p(1);
+      inc_p(1) = 1;
+    }
     ndimen_p = 2;
     baseMakeSteps();
   }
@@ -794,7 +798,7 @@ void ArrayBase::checkCubeShape()
     length_p.resize(3); 
     inc_p.resize(3);
     originalLength_p.resize(3);
-    int len = 1;
+    int len = (nelements()==0) ? 0 : 1;
     if (ndim() == 0) {
       len = 0;
       length_p(0) = 0;

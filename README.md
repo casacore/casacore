@@ -57,7 +57,7 @@ To compile casacore you need to meet the following requirements:
 * cfitsio (3.181 or later)
 * wcslib (4.20 or later)
 * sofa (optional, only for testing casacore measures)
-* fftw3 (optional)
+* fftw3
 * hdf5 (optional)
 * numpy (optional)
 * boost-python (optional)
@@ -67,12 +67,12 @@ On Debian / Ubuntu you can install these with:
  ``` 
 $ sudo apt-get install build-essential cmake gfortran g++ libncurses5-dev \
     libreadline-dev flex bison libblas-dev liblapacke-dev libcfitsio-dev \
-    wcslib-dev 
+    wcslib-dev libfftw3-dev
 ```
 
 and the optional libraries:
 ```
-$ sudo apt-get install libhdf5-serial-dev libfftw3-dev python-numpy \
+$ sudo apt-get install libhdf5-serial-dev python-numpy \
     libboost-python-dev libpython3.4-dev libpython2.7-dev
 ```
 
@@ -108,7 +108,7 @@ make install
 
 there are various flags available to cmake to enable and disable options:
 ```
-$ cmake -DUSE_FFTW3=ON -DDATA_DIR=/usr/share/casacore/data -DUSE_OPENMP=ON \
+$ cmake -DDATA_DIR=/usr/share/casacore/data -DUSE_OPENMP=ON \
     -DUSE_HDF5=ON -DBUILD_PYTHON=ON -DUSE_THREADS=ON
 ```
 

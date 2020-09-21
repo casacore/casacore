@@ -60,6 +60,7 @@ class MVBaseline;
 // <ul>
 //   <li> MVuvw() creates point at origin (0,0,0)
 //   <li> MVuvw(MVuvw) creates a copy
+//   <li> MVuvw(MVPosition) creates (x,y,z) from the given position
 //   <li> MVuvw(Double, Double, Double) creates (x,y,z) with
 //		specified values (assuming meters)
 //   <li> MVuvw(Quantity length,Double, Double) creates a MVuvw assuming
@@ -116,7 +117,7 @@ public:
   //# Constructors
   // Default constructor generates a (0,0,0) uvw
   MVuvw();
-  // Copy constructor
+  // Creates from an MVPosition
   MVuvw(const MVPosition &other);
   // Creates a specified vector
   MVuvw(Double in0, Double in1, Double in2);
@@ -147,11 +148,6 @@ public:
   // <group>
   MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew=False);
   // </group>
-  // Copy assignment
-  MVuvw &operator=(const MVuvw &other);
-  
-  // Destructor
-  ~MVuvw();
   
   //# Operators
   // Multiplication defined as in-product

@@ -50,13 +50,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MVuvw::MVuvw() :
   MVPosition() {}
 
-MVuvw &MVuvw::operator=(const MVuvw &other) {
-  if (this != &other) {
-    xyz = other.xyz;
-  }
-  return *this;
-}
-
 MVuvw::MVuvw(Double in) :
   MVPosition(in) {}
 
@@ -103,9 +96,6 @@ MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) :
 
 MVuvw::MVuvw(const MVPosition &other) :
   MVPosition(other) {}
-
-//# Destructor
-MVuvw::~MVuvw() {}
 
 //# Operators
 Bool MVuvw::

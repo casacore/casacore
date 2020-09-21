@@ -1043,4 +1043,12 @@ BOOST_AUTO_TEST_CASE( nondegenerate_on_subsection )
   }
 }
 
+BOOST_AUTO_TEST_CASE( assign_empty )
+{
+  Array<int> zeroArr;
+  zeroArr = Array<int>();
+  BOOST_CHECK_EQUAL( zeroArr.shape().size(), 0);
+  BOOST_CHECK( zeroArr.shape() == IPosition() );
+}
+
 BOOST_AUTO_TEST_SUITE_END()

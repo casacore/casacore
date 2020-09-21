@@ -35,9 +35,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 QBase::QBase() 
 : qUnit() {}
 
-QBase::QBase(const QBase &other) 
-: qUnit(other.qUnit) {}
-
 QBase::QBase(const Unit &s) 
 : qUnit(s) {}
 

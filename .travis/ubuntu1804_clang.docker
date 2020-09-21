@@ -25,7 +25,6 @@ USER casacore
 RUN mkdir /code/build
 WORKDIR /code/build
 RUN cmake .. \
-    -DUSE_FFTW3=ON \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
     -DUSE_HDF5=ON \

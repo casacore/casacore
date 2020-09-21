@@ -56,7 +56,6 @@ class ExampleDesc
 public:
     ExampleDesc(): x_p(0), y_p(0) {}
     ExampleDesc(Int x, float y) : x_p(x), y_p(y) {}
-    ExampleDesc(const ExampleDesc& that): x_p(that.x_p), y_p(that.y_p) {}
     static String dataTypeId()
 	{ return "ExampleDesc"; }
     Int x() const

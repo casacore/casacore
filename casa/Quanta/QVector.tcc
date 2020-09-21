@@ -57,10 +57,6 @@ template <class T> QVector<T>::QVector(const Vector<Quantum<T> >& q)
     this->setValue(copy);
 }
 
-template <class T> QVector<T>::QVector(const QVector<T>& other) : Quantum<Vector<T> >(other) {}
-
-template <class T> QVector<T>::~QVector() {}
-
 template <class T> Quantum<T> QVector<T>::operator[](uInt index) const {
 	return Quantum<T>(this->getValue()[index], this->getUnit());
 }
