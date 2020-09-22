@@ -293,10 +293,17 @@ void MSFitsOutput::write() const {
     // support for adhoc NRAO SYSPOWER table
     File syspower_f = _ms.tableName() + "/SYSPOWER";
     if (syspower_f.exists() && syspower_f.isDirectory()) {
-        Table syspower(syspower_f.path().originalName());
-        os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
-        if (! _writeSY(fitsOutput, _ms, syspower, nrspw, spwidMap, _combineSpw)) {
-            os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
+        const auto tableName = _ms.keywordSet().asTable("SYSPOWER").tableName();
+        if(Table::isReadable(tableName)) {
+            Table syspower(tableName);
+            os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
+            if (! _writeSY(fitsOutput, _ms, syspower, nrspw, spwidMap, _combineSpw)) {
+                os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
+            }
+            else {
+                os << LogIO::WARN << "Table " << tableName << " cannot be read. Will "
+                    << "not write UVFITS SY table" << LogIO::POST;
+            }
         }
     }
 }
