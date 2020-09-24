@@ -179,15 +179,15 @@ struct re_registers;
 
 // <example>
 // <srcblock>
-// Regex RXwhite("[ \n\t\r\v\f]+", 1);
+// Regex RXwhite("[ \n\t\r\v\f]+");
 //        (blank, newline, tab, return, vertical tab, formfeed)
-// Regex RXint("-?[0-9]+", 1);
-// Regex RXdouble("-?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?", 1, 200);
-// Regex RXalpha("[A-Za-z]+", 1);
-// Regex RXlowercase("[a-z]+", 1);
-// Regex RXuppercase("[A-Z]+", 1);
-// Regex RXalphanum("[0-9A-Za-z]+", 1);
-// Regex RXidentifier("[A-Za-z_][A-Za-z0-9_]*", 1);
+// Regex RXint("[-+]?[0-9]+");
+// Regex RXdouble("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
+// Regex RXalpha("[A-Za-z]+");
+// Regex RXlowercase("[a-z]+");
+// Regex RXuppercase("[A-Z]+");
+// Regex RXalphanum("[0-9A-Za-z]+");
+// Regex RXidentifier("[A-Za-z_][A-Za-z0-9_]*");
 // </srcblock>
 // In RXdouble the . is escaped via a backslash to get it literally.
 // The second backslash is needed to escape the backslash in C++.
@@ -212,7 +212,7 @@ public:
   // Construct a regular expression from the string.
   // If toECMAScript=True, function toEcma is called to convert the old cregex
   // syntax to the new ECMAScript syntax.
-  // If fast=True, Matching efficiency is preferred over efficiency constructing
+  // If fast=True, matching efficiency is preferred over efficiency constructing
   // the regex object.
   explicit Regex(const String& exp, Bool fast=False, Bool toECMAScript=True);
 
@@ -251,12 +251,12 @@ public:
   const String& regexp() const
     { return itsStr; }
     
-  // Test if the regular expression matches (part of) string <src>s</src>.
+  // Test if the regular expression matches (first part of) string <src>s</src>.
   // The return value gives the length of the matching string part,
   // or String::npos if there is no match or an error.
   // The string has <src>len</src> characters and the test starts at
   // position <src>pos</src>. The string may contain null characters.
-  // Negative p is allowed to match at end.
+  // Negative p is allowed to define the start from the end.
   //
   // <note role=tip>
   // Use the appropriate <linkto class=String>String</linkto> functions
@@ -267,13 +267,16 @@ public:
                           String::size_type len,
                           String::size_type pos=0) const;
 
-  // Test if the regular expression occurs in string <src>s</src>.
+  // Test if the regular expression matches the entire string.
+  Bool fullMatch(const Char* s, String::size_type len) const;
+
+  // Test if the regular expression occurs anywhere in string <src>s</src>.
   // The return value gives the position of the first substring
   // matching the regular expression. The length of that substring
   // is returned in <src>matchlen</src>.
   // The string has <src>len</src> characters and the test starts at
   // position <src>pos</src>. The string may contain null characters.
-  // If the pos given is less than 0, the search starts -pos from the end.
+  // If the pos given is negative, the search starts -pos from the end.
   // <note role=tip>
   // Use the appropriate <linkto class=String>String</linkto> functions
   // to test if a regular expression occurs in a string.
