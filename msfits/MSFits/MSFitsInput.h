@@ -48,6 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class FitsInput;
 class BinaryTable;
 class MSColumns;
+template <class T> class ScalarColumn;
 
 // <summary>
 // A helper class for MSFitsInput
@@ -269,23 +270,66 @@ class MSFitsInput
   // This is an implementation helper class used to store 'local' data
   // during the filling process.
 public:
+  MSFitsInput() = delete;
+
   // Create from output and input file names. This function opens the input
   // file, and checks the output file is writable.
   MSFitsInput(const String& msFile, const String& fitsFile, const Bool NewNameStyle=False);
+  
+  MSFitsInput(const MSFitsInput& other) = delete;
 
   // The destructor is fairly trivial.
   ~MSFitsInput();
+
+  MSFitsInput& operator=(const MSFitsInput& other) = delete;
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
   // 
   void readFitsFile(Int obsType = MSTileLayout::Standard);
 
-protected:
+private:
+  FitsInput* _infile;
+  String _msFile;
+  MSPrimaryGroupHolder _priGroup;
+  MSPrimaryTableHolder _priTable;
+  MeasurementSet _ms;
+  MSColumns* _msc;
+  Int _nIF;
+  Vector<Int> _nPixel, _corrType;
+  Block<Int> _corrIndex;
+  Matrix<Int> _corrProduct;
+  Vector<String> _coordType;
+  Vector<Double> _refVal, _refPix, _delta;
+  String _array, _object, _timsys;
+  Double _epoch;
+  MDirection::Types _epochRef; // This is a direction measure reference code
+                                // determined by epoch_p, hence the name and type.
+  // unique antennas found in the visibility data
+  // NOTE These are 1-based
+  std::set<Int> _uniqueAnts;
+  // number of rows in the created MS ANTENNA table
+  Int _nAntRow;
+  Int _nArray;
+  Vector<Double> _receptorAngle;
+  MFrequency::Types _freqsys;
+  Double _restfreq; // used for images
+  Bool _addSourceTable;
+  LogIO _log;
+  Record _header;
+  Double _refFreq;
+  Bool _useAltrval;
+  Vector<Double> _chanFreq;
+  Bool _newNameStyle;
+  Vector<Double> _obsTime;
+
+  Matrix<Double> _restFreq; // used for UVFITS
+  Matrix<Double> _sysVel;
+  Bool _msCreated;
 
   // Check that the input is a UV fits file with required contents.
   // Returns False if not ok.
-  Bool checkInput(FitsInput& infile);
+  Bool _checkInput(FitsInput& infile);
 
   // Read the axis info of the primary group, throws an exception if required
   // axes are missing.
@@ -370,59 +414,28 @@ protected:
   
   // Check the frame if there is an SU table
   void setFreqFrameVar(BinaryTable& binTab);
+
   // update a the Spectral window post filling if necessary
   void updateSpectralWindowTable();
 
   void readRandomGroupUVFits(Int obsType);
   void readPrimaryTableUVFits(Int obsType);
 
-private:
-  //# The default constructor is private and undefined
-  MSFitsInput();
-  //# The copy constructor is private and undefined
-  MSFitsInput(const MSFitsInput& other);
-  //# The assignment operator is private and undefined
-  MSFitsInput& operator=(const MSFitsInput& other);
-
-  FitsInput* _infile;
-  String _msFile;
-  MSPrimaryGroupHolder _priGroup;
-  MSPrimaryTableHolder _priTable;
-  MeasurementSet _ms;
-  MSColumns* _msc;
-  Int _nIF;
-  Vector<Int> _nPixel, _corrType;
-  Block<Int> _corrIndex;
-  Matrix<Int> _corrProduct;
-  Vector<String> _coordType;
-  Vector<Double> _refVal, _refPix, _delta;
-  String _array, _object, _timsys;
-  Double _epoch;
-  MDirection::Types _epochRef; // This is a direction measure reference code
-                                // determined by epoch_p, hence the name and type.
-  // unique antennas found in the visibility data
-  // NOTE These are 1-based
-  std::set<Int> _uniqueAnts;
-  // number of rows in the created MS ANTENNA table
-  Int _nAntRow;
-  Int _nArray;
-  Vector<Double> _receptorAngle;
-  MFrequency::Types _freqsys;
-  Double _restfreq; // used for images
-  Bool _addSourceTable;
-  LogIO _log;
-  Record _header;
-  Double _refFreq;
-  Bool _useAltrval;
-  Vector<Double> _chanFreq;
-  Bool _newNameStyle;
-  Vector<Double> _obsTime;
-
-  Matrix<Double> _restFreq; // used for UVFITS
-  Matrix<Double> _sysVel;
-  Bool _msCreated;
-
   std::pair<Int, Int> _extractAntennas(Float baseline);
+  
+  void _fillSysPowerTable(BinaryTable& bt);
+
+  void _doFillSysPowerSingleIF(
+      const String& casaTableName, const ScalarColumn<Double>& timeCol,
+      const ScalarColumn<Float>& intervalCol,
+      const ScalarColumn<Int>& antNoCol, const ScalarColumn<Int>& freqIDCol,
+      const ScalarColumn<Float>& powerDif1Col,
+      const ScalarColumn<Float>& powerSum1Col,
+      const ScalarColumn<Float>& postGain1Col,
+      const ScalarColumn<Float>& powerDif2Col,
+      const ScalarColumn<Float>& powerSum2Col,
+      const ScalarColumn<Float>& postGain2Col
+  );
 
 };
 
