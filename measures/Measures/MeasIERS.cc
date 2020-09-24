@@ -413,7 +413,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
           }
         }
           if ( found == False ) {
-            throw(AipsError("Measures directory specified which does not contain the IERS data."));
+            throw(AipsError(std::string("Measures directory specified which does not contain the IERS data: ") + measures_data));
           }
       }
 
