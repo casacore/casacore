@@ -65,9 +65,11 @@ public:
         return result;
     }
 
-    // get directory containing IERS measures data
-    // an exception is thrown if it does not exist or
-    // does not contain the IERS tables
+    // Get AppState specified directory for (IERS) measures data.
+    //
+    // If data is not found in the specified directory and the
+    // specified directiory name is nonempty (size > 0), an
+    // exception will be thrown in findTab.
     virtual std::string measuresDir( ) const {
         static std::string result;
         return result;
