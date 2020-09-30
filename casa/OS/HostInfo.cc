@@ -26,6 +26,8 @@
 //#
 //# $Id$
 
+#define _XOPEN_SOURCE 600       //For clock_gettime
+
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/System/Aipsrc.h>
@@ -35,20 +37,7 @@
 #include <sys/utsname.h>
 
 // Time related includes
-#if defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX) || defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI) || defined(AIPS_BSD)
-#include <sys/time.h>
-#elif defined(AIPS_OSF)
-#include <sys/timers.h>
-#else
-#include <sys/timeb.h>
-#endif
-
-#if defined(AIPS_SOLARIS) && !defined(__CLCC__)
-extern "C" { int gettimeofday(struct timeval *tp, void*); };
-#endif
-#if defined(AIPS_OSF)
-extern "C" { int getclock(int clock_type, struct timespec* tp); };
-#endif
+#include <time.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -78,45 +67,14 @@ Int HostInfo::processID()
 }
 
 
-#if defined(AIPS_SOLARIS) && defined(__CLCC__)
-Double HostInfo::secondsFrom1970()
-{
-    struct timeval  tp;
-    AlwaysAssert(gettimeofday(&tp) >= 0, AipsError);
-    double total = tp.tv_sec;
-    total += tp.tv_usec * 0.000001;
-    return total;
-}
-#elif defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX) || defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI) || defined(AIPS_BSD)
-Double HostInfo::secondsFrom1970()
-{
-    struct timeval  tp;
-    struct timezone tz;
-    tz.tz_minuteswest = 0;
-    AlwaysAssert(gettimeofday(&tp, &tz) >= 0, AipsError);
-    double total = tp.tv_sec;
-    total += tp.tv_usec * 0.000001;
-    return total;
-}
-#elif defined(AIPS_OSF)
 Double HostInfo::secondsFrom1970()
 {
   struct timespec tp;
-  AlwaysAssert(getclock(TIMEOFDAY,&tp) == 0, AipsError);
+  AlwaysAssert(clock_gettime(CLOCK_REALTIME, &tp) == 0, AipsError);
   double total = tp.tv_sec;
   total += tp.tv_nsec * 1.e-9;
   return total;
 }
-#else
-Double HostInfo::secondsFrom1970()
-{
-    struct timeb ftm;
-    AlwaysAssert(ftime(&ftm) >= 0, AipsError);
-    double total = ftm.time;
-    total += ftm.millitm*0.001;
-    return total;
-}
-#endif
 
 #define HOSTINFO_IMPLEMENT_MEMBERS				\
 Int HostInfo::numCPUs(bool use_aipsrc)				\

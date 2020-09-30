@@ -560,7 +560,7 @@ void testWithLocking()
                                                    IPosition(1,n)));
       // Check the contents.
       for (uInt i=0; i<n; ++i) {
-        AlwaysAssertExit (vec[i] == row/10000*10000);
+        AlwaysAssertExit (vec[i] == (Int)row/10000*10000);
         row++;
       }
       tab.unlock();
