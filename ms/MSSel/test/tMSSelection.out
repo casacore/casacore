@@ -809,7 +809,7 @@ DDIDs(SPW)   = [1]
 StateList    = []
 Number of selected rows: 529
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-###MSSelectionError: No Spw ID(s) matched specifications
+###MSSelectionError: No Spw ID(s) matched specifications 
 (near char. 0 in string ""ALMA_RB_03#BB_1#SW-01#FULL_RE"")
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
