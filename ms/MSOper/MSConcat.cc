@@ -354,6 +354,9 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   // WEATHER
   copyWeather(otherMS.weather(), newAntIndices);
 
+  // GAIN_CURVE
+  copyGainCurve(otherMS, newAntIndices);
+
   /////////////////////////////////////////////////////
 
   // copying all subtables over to otherMS
@@ -1234,6 +1237,10 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     log << LogIO::WARN << "Could not merge Weather subtables " << LogIO::POST ;
   }
 
+  // GAIN_CURVE
+  if(!copyGainCurve(otherMS, newAntIndices)){
+    log << LogIO::WARN << "Could not merge GainCurve subtables " << LogIO::POST ;
+  }
 
   //////////////////////////////////////////////////////
 
@@ -2214,6 +2221,85 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather,
   return True;
 }
 
+Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS,
+			     const Block<uInt>& newAntIndices){
+  // uses newSPWIndex_p; to be called after copySpwAndPol
+
+  LogIO os(LogOrigin("MSConcat", "copyGainCurve"));
+
+  Bool itsGainCurveNull = (!itsMS.rwKeywordSet().isDefined("GAIN_CURVE") || (itsMS.rwKeywordSet().asTable("GAIN_CURVE").nrow() == 0));
+  Bool otherGainCurveNull = (!otherMS.keywordSet().isDefined("GAIN_CURVE") || (otherMS.keywordSet().asTable("GAIN_CURVE").nrow() == 0));
+
+  if(itsGainCurveNull && otherGainCurveNull){ // neither of the two MSs do have valid gain curve tables
+    os << LogIO::NORMAL << "No valid gain curve tables present. Result won't have one either." << LogIO::POST;
+    return True;
+  }
+  else if(itsGainCurveNull && !otherGainCurveNull){
+    os << LogIO::WARN << itsMS.tableName() << " does not have a valid gain curve table," << endl
+       << "  the MS to be appended, however, has one. Result won't have one."
+       << LogIO::POST;
+    return False;
+  }
+
+  if (otherGainCurveNull)
+    return True;
+
+  Table gainCurve = itsMS.rwKeywordSet().asTable("GAIN_CURVE");
+  Table otherGainCurve = otherMS.keywordSet().asTable("GAIN_CURVE");
+  Int actualRow=gainCurve.nrow()-1;
+  Int origNRow=actualRow+1;
+  Int rowToBeAdded=otherGainCurve.nrow();
+  TableRow gainCurveRow(gainCurve);
+  const ROTableRow otherGainCurveRow(otherGainCurve);
+  for (Int k=0; k < rowToBeAdded; ++k){
+    ++actualRow;
+    gainCurve.addRow();
+    gainCurveRow.put(actualRow, otherGainCurveRow.get(k, True));
+  }
+
+  //Now reassigning antennas to the new indices of the ANTENNA table
+
+  if(rowToBeAdded > 0){
+    ScalarColumn<Int> antCol(gainCurve, "ANTENNA_ID");
+    // check antenna IDs
+    Vector<Int> antennaIDs=antCol.getColumn();
+    Bool idsOK = True;
+    Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN
+	 << "Found invalid antenna ids in the GAIN_CURVE table; the GAIN_CURVE table will be emptied as it is inconsistent"
+	 << LogIO::POST;
+      RowNumbers rowtodel(gainCurve.nrow());
+      indgen(rowtodel);
+      gainCurve.removeRow(RowNumbers(rowtodel));
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      antCol.put(k, newAntIndices[antennaIDs[k]]);
+    }
+  }
+
+  //Now reassigning SPWs to the new indices of the SPECTRAL_WINDOW table
+
+  if(doSPW_p && rowToBeAdded > 0){
+    ScalarColumn<Int> spwCol(gainCurve, "SPECTRAL_WINDOW_ID");
+    // check SPW IDs
+    Vector<Int> spwIDs=spwCol.getColumn();
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
+	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
+    }
+  }
+
+  return True;
+}
 
 Int MSConcat::copyObservation(const MSObservation& otherObs,
 			      const Bool remRedunObsId){
