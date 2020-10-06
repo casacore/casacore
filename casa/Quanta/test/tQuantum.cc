@@ -308,6 +308,21 @@ try {
     	AlwaysAssert(near(q.getValue("MHz"), 99930.8, 1e-5), AipsError);
 
     }
+
+    // Test copy construction and copy assignment with Vector does deep copying
+    {
+        // Copy constructor
+        Quantum<Vector<Int>> original({1, 2, 3}, "m");
+        Quantum<Vector<Int>> copy_constructed(original);
+        copy_constructed.getValue()[0] = 100;
+        AlwaysAssert(original.getValue()[0] == 1, AipsError);
+
+        // Copy assignment
+        Quantum<Vector<Int>> copy_assigned;
+        copy_assigned = original;
+        copy_assigned.getValue()[0] = 100;
+        AlwaysAssert(original.getValue()[0] == 1, AipsError);
+    }
     cout << endl << "--------------------------" << endl;
     return 0;
 }
