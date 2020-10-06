@@ -276,6 +276,8 @@ template <class Qtype> class Quantum : public QBase{
   //# Constructors
   // Default constructor, generates '0'
   Quantum();
+  // Copy constructor (deep copy)
+  Quantum(const Quantum<Qtype> &other);
   // Construct undimensioned quantum (i.e. unit="")
   Quantum(const Qtype &factor);
   // Construct dimensioned quantum (e.g. '1.23 km/Mpc')
@@ -288,6 +290,10 @@ template <class Qtype> class Quantum : public QBase{
   // Construct quantum with unit copied from existing quantum
   Quantum(const Qtype &factor, const QBase &other);
   
+  //# Operators
+  // Assignment (deep copy)
+  Quantum<Qtype> &operator=(const Quantum<Qtype> &other);
+
   // Unary operations
   // <group>
   const Quantum<Qtype> &operator+() const;
