@@ -50,6 +50,19 @@ Quantum<Qtype>::Quantum() :
     QBase() { qVal = Qtype();}
 
 template <class Qtype>
+Quantum<Qtype>::Quantum(const Quantum<Qtype> &other) :
+    QBase(other) {
+  // Here qVal is copy-assigned in the constructor body
+  // instead of direct-initialized in the member initializer list (which invokes
+  // its copy constructor) to cope with Array/Vector/Matrix values: they copy by
+  // reference on the copy construction, but by value on copy assignment (and
+  // this class wants to do the latter).
+  // See https://github.com/casacore/casacore/commit/e5d8484b5108f0a890ddd9d494c2efcab738ce7c#r42799565
+  // for reference
+  qVal = other.qVal;
+}
+
+template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor) : 
   QBase() {
   qVal = factor;
@@ -68,6 +81,9 @@ Quantum<Qtype>::Quantum(const Qtype &factor, const QBase &other) :
 }
 
 //# Quantum operators
+
+template <class Qtype>
+Quantum<Qtype> &Quantum<Qtype>::operator=(const Quantum<Qtype> &/*other*/) = default;
 
 template <class Qtype>
 const Quantum<Qtype> &Quantum<Qtype>::operator+() const{
