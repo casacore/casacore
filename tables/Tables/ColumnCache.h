@@ -30,6 +30,9 @@
 
 
 //# Includes
+#include <cassert>
+#include <limits>
+
 #include <casacore/casa/aips.h>
 
 
@@ -136,8 +139,12 @@ inline void ColumnCache::invalidate()
 
 inline Int64 ColumnCache::offset (rownr_t rownr) const
 {
-    return rownr<itsStart || rownr>itsEnd  ?  -1 :
-	                                      (rownr-itsStart)*itsIncr;
+    if (rownr < itsStart || rownr > itsEnd) {
+        return -1;
+    }
+    auto offset = (rownr - itsStart) * itsIncr;
+    assert(offset <= std::numeric_limits<Int64>::max());
+    return Int64(offset);
 }
 
 inline const void* ColumnCache::dataPtr() const
