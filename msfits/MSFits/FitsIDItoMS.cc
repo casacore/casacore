@@ -3225,8 +3225,10 @@ Bool FITSIDItoMS1::fillSysCalTable()
       dualPol=True;
     }
     TSYSisScalar=True;
-    *itsLog << LogIO::WARN << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
-	    << endl << " i.e. using same value for all bands." << LogIO::POST;
+    if (nIF > 1) {
+      *itsLog << LogIO::WARN << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
+	      << endl << " i.e. using same value for all bands." << LogIO::POST;
+    }
   }
   Vector<Float> tsys(dualPol ? 2 : 1);
 
@@ -3489,7 +3491,7 @@ Bool FITSIDItoMS1::handleGainCurve()
   String kwname;
   kwl.first();
   Int nIF = 1;
-  int nTabs = 1;
+  Int nTabs = 1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_BAND") {
@@ -3527,32 +3529,81 @@ Bool FITSIDItoMS1::handleGainCurve()
 
   Int nVal=nrows();
   Bool dualPol=False;
+  Bool GCisScalar=False;
 
   Table gcTab = oldfullTable("");
   ScalarColumn<Int> anNo(gcTab, "ANTENNA_NO");
   ScalarColumn<Int> array(gcTab, "ARRAY");
   ScalarColumn<Int> fqid(gcTab, "FREQID");
-  ArrayColumn<Int> type_1(gcTab, "TYPE_1");
-  ArrayColumn<Int> nterm_1(gcTab, "NTERM_1");
-  ArrayColumn<Int> xtyp_1(gcTab, "X_TYP_1");
-  ArrayColumn<Int> ytyp_1(gcTab, "Y_TYP_1");
-  ArrayColumn<Float> gain_1(gcTab, "GAIN_1");
-  ArrayColumn<Float> sens_1(gcTab, "SENS_1");
+  ArrayColumn<Int> type_1;
+  ArrayColumn<Int> nterm_1;
+  ArrayColumn<Int> xtyp_1;
+  ArrayColumn<Int> ytyp_1;
+  ArrayColumn<Float> gain_1;
+  ArrayColumn<Float> sens_1;
   ArrayColumn<Int> type_2;
   ArrayColumn<Int> nterm_2;
   ArrayColumn<Int> xtyp_2;
   ArrayColumn<Int> ytyp_2;
   ArrayColumn<Float> gain_2;
   ArrayColumn<Float> sens_2;
-  if (gcTab.tableDesc().isColumn("TYPE_2")) {
+  ScalarColumn<Int> type_1S;
+  ScalarColumn<Int> nterm_1S;
+  ScalarColumn<Int> xtyp_1S;
+  ScalarColumn<Int> ytyp_1S;
+  ScalarColumn<Float> gain_1S;
+  ScalarColumn<Float> sens_1S;
+  ScalarColumn<Int> type_2S;
+  ScalarColumn<Int> nterm_2S;
+  ScalarColumn<Int> xtyp_2S;
+  ScalarColumn<Int> ytyp_2S;
+  ScalarColumn<Float> gain_2S;
+  ScalarColumn<Float> sens_2S;
+  Int ytyp, nterm;
+  try {
+    type_1.attach(gcTab, "TYPE_1");
+    nterm_1.attach(gcTab, "NTERM_1");
+    xtyp_1.attach(gcTab, "X_TYP_1");
+    ytyp_1.attach(gcTab, "Y_TYP_1");
+    sens_1.attach(gcTab, "SENS_1");
+    if (gcTab.tableDesc().isColumn("TYPE_2")) {
       type_2.attach(gcTab, "TYPE_2");
       nterm_2.attach(gcTab, "NTERM_2");
       xtyp_2.attach(gcTab, "X_TYP_2");
       ytyp_2.attach(gcTab, "Y_TYP_2");
-      gain_2.attach(gcTab, "GAIN_2");
       sens_2.attach(gcTab, "SENS_2");
       dualPol=True;
     }
+  }
+  catch (std::exception&) {
+    type_1S.attach(gcTab, "TYPE_1");
+    nterm_1S.attach(gcTab, "NTERM_1");
+    xtyp_1S.attach(gcTab, "X_TYP_1");
+    ytyp_1S.attach(gcTab, "Y_TYP_1");
+    sens_1S.attach(gcTab, "SENS_1");
+    if (gcTab.tableDesc().isColumn("TYPE_2")) {
+      type_2S.attach(gcTab, "TYPE_2");
+      nterm_2S.attach(gcTab, "NTERM_2");
+      xtyp_2S.attach(gcTab, "X_TYP_2");
+      ytyp_2S.attach(gcTab, "Y_TYP_2");
+      sens_2S.attach(gcTab, "SENS_2");
+      dualPol=True;
+    }
+    GCisScalar=True;
+    if (nIF > 1) {
+      *itsLog << LogIO::WARN << "Treating columns in input GAIN_CURVE table as scalar,"
+	      << endl << " i.e. using same value for all bands." << LogIO::POST;
+    }
+  }
+  if (GCisScalar && nTabs == 1) {
+    gain_1S.attach(gcTab, "GAIN_1");
+    if (gcTab.tableDesc().isColumn("GAIN_2"))
+      gain_2S.attach(gcTab, "GAIN_2");
+  } else {
+    gain_1.attach(gcTab, "GAIN_1");
+    if (gcTab.tableDesc().isColumn("GAIN_2"))
+      gain_2.attach(gcTab, "GAIN_2");
+  }
 
   Table msgc = ms_p.rwKeywordSet().asTable("GAIN_CURVE");
   Vector<Float> sens(dualPol ? 2 : 1);
@@ -3573,26 +3624,48 @@ Bool FITSIDItoMS1::handleGainCurve()
       ArrayColumn<Float> sensCol(msgc, "SENSITIVITY");
 
       IPosition thisIF = IPosition(1,inIF);
-      if (dualPol &&
-	  (type_1(inRow)(thisIF) != type_2(inRow)(thisIF) ||
-	   xtyp_1(inRow)(thisIF) != xtyp_2(inRow)(thisIF) ||
-	   ytyp_1(inRow)(thisIF) != ytyp_2(inRow)(thisIF) ||
-	   nterm_1(inRow)(thisIF) != nterm_2(inRow)(thisIF))) {
-	*itsLog << "Distinct gain curve types per polarisation" << LogIO::POST;
-	continue;
+      if (GCisScalar && inIF == 0) {
+	if (dualPol &&
+	    (type_1S(inRow) != type_2S(inRow) ||
+	     xtyp_1S(inRow) != xtyp_2S(inRow) ||
+	     ytyp_1S(inRow) != ytyp_2S(inRow) ||
+	     nterm_1S(inRow) != nterm_2S(inRow))) {
+	  *itsLog << "Distinct gain curve types per polarisation" << LogIO::POST;
+	  continue;
+	}
+	if (type_1S(inRow) != 2) {
+	  *itsLog << "Unsupported gain curve type "
+		  << type_1S(inRow) << LogIO::POST;
+	  continue;
+	}
+	ytyp = ytyp_1S(inRow);
+	nterm = nterm_1S(inRow);
       }
-      if (type_1(inRow)(thisIF) != 2) {
-	*itsLog << "Unsupported gain curve type "
-		<< type_1(inRow)(thisIF) << LogIO::POST;
-	continue;
+      else if (!GCisScalar) {
+	if (dualPol && 
+	    (type_1(inRow)(thisIF) != type_2(inRow)(thisIF) ||
+	     xtyp_1(inRow)(thisIF) != xtyp_2(inRow)(thisIF) ||
+	     ytyp_1(inRow)(thisIF) != ytyp_2(inRow)(thisIF) ||
+	     nterm_1(inRow)(thisIF) != nterm_2(inRow)(thisIF))) {
+	  *itsLog << "Distinct gain curve types per polarisation" << LogIO::POST;
+	  continue;
+	}
+	if (type_1(inRow)(thisIF) != 2) {
+	  *itsLog << "Unsupported gain curve type "
+		  << type_1(inRow)(thisIF) << LogIO::POST;
+	  continue;
+	}
+	ytyp = ytyp_1(inRow)(thisIF);
+	nterm = nterm_1(inRow)(thisIF);
       }
-      switch (ytyp_1(inRow)(thisIF)) {
+
+      switch (ytyp) {
       case 1:
       case 2:
 	break;
       default:
 	*itsLog << "Unsupported gain curve coordinate type "
-		<< ytyp_1(inRow)(thisIF) << LogIO::POST;
+		<< ytyp << LogIO::POST;
 	continue;
       }
 
@@ -3604,7 +3677,7 @@ Bool FITSIDItoMS1::handleGainCurve()
       }
       feedIdCol.put(outRow,-1);
       spwIdCol.put(outRow,inIF);
-      switch (ytyp_1(inRow)(thisIF)) {
+      switch (ytyp) {
       case 1:
 	typeCol.put(outRow,"POWER(EL)");
 	break;
@@ -3614,15 +3687,27 @@ Bool FITSIDItoMS1::handleGainCurve()
       }
       timeCol.put(outRow, (startTime_p + lastTime_p) / 2);
       intervalCol.put(outRow, lastTime_p - startTime_p);
-      npolyCol.put(outRow,nterm_1(inRow)(thisIF));
-      Matrix<Float> gain(dualPol ? 2 : 1, nterm_1(inRow)(thisIF));
-      gain.row(0)=gain_1(inRow)(Slice(inIF * nTabs, nterm_1(inRow)(thisIF)));
-      if (dualPol)
-	gain.row(1)=gain_2(inRow)(Slice(inIF * nTabs, nterm_2(inRow)(thisIF)));
+      npolyCol.put(outRow,nterm);
+      Matrix<Float> gain(dualPol ? 2 : 1, nterm);
+      if (GCisScalar && nTabs == 1) {
+	gain.row(0)=gain_1S(inRow);
+	if (dualPol)
+	  gain.row(1)=gain_2S(inRow);
+      } else {
+	gain.row(0)=gain_1(inRow)(Slice(inIF * nTabs, nterm));
+	if (dualPol)
+	  gain.row(1)=gain_2(inRow)(Slice(inIF * nTabs, nterm));
+      }
       gainCol.put(outRow,gain);
-      sens(0)=sens_1(inRow)(thisIF);
-      if (dualPol)
-	sens(1)=sens_2(inRow)(thisIF);
+      if (GCisScalar) {
+	sens(0)=sens_1S(inRow);
+	if (dualPol)
+	  sens(1)=sens_2S(inRow);
+      } else {
+	sens(0)=sens_1(inRow)(thisIF);
+	if (dualPol)
+	  sens(1)=sens_2(inRow)(thisIF);
+      }
       sensCol.put(outRow,sens);
     }
   }
