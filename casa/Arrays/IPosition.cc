@@ -76,11 +76,11 @@ IPosition::IPosition (const Array<int> &other)
 
 IPosition::IPosition (const Array<long long> &other)
   : size_p (0),
-    data_p (0)
+    data_p (buffer_p)
 {
     if (other.size() > 0) {
         if (other.ndim() != 1) {
-            throw(ArrayError("IPosition::IPosition(const Array<Int64> &other) - "
+            throw(ArrayError("IPosition::IPosition(const Array<long long> &other) - "
                             "other is not one-dimensional"));
         }
         fill (other.size(), other.begin());
@@ -208,7 +208,7 @@ IPosition::IPosition (const std::vector<int> &other)
 
 IPosition::IPosition (const std::vector<long long> &other)
   : size_p (0),
-    data_p (0)
+    data_p (nullptr)
 {
     fill (other.size(), other.begin());
     assert(ok());
