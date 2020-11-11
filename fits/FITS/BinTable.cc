@@ -119,6 +119,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 			    maxsize = nbytes;
 			}
 			// fall throught to BYTE for the actual allocation
+			CASACORE_FALLTHROUGH;
 		    case FITS::BYTE: 
 			vaptr_p[i] = (void *)(new uChar[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);

@@ -63,6 +63,7 @@ directProduct(SquareMatrix<Complex,4>& result,
 		return result;
 	    }
 	}
+	CASACORE_FALLTHROUGH;
     case SquareMatrix<Complex,2>::Diagonal: 
 	switch (right.type_p) {
 	    case SquareMatrix<Complex,2>::ScalarId: {
@@ -90,6 +91,7 @@ directProduct(SquareMatrix<Complex,4>& result,
 		return result;
 	    }
 	}
+	CASACORE_FALLTHROUGH;
     case SquareMatrix<Complex,2>::General: 
 	switch (right.type_p) {
 	    case SquareMatrix<Complex,2>::ScalarId: {

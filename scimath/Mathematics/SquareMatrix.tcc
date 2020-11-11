@@ -168,6 +168,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(const SquareMatrix<T,n>& other)
 		return *this;
 	    }
 	}
+	CASACORE_FALLTHROUGH;
     case Diagonal: 
 	switch (other.type_p) {
 	    case ScalarId: {
@@ -191,6 +192,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(const SquareMatrix<T,n>& other)
 		return *this;
 	    }
 	}
+	CASACORE_FALLTHROUGH;
     case General: 
 	switch (other.type_p) {
 	    case ScalarId: {

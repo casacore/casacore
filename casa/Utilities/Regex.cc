@@ -382,6 +382,7 @@ String Regex::fromSQLPattern(const String& pattern)
 	case ')':
 	case '\\':
             result.push_back ('\\');
+            CASACORE_FALLTHROUGH;
 	default:
             result.push_back (c);
 	}

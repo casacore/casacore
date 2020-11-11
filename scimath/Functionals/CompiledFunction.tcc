@@ -154,6 +154,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 	exec_p.back() = atan(exec_p.back());
 	break;
       }
+      CASACORE_FALLTHROUGH;
     case FuncExprData::ATAN2:
       exec_p.back() = atan2(exec_p.back(), t);
       break;
