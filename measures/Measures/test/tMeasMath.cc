@@ -247,10 +247,10 @@ int main()
 	cout << " equation of equinoxes 45882.5: " <<
 	    nt1.getEqoxAngle(45882,"''") << endl;
 	cout << " equation at 45882.5 from derivative at 45882.7: " <<
-	    nt1.getEqoxAngle(45882.2,"''") - (const Double) 0.2 *
+	    nt1.getEqoxAngle(45882.2,"''") -  0.2 *
 		Quantity(nt1.derivativeEqox(45882.2)/C::arcsec,"''") << endl;
 	cout << " equation at 45882.5 from derivative at 45882.54: " <<
-	    nt1.getEqoxAngle(45882.04,"''") - (const Double) 0.04 *
+	    nt1.getEqoxAngle(45882.04,"''") -  0.04 *
 		Quantity(nt1.derivativeEqox(45882.04)/C::arcsec,"''") << endl;
 	cout << "J2000 nutation: " << endl;
 	Double eq;

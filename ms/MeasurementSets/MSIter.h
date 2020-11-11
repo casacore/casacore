@@ -420,9 +420,10 @@ protected:
   Bool timeInSort_p, arrayInSort_p, ddInSort_p, fieldInSort_p;
 
   size_t nMS_p, curMS_p;
+  ssize_t lastMS_p;
   CountedPtr<MSColumns> msc_p;
   Table curTable_p;
-  Int lastMS_p, curArrayIdFirst_p, lastArrayId_p, curSourceIdFirst_p;
+  Int curArrayIdFirst_p, lastArrayId_p, curSourceIdFirst_p;
   String curFieldNameFirst_p, curSourceNameFirst_p;
   Int curFieldIdFirst_p, lastFieldId_p;
   Int curSpectralWindowIdFirst_p, lastSpectralWindowId_p;

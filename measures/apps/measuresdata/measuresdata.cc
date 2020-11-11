@@ -1468,7 +1468,6 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   uInt ksize(0);
   uInt ncoeff(0);
   Double stepo(0);
-  Double endepo(0);
   uInt incepo(0);
   vector<String> kwnames;
   vector<Double> kwval;
@@ -1500,7 +1499,6 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
     for (++bc; bc<bl; ++bc) {
       if (hfields[bc].size()<3) continue;
       stepo = double_data(hfields[bc][0]) -2400000.5;
-      endepo = double_data(hfields[bc][1]) -2400000.5;
       incepo = int_data(hfields[bc][2]);
       break;
     };
@@ -1568,24 +1566,25 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   while (read_line(line, infile)) {
     if (line.size() < 2 || int_data(line[1]) != Int(ncoeff)) continue;
     Double st0;
-    Double st1;
     vector<Double> res;
     while (read_line(line, infile)) {
       for (uInt i=0; i<line.size(); ++i) {
-	if (res.size() == 0 && i<2) {
-	  if (i==0) st0 = double_data(line[i])-2400000.5;
-	  else st1 = double_data(line[i])-2400000.5;
-	  continue;
-	};
-	if (st0 <= inVal.lastmjd) break;
-	res.push_back(double_data(line[i]));
-      };
-      if (st0 <= inVal.lastmjd) break;
+        if (res.size() == 0 && i<2) {
+          if (i==0) 
+            st0 = double_data(line[i])-2400000.5;
+          continue;
+        }
+        if (st0 <= inVal.lastmjd) 
+          break;
+        res.push_back(double_data(line[i]));
+      }
+      if (st0 <= inVal.lastmjd) 
+        break;
       if (res.size() >= ncoeff) {
-	res.resize(ncoeff);
-	allcol.push_back(res);
-	allmjd.push_back(st0);
-	break;
+        res.resize(ncoeff);
+        allcol.push_back(res);
+        allmjd.push_back(st0);
+        break;
       };
     };
   };
