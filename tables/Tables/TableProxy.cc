@@ -491,7 +491,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpFloat:
     defPrec = 9;
-    [[fallthrough]];
+    CASACORE_FALLTHROUGH;
   case TpDouble:
     {
       // set precision; set it back at the end.
@@ -503,7 +503,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpComplex:
     defPrec = 9;
-    [[fallthrough]];
+    CASACORE_FALLTHROUGH;
   case TpDComplex:
     {
       // set precision; set it back at the end.
@@ -557,7 +557,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpArrayFloat:
     defPrec = 9;
-    [[fallthrough]];
+    CASACORE_FALLTHROUGH;
   case TpArrayDouble:
     {
       // set precision; set it back at the end.
@@ -581,7 +581,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpArrayComplex:
     defPrec = 9;
-    [[fallthrough]];
+    CASACORE_FALLTHROUGH;
   case TpArrayDComplex:
     {
       // set precision; set it back at the end.

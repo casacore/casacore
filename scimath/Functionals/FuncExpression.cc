@@ -522,7 +522,7 @@ Bool FuncExpression::exec(Double &res) const {
 	  exec_p.back() = atan(exec_p.back());
 	  break;
 	}
-	[[fallthrough]];
+	CASACORE_FALLTHROUGH;
       case FuncExprData::ATAN2: {
 	Double t(exec_p.back());
 	exec_p.pop_back();

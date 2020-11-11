@@ -78,4 +78,16 @@ extern Bool aips_debug_on;
 #define CASACORE_STRINGIFY(x) CASACORE_STRINGIFY_HELPER(x)
 #define CASACORE_STRINGIFY_HELPER(x) #x
 
+// A fallthrough attribute to avoid compiler warnings,
+// available only from C++17 onwards
+#if __cplusplus >= 201703L
+#define CASACORE_FALLTHROUGH [[fallthrough]]
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define CASACORE_FALLTHROUGH [[gnu::fallthrough]]
+#elif defined(__clang__)
+#define CASACORE_FALLTHROUGH [[clang::fallthrough]]
+#else
+#define CASACORE_FALLTHROUGH
+#endif
+
 #endif

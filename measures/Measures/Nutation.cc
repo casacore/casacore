@@ -320,7 +320,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       for (uInt i=0; i<14; i++) {
 	pfa(i) = MeasTable::planetaryArg2000(i)(t);
       }
-      [[fallthrough]];
+      CASACORE_FALLTHROUGH;
     case IAU2000A:
       neval_p = 0;
       for (Int i=32; i>=0; --i) {
@@ -481,7 +481,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
 	pfa(i) = MeasTable::planetaryArg2000(i)(t);
 	pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
       }
-      [[fallthrough]];
+      CASACORE_FALLTHROUGH;
     case IAU2000A:
       neval_p = deval_p = 0;
       for (Int i=32; i>=0; --i) {

@@ -310,7 +310,7 @@ void showBinaryTable(BinaryTableExtension &x) {
                 if (maxsize % 8) nbytes++;
                 maxsize = nbytes;
             }
-            [[fallthrough]];
+            CASACORE_FALLTHROUGH;
             case FITS::BYTE: 
                vaptr[i] = (void *)(new unsigned char[maxsize]);
                break;

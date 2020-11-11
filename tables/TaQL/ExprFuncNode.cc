@@ -1595,7 +1595,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             break;
         case resizeFUNC:
             optarg = 1;
-            [[fallthrough]];
+            CASACORE_FALLTHROUGH;
         case arrayFUNC:
         case transposeFUNC:
         case areverseFUNC:
@@ -1748,7 +1748,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case weekdayFUNC:
     case weekFUNC:
         dtout = NTInt;
-        [[fallthrough]];
+        CASACORE_FALLTHROUGH;
     case mjdFUNC:
     case timeFUNC:
         if (checkNumOfArg (0, 1, nodes) == 1) {

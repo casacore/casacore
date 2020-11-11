@@ -403,7 +403,7 @@ String Regex::fromSQLPattern(const String& pattern)
 	case ')':
 	case '\\':
             result.push_back ('\\');
-	    // fall through
+            CASACORE_FALLTHROUGH;
 	default:
             result.push_back (c);
 	}

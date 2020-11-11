@@ -346,7 +346,7 @@ void TableExprFuncNodeArray::tryToConst()
         break;
     case TableExprFuncNode::arrfractilesFUNC:
         axarg = 2;
-        [[fallthrough]];
+        CASACORE_FALLTHROUGH;
     case TableExprFuncNode::arrsumsFUNC:
     case TableExprFuncNode::arrproductsFUNC:
     case TableExprFuncNode::arrsumsqrsFUNC:

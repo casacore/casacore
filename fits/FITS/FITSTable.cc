@@ -853,7 +853,7 @@ Bool FITSTable::reopen(const String &fileName)
 			maxsize = nbytes;
 		    }
 		    // fall through to BYTE for actual allocation
-        [[fallthrough]];
+		    CASACORE_FALLTHROUGH;
 		case FITS::BYTE: 
 		    vaptr_p[i] = (void *)(new uChar[maxsize]);
 		    AlwaysAssert(vaptr_p[i], AipsError);

@@ -341,13 +341,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		switch (actualSize) { // absence of breaks statements intended
 		case 0:
 		    parameters_p(0) = 0.; // mu
-		    [[fallthrough]];
+		    CASACORE_FALLTHROUGH;
 		case 1:
 		    parameters_p(1) = 0.; // phi_c
-		    [[fallthrough]];
+		    CASACORE_FALLTHROUGH;
 		case 2:
 		    parameters_p(2) = 90.; // theta_c
-		    [[fallthrough]];
+		    CASACORE_FALLTHROUGH;
 		default:
 		    break;
 		}

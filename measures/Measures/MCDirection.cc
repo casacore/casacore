@@ -445,7 +445,7 @@ void MCDirection::doConvert(MVDirection &in,
     
     case R_COMET:
       if (comID == MDirection::APP) break;
-      [[fallthrough]];
+      CASACORE_FALLTHROUGH;
     case TOPO_APP: 
       measMath.deapplyAPPtoTOPO(in, lengthP);
       break;
