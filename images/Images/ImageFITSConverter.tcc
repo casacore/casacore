@@ -248,7 +248,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 				Bool deleteMaskPtr;
 				Bool* mPtr = maskCursor.getStorage(deleteMaskPtr);
 				if (zeroBlanks) {
-					for (uInt i=0; i<maskCursor.nelements(); i++) {
+					for (size_t i=0; i<maskCursor.nelements(); i++) {
 						if (isNaN(ptr[i])) {
 							mPtr[i] = False;
 							hasBlanks = True;
@@ -260,7 +260,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 					}
 				}
 				else {
-					for (uInt i=0; i<maskCursor.nelements(); i++) {
+					for (size_t i=0; i<maskCursor.nelements(); i++) {
 						if (isNaN(ptr[i])) {
 							mPtr[i] = False;
 							hasBlanks = True;
@@ -275,7 +275,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 			}
 			else {
 				if (zeroBlanks) {
-					for (uInt i=0; i<cursor.nelements(); i++) {
+					for (size_t i=0; i<cursor.nelements(); i++) {
 						if (isNaN(ptr[i])) {
 							hasBlanks = True;
 							ptr[i] = 0.0;
