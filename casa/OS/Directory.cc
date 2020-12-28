@@ -496,6 +496,7 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
    return expInNames;
 }
 
+#if ! defined(GRAALVM)
 #ifndef __APPLE__
 #include <sys/vfs.h>
 #include <linux/nfs_fs.h>
@@ -520,6 +521,6 @@ Bool Directory::isNFSMounted() const
 #endif
 
 }
-
+#endif
 } //# NAMESPACE CASACORE - END
 

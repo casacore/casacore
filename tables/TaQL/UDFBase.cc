@@ -28,7 +28,9 @@
 //# Includes
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/Tables/TableError.h>
+#if ! defined(GRAALVM)
 #include <casacore/casa/OS/DynLib.h>
+#endif
 
 namespace casacore {
 
@@ -208,6 +210,7 @@ namespace casacore {
         return iter->second (fname);
       }
     }
+#if ! defined(GRAALVM)
     String sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
@@ -253,6 +256,9 @@ namespace casacore {
                         "\n  Maybe check if (DY)LD_LIBRARY_PATH and "
                         "CASACORE_LDPATH match the"
                         " libraries used during the build of " + libname);
+#else
+    throw TableInvExpr ("TaQL function " + fname + " is unknown (dynamic loading is not supported with GraalVM)");
+#endif
   }
 
 } // end namespace

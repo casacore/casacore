@@ -223,10 +223,11 @@ public:
     // Return the total size  of everything in the Directory. If the Directory
     // does not exist, an exception will be thrown.
     virtual Int64 size() const;
-
+#if ! defined(GRAALVM)
     //Check if a directory is mounted via NFS or not.
+    // not available in musl libc (https://musl.libc.org/)
     Bool isNFSMounted() const;
-    
+#endif
 private:
     // Check if the path defines a directory.
     // Also resolve possible symlinks.

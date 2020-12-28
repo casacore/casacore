@@ -223,7 +223,8 @@ String SystemCallError::errorMessage(int error)
   }
   return "errno " + String::toString(error);
 #else
-  return strerror_r(error, buffer, sizeof buffer);
+  auto result = strerror_r(error, buffer, sizeof buffer);
+  return result == 0 || (size_t) result == (size_t) buffer ? String(buffer) : "errno " + String::toString(error);
 #endif
 }
 

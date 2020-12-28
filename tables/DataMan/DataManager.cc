@@ -48,7 +48,9 @@
 #include <casacore/tables/Tables/PlainTable.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/String.h>
+#if ! defined(GRAALVM)
 #include <casacore/casa/OS/DynLib.h>
+#endif
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/stdio.h>                     // for sprintf
 
@@ -367,6 +369,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
     if (iter != theirRegisterMap.end()) {
         return iter->second;
     }
+#if ! defined(GRAALVM)
     // Try to load the data manager from a dynamic library with that name
     // (in lowercase without possible template extension).
     // A < denotes a template name which is discarded.
@@ -388,6 +391,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
             return iter->second;
         }
     }
+#endif
     return unknownDataManager;
 }
 
