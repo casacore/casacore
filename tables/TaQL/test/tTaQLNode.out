@@ -376,3 +376,4 @@ WITH [SELECT abs((phase(t1.DATA))-(phase(t2.DATA))) AS D FROM a.ms AS t1,/home/g
 
 with ~a select 1+2 from [~b,[select 3+4 from [[select 5+6],~c]], ~d giving ~e] where 3+4 giving ~f
 WITH ~a SELECT (1)+(2) FROM [~b,[SELECT (3)+(4) FROM [[SELECT (5)+(6)],~c]],~d GIVING ~e] WHERE (3)+(4) GIVING ~f
+
