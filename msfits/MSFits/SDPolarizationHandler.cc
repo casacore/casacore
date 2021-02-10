@@ -296,6 +296,7 @@ void SDPolarizationHandler::stokesKeys(Int stokesValue, Int &key1, Int &key2)
     case Stokes::QP:
 	key1 = Stokes::QQ;
 	key2 = Stokes::PP;
+  break;
     default:
 	// the two keys are identical to each other and to the stokes type
 	key1 = key2 = stokesValue;

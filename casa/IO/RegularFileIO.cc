@@ -76,6 +76,7 @@ int RegularFileIO::openCreate (const RegularFile& file,
 	    throw (AipsError ("RegularFileIO: new file " + name +
 			      " already exists"));
 	}
+	[[fallthrough]];
     case ByteIO::New:
     case ByteIO::Scratch:
         create = True;

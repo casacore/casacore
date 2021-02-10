@@ -100,6 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case gminsFUNC:
     case gmaxsFUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case gminFUNC:
     case gmaxFUNC:
       checkNumOfArg (1, 1, nodes);
@@ -108,6 +109,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case gproductsFUNC:
     case gsumsqrsFUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case gsumFUNC:
     case gproductFUNC:
     case gsumsqrFUNC:
@@ -115,6 +117,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
     case gmeansFUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case gmeanFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
@@ -123,6 +126,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case gstddevs0FUNC:
     case gstddevs1FUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case gvariance0FUNC:
     case gvariance1FUNC:
     case gstddev0FUNC:
@@ -131,6 +135,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
     case grmssFUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case grmsFUNC:
     case gmedianFUNC:
       checkNumOfArg (1, 1, nodes);
@@ -146,6 +151,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case ganysFUNC:
     case gallsFUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case ganyFUNC:
     case gallFUNC:
       checkNumOfArg (1, 1, nodes);
@@ -153,6 +159,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case gntruesFUNC:
     case gnfalsesFUNC:
       resVT = VTArray;
+      [[fallthrough]];
     case gntrueFUNC:
     case gnfalseFUNC:
       checkNumOfArg (1, 1, nodes);
@@ -238,6 +245,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           break;
         }
         // Fall through, so e.g. mean of ints can be done
+      [[fallthrough]];
       case NTDouble:
         switch (funcType()) {
         case gminFUNC:
@@ -342,6 +350,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         break;
       }
       // Fall through, so e.g. mean of ints can be done
+      [[fallthrough]];
     case NTDouble:
       switch (funcType()) {
       case gminFUNC:

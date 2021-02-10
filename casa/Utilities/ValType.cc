@@ -284,6 +284,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpComplex:
     case TpArrayComplex:
       nrElementsPerValue = 2;
+      [[fallthrough]];
     case TpFloat:
     case TpArrayFloat:
       readFunc  = CanonicalConversion::getToLocal (static_cast<float*>(0));
@@ -292,6 +293,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpDComplex:
     case TpArrayDComplex:
       nrElementsPerValue = 2;
+      [[fallthrough]];
     case TpDouble:
     case TpArrayDouble:
       readFunc  = CanonicalConversion::getToLocal (static_cast<double*>(0));
@@ -346,6 +348,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpComplex:
     case TpArrayComplex:
       nrElementsPerValue = 2;
+      [[fallthrough]];
     case TpFloat:
     case TpArrayFloat:
       readFunc  = LECanonicalConversion::getToLocal (static_cast<float*>(0));
@@ -354,6 +357,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpDComplex:
     case TpArrayDComplex:
       nrElementsPerValue = 2;
+      [[fallthrough]];
     case TpDouble:
     case TpArrayDouble:
       readFunc  = LECanonicalConversion::getToLocal (static_cast<double*>(0));

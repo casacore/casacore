@@ -99,6 +99,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpBool:
 	  sizeInBytes += size*1;
 	  code = "L";
@@ -115,6 +116,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpUChar:
 	  sizeInBytes += size*1;
 	  code = "B";
@@ -131,6 +133,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpShort:
 	  sizeInBytes += size*2;
 	  code = "I";
@@ -147,6 +150,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpInt:
 	  sizeInBytes += size*4;
 	  code = "J";
@@ -163,6 +167,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpFloat:
 	  sizeInBytes += size*4;
 	  code = "E";
@@ -179,6 +184,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpDouble:
 	  sizeInBytes += size*8;
 	  code = "D";
@@ -195,6 +201,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpComplex:
 	  sizeInBytes += size*8;
 	  code = "C";
@@ -211,6 +218,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
+      [[fallthrough]];
       case TpDComplex:
 	  sizeInBytes += size*16;
 	  code = "M";

@@ -182,6 +182,7 @@ void do_binary_table(BinaryTableExtension &x) {
 			    if (maxsize % 8) nbytes++;
 			    maxsize = nbytes;
 			}
+      [[fallthrough]];
 			// fall through to byte for the actual allocation
 		    case FITS::BYTE: 
 			vaptr[i] = (void *)(new unsigned char[maxsize]);

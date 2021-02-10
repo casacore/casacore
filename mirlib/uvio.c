@@ -745,15 +745,15 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
     CHECK(iostat,(message,"Error accessing visdata for %s, in UVOPEN(old)",name));
 #ifdef MIR4
     /* figure out if to read old MIR3 or new MIR4 */
-    if (1) {
+#if true
       rdhdl_c(*tno,"vislen",&(uv->max_offset),hsize_c(uv->item));
-    } else {
+#else
       int old_vislen;
       rdhdi_c(*tno,"vislen",&old_vislen,hsize_c(uv->item));
       if (old_vislen < 0) 
 	ERROR('f',(message,"Bad conversion MIR3<->MIR4 in UVOPEN: vislen=%d",old_vislen));
       uv->max_offset = old_vislen;
-    }
+#endif
 #else
     /* MIR3 and before format: */
     rdhdi_c(*tno,"vislen",&(uv->max_offset),hsize_c(uv->item));

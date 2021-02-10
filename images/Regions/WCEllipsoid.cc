@@ -378,6 +378,7 @@ WCEllipsoid* WCEllipsoid::fromRecord (
 			}
 			theta = qh.asQuantity();
 			// do not break, allow fall thru to default to get radii too.
+      [[fallthrough]];
 		case NOT_SPECIAL:
 		default:
 			{

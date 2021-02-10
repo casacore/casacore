@@ -132,14 +132,17 @@ int main (int argc, const char* argv[])
       constrArg = 0.0;
       constrArg[2] = 1.0;
       fitter.addConstraint(constrArg, v[2]);
+      [[fallthrough]];
     case '2':					// W1==W2
       constrArg = 0.0;
       constrArg[2] = 1.0; constrArg[5] = -1.0;
       fitter.addConstraint(constrArg);
+      [[fallthrough]];
     case '1':					// A1/A2=2
       constrArg = 0.0;
       constrArg[0] = 1.0; constrArg[3] = -2.0;
       fitter.addConstraint(constrArg);
+      [[fallthrough]];
     default:
       break;
     }

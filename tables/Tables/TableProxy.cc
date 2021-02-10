@@ -491,6 +491,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpFloat:
     defPrec = 9;
+    [[fallthrough]];
   case TpDouble:
     {
       // set precision; set it back at the end.
@@ -502,6 +503,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpComplex:
     defPrec = 9;
+    [[fallthrough]];
   case TpDComplex:
     {
       // set precision; set it back at the end.
@@ -555,6 +557,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpArrayFloat:
     defPrec = 9;
+    [[fallthrough]];
   case TpArrayDouble:
     {
       // set precision; set it back at the end.
@@ -578,6 +581,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpArrayComplex:
     defPrec = 9;
+    [[fallthrough]];
   case TpArrayDComplex:
     {
       // set precision; set it back at the end.
@@ -1168,7 +1172,7 @@ Record TableProxy::getVarColumn (const String& columnName,
   Int64 nrows = getRowsCheck (columnName, row, nrow, incr, "getVarColumn");
   TableColumn tabcol (table_p, columnName);
   Record rec;
-  char namebuf[16];
+  char namebuf[22];
   for (Int64 i=0; i<nrows; i++) {
     // Add the result to the record with field name formed from 1-based rownr.
     sprintf (namebuf, "r%lli", row+1);
