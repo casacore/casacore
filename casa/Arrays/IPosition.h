@@ -124,7 +124,7 @@ public:
     // A zero-length IPosition.
     IPosition() noexcept;
 
-    // An IPosition of size "length." The values in the object are undefined.
+    // An IPosition of size "length." The values in the object are uninitialized.
     explicit IPosition(size_t length);
 
     // An IPosition initialized from the given list
@@ -137,6 +137,7 @@ public:
     // An IPosition of size "length" with defined values. You need to supply
     // a value for each element of the IPosition (up to 10). [Unfortunately
     // varargs might not be sufficiently portable.]
+    //TODO: [[deprecated("Use the initialize list constructor")]]
     IPosition (size_t length, ssize_t val0, ssize_t val1, ssize_t val2=MIN_INT, 
 	       ssize_t val3=MIN_INT, ssize_t val4=MIN_INT, ssize_t val5=MIN_INT,
 	       ssize_t val6=MIN_INT, ssize_t val7=MIN_INT, ssize_t val8=MIN_INT,
