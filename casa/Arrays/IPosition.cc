@@ -41,6 +41,7 @@ IPosition::IPosition (size_t length)
     if (length > BufferLength) {
 	allocateBuffer();
     }
+    memset(data_p, 0, size_p * sizeof(ssize_t));
 }
 
 IPosition::IPosition(std::initializer_list<ssize_t> list)
@@ -324,6 +325,8 @@ IPosition& IPosition::operator= (const IPosition& other)
 IPosition& IPosition::operator=(IPosition&& source)
 {
   size_p = source.size_p;
+  if (data_p != &buffer_p[0])
+    delete [] data_p;
   data_p = size_p > BufferLength ? source.data_p : buffer_p;
   for(size_t i=0; i!=size_p; ++i)
     data_p[i] = source.data_p[i];
