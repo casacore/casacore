@@ -175,11 +175,6 @@ class MeasFrame {
   MeasFrame(const Measure &meas1, const Measure &meas2,
 	    const Measure &meas3);
   // </group>
-  // Copy constructor (reference semantics)
-  MeasFrame(const MeasFrame &other);
-  // Copy assignment (reference semantics)
-  MeasFrame &operator=(const MeasFrame &other);
-  // Destructor
   ~MeasFrame();
   
   //# Operators
@@ -294,7 +289,7 @@ private:
   
   //# Data
   // Representation of MeasFrame
-  FrameRep *rep;
+  std::shared_ptr<FrameRep> rep;
   
   //# Member functions
   // Create an instance of the MeasFrame class
@@ -316,10 +311,6 @@ private:
   void makeComet();
   // Throw reset error
   void errorReset(const String &txt);
-  // Lock the frame to make sure deletion occurs when needed
-  void lock(uInt &locker);
-  // Unlock the frame
-  void unlock(const uInt locker);
 };
 
 //# Global functions
