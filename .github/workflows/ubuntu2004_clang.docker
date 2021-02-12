@@ -16,7 +16,6 @@ RUN docker-apt-install \
     libhdf5-serial-dev \
     libboost-dev \
     libboost-python-dev \
-    python-numpy \
     python3-numpy
 ADD . /code
 RUN useradd -ms /bin/bash casacore
@@ -28,7 +27,6 @@ RUN cmake .. \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
     -DUSE_HDF5=ON \
-    -DBUILD_PYTHON=ON \
     -DBUILD_PYTHON3=ON \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/share/casacore/data \
