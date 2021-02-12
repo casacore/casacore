@@ -1,4 +1,4 @@
-name: Containers
+name: Linux
 
 on:
   push:
@@ -7,13 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
-  containers:
-    runs-on: ubuntu-18.04
+  Linux:
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         dist:
-          - ubuntu1604_clang
-          - ubuntu1604_gcc
           - ubuntu1804_clang
           - ubuntu1804_gcc
           - ubuntu2004_clang

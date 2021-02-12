@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 jobs:
-  osx_wheel:
+  osx:
     runs-on: macos-10.15
 
     steps:
@@ -27,15 +27,20 @@ jobs:
       - name:  get WSRT measures
         run: wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
 
-      - name: extract archives
+      - name: extract and compile sofa
         run: |
           mkdir -p build
           cd build
           tar zxvf ../sofa.tgz
           tar zxvf ../WSRT_Measures.ztar
-     
-      - name: compile sofa
-        run: cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
+          ls
+          ls sofa
+          ls sofa/20150209_a/
+          ls sofa/20150209_a/f77
+          cd sofa/20150209_a/f77/src/
+          make 
+          make test 
+          cd ../../../../
 
       - name: configure
         run: cmake .. \
@@ -50,7 +55,7 @@ jobs:
               -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 
       - name: build
-        run: make -j4
+        run: make -j3
 
       - name: run tests  
         run: CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
