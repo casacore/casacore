@@ -21,8 +21,8 @@ jobs:
       - name: pip install numpy
         run: pip3 install numpy
 
-      - name:  get SOFA
-        run: wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O sofa.tgz
+#      - name:  get SOFA
+#        run: wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O sofa.tgz
 
       - name:  get WSRT measures
         run: wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
@@ -31,16 +31,12 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          tar zxvf ../sofa.tgz
           tar zxvf ../WSRT_Measures.ztar
-          ls
-          ls sofa
-          ls sofa/20150209_a/
-          ls sofa/20150209_a/f77
-          cd sofa/20150209_a/f77/src/
-          make 
-          make test 
-          cd ../../../../
+#          tar zxvf ../sofa.tgz
+#          cd sofa/20150209_a/f77/src/
+#          make 
+#          make test 
+#          cd ../../../../
 
       - name: configure
         run: cmake .. \
