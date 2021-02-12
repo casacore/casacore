@@ -1,0 +1,26 @@
+name: Containers
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  containers:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        dist:
+          - ubuntu1604_clang
+          - ubuntu1604_gcc
+          - ubuntu1804_clang
+          - ubuntu1804_gcc
+          - ubuntu2004_clang
+          - ubuntu2004_gcc
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Build container
+        run: docker build . -t ${{ matrix.dist }} -f .github/workflows/${{ matrix.dist }}.docker
