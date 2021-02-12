@@ -47,8 +47,7 @@ jobs:
               -DBUILD_PYTHON3=ON \
               -DBoost_NO_BOOST_CMAKE=True \
               -DDATA_DIR=. \
-              -DSOFA_ROOT_DIR=. \
-              -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
+              -DSOFA_ROOT_DIR=.
 
       - name: build
         run: make -j3
