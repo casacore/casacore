@@ -33,9 +33,7 @@ jobs:
           cd build
           tar zxvf ../sofa.tgz
           tar zxvf ../WSRT_Measures.ztar
-
-          - name: build sofa\
-      
+     
       - name: compile sofa
         run: cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
 
