@@ -31,7 +31,10 @@ jobs:
           tar zxvf ../WSRT_Measures.ztar
 
       - name: configure
-        run: cmake -DBUILD_TESTING=ON -DUSE_OPENMP=OFF -DUSE_HDF5=ON -DBUILD_PYTHON=OFF -DBUILD_PYTHON3=ON -DBoost_NO_BOOST_CMAKE=True -DDATA_DIR=. ..
+        run: |
+          ls
+          ls ..
+          cmake -DBUILD_TESTING=ON -DUSE_OPENMP=OFF -DUSE_HDF5=ON -DBUILD_PYTHON=OFF -DBUILD_PYTHON3=ON -DBoost_NO_BOOST_CMAKE=True -DDATA_DIR=. ..
 
       - name: build
         run: make -j3
