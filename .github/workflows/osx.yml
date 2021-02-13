@@ -39,7 +39,8 @@ jobs:
               -DBUILD_PYTHON3=ON \
               -DBoost_NO_BOOST_CMAKE=True \
               -DDATA_DIR=. \
-		..
+              ..
+
 
       - name: build
         run: make -j3
