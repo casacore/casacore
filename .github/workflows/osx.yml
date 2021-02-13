@@ -24,13 +24,11 @@ jobs:
       - name:  get WSRT measures
         run: wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
 
-      - name: make build folder
+      - name: make build folder 
         run: |
           mkdir -p build
           cd build
-
-      - name: extract WSRT measures
-        run: tar zxvf ../WSRT_Measures.ztar
+          tar zxvf ../WSRT_Measures.ztar
 
       - name: configure
         run: cmake -DBUILD_TESTING=ON -DUSE_OPENMP=OFF -DUSE_HDF5=ON -DBUILD_PYTHON=OFF -DBUILD_PYTHON3=ON -DBoost_NO_BOOST_CMAKE=True -DDATA_DIR=. ..
