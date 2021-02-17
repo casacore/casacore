@@ -46,7 +46,7 @@ MemoryIO::MemoryIO (uInt64 initialSize, uInt64 expandSize)
   itsCanDelete  (True)
 {
   if (itsAlloc > 0) {
-    itsBuffer = new uChar[itsAlloc];
+    itsBuffer = new uChar[itsAlloc]();
     AlwaysAssert (itsBuffer != 0, AipsError);
   }
 }
