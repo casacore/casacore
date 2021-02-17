@@ -65,6 +65,16 @@ public:
         return result;
     }
 
+    // Get AppState specified directory for (IERS) measures data.
+    //
+    // If data is not found in the specified directory and the
+    // specified directiory name is nonempty (size > 0), an
+    // exception will be thrown in findTab.
+    virtual std::string measuresDir( ) const {
+        static std::string result;
+        return result;
+    }
+
     virtual bool initialized( ) const { return false; }
 
     virtual ~AppState( ) { }

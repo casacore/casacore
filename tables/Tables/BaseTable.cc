@@ -338,18 +338,24 @@ void BaseTable::flushTableInfo()
 
 void BaseTable::writeStart (AipsIO& ios, Bool bigEndian)
 {
-    //# Check option.
+    // Check option.
     if (!openedForWrite()) {
-	throw (TableInvOpt ("BaseTable::writeStart",
-			    "must be Table::New, NewNoReplace or Update"));
+        throw (TableInvOpt ("BaseTable::writeStart",
+                            "must be Table::New, NewNoReplace or Update"));
     }
-    //# Create table directory when needed.
+    // Create table directory when needed.
     Bool made = makeTableDir();
-    //# Create the file.
-    ios.open (Table::fileName(name_p), ByteIO::New);
-    //# Start the object as Table, so class Table can read it back.
-    //# Version 2 (of PlainTable) does not have its own TableRecord anymore.
-    //# Use old version if nr of rows fit in an Int, otherwise use new version.
+    // Create the file. It is a temporary file that will be later renamed
+    // to the final name. This is so because, in case other process
+    // tries to create a Table object with this table, there is a small
+    // window in which the table.dat is truncated to lenght 0 (ByteIO::New) by
+    // this process while the constructor of Table in the other process
+    // will fail because table.dat is empty. Note that the constructor reads
+    // reads table.dat before doing any locking
+    ios.open (Table::fileName(name_p)+"_tmp", ByteIO::New);
+    // Start the object as Table, so class Table can read it back.
+    // Version 2 (of PlainTable) does not have its own TableRecord anymore.
+    // Use old version if nr of rows fit in an Int, otherwise use new version.
     if (nrrow_p > rownr_t(std::numeric_limits<Int>::max())) {
         ios.putstart ("Table", 3);
         ios << nrrow_p;
@@ -357,14 +363,14 @@ void BaseTable::writeStart (AipsIO& ios, Bool bigEndian)
         ios.putstart ("Table", 2);
         ios << uInt(nrrow_p);
     }
-    //# Write endianity as a uInt, because older tables contain a uInt 0 here.
+    // Write endianity as a uInt, because older tables contain a uInt 0 here.
     uInt endian = 0;
     if (!bigEndian) {
       endian = 1;
     }
     ios << endian;              // 0=bigendian; 1=littleendian
     if (made && !isMarkedForDelete()) {
-	scratchCallback (False, name_p);
+        scratchCallback (False, name_p);
     }
 }
 
@@ -372,6 +378,12 @@ void BaseTable::writeStart (AipsIO& ios, Bool bigEndian)
 void BaseTable::writeEnd (AipsIO& ios)
 {
     ios.putend ();
+    // Ensure that the buffers have been written before renaming
+    ios.close();
+    // Now rename the file to the final name (table.dat). Not that the 
+    // rename is function (used by RegularFile::move) is atomic 
+    // (https://pubs.opengroup.org/onlinepubs/9699919799/functions/rename.html)
+    RegularFile(Table::fileName(name_p)+"_tmp").move (Table::fileName(name_p), true);
 }
 
 

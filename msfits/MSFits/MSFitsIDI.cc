@@ -341,7 +341,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 	  }
 	}
 	else{ // ignore this subtable
-	  if (infits.datasize() > 0)
+	  if (infits.currsize() > 0)
 	    infits.skip_all(FITS::BinaryTableHDU);
 	}
       }

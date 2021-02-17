@@ -88,15 +88,16 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 
 MSIter::MSIter(const MeasurementSet& ms,
                const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
-  curMS_p(0),lastMS_p(-1),
-  storeSorted_p(false),
-  interval_p(0), prevFirstTimeStamp_p(-1.0),
-  allBeamOffsetsZero_p(True),
-  timeComp_p(0),
   timeInSort_p(false),
   arrayInSort_p(false),
   ddInSort_p(false),
-  fieldInSort_p(false)
+  fieldInSort_p(false),
+  curMS_p(0),lastMS_p(-1),
+  storeSorted_p(false),
+  interval_p(0),
+  prevFirstTimeStamp_p(-1.0),
+  allBeamOffsetsZero_p(True),
+  timeComp_p(0)
 {
     This = (MSIter*)this;
     bms_p.resize(1);
@@ -106,15 +107,16 @@ MSIter::MSIter(const MeasurementSet& ms,
 
 MSIter::MSIter(const Block<MeasurementSet>& mss,
   const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
-  bms_p(mss), curMS_p(0),lastMS_p(-1),
-  storeSorted_p(false),
-  interval_p(0), prevFirstTimeStamp_p(-1.0),
-  allBeamOffsetsZero_p(True),
-  timeComp_p(0),
+  bms_p(mss),
   timeInSort_p(false),
   arrayInSort_p(false),
   ddInSort_p(false),
-  fieldInSort_p(false)
+  fieldInSort_p(false),
+  curMS_p(0),lastMS_p(-1),
+  storeSorted_p(false),
+  interval_p(0), prevFirstTimeStamp_p(-1.0),
+  allBeamOffsetsZero_p(True),
+  timeComp_p(0)
 {
     This = (MSIter*)this;
     construct(sortColumns);
@@ -125,7 +127,7 @@ void MSIter::construct(
 {
     nMS_p=bms_p.nelements();
     if (nMS_p==0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
-    for (Int i=0; i<nMS_p; i++) {
+    for (size_t i=0; i<nMS_p; i++) {
         if (bms_p[i].nrow()==0) {
             throw(AipsError("MSIter::construct - Input MeasurementSet.has zero selected rows"));
         }
@@ -149,8 +151,7 @@ void MSIter::construct(
     }
 
     // Create the table iterators
-    for (Int i=0; i<nMS_p; i++) {
-        Bool useIn=False, store=False, useSorted=False;
+    for (size_t i=0; i<nMS_p; i++) {
         // create the iterator for each MS
         tabIter_p[i] = new TableIterator(bms_p[i],sortColumnNames,
                                          sortCompareFunctions,sortOrders);
@@ -609,7 +610,7 @@ const MFrequency& MSIter::restFrequency(Int line) const
 
 void MSIter::setMSInfo()
 {
-  newMS_p = (lastMS_p != curMS_p);
+  newMS_p = (lastMS_p != (ssize_t)curMS_p);
   if (newMS_p) {
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();

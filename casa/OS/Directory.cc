@@ -315,7 +315,10 @@ void Directory::copy (const Path& target, Bool overwrite,
 	command = "chmod -Rf u+w '";
 #endif
 	command += targetName.expandedName() + "'";
-	AlwaysAssert (system(command.chars()) == 0, AipsError);
+	int result = system(command.chars());
+	if(result != 0)
+	  throw AipsError("Executing chmod command returned an error. Command was: "
+			  + command);	  
     }
 #endif
 }

@@ -369,8 +369,8 @@ Bool String::contains(const Regex &r) const {
 Bool String::matches(const Regex &r, Int pos) const {
   String::size_type l = (pos < 0) ? -pos : length() - pos;
   if (l>length()) return False;
-  if (pos<0) return r.match(c_str(), l, 0) == l;
-  return r.match(c_str(), length(), pos) == l;
+  if (pos<0) return r.fullMatch(c_str(), l);
+  return r.fullMatch(c_str()+pos, l);
 }
 
 String::size_type String::index(const Regex &r, Int startpos) const {

@@ -109,6 +109,7 @@ private:
   Bool copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Bool copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAndIndices);
   Bool copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAndIndices);
+  Bool copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& newAndIndices);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
                              //# by default remove redundant observation table rows
   Int copyProcessor(const MSProcessor& otherObs, const Bool remRedunProcId=True);

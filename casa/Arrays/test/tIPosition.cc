@@ -119,6 +119,44 @@ BOOST_AUTO_TEST_CASE( common_operations )
   }
 }
 
+BOOST_AUTO_TEST_CASE( construct_from_int_array )
+{
+  Vector<int> emptyVec;
+  IPosition emptyPos(emptyVec);
+  BOOST_CHECK(emptyPos.nelements() == 0);
+
+  Vector<int> filledVec{ 19, 82 };
+  IPosition filledPos(filledVec);
+  BOOST_CHECK(filledPos.nelements() == 2);
+  BOOST_CHECK(filledPos[0] == 19);
+  BOOST_CHECK(filledPos[1] == 82);
+
+  Vector<int> bigVec{ 9, 8, 7, 6, 5, 4, 3 };
+  IPosition bigPos(bigVec);
+  BOOST_CHECK(bigPos.nelements() == 7);
+  for(int i=0; i!=7; ++i)
+    BOOST_CHECK(bigPos[i] == (9-i));
+}
+
+BOOST_AUTO_TEST_CASE( construct_from_ll_array )
+{
+  Vector<long long> emptyVec;
+  IPosition emptyPos(emptyVec);
+  BOOST_CHECK(emptyPos.nelements() == 0);
+
+  Vector<long long> filledVec{ 19, 82 };
+  IPosition filledPos(filledVec);
+  BOOST_CHECK(filledPos.nelements() == 2);
+  BOOST_CHECK(filledPos[0] == 19);
+  BOOST_CHECK(filledPos[1] == 82);
+
+  Vector<long long> bigVec{ 9, 8, 7, 6, 5, 4, 3 };
+  IPosition bigPos(bigVec);
+  BOOST_CHECK(bigPos.nelements() == 7);
+  for(int i=0; i!=7; ++i)
+    BOOST_CHECK(bigPos[i] == (9-i));
+}
+
 BOOST_AUTO_TEST_CASE( move_exhaustively )
 {
   int i;

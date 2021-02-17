@@ -29,144 +29,139 @@
 
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
+#include <sstream>
 
 #include <casacore/casa/namespace.h>
 //# Forward Declarations
 
-void testParallel();
-void a();
-void b();
-
 // <summary> Test program for the Regex class </summary>
 
-// This program tests the class Regex.
-// It also tests if a Vector of Regex objects works fine.
-// The results are written to stdout. The script executing this program,
-// compares the results with the reference output file.
-
-int main () {
-  try {
-    // Test parallel first to ensure initialization works fine.
-    testParallel();
-    AlwaysAssertExit (Regex::toEcma("[][]") == String("[\\]\\[]"));
-    AlwaysAssertExit (Regex::toEcma("[\\]\\[]") == String("[\\]\\[]"));
-    AlwaysAssertExit (Regex::toEcma("[[:alpha:]]") == String("[[:alpha:]]"));
-    AlwaysAssertExit (Regex::toEcma("(the)\\15a") == String("(the)\\1[5]a"));
-    a();
-    b();
-  } catch (std::exception& x) {
-    cout << x.what() << endl;
-    return 1;
-  }
-  return 0;                           // exit with success status
-}
-
-// Make sure the return value for a non-match is the same
-// for 32 and 64 bit machines.
-String::size_type doMatch (const Regex& exp, const char* str, uInt len)
-{
-  String::size_type k = exp.match (str, len);
-  if (k == String::npos) {
-    return 4294967295u;
-  }
-  return k;
-}
 
 // First do some simple Regex things.
-void a() {
+void testBasic()
+{
+    // Do some basic tests for a simple regex.
     Regex exp("a?bcd(bcdcdd)?");
-    cout << doMatch (exp, "bdc",3) << " ";
-    cout << doMatch (exp, "abcd",3) << " ";
-    cout << doMatch (exp, "abcd",4) << " ";
-    cout << doMatch (exp, "abcdbcdcdd",10) << endl;
+    AlwaysAssertExit (exp.match ("bdc",3) == String::npos);
+    AlwaysAssertExit (exp.match ("abcd",3) == String::npos);
+    AlwaysAssertExit (exp.match ("abcd",4) == 4);
+    AlwaysAssertExit (exp.match ("abcdbcdcdd",10) == 10);
+    AlwaysAssertExit (exp.match ("abcdbcdcdd",10) == 10);
+    AlwaysAssertExit (exp.match ("bcdxxx", 6) == 3);
+    AlwaysAssertExit (! exp.fullMatch ("bdc",3));
+    AlwaysAssertExit (! exp.fullMatch ("abcd",3));
+    AlwaysAssertExit (exp.fullMatch ("abcd",4));
+    AlwaysAssertExit (exp.fullMatch ("abcdbcdcdd",10));
+    AlwaysAssertExit (! exp.fullMatch ("bcdxxx", 6));
 
-    cout << doMatch (RXalpha, "bcd",0) << " ";
-    cout << doMatch (RXalpha, "bcd",1) << " ";
-    cout << doMatch (RXalpha, "bcd",2) << " ";
-    cout << doMatch (RXalpha, "bcd",3) << " ";
-    cout << doMatch (RXalpha, "bcd",4) << " ";
-    cout << doMatch (RXalpha, "bcd",100) << endl;
+    // Test with a given start position (from start and from end).
+    // Test valid start positions.
+    AlwaysAssertExit (exp.match ("abcde",5,0) == 4);
+    AlwaysAssertExit (exp.match ("abcde",5,1) == 3);
+    AlwaysAssertExit (exp.match ("abcde",5,2) == String::npos);
+    AlwaysAssertExit (exp.match ("abcde",5,-5) == 4);
+    AlwaysAssertExit (exp.match ("abcde",5,-4) == 3);
+    AlwaysAssertExit (exp.match ("abcde",5,-3) == String::npos);
+    // Test invalid start positions.
+    AlwaysAssertExit (exp.match ("abcde",5,-6) == String::npos);
+    AlwaysAssertExit (exp.match ("abcde",5,5) == String::npos);
 
-    cout << String("1").matches(RXdouble) << " ";
-    cout << String("-1").matches(RXdouble) << " ";
-    cout << String("+1").matches(RXdouble) << " ";
-    cout << String("1.").matches(RXdouble) << " ";
-    cout << String("1.1").matches(RXdouble) << " ";
-    cout << String(".1").matches(RXdouble) << " ";
-    cout << String("1.e1").matches(RXdouble) << " ";
-    cout << String("1.1e+1").matches(RXdouble) << " ";
-    cout << String(".1E-1").matches(RXdouble) << " ";
-    cout << String(".1.e-1").matches(RXdouble) << " ";
-    cout << endl;
+    // Test some predefined regex-es.
+    AlwaysAssertExit (RXalpha.match ("bcd",0) == String::npos);
+    AlwaysAssertExit (RXalpha.match ("bcd",1) == 1);
+    AlwaysAssertExit (RXalpha.match ("bcd",2) == 2);
+    AlwaysAssertExit (RXalpha.match ("bcd",3) == 3);
+    AlwaysAssertExit (RXalpha.match ("bcd",4) == 3);
+    // Also test the String's matches function for a regex.
+    AlwaysAssertExit (String("1").matches(RXdouble));
+    AlwaysAssertExit (String("-1").matches(RXdouble));
+    AlwaysAssertExit (String("+1").matches(RXdouble));
+    AlwaysAssertExit (String("1.").matches(RXdouble));
+    AlwaysAssertExit (String("1.1").matches(RXdouble));
+    AlwaysAssertExit (String(".1").matches(RXdouble));
+    AlwaysAssertExit (String("1.e1").matches(RXdouble));
+    AlwaysAssertExit (String("1.1e+1").matches(RXdouble));
+    AlwaysAssertExit (String(".1E-1").matches(RXdouble));
+    AlwaysAssertExit (! String(".1.e-1").matches(RXdouble));
 
+    // Some more basic tests using the copy constructor.
     Regex exp2(exp);
-    cout << doMatch(exp2, "abcdbcdcdd",10) << endl;
-    cout << String("abcdbcdcdd").matches(exp2) << " ";
-    cout << String("abcdb").matches(exp2) << " ";
-    cout << String("abcd").matches(exp2) << " ";
-    cout << String("bcd").matches(exp2) << "   ";
-    cout << exp2.regexp() << endl;
+    AlwaysAssertExit (exp2.match ("abcdbcdcdd",10) == 10);
+    AlwaysAssertExit (String("abcdbcdcdd").matches(exp2));
+    AlwaysAssertExit (! String("abcdb").matches(exp2));
+    AlwaysAssertExit (String("abcd").matches(exp2));
+    AlwaysAssertExit (String("bcd").matches(exp2));
+    AlwaysAssertExit (exp2.regexp() == "a?bcd(bcdcdd)?");
 
+    // The same using the assignment operator.
+    Regex exp3("any");
+    exp3 = exp2;
+    AlwaysAssertExit (exp3.match ("abcdbcdcdd",10) == 10);
+    AlwaysAssertExit (String("abcdbcdcdd").matches(exp3));
+    AlwaysAssertExit (! String("abcdb").matches(exp3));
+    AlwaysAssertExit (String("abcd").matches(exp3));
+    AlwaysAssertExit (String("bcd").matches(exp3));
+    AlwaysAssertExit (exp3.regexp() == "a?bcd(bcdcdd)?");
+
+    // Arbitrary strings match.
     Regex exp5(".+");
-    cout << doMatch (exp5, "",0) << " ";
-    cout << doMatch (exp5, "",1) << " ";
-    cout << doMatch (exp5, "",2) << " ";
-    // This used to be:
-    // cout << doMatch (exp5, "",10) << " "
-    // But I believe that is not a correct test, as it will go out of bounds
-    // (A.O. 2020)
-    cout << doMatch (exp5, "\0\0\0\0\0\0\0\0\0\0",10) << " ";
-    cout << doMatch (exp5, "a",1) << " ";
-    cout << doMatch (exp5, "a",2) << " ";
-    cout << doMatch (exp5, "\0\0",2) << endl;
+    AlwaysAssertExit (exp5.match ("", 0) == String::npos);
+    AlwaysAssertExit (exp5.match ("", 1) == 1);
+    AlwaysAssertExit (exp5.match ("a", 1) == 1);
+    AlwaysAssertExit (exp5.match ("0123456789", 10) == 10);
+    AlwaysAssertExit (exp5.match ("a", 2) == 2);
+    AlwaysAssertExit (exp5.match ("\0\0", 2) == 2);
 
-    Vector<Regex> vec(3);
-    vec(0) = exp;
-    vec(1) = exp5;
-    vec(2) = RXalpha;
-    Vector<Int> veci(10);
-    for (Int i=0; i<10; i++) veci(i) = i;
-    cout << vec << endl;
-    cout << veci << endl;
+    // Check that an empty string matches .* but not .+
+    AlwaysAssertExit (Regex(".*").match ("", 0) == 0);
+    AlwaysAssertExit (Regex(".+").match ("", 0) == String::npos);
+    AlwaysAssertExit (Regex(".*").fullMatch ("", 0));
+    AlwaysAssertExit (! Regex(".+").fullMatch ("", 0));
 
-    exp5 = exp2;
-    cout << doMatch (exp5, "abcdbcdcdd",10) << endl;
-    cout << String("abcdbcdcdd").matches(exp5) << " ";
-    cout << String("abcdb").matches(exp5) << " ";
-    cout << String("abcd").matches(exp5) << "   ";
-    cout << String("bcd").matches(exp5) << " ";
-    cout << exp5.regexp() << endl;
-
-    cout << "end of a" << endl;
+    cout << "end of testBasic" << endl;
 }
 
-// Do some more fancy things.
-void b() {
+// Test the output operator.
+void testIO()
+{
     Regex exp5("a?bcd(bcdcdd)?");
     Regex exp2(".+");
-    cout << exp5.regexp() << "   " << exp2.regexp() << endl;
-    Vector<Regex> vec(3);
-    vec(0) = exp5;
-    vec(1) = exp2;
-    vec(2) = RXalpha;
-    Vector<Int> veci(10);
-    for (Int i=0; i<10; i++) veci(i) = i;
-    cout << vec << endl;
-    cout << veci << endl;
+    std::ostringstream oss;
+    oss << exp5;
+    AlwaysAssertExit (String(oss.str()) == exp5.regexp());
+    cout << "end of testIO" << endl;
+}
 
-    cout << doMatch (exp5, "abcdbcdcdd",10) << endl;
-    cout << String("abcdbcdcdd").matches(exp5) << " ";
-    cout << String("abcdb").matches(exp5) << " ";
-    cout << String("abcd").matches(exp5) << "   ";
-    cout << String("bcd").matches(exp5) << "   ";
-    cout << exp5.regexp() << endl;
+void testSearch()
+{
+  Int matchlen;
+  Regex exp1("abc");
+  Regex exp2("(abc)+");
+  AlwaysAssertExit (exp1.search("12abc345", 8, matchlen) == 2);
+  AlwaysAssertExit (matchlen == 3);
+  AlwaysAssertExit (exp1.search("abcabc345", 9, matchlen) == 0);
+  AlwaysAssertExit (matchlen == 3);
+  AlwaysAssertExit (exp1.search("ab345", 5, matchlen) == String::npos);
+  AlwaysAssertExit (exp2.search("12abc345", 8, matchlen) == 2);
+  AlwaysAssertExit (matchlen == 3);
+  AlwaysAssertExit (exp2.search("abcabc345", 9, matchlen) == 0);
+  AlwaysAssertExit (matchlen == 6);
+  AlwaysAssertExit (exp2.search("ab345", 5, matchlen) == String::npos);
 
-    cout << "end of b" << endl;
+  // Test search backwards.
+  AlwaysAssertExit (exp1.searchBack("12abc345", 8, matchlen, 0) == 2);
+  AlwaysAssertExit (matchlen == 3);
+  AlwaysAssertExit (exp1.searchBack("12abcabc345", 8, matchlen, 0) == 5);
+  AlwaysAssertExit (matchlen == 3);
+  AlwaysAssertExit (exp2.searchBack("12abc345", 8, matchlen, 0) == 2);
+  AlwaysAssertExit (matchlen == 3);
+  AlwaysAssertExit (exp2.searchBack("12abcabc345", 8, matchlen, 0) == 5);
+  AlwaysAssertExit (matchlen == 3);
+
+  cout << "end of testSearch" << endl;
 }
 
 // Test a Regex in parallel.
@@ -179,4 +174,25 @@ void testParallel()
     Regex rx(".*");
     AlwaysAssert (String("ab").matches(rx), AipsError);
   }
+}
+
+
+int main () {
+  try {
+    // Test parallel first to ensure initialization works fine.
+    testParallel();
+    // Test some specific pattern conversions.
+    AlwaysAssertExit (Regex::toEcma("[][]") == String("[\\]\\[]"));
+    AlwaysAssertExit (Regex::toEcma("[\\]\\[]") == String("[\\]\\[]"));
+    AlwaysAssertExit (Regex::toEcma("[[:alpha:]]") == String("[[:alpha:]]"));
+    AlwaysAssertExit (Regex::toEcma("(the)\\15a") == String("(the)\\1[5]a"));
+    // Test the Regex functions.
+    testBasic();
+    testIO();
+    testSearch();
+  } catch (const std::exception& x) {
+    cout << x.what() << endl;
+    return 1;
+  }
+  return 0;                           // exit with success status
 }

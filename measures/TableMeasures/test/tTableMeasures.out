@@ -284,7 +284,7 @@ TableMeasDescBase::reconstruct; MEASINFO record not found for column TimeRef
 The following line should be a null column exception.
 Invalid Table operation: MeasTableColumn object is null
 The following line should be an illegal offset column type exception.
-Invalid Table data type when accessing column in ScalarColumn ctor for column SpareCol1
+Invalid Table data type when accessing column  in ScalarColumn ctor for column SpareCol1
 Reopening the table read-only and reading contents...
 Filling the MDirection column MDirColumn
 put: Direction: [0.565521, 0.205833, 0.798636]

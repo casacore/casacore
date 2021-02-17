@@ -110,8 +110,8 @@ HostMachineInfo::HostMachineInfo( ) : valid(1) {
     struct host_basic_info basic_info;
     unsigned int count = HOST_BASIC_INFO_COUNT;
 
-    /* get the page size with "getpagesize" and calculate pageshift from it */
-    pagesize_ = pagesize = getpagesize();
+    /* get the page size with portable sysconf and calculate pageshift from it */
+    pagesize_ = pagesize = sysconf(_SC_PAGESIZE);
     pageshift = 0;
     while (pagesize > 1)
     {

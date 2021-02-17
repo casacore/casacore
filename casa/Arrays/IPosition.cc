@@ -41,6 +41,7 @@ IPosition::IPosition (size_t length)
     if (length > BufferLength) {
 	allocateBuffer();
     }
+    memset(data_p, 0, size_p * sizeof(ssize_t));
 }
 
 IPosition::IPosition(std::initializer_list<ssize_t> list)
@@ -76,11 +77,11 @@ IPosition::IPosition (const Array<int> &other)
 
 IPosition::IPosition (const Array<long long> &other)
   : size_p (0),
-    data_p (0)
+    data_p (buffer_p)
 {
     if (other.size() > 0) {
         if (other.ndim() != 1) {
-            throw(ArrayError("IPosition::IPosition(const Array<Int64> &other) - "
+            throw(ArrayError("IPosition::IPosition(const Array<long long> &other) - "
                             "other is not one-dimensional"));
         }
         fill (other.size(), other.begin());
@@ -208,7 +209,7 @@ IPosition::IPosition (const std::vector<int> &other)
 
 IPosition::IPosition (const std::vector<long long> &other)
   : size_p (0),
-    data_p (0)
+    data_p (nullptr)
 {
     fill (other.size(), other.begin());
     assert(ok());
@@ -324,6 +325,8 @@ IPosition& IPosition::operator= (const IPosition& other)
 IPosition& IPosition::operator=(IPosition&& source)
 {
   size_p = source.size_p;
+  if (data_p != &buffer_p[0])
+    delete [] data_p;
   data_p = size_p > BufferLength ? source.data_p : buffer_p;
   for(size_t i=0; i!=size_p; ++i)
     data_p[i] = source.data_p[i];

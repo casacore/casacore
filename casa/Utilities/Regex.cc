@@ -40,8 +40,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 Regex::Regex()
 {}
 
-  Regex::Regex(const String& str, Bool fast, Bool toECMAScript)
-    : itsStr (str)
+Regex::Regex(const String& str, Bool fast, Bool toECMAScript)
+  : itsStr (str)
 {
   // Make the possible exception thrown by regex a bit more clear.
   try {
@@ -73,11 +73,30 @@ String::size_type Regex::match(const Char* s,
   if (ps < 0) {
     ps += len;
   }
-  if (ps > static_cast<Int>(len)) return String::npos;
-  if (! std::regex_match(s+ps, s+len, *this)) return String::npos;
-  return len-ps;
+  if (ps < 0) return String::npos;
+  // A zero-length string can match .*
+  // Therefore try fullMatch for such a case.
+  if (ps == static_cast<Int>(len)  &&  fullMatch (s+ps, 0)) {
+    return 0;
+  }
+  if (ps >= static_cast<Int>(len)) return String::npos;
+  Int matchlen;
+  String::size_type res = search(s, len, matchlen, ps);
+  if (res != String::npos) {
+    if (static_cast<Int>(res) == ps) {
+      res = matchlen;
+    } else {
+      res = String::npos;     // no match from start on
+    }
+  }
+  return res;
 }
 
+Bool Regex::fullMatch(const Char* s, String::size_type len) const
+{
+  return std::regex_match(s, s+len, *this);
+}
+                               
 String::size_type Regex::search(const Char* s, String::size_type len,
                                 Int& matchlen,
                                 Int pos) const
@@ -86,6 +105,7 @@ String::size_type Regex::search(const Char* s, String::size_type len,
   if (pos < 0) {
     return searchBack (s, len, matchlen, -pos);
   }
+  if (pos >= static_cast<Int>(len)) return String::npos;
   std::cmatch result;
   if (std::regex_search(s+pos, s+len, result, *this)) {
     matchlen = result.length(0);
@@ -103,8 +123,9 @@ String::size_type Regex::searchBack(const Char* s, String::size_type len,
     return String::npos;
   }
   for (Int p = len-pos; p>=0; --p) {
-    if (match(s, len, p) != String::npos) {
-      matchlen = len-p;
+    String::size_type ml = match(s, len, p);
+    if (ml != String::npos) {
+      matchlen = ml;
       return p;
     }
   }
@@ -382,6 +403,7 @@ String Regex::fromSQLPattern(const String& pattern)
 	case ')':
 	case '\\':
             result.push_back ('\\');
+	    // fall through
 	default:
             result.push_back (c);
 	}
@@ -414,6 +436,7 @@ String Regex::fromString (const String& str)
 	case '\\':
             result.push_back ('\\');
 	}
+	// fall through
 	result.push_back (c);
     }
     return result;
