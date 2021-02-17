@@ -290,10 +290,15 @@ void MSFitsOutput::write() const {
                 << LogIO::POST;
         }
     }
+    /*
+     * FIXME there are still some issues with this, but I have to move on to
+     * another issue for now, so commenting out SYSPOWER table support until
+     * I can work on it again
+     * dmehring 17feb2021
+     *
     // support for adhoc NRAO SYSPOWER table
     static const String SYSPOWER = "SYSPOWER";
     File syspower_f( _ms.tableName() + "/" + SYSPOWER);
-    // if (syspower_f.exists() && syspower_f.isDirectory()) {
     if (_ms.keywordSet().isDefined(SYSPOWER)) {
         const auto tableName = _ms.keywordSet().asTable("SYSPOWER").tableName();
         if(Table::isReadable(tableName)) {
@@ -307,6 +312,7 @@ void MSFitsOutput::write() const {
             }
         }
     }
+    */
 }
 
 Bool MSFitsOutput::writeFitsFile(
