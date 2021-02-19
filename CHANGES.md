@@ -1,3 +1,14 @@
+# 3.4.0
+
+## General
+ - Major modernization of Arrays, bringing it more in line with C++11 (#1012)
+ - Use std::regex (#1072)
+ - Remove many warnings (#1024, #1036, #1062)
+ - Use FFTW as default FFT provider (#1029, #1047, #1049)
+ - UVFITS improvements (#1033, #1040, #1064, #1066, #1067)
+ - Support for 64-bit row numbers.
+
+
 # 3.3.0
 
 ## General
