@@ -1531,8 +1531,8 @@ template<class T> T median(const MaskedArray<T> &left, bool sorted,
   const T *leftarrS = leftarrStorage;
   
   bool leftmaskDelete;
-  const LogicalArrayElem *leftmaskStorage
-  = left.getMaskStorage(leftmaskDelete);
+  const LogicalArrayElem *leftmaskStorage =
+    left.getMaskStorage(leftmaskDelete);
   const LogicalArrayElem *leftmaskS = leftmaskStorage;
   
   size_t n2 = (nelem - 1)/2;

@@ -41,7 +41,6 @@ IPosition::IPosition (size_t length)
     if (length > BufferLength) {
 	allocateBuffer();
     }
-    memset(data_p, 0, size_p * sizeof(ssize_t));
 }
 
 IPosition::IPosition(std::initializer_list<ssize_t> list)
@@ -113,9 +112,7 @@ IPosition::IPosition (size_t length, ssize_t val)
     if (size_p > BufferLength) {
 	allocateBuffer();
     }
-    for (size_t i=0; i<size_p; i++) {
-	data_p[i] = val;
-    }
+    std::fill_n(data_p, size_p, val);
 }
 
 // <thrown>
@@ -166,9 +163,7 @@ IPosition::IPosition (const IPosition& other)
     if (size_p > BufferLength) {
 	allocateBuffer();
     }
-    for (size_t i=0; i<size_p; i++) {
-	data_p[i] = other.data_p[i];
-    }
+    std::copy_n(other.data_p, size_p, data_p);
     assert(ok());
 }
 
@@ -176,8 +171,7 @@ IPosition::IPosition (IPosition&& source) noexcept
 : size_p (source.size_p),
   data_p (size_p > BufferLength ? source.data_p : buffer_p)
 {
-  for(size_t i=0; i!=size_p; ++i)
-    data_p[i] = source.data_p[i];
+  std::copy_n(source.data_p, size_p, data_p);
   
   source.size_p = 0;
   source.data_p = source.buffer_p;
@@ -292,9 +286,7 @@ void IPosition::resize (size_t newSize, bool copy)
     size_p = newSize;
     allocateBuffer();
     if (oldData != data_p  &&  copy) {
-	for (size_t i=0; i<std::min(size_p, oldSize); i++) {
-	    data_p[i] = oldData[i];
-	}
+      std::copy_n(oldData, std::min(size_p, oldSize), data_p);
     }
     // Delete the old data, if any.
     if (oldData != &buffer_p[0]) {
@@ -315,9 +307,7 @@ IPosition& IPosition::operator= (const IPosition& other)
   if (size_p != other.size_p) {
     resize (other.nelements(), false);
   }
-  for (size_t i=0; i<size_p; i++) {
-    data_p[i] = other.data_p[i];
-  }
+  std::copy_n(other.data_p, size_p, data_p);
   assert(ok());
   return *this;
 }
@@ -328,8 +318,7 @@ IPosition& IPosition::operator=(IPosition&& source)
   if (data_p != &buffer_p[0])
     delete [] data_p;
   data_p = size_p > BufferLength ? source.data_p : buffer_p;
-  for(size_t i=0; i!=size_p; ++i)
-    data_p[i] = source.data_p[i];
+  std::copy_n(source.data_p, size_p, data_p);
   
   source.size_p = 0;
   source.data_p = source.buffer_p;
@@ -340,9 +329,7 @@ IPosition& IPosition::operator=(IPosition&& source)
 IPosition& IPosition::operator= (ssize_t value)
 {
     assert(ok());
-    for (size_t i=0; i<size_p; i++) {
-	data_p[i] = value;
-    }
+    std::fill_n(data_p, size_p, value);
     return *this;
 }
 
@@ -363,30 +350,24 @@ IPosition IPosition::operator() (const IPosition& axes) const
 
 void IPosition::append (const IPosition& other)
 {
-    size_t j = size_p;
+    const size_t pos = size_p;
     resize (size_p + other.size_p);
-    for (size_t i=0; i<other.size_p; i++) {
-	data_p[j++] = other.data_p[i];
-    }
+    std::copy_n(other.data_p, other.size_p, data_p + pos);
 }
 
 void IPosition::prepend (const IPosition& other)
 {
-    size_t i;
-    size_t j = size_p;
+    const size_t old_size = size_p;
     resize (size_p + other.size_p);
-    for (i=size_p; j>0;) {
-	data_p[--i] = data_p[--j];
-    }
-    for (i=0; i<other.size_p; i++) {
-	data_p[i] = other.data_p[i];
-    }
+    std::move_backward(data_p, data_p + old_size, data_p + size_p);
+    std::copy_n(other.data_p, other.size_p, data_p);
 }
 
 IPosition IPosition::concatenate (const IPosition& other) const
 {
-    IPosition tmp (*this);
-    tmp.append (other);
+    IPosition tmp(size_p + other.size_p);
+    std::copy_n(data_p, size_p, tmp.data_p);
+    std::copy_n(other.data_p, other.size_p, tmp.data_p + size_p);
     return tmp;
 }
 
@@ -395,9 +376,7 @@ void IPosition::setFirst (const IPosition& other)
     if (size_p < other.size_p) {
 	throw (std::runtime_error ("IPosition::setFirst(other); other is too long"));
     }
-    for (size_t i=0; i<other.size_p; i++) {
-	data_p[i] = other.data_p[i];
-    }
+    std::copy_n(other.data_p, other.size_p, data_p);
 }
 
 void IPosition::setLast (const IPosition& other)
@@ -405,10 +384,7 @@ void IPosition::setLast (const IPosition& other)
     if (size_p < other.size_p) {
 	throw (std::runtime_error ("IPosition::setLast(other); other is too long"));
     }
-    size_t j = size_p - other.size_p;
-    for (size_t i=0; i<other.size_p; i++) {
-	data_p[j++] = other.data_p[i];
-    }
+    std::copy_n(other.data_p, other.size_p, data_p + size_p - other.size_p);
 }
 
 IPosition IPosition::getFirst (size_t n) const
@@ -417,9 +393,7 @@ IPosition IPosition::getFirst (size_t n) const
 	throw (std::runtime_error ("IPosition::getFirst(n); n is too high"));
     }
     IPosition tmp(n);
-    for (size_t i=0; i<n; i++) {
-	tmp.data_p[i] = data_p[i];
-    }
+    std::copy_n(data_p, n, tmp.data_p);
     return tmp;
 }
 
@@ -429,10 +403,7 @@ IPosition IPosition::getLast (size_t n) const
 	throw (std::runtime_error ("IPosition::getLast(n); n is too high"));
     }
     IPosition tmp(n);
-    size_t j = size_p - n;
-    for (size_t i=0; i<n; i++) {
-	tmp.data_p[i] = data_p[j++];
-    }
+    std::copy_n(data_p + size_p - n, n, tmp.data_p);
     return tmp;
 }
 
