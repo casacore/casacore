@@ -1,4 +1,4 @@
-FROM kernsuite/base:3
+FROM kernsuite/base:4
 RUN docker-apt-install \
     clang \
     casacore-data \
@@ -7,7 +7,7 @@ RUN docker-apt-install \
     bison \
     libblas-dev \
     liblapack-dev \
-    libcfitsio3-dev \
+    libcfitsio-dev \
     wcslib-dev \
     libfftw3-dev \
     gfortran \
@@ -30,13 +30,11 @@ RUN cmake .. \
     -DUSE_HDF5=ON \
     -DBUILD_PYTHON=ON \
     -DBUILD_PYTHON3=ON \
-    -DBOOST_PYTHON3_LIBRARY_NAME=python-py35 \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/share/casacore/data \
     -DCMAKE_C_COMPILER=/usr/bin/clang \
     -DCMAKE_CXX_COMPILER=/usr/bin/clang++
-RUN make -j4
+RUN make -j2
 USER root
 RUN make install
 USER casacore
-

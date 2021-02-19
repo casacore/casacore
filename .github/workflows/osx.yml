@@ -1,0 +1,46 @@
+name: OS X
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ "*" ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  osx:
+    runs-on: macos-10.15
+    continue-on-error: true
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install homebrew deps
+        run: brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran
+
+      - name: pip install numpy
+        run: pip3 install numpy
+
+      - name:  get WSRT measures
+        run: wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
+
+      - name: make build folder 
+        run: |
+          mkdir -p build
+          cd build
+          tar zxvf ../WSRT_Measures.ztar
+
+      - name: configure
+        run: |
+          cd build
+          cmake -DBUILD_TESTING=ON -DCMAKE_PREFIX_PATH=/usr/local/ -DUSE_OPENMP=OFF -DUSE_HDF5=ON -DBUILD_PYTHON=OFF -DBUILD_PYTHON3=ON -DBoost_NO_BOOST_CMAKE=True -DDATA_DIR=. ..
+
+      - name: build
+        run: make -j3
+
+      - name: run tests  
+        run: CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
+    
+      - name: install
+        run: make install
