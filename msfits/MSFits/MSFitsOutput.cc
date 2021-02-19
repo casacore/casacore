@@ -290,22 +290,29 @@ void MSFitsOutput::write() const {
                 << LogIO::POST;
         }
     }
+    /*
+     * FIXME there are still some issues with this, but I have to move on to
+     * another issue for now, so commenting out SYSPOWER table support until
+     * I can work on it again
+     * dmehring 17feb2021
+     *
     // support for adhoc NRAO SYSPOWER table
-    File syspower_f = _ms.tableName() + "/SYSPOWER";
-    if (syspower_f.exists() && syspower_f.isDirectory()) {
+    static const String SYSPOWER = "SYSPOWER";
+    File syspower_f( _ms.tableName() + "/" + SYSPOWER);
+    if (_ms.keywordSet().isDefined(SYSPOWER)) {
         const auto tableName = _ms.keywordSet().asTable("SYSPOWER").tableName();
         if(Table::isReadable(tableName)) {
             Table syspower(tableName);
             os << LogIO::NORMAL << "Found SYSPOWER table" << LogIO::POST;
-            if (! _writeSY(fitsOutput, _ms, syspower, nrspw, spwidMap, _combineSpw)) {
-                os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
+            if (_writeSY(fitsOutput, _ms, syspower, nrspw, spwidMap, _combineSpw)) {
+                os << LogIO::NORMAL << "Wrote SY table" << LogIO::POST;
             }
             else {
-                os << LogIO::WARN << "Table " << tableName << " cannot be read. Will "
-                    << "not write UVFITS SY table" << LogIO::POST;
+                os << LogIO::WARN << "Could not write SY table" << LogIO::POST;
             }
         }
     }
+    */
 }
 
 Bool MSFitsOutput::writeFitsFile(
