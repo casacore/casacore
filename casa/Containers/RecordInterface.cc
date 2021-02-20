@@ -53,8 +53,7 @@ RecordInterface::RecordInterface (RecordType type,
 {}
 
 RecordInterface::RecordInterface (const RecordInterface& other)
-: NoticeSource    (),
-  checkFunction_p (other.checkFunction_p),
+: checkFunction_p (other.checkFunction_p),
   checkArgument_p (other.checkArgument_p),
   type_p          (other.type_p)
 {}
@@ -69,7 +68,6 @@ RecordInterface& RecordInterface::operator= (const RecordInterface& other)
     
 RecordInterface::~RecordInterface()
 {
-    notify (RecordNotice (RecordNotice::DETACH, 0));
 }
 
 
@@ -693,30 +691,6 @@ const Array<String>& RecordInterface::asArrayString (const RecordFieldId& id) co
 {
     Int whichField = idToNumber (id);
     return *(const Array<String>*)get_pointer (whichField, TpArrayString);
-}
-
-
-
-
-RecordNotice::RecordNotice (NoticeType changeType, uInt fieldNumber)
-: changeType_p  (changeType),
-  fieldNumber_p (fieldNumber)
-{}
-
-uInt RecordNotice::type() const
-{
-    // This function returns the "Notice" type, retrieved
-    // from the "type registry".
-    return Register(this);
-}
-
-int RecordNotice::operator== (const Notice& that) const
-{
-    if (type() != that.type()) {
-	return 0;
-    }
-    return (changeType_p  == ((const RecordNotice&)that).changeType_p)
-	&& (fieldNumber_p == ((const RecordNotice&)that).fieldNumber_p);
 }
 
 } //# NAMESPACE CASACORE - END

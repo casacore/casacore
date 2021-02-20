@@ -33,7 +33,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Utilities/Notice.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -115,7 +114,7 @@ class Table;
 //# </todo>
 
 
-template<class T> class RecordFieldPtr : public NoticeTarget
+template<class T> class RecordFieldPtr
 {
 public:
     // This object does not point to any field, i.e. 
@@ -128,15 +127,6 @@ public:
     RecordFieldPtr (RecordInterface& record, Int whichField);
     RecordFieldPtr (RecordInterface& record, const RecordFieldId&);
     // </group>
-
-    // After calling, this and other point to the same field, i.e. it
-    // uses reference semantics.
-    // <group>
-    RecordFieldPtr (const RecordFieldPtr<T>& other);
-    RecordFieldPtr<T>& operator= (const RecordFieldPtr<T>& other);
-    // </group>
-
-    ~RecordFieldPtr();
 
     // Change our pointer to the supplied field. If it doesn't exist an
     // exception is thrown.
@@ -189,16 +179,12 @@ public:
     // </ol>
     //# This inherited function is shown for documentation purposes.
     Bool isAttached() const
-	{return NoticeTarget::isAttached();}
+	{return fieldPtr_p;}
 
 private:
     T*               fieldPtr_p;
     RecordInterface* parent_p;
     Int              fieldNumber_p;
-
-    // Not important for users - the mechanism by which field pointers are
-    // notified when there is a change in the record.
-    virtual void notify (const Notice& message);
 };
 
 

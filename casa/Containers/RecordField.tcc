@@ -37,8 +37,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr()
-: fieldPtr_p   (0),
-  parent_p     (0),
+: fieldPtr_p   (nullptr),
+  parent_p     (nullptr),
   fieldNumber_p(-1)
 {
     // Nothing
@@ -58,34 +58,6 @@ RecordFieldPtr<T>::RecordFieldPtr (RecordInterface& record,
 }
 
 template<class T>
-RecordFieldPtr<T>::~RecordFieldPtr()
-{
-    // I assume ~NoticeTarget() takes this object out of the list
-}
-
-template<class T>
-RecordFieldPtr<T>::RecordFieldPtr (const RecordFieldPtr<T>& other)
-: NoticeTarget  (),
-  fieldPtr_p    (other.fieldPtr_p),
-  parent_p      (other.parent_p),
-  fieldNumber_p (other.fieldNumber_p)
-{
-    link (other);
-}
-
-template<class T>
-RecordFieldPtr<T>& RecordFieldPtr<T>::operator=(const RecordFieldPtr<T>& other)
-{
-    if (this != &other) {
-	fieldPtr_p    = other.fieldPtr_p;
-	parent_p      = other.parent_p;
-	fieldNumber_p = other.fieldNumber_p;
-	link(other);
-    }
-    return *this;
-}
-
-template<class T>
 void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
 					const RecordFieldId& id)
 {
@@ -101,16 +73,14 @@ void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
     // This cast is fully safe.
     fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, whichField, 
 					    whatType(static_cast<T*>(nullptr)), static_cast<T*>(nullptr)));
-    attach (record);
 }
 
 template<class T>
 void RecordFieldPtr<T>::detach()
 {
-    fieldPtr_p    = 0;
-    parent_p      = 0;
+    fieldPtr_p    = nullptr;
+    parent_p      = nullptr;
     fieldNumber_p = -1;
-    unlink();
 }
 
 template<class T>
@@ -136,37 +106,6 @@ template<class T>
 void RecordFieldPtr<T>::setComment (const String& comment)
 {
     parent_p->setComment (fieldNumber_p, comment);
-}
-
-
-template<class T>
-void RecordFieldPtr<T>::notify (const Notice& notice)
-{
-    const RecordNotice& note = (const RecordNotice&) notice;
-    switch (note.changeType()) {
-    case RecordNotice::DETACH:
-	// The record has been deleted; detach.
-	detach();
-	break;
-    case RecordNotice::ACQUIRE:
-	// The RecordRep has been copied; re-acquire the pointer.
-	fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, fieldNumber_p,
-						whatType(static_cast<T*>(0)), static_cast<T*>(0)));
-	break;
-    case RecordNotice::REMOVE:
-	// A field has been removed.
-	if (note.fieldNumber() == fieldNumber_p) {
-	    // This field has been removed; detach.
-	    detach();
-	}else if (note.fieldNumber() < fieldNumber_p) {
-	    // A previous field has been removed; decrement field number.
-	    fieldNumber_p--;
-	}
-	break;
-    default:
-	// Should not occur.
-	AlwaysAssert (0, AipsError);
-    }
 }
 
 } //# NAMESPACE CASACORE - END
