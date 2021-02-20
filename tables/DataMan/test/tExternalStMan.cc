@@ -291,6 +291,7 @@ namespace casacore {
     explicit UvwColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~UvwColumn();
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
     virtual void getArraydoubleV (uInt rowNr,
                                   Array<Double>* dataPtr) override;
@@ -305,6 +306,7 @@ namespace casacore {
       : LofarColumn(parent, dtype) {}
     virtual ~DataColumn();
     virtual Bool isWritable() const override;
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
     virtual void getArrayComplexV (uInt rowNr,
                                    Array<Complex>* dataPtr) override;
@@ -320,6 +322,7 @@ namespace casacore {
     explicit FlagColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagColumn();
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
     virtual void getArrayBoolV (uInt rowNr,
                                 Array<Bool>* dataPtr) override;
@@ -333,6 +336,7 @@ namespace casacore {
     explicit WeightColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~WeightColumn();
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
     virtual void getArrayfloatV (uInt rowNr,
                                  Array<Float>* dataPtr) override;
@@ -346,6 +350,7 @@ namespace casacore {
     explicit SigmaColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~SigmaColumn();
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
     virtual void getArrayfloatV (uInt rowNr,
                                  Array<Float>* dataPtr) override;
@@ -359,6 +364,7 @@ namespace casacore {
     explicit WSpectrumColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~WSpectrumColumn();
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
     virtual void getArrayfloatV (uInt rowNr,
                                  Array<Float>* dataPtr) override;
@@ -372,7 +378,9 @@ namespace casacore {
     explicit FlagCatColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagCatColumn();
+    using LofarColumn::isShapeDefined;
     virtual Bool isShapeDefined (uInt rownr) override;
+    using LofarColumn::shape;
     virtual IPosition shape (uInt rownr) override;
   };
 
