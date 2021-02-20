@@ -858,7 +858,7 @@ class FitsBase {
 	static FitsBase *make(const FITS::ValueType &, int, int *);
 	static FitsBase *make(FitsBase &);
 
-	FitsBase & operator = (FitsBase &);
+	FitsBase & operator = (FitsBase &) = delete;
 	virtual void show(std::ostream &) = 0;
 
     protected:

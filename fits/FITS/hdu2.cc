@@ -862,12 +862,12 @@ int *FitsBase::vdim() {
 	return &no_elements; 
 }
 //====================================================================================
-FitsBase & FitsBase::operator = (FitsBase &x) {
+/*FitsBase & FitsBase::operator = (FitsBase &x) {
 	if (fieldtype() == x.fieldtype() &&
 	    nelements() == x.nelements())
 	    memcpy(data(),x.data(),localfieldsize());
 	return *this;
-}
+}*/
 //====================================================================================
 FitsBase * FitsBase::make(const FITS::ValueType &type,int n) {
 	switch (type) {
