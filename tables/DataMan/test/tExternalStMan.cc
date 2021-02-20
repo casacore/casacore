@@ -59,7 +59,7 @@ namespace casacore {
   class LofarColumn;
 
 
-  class LofarStMan final : public DataManager
+  class LofarStMan : public DataManager
   {
   public:
     // Create a Lofar storage manager with the given name.
@@ -215,7 +215,7 @@ namespace casacore {
 
   // <summary>ANTENNA1 column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class Ant1Column final : public LofarColumn
+  class Ant1Column : public LofarColumn
   {
   public:
     explicit Ant1Column (LofarStMan* parent, int dtype)
@@ -226,7 +226,7 @@ namespace casacore {
 
   // <summary>ANTENNA2 column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class Ant2Column final : public LofarColumn
+  class Ant2Column : public LofarColumn
   {
   public:
     explicit Ant2Column (LofarStMan* parent, int dtype)
@@ -237,7 +237,7 @@ namespace casacore {
 
   // <summary>TIME and TIME_CENTROID column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class TimeColumn final : public LofarColumn
+  class TimeColumn : public LofarColumn
   {
   public:
     explicit TimeColumn (LofarStMan* parent, int dtype)
@@ -248,7 +248,7 @@ namespace casacore {
 
   // <summary>INTERVAL and EXPOSURE column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class IntervalColumn final : public LofarColumn
+  class IntervalColumn : public LofarColumn
   {
   public:
     explicit IntervalColumn (LofarStMan* parent, int dtype)
@@ -259,7 +259,7 @@ namespace casacore {
 
   // <summary>All columns in the LOFAR Storage Manager with value 0.</summary>
   // <use visibility=local>
-  class ZeroColumn final : public LofarColumn
+  class ZeroColumn : public LofarColumn
   {
   public:
     explicit ZeroColumn (LofarStMan* parent, int dtype)
@@ -272,7 +272,7 @@ namespace casacore {
 
   // <summary>All columns in the LOFAR Storage Manager with value False.</summary>
   // <use visibility=local>
-  class FalseColumn final : public LofarColumn
+  class FalseColumn : public LofarColumn
   {
   public:
     explicit FalseColumn (LofarStMan* parent, int dtype)
@@ -285,7 +285,7 @@ namespace casacore {
 
   // <summary>UVW column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class UvwColumn final : public LofarColumn
+  class UvwColumn : public LofarColumn
   {
   public:
     explicit UvwColumn (LofarStMan* parent, int dtype)
@@ -298,7 +298,7 @@ namespace casacore {
 
   // <summary>DATA column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class DataColumn final : public LofarColumn
+  class DataColumn : public LofarColumn
   {
   public:
     explicit DataColumn (LofarStMan* parent, int dtype)
@@ -314,7 +314,7 @@ namespace casacore {
 
   // <summary>FLAG column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class FlagColumn final : public LofarColumn
+  class FlagColumn : public LofarColumn
   {
   public:
     explicit FlagColumn (LofarStMan* parent, int dtype)
@@ -327,7 +327,7 @@ namespace casacore {
 
   // <summary>WEIGHT column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class WeightColumn final : public LofarColumn
+  class WeightColumn : public LofarColumn
   {
   public:
     explicit WeightColumn (LofarStMan* parent, int dtype)
@@ -340,7 +340,7 @@ namespace casacore {
 
   // <summary>SIGMA column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class SigmaColumn final : public LofarColumn
+  class SigmaColumn : public LofarColumn
   {
   public:
     explicit SigmaColumn (LofarStMan* parent, int dtype)
@@ -353,7 +353,7 @@ namespace casacore {
 
   // <summary>WEIGHT_SPECTRUM column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class WSpectrumColumn final : public LofarColumn
+  class WSpectrumColumn : public LofarColumn
   {
   public:
     explicit WSpectrumColumn (LofarStMan* parent, int dtype)
@@ -366,7 +366,7 @@ namespace casacore {
 
   // <summary>FLAG_CATEGORY column in the LOFAR Storage Manager.</summary>
   // <use visibility=local>
-  class FlagCatColumn final : public LofarColumn
+  class FlagCatColumn : public LofarColumn
   {
   public:
     explicit FlagCatColumn (LofarStMan* parent, int dtype)
