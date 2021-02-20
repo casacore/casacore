@@ -135,13 +135,13 @@ public:
 
     // An IPosition initialized from a variable number of parameters.
     // The first parameter should specify the size, but the actual
-    // size of he resulting IPosition is determined from the number
-    // of parameters (the first arugment is ignored).
+    // size of the resulting IPosition is determined from the number
+    // of parameters (the first argument is ignored).
     //
     // This constructor should be disfavoured, because i) of the
     // dummy parameter and ii) because it may narrow the
     // specified parameter without a warning. 
-    
+    //
     // Instead, use an initializer list constructor whenever possible.
     // If an IPosition is created inside a macro, an initializer list
     // is not possible. In those cases, use the Make(Vals...) factory
