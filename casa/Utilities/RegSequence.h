@@ -31,6 +31,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/Sequence.h>
 
+#include <atomic>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Sequence for the Register() template functions </summary>

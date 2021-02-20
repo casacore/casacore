@@ -40,7 +40,7 @@ TaQLNode TaQLNode::theirNode;
 std::vector<TaQLNode*> TaQLNode::theirNodesCreated;
 // Initialize the TaQL style.
 TaQLStyle TaQLNode::theirStyle;
-Mutex TaQLNode::theirMutex;
+std::mutex TaQLNode::theirMutex;
 
 
 TaQLNode TaQLNode::parse (const String& command)
@@ -50,7 +50,7 @@ TaQLNode TaQLNode::parse (const String& command)
   if (str.length() == 0  ||  str[str.length()-1] != '\n') {
     str += '\n';
   }
-  ScopedMutexLock lock(theirMutex);
+  std::lock_guard<std::mutex> lock(theirMutex);
   // Reset to default TaQL style and no timings.
   theirStyle.reset();
   try {

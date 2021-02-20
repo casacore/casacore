@@ -27,10 +27,12 @@
 
 #ifndef CASA_APPSTATE_H
 #define CASA_APPSTATE_H
+
+#include <casacore/casa/aips.h>
+
 #include <string>
 #include <list>
-#include <casacore/casa/aips.h>
-#include <casacore/casa/OS/Mutex.h>
+#include <mutex>
 
 namespace casacore {
 
@@ -132,8 +134,8 @@ class AppStateSource {
 public:
 
     static void initialize(AppState *init) {
-        static Mutex mutex_p;
-        ScopedMutexLock lock(mutex_p);
+        static std::mutex mutex_p;
+        std::lock_guard<std::mutex> lock(mutex_p);
         if ( user_state ) delete user_state;
         user_state = init;
     }

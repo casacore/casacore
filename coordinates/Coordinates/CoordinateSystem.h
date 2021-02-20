@@ -903,7 +903,7 @@ private:
     ObsInfo obsinfo_p;
 
     const static String _class;
-    static Mutex _mapInitMutex;
+    static std::mutex _mapInitMutex;
     static std::map<String, String> _friendlyAxisMap;
 
     static void _initFriendlyAxisMap();

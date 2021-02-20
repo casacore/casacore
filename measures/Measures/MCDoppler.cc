@@ -41,11 +41,11 @@ uInt MCDoppler::ToRef_p[N_Routes][3] = {
     {MDoppler::RATIO,	MDoppler::BETA,		0},
     {MDoppler::RATIO,	MDoppler::GAMMA,	0} };
 uInt MCDoppler::FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
-CallOnce0 MCDoppler::theirInitOnce;
+std::once_flag MCDoppler::theirInitOnceFlag;
 
 //# Constructors
 MCDoppler::MCDoppler() {
-    theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
 }
 
 //# Destructor
@@ -148,7 +148,7 @@ void MCDoppler::doConvert(MVDoppler &in,
 }
 
 String MCDoppler::showState() {
-  theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
   return MCBase::showState(MCDoppler::FromTo_p[0],
 			   MDoppler::N_Types, MCDoppler::N_Routes,
 			   MCDoppler::ToRef_p);

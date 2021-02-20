@@ -73,19 +73,19 @@ MeasTableMulPosSunXY   MeasTable::theirMulPosSunXY;
 MeasTableMulPosSunZ    MeasTable::theirMulPosSunZ;
 MeasTableMulPosEarthXY MeasTable::theirMulPosEarthXY;
 MeasTableMulPosEarthZ  MeasTable::theirMulPosEarthZ;
-CallOnce MeasTable::theirPlanetaryInitOnce;
-CallOnce MeasTable::theirPlanetaryConstantsInitOnce;
-CallOnce0 MeasTable::theirObsInitOnce;
+std::once_flag MeasTable::theirPlanetaryInitOnceFlag;
+std::once_flag MeasTable::theirPlanetaryConstantsInitOnceFlag;
+std::once_flag MeasTable::theirObsInitOnceFlag;
 Vector<String> MeasTable::obsNams;
 Vector<MPosition> MeasTable::obsPos;
 Vector<String> MeasTable::antResponsesPath;
-CallOnce0 MeasTable::theirLinesInitOnce;
+std::once_flag MeasTable::theirLinesInitOnceFlag;
 Vector<String> MeasTable::lineNams;
 Vector<MFrequency> MeasTable::linePos;
-CallOnce0 MeasTable::theirSrcInitOnce;
+std::once_flag MeasTable::theirSrcInitOnceFlag;
 Vector<String> MeasTable::srcNams;
 Vector<MDirection> MeasTable::srcPos;
-CallOnce0 MeasTable::theirIGRFInitOnce;
+std::once_flag MeasTable::theirIGRFInitOnceFlag;
 Double MeasTable::dtimeIGRF = 0;
 Double MeasTable::firstIGRF = 0;
 std::vector<Vector<Double> > MeasTable::coefIGRF;
@@ -2801,7 +2801,7 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 // Planetary data
 Vector<Double> MeasTable::Planetary(MeasTable::Types which, Double T) {
   static MeasJPL::Files fil(MeasJPL::DE200);
-  theirPlanetaryInitOnce(calcPlanetary, &fil);
+  std::call_once(theirPlanetaryInitOnceFlag, calcPlanetary, &fil);
 
   Vector<Double> res(6);
   if (!MeasJPL::get(res, fil, (MeasJPL::Types)which, MVEpoch(T))) {
@@ -2826,7 +2826,7 @@ void MeasTable::calcPlanetary(MeasJPL::Files *fil) {
 // Planetary constants
 Double MeasTable::Planetary(MeasTable::JPLconst what) {
   static Double cn[MeasTable::N_JPLconst];
-  theirPlanetaryConstantsInitOnce(calcPlanetaryConstants, cn);
+  std::call_once(theirPlanetaryConstantsInitOnceFlag, calcPlanetaryConstants, cn);
   return cn[what];
 }
 
@@ -2848,7 +2848,7 @@ void MeasTable::calcPlanetaryConstants(Double cn[MeasTable::N_JPLconst]) {
 
 // Observatory data
 void MeasTable::initObservatories() {
-  theirObsInitOnce(doInitObservatories);
+  std::call_once(theirObsInitOnceFlag, doInitObservatories);
 }
 
 void MeasTable::doInitObservatories()
@@ -2897,12 +2897,12 @@ void MeasTable::doInitObservatories()
 }
 
 const Vector<String> &MeasTable::Observatories() {
-  theirObsInitOnce(doInitObservatories);
+  std::call_once(theirObsInitOnceFlag, doInitObservatories);
   return MeasTable::obsNams;
 }
 
 Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
-  theirObsInitOnce(doInitObservatories);
+  std::call_once(theirObsInitOnceFlag, doInitObservatories);
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos[i];
@@ -2912,7 +2912,7 @@ Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
 }
 
 Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
-  theirObsInitOnce(doInitObservatories);
+  std::call_once(theirObsInitOnceFlag, doInitObservatories);
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     antRespPath = MeasTable::antResponsesPath(i);
@@ -2957,7 +2957,7 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
 
 // Line data
 void MeasTable::initLines() {
-  theirLinesInitOnce(doInitLines);
+  std::call_once(theirLinesInitOnceFlag, doInitLines);
 }
 
 void MeasTable::doInitLines()
@@ -2992,12 +2992,12 @@ void MeasTable::doInitLines()
 }
 
 const Vector<String> &MeasTable::Lines() {
-  theirLinesInitOnce(doInitLines);
+  std::call_once(theirLinesInitOnceFlag, doInitLines);
   return MeasTable::lineNams;
 }
 
 Bool MeasTable::Line(MFrequency &obs, const String &nam) {
-  theirLinesInitOnce(doInitLines);
+  std::call_once(theirLinesInitOnceFlag, doInitLines);
   uInt i=MUString::minimaxNC(nam, MeasTable::lineNams);
   if (i < MeasTable::lineNams.nelements()) {
     obs = MeasTable::linePos(i);
@@ -3008,7 +3008,7 @@ Bool MeasTable::Line(MFrequency &obs, const String &nam) {
 
 // Source data
 void MeasTable::initSources() {
-  theirSrcInitOnce(doInitSources);
+  std::call_once(theirSrcInitOnceFlag, doInitSources);
 }
 
 void MeasTable::doInitSources()
@@ -3047,12 +3047,12 @@ void MeasTable::doInitSources()
 }
 
 const Vector<String> &MeasTable::Sources() {
-  theirSrcInitOnce(doInitSources);
+  std::call_once(theirSrcInitOnceFlag, doInitSources);
   return MeasTable::srcNams;
 }
 
 Bool MeasTable::Source(MDirection &obs, const String &nam) {
-  theirSrcInitOnce(doInitSources);
+  std::call_once(theirSrcInitOnceFlag, doInitSources);
   uInt i=MUString::minimaxNC(nam, MeasTable::srcNams);
   if (i < MeasTable::srcNams.nelements()) {
     obs = MeasTable::srcPos(i);
@@ -3063,7 +3063,7 @@ Bool MeasTable::Source(MDirection &obs, const String &nam) {
 
 // Magnetic field (IGRF) function
 Vector<Double> MeasTable::IGRF(Double tm) {
-  theirIGRFInitOnce(doInitIGRF);
+  std::call_once(theirIGRFInitOnceFlag, doInitIGRF);
   // Look up closest MJD interval. Note that each interval has same width.
   Int indx = Int((tm-firstIGRF) / dtimeIGRF) - 1;
   if (indx >= Int(coefIGRF.size())) {
@@ -3078,7 +3078,7 @@ Vector<Double> MeasTable::IGRF(Double tm) {
 }
 
 void MeasTable::initIGRF() {
-  theirIGRFInitOnce(doInitIGRF);
+  std::call_once(theirIGRFInitOnceFlag, doInitIGRF);
 }
 
 void MeasTable::doInitIGRF()

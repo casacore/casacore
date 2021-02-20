@@ -36,7 +36,6 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/OS/Mutex.h>
 #include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -281,7 +280,7 @@ private:
     static const RecordInterface* theirRecPtr;
     static const Table*           theirTabPtr;
     static TableExprNode*         theirNodePtr;
-    static Mutex                  theirMutex;
+    static std::mutex theirMutex;
 };
 
 

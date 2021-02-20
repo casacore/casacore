@@ -34,8 +34,9 @@
 
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/OS/Mutex.h>
 #include <casacore/casa/iosfwd.h>
+
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -306,7 +307,7 @@ private:
   //# Data members.
   CountedPtr<LogSinkInterface> local_sink_p;
   static CountedPtr<LsiIntermediate> * global_sink_p;
-  static CallOnce0 theirCallOnce;
+  static std::once_flag theirCallOnceFlag;
 
   // The following is a reference to the global sink. It is created to
   // ensure that the global sink is not destroyed before the last local

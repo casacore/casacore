@@ -36,9 +36,10 @@
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/ByteIO.h>
-#include <casacore/casa/OS/Mutex.h>
-#include <map>
+
 #include <iosfwd>
+#include <map>
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -518,7 +519,7 @@ private:
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
     static std::map<String,DataManagerCtor> theirRegisterMap;
-    static Mutex theirMutex;
+    static std::recursive_mutex theirMutex;
 
 public:
     // Has the object already been cloned?

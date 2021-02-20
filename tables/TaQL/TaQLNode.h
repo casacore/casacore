@@ -33,9 +33,10 @@
 #include <casacore/tables/TaQL/TaQLNodeRep.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/casa/OS/Mutex.h>
-#include <vector>
+
 #include <iostream>
+#include <mutex>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -163,7 +164,7 @@ public:
   // Keep the TaQL style to use.
   static TaQLStyle theirStyle;
   // Use a mutex to guard the statics.
-  static Mutex theirMutex;
+  static std::mutex theirMutex;
 };
 
 

@@ -24,19 +24,19 @@
 //#
 
 #include <casacore/scimath/StatsFramework/ZScoreCalculator.h>
-#include <stdlib.h>
-
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/OS/Mutex.h>
+
+#include <cstdlib>
+#include <mutex>
 
 namespace casacore {
 
 std::map<uInt64, Double> ZScoreCalculator::_nptsToMaxZScore;
 
-Mutex ZScoreCalculator::_mutex;
+std::mutex ZScoreCalculator::_mutex;
 
 Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
-    ScopedMutexLock lock(_mutex);
+    std::lock_guard<std::mutex> lock(_mutex);
     if (_nptsToMaxZScore.empty()) {
         // initialize the map
         _nptsToMaxZScore[0] = 0.5;

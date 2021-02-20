@@ -45,7 +45,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialize the statics.
-Mutex ColumnDesc::theirMutex;
+std::mutex ColumnDesc::theirMutex;
 
   
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)
@@ -239,7 +239,7 @@ void ColumnDesc::show (ostream& os) const
 void ColumnDesc::registerCtor (const String& name,
                                ColumnDesc::ColumnDescCtor* func)
 {
-    ScopedMutexLock lock(theirMutex);
+    std::lock_guard<std::mutex> lock(theirMutex);
     getRegisterMap().insert (std::make_pair(name, func));
 }
 

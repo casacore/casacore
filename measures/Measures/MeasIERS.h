@@ -34,7 +34,8 @@
 #include <casacore/tables/Tables/TableRow.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/RecordField.h>
-#include <casacore/casa/OS/Mutex.h>
+
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -264,7 +265,7 @@ private:
 
   //# Data members
   // Object to ensure safe multi-threaded lazy single initialization
-  static CallOnce0 theirCallOnce;
+  static std::once_flag theirCallOnceFlag;
   // Current date
   static Double dateNow;
   // Read data (meas - predict)

@@ -46,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (Double time, Double epsilon)
   {
     {   // cache lookup must be thread-safe
-      ScopedMutexLock locker(itsMutex);
+      std::lock_guard<std::mutex> locker(itsMutex);
       // See if a time (within the required epsilon) has already been calculated.
       // If so, return it.
       // Note: locking needs to be done outside this class.
@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     *arr = itsDefArray;
     calc (*arr, time);
     {   // cache insertion must also be thread-safe
-      ScopedMutexLock locker(itsMutex);
+      std::lock_guard<std::mutex> locker(itsMutex);
       // Determine where to insert in the vector.
       // If not full yet, put it at the end and first inser
       // Otherwise use the least recently used entry.

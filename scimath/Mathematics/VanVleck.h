@@ -33,8 +33,8 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/scimath/Functionals/Interpolate1D.h>
 #include <casacore/casa/BasicSL/Constants.h>
-#include <casacore/casa/OS/Mutex.h>
 
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -188,7 +188,7 @@ private:
     // This is (Qx1[i+1]-Qx1[i])*(Qy1[j+1]*Qy1[j])
     static Matrix<Double> itsQx1Qy1diffs;
     // The mutex to make the functions thread-safe.
-    static Mutex theirMutex;
+    static std::mutex theirMutex;
 
 
     // The fortran numerical integration function will call this.

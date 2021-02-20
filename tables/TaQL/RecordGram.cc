@@ -82,7 +82,7 @@ const RecordInterface* RecordGram::theirRecPtr = 0;
 TableExprNode* RecordGram::theirNodePtr = 0;
 const Table* RecordGram::theirTabPtr = 0;
 TaQLStyle RecordGram::theirTaQLStyle;
-Mutex RecordGram::theirMutex;
+std::mutex RecordGram::theirMutex;
 
 //# The list of nodes to delete (usually in case of exception).
 std::map<void*, RecordGram::Token> RecordGram::theirTokens;
@@ -331,7 +331,7 @@ Array<MVTime> RecordGram::expr2ArrayDate (const String& expr,
 TableExprNode RecordGram::parse (const RecordInterface& record,
                                  const String& expression)
 {
-    ScopedMutexLock lock(theirMutex);
+    std::lock_guard<std::mutex> lock(theirMutex);
     theirRecPtr = &record;
     theirTabPtr = 0;
     return doParse (expression);
@@ -340,7 +340,7 @@ TableExprNode RecordGram::parse (const RecordInterface& record,
 TableExprNode RecordGram::parse (const Table& table,
                                  const String& expression)
 {
-    ScopedMutexLock lock(theirMutex);
+    std::lock_guard<std::mutex> lock(theirMutex);
     theirRecPtr = 0;
     theirTabPtr = &table;
     return doParse (expression);

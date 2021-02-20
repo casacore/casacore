@@ -33,6 +33,8 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/System/Aipsrc.h>
 
+#include <mutex>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
@@ -220,7 +222,7 @@ private:
   //# Data
   // The global AipsrcValue object
   static AipsrcValue myp_p;
-  static Mutex theirMutex;
+  static std::mutex theirMutex;
   // Register list
   // <group>
   Block<T> tlst;
@@ -260,7 +262,7 @@ public:
   static void save(uInt keyword);
 private:
   static AipsrcValue myp_p;
-  static Mutex theirMutex;
+  static std::mutex theirMutex;
   Block<Bool> tlst;
   Block<String> ntlst;
   AipsrcValue<Bool> &operator=(const AipsrcValue<Bool> &other);

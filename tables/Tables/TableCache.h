@@ -32,8 +32,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/IO/FileLocker.h>
-#include <casacore/casa/OS/Mutex.h>
+
 #include <map>
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -159,7 +160,7 @@ private:
     //# The .cc file will use (fully safe) casts.
     std::map<String,void*> tableMap_p;
     //# A mutex to synchronize access to the cache.
-    mutable Mutex itsMutex;
+    mutable std::mutex itsMutex;
 };
 
 

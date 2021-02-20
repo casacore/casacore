@@ -33,7 +33,6 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/System/Aipsrc.h>
-#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -140,7 +139,7 @@ public:
 private:
   //# Data
   static AipsrcVector myp_p;
-  static Mutex theirMutex;
+  static std::mutex theirMutex;
   // register list
   // <group>
   Block<Vector<T> > tlst;
@@ -181,7 +180,7 @@ template <> class AipsrcVector_String<String> : public Aipsrc {
 
 private:
   static AipsrcVector_String myp_p;
-  static Mutex theirMutex;
+  static std::mutex theirMutex;
   Block<Vector<String> > tlst;
   Block<String> ntlst;
   AipsrcVector_String<String>
@@ -215,7 +214,7 @@ template <> class AipsrcVector_Bool<Bool> : public Aipsrc {
 
 private:
   static AipsrcVector_Bool myp_p;
-  static Mutex theirMutex;
+  static std::mutex theirMutex;
   Block<Vector<Bool> > tlst;
   Block<String> ntlst;
   AipsrcVector_Bool<Bool>

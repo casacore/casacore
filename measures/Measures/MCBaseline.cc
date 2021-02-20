@@ -86,11 +86,11 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::ICRS,		MBaseline::J2000,	0},
   {MBaseline::J2000,		MBaseline::ICRS,	0} };
 uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
-CallOnce0 MCBaseline::theirInitOnce;
+std::once_flag MCBaseline::theirInitOnceFlag;
 
 //# Constructors
 MCBaseline::MCBaseline() : measMath() {
-  theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
 }
 
 //# Destructor
@@ -447,7 +447,7 @@ void MCBaseline::doConvert(MVBaseline &in,
 }
 
 String MCBaseline::showState() {
-  theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
   return MCBase::showState(MCBaseline::FromTo_p[0],
 			   MBaseline::N_Types, MCBaseline::N_Routes,
 			   MCBaseline::ToRef_p);

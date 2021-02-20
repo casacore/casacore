@@ -91,13 +91,13 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::ICRS,		MDirection::J2000,	0},
   {MDirection::J2000,		MDirection::ICRS,	0} };
 uInt MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
-CallOnce0 MCDirection::theirInitOnce;
+std::once_flag MCDirection::theirInitOnceFlag;
 
 //# Constructors
 MCDirection::MCDirection() :
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   VEC61(0), VEC62(0), VEC63(0), measMath() {
-    theirInitOnce(doFillState);
+    std::call_once(theirInitOnceFlag, doFillState);
 }
 
 //# Destructor
@@ -602,7 +602,7 @@ void MCDirection::doConvert(MVDirection &in,
 }
 
 String MCDirection::showState() {
-  theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
   return MCBase::showState(MCDirection::FromTo_p[0],
 			   MDirection::N_Types, MCDirection::N_Routes,
 			   MCDirection::ToRef_p);

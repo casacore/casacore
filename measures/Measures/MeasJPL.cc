@@ -139,7 +139,7 @@ Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
 
 Bool MeasJPL::initMeasOnce(MeasJPL::Files which) {
   try {
-    theirCallOnce[which](doInitMeas, which);
+    std::call_once(theirCallOnceFlags[which], doInitMeas, which);
   } catch (InitError& ) {
     return False;
   }
@@ -249,7 +249,7 @@ void MeasJPL::closeMeas() {
 #if defined(USE_THREADS)
     std::atomic_thread_fence(std::memory_order_release); // pray
 #endif
-    new (&theirCallOnce[i]) CallOnce; // HACK
+    new (&theirCallOnceFlags[i]) std::once_flag; // HACK
   }
 }
 
@@ -265,7 +265,7 @@ const Double* MeasJPL::fillMeas(Double &intv, MeasJPL::Files which,
   intv = ((utf.getDay() - (ut*dmjd[which] + mjd0[which]))
 	   + utf.getDayFraction()) / dmjd[which];
   // If needed, read the data of this interval.
-  ScopedMutexLock locker(theirMutex);
+  std::lock_guard<std::mutex> locker(theirMutex);
   for (size_t i=0; i<curDate[which].size(); ++i) {
     if (ut == curDate[which][i]) {
       return dval[which][i].data();
@@ -318,8 +318,8 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv,
   }
 }
 
-CallOnce MeasJPL::theirCallOnce[MeasJPL::N_Files];
-Mutex MeasJPL::theirMutex;
+std::once_flag MeasJPL::theirCallOnceFlags[MeasJPL::N_Files];
+std::mutex MeasJPL::theirMutex;
 Table MeasJPL::t[MeasJPL::N_Files];
 ArrayColumn<Double> MeasJPL::acc[MeasJPL::N_Files];
 Int MeasJPL::mjd0[MeasJPL::N_Files] = {0, 0};
