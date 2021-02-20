@@ -115,47 +115,6 @@ IPosition::IPosition (size_t length, ssize_t val)
     std::fill_n(data_p, size_p, val);
 }
 
-// <thrown>
-//    <item> std::runtime_error
-// </thrown>
-IPosition::IPosition (size_t length, ssize_t val0, ssize_t val1, ssize_t val2,
-                      ssize_t val3, ssize_t val4, ssize_t val5, ssize_t val6,
-                      ssize_t val7, ssize_t val8, ssize_t val9)
-: size_p (length),
-  data_p (buffer_p)
-{
-    if (size_p > BufferLength) {
-	allocateBuffer();
-    }
-    if (size_p > 10  ||  length < 1) {
-	throw(std::runtime_error("IPosition::IPosition(size_t length, val0, ...) - "
-			 "Can only initialize from 1 to 10 elements"));
-    }
-    switch (length) {
-         case 10: data_p[9] = val9;    // Fall through
-	 case 9:  data_p[8] = val8;    // Fall through
-	 case 8:  data_p[7] = val7;    // Fall through
-	 case 7:  data_p[6] = val6;    // Fall through
-	 case 6:  data_p[5] = val5;    // Fall through
-	 case 5:  data_p[4] = val4;    // Fall through
-	 case 4:  data_p[3] = val3;    // Fall through
-	 case 3:  data_p[2] = val2;    // Fall through
-	 case 2:  data_p[1] = val1;    // Fall through
-	 case 1:  data_p[0] = val0; break;
-	 default:
-             throw(std::runtime_error("IPosition::IPosition(size_t length, val0, ...) - "
-			     "Can only initialize from 1 to 10 elements"));
-    }
-    for (size_t i=0; i<size_p; i++) {
-	if (data_p[i] == MIN_INT) {
-	    throw(std::runtime_error("IPosition::IPosition(size_t length, val0, ...) - "
-		    "One or more valn == INT_MIN. Probably haven't defined "
-		    "enough values. Otherwise specify after construction."));
-	}
-    }
-    assert(ok());
-}
-
 IPosition::IPosition (const IPosition& other)
 : size_p (other.size_p),
   data_p (buffer_p)

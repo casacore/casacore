@@ -337,7 +337,7 @@ void writeFixVar(const TSMOption& tsmOpt)
     SetupNewTable newtab("tTiledShapeStMan_tmp.data", td, Table::New);
     // Create a storage manager for it.
     // Let the tile shape match the cube shape.
-    TiledShapeStMan sm1 ("TSMExample", IPosition(2,16,25,1));
+    TiledShapeStMan sm1 ("TSMExample", IPosition(2,16,25));
     newtab.bindAll (sm1);
     Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
 
