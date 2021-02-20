@@ -158,6 +158,16 @@ public:
     
     ~IPosition();
 
+    // Construct an IPosition that is initialized from a variable number of parameter.
+    // The resulting size of the IPosition will equal the number of parameters specified.
+    //
+    // In general, using the initializer list constructor should be preferred. Defining
+    // an initializer list inside macros is however not possible. In those cases, this
+    // method can be used to construct the IPosition.
+    //
+    // Example: IPosition::Make(3, 5) creates an IPosition of size 2, with values 3 and 5.
+    // It is identical to IPosition{3, 5}. A program is ill-formed when narrowing of
+    // a parameter is required, causing a compiler warning or error.
     template<typename... Vals>
     static IPosition Make (Vals... vals) {
       return IPosition{vals...};
