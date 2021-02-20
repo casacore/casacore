@@ -215,7 +215,6 @@ Utilities/DataType.cc
 Utilities/DynBuffer.cc
 Utilities/Fallible2.cc
 Utilities/MUString.cc
-Utilities/Notice.cc
 Utilities/Precision.cc
 Utilities/RecordTransformable.cc
 Utilities/Regex.cc
@@ -361,8 +360,6 @@ Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
 Containers/IterError.h
-Containers/Link.h
-Containers/Link.tcc
 Containers/ObjectStack.h
 Containers/ObjectStack.tcc
 Containers/RecordDesc.h
@@ -628,7 +625,6 @@ Utilities/GenSort.tcc
 Utilities/LinearSearch.h
 Utilities/LinearSearch.tcc
 Utilities/MUString.h
-Utilities/Notice.h
 Utilities/Precision.h
 Utilities/PtrHolder.h
 Utilities/PtrHolder.tcc

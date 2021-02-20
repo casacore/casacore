@@ -34,7 +34,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/Notice.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -141,7 +140,7 @@ class IPosition;
 // </todo>
 
 
-class RecordInterface : public NoticeSource
+class RecordInterface
 {
 public:
     // Define the flag telling if a Record has a fixed or
@@ -590,74 +589,6 @@ inline const Array<Double>& RecordInterface::asArraydouble
 {
     return asArrayDouble (id);
 }
-
-
-
-
-// <summary>
-// Helper class to notify class Record about changes
-// </summary>
-
-// <use visibility=local>
-
-// <reviewed reviewer="Mark Wieringa" date="1996/04/15" tests="tRecord">
-// </reviewed>
-
-// <prerequisite>
-//   <li> <linkto class="Notice">Notice</linkto>.
-// </prerequisite>
-
-// <synopsis>
-// This class is of essentially no interest. The Notification system which is
-// used to invalidate RecordFieldPtr's to a destructed or changed record
-// requires that a class derived from Notice be available to carry
-// messages. There are 3 messages which are described below.
-// </synopsis>
-
-class RecordNotice : public Notice
-{
-public:
-    // Define the possible change types.
-    enum NoticeType {
-	// Record has been deleted; detach all RecordFieldPtr's.
-	DETACH,
-	// RecordRep has been copied; re-acquire the pointers in
-	// all RecordFieldPtr's.
-	ACQUIRE,
-	// A field has been removed; detach that RecordFieldPtr and
-	// decrement field numbers in RecordFieldPtr's following it.
-	REMOVE};
-
-    // Construct a notice for the given type and field number.
-    // The field number is only used for type REMOVE.
-    RecordNotice (NoticeType changeType, uInt fieldNumber);
-
-    // Always returns False.
-    virtual bool operator== (const Notice& that) const;
-
-    // Return the change type.
-    NoticeType changeType() const;
-
-    // Return the field number.
-    Int fieldNumber() const;
-
-private:
-    NoticeType changeType_p;
-    uInt       fieldNumber_p;        //# only used for REMOVE
-};
-
-
-inline RecordNotice::NoticeType RecordNotice::changeType() const
-{
-    return changeType_p;
-}
-inline Int RecordNotice::fieldNumber() const
-{
-    return fieldNumber_p;
-}
-
-
-
 
 } //# NAMESPACE CASACORE - END
 
