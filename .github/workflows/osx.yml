@@ -1,4 +1,4 @@
-name: OS X
+name: macOS
 
 on:
   push:
@@ -10,14 +10,20 @@ on:
 jobs:
   osx:
     runs-on: macos-10.15
-    continue-on-error: true
 
     steps:
       - name: checkout
         uses: actions/checkout@v2
 
       - name: install homebrew deps
-        run: brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran
+        run: |
+          brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran
+
+      - name: debug gfortran
+        continue-on-error: true
+        run: |
+          set -ex
+          which gfortran-10
 
       - name: pip install numpy
         run: pip3 install numpy
@@ -25,7 +31,7 @@ jobs:
       - name:  get WSRT measures
         run: wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
 
-      - name: make build folder 
+      - name: make build folder
         run: |
           mkdir -p build
           cd build
@@ -34,13 +40,28 @@ jobs:
       - name: configure
         run: |
           cd build
-          cmake -DBUILD_TESTING=ON -DCMAKE_PREFIX_PATH=/usr/local/ -DUSE_OPENMP=OFF -DUSE_HDF5=ON -DBUILD_PYTHON=OFF -DBUILD_PYTHON3=ON -DBoost_NO_BOOST_CMAKE=True -DDATA_DIR=. ..
+          cmake \
+            -DBUILD_TESTING=ON \
+            -DCMAKE_PREFIX_PATH=/usr/local/ \
+            -DUSE_OPENMP=OFF \
+            -DUSE_HDF5=ON \
+            -DBUILD_PYTHON=OFF \
+            -DBUILD_PYTHON3=ON \
+            -DBoost_NO_BOOST_CMAKE=True \
+            -DCMAKE_Fortran_COMPILER=gfortran-10 \
+            -DDATA_DIR=. ..
 
       - name: build
-        run: make -j3
+        run: |
+          cd build
+          make -j3
 
-      - name: run tests  
-        run: CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
-    
+      - name: run tests
+        run: |
+          cd build
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
+
       - name: install
-        run: make install
+        run: |
+          cd build
+          make install
