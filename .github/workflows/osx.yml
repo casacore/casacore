@@ -54,7 +54,7 @@ jobs:
       - name: build
         run: |
           cd build
-          make -j3
+          make -j
 
       - name: run tests
         run: |
