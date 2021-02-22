@@ -16,14 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: install homebrew deps
-        run: |
-          brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran
-
-      - name: debug gfortran
-        continue-on-error: true
-        run: |
-          set -ex
-          which gfortran-10
+        run: brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran
 
       - name: pip install numpy
         run: pip3 install numpy
