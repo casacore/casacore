@@ -1,4 +1,5 @@
-FROM kernsuite/base:4
+FROM kernsuite/base:6
+RUN docker-apt-upgrade
 RUN docker-apt-install \
     clang \
     casacore-data \

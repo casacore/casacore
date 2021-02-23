@@ -28,7 +28,6 @@ RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel read
 WORKDIR /tmp
 RUN curl http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
 RUN curl ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar --output /tmp/measures.tgz
-RUN curl https://github.com/casacore/casacore/archive/v${CASACORE_VERSION}.tar.gz -L --output /tmp/casacore.tar.gz
 RUN curl https://ufpr.dl.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
 
 RUN mkdir /build
@@ -59,21 +58,20 @@ RUN ./b2 -j${THREADS} \
     link=static,shared install
 
 # casacore wants numpy
-RUN /opt/python/${TARGET}/bin/pip install 'numpy==1.20.1'
-
-RUN ls -al /opt/boost/lib/libboost_python${PYMAJOR}${PYMINOR}.so
+RUN /opt/python/${TARGET}/bin/pip install numpy==1.19.5
 
 # set up casacore
-WORKDIR /build
-RUN tar zxvf /tmp/casacore.tar.gz
-WORKDIR /build/casacore-${CASACORE_VERSION}
-RUN mkdir -p /build/casacore-${CASACORE_VERSION}/build
-WORKDIR /build/casacore-${CASACORE_VERSION}/build
+ADD . /code
+RUN useradd -ms /bin/bash casacore
+RUN chown casacore.casacore /code
+USER casacore
+RUN mkdir /code/build
+WORKDIR /code/build
 RUN cmake .. \
     -DPython3_ROOT_DIR=/opt/python/${TARGET} \
     -DPython3_EXECUTABLE=/opt/python/${TARGET}/bin/python3 \
     -DPython3_LIBRARY=/opt/boost/lib/libboost_python${PYMAJOR}${PYMINOR}.so \
-    -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/ \
+    -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/ \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
@@ -82,11 +80,3 @@ RUN cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
 RUN make install
-
-ADD . /python-casacore
-WORKDIR /python-casacore
-ENV CFLAGS "-I/opt/boost/include -L/opt/boost/lib -I/usr/include/cfitsio"
-ENV LD_LIBRARY_PATH "/opt/boost/lib:/usr/local/lib"
-RUN /opt/python/${TARGET}/bin/python ./setup.py build_ext -j${THREADS}
-RUN /opt/python/${TARGET}/bin/python ./setup.py bdist_wheel -d .
-RUN auditwheel repair --plat manylinux2010_x86_64 -w /output *.whl
