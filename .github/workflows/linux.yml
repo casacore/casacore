@@ -21,4 +21,4 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Build container
-        run: docker build . -t ${{ matrix.dist }} -f .github/workflows/${{ matrix.dist }}.docker
+        run: docker build . -t ${{ matrix.dist }} -f docker/${{ matrix.dist }}.docker

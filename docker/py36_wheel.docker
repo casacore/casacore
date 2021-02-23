@@ -1,0 +1,83 @@
+FROM quay.io/pypa/manylinux2014_x86_64
+
+# set python version
+ENV PYMAJOR 3
+ENV PYMINOR 6
+ENV PYUNICODE m
+ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}${PYUNICODE}
+
+# boost version
+ENV BOOSTMAJOR 75
+ENV BOOSTMINOR 0
+ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
+ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
+
+# where do we epect casacore data build time and runtime
+ENV CASACORE_DATA /usr/share/casacore/data
+
+# which casacore version to use
+
+ENV CASACORE_VERSION 3.4.0
+
+# how many threads to use for compiling
+ENV THREADS 4
+
+# install rpms
+RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel
+
+# download other source code
+WORKDIR /tmp
+RUN curl http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
+RUN curl ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar --output /tmp/measures.tgz
+RUN curl https://ufpr.dl.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
+
+RUN mkdir /build
+WORKDIR /build
+
+RUN mkdir -p ${CASACORE_DATA}
+WORKDIR ${CASACORE_DATA}
+RUN tar zxvf /tmp/measures.tgz
+
+# install and configure sofa and measures
+WORKDIR /build
+RUN tar zxvf /tmp/sofa.tgz
+WORKDIR /build/sofa/20150209_a/f77/src
+RUN make -j${THREADS}
+
+
+# setup boost
+WORKDIR /build
+RUN tar jxvf /tmp/boost.tar.bz2
+WORKDIR /build/boost_${BOOST_}
+RUN ./bootstrap.sh --prefix=/opt/boost \
+    --with-libraries=python \
+    --with-python=/opt/python/${TARGET}/bin/python \
+    --with-python-version=${PYMAJOR}.${PYMINOR} \
+    --with-python-root=/opt/python/${TARGET}
+RUN ./b2 -j${THREADS} \
+    cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/" \
+    link=static,shared install
+
+# casacore wants numpy
+RUN /opt/python/${TARGET}/bin/pip install numpy==1.19.5
+
+# set up casacore
+ADD . /code
+RUN useradd -ms /bin/bash casacore
+RUN chown casacore.casacore /code
+USER casacore
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN cmake .. \
+    -DPython3_ROOT_DIR=/opt/python/${TARGET} \
+    -DPython3_EXECUTABLE=/opt/python/${TARGET}/bin/python3 \
+    -DPython3_LIBRARY=/opt/boost/lib/libboost_python${PYMAJOR}${PYMINOR}.so \
+    -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/ \
+    -DSOFA_ROOT_DIR=/build \
+    -DBUILD_TESTING=OFF \
+    -DDATA_DIR=${CASACORE_DATA} \
+    -DBUILD_PYTHON3=ON \
+    -DBUILD_PYTHON=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr/local
+RUN make -j${THREADS}
+RUN make install
