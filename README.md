@@ -157,7 +157,3 @@ than welcome! But to maintain a high code quality we have written a [contributio
 manual](https://github.com/casacore/casacore/blob/master/CONTRIBUTING.md), please read
 that first.
 
-
-# travis
-
-[![Build Status](https://travis-ci.org/casacore/casacore.svg?branch=master)](https://travis-ci.org/casacore/casacore)
