@@ -129,7 +129,7 @@ public:
     // An IPosition initialized from the given list
     IPosition(std::initializer_list<ssize_t> list);
     
-    // An IPosition of size "length." The values in the object get
+    // An IPosition of size "length." All values in the object are
     // initialized to val.
     IPosition(size_t length, ssize_t val);
 
@@ -148,8 +148,8 @@ public:
     // method. Both of those methods do not have the above issues.
     template<typename... Vals>
     //[[ deprecated("Use the initializer list constructor or Make() method") ]]
-    IPosition (size_t /*dummy*/, Vals... vals) :
-    IPosition{static_cast<ssize_t>(vals)...} { }
+    IPosition (size_t /*dummy*/, ssize_t val1, ssize_t val2, Vals... vals) :
+    IPosition{val1, val2, static_cast<ssize_t>(vals)...} { }
 
     // Makes a copy (copy, NOT reference, semantics) of source.
     IPosition(const IPosition& source);
