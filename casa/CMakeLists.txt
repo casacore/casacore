@@ -234,7 +234,6 @@ ${FLEX_JsonGram_OUTPUTS}
 if (BUILD_DEPRECATED)
     list (APPEND buildfiles
          Containers/HashMap2.cc
-         Containers/List2.cc
          Containers/Map2.cc
          Containers/Stack2.cc
          Containers/StackError.cc
@@ -387,10 +386,6 @@ if (BUILD_DEPRECATED)
          Containers/HashMapIO.tcc
          Containers/HashMapIter.h
          Containers/HashMapIter.tcc
-         Containers/List.h
-         Containers/List.tcc
-         Containers/ListIO.h
-         Containers/ListIO.tcc
          Containers/Map.h
          Containers/Map.tcc
          Containers/MapIO.h
