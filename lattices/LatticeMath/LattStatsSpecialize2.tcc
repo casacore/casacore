@@ -54,9 +54,8 @@ template <class T> Bool LattStatsSpecialize::setIncludeExclude(
 //   Bool      True if successfull, will fail if user tries to give too
 //             many values for includeB or excludeB, or tries to give
 //             values for both
-    static const T dummy(0);
     ThrowIf (
-        ! isReal(whatType(&dummy)),
+        ! isReal(whatType<T>()),
         "Logic error, this method is for real data types only"
     );
     noInclude = True;

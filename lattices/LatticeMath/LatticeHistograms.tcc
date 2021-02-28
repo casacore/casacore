@@ -456,8 +456,7 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
       return False;
    }
 
-   T* dummy = 0;
-   DataType latticeType = whatType(dummy);
+   DataType latticeType = whatType<T>();
    if (latticeType !=TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
       ostringstream oss;
       oss << "Lattices of type " << latticeType << " are not currently supported" << endl;

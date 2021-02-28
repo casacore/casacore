@@ -656,13 +656,13 @@ public:
   inline void traceAlloc (const void* addr, size_t sz) const
   {
     if (itsTraceSize>0 && sz>=itsTraceSize) {
-      doTraceAlloc (addr, sz, whatType(static_cast<T*>(0)), sizeof(T));
+      doTraceAlloc (addr, sz, whatType<T>(), sizeof(T));
     }
   }
   inline void traceFree (const void* addr, size_t sz) const
   {
     if (itsTraceSize>0 && sz>=itsTraceSize) {
-      doTraceFree (addr, sz, whatType(static_cast<T*>(0)), sizeof(T));
+      doTraceFree (addr, sz, whatType<T>(), sizeof(T));
     }
   }
 

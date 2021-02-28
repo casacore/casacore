@@ -119,7 +119,6 @@ TableRecord& TableRecord::operator= (const TableRecord& other)
     // to replace the RecordFieldPtr pointers).
     if (this != &other) {
 	if (! isFixed()  ||  nfields() == 0) {
-	    notify (RecordNotice (RecordNotice::DETACH, 0));
 	    rep_p = other.rep_p;
 	}else{
 	    AlwaysAssert (conform (other), AipsError);
@@ -166,9 +165,6 @@ TableRecordRep& TableRecord::rwRef()
 {
     const TableRecordRep& oldRep = rep_p.ref();
     TableRecordRep& newRep = rep_p.rwRef();
-    if (&oldRep != &newRep) {
-	notify (RecordNotice (RecordNotice::ACQUIRE, 0));
-    }
     return newRep;
 }
 
@@ -193,8 +189,6 @@ void TableRecord::restructure (const RecordDesc& newDescription,
 {
     // Restructure is not possible for fixed records.
     throwIfFixed();
-    // Restructuring means that all RecordFieldPtr's get invalid.
-    notify (RecordNotice (RecordNotice::DETACH, 0));
     rwRef().restructure (newDescription, recursive);
 }
 
@@ -228,7 +222,6 @@ void TableRecord::removeField (const RecordFieldId& id)
     throwIfFixed();
     Int whichField = idToNumber (id);
     rwRef().removeField (whichField);
-    notify (RecordNotice (RecordNotice::REMOVE, whichField));
 }
 
 void TableRecord::renameField (const String& newName, const RecordFieldId& id)
@@ -401,8 +394,6 @@ void TableRecord::getRecord (AipsIO& os, const TableAttr& parentAttr)
     // Get is only possible when the Record is empty or when
     // the Record is non-fixed.
     AlwaysAssert ((! isFixed()  ||  nfields() == 0), AipsError);
-    // Possible RecordFieldPtr's have to be detached.
-    notify (RecordNotice (RecordNotice::DETACH, 0));
     // Reading the record type back means casting it from an int
     // to the correct type.
     Int type;

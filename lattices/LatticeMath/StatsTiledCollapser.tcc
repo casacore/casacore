@@ -38,7 +38,7 @@ StatsTiledCollapser<T,U>::StatsTiledCollapser(
     Bool fixedMinMax
 ) : _range(pixelRange), _include(! noInclude),
     _exclude(! noExclude), _fixedMinMax(fixedMinMax),
-    _isReal(isReal(whatType(&*(CountedPtr<T>(new T(0)))))),
+    _isReal(isReal(whatType<T>())),
     _minpos(0), _maxpos(0) {}
 
 template <class T, class U>
@@ -221,7 +221,7 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     U* sumPtr = _sum->storage();
     U* sumSqPtr = _sumSq->storage();
     CountedPtr<Block<DComplex> > nptsComplex;
-    if (! isReal(whatType(resptr))) {
+    if (! isReal(whatType<U>())) {
         nptsComplex = new Block<DComplex>(_n1*_n3);
     }
     U* nPtsPtr;

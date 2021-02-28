@@ -276,7 +276,7 @@ void* TableRecordRep::get_pointer (Int whichField, DataType type) const
 			  "incorrect data type used for field " +
 			  desc_p.name(whichField)));
     }
-    if (datavec_p[whichField] == 0) {
+    if (datavec_p[whichField] == nullptr) {
         const_cast<TableRecordRep*>(this)->makeDataVec (whichField, descDtype);
     }
     return datavec_p[whichField];

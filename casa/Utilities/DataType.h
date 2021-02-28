@@ -161,45 +161,50 @@ enum DataType {TpBool,    TpChar,     TpUChar,
 // Write a formated representation (e.g., Type=Bool) of the given data type.
 ostream &operator<<(ostream &os, DataType type);
 
-// These (overloaded) functions return DataType that corresponds to to the
-// type that is being pointed at. A pointer is used to avoid to avoid having
-// to create the object if it is of Array or Table types. At least for CFront,
-// it also avoids those types from being instantiated (they are forward
-// declared). The void* function matches any type (if none other will), and
-// returns TpOther.
+// These (specialized) functions return the DataType that corresponds
+// to the template type. TpOther is returned for types that are
+// not specialized, as is void.
 // <group>
-inline DataType whatType(const void *)   { return TpOther; }
-inline DataType whatType(const Bool *)   { return TpBool; }
-inline DataType whatType(const Char *)   { return TpChar; }
-inline DataType whatType(const uChar *)  { return TpUChar; }
-inline DataType whatType(const Short*) {return TpShort ; }
-inline DataType whatType(const uShort*) {return TpUShort ; }
-inline DataType whatType(const Int*) {return TpInt ; }
-inline DataType whatType(const uInt*) {return TpUInt ; }
-inline DataType whatType(const Int64*) {return TpInt64 ; }
-inline DataType whatType(const float*) {return TpFloat ; }
-inline DataType whatType(const double*) {return TpDouble ; }
-inline DataType whatType(const Complex*) {return TpComplex ; }
-inline DataType whatType(const DComplex*) {return TpDComplex ; }
-inline DataType whatType(const String*) {return TpString ; }
-inline DataType whatType(const Table*) {return TpTable ; }
-inline DataType whatType(const Array<Bool> *)   { return TpArrayBool; }
-inline DataType whatType(const Array<Char> *)   { return TpArrayChar; }
-inline DataType whatType(const Array<uChar> *)  { return TpArrayUChar; }
-inline DataType whatType(const Array<Short>*) {return TpArrayShort ; }
-inline DataType whatType(const Array<uShort> *) {return TpArrayUShort ; }
-inline DataType whatType(const Array<Int> *) {return TpArrayInt ; }
-inline DataType whatType(const Array<uInt> *) {return TpArrayUInt ; }
-inline DataType whatType(const Array<Int64> *) {return TpArrayInt64 ; }
-inline DataType whatType(const Array<float> *) {return TpArrayFloat ; }
-inline DataType whatType(const Array<double> *) {return TpArrayDouble ; }
-inline DataType whatType(const Array<Complex> *) {return TpArrayComplex ; }
-inline DataType whatType(const Array<DComplex> *) {return TpArrayDComplex ; }
-inline DataType whatType(const Array<String> *) {return TpArrayString ; }
-inline DataType whatType(const Record *) {return TpRecord ; }
-inline DataType whatType(const Quantum<Double> *) {return TpQuantity ; }
-inline DataType whatType(const Array<Quantum<Double> > *)
-                                                  {return TpArrayQuantity ; }
+template<typename T>
+inline DataType whatType() { return TpOther; }
+
+#define DEFINE_WHATTYPE(SPECIALIZED_TYPE, RETURN_TYPE) \
+  template<> inline DataType whatType<SPECIALIZED_TYPE>() { return RETURN_TYPE; }
+  
+DEFINE_WHATTYPE(void, TpOther)
+DEFINE_WHATTYPE(Bool, TpBool)
+DEFINE_WHATTYPE(Char, TpChar)
+DEFINE_WHATTYPE(uChar, TpUChar)
+DEFINE_WHATTYPE(Short, TpShort)
+DEFINE_WHATTYPE(uShort, TpUShort)
+DEFINE_WHATTYPE(Int, TpInt)
+DEFINE_WHATTYPE(uInt, TpUInt)
+DEFINE_WHATTYPE(Int64, TpInt64)
+DEFINE_WHATTYPE(float, TpFloat)
+DEFINE_WHATTYPE(double, TpDouble)
+DEFINE_WHATTYPE(Complex, TpComplex)
+DEFINE_WHATTYPE(DComplex, TpDComplex)
+DEFINE_WHATTYPE(String, TpString)
+DEFINE_WHATTYPE(Table, TpTable)
+DEFINE_WHATTYPE(Array<Bool>, TpArrayBool)
+DEFINE_WHATTYPE(Array<Char>, TpArrayChar)
+DEFINE_WHATTYPE(Array<uChar>, TpArrayUChar)
+DEFINE_WHATTYPE(Array<Short>, TpArrayShort)
+DEFINE_WHATTYPE(Array<uShort>, TpArrayUShort)
+DEFINE_WHATTYPE(Array<Int>, TpArrayInt)
+DEFINE_WHATTYPE(Array<uInt>, TpArrayUInt)
+DEFINE_WHATTYPE(Array<Int64>, TpArrayInt64)
+DEFINE_WHATTYPE(Array<float>, TpArrayFloat)
+DEFINE_WHATTYPE(Array<double>, TpArrayDouble)
+DEFINE_WHATTYPE(Array<Complex>, TpArrayComplex)
+DEFINE_WHATTYPE(Array<DComplex>, TpArrayDComplex)
+DEFINE_WHATTYPE(Array<String>, TpArrayString)
+DEFINE_WHATTYPE(Record, TpRecord)
+DEFINE_WHATTYPE(Quantum<Double>, TpQuantity)
+DEFINE_WHATTYPE(Array<Quantum<Double>>, TpArrayQuantity)
+
+#undef DEFINE_WHATTYPE
+
 // </group>
 
 // It is sometimes useful to discover what the corresponding
