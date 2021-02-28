@@ -37,8 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr()
-: fieldPtr_p   (nullptr),
-  parent_p     (nullptr),
+: parent_p     (nullptr),
   fieldNumber_p(-1)
 {
     // Nothing
@@ -69,16 +68,12 @@ void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
 {
     parent_p      = &record;
     fieldNumber_p = whichField;
-    // Cast to correct type, because a void* is returned.
-    // This cast is fully safe.
-    fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, whichField, 
-					    whatType(static_cast<T*>(nullptr)), static_cast<T*>(nullptr)));
+    get(); // check type
 }
 
 template<class T>
 void RecordFieldPtr<T>::detach()
 {
-    fieldPtr_p    = nullptr;
     parent_p      = nullptr;
     fieldNumber_p = -1;
 }
@@ -87,13 +82,43 @@ template<class T>
 T& RecordFieldPtr<T>::operator*()
 {
     parent_p->makeUnique();
-    return *fieldPtr_p;
+    return const_cast<T&>(get());
+}
+
+template<>
+inline const Table* RecordFieldPtr<Table>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+{
+  return static_cast<const Table*>(record->get_pointer(fieldNumber, TpOther));
+}
+
+template<>
+inline const Record* RecordFieldPtr<Record>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+{
+  return static_cast<const Record*>(record->get_pointer(fieldNumber, TpRecord, "Record"));
+}
+
+template<>
+inline const TableRecord* RecordFieldPtr<TableRecord>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+{
+  return static_cast<const TableRecord*>(record->get_pointer(fieldNumber, TpRecord, "TableRecord"));
 }
 
 template<class T>
-void RecordFieldPtr<T>::define (const T& value)
+inline const T* RecordFieldPtr<T>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
 {
-    defineRecordFieldPtr (parent_p, fieldNumber_p, whatType(static_cast<T*>(0)), &value);
+  return static_cast<const T*>(record->get_pointer(fieldNumber, whatType<T>()));
+}
+
+template<class T>
+inline void RecordFieldPtr<T>::define (const T& value)
+{
+    parent_p->defineDataField (fieldNumber_p, whatType<T>(), &value);
+}
+
+template<>
+inline void RecordFieldPtr<TableRecord>::define (const TableRecord& value)
+{
+    parent_p->defineDataField (fieldNumber_p, TpRecord, &value);
 }
 
 template<class T>
