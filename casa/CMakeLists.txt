@@ -231,15 +231,6 @@ ${BISON_JsonGram_OUTPUTS}
 ${FLEX_JsonGram_OUTPUTS}
 )
 
-if (BUILD_DEPRECATED)
-    list (APPEND buildfiles
-         Containers/HashMap2.cc
-         Containers/Map2.cc
-         Containers/Stack2.cc
-         Containers/StackError.cc
-    )
-endif ()
-
 add_library (casa_casa ${buildfiles})
 
 
@@ -377,39 +368,6 @@ Containers/ValueHolder.h
 Containers/ValueHolderRep.h
 DESTINATION include/casacore/casa/Containers
 )
-
-if (BUILD_DEPRECATED)
-    install (FILES
-         Containers/HashMap.h
-         Containers/HashMap.tcc
-         Containers/HashMapIO.h
-         Containers/HashMapIO.tcc
-         Containers/HashMapIter.h
-         Containers/HashMapIter.tcc
-         Containers/Map.h
-         Containers/Map.tcc
-         Containers/MapIO.h
-         Containers/MapIO.tcc
-         Containers/OrderedMap.h
-         Containers/OrderedMap.tcc
-         Containers/OrdMapIO.h
-         Containers/OrdMapIO.tcc
-         Containers/OrderedPair.h
-         Containers/OrderedPair.tcc
-         Containers/OrdPairIO.h
-         Containers/OrdPairIO.tcc
-         Containers/Queue.h
-         Containers/Queue.tcc
-         Containers/SimOrdMap.h
-         Containers/SimOrdMap.tcc
-         Containers/SimOrdMapIO.h
-         Containers/SimOrdMapIO.tcc
-         Containers/Stack.h
-         Containers/Stack.tcc
-         Containers/StackError.h
-    DESTINATION include/casacore/casa/Containers
-    )
-endif ()
 
 install (FILES
 Exceptions/CasaErrorTools.h
