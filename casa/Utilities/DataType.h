@@ -161,12 +161,9 @@ enum DataType {TpBool,    TpChar,     TpUChar,
 // Write a formated representation (e.g., Type=Bool) of the given data type.
 ostream &operator<<(ostream &os, DataType type);
 
-// These (overloaded) functions return DataType that corresponds to to the
-// type that is being pointed at. A pointer is used to avoid to avoid having
-// to create the object if it is of Array or Table types. At least for CFront,
-// it also avoids those types from being instantiated (they are forward
-// declared). The void* function matches any type (if none other will), and
-// returns TpOther.
+// These (specialized) functions return the DataType that corresponds
+// to the template type. TpOther is returned for types that are
+// not specialized, as is void.
 // <group>
 template<typename T>
 inline DataType whatType() { return TpOther; }
@@ -208,8 +205,6 @@ DEFINE_WHATTYPE(Array<Quantum<Double>>, TpArrayQuantity)
 
 #undef DEFINE_WHATTYPE
 
-template<typename T>
-inline DataType whatType(const T*) { return whatType<T>(); }
 // </group>
 
 // It is sometimes useful to discover what the corresponding
