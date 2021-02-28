@@ -270,8 +270,7 @@ template <typename T> void ImageUtilities::openImage(
         ! lattPtr,
         "Image " + fileName + " cannot be opened; its type is unknown"
     );
-    T x = 0;
-    if (lattPtr->dataType() != whatType(&x)) {
+    if (lattPtr->dataType() != whatType<T>()) {
         delete lattPtr;
         ThrowCc(
             "Logic Error: " + fileName
