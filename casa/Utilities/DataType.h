@@ -170,68 +170,44 @@ ostream &operator<<(ostream &os, DataType type);
 // <group>
 template<typename T>
 inline DataType whatType() { return TpOther; }
-template<>
-inline DataType whatType<void>() { return TpOther; }
-template<>
-inline DataType whatType<Bool>() { return TpBool; }
-template<>
-inline DataType whatType<Char>() { return TpChar; }
-template<>
-inline DataType whatType<uChar>() { return TpUChar; }
-template<>
-inline DataType whatType<Short>() {return TpShort ; }
-template<>
-inline DataType whatType<uShort>() {return TpUShort ; }
-template<>
-inline DataType whatType<Int>() {return TpInt ; }
-template<>
-inline DataType whatType<uInt>() {return TpUInt ; }
-template<>
-inline DataType whatType<Int64>() {return TpInt64 ; }
-template<>
-inline DataType whatType<float>() {return TpFloat ; }
-template<>
-inline DataType whatType<double>() {return TpDouble ; }
-template<>
-inline DataType whatType<Complex>() {return TpComplex ; }
-template<>
-inline DataType whatType<DComplex>() {return TpDComplex ; }
-template<>
-inline DataType whatType<String>() {return TpString ; }
-template<>
-inline DataType whatType<Table>() {return TpTable ; }
-template<>
-inline DataType whatType<Array<Bool>>() { return TpArrayBool; }
-template<>
-inline DataType whatType<Array<Char>>() { return TpArrayChar; }
-template<>
-inline DataType whatType<Array<uChar>>() { return TpArrayUChar; }
-template<>
-inline DataType whatType<Array<Short>>() {return TpArrayShort ; }
-template<>
-inline DataType whatType<Array<uShort>>() {return TpArrayUShort ; }
-template<>
-inline DataType whatType<Array<Int>>() {return TpArrayInt ; }
-template<>
-inline DataType whatType<Array<uInt>>() {return TpArrayUInt ; }
-template<>
-inline DataType whatType<Array<Int64>>() {return TpArrayInt64 ; }
-template<>
-inline DataType whatType<Array<float>>() {return TpArrayFloat ; }
-template<>
-inline DataType whatType<Array<double>>() {return TpArrayDouble ; }
-template<>
-inline DataType whatType<Array<Complex>>() {return TpArrayComplex ; }
-template<>
-inline DataType whatType<Array<DComplex>>() {return TpArrayDComplex ; }
-template<>
-inline DataType whatType<Array<String>>() {return TpArrayString ; }
-template<>
-inline DataType whatType<Record>() {return TpRecord ; }
-template<>
-inline DataType whatType<Quantum<Double>>() {return TpQuantity ; }
-template<>
-inline DataType whatType<Array<Quantum<Double>>>() {return TpArrayQuantity ; }
+
+#define DEFINE_WHATTYPE(SPECIALIZED_TYPE, RETURN_TYPE) \
+  template<> inline DataType whatType<SPECIALIZED_TYPE>() { return RETURN_TYPE; }
+  
+DEFINE_WHATTYPE(void, TpOther)
+DEFINE_WHATTYPE(Bool, TpBool)
+DEFINE_WHATTYPE(Char, TpChar)
+DEFINE_WHATTYPE(uChar, TpUChar)
+DEFINE_WHATTYPE(Short, TpShort)
+DEFINE_WHATTYPE(uShort, TpUShort)
+DEFINE_WHATTYPE(Int, TpInt)
+DEFINE_WHATTYPE(uInt, TpUInt)
+DEFINE_WHATTYPE(Int64, TpInt64)
+DEFINE_WHATTYPE(float, TpFloat)
+DEFINE_WHATTYPE(double, TpDouble)
+DEFINE_WHATTYPE(Complex, TpComplex)
+DEFINE_WHATTYPE(DComplex, TpDComplex)
+DEFINE_WHATTYPE(String, TpString)
+DEFINE_WHATTYPE(Table, TpTable)
+DEFINE_WHATTYPE(Array<Bool>, TpArrayBool)
+DEFINE_WHATTYPE(Array<Char>, TpArrayChar)
+DEFINE_WHATTYPE(Array<uChar>, TpArrayUChar)
+DEFINE_WHATTYPE(Array<Short>, TpArrayShort)
+DEFINE_WHATTYPE(Array<uShort>, TpArrayUShort)
+DEFINE_WHATTYPE(Array<Int>, TpArrayInt)
+DEFINE_WHATTYPE(Array<uInt>, TpArrayUInt)
+DEFINE_WHATTYPE(Array<Int64>, TpArrayInt64)
+DEFINE_WHATTYPE(Array<float>, TpArrayFloat)
+DEFINE_WHATTYPE(Array<double>, TpArrayDouble)
+DEFINE_WHATTYPE(Array<Complex>, TpArrayComplex)
+DEFINE_WHATTYPE(Array<DComplex>, TpArrayDComplex)
+DEFINE_WHATTYPE(Array<String>, TpArrayString)
+DEFINE_WHATTYPE(Record, TpRecord)
+DEFINE_WHATTYPE(Quantum<Double>, TpQuantity)
+DEFINE_WHATTYPE(Array<Quantum<Double>>, TpArrayQuantity)
+
+#undef DEFINE_WHATTYPE
+
 template<typename T>
 inline DataType whatType(const T*) { return whatType<T>(); }
 // </group>
