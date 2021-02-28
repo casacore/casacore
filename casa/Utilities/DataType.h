@@ -168,38 +168,72 @@ ostream &operator<<(ostream &os, DataType type);
 // declared). The void* function matches any type (if none other will), and
 // returns TpOther.
 // <group>
-inline DataType whatType(const void *)   { return TpOther; }
-inline DataType whatType(const Bool *)   { return TpBool; }
-inline DataType whatType(const Char *)   { return TpChar; }
-inline DataType whatType(const uChar *)  { return TpUChar; }
-inline DataType whatType(const Short*) {return TpShort ; }
-inline DataType whatType(const uShort*) {return TpUShort ; }
-inline DataType whatType(const Int*) {return TpInt ; }
-inline DataType whatType(const uInt*) {return TpUInt ; }
-inline DataType whatType(const Int64*) {return TpInt64 ; }
-inline DataType whatType(const float*) {return TpFloat ; }
-inline DataType whatType(const double*) {return TpDouble ; }
-inline DataType whatType(const Complex*) {return TpComplex ; }
-inline DataType whatType(const DComplex*) {return TpDComplex ; }
-inline DataType whatType(const String*) {return TpString ; }
-inline DataType whatType(const Table*) {return TpTable ; }
-inline DataType whatType(const Array<Bool> *)   { return TpArrayBool; }
-inline DataType whatType(const Array<Char> *)   { return TpArrayChar; }
-inline DataType whatType(const Array<uChar> *)  { return TpArrayUChar; }
-inline DataType whatType(const Array<Short>*) {return TpArrayShort ; }
-inline DataType whatType(const Array<uShort> *) {return TpArrayUShort ; }
-inline DataType whatType(const Array<Int> *) {return TpArrayInt ; }
-inline DataType whatType(const Array<uInt> *) {return TpArrayUInt ; }
-inline DataType whatType(const Array<Int64> *) {return TpArrayInt64 ; }
-inline DataType whatType(const Array<float> *) {return TpArrayFloat ; }
-inline DataType whatType(const Array<double> *) {return TpArrayDouble ; }
-inline DataType whatType(const Array<Complex> *) {return TpArrayComplex ; }
-inline DataType whatType(const Array<DComplex> *) {return TpArrayDComplex ; }
-inline DataType whatType(const Array<String> *) {return TpArrayString ; }
-inline DataType whatType(const Record *) {return TpRecord ; }
-inline DataType whatType(const Quantum<Double> *) {return TpQuantity ; }
-inline DataType whatType(const Array<Quantum<Double> > *)
-                                                  {return TpArrayQuantity ; }
+template<typename T>
+inline DataType whatType() { return TpOther; }
+template<>
+inline DataType whatType<void>() { return TpOther; }
+template<>
+inline DataType whatType<Bool>() { return TpBool; }
+template<>
+inline DataType whatType<Char>() { return TpChar; }
+template<>
+inline DataType whatType<uChar>() { return TpUChar; }
+template<>
+inline DataType whatType<Short>() {return TpShort ; }
+template<>
+inline DataType whatType<uShort>() {return TpUShort ; }
+template<>
+inline DataType whatType<Int>() {return TpInt ; }
+template<>
+inline DataType whatType<uInt>() {return TpUInt ; }
+template<>
+inline DataType whatType<Int64>() {return TpInt64 ; }
+template<>
+inline DataType whatType<float>() {return TpFloat ; }
+template<>
+inline DataType whatType<double>() {return TpDouble ; }
+template<>
+inline DataType whatType<Complex>() {return TpComplex ; }
+template<>
+inline DataType whatType<DComplex>() {return TpDComplex ; }
+template<>
+inline DataType whatType<String>() {return TpString ; }
+template<>
+inline DataType whatType<Table>() {return TpTable ; }
+template<>
+inline DataType whatType<Array<Bool>>() { return TpArrayBool; }
+template<>
+inline DataType whatType<Array<Char>>() { return TpArrayChar; }
+template<>
+inline DataType whatType<Array<uChar>>() { return TpArrayUChar; }
+template<>
+inline DataType whatType<Array<Short>>() {return TpArrayShort ; }
+template<>
+inline DataType whatType<Array<uShort>>() {return TpArrayUShort ; }
+template<>
+inline DataType whatType<Array<Int>>() {return TpArrayInt ; }
+template<>
+inline DataType whatType<Array<uInt>>() {return TpArrayUInt ; }
+template<>
+inline DataType whatType<Array<Int64>>() {return TpArrayInt64 ; }
+template<>
+inline DataType whatType<Array<float>>() {return TpArrayFloat ; }
+template<>
+inline DataType whatType<Array<double>>() {return TpArrayDouble ; }
+template<>
+inline DataType whatType<Array<Complex>>() {return TpArrayComplex ; }
+template<>
+inline DataType whatType<Array<DComplex>>() {return TpArrayDComplex ; }
+template<>
+inline DataType whatType<Array<String>>() {return TpArrayString ; }
+template<>
+inline DataType whatType<Record>() {return TpRecord ; }
+template<>
+inline DataType whatType<Quantum<Double>>() {return TpQuantity ; }
+template<>
+inline DataType whatType<Array<Quantum<Double>>>() {return TpArrayQuantity ; }
+template<typename T>
+inline DataType whatType(const T*) { return whatType<T>(); }
 // </group>
 
 // It is sometimes useful to discover what the corresponding
