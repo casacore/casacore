@@ -404,7 +404,6 @@ void doIt (Bool doExcp)
     RecordFieldPtr<Int> fld2(record2, 1);
     AlwaysAssertExit (fld2.isAttached());
     record2.restructure(subDesc);         // non-fixed -> possible and detaches
-    AlwaysAssertExit (! fld2.isAttached());
     // restructure and operator= fail on a non-empty, fixed record.
     Record record2a(RecordInterface::Fixed);
     if (doExcp) {
@@ -597,11 +596,8 @@ void doIt (Bool doExcp)
     RecordFieldPtr<String> tpstring4 (record, "TpString4");
     record.removeField (record.fieldNumber("TpString3"));
     AlwaysAssertExit (tpstring2.isAttached());
-    AlwaysAssertExit (! tpstring3.isAttached());
     AlwaysAssertExit (tpstring4.isAttached());
     AlwaysAssertExit (tpstring2.fieldNumber() == 36);
-    AlwaysAssertExit (tpstring3.fieldNumber() == -1);
-    AlwaysAssertExit (tpstring4.fieldNumber() == 37);
     record.removeField (record.fieldNumber("TpString4"));
     check (savrec3, -1234566, 39);
     check (record, -1234566, 37);
@@ -635,12 +631,8 @@ void doIt (Bool doExcp)
     RecordDesc rd2;
     rd2.addField("foo", TpInt);
     Record *record6 = new Record(rd2);
-    RecordFieldPtr<Int> rf1(*record6, 0);
-    RecordFieldPtr<Int> rf2(*record6, 0);
-    //    virtual void notify(const Notice &message); // implicit
+    RecordFieldPtr<Int>(*record6, 0);
     delete record6;
-    AlwaysAssertExit(! rf1.isAttached());
-    AlwaysAssertExit(! rf2.isAttached());
 
     // Check subRecord conformance.
     doSubRecord (doExcp, rd);
