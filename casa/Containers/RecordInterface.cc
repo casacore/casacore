@@ -31,7 +31,6 @@
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 
