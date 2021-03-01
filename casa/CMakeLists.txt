@@ -219,7 +219,6 @@ Utilities/Notice.cc
 Utilities/Precision.cc
 Utilities/RecordTransformable.cc
 Utilities/Regex.cc
-Utilities/RegSequence.cc
 Utilities/Sequence2.cc
 Utilities/Sort.cc
 Utilities/SortError.cc
@@ -635,9 +634,6 @@ Utilities/PtrHolder.h
 Utilities/PtrHolder.tcc
 Utilities/RecordTransformable.h
 Utilities/Regex.h
-Utilities/Register.h
-Utilities/Register.tcc
-Utilities/RegSequence.h
 Utilities/Sequence.h
 Utilities/Sequence.tcc
 Utilities/SortError.h

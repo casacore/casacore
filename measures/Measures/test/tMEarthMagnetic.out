@@ -114,7 +114,6 @@ near:           0
 nearAbs:        0
 !=:             1
 ==:             0
-type:           3
 All MVEarthMagnetic functions: ok
 ----------------------------
 Exercise all MEarthMagnetic function
@@ -127,8 +126,6 @@ get:            [4.16523e+06, 180543, 2.49133e+06] cm.m-1.kg.s-2.A-1
 getAngle:       [2.48195, 30.861] deg
 getDefaultType: IGRF
 getRefString:   HADEC
-myType:         4
-type:           4
 All MEarthMagnetic functions: ok
 ---------------------------
 ------------------------------------------

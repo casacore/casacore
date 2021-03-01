@@ -29,7 +29,6 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/casa/Utilities/Assert.h>
 
@@ -107,12 +106,8 @@ const String &MPosition::showMe() {
     return name;
 }
 
-uInt MPosition::type() const {
-  return Register(static_cast<MPosition *>(0));
-}
-
 void MPosition::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MPosition *>(0))) {
+  if (!dynamic_cast<const MPosition*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MPosition::showMe()));
   }
@@ -218,7 +213,7 @@ Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
 }
 
 Bool MPosition::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MPosition *>(0))) return False;
+  if (!dynamic_cast<const MPosition*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -239,10 +234,6 @@ const String &MPosition::getDefaultType() const {
 
 String MPosition::getRefString() const {
   return MPosition::showType(ref.getType());
-}
-
-uInt MPosition::myType() {
-  return Register(static_cast<MPosition *>(0));
 }
 
 Quantum<Vector<Double> > MPosition::get(const Unit &inunit) const {

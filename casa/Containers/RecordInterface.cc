@@ -703,16 +703,9 @@ RecordNotice::RecordNotice (NoticeType changeType, uInt fieldNumber)
   fieldNumber_p (fieldNumber)
 {}
 
-uInt RecordNotice::type() const
+bool RecordNotice::operator== (const Notice& that) const
 {
-    // This function returns the "Notice" type, retrieved
-    // from the "type registry".
-    return Register(this);
-}
-
-int RecordNotice::operator== (const Notice& that) const
-{
-    if (type() != that.type()) {
+    if (typeid(*this) != typeid(that)) {
 	return 0;
     }
     return (changeType_p  == ((const RecordNotice&)that).changeType_p)

@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/measures/Measures/MFrequency.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/measures/Measures/MCDoppler.h>
 #include <casacore/measures/Measures/MeasConvert.h>
@@ -80,12 +79,8 @@ const String &MFrequency::showMe() {
     return name;
 }
 
-uInt MFrequency::type() const {
-  return Register(static_cast<MFrequency *>(0));
-}
-
 void MFrequency::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MFrequency *>(0))) {
+  if (!dynamic_cast<const MFrequency*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MFrequency::showMe()));
   }
@@ -230,7 +225,7 @@ Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
 }
 
 Bool MFrequency::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MFrequency *>(0))) return False;
+  if (!dynamic_cast<const MFrequency*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -251,10 +246,6 @@ const String &MFrequency::getDefaultType() const {
 
 String MFrequency::getRefString() const {
   return MFrequency::showType(ref.getType());
-}
-
-uInt MFrequency::myType() {
-  return Register(static_cast<MFrequency *>(0));
 }
 
 Quantity MFrequency::get(const Unit &un) const {
