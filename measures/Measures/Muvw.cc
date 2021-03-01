@@ -30,7 +30,6 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -82,12 +81,8 @@ const String &Muvw::showMe() {
     return name;
 }
 
-uInt Muvw::type() const {
-  return Register(static_cast<Muvw *>(0));
-}
-
 void Muvw::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<Muvw *>(0))) {
+  if (!dynamic_cast<const Muvw*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    Muvw::showMe()));
   }
@@ -266,7 +261,7 @@ Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
 }
 
 Bool Muvw::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<Muvw *>(0))) return False;
+  if (!dynamic_cast<const Muvw*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -287,10 +282,6 @@ const String &Muvw::getDefaultType() const {
 
 String Muvw::getRefString() const {
   return Muvw::showType(ref.getType());
-}
-
-uInt Muvw::myType() {
-  return Register(static_cast<Muvw *>(0));
 }
 
 Quantum<Vector<Double> > Muvw::get(const Unit &inunit) const {

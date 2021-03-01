@@ -31,7 +31,6 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -84,12 +83,8 @@ const String &MBaseline::showMe() {
     return name;
 }
 
-uInt MBaseline::type() const {
-  return Register(static_cast<MBaseline *>(0));
-}
-
-void MBaseline::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MBaseline *>(0))) {
+void MBaseline::assure(const Measure& in) {
+  if (!dynamic_cast<const MBaseline*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MBaseline::showMe()));
   }
@@ -268,7 +263,7 @@ Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
 }
 
 Bool MBaseline::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MBaseline *>(0))) return False;
+  if (!dynamic_cast<const MBaseline*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -289,10 +284,6 @@ const String &MBaseline::getDefaultType() const {
 
 String MBaseline::getRefString() const {
   return MBaseline::showType(ref.getType());
-}
-
-uInt MBaseline::myType() {
-  return Register(static_cast<MBaseline *>(0));
 }
 
 Quantum<Vector<Double> > MBaseline::get(const Unit &inunit) const {

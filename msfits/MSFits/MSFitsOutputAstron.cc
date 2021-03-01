@@ -1499,7 +1499,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
       *idno = 1 + fieldidMap[fieldnum];
       dir=msfc.phaseDirMeas(fieldnum);
       *source = inname(fieldnum) + "                ";
-      if (dir.type()==MDirection::B1950) {
+      if (dir.getRefPtr()->getType()==MDirection::B1950) {
 	*epoch = 1950.;
       }
       
@@ -1540,7 +1540,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
       	  if (sourceColumns->direction().isDefined(rownr)) {
       	    dir = sourceColumns->directionMeas()(rownr);
       	  }
-      	  if (dir.type()==MDirection::B1950) {
+      	  if (dir.getRefPtr()->getType()==MDirection::B1950) {
       	    *epoch = 1950.;
       	  }
       	}

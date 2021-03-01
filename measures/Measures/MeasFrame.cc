@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures/MCFrame.h>
@@ -470,6 +469,7 @@ void MeasFrame::create() {
 
 void MeasFrame::fill(const Measure *in) {
   if (in) {
+<<<<<<< HEAD
     uInt locker = 0;
     if (in->type() == Register(static_cast<MEpoch *>(0))) {
       lock(locker);
@@ -494,6 +494,19 @@ void MeasFrame::fill(const Measure *in) {
       delete rep->radval;
       rep->radval = in->clone();
       unlock(locker);
+=======
+    if (dynamic_cast<const MEpoch*>(in)) {
+      rep->epval = std::unique_ptr<Measure>(in->clone());
+      makeEpoch();
+    } else if (dynamic_cast<const MPosition*>(in)) {
+      rep->posval = std::unique_ptr<Measure>(in->clone());
+      makePosition();
+    } else if (dynamic_cast<const MDirection*>(in)) {
+      rep->dirval = std::unique_ptr<Measure>(in->clone());
+      makeDirection();
+    } else if (dynamic_cast<const MRadialVelocity*>(in)) {
+      rep->radval = std::unique_ptr<Measure>(in->clone());
+>>>>>>> 9b6df3baa (Remove the custom typing system of casacore)
       makeRadialVelocity();
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +
