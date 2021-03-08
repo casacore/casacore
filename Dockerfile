@@ -1,0 +1,40 @@
+FROM kernsuite/base:7
+RUN docker-apt-upgrade
+RUN docker-apt-install \
+    clang \
+    casacore-data \
+    cmake \
+    flex \
+    bison \
+    libblas-dev \
+    liblapack-dev \
+    libcfitsio-dev \
+    wcslib-dev \
+    libfftw3-dev \
+    gfortran \
+    libncurses5-dev \
+    libreadline6-dev \
+    libhdf5-serial-dev \
+    libboost-dev \
+    libboost-python-dev \
+    python3-numpy
+ADD . /code
+RUN useradd -ms /bin/bash casacore
+RUN chown casacore.casacore /code
+USER casacore
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN cmake .. \
+    -DBUILD_TESTING=ON \
+    -DUSE_OPENMP=OFF \
+    -DUSE_HDF5=ON \
+    -DBUILD_PYTHON=OFF \
+    -DBUILD_PYTHON3=ON \
+    -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
+    -DDATA_DIR=/usr/share/casacore/data \
+    -DCMAKE_C_COMPILER=/usr/bin/clang \
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+RUN make -j2
+USER root
+RUN make install
+USER casacore
