@@ -5009,7 +5009,8 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         if (spwInfo[i].reffreq.getUnit() == emptyUnit) {
             spwInfo[i].reffreq.set(hz);
         }
-        // algorithm from thunter, CAS-5794, CAS-12592
+        // types of ALMA spws
+        // algorithm from thunter, CAS-5794, CAS-12592, CAS-13362
         if (name[i].contains(wvr)) {
             wvrFirst.insert(i);
             if (name[i] == wvrNominal) {
@@ -5017,25 +5018,21 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
             }
         }
         else if (
-            nchan >= 15
-            && ! (
-                nchan == 256 || nchan == 128 || nchan == 64 || nchan == 32
-                || nchan == 16 || nchan == 248 || nchan == 124
-                || nchan == 62 || nchan == 31
-            )
-        ) {
-            fdmSpw.insert(i);
-        }
-        else if (
             spwInfo[i].nchans == 1 && ! name[i].contains("FULL_RES")
         ) {
             avgSpw.insert(i);
         }
-        /*
-        else if (spwInfo[i].nchans == 4) {
-            wvrSpw.insert(i);
+        else if (
+            spwInfo[i].bandwidth < 2e9 || (
+                nchan >= 15 && ! (
+                    nchan == 256 || nchan == 128 || nchan == 64
+                    || nchan == 32 || nchan == 16 || nchan == 248
+                    || nchan == 124 || nchan == 62 || nchan == 31
+                )
+            )
+        ) {
+            fdmSpw.insert(i);
         }
-        */
         else {
             tdmSpw.insert(i);
         }
