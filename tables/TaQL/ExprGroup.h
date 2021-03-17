@@ -81,9 +81,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     TableExprNodeRep::NodeDataType itsDT;
-    Bool   itsBool;
-    Int64  itsInt64;
-    Double itsDouble;
+    Bool   itsBool = false;
+    Int64  itsInt64 = 0;
+    Double itsDouble = 0.0;
     String itsString;
   };
 

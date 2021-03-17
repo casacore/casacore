@@ -40,7 +40,6 @@ class VACExample
 public:
     VACExample(): x_p(0), y_p(0) {}
     VACExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
-    VACExample(const VACExample& that): x_p(that.x_p), y_p(that.y_p), z_p(that.z_p) {}
     static String dataTypeId()
 	{ return "VACExample"; }
     Int x() const

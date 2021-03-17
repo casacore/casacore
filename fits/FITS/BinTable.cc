@@ -119,6 +119,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 			    maxsize = nbytes;
 			}
 			// fall throught to BYTE for the actual allocation
+			CASACORE_FALLTHROUGH;
 		    case FITS::BYTE: 
 			vaptr_p[i] = (void *)(new uChar[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);
@@ -174,7 +175,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
    String kwname;
    // will hold the index portion for indexed keywords, this should be
    // more than enough space
-   char index[8];
+   char index[11];
    while ((kw = kwl.next())) {
        if (!kw->isreserved() || (sdfits && isSDFitsColumn(kw->kw().name()))) {
 	   // Get the kw name and remove the trailing spaces

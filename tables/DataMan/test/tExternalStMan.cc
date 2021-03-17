@@ -73,31 +73,31 @@ namespace casacore {
     ~LofarStMan();
 
     // Clone this object.
-    virtual DataManager* clone() const;
+    virtual DataManager* clone() const override;
   
     // Get the type name of the data manager (i.e. LofarStMan).
-    virtual String dataManagerType() const;
+    virtual String dataManagerType() const override;
   
     // Get the name given to the storage manager (in the constructor).
-    virtual String dataManagerName() const;
+    virtual String dataManagerName() const override;
   
     // Record a record containing data manager specifications.
-    virtual Record dataManagerSpec() const;
+    virtual Record dataManagerSpec() const override;
 
     // The storage manager is not a regular one.
-    virtual Bool isRegular() const;
+    virtual Bool isRegular() const override;
   
     // The storage manager cannot add rows.
-    virtual Bool canAddRow() const;
+    virtual Bool canAddRow() const override;
   
     // The storage manager cannot delete rows.
-    virtual Bool canRemoveRow() const;
+    virtual Bool canRemoveRow() const override;
   
     // The storage manager can add columns, which does not really do something.
-    virtual Bool canAddColumn() const;
+    virtual Bool canAddColumn() const override;
   
     // Columns can be removed, but it does not do anything at all.
-    virtual Bool canRemoveColumn() const;
+    virtual Bool canRemoveColumn() const override;
   
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
@@ -122,53 +122,53 @@ namespace casacore {
   
     // Flush and optionally fsync the data.
     // It does nothing, and returns False.
-    virtual Bool flush (AipsIO&, Bool doFsync);
+    virtual Bool flush (AipsIO&, Bool doFsync) override;
   
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create (uInt nrrow) override;
   
     // Open the storage manager file for an existing table.
     // Return the number of rows in the data file.
     // <group>
-    virtual void open (uInt nrrow, AipsIO&); //# should never be called
-    virtual uInt open1 (uInt nrrow, AipsIO&);
+    virtual void open (uInt nrrow, AipsIO&) override; //# should never be called
+    virtual uInt open1 (uInt nrrow, AipsIO&) override;
     // </group>
 
     // Prepare the columns.
-    virtual void prepare();
+    virtual void prepare() override;
 
     // Resync the storage manager with the new file contents.
     // It does nothing.
     // <group>
-    virtual void resync (uInt nrrow);   //# should never be called
-    virtual uInt resync1 (uInt nrrow);
+    virtual void resync (uInt nrrow) override;   //# should never be called
+    virtual uInt resync1 (uInt nrrow) override;
     // </group>
   
     // Reopen the storage manager files for read/write.
     // It does nothing.
-    virtual void reopenRW();
+    virtual void reopenRW() override;
   
     // The data manager will be deleted (because all its columns are
     // requested to be deleted).
     // So clean up the things needed (e.g. delete files).
-    virtual void deleteManager();
+    virtual void deleteManager() override;
 
     // Add rows to the storage manager.
     // It cannot do it, so throws an exception.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow (uInt nrrow) override;
   
     // Delete a row from all columns.
     // It cannot do it, so throws an exception.
-    virtual void removeRow (uInt rowNr);
+    virtual void removeRow (uInt rowNr) override;
   
     // Do the final addition of a column.
     // It won't do anything.
-    virtual void addColumn (DataManagerColumn*);
+    virtual void addColumn (DataManagerColumn*) override;
   
     // Remove a column from the data file.
     // It won't do anything.
-    virtual void removeColumn (DataManagerColumn*);
+    virtual void removeColumn (DataManagerColumn*) override;
   
     // Create a column in the storage manager on behalf of a table column.
     // The caller has to delete the newly created object.
@@ -176,15 +176,15 @@ namespace casacore {
     // Create a scalar column.
     virtual DataManagerColumn* makeScalarColumn (const String& aName,
                                                  int aDataType,
-                                                 const String& aDataTypeID);
+                                                 const String& aDataTypeID) override;
     // Create a direct array column.
     virtual DataManagerColumn* makeDirArrColumn (const String& aName,
                                                  int aDataType,
-                                                 const String& aDataTypeID);
+                                                 const String& aDataTypeID) override;
     // Create an indirect array column.
     virtual DataManagerColumn* makeIndArrColumn (const String& aName,
                                                  int aDataType,
-                                                 const String& aDataTypeID);
+                                                 const String& aDataTypeID) override;
     // </group>
 
     //# Declare member variables.
@@ -204,9 +204,9 @@ namespace casacore {
     {}
     virtual ~LofarColumn();
     // Most columns are not writable (only DATA is writable).
-    virtual Bool isWritable() const;
+    virtual Bool isWritable() const override;
     // Set column shape of fixed shape columns; it does nothing.
-    virtual void setShapeColumn (const IPosition& shape);
+    virtual void setShapeColumn (const IPosition& shape) override;
     // Prepare the column. By default it does nothing.
     virtual void prepareCol();
   protected:
@@ -221,7 +221,7 @@ namespace casacore {
     explicit Ant1Column (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~Ant1Column();
-    virtual void getIntV (uInt rowNr, Int* dataPtr);
+    virtual void getIntV (uInt rowNr, Int* dataPtr) override;
   };
 
   // <summary>ANTENNA2 column in the LOFAR Storage Manager.</summary>
@@ -232,7 +232,7 @@ namespace casacore {
     explicit Ant2Column (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~Ant2Column();
-    virtual void getIntV (uInt rowNr, Int* dataPtr);
+    virtual void getIntV (uInt rowNr, Int* dataPtr) override;
   };
 
   // <summary>TIME and TIME_CENTROID column in the LOFAR Storage Manager.</summary>
@@ -243,7 +243,7 @@ namespace casacore {
     explicit TimeColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~TimeColumn();
-    virtual void getdoubleV (uInt rowNr, Double* dataPtr);
+    virtual void getdoubleV (uInt rowNr, Double* dataPtr) override;
   };
 
   // <summary>INTERVAL and EXPOSURE column in the LOFAR Storage Manager.</summary>
@@ -254,7 +254,7 @@ namespace casacore {
     explicit IntervalColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~IntervalColumn();
-    virtual void getdoubleV (uInt rowNr, Double* dataPtr);
+    virtual void getdoubleV (uInt rowNr, Double* dataPtr) override;
   };
 
   // <summary>All columns in the LOFAR Storage Manager with value 0.</summary>
@@ -265,7 +265,7 @@ namespace casacore {
     explicit ZeroColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~ZeroColumn();
-    virtual void getIntV (uInt rowNr, Int* dataPtr);
+    virtual void getIntV (uInt rowNr, Int* dataPtr) override;
   private:
     Int itsValue;
   };
@@ -278,7 +278,7 @@ namespace casacore {
     explicit FalseColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FalseColumn();
-    virtual void getBoolV (uInt rowNr, Bool* dataPtr);
+    virtual void getBoolV (uInt rowNr, Bool* dataPtr) override;
   private:
     Bool itsValue;
   };
@@ -291,9 +291,10 @@ namespace casacore {
     explicit UvwColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~UvwColumn();
-    virtual IPosition shape (uInt rownr);
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
     virtual void getArraydoubleV (uInt rowNr,
-                                  Array<Double>* dataPtr);
+                                  Array<Double>* dataPtr) override;
   };
 
   // <summary>DATA column in the LOFAR Storage Manager.</summary>
@@ -304,12 +305,13 @@ namespace casacore {
     explicit DataColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~DataColumn();
-    virtual Bool isWritable() const;
-    virtual IPosition shape (uInt rownr);
+    virtual Bool isWritable() const override;
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
     virtual void getArrayComplexV (uInt rowNr,
-                                   Array<Complex>* dataPtr);
+                                   Array<Complex>* dataPtr) override;
     virtual void putArrayComplexV (uInt rowNr,
-                                   const Array<Complex>* dataPtr);
+                                   const Array<Complex>* dataPtr) override;
   };
 
   // <summary>FLAG column in the LOFAR Storage Manager.</summary>
@@ -320,9 +322,10 @@ namespace casacore {
     explicit FlagColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagColumn();
-    virtual IPosition shape (uInt rownr);
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
     virtual void getArrayBoolV (uInt rowNr,
-                                Array<Bool>* dataPtr);
+                                Array<Bool>* dataPtr) override;
   };
 
   // <summary>WEIGHT column in the LOFAR Storage Manager.</summary>
@@ -333,9 +336,10 @@ namespace casacore {
     explicit WeightColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~WeightColumn();
-    virtual IPosition shape (uInt rownr);
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
     virtual void getArrayfloatV (uInt rowNr,
-                                 Array<Float>* dataPtr);
+                                 Array<Float>* dataPtr) override;
   };
 
   // <summary>SIGMA column in the LOFAR Storage Manager.</summary>
@@ -346,9 +350,10 @@ namespace casacore {
     explicit SigmaColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~SigmaColumn();
-    virtual IPosition shape (uInt rownr);
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
     virtual void getArrayfloatV (uInt rowNr,
-                                 Array<Float>* dataPtr);
+                                 Array<Float>* dataPtr) override;
   };
 
   // <summary>WEIGHT_SPECTRUM column in the LOFAR Storage Manager.</summary>
@@ -359,9 +364,10 @@ namespace casacore {
     explicit WSpectrumColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~WSpectrumColumn();
-    virtual IPosition shape (uInt rownr);
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
     virtual void getArrayfloatV (uInt rowNr,
-                                 Array<Float>* dataPtr);
+                                 Array<Float>* dataPtr) override;
   };
 
   // <summary>FLAG_CATEGORY column in the LOFAR Storage Manager.</summary>
@@ -372,8 +378,10 @@ namespace casacore {
     explicit FlagCatColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagCatColumn();
-    virtual Bool isShapeDefined (uInt rownr);
-    virtual IPosition shape (uInt rownr);
+    using LofarColumn::isShapeDefined;
+    virtual Bool isShapeDefined (uInt rownr) override;
+    using LofarColumn::shape;
+    virtual IPosition shape (uInt rownr) override;
   };
 
 

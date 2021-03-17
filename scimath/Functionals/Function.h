@@ -219,14 +219,6 @@ class RecordInterface;
      template <class W, class X>
      Function(const Function<W,X> &other) : param_p(other.parameters()),
      arg_p(0), parset_p(other.parsetp()), locked_p(False) {}
-     Function(const Function<T,U> &other) :
-       Functional<typename FunctionTraits<T>::ArgType, U>        (other),
-       Functional<Vector<typename FunctionTraits<T>::ArgType>, U>(other),
-       param_p(other.param_p),
-       arg_p(other.arg_p),
-       parset_p(other.parset_p),
-       locked_p(False)
-     {}
      // </group>
      
      // Destructor

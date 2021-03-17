@@ -284,6 +284,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpComplex:
     case TpArrayComplex:
       nrElementsPerValue = 2;
+      CASACORE_FALLTHROUGH;
     case TpFloat:
     case TpArrayFloat:
       readFunc  = CanonicalConversion::getToLocal (static_cast<float*>(0));
@@ -292,6 +293,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpDComplex:
     case TpArrayDComplex:
       nrElementsPerValue = 2;
+      CASACORE_FALLTHROUGH;
     case TpDouble:
     case TpArrayDouble:
       readFunc  = CanonicalConversion::getToLocal (static_cast<double*>(0));
@@ -346,6 +348,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpComplex:
     case TpArrayComplex:
       nrElementsPerValue = 2;
+      CASACORE_FALLTHROUGH;
     case TpFloat:
     case TpArrayFloat:
       readFunc  = LECanonicalConversion::getToLocal (static_cast<float*>(0));
@@ -354,6 +357,7 @@ void ValType::getCanonicalFunc (DataType dt,
     case TpDComplex:
     case TpArrayDComplex:
       nrElementsPerValue = 2;
+      CASACORE_FALLTHROUGH;
     case TpDouble:
     case TpArrayDouble:
       readFunc  = LECanonicalConversion::getToLocal (static_cast<double*>(0));
@@ -378,17 +382,21 @@ Bool ValType::isPromotable (DataType from, DataType to)
     case TpChar:
 	if (to == TpShort)
 	    return True;
+	CASACORE_FALLTHROUGH;
     case TpShort:
 	if (to == TpInt)
 	    return True;
+	CASACORE_FALLTHROUGH;
     case TpInt:
 	if (to == TpInt64)
 	    return True;
+	CASACORE_FALLTHROUGH;
     case TpInt64:
     case TpFloat:
     case TpDouble:
 	if (to == TpFloat  ||  to == TpDouble)
 	    return True;
+	CASACORE_FALLTHROUGH;
     case TpComplex:
     case TpDComplex:
 	if (to == TpComplex  ||  to == TpDComplex)
@@ -397,9 +405,11 @@ Bool ValType::isPromotable (DataType from, DataType to)
     case TpUChar:
 	if (to == TpUShort)
 	    return True;
+	CASACORE_FALLTHROUGH;
     case TpUShort:
 	if (to == TpUInt)
 	    return True;
+	CASACORE_FALLTHROUGH;
     case TpUInt:
         if (to == TpInt64)
             return True;

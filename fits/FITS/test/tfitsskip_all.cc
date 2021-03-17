@@ -186,6 +186,7 @@ void do_binary_table(BinaryTableExtension &x) {
 			    maxsize = nbytes;
 			}
 			// fall through to byte for the actual allocation
+			CASACORE_FALLTHROUGH;
 		    case FITS::BYTE: 
 			vaptr[i] = (void *)(new unsigned char[maxsize]);
 			break;

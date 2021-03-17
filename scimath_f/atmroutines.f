@@ -732,7 +732,8 @@ C
          IF(L.EQ.1)B=DV1
          IF(IL.EQ.0.)A3=A3*FMEN(L)*FLIN(V,FMEN(L),B)
          IF(IL.EQ.1.)A3=A3*FMEN(L)*FVVW(V,FMEN(L),B)
-1     SUM=SUM+(A1+A2+A3)*EXP(-E)
+1     CONTINUE
+      SUM=SUM+(A1+A2+A3)*EXP(-E)
       KO2=SUM*KO2
 C
 C	RAYAS CON DN=2
@@ -803,7 +804,8 @@ C----------------------------------------------------------------------
          TOX=TOX+TEM*EXP(-OXI)*(1.-EXP(-OX))
          OXI=OXI+OX
          TEMI=TEMI+TEM*EXP(-KV)*(1.-EXP(-AG-OX))
-1     KV=AGU+OXI
+1     CONTINUE
+      KV=AGU+OXI
       KVAT=KV
       IF ( KV.LE.1.E-10 ) THEN
          IER = 1

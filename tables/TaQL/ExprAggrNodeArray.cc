@@ -136,6 +136,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         break;
       }
       // Fall through, so e.g. mean of ints can be done
+      CASACORE_FALLTHROUGH;
     case NTDouble:
       switch (funcType()) {
       case TableExprFuncNode::gminsFUNC:

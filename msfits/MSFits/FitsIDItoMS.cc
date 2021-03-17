@@ -3559,7 +3559,7 @@ Bool FITSIDItoMS1::handleGainCurve()
   ScalarColumn<Int> ytyp_2S;
   ScalarColumn<Float> gain_2S;
   ScalarColumn<Float> sens_2S;
-  Int ytyp, nterm;
+  Int ytyp = 0, nterm = 0;
   try {
     type_1.attach(gcTab, "TYPE_1");
     nterm_1.attach(gcTab, "NTERM_1");

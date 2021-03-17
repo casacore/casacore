@@ -594,11 +594,11 @@ int FitsInput::skip_hdu() { //Skip an entire header-data unit
     }
 
     // check if the header of the current HDU is properly ended
-    char l_message[FLEN_ERRMSG];
+    char l_message[137 /*FLEN_ERRMSG*/];
     char l_keyname[FLEN_KEYWORD];
     char l_keyval[FLEN_VALUE];
     char l_card[FLEN_CARD];
-    char* l_comm = NULL;
+    char* l_comm = nullptr;
 
     int l_status = 0;
 
