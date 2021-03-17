@@ -134,7 +134,7 @@ void FitGaussian<T>::setNumGaussians(uInt numgaussians)
   itsRetryFctr.resize();
   itsFirstEstimate.resize();
   itsMask.resize();
-  if (itsDimension*3!=0 && itsNGaussians) {
+  if (itsDimension*3 != 0 && itsNGaussians) {
     itsMask.resize(itsNGaussians, itsDimension*3); itsMask = 1;
   }
 }
