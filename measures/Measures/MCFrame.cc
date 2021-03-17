@@ -490,7 +490,6 @@ void MCFrame::makeEpoch() {
   epConvTDB = new MEpoch::Convert(*(myf.epoch()), REFTDB);
   epConvUT1 = new MEpoch::Convert(*(myf.epoch()), REFUT1);
   epConvTT  = new MEpoch::Convert(*(myf.epoch()), REFTT);
-  uInt locker = 0;			// locking assurance
   if (epTDBp) {
     delete epTDBp; epTDBp = 0;
   }
@@ -500,14 +499,12 @@ void MCFrame::makeEpoch() {
   if (epTTp) {
     delete epTTp; epTTp = 0;
   }
-  myf.lock(locker);
   if (epConvLAST) {
     delete static_cast<MEpoch::Convert *>(epConvLAST);
     epConvLAST = 0;
   }
   epConvLAST = new MEpoch::Convert(*(myf.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, this->myf));
-  myf.unlock(locker);
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
   }
@@ -550,7 +547,6 @@ void MCFrame::makePosition() {
 void MCFrame::makeDirection() {
   static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
   uInt locker =0;
-  myf.lock(locker);
   if (dirConvJ2000) {
     delete static_cast<MDirection::Convert *>(dirConvJ2000);
     dirConvJ2000 = 0;
@@ -558,10 +554,8 @@ void MCFrame::makeDirection() {
   dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::J2000,
 							 this->myf));
-  myf.unlock(locker);
 
   static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
-  myf.lock(locker);
   if (dirConvB1950) {
     delete static_cast<MDirection::Convert *>(dirConvB1950);
     dirConvB1950 = 0;
@@ -569,8 +563,6 @@ void MCFrame::makeDirection() {
   dirConvB1950 = new MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::B1950,
 							 this->myf));
-  myf.unlock(locker);
-  myf.lock(locker);
   if (dirConvApp) {
     delete static_cast<MDirection::Convert *>(dirConvApp);
     dirConvApp = 0;
@@ -578,7 +570,6 @@ void MCFrame::makeDirection() {
   dirConvApp = new MDirection::Convert(*(myf.direction()),
 				       MDirection::Ref(MDirection::APP,
 						       this->myf));
-  myf.unlock(locker);
   if (j2000Longp) {
     delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;

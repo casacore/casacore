@@ -44,96 +44,61 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Representation class
 class FrameRep {
 public:
-  // Constructor
-  FrameRep() :
-    epval(0), posval(0), dirval(0), radval(0), comval(0),
-    mymcf(0), cnt(1) {}
-  // Destructor
-  ~FrameRep() {
-    delete epval;
-    delete posval;
-    delete dirval;
-    delete radval;
-    delete comval;
-    delete mymcf;		// delete conversion frame data
-  }
-  
-  // The actual measures
-  // <group>
   // Epoch in time
-  Measure *epval;
+  std::unique_ptr<Measure> epval;
   // Position
-  Measure *posval;
+  std::unique_ptr<Measure> posval;
   // Direction
-  Measure *dirval;
+  std::unique_ptr<Measure> dirval;
   // Radial velocity
-  Measure *radval;
+  std::unique_ptr<Measure> radval;
   // Comet
-  MeasComet *comval;
+  std::unique_ptr<MeasComet> comval;
   // Pointer to belonging conversion frame
-  MCFrame *mymcf;
-  // Usage count
-  Int cnt;
+  std::unique_ptr<MCFrame> mymcf;
 };
 
 // MeasFrame class
 
 //# Constructors
-MeasFrame::MeasFrame() : rep(0) {
+MeasFrame::MeasFrame() : rep() {
   create();
 }
 
-MeasFrame::MeasFrame(const Measure &meas1) : rep(0) {
+MeasFrame::MeasFrame(const Measure &meas1) : rep() {
   create();
   fill(&meas1);
 }
 
-MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) : rep(0) {
+MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) : rep() {
   create();
   fill(&meas1);
   fill(&meas2);
 }
 
 MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2,
-		     const Measure &meas3) : rep(0) {
+		     const Measure &meas3) : rep() {
   create();
   fill(&meas1);
   fill(&meas2);
   fill(&meas3);
 }
 
-MeasFrame::MeasFrame(const MeasFrame &other) {
-  rep = other.rep;
-  if (rep) rep->cnt++;
-}
-
-// Destructor
-MeasFrame::~MeasFrame() {
-  if (rep && rep->cnt && --rep->cnt == 0) delete rep;
-}
-
-// Operators
-MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
-  if (this != &other) {
-    if (other.rep) other.rep->cnt++;
-    if (rep && rep->cnt && --rep->cnt == 0) delete rep;
-    rep = other.rep;
-  }
-  return *this;
-}
+// An explicit destructor is necessary because rep is unresolved during the header file
+MeasFrame::~MeasFrame() { }
 
 Bool MeasFrame::operator==(const MeasFrame &other) const {
-  return (rep == other.rep);
+  return rep == other.rep;
 }
 
 Bool MeasFrame::operator!=(const MeasFrame &other) const{
-  return (rep != other.rep);
+  return rep != other.rep;
 }
 
 // General member functions
 Bool MeasFrame::empty() const{
-  return ( !(rep && (rep->epval || rep->posval || 
-		     rep->dirval || rep->radval)) );
+  return !(rep && (rep->epval || rep->posval || 
+		     rep->dirval || rep->radval));
 }
 
 void MeasFrame::set(const Measure &meas1) {
@@ -183,11 +148,7 @@ void MeasFrame::resetEpoch(const MVEpoch &val) {
 
 void MeasFrame::resetEpoch(const Measure &val) {
   if (rep && rep->epval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->epval;
-    rep->epval = val.clone();
-    unlock(locker);
+    rep->epval = std::unique_ptr<Measure>(val.clone());
     makeEpoch();
   } else {
     errorReset(String("Epoch"));
@@ -213,11 +174,7 @@ void MeasFrame::resetPosition(const MVPosition  &val) {
 
 void MeasFrame::resetPosition(const Measure &val) {
   if (rep && rep->posval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->posval;
-    rep->posval = val.clone();
-    unlock(locker);
+    rep->posval = std::unique_ptr<Measure>(val.clone());
     makePosition();
   } else {
     errorReset(String("Position"));
@@ -243,11 +200,7 @@ void MeasFrame::resetDirection(const MVDirection  &val) {
 
 void MeasFrame::resetDirection(const Measure &val) {
   if (rep && rep->dirval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->dirval;
-    rep->dirval = val.clone();
-    unlock(locker);
+    rep->dirval = std::unique_ptr<Measure>(val.clone());
     makeDirection();
   } else {
     errorReset(String("Direction"));
@@ -273,11 +226,7 @@ void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
 
 void MeasFrame::resetRadialVelocity(const Measure &val) {
   if (rep && rep->radval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->radval;
-    rep->radval = val.clone();
-    unlock(locker);
+    rep->radval = std::unique_ptr<Measure>(val.clone());
     makeRadialVelocity();
   } else {
     errorReset(String("RadialVelocity"));
@@ -293,37 +242,28 @@ void MeasFrame::resetComet(const MeasComet &val) {
 }
 
 const Measure* MeasFrame::epoch() const{
-  if (rep) return rep->epval;
-  return 0;
+  if (rep) return rep->epval.get();
+  return nullptr;
 }
 
 const Measure* MeasFrame::position() const{
-  if (rep) return rep->posval;
-  return 0;
+  if (rep) return rep->posval.get();
+  return nullptr;
 }
 
 const Measure* MeasFrame::direction() const{
-  if (rep) return rep->dirval;
-  return 0;
+  if (rep) return rep->dirval.get();
+  return nullptr;
 }
 
 const Measure* MeasFrame::radialVelocity() const{
-  if (rep) return rep->radval;
-  return 0;
+  if (rep) return rep->radval.get();
+  return nullptr;
 }
 
 const MeasComet* MeasFrame::comet() const{
-  if (rep) return rep->comval;
-  return 0;
-}
-
-void MeasFrame::lock(uInt &locker) {
-  locker = 1;
-  if (rep) locker = rep->cnt++;
-}
-
-void MeasFrame::unlock(const uInt locker) {
-  if (rep) rep->cnt = locker;
+  if (rep) return rep->comval.get();
+  return nullptr;
 }
 
 Bool MeasFrame::getTDB(Double &tdb) const {
@@ -460,40 +400,24 @@ Bool MeasFrame::getComet(MVPosition &tdb) const {
 
 void MeasFrame::create() {
   if (!rep) {
-    rep = new FrameRep();
-    uInt locker = 0;
-    lock(locker);
-    rep->mymcf = new MCFrame(*this);
-    unlock(locker);
+    rep.reset(new FrameRep());
+    rep->mymcf = std::unique_ptr<MCFrame>(new MCFrame(*this));
   }
 }
 
 void MeasFrame::fill(const Measure *in) {
   if (in) {
-    uInt locker = 0;
-    if (in->type() == Register(static_cast<MEpoch *>(0))) {
-      lock(locker);
-      delete rep->epval;
-      rep->epval = in->clone();
-      unlock(locker);
+    if (in->type() == Register(static_cast<MEpoch *>(nullptr))) {
+      rep->epval = std::unique_ptr<Measure>(in->clone());
       makeEpoch();
-    } else if (in->type() == Register(static_cast<MPosition *>(0))) {
-      lock(locker);
-      delete rep->posval;
-      rep->posval = in->clone();
-      unlock(locker);
+    } else if (in->type() == Register(static_cast<MPosition *>(nullptr))) {
+      rep->posval = std::unique_ptr<Measure>(in->clone());
       makePosition();
-    } else if (in->type() == Register(static_cast<MDirection *>(0))) {
-      lock(locker);
-      delete rep->dirval;
-      rep->dirval = in->clone();
-      unlock(locker);
+    } else if (in->type() == Register(static_cast<MDirection *>(nullptr))) {
+      rep->dirval = std::unique_ptr<Measure>(in->clone());
       makeDirection();
-    } else if (in->type() == Register(static_cast<MRadialVelocity *>(0))) {
-      lock(locker);
-      delete rep->radval;
-      rep->radval = in->clone();
-      unlock(locker);
+    } else if (in->type() == Register(static_cast<MRadialVelocity *>(nullptr))) {
+      rep->radval = std::unique_ptr<Measure>(in->clone());
       makeRadialVelocity();
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +
@@ -504,11 +428,11 @@ void MeasFrame::fill(const Measure *in) {
 
 void MeasFrame::fill(const MeasComet *in) {
   if (in) {
-    delete rep->comval; rep->comval = 0;
+    rep->comval.reset();
     if (in->ok()) {
-      rep->comval = in->clone();
+      rep->comval = std::unique_ptr<MeasComet>(in->clone());
       if (!rep->comval->ok()) {
-	delete rep->comval; rep->comval = 0;
+        rep->comval.reset();
       }
     }
     if (rep->comval) {
