@@ -29,7 +29,6 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/Quanta/MVAngle.h>
@@ -153,12 +152,8 @@ const String &MDirection::showMe() {
     return name;
 }
 
-uInt MDirection::type() const {
-  return Register(static_cast<MDirection *>(0));
-}
-
 void MDirection::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MDirection *>(0))) {
+  if (!dynamic_cast<const MDirection *>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDirection::showMe()));
   }
@@ -394,7 +389,7 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 }
 
 Bool MDirection::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MDirection *>(0))) return False;
+  if (!dynamic_cast<const MDirection*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -415,10 +410,6 @@ const String &MDirection::getDefaultType() const {
 
 String MDirection::getRefString() const {
   return MDirection::showType(ref.getType());
-}
-
-uInt MDirection::myType() {
-  return Register(static_cast<MDirection *>(0));
 }
 
 Bool MDirection::isModel() const {

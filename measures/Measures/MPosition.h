@@ -150,7 +150,6 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   // <group>
   virtual const String &tellMe() const;
   static const String &showMe();
-  virtual uInt type() const;
   static void assure(const Measure &in);
   // </group>
   // Translate reference code. The uInt version has a check for valid codes
@@ -199,8 +198,6 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  // Get my type (as Register)
-  static uInt myType();
   
   // Get Measure data
   // <group>

@@ -30,7 +30,6 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicSL/Constants.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 #include <casacore/casa/Quanta/Euler.h>
 #include <casacore/casa/Quanta/UnitVal.h>
@@ -162,12 +161,8 @@ MVuvw MVuvw::operator-(const MVuvw &right) const{
 
 //# Member functions
 
-uInt MVuvw::type() const {
-  return Register(static_cast<MVuvw *>(0));
-}
-
 void MVuvw::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVuvw *>(0))) {
+  if (!dynamic_cast<const MVuvw*>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVuvw"));
   }
 }

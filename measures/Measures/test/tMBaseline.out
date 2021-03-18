@@ -108,7 +108,6 @@ near:           0
 nearAbs:        0
 !=:             1
 ==:             0
-type:           4
 All MVBaseline functions: ok
 ----------------------------
 Exercise all MBaseline function
@@ -121,7 +120,5 @@ get:            [10000, 1000, 1e-06] cm
 getAngle:       [5.71059, 5.70114e-09] deg
 getDefaultType: ITRF
 getRefString:   HADEC
-myType:         5
-type:           5
 All MBaseline functions: ok
 ---------------------------

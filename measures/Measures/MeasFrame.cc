@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures/MCFrame.h>
@@ -407,16 +406,16 @@ void MeasFrame::create() {
 
 void MeasFrame::fill(const Measure *in) {
   if (in) {
-    if (in->type() == Register(static_cast<MEpoch *>(nullptr))) {
+    if (dynamic_cast<const MEpoch*>(in)) {
       rep->epval = std::unique_ptr<Measure>(in->clone());
       makeEpoch();
-    } else if (in->type() == Register(static_cast<MPosition *>(nullptr))) {
+    } else if (dynamic_cast<const MPosition*>(in)) {
       rep->posval = std::unique_ptr<Measure>(in->clone());
       makePosition();
-    } else if (in->type() == Register(static_cast<MDirection *>(nullptr))) {
+    } else if (dynamic_cast<const MDirection*>(in)) {
       rep->dirval = std::unique_ptr<Measure>(in->clone());
       makeDirection();
-    } else if (in->type() == Register(static_cast<MRadialVelocity *>(nullptr))) {
+    } else if (dynamic_cast<const MRadialVelocity*>(in)) {
       rep->radval = std::unique_ptr<Measure>(in->clone());
       makeRadialVelocity();
     } else {

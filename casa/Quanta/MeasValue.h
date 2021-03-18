@@ -147,16 +147,6 @@ public:
   void dummy_operator() const {;};
   
   //# General Member Functions
-  // Assert that we are the correct MeasValue type
-  // <thrown>
-  //   <li> AipsError if wrong MeasValue type
-  // </thrown>
-  // Each Measure should have:
-  // <src> static void assure(const MeasValue &in); </src>
-  // Get the type (== Register(M*)) of derived MeasValue
-  // <group>
-  virtual uInt type() const = 0;
-  // </group>
   // Print a MeasValue
   virtual void print(ostream &os) const = 0;
   

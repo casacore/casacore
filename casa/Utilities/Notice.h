@@ -65,11 +65,8 @@ public:
 
     virtual ~Notice();
 
-    // Return the identification number of the <src>Notice</src> type.
-    virtual uInt type() const = 0;
-   
     // Compare two <src>Notice</src>s.
-    virtual int operator==(const Notice &) const = 0;
+    virtual bool operator==(const Notice &) const = 0;
 };
 
 // <summary>base class for notice originators</summary> 

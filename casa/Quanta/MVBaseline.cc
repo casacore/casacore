@@ -29,7 +29,6 @@
 #include <casacore/casa/Quanta/MVBaseline.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/Quanta/QMath.h>
@@ -152,12 +151,8 @@ MVBaseline MVBaseline::operator-(const MVBaseline &right) const{
 
 //# Member functions
 
-uInt MVBaseline::type() const {
-  return Register(static_cast<MVBaseline *>(0));
-}
-
 void MVBaseline::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVBaseline *>(0))) {
+  if (!dynamic_cast<const MVBaseline*>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVBaseline"));
   }
 }

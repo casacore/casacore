@@ -205,7 +205,6 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   // <group>
   virtual const String &tellMe() const;
   static const String &showMe();
-  virtual uInt type() const;
   static void assure(const Measure &in);
   // </group>
   // Translate reference code. The uInt version has a check for valid codes
@@ -251,8 +250,6 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  // Get my type (as Register)
-  static uInt myType();
   
   // Get radial velocity in specified units
   Quantity get(const Unit &un) const;

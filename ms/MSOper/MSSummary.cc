@@ -821,7 +821,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os << "z";
         os << endl;
         vector<MPosition> antPos = _msmd->getAntennaPositions();
-        Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
+        Bool posIsITRF = antPos[0].getRefPtr()->getType() != MPosition::ITRF;
         vector<QVD> offsets = _msmd->getAntennaOffsets();
         QVD diameters = _msmd->getAntennaDiameters();
         std::set<Int>::const_iterator iter = antIds.begin();

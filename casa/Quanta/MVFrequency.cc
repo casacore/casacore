@@ -29,7 +29,6 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/MVFrequency.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -127,12 +126,8 @@ Bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
 
 // Member functions
 
-uInt MVFrequency::type() const {
-  return Register(static_cast<MVFrequency *>(0));
-}
-
 void MVFrequency::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVFrequency *>(0))) {
+  if (!dynamic_cast<const MVFrequency*>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVFrequency"));
   }
 }

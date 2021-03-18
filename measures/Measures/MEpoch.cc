@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MEpoch.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -77,12 +76,8 @@ const String &MEpoch::showMe() {
   return name;
 }
 
-uInt MEpoch::type() const {
-  return Register(static_cast<MEpoch *>(0));
-}
-
 void MEpoch::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MEpoch *>(0))) {
+  if (!dynamic_cast<const MEpoch*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEpoch::showMe()));
   }
@@ -220,7 +215,7 @@ Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
 }
 
 Bool MEpoch::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MEpoch *>(0))) return False;
+  if (!dynamic_cast<const MEpoch*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -254,10 +249,6 @@ String MEpoch::getRefString() const {
   if ((ref.getType() & MEpoch::RAZE) != 0) x = String("R_");
   x += MEpoch::showType(ref.getType());
   return x;
-}
-
-uInt MEpoch::myType() {
-  return Register(static_cast<MEpoch *>(0));
 }
 
 Quantity MEpoch::get(const Unit &inunit) const {

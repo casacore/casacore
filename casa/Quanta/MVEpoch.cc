@@ -31,7 +31,6 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/MVEpoch.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -150,12 +149,8 @@ Bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
 
 //# Member functions
 
-uInt MVEpoch::type() const {
-  return Register(static_cast<MVEpoch *>(0));
-}
-
 void MVEpoch::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVEpoch *>(0))) {
+  if (!dynamic_cast<const MVEpoch*>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVEpoch"));
   }
 }

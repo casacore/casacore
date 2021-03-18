@@ -3402,7 +3402,7 @@ vector<QVD> MSMetaData::getAntennaOffsets() const {
         return _antennaOffsets;
     }
     MPosition obsPos = getObservatoryPosition(0);
-    if (obsPos.type() != MPosition::ITRF) {
+    if (obsPos.getRef().getType() != MPosition::ITRF) {
         MeasConvert<MPosition> toItrf(obsPos, MPosition::ITRF);
         obsPos = toItrf(obsPos);
     }
