@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String CoordinateSystem::_class = "CoordinateSystem";
 
-Mutex CoordinateSystem::_mapInitMutex;
+std::mutex CoordinateSystem::_mapInitMutex;
 map<String, String> CoordinateSystem::_friendlyAxisMap = map<String, String>();
 
 
@@ -4653,7 +4653,7 @@ Vector<Int> CoordinateSystem::linearAxesNumbers() const {
 }
 
 void CoordinateSystem::_initFriendlyAxisMap() {
-        ScopedMutexLock lock(_mapInitMutex);
+        std::lock_guard<std::mutex> lock(_mapInitMutex);
 	if (_friendlyAxisMap.size() == 0) {
 		_friendlyAxisMap["velocity"] = "spectral";
 		_friendlyAxisMap["frequency"] = "spectral";

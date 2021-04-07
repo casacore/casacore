@@ -29,9 +29,10 @@
 
 #include <casacore/casa/aips.h>
 
+#include <cmath>
 #include <map>
+#include <mutex>
 #include <set>
-#include <math.h>
 
 namespace casacore {
 
@@ -58,7 +59,7 @@ public:
 
 private:
     static std::map<uInt64, Double> _nptsToMaxZScore;
-    static Mutex _mutex;
+    static std::mutex _mutex;
 
 };
 

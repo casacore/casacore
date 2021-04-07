@@ -12,7 +12,6 @@ tIBMConversion
 tLECanonicalConversion
 tMemoryTrace
 tModcompConversion
-tMutex
 tPath
 tPrecTimer
 tRegularFile

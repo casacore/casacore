@@ -30,8 +30,9 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/vector.h>
-#include <casacore/casa/OS/Mutex.h>
+
+#include <mutex>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -119,8 +120,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   private:
     //# Data
     // The Stack
-    vector<T*> stack_p;
-    Mutex      mutex_p;
+    std::vector<T*> stack_p;
+    std::mutex mutex_p;
 
     //# Constructors
     // All ctor and assignment constructors and assignment (not implemented)

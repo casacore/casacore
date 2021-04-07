@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Data
 AipsrcVector<Bool> AipsrcVector<Bool>::myp_p;
-Mutex AipsrcVector<Bool>::theirMutex;
+std::mutex AipsrcVector<Bool>::theirMutex;
 
 //# Constructor
 AipsrcVector<Bool>::AipsrcVector() : 
@@ -74,7 +74,7 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
 
 uInt AipsrcVector<Bool>::registerRC(const String &keyword,
 				    const Vector<Bool> &deflt) {
-  ScopedMutexLock lock(theirMutex);
+  std::lock_guard<std::mutex> lock(theirMutex);
   uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
@@ -82,21 +82,21 @@ uInt AipsrcVector<Bool>::registerRC(const String &keyword,
 }
 
 const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
-  ScopedMutexLock lock(theirMutex);
+  std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
 void AipsrcVector<Bool>::set(uInt keyword,
 			     const Vector<Bool> &deflt) {
-  ScopedMutexLock lock(theirMutex);
+  std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   (myp_p.tlst)[keyword-1].resize(deflt.nelements());
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
 void AipsrcVector<Bool>::save(uInt keyword) {
-  ScopedMutexLock lock(theirMutex);
+  std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostringstream oss;
   Int n = ((myp_p.tlst)[keyword-1]).nelements();

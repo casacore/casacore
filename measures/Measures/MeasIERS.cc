@@ -51,7 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 const Double MeasIERS::INTV = 5;
 
 //# Static data
-CallOnce0 MeasIERS::theirCallOnce;
+std::once_flag MeasIERS::theirCallOnceFlag;
 uInt MeasIERS::predicttime_reg = 0;
 uInt MeasIERS::notable_reg = 0;
 uInt MeasIERS::forcepredict_reg = 0;
@@ -69,7 +69,7 @@ Bool MeasIERS::get(Double &returnValue,
                    MeasIERS::Types type,
                    Double date) {
   returnValue = 0.0;
-  theirCallOnce(initMeas);
+  std::call_once(theirCallOnceFlag, initMeas);
 
   // Exit if no table has to be used.
   if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) {
@@ -232,7 +232,7 @@ void MeasIERS::closeMeas() {
 #if defined(USE_THREADS)
   std::atomic_thread_fence(std::memory_order_release); // pray
 #endif
-  new (&theirCallOnce) CallOnce0; // HACK
+  new (&theirCallOnceFlag) std::once_flag; // HACK
 }
 
 void MeasIERS::openNote(CLOSEFUN fun) {

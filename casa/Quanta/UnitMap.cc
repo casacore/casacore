@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialize statics.
-Mutex UnitMap::fitsMutex;
+std::mutex UnitMap::fitsMutex;
 
 
   
@@ -188,7 +188,7 @@ void UnitMap::addFITS() {
   // Could be optimized using C++11 std::call_once(), but infrequently called.
   // If to be optimized, do note clearFITS() below (but not used atm).
   // Double checked locking is unsafe pre-C++11!
-  ScopedMutexLock lock(UnitMap::fitsMutex);
+  std::lock_guard<std::mutex> lock(UnitMap::fitsMutex);
   if (! maps.doneFITS) {
     uInt cnt = 0;
     const UnitName *Fname;
@@ -202,7 +202,7 @@ void UnitMap::addFITS() {
 
 void UnitMap::clearFITS() {
   UMaps& maps = getMaps();
-  ScopedMutexLock lock(UnitMap::fitsMutex);
+  std::lock_guard<std::mutex> lock(UnitMap::fitsMutex);
   if (maps.doneFITS) {
     uInt cnt = 0;
     const UnitName *Fname;

@@ -38,8 +38,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Define the statics.
-  CallOnce0 TableTrace::theirCallOnce;
-  Mutex TableTrace::theirMutex;
+  std::once_flag TableTrace::theirCallOnceFlag;
+  std::mutex TableTrace::theirMutex;
   std::ofstream TableTrace::theirTraceFile;
   std::ostream* TableTrace::theirStream = 0;
   int TableTrace::theirDoTrace = 0;
@@ -51,10 +51,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   int TableTrace::traceTable (const String& tableName, char oper)
   {
     // Open trace file if not done yet.
-    theirCallOnce(initTracing);
+    std::call_once(theirCallOnceFlag, initTracing);
     int tabid = -1;
     if (theirDoTrace > 0) {
-      ScopedMutexLock locker(theirMutex);
+      std::lock_guard<std::mutex> locker(theirMutex);
       // Table should not be found, but who knows ...
       tabid = findTable (tableName);
       int id = tabid;
@@ -79,9 +79,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::traceClose (const String& tableName)
   {
-    theirCallOnce(initTracing);
+    std::call_once(theirCallOnceFlag, initTracing);
     if (theirDoTrace > 0) {
-      ScopedMutexLock locker(theirMutex);
+      std::lock_guard<std::mutex> locker(theirMutex);
       int tabid = findTable (tableName);
       writeTraceFirst (tabid, tableName, 'c');
       if (tabid < 0) {
@@ -96,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::traceFile (int tabid, const String& oper)
   {
-    theirCallOnce(initTracing);
+    std::call_once(theirCallOnceFlag, initTracing);
     if (theirDoTrace > 0) {
       writeTraceFirst (tabid, '*'+oper+'*', 't');
       *theirStream << endl;
@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::traceRefTable (const String& parentName, char oper)
   {
-    theirCallOnce(initTracing);
+    std::call_once(theirCallOnceFlag, initTracing);
     if (theirDoTrace > 1) {
       int tabid = findTable (parentName);
       writeTraceFirst (tabid, "*reftable*", oper);
@@ -115,7 +115,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   int TableTrace::traceColumn (const ColumnDesc& cd)
   {
-    theirCallOnce(initTracing);
+    std::call_once(theirCallOnceFlag, initTracing);
     int traceCol = 0;
     if (theirOper > 0) {
       // First test if all scalar, array, or record columns are traced.

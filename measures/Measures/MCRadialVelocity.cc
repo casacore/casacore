@@ -54,12 +54,12 @@ uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
   {MRadialVelocity::CMB,	MRadialVelocity::BARY,		0} };
 uInt MCRadialVelocity::
 FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
-CallOnce0 MCRadialVelocity::theirInitOnce;
+std::once_flag MCRadialVelocity::theirInitOnceFlag;
 
 //# Constructors
 MCRadialVelocity::MCRadialVelocity() :
   MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
-    theirInitOnce(doFillState);
+    std::call_once(theirInitOnceFlag, doFillState);
 }
 
 //# Destructor
@@ -323,7 +323,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 }
 
 String MCRadialVelocity::showState() {
-  theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
   return MCBase::showState(MCRadialVelocity::FromTo_p[0],
 			   MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 			   MCRadialVelocity::ToRef_p);

@@ -30,10 +30,10 @@ namespace casacore {
 std::set<StatisticsData::STATS> BiweightStatisticsData::_unsupportedStats
     = std::set<StatisticsData::STATS>();
 
-Mutex BiweightStatisticsData::_mutex;
+std::mutex BiweightStatisticsData::_mutex;
 
 std::set<StatisticsData::STATS> BiweightStatisticsData::getUnsupportedStats() {
-    ScopedMutexLock sc(_mutex);
+    std::lock_guard<std::mutex> sc(_mutex);
     if (_unsupportedStats.empty()) {
         _unsupportedStats.insert(StatisticsData::RMS);
         _unsupportedStats.insert(StatisticsData::SUM);

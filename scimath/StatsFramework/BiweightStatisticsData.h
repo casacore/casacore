@@ -28,9 +28,9 @@
 
 #include <casacore/casa/aips.h>
 
-#include <casacore/casa/OS/Mutex.h>
 #include <casacore/scimath/StatsFramework/StatisticsData.h>
 
+#include <mutex>
 #include <set>
 
 namespace casacore {
@@ -48,7 +48,7 @@ public:
 private:
 
     static std::set<StatisticsData::STATS> _unsupportedStats;
-    static Mutex _mutex;
+    static std::mutex _mutex;
 };
 
 }

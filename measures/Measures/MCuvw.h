@@ -39,7 +39,8 @@
 #include <casacore/measures/Measures/MeasMath.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Quanta/MVDirection.h>
-#include <casacore/casa/OS/Mutex.h>
+
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -180,7 +181,7 @@ private:
   // Transition matrix
   static uInt FromTo_p[Muvw::N_Types][Muvw::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
-  static CallOnce0 theirInitOnce;
+  static std::once_flag theirInitOnceFlag;
 
   //# Constructors
   // Copy constructor (not implemented)

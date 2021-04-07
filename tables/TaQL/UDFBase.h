@@ -35,7 +35,6 @@
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/OS/Mutex.h>
 #include <casacore/casa/stdmap.h>
 
 
@@ -386,7 +385,7 @@ namespace casacore {
     //#    which is intended for python functions (through PyTaQL).
     //# 2. The loaded libraries are kept in the map (with 0 funcptr).
     static map<String, MakeUDFObject*> theirRegistry;
-    static Mutex                       theirMutex;
+    static std::recursive_mutex theirMutex;
   };
 
 } // end namespace

@@ -29,7 +29,8 @@
 #define CASA_SEQUENCE_H
 
 #include <casacore/casa/aips.h>
-#include <casacore/casa/OS/Mutex.h>
+
+#include <atomic>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

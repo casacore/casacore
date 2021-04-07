@@ -36,7 +36,7 @@ namespace casacore {
   // Use a recursive mutex, because loading from a shared library can cause
   // a nested lock.
   map<String,UDFBase::MakeUDFObject*> UDFBase::theirRegistry;
-  Mutex UDFBase::theirMutex(Mutex::Recursive);
+  std::recursive_mutex UDFBase::theirMutex;
 
 
   UDFBase::UDFBase()
@@ -175,7 +175,7 @@ namespace casacore {
     } else {
       throw TableInvExpr("UDF " + name + " has an invalid name (no dot)");
     }
-    ScopedMutexLock lock(theirMutex);
+    std::lock_guard<std::recursive_mutex> lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter == theirRegistry.end()) {
       theirRegistry[fname] = func;
@@ -201,7 +201,7 @@ namespace casacore {
     fname.downcase();
     map<String,MakeUDFObject*>::iterator iter;
     {
-      ScopedMutexLock lock(theirMutex);
+      std::lock_guard<std::recursive_mutex> lock(theirMutex);
       // Try to find the function.
       iter = theirRegistry.find (fname);
       if (iter != theirRegistry.end()) {
@@ -224,7 +224,7 @@ namespace casacore {
         return iter->second (fname);
       }
 
-      ScopedMutexLock lock(theirMutex);
+      std::lock_guard<std::recursive_mutex> lock(theirMutex);
       // See if the library is already loaded.
       iter = theirRegistry.find (libname);
       if (iter == theirRegistry.end()) {

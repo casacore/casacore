@@ -149,7 +149,6 @@ OS/Memory.cc
 OS/MemoryTrace.cc
 OS/ModcompConversion.cc
 OS/ModcompDataConversion.cc
-OS/Mutex.cc
 OS/OMP.cc
 OS/Path.cc
 OS/PrecTimer.cc

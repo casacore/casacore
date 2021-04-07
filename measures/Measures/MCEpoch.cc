@@ -32,6 +32,8 @@
 #include <casacore/measures/Measures/Nutation.h>
 #include <casacore/measures/Measures/MeasTable.h>
 
+#include <mutex>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
@@ -60,12 +62,12 @@ uInt MCEpoch::ToRef_p[N_Routes][3] = {
   {MEpoch::TCB,		MEpoch::TDB,	0} };
 
 uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
-CallOnce0 MCEpoch::theirInitOnce;
+std::once_flag MCEpoch::theirInitOnceFlag;
 
 //# Constructors
 MCEpoch::MCEpoch() :
   NUTATFROM(0), NUTATTO(0) {
-    theirInitOnce(doFillState);
+    std::call_once(theirInitOnceFlag, doFillState);
 }
 
 //# Destructor
@@ -304,7 +306,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 }
   
 String MCEpoch::showState() {
-  theirInitOnce(doFillState);
+  std::call_once(theirInitOnceFlag, doFillState);
   return MCBase::showState(MCEpoch::FromTo_p[0],
                            MEpoch::N_Types, MCEpoch::N_Routes,
                            MCEpoch::ToRef_p);

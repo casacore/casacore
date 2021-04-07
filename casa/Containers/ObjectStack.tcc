@@ -51,7 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Member functions
   template <class T>
   T *ObjectStack<T>::get() {
-    ScopedMutexLock lock(mutex_p);
+    std::lock_guard<std::mutex> lock(mutex_p);
     if (stack_p.empty()) stack_p.push_back(new T);
     stack_p.pop_back();
     return *stack_p.end();
@@ -59,8 +59,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <class T>
   void ObjectStack<T>::clear() {
-    ScopedMutexLock lock(mutex_p);
-    vector<T*>(stack_p).swap(stack_p);
+    std::lock_guard<std::mutex> lock(mutex_p);
+    std::vector<T*>(stack_p).swap(stack_p);
   }
 
 } //# NAMESPACE CASACORE - END
