@@ -343,7 +343,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     if (!useIn && !useSorted) {
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
-      sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
+      sorted = bms_p[i].sort(columns, objComp, orders, Sort::QuickSort);
     }
 
     // Only store if globally requested _and_ locally decided
