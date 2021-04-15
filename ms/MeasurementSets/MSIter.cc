@@ -535,7 +535,6 @@ void MSIter::setState()
     checkFeed_p=True;
   curTable_p=tabIter_p[curMS_p]->table();
   colArray_p.attach(curTable_p,MS::columnName(MS::ARRAY_ID));
-  colField_p.attach(curTable_p,MS::columnName(MS::FIELD_ID));
   // msc_p is already defined here (it is set in setMSInfo)
   if(newMS_p)
     msc_p->antenna().mount().getColumn(antennaMounts_p,True);
@@ -582,7 +581,18 @@ void MSIter::setState()
 
   setArrayInfo();
   feedInfoCached_p = false;
-  setFieldInfo();
+  curFieldIdFirst_p=-1;
+  //If field is not in the sorting columns, then the field id
+  //can change between elements of the same iteration, so the safest
+  //is to signal that it changes.
+  if(!fieldInSort_p)
+    newFieldId_p = true;
+  else
+  {
+    setFieldInfo();
+    newFieldId_p=(lastFieldId_p!=curFieldIdFirst_p);
+    lastFieldId_p = curFieldIdFirst_p;
+  }
 
   // If time binning, update the MSInterval's offset to account for glitches.
   // For example, if averaging to 5s and the input is
@@ -659,6 +669,8 @@ const MFrequency& MSIter::frequency0() const
 const MFrequency& MSIter::restFrequency(Int line) const
 {
   MFrequency freq;
+  if(curFieldIdFirst_p == -1)
+    setFieldInfo();
   Int sourceId = msc_p->field().sourceId()(curFieldIdFirst_p);
   if (!msc_p->source().restFrequency().isNull()) {
     if (line>=0 && line < msc_p->source().restFrequency()(sourceId).shape()(0))
@@ -879,22 +891,19 @@ void MSIter::cacheExtraDDInfo() const
   }
 }
 
-void MSIter::setFieldInfo()
+void MSIter::setFieldInfo() const
 {
+  colField_p.attach(curTable_p,MS::columnName(MS::FIELD_ID));
   curFieldIdFirst_p=colField_p(0);
-  if(fieldInSort_p)
-    newFieldId_p=(lastFieldId_p!=curFieldIdFirst_p);
-  //If array is not in the sorting columns, then the field id
-  //can change between elements of the same iteration, so the safest
-  //is to signal that it changes.
-  else
-    newFieldId_p = true;
-  lastFieldId_p = curFieldIdFirst_p;
 }
 
-const String& MSIter::fieldName()  const {
+const String& MSIter::fieldName() const {
   if(newFieldId_p)
-    This->curFieldNameFirst_p = msc_p->field().name()(curFieldIdFirst_p);
+  {
+    if(curFieldIdFirst_p == -1)
+      setFieldInfo();
+    curFieldNameFirst_p = msc_p->field().name()(curFieldIdFirst_p);
+  }
 
   return curFieldNameFirst_p;
 }
@@ -923,8 +932,10 @@ const MDirection& MSIter::phaseCenter() const {
   if(msc_p){
     Double firstTimeStamp=ScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
     if(newFieldId_p || (firstTimeStamp != prevFirstTimeStamp_p)){
-      This->prevFirstTimeStamp_p=firstTimeStamp;
-      This->phaseCenter_p=msc_p->field().phaseDirMeas(curFieldIdFirst_p, firstTimeStamp);
+      if(curFieldIdFirst_p == -1)
+        setFieldInfo();
+      prevFirstTimeStamp_p=firstTimeStamp;
+      phaseCenter_p=msc_p->field().phaseDirMeas(curFieldIdFirst_p, firstTimeStamp);
     }
   }
   return phaseCenter_p;
