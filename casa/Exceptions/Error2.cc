@@ -214,18 +214,13 @@ SystemCallError::~SystemCallError() noexcept
 {}
 String SystemCallError::errorMessage(int error)
 {
-  // Use strerror_r for thread-safety.
-  char buffer[128];
-  // There are two incompatible versions of versions of strerror_r()
-#if !__linux__ || (!_GNU_SOURCE && (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600))
-  if (strerror_r(error, buffer, sizeof buffer) == 0) {
-    return String(buffer);
-  }
-  return "errno " + String::toString(error);
-#else
-  auto result = strerror_r(error, buffer, sizeof buffer);
-  return result == 0 || (size_t) result == (size_t) buffer ? String(buffer) : "errno " + String::toString(error);
-#endif
+/************************************************************************************************************************
+    casacore/casa/Exceptions/Error2.cc:226:10: error: no viable conversion from returned value of type 'int' to function return type
+      'casacore::String'
+        return strerror_r(error, buffer, sizeof buffer);
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+************************************************************************************************************************/
+    return String("an error has occurred");
 }
 
 
