@@ -294,6 +294,250 @@ void iterMSGenericSortFuncAntennaGrouping ()
   AlwaysAssertExit(nAnt2 == 5);
 }
 
+void createMSSeveralDD (int nant, int ntime, int ndd, double msinterval)
+{
+  // Create the MS (with DATA column) and its subtables.
+  TableDesc td (MS::requiredTableDesc());
+  MS::addColumnToDesc(td, MS::DATA, 2);
+  SetupNewTable newtab("tMSIter_severaldd_tmp.ms", td, Table::New);
+  MeasurementSet ms(newtab);
+  ms.createDefaultSubtables(Table::New);
+  // Write main table with columns needed for MSIter.
+  Array<Complex> data(IPosition(2,4,8));
+  indgen (data);
+  MSColumns mscols(ms);
+  uInt rownr = 0;
+  for (int it=0; it<ntime; ++it) {
+    for (int ddid=0; ddid<ndd; ++ddid) {
+      for (int i1=0; i1<nant; ++i1) {
+        for (int i2=i1; i2<nant; ++i2) {
+          ms.addRow();
+          mscols.time().put (rownr, 1e9 + msinterval*(it+0.5));
+          mscols.interval().put (rownr, msinterval);
+          mscols.antenna1().put (rownr, i1);
+          mscols.antenna2().put (rownr, i2);
+          mscols.arrayId().put (rownr, 0);
+          mscols.dataDescId().put (rownr, ddid);
+          mscols.fieldId().put (rownr, 0);
+          mscols.data().put (rownr, data);
+          data += Complex(float(data.size()), 0.);
+          ++rownr;
+        }
+      }
+    }
+  }
+  // Write subtables needed for MSIter.
+  ms.field().addRow(1);
+  MSFieldColumns fieldcols(ms.field());
+  Array<double> dir(IPosition(2,2,1));
+  dir.data()[0] = 1.1; dir.data()[1] = 1.5;
+  fieldcols.delayDir().put (0, dir);
+  fieldcols.phaseDir().put (0, dir);
+  fieldcols.name().put (0, "TESTFIELD");
+  fieldcols.sourceId().put (0, 0);
+
+  ms.dataDescription().addRow(ndd);
+  MSDataDescColumns ddcols(ms.dataDescription());
+  for (int ddid=0; ddid<ndd; ++ddid) {
+    ddcols.spectralWindowId().put (ddid, ddid);
+    ddcols.polarizationId().put (ddid, ddid%2);
+  }
+
+  ms.spectralWindow().addRow(ndd);
+  MSSpWindowColumns spwcols(ms.spectralWindow());
+  Vector<Double>freqs(8);
+  indgen (freqs, 1e9, 1e6);
+  for (int ddid=0; ddid<ndd; ++ddid) {
+    spwcols.chanFreq().put (ddid, freqs + ddid * 1e7);
+  }
+
+  ms.polarization().addRow(2);
+  MSPolarizationColumns polcols(ms.polarization());
+  Vector<Int> corrTypes1(2, 0);
+  corrTypes1[1] = 1;
+  polcols.numCorr().put (0, 4);
+  polcols.corrType().put (0, corrTypes1);
+  Vector<Int> corrTypes2(2, 0);
+  corrTypes2[0] = Stokes::XX;
+  corrTypes2[1] = Stokes::YY;
+  polcols.numCorr().put (1, 4);
+  polcols.corrType().put (1, corrTypes2);
+
+  ms.antenna().addRow(nant);
+  MSAntennaColumns antcols(ms.antenna());
+  Vector<double> pos(3);
+  indgen (pos, 6.4e6, 1e3);
+  for (int i=0; i<nant; ++i) {
+    antcols.mount().put (i, "equatorial");
+    antcols.position().put (i, pos);
+    pos += 10.;
+  }
+
+  ms.feed().addRow(nant);
+  MSFeedColumns feedcols(ms.feed());
+  for (int i=0; i<nant; ++i) {
+    feedcols.antennaId().put (i, i);
+    feedcols.feedId().put (i, i);
+    feedcols.spectralWindowId().put (i, 0);
+    feedcols.time().put (i, 60.);
+    feedcols.interval().put (i, 0.);    // no time dependence
+    feedcols.numReceptors().put (i, 2);
+    feedcols.beamOffset().put (i, Array<Double>(IPosition(2,2,2),0.));
+    feedcols.receptorAngle().put (i, Vector<Double>(2,0.));
+    feedcols.polResponse().put (i, Array<Complex>(IPosition(2,2,2)));
+  }
+}
+
+// This test exercises the lazy caching mechanism for retrieving 
+// metadata related to DD.
+void iterMSCachedDDInfo ()
+{
+  // Create synthetic MS with several DDIds
+  int nant = 5;
+  int ntime = 5;
+  int ndd = 5;
+  double msinterval = 60.;
+  createMSSeveralDD(nant, ntime, ndd, msinterval);
+  MeasurementSet ms("tMSIter_severaldd_tmp.ms");
+
+  // Create a MSIter with DDID in the sorting columns
+  // There will be as many iterations as DDIDs. 
+  // This is done both for the traditional constructor as for the 
+  // constructor with the generic sorting definition.
+  for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
+  {
+    std::unique_ptr<MSIter> msIter;
+    if(useGenericSortCons)
+    {
+      // Use constructor with generic sorting definitions
+      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      sortCols.push_back(std::make_pair("DATA_DESC_ID", nullptr));
+      msIter.reset(new MSIter(ms, sortCols));
+    }
+    else 
+    {
+      // Use traditional constructor
+      Block<int> sort(1);
+      sort[0] = MS::DATA_DESC_ID;
+      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+    }
+
+    // Set the expected DD metadata in the first iteration
+    int expectedDDId = 0;
+    int expectedSPWId = 0;
+    int expectedPolId = 0;
+    int expectedPolFrame = 0;
+    Vector<Double>expectedFreqs(8);
+    indgen (expectedFreqs, 1e9, 1e6);
+   
+    // Iterate the MS
+    // It is expected that in each iteration a new DDId is retrieved
+    for (msIter->origin(); msIter->more(); (*msIter)++) 
+    {
+      cout << "nrow=" << msIter->table().nrow()<<endl;
+      cout << "ddid = " << msIter->dataDescriptionId() << 
+              " spwid = " << msIter->spectralWindowId() <<
+              " polid = " << msIter->polarizationId() << endl;
+      cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+      // Check that the DD related metadata is what we expect
+      AlwaysAssertExit(msIter->dataDescriptionId() == expectedDDId);
+      AlwaysAssertExit(msIter->spectralWindowId() == expectedSPWId);
+      AlwaysAssertExit(msIter->polarizationId() == expectedPolId);
+      AlwaysAssertExit(msIter->polFrame() == expectedPolFrame);
+      AlwaysAssertExit(allEQ(msIter->frequency(), expectedFreqs));
+      for (size_t ddrow = 0 ; ddrow < msIter->table().nrow() ; ddrow++) {
+        AlwaysAssertExit(msIter->colDataDescriptionIds()(ddrow) == expectedDDId);
+      }
+      Unit Hz(String("Hz"));
+      AlwaysAssertExit(msIter->frequency0().get(Hz).getValue() == expectedFreqs[0]);
+      expectedDDId++;
+      expectedSPWId++;
+      expectedPolId = expectedDDId % 2;
+      expectedPolFrame = expectedDDId % 2;
+      expectedFreqs += 1e7;
+    }
+  }
+
+
+  // Create a MSIter without DDID in the sorting columns
+  // Sorting is done per timestamp. For each timestamp
+  // all baselines and all DDIds are present
+  // This is done both for the traditional constructor as for the 
+  // constructor with the generic sorting definition.
+  for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
+  {
+    std::unique_ptr<MSIter> msIter;
+    if(useGenericSortCons)
+    {
+      // Use constructor with generic sorting definitions
+      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      sortCols.push_back(std::make_pair("TIME", nullptr));
+      msIter.reset(new MSIter(ms, sortCols));
+    }
+    else
+    {
+      // Use traditional constructor
+      Block<int> sort(1);
+      sort[0] = MS::TIME;
+      msIter.reset(new MSIter(ms, sort, 1., False, False)); // Use stored table in memory
+    }
+
+    // Set the expected DD metadata in the first iteration
+    int expectedDDId = 0;
+    int expectedSPWId = 0;
+    int expectedPolId = 0;
+    int expectedPolFrame = 0;
+    Vector<Double>expectedFreqs(8);
+    indgen (expectedFreqs, 1e9, 1e6);
+
+    // Do not read the DD information for each iteration, but skip iterSkip
+    // iterations before reading it. That should exercise the logic for the
+    // lazy computation of the DD
+    for (int iterSkip = 5; iterSkip >=0; iterSkip--)
+    {
+      // Iterate the MS
+      // It is expected that in each iteration a single timestamp is retrieved,
+      // which contains all DDIds
+      int rowsToSkip = iterSkip;
+      for (msIter->origin(); msIter->more(); (*msIter)++)
+      {
+        if(rowsToSkip == 0)
+        {
+          cout << "nrow=" << msIter->table().nrow()<<endl;
+          cout << "ddid = " << msIter->dataDescriptionId() <<
+                  " spwid = " << msIter->spectralWindowId() <<
+                  " polid = " << msIter->polarizationId() << endl;
+          cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+          // Check that the DD related metadata is what we expect
+          // For DDId, SPWId, polID: since there is no unique ID in this iteration
+          // the first one is returned
+          AlwaysAssertExit(msIter->dataDescriptionId() == 0);
+          AlwaysAssertExit(msIter->spectralWindowId() == 0);
+          AlwaysAssertExit(msIter->polarizationId() == 0);
+          AlwaysAssertExit(msIter->polFrame() == 0);
+          AlwaysAssertExit(allEQ(msIter->frequency(), expectedFreqs));
+          for (size_t ddrow = 0 ; ddrow < msIter->table().nrow() ; ddrow++) {
+            // Every 15 rows (number of baselines) a new DDId appears
+            AlwaysAssertExit(msIter->colDataDescriptionIds()(ddrow) == (size_t)(ddrow / 15));
+          }
+          Unit Hz(String("Hz"));
+          //Frequency also refers to the first SPW
+          AlwaysAssertExit(msIter->frequency0().get(Hz).getValue() == expectedFreqs[0]);
+          expectedPolId = expectedDDId % 2;
+          expectedPolFrame = expectedDDId % 2;
+          rowsToSkip = iterSkip;
+        }
+        else
+        {
+          cout << " Skipping row" << endl;
+          rowsToSkip--;
+        }
+      }
+    }
+  }
+
+}
+
 int main (int argc, char* argv[])
 {
   try {
@@ -329,6 +573,8 @@ int main (int argc, char* argv[])
     iterMSGenericSortFuncAlwaysTrue();
     cout << "########" << endl;
     iterMSGenericSortFuncAntennaGrouping();
+    cout << "########" << endl;
+    iterMSCachedDDInfo();
   } catch (std::exception& x) {
     cerr << "Unexpected exception: " << x.what() << endl;
     return 1;
