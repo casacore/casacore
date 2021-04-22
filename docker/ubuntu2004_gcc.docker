@@ -1,6 +1,8 @@
 FROM kernsuite/base:7
+RUN docker-apt-upgrade
 RUN docker-apt-install \
-    clang \
+    gcc \
+    g++ \
     casacore-data \
     cmake \
     flex \
@@ -30,10 +32,9 @@ RUN cmake .. \
     -DBUILD_PYTHON=OFF \
     -DBUILD_PYTHON3=ON \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
-    -DDATA_DIR=/usr/share/casacore/data \
-    -DCMAKE_C_COMPILER=/usr/bin/clang \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+    -DDATA_DIR=/usr/share/casacore/data
 RUN make -j2
 USER root
 RUN make install
 USER casacore
+
