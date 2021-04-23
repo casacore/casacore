@@ -157,6 +157,21 @@ BOOST_AUTO_TEST_CASE( construct_from_ll_array )
     BOOST_CHECK(bigPos[i] == (9-i));
 }
 
+BOOST_AUTO_TEST_CASE(make)
+{
+  IPosition d = IPosition::Make(8, 5, 19, 82);
+  BOOST_CHECK_EQUAL(d.nelements(), 4);
+  BOOST_CHECK_EQUAL(d[0], 8);
+  BOOST_CHECK_EQUAL(d[1], 5);
+  BOOST_CHECK_EQUAL(d[2], 19);
+  BOOST_CHECK_EQUAL(d[3], 82);
+  
+  IPosition l = IPosition::Make(9, 8, 7, 6, 5, 4, 3);
+  BOOST_CHECK_EQUAL(l.nelements(), 7);
+  for(int i=0; i!=7; ++i)
+    BOOST_CHECK_EQUAL(l[i], 9-i);
+}
+
 BOOST_AUTO_TEST_CASE( move_exhaustively )
 {
   int i;
