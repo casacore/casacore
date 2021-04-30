@@ -316,6 +316,8 @@ void createMSSeveralDD (int nant, int ntime, int ndd, double msinterval)
           mscols.interval().put (rownr, msinterval);
           mscols.antenna1().put (rownr, i1);
           mscols.antenna2().put (rownr, i2);
+          mscols.feed1().put (rownr, i1);
+          mscols.feed2().put (rownr, i2);
           mscols.arrayId().put (rownr, 0);
           mscols.dataDescId().put (rownr, ddid);
           mscols.fieldId().put (rownr, 0);
@@ -373,37 +375,41 @@ void createMSSeveralDD (int nant, int ntime, int ndd, double msinterval)
     pos += 10.;
   }
 
-  ms.feed().addRow(nant);
+  ms.feed().addRow(nant*ndd);
   MSFeedColumns feedcols(ms.feed());
-  for (int i=0; i<nant; ++i) {
-    feedcols.antennaId().put (i, i);
-    feedcols.feedId().put (i, i);
-    feedcols.spectralWindowId().put (i, 0);
-    feedcols.time().put (i, 60.);
-    feedcols.interval().put (i, 0.);    // no time dependence
-    feedcols.numReceptors().put (i, 2);
-    feedcols.beamOffset().put (i, Array<Double>(IPosition(2,2,2),0.));
-    feedcols.receptorAngle().put (i, Vector<Double>(2,0.));
-    feedcols.polResponse().put (i, Array<Complex>(IPosition(2,2,2)));
+  for (int ddid=0; ddid<ndd; ++ddid) {
+    for (int i=0; i<nant; ++i) {
+      feedcols.antennaId().put (i + ddid * nant, i);
+      feedcols.feedId().put (i + ddid * nant, 0); // no feed-arrays, one single feed
+      feedcols.spectralWindowId().put (i + ddid * nant, ddid);
+      feedcols.time().put (i + ddid * nant, 60.);
+      feedcols.interval().put (i + ddid * nant, 0.);    // no time dependence
+      feedcols.numReceptors().put (i + ddid * nant, 2);
+      feedcols.beamOffset().put (i + ddid * nant, Array<Double>(IPosition(2,2,2), i*0.01+ddid*0.1));
+      feedcols.receptorAngle().put (i + ddid * nant, Vector<Double>(2, i*0.01+ddid*0.1));
+      feedcols.polResponse().put (i + ddid * nant, Array<Complex>(IPosition(2,2,2), Complex(i*0.01+ddid*0.1, i*0.01+ddid*0.1)));
+    }
   }
 }
 
 // This test exercises the lazy caching mechanism for retrieving 
-// metadata related to DD.
-void iterMSCachedDDInfo ()
+// metadata related to DD and FEED.
+void iterMSCachedDDFeedInfo ()
 {
   // Create synthetic MS with several DDIds
-  int nant = 5;
-  int ntime = 5;
-  int ndd = 5;
+  int nAnt = 5;
+  int nTime = 5;
+  int nDD = 5;
   double msinterval = 60.;
-  createMSSeveralDD(nant, ntime, ndd, msinterval);
+  createMSSeveralDD(nAnt, nTime, nDD, msinterval);
   MeasurementSet ms("tMSIter_severaldd_tmp.ms");
 
   // Create a MSIter with DDID in the sorting columns
   // There will be as many iterations as DDIDs. 
   // This is done both for the traditional constructor as for the 
   // constructor with the generic sorting definition.
+  cout << "Iteration with DDID sorting" << endl;
+  cout << "===========================" << endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -429,7 +435,24 @@ void iterMSCachedDDInfo ()
     int expectedPolFrame = 0;
     Vector<Double>expectedFreqs(8);
     indgen (expectedFreqs, 1e9, 1e6);
-   
+
+    // Set the expected Feed metadata in the first iteration
+    int nReceptors = 2;
+    int nFeed = 1;
+    Cube<Double> expectedReceptorAngles;
+    Cube<RigidVector<Double,2>> expectedBeamOffsets;
+    Matrix<Complex> expectedPartialCJones(IPosition(2,2));
+    expectedPartialCJones = 0;
+    expectedReceptorAngles.resize(nReceptors, nAnt, nFeed);
+    expectedBeamOffsets.resize(nReceptors, nAnt, nFeed);
+    for(int iAnt = 0; iAnt < nAnt; iAnt++)
+    {
+      expectedReceptorAngles(0, iAnt, 0) = iAnt*0.01;
+      expectedReceptorAngles(1, iAnt, 0) = iAnt*0.01;
+      expectedBeamOffsets(0, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+      expectedBeamOffsets(1, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+    }
+
     // Iterate the MS
     // It is expected that in each iteration a new DDId is retrieved
     for (msIter->origin(); msIter->more(); (*msIter)++) 
@@ -439,6 +462,7 @@ void iterMSCachedDDInfo ()
               " spwid = " << msIter->spectralWindowId() <<
               " polid = " << msIter->polarizationId() << endl;
       cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+
       // Check that the DD related metadata is what we expect
       AlwaysAssertExit(msIter->dataDescriptionId() == expectedDDId);
       AlwaysAssertExit(msIter->spectralWindowId() == expectedSPWId);
@@ -450,20 +474,182 @@ void iterMSCachedDDInfo ()
       }
       Unit Hz(String("Hz"));
       AlwaysAssertExit(msIter->frequency0().get(Hz).getValue() == expectedFreqs[0]);
+
+      // Check that the Feed related metadata is what we expect
+      AlwaysAssertExit(allNear(msIter->receptorAngles(), expectedReceptorAngles, 1e-6));
+      AlwaysAssertExit(allNear(msIter->receptorAngle(), expectedReceptorAngles[0], 1e-6));
+      // Need to unwrap the loop because RigidVector doesn't have a comparison operator
+      for(int iRec = 0 ; iRec < nReceptors; ++iRec)
+      {
+        for(int iAnt = 0; iAnt < nAnt; iAnt++)
+        {
+          for(int iFeed = 0; iFeed < nFeed; iFeed++)
+          {
+            AlwaysAssertExit(std::abs(msIter->getBeamOffsets()(iRec, iAnt, iFeed)(0) - expectedBeamOffsets(iRec, iAnt, iFeed)(0)) < 1e-6);
+            AlwaysAssertExit(std::abs(msIter->getBeamOffsets()(iRec, iAnt, iFeed)(1) - expectedBeamOffsets(iRec, iAnt, iFeed)(1)) < 1e-6);
+          }
+        }
+      }
+      // Need to unwrap the loop because SquareMatrix doesn't have a comparison operator
+      for(int iAnt = 0; iAnt < nAnt; iAnt++)
+      {
+        for(int iFeed = 0; iFeed < nFeed; iFeed++)
+        {
+          AlwaysAssertExit(allNear(msIter->CJonesAll()(iAnt, iFeed).matrix(), expectedPartialCJones + Complex(iAnt * 0.01, iAnt * 0.01), 1e-6));
+        }
+      }
+
+      // Update the expected values for next iteration
       expectedDDId++;
       expectedSPWId++;
       expectedPolId = expectedDDId % 2;
       expectedPolFrame = expectedDDId % 2;
       expectedFreqs += 1e7;
+      expectedReceptorAngles += 0.1;
+      expectedBeamOffsets += RigidVector<Double,2>(0.1);
+      expectedPartialCJones += Complex(0.1, 0.1);
     }
   }
 
+  // Create a MSIter with DDID in the sorting columns
+  // but not the fastest one. There will be as many iterations
+  // as DDIds times the groups in the other sortign column.
+  // Antenna1 has been choosen as the other one.
+  // This is done both for the traditional constructor as for the
+  // constructor with the generic sorting definition.
+  cout << "Iteration with ANTENNA1 and DDID sorting" << endl;
+  cout << "========================================" << endl;
+  for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
+  {
+    std::unique_ptr<MSIter> msIter;
+    if(useGenericSortCons)
+    {
+      // Use constructor with generic sorting definitions
+      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      sortCols.push_back(std::make_pair("DATA_DESC_ID", nullptr));
+      sortCols.push_back(std::make_pair("ANTENNA1", nullptr));
+      msIter.reset(new MSIter(ms, sortCols));
+    }
+    else
+    {
+      // Use traditional constructor
+      Block<int> sort(2);
+      sort[0] = MS::DATA_DESC_ID;
+      sort[1] = MS::ANTENNA1;
+      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+    }
+
+    // Set the expected DD metadata in the first iteration
+    int expectedDDId = 0;
+    int expectedSPWId = 0;
+    int expectedPolId = 0;
+    int expectedPolFrame = 0;
+    bool newSpw = true;
+    bool newPol = true;
+    bool newDD = true;
+    Vector<Double>expectedFreqs(8);
+    indgen (expectedFreqs, 1e9, 1e6);
+
+    // Set the expected Feed metadata in the first iteration
+    int nReceptors = 2;
+    int nFeed = 1;
+    Cube<Double> expectedReceptorAngles;
+    Cube<RigidVector<Double,2>> expectedBeamOffsets;
+    Matrix<Complex> expectedPartialCJones(IPosition(2,2));
+    expectedPartialCJones = 0;
+    expectedReceptorAngles.resize(nReceptors, nAnt, nFeed);
+    expectedBeamOffsets.resize(nReceptors, nAnt, nFeed);
+    for(int iAnt = 0; iAnt < nAnt; iAnt++)
+    {
+      expectedReceptorAngles(0, iAnt, 0) = iAnt*0.01;
+      expectedReceptorAngles(1, iAnt, 0) = iAnt*0.01;
+      expectedBeamOffsets(0, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+      expectedBeamOffsets(1, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+    }
+
+    // Iterate the MS
+    // It is expected that in each iteration antenna1 index runs faster
+    // than DDId
+    int antena1Idx = 0;
+    for (msIter->origin(); msIter->more(); (*msIter)++)
+    {
+      cout << "nrow=" << msIter->table().nrow()<<endl;
+      cout << "ddid = " << msIter->dataDescriptionId() <<
+              " spwid = " << msIter->spectralWindowId() <<
+              " polid = " << msIter->polarizationId() << endl;
+      cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+
+      // Check that the DD related metadata is what we expect
+      AlwaysAssertExit(msIter->dataDescriptionId() == expectedDDId);
+      AlwaysAssertExit(msIter->newDataDescriptionId() == newDD);
+      AlwaysAssertExit(msIter->spectralWindowId() == expectedSPWId);
+      AlwaysAssertExit(msIter->newSpectralWindow() == newSpw);
+      AlwaysAssertExit(msIter->polarizationId() == expectedPolId);
+      AlwaysAssertExit(msIter->newPolarizationId() == newPol);
+      AlwaysAssertExit(msIter->polFrame() == expectedPolFrame);
+      AlwaysAssertExit(allEQ(msIter->frequency(), expectedFreqs));
+      for (size_t ddrow = 0 ; ddrow < msIter->table().nrow() ; ddrow++) {
+        AlwaysAssertExit(msIter->colDataDescriptionIds()(ddrow) == expectedDDId);
+      }
+      Unit Hz(String("Hz"));
+      AlwaysAssertExit(msIter->frequency0().get(Hz).getValue() == expectedFreqs[0]);
+
+      // Check that the Feed related metadata is what we expect
+      AlwaysAssertExit(allNear(msIter->receptorAngles(), expectedReceptorAngles, 1e-6));
+      AlwaysAssertExit(allNear(msIter->receptorAngle(), expectedReceptorAngles[0], 1e-6));
+      for(int iRec = 0 ; iRec < nReceptors; ++iRec)
+      {
+        for(int iAnt = 0; iAnt < nAnt; iAnt++)
+        {
+          for(int iFeed = 0; iFeed < nFeed; iFeed++)
+          {
+            AlwaysAssertExit(std::abs(msIter->getBeamOffsets()(iRec, iAnt, iFeed)(0) - expectedBeamOffsets(iRec, iAnt, iFeed)(0)) < 1e-6);
+            AlwaysAssertExit(std::abs(msIter->getBeamOffsets()(iRec, iAnt, iFeed)(1) - expectedBeamOffsets(iRec, iAnt, iFeed)(1)) < 1e-6);
+          }
+        }
+      }
+      // Need to unwrap the loop because SquareMatrix doesn't have a comparison operator
+      for(int iAnt = 0; iAnt < nAnt; iAnt++)
+      {
+        for(int iFeed = 0; iFeed < nFeed; iFeed++)
+        {
+          AlwaysAssertExit(allNear(msIter->CJonesAll()(iAnt, iFeed).matrix(), expectedPartialCJones + Complex(iAnt * 0.01, iAnt * 0.01), 1e-6));
+        }
+      }
+
+      // Update the expected values for next iteration
+      antena1Idx++;
+      if(antena1Idx > nAnt - 1)
+      { // All ANTENNA1 iterations done, now iterate on a new DD
+        expectedDDId++;
+        expectedSPWId++;
+        expectedPolId = expectedDDId % 2;
+        expectedPolFrame = expectedDDId % 2;
+        expectedFreqs += 1e7;
+        expectedReceptorAngles += 0.1;
+        expectedBeamOffsets += RigidVector<Double,2>(0.1);
+        expectedPartialCJones += Complex(0.1, 0.1);
+        antena1Idx = 0;
+        newSpw = true;
+        newPol = true;
+        newDD = true;
+      }
+      else
+      { // Still iterating on ANTENNA1
+        newSpw = false;
+        newPol = false;
+        newDD = false;
+      }
+    }
+  }
 
   // Create a MSIter without DDID in the sorting columns
   // Sorting is done per timestamp. For each timestamp
   // all baselines and all DDIds are present
   // This is done both for the traditional constructor as for the 
   // constructor with the generic sorting definition.
+  cout << "Iteration with TIME sorting" << endl;
+  cout << "===========================" << endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -483,12 +669,25 @@ void iterMSCachedDDInfo ()
     }
 
     // Set the expected DD metadata in the first iteration
-    int expectedDDId = 0;
-    int expectedSPWId = 0;
-    int expectedPolId = 0;
-    int expectedPolFrame = 0;
     Vector<Double>expectedFreqs(8);
     indgen (expectedFreqs, 1e9, 1e6);
+
+    // Set the expected Feed metadata in the first iteration
+    int nReceptors = 2;
+    int nFeed = 1;
+    Cube<Double> expectedReceptorAngles;
+    Cube<RigidVector<Double,2>> expectedBeamOffsets;
+    Matrix<Complex> expectedPartialCJones(IPosition(2,2));
+    expectedPartialCJones = 0;
+    expectedReceptorAngles.resize(nReceptors, nAnt, nFeed);
+    expectedBeamOffsets.resize(nReceptors, nAnt, nFeed);
+    for(int iAnt = 0; iAnt < nAnt; iAnt++)
+    {
+      expectedReceptorAngles(0, iAnt, 0) = iAnt*0.01;
+      expectedReceptorAngles(1, iAnt, 0) = iAnt*0.01;
+      expectedBeamOffsets(0, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+      expectedBeamOffsets(1, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+    }
 
     // Do not read the DD information for each iteration, but skip iterSkip
     // iterations before reading it. That should exercise the logic for the
@@ -510,7 +709,7 @@ void iterMSCachedDDInfo ()
           cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
           // Check that the DD related metadata is what we expect
           // For DDId, SPWId, polID: since there is no unique ID in this iteration
-          // the first one is returned
+          // the first one (0) is returned
           AlwaysAssertExit(msIter->dataDescriptionId() == 0);
           AlwaysAssertExit(msIter->spectralWindowId() == 0);
           AlwaysAssertExit(msIter->polarizationId() == 0);
@@ -518,13 +717,38 @@ void iterMSCachedDDInfo ()
           AlwaysAssertExit(allEQ(msIter->frequency(), expectedFreqs));
           for (size_t ddrow = 0 ; ddrow < msIter->table().nrow() ; ddrow++) {
             // Every 15 rows (number of baselines) a new DDId appears
-            AlwaysAssertExit(msIter->colDataDescriptionIds()(ddrow) == (size_t)(ddrow / 15));
+            AlwaysAssertExit(msIter->colDataDescriptionIds()(ddrow) == (int)(ddrow / 15));
           }
           Unit Hz(String("Hz"));
           //Frequency also refers to the first SPW
           AlwaysAssertExit(msIter->frequency0().get(Hz).getValue() == expectedFreqs[0]);
-          expectedPolId = expectedDDId % 2;
-          expectedPolFrame = expectedDDId % 2;
+
+          // Check that the Feed related metadata is what we expect
+          // Note that these are computed assuming there is a single SPW
+          // in the iteration, so they will return values corresponding
+          // to the first SPW, DDId present.
+          AlwaysAssertExit(allNear(msIter->receptorAngles(), expectedReceptorAngles, 1e-6));
+          AlwaysAssertExit(allNear(msIter->receptorAngle(), expectedReceptorAngles[0], 1e-6));
+          for(int iRec = 0 ; iRec < nReceptors; ++iRec)
+          {
+            for(int iAnt = 0; iAnt < nAnt; iAnt++)
+            {
+              for(int iFeed = 0; iFeed < nFeed; iFeed++)
+              {
+                AlwaysAssertExit(std::abs(msIter->getBeamOffsets()(iRec, iAnt, iFeed)(0) - expectedBeamOffsets(iRec, iAnt, iFeed)(0)) < 1e-6);
+                AlwaysAssertExit(std::abs(msIter->getBeamOffsets()(iRec, iAnt, iFeed)(1) - expectedBeamOffsets(iRec, iAnt, iFeed)(1)) < 1e-6);
+              }
+            }
+          }
+          // Need to unwrap the loop because SquareMatrix doesn't have a comparison operator
+          for(int iAnt = 0; iAnt < nAnt; iAnt++)
+          {
+            for(int iFeed = 0; iFeed < nFeed; iFeed++)
+            {
+              AlwaysAssertExit(allNear(msIter->CJonesAll()(iAnt, iFeed).matrix(), expectedPartialCJones + Complex(iAnt * 0.01, iAnt * 0.01), 1e-6));
+            }
+          }
+
           rowsToSkip = iterSkip;
         }
         else
@@ -574,7 +798,7 @@ int main (int argc, char* argv[])
     cout << "########" << endl;
     iterMSGenericSortFuncAntennaGrouping();
     cout << "########" << endl;
-    iterMSCachedDDInfo();
+    iterMSCachedDDFeedInfo();
   } catch (std::exception& x) {
     cerr << "Unexpected exception: " << x.what() << endl;
     return 1;

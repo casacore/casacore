@@ -203,6 +203,15 @@ public:
   // functions used to group the iterations are given explicitly, making
   // the constructor more generic. Also, the column is specified as a string,
   // to support sorting by columns not part of the standard MS definition.
+  // Note that with this constructor TIME is not treated in any special way and
+  // there are no default sorting columns, i.e., the sorting needs have to be
+  // set explicitly.
+  // The last element in vector sortColumns will be the column that will change
+  // faster in the iteration loop, whereas the first element will be the slower.
+  // For instance, if sortColumns[0].first = "DATA_DESC_ID" nad
+  // sortColumns[1].first = "ANTENNA1" then the first iterations will go through
+  // all possible values of ANTENNA1 for the first DDId, then it will start
+  // the iterations for the second DDId and so on.
   MSIter(const MeasurementSet& ms,
          const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
 
@@ -404,7 +413,7 @@ protected:
   virtual void setState();
   void setMSInfo();
   void setArrayInfo();
-  void setFeedInfo();
+  void setFeedInfo() const;
   // Store the current DD, SPW, Pol ID.
   // It can be called in logically const objects although it modifies
   // caching (mutable) variables for performance reasons.
@@ -444,8 +453,12 @@ protected:
   // These variables point to the IDs of the previous iteration.
   Int lastDataDescId_p, lastSpectralWindowId_p, lastPolarizationId_p;
   Bool more_p, newMS_p, newArrayId_p, newFieldId_p, newSpectralWindowId_p,
-    newPolarizationId_p, newDataDescId_p,
-    timeDepFeed_p, spwDepFeed_p, checkFeed_p;
+    newPolarizationId_p, newDataDescId_p;
+  mutable bool spwDepFeed_p, checkFeed_p;
+
+  // Variable to know whether the feed info is already computed
+  mutable bool feedInfoCached_p;
+
 
   // Globally control disk storage of SORTED_TABLE
   Bool storeSorted_p;
@@ -462,23 +475,23 @@ protected:
   MDirection phaseCenter_p;
   Double prevFirstTimeStamp_p;
   //cache for access functions
-  Matrix<Double> receptorAnglesFeed0_p; // former receptorAngle_p,
+  mutable Matrix<Double> receptorAnglesFeed0_p; // former receptorAngle_p,
                                    // temporary retained for compatibility
                                    // contain actually a reference to the
 				   // first plane of receptorAngles_p
-  Cube<Double> receptorAngles_p;
-  Vector<SquareMatrix<Complex,2> > CJonesFeed0_p; // a temporary reference
+  mutable Cube<Double> receptorAngles_p;
+  mutable Vector<SquareMatrix<Complex,2> > CJonesFeed0_p; // a temporary reference
                                    // similar to receptorAngle_p
-  Matrix<SquareMatrix<Complex,2> > CJones_p;
+  mutable Matrix<SquareMatrix<Complex,2> > CJones_p;
   Vector<String>  antennaMounts_p; // a string mount identifier for each
                                    // antenna (e.g. EQUATORIAL, ALT-AZ,...)
-  Cube<RigidVector<Double, 2> > beamOffsets_p;// angular offsets (two values for
+  mutable Cube<RigidVector<Double, 2> > beamOffsets_p;// angular offsets (two values for
                                    // each element of the cube in radians)
 				   // in the antenna coordinate system.
 				   // Cube axes are: receptor, antenna, feed.
-  Bool allBeamOffsetsZero_p;       // True if all elements of beamOffsets_p
-                                   // are zero (to speed things up in a
-				   // single beam case)
+  mutable Bool allBeamOffsetsZero_p; // True if all elements of beamOffsets_p
+                                     // are zero (to speed things up in a
+				     // single beam case)
   mutable PolFrame polFrame_p;     // polarization Frame. It is lazily cached,
                                    // hence mutable. See cacheExtraDDInfo()
   mutable Bool freqCacheOK_p;      // signal that the frequency cache is fine
@@ -528,18 +541,19 @@ inline Int MSIter::polFrame() const
 inline const MPosition& MSIter::telescopePosition() const
 { return telescopePosition_p;}
 inline const Vector<SquareMatrix<Complex,2> >& MSIter::CJones() const
-{ return CJonesFeed0_p;}
+{if(!feedInfoCached_p)  setFeedInfo();  return CJonesFeed0_p;}
 inline const Matrix<SquareMatrix<Complex,2> >& MSIter::CJonesAll() const
-{ return CJones_p;}
+{if(!feedInfoCached_p)  setFeedInfo();  return CJones_p;}
 inline const Matrix<Double>& MSIter::receptorAngle() const
-{return receptorAnglesFeed0_p;}
+{if(!feedInfoCached_p)  setFeedInfo();  return receptorAnglesFeed0_p;}
 inline const Cube<Double>& MSIter::receptorAngles() const
-{return receptorAngles_p;}
+{if(!feedInfoCached_p)  setFeedInfo();  return receptorAngles_p;}
 inline const Vector<String>& MSIter::antennaMounts() const
 {return antennaMounts_p;}
 inline const Cube<RigidVector<Double, 2> >& MSIter::getBeamOffsets() const
-{return beamOffsets_p;}
-inline Bool MSIter::allBeamOffsetsZero() const {return allBeamOffsetsZero_p;}
+{if(!feedInfoCached_p)  setFeedInfo();  return beamOffsets_p;}
+inline Bool MSIter::allBeamOffsetsZero() const 
+{if(!feedInfoCached_p)  setFeedInfo();  return allBeamOffsetsZero_p;}
 
 } //# NAMESPACE CASACORE - END
 
