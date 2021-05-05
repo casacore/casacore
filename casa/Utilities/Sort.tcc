@@ -123,31 +123,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
+  T Sort::doUnique (Vector<T>& uniqueVector, const Vector<T>& indexVector) const
+  {
+    Vector<size_t> changeKey;
+    return doUnique (uniqueVector, changeKey, indexVector);
+  }
+
+  template<typename T>
   T Sort::doUnique (Vector<T>& uniqueVector,
+                    Vector<size_t>& changeKey, 
                     const Vector<T>& indexVector) const
   {
     T nrrec = indexVector.nelements();
     uniqueVector.resize (nrrec);
+    changeKey.resize (nrrec);
     if (nrrec == 0) {
       return 0;
     }
     // Pass the sort function a C-array of indices, because indexing
     // in there is (much) faster than in a vector.
-    Bool delInx, delUniq;
+    Bool delInx, delUniq, delChange;
     const T* inx = indexVector.getStorage (delInx);
     T* uniq = uniqueVector.getStorage (delUniq);
+    size_t* change = changeKey.getStorage (delChange);
     uniq[0] = 0;
     T nruniq = 1;
+    size_t idxComp;
     for (T i=1; i<nrrec; i++) {
-      Int cmp = compare (inx[i-1], inx[i]);
+      Int cmp = compareChangeIdx (inx[i-1], inx[i], idxComp);
       if (cmp != 1  &&  cmp != -1) {
+        change[nruniq-1] = idxComp;
         uniq[nruniq++] = i;
       }
     }
     indexVector.freeStorage (inx, delInx);
     uniqueVector.putStorage (uniq, delUniq);
+    changeKey.putStorage (change, delChange);
     if (nruniq < nrrec) {
       uniqueVector.resize (nruniq, True);
+      changeKey.resize (nruniq, True);
     }
     return nruniq;
   }
@@ -422,15 +436,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   int Sort::compare (T i1, T i2) const
   {
+    size_t idxComp;
+    return compareChangeIdx(i1, i2, idxComp);
+  }
+
+  // This is a similar function to compare() but it also gives back which is the
+  // first comparison function that doesn't match.
+  // idxComp gives the comparison function index. In case the function returns
+  // 1 or -1 idxComp is not modified.
+  template<typename T>
+  int Sort::compareChangeIdx(T i1, T i2, size_t& idxComp) const
+  {
     int seq;
     SortKey* skp;
-    for (uInt i=0; i<nrkey_p; i++) {
+    for (size_t i=0; i<nrkey_p; i++) {
       skp = keys_p[i];
       seq = skp->cmpObj_p->comp ((char*)skp->data_p + i1*skp->incr_p,
                                  (char*)skp->data_p + i2*skp->incr_p);
       if (seq == skp->order_p)
+      {
+        idxComp = i;
         return 2;                       // in order
+      }
       if (seq != 0) {
+        idxComp = i;
         return 0;                       // out-of-order
       }
     }

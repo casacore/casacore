@@ -233,6 +233,56 @@ void sortall (int options, Sort::Order order)
     sortdo (options, sort2, order, data, nrdata);
 }
 
+// This test the unique(0 function of the Sort class
+void sort_test_unique()
+{
+    // Create a dataset with two "columns". In total
+    // there are 16 times in which the sorting columns change
+    // 4 changes in data column and 4 in data2 column.
+    // For each of these "groups" there are 2 items in the dataset
+    const size_t nchanges = 16;
+    const size_t groupitems = 2;
+    const size_t nrdata = groupitems * nchanges;
+    Int data[nrdata];
+    Int data2[nrdata];
+    for (size_t i=0; i<nchanges; i++) {
+      for (size_t j=0; j<groupitems; j++) {
+        data[j+i*groupitems] = i%4;
+        data2[j+i*groupitems] = i/4;
+      }
+    }
+    // Sort the dataset with data2 as the fastest changing sorting
+    // criteria
+    Sort sort;
+    sort.sortKey (data,  TpInt, 0, Sort::Ascending);
+    sort.sortKey (data2, TpInt, 0, Sort::Ascending);
+    Vector<uInt> inxvec;
+    uInt nr = sort.sort (inxvec, nrdata, Sort::ParSort);
+    AlwaysAssertExit (nr == nrdata);
+    // Get the group boundaries (portions of the dataset where all the sorting
+    // functions are evaluated to 0, i.e., they are identical from the point of
+    // view of the sorting)
+    Vector<uInt> uniqueVector;
+    Vector<size_t> changeKey;
+    sort.unique(uniqueVector, changeKey, inxvec);
+    for (size_t i=0; i<uniqueVector.size(); i++) {
+      cout << uniqueVector[i] << " (change " << changeKey[i] << ") ";
+      // Each group consists of 2 items, so the group boundaries jump every 2
+      AlwaysAssertExit(uniqueVector[i] == 2*i);
+      // Check the changing column. Note that this denotes the column that will
+      // change _at then end_ of each iteration. In other words, the column
+      // that will be different the next iteration. Hence the i+1.
+      if( (i+1)%4 == 0)
+      { // Every 4 groups the slowest changing column will change
+        AlwaysAssertExit(changeKey[i] == 0);
+      }
+      else
+      { // For groups in between the fastest changing column is data2
+        AlwaysAssertExit(changeKey[i] == 1);
+      }
+    }
+    cout << endl;
+}
 
 int main()
 {
@@ -258,6 +308,8 @@ int main()
     sortall (Sort::ParSort | Sort::NoDuplicates, Sort::Descending);
     sortall (Sort::QuickSort | Sort::NoDuplicates, Sort::Descending);
     sortall (Sort::HeapSort | Sort::NoDuplicates, Sort::Descending);
+
+    sort_test_unique();
 
     return 0;                              // exit with success status
 }

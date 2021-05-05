@@ -56,6 +56,7 @@ void doiter0();
 void doiter1();
 void doiter2();
 void doiter3();
+void test_cache_boundaries();
 
 int main (int argc, const char* argv[])
 {
@@ -64,13 +65,14 @@ int main (int argc, const char* argv[])
 	istringstream istr(argv[1]);
 	istr >> nr;
     }
-    credes();          // make description
-    cretab(nr);        // create table (and write it)
-    doiter0();         // do no column iteration
-    doiter1();         // do single column iteration
-    doiter2();         // do two column iteration
-    doiter3();         // do interval iteration
-    return 0;          // successfully executed
+    credes();                // make description
+    cretab(nr);              // create table (and write it)
+    doiter0();               // do no column iteration
+    doiter1();               // do single column iteration
+    doiter2();               // do two column iteration
+    doiter3();               // do interval iteration
+    test_cache_boundaries(); // test option to cache group boundaries
+    return 0;                // successfully executed
 }
 
 // Create the description of the table and its subtable.
@@ -273,4 +275,66 @@ void doiter3()
 	iter1.next();
     }
     cout << "   #iter3=" << nr << endl;
+}
+
+void test_cache_boundaries()
+{
+    // Create two iterators, one that cached the boundaries between iterations
+    // and one that does not.
+    Table tab1 ("tTableIter_tmp.data");
+    Table t1;
+    Block<String> sortCols(2);
+    sortCols[0] = "col2";
+    sortCols[1] = "col1";
+    Block<CountedPtr<BaseCompare> > compObj(2);
+    compObj[0] = nullptr;
+    compObj[1] = nullptr;
+    Block<Int> orders(2);
+    orders[0] = TableIterator::Ascending;
+    orders[1] = TableIterator::Ascending;
+    TableIterator iter1(tab1, sortCols, compObj, orders);
+    TableIterator iter2(tab1, sortCols, compObj, orders, TableIterator::ParSort, true);
+
+    iter1.reset();
+    iter2.reset();
+
+    while (!iter1.pastEnd()) {
+        auto iter1Table = iter1.table();
+        auto iter2Table = iter2.table();
+        AlwaysAssertExit(iter2Table.nrow() == iter1Table.nrow());
+        ScalarColumn<Int>     iter1Col1 (iter1Table, "col1");
+        ScalarColumn<double>  iter1Col2 (iter1Table, "col2");
+        ScalarColumn<float>   iter1Col3 (iter1Table, "col3");
+        ScalarColumn<Complex> iter1Col4 (iter1Table, "col4");
+        ScalarColumn<Int>     iter2Col1 (iter2Table, "col1");
+        ScalarColumn<double>  iter2Col2 (iter2Table, "col2");
+        ScalarColumn<float>   iter2Col3 (iter2Table, "col3");
+        ScalarColumn<Complex> iter2Col4 (iter2Table, "col4");
+        Vector<int>     iter1Vec1;
+        Vector<double>  iter1Vec2;
+        Vector<float>   iter1Vec3;
+        Vector<Complex> iter1Vec4;
+        Vector<int>     iter2Vec1;
+        Vector<double>  iter2Vec2;
+        Vector<float>   iter2Vec3;
+        Vector<Complex> iter2Vec4;
+        iter1Col1.getColumn (iter1Vec1);
+        iter1Col2.getColumn (iter1Vec2);
+        iter1Col3.getColumn (iter1Vec3);
+        iter1Col4.getColumn (iter1Vec4);
+        iter2Col1.getColumn (iter2Vec1);
+        iter2Col2.getColumn (iter2Vec2);
+        iter2Col3.getColumn (iter2Vec3);
+        iter2Col4.getColumn (iter2Vec4);
+        // Check that all the columns for this iteration have the same 
+        // content in both iterators.
+        AlwaysAssertExit(allEQ(iter1Vec1, iter2Vec1));
+        AlwaysAssertExit(allEQ(iter1Vec2, iter2Vec2));
+        AlwaysAssertExit(allEQ(iter1Vec3, iter2Vec3));
+        AlwaysAssertExit(allEQ(iter1Vec4, iter2Vec4));
+        // Check that the changing key is the same in both iterators.
+        AlwaysAssertExit(iter1.keyChangeAtLastNext() == iter2.keyChangeAtLastNext());
+        iter1.next();
+        iter2.next();
+    }
 }

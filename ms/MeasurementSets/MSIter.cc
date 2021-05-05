@@ -154,7 +154,8 @@ void MSIter::construct(
     for (size_t i=0; i<nMS_p; i++) {
         // create the iterator for each MS
         tabIter_p[i] = new TableIterator(bms_p[i],sortColumnNames,
-                                         sortCompareFunctions,sortOrders);
+                                         sortCompareFunctions,sortOrders,
+                                         TableIterator::ParSort, true);
         tabIterAtStart_p[i]=True;
     }
     setMSInfo();

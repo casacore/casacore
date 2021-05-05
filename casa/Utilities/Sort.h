@@ -343,12 +343,22 @@ public:
     // <br>
     // It returns the number of unique records. The unique array
     // is resized to that number.
+    // The third version also gives back a vector with the keys that
+    // change in each sorting group. The size of changeKey is the same as
+    // uniqueVector, and for each unique sorting group indicates the index
+    // of the keyword that will change at the end of the group.
     // <group>
     uInt unique (Vector<uInt>& uniqueVector, uInt nrrec) const;
     uInt unique (Vector<uInt>& uniqueVector,
                  const Vector<uInt>& indexVector) const;
+    uInt unique (Vector<uInt>& uniqueVector,
+                 Vector<size_t>& changeKey,
+                 const Vector<uInt>& indexVector) const;
     uInt64 unique (Vector<uInt64>& uniqueVector, uInt64 nrrec) const;
     uInt64 unique (Vector<uInt64>& uniqueVector,
+                   const Vector<uInt64>& indexVector) const;
+    uInt64 unique (Vector<uInt64>& uniqueVector,
+                   Vector<size_t>& changeKey,
                    const Vector<uInt64>& indexVector) const;
     // </group>
 
@@ -361,6 +371,9 @@ private:
     T doUnique (Vector<T>& uniqueVector, T nrrec) const;
     template <typename T>
     T doUnique (Vector<T>& uniqueVector, const Vector<T>& indexVector) const;
+    template <typename T>
+    T doUnique (Vector<T>& uniqueVector, Vector<size_t>& changeKey,
+                const Vector<T>& indexVector) const;
 
     // Copy that Sort object to this.
     void copy (const Sort& that);
@@ -411,9 +424,14 @@ private:
     template<typename T>
     void siftDown (T low, T up, T* indices) const;
 
-    // Compare the keys of 2 records.
+    // Compare 2 records based on the comparison functions
     template<typename T>
     int compare (T index1, T index2) const;
+
+    // As compare() but it also gives back the index of the first comparison
+    // function that didn't match.
+    template<typename T>
+    int compareChangeIdx(T i1, T i2, size_t& idxComp) const;
 
     // Swap 2 indices.
     template<typename T>
@@ -426,7 +444,7 @@ private:
 
     //# Data memebers
     PtrBlock<SortKey*> keys_p;                    //# keys to sort on
-    uInt               nrkey_p;                   //# #sort-keys
+    size_t             nrkey_p;                   //# #sort-keys
     const void*        data_p;                    //# pointer to data records
     uInt               size_p;                    //# size of data record
     int                order_p;                   //# -1=asc 0=mixed 1=desc
