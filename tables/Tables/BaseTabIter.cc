@@ -56,7 +56,8 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
   lastVal_p (keys.nelements()),
   curVal_p  (keys.nelements()),
   sortIterBoundaries_p   (nullptr),
-  sortIterKeyIdxChange_p (nullptr)
+  sortIterKeyIdxChange_p (nullptr),
+  aRefTable_p(nullptr)
 {
     // If needed sort the table in order of the iteration keys.
     // The passed in compare functions are for the iteration.
@@ -97,6 +98,7 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
     {
         sortIterBoundariesIt_p   = sortIterBoundaries_p->begin();
         sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
+        aRefTable_p = sortTab_p->makeRefTable (False, 0);
     }
 }
 
@@ -116,7 +118,8 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
   lastVal_p (that.nrkeys_p),
   curVal_p  (that.nrkeys_p),
   sortIterBoundaries_p   (that.sortIterBoundaries_p),
-  sortIterKeyIdxChange_p (that.sortIterKeyIdxChange_p)
+  sortIterKeyIdxChange_p (that.sortIterKeyIdxChange_p),
+  aRefTable_p(nullptr)
 {
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
@@ -134,6 +137,10 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
     {
         sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
     }
+    if(sortIterBoundaries_p && sortIterKeyIdxChange_p)
+    {
+        aRefTable_p = sortTab_p->makeRefTable (False, 0);
+    }
 }
 
 BaseTableIterator::~BaseTableIterator()
@@ -145,7 +152,6 @@ BaseTableIterator::~BaseTableIterator()
     // Unlink from the table and delete it.
     BaseTable::unlink (sortTab_p);
 }
-
 
 void BaseTableIterator::reset()
 {
@@ -160,7 +166,6 @@ void BaseTableIterator::reset()
     }
 }
 
-
 BaseTable* BaseTableIterator::next()
 {
     // If there are no group boundaries precomputed do an expensive
@@ -172,9 +177,9 @@ BaseTable* BaseTableIterator::next()
     }
 
     // Allocate a RefTable to represent the rows in the iteration group.
-    RefTable* itp = sortTab_p->makeRefTable (False, 0);
+    aRefTable_p->removeAllRow();
     if (lastRow_p >= sortTab_p->nrow()) {
-        return itp;                              // the end of the table
+        return aRefTable_p;                              // the end of the table
     }
 
     // Go to the next group boundary (the one after this), which will be
@@ -191,10 +196,7 @@ BaseTable* BaseTableIterator::next()
     }
     // lastRow_p contains the starting point for this group
     rownr_t startThisGroup = lastRow_p;
-    for (rownr_t irow=startThisGroup; irow < startNextGroup; irow++)
-    {
-        itp->addRownr (irow);
-    }
+    aRefTable_p->addRownrRange (startThisGroup, startNextGroup - 1);
     // Set lastRow_p to the starting point of next group
     lastRow_p = startNextGroup;
 
@@ -211,9 +213,9 @@ BaseTable* BaseTableIterator::next()
     ++sortIterKeyIdxChangeIt_p;
 
     //# Adjust rownrs in case source table is already a RefTable.
-    Vector<rownr_t>& rownrs = *(itp->rowStorage());
-    sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
-    return itp;
+    Vector<rownr_t>& rownrs = *(aRefTable_p->rowStorage());
+    sortTab_p->adjustRownrs (aRefTable_p->nrow(), rownrs, False);
+    return aRefTable_p;
 }
 
 BaseTable* BaseTableIterator::noCachedIterBoundariesNext()
