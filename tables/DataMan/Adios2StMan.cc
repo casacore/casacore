@@ -61,76 +61,76 @@ Adios2StMan::~Adios2StMan() = default;
 
 DataManager *Adios2StMan::clone() const
 {
-	return pimpl->clone();
+    return pimpl->clone();
 }
 
 String Adios2StMan::dataManagerType() const
 {
-	return pimpl->dataManagerType();
+    return pimpl->dataManagerType();
 }
 
 String Adios2StMan::dataManagerName() const
 {
-	return pimpl->dataManagerName();
+    return pimpl->dataManagerName();
 }
 
 void Adios2StMan::create64(rownr_t aNrRows)
 {
-	pimpl->create64(aNrRows);
+    pimpl->create64(aNrRows);
 }
 
 rownr_t Adios2StMan::open64(rownr_t aRowNr, AipsIO &ios)
 {
-	return pimpl->open64(aRowNr, ios);
+    return pimpl->open64(aRowNr, ios);
 }
 
 rownr_t Adios2StMan::resync64(rownr_t aRowNr)
 {
-	return pimpl->resync64(aRowNr);
+    return pimpl->resync64(aRowNr);
 }
 
 Bool Adios2StMan::flush(AipsIO &ios, Bool doFsync)
 {
-	return pimpl->flush(ios, doFsync);
+    return pimpl->flush(ios, doFsync);
 }
 
 DataManagerColumn *Adios2StMan::makeScalarColumn(
-    const String &aName, int aDataType, const String &aDataTypeID)
+        const String &aName, int aDataType, const String &aDataTypeID)
 {
-	return pimpl->makeScalarColumn(aName, aDataType, aDataTypeID);
+    return pimpl->makeScalarColumn(aName, aDataType, aDataTypeID);
 }
 
 DataManagerColumn *Adios2StMan::makeDirArrColumn(
-    const String &aName, int aDataType, const String &aDataTypeID)
+        const String &aName, int aDataType, const String &aDataTypeID)
 {
-	return pimpl->makeDirArrColumn(aName, aDataType, aDataTypeID);
+    return pimpl->makeDirArrColumn(aName, aDataType, aDataTypeID);
 }
 
 DataManagerColumn *Adios2StMan::makeIndArrColumn(
-    const String &aName, int aDataType, const String &aDataTypeID)
+        const String &aName, int aDataType, const String &aDataTypeID)
 {
-	return pimpl->makeIndArrColumn(aName, aDataType, aDataTypeID);
+    return pimpl->makeIndArrColumn(aName, aDataType, aDataTypeID);
 }
 
 void Adios2StMan::deleteManager()
 {
-	pimpl->deleteManager();
+    pimpl->deleteManager();
 }
 
 void Adios2StMan::addRow64(rownr_t aNrRows)
 {
-	return pimpl->addRow64(aNrRows);
+    return pimpl->addRow64(aNrRows);
 }
 
 DataManager *Adios2StMan::makeObject(
-    const String &aDataManType, const Record &spec)
+        const String &aDataManType, const Record &spec)
 {
-	return impl::makeObject(aDataManType, spec);
+    return impl::makeObject(aDataManType, spec);
 }
 
 rownr_t Adios2StMan::getNrRows()
 {
-	return pimpl->getNrRows();
+    return pimpl->getNrRows();
 }
 
 
@@ -217,9 +217,13 @@ Adios2StMan::impl::~impl()
         itsAdiosEngine->EndStep();
         itsAdiosEngine->Close();
     }
-    for (uInt i = 0; i < ncolumn(); ++i) {
-      delete itsColumnPtrBlk[i];
+    for (uInt i = 0; i < ncolumn(); ++i)
+    {
+        delete itsColumnPtrBlk[i];
     }
+    Adios2StMan::impl::itsAdiosEngineType.clear();
+    Adios2StMan::impl::itsAdiosEngineParams.clear();
+    Adios2StMan::impl::itsAdiosTransportParamsVec.clear();
 }
 
 DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,

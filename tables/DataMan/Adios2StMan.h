@@ -77,8 +77,8 @@ public:
     rownr_t getNrRows();
 
 private:
-	 class impl;
-	 std::unique_ptr<impl> pimpl;
+    class impl;
+    std::unique_ptr<impl> pimpl;
 }; // end of class Adios2StMan
 
 extern "C" void register_adios2stman();
