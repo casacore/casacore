@@ -174,6 +174,8 @@ private:
     void toAdios(const void *data, std::size_t offset)
     {
         const T *tData = static_cast<const T *>(data);
+        if(!isShapeFixed)
+            itsAdiosVariable.SetShape(itsAdiosShape);
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
         itsAdiosEngine->Put<T>(itsAdiosVariable, tData + offset, adios2::Mode::Sync);
     }

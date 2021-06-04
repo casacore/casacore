@@ -77,11 +77,6 @@ IPosition Adios2StManColumn::shape(rownr_t aRowNr)
         }
         else
         {
-            /*
-            throw(std::runtime_error("Shape not defined for Column "
-                        + static_cast<std::string>(itsColumnName)
-                        + " Row " + std::to_string(aRowNr)));
-                        */
             return IPosition();
         }
     }
@@ -111,12 +106,37 @@ void Adios2StManColumn::scalarColumnVToSelection()
 
 void Adios2StManColumn::arrayVToSelection(rownr_t rownr)
 {
-    itsAdiosStart[0] = rownr;
-    itsAdiosCount[0] = 1;
-    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+    if(isShapeFixed)
     {
-        itsAdiosStart[i] = 0;
-        itsAdiosCount[i] = itsAdiosShape[i];
+        itsAdiosStart[0] = rownr;
+        itsAdiosCount[0] = 1;
+        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+        {
+            itsAdiosStart[i] = 0;
+            itsAdiosCount[i] = itsAdiosShape[i];
+        }
+    }
+    else
+    {
+        auto casaShape = itsCasaShapes.find(rownr);
+        if(casaShape != itsCasaShapes.end())
+        {
+            itsAdiosShape.resize(casaShape->second.size() + 1);
+            itsAdiosStart.resize(casaShape->second.size() + 1);
+            itsAdiosCount.resize(casaShape->second.size() + 1);
+            itsAdiosStart[0] = rownr;
+            itsAdiosCount[0] = 1;
+            for (size_t i = 0; i < casaShape->second.size(); ++i)
+            {
+                itsAdiosShape[i + 1] = casaShape->second[casaShape->second.size() - i - 1];
+                itsAdiosCount[i + 1] = casaShape->second[casaShape->second.size() - i - 1];
+                itsAdiosStart[i + 1] = 0;
+            }
+        }
+        else
+        {
+            cerr << "Shape of Row " << rownr << " has not been set" << endl;
+        }
     }
 }
 
