@@ -26,12 +26,13 @@
 //# $Id$
 
 #include <casacore/tables/DataMan/Adios2StMan.h>
-#include <casacore/tables/Tables/TableDesc.h>
-#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
-#include <casacore/tables/Tables/ArrColDesc.h>
-#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/namespace.h>
 
 
@@ -257,6 +258,24 @@ void doReadArray(std::string filename, uInt rows, IPosition array_pos){
     VerifyArrayColumn<String>(casa_table, "array_String", rows, array_pos);
 }
 
+void doCopyTable(std::string inTable, std::string outTable, std::string column)
+{
+    Table tab(inTable);
+    TableDesc td("", "1", TableDesc::Scratch);
+    SetupNewTable newtab(outTable, td, Table::New);
+    Table duptab(newtab);
+    duptab.addRow(tab.nrow());
+    Adios2StMan a2stman;
+    duptab.addColumn(tab.tableDesc().columnDesc(column), a2stman);
+    TableCopy::copyColumnData(tab, column, duptab, column, false);
+}
+
+void doReadCopiedTable(std::string filename, std::string column, uInt rows, IPosition array_pos)
+{
+    Table tab(filename);
+    VerifyArrayColumn<Complex>(tab, "array_Complex", rows, array_pos);
+}
+
 int main(int argc, char **argv){
 
     MPI_Init(&argc,&argv);
@@ -267,6 +286,9 @@ int main(int argc, char **argv){
     doWriteDefault("default.table", rows, array_pos);
     doReadScalar("default.table", rows);
     doReadArray("default.table", rows, array_pos);
+
+    doCopyTable("default.table", "duplicated.table", "array_Complex");
+    doReadCopiedTable("duplicated.table", "array_Complex", rows, array_pos);
 
     MPI_Finalize();
 }
