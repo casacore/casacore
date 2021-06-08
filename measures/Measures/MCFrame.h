@@ -96,7 +96,7 @@ public:
   
   //# Constructors
   // Construct using the MeasFrame parent
-  MCFrame(MeasFrame *inf);
+  MCFrame(std::weak_ptr<MeasFrame::FrameRep> inf);
 
   // Destructor
   ~MCFrame();
@@ -173,7 +173,7 @@ public:
 private:
   //# Data
   // The belonging frame pointer
-  MeasFrame *myf;
+  std::weak_ptr<MeasFrame::FrameRep> myf;
   // The actual measure conversion values
   // <group>
   // Conversion to TDB time (due to some (for me) unsolvable dependency
@@ -232,11 +232,11 @@ private:
   
   //# Member functions
   // Default constructor (not implemented)
-  MCFrame();
+  MCFrame() = delete;
   // Copy constructor (not implemented)
-  MCFrame(const MCFrame &other);
+  MCFrame(const MCFrame &other) = delete;
   // Copy assignment (not implemented)
-  MCFrame &operator=(const MCFrame &other);
+  MCFrame &operator=(const MCFrame &other) = delete;
 };
 
 

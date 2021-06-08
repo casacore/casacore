@@ -41,44 +41,23 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Representation class
-class FrameRep {
-public:
-  // Epoch in time
-  std::unique_ptr<Measure> epval;
-  // Position
-  std::unique_ptr<Measure> posval;
-  // Direction
-  std::unique_ptr<Measure> dirval;
-  // Radial velocity
-  std::unique_ptr<Measure> radval;
-  // Comet
-  std::unique_ptr<MeasComet> comval;
-  // Pointer to belonging conversion frame
-  std::unique_ptr<MCFrame> mymcf;
-};
-
 // MeasFrame class
 
 //# Constructors
-MeasFrame::MeasFrame() : rep() {
-  create();
+MeasFrame::MeasFrame() : rep(createRep()) {
 }
 
-MeasFrame::MeasFrame(const Measure &meas1) : rep() {
-  create();
+MeasFrame::MeasFrame(const Measure &meas1) : rep(createRep()) {
   fill(&meas1);
 }
 
-MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) : rep() {
-  create();
+MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) : rep(createRep()) {
   fill(&meas1);
   fill(&meas2);
 }
 
 MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2,
-		     const Measure &meas3) : rep() {
-  create();
+		     const Measure &meas3) : rep(createRep()) {
   fill(&meas1);
   fill(&meas2);
   fill(&meas3);
@@ -138,7 +117,7 @@ void MeasFrame::resetEpoch(const Quantum<Vector<Double> > &val) {
 }
 
 void MeasFrame::resetEpoch(const MVEpoch &val) {
-  if (rep && rep->epval) {
+  if (rep->epval) {
     rep->epval->set(val);
     rep->mymcf->resetEpoch();
   } else {
@@ -147,7 +126,7 @@ void MeasFrame::resetEpoch(const MVEpoch &val) {
 }
 
 void MeasFrame::resetEpoch(const Measure &val) {
-  if (rep && rep->epval) {
+  if (rep->epval) {
     rep->epval = std::unique_ptr<Measure>(val.clone());
     makeEpoch();
   } else {
@@ -164,7 +143,7 @@ void MeasFrame::resetPosition(const Quantum<Vector<Double> > &val) {
 }
 
 void MeasFrame::resetPosition(const MVPosition  &val) {
-  if (rep && rep->posval) {
+  if (rep->posval) {
     rep->posval->set(val);
     rep->mymcf->resetPosition();
   } else {
@@ -173,7 +152,7 @@ void MeasFrame::resetPosition(const MVPosition  &val) {
 }
 
 void MeasFrame::resetPosition(const Measure &val) {
-  if (rep && rep->posval) {
+  if (rep->posval) {
     rep->posval = std::unique_ptr<Measure>(val.clone());
     makePosition();
   } else {
@@ -190,7 +169,7 @@ void MeasFrame::resetDirection(const Quantum<Vector<Double> > &val) {
 }
 
 void MeasFrame::resetDirection(const MVDirection  &val) {
-  if (rep && rep->dirval) {
+  if (rep->dirval) {
     rep->dirval->set(val);
     rep->mymcf->resetDirection();
   } else {
@@ -199,7 +178,7 @@ void MeasFrame::resetDirection(const MVDirection  &val) {
 }
 
 void MeasFrame::resetDirection(const Measure &val) {
-  if (rep && rep->dirval) {
+  if (rep->dirval) {
     rep->dirval = std::unique_ptr<Measure>(val.clone());
     makeDirection();
   } else {
@@ -216,7 +195,7 @@ void MeasFrame::resetRadialVelocity(const Quantum<Vector<Double> > &val) {
 }
 
 void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
-  if (rep && rep->radval) {
+  if (rep->radval) {
     rep->radval->set(val);
     rep->mymcf->resetRadialVelocity();
   } else {
@@ -225,7 +204,7 @@ void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
 }
 
 void MeasFrame::resetRadialVelocity(const Measure &val) {
-  if (rep && rep->radval) {
+  if (rep->radval) {
     rep->radval = std::unique_ptr<Measure>(val.clone());
     makeRadialVelocity();
   } else {
@@ -234,7 +213,7 @@ void MeasFrame::resetRadialVelocity(const Measure &val) {
 }
 
 void MeasFrame::resetComet(const MeasComet &val) {
-  if (rep && rep->comval) {
+  if (rep->comval) {
     fill(&val);
   } else {
     errorReset(String("Comet"));
@@ -242,167 +221,161 @@ void MeasFrame::resetComet(const MeasComet &val) {
 }
 
 const Measure* MeasFrame::epoch() const{
-  if (rep) return rep->epval.get();
-  return nullptr;
+  return rep->epval.get();
 }
 
 const Measure* MeasFrame::position() const{
-  if (rep) return rep->posval.get();
-  return nullptr;
+  return rep->posval.get();
 }
 
 const Measure* MeasFrame::direction() const{
-  if (rep) return rep->dirval.get();
-  return nullptr;
+  return rep->dirval.get();
 }
 
 const Measure* MeasFrame::radialVelocity() const{
-  if (rep) return rep->radval.get();
-  return nullptr;
+  return rep->radval.get();
 }
 
 const MeasComet* MeasFrame::comet() const{
-  if (rep) return rep->comval.get();
-  return nullptr;
+  return rep->comval.get();
 }
 
 Bool MeasFrame::getTDB(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getTDB(tdb));
+  if (rep->mymcf) return (rep->mymcf->getTDB(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getUT1(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getUT1(tdb));
+  if (rep->mymcf) return (rep->mymcf->getUT1(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getTT(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getTT(tdb));
+  if (rep->mymcf) return (rep->mymcf->getTT(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLong(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLong(tdb));
+  if (rep->mymcf) return (rep->mymcf->getLong(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLat(tdb));
+  if (rep->mymcf) return (rep->mymcf->getLat(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getITRF(MVPosition &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getITRF(tdb));
+  if (rep->mymcf) return (rep->mymcf->getITRF(tdb));
   tdb = MVPosition(0.0);
   return False; 
 }
 
 Bool MeasFrame::getRadius(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getRadius(tdb));
+  if (rep->mymcf) return (rep->mymcf->getRadius(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLatGeo(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLatGeo(tdb));
+  if (rep->mymcf) return (rep->mymcf->getLatGeo(tdb));
   tdb = 0;
   return False;
 }
 
 Bool MeasFrame::getLAST(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLAST(tdb));
+  if (rep->mymcf) return (rep->mymcf->getLAST(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLASTr(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLASTr(tdb));
+  if (rep->mymcf) return (rep->mymcf->getLASTr(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getJ2000(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000(tdb));
+  if (rep->mymcf) return (rep->mymcf->getJ2000(tdb));
   tdb = Double(0.0);
   return False; 
 }
 
 Bool MeasFrame::getJ2000Long(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Long(tdb));
+  if (rep->mymcf) return (rep->mymcf->getJ2000Long(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getJ2000Lat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Lat(tdb));
+  if (rep->mymcf) return (rep->mymcf->getJ2000Lat(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950(tdb));
+  if (rep->mymcf) return (rep->mymcf->getB1950(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950Long(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950Long(tdb));
+  if (rep->mymcf) return (rep->mymcf->getB1950Long(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950Lat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950Lat(tdb));
+  if (rep->mymcf) return (rep->mymcf->getB1950Lat(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getApp(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getApp(tdb));
+  if (rep->mymcf) return (rep->mymcf->getApp(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getAppLong(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getAppLong(tdb));
+  if (rep->mymcf) return (rep->mymcf->getAppLong(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getAppLat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getAppLat(tdb));
+  if (rep->mymcf) return (rep->mymcf->getAppLat(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLSR(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLSR(tdb));
+  if (rep->mymcf) return (rep->mymcf->getLSR(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getCometType(uInt &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getCometType(tdb));
+  if (rep->mymcf) return (rep->mymcf->getCometType(tdb));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getComet(MVPosition &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getComet(tdb));
+  if (rep->mymcf) return (rep->mymcf->getComet(tdb));
   tdb = MVPosition(0.0);
   return False; 
 }
 
-void MeasFrame::create() {
-  if (!rep) {
-    rep.reset(new FrameRep());
-    rep->mymcf = std::unique_ptr<MCFrame>(new MCFrame(this));
-  }
+std::shared_ptr<MeasFrame::FrameRep> MeasFrame::createRep() {
+  std::shared_ptr<FrameRep> r(new FrameRep());
+  rep->mymcf = std::unique_ptr<MCFrame>(new MCFrame(r));
+  return r;
 }
 
 void MeasFrame::fill(const Measure *in) {

@@ -137,7 +137,25 @@ template <class Qtype> class Quantum;
 class MeasFrame {
 
  public:
-  
+  // Representation class
+  class FrameRep {
+  public:
+    // Epoch in time
+    std::unique_ptr<Measure> epval;
+    // Position
+    std::unique_ptr<Measure> posval;
+    // Direction
+    std::unique_ptr<Measure> dirval;
+    // Radial velocity
+    std::unique_ptr<Measure> radval;
+    // Comet
+    std::unique_ptr<MeasComet> comval;
+    // Pointer to belonging conversion frame
+    std::unique_ptr<MCFrame> mymcf;
+  };
+  MeasFrame(std::shared_ptr<FrameRep> repPointer) : rep(repPointer)
+  { }
+
   //# Friends
   // Output a frame
   friend ostream &operator<<(ostream &os, MeasFrame &mf);
@@ -293,7 +311,7 @@ private:
   
   //# Member functions
   // Create an instance of the MeasFrame class
-  void create();
+  std::shared_ptr<FrameRep> createRep();
   // Fill a MeasFrame element
   // <group>
   void fill(const Measure *in);

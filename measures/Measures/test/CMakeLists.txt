@@ -20,6 +20,7 @@ tRecordTransformable
 tStokes
 tUVWMachine
 tVelocityMachine
+tbug1111
 )
 
 foreach (test ${tests})
