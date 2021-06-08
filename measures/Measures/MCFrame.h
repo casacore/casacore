@@ -96,7 +96,7 @@ public:
   
   //# Constructors
   // Construct using the MeasFrame parent
-  MCFrame(MeasFrame &inf);
+  MCFrame(MeasFrame *inf);
 
   // Destructor
   ~MCFrame();
@@ -173,7 +173,7 @@ public:
 private:
   //# Data
   // The belonging frame pointer
-  MeasFrame myf;
+  MeasFrame *myf;
   // The actual measure conversion values
   // <group>
   // Conversion to TDB time (due to some (for me) unsolvable dependency

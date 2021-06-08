@@ -401,7 +401,7 @@ Bool MeasFrame::getComet(MVPosition &tdb) const {
 void MeasFrame::create() {
   if (!rep) {
     rep.reset(new FrameRep());
-    rep->mymcf = std::unique_ptr<MCFrame>(new MCFrame(*this));
+    rep->mymcf = std::unique_ptr<MCFrame>(new MCFrame(this));
   }
 }
 
