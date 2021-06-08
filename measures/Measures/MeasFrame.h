@@ -153,8 +153,6 @@ class MeasFrame {
     // Pointer to belonging conversion frame
     std::unique_ptr<MCFrame> mymcf;
   };
-  MeasFrame(std::shared_ptr<FrameRep> repPointer) : rep(repPointer)
-  { }
 
   //# Friends
   // Output a frame
@@ -304,6 +302,8 @@ class MeasFrame {
   // </group>
   
 private:
+  MeasFrame(std::shared_ptr<FrameRep> repPointer) : rep(std::move(repPointer))
+  { }
   
   //# Data
   // Representation of MeasFrame

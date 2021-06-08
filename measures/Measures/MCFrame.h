@@ -31,12 +31,17 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
+class MDirection;
+class MEpoch;
+class MPosition;
+class MRadialVelocity;
 class MVDirection;
 class MVPosition;
 
@@ -171,63 +176,62 @@ public:
   Bool getComet(MVPosition &tdb);
   
 private:
+  // Conversion to TDB time
+  MeasConvert<MEpoch> getEpConvTDB() const;
+  // Conversion to UT1 time
+  MeasConvert<MEpoch> getEpConvUT1() const;
+  // Conversion to TT time
+  MeasConvert<MEpoch> getEpConvTT() const;
+  // Conversion to LAST time
+  MeasConvert<MEpoch> getEpConvLAST() const;
+  // Conversion to ITRF longitude/latitude
+  MeasConvert<MPosition> getPosConvLong() const;
+  // Conversion to geodetic longitude/latitude
+  MeasConvert<MPosition> getPosConvLongGeo() const;
+  // Conversion to J2000
+  MeasConvert<MDirection> getDirConvJ2000() const;
+  // Conversion to B1950
+  MeasConvert<MDirection> getDirConvB1950() const;
+  // Conversion to apparent coordinates
+  MeasConvert<MDirection> getDirConvApp() const;
+  // Conversion to LSR radial velocity
+  MeasConvert<MRadialVelocity> getRadConvLSR() const;
+ 
   //# Data
   // The belonging frame pointer
   std::weak_ptr<MeasFrame::FrameRep> myf;
   // The actual measure conversion values
   // <group>
-  // Conversion to TDB time (due to some (for me) unsolvable dependency
-  // errors)
-  // not the proper MeasConvert* here)
-  void *epConvTDB;
   // TDB time
-  Double *epTDBp;
-  // Conversion to UT1 time
-  void *epConvUT1;
+  std::unique_ptr<Double> epTDBp;
   // UT1 time
-  Double *epUT1p;
-  // Conversion to TT time
-  void *epConvTT;
+  std::unique_ptr<Double> epUT1p;
   // TT time
-  Double *epTTp;
-  // Conversion to LAST time
-  void *epConvLAST;
+  std::unique_ptr<Double> epTTp;
   // LAST time
-  Double *epLASTp;
-  // Conversion to ITRF longitude/latitude
-  void *posConvLong;
+  std::unique_ptr<Double> epLASTp;
   // Longitude
-  Vector<Double> *posLongp;
+  std::unique_ptr<Vector<Double>> posLongp;
   // Position
-  MVPosition *posITRFp;
-  // Conversion to geodetic longitude/latitude
-  void *posConvLongGeo;
+  std::unique_ptr<MVPosition> posITRFp;
   // Latitude
-  Vector<Double> *posLongGeop;
+  std::unique_ptr<Vector<Double>> posLongGeop;
   // Position
-  MVPosition *posGeop;
-  // Conversion to J2000
-  void *dirConvJ2000;
+  std::unique_ptr<MVPosition> posGeop;
   // Longitude
-  Vector<Double> *j2000Longp;
+  std::unique_ptr<Vector<Double>> j2000Longp;
   // J2000 coordinates
-  MVDirection *dirJ2000p;
-  // Conversion to B1950
-  void *dirConvB1950;
+  std::unique_ptr<MVDirection> dirJ2000p;
   // Longitude
-  Vector<Double> *b1950Longp;
+  std::unique_ptr<Vector<Double>> b1950Longp;
   // B1950 coordinates
-  MVDirection *dirB1950p;
-  // Conversion to apparent coordinates
-  void *dirConvApp;
+  std::unique_ptr<MVDirection> dirB1950p;
   // Longitude
-  Vector<Double> *appLongp;
+  std::unique_ptr<Vector<Double>> appLongp;
   // Apparent coordinates
-  MVDirection *dirAppp;
-  // Conversion to LSR radial velocity
-  void *radConvLSR;
+  std::unique_ptr<MVDirection> dirAppp;
   // Radial velocity
-  Double *radLSRp;
+  std::unique_ptr<Double> radLSRp;
   // </group>
   
   //# Member functions

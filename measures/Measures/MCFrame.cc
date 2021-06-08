@@ -49,94 +49,54 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Constructors
 MCFrame::MCFrame(std::weak_ptr<MeasFrame::FrameRep> inf) :
   myf(inf),
-  epConvTDB(0), epTDBp(0), 
-  epConvUT1(0), epUT1p(0), 
-  epConvTT(0), epTTp(0), 
-  epConvLAST(0), epLASTp(0), 
-  posConvLong(0), posLongp(0), posITRFp(0),
-  posConvLongGeo(0), posLongGeop(0), posGeop(0),
-  dirConvJ2000(0), j2000Longp(0), dirJ2000p(0),
-  dirConvB1950(0), b1950Longp(0), dirB1950p(0),
-  dirConvApp(0), appLongp(0), dirAppp(0),
-  radConvLSR(0), radLSRp(0) {;}
+  epTDBp(), 
+  epUT1p(), 
+  epTTp(), 
+  epLASTp(), 
+  posLongp(), posITRFp(),
+  posLongGeop(), 
+  posGeop(),j2000Longp(), dirJ2000p(),
+  b1950Longp(), dirB1950p(),
+  appLongp(), dirAppp(),
+  radLSRp() {;}
 
 // Destructor
-MCFrame::~MCFrame() {
-  delete static_cast<MEpoch::Convert *>(epConvTDB);
-  delete epTDBp;
-  delete static_cast<MEpoch::Convert *>(epConvUT1);
-  delete epUT1p;
-  delete static_cast<MEpoch::Convert *>(epConvTT);
-  delete epTTp;
-  delete static_cast<MEpoch::Convert *>(epConvLAST);
-  delete epLASTp;
-  delete static_cast<MPosition::Convert *>(posConvLong);
-  delete posLongp;
-  delete posITRFp;
-  delete static_cast<MPosition::Convert *>(posConvLongGeo);
-  delete posLongGeop;
-  delete posGeop;
-  delete static_cast<MDirection::Convert *>(dirConvJ2000);
-  delete j2000Longp;
-  delete dirJ2000p;
-  delete static_cast<MDirection::Convert *>(dirConvB1950);
-  delete b1950Longp;
-  delete dirB1950p;
-  delete static_cast<MDirection::Convert *>(dirConvApp);
-  delete appLongp;
-  delete dirAppp;
-  delete static_cast<MRadialVelocity::Convert *>(radConvLSR);
-  delete radLSRp;
-}
+MCFrame::~MCFrame() { }
 
 // Operators
 
 // General member functions
 
 void MCFrame::resetEpoch() {
-    delete epTDBp; epTDBp = nullptr;
-    delete epUT1p; epUT1p = nullptr;
-    delete epTTp; epTTp = nullptr;
-    delete epLASTp; epLASTp = nullptr;
-    delete appLongp; appLongp = nullptr;
-    delete dirAppp; dirAppp = nullptr;
-    delete radLSRp; radLSRp = nullptr;
+  epTDBp.reset();
+  epUT1p.reset();;
+  epTTp.reset();
+  epLASTp.reset();
+  appLongp.reset();
+  dirAppp.reset();
+  radLSRp.reset();
 }
 
 void MCFrame::resetPosition() {
-  if (posLongp) {
-    delete posLongp; posLongp = nullptr;
-    delete posITRFp; posITRFp = nullptr;
-    delete posLongGeop; posLongGeop = nullptr;
-    delete posGeop; posGeop = nullptr;
-  }
-  if (epLASTp) {
-    delete epLASTp; epLASTp = nullptr;
-  }
+  posLongp.reset();
+  posITRFp.reset();
+  posLongGeop.reset();
+  posGeop.reset();
+  epLASTp.reset();
 }
 
 void MCFrame::resetDirection() {
-  if (j2000Longp) {
-    delete j2000Longp; j2000Longp = nullptr;
-    delete dirJ2000p; dirJ2000p = nullptr;
-  }
-  if (b1950Longp) {
-    delete b1950Longp; b1950Longp = nullptr;
-    delete dirB1950p; dirB1950p = nullptr;
-  }
-  if (appLongp) {
-    delete appLongp; appLongp = nullptr;
-    delete dirAppp; dirAppp = nullptr;
-  }
-  if (radLSRp) {
-    delete radLSRp; radLSRp = nullptr;
-  }
+  j2000Longp.reset();
+  dirJ2000p.reset();
+  b1950Longp.reset();
+  dirB1950p.reset();
+  appLongp.reset();
+  dirAppp.reset();
+  radLSRp.reset();
 }
 
 void MCFrame::resetRadialVelocity() {
-  if (radLSRp) {
-    delete radLSRp; radLSRp = nullptr;
-  }
+  radLSRp.reset();
 }
 
 void MCFrame::resetComet() {
@@ -146,8 +106,8 @@ Bool MCFrame::getTDB(Double &tdb) {
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
   if (epoch) {
     if (!epTDBp) {
-      epTDBp = new Double;
-      *epTDBp = static_cast<MEpoch::Convert *>(epConvTDB)->operator()
+      epTDBp.reset(new Double);
+      *epTDBp = getEpConvTDB()
 	(*dynamic_cast<const MVEpoch *const>(epoch->getData())).
 	getValue().get();
     }
@@ -162,8 +122,8 @@ Bool MCFrame::getUT1(Double &tdb) {
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
   if (epoch) {
     if (!epUT1p) {
-      epUT1p = new Double;
-      *epUT1p = static_cast<MEpoch::Convert *>(epConvUT1)->operator()
+      epUT1p.reset(new Double);
+      *epUT1p = getEpConvUT1()
 	(*dynamic_cast<const MVEpoch *const>(myf.lock()->epval->getData())).
 	getValue().get();
     }
@@ -178,8 +138,8 @@ Bool MCFrame::getTT(Double &tdb) {
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
   if (epoch) {
     if (!epTTp) {
-      epTTp = new Double;
-      *epTTp = static_cast<MEpoch::Convert *>(epConvTT)->operator()
+      epTTp.reset(new Double);
+      *epTTp = getEpConvTT()
 	(*dynamic_cast<const MVEpoch *const>(epoch->getData())).
 	getValue().get();
     }
@@ -194,9 +154,9 @@ Bool MCFrame::getLong(Double &tdb) {
   std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
   if (position) {
     if (!posLongp) {
-      posLongp = new Vector<Double>(3);
-      posITRFp = new MVPosition;
-      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+      posLongp.reset(new Vector<Double>(3));
+      posITRFp.reset(new MVPosition());
+      *posITRFp = getPosConvLong()
 	(*dynamic_cast<const MVPosition *const>(position->getData())).
 	getValue();
       *posLongp = posITRFp->get();
@@ -212,9 +172,9 @@ Bool MCFrame::getLat(Double &tdb) {
   std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
   if (position) {
     if (!posLongp) {
-      posLongp = new Vector<Double>(3);
-      posITRFp = new MVPosition;
-      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+      posLongp.reset(new Vector<Double>(3));
+      posITRFp.reset(new MVPosition);
+      *posITRFp = getPosConvLong()
 	(*dynamic_cast<const MVPosition *const>(position->getData())).
 	getValue();
       *posLongp = posITRFp->get();
@@ -230,9 +190,9 @@ Bool MCFrame::getLatGeo(Double &tdb) {
   std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
   if (position) {
     if (!posLongGeop) {
-      posLongGeop = new Vector<Double>(3);
-      posGeop = new MVPosition;
-      *posGeop = static_cast<MPosition::Convert *>(posConvLongGeo)->operator()
+      posLongGeop.reset(new Vector<Double>(3));
+      posGeop.reset(new MVPosition);
+      *posGeop = getPosConvLongGeo()
         (*dynamic_cast<const MVPosition *const>(position->getData())).
         getValue();
       *posLongGeop = posGeop->get();
@@ -248,9 +208,9 @@ Bool MCFrame::getITRF(MVPosition &tdb) {
   std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
   if (position) {
     if (!posLongp) {
-      posLongp = new Vector<Double>(3);
-      posITRFp = new MVPosition;
-      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+      posLongp.reset(new Vector<Double>(3));
+      posITRFp.reset(new MVPosition);
+      *posITRFp = getPosConvLong()
 	(*dynamic_cast<const MVPosition *const>(position->getData())).
 	getValue();
       *posLongp = posITRFp->get();
@@ -266,9 +226,9 @@ Bool MCFrame::getRadius(Double &tdb) {
   std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
   if (position) {
     if (!posLongp) {
-      posLongp = new Vector<Double>(3);
-      posITRFp = new MVPosition;
-      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+      posLongp.reset(new Vector<Double>(3));
+      posITRFp.reset(new MVPosition);
+      *posITRFp = getPosConvLong()
 	(*dynamic_cast<const MVPosition *const>(position->getData())).
 	getValue();
       *posLongp = posITRFp->get();
@@ -284,8 +244,8 @@ Bool MCFrame::getLAST(Double &tdb) {
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
   if (epoch) {
     if (!epLASTp) {
-      epLASTp = new Double;
-      *epLASTp = static_cast<MEpoch::Convert *>(epConvLAST)->operator()
+      epLASTp.reset(new Double);
+      *epLASTp = getEpConvLAST()
 	(*dynamic_cast<const MVEpoch *const>(epoch->getData())).
 	getValue().get();
     }
@@ -306,9 +266,9 @@ Bool MCFrame::getJ2000Long(Double &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!j2000Longp) {
-      j2000Longp = new Vector<Double>(2);
-      dirJ2000p = new MVDirection;
-      *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
+      j2000Longp.reset(new Vector<Double>(2));
+      dirJ2000p.reset(new MVDirection);
+      *dirJ2000p = getDirConvJ2000()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *j2000Longp = dirJ2000p->get();
@@ -324,9 +284,9 @@ Bool MCFrame::getJ2000Lat(Double &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!j2000Longp) {
-      j2000Longp = new Vector<Double>(2);
-      dirJ2000p = new MVDirection;
-      *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
+      j2000Longp.reset(new Vector<Double>(2));
+      dirJ2000p.reset(new MVDirection);
+      *dirJ2000p = getDirConvJ2000()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *j2000Longp = dirJ2000p->get();
@@ -342,9 +302,9 @@ Bool MCFrame::getJ2000(MVDirection &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!j2000Longp) {
-      j2000Longp = new Vector<Double>(2);
-      dirJ2000p = new MVDirection;
-      *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
+      j2000Longp.reset(new Vector<Double>(2));
+      dirJ2000p.reset(new MVDirection);
+      *dirJ2000p = getDirConvJ2000()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *j2000Longp = dirJ2000p->get();
@@ -360,9 +320,9 @@ Bool MCFrame::getB1950Long(Double &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!b1950Longp) {
-      b1950Longp = new Vector<Double>(2);
-      dirB1950p = new MVDirection;
-      *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
+      b1950Longp.reset(new Vector<Double>(2));
+      dirB1950p.reset(new MVDirection);
+      *dirB1950p = getDirConvB1950()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *b1950Longp = dirB1950p->get();
@@ -378,9 +338,9 @@ Bool MCFrame::getB1950Lat(Double &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!b1950Longp) {
-      b1950Longp = new Vector<Double>(2);
-      dirB1950p = new MVDirection;
-      *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
+      b1950Longp.reset(new Vector<Double>(2));
+      dirB1950p.reset(new MVDirection);
+      *dirB1950p = getDirConvB1950()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *b1950Longp = dirB1950p->get();
@@ -396,9 +356,9 @@ Bool MCFrame::getB1950(MVDirection &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!b1950Longp) {
-      b1950Longp = new Vector<Double>(2);
-      dirB1950p = new MVDirection;
-      *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
+      b1950Longp.reset(new Vector<Double>(2));
+      dirB1950p.reset(new MVDirection);
+      *dirB1950p = getDirConvB1950()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *b1950Longp = dirB1950p->get();
@@ -414,9 +374,9 @@ Bool MCFrame::getAppLong(Double &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!appLongp) {
-      appLongp = new Vector<Double>(2);
-      dirAppp = new MVDirection;
-      *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
+      appLongp.reset(new Vector<Double>(2));
+      dirAppp.reset(new MVDirection);
+      *dirAppp = getDirConvApp()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *appLongp = dirAppp->get();
@@ -432,9 +392,9 @@ Bool MCFrame::getAppLat(Double &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!appLongp) {
-      appLongp = new Vector<Double>(2);
-      dirAppp = new MVDirection;
-      *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
+      appLongp.reset(new Vector<Double>(2));
+      dirAppp.reset(new MVDirection);
+      *dirAppp = getDirConvApp()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *appLongp = dirAppp->get();
@@ -450,9 +410,9 @@ Bool MCFrame::getApp(MVDirection &tdb) {
   std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
   if (direction) {
     if (!appLongp) {
-      appLongp = new Vector<Double>(2);
-      dirAppp = new MVDirection;
-      *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
+      appLongp.reset(new Vector<Double>(2));
+      dirAppp.reset(new MVDirection);
+      *dirAppp = getDirConvApp()
 	(*dynamic_cast<const MVDirection *const>(direction->getData())).
 	getValue();
       *appLongp = dirAppp->get();
@@ -468,8 +428,8 @@ Bool MCFrame::getLSR(Double &tdb) {
   std::unique_ptr<casacore::Measure>& radialVelocity = myf.lock()->radval;
   if (radialVelocity) {
     if (!radLSRp) {
-      radLSRp = new Double;
-      *radLSRp = static_cast<MRadialVelocity::Convert *>(radConvLSR)->operator()
+      radLSRp.reset(new Double);
+      *radLSRp = getRadConvLSR()
 	(*dynamic_cast<const MVRadialVelocity *const>(radialVelocity->
 						      getData())).
 	getValue();
@@ -501,128 +461,109 @@ Bool MCFrame::getComet(MVPosition &tdb) {
   return False;
 }
 
-void MCFrame::makeEpoch() {
-  static const MEpoch::Ref REFTDB = MEpoch::Ref(MEpoch::TDB);
-  static const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
-  static const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
-  delete static_cast<MEpoch::Convert *>(epConvTDB);
-  delete static_cast<MEpoch::Convert *>(epConvUT1);
-  delete static_cast<MEpoch::Convert *>(epConvTT);
+MEpoch::Convert MCFrame::getEpConvTDB() const {
+  const MEpoch::Ref REFTDB = MEpoch::Ref(MEpoch::TDB);
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
-  epConvTDB = new MEpoch::Convert(*epoch, REFTDB);
-  epConvUT1 = new MEpoch::Convert(*epoch, REFUT1);
-  epConvTT  = new MEpoch::Convert(*epoch, REFTT);
-  if (epTDBp) {
-    delete epTDBp; epTDBp = nullptr;
-  }
-  if (epUT1p) {
-    delete epUT1p; epUT1p = nullptr;
-  }
-  if (epTTp) {
-    delete epTTp; epTTp = nullptr;
-  }
-  if (epConvLAST) {
-    delete static_cast<MEpoch::Convert *>(epConvLAST);
-    epConvLAST = nullptr;
-  }
-  epConvLAST = new MEpoch::Convert(*(epoch),
-				   MEpoch::Ref(MEpoch::LAST, MeasFrame(this->myf.lock())));
-  if (epLASTp) {
-    delete epLASTp; epLASTp = nullptr;
-  }
-  if (appLongp) {
-    delete appLongp; appLongp = nullptr;
-    delete dirAppp; dirAppp = nullptr;
-  }
-  if (radLSRp) {
-    delete radLSRp; radLSRp = nullptr;
-  }
+  return MEpoch::Convert(*epoch, REFTDB);
+}
+
+MEpoch::Convert MCFrame::getEpConvUT1() const {
+  static const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
+  std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
+  return MEpoch::Convert(*epoch, REFUT1);
+}
+
+MEpoch::Convert MCFrame::getEpConvTT() const {
+  static const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
+  std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
+  return MEpoch::Convert(*epoch, REFTT);
+}
+
+MEpoch::Convert MCFrame::getEpConvLAST() const {
+  std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
+  return MEpoch::Convert(*(epoch), MEpoch::Ref(MEpoch::LAST, MeasFrame(this->myf.lock())));
+}
+
+void MCFrame::makeEpoch() {
+  epTDBp.reset();
+  epUT1p.reset();
+  epTTp.reset();
+  epLASTp.reset();
+  appLongp.reset();
+  dirAppp.reset();
+  radLSRp.reset();
+}
+
+MPosition::Convert MCFrame::getPosConvLong() const
+{
+  const MPosition::Ref REFLONG = MPosition::Ref(MPosition::ITRF);
+  std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
+  return MPosition::Convert(*position, REFLONG);
+}
+
+MPosition::Convert MCFrame::getPosConvLongGeo() const
+{
+  const MPosition::Ref REFGEO = MPosition::Ref(MPosition::WGS84);
+  std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
+  return MPosition::Convert(*position, REFGEO);
 }
 
 void MCFrame::makePosition() {
-  static const MPosition::Ref REFLONG 
-    = MPosition::Ref(MPosition::ITRF);
-  delete static_cast<MPosition::Convert *>(posConvLong);
-  std::unique_ptr<casacore::Measure>& position = myf.lock()->posval;
-  posConvLong = new MPosition::Convert(*position,
-				       REFLONG);
-  if (posLongp) {
-    delete posLongp; posLongp = nullptr;
-    delete posITRFp; posITRFp = nullptr;
-  }
-  if (epLASTp) {
-    delete epLASTp; epLASTp = nullptr;
-  }
-  if (radLSRp) {
-    delete radLSRp; radLSRp = nullptr;
-  }
-  static const MPosition::Ref REFGEO
-    = MPosition::Ref(MPosition::WGS84);
-  delete static_cast<MPosition::Convert *>(posConvLongGeo);
-  posConvLongGeo = new MPosition::Convert(*position,
-					  REFGEO);
-  if (posLongGeop) {
-    delete posLongGeop; posLongGeop = nullptr;
-    delete posGeop; posGeop = nullptr;
-  }
+  posLongp.reset();
+  posITRFp.reset();
+  epLASTp.reset();
+  radLSRp.reset();
+  posLongGeop.reset();
+  posGeop.reset();
+}
+
+MDirection::Convert MCFrame::getDirConvJ2000() const
+{
+  std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
+  return MDirection::Convert(*direction,
+					 MDirection::Ref(MDirection::J2000,
+							 MeasFrame(this->myf.lock())));
+}
+
+MDirection::Convert MCFrame::getDirConvB1950() const
+{
+  std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
+  return MDirection::Convert(*direction,
+					 MDirection::Ref(MDirection::B1950,
+							 MeasFrame(this->myf.lock())));
+}
+
+MDirection::Convert MCFrame::getDirConvApp() const
+{
+  std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
+  return MDirection::Convert(*direction,
+				       MDirection::Ref(MDirection::APP,
+						       MeasFrame(this->myf.lock())));
 }
 
 void MCFrame::makeDirection() {
-  static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
-  if (dirConvJ2000) {
-    delete static_cast<MDirection::Convert *>(dirConvJ2000);
-    dirConvJ2000 = nullptr;
-  }
-  std::unique_ptr<casacore::Measure>& direction = myf.lock()->dirval;
-  dirConvJ2000 = new MDirection::Convert(*direction,
-					 MDirection::Ref(MDirection::J2000,
-							 MeasFrame(this->myf.lock())));
+  j2000Longp.reset();
+  dirJ2000p.reset();
+  b1950Longp.reset();
+  dirB1950p.reset();
+  appLongp.reset();
+  dirAppp.reset();
+  radLSRp.reset();
+}
 
-  static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
-  if (dirConvB1950) {
-    delete static_cast<MDirection::Convert *>(dirConvB1950);
-    dirConvB1950 = nullptr;
-  }
-  dirConvB1950 = new MDirection::Convert(*direction,
-					 MDirection::Ref(MDirection::B1950,
-							 MeasFrame(this->myf.lock())));
-  if (dirConvApp) {
-    delete static_cast<MDirection::Convert *>(dirConvApp);
-    dirConvApp = nullptr;
-  }
-  dirConvApp = new MDirection::Convert(*direction,
-				       MDirection::Ref(MDirection::APP,
-						       MeasFrame(this->myf.lock())));
-  if (j2000Longp) {
-    delete j2000Longp; j2000Longp = nullptr;
-    delete dirJ2000p; dirJ2000p = nullptr;
-  }
-  if (b1950Longp) {
-    delete b1950Longp; b1950Longp = nullptr;
-    delete dirB1950p; dirB1950p = nullptr;
-  }
-  if (appLongp) {
-    delete appLongp; appLongp = nullptr;
-    delete dirAppp; dirAppp = nullptr;
-  }
-  if (radLSRp) {
-    delete radLSRp; radLSRp = nullptr;
-  }
+MRadialVelocity::Convert MCFrame::getRadConvLSR() const
+{
+  const MRadialVelocity::Ref REFLSR 
+    = MRadialVelocity::Ref(MRadialVelocity::LSRK);
+  std::unique_ptr<casacore::Measure>& radialVelocity = myf.lock()->radval;
+  return MRadialVelocity::Convert(*radialVelocity, REFLSR);
 }
 
 void MCFrame::makeRadialVelocity() {
-  static const MRadialVelocity::Ref REFLSR 
-    = MRadialVelocity::Ref(MRadialVelocity::LSRK);
-  delete static_cast<MRadialVelocity::Convert *>(radConvLSR);
-  std::unique_ptr<casacore::Measure>& radialVelocity = myf.lock()->radval;
-  radConvLSR = new MRadialVelocity::Convert(*radialVelocity,
-					    REFLSR);
-  if (radLSRp) {
-    delete radLSRp; radLSRp = nullptr;
-  }
+  radLSRp.reset();
 }
 
-void MCFrame::makeComet() {;}
+void MCFrame::makeComet() { }
 
 } //# NAMESPACE CASACORE - END
 
