@@ -94,7 +94,7 @@ void FilebufIO::setBuffer (Int64 bufSize)
     itsBufOffset = -1;
   }
   if (bufSize > 0) {
-    itsBuffer  = new char[bufSize];
+    itsBuffer  = new char[bufSize]();
     itsBufSize = bufSize;
     itsBufOffset = -Int(itsBufSize+1);
   }
