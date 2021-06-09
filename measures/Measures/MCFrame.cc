@@ -468,13 +468,13 @@ MEpoch::Convert MCFrame::getEpConvTDB() const {
 }
 
 MEpoch::Convert MCFrame::getEpConvUT1() const {
-  static const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
+  const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
   return MEpoch::Convert(*epoch, REFUT1);
 }
 
 MEpoch::Convert MCFrame::getEpConvTT() const {
-  static const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
+  const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
   std::unique_ptr<casacore::Measure>& epoch = myf.lock()->epval;
   return MEpoch::Convert(*epoch, REFTT);
 }
