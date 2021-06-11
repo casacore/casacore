@@ -405,7 +405,14 @@ protected:
   void setMSInfo();
   void setArrayInfo();
   void setFeedInfo();
-  void setDataDescInfo();
+  // Store the current DD, SPW, Pol ID.
+  // It can be called in logically const objects although it modifies
+  // caching (mutable) variables for performance reasons.
+  void cacheCurrentDDInfo() const;
+  // Store extra info related to the DD.
+  // It can be called in logically const objects although it modifies
+  // caching (mutable) variables for performance reasons.
+  void cacheExtraDDInfo() const;
   void setFieldInfo();
 
 // Determine if the numbers in r1 are a sorted subset of those in r2
@@ -426,9 +433,16 @@ protected:
   Int curArrayIdFirst_p, lastArrayId_p, curSourceIdFirst_p;
   String curFieldNameFirst_p, curSourceNameFirst_p;
   Int curFieldIdFirst_p, lastFieldId_p;
-  Int curSpectralWindowIdFirst_p, lastSpectralWindowId_p;
-  Int curPolarizationId_p, lastPolarizationId_p;
-  Int curDataDescIdFirst_p, lastDataDescId_p;
+  // These variables point to the current (as in this iteration)
+  // DD, SPW and polarization IDs. They are mutable since they are
+  // evaluated in a lazy way, i.e., only when needed. If the DDId is
+  // part of the sorting columns then it is always computed when calling
+  // next(), otherwise it is only computed when some accesor of
+  // metadata that depends on them is called by the application.
+  mutable Int curDataDescIdFirst_p, curSpectralWindowIdFirst_p,
+    curPolarizationIdFirst_p;
+  // These variables point to the IDs of the previous iteration.
+  Int lastDataDescId_p, lastSpectralWindowId_p, lastPolarizationId_p;
   Bool more_p, newMS_p, newArrayId_p, newFieldId_p, newSpectralWindowId_p,
     newPolarizationId_p, newDataDescId_p,
     timeDepFeed_p, spwDepFeed_p, checkFeed_p;
@@ -439,8 +453,11 @@ protected:
   // time selection
   Double interval_p;
 
-  // columns
-  ScalarColumn<Int> colArray_p, colDataDesc_p, colField_p;
+  // This column is mutable since it is only attached when it is
+  // neccesary to read the DD Ids. That might happen when calling
+  // a const accesor like dataDescriptionId().
+  mutable ScalarColumn<Int> colDataDesc_p;
+  ScalarColumn<Int> colArray_p, colField_p;
 
   MDirection phaseCenter_p;
   Double prevFirstTimeStamp_p;
@@ -462,9 +479,10 @@ protected:
   Bool allBeamOffsetsZero_p;       // True if all elements of beamOffsets_p
                                    // are zero (to speed things up in a
 				   // single beam case)
-  PolFrame polFrame_p;
-  Bool freqCacheOK_p;
-  Vector<Double> frequency_p;
+  mutable PolFrame polFrame_p;     // polarization Frame. It is lazily cached,
+                                   // hence mutable. See cacheExtraDDInfo()
+  mutable Bool freqCacheOK_p;      // signal that the frequency cache is fine
+  mutable Vector<Double> frequency_p;
   MFrequency frequency0_p;
   MFrequency restFrequency_p;
   MPosition telescopePosition_p;
@@ -489,16 +507,24 @@ inline const ScalarColumn<Int>& MSIter::colArrayIds() const
 inline const ScalarColumn<Int>& MSIter::colFieldIds() const
 { return colField_p;}
 inline const ScalarColumn<Int>& MSIter::colDataDescriptionIds() const
-{ return colDataDesc_p;}
+{if(curDataDescIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
+  return colDataDesc_p;}
 inline Int MSIter::arrayId() const {return curArrayIdFirst_p;}
 inline Int MSIter::fieldId() const { return curFieldIdFirst_p;}
 inline Int MSIter::spectralWindowId() const
-{ return curSpectralWindowIdFirst_p;}
-inline Int MSIter::polarizationId() const {return curPolarizationId_p;}
-inline Int MSIter::dataDescriptionId() const {return curDataDescIdFirst_p;}
+{if(curSpectralWindowIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
+  return curSpectralWindowIdFirst_p;}
+inline Int MSIter::polarizationId() const
+{if(curPolarizationIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
+  return curPolarizationIdFirst_p;}
+inline Int MSIter::dataDescriptionId() const
+{if(curDataDescIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
+  return curDataDescIdFirst_p;}
 inline Bool MSIter::newPolarizationId() const { return newPolarizationId_p;}
 inline Bool MSIter::newDataDescriptionId() const { return newDataDescId_p;}
-inline Int MSIter::polFrame() const { return polFrame_p;}
+inline Int MSIter::polFrame() const
+{if(curPolarizationIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
+  return polFrame_p;}
 inline const MPosition& MSIter::telescopePosition() const
 { return telescopePosition_p;}
 inline const Vector<SquareMatrix<Complex,2> >& MSIter::CJones() const
