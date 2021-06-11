@@ -271,7 +271,11 @@ rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
 
     ios.getstart(itsDataManName);
     ios >> itsDataManName;
-    ios >> itsStManColumnType;
+    {
+      // see comment on flush()
+      int dummy;
+      ios >> dummy;
+    }
     ios.getend();
     itsRows = aNrRows;
     return itsRows;
@@ -378,7 +382,10 @@ Bool Adios2StMan::impl::flush(AipsIO &ios, Bool /*doFsync*/)
 {
     ios.putstart(itsDataManName, 2);
     ios << itsDataManName;
-    ios << itsStManColumnType;
+    // Here we used to write itsStManColumnType (int), but that was an otherwise
+    // unused member, so we are writing a dummy 0 instead to preserve backwards
+    // compatibility
+    ios << 0;
     ios.putend();
     return true;
 }
