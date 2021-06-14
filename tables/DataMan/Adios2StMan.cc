@@ -302,7 +302,10 @@ DataManager *Adios2StMan::impl::clone() const
     return new Adios2StMan(itsMpiComm, itsAdiosEngineType, itsAdiosEngineParams, itsAdiosTransportParamsVec);
 }
 
-String Adios2StMan::impl::dataManagerType() const { return itsDataManName; }
+String Adios2StMan::impl::dataManagerType() const
+{
+    return DATA_MANAGER_TYPE;
+}
 
 void Adios2StMan::impl::addRow64(rownr_t aNrRows)
 {
@@ -332,7 +335,7 @@ rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
     }
     itsAdiosEngine->BeginStep();
 
-    ios.getstart(itsDataManName);
+    ios.getstart(DATA_MANAGER_TYPE);
     ios >> itsDataManName;
     {
       // see comment on flush()
@@ -443,7 +446,7 @@ rownr_t Adios2StMan::impl::resync64(rownr_t /*aNrRows*/) { return itsRows; }
 
 Bool Adios2StMan::impl::flush(AipsIO &ios, Bool /*doFsync*/)
 {
-    ios.putstart(itsDataManName, 2);
+    ios.putstart(DATA_MANAGER_TYPE, 2);
     ios << itsDataManName;
     // Here we used to write itsStManColumnType (int), but that was an otherwise
     // unused member, so we are writing a dummy 0 instead to preserve backwards

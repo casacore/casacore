@@ -93,6 +93,8 @@ private:
     // MPI communicator to be used by all instances of this storage manager
     static MPI_Comm itsMpiComm;
 
+    // The type of this storage manager
+    static constexpr const char *DATA_MANAGER_TYPE = "Adios2StMan";
     // The name of the specification field for the I/O engine type
     static constexpr const char *SPEC_FIELD_ENGINE_TYPE = "ENGINETYPE";
     // The name of the specification field for the I/O engine parameters
