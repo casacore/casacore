@@ -35,10 +35,11 @@ namespace casacore
 {
 
 // Static objects in impl class
-std::string Adios2StMan::impl::itsAdiosEngineType;
-adios2::Params Adios2StMan::impl::itsAdiosEngineParams;
-std::vector<adios2::Params> Adios2StMan::impl::itsAdiosTransportParamsVec;
 MPI_Comm Adios2StMan::impl::itsMpiComm = MPI_COMM_WORLD;
+
+constexpr const char *Adios2StMan::impl::SPEC_FIELD_ENGINE_TYPE;
+constexpr const char *Adios2StMan::impl::SPEC_FIELD_ENGINE_PARAMS;
+constexpr const char *Adios2StMan::impl::SPEC_FIELD_TRANSPORT_PARAMS;
 
 //
 // Adios2StMan implementation in terms of the impl class
@@ -128,6 +129,11 @@ DataManager *Adios2StMan::makeObject(
     return impl::makeObject(aDataManType, spec);
 }
 
+Record Adios2StMan::dataManagerSpec() const
+{
+    return pimpl->dataManagerSpec();
+}
+
 rownr_t Adios2StMan::getNrRows()
 {
     return pimpl->getNrRows();
@@ -152,12 +158,11 @@ Adios2StMan::impl::impl(
         Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
         std::map<std::string, std::string> engineParams,
         std::vector<std::map<std::string, std::string>> transportParams)
-    : parent(parent)
+    : parent(parent), itsAdiosEngineType(std::move(engineType)),
+      itsAdiosEngineParams(std::move(engineParams)),
+      itsAdiosTransportParamsVec(std::move(transportParams))
 {
     itsMpiComm = mpiComm;
-    itsAdiosEngineType = engineType;
-    itsAdiosEngineParams = engineParams;
-    itsAdiosTransportParamsVec = transportParams;
 
     int mpi_finalized;
     MPI_Finalized(&mpi_finalized);
@@ -221,22 +226,80 @@ Adios2StMan::impl::~impl()
     {
         delete itsColumnPtrBlk[i];
     }
-    Adios2StMan::impl::itsAdiosEngineType.clear();
-    Adios2StMan::impl::itsAdiosEngineParams.clear();
-    Adios2StMan::impl::itsAdiosTransportParamsVec.clear();
+}
+
+static adios2::Params to_adios2_params(const Record &record)
+{
+    adios2::Params params;
+    for (Int i = 0; i != Int(record.size()); i++)
+    {
+        params[record.name(i)] = record.asString(i);
+    }
+    return params;
+}
+
+static Record to_record(const adios2::Params &params)
+{
+    Record record;
+    for (auto &kv : params)
+    {
+        record.define(kv.first, kv.second);
+    }
+    return record;
 }
 
 DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
-                                     const Record &/*spec*/)
+                                     const Record &spec)
 {
-    return new Adios2StMan(itsMpiComm, itsAdiosEngineType,
-                               itsAdiosEngineParams,
-                               itsAdiosTransportParamsVec);
+    std::string engine;
+    adios2::Params engine_params;
+    std::vector<adios2::Params> transport_params;
+    if (spec.isDefined(SPEC_FIELD_ENGINE_TYPE)) {
+        engine = spec.asString(SPEC_FIELD_ENGINE_TYPE);
+    }
+    if (spec.isDefined(SPEC_FIELD_ENGINE_PARAMS)) {
+        engine_params = to_adios2_params(spec.asRecord(SPEC_FIELD_ENGINE_PARAMS));
+    }
+    if (spec.isDefined(SPEC_FIELD_TRANSPORT_PARAMS)) {
+        auto &record = spec.asRecord(SPEC_FIELD_TRANSPORT_PARAMS);
+        for (Int i = 0; i != Int(record.size()); i++) {
+            auto name = record.name(i);
+            auto params = to_adios2_params(record.asRecord(i));
+            params["Name"] = name;
+            transport_params.emplace_back(std::move(params));
+        }
+    }
+    return new Adios2StMan(itsMpiComm, engine, engine_params, transport_params);
+}
+
+Record Adios2StMan::impl::dataManagerSpec() const
+{
+    Record record;
+    if (!itsAdiosEngineType.empty()) {
+        record.define(SPEC_FIELD_ENGINE_TYPE, itsAdiosEngineType);
+    }
+    if (!itsAdiosEngineParams.empty()) {
+        record.defineRecord(SPEC_FIELD_ENGINE_PARAMS, to_record(itsAdiosEngineParams));
+    }
+    if (!itsAdiosTransportParamsVec.empty()) {
+        Record transport_params_record;
+        for (size_t i = 0; i < itsAdiosTransportParamsVec.size(); ++i) {
+            std::string transportName = std::to_string(i);
+            auto &params = itsAdiosTransportParamsVec[i];
+            auto j = params.find("Name");
+            if (j != params.end()) {
+                transportName = j->second;
+            }
+            transport_params_record.defineRecord(transportName, to_record(params));
+        }
+        record.defineRecord(SPEC_FIELD_TRANSPORT_PARAMS, transport_params_record);
+    }
+    return record;
 }
 
 DataManager *Adios2StMan::impl::clone() const
 {
-    return makeObject(itsDataManName, Record());
+    return new Adios2StMan(itsMpiComm, itsAdiosEngineType, itsAdiosEngineParams, itsAdiosTransportParamsVec);
 }
 
 String Adios2StMan::impl::dataManagerType() const { return itsDataManName; }

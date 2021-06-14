@@ -74,6 +74,7 @@ public:
     virtual void addRow64(rownr_t aNrRows);
     static DataManager *makeObject(const String &aDataManType,
                                    const Record &spec);
+    Record dataManagerSpec() const;
     rownr_t getNrRows();
 
 private:
