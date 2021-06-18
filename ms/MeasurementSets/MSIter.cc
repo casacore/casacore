@@ -148,6 +148,15 @@ void MSIter::construct(
         sortColumnNames[iCol] = element.first;
         sortCompareFunctions[iCol] = element.second;
         ++iCol;
+        if (element.first == "DATA_DESC_ID") {
+            ddInSort_p = true;
+        } else if (element.first == "TIME") {
+            timeInSort_p = true;
+        } else if (element.first == "FIELD_ID") {
+            fieldInSort_p = true;
+        } else if (element.first == "ARRAY_ID") {
+            arrayInSort_p = true;
+        }
     }
 
     // Create the table iterators
@@ -262,14 +271,17 @@ void MSIter::construct(const Block<Int>& sortColumns,
     if (!arrayInSort_p) {
       // add array if it's not there
       columns[iCol++]=MS::columnName(MS::ARRAY_ID);
+      arrayInSort_p = true;
     }
     if (!fieldInSort_p) {
       // add field if it's not there
       columns[iCol++]=MS::columnName(MS::FIELD_ID);
+      fieldInSort_p = true;
     }
     if (!ddInSort_p) {
       // add dd if it's not there
       columns[iCol++]=MS::columnName(MS::DATA_DESC_ID);
+      ddInSort_p = true;
     }
     if (!timeInSort_p) {
       // add time if it's not there
@@ -425,7 +437,6 @@ MSIter::operator=(const MSIter& other)
   newSpectralWindowId_p = other.newSpectralWindowId_p;
   newPolarizationId_p = other.newPolarizationId_p;
   newDataDescId_p = other.newDataDescId_p;
-  timeDepFeed_p = other.timeDepFeed_p;
   spwDepFeed_p = other.spwDepFeed_p;
   checkFeed_p = other.checkFeed_p;
   storeSorted_p = other.storeSorted_p;
@@ -504,7 +515,7 @@ MSIter & MSIter::operator++()
 void MSIter::advance()
 {
   newMS_p=newArrayId_p=newSpectralWindowId_p=newPolarizationId_p=
-    newDataDescId_p=newFieldId_p=checkFeed_p=False;
+    newDataDescId_p=newFieldId_p=False;
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
 
@@ -570,7 +581,7 @@ void MSIter::setState()
   }
 
   setArrayInfo();
-  setFeedInfo();
+  feedInfoCached_p = false;
   setFieldInfo();
 
   // If time binning, update the MSInterval's offset to account for glitches.
@@ -705,7 +716,7 @@ void MSIter::setArrayInfo()
   lastArrayId_p = curArrayIdFirst_p;
 }
 
-void MSIter::setFeedInfo()
+void MSIter::setFeedInfo() const
 {
   // Setup CJones and the receptor angle
 
@@ -740,10 +751,11 @@ void MSIter::setFeedInfo()
     Vector<Double> feedTimes=msc_p->feed().time().getColumn();
     Vector<Double> interval=msc_p->feed().interval().getColumn();
     // Assume time dependence
-    timeDepFeed_p=True;
+    bool timeDepFeed = true;
     // if all interval values are <= zero or very large,
     // there is no time dependence
-    if (allLE(interval,0.0)||allGE(interval,1.e9)) timeDepFeed_p=False;
+    if (allLE(interval,0.0)||allGE(interval,1.e9))
+      timeDepFeed = false;
     else {
       // check if any antennas appear more than once
       // check for each spectral window and feed in turn..
@@ -761,13 +773,13 @@ void MSIter::setFeedInfo()
 				     Sort::HeapSort | Sort::NoDuplicates);
 	if (nUniq!=nRow) unique=False;
       }
-      timeDepFeed_p=!unique;
+      timeDepFeed = !unique;
     }
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
     spwDepFeed_p = !(allEQ(spwId,-1));
     first=True;
     checkFeed_p = False;
-    if (timeDepFeed_p) {
+    if (timeDepFeed) {
       LogIO os;
       os << LogIO::WARN << LogOrigin("MSIter","setFeedInfo")
 	 <<" time dependent feed table encountered - not correctly handled "
@@ -839,6 +851,7 @@ void MSIter::setFeedInfo()
     CJonesFeed0_p=CJones_p.column(0);
     //
   }
+  feedInfoCached_p = true;
 }
 
 void MSIter::cacheCurrentDDInfo() const

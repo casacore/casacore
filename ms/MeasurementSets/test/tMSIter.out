@@ -100,6 +100,8 @@ nrow=30
 nrow=25
 nrow=5
 ########
+Iteration with DDID sorting
+===========================
 nrow=75
 ddid = 0 spwid = 0 polid = 0
 freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
@@ -130,6 +132,160 @@ freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e
 nrow=75
 ddid = 4 spwid = 4 polid = 0
 freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+Iteration with ANTENNA1 and DDID sorting
+========================================
+nrow=25
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=20
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=15
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=10
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=5
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=25
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=20
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=15
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=10
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=5
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=25
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=20
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=15
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=10
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=5
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=25
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=20
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=15
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=10
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=5
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=25
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=20
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=15
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=10
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=5
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=25
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=20
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=15
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=10
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=5
+ddid = 0 spwid = 0 polid = 0
+freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+nrow=25
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=20
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=15
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=10
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=5
+ddid = 1 spwid = 1 polid = 1
+freqs = [1.01e+09, 1.011e+09, 1.012e+09, 1.013e+09, 1.014e+09, 1.015e+09, 1.016e+09, 1.017e+09] freq0 Frequency: 1.01e+09
+nrow=25
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=20
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=15
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=10
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=5
+ddid = 2 spwid = 2 polid = 0
+freqs = [1.02e+09, 1.021e+09, 1.022e+09, 1.023e+09, 1.024e+09, 1.025e+09, 1.026e+09, 1.027e+09] freq0 Frequency: 1.02e+09
+nrow=25
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=20
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=15
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=10
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=5
+ddid = 3 spwid = 3 polid = 1
+freqs = [1.03e+09, 1.031e+09, 1.032e+09, 1.033e+09, 1.034e+09, 1.035e+09, 1.036e+09, 1.037e+09] freq0 Frequency: 1.03e+09
+nrow=25
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=20
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=15
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=10
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+nrow=5
+ddid = 4 spwid = 4 polid = 0
+freqs = [1.04e+09, 1.041e+09, 1.042e+09, 1.043e+09, 1.044e+09, 1.045e+09, 1.046e+09, 1.047e+09] freq0 Frequency: 1.04e+09
+Iteration with TIME sorting
+===========================
  Skipping row
  Skipping row
  Skipping row
