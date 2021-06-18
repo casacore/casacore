@@ -247,6 +247,9 @@ public:
     // Remove the given row.
     virtual void removeRow (rownr_t rownr);
 
+    // Remove the given row.
+    virtual void removeAllRow ();
+
     // Add one or more columns to the table.
     // The column is added to the parent table if told so and if not existing.
     // <group>
@@ -306,6 +309,8 @@ public:
 
     // Add a rownr to reference table.
     void addRownr (rownr_t rownr);
+
+void addRownrRange (rownr_t startRownr, rownr_t endRownr);
 
     // Set the exact number of rows in the table.
     // An exception is thrown if more than current nrrow.

@@ -548,6 +548,22 @@ void RefTable::addRownr (rownr_t rnr)
     changed_p = True;
 }
 
+//# Add a row number range of the root table.
+void RefTable::addRownrRange (rownr_t startRownr, rownr_t endRownr)
+{
+    rownr_t nrow = rowStorage_p.nelements();
+    rownr_t new_nrrow_p = nrrow_p + endRownr - startRownr + 1;
+    if (new_nrrow_p > nrow) {
+        rowStorage_p.resize (nrow + endRownr - startRownr + 1, True);
+        rows_p = getStorage (rowStorage_p);
+    }
+    std::iota(rows_p + nrrow_p, rows_p + new_nrrow_p, startRownr);
+    //for(rownr_t irow = startRownr; irow <= endRownr; ++irow)
+    //    rows_p[nrrow_p++] = irow;
+    nrrow_p = new_nrrow_p;
+    changed_p = True;
+}
+
 //# Set exact number of rows.
 void RefTable::setNrrow (rownr_t nrrow)
 {
@@ -821,6 +837,11 @@ void RefTable::removeRow (rownr_t rownr)
     changed_p = True;
 }
 
+void RefTable::removeAllRow ()
+{
+    nrrow_p=0;
+    changed_p = True;
+}
 
 void RefTable::removeColumn (const Vector<String>& columnNames)
 {
