@@ -87,11 +87,20 @@ public:
     // Create the table iterator to iterate through the given
     // columns in the given order. The given compare objects
     // will be used for the sort and to compare if values are equal.
-    // If a compare object is null, the default ObjCompare<T> will be used.
+    // If a compare object in cmpObjs is null, the default ObjCompare<T> 
+    // will be used.
+    // If cacheIterationBoundaries is set to true then the iteration
+    // boundaries computed at construction time while sorting the table
+    // are used when advancing with next(). Otherwise, for each next()
+    // call the comparison functions are reevaluated again to get the
+    // iteration boundary. This improves performance in general but will
+    // break existing applications that change the comparison objects
+    // (cmpObjs) between iterations.
     BaseTableIterator (BaseTable*, const Block<String>& columnNames,
-                       const Block<CountedPtr<BaseCompare> >&,
+                       const Block<CountedPtr<BaseCompare> >& cmpObjs,
                        const Block<Int>& orders,
-                       int option);
+                       int option,
+                       bool cacheIterationBoundaries = false);
 
     // Clone this iterator.
     BaseTableIterator* clone() const;
@@ -123,6 +132,8 @@ protected:
     // Copy constructor (to be used by clone)
     BaseTableIterator (const BaseTableIterator&);
 
+    BaseTable* noCachedIterBoundariesNext();
+
 private:
     // Assignment is not needed, because the assignment operator in
     // the envelope class TableIterator has reference semantics.
@@ -131,6 +142,11 @@ private:
 
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column
+
+    std::shared_ptr<Vector<rownr_t>> sortIterBoundaries_p;
+    std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange_p;
+    Vector<rownr_t>::iterator sortIterBoundariesIt_p;
+    Vector<size_t>::iterator  sortIterKeyIdxChangeIt_p;
 };
 
 

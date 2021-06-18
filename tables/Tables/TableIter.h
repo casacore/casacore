@@ -170,9 +170,17 @@ public:
     // Give the iteration order per column.
     // Give an optional compare object per column.
     // A zero pointer means that the default compare function will be used.
+    // If cacheIterationBoundaries is set to true then the iteration
+    // boundaries computed at construction time while sorting the table
+    // are used when advancing with next(). Otherwise, for each next()
+    // call the comparison functions are reevaluated again to get the
+    // iteration boundary. This improves performance in general but will
+    // break existing applications that change the comparison objects
+    // (cmpObjs) between iterations.
     TableIterator (const Table&, const Block<String>& columnNames,
-		   const Block<CountedPtr<BaseCompare> >&,
-		   const Block<Int>& orders, Option = ParSort);
+                   const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                   const Block<Int>& orders, Option = ParSort,
+                   bool cacheIterationBoundaries = false);
     // </group>
 
     // Copy constructor (copy semantics).

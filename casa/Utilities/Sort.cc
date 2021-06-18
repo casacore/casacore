@@ -181,7 +181,7 @@ Sort::Sort (const Sort& that)
 
 Sort::~Sort()
 {
-    for (uInt i=0; i<nrkey_p; i++) {
+    for (size_t i=0; i<nrkey_p; i++) {
 	delete keys_p[i];
     }
 }
@@ -196,12 +196,12 @@ Sort& Sort::operator= (const Sort& that)
 
 void Sort::copy (const Sort& that)
 {
-    for (uInt i=0; i<nrkey_p; i++) {
+    for (size_t i=0; i<nrkey_p; i++) {
 	delete keys_p[i];
     }
     nrkey_p = that.nrkey_p;
     keys_p.resize (nrkey_p);
-    for (uInt i=0; i<nrkey_p; i++) {
+    for (size_t i=0; i<nrkey_p; i++) {
 	keys_p = new SortKey (*(that.keys_p[i]));
     }
     data_p  = that.data_p;
@@ -276,12 +276,22 @@ uInt Sort::unique (Vector<uInt>& uniqueVector,
                    const Vector<uInt>& indexVector) const
   { return doUnique (uniqueVector, indexVector); }
 
+uInt Sort::unique (Vector<uInt>& uniqueVector,
+                   Vector<size_t>& changeKey,
+                   const Vector<uInt>& indexVector) const
+  { return doUnique (uniqueVector, changeKey, indexVector); }
+
 uInt64 Sort::unique (Vector<uInt64>& uniqueVector, uInt64 nrrec) const
   { return doUnique (uniqueVector, nrrec); }
 
 uInt64 Sort::unique (Vector<uInt64>& uniqueVector,
                      const Vector<uInt64>& indexVector) const
   { return doUnique (uniqueVector, indexVector); }
+
+uInt64 Sort::unique (Vector<uInt64>& uniqueVector,
+                     Vector<size_t>& changeKey,
+                     const Vector<uInt64>& indexVector) const
+  { return doUnique (uniqueVector, changeKey, indexVector); }
     // </group>
 
 } //# NAMESPACE CASACORE - END

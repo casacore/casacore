@@ -78,14 +78,16 @@ TableIterator::TableIterator (const Table& tab,
 }
 
 TableIterator::TableIterator (const Table& tab,
-			      const Block<String>& keys,
-			      const Block<CountedPtr<BaseCompare> >& cmpObjs,
-			      const Block<Int>& orders,
-			      Option option)
+                              const Block<String>& keys,
+                              const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                              const Block<Int>& orders,
+                              Option option,
+                              bool cacheIterationBoundaries)
 : tabIterPtr_p (0)
 {
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObjs,
-						     orders, option);
+                                                     orders, option,
+                                                     cacheIterationBoundaries);
     next();                            // get first subtable
 }
 

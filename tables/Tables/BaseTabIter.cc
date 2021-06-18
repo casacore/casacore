@@ -46,14 +46,17 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
     const Block<String>& keys,
     const Block<CountedPtr<BaseCompare> >& cmp,
     const Block<Int>& order,
-    int option)
+    int option,
+    bool cacheIterationBoundaries)
 : lastRow_p (0),
   nrkeys_p  (keys.nelements()),
   keyChangeAtLastNext_p(""),
   colPtr_p  (keys.nelements()),
   cmpObj_p  (cmp),
   lastVal_p (keys.nelements()),
-  curVal_p  (keys.nelements())
+  curVal_p  (keys.nelements()),
+  sortIterBoundaries_p   (nullptr),
+  sortIterKeyIdxChange_p (nullptr)
 {
     // If needed sort the table in order of the iteration keys.
     // The passed in compare functions are for the iteration.
@@ -74,7 +77,14 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
                 ord[i] = Sort::Descending;
             }
         }
-        sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt));
+        if(cacheIterationBoundaries)
+        {
+            sortIterBoundaries_p   = std::make_shared<Vector<rownr_t>>();
+            sortIterKeyIdxChange_p = std::make_shared<Vector<size_t>>();
+        }
+        sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt,
+                                            sortIterBoundaries_p,
+                                            sortIterKeyIdxChange_p ));
     }
     sortTab_p->link();
     // Get the pointers to the BaseColumn object.
@@ -82,6 +92,11 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
     for (uInt i=0; i<nrkeys_p; i++) {
         colPtr_p[i] = sortTab_p->getColumn (keys[i]);
         colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
+    }
+    if(cacheIterationBoundaries)
+    {
+        sortIterBoundariesIt_p   = sortIterBoundaries_p->begin();
+        sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
     }
 }
 
@@ -99,24 +114,33 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
   colPtr_p  (that.colPtr_p),
   cmpObj_p  (that.cmpObj_p),
   lastVal_p (that.nrkeys_p),
-  curVal_p  (that.nrkeys_p)
+  curVal_p  (that.nrkeys_p),
+  sortIterBoundaries_p   (that.sortIterBoundaries_p),
+  sortIterKeyIdxChange_p (that.sortIterKeyIdxChange_p)
 {
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
     for (uInt i=0; i<nrkeys_p; i++) {
-	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
+        colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
     // Link against the table (ie. increase its ref.count).
     sortTab_p = that.sortTab_p;
     sortTab_p->link();
+    if(sortIterBoundaries_p)
+    {
+        sortIterBoundariesIt_p = sortIterBoundaries_p->begin();
+    }
+    if(sortIterKeyIdxChange_p)
+    {
+        sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
+    }
 }
-
 
 BaseTableIterator::~BaseTableIterator()
 {
     // Delete the value buffers.
     for (uInt i=0; i<nrkeys_p; i++) {
-	colPtr_p[i]->freeIterBuf (lastVal_p[i], curVal_p[i]);
+        colPtr_p[i]->freeIterBuf (lastVal_p[i], curVal_p[i]);
     }
     // Unlink from the table and delete it.
     BaseTable::unlink (sortTab_p);
@@ -126,11 +150,77 @@ BaseTableIterator::~BaseTableIterator()
 void BaseTableIterator::reset()
 {
     lastRow_p = 0;
+    if(sortIterBoundaries_p)
+    {
+        sortIterBoundariesIt_p = sortIterBoundaries_p->begin();
+    }
+    if(sortIterKeyIdxChange_p)
+    {
+        sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
+    }
 }
 
 
 BaseTable* BaseTableIterator::next()
 {
+    // If there are no group boundaries precomputed do an expensive
+    // walk to check where a new boundary happens by calling the comparion
+    // functions
+    if(!sortIterBoundaries_p || !sortIterKeyIdxChange_p)
+    {
+        return noCachedIterBoundariesNext();
+    }
+
+    // Allocate a RefTable to represent the rows in the iteration group.
+    RefTable* itp = sortTab_p->makeRefTable (False, 0);
+    if (lastRow_p >= sortTab_p->nrow()) {
+        return itp;                              // the end of the table
+    }
+
+    // Go to the next group boundary (the one after this), which will be
+    // one past the end of the current group.
+    ++sortIterBoundariesIt_p;
+    rownr_t startNextGroup;
+    if(sortIterBoundariesIt_p == sortIterBoundaries_p->end())
+    {
+        startNextGroup = sortTab_p->nrow();
+    }
+    else
+    {
+        startNextGroup = *sortIterBoundariesIt_p;
+    }
+    // lastRow_p contains the starting point for this group
+    rownr_t startThisGroup = lastRow_p;
+    for (rownr_t irow=startThisGroup; irow < startNextGroup; irow++)
+    {
+        itp->addRownr (irow);
+    }
+    // Set lastRow_p to the starting point of next group
+    lastRow_p = startNextGroup;
+
+    // If we've reached the end of the table, clear the keyCh_p
+    if (lastRow_p==sortTab_p->nrow())
+    {
+        keyChangeAtLastNext_p=String();
+    }
+    // If not, get the name of the column from the sorting column ID
+    else
+    {
+        keyChangeAtLastNext_p=colPtr_p[*sortIterKeyIdxChangeIt_p]->columnDesc().name();
+    }
+    ++sortIterKeyIdxChangeIt_p;
+
+    //# Adjust rownrs in case source table is already a RefTable.
+    Vector<rownr_t>& rownrs = *(itp->rowStorage());
+    sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
+    return itp;
+}
+
+BaseTable* BaseTableIterator::noCachedIterBoundariesNext()
+{
+    // This is an expensive way to find the next group boundary by calling
+    // the sorting function for each individual row.
+
     // Allocate a RefTable to represent the rows in the iteration group.
     RefTable* itp = sortTab_p->makeRefTable (False, 0);
     if (lastRow_p >= sortTab_p->nrow()) {
@@ -175,6 +265,21 @@ BaseTableIterator::copyState(const BaseTableIterator &other)
 {
   lastRow_p = other.lastRow_p;
   keyChangeAtLastNext_p = other.keyChangeAtLastNext_p;
+
+  if(sortIterBoundaries_p)
+  {
+      sortIterBoundariesIt_p = sortIterBoundaries_p->begin();
+      std::advance(sortIterBoundariesIt_p,
+                   std::distance(other.sortIterBoundaries_p->begin(),
+                                 other.sortIterBoundariesIt_p));
+  }
+  if(sortIterKeyIdxChange_p)
+  {
+      sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
+      std::advance(sortIterKeyIdxChangeIt_p,
+                   std::distance(other.sortIterKeyIdxChange_p->begin(),
+                                 other.sortIterKeyIdxChangeIt_p));
+  } 
 }
 
 } //# NAMESPACE CASACORE - END
