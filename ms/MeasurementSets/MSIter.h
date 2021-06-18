@@ -391,7 +391,7 @@ public:
   //phasecenters, i.e time varying for a given field_id..
   //If the iterator is set so as one iteration has more that 1 time stamp
   //then this version is correct only for fixed phasecenters
-  const MDirection& phaseCenter() const ;
+  const MDirection& phaseCenter() const;
 
   //If the iterator is set so as one iteration has more that 1 value of time stamp
   // or fieldid
@@ -422,7 +422,7 @@ protected:
   // It can be called in logically const objects although it modifies
   // caching (mutable) variables for performance reasons.
   void cacheExtraDDInfo() const;
-  void setFieldInfo();
+  void setFieldInfo() const;
 
 // Determine if the numbers in r1 are a sorted subset of those in r2
   Bool isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2);
@@ -440,8 +440,10 @@ protected:
   CountedPtr<MSColumns> msc_p;
   Table curTable_p;
   Int curArrayIdFirst_p, lastArrayId_p, curSourceIdFirst_p;
-  String curFieldNameFirst_p, curSourceNameFirst_p;
-  Int curFieldIdFirst_p, lastFieldId_p;
+  mutable String curFieldNameFirst_p;
+  String curSourceNameFirst_p;
+  mutable Int curFieldIdFirst_p;
+  Int lastFieldId_p;
   // These variables point to the current (as in this iteration)
   // DD, SPW and polarization IDs. They are mutable since they are
   // evaluated in a lazy way, i.e., only when needed. If the DDId is
@@ -469,11 +471,11 @@ protected:
   // This column is mutable since it is only attached when it is
   // neccesary to read the DD Ids. That might happen when calling
   // a const accesor like dataDescriptionId().
-  mutable ScalarColumn<Int> colDataDesc_p;
-  ScalarColumn<Int> colArray_p, colField_p;
+  mutable ScalarColumn<Int> colDataDesc_p, colField_p;
+  ScalarColumn<Int> colArray_p;
 
-  MDirection phaseCenter_p;
-  Double prevFirstTimeStamp_p;
+  mutable MDirection phaseCenter_p;
+  mutable Double prevFirstTimeStamp_p;
   //cache for access functions
   mutable Matrix<Double> receptorAnglesFeed0_p; // former receptorAngle_p,
                                    // temporary retained for compatibility
@@ -523,7 +525,7 @@ inline const ScalarColumn<Int>& MSIter::colDataDescriptionIds() const
 {if(curDataDescIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
   return colDataDesc_p;}
 inline Int MSIter::arrayId() const {return curArrayIdFirst_p;}
-inline Int MSIter::fieldId() const { return curFieldIdFirst_p;}
+inline Int MSIter::fieldId() const {if(curFieldIdFirst_p==-1) setFieldInfo(); return curFieldIdFirst_p;}
 inline Int MSIter::spectralWindowId() const
 {if(curSpectralWindowIdFirst_p==-1) {cacheCurrentDDInfo(); cacheExtraDDInfo();}
   return curSpectralWindowIdFirst_p;}

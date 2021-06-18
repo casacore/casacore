@@ -46,7 +46,7 @@
 using namespace casacore;
 using namespace std;
 
-void createMS (int nant, int ntime, double msinterval)
+void createMS (int nAnt, int nTime, double msinterval)
 {
   // Create the MS (with DATA column) and its subtables.
   TableDesc td (MS::requiredTableDesc());
@@ -59,9 +59,9 @@ void createMS (int nant, int ntime, double msinterval)
   indgen (data);
   MSColumns mscols(ms);
   uInt rownr = 0;
-  for (int it=0; it<ntime; ++it) {
-    for (int i1=0; i1<nant; ++i1) {
-      for (int i2=i1; i2<nant; ++i2) {
+  for (int it=0; it<nTime; ++it) {
+    for (int i1=0; i1<nAnt; ++i1) {
+      for (int i2=i1; i2<nAnt; ++i2) {
         ms.addRow();
         mscols.time().put (rownr, 1e9 + msinterval*(it+0.5));
         mscols.interval().put (rownr, msinterval);
@@ -104,19 +104,19 @@ void createMS (int nant, int ntime, double msinterval)
   polcols.numCorr().put (0, 4);
   polcols.corrType().put (0, corrTypes);
 
-  ms.antenna().addRow(nant);
+  ms.antenna().addRow(nAnt);
   MSAntennaColumns antcols(ms.antenna());
   Vector<double> pos(3);
   indgen (pos, 6.4e6, 1e3);
-  for (int i=0; i<nant; ++i) {
+  for (int i=0; i<nAnt; ++i) {
     antcols.mount().put (i, "equatorial");
     antcols.position().put (i, pos);
     pos += 10.;
   }
 
-  ms.feed().addRow(nant);
+  ms.feed().addRow(nAnt);
   MSFeedColumns feedcols(ms.feed());
-  for (int i=0; i<nant; ++i) {
+  for (int i=0; i<nAnt; ++i) {
     feedcols.antennaId().put (i, i);
     feedcols.feedId().put (i, i);
     feedcols.spectralWindowId().put (i, 0);
@@ -294,12 +294,12 @@ void iterMSGenericSortFuncAntennaGrouping ()
   AlwaysAssertExit(nAnt2 == 5);
 }
 
-void createMSSeveralDD (int nant, int ntime, int ndd, double msinterval)
+void createMSSeveralDDFeedField(int nAnt, int nTime, int nDD, int nField, double msinterval, std::string name)
 {
   // Create the MS (with DATA column) and its subtables.
   TableDesc td (MS::requiredTableDesc());
   MS::addColumnToDesc(td, MS::DATA, 2);
-  SetupNewTable newtab("tMSIter_severaldd_tmp.ms", td, Table::New);
+  SetupNewTable newtab(name, td, Table::New);
   MeasurementSet ms(newtab);
   ms.createDefaultSubtables(Table::New);
   // Write main table with columns needed for MSIter.
@@ -307,49 +307,53 @@ void createMSSeveralDD (int nant, int ntime, int ndd, double msinterval)
   indgen (data);
   MSColumns mscols(ms);
   uInt rownr = 0;
-  for (int it=0; it<ntime; ++it) {
-    for (int ddid=0; ddid<ndd; ++ddid) {
-      for (int i1=0; i1<nant; ++i1) {
-        for (int i2=i1; i2<nant; ++i2) {
-          ms.addRow();
-          mscols.time().put (rownr, 1e9 + msinterval*(it+0.5));
-          mscols.interval().put (rownr, msinterval);
-          mscols.antenna1().put (rownr, i1);
-          mscols.antenna2().put (rownr, i2);
-          mscols.feed1().put (rownr, i1);
-          mscols.feed2().put (rownr, i2);
-          mscols.arrayId().put (rownr, 0);
-          mscols.dataDescId().put (rownr, ddid);
-          mscols.fieldId().put (rownr, 0);
-          mscols.data().put (rownr, data);
-          data += Complex(float(data.size()), 0.);
-          ++rownr;
+  for (int iField=0; iField<nField; ++iField) {
+    for (int it=0; it<nTime; ++it) {
+      for (int ddid=0; ddid<nDD; ++ddid) {
+        for (int i1=0; i1<nAnt; ++i1) {
+          for (int i2=i1; i2<nAnt; ++i2) {
+            ms.addRow();
+            mscols.time().put (rownr, 1e9 + msinterval*(it+0.5));
+            mscols.interval().put (rownr, msinterval);
+            mscols.antenna1().put (rownr, i1);
+            mscols.antenna2().put (rownr, i2);
+            mscols.feed1().put (rownr, i1);
+            mscols.feed2().put (rownr, i2);
+            mscols.arrayId().put (rownr, 0);
+            mscols.dataDescId().put (rownr, ddid);
+            mscols.fieldId().put (rownr, iField);
+            mscols.data().put (rownr, data);
+            data += Complex(float(data.size()), 0.);
+            ++rownr;
+          }
         }
       }
     }
   }
   // Write subtables needed for MSIter.
-  ms.field().addRow(1);
+  ms.field().addRow(nField);
   MSFieldColumns fieldcols(ms.field());
-  Array<double> dir(IPosition(2,2,1));
-  dir.data()[0] = 1.1; dir.data()[1] = 1.5;
-  fieldcols.delayDir().put (0, dir);
-  fieldcols.phaseDir().put (0, dir);
-  fieldcols.name().put (0, "TESTFIELD");
-  fieldcols.sourceId().put (0, 0);
+  for (int iField=0; iField<nField; ++iField) {
+    Array<double> dir(IPosition(2,2,1));
+    dir.data()[0] = 1.1; dir.data()[1] = 1.5;
+    fieldcols.delayDir().put (iField, dir);
+    fieldcols.phaseDir().put (iField, dir);
+    fieldcols.name().put (iField, std::string("TESTFIELD")+std::to_string(iField));
+    fieldcols.sourceId().put (iField, 0);
+  }
 
-  ms.dataDescription().addRow(ndd);
+  ms.dataDescription().addRow(nDD);
   MSDataDescColumns ddcols(ms.dataDescription());
-  for (int ddid=0; ddid<ndd; ++ddid) {
+  for (int ddid=0; ddid<nDD; ++ddid) {
     ddcols.spectralWindowId().put (ddid, ddid);
     ddcols.polarizationId().put (ddid, ddid%2);
   }
 
-  ms.spectralWindow().addRow(ndd);
+  ms.spectralWindow().addRow(nDD);
   MSSpWindowColumns spwcols(ms.spectralWindow());
   Vector<Double>freqs(8);
   indgen (freqs, 1e9, 1e6);
-  for (int ddid=0; ddid<ndd; ++ddid) {
+  for (int ddid=0; ddid<nDD; ++ddid) {
     spwcols.chanFreq().put (ddid, freqs + ddid * 1e7);
   }
 
@@ -365,29 +369,29 @@ void createMSSeveralDD (int nant, int ntime, int ndd, double msinterval)
   polcols.numCorr().put (1, 4);
   polcols.corrType().put (1, corrTypes2);
 
-  ms.antenna().addRow(nant);
+  ms.antenna().addRow(nAnt);
   MSAntennaColumns antcols(ms.antenna());
   Vector<double> pos(3);
   indgen (pos, 6.4e6, 1e3);
-  for (int i=0; i<nant; ++i) {
+  for (int i=0; i<nAnt; ++i) {
     antcols.mount().put (i, "equatorial");
     antcols.position().put (i, pos);
     pos += 10.;
   }
 
-  ms.feed().addRow(nant*ndd);
+  ms.feed().addRow(nAnt*nDD);
   MSFeedColumns feedcols(ms.feed());
-  for (int ddid=0; ddid<ndd; ++ddid) {
-    for (int i=0; i<nant; ++i) {
-      feedcols.antennaId().put (i + ddid * nant, i);
-      feedcols.feedId().put (i + ddid * nant, 0); // no feed-arrays, one single feed
-      feedcols.spectralWindowId().put (i + ddid * nant, ddid);
-      feedcols.time().put (i + ddid * nant, 60.);
-      feedcols.interval().put (i + ddid * nant, 0.);    // no time dependence
-      feedcols.numReceptors().put (i + ddid * nant, 2);
-      feedcols.beamOffset().put (i + ddid * nant, Array<Double>(IPosition(2,2,2), i*0.01+ddid*0.1));
-      feedcols.receptorAngle().put (i + ddid * nant, Vector<Double>(2, i*0.01+ddid*0.1));
-      feedcols.polResponse().put (i + ddid * nant, Array<Complex>(IPosition(2,2,2), Complex(i*0.01+ddid*0.1, i*0.01+ddid*0.1)));
+  for (int ddid=0; ddid<nDD; ++ddid) {
+    for (int i=0; i<nAnt; ++i) {
+      feedcols.antennaId().put (i + ddid * nAnt, i);
+      feedcols.feedId().put (i + ddid * nAnt, 0); // no feed-arrays, one single feed
+      feedcols.spectralWindowId().put (i + ddid * nAnt, ddid);
+      feedcols.time().put (i + ddid * nAnt, 60.);
+      feedcols.interval().put (i + ddid * nAnt, 0.);    // no time dependence
+      feedcols.numReceptors().put (i + ddid * nAnt, 2);
+      feedcols.beamOffset().put (i + ddid * nAnt, Array<Double>(IPosition(2,2,2), i*0.01+ddid*0.1));
+      feedcols.receptorAngle().put (i + ddid * nAnt, Vector<Double>(2, i*0.01+ddid*0.1));
+      feedcols.polResponse().put (i + ddid * nAnt, Array<Complex>(IPosition(2,2,2), Complex(i*0.01+ddid*0.1, i*0.01+ddid*0.1)));
     }
   }
 }
@@ -400,9 +404,10 @@ void iterMSCachedDDFeedInfo ()
   int nAnt = 5;
   int nTime = 5;
   int nDD = 5;
+  int nField = 1;
   double msinterval = 60.;
-  createMSSeveralDD(nAnt, nTime, nDD, msinterval);
-  MeasurementSet ms("tMSIter_severaldd_tmp.ms");
+  createMSSeveralDDFeedField(nAnt, nTime, nDD, nField, msinterval, "tMSIter_severalddfeed_tmp.ms");
+  MeasurementSet ms("tMSIter_severalddfeed_tmp.ms");
 
   // Create a MSIter with DDID in the sorting columns
   // There will be as many iterations as DDIDs. 
@@ -759,23 +764,210 @@ void iterMSCachedDDFeedInfo ()
       }
     }
   }
+}
 
+// This test exercises the lazy caching mechanism for retrieving
+// metadata related to FIELD
+void iterMSCachedFieldInfo ()
+{
+  // Create synthetic MS with several Fields
+  int nAnt = 5;
+  int nTime = 5;
+  int nDD = 1;
+  int nField = 5;
+  double msinterval = 60.;
+  createMSSeveralDDFeedField(nAnt, nTime, nDD, nField, msinterval, "tMSIter_severalfield_tmp.ms");
+  MeasurementSet ms("tMSIter_severalfield_tmp.ms");
+
+  // Create a MSIter with DDID in the sorting columns
+  // There will be as many iterations as FIELD_IDs.
+  // This is done both for the traditional constructor as for the
+  // constructor with the generic sorting definition.
+  cout << "Iteration with FIELD sorting" << endl;
+  cout << "===========================" << endl;
+  for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
+  {
+    std::unique_ptr<MSIter> msIter;
+    if(useGenericSortCons)
+    {
+      // Use constructor with generic sorting definitions
+      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      sortCols.push_back(std::make_pair("FIELD_ID", nullptr));
+      msIter.reset(new MSIter(ms, sortCols));
+    }
+    else
+    {
+      // Use traditional constructor
+      Block<int> sort(1);
+      sort[0] = MS::FIELD_ID;
+      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+    }
+
+    // Set the expected Field metadata in the first iteration
+    int expectedFieldId = 0;
+    std::string expectedFieldName("TESTFIELD");
+
+    // Iterate the MS
+    // It is expected that in each iteration a new FIELD_ID is retrieved
+    for (msIter->origin(); msIter->more(); (*msIter)++)
+    {
+      cout << "nrow=" << msIter->table().nrow()<<endl;
+      cout << "fieldid = " << msIter->fieldId() << endl;
+
+      // Check that the FIELD related metadata is what we expect
+      AlwaysAssertExit(msIter->fieldId() == expectedFieldId);
+      AlwaysAssertExit(!msIter->fieldName().compare(expectedFieldName+std::to_string(expectedFieldId)));
+      for (size_t fieldrow = 0 ; fieldrow < msIter->table().nrow() ; fieldrow++) {
+        AlwaysAssertExit(msIter->colFieldIds()(fieldrow) == expectedFieldId);
+      }
+
+      // Update the expected values for next iteration
+      expectedFieldId++;
+    }
+  }
+
+  // Create a MSIter with FIELD in the sorting columns
+  // but not the fastest one. There will be as many iterations
+  // as FIELD_ID times the groups in the other sortign column.
+  // Antenna1 has been choosen as the other one.
+  // This is done both for the traditional constructor as for the
+  // constructor with the generic sorting definition.
+  cout << "Iteration with ANTENNA1 and FIELD sorting" << endl;
+  cout << "========================================" << endl;
+  for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
+  {
+    std::unique_ptr<MSIter> msIter;
+    if(useGenericSortCons)
+    {
+      // Use constructor with generic sorting definitions
+      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      sortCols.push_back(std::make_pair("FIELD_ID", nullptr));
+      sortCols.push_back(std::make_pair("ANTENNA1", nullptr));
+      msIter.reset(new MSIter(ms, sortCols));
+    }
+    else
+    {
+      // Use traditional constructor
+      Block<int> sort(2);
+      sort[0] = MS::FIELD_ID;
+      sort[1] = MS::ANTENNA1;
+      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+    }
+
+    // Set the expected Field metadata in the first iteration
+    int expectedFieldId = 0;
+    bool newField = true;
+    std::string expectedFieldName("TESTFIELD");
+
+    // Iterate the MS
+    // It is expected that in each iteration antenna1 index runs faster
+    // than DDId
+    int antena1Idx = 0;
+    for (msIter->origin(); msIter->more(); (*msIter)++)
+    {
+      cout << "nrow=" << msIter->table().nrow()<<endl;
+      cout << "fieldid = " << msIter->fieldId() << endl;
+
+      // Check that the DD related metadata is what we expect
+      AlwaysAssertExit(msIter->fieldId() == expectedFieldId);
+      AlwaysAssertExit(msIter->newField() == newField);
+      AlwaysAssertExit(!msIter->fieldName().compare(expectedFieldName+std::to_string(expectedFieldId)));
+      for (size_t fieldrow = 0 ; fieldrow < msIter->table().nrow() ; fieldrow++) {
+        AlwaysAssertExit(msIter->colFieldIds()(fieldrow) == expectedFieldId);
+      }
+      // Update the expected values for next iteration
+      antena1Idx++;
+      if(antena1Idx > nAnt - 1)
+      { // All ANTENNA1 iterations done, now iterate on a new DD
+        expectedFieldId++;
+        antena1Idx = 0;
+        newField = true;
+      }
+      else
+      { // Still iterating on ANTENNA1
+        newField = false;
+      }
+    }
+  }
+
+  // Create a MSIter without FIELD in the sorting columns
+  // Sorting is done per timestamp. For each timestamp
+  // all baselines and all FIELD_IDs are present
+  // This is done both for the traditional constructor as for the
+  // constructor with the generic sorting definition.
+  cout << "Iteration with TIME sorting" << endl;
+  cout << "===========================" << endl;
+  for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
+  {
+    std::unique_ptr<MSIter> msIter;
+    if(useGenericSortCons)
+    {
+      // Use constructor with generic sorting definitions
+      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      sortCols.push_back(std::make_pair("TIME", nullptr));
+      msIter.reset(new MSIter(ms, sortCols));
+    }
+    else
+    {
+      // Use traditional constructor
+      Block<int> sort(1);
+      sort[0] = MS::TIME;
+      msIter.reset(new MSIter(ms, sort, 1., False, False)); // Use stored table in memory
+    }
+
+    // Set the expected Field metadata in the first iteration
+    int expectedFieldId = 0;
+    std::string expectedFieldName("TESTFIELD0");
+
+    // Do not read the DD information for each iteration, but skip iterSkip
+    // iterations before reading it. That should exercise the logic for the
+    // lazy computation of the DD
+    for (int iterSkip = 5; iterSkip >=0; iterSkip--)
+    {
+      // Iterate the MS
+      // It is expected that in each iteration a single timestamp is retrieved,
+      // which contains all FIELD_IDs
+      int rowsToSkip = iterSkip;
+      for (msIter->origin(); msIter->more(); (*msIter)++)
+      {
+        if(rowsToSkip == 0)
+        {
+          cout << "nrow=" << msIter->table().nrow()<<endl;
+          cout << "fieldid = " << msIter->fieldId() << endl;
+          // Check that the FIELD related metadata is what we expect
+          // For FIELD_ID: since there is no unique ID in this iteration
+          // the first one (0) is returned
+          AlwaysAssertExit(msIter->fieldId() == expectedFieldId);
+          AlwaysAssertExit(!msIter->fieldName().compare(expectedFieldName));
+          for (size_t fieldrow = 0 ; fieldrow < msIter->table().nrow() ; fieldrow++) {
+            // Every 15 rows (number of baselines) a new FIELD_ID appears
+            AlwaysAssertExit(msIter->colFieldIds()(fieldrow) == (int)(fieldrow / 15));
+          }
+        }
+        else
+        {
+          cout << " Skipping row" << endl;
+          rowsToSkip--;
+        }
+      }
+    }
+  }
 }
 
 int main (int argc, char* argv[])
 {
   try {
-    int nant = 3;
-    int ntime = 5;
+    int nAnt = 3;
+    int nTime = 5;
     double msinterval = 60.;
     double binwidth = 120.;
     if (argc > 1) {
       istringstream iss(argv[1]);
-      iss >> nant;
+      iss >> nAnt;
     }
     if (argc > 2) {
       istringstream iss(argv[2]);
-      iss >> ntime;
+      iss >> nTime;
     }
     if (argc > 3) {
       istringstream iss(argv[3]);
@@ -785,7 +977,7 @@ int main (int argc, char* argv[])
       istringstream iss(argv[4]);
       iss >> binwidth;
     }
-    createMS(nant, ntime, msinterval);
+    createMS(nAnt, nTime, msinterval);
     iterMS(binwidth);
     cout << "########" << endl;
     iterMSMemory(binwidth);
@@ -799,6 +991,8 @@ int main (int argc, char* argv[])
     iterMSGenericSortFuncAntennaGrouping();
     cout << "########" << endl;
     iterMSCachedDDFeedInfo();
+    cout << "########" << endl;
+    iterMSCachedFieldInfo();
   } catch (std::exception& x) {
     cerr << "Unexpected exception: " << x.what() << endl;
     return 1;

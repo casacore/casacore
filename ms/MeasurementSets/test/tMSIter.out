@@ -386,3 +386,220 @@ freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09
 nrow=75
 ddid = 0 spwid = 0 polid = 0
 freqs = [1e+09, 1.001e+09, 1.002e+09, 1.003e+09, 1.004e+09, 1.005e+09, 1.006e+09, 1.007e+09] freq0 Frequency: 1e+09
+########
+Iteration with FIELD sorting
+===========================
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 1
+nrow=75
+fieldid = 2
+nrow=75
+fieldid = 3
+nrow=75
+fieldid = 4
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 1
+nrow=75
+fieldid = 2
+nrow=75
+fieldid = 3
+nrow=75
+fieldid = 4
+Iteration with ANTENNA1 and FIELD sorting
+========================================
+nrow=25
+fieldid = 0
+nrow=20
+fieldid = 0
+nrow=15
+fieldid = 0
+nrow=10
+fieldid = 0
+nrow=5
+fieldid = 0
+nrow=25
+fieldid = 1
+nrow=20
+fieldid = 1
+nrow=15
+fieldid = 1
+nrow=10
+fieldid = 1
+nrow=5
+fieldid = 1
+nrow=25
+fieldid = 2
+nrow=20
+fieldid = 2
+nrow=15
+fieldid = 2
+nrow=10
+fieldid = 2
+nrow=5
+fieldid = 2
+nrow=25
+fieldid = 3
+nrow=20
+fieldid = 3
+nrow=15
+fieldid = 3
+nrow=10
+fieldid = 3
+nrow=5
+fieldid = 3
+nrow=25
+fieldid = 4
+nrow=20
+fieldid = 4
+nrow=15
+fieldid = 4
+nrow=10
+fieldid = 4
+nrow=5
+fieldid = 4
+nrow=25
+fieldid = 0
+nrow=20
+fieldid = 0
+nrow=15
+fieldid = 0
+nrow=10
+fieldid = 0
+nrow=5
+fieldid = 0
+nrow=25
+fieldid = 1
+nrow=20
+fieldid = 1
+nrow=15
+fieldid = 1
+nrow=10
+fieldid = 1
+nrow=5
+fieldid = 1
+nrow=25
+fieldid = 2
+nrow=20
+fieldid = 2
+nrow=15
+fieldid = 2
+nrow=10
+fieldid = 2
+nrow=5
+fieldid = 2
+nrow=25
+fieldid = 3
+nrow=20
+fieldid = 3
+nrow=15
+fieldid = 3
+nrow=10
+fieldid = 3
+nrow=5
+fieldid = 3
+nrow=25
+fieldid = 4
+nrow=20
+fieldid = 4
+nrow=15
+fieldid = 4
+nrow=10
+fieldid = 4
+nrow=5
+fieldid = 4
+Iteration with TIME sorting
+===========================
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+nrow=75
+fieldid = 0
+ Skipping row
+ Skipping row
+ Skipping row
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+ Skipping row
+ Skipping row
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+ Skipping row
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+ Skipping row
+nrow=75
+fieldid = 0
+ Skipping row
+ Skipping row
+ Skipping row
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+ Skipping row
+ Skipping row
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+ Skipping row
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
+nrow=75
+fieldid = 0
