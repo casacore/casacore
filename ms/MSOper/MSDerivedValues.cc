@@ -269,7 +269,7 @@ Double MSDerivedValues::parAngle()
   Double pa=0;
 
   if (mount_p(antenna_p)==0 || mount_p(antenna_p)==4 ||
-      mount_p(antenna_p)== 5) {
+      mount_p(antenna_p)==5) {
     // Now we can do the conversions using the machines
     mRADecInAzEl_p     = cRADecToAzEl_p();
     mHADecPoleInAzEl_p = cHADecToAzEl_p();
@@ -291,6 +291,10 @@ Double MSDerivedValues::parAngle()
     //#  cout<<"Antenna "<<iant<<" at time: "<<MVTime(mEpoch.getValue())<<
     //#  " has PA = "<<pa_p(iant)*57.28<<endl;
     
+  } else if (mount_p(antenna_p)==2) {
+    Double ha = cRADecToHADec_p().getValue().get()(0);
+    Double dec = cRADecToHADec_p().getValue().get()(1);
+    pa = atan2(-cos(ha), -sin(ha) * sin(dec));
   } else if (mount_p(antenna_p)==1) {
     // nothing to do for equatorial mounts, pa is always 0
   } else {
