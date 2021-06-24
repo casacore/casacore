@@ -190,9 +190,9 @@ MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
 	mount_p(i)=0;
       } else if (mount(i)=="equatorial" || mount(i)=="EQUATORIAL") {
         mount_p(i)=1;
-      } else if (mount(i)=="X-Y" || mount(i)=="x-y") {
-        mount_p(i)=2;
       } else if (mount(i)=="orbiting" || mount(i)=="ORBITING") {
+        mount_p(i)=2;
+      } else if (mount(i)=="x-y" || mount(i)=="X-Y") {
         mount_p(i)=3;
       } else if (mount(i)=="alt-az+nasmyth-r" || mount(i)=="ALT-AZ+NASMYTH-R") {
 	mount_p(i)=4;
@@ -291,7 +291,7 @@ Double MSDerivedValues::parAngle()
     //#  cout<<"Antenna "<<iant<<" at time: "<<MVTime(mEpoch.getValue())<<
     //#  " has PA = "<<pa_p(iant)*57.28<<endl;
     
-  } else if (mount_p(antenna_p)==2) {
+  } else if (mount_p(antenna_p)==3) {
     Double ha = cRADecToHADec_p().getValue().get()(0);
     Double dec = cRADecToHADec_p().getValue().get()(1);
     pa = atan2(-cos(ha), -sin(ha) * sin(dec));
