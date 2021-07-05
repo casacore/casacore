@@ -70,24 +70,37 @@ public:
     void addRow64(rownr_t aNrRows);
     static DataManager *makeObject(const String &aDataManType,
                                    const Record &spec);
+    Record dataManagerSpec() const;
     rownr_t getNrRows();
 
 private:
     Adios2StMan &parent;
     String itsDataManName = "Adios2StMan";
-    rownr_t itsRows;
-    int itsStManColumnType;
+    rownr_t itsRows {0};
     PtrBlock<Adios2StManColumn *> itsColumnPtrBlk;
 
     std::shared_ptr<adios2::ADIOS> itsAdios;
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
 
-    static std::string itsAdiosEngineType;
-    static adios2::Params itsAdiosEngineParams;
-    static std::vector<adios2::Params> itsAdiosTransportParamsVec;
+    // The ADIOS2 I/O Engine type
+    std::string itsAdiosEngineType;
+    // Parameters for the ADIOS2 I/O engine
+    adios2::Params itsAdiosEngineParams;
+    // Parameters for the ADIOS2 I/O Transports
+    std::vector<adios2::Params> itsAdiosTransportParamsVec;
 
+    // MPI communicator to be used by all instances of this storage manager
     static MPI_Comm itsMpiComm;
+
+    // The type of this storage manager
+    static constexpr const char *DATA_MANAGER_TYPE = "Adios2StMan";
+    // The name of the specification field for the I/O engine type
+    static constexpr const char *SPEC_FIELD_ENGINE_TYPE = "ENGINETYPE";
+    // The name of the specification field for the I/O engine parameters
+    static constexpr const char *SPEC_FIELD_ENGINE_PARAMS = "ENGINEPARAMS";
+    // The name of the specification field for the transport parameters
+    static constexpr const char *SPEC_FIELD_TRANSPORT_PARAMS = "TRANSPORTPARAMS";
 
     uInt ncolumn() const { return parent.ncolumn(); }
     String fileName() const { return parent.fileName(); }
