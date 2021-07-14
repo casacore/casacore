@@ -47,6 +47,7 @@ option (BUILD_PYTHON3 "Build the python3 bindings" NO)
 
 option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 option (BUILD_FFTPACK_DEPRECATED "build FFTPack" NO)
+option (BUILD_DYSCO "Build the Dysco compression storage manager" YES)
 
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
@@ -579,6 +580,7 @@ message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
 message (STATUS "BUILD_FFTPACK_DEPRECATED= ${BUILD_FFTPACK_DEPRECATED}")
 message (STATUS "BUILD_DEPRECATED ...... = ${BUILD_DEPRECATED}")
+message (STATUS "BUILD_DYSCO ........... = ${BUILD_DYSCO}")
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
 message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
