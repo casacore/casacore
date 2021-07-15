@@ -33,14 +33,14 @@ else()
 endif()
 
 add_library(dyscostman-object OBJECT
-	aftimeblockencoder.cpp
-	dyscostman.cpp
-	dyscodatacolumn.cpp
-	dyscoweightcolumn.cpp
-	stochasticencoder.cpp
-	threadeddyscocolumn.cpp
-	rftimeblockencoder.cpp
-	rowtimeblockencoder.cpp)
+	aftimeblockencoder.cc
+	dyscostman.cc
+	dyscodatacolumn.cc
+	dyscoweightcolumn.cc
+	stochasticencoder.cc
+	threadeddyscocolumn.cc
+	rftimeblockencoder.cc
+	rowtimeblockencoder.cc)
 set_property(TARGET dyscostman-object PROPERTY POSITION_INDEPENDENT_CODE 1) 
 
 add_library(dyscostman SHARED $<TARGET_OBJECTS:dyscostman-object>)
@@ -52,11 +52,11 @@ if(Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIR})
   add_executable(tDysco
     $<TARGET_OBJECTS:dyscostman-object>
-    tests/runtests.cpp 
-    tests/testbytepacking.cpp
-    tests/testdithering.cpp
-    tests/testdyscostman.cpp
-    tests/testtimeblockencoder.cpp
+    tests/runtests.cc 
+    tests/testbytepacking.cc
+    tests/testdithering.cc
+    tests/testdyscostman.cc
+    tests/testtimeblockencoder.cc
     )
   target_link_libraries(tDysco ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${GSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} casa_tables casa_casa)
   add_test(tDysco tDysco)
