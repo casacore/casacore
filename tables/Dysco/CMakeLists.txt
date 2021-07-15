@@ -45,7 +45,7 @@ set_property(TARGET dyscostman-object PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 add_library(dyscostman SHARED $<TARGET_OBJECTS:dyscostman-object>)
 set_target_properties(dyscostman PROPERTIES SOVERSION 0)
-target_link_libraries(dyscostman ${GSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(dyscostman ${GSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} casa_tables casa_casa)
 
 find_package(Boost COMPONENTS system filesystem unit_test_framework)
 if(Boost_FOUND)
