@@ -209,6 +209,10 @@ if(MPI_FOUND)
     endif(ADIOS2_FOUND)
 endif(MPI_FOUND)
 
+if(BUILD_DYSCO)
+  add_subdirectory(Dysco)
+endif(BUILD_DYSCO)
+
 add_subdirectory (apps)
 
 install (TARGETS casa_tables
