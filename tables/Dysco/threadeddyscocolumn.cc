@@ -209,10 +209,10 @@ void ThreadedDyscoColumn<DataType>::putValues(
 }
 
 template <typename DataType>
-void ThreadedDyscoColumn<DataType>::Prepare(DyscoDistribution distribution,
-                                            Normalization normalization,
-                                            double studentsTNu,
-                                            double distributionTruncation) {
+void ThreadedDyscoColumn<DataType>::Prepare(DyscoDistribution,
+                                            Normalization,
+                                            double /*studentsTNu*/,
+                                            double /*distributionTruncation*/) {
   stopThreads();
   casacore::Table &table = storageManager().table();
   _ant1Col.reset(new casacore::ScalarColumn<int>(table, "ANTENNA1"));

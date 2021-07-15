@@ -9,7 +9,7 @@ RowTimeBlockEncoder::RowTimeBlockEncoder(size_t nPol, size_t nChannels)
       _rowFactors() {}
 
 void RowTimeBlockEncoder::InitializeDecode(const float *metaBuffer, size_t nRow,
-                                           size_t nAntennae) {
+                                           size_t /*nAntennae*/) {
   _rowFactors.assign(metaBuffer, metaBuffer + nRow);
 }
 
@@ -37,7 +37,7 @@ void RowTimeBlockEncoder::Decode(const StochasticEncoder<float> &gausEncoder,
 template <bool UseDithering>
 void RowTimeBlockEncoder::encode(const StochasticEncoder<float> &gausEncoder,
                                  const FBuffer &buffer, float *metaBuffer,
-                                 symbol_t *symbolBuffer, size_t antennaCount,
+                                 symbol_t *symbolBuffer, size_t /*antennaCount*/,
                                  std::mt19937 *rnd) {
   // Note that encoding is performed with doubles
   std::vector<DBufferRow> data;

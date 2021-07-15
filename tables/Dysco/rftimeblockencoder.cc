@@ -15,7 +15,7 @@ template <bool UseDithering>
 void RFTimeBlockEncoder::encode(
     const dyscostman::StochasticEncoder<float> &gausEncoder,
     const TimeBlockEncoder::FBuffer &buffer, float *metaBuffer,
-    TimeBlockEncoder::symbol_t *symbolBuffer, size_t antennaCount,
+    TimeBlockEncoder::symbol_t *symbolBuffer, size_t /*antennaCount*/,
     std::mt19937 *rnd) {
   // Note that encoding is performed with doubles
   std::vector<DBufferRow> data;
@@ -99,7 +99,7 @@ void RFTimeBlockEncoder::encode(
 }
 
 void RFTimeBlockEncoder::InitializeDecode(const float *metaBuffer, size_t nRow,
-                                          size_t nAntennae) {
+                                          size_t /*nAntennae*/) {
   _channelFactors.assign(metaBuffer, metaBuffer + _nPol * _nChannels);
   metaBuffer += _nPol * _nChannels;
   _rowFactors.assign(metaBuffer, metaBuffer + _nPol * nRow);

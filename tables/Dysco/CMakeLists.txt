@@ -54,7 +54,6 @@ if(Boost_FOUND)
     $<TARGET_OBJECTS:dyscostman-object>
     tests/runtests.cc 
     tests/testbytepacking.cc
-    tests/testdithering.cc
     tests/testdyscostman.cc
     tests/testtimeblockencoder.cc
     )

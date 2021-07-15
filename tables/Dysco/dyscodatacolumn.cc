@@ -49,7 +49,7 @@ void DyscoDataColumn::Prepare(DyscoDistribution distribution,
   }
 }
 
-void DyscoDataColumn::initializeDecode(TimeBlockBuffer<data_t> *buffer,
+void DyscoDataColumn::initializeDecode(TimeBlockBuffer<data_t> */*buffer*/,
                                        const float *metaBuffer, size_t nRow,
                                        size_t nAntennae) {
   _decoder->InitializeDecode(metaBuffer, nRow, nAntennae);

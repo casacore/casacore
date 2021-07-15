@@ -394,7 +394,7 @@ void AFTimeBlockEncoder::calculateAntennaeRMS(
   }
 }
 
-void AFTimeBlockEncoder::InitializeDecode(const float *metaBuffer, size_t nRow,
+void AFTimeBlockEncoder::InitializeDecode(const float *metaBuffer, size_t /*nRow*/,
                                           size_t nAntennae) {
   if (_rmsPerAntenna.size() < nAntennae * _nPol)
     _rmsPerAntenna.resize(nAntennae * _nPol);
