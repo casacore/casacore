@@ -40,8 +40,8 @@
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/ImageRegrid.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/MaskedLattice.h> 
-#include <casacore/lattices/LRegions/LCPagedMask.h> 
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/scimath/Mathematics/Interpolate2D.h>
@@ -164,7 +164,7 @@ try {
       } else {
          pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
       }
-      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
+      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
       pImOut->makeMask(maskName, True, True, True, True);
 //
       Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
@@ -180,7 +180,7 @@ try {
       } else {
          pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
       }
-      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
+      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
       pImOut->makeMask(maskName, True, True, True, True);
 //
       Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
@@ -193,6 +193,29 @@ try {
       grid.resize();
       gridMask.resize();
       regridder.set2DCoordinateGrid(grid, gridMask);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+//
+      delete pImOut;
+    }
+
+//  test reuse using reuse2DCoordinateGrid
+    if (reuse) {
+      ImageInterface<Float>* pImOut = 0;
+      if (save) {
+         pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFileReused2"));
+      } else {
+         pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
+      }
+      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
+      pImOut->makeMask(maskName, True, True, True, True);
+//
+      Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
+      Cube<Double> grid;
+      Matrix<Bool> gridMask;
+      regridder.reuse2DCoordinateGrid(True);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+//
+      regridder.reuse2DCoordinateGrid(False);
       regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
 //
       delete pImOut;
@@ -318,10 +341,8 @@ try {
 } catch (std::exception& x) {
      cerr << "aipserror: error " << x.what() << endl;
      return 1;
-} 
+}
 
 return 0;
 
 }
-
-

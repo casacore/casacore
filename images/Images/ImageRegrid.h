@@ -68,7 +68,7 @@ class ProgressMeter;
 // </prerequisite>
 //
 // <etymology>
-//  Regrids, or resamples, images.  
+//  Regrids, or resamples, images.
 // </etymology>
 //
 // <synopsis>
@@ -84,14 +84,14 @@ class ProgressMeter;
 //
 //  Any DirectionCoordinate or LinearCoordinate holding exactly two axes
 //  is regridded in one pass with a 2-D interpolation scheme.
-//  All other axes are regridded in separate passes with a 1D interpolation 
+//  All other axes are regridded in separate passes with a 1D interpolation
 //  scheme.    This means that a LinearCoordinate holding say 3 axes
 //  where some of them are coupled will not be correctly regridded.
 //  StokesCoordinates cannot be  regridded.
 //
-//  Multiple passes are made through the data, and the output of 
-//  each pass is the input of the next pass.  The intermediate 
-//  images are stored as TempImages which may be in memory or 
+//  Multiple passes are made through the data, and the output of
+//  each pass is the input of the next pass.  The intermediate
+//  images are stored as TempImages which may be in memory or
 //  on disk, depending on their size.
 //
 //  It can also simply insert this image into that one via
@@ -99,18 +99,18 @@ class ProgressMeter;
 // </synopsis>
 //
 // <example>
-// 
+//
 // <srcblock>
 // </srcblock>
 // </example>
 //
-// <motivation> 
+// <motivation>
 // A common image analysis need is to regrid images, e.g. to compare
 // images from different telescopes.
 // </motivation>
 //
 // <thrown>
-// <li> AipsError 
+// <li> AipsError
 // </thrown>
 //
 // <todo asof="1999/04/20">
@@ -133,7 +133,7 @@ public:
   ImageRegrid<T>& operator=(const ImageRegrid& other);
 
   // Regrid inImage onto the grid specified by outImage.
-  // If outImage has a writable mask, it will be updated in that 
+  // If outImage has a writable mask, it will be updated in that
   // output pixels at which the regridding failed will be masked bad (False)
   // and the pixel value set to zero. Otherwise the output mask is not changed.
   // Specify which pixel axes of outImage are to be
@@ -145,7 +145,7 @@ public:
   // the coordinate grid computation decimation FACTOR
   // (e.g.  nCoordGrid ~ nIn / decimate). 0 means no decimation
   // (slowest and most accurate)
-  void regrid(ImageInterface<T>& outImage, 
+  void regrid(ImageInterface<T>& outImage,
               typename Interpolate2D::Method method,
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
@@ -169,10 +169,17 @@ public:
   void set2DCoordinateGrid (const Cube<Double>& grid, const Matrix<Bool>& gridMask, Bool notify=False);
 // </group>
 //
+
+  // Alternative to the above get/set functions that keep the grids internal.
+  // Use this after a call to regrid to reuse the coordinate grid for the next
+  // regrid call. If the grid needs to be recomputed call this with reuse=False
+  void reuse2DCoordinateGrid (Bool reuse);
+
+
   // Inserts inImage into outImage.  The alignment is done by
-  // placing the blc of inImage at the specified 
-  // absolute pixel of the outImage (outPixelLocation).  If 
-  // the outPixelLocation vector is of zero length, then the images 
+  // placing the blc of inImage at the specified
+  // absolute pixel of the outImage (outPixelLocation).  If
+  // the outPixelLocation vector is of zero length, then the images
   // are aligned by their reference pixels.  Only integral shifts are done
   // in the aligment process. If outImage has a mask,  it will be updated.
   // Returns False if no overlap of images, in which case the
@@ -225,7 +232,7 @@ public:
   Cube<Double> itsUser2DCoordinateGrid;
   Matrix<Bool> itsUser2DCoordinateGridMask;
   Bool itsNotify;
-//  
+//
   // Check shape and axes.  Exception if no good.  If pixelAxes
   // of length 0, set to all axes according to shape
   void _checkAxes(IPosition& outPixelAxes,
@@ -236,25 +243,25 @@ public:
                   Bool verbose);
 
   // Find maps between coordinate systems
-  void findMaps (uInt nDim, 
+  void findMaps (uInt nDim,
                  Vector<Int>& pixelAxisMap1,
                  Vector<Int>& pixelAxisMap2,
                  const CoordinateSystem& inCoords,
                  const CoordinateSystem& outCoords) const;
 
-  // Find scale factor to conserve flux 
-   Double findScaleFactor(const Unit& units, 
-                          const CoordinateSystem& inCoords, 
-                          const CoordinateSystem& outCoords, 
+  // Find scale factor to conserve flux
+   Double findScaleFactor(const Unit& units,
+                          const CoordinateSystem& inCoords,
+                          const CoordinateSystem& outCoords,
                           Int inCoordinate, Int outCoordinate,
                           LogIO& os) const;
 
   // Regrid one Coordinate
    void _regridOneCoordinate (LogIO& os, IPosition& outShape2,
                               Vector<Bool>& doneOutPixelAxes,
-                              MaskedLattice<T>* &finalOutPtr,  
-                              MaskedLattice<T>* &inPtr,   
-                              MaskedLattice<T>* &outPtr,  
+                              MaskedLattice<T>* &finalOutPtr,
+                              MaskedLattice<T>* &inPtr,
+                              MaskedLattice<T>* &outPtr,
                               CoordinateSystem& outCoords,
                               const CoordinateSystem& inCoords,
                               Int outPixelAxis,
@@ -262,20 +269,20 @@ public:
                               const IPosition& outShape,
                               Bool replicate, uInt decimate,
                               Bool outIsMasked, Bool showProgress,
-                              Bool forceRegrid, 
+                              Bool forceRegrid,
                               typename Interpolate2D::Method method,
                               Bool verbose);
 
   // Regrid  DirectionCoordinate or 2-axis LinearCoordinate
    void regridTwoAxisCoordinate  (LogIO& os, MaskedLattice<T>& outLattice,
                          const MaskedLattice<T>& inLattice,
-                         const Unit& imageUnit, 
+                         const Unit& imageUnit,
                          const CoordinateSystem& inCoords,
                          const CoordinateSystem& outCoords,
                          Int inCoordinate, Int outCoordinate,
                          const Vector<Int> inPixelAxes,
                          const Vector<Int> outPixelAxes,
-                         const Vector<Int> pixelAxisMap1,  
+                         const Vector<Int> pixelAxisMap1,
                          const Vector<Int> pixelAxisMap2,
                          typename Interpolate2D::Method method,
                          Bool replicate, uInt decimate,
@@ -283,7 +290,7 @@ public:
 
   // Make regridding coordinate grid for this cursor.
   void make2DCoordinateGrid (LogIO& os, Bool& allFail, Bool&missedIt,
-                             Double& minInX, Double& minInY, 
+                             Double& minInX, Double& minInY,
                              Double& maxInX, Double& maxInY,
                              Cube<Double>& in2DPos,
                              Matrix<Bool>& succeed,
@@ -301,9 +308,9 @@ public:
 
   // Make replication coordinate grid for this cursor
    void make2DCoordinateGrid (Cube<Double>& in2DPos,
-                              Double& minInX, Double& minInY, 
+                              Double& minInX, Double& minInY,
                               Double& maxInX, Double& maxInY,
-                              const Vector<Double>& pixelScale, 
+                              const Vector<Double>& pixelScale,
                               uInt xInAxis, uInt yInAxis,
                               uInt xOutAxis, uInt yOutAxis,
                               uInt xInCorrAxis, uInt yInCorrAxis,
@@ -345,7 +352,7 @@ public:
 //
    void regrid2DMatrix(Lattice<T>& outCursor,
                        LatticeIterator<Bool>*& outMaskIterPtr,
-                       const Interpolate2D& interp,  
+                       const Interpolate2D& interp,
                                     ProgressMeter*& pProgress,
                                     Double& iPix,
                                     uInt nDim,
@@ -375,9 +382,9 @@ public:
                       const IPosition& inShape);
 //
    Bool minmax(Double &minX, Double &maxX, Double& minY, Double& maxY,
-               const Array<Double> &xData,
-               const Array<Double> &yData,
-               const Array<Bool>& mask);
+               const Matrix<Double> &xData,
+               const Matrix<Double> &yData,
+               const Matrix<Bool>& mask);
 };
 
 //# Declare extern templates for often used types.
@@ -389,4 +396,3 @@ public:
 #include <casacore/images/Images/ImageRegrid.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
-
