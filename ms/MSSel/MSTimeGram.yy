@@ -169,11 +169,11 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 		   MSTimeParse::thisMSTParser->setDefaults($3,false);
 		   MSTimeParse::thisMSTParser->validate($1);
 		   MSTimeParse::thisMSTParser->validate($3);
-		   Double s;
-		   s=$3.sec;
+		   Double s0 = Double($1.sec) + Double($1.fsec) / 1000.0;
+		   Double s1 = Double($3.sec) + Double($3.fsec) / 1000.0;
 
-		   Time time0($1.year,$1.month,$1.day,$1.hour,$1.minute,(Double)$1.sec);
-		   Time time1($3.year,$3.month,$3.day,$3.hour,$3.minute,s);
+		   Time time0($1.year,$1.month,$1.day,$1.hour,$1.minute,s0);
+		   Time time1($3.year,$3.month,$3.day,$3.hour,$3.minute,s1);
 		   Double mjd=time1.modifiedJulianDay()*86400.0;
 
 		   time1 = time0 + mjd;
