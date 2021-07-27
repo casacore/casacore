@@ -3113,7 +3113,7 @@ Vector<String> CoordinateSystem::list (LogIO& os,
    MEpoch defEpoch = ObsInfo::defaultObsDate();
    if (epoch.getValue().getDay() != defEpoch.getValue().getDay()) { 
       MVTime time = MVTime(epoch.getValue());
-      os << "Date observation    : " << time.string(MVTime::YMD) << endl;
+      os << "Date observation    : " << time.string(MVTime::YMD, 12) << endl;
    } else {
       os << "Date observation    : " << "UNKNOWN" << endl;
    }
