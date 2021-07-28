@@ -174,11 +174,12 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 
 		   Time time0($1.year,$1.month,$1.day,$1.hour,$1.minute,s0);
 		   Time time1($3.year,$3.month,$3.day,$3.hour,$3.minute,s1);
-		   Double mjd=time1.modifiedJulianDay()*86400.0;
-
-		   time1 = time0 + mjd;
-		   const MEpoch *t0=new MEpoch(MVEpoch(time0.modifiedJulianDay()));
-		   const MEpoch *t1=new MEpoch(MVEpoch(time1.modifiedJulianDay()));
+		   Double mjd0 = time0.modifiedJulianDay();
+		   Double mjd1 = time1.modifiedJulianDay();
+		   MVEpoch mve0(mjd0);
+		   MVEpoch mve1(mjd0, mjd1);
+		   const MEpoch *t0=new MEpoch(mve0);
+		   const MEpoch *t1=new MEpoch(mve1);
 
 		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,MSTimeEdgeInclusiveRange,MSTimeEdgeBuffer);
 		   MSTGgarbageCollector(t0);
