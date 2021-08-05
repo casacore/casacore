@@ -1,3 +1,41 @@
 #! /bin/sh
-echo "UNTESTED"
-exit 3
+# -----------------------------------------------------------------------------
+# Usage: tMSTimeGram.run
+# -----------------------------------------------------------------------------
+# This script executes the program tMSTimeGram to test the
+# MSTimeGram module.
+#
+# $Id$
+#-----------------------------------------------------------------------------
+
+  MS=$CASADEMO"mssel_test_small.ms"
+
+  runCmd(){
+      # Uncomment following line to generate an output close to a
+      # script to run the tests
+      #echo "#Test:$1"; echo $3;
+
+      eval "$2 $3"
+  }
+
+  getTestMS() {
+      tar zxf $testsrcdir/$MS.tgz
+  }
+
+  cleanup() {
+      \rm -rf $MS
+  }
+
+  # Get the test MS (un-tar it from $testsrcdir).
+  getTestMS;
+
+  # T1~T2 syntax: selects single timestamp, 2014/09/20/10:37:51.360000
+  runCmd 1 "$casa_checktool" " ./tMSTimeGram $MS '2014/09/20/10:37:51.0~10:37:51.5'";
+
+  # T+dT syntax: selects single timestamp, 2014/09/20/10:37:51.360000
+  runCmd 2 "$casa_checktool" " ./tMSTimeGram $MS '2014/09/20/10:37:51.0+0:0:0.5'";
+
+  #
+  # Remove the test MS and any other cleanup required.
+  #
+  cleanup;
