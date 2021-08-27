@@ -17,6 +17,7 @@ RUN docker-apt-install \
     libhdf5-serial-dev \
     libboost-dev \
     libboost-python-dev \
+    libgsl-dev \
     python-numpy \
     python3-numpy
 ADD . /code

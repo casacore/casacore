@@ -47,6 +47,7 @@ option (BUILD_PYTHON3 "Build the python3 bindings" NO)
 
 option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 option (BUILD_FFTPACK_DEPRECATED "build FFTPack" NO)
+option (BUILD_DYSCO "Build the Dysco compression storage manager" YES)
 
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
@@ -373,6 +374,9 @@ endif (_usewcs STREQUAL YES)
 
 # Set the include directories and HAVE compiler variables
 include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+if (BUILD_DYSCO)
+    add_definitions(-DHAVE_DYSCO)
+endif (BUILD_DYSCO)
 if (WCSLIB_FOUND)
     include_directories (${WCSLIB_INCLUDE_DIRS})
     add_definitions (-DWCSLIB_VERSION_MAJOR=${WCSLIB_VERSION_MAJOR} -DWCSLIB_VERSION_MINOR=${WCSLIB_VERSION_MINOR})
@@ -579,6 +583,7 @@ message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
 message (STATUS "BUILD_FFTPACK_DEPRECATED= ${BUILD_FFTPACK_DEPRECATED}")
 message (STATUS "BUILD_DEPRECATED ...... = ${BUILD_DEPRECATED}")
+message (STATUS "BUILD_DYSCO ........... = ${BUILD_DYSCO}")
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
 message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
