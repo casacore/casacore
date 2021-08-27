@@ -28,6 +28,13 @@ if (ADIOS2_FOUND)
   set(ADIOS2_HEADERS DataMan/Adios2StMan.h DataMan/Adios2StManColumn.h)
 endif (ADIOS2_FOUND)
 
+if(BUILD_DYSCO)
+  add_subdirectory(Dysco)
+else(BUILD_DYSCO)
+  set(DYSCOSTMAN_SOURCES)
+  set(DYSCOSTMAN_LIBRARIES)
+endif(BUILD_DYSCO)
+
 add_library (casa_tables
 Tables/ArrayColumnBase.cc
 Tables/ArrayColumn_tmpl.cc
@@ -199,19 +206,16 @@ ${FLEX_RecordGram_OUTPUTS}
 ${BISON_TableGram_OUTPUTS}
 ${FLEX_TableGram_OUTPUTS}
 ${ADIOS2_SOURCES}
+${DYSCOSTMAN_SOURCES}
 )
 
-target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES})
 if(MPI_FOUND)
     target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
     if(ADIOS2_FOUND)
         target_link_libraries(casa_tables adios2::adios2)
     endif(ADIOS2_FOUND)
 endif(MPI_FOUND)
-
-if(BUILD_DYSCO)
-  add_subdirectory(Dysco)
-endif(BUILD_DYSCO)
 
 add_subdirectory (apps)
 

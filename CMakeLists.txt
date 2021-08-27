@@ -374,6 +374,9 @@ endif (_usewcs STREQUAL YES)
 
 # Set the include directories and HAVE compiler variables
 include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+if (BUILD_DYSCO)
+    add_definitions(-DHAVE_DYSCO)
+endif (BUILD_DYSCO)
 if (WCSLIB_FOUND)
     include_directories (${WCSLIB_INCLUDE_DIRS})
     add_definitions (-DWCSLIB_VERSION_MAJOR=${WCSLIB_VERSION_MAJOR} -DWCSLIB_VERSION_MINOR=${WCSLIB_VERSION_MINOR})

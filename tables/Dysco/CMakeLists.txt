@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(dysco)
-
 find_package(GSL REQUIRED)
 
 find_package(Threads REQUIRED)
@@ -43,10 +41,8 @@ add_library(dyscostman-object OBJECT
 	rowtimeblockencoder.cc)
 set_property(TARGET dyscostman-object PROPERTY POSITION_INDEPENDENT_CODE 1) 
 
-add_library(dyscostman SHARED $<TARGET_OBJECTS:dyscostman-object>)
-set_target_properties(dyscostman PROPERTIES SOVERSION 0)
-target_link_libraries(dyscostman ${GSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} casa_tables casa_casa)
-
+set(DYSCOSTMAN_SOURCES $<TARGET_OBJECTS:dyscostman-object> PARENT_SCOPE)
+set(DYSCOSTMAN_LIBRARIES ${GSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} PARENT_SCOPE)
 find_package(Boost COMPONENTS system filesystem unit_test_framework)
 if(Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIR})
@@ -63,4 +59,3 @@ else()
   message("Boost testing framework not found.")
 endif()
 
-install (TARGETS dyscostman DESTINATION lib) 
