@@ -44,6 +44,7 @@ constexpr const char *Adios2StMan::impl::SPEC_FIELD_TRANSPORT_PARAMS;
 //
 // Adios2StMan implementation in terms of the impl class
 //
+
 Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
     : DataManager(),
     pimpl(std::unique_ptr<impl>(new impl(*this, mpiComm)))
@@ -52,9 +53,10 @@ Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
 
 Adios2StMan::Adios2StMan(MPI_Comm mpiComm, std::string engineType,
     std::map<std::string, std::string> engineParams,
-    std::vector<std::map<std::string, std::string>> transportParams)
+    std::vector<std::map<std::string, std::string>> transportParams,
+    std::vector<std::map<std::string, std::string>> operatorParams)
     : DataManager(),
-    pimpl(std::unique_ptr<impl>(new impl(*this, mpiComm, engineType, engineParams, transportParams)))
+    pimpl(std::unique_ptr<impl>(new impl(*this, mpiComm, engineType, engineParams, transportParams, operatorParams)))
 {
 }
 
@@ -144,23 +146,23 @@ rownr_t Adios2StMan::getNrRows()
 //
 // impl class implementation using ADIOS2
 //
+
 Adios2StMan::impl::impl(Adios2StMan &parent, MPI_Comm mpiComm)
     : parent(parent)
 {
     itsMpiComm = mpiComm;
-    std::string engineType;
-    adios2::Params engineParams;
-    std::vector<adios2::Params> transportParams;
-    Adios2StMan(mpiComm, engineType, engineParams, transportParams);
+    Adios2StMan(mpiComm, "", {}, {}, {});
 }
 
 Adios2StMan::impl::impl(
         Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
         std::map<std::string, std::string> engineParams,
-        std::vector<std::map<std::string, std::string>> transportParams)
+        std::vector<std::map<std::string, std::string>> transportParams,
+        std::vector<std::map<std::string, std::string>> operatorParams)
     : parent(parent), itsAdiosEngineType(std::move(engineType)),
       itsAdiosEngineParams(std::move(engineParams)),
-      itsAdiosTransportParamsVec(std::move(transportParams))
+      itsAdiosTransportParamsVec(std::move(transportParams)),
+      itsAdiosOperatorParamsVec(std::move(operatorParams))
 {
     itsMpiComm = mpiComm;
 
@@ -203,15 +205,28 @@ Adios2StMan::impl::impl(
     {
         itsAdiosIO->SetParameters(itsAdiosEngineParams);
     }
-    for (size_t i = 0; i < itsAdiosTransportParamsVec.size(); ++i)
+    for (const auto &param: itsAdiosTransportParamsVec)
     {
-        std::string transportName = std::to_string(i);
-        auto j = itsAdiosTransportParamsVec[i].find("Name");
-        if (j != itsAdiosTransportParamsVec[i].end())
-        {
-            transportName = j->second;
-        }
-        itsAdiosIO->AddTransport(transportName, itsAdiosTransportParamsVec[i]);
+        auto itName = param.find("Name");
+        if(itName==param.end()) continue;
+        itsAdiosIO->AddTransport(itName->second, param);
+    }
+    for(auto param : itsAdiosOperatorParamsVec)
+    {
+        std::string var,op;
+
+        auto itVar = param.find("Variable");
+        if(itVar==param.end())  continue;
+        else  var = itVar->second;
+
+        auto itOp = param.find("Operator");
+        if(itOp==param.end())  continue;
+        else  op=itOp->second;
+
+        param.erase(itVar);
+        param.erase(itOp);
+
+        itsAdiosIO->AddOperation(var, op, param);
     }
 }
 
@@ -269,7 +284,7 @@ DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
             transport_params.emplace_back(std::move(params));
         }
     }
-    return new Adios2StMan(itsMpiComm, engine, engine_params, transport_params);
+    return new Adios2StMan(itsMpiComm, engine, engine_params, transport_params, {});
 }
 
 Record Adios2StMan::impl::dataManagerSpec() const
@@ -299,7 +314,7 @@ Record Adios2StMan::impl::dataManagerSpec() const
 
 DataManager *Adios2StMan::impl::clone() const
 {
-    return new Adios2StMan(itsMpiComm, itsAdiosEngineType, itsAdiosEngineParams, itsAdiosTransportParamsVec);
+    return new Adios2StMan(itsMpiComm, itsAdiosEngineType, itsAdiosEngineParams, itsAdiosTransportParamsVec, itsAdiosOperatorParamsVec);
 }
 
 String Adios2StMan::impl::dataManagerType() const

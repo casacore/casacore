@@ -42,9 +42,11 @@ class Adios2StMan::impl
 {
 public:
     impl(Adios2StMan &parent, MPI_Comm mpiComm = MPI_COMM_WORLD);
+
     impl(Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
             std::map<std::string, std::string> engineParams,
-            std::vector<std::map<std::string, std::string>> transportParams);
+            std::vector<std::map<std::string, std::string>> transportParams,
+            std::vector<std::map<std::string, std::string>> operatorParams);
 
     ~impl();
 
@@ -87,8 +89,10 @@ private:
     std::string itsAdiosEngineType;
     // Parameters for the ADIOS2 I/O engine
     adios2::Params itsAdiosEngineParams;
-    // Parameters for the ADIOS2 I/O Transports
+    // Parameters for the ADIOS2 I/O transports
     std::vector<adios2::Params> itsAdiosTransportParamsVec;
+    // Parameters for the ADIOS2 I/O operators (compressors)
+    std::vector<adios2::Params> itsAdiosOperatorParamsVec;
 
     // MPI communicator to be used by all instances of this storage manager
     static MPI_Comm itsMpiComm;
