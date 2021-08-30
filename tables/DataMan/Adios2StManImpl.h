@@ -105,6 +105,8 @@ private:
     static constexpr const char *SPEC_FIELD_ENGINE_PARAMS = "ENGINEPARAMS";
     // The name of the specification field for the transport parameters
     static constexpr const char *SPEC_FIELD_TRANSPORT_PARAMS = "TRANSPORTPARAMS";
+    // The name of the specification field for the transport parameters
+    static constexpr const char *SPEC_FIELD_OPERATOR_PARAMS = "OPERATORPARAMS";
 
     uInt ncolumn() const { return parent.ncolumn(); }
     String fileName() const { return parent.fileName(); }
