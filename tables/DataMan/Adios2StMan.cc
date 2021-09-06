@@ -46,12 +46,6 @@ constexpr const char *Adios2StMan::impl::SPEC_FIELD_OPERATOR_PARAMS;
 // Adios2StMan implementation in terms of the impl class
 //
 
-Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
-    : DataManager(),
-    pimpl(std::unique_ptr<impl>(new impl(*this, mpiComm)))
-{
-}
-
 Adios2StMan::Adios2StMan(MPI_Comm mpiComm, std::string engineType,
     std::map<std::string, std::string> engineParams,
     std::vector<std::map<std::string, std::string>> transportParams,
@@ -147,13 +141,6 @@ rownr_t Adios2StMan::getNrRows()
 //
 // impl class implementation using ADIOS2
 //
-
-Adios2StMan::impl::impl(Adios2StMan &parent, MPI_Comm mpiComm)
-    : parent(parent)
-{
-    itsMpiComm = mpiComm;
-    Adios2StMan(mpiComm, "", {}, {}, {});
-}
 
 Adios2StMan::impl::impl(
         Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,

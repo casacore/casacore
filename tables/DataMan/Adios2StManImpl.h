@@ -41,12 +41,16 @@ class Adios2StManColumn;
 class Adios2StMan::impl
 {
 public:
-    impl(Adios2StMan &parent, MPI_Comm mpiComm = MPI_COMM_WORLD);
 
-    impl(Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
-            std::map<std::string, std::string> engineParams,
-            std::vector<std::map<std::string, std::string>> transportParams,
-            std::vector<std::map<std::string, std::string>> operatorParams);
+    impl(Adios2StMan &parent,
+            MPI_Comm mpiComm = MPI_COMM_WORLD,
+            std::string engineType = std::string(),
+            std::map<std::string, std::string> engineParams
+                = std::map<std::string, std::string>(),
+            std::vector<std::map<std::string, std::string>> transportParams
+                = std::vector<std::map<std::string, std::string>>(),
+            std::vector<std::map<std::string, std::string>> operatorParams
+                = std::vector<std::map<std::string, std::string>>());
 
     ~impl();
 
@@ -105,7 +109,7 @@ private:
     static constexpr const char *SPEC_FIELD_ENGINE_PARAMS = "ENGINEPARAMS";
     // The name of the specification field for the transport parameters
     static constexpr const char *SPEC_FIELD_TRANSPORT_PARAMS = "TRANSPORTPARAMS";
-    // The name of the specification field for the transport parameters
+    // The name of the specification field for the operator parameters
     static constexpr const char *SPEC_FIELD_OPERATOR_PARAMS = "OPERATORPARAMS";
 
     uInt ncolumn() const { return parent.ncolumn(); }
