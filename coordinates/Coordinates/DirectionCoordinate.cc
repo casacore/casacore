@@ -1649,10 +1649,12 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
 
 // Find names and units for Fourier coordinate and units to set 
 // for this DirectionCoordinate 
-
-   Vector<String> names(worldAxisNames());
-   Vector<String> units(worldAxisUnits());
-   Vector<String> unitsCanon(worldAxisUnits());
+   Vector<String> names = worldAxisNames().copy();
+   Vector<String> units = worldAxisUnits().copy();
+   // Not copying causes a reference to this object's units to be passed
+   // in to the fourierUnits() call below and they can be changed.
+   // That would be bad.
+   Vector<String> unitsCanon = worldAxisUnits().copy();
 //
    Vector<String> namesOut(worldAxisNames().copy());
    Vector<String> unitsOut(worldAxisUnits().copy());
@@ -1671,8 +1673,8 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
 
 // Create a LinearXform to do the inversion
 
-   Vector<Double> cdelt(dc.increment().copy());
-   fromCurrent(cdelt);
+   Vector<Double> cdelt = dc.increment().copy();
+   dc.fromCurrent(cdelt);
    LinearXform linear(dc.referencePixel(), cdelt, dc.linearTransform());
 
 // Now make the new output LinearCoordinate.  
