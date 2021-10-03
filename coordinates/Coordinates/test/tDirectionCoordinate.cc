@@ -1259,6 +1259,7 @@ void doit5 (DirectionCoordinate& dC)
       if (!allNear(crval2,0.0,1e-13)) {
          throw(AipsError("makeFourierCoordinate (1) failed crval test"));
       }
+      // inc tests verity CAS-13629
       if (! near(inc2[0], -2*13.4287, 1e-5)) {
          throw(AipsError("makeFourierCoordinate (1) failed cdelt[0] test"));
       }
@@ -1284,15 +1285,6 @@ void doit5 (DirectionCoordinate& dC)
       }
       delete pC;
    }
-    /*
-   // CAS-13629
-    {
-        unique_ptr<Coordinate> pC = dC.makeFourierCoordinate (axes, shape);
-        dC.setUnits(Vector<String>(2, "armin"));
-
-        
-    }
-    */
 }
 
 void doit6 () 
