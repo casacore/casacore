@@ -1619,88 +1619,80 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
     return True;
 }
-     
 
+Coordinate* DirectionCoordinate::makeFourierCoordinate(
+    const Vector<Bool>& axes, const Vector<Int>& shape
+) const {
+    // axes says which axes in the coordinate are to be transformed
+    // shape is the shape of the image for all axes in this coordinate
+    AlwaysAssert(nPixelAxes()==2, AipsError);
+    AlwaysAssert(nWorldAxes()==2, AipsError);
 
+    if (axes.nelements() != 2) {
+        set_error ("Invalid number of specified axes");
+        return 0;
+    }
+    if (!axes[0] || !axes[1]) {
+        set_error ("You must specify both axes of the DirectionCoordinate to transform");
+        return 0;
+    }
+    if (shape.nelements() != 2) {
+        set_error ("Invalid number of elements in shape");
+        return 0;
+    }
 
-Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
-                                                        const Vector<Int>& shape) const
-//
-// axes says which axes in the coordinate are to be transformed
-// shape is the shape of the image for all axes in this coordinate
-//
-{
-   AlwaysAssert(nPixelAxes()==2, AipsError);
-   AlwaysAssert(nWorldAxes()==2, AipsError);
-//
-   if (axes.nelements() != 2) {
-      set_error ("Invalid number of specified axes");
-      return 0;
-   }
-   if (!axes[0] || !axes[1]) {
-      set_error ("You must specify both axes of the DirectionCoordinate to transform");
-      return 0;
-   }
-//
-   if (shape.nelements() != 2) {
-      set_error ("Invalid number of elements in shape");
-      return 0;
-   }
+    // Find names and units for Fourier coordinate and units to set 
+    // for this DirectionCoordinate 
+    Vector<String> names = worldAxisNames().copy();
+    Vector<String> units = worldAxisUnits().copy();
+    // Not copying causes a reference to this object's units to be passed
+    // in to the fourierUnits() call below and they can be changed.
+    // That would be bad.
+    Vector<String> unitsCanon = worldAxisUnits().copy();
 
-// Find names and units for Fourier coordinate and units to set 
-// for this DirectionCoordinate 
-   Vector<String> names = worldAxisNames().copy();
-   Vector<String> units = worldAxisUnits().copy();
-   // Not copying causes a reference to this object's units to be passed
-   // in to the fourierUnits() call below and they can be changed.
-   // That would be bad.
-   Vector<String> unitsCanon = worldAxisUnits().copy();
-//
-   Vector<String> namesOut(worldAxisNames().copy());
-   Vector<String> unitsOut(worldAxisUnits().copy());
-   fourierUnits (namesOut[0], unitsOut[0], unitsCanon[0], Coordinate::DIRECTION, 0,
-                 units[0], names[0]);
-   fourierUnits (namesOut[1], unitsOut[1], unitsCanon[1], Coordinate::DIRECTION, 1,
-                 units[1], names[1]);
+    Vector<String> namesOut(worldAxisNames().copy());
+    Vector<String> unitsOut(worldAxisUnits().copy());
+    fourierUnits(
+        namesOut[0], unitsOut[0], unitsCanon[0], Coordinate::DIRECTION, 0,
+        units[0], names[0]
+    );
+    fourierUnits(
+        namesOut[1], unitsOut[1], unitsCanon[1], Coordinate::DIRECTION, 1,
+        units[1], names[1]
+    );
+    // Make a copy of ourselves and set the new units
+    DirectionCoordinate dc = *this;
+    if (!dc.setWorldAxisUnits(unitsCanon)) {
+        set_error ("Could not set world axis units");
+        return 0;
+    }
+    // Create a LinearXform to do the inversion
+    Vector<Double> cdelt = dc.increment().copy();
+    dc.fromCurrent(cdelt);
+    LinearXform linear(dc.referencePixel(), cdelt, dc.linearTransform());
 
-// Make a copy of ourselves and set the new units
+    // Now make the new output LinearCoordinate.  
 
-   DirectionCoordinate dc = *this;
-   if (!dc.setWorldAxisUnits(unitsCanon)) {
-      set_error ("Could not set world axis units");
-      return 0;
-   }
+    Vector<Double> crpix(2), scale(2), crval(2,0.0);
+    crpix[0] = Int(shape[0] / 2);
+    crpix[1] = Int(shape[1] / 2);
 
-// Create a LinearXform to do the inversion
+    scale[0] = dc.to_degrees_p[0] / Double(shape[0]);
+    scale[1] = dc.to_degrees_p[1] / Double(shape[1]);
 
-   Vector<Double> cdelt = dc.increment().copy();
-   dc.fromCurrent(cdelt);
-   LinearXform linear(dc.referencePixel(), cdelt, dc.linearTransform());
-
-// Now make the new output LinearCoordinate.  
-
-   Vector<Double> crpix(2), scale(2), crval(2,0.0);
-   crpix[0] = Int(shape[0] / 2);
-   crpix[1] = Int(shape[1] / 2);
-//
-   scale[0] = dc.to_degrees_p[0] / Double(shape[0]);
-   scale[1] = dc.to_degrees_p[1] / Double(shape[1]);
-//
-   String errMsg;
-   std::unique_ptr<LinearXform> pLinearF(linear.fourierInvert(errMsg, axes, crpix, scale));
-   if (pLinearF==0) {
-      set_error (errMsg);
-      return 0;
-   }
-//
-   LinearCoordinate* pLinear = new LinearCoordinate(namesOut, unitsOut, crval, 
-                                                    pLinearF->cdelt(),
-                                                    pLinearF->pc(), 
-                                                    pLinearF->crpix());
-   return pLinear;
+    String errMsg;
+    std::unique_ptr<LinearXform> pLinearF(
+        linear.fourierInvert(errMsg, axes, crpix, scale)
+    );
+    if (pLinearF==0) {
+        set_error (errMsg);
+        return 0;
+    }
+    return new LinearCoordinate(
+        namesOut, unitsOut, crval, pLinearF->cdelt(),
+        pLinearF->pc(), pLinearF->crpix()
+    );
 }
-
-
 
 void DirectionCoordinate::makeDirectionCoordinate(MDirection::Types directionType, 
                                                   const Projection& proj,
