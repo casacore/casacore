@@ -1687,7 +1687,7 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
    scale[1] = dc.to_degrees_p[1] / Double(shape[1]);
 //
    String errMsg;
-   LinearXform* pLinearF = linear.fourierInvert(errMsg, axes, crpix, scale);
+   std::unique_ptr<LinearXform> pLinearF(linear.fourierInvert(errMsg, axes, crpix, scale));
    if (pLinearF==0) {
       set_error (errMsg);
       return 0;
@@ -1697,7 +1697,6 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
                                                     pLinearF->cdelt(),
                                                     pLinearF->pc(), 
                                                     pLinearF->crpix());
-   delete pLinearF;
    return pLinear;
 }
 
