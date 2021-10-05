@@ -7,9 +7,10 @@
 #include "timeblockbuffer.h"
 
 class WeightBlockEncoder {
-public:
+ public:
   WeightBlockEncoder(size_t nPolarizations, size_t nChannels, size_t quantCount)
-      : _nPolarizations(nPolarizations), _nChannels(nChannels),
+      : _nPolarizations(nPolarizations),
+        _nChannels(nChannels),
         _quantCount(quantCount) {}
 
   size_t MetaDataFloatCount() const { return 1.0; }
@@ -31,8 +32,7 @@ public:
       float value = *rowBuffer * scaleValue;
       row.visibilities.resize(_nChannels * _nPolarizations);
       float *chPtr = &row.visibilities[ch * _nPolarizations];
-      for (size_t p = 0; p != _nPolarizations; ++p)
-        chPtr[p] = value;
+      for (size_t p = 0; p != _nPolarizations; ++p) chPtr[p] = value;
       ++rowBuffer;
     }
   }
@@ -45,14 +45,11 @@ public:
         const float *visPtr = &row.visibilities[ch * _nPolarizations];
         float weight = *visPtr;
         for (size_t p = 1; p != _nPolarizations; ++p)
-          if (visPtr[p] < weight)
-            weight = visPtr[p];
-        if (weight > maxValue)
-          maxValue = weight;
+          if (visPtr[p] < weight) weight = visPtr[p];
+        if (weight > maxValue) maxValue = weight;
       }
     }
-    if (maxValue == 0.0)
-      maxValue = 1.0;
+    if (maxValue == 0.0) maxValue = 1.0;
     metaBuffer[0] = maxValue;
 
     double scaleValue = double(_quantCount - 1) / maxValue;
@@ -62,8 +59,7 @@ public:
         const float *visPtr = &row.visibilities[ch * _nPolarizations];
         float weight = *visPtr;
         for (size_t p = 1; p != _nPolarizations; ++p)
-          if (visPtr[p] < weight)
-            weight = visPtr[p];
+          if (visPtr[p] < weight) weight = visPtr[p];
 
         *symbolBuffer = roundf(double(weight) * scaleValue);
         ++symbolBuffer;
@@ -71,7 +67,7 @@ public:
     }
   }
 
-private:
+ private:
   const size_t _nPolarizations;
   const size_t _nChannels;
   const size_t _quantCount;

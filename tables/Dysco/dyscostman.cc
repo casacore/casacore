@@ -15,30 +15,56 @@ const unsigned short DyscoStMan::VERSION_MAJOR = 1,
 
 DyscoStMan::DyscoStMan(unsigned dataBitCount, unsigned weightBitCount,
                        const casacore::String &name)
-    : DataManager(), _nRow(0), _nBlocksInFile(0), _rowsPerBlock(0),
-      _antennaCount(0), _blockSize(0), _headerSize(0), _name(name),
-      _dataBitCount(dataBitCount), _weightBitCount(weightBitCount),
+    : DataManager(),
+      _nRow(0),
+      _nBlocksInFile(0),
+      _rowsPerBlock(0),
+      _antennaCount(0),
+      _blockSize(0),
+      _headerSize(0),
+      _name(name),
+      _dataBitCount(dataBitCount),
+      _weightBitCount(weightBitCount),
       _distribution(TruncatedGaussianDistribution),
-      _normalization(Normalization::kAF), _studentTNu(0.0),
-      _distributionTruncation(2.5), _staticSeed(false) {}
+      _normalization(Normalization::kAF),
+      _studentTNu(0.0),
+      _distributionTruncation(2.5),
+      _staticSeed(false) {}
 
 DyscoStMan::DyscoStMan(const casacore::String &name,
                        const casacore::Record &spec)
-    : DataManager(), _nRow(0), _nBlocksInFile(0), _rowsPerBlock(0),
-      _antennaCount(0), _blockSize(0), _headerSize(0), _name(name),
-      _dataBitCount(0), _weightBitCount(0), _distribution(GaussianDistribution),
-      _normalization(Normalization::kAF), _studentTNu(0.0),
-      _distributionTruncation(0.0), _staticSeed(false) {
+    : DataManager(),
+      _nRow(0),
+      _nBlocksInFile(0),
+      _rowsPerBlock(0),
+      _antennaCount(0),
+      _blockSize(0),
+      _headerSize(0),
+      _name(name),
+      _dataBitCount(0),
+      _weightBitCount(0),
+      _distribution(GaussianDistribution),
+      _normalization(Normalization::kAF),
+      _studentTNu(0.0),
+      _distributionTruncation(0.0),
+      _staticSeed(false) {
   setFromSpec(spec);
 }
 
 DyscoStMan::DyscoStMan(const DyscoStMan &source)
-    : DataManager(), _nRow(0), _nBlocksInFile(0), _rowsPerBlock(0),
-      _antennaCount(0), _blockSize(0), _headerSize(0), _name(source._name),
+    : DataManager(),
+      _nRow(0),
+      _nBlocksInFile(0),
+      _rowsPerBlock(0),
+      _antennaCount(0),
+      _blockSize(0),
+      _headerSize(0),
+      _name(source._name),
       _dataBitCount(source._dataBitCount),
       _weightBitCount(source._weightBitCount),
       _distribution(source._distribution),
-      _normalization(source._normalization), _studentTNu(source._studentTNu),
+      _normalization(source._normalization),
+      _studentTNu(source._studentTNu),
       _distributionTruncation(source._distributionTruncation),
       _staticSeed(source._staticSeed) {}
 
@@ -97,31 +123,31 @@ casacore::Record DyscoStMan::dataManagerSpec() const {
   spec.define("weightBitCount", _weightBitCount);
   std::string distStr;
   switch (_distribution) {
-  case GaussianDistribution:
-    distStr = "Gaussian";
-    break;
-  case UniformDistribution:
-    distStr = "Uniform";
-    break;
-  case StudentsTDistribution:
-    distStr = "StudentsT";
-    break;
-  case TruncatedGaussianDistribution:
-    distStr = "TruncatedGaussian";
-    break;
+    case GaussianDistribution:
+      distStr = "Gaussian";
+      break;
+    case UniformDistribution:
+      distStr = "Uniform";
+      break;
+    case StudentsTDistribution:
+      distStr = "StudentsT";
+      break;
+    case TruncatedGaussianDistribution:
+      distStr = "TruncatedGaussian";
+      break;
   }
   spec.define("distribution", distStr);
   std::string normStr;
   switch (_normalization) {
-  case Normalization::kAF:
-    normStr = "AF";
-    break;
-  case Normalization::kRF:
-    normStr = "RF";
-    break;
-  case Normalization::kRow:
-    normStr = "Row";
-    break;
+    case Normalization::kAF:
+      normStr = "AF";
+      break;
+    case Normalization::kRF:
+      normStr = "RF";
+      break;
+    case Normalization::kRow:
+      normStr = "Row";
+      break;
   }
   spec.define("normalization", normStr);
   spec.define("studentTNu", _studentTNu);
@@ -133,15 +159,16 @@ void DyscoStMan::registerClass() {
   DataManager::registerCtor("DyscoStMan", makeObject);
 }
 
-casacore::Bool DyscoStMan::flush(casacore::AipsIO &, casacore::Bool /*doFsync*/) {
+casacore::Bool DyscoStMan::flush(casacore::AipsIO &,
+                                 casacore::Bool /*doFsync*/) {
   return false;
 }
 
 void DyscoStMan::create(casacore::uInt nRow) {
   _nRow = nRow;
-  _fStream.reset(new std::fstream(fileName().c_str(),
-                                  std::ios_base::in | std::ios_base::out |
-                                      std::ios_base::trunc));
+  _fStream.reset(new std::fstream(
+      fileName().c_str(),
+      std::ios_base::in | std::ios_base::out | std::ios_base::trunc));
   if (_fStream->fail())
     throw DyscoStManError("I/O error: could not create new file '" +
                           fileName() + "'");
@@ -236,8 +263,9 @@ void DyscoStMan::initializeRowsPerBlock(size_t rowsPerBlock,
                                         bool writeToHeader) {
   if (areOffsetsInitialized() &&
       (rowsPerBlock != _rowsPerBlock || antennaCount != _antennaCount))
-    throw DyscoStManError("initializeRowsPerBlock() called with two different "
-                          "values; something is wrong");
+    throw DyscoStManError(
+        "initializeRowsPerBlock() called with two different "
+        "values; something is wrong");
 
   _rowsPerBlock = rowsPerBlock;
   _antennaCount = antennaCount;
@@ -250,8 +278,7 @@ void DyscoStMan::initializeRowsPerBlock(size_t rowsPerBlock,
 
     col->InitializeAfterNRowsPerBlockIsKnown();
   }
-  if (writeToHeader)
-    writeHeader();
+  if (writeToHeader) writeHeader();
 }
 
 void DyscoStMan::open(casacore::uInt nRow, casacore::AipsIO &) {
@@ -277,18 +304,18 @@ void DyscoStMan::open(casacore::uInt nRow, casacore::AipsIO &) {
     _nBlocksInFile = 0;
 }
 
-casacore::DataManagerColumn *
-DyscoStMan::makeScalarColumn(const casacore::String &/*name*/, int dataType,
-                             const casacore::String &dataTypeID) {
+casacore::DataManagerColumn *DyscoStMan::makeScalarColumn(
+    const casacore::String & /*name*/, int dataType,
+    const casacore::String &dataTypeID) {
   std::ostringstream s;
   s << "Can not create scalar columns with DyscoStMan! (requested datatype: '"
     << dataTypeID << "' (" << dataType << ")";
   throw DyscoStManError(s.str());
 }
 
-casacore::DataManagerColumn *
-DyscoStMan::makeDirArrColumn(const casacore::String &name, int dataType,
-                             const casacore::String &/*dataTypeID*/) {
+casacore::DataManagerColumn *DyscoStMan::makeDirArrColumn(
+    const casacore::String &name, int dataType,
+    const casacore::String & /*dataTypeID*/) {
   std::unique_ptr<DyscoStManColumn> col;
 
   if (name == "WEIGHT_SPECTRUM") {
@@ -308,9 +335,9 @@ DyscoStMan::makeDirArrColumn(const casacore::String &name, int dataType,
   return _columns.back().get();
 }
 
-casacore::DataManagerColumn *
-DyscoStMan::makeIndArrColumn(const casacore::String &/*name*/, int /*dataType*/,
-                             const casacore::String &/*dataTypeID*/) {
+casacore::DataManagerColumn *DyscoStMan::makeIndArrColumn(
+    const casacore::String & /*name*/, int /*dataType*/,
+    const casacore::String & /*dataTypeID*/) {
   throw DyscoStManError(
       "makeIndArrColumn() called on DyscoStMan. DyscoStMan can only created "
       "direct columns!\nUse casacore::ColumnDesc::Direct as option in your "
@@ -335,8 +362,7 @@ void DyscoStMan::prepare() {
       dataCol->SetBitsPerSymbol(_dataBitCount);
     else {
       DyscoWeightColumn *wghtCol = dynamic_cast<DyscoWeightColumn *>(col.get());
-      if (wghtCol)
-        wghtCol->SetBitsPerSymbol(_weightBitCount);
+      if (wghtCol) wghtCol->SetBitsPerSymbol(_weightBitCount);
     }
     col->Prepare(_distribution, _normalization, _studentTNu,
                  _distributionTruncation);
@@ -355,8 +381,9 @@ void DyscoStMan::addRow(casacore::uInt nrrow) { _nRow += nrrow; }
 
 void DyscoStMan::removeRow(casacore::uInt rowNr) {
   if (rowNr != _nRow - 1)
-    throw DyscoStManError("Trying to remove a row in the middle of the file: "
-                          "the DyscoStMan does not support this");
+    throw DyscoStManError(
+        "Trying to remove a row in the middle of the file: "
+        "the DyscoStMan does not support this");
   _nRow--;
 }
 
@@ -398,7 +425,7 @@ void DyscoStMan::readCompressedData(size_t blockIndex,
     if (blockIndex + 1 != _nBlocksInFile)
       throw DyscoStManError("I/O error: error while reading file '" +
                             fileName() + "'");
-    _fStream->clear(); // reset fail bit
+    _fStream->clear();  // reset fail bit
   }
 }
 
@@ -417,4 +444,4 @@ void DyscoStMan::writeCompressedData(size_t blockIndex,
                           "'");
 }
 
-} // namespace dyscostman
+}  // namespace dyscostman

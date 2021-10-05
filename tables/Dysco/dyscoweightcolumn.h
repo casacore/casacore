@@ -15,7 +15,7 @@ class DyscoStMan;
  * @author André Offringa
  */
 class DyscoWeightColumn final : public ThreadedDyscoColumn<float> {
-public:
+ public:
   /**
    * Create a new column. Internally called by DyscoStMan when creating a
    * new column.
@@ -34,7 +34,7 @@ public:
                        Normalization normalization, double studentsTNu,
                        double distributionTruncation) override;
 
-protected:
+ protected:
   virtual void initializeDecode(TimeBlockBuffer<data_t> *buffer,
                                 const float *metaBuffer, size_t nRow,
                                 size_t nAntennae) override;
@@ -50,21 +50,21 @@ protected:
                       TimeBlockBuffer<data_t> *buffer, float *metaBuffer,
                       symbol_t *symbolBuffer, size_t nAntennae) override;
 
-  virtual size_t metaDataFloatCount(size_t nRows, size_t nPolarizations,
-                                    size_t nChannels,
-                                    size_t nAntennae) const override {
+  virtual size_t metaDataFloatCount(size_t /*nRows*/, size_t /*nPolarizations*/,
+                                    size_t /*nChannels*/,
+                                    size_t /*nAntennae*/) const override {
     return _encoder->MetaDataFloatCount();
   }
 
-  virtual size_t symbolCount(size_t nRowsInBlock, size_t nPolarizations,
-                             size_t nChannels) const override {
+  virtual size_t symbolCount(size_t nRowsInBlock, size_t /*nPolarizations*/,
+                             size_t /*nChannels*/) const override {
     return _encoder->SymbolCount(nRowsInBlock);
   }
 
-private:
+ private:
   std::unique_ptr<WeightBlockEncoder> _encoder;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

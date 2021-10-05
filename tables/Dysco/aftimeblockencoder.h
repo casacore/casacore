@@ -12,16 +12,15 @@
 #include "timeblockencoder.h"
 
 class AFTimeBlockEncoder : public TimeBlockEncoder {
-public:
+ public:
   AFTimeBlockEncoder(size_t nPol, size_t nChannels, bool fitToMaximum);
 
   virtual ~AFTimeBlockEncoder() override;
 
-  virtual void
-  EncodeWithDithering(const dyscostman::StochasticEncoder<float> &gausEncoder,
-                      FBuffer &buffer, float *metaBuffer,
-                      symbol_t *symbolBuffer, size_t antennaCount,
-                      std::mt19937 &rnd) final override {
+  virtual void EncodeWithDithering(
+      const dyscostman::StochasticEncoder<float> &gausEncoder, FBuffer &buffer,
+      float *metaBuffer, symbol_t *symbolBuffer, size_t antennaCount,
+      std::mt19937 &rnd) final override {
     encode<true>(gausEncoder, buffer, metaBuffer, symbolBuffer, antennaCount,
                  &rnd);
   }
@@ -55,7 +54,7 @@ public:
     return _nChannels * _nPol * 2 /*complex*/;
   }
 
-  virtual size_t MetaDataCount(size_t nRow, size_t nPol, size_t nChannels,
+  virtual size_t MetaDataCount(size_t /*nRow*/, size_t nPol, size_t nChannels,
                                size_t nAntennae) const final override {
     return nPol * (nChannels + nAntennae);
   }
@@ -64,7 +63,7 @@ public:
                  TimeBlockBuffer<std::complex<float>> &buffer,
                  size_t antennaCount);
 
-private:
+ private:
   void calculateAntennaeRMS(const std::vector<DBufferRow> &data,
                             size_t polIndex, size_t antennaCount);
 

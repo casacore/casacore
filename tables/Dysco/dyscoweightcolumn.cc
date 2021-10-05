@@ -12,8 +12,9 @@ void DyscoWeightColumn::Prepare(DyscoDistribution distribution,
                                         1 << getBitsPerSymbol()));
 }
 
-void DyscoWeightColumn::initializeDecode(TimeBlockBuffer<data_t> */*buffer*/,
-                                         const float *metaBuffer, size_t /*nRow*/,
+void DyscoWeightColumn::initializeDecode(TimeBlockBuffer<data_t> * /*buffer*/,
+                                         const float *metaBuffer,
+                                         size_t /*nRow*/,
                                          size_t /*nAntennae*/) {
   _encoder->InitializeDecode(metaBuffer);
 }
@@ -24,11 +25,11 @@ void DyscoWeightColumn::decode(TimeBlockBuffer<data_t> *buffer,
   _encoder->Decode(*buffer, data, blockRow);
 }
 
-void DyscoWeightColumn::encode(ThreadDataBase */*threadData*/,
+void DyscoWeightColumn::encode(ThreadDataBase * /*threadData*/,
                                TimeBlockBuffer<data_t> *buffer,
                                float *metaBuffer, symbol_t *symbolBuffer,
                                size_t /*nAntennae*/) {
   _encoder->Encode(*buffer, metaBuffer, symbolBuffer);
 }
 
-} // namespace dyscostman
+}  // namespace dyscostman

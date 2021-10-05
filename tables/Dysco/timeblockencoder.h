@@ -10,7 +10,7 @@
 #include <vector>
 
 class RMSMeasurement {
-public:
+ public:
   RMSMeasurement() : _count(0), _value(0.0) {}
 
   void Include(const std::complex<double> &val) {
@@ -22,7 +22,7 @@ public:
 
   double RMS() const { return sqrt(_value / (_count * 2)); }
 
-private:
+ private:
   static bool isfinite(const std::complex<double> &val) {
     return std::isfinite(val.real()) && std::isfinite(val.imag());
   }
@@ -32,7 +32,7 @@ private:
 };
 
 class TimeBlockEncoder {
-public:
+ public:
   typedef TimeBlockBuffer<std::complex<float>> FBuffer;
   typedef typename TimeBlockBuffer<std::complex<float>>::DataRow FBufferRow;
   typedef TimeBlockBuffer<std::complex<double>> DBuffer;
@@ -42,11 +42,10 @@ public:
 
   virtual ~TimeBlockEncoder() {}
 
-  virtual void
-  EncodeWithDithering(const dyscostman::StochasticEncoder<float> &gausEncoder,
-                      FBuffer &buffer, float *metaBuffer,
-                      symbol_t *symbolBuffer, size_t antennaCount,
-                      std::mt19937 &rnd) = 0;
+  virtual void EncodeWithDithering(
+      const dyscostman::StochasticEncoder<float> &gausEncoder, FBuffer &buffer,
+      float *metaBuffer, symbol_t *symbolBuffer, size_t antennaCount,
+      std::mt19937 &rnd) = 0;
 
   virtual void EncodeWithoutDithering(
       const dyscostman::StochasticEncoder<float> &gausEncoder, FBuffer &buffer,
@@ -69,7 +68,7 @@ public:
   virtual size_t MetaDataCount(size_t nRow, size_t nPol, size_t nChannels,
                                size_t nAntennae) const = 0;
 
-protected:
+ protected:
   TimeBlockEncoder() {}
 };
 

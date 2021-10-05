@@ -16,40 +16,40 @@ void DyscoDataColumn::Prepare(DyscoDistribution distribution,
   const size_t nPolarizations = shape()[0], nChannels = shape()[1];
 
   switch (normalization) {
-  case Normalization::kAF:
-    _decoder.reset(new AFTimeBlockEncoder(nPolarizations, nChannels, true));
-    break;
-  case Normalization::kRF:
-    _decoder.reset(new RFTimeBlockEncoder(nPolarizations, nChannels));
-    break;
-  case Normalization::kRow:
-    _decoder.reset(new RowTimeBlockEncoder(nPolarizations, nChannels));
-    break;
+    case Normalization::kAF:
+      _decoder.reset(new AFTimeBlockEncoder(nPolarizations, nChannels, true));
+      break;
+    case Normalization::kRF:
+      _decoder.reset(new RFTimeBlockEncoder(nPolarizations, nChannels));
+      break;
+    case Normalization::kRow:
+      _decoder.reset(new RowTimeBlockEncoder(nPolarizations, nChannels));
+      break;
   }
 
   switch (distribution) {
-  case GaussianDistribution:
-    _gausEncoder.reset(
-        new StochasticEncoder<float>(1 << getBitsPerSymbol(), 1.0, true));
-    break;
-  case UniformDistribution:
-    _gausEncoder.reset(
-        new StochasticEncoder<float>(1 << getBitsPerSymbol(), 1.0, false));
-    break;
-  case StudentsTDistribution:
-    _gausEncoder.reset(
-        new StochasticEncoder<float>(StochasticEncoder<float>::StudentTEncoder(
-            1 << getBitsPerSymbol(), studentsTNu, 1.0)));
-    break;
-  case TruncatedGaussianDistribution:
-    _gausEncoder.reset(new StochasticEncoder<float>(
-        StochasticEncoder<float>::TruncatedGausEncoder(
-            1 << getBitsPerSymbol(), distributionTruncation, 1.0)));
-    break;
+    case GaussianDistribution:
+      _gausEncoder.reset(
+          new StochasticEncoder<float>(1 << getBitsPerSymbol(), 1.0, true));
+      break;
+    case UniformDistribution:
+      _gausEncoder.reset(
+          new StochasticEncoder<float>(1 << getBitsPerSymbol(), 1.0, false));
+      break;
+    case StudentsTDistribution:
+      _gausEncoder.reset(new StochasticEncoder<float>(
+          StochasticEncoder<float>::StudentTEncoder(1 << getBitsPerSymbol(),
+                                                    studentsTNu, 1.0)));
+      break;
+    case TruncatedGaussianDistribution:
+      _gausEncoder.reset(new StochasticEncoder<float>(
+          StochasticEncoder<float>::TruncatedGausEncoder(
+              1 << getBitsPerSymbol(), distributionTruncation, 1.0)));
+      break;
   }
 }
 
-void DyscoDataColumn::initializeDecode(TimeBlockBuffer<data_t> */*buffer*/,
+void DyscoDataColumn::initializeDecode(TimeBlockBuffer<data_t> * /*buffer*/,
                                        const float *metaBuffer, size_t nRow,
                                        size_t nAntennae) {
   _decoder->InitializeDecode(metaBuffer, nRow, nAntennae);
@@ -66,15 +66,15 @@ DyscoDataColumn::initializeEncodeThread() {
   const size_t nPolarizations = shape()[0], nChannels = shape()[1];
   std::unique_ptr<TimeBlockEncoder> encoder;
   switch (_normalization) {
-  case Normalization::kAF:
-    encoder.reset(new AFTimeBlockEncoder(nPolarizations, nChannels, true));
-    break;
-  case Normalization::kRF:
-    encoder.reset(new RFTimeBlockEncoder(nPolarizations, nChannels));
-    break;
-  case Normalization::kRow:
-    encoder.reset(new RowTimeBlockEncoder(nPolarizations, nChannels));
-    break;
+    case Normalization::kAF:
+      encoder.reset(new AFTimeBlockEncoder(nPolarizations, nChannels, true));
+      break;
+    case Normalization::kRF:
+      encoder.reset(new RFTimeBlockEncoder(nPolarizations, nChannels));
+      break;
+    case Normalization::kRow:
+      encoder.reset(new RowTimeBlockEncoder(nPolarizations, nChannels));
+      break;
   }
   std::unique_ptr<ThreadData> newThreadData(new ThreadData(std::move(encoder)));
   // Seed every thread from a random number
@@ -114,4 +114,4 @@ size_t DyscoDataColumn::defaultThreadCount() const {
   }
 }
 
-} // namespace dyscostman
+}  // namespace dyscostman

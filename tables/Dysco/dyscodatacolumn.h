@@ -16,15 +16,18 @@ class DyscoStMan;
  * @author André Offringa
  */
 class DyscoDataColumn final : public ThreadedDyscoColumn<std::complex<float>> {
-public:
+ public:
   /**
    * Create a new column. Internally called by DyscoStMan when creating a
    * new column.
    */
   DyscoDataColumn(DyscoStMan *parent, int dtype)
-      : ThreadedDyscoColumn(parent, dtype), _rnd(std::random_device{}()),
-        _gausEncoder(), _distribution(GaussianDistribution),
-        _normalization(Normalization::kRF), _randomize(true) {}
+      : ThreadedDyscoColumn(parent, dtype),
+        _rnd(std::random_device{}()),
+        _gausEncoder(),
+        _distribution(GaussianDistribution),
+        _normalization(Normalization::kRF),
+        _randomize(true) {}
 
   DyscoDataColumn(const DyscoDataColumn &source) = delete;
 
@@ -44,7 +47,7 @@ public:
     _randomize = false;
   }
 
-protected:
+ protected:
   virtual void initializeDecode(TimeBlockBuffer<data_t> *buffer,
                                 const float *metaBuffer, size_t nRow,
                                 size_t nAntennae) override;
@@ -67,7 +70,7 @@ protected:
 
   virtual size_t defaultThreadCount() const override;
 
-private:
+ private:
   struct ThreadData final : public ThreadDataBase {
     ThreadData(std::unique_ptr<TimeBlockEncoder> timeBlockEncoder)
         : encoder(std::move(timeBlockEncoder)) {}
@@ -84,6 +87,6 @@ private:
   bool _randomize;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif
