@@ -5,7 +5,10 @@
 
 #include <casacore/casa/Containers/Record.h>
 
+#include <cstdint>
 #include <fstream>
+#include <memory>
+#include <mutex>
 #include <vector>
 
 #include "dyscodistribution.h"
@@ -41,9 +44,9 @@ class DyscoStManColumn;
  * The main class for the Dysco storage manager.
  */
 class DyscoStMan : public casacore::DataManager {
-public:
+ public:
   /**
-   * Convience constructor to create a new storage manager with some settings
+   * Convenience constructor to create a new storage manager with some settings
    * without having to fill a 'spec' Record. The storage manager will be
    * initialized to AF normalization with a truncated Gaussian distribution for
    * the quantization, and a truncation of sigma = 2.5. To change the settings,
@@ -228,7 +231,7 @@ public:
    */
   static void registerClass();
 
-protected:
+ protected:
   /**
    * The number of rows that are actually stored in the file.
    * This method is synchronized (i.e., thread-safe).
@@ -300,7 +303,7 @@ protected:
   void initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount,
                               bool writeToHeader);
 
-private:
+ private:
   friend class DyscoStManColumn;
 
   const static unsigned short VERSION_MAJOR, VERSION_MINOR;
@@ -340,19 +343,19 @@ private:
   // Create a column in the storage manager on behalf of a table column.
   // The caller will NOT delete the newly created object.
   // Create a scalar column.
-  virtual casacore::DataManagerColumn *
-  makeScalarColumn(const casacore::String &name, int dataType,
-                   const casacore::String &dataTypeID) final override;
+  virtual casacore::DataManagerColumn *makeScalarColumn(
+      const casacore::String &name, int dataType,
+      const casacore::String &dataTypeID) final override;
 
   // Create a direct array column.
-  virtual casacore::DataManagerColumn *
-  makeDirArrColumn(const casacore::String &name, int dataType,
-                   const casacore::String &dataTypeID) final override;
+  virtual casacore::DataManagerColumn *makeDirArrColumn(
+      const casacore::String &name, int dataType,
+      const casacore::String &dataTypeID) final override;
 
   // Create an indirect array column.
-  virtual casacore::DataManagerColumn *
-  makeIndArrColumn(const casacore::String &name, int dataType,
-                   const casacore::String &dataTypeID) final override;
+  virtual casacore::DataManagerColumn *makeIndArrColumn(
+      const casacore::String &name, int dataType,
+      const casacore::String &dataTypeID) final override;
 
   virtual void resync(casacore::uInt nRow) final override;
 
@@ -400,6 +403,6 @@ private:
   std::vector<std::unique_ptr<DyscoStManColumn>> _columns;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

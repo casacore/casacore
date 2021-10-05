@@ -32,10 +32,10 @@ struct Header : public Serializable {
   double studentTNu, distributionTruncation;
 
   uint32_t calculateColumnHeaderOffset() const {
-    return 7 * 4 +                             // 6 x uint32 + string length
-           storageManagerName.size() + 2 * 2 + // 2 x uint16
-           4 * 1 +                             // 4 x uint8
-           2 * 8;                              // 2 x double
+    return 7 * 4 +                              // 6 x uint32 + string length
+           storageManagerName.size() + 2 * 2 +  // 2 x uint16
+           4 * 1 +                              // 4 x uint8
+           2 * 8;                               // 2 x double
   }
 
   virtual void Serialize(std::ostream &stream) const final override {

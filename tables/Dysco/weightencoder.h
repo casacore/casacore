@@ -12,8 +12,9 @@ namespace dyscostman {
  * factor will be such that the max value will still fit.
  * @author André Offringa
  */
-template <typename T> class WeightEncoder {
-public:
+template <typename T>
+class WeightEncoder {
+ public:
   /** Value type of the original weights (a floating point value).*/
   typedef T value_t;
   /** Value type of the symbols to which the weights are encoded. */
@@ -40,8 +41,7 @@ public:
     scaleVal = *i;
     ++i;
     while (i != input.end()) {
-      if (*i > scaleVal)
-        scaleVal = *i;
+      if (*i > scaleVal) scaleVal = *i;
       ++i;
     }
 
@@ -76,10 +76,10 @@ public:
     }
   }
 
-private:
+ private:
   unsigned _quantCount;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

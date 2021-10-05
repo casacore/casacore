@@ -17,19 +17,26 @@ namespace dyscostman {
 template <typename DataType>
 ThreadedDyscoColumn<DataType>::ThreadedDyscoColumn(DyscoStMan *parent,
                                                    int dtype)
-    : DyscoStManColumn(parent, dtype), _bitsPerSymbol(0), _ant1Col(),
-      _ant2Col(), _fieldCol(), _packedBlockReadBuffer(),
-      _unpackedSymbolReadBuffer(), _stopThreads(false),
+    : DyscoStManColumn(parent, dtype),
+      _bitsPerSymbol(0),
+      _ant1Col(),
+      _ant2Col(),
+      _fieldCol(),
+      _packedBlockReadBuffer(),
+      _unpackedSymbolReadBuffer(),
+      _stopThreads(false),
       _currentBlock(std::numeric_limits<size_t>::max()),
-      _isCurrentBlockChanged(false), _blockSize(0), _antennaCount(0),
+      _isCurrentBlockChanged(false),
+      _blockSize(0),
+      _antennaCount(0),
       _timeBlockBuffer() {}
 
 // prepare the class for destruction when the derived class is destructed.
 // this is necessary because the virtual function of the derived class might get
 // called to empty the cache.
-template <typename DataType> void ThreadedDyscoColumn<DataType>::shutdown() {
-  if (_isCurrentBlockChanged)
-    storeBlock();
+template <typename DataType>
+void ThreadedDyscoColumn<DataType>::shutdown() {
+  if (_isCurrentBlockChanged) storeBlock();
 
   stopThreads();
 }
@@ -39,7 +46,8 @@ ThreadedDyscoColumn<DataType>::~ThreadedDyscoColumn() {
   shutdown();
 }
 
-template <typename DataType> void ThreadedDyscoColumn<DataType>::stopThreads() {
+template <typename DataType>
+void ThreadedDyscoColumn<DataType>::stopThreads() {
   std::unique_lock<std::mutex> lock(_mutex);
 
   if (_threadGroup.empty()) {
@@ -49,8 +57,7 @@ template <typename DataType> void ThreadedDyscoColumn<DataType>::stopThreads() {
           "DyscoStMan can not handle this situation.");
   } else {
     // Don't stop threads before cache is empty
-    while (!_cache.empty())
-      _cacheChangedCondition.wait(lock);
+    while (!_cache.empty()) _cacheChangedCondition.wait(lock);
 
     // Signal threads to stop
     _stopThreads = true;
@@ -124,8 +131,7 @@ void ThreadedDyscoColumn<DataType>::getValues(
       lock.unlock();
 
       if (_currentBlock != blockIndex) {
-        if (_isCurrentBlockChanged)
-          storeBlock();
+        if (_isCurrentBlockChanged) storeBlock();
         loadBlock(blockIndex);
       }
 
@@ -136,7 +142,8 @@ void ThreadedDyscoColumn<DataType>::getValues(
   }
 }
 
-template <typename DataType> void ThreadedDyscoColumn<DataType>::storeBlock() {
+template <typename DataType>
+void ThreadedDyscoColumn<DataType>::storeBlock() {
   // Put the data of the current block into the cache so that the parallell
   // threads can write them
   std::unique_lock<std::mutex> lock(_mutex);
@@ -195,8 +202,7 @@ void ThreadedDyscoColumn<DataType>::putValues(
 
     // Is this the first row of a new block?
     if (blockIndex != _currentBlock) {
-      if (_isCurrentBlockChanged)
-        storeBlock();
+      if (_isCurrentBlockChanged) storeBlock();
 
       // Load new block
       loadBlock(blockIndex);
@@ -209,8 +215,7 @@ void ThreadedDyscoColumn<DataType>::putValues(
 }
 
 template <typename DataType>
-void ThreadedDyscoColumn<DataType>::Prepare(DyscoDistribution,
-                                            Normalization,
+void ThreadedDyscoColumn<DataType>::Prepare(DyscoDistribution, Normalization,
                                             double /*studentsTNu*/,
                                             double /*distributionTruncation*/) {
   stopThreads();
@@ -256,8 +261,7 @@ void ThreadedDyscoColumn<DataType>::InitializeAfterNRowsPerBlockIsKnown() {
   EncodingThreadFunctor functor;
   functor.parent = this;
   _stopThreads = false;
-  for (size_t i = 0; i != threadCount; ++i)
-    _threadGroup.create_thread(functor);
+  for (size_t i = 0; i != threadCount; ++i) _threadGroup.create_thread(functor);
 }
 
 template <typename DataType>
@@ -332,15 +336,13 @@ template <typename DataType>
 bool ThreadedDyscoColumn<DataType>::isWriteItemAvailable(
     typename cache_t::iterator &i) {
   i = _cache.begin();
-  while (i != _cache.end() && i->second->isBeingWritten)
-    ++i;
+  while (i != _cache.end() && i->second->isBeingWritten) ++i;
   return (i != _cache.end());
 }
 
 template <typename DataType>
-size_t
-ThreadedDyscoColumn<DataType>::CalculateBlockSize(size_t nRowsInBlock,
-                                                  size_t nAntennae) const {
+size_t ThreadedDyscoColumn<DataType>::CalculateBlockSize(
+    size_t nRowsInBlock, size_t nAntennae) const {
   size_t nPolarizations = _shape[0], nChannels = _shape[1];
   const size_t metaDataSize =
       sizeof(float) *
@@ -371,4 +373,4 @@ void ThreadedDyscoColumn<DataType>::UnserializeExtraHeader(
 template class ThreadedDyscoColumn<std::complex<float>>;
 template class ThreadedDyscoColumn<float>;
 
-} // namespace dyscostman
+}  // namespace dyscostman

@@ -8,9 +8,8 @@
 
 #include <casa/Arrays/IPosition.h>
 
+#include <cstdint>
 #include <map>
-
-#include <stdint.h>
 
 namespace dyscostman {
 
@@ -21,14 +20,15 @@ class DyscoStMan;
  * @author André Dysco
  */
 class DyscoStManColumn : public casacore::StManColumn {
-public:
+ public:
   /**
    * Constructor, to be overloaded by subclass.
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
    */
   explicit DyscoStManColumn(DyscoStMan *parent, int dtype)
-      : casacore::StManColumn(dtype), _offsetInBlock(0),
+      : casacore::StManColumn(dtype),
+        _offsetInBlock(0),
         _storageManager(parent) {}
 
   /** Destructor */
@@ -69,7 +69,7 @@ public:
     _offsetInBlock = offsetInBlock;
   }
 
-protected:
+ protected:
   /** Get the storage manager for this column */
   DyscoStMan &storageManager() const { return *_storageManager; }
 
@@ -107,7 +107,7 @@ protected:
 
   void initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount);
 
-private:
+ private:
   DyscoStManColumn(const DyscoStManColumn &source) = delete;
   void operator=(const DyscoStManColumn &source) = delete;
 
@@ -115,7 +115,7 @@ private:
   DyscoStMan *_storageManager;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #include "dyscostman.h"
 
@@ -166,6 +166,6 @@ inline void DyscoStManColumn::initializeRowsPerBlock(size_t rowsPerBlock,
   _storageManager->initializeRowsPerBlock(rowsPerBlock, antennaCount, true);
 }
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

@@ -9,7 +9,7 @@ namespace dyscostman {
  * Represents a runtime exception that occured within the DyscoStMan.
  */
 class DyscoStManError : public casacore::DataManError {
-public:
+ public:
   /** Constructor */
   DyscoStManError() : casacore::DataManError() {}
   /** Construct with message.
@@ -19,6 +19,6 @@ public:
             message + " -- Error occured inside the Dysco Storage Manager") {}
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

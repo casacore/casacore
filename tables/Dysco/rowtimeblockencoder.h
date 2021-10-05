@@ -12,16 +12,15 @@
 #include "timeblockencoder.h"
 
 class RowTimeBlockEncoder : public TimeBlockEncoder {
-public:
+ public:
   RowTimeBlockEncoder(size_t nPol, size_t nChannels);
 
   virtual ~RowTimeBlockEncoder() override {}
 
-  virtual void
-  EncodeWithDithering(const dyscostman::StochasticEncoder<float> &gausEncoder,
-                      FBuffer &buffer, float *metaBuffer,
-                      symbol_t *symbolBuffer, size_t antennaCount,
-                      std::mt19937 &rnd) final override {
+  virtual void EncodeWithDithering(
+      const dyscostman::StochasticEncoder<float> &gausEncoder, FBuffer &buffer,
+      float *metaBuffer, symbol_t *symbolBuffer, size_t antennaCount,
+      std::mt19937 &rnd) final override {
     encode<true>(gausEncoder, buffer, metaBuffer, symbolBuffer, antennaCount,
                  &rnd);
   }
@@ -55,12 +54,13 @@ public:
     return _nChannels * _nPol * 2 /*complex*/;
   }
 
-  virtual size_t MetaDataCount(size_t nRow, size_t nPol, size_t nChannels,
-                               size_t nAntennae) const final override {
+  virtual size_t MetaDataCount(size_t nRow, size_t /*nPol*/,
+                               size_t /*nChannels*/,
+                               size_t /*nAntennae*/) const final override {
     return nRow;
   }
 
-private:
+ private:
   template <bool UseDithering>
   void encode(const dyscostman::StochasticEncoder<float> &gausEncoder,
               const FBuffer &buffer, float *metaBuffer, symbol_t *symbolBuffer,

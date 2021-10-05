@@ -9,6 +9,8 @@
 #include <condition_variable>
 #include <cstdint>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <random>
 
 #include "dyscostmancol.h"
@@ -28,7 +30,7 @@ class DyscoStMan;
  */
 template <typename DataType>
 class ThreadedDyscoColumn : public DyscoStManColumn {
-public:
+ public:
   typedef DataType data_t;
 
   /**
@@ -49,7 +51,7 @@ public:
 
   /** Get the dimensions of the values in a particular row.
    * @param rownr The row to get the shape for. */
-  virtual casacore::IPosition shape(casacore::uInt rownr) override {
+  virtual casacore::IPosition shape(casacore::uInt /*rownr*/) override {
     return _shape;
   }
 
@@ -59,9 +61,9 @@ public:
    * @param rowNr The row number to get the values for.
    * @param dataPtr The array of values, which should be a contiguous array.
    */
-  virtual void
-  getArrayComplexV(casacore::uInt rowNr,
-                   casacore::Array<casacore::Complex> *dataPtr) override {
+  virtual void getArrayComplexV(
+      casacore::uInt rowNr,
+      casacore::Array<casacore::Complex> *dataPtr) override {
     // Note that this method is specialized for std::complex<float> -- the
     // generic method won't do anything
     return DyscoStManColumn::getArrayComplexV(rowNr, dataPtr);
@@ -80,9 +82,9 @@ public:
    * @param rowNr The row number to write the values to.
    * @param dataPtr The data pointer, which should be a contiguous array.
    */
-  virtual void
-  putArrayComplexV(casacore::uInt rowNr,
-                   const casacore::Array<casacore::Complex> *dataPtr) override {
+  virtual void putArrayComplexV(
+      casacore::uInt rowNr,
+      const casacore::Array<casacore::Complex> *dataPtr) override {
     // Note that this method is specialized for std::complex<float> -- the
     // generic method won't do anything
     return DyscoStManColumn::putArrayComplexV(rowNr, dataPtr);
@@ -120,9 +122,9 @@ public:
 
   virtual void UnserializeExtraHeader(std::istream &stream) final override;
 
-protected:
+ protected:
   class ThreadDataBase {
-  public:
+   public:
     virtual ~ThreadDataBase(){};
   };
 
@@ -156,7 +158,7 @@ protected:
 
   const casacore::IPosition &shape() const { return _shape; }
 
-private:
+ private:
   struct CacheItem {
     CacheItem(std::unique_ptr<TimeBlockBuffer<data_t>> &&encoder_)
         : encoder(std::move(encoder_)), isBeingWritten(false) {}
@@ -236,9 +238,8 @@ inline void ThreadedDyscoColumn<std::complex<float>>::putArrayComplexV(
   putValues(rowNr, dataPtr);
 }
 template <>
-inline void
-ThreadedDyscoColumn<float>::getArrayfloatV(casacore::uInt rowNr,
-                                           casacore::Array<float> *dataPtr) {
+inline void ThreadedDyscoColumn<float>::getArrayfloatV(
+    casacore::uInt rowNr, casacore::Array<float> *dataPtr) {
   getValues(rowNr, dataPtr);
 }
 template <>
@@ -250,6 +251,6 @@ inline void ThreadedDyscoColumn<float>::putArrayfloatV(
 extern template class ThreadedDyscoColumn<std::complex<float>>;
 extern template class ThreadedDyscoColumn<float>;
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

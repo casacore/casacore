@@ -11,7 +11,7 @@ namespace dyscostman {
  * Group of threads.
  */
 class threadgroup {
-public:
+ public:
   /** Constructor */
   threadgroup() {}
   /** Destructor. Will join all threads that have not been joined yet. */
@@ -22,7 +22,8 @@ public:
    * will be added to the group.
    * @param threadFunc The functor to be called.
    */
-  template <typename T> void create_thread(T threadFunc) {
+  template <typename T>
+  void create_thread(T threadFunc) {
     _threads.emplace_back(threadFunc);
   }
 
@@ -43,10 +44,10 @@ public:
    */
   bool empty() const { return _threads.empty(); }
 
-private:
+ private:
   std::vector<std::thread> _threads;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

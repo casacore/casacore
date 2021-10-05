@@ -28,8 +28,9 @@ namespace dyscostman {
  *
  * @author André Offringa (offringa@gmail.com)
  */
-template <typename ValueType = float> class StochasticEncoder {
-public:
+template <typename ValueType = float>
+class StochasticEncoder {
+ public:
   /**
    * Construct encoder for given dictionary size and Gaussian stddev.
    * This constructor initializes the lookup table, and is therefore
@@ -148,7 +149,7 @@ public:
 
   ValueType MinQuantity() const { return _decDictionary.smallest_value(); }
 
-private:
+ private:
   explicit StochasticEncoder(size_t quantCount)
       : _encDictionary(quantCount - 1), _decDictionary(quantCount - 1) {}
 
@@ -157,7 +158,7 @@ private:
   void initializeTruncatedGaussian(double truncationValue, double rms);
 
   class Dictionary {
-  public:
+   public:
     typedef value_t *iterator;
     typedef const value_t *const_iterator;
 
@@ -248,7 +249,7 @@ private:
     size_t size() const { return _values.size(); }
     size_t capacity(size_t) const { return _values.capacity(); }
 
-  private:
+   private:
     ao::uvector<value_t> _values;
   };
 
@@ -261,6 +262,6 @@ private:
   Dictionary _decDictionary;
 };
 
-} // namespace dyscostman
+}  // namespace dyscostman
 
 #endif

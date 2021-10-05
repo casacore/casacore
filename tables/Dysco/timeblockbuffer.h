@@ -6,8 +6,9 @@
 #include <complex>
 #include <vector>
 
-template <typename data_t> class TimeBlockBuffer {
-public:
+template <typename data_t>
+class TimeBlockBuffer {
+ public:
   typedef unsigned symbol_t;
 
   TimeBlockBuffer(size_t nPol, size_t nChannels)
@@ -28,8 +29,7 @@ public:
 
   void SetData(size_t blockRow, size_t antenna1, size_t antenna2,
                const data_t *data) {
-    if (_data.size() <= blockRow)
-      _data.resize(blockRow + 1);
+    if (_data.size() <= blockRow) _data.resize(blockRow + 1);
     DataRow &newRow = _data[blockRow];
     newRow.antenna1 = antenna1;
     newRow.antenna2 = antenna2;
@@ -72,7 +72,7 @@ public:
     }
   }
 
-private:
+ private:
   size_t _nPol, _nChannels;
   std::vector<DataRow> _data;
 };

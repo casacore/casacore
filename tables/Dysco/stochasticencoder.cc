@@ -57,8 +57,7 @@ StochasticEncoder<ValueType>::invCumulative(num_t c, num_t err) {
     if (currErr >= error) {
       ++notConverging;
       // not converging anymore; stop.
-      if (notConverging > 10)
-        return x;
+      if (notConverging > 10) return x;
     } else
       notConverging = 0;
     error = currErr;
@@ -173,4 +172,4 @@ void StochasticEncoder<ValueType>::initializeTruncatedGaussian(
 
 template class StochasticEncoder<float>;
 
-} // namespace dyscostman
+}  // namespace dyscostman

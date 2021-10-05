@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 class Serializable {
-public:
+ public:
   virtual ~Serializable() {}
   virtual void Serialize(std::ostream &stream) const = 0;
   virtual void Unserialize(std::istream &stream) = 0;
@@ -121,8 +121,9 @@ public:
     delete[] str;
   }
 
-private:
-  template <typename T> static T Unserialize(std::istream &stream) {
+ private:
+  template <typename T>
+  static T Unserialize(std::istream &stream) {
     T val;
     stream.read(reinterpret_cast<char *>(&val), sizeof(val));
     return val;

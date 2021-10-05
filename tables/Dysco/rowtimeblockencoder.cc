@@ -4,7 +4,8 @@
 using namespace dyscostman;
 
 RowTimeBlockEncoder::RowTimeBlockEncoder(size_t nPol, size_t nChannels)
-    : _nPol(nPol), _nChannels(nChannels),
+    : _nPol(nPol),
+      _nChannels(nChannels),
       _ditherDist(StochasticEncoder<float>::GetDitherDistribution()),
       _rowFactors() {}
 
@@ -37,8 +38,8 @@ void RowTimeBlockEncoder::Decode(const StochasticEncoder<float> &gausEncoder,
 template <bool UseDithering>
 void RowTimeBlockEncoder::encode(const StochasticEncoder<float> &gausEncoder,
                                  const FBuffer &buffer, float *metaBuffer,
-                                 symbol_t *symbolBuffer, size_t /*antennaCount*/,
-                                 std::mt19937 *rnd) {
+                                 symbol_t *symbolBuffer,
+                                 size_t /*antennaCount*/, std::mt19937 *rnd) {
   // Note that encoding is performed with doubles
   std::vector<DBufferRow> data;
   buffer.ConvertVector<std::complex<double>>(data);
@@ -52,12 +53,10 @@ void RowTimeBlockEncoder::encode(const StochasticEncoder<float> &gausEncoder,
     for (size_t i = 0; i != visPerRow; ++i) {
       std::complex<double> v = row.visibilities[i];
       double m = std::max(std::fabs(v.real()), std::fabs(v.imag()));
-      if (std::isfinite(m))
-        maxVal = std::max(maxVal, m);
+      if (std::isfinite(m)) maxVal = std::max(maxVal, m);
     }
     const double factor = (maxVal == 0.0) ? 1.0 : maxLevel / maxVal;
-    for (size_t i = 0; i != visPerRow; ++i)
-      row.visibilities[i] *= factor;
+    for (size_t i = 0; i != visPerRow; ++i) row.visibilities[i] *= factor;
     metaBuffer[rowIndex] = maxVal / maxLevel;
   }
 
