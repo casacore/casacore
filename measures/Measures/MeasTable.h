@@ -571,7 +571,7 @@ private:
   // </group>
 
   ///#if !defined(USE_THREADS) || defined(__APPLE__)
-  ///  static Mutex theirdUT1Mutex;
+  ///  static std::mutex theirdUT1Mutex;
   ///#endif
 };
 
