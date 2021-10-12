@@ -96,11 +96,11 @@ AipsError::~AipsError() noexcept
   // stack trace from last exception
   static String lastStackTrace = "*no-stack-trace*";
   // protects the lastMessage and lastStackTrace statics
-  static Mutex  lastErrorMutex;
+  static std::mutex  lastErrorMutex;
 
   void AipsError::getLastInfo (String & message, String & stackTrace)
   {
-    ScopedMutexLock lock(lastErrorMutex);
+    std::lock_guard<std::mutex> lock(lastErrorMutex);
     message = getLastMessage();
     stackTrace = getLastStackTrace();
   }
@@ -110,7 +110,7 @@ AipsError::~AipsError() noexcept
     { return CasaErrorTools::replaceStackAddresses (lastStackTrace); }
   void AipsError::clearLastInfo ()
   {
-    ScopedMutexLock lock(lastErrorMutex);
+    std::lock_guard<std::mutex> lock(lastErrorMutex);
     lastMessage = "*none*";
     lastStackTrace = "*no-stack-trace*";
   }
@@ -121,7 +121,7 @@ AipsError::~AipsError() noexcept
     // for later retrieval via casapy
     stackTrace = CasaErrorTools::generateStackTrace();
     {
-      ScopedMutexLock lock(lastErrorMutex);
+      std::lock_guard<std::mutex> lock(lastErrorMutex);
       lastMessage = message;
       lastStackTrace = stackTrace;
     }
