@@ -91,7 +91,7 @@ Double MeasTable::firstIGRF = 0;
 std::vector<Vector<Double> > MeasTable::coefIGRF;
 std::vector<Vector<Double> > MeasTable::dIGRF;
   ///#if !defined(USE_THREADS) || defined(__APPLE__)
-  ///Mutex MeasTable::theirdUT1Mutex;
+  ///std::mutex MeasTable::theirdUT1Mutex;
   ///#endif
 
 //# Member functions
@@ -4407,7 +4407,7 @@ Double MeasTable::dUT1(Double utc) {
   static thread_local Double res = 0.0;
   static thread_local Double checkT = -1e6;
   ///#else // !USE_THREADS (empty Mutex impl) or __APPLE__
-  ///  ScopedMutexLock lock(theirdUT1Mutex); // Pity. Try to narrow blunt __APPLE__ cond.
+  ///  std::lock_guard<std::mutex> lock(theirdUT1Mutex); // Pity. Try to narrow blunt __APPLE__ cond.
   ///  static Double res = 0.0;
   ///  static Double checkT = -1e6;
   ///#endif
