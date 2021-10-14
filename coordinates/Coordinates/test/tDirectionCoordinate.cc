@@ -1239,12 +1239,17 @@ void doit5 (DirectionCoordinate& dC)
 // All axes
 
    {
-      Coordinate* pC = dC.makeFourierCoordinate (axes, shape);
+      dC.setWorldAxisUnits(Vector<String>(2, "arcmin"));
+      Vector<Double> inc(2, 1);
+      inc[0] = -1;
+      dC.setIncrement(inc);
+      std::unique_ptr<Coordinate> pC(dC.makeFourierCoordinate (axes, shape));
 //
       Vector<String> units2 = pC->worldAxisUnits();
       Vector<String> names2 = pC->worldAxisNames();
       Vector<Double> crval2 = pC->referenceValue();
       Vector<Double> crpix2 = pC->referencePixel();
+      Vector<Double> inc2 = pC->increment();
       if (units2(0)!=String("lambda") || units2(1)!=String("lambda")) {
          throw(AipsError("makeFourierCoordinate (1) failed units test"));
       }
@@ -1254,12 +1259,18 @@ void doit5 (DirectionCoordinate& dC)
       if (!allNear(crval2,0.0,1e-13)) {
          throw(AipsError("makeFourierCoordinate (1) failed crval test"));
       }
+      // inc tests verity CAS-13629
+      if (! near(inc2[0], -2*13.4287, 1e-5)) {
+         throw(AipsError("makeFourierCoordinate (1) failed cdelt[0] test"));
+      }
+      if (! near(inc2[1], 13.4287, 1e-5)) {
+         throw(AipsError("makeFourierCoordinate (1) failed cdelt[1] test"));
+      }
       for (uInt i=0; i<pC->nPixelAxes(); i++) { 
          if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
             throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
          }
       }
-      delete pC;
    }
 
 // Not all axes 
