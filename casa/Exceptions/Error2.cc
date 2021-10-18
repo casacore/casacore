@@ -35,6 +35,7 @@
 #ifdef USE_STACKTRACE
 # include <casacore/casa/System/AipsrcValue.h>
 # include <execinfo.h>
+# include <mutex>
 # define AddStackTrace() addStackTrace()
 #else
 # define AddStackTrace()
