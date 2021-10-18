@@ -31,10 +31,12 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/string.h>      //# needed for strerror_r
 
+
 //# Stacktracing requires some extra includes.
 #ifdef USE_STACKTRACE
 # include <casacore/casa/System/AipsrcValue.h>
 # include <execinfo.h>
+# include <mutex>
 # define AddStackTrace() addStackTrace()
 #else
 # define AddStackTrace()
