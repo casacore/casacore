@@ -115,7 +115,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     //# Store the rownr if the mask is set.
-    rownr_t nr = min (mask.nelements(), btp->nrow());
+    rownr_t nr = std::min<rownr_t> (mask.nelements(), btp->nrow());
     for (rownr_t i=0; i<nr; i++) {
 	if (mask(i)) {
 	    addRownr (i);
