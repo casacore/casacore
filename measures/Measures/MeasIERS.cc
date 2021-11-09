@@ -41,6 +41,8 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/System/AppState.h>
 
+#include <atomic>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
