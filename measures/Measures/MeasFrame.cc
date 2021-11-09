@@ -469,44 +469,30 @@ void MeasFrame::create() {
 
 void MeasFrame::fill(const Measure *in) {
   if (in) {
-<<<<<<< HEAD
     uInt locker = 0;
-    if (in->type() == Register(static_cast<MEpoch *>(0))) {
+    if (dynamic_cast<const MEpoch*>(in)) {
       lock(locker);
       delete rep->epval;
       rep->epval = in->clone();
       unlock(locker);
       makeEpoch();
-    } else if (in->type() == Register(static_cast<MPosition *>(0))) {
+    } else if (dynamic_cast<const MPosition*>(in)) {
       lock(locker);
       delete rep->posval;
       rep->posval = in->clone();
       unlock(locker);
       makePosition();
-    } else if (in->type() == Register(static_cast<MDirection *>(0))) {
+    } else if (dynamic_cast<const MDirection*>(in)) {
       lock(locker);
       delete rep->dirval;
       rep->dirval = in->clone();
       unlock(locker);
       makeDirection();
-    } else if (in->type() == Register(static_cast<MRadialVelocity *>(0))) {
+    } else if (dynamic_cast<const MRadialVelocity*>(in)) {
       lock(locker);
       delete rep->radval;
       rep->radval = in->clone();
       unlock(locker);
-=======
-    if (dynamic_cast<const MEpoch*>(in)) {
-      rep->epval = std::unique_ptr<Measure>(in->clone());
-      makeEpoch();
-    } else if (dynamic_cast<const MPosition*>(in)) {
-      rep->posval = std::unique_ptr<Measure>(in->clone());
-      makePosition();
-    } else if (dynamic_cast<const MDirection*>(in)) {
-      rep->dirval = std::unique_ptr<Measure>(in->clone());
-      makeDirection();
-    } else if (dynamic_cast<const MRadialVelocity*>(in)) {
-      rep->radval = std::unique_ptr<Measure>(in->clone());
->>>>>>> 9b6df3baa (Remove the custom typing system of casacore)
       makeRadialVelocity();
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +
