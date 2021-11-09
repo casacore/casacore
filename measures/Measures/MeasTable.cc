@@ -53,6 +53,8 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/Utilities/Assert.h>
 
+#include <atomic>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
