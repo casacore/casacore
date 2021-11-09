@@ -1343,8 +1343,18 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
         *odate2 = dayFraction;
 
         // BASELINE
-        *obaseline = antnumbers(inant1(tbfrownr)) * 256 + antnumbers(inant2(
-                tbfrownr)) + inarray(tbfrownr) * 0.01;
+        Vector<Int> ant1 = inant1.getColumn();
+        Vector<Int> ant2 = inant2.getColumn();
+        Int minant1, minant2, maxant1, maxant2;
+        minMax(minant1, maxant1, ant1);
+        minMax(minant2, maxant2, ant2);
+        if (maxant1 > 255 || maxant2 > 255) {
+          *obaseline = antnumbers(inant1(tbfrownr)) * 2048 + antnumbers(inant2(
+                       tbfrownr)) + inarray(tbfrownr) * 0.01;
+        } else {
+          *obaseline = antnumbers(inant1(tbfrownr)) * 256 + antnumbers(inant2(
+                       tbfrownr)) + inarray(tbfrownr) * 0.01;
+        }
 
         // FREQSEL (in the future it might be FREQ_GRP+1)
         //    *ofreqsel = inddid(i) + 1;
