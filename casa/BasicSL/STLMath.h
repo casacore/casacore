@@ -99,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     std::vector<T> result(left.size());
     std::transform (left.begin(), left.end(), result.begin(),
-                    std::bind(std::divides<T>(), std::placeholders::_1, right));
+                    [right](T x) { return x / right; });
     return result;
   }
 
