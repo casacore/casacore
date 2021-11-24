@@ -131,9 +131,11 @@ public:
   virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
 			     Bool determineOrder) const;
   virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
-			     const Block<CountedPtr<BaseCompare> >&,
-			     const Block<Int>& sortOrder,
-			     int sortOption);
+                             const Block<CountedPtr<BaseCompare> >&,
+                             const Block<Int>& sortOrder,
+                             int sortOption,
+                             std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
+                             std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange);
   virtual void renameSubTables (const String& newName,
 				const String& oldName);
   // </group>

@@ -64,6 +64,8 @@ public:
   friend class String;
   // Make a string
   operator const string() const { return string(ref_p, pos_p, len_p); }
+  // Default copy constructor.
+  SubString (const SubString&) = default;
   // Assignment
   // <group>
   SubString &operator=(const SubString &str);

@@ -409,12 +409,13 @@ Array<Bool>     TableExprNodeRep::getColumnBool
 {
     TableExprId id;
     rownr_t nrrow = rownrs.size();
-    Vector<Bool> vec (nrrow);
+    Array<Bool> arr (IPosition(1,nrrow));
+    Bool* vec = arr.data();
     for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr   (rownrs[i]);
       vec[i] = getBool (id);
     }
-    return vec;
+    return arr;
 }
 Array<uChar>    TableExprNodeRep::getColumnuChar
 (const Vector<rownr_t>&)
@@ -439,12 +440,13 @@ Array<Int>      TableExprNodeRep::getColumnInt
 {
     TableExprId id;
     rownr_t nrrow = rownrs.size();
-    Vector<Int> vec (nrrow);
+    Array<Int> arr (IPosition(1,nrrow));
+    Int* vec = arr.data();
     for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr   (rownrs[i]);
       vec[i] = getInt (id);
     }
-    return vec;
+    return arr;
 }
 Array<uInt>     TableExprNodeRep::getColumnuInt
 (const Vector<rownr_t>&)
@@ -457,12 +459,13 @@ Array<Int64>    TableExprNodeRep::getColumnInt64
 {
     TableExprId id;
     rownr_t nrrow = rownrs.size();
-    Vector<Int64> vec (nrrow);
+    Array<Int64> arr (IPosition(1,nrrow));
+    Int64* vec = arr.data();
     for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr   (rownrs[i]);
       vec[i] = getInt (id);
     }
-    return vec;
+    return arr;
 }
 Array<Float>    TableExprNodeRep::getColumnFloat
 (const Vector<rownr_t>&)
@@ -475,12 +478,13 @@ Array<Double>   TableExprNodeRep::getColumnDouble
 {
     TableExprId id;
     rownr_t nrrow = rownrs.size();
-    Vector<Double> vec (nrrow);
+    Array<Double> arr (IPosition(1,nrrow));
+    Double* vec = arr.data();
     for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr   (rownrs[i]);
       vec[i] = getDouble (id);
     }
-    return vec;
+    return arr;
 }
 Array<Complex>  TableExprNodeRep::getColumnComplex
 (const Vector<rownr_t>&)
@@ -493,24 +497,26 @@ Array<DComplex> TableExprNodeRep::getColumnDComplex
 {
     TableExprId id;
     rownr_t nrrow = rownrs.size();
-    Vector<DComplex> vec (nrrow);
+    Array<DComplex> arr (IPosition(1,nrrow));
+    DComplex* vec = arr.data();
     for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr   (rownrs[i]);
       vec[i] = getDComplex (id);
     }
-    return vec;
+    return arr;
 }
 Array<String>   TableExprNodeRep::getColumnString
 (const Vector<rownr_t>& rownrs)
 {
     TableExprId id;
     rownr_t nrrow = rownrs.size();
-    Vector<String> vec (nrrow);
+    Array<String> arr (IPosition(1,nrrow));
+    String* vec = arr.data();
     for (rownr_t i=0; i<nrrow; i++) {
       id.setRownr   (rownrs[i]);
       vec[i] = getString (id);
     }
-    return vec;
+    return arr;
 }
 
 // The following can be implemented one time.

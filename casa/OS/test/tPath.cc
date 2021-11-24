@@ -159,7 +159,8 @@ void doIt (Bool doExcp, Bool& success)
     AlwaysAssertExit (test3.originalName() == test2.originalName());
     AlwaysAssertExit (test3.expandedName() == test2.expandedName());
     AlwaysAssertExit (test3.absoluteName() == test2.absoluteName());
-    test3 = test3;
+    const Path& test3ref(test3);
+    test3 = test3ref;
     AlwaysAssertExit (test3.originalName() == test2.originalName());
     AlwaysAssertExit (test3.expandedName() == test2.expandedName());
     AlwaysAssertExit (test3.absoluteName() == test2.absoluteName());
