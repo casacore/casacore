@@ -506,6 +506,59 @@ uInt tReferenceCopy(const String& msName, const String& refMSName)
     return errCount;
 }
 
+// test null MS
+
+uInt tNullMS(const String& msName)
+{
+  uInt errCount = 0;
+  {
+    // Test construction and destruction of null MS.
+    MeasurementSet ms;
+    if (! ms.isNull()) {
+      cout << "tNullMS: MS should be null" << endl;
+      errCount++;
+    }
+  }
+  MeasurementSet nullMS;
+  {
+    // Test copy construction of null MS.
+    MeasurementSet mscopy (nullMS);
+    if (! mscopy.isNull()) {
+      cout << "tNullMS: MS copy should be null" << endl;
+      errCount++;
+    }
+  }
+  {
+    // Test assigment of null MS to null MS
+    MeasurementSet ms;
+    ms = nullMS;
+    if (! ms.isNull()) {
+      cout << "tNullMS: assign to null MS should be null" << endl;
+      errCount++;
+    }
+  }
+  {
+    // Test assigment of null MS to non-null MS
+    MeasurementSet ms(msName);
+    ms = nullMS;
+    if (! ms.isNull()) {
+      cout << "tNullMS: assign to non-null MS should be null" << endl;
+      errCount++;
+    }
+  }
+  {
+    // Test assigment of non-null MS to null MS
+    MeasurementSet nms;
+    MeasurementSet ms(msName);
+    nms = ms;
+    if (nms.isNull()) {
+      cout << "tNullMS: assign to null MS should be non-null" << endl;
+      errCount++;
+    }
+  }
+  return errCount;
+}
+
 // test exceptions in constructions
 
 uInt tSetupNewTabError()
@@ -604,6 +657,11 @@ int main() {
     checkErrors(newErrors);
     errCount += newErrors;
 
+    cout << "\nTest null MS ... ";
+    newErrors = tNullMS(msName);
+    checkErrors(newErrors);
+    errCount += newErrors;
+    
     cout << "\nTest exceptions" << endl;
     cout << "in Constructors ... ";
     newErrors = tSetupNewTabError();

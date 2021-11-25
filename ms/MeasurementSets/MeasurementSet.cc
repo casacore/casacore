@@ -261,27 +261,30 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
   hasBeenDestroyed_p(False)
 {
   doNotLockSubtables_p = other.doNotLockSubtables_p;
-  copySubtables (other); // others will be handled by initRefs
+  if (! other.isNull()) {
+    copySubtables (other); // others will be handled by initRefs
 
-  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
+    mainLock_p=TableLock(TableLock::AutoNoReadLocking);
 
-  // verify that other is valid
+    // verify that other is valid
 
-  if (&other != this) {
+    if (&other != this) {
       addCat();
       if (! validate(this->tableDesc()))
-          throw (AipsError("MS(const MeasurementSet &) - "
-                  "MeasurementSet is not a valid MS"));
-  }
+        throw (AipsError("MS(const MeasurementSet &) - "
+                         "MeasurementSet is not a valid MS"));
+    }
 
-  if (!isNull()){
+    if (!isNull()){
       initRefs();
+    }
   }
 }
 
 MeasurementSet::~MeasurementSet()
 {
 // check to make sure that this MS is still valid
+  if (! isNull()) {
     if (!hasBeenDestroyed_p  &&  !validate()) {
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
@@ -290,7 +293,8 @@ MeasurementSet::~MeasurementSet()
            << "~MS() - Table written is not a valid MS"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+  }
+  hasBeenDestroyed_p = True;
 }
 
 MeasurementSet&
@@ -308,11 +312,15 @@ MeasurementSet::operator=(const MeasurementSet &other)
 	mrsDebugLevel_p = other.mrsDebugLevel_p;
 	memoryResidentSubtables_p = other.memoryResidentSubtables_p;
 
-	copySubtables (other);
+        if (! (isNull()  ||  other.isNull())) {
+          copySubtables (other);
+        }
 
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
 
-	initRefs();
+        if (! isNull()) {
+          initRefs();
+        }
     }
 
     return *this;
