@@ -13,7 +13,6 @@ tLatticeSlice1D
 tLatticeStatistics
 tLatticeStatsDataProvider
 tLatticeTwoPtCorr
-tLattStatsSpecialize
 )
 
 foreach (test ${tests})
