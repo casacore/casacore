@@ -261,7 +261,7 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
   hasBeenDestroyed_p(False)
 {
   doNotLockSubtables_p = other.doNotLockSubtables_p;
-  if (! other.isNull()) {
+  if (! isNull()) {
     copySubtables (other); // others will be handled by initRefs
 
     mainLock_p=TableLock(TableLock::AutoNoReadLocking);
@@ -274,8 +274,9 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
         throw (AipsError("MS(const MeasurementSet &) - "
                          "MeasurementSet is not a valid MS"));
     }
+    hasBeenDestroyed_p = other.hasBeenDestroyed_p;
 
-    if (!isNull()){
+    if (! isNull()){
       initRefs();
     }
   }
@@ -300,30 +301,30 @@ MeasurementSet::~MeasurementSet()
 MeasurementSet&
 MeasurementSet::operator=(const MeasurementSet &other)
 {
-    if (&other != this) {
+  if (&other != this) {
 
-        clearSubtables ();  // Make all subtables refer to null tables
+    clearSubtables ();  // Make all subtables refer to null tables
 
-	MSTable<MSMainEnums>::operator=(other);
+    MSTable<MSMainEnums>::operator=(other);
 
-	// MRS related components
+    // MRS related components
 
-	mrsEligibility_p = other.mrsEligibility_p;
-	mrsDebugLevel_p = other.mrsDebugLevel_p;
-	memoryResidentSubtables_p = other.memoryResidentSubtables_p;
+    mrsEligibility_p = other.mrsEligibility_p;
+    mrsDebugLevel_p = other.mrsDebugLevel_p;
+    memoryResidentSubtables_p = other.memoryResidentSubtables_p;
 
-        if (! (isNull()  ||  other.isNull())) {
-          copySubtables (other);
-        }
-
-	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
-
-        if (! isNull()) {
-          initRefs();
-        }
+    if (! isNull()) {
+      copySubtables (other);
     }
 
-    return *this;
+    hasBeenDestroyed_p = other.hasBeenDestroyed_p;
+
+    if (! isNull()) {
+      initRefs();
+    }
+  }
+
+  return *this;
 }
 
 void
