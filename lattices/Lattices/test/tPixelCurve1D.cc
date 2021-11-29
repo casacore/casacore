@@ -129,7 +129,8 @@ int main()
   // Copy constructor and self assignment.
   PixelCurve1D pcurve3(pcurve);
   AlwaysAssertExit (pcurve3.npoints() == 9);
-  pcurve3 = pcurve3;
+  const PixelCurve1D& pcurve3ref(pcurve3);
+  pcurve3 = pcurve3ref;
   AlwaysAssertExit (pcurve3.npoints() == 9);
   pcurve3.getPixelCoord (x, y, 0, 8);
   cout << x << y << endl;
@@ -169,7 +170,8 @@ int main()
     yp[0]=2; yp[1]=6; yp[2]=9; yp[3]=6; yp[4]=6;
     PixelCurve1D pcurve4(xp,yp,21);
     AlwaysAssertExit (pcurve4.npoints() == 21);
-    pcurve4 = pcurve4;
+    const PixelCurve1D& pcurve4ref(pcurve4);
+    pcurve4 = pcurve4ref;
     AlwaysAssertExit (pcurve4.npoints() == 21);
     pcurve4.getPixelCoord (x, y, 0, 20);
     cout << x << y << endl;

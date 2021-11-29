@@ -252,9 +252,11 @@ Bool NullTable::adjustRownrs (rownr_t, Vector<rownr_t>&,
 }
 
 BaseTable* NullTable::doSort (PtrBlock<BaseColumn*>&,
-			      const Block<CountedPtr<BaseCompare> >&,
-			      const Block<Int>&,
-			      int)
+                             const Block<CountedPtr<BaseCompare> >&,
+                             const Block<Int>&,
+                             int,
+                             std::shared_ptr<Vector<rownr_t>>,
+                             std::shared_ptr<Vector<size_t>>)
 {
   throw makeError ("doSort");
 }

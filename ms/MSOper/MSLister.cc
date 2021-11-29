@@ -289,6 +289,10 @@ void MSLister::listHeader()
     // logStream_p << "dataColSel = " << dataColSel << LogIO::POST;
     // cout << "dataColSel = " << dataColSel << endl;
 
+    // Fill unused variables to avoid compiler warnings.
+    nchan = 0;
+    start = 0;
+    step  = 0;
     selectvis(timerange, newSpw, scan, field, antenna, uvrange, chanmode,
               nchan, start, step, mStart,  mStep, correlation,
               // IGNORE PARAMETERS THAT ARE NOT YET IMPLEMENTED
@@ -298,7 +302,7 @@ void MSLister::listHeader()
     // List the data
     listData(pagerows, listfile);
   }
-  catch (std::exception& x) {
+  catch (const std::exception& x) {
     logStream_p << LogOrigin("MSLister","list",WHERE)
             << LogIO::SEVERE << "Caught exception: " << x.what()
             << LogIO::POST;

@@ -69,7 +69,8 @@ void doIt (Bool doExcp)
     // Test assignment.
     File isFile2;
     isFile2 = isFile;
-    exist2 = exist2;
+    const File& exist2ref(exist2);
+    exist2 = exist2ref;
     
     AlwaysAssertExit (isFile.isRegular());
     AlwaysAssertExit (isDir.isDirectory());

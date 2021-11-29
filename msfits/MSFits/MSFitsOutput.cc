@@ -2625,7 +2625,7 @@ Bool MSFitsOutput::_writeSY(
         ANTENNA_ID, FEED_ID, SPECTRAL_WINDOW_ID, TIME, "INTERVAL",
         "SWITCHED_DIFF", "SWITCHED_SUM", "REQUANTIZER_GAIN"
     };
-    for (const auto cname: expColNames) {
+    for (const String& cname: expColNames) {
         if (! td.isColumn(cname)) {
             os << LogIO::WARN << "Required column " << cname
                 << " not found in SYSPOWER table" << LogIO::POST;

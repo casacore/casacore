@@ -299,7 +299,8 @@ void doit()
     for(i=0; i < 200; i++) {
 	AlwaysAssertExit(bi2[i] == 5);
     }
-    bi2 = bi2;
+    const Block<Int>& bi2ref(bi2);         // Use ref in self-assigment
+    bi2 = bi2ref;                          // to avoid compiler warning
     AlwaysAssertExit(bi2.nelements() == 200);
     for(i=0; i < 200; i++) {
 	AlwaysAssertExit(bi2[i] == 5);

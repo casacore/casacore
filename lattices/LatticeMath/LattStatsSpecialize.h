@@ -90,8 +90,8 @@ public:
    static void accumulate (DComplex& nPts, DComplex& sum,
 						   DComplex& mean, DComplex& nvariance,DComplex& variance,
                            DComplex& sumSq, Complex& dataMin,
-                           Complex& dataMax, const Int& minPos,
-                           const Int& maxPos, Bool& minMaxInit,
+                           Complex& dataMax, Int& minPos,
+                           Int& maxPos, Bool& minMaxInit,
                            const Bool fixedMinMax, const Complex datum,
                            const uInt& pos, const Complex useIt);
 

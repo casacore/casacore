@@ -79,7 +79,8 @@ void doIt (Bool doExcp)
 	} 
     }
     // Assignment.
-    risLink1 = risLink1;
+    const RegularFile& risLink1ref(risLink1);
+    risLink1 = risLink1ref;
     AlwaysAssertExit (risLink1.path().originalName() ==
                                              "tRegularFile_tmp/isLink1");
     rFile5 = risFile;

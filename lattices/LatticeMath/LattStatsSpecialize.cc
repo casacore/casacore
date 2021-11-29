@@ -106,8 +106,8 @@ void LattStatsSpecialize::accumulate (
 	DComplex& nPts, DComplex& sum,
 	DComplex& mean, DComplex& nvariance, DComplex& variance,
 	DComplex& sumSq, Complex& dataMin,
-	Complex& dataMax, const Int&,
-	const Int&, Bool& minMaxInit,
+	Complex& dataMax, Int&,
+        Int&, Bool& minMaxInit,
 	const Bool fixedMinMax, const Complex datum,
 	const uInt&, const Complex useIt
 ) {
