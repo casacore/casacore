@@ -68,33 +68,6 @@ class IPosition;
 class LattStatsSpecialize
 {
 public:
-	// !!! WARNING !!!
-	// BOTH accumulate() METHODS ARE DEPRECATED AND NO LONGER USED BY CASACORE NOR
-	// CASA. THESE METHODS WILL BE REMOVED IN THE NEAR FUTURE. PLEASE MODIFY EXISTING
-	// CODE WHICH USES THEM. CURRENT STATISTIC CLASSES MAY BE FOUND IN scimath/StatsFramework.
-
-   // in this version we maintain a running mean and variance to avoid catastrophic round-off
-   // issues that can happen in some cases, CAS-2226. Removing old versions in which these
-	// quantities were not accumulated - dmehring 2011mar01
-
-   static void accumulate (
-		Double& nPts, Double& sum,
-   		Double& mean, Double& nvariance, Double& variance,
-   		Double& sumSq, Float& dataMin,
-   		Float& dataMax, Int& minPos,
-   		Int& maxPos, Bool& minMaxInit,
-   		const Bool fixedMinMax, const Float datum,
-   		const uInt& pos, const Float useIt
-   	);
-
-   static void accumulate (DComplex& nPts, DComplex& sum,
-						   DComplex& mean, DComplex& nvariance,DComplex& variance,
-                           DComplex& sumSq, Complex& dataMin,
-                           Complex& dataMax, Int& minPos,
-                           Int& maxPos, Bool& minMaxInit,
-                           const Bool fixedMinMax, const Complex datum,
-                           const uInt& pos, const Complex useIt);
-
    static Bool hasSomePoints (Double npts);
    static Bool hasSomePoints (DComplex npts);
 //
