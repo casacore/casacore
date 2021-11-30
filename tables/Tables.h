@@ -1125,7 +1125,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   compression. It combines non-linear least-squares quantization and
 //   different kinds of normalizaton. With the typical factor of 4
 //   compression, the loss in accuracy from lossy compression is
-//   negligable. It should only be used for real (non-simulated) data.
+//   negligable. It should only be used for real (non-simulated) data
+//   and for Measurement Set data.
 //   The method is described in this article:
 //   https://arxiv.org/abs/1609.02019.
 // </ol>
