@@ -1119,6 +1119,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   normal tables. Note, however, that if a table is accessed
 //   concurrently from multiple processes, MemoryStMan data cannot be
 //   synchronized.
+//
+//  <li>
+//   @ref dyscostman.DyscoStMan is a class that stores data with lossy
+//   compression. It combines non-linear least-squares quantization and
+//   different kinds of normalizaton. With the typical factor of 4
+//   compression, the loss in accuracy from lossy compression is
+//   negligable. It should only be used for real (non-simulated) data.
+//   The method is described in this article:
+//   https://arxiv.org/abs/1609.02019.
 // </ol>
 //
 // The storage manager framework makes it possible to support arbitrary files
