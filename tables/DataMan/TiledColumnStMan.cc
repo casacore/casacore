@@ -99,7 +99,12 @@ Bool TiledColumnStMan::canAccessColumn () const
 {
     return True;
 }
-
+ 
+Bool TiledColumnStMan::checkFailover (DataType, uInt) const
+{
+    return True;
+}
+  
 
 void TiledColumnStMan::create64 (rownr_t nrrow)
 {
@@ -125,6 +130,17 @@ void TiledColumnStMan::create64 (rownr_t nrrow)
 }
 	    
 
+void TiledColumnStMan::repairNrow (rownr_t nrrow)
+{
+  nrrow_p = nrrow;
+  AlwaysAssert (fileSet_p.size() == 1, AipsError);
+  AlwaysAssert (cubeSet_p.size() == 1, AipsError);
+  Int64 length = cubeSet_p[0]->repairNrow (nrrow);
+  // Increment the file length.
+  fileSet_p[0]->extend (length - fileSet_p[0]->length());
+}
+
+ 
 Bool TiledColumnStMan::flush (AipsIO&, Bool fsync)
 {
     // Flush the caches.
@@ -150,7 +166,8 @@ void TiledColumnStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
     headerFile->getstart ("TiledColumnStMan");
     *headerFile >> tileShape_p;
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime, 1);
+    // Guess the nr of rows from the file size and compare to given nr.
+    headerFileGet (*headerFile, tabNrrow, firstTime, 1, True);
     headerFile->getend();
     headerFileClose (headerFile);
 }

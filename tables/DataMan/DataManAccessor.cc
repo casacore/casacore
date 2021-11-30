@@ -32,6 +32,9 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/RawIO.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -46,6 +49,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   RODataManAccessor::~RODataManAccessor()
   {}
+
+  void RODataManAccessor::flush (Bool fsync)
+  {
+    if (itsDataManager) {
+      // The possible data in the AipsIO object will be neglected.
+      MemoryIO membuf;
+      RawIO rawio(&membuf);
+      AipsIO ios(&rawio);
+      itsDataManager->flush (ios, fsync);
+    } else {
+      throw DataManError ("setProperties cannot be used on a default "
+                          "empty RODataManAccessor object");
+    }
+  }
 
   void RODataManAccessor::setProperties (const Record& prop) const
   {

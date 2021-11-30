@@ -119,6 +119,7 @@ public:
     // <br>If the cubeshape is empty, the hypercube is still undefined and
     // can be added later with setShape. That is only used by TiledCellStMan.
     // <br> The fileOffset argument is meant for class TiledFileAccess.
+    // <br> The useDerived flag is meant for derived classes such as TSMCubeMMap.
     TSMCube (TiledStMan* stman, TSMFile* file,
 	     const IPosition& cubeShape,
 	     const IPosition& tileShape,
@@ -129,6 +130,7 @@ public:
     // Reconstruct the hypercube by reading its data from the AipsIO stream.
     // It will link itself to the correct TSMFile. The TSMFile objects
     // must have been reconstructed in advance.
+    // <br> The useDerived flag is meant for derived classes such as TSMCubeMMap.
     TSMCube (TiledStMan* stman, AipsIO& ios,
              Bool useDerived = False);
 
@@ -157,6 +159,10 @@ public:
     // It returns the data manager sequence number, which is -1 if
     // no file is attached to the cube (for cells without a value).
     Int getObject (AipsIO& ios);
+
+    // Fix the cube shape for a repaired TiledColumnStMan.
+    // It returns the size (in bytes) of all tiles.
+    Int64 repairNrow (rownr_t nrrow);
 
     // Resync the object with the data file.
     // It reads the object, and adjusts the cache.

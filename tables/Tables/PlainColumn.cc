@@ -55,6 +55,12 @@ PlainColumn::~PlainColumn()
 {}
 
 
+Bool PlainColumn::checkFailover() const
+{
+  return dataManPtr_p->checkFailover (columnDesc().dataType(),
+                                      columnDesc().maxLength());
+}
+
 rownr_t PlainColumn:: nrow() const
     { return colSetPtr_p->nrow(); }
 

@@ -62,7 +62,7 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
     }
   }
   //# Check if there are no data managers with equal names.
-  newtab.columnSetPtr()->checkDataManagerNames ("MemoryTable");
+  newtab.columnSetPtr()->checkDataManagers ("MemoryTable");
   //# Get the data from the SetupNewTable object.
   //# Set SetupNewTable object to in use.
   tdescPtr_p  = tdescPtr;

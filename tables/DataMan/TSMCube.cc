@@ -137,7 +137,6 @@ TSMCube::~TSMCube()
     delete [] cachedTile_p;
 }
 
-
 void TSMCube::clearCache (Bool doFlush)
 {
     if (doFlush) {
@@ -327,6 +326,15 @@ Int TSMCube::getObject (AipsIO& ios)
         ios >> fileOffset_p;
     }
     return fileSeqnr;
+}
+
+Int64 TSMCube::repairNrow (rownr_t nrrow)
+{
+    // Adjust the nr of rows in the cube shape for repaired TiledColumnStMan file.
+    cubeShape_p[nrdim_p-1] = nrrow;
+    setupNrTiles();
+    resyncCache();
+    return nrTiles_p * bucketSize_p;
 }
 
 void TSMCube::resync (AipsIO& ios)

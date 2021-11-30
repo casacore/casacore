@@ -171,7 +171,7 @@ void TiledCellStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
     headerFile->getstart ("TiledCellStMan");
     *headerFile >> defaultTileShape_p;
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime, 0);
+    headerFileGet (*headerFile, tabNrrow, firstTime, 0, False);
     headerFile->getend();
     headerFileClose (headerFile);
 }

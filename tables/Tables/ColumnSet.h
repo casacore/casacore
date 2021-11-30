@@ -110,6 +110,10 @@ public:
     const StorageOption& storageOption() const
       { return storageOpt_p; }
 
+    // Is the table in Failover mode?
+    Bool failoverMode() const
+      { return storageOpt_p.option() == StorageOption::Failover; }
+  
     // Are subtables used in other processes.
     Bool areTablesMultiUsed() const;
 
@@ -251,8 +255,10 @@ public:
     // correct datamanagers when they are read back.
     DataManager* getDataManager (uInt seqnr) const;
 
-    // Check if no double data manager names have been given.
-    void checkDataManagerNames (const String& tableName) const;
+    // Check the data managers.
+    // It checks if no equal names have been given and
+    // if they match the possible failover mode.
+    void checkDataManagers (const String& tableName) const;
 
     // Find the data manager with the given name or for the given column.
     // If the data manager or column is unknown, an exception is thrown.

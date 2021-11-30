@@ -1,5 +1,5 @@
 //# Tables.h: The Tables module - Casacore data storage
-//# Copyright (C) 1994-2010
+//# Copyright (C) 1994-2021
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -188,26 +188,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> Only the standard Casacore data types can be used in filled
 //       columns, be they scalars or arrays:  Bool, uChar, Short, uShort,
 //       Int, uInt, Int64, float, double, Complex, DComplex and String.
-//       Furthermore scalars containing
+//       Furthermore, scalars containing
 //       <linkto class=TableRecord>record</linkto> values are possible
 //  <li> A column can have a default value, which will automatically be stored
 //       in a cell of the column, when a row is added to the table.
 //  <li> <A HREF="#Tables:Data Managers">Data managers</A> handle the
 //       reading, writing and generation of data. Each column in a table can
-//       be assigned its own data manager, which allows for optimization of
+//       be assigned its own data manager, but it is also possible that a data manager
+//       handles multiple columns. It allows for optimization of 
 //       the data storage per column. The choice of data manager determines
 //       whether a column is filled or virtual.
 //  <li> Table data are stored in a canonical format, so they can be read
 //       on any machine. To avoid needless swapping of bytes, the data can
-//       be stored in big endian (as used on e.g. SUN) or little endian
-//       (as used on Intel PC-s) canonical format. 
+//       be stored in little or big endian canonical format. 
 //       By default it uses the format specified in the aipsrc variable
 //       <code>table.endianformat</code> which defaults to
 //       <code>Table::LocalEndian</code> (the endian format of the
 //       machine being used when creating the table).
+//  <li> Failover mode can be used to create robust tables.
+//       Most storage managers use indices to locate the data. The indices are
+//       only written when a table is flushed. Hence, in case of a crash it can happen
+//       that a table does not seem to contain any data.
+//       The alleviate this problem a table can be created in
+//       <A HREF="#Tables:Failover">FAILOVER mode</A>.
 //  <li> The SQL-like
 //       <a href="../notes/199.html">Table Query Language</a> (TaQL)
-//       can be used to do operations on tables like
+//       can be used to do operations on tables such as
 //       select, sort, update, insert, delete, and create.
 // </ul>
 //
@@ -215,18 +221,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ul>
 // <li> A plain table is a table stored on disk.
 //      It can be shared by multiple processes.
-// <li> A memory table is a table held in memory.
+// <li> A memory table is a volatile table held in memory.
 //      It is a process specific table, thus not sharable.
 //      The <linkto class=Table>Table::copy</linkto> function can be used
 //      to turn a memory table into a plain table.
-// <li> A reference table is a table referencing a plain or memory table.
-//      It is the result of a selection or sort on another table.
-//      A reference table references the data in the other table, thus
+// <li> A reference table is a table referencing another table.
+//      It is the result of a selection or sort on a table.
+//      A reference table references the data in the original table, thus
 //      changing data in a reference table means that the data in the
 //      original table are changed.
 //      The <linkto class=Table>Table::deepCopy</linkto> function can be
 //      used to turn a reference table into a plain table.
-// <li> <A HREF="#Tables:concatenation">a concatenated table</A>
+// <li> <A HREF="#Tables:concatenation">A concatenated table</A>
 //      is a union of tables (of any form) with the same description.
 //      They are concatenated in a virtual way, thus no copy is made.
 // </ul>
@@ -235,7 +241,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // locking/synchronization</A> mechanism. Concurrent access over NFS is also
 // supported.
 // <p>
-// A (somewhat primitive) mechanism is available to do a
+// A (somewhat primitive) indexing mechanism is available to do a
 // <A HREF="#Tables:KeyLookup">table lookup</A> based on the contents
 // of a key.
 
@@ -269,8 +275,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>
 // and
 // <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto>.
-// For scalars of a standard data type (i.e. Bool, uChar, Int, Short,
-// uShort, uInt, float, double, Complex, DComplex and String) you could
+// For scalars of a standard data type (i.e., Bool, uChar, Short,
+// uShort, Int, uInt, Int64, float, double, Complex, DComplex and String) you could
 // instead use 
 // <linkto class="TableColumn">TableColumn::getScalar(...)</linkto> or
 // <linkto class="TableColumn">TableColumn::asXXX(...)</linkto>.
@@ -331,7 +337,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   Create a <A HREF="#Tables:Table Description">table description</A>.
 //  <li>
 //   Create a <linkto class="SetupNewTable:description">SetupNewTable</linkto>
-//   object with the name of the new table.
+//   object with the name of the new table. Optionally the
+//   <A HREF="#Tables::Failover">FAILOVER</A> flag can be given.
 //  <li>
 //   Create the necessary <A HREF="#Tables:Data Managers">data managers</A>.
 //  <li>
@@ -354,7 +361,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // can be bound to any data manager. <src>MemoryTable</src> will rebind 
 // stored columns to the <linkto class=MemoryStMan>MemoryStMan</linkto>
 // storage manager, but virtual columns bindings are not changed.
-
+// <br>Note that step 3 and 4 can be replaced by using a call to
+// <src>SetupNewTable::bindCreate</src> passing a Record object
+// defining the full <A HREF=#Tables:DataManagerInfo>DataManagerInfo</A>.
 //
 // The following example shows how you can create a table. An example
 // specifically illustrating the creation of the
@@ -418,6 +427,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     Table tab(newtab, Table::Memory, 10);
 // </srcblock>
 
+// <ANCHOR NAME="Tables:DataManagerInfo">
+// It is possible to obtain information how the table data are stored.
+// <ul>
+//  <li>
+// The function <src>Table::showStructure</src> writes on the given output stream
+// a description of all columns and which data managers are used to store the data
+// contained in them.
+//  <li>
+// The function <src>Table::dataManagerInfo</src> returns a Record object containing
+// all information about the data managers used. The Record consists of a number of
+// subrecords, each representing a data manager. A subrecord contains the following fields:
+//  <ul>
+//  <li> TYPE: The data manager type (e.g., StandardStMan).
+//  <li> NAME: The name of the data manager instance. Note that the same data manager type
+//             can be used multiple times, hence a unique name is needed.
+//  <li> SEQNR: The sequence number of the data manager, which is reflected in the name
+//              of the file used to store the data (e.g., <src>table.f2</src>). Note that
+//              the sequence numbers do not need to be consecutive (a data manager is
+//              removed if all its columns are removed from the table).
+//  <li> SPEC: A subrecord containing the parameters of the data manager. The fields used
+//             in that subrecord depend on the data manager.
+//  <li> COLUMNS: A vector containing the names of the columns stored with this data manager.
+//  </ul>
+// The overall DataManagerInfo Record and subrecords are created by class ColumnSet,
+// while the SPEC subrecord is filled by the appropriate virtual function
+// DataManager::dataManagerSpec. Note that SPEC contains volatile and non-volatile parameters.
+// Non-volatile parameters (such as BucketSize) can only be set when the data manager is
+// constructed and remain the same for the lifetime of the table. Volatile parameters
+// (such as MaxCacheSize) can be changed at any time using function <src>setProperties</src>
+// in class DataManagerAccessor.
+// </ul>
+// Note that a DataManagerInfo Record can be used to create a new table as described in the
+// <A HREF=#Table::creation>previous section</A>.
+  
 // <ANCHOR NAME="Tables:write">
 // <h3>Writing into a Table</h3></ANCHOR>
 //
@@ -443,8 +486,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // let you write a value at a time or the entire column in one go.
 // For arrays you can "put" subsections of the arrays.
 //
-// As an alternative for scalars of a standard data type (i.e. Bool,
-// uChar, Int, Short, uShort, uInt, float, double, Complex, DComplex
+// As an alternative for scalars of a standard data type (i.e., Bool,
+// uChar, Int, Short, uShort, uInt, Int64, float, double, Complex, DComplex
 // and String) you could use the functions
 // <linkto class="TableColumn">TableColumn::putScalar(...)</linkto>.
 // These functions offer an extra: automatic data type promotion; so that
@@ -583,6 +626,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     conversion.
 //   </ul>
 // </ol>
+
+// <ANCHOR NAME="Tables:Failover">
+// Most storage managers use indices to locate the data. The indices are
+// only written when a table is flushed. Hence it can happen that a
+// table does not seem to contain any data.
+// The alleviate this problem a table can be created by setting the
+// FAILOVER flag in the StorageOption when creating the SetupNewTable object.
+// Using this flag comes with several constraints:
+// <ul>
+//  <li> Only the StandardStMan and TiledColumnStMan storage managers can be used.
+//       Virtual column engines do not store data, thus can always be used.
+//  <li> Rows cannot be deleted.
+//  <li> Columns cannot be added nor deleted.
+//  <li> The indices are only written when the table is closed, not when flushed.
+//  <li> MultiFile cannot be used.
+//  <li> The table.dat file is written at the beginning, so the table structure is known.
+// </ul>
+// In this way the storage manager files have a regular structure which means that
+// the number of table rows can be guessed when a crashed table is opened.
+// First the number of rows for each storage manager is determined using its file sizes.
+// The number of table rows is the minimum of the number or rows in the storage managers.
+// <br>Note that CTDS only writes a bucket or tile when it is completely filled,
+// so the rows in a partially filled bucket or tile are lost (unless a flush was done
+// before it was completely filled). It means that the bucket/tile sizes should be smallish
+// to avoid losing too many rows.
+// <br> The constraints above seem to be quite strong, but creating a MeasurementSet
+// usually matches them. It is wise to size the buckets/tiles such that they contain
+// the data of a single or a few time stamps.
 
 // <ANCHOR NAME="Tables:row-access">
 // <h3>Accessing rows in a Table</h3></ANCHOR>
@@ -729,15 +800,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <h4>Table Query Language</h4>
 // The selection and sorting mechanism described above can only be used
 // in a hard-coded way in a C++ program.
-// There is, however, another way. Strings containing selection and
-// sorting commands can be used.
+// There is, however, another way. Command strings containing selection and
+// sorting (and many other) commands can be parsed and executed. 
 // The syntax of these commands is based on SQL and is described in the
 // <a href="../notes/199.html">Table Query Language</a> (TaQL) note 199.
 // The language supports UDFs (User Defined Functions) in dynamically
 // loadable libraries as explained in the note.
 // <br>A TaQL command can be executed with the static function
 // <src>tableCommand</src> defined in class
-// <linkto class=TableParse>TableParse</linkto>.
+// <linkto class=TableParse>TableParse</linkto>. It can also be executed from
+// Python (using python-casacore) and from he sheel using the program 'taql'.
 
 // <ANCHOR NAME="Tables:concatenation">
 // <h3>Table Concatenation</h3></ANCHOR>
@@ -988,7 +1060,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> <A HREF="#Tables:storage managers">Storage managers</A> --
 //   which store the data as such. They can only handle the standard
 //   data types (Bool,...,String) as discussed in the section about the
-//   <A HREF="#Tables:properties">table properties</A>).
+//   <A HREF="#Tables:properties">table properties</A>.
 //  <li> <A HREF="#Tables:virtual column engines">Virtual column engines</A>
 //   -- which manipulate the data.
 //   An engine could be a simple thing like scaling the data (as done

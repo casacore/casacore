@@ -262,7 +262,7 @@ void MSMBase::create64 (rownr_t nrrow)
   nrrowCreate_p = nrrow;
 }
 
-rownr_t MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
+Fallible<rownr_t> MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
 {
   nrrow_p = tabNrrow;
   //# Create the required nr of rows and initialize them.
@@ -272,7 +272,7 @@ rownr_t MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
   return nrrow_p;
 }
 
-rownr_t MSMBase::resync64 (rownr_t nrrow)
+Fallible<rownr_t> MSMBase::resync64 (rownr_t nrrow)
 {
   // Add or remove rows if it has changed.
   // Note that removing decreases the row number, so the same row number

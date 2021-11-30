@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# $Id$
+
+# Run in the background and kill after 2 seconds to get a failed table.
+echo "Run with small nr of rows in SSM ..."
+./tFailoverTable >& tFailoverTable_tmp.out1 &
+pid=$!
+sleep 2
+kill -9 $pid
+cat tFailoverTable_tmp.out1
+
+# Now read and check the aborted table.
+$casa_checktool ./tFailoverTable r
+
+# Do the same for a table where all rows fit in a single SSM bucket,
+# so no SSM data are written.
+echo
+echo "Run with large nr of rows in SSM ..."
+./tFailoverTable 600 >& tFailoverTable_tmp.out2 &
+pid=$!
+sleep 2
+kill -9 $pid
+cat tFailoverTable_tmp.out2
+
+# Now read and check the aborted table.
+$casa_checktool ./tFailoverTable r

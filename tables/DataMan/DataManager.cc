@@ -68,6 +68,7 @@ DataManager::DataManager()
 : nrcol_p       (0),
   seqnr_p       (0),
   asBigEndian_p (False),
+  failoverMode_p(False),
   tsmOption_p   (TSMOption::Buffer, 0, 0),
   multiFile_p   (0),
   clone_p       (0)
@@ -100,6 +101,8 @@ void DataManager::setProperties (const Record&)
 Bool DataManager::isStorageManager() const
     { return True; }
 
+Bool DataManager::checkFailover (DataType, uInt) const
+    { return ! isStorageManager(); }
 
 
 void DataManager::create64 (rownr_t nrrow)
@@ -108,12 +111,15 @@ void DataManager::create64 (rownr_t nrrow)
   create (uInt(nrrow));
 }
   
-rownr_t DataManager::open64 (rownr_t nrrow, AipsIO& ios)
+Fallible<rownr_t> DataManager::open64 (rownr_t nrrow, AipsIO& ios)
 {
   return open1 (uInt(nrrow), ios);
 }
 
-rownr_t DataManager::resync64 (rownr_t nrrow)
+void DataManager::repairNrow (rownr_t)
+{}
+  
+Fallible<rownr_t> DataManager::resync64 (rownr_t nrrow)
 {
   AlwaysAssert (nrrow < std::numeric_limits<uInt>::max(), AipsError);
   return resync1 (uInt(nrrow));

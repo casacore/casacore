@@ -301,8 +301,8 @@ private:
     // Determine and set the endian format (big or little).
     void setEndian (int endianFormat);
 
-    // Throw an exception if the table is not writable.
-    void checkWritable (const char* func) const;
+    // Throw an exception if the table is not writable or if Failover is used.
+    void checkWritable (const char* func, Bool checkFailover=True) const;
 
 
     CountedPtr<ColumnSet> colSetPtr_p;        //# pointer to set of columns

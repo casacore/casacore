@@ -73,12 +73,12 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
                                    Bool initialize, const TableLock& lockOptions,
                                    int endianFormat, const TSMOption& tsmOption)
 {
-    colSetPtr_p    = 0;
-    tableChanged_p = True;
-    addToCache_p   = True;
-    lockPtr_p      = 0;
-    tsmOption_p    = tsmOption;
-    try {
+  colSetPtr_p    = 0;
+  tableChanged_p = True;
+  addToCache_p   = True;
+  lockPtr_p      = 0;
+  tsmOption_p    = tsmOption;
+  try {
     // Determine and set the endian option.
     setEndian (endianFormat);
     // Replace default TSM option for new table.
@@ -113,9 +113,9 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
 	}
     }
     //# Create the data managers for unbound columns.
-    //# Check if there are no data managers with equal names.
+    //# Check if the data managers (equal names and failover match).
     newtab.handleUnbound();
-    newtab.columnSetPtr()->checkDataManagerNames (name_p);
+    newtab.columnSetPtr()->checkDataManagers (name_p);
     //# Get the data from the SetupNewTable object.
     //# Set SetupNewTable object to in use.
     tdescPtr_p  = newtab.tableDescPtr();
@@ -144,6 +144,10 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
     //# incorrect number of rows (similar behaviour as in function addRow).
     nrrowToAdd_p = 0;
     nrrow_p = nrrow;
+    // Flush this table if in Failover mode, so basic meta data is available.
+    if (colSetPtr_p->failoverMode()) {
+      flush (False, False);
+    }
     //# Release the write lock if UserLocking is used.
     if (lockPtr_p->option() == TableLock::UserLocking) {
 	lockPtr_p->release();
@@ -673,7 +677,7 @@ Bool PlainTable::canRenameColumn (const String& columnName) const
 void PlainTable::addRow (rownr_t nrrw, Bool initialize)
 {
     if (nrrw > 0) {
-        checkWritable("addRow");
+        checkWritable("addRow", False);
 	//# Locking has to be done here, otherwise nrrow_p is not up-to-date
 	//# when autoReleaseLock releases the lock and writes the data.
 	nrrowToAdd_p = nrrw;
@@ -690,7 +694,7 @@ void PlainTable::addRow (rownr_t nrrw, Bool initialize)
 
 void PlainTable::removeRow (rownr_t rownr)
 {
-    checkWritable("rowmoveRow");
+    checkWritable("removeRow");
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date
     //# when autoReleaseLock releases the lock and writes the data.
     colSetPtr_p->checkWriteLock (True);
@@ -810,11 +814,15 @@ void PlainTable::setEndian (int endianFormat)
     }
 }
 
-void PlainTable::checkWritable (const char* func) const
+void PlainTable::checkWritable (const char* func, Bool checkFailover) const
 {
     if (! isWritable()) {
         throw (TableInvOper ("Table::" + String(func) + "; table "
                              + tableName() + " is not writable"));
+    }
+    if (checkFailover  &&  colSetPtr_p->failoverMode()) {
+        throw (TableInvOper ("Table::" + String(func) + " cannot be done; table "
+                             + tableName() + " is in Failover mode"));
     }
 }
 

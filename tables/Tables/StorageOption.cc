@@ -51,6 +51,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         itsOption = StorageOption::MultiHDF5;
       } else if (opt == "sepfile") {
         itsOption = StorageOption::SepFile;
+      } else if (opt == "failover") {
+        itsOption = StorageOption::Failover;
       } else {
         itsOption = StorageOption::Default;
       }

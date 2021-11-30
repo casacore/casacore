@@ -198,9 +198,12 @@ public:
   // with <src>canExceedNrBuckets=False</src>.
   virtual void setProperties (const Record& spec);
 
+  // StandardStMan supports failover mode except for variable length string columns.
+  virtual Bool checkFailover (DataType dtype, uInt maxLen) const;
+  
   // Get the version of the class.
   uInt getVersion() const;
-  
+
   // Set the cache size (in buckets).
   // If <src>canExceedNrBuckets=True</src>, the given cache size can be
   // larger than the nr of buckets in the file. In this way the cache can
@@ -319,11 +322,15 @@ private:
   
   // Open the storage manager file for an existing table, read in
   // the data, and let the SSMColumn objects read their data.
-  virtual rownr_t open64 (rownr_t aRowNr, AipsIO&);
+  virtual Fallible<rownr_t> open64 (rownr_t aRowNr, AipsIO&);
+  
+  // Fix the the storage manager using the given nr of rows.
+  // It is called in case a Failover table needs to be repaired.
+  virtual void repairNrow (rownr_t nrrow);
   
   // Resync the storage manager with the new file contents.
   // This is done by clearing the cache.
-  virtual rownr_t resync64 (rownr_t aRowNr);
+  virtual Fallible<rownr_t> resync64 (rownr_t aRowNr);
   
   // Reopen the storage manager files for read/write.
   virtual void reopenRW();
@@ -388,8 +395,17 @@ private:
   // Read the index from its buckets.
   void readIndexBuckets();
 
-  // Write the header and the indices.
-  void writeIndex();
+  // Generate the bucket index for tables created in Failover mode.
+  void generateIndex();
+  
+  // Write the header and optionally the indices.
+  void writeHeader (Bool headerOnly);
+
+  // Write the index and return the length written.
+  uInt writeIndex();
+
+  // Check if the index is correct for Failover mode.
+  void checkIndex();
 
 
   //# Declare member variables.
@@ -453,7 +469,7 @@ private:
   
   // The bucket size.
   uInt itsBucketSize;
-  uInt itsBucketRows;
+  uInt itsRowsPerBucket;
   
   // The assembly of all columns.
   PtrBlock<SSMColumn*> itsPtrColumn;

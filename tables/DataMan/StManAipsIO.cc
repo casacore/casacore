@@ -323,11 +323,11 @@ void StManAipsIO::create64 (rownr_t nrrow)
     setHasPut();
 }
 
-rownr_t StManAipsIO::open64 (rownr_t tabNrrow, AipsIO&)
+Fallible<rownr_t> StManAipsIO::open64 (rownr_t tabNrrow, AipsIO&)
 {
     return resync64 (tabNrrow);
 }
-rownr_t StManAipsIO::resync64 (rownr_t nrrow)
+Fallible<rownr_t> StManAipsIO::resync64 (rownr_t nrrow)
 {
     if (iosfile_p != 0) {
         iosfile_p->resync();

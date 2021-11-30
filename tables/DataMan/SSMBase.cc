@@ -13,7 +13,7 @@
 //# License for more details.
 //#
 //# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
+//# along with this library; if not, writeto the Free Software Foundation,
 //# Inc., 675 Massachusettes Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
@@ -73,13 +73,13 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
   itsFreeBucketsNr     (0),
   itsFirstFreeBucket   (-1),
   itsBucketSize        (0),
-  itsBucketRows        (0),
+  itsRowsPerBucket     (0),
   isDataChanged        (False)
 { 
   if (aBucketSize < 0) {
-    itsBucketRows = -aBucketSize;
+    itsRowsPerBucket = -aBucketSize;
   } else if (aBucketSize == 0) {
-    itsBucketRows = 32;
+    itsRowsPerBucket = 32;
   } else {
     itsBucketSize = aBucketSize;
   }
@@ -105,13 +105,13 @@ SSMBase::SSMBase (const String& aDataManName,
   itsFreeBucketsNr     (0),
   itsFirstFreeBucket   (-1),
   itsBucketSize        (0),
-  itsBucketRows        (0),
+  itsRowsPerBucket     (0),
   isDataChanged        (False)
 { 
   if (aBucketSize < 0) {
-    itsBucketRows = -aBucketSize;
+    itsRowsPerBucket = -aBucketSize;
   } else if (aBucketSize == 0) {
-    itsBucketRows = 32;
+    itsRowsPerBucket = 32;
   } else {
     itsBucketSize = aBucketSize;
   }
@@ -137,21 +137,21 @@ SSMBase::SSMBase (const String& aDataManName,
   itsFreeBucketsNr     (0),
   itsFirstFreeBucket   (-1),
   itsBucketSize        (0),
-  itsBucketRows        (0),
+  itsRowsPerBucket     (0),
   isDataChanged        (False)
 { 
   // Get nr of rows per bucket if defined.
   if (spec.isDefined ("BUCKETROWS")) {
-    itsBucketRows = spec.asInt ("BUCKETROWS");
+    itsRowsPerBucket = spec.asInt ("BUCKETROWS");
   }
   // If no bucketrows, get bucketsize if defined.
   // Otherwise set bucketrows to default value.
-  if (itsBucketRows == 0) {
+  if (itsRowsPerBucket == 0) {
     if (spec.isDefined ("BUCKETSIZE")) {
       itsBucketSize = spec.asInt ("BUCKETSIZE");
     }
     if (itsBucketSize == 0) {
-      itsBucketRows = 32;
+      itsRowsPerBucket = 32;
     }
   }
   if (spec.isDefined ("PERSCACHESIZE")) {
@@ -178,12 +178,17 @@ SSMBase::SSMBase (const SSMBase& that)
   itsFreeBucketsNr     (0),
   itsFirstFreeBucket   (-1),
   itsBucketSize        (that.itsBucketSize),
-  itsBucketRows        (that.itsBucketRows),
+  itsRowsPerBucket     (that.itsRowsPerBucket),
   isDataChanged        (False)
 {}
 
 SSMBase::~SSMBase()
 {
+  // In Failover mode the index is only written at the very end, so it's sure
+  // that no more data are written.
+  if (itsFile  &&  failover()) {
+    writeHeader (False);
+  }
   for (uInt i=0; i<ncolumn(); i++) {
     delete itsPtrColumn[i];
   }
@@ -229,6 +234,12 @@ Record SSMBase::getProperties() const
   return rec;
 }
 
+Bool SSMBase::checkFailover (DataType dtype, uInt maxLen) const
+{
+  // Only non-strings and fixed sized strings are possible in Failover mode.
+  return dtype != TpString  ||  maxLen > 0;
+}
+  
 void SSMBase::setProperties (const Record& rec)
 {
   if (rec.isDefined("MaxCacheSize")) {
@@ -289,7 +300,6 @@ DataManagerColumn* SSMBase::makeScalarColumn (const String&,
 					      int aDataType,
 					      const String&)
 {
-
   //# Extend itsPtrColumn block if needed.
   if (ncolumn() >= itsPtrColumn.nelements()) {
     itsPtrColumn.resize (itsPtrColumn.nelements() + 32);
@@ -339,10 +349,14 @@ DataManager* SSMBase::makeObject (const String& group, const Record& spec)
 
 void SSMBase::setCacheSize (uInt aCacheSize, Bool canExceedNrBuckets)
 {
-  itsCacheSize = max(aCacheSize,2u);
+  if (failover()) {
+    itsCacheSize = 1;
+  } else {
+    itsCacheSize = aCacheSize;
+  }
   // Limit the cache size if needed.
   if (!canExceedNrBuckets  &&  itsCacheSize > getCache().nBucket()) {
-    itsCacheSize = itsCache->nBucket();
+    itsCacheSize = max(1u, itsCache->nBucket());
   }
   if (itsCache != 0) {
     itsCache->resize (itsCacheSize);
@@ -410,9 +424,9 @@ void SSMBase::readHeader()
   }
   AipsIO anOs (aTio);
   uInt version = anOs.getstart("StandardStMan");
-  itsBucketRows = 0;
+  itsRowsPerBucket = 0;
   itsIdxBucketOffset = 0;
-  Bool bigEndian = True;
+  Bool bigEndian = True;      // older versions use big endian
   if (version >= 3) {
     anOs >> bigEndian;
   }
@@ -433,6 +447,12 @@ void SSMBase::readHeader()
   anOs >> itsIndexLength;               // length of index
   uInt nrinx;
   anOs >> nrinx;                        // Nr of indices
+  if (version >= 4) {
+    anOs >> itsRowsPerBucket;           // Nr of rows per bucket
+  }
+  anOs.getend();
+  anOs.close();
+  delete aTio;
 
   if (itsStringHandler == 0) {
     itsStringHandler = new SSMStringHandler(this);
@@ -440,24 +460,29 @@ void SSMBase::readHeader()
   }
   itsStringHandler->setLastStringBucket(itsLastStringBucket);
 
-  anOs.getend();
-  anOs.close();
-  delete aTio;
-
+  // Create the index objects which are usually filled later by readIndexBuckets.
   for (uInt i=0; i<itsPtrIndex.nelements(); i++) {
     delete itsPtrIndex[i];
   }
   itsPtrIndex.resize (nrinx, True, False);
   itsPtrIndex = 0;
+  if (itsNrIdxBuckets == 0) {
+    // No index buckets, so the file is probably created in Failover mode.
+    // Determine the nr of rows from the file size. It also sets itsNrBuckets.
+    generateIndex();
+  }
 }
 
 void SSMBase::readIndexBuckets()
 {
+  if (itsNrIdxBuckets == 0) {
+    // No index written; filled by generateIndex.
+    return;
+  }
   TypeIO*   aMio;
   MemoryIO  aMemBuf(itsIndexLength);
 
   uInt aCLength = 2*CanonicalConversion::canonicalSize (&itsFirstIdxBucket);
-  getCache();
   // It is stored in big or little endian canonical format.
   if (asBigEndian()) {
     aMio = new CanonicalIO (&aMemBuf);
@@ -509,35 +534,105 @@ void SSMBase::readIndexBuckets()
   delete aMio;
 }
 
-void SSMBase::writeIndex()
+void SSMBase::generateIndex()
 {
-  TypeIO*   aTio;
-  TypeIO*   aMio;
-  MemoryIO  aMemBuf;
+  // This function is called if a table was created in Failover mode and
+  // ended prematurely. In that case the index maps are not written.
+  // First find the number of data buckets (use file size minus header).
+  Int64 size = itsFile->fileSize() - 512;
+  Int64 itsNrBuckets = size / itsBucketSize;
+  // If the nr of table rows matches the nr of buckets, it is assumed to be correct.
+  // (the last bucket might be filled partially).
+  // Otherwise it is assumed all buckets are filled and that table creation ended
+  // prematurely.
+  rownr_t nrrow = itsNrBuckets * itsRowsPerBucket;
+  rownr_t norig = itsNrRows;
+  if (norig < nrrow-itsRowsPerBucket) {
+    norig = nrrow;
+  }
+  repairNrow (norig);
+}
 
-  // Use the file given by the BucketFile object..
+void SSMBase::writeHeader (Bool headerOnly)
+{
+  // Only write the index if not in Failover mode.
+  // Otherwise index buckets might be spread over the file making it unpredictable
+  // where data buckets reside. For the same reason string buckets are not allowed in
+  // Failover mode.
+  // But check the index to see if the blocks are sequential.
+  uInt idxLength = 0;
+  if (headerOnly) {
+    checkIndex();
+  } else {
+    idxLength = writeIndex();
+  }
+
+  // Write the header into the file given by the BucketFile object.
   // Use a buffer size (512) equal to start of buckets in the file,
   // so the IO buffers in the different objects do not overlap.
   CountedPtr<ByteIO> aFio = itsFile->makeFilebufIO (512);
-  uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
-
   // Store it in big or little endian canonical format.
+  std::shared_ptr<TypeIO> aTio;
   if (asBigEndian()) {
-    aMio = new CanonicalIO (&aMemBuf);
-    aTio = new CanonicalIO (aFio.get());
+    aTio.reset (new CanonicalIO (aFio.get()));
   } else {
-    aMio = new LECanonicalIO (&aMemBuf);
-    aTio = new LECanonicalIO (aFio.get());
+    aTio.reset (new LECanonicalIO (aFio.get()));
   }
-  AipsIO anMOs (aMio);
 
-  uInt aNrIdx = itsPtrIndex.nelements();
-  for (uInt i=0;i<aNrIdx; i++ ){
-    itsPtrIndex[i]->put(anMOs);
+  AlwaysAssert ( itsStringHandler != 0, AipsError);
+  itsLastStringBucket = itsStringHandler->lastStringBucket();
+  itsStringHandler->flush();
+  itsCache->flush();
+  uInt aNrBuckets = getCache().nBucket();
+
+  itsFile->seek (0);
+  AipsIO anOs (aTio.get());
+  
+  // Write a few items at the beginning of the file  AipsIO anOs (aTio);
+  anOs.putstart("StandardStMan", 4);
+  anOs << asBigEndian();
+  anOs << itsBucketSize;                // Size of the bucket
+  anOs << aNrBuckets;                   // Present number of buckets
+  anOs << itsPersCacheSize;             // Size of Persistent cache
+  anOs << getCache().nFreeBucket();     // Nr of Free Buckets
+  anOs << getCache().firstFreeBucket(); // First Free Bucket nr
+  anOs << itsNrIdxBuckets;              // Nr buckets needed for index
+  anOs << itsFirstIdxBucket;            // First Index bucket number
+  anOs << itsIdxBucketOffset;           // Offset of bucket if fitting
+  anOs << itsLastStringBucket;          // Last String bucket in use
+  anOs << idxLength;                    // length of index
+  anOs << uInt(itsPtrIndex.nelements());// Nr of indices
+  anOs << itsRowsPerBucket;             // Nr of rows per bucket
+  anOs.putend();  
+  anOs.close();
+  aFio->flush();
+  // Synchronize to make sure it gets written to disk.
+  // This is needed for NFS-files under Linux (to resolve defect 2752).
+  itsFile->fsync();
+}
+
+uInt SSMBase::writeIndex()
+{
+  MemoryIO  aMemBuf;
+  {
+    // Store it in big or little endian canonical format.
+    std::shared_ptr<TypeIO> aMio;
+    if (asBigEndian()) {
+      aMio.reset (new CanonicalIO (&aMemBuf));
+    } else {
+      aMio.reset (new LECanonicalIO (&aMemBuf));
+    }
+    {
+      // Put the index in AipsIO format into the memory buffer.
+      AipsIO anMOs (aMio.get());
+      uInt aNrIdx = itsPtrIndex.nelements();
+      for (uInt i=0;i<aNrIdx; i++ ){
+        itsPtrIndex[i]->put(anMOs);
+      }
+    }
   }
-  anMOs.close();
-
-  // Write total Mio in buckets.
+  uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
+  // Write the memory buffer into buckets.
   // Leave space for next bucket nr.
   const uChar* aMemPtr = aMemBuf.getBuffer();
   uInt idxLength = aMemBuf.length();
@@ -549,7 +644,6 @@ void SSMBase::writeIndex()
   } else {
     aRestSize = idxBucketSize;
   }
-
 
   // If index is currently written in a single half of a bucket,
   // see if this fits in the other half.
@@ -602,47 +696,16 @@ void SSMBase::writeIndex()
   }
 
   itsNrIdxBuckets = aNrBuckets;
-  delete aMio;
+  return idxLength;
+}
 
-  AlwaysAssert ( itsStringHandler != 0, AipsError);
-  itsLastStringBucket = itsStringHandler->lastStringBucket();
-
-  itsStringHandler->flush();
-  itsCache->flush();
-
-  aNrBuckets = getCache().nBucket();
-
-  itsFile->seek (0);
-  AipsIO anOs (aTio);
-  
-  // Write a few items at the beginning of the file  AipsIO anOs (aTio);
-  // The endian switch is a new feature. So only put it if little endian
-  // is used. In that way older software can read newer tables.
-  if (asBigEndian()) {
-    anOs.putstart("StandardStMan", 2);
-  } else {
-    anOs.putstart("StandardStMan", 3);
-    anOs << asBigEndian();
-  }
-  anOs << itsBucketSize;                // Size of the bucket
-  anOs << aNrBuckets;                   // Present number of buckets
-  anOs << itsPersCacheSize;             // Size of Persistent cache
-  anOs << getCache().nFreeBucket();     // Nr of Free Buckets
-  anOs << getCache().firstFreeBucket(); // First Free Bucket nr
-  anOs << itsNrIdxBuckets;              // Nr buckets needed for index
-  anOs << itsFirstIdxBucket;            // First Index bucket number
-  anOs << itsIdxBucketOffset;           // Offset of bucket if fitting
-  anOs << itsLastStringBucket;          // Last String bucket in use
-  anOs << idxLength;                    // length of index
-  anOs << uInt(itsPtrIndex.nelements());// Nr of indices
-  
-  anOs.putend();  
-  anOs.close();
-  delete aTio;
-  aFio->flush();
-  // Synchronize to make sure it gets written to disk.
-  // This is needed for NFS-files under Linux (to resolve defect 2752).
-  itsFile->fsync();
+void SSMBase::checkIndex()
+{
+  // There should be no free buckets.
+  AlwaysAssert (getCache().nFreeBucket() == 0, AipsError);
+  // Only one index map should be used (the same for all columns).
+  AlwaysAssert (itsPtrIndex.size() == 1, AipsError);
+  itsPtrIndex[0]->checkSeqIndex();
 }
 
 void SSMBase::setBucketDirty()
@@ -651,22 +714,18 @@ void SSMBase::setBucketDirty()
   isDataChanged = True;
 }
 
-//# The storage manager can add rows.
 Bool SSMBase::canAddRow() const
 {
   return True;
 }
-//# The storage manager can delete rows.
 Bool SSMBase::canRemoveRow() const
 {
   return True;
 }
-//# The storage manager cannot add columns (not yet).
 Bool SSMBase::canAddColumn() const
 {
   return True;
 }
-//# The storage manager cannot delete columns (not yet).
 Bool SSMBase::canRemoveColumn() const
 {
   return True;
@@ -724,7 +783,6 @@ void SSMBase::removeRow64 (rownr_t aRowNr)
     itsIdxBucketOffset = 0;
     itsNrIdxBuckets    = 0;
     create64(itsNrRows);
-    //    recreate();
   }
   isDataChanged = True;
 }
@@ -969,7 +1027,7 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
   }
 
   if (isDataChanged) {
-    writeIndex();
+    writeHeader (failover());
     if (doFsync) {
       itsFile->fsync();
     }
@@ -989,7 +1047,7 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
   return changed;
 }
 
-rownr_t SSMBase::resync64 (rownr_t aNrRows)
+Fallible<rownr_t> SSMBase::resync64 (rownr_t aNrRows)
 {
   itsNrRows = aNrRows;
   if (itsPtrIndex.nelements() != 0) {
@@ -1024,7 +1082,7 @@ void SSMBase::create64 (rownr_t aNrRows)
   addRow64 (aNrRows);
 }
 
-rownr_t SSMBase::open64 (rownr_t aRowNr, AipsIO& ios)
+Fallible<rownr_t> SSMBase::open64 (rownr_t aRowNr, AipsIO& ios)
 {
   itsNrRows = aRowNr;
   ios.getstart ("SSM");
@@ -1042,9 +1100,27 @@ rownr_t SSMBase::open64 (rownr_t aRowNr, AipsIO& ios)
   for (uInt i=0; i<aNrCol; i++) {
     itsPtrColumn[i]->getFile(itsNrRows);
   }
+  // Create the cache, which also reads the indices.
+  makeCache();
   return itsNrRows;
 }
 
+void SSMBase::repairNrow (rownr_t nrrow)
+{
+  if (nrrow != itsNrRows  ||  nrrow == 0) {
+    itsNrRows = nrrow;
+    itsNrBuckets = (itsNrRows + itsRowsPerBucket - 1) / itsRowsPerBucket;
+    uInt aNrIdx = itsPtrIndex.nelements();
+    AlwaysAssert (aNrIdx == 1, AipsError);
+    delete itsPtrIndex[0];
+    itsPtrIndex[0] = new SSMIndex(this, itsRowsPerBucket);
+    itsPtrIndex[0]->generate (itsNrRows, ncolumn());
+    if (itsCache) {
+      itsCache->resync (itsNrBuckets, itsFreeBucketsNr, itsFirstFreeBucket);
+    }
+  }
+}
+  
 StManArrayFile* SSMBase::openArrayFile (ByteIO::OpenOption anOpt)
 {
   if (itsIosFile == 0) {
@@ -1090,9 +1166,9 @@ void SSMBase::init()
   // If an advised nr of rows per bucket was given and the actual
   // nr is smaller, adjust it to fill up the last bucket.
   uInt rowsPerBucket = setBucketSize();
-  if (itsBucketRows > 0  &&  itsBucketRows > rowsPerBucket) {
-    uInt nbuckets = (itsBucketRows + rowsPerBucket - 1) / rowsPerBucket;
-    itsBucketRows = (itsBucketRows + nbuckets - 1) / nbuckets;
+  if (itsRowsPerBucket > 0  &&  itsRowsPerBucket > rowsPerBucket) {
+    uInt nbuckets = (itsRowsPerBucket + rowsPerBucket - 1) / rowsPerBucket;
+    itsRowsPerBucket = (itsRowsPerBucket + nbuckets - 1) / nbuckets;
     rowsPerBucket = setBucketSize();
   }
   // Determine the offset of each column.
@@ -1108,6 +1184,10 @@ void SSMBase::init()
   itsPtrIndex.resize (1, True);
   itsPtrIndex[0] = new SSMIndex(this, rowsPerBucket);
   itsPtrIndex[0]->setNrColumns (nrCol, aTotalSize);
+  // Limit the cache size to 1 in case of Failover.
+  if (failover()) {
+    itsCacheSize = 1;
+  }
 }
 
 
@@ -1115,7 +1195,7 @@ uInt SSMBase::setBucketSize()
 {
   // Find nr of columns and possibly advised nr of rows per bucket.
   uInt nrCol = ncolumn();
-  uInt advBucketRows = itsBucketRows;
+  uInt advRowsPerBucket = itsRowsPerBucket;
   // Finding the nr of rows fitting in the bucket is a bit hard, because
   // Bool values are stored as bits. Therefore we have to iterate.
   // First find the nr of full bytes needed (ignoring possible remainders).
@@ -1127,8 +1207,8 @@ uInt SSMBase::setBucketSize()
   if (itsBucketSize < 128) {
     itsBucketSize = 128;
   }
-  uInt rowsPerBucket = advBucketRows;
-  if (advBucketRows == 0) {
+  uInt rowsPerBucket = advRowsPerBucket;
+  if (advRowsPerBucket == 0) {
     if (itsBucketSize < 128) {
       itsBucketSize = 128;
     }
@@ -1145,14 +1225,14 @@ uInt SSMBase::setBucketSize()
 		    itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
     }
     // If advised #rows/bucket given, get bucket size.
-    if (advBucketRows > 0) {
+    if (advRowsPerBucket > 0) {
       itsBucketSize = min (32768u, max(128u, aThisSize));
       if (itsBucketSize == aThisSize) {
 	break;
       }
       // Exceeding minimum or maximum, so calculate #rows/bucket.
       rowsPerBucket = itsBucketSize/aTotalSize;
-      advBucketRows = 0;
+      advRowsPerBucket = 0;
     } else {
       // Stop if one more row does not fit.
       if (aNextSize > itsBucketSize) {

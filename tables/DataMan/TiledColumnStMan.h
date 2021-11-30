@@ -188,6 +188,9 @@ public:
     // Get the type name of the data manager (i.e. TiledColumnStMan).
     virtual String dataManagerType() const;
 
+    // TiledColumnStMan supports failover mode except for string columns.
+    virtual Bool checkFailover (DataType dtype, uInt maxLen) const;
+
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
     static DataManager* makeObject (const String& dataManagerType,
@@ -231,6 +234,10 @@ private:
     // This allows a column with an indirect array to create its file.
     virtual void create64 (rownr_t nrrow);
 
+    // Fix the the storage manager using the given nr of rows.
+    // It is called in case a Failover table needs to be repaired.
+    virtual void repairNrow (rownr_t nrrow);
+  
     // Read the header info.
     virtual void readHeader (rownr_t nrrow, Bool firstTime);
 

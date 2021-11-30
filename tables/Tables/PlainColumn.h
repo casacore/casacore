@@ -97,6 +97,9 @@ public:
     // Test if the column is stored (otherwise it is virtual).
     virtual Bool isStored() const;
 
+    // Check if Failover is supported.
+    Bool checkFailover() const;
+  
     // Get access to the column keyword set.
     // <group>
     TableRecord& rwKeywordSet();

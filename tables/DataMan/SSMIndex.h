@@ -135,7 +135,7 @@ public:
   // It returns the bucket nr if it gets empty, otherwise -1.
   Int deleteRow (rownr_t aRowNumber);
 
-  // Get the number of rows that fits in ach bucket.
+  // Get the number of rows that fits in each bucket.
   uInt getRowsPerBucket() const;
 
   // Find the bucket containing the given row.
@@ -143,6 +143,12 @@ public:
   // It also sets the first and last row number fitting in that bucket.
   void find (rownr_t aRowNumber, uInt& aBucketNr, rownr_t& aStartRow,
 	     rownr_t& anEndRow, const String& colName) const;
+
+  // Check if the buckets are fully sequential (for Failover mode).
+  void checkSeqIndex() const;
+
+  // Generate the index (for table created in Failover mode).
+  void generate (rownr_t nrows, uInt ncolumns);
 
 private:
   // Get the index of the bucket containing the given row.

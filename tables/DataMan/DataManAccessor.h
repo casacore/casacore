@@ -90,6 +90,10 @@ public:
 
     virtual ~RODataManAccessor();
 
+    // Let the data manager flush its data to disk.
+    // It cannot write meta data to the AipsIO stream in the table.dat file.
+    void flush (Bool fsync = False);
+  
     // Set data manager properties using the fields in the record.
     // Each data manager has its specific set of properties.
     void setProperties (const Record&) const;

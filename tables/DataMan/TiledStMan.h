@@ -319,10 +319,10 @@ public:
     TSMFile* getFile (uInt sequenceNumber);
 
     // Open the storage manager for an existing table.
-    virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
+    virtual Fallible<rownr_t> open64 (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
-    virtual rownr_t resync64 (rownr_t nrrow);
+    virtual Fallible<rownr_t> resync64 (rownr_t nrrow);
 
     // Reopen all files used in this storage manager for read/write access.
     virtual void reopenRW();
@@ -462,8 +462,9 @@ protected:
     // Read the data from the header file.
     // When done for the first time, setup() is called to initialize
     // the various variables (using the extraNdim variable).
+    // If given, the nr of rows is guessed to repair prematurely ended tables.
     void headerFileGet (AipsIO& headerFile, rownr_t tabNrrow, Bool firstTime,
-			Int extraNdim);
+			Int extraNdim, Bool doGuess);
 
     // Close the header file.
     // It deletes the AipsIO object.
@@ -484,6 +485,9 @@ protected:
     // This function is temporary and can disappear when the ColumnDesc
     // classes use type TpArray*.
     int arrayDataType (int dataType) const;
+
+    // Guess the nr of rows from the file size (only for TiledColumnStMan).
+    rownr_t guessNrow();
 
 
     //# Declare all data members.

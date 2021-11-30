@@ -1,0 +1,435 @@
+Run with small nr of rows in SSM ...
+Invalid Table operation: Table tFailoverTable_tmp.tab1 cannot be created; storage manager of column col6 does not support Failover mode
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 0
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 128
+ ColIndex[2]           : 0 ColOffset[2]          : 384
+ ColIndex[3]           : 0 ColOffset[3]          : 512
+ ColIndex[4]           : 0 ColOffset[4]          : 768
+CacheSize                   : 1
+Size of buckets             : 1088
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 0
+Rows Per bucket    : 32
+Nr of Columns      : 5
+Freespace entries: 0
+
+
+  Filling done
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 500
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 128
+ ColIndex[2]           : 0 ColOffset[2]          : 384
+ ColIndex[3]           : 0 ColOffset[3]          : 512
+ ColIndex[4]           : 0 ColOffset[4]          : 768
+CacheSize                   : 1
+Size of buckets             : 1088
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 16
+Rows Per bucket    : 32
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 31
+BucketNr[1]  : 1 - LastRow[1]   : 63
+BucketNr[2]  : 2 - LastRow[2]   : 95
+BucketNr[3]  : 3 - LastRow[3]   : 127
+BucketNr[4]  : 4 - LastRow[4]   : 159
+BucketNr[5]  : 5 - LastRow[5]   : 191
+BucketNr[6]  : 6 - LastRow[6]   : 223
+BucketNr[7]  : 7 - LastRow[7]   : 255
+BucketNr[8]  : 8 - LastRow[8]   : 287
+BucketNr[9]  : 9 - LastRow[9]   : 319
+BucketNr[10]  : 10 - LastRow[10]   : 351
+BucketNr[11]  : 11 - LastRow[11]   : 383
+BucketNr[12]  : 12 - LastRow[12]   : 415
+BucketNr[13]  : 13 - LastRow[13]   : 447
+BucketNr[14]  : 14 - LastRow[14]   : 479
+BucketNr[15]  : 15 - LastRow[15]   : 499
+Freespace entries: 0
+
+
+>>> TSMCube cache statistics:
+cubeShape: [3, 4, 500]
+tileShape: [3, 4, 5]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  100
+#inits:    100
+#writes:   99
+#accesses: 500        hit-rate:  80%
+<<<
+Invalid Table operation: Table::removeRow cannot be done; table tFailoverTable_tmp.tab2 is in Failover mode
+Table opened with 500 rows out of 500
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 500
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 128
+ ColIndex[2]           : 0 ColOffset[2]          : 384
+ ColIndex[3]           : 0 ColOffset[3]          : 512
+ ColIndex[4]           : 0 ColOffset[4]          : 768
+CacheSize                   : 2
+Size of buckets             : 1088
+Total buckets               : 17
+Total Index buckets         : 1
+1st Index bucket            : 16
+Index bucket offset         : 8
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 16
+Rows Per bucket    : 32
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 31
+BucketNr[1]  : 1 - LastRow[1]   : 63
+BucketNr[2]  : 2 - LastRow[2]   : 95
+BucketNr[3]  : 3 - LastRow[3]   : 127
+BucketNr[4]  : 4 - LastRow[4]   : 159
+BucketNr[5]  : 5 - LastRow[5]   : 191
+BucketNr[6]  : 6 - LastRow[6]   : 223
+BucketNr[7]  : 7 - LastRow[7]   : 255
+BucketNr[8]  : 8 - LastRow[8]   : 287
+BucketNr[9]  : 9 - LastRow[9]   : 319
+BucketNr[10]  : 10 - LastRow[10]   : 351
+BucketNr[11]  : 11 - LastRow[11]   : 383
+BucketNr[12]  : 12 - LastRow[12]   : 415
+BucketNr[13]  : 13 - LastRow[13]   : 447
+BucketNr[14]  : 14 - LastRow[14]   : 479
+BucketNr[15]  : 15 - LastRow[15]   : 499
+Freespace entries: 0
+
+
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 0
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 128
+ ColIndex[2]           : 0 ColOffset[2]          : 384
+ ColIndex[3]           : 0 ColOffset[3]          : 512
+ ColIndex[4]           : 0 ColOffset[4]          : 768
+CacheSize                   : 1
+Size of buckets             : 1088
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 0
+Rows Per bucket    : 32
+Nr of Columns      : 5
+Freespace entries: 0
+
+
+  Filling done
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 500
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 128
+ ColIndex[2]           : 0 ColOffset[2]          : 384
+ ColIndex[3]           : 0 ColOffset[3]          : 512
+ ColIndex[4]           : 0 ColOffset[4]          : 768
+CacheSize                   : 1
+Size of buckets             : 1088
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 16
+Rows Per bucket    : 32
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 31
+BucketNr[1]  : 1 - LastRow[1]   : 63
+BucketNr[2]  : 2 - LastRow[2]   : 95
+BucketNr[3]  : 3 - LastRow[3]   : 127
+BucketNr[4]  : 4 - LastRow[4]   : 159
+BucketNr[5]  : 5 - LastRow[5]   : 191
+BucketNr[6]  : 6 - LastRow[6]   : 223
+BucketNr[7]  : 7 - LastRow[7]   : 255
+BucketNr[8]  : 8 - LastRow[8]   : 287
+BucketNr[9]  : 9 - LastRow[9]   : 319
+BucketNr[10]  : 10 - LastRow[10]   : 351
+BucketNr[11]  : 11 - LastRow[11]   : 383
+BucketNr[12]  : 12 - LastRow[12]   : 415
+BucketNr[13]  : 13 - LastRow[13]   : 447
+BucketNr[14]  : 14 - LastRow[14]   : 479
+BucketNr[15]  : 15 - LastRow[15]   : 499
+Freespace entries: 0
+
+
+>>> TSMCube cache statistics:
+cubeShape: [3, 4, 500]
+tileShape: [3, 4, 5]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  100
+#inits:    100
+#writes:   99
+#accesses: 500        hit-rate:  80%
+<<<
+Waiting 10 seconds to be killed to get improperly ended table ...
+Table opened with 480 rows out of 500
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 480
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 128
+ ColIndex[2]           : 0 ColOffset[2]          : 384
+ ColIndex[3]           : 0 ColOffset[3]          : 512
+ ColIndex[4]           : 0 ColOffset[4]          : 768
+CacheSize                   : 2
+Size of buckets             : 1088
+Total buckets               : 15
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 15
+Rows Per bucket    : 32
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 31
+BucketNr[1]  : 1 - LastRow[1]   : 63
+BucketNr[2]  : 2 - LastRow[2]   : 95
+BucketNr[3]  : 3 - LastRow[3]   : 127
+BucketNr[4]  : 4 - LastRow[4]   : 159
+BucketNr[5]  : 5 - LastRow[5]   : 191
+BucketNr[6]  : 6 - LastRow[6]   : 223
+BucketNr[7]  : 7 - LastRow[7]   : 255
+BucketNr[8]  : 8 - LastRow[8]   : 287
+BucketNr[9]  : 9 - LastRow[9]   : 319
+BucketNr[10]  : 10 - LastRow[10]   : 351
+BucketNr[11]  : 11 - LastRow[11]   : 383
+BucketNr[12]  : 12 - LastRow[12]   : 415
+BucketNr[13]  : 13 - LastRow[13]   : 447
+BucketNr[14]  : 14 - LastRow[14]   : 479
+Freespace entries: 0
+
+
+
+Run with large nr of rows in SSM ...
+Invalid Table operation: Table tFailoverTable_tmp.tab1 cannot be created; storage manager of column col6 does not support Failover mode
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 0
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 2400
+ ColIndex[2]           : 0 ColOffset[2]          : 7200
+ ColIndex[3]           : 0 ColOffset[3]          : 9600
+ ColIndex[4]           : 0 ColOffset[4]          : 14400
+CacheSize                   : 1
+Size of buckets             : 20400
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 0
+Rows Per bucket    : 600
+Nr of Columns      : 5
+Freespace entries: 0
+
+
+  Filling done
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 500
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 2400
+ ColIndex[2]           : 0 ColOffset[2]          : 7200
+ ColIndex[3]           : 0 ColOffset[3]          : 9600
+ ColIndex[4]           : 0 ColOffset[4]          : 14400
+CacheSize                   : 1
+Size of buckets             : 20400
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 600
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 499
+Freespace entries: 0
+
+
+>>> TSMCube cache statistics:
+cubeShape: [3, 4, 500]
+tileShape: [3, 4, 5]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  100
+#inits:    100
+#writes:   99
+#accesses: 500        hit-rate:  80%
+<<<
+Invalid Table operation: Table::removeRow cannot be done; table tFailoverTable_tmp.tab2 is in Failover mode
+Table opened with 500 rows out of 500
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 500
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 2400
+ ColIndex[2]           : 0 ColOffset[2]          : 7200
+ ColIndex[3]           : 0 ColOffset[3]          : 9600
+ ColIndex[4]           : 0 ColOffset[4]          : 14400
+CacheSize                   : 2
+Size of buckets             : 20400
+Total buckets               : 2
+Total Index buckets         : 1
+1st Index bucket            : 1
+Index bucket offset         : 8
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 600
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 499
+Freespace entries: 0
+
+
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 0
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 2400
+ ColIndex[2]           : 0 ColOffset[2]          : 7200
+ ColIndex[3]           : 0 ColOffset[3]          : 9600
+ ColIndex[4]           : 0 ColOffset[4]          : 14400
+CacheSize                   : 1
+Size of buckets             : 20400
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 0
+Rows Per bucket    : 600
+Nr of Columns      : 5
+Freespace entries: 0
+
+
+  Filling done
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 500
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 2400
+ ColIndex[2]           : 0 ColOffset[2]          : 7200
+ ColIndex[3]           : 0 ColOffset[3]          : 9600
+ ColIndex[4]           : 0 ColOffset[4]          : 14400
+CacheSize                   : 1
+Size of buckets             : 20400
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 600
+Nr of Columns      : 5
+BucketNr[0]  : 0 - LastRow[0]   : 499
+Freespace entries: 0
+
+
+>>> TSMCube cache statistics:
+cubeShape: [3, 4, 500]
+tileShape: [3, 4, 5]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  100
+#inits:    100
+#writes:   99
+#accesses: 500        hit-rate:  80%
+<<<
+Waiting 10 seconds to be killed to get improperly ended table ...
+Table opened with 0 rows out of 500
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 0
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 2400
+ ColIndex[2]           : 0 ColOffset[2]          : 7200
+ ColIndex[3]           : 0 ColOffset[3]          : 9600
+ ColIndex[4]           : 0 ColOffset[4]          : 14400
+CacheSize                   : 2
+Size of buckets             : 20400
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 0
+Rows Per bucket    : 600
+Nr of Columns      : 5
+Freespace entries: 0
+
+

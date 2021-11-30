@@ -749,12 +749,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const char* convFuncHelp[] = {
     "Conversion functions",
     "",
-    "  string HMS       (real RAD)    convert angles to e.g. 12h34m56.789",
-    "  string DMS       (real RAD)    convert angles to e.g. 12d34m56.789",
-    "  string HDMS      (realarray)   convert angles alternately to HMS and DMS",
-    "  string STR       (string, int WIDTH)    make string WIDTH long",
-    "  string STR       (numeric, )    make string WIDTH long",
-    "  string STR       (string, int WIDTH)    make string WIDTH long"
+    "  string HMS       (real RAD)    convert angles to string, e.g. 12h34m56.789",
+    "  string DMS       (real RAD)    convert angles to string, e.g. 12d34m56.789",
+    "  string HDMS      (realarray)   convert angles alternately to HMS and DMS string",
+    "  string STR(ING)  (any, real WIDTH.PREC)  convert to string using width and/or precision",
+    "  string STR(ING)  (string, string fmt)    convert to string using C-style format",
+    "  string STR(ING)  (string, string fmt)    convert to string using C-style format"
   };
 
   const char* logicalFuncHelp[] = {

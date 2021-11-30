@@ -33,6 +33,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/TSMOption.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/ByteIO.h>
@@ -219,6 +221,7 @@ class DataManager
 {
 friend class SetupNewTable;
 friend class ColumnSet;
+friend class RODataManAccessor;
 
 public:
 
@@ -263,6 +266,11 @@ public:
     // The default is yes.
     virtual Bool isStorageManager() const;
 
+    // Check if the data manager supports failover mode for a column with the given
+    // data type and maximum string length?
+    // The default is False for storage managers and True for virtual engines.
+    virtual Bool checkFailover (DataType columnDataType, uInt maxLen) const;
+  
     // Tell if the data manager wants to reallocate the data manager
     // column objects.
     // This is used by the tiling storage manager.
@@ -381,6 +389,14 @@ protected:
     void setEndian (Bool bigEndian)
       { asBigEndian_p = bigEndian; }
 
+    // Tell the data manager if Failover mode is used.
+    void setFailover (Bool failoverMode)
+      { failoverMode_p = failoverMode; }
+
+    // Is Failover mode used?
+    Bool failover() const
+      { return failoverMode_p; }
+                
     // Tell the data manager which TSM option to use.
     void setTsmOption (const TSMOption& tsmOption);
 
@@ -404,6 +420,7 @@ private:
     uInt         nrcol_p;            //# #columns in this st.man.
     uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
     Bool         asBigEndian_p;      //# store data in big or little endian
+    Bool         failoverMode_p;     //# Use failover mode?
     TSMOption    tsmOption_p;
     MultiFileBase* multiFile_p;      //# MultiFile to use; 0=no MultiFile
     Table*       table_p;            //# Table this data manager belongs to
@@ -479,13 +496,23 @@ private:
     // The AipsIO stream represents the main table file and must be
     // used by virtual column engines to retrieve the data stored
     // in the flush function.
-    // <br>The data manager returns 0 or the nr of rows it thinks there are.
-    // This is particularly useful for data managers like LofarStMan whose
-    // data are written outside the table system, thus for which no rows
-    // have been added.
-    // <br>The default implementation calls the uInt version of open and open1.
-    virtual rownr_t open64 (rownr_t nrrow, AipsIO& ios);
+    // <br>The data manager returns a Fallible<rownr_t> containing the nr of rows it
+    // thinks there are. This is particularly useful for data managers such as LofarStMan
+    // whose data are written outside the table system, thus for which no rows have been
+    // added.
+    // An invalid Fallible object should be returned if the data manager does not know
+    // the number of rows.
+    // <br>The default implementation calls the uInt version of open and open1 and
+    // returns a valid Fallible object.
+  virtual Fallible<rownr_t> open64 (rownr_t nrrow, AipsIO& ios);
 
+    // Fix the the storage managers using the given nr of rows.
+    // It is called when the open64 functions return a different nr of rows
+    // in case a Failover table needs to be repaired.
+    // It is only used by TiledColumnStMan and StandardStMan.
+    // The default implementation does nothing.
+    virtual void repairNrow (rownr_t nrrow);
+  
     // Resync the data by rereading cached data from the file.
     // This is called when a lock is acquired on the file and it appears 
     // that data in this data manager has been changed by another process.
@@ -493,9 +520,11 @@ private:
     // This is particularly useful for data managers like LofarStMan whose
     // data are written outside the table system, thus for which no rows
     // have been added.
-    // <br>The default implementation calls the uInt version of resync and
-    // resync1.
-    virtual rownr_t resync64 (rownr_t nrrow);
+    // An invalid Fallible object should be returned if the data manager does not know
+    // the number of rows.
+    // <br>The default implementation calls the uInt version of open and open1 and
+    // returns a valid Fallible object.
+    virtual Fallible<rownr_t> resync64 (rownr_t nrrow);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all
