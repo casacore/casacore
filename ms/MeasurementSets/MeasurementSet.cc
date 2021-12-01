@@ -258,27 +258,21 @@ MeasurementSet::MeasurementSet (MPI_Comm comm,
 
 MeasurementSet::MeasurementSet(const MeasurementSet &other)
 : MSTable<MSMainEnums>(other),
-  hasBeenDestroyed_p(False)
+  doNotLockSubtables_p(other.doNotLockSubtables_p),
+  hasBeenDestroyed_p  (other.hasBeenDestroyed_p)
 {
-  doNotLockSubtables_p = other.doNotLockSubtables_p;
   if (! isNull()) {
     copySubtables (other); // others will be handled by initRefs
 
     mainLock_p=TableLock(TableLock::AutoNoReadLocking);
 
     // verify that other is valid
-
-    if (&other != this) {
-      addCat();
-      if (! validate(this->tableDesc()))
-        throw (AipsError("MS(const MeasurementSet &) - "
-                         "MeasurementSet is not a valid MS"));
+    addCat();
+    if (! validate(this->tableDesc())) {
+      throw (AipsError("MS(const MeasurementSet &) - "
+                       "MeasurementSet is not a valid MS"));
     }
-    hasBeenDestroyed_p = other.hasBeenDestroyed_p;
-
-    if (! isNull()){
-      initRefs();
-    }
+    initRefs();
   }
 }
 
