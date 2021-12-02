@@ -258,30 +258,28 @@ MeasurementSet::MeasurementSet (MPI_Comm comm,
 
 MeasurementSet::MeasurementSet(const MeasurementSet &other)
 : MSTable<MSMainEnums>(other),
-  hasBeenDestroyed_p(False)
+  doNotLockSubtables_p(other.doNotLockSubtables_p),
+  hasBeenDestroyed_p  (other.hasBeenDestroyed_p)
 {
-  doNotLockSubtables_p = other.doNotLockSubtables_p;
-  copySubtables (other); // others will be handled by initRefs
+  if (! isNull()) {
+    copySubtables (other); // others will be handled by initRefs
 
-  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
+    mainLock_p=TableLock(TableLock::AutoNoReadLocking);
 
-  // verify that other is valid
-
-  if (&other != this) {
-      addCat();
-      if (! validate(this->tableDesc()))
-          throw (AipsError("MS(const MeasurementSet &) - "
-                  "MeasurementSet is not a valid MS"));
-  }
-
-  if (!isNull()){
-      initRefs();
+    // verify that other is valid
+    addCat();
+    if (! validate(this->tableDesc())) {
+      throw (AipsError("MS(const MeasurementSet &) - "
+                       "MeasurementSet is not a valid MS"));
+    }
+    initRefs();
   }
 }
 
 MeasurementSet::~MeasurementSet()
 {
 // check to make sure that this MS is still valid
+  if (! isNull()) {
     if (!hasBeenDestroyed_p  &&  !validate()) {
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
@@ -290,32 +288,37 @@ MeasurementSet::~MeasurementSet()
            << "~MS() - Table written is not a valid MS"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+  }
+  hasBeenDestroyed_p = True;
 }
 
 MeasurementSet&
 MeasurementSet::operator=(const MeasurementSet &other)
 {
-    if (&other != this) {
+  if (&other != this) {
 
-        clearSubtables ();  // Make all subtables refer to null tables
+    clearSubtables ();  // Make all subtables refer to null tables
 
-	MSTable<MSMainEnums>::operator=(other);
+    MSTable<MSMainEnums>::operator=(other);
 
-	// MRS related components
+    // MRS related components
 
-	mrsEligibility_p = other.mrsEligibility_p;
-	mrsDebugLevel_p = other.mrsDebugLevel_p;
-	memoryResidentSubtables_p = other.memoryResidentSubtables_p;
+    mrsEligibility_p = other.mrsEligibility_p;
+    mrsDebugLevel_p = other.mrsDebugLevel_p;
+    memoryResidentSubtables_p = other.memoryResidentSubtables_p;
 
-	copySubtables (other);
-
-	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
-
-	initRefs();
+    if (! isNull()) {
+      copySubtables (other);
     }
 
-    return *this;
+    hasBeenDestroyed_p = other.hasBeenDestroyed_p;
+
+    if (! isNull()) {
+      initRefs();
+    }
+  }
+
+  return *this;
 }
 
 void
