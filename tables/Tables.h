@@ -1129,6 +1129,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   that is in a Measurement Set.
 //   The method is described in this article:
 //   https://arxiv.org/abs/1609.02019.
+//
+//  <li>
+//   <linkto class="Adios2StMan:description">Adios2StMan</linkto> uses the
+//   <A HREF="https://github.com/ornladios/ADIOS2">ADIOS2 framework</A> to
+//   store and load column data.
+//   <br>ADIOS2 has several configurable storage backend itself, and this
+//   flexibility is also available via Adios2StMan. This includes, among other
+//   things, storing compressed data, or choosing a different on-disk formats.
+//   <br>This storage manager is also special in that it provides parallel
+//   writing capabilities for MPI processes, so that multiple processes can
+//   write into different sections of the same column concurrently.
 // </ol>
 //
 // The storage manager framework makes it possible to support arbitrary files
