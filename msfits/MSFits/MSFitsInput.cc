@@ -1138,6 +1138,10 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     }
     // get index for baseline
     Int iBsln = getIndex(pType, "BASELINE");
+    // get indices for subarray, antenna1 and antenna2
+    Int iSubarr = getIndex(pType, "SUBARRAY");
+    Int iAnt1 = getIndex(pType, "ANTENNA1");
+    Int iAnt2 = getIndex(pType, "ANTENNA2");
     // get indices for time
     Int iTime0 = getIndex(pType, "DATE", 0);
     Int iTime1 = getIndex(pType, "DATE", 1);
@@ -1231,8 +1235,18 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
             // make 0-based
             fieldId = (Int) _priGroup.parm(iSource) - 1;
         }
-        Float baseline = _priGroup.parm(iBsln);
-        Int arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
+        Int arrayId = 0;
+        std::pair<Int, Int> ants;
+        if (iBsln >= 0) {
+            Float baseline = _priGroup.parm(iBsln);
+            ants = _extractAntennas(baseline);
+            arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
+        } else {
+            Int antenna1 = _priGroup.parm(iAnt1);
+            Int antenna2 = _priGroup.parm(iAnt2);
+            ants = _extractAntennas(antenna1, antenna2);
+            arrayId = _priGroup.parm(iSubarr);
+        }
         _nArray = max(_nArray, arrayId + 1);
         for (Int k = 0; k < nif; ++k) {
             Int index = group * nif + k;
@@ -1241,7 +1255,6 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
             uvw(1, index) = _priGroup.parm(iV) * C::c;
             uvw(2, index) = _priGroup.parm(iW) * C::c;
             // Convert from units of seconds to meters
-            std::pair<Int, Int> ants = _extractAntennas(baseline);
             ant1[index] = ants.first;
             ant2[index] = ants.second;
         }
@@ -1461,6 +1474,10 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     }
     // get index for baseline
     Int iBsln = getIndex(pType, "BASELINE");
+    // get indices for subarray, antenna1 and antenna2
+    Int iSubarr = getIndex(pType, "SUBARRAY");
+    Int iAnt1 = getIndex(pType, "ANTENNA1");
+    Int iAnt2 = getIndex(pType, "ANTENNA2");
     // get indices for time
     Int iTime0 = getIndex(pType, "DATE", 0);
     Int iTime1 = getIndex(pType, "DATE", 1);
@@ -1556,10 +1573,19 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
         uvw *= C::c;
 
         // Extract array/baseline/antenna info
-        Float baseline = _priGroup.parm(iBsln);
-        Int arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
+        Int arrayId = 0;
+        std::pair<Int, Int> ants;
+        if (iBsln >= 0) {
+            Float baseline = _priGroup.parm(iBsln);
+            ants = _extractAntennas(baseline);
+            arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
+        } else {
+            Int antenna1 = _priGroup.parm(iAnt1);
+            Int antenna2 = _priGroup.parm(iAnt2);
+            ants = _extractAntennas(antenna1, antenna2);
+            arrayId = _priGroup.parm(iSubarr);
+        }
         _nArray = max(_nArray, arrayId + 1);
-        std::pair<Int, Int> ants = _extractAntennas(baseline);
         Int ant1 = ants.first;
         Int ant2 = ants.second;
         // Ensure arrayId-specific params are of correct length:
@@ -3196,6 +3222,9 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     }
 
     Int iBsln = getIndex(TType, "BASELINE");
+    Int iSubarr = getIndex(TType, "SUBARRAY");
+    Int iAnt1 = getIndex(TType, "ANTENNA1");
+    Int iAnt2 = getIndex(TType, "ANTENNA2");
     Int iTime0 = getIndex(TType, "DATE");
     Int iSource = getIndex(TType, "SOURCE");
     Int iFreq = getIndex(TType, "FREQSEL");
@@ -3239,8 +3268,17 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             ScalarColumn<Float> colUU(tb, TType(iU));
             ScalarColumn<Float> colVV(tb, TType(iV));
             ScalarColumn<Float> colWW(tb, TType(iW));
-            ScalarColumn<Float> colBL(tb, TType(iBsln));
+            ScalarColumn<Float> colBL;
+            ScalarColumn<Float> colSubarr, colAnt1, colAnt2;
             ArrayColumn<Float> colVis(tb, TType(iVis));
+
+            if (iBsln >= 0) {
+              colBL = ScalarColumn<Float>(tb, TType(iBsln));
+            } else {
+              colSubarr = ScalarColumn<Float>(tb, TType(iSubarr));
+              colAnt1 = ScalarColumn<Float>(tb, TType(iAnt1));
+              colAnt2 = ScalarColumn<Float>(tb, TType(iAnt2));
+            }
 
             Int visL = 1;
             for (uInt i = 0; i < _nPixel.nelements(); i++)
@@ -3275,10 +3313,19 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             uvw *= C::c;
 
             // Extract array/baseline/antenna info
-            Float baseline = colBL.asfloat(0);
-            Int arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
+            Int arrayId;
+            std::pair<Int, Int> ants;
+            if (iBsln >= 0) {
+                Float baseline = colBL.asfloat(0);
+                ants = _extractAntennas(baseline);
+                arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
+            } else {
+                Int antenna1 = _priGroup.parm(iAnt1);
+                Int antenna2 = _priGroup.parm(iAnt2);
+                ants = _extractAntennas(antenna1, antenna2);
+                arrayId = _priGroup.parm(iSubarr) - 1;
+            }
             _nArray = max(_nArray, arrayId + 1);
-            std::pair<Int, Int> ants = _extractAntennas(baseline);
             Int ant1 = ants.first;
             Int ant2 = ants.second;
 
@@ -3459,9 +3506,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     }
 }
 
-std::pair<Int, Int> MSFitsInput::_extractAntennas(Float baseline) {
-    Int ant1 = Int(baseline) / 256;
-    Int ant2 = Int(baseline) - ant1 * 256;
+std::pair<Int, Int> MSFitsInput::_extractAntennas(Int ant1, Int ant2) {
     _nAntRow = max(_nAntRow, ant1);
     _nAntRow = max(_nAntRow, ant2);
     _uniqueAnts.insert(ant1);
@@ -3470,6 +3515,12 @@ std::pair<Int, Int> MSFitsInput::_extractAntennas(Float baseline) {
     ant1--;
     ant2--;
     return make_pair(ant1, ant2);
+}
+
+std::pair<Int, Int> MSFitsInput::_extractAntennas(Float baseline) {
+    Int ant1 = Int(baseline) / 256;
+    Int ant2 = Int(baseline) - ant1 * 256;
+    return _extractAntennas(ant1, ant2);
 }
 
 void MSFitsInput::fillObservationTable(ConstFitsKeywordList& kwl) {

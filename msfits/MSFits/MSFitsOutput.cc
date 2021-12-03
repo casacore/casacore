@@ -366,6 +366,23 @@ uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,
     return tbfend;
 }
 
+// Define a FITS random group parameter with default scaling and offset
+static void defineRandomParam(Record& ek, Int n, const String& name) {
+    String ptype = "ptype" + String::toString(n);
+    String pscal = "pscal" + String::toString(n);
+    String pzero = "pzero" + String::toString(n);
+    ek.define(ptype, name);
+    ek.define(pscal, 1.0);
+    ek.define(pzero, 0.0);
+}
+
+static void defineRandomParam(Record& ek, Int n, const String& name,
+        const String& comment) {
+    String ptype = "ptype" + String::toString(n);
+    defineRandomParam(ek, n, name);
+    ek.setComment(ptype, comment);
+}
+
 std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     Double& chanbw, const String &outFITSFile,
     const Block<Int>& spwidMap, Int nrspw,
@@ -476,6 +493,10 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
             restFreq = restfreqcol(0)(ip);
         }
     }
+
+    Vector<Int> antnumbers;
+    _handleAntNumbers(_ms, antnumbers);
+    Int maxant = max(antnumbers);
 
     // Also find out what the Stokes are and make sure that they are the same
     // throughout the MS. In principle we could handle the same stokes in
@@ -678,8 +699,16 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     // DATE
     desc.addField("date1", TpFloat);
     desc.addField("date2", TpFloat);
-    // BASELINE
-    desc.addField("baseline", TpFloat);
+    // BASELINE if maximum antenna number < 256
+    // SUBARRAY, ANTENNA1 and ANTENNA2 otherwise
+    // (see AIPS memo 117, section 3.1.2)
+    if (maxant < 256) {
+        desc.addField("baseline", TpFloat);
+    } else {
+        desc.addField("subarray", TpFloat);
+        desc.addField("antenna1", TpFloat);
+        desc.addField("antenna2", TpFloat);
+    }
     // FREQSEL
     ScalarColumn<Int> inddid(_ms, MS::columnName(MS::DATA_DESC_ID));
     desc.addField("freqsel", TpFloat);
@@ -748,36 +777,23 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     ek.define("crota7", 0.0);
 
     // PTYPE PSCALE PZERO
-    ek.define("ptype1", "UU");
-    ek.define("pscal1", 1.0);
-    ek.define("pzero1", 0.0);
-    ek.define("ptype2", "VV");
-    ek.define("pscal2", 1.0);
-    ek.define("pzero2", 0.0);
-    ek.define("ptype3", "WW");
-    ek.define("pscal3", 1.0);
-    ek.define("pzero3", 0.0);
-    ek.define("ptype4", "DATE");
-    ek.define("pscal4", 1.0);
-    ek.define("pzero4", 0.0);
-    ek.setComment("ptype4", "Day number");
-    ek.define("ptype5", "DATE");
-    ek.define("pscal5", 1.0);
-    ek.define("pzero5", 0.0);
-    ek.setComment("ptype5", "Day fraction");
-    ek.define("ptype6", "BASELINE");
-    ek.define("pscal6", 1.0);
-    ek.define("pzero6", 0.0);
-    ek.define("ptype7", "FREQSEL");
-    ek.define("pscal7", 1.0);
-    ek.define("pzero7", 0.0);
+    Int idx = 1;
+    defineRandomParam(ek, idx++, "UU");
+    defineRandomParam(ek, idx++, "VV");
+    defineRandomParam(ek, idx++, "WW");
+    defineRandomParam(ek, idx++, "DATE", "Day number");
+    defineRandomParam(ek, idx++, "DATE", "Day fraction");
+    if (maxant < 256) {
+        defineRandomParam(ek, idx++, "BASELINE");
+    } else {
+        defineRandomParam(ek, idx++, "SUBARRAY");
+        defineRandomParam(ek, idx++, "ANTENNA1");
+        defineRandomParam(ek, idx++, "ANTENNA2");
+    }
+    defineRandomParam(ek, idx++, "FREQSEL");
     if (asMultiSource) {
-        ek.define("ptype8", "SOURCE");
-        ek.define("pscal8", 1.0);
-        ek.define("pzero8", 0.0);
-        ek.define("ptype9", "INTTIM");
-        ek.define("pscal9", 1.0);
-        ek.define("pzero9", 0.0);
+        defineRandomParam(ek, idx++, "SOURCE");
+        defineRandomParam(ek, idx++, "INTTIM");
     }
 
     // EXTEND - already written by FITSGroupWriter
@@ -1046,7 +1062,17 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     RecordFieldPtr<Float> oww(writer.row(), "w");
     RecordFieldPtr<Float> odate1(writer.row(), "date1");
     RecordFieldPtr<Float> odate2(writer.row(), "date2");
-    RecordFieldPtr<Float> obaseline(writer.row(), "baseline");
+    RecordFieldPtr<Float> obaseline;
+    RecordFieldPtr<Float> osubarray;
+    RecordFieldPtr<Float> oantenna1;
+    RecordFieldPtr<Float> oantenna2;
+    if (maxant < 256) {
+        obaseline = RecordFieldPtr<Float> (writer.row(), "baseline");
+    } else {
+        osubarray = RecordFieldPtr<Float> (writer.row(), "subarray");
+        oantenna1 = RecordFieldPtr<Float> (writer.row(), "antenna1");
+        oantenna2 = RecordFieldPtr<Float> (writer.row(), "antenna2");
+    }
     RecordFieldPtr<Float> ofreqsel(writer.row(), "freqsel");
     RecordFieldPtr<Float> osource;
     RecordFieldPtr<Float> ointtim;
@@ -1064,9 +1090,6 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
                     << LogIO::POST;
         }
     }
-
-    Vector<Int> antnumbers;
-    _handleAntNumbers(_ms, antnumbers);
 
     // Loop through all rows.
     ProgressMeter meter(0.0, nOutRow * 1.0, "UVFITS Writer", "Rows copied", "",
@@ -1343,8 +1366,15 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
         *odate2 = dayFraction;
 
         // BASELINE
-        *obaseline = antnumbers(inant1(tbfrownr)) * 256 + antnumbers(inant2(
-                tbfrownr)) + inarray(tbfrownr) * 0.01;
+        if (maxant < 256) {
+            *obaseline = antnumbers(inant1(tbfrownr)) * 256 +
+                    antnumbers(inant2(tbfrownr)) +
+                    inarray(tbfrownr) * 0.01;
+        } else {
+            *osubarray = inarray(tbfrownr) + 1;
+            *oantenna1 = antnumbers(inant1(tbfrownr));
+            *oantenna2 = antnumbers(inant2(tbfrownr));
+        }
 
         // FREQSEL (in the future it might be FREQ_GRP+1)
         //    *ofreqsel = inddid(i) + 1;

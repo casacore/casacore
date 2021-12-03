@@ -421,8 +421,9 @@ private:
   void readRandomGroupUVFits(Int obsType);
   void readPrimaryTableUVFits(Int obsType);
 
+  std::pair<Int, Int> _extractAntennas(Int antenna1, Int antenna2);
   std::pair<Int, Int> _extractAntennas(Float baseline);
-  
+
   void _fillSysPowerTable(BinaryTable& bt);
 
   void _doFillSysPowerSingleIF(
