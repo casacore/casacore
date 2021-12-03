@@ -115,6 +115,10 @@ public:
     // Return the logical file length.
     Int64 length() const;
 
+    // Get the actual length of the file.
+    Int64 fileSize() const
+      { return file_p->fileSize(); }
+  
     // Return the file sequence number.
     uInt sequenceNumber() const;
 

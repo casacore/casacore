@@ -37,6 +37,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/IO/MultiFile.h>
 #include <casacore/casa/IO/MultiHDF5.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/IO/MemoryIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <limits>
@@ -114,6 +115,7 @@ void ColumnSet::initDataManagers (rownr_t nrrow, Bool bigEndian,
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	BLOCKDATAMANVAL(i)->setEndian (bigEndian);
 	BLOCKDATAMANVAL(i)->setTsmOption (tsmOption);
+        BLOCKDATAMANVAL(i)->setFailover (failoverMode());
     }
     for (uInt i=0; i<colMap_p.size(); ++i) {
         getColumn(i)->createDataManagerColumn();
@@ -137,6 +139,7 @@ void ColumnSet::initDataManagers (rownr_t nrrow, Bool bigEndian,
 
 void ColumnSet::initSomeDataManagers (uInt from, Table& tab)
 {
+    // Open the MultiFile if needed and possible.
     openMultiFile (from, tab, ByteIO::New);
     //# Link the data managers to the table.
     for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
@@ -173,6 +176,11 @@ void ColumnSet::openMultiFile (uInt from, const Table& tab,
       storageOpt_p.option() != StorageOption::MultiHDF5) {
     return;
   }
+  // MultiFile cannot be used in Failover mode.
+  // They are mutually exclusive in StorageOption, but double check here.
+  if (failoverMode()) {
+    return;
+  }
   // See if any data manager can use MultiFile/HDF5. 
   Bool useMultiFile = False;
   for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
@@ -206,9 +214,9 @@ rownr_t ColumnSet::resync (rownr_t nrrow, Bool forceSync)
 		                   blockDataMan_p.nelements(), AipsError);
 	for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	    if (dataManChanged_p[i]  ||  nrrow != nrrow_p  ||  forceSync) {
-                rownr_t nrr = BLOCKDATAMANVAL(i)->resync64 (nrrow);
-                if (nrr > nrrow) {
-                    nrrow = nrr;
+                Fallible<rownr_t> nrr = BLOCKDATAMANVAL(i)->resync64 (nrrow);
+                if (nrr.isValid()  &&  nrr.value() > nrrow) {
+                    nrrow = nrr.value();
                 }
 		dataManChanged_p[i] = False;
 	    }
@@ -239,6 +247,9 @@ Bool ColumnSet::canAddRow() const
 }
 Bool ColumnSet::canRemoveRow() const
 {
+    if (failoverMode()) {
+        return False;
+    }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	if (! BLOCKDATAMANVAL(i)->canRemoveRow()) {
 	    return False;
@@ -248,6 +259,9 @@ Bool ColumnSet::canRemoveRow() const
 }
 Bool ColumnSet::canRemoveColumn (const Vector<String>& columnNames) const
 {
+    if (failoverMode()) {
+        return False;
+    }
     // Cannot be removed if column is unknown.
     for (uInt i=0; i<columnNames.nelements(); i++) {
         if (! tdescPtr_p->isColumn (columnNames(i))) {
@@ -261,6 +275,9 @@ Bool ColumnSet::canRemoveColumn (const Vector<String>& columnNames) const
 }
 Bool ColumnSet::canRenameColumn (const String& columnName) const
 {
+    if (failoverMode()) {
+        return False;
+    }
     // Cannot be renamed if column is unknown.
     if (! tdescPtr_p->isColumn (columnName)) {
 	return False;
@@ -620,7 +637,7 @@ DataManager* ColumnSet::findDataManager (const String& name,
                          baseTablePtr_p->tableName()));
 }
 
-void ColumnSet::checkDataManagerNames (const String& tableName) const
+void ColumnSet::checkDataManagers (const String& tableName) const
 {
     // Loop through all data managers.
     // A name can appear only once (except a blank name).
@@ -629,7 +646,20 @@ void ColumnSet::checkDataManagerNames (const String& tableName) const
       checkDataManagerName (BLOCKDATAMANVAL(i)->dataManagerName(), i+1,
                             tableName);
     }
+    if (storageOpt_p.option() == StorageOption::Failover) {
+      // Check for all columns and their data managers if failover is supported.
+      // Note that the data managers have no column objects yet since
+      // createXXXColumn is called later. So do the check in PlainColumn.
+      for (auto x : colMap_p) {
+        if (! COLMAPCAST(x.second)->checkFailover()) {
+          throw TableInvOper("Table " + tableName + " cannot be created; storage manager "
+                             "of column " + COLMAPCAST(x.second)->columnDesc().name() +
+                             " does not support Failover mode");
+        }
+      }
+    }
 }
+
 Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
                                       const String& tableName,
 				      Bool doTthrow) const
@@ -892,18 +922,37 @@ rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndi
     for (i=0; i<blockDataMan_p.nelements(); i++) {
 	BLOCKDATAMANVAL(i)->linkToTable (tab);
     }
-    //# Finally open the data managers and let them prepare themselves.
+    // Finally open the data managers and let them prepare themselves.
+    // Some storage managers can repair themselves in case of prematurely ended tables.
+    // In that case they return a higher nr of rows; take the lowest value because
+    // they may not find the same nr of rows as it depends on e.g. the bucket size.
+    rownr_t nrmin = 0;
+    Bool nrminSet = False;
     for (i=0; i<nr; i++) {
 	uChar* data;
 	uInt leng;
 	ios.getnew (leng, data);
 	MemoryIO memio (data, leng);
 	AipsIO aio(&memio);
-	rownr_t nrrow = BLOCKDATAMANVAL(i)->open64 (nrrow_p, aio);
-        if (nrrow > nrrow_p) {
-          nrrow_p = nrrow;
+	Fallible<rownr_t> fnrrow = BLOCKDATAMANVAL(i)->open64 (nrrow_p, aio);
+        if (fnrrow.isValid()) {
+          rownr_t nrrow = fnrrow.value();
+          if (nrrow >= nrrow_p  &&  (!nrminSet  ||  nrrow < nrmin)) {
+            nrmin = nrrow;
+            nrminSet = True;
+          }
         }
 	delete [] data;
+    }
+    if (nrmin > nrrow_p) {
+        nrrow_p = nrmin;
+        LogIO logger;
+        logger << LogIO::NORMAL << "Set size of table "
+               << baseTablePtr_p->tableName()
+               << " to " << nrrow_p << " rows" << LogIO::POST;
+        for (i=0; i<nr; i++) {
+          BLOCKDATAMANVAL(i)->repairNrow (nrrow_p);
+        }
     }
     prepareSomeDataManagers (0);
     return nrrow_p;

@@ -262,11 +262,11 @@ private:
 
     // Open the storage manager file for an existing table, read in
     // the data, and let the ISMColumn objects read their data.
-    virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
+    virtual Fallible<rownr_t> open64 (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
-    virtual rownr_t resync64 (rownr_t nrrow);
+  virtual Fallible<rownr_t> resync64 (rownr_t nrrow);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();

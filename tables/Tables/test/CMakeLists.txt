@@ -28,6 +28,7 @@ tConcatRows
 tConcatTable
 tConcatTable2
 tConcatTable3
+tFailoverTable
 tMemoryTable
 tReadAsciiTable
 tReadAsciiTable2

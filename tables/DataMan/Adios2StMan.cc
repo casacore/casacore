@@ -80,12 +80,12 @@ void Adios2StMan::create64(rownr_t aNrRows)
     pimpl->create64(aNrRows);
 }
 
-rownr_t Adios2StMan::open64(rownr_t aRowNr, AipsIO &ios)
+Fallible<rownr_t> Adios2StMan::open64(rownr_t aRowNr, AipsIO &ios)
 {
     return pimpl->open64(aRowNr, ios);
 }
 
-rownr_t Adios2StMan::resync64(rownr_t aRowNr)
+Fallible<rownr_t> Adios2StMan::resync64(rownr_t aRowNr)
 {
     return pimpl->resync64(aRowNr);
 }

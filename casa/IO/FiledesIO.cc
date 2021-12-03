@@ -96,8 +96,8 @@ void FiledesIO::write (Int64 size, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
-	throw AipsError ("FiledesIO " + itsFileName
-                         + "is not writable");
+	throw AipsError ("FiledesIO::write - " + itsFileName
+                         + " is not writable");
     }
     if (::traceWRITE(itsFile, (Char *)buf, size) != size) {
         int error = errno;
@@ -111,8 +111,8 @@ void FiledesIO::pwrite (Int64 size, Int64 offset, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
-	throw AipsError ("FiledesIO " + itsFileName
-                         + "is not writable");
+	throw AipsError ("FiledesIO::pwrite - " + itsFileName
+                         + " is not writable");
     }
     if (::tracePWRITE(itsFile, (Char *)buf, size, offset) != size) {
         int error = errno;

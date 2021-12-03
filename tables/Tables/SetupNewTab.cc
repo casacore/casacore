@@ -296,14 +296,14 @@ void SetupNewTableRep::handleUnbound()
 	    col->bind (dataManPtr);
 	    //# Bind this data manager to all other unbound columns with
 	    //# the same group and default data manager type name.
-		for (uInt j=i+1; j<tdescPtr_p->ncolumn(); j++) {
-		    PlainColumn* cp = colSetPtr_p->getColumn(j);
-		    const ColumnDesc& cd = cp->columnDesc();
-		    if (!cp->isBound()
-		    &&  cd.dataManagerGroup() == coldes.dataManagerGroup()
-		    &&  cd.dataManagerType()  == coldes.dataManagerType()) {
-			//# Great, bind the column to the data manager.
-			cp->bind (dataManPtr);
+            for (uInt j=i+1; j<tdescPtr_p->ncolumn(); j++) {
+                PlainColumn* cp = colSetPtr_p->getColumn(j);
+                const ColumnDesc& cd = cp->columnDesc();
+                if (!cp->isBound()
+		&&  cd.dataManagerGroup() == coldes.dataManagerGroup()
+		&&  cd.dataManagerType()  == coldes.dataManagerType()) {
+                  //# Great, bind the column to the data manager.
+                    cp->bind (dataManPtr);
 		}
 	    }
 	}

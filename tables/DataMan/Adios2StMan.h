@@ -58,8 +58,8 @@ public:
     virtual String dataManagerType() const;
     virtual String dataManagerName() const;
     virtual void create64(rownr_t aNrRows);
-    virtual rownr_t open64(rownr_t aRowNr, AipsIO &ios);
-    virtual rownr_t resync64(rownr_t aRowNr);
+    virtual Fallible<rownr_t> open64(rownr_t aRowNr, AipsIO &ios);
+    virtual Fallible<rownr_t> resync64(rownr_t aRowNr);
     virtual Bool flush(AipsIO &, Bool doFsync);
     virtual DataManagerColumn *makeScalarColumn(const String &aName,
                                                 int aDataType,

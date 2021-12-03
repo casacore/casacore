@@ -84,6 +84,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       MultiHDF5,
       // Let storage managers use separate files.
       SepFile,
+      // Use failover mode to ensure a new table is readable in case of a crash.
+      // It uses separate files with storage manager restrictions.
+      Failover,
       // Use default (currently SepFile).
       Default,
       // Use as defined in the aipsrc file.

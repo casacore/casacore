@@ -998,17 +998,17 @@ rownr_t TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) cons
 }
 
 
-rownr_t TiledStMan::open64 (rownr_t nrrow, AipsIO&)
+Fallible<rownr_t> TiledStMan::open64 (rownr_t nrrow, AipsIO&)
 {
     // Read the header info (for the first time).
     readHeader (nrrow, True);
-    return nrrow;
+    return nrrow_p;
 }
-rownr_t TiledStMan::resync64 (rownr_t nrrow)
+Fallible<rownr_t> TiledStMan::resync64 (rownr_t nrrow)
 {
     // Reread the header info.
     readHeader (nrrow, False);
-    return nrrow;
+    return nrrow_p;
 }
 
 Bool TiledStMan::flushCaches (Bool fsync)
@@ -1109,7 +1109,7 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt64 nrCube)
 }
 
 void TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
-				Bool firstTime, Int extraNdim)
+				Bool firstTime, Int extraNdim, Bool doGuess)
 {
     nrrow_p = tabNrrow;
     uInt version = headerFile.getstart ("TiledStMan");
@@ -1121,36 +1121,21 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
         throw DataManError("Endian flag in TSM mismatches the table flag");
     }
     //# Get and check the number of rows and columns and the column types.
-    rownr_t nrrow;
+    rownr_t nrrowTSM;
     uInt nrcol, seqnr;
     int  dtype;
     headerFile >> seqnr;
     if (version >= 3) {
-        headerFile >> nrrow;
+        headerFile >> nrrowTSM;
     } else {
         uInt nrrowOld;
         headerFile >> nrrowOld;
-        nrrow = nrrowOld;
+        nrrowTSM = nrrowOld;
     }
     headerFile >> nrcol;
     if (seqnr != sequenceNr()  ||  nrcol != ncolumn()) {
-      //# Temporary hack to fix a corrupted table.
-      //#if (sequenceNr() != 7) {
 	throw (DataManInternalError
 	          ("TiledStMan::headerFileGet: mismatch in seqnr,#col"));
-      //#}
-    }
-    if (nrrow != nrrow_p) {
-#if defined(TABLEREPAIR)
-        cerr << "TiledStMan::headerFileGet: mismatch in #row (expected "
-	     << nrrow_p << ", found " << nrrow << ")" << endl;
-	dataChanged_p = True;
-#else
-	throw (DataManInternalError
-	          ("TiledStMan::headerFileGet: mismatch in #row; expected " +
-		   String::toString(nrrow_p) + ", found " +
-		   String::toString(nrrow)));
-#endif
     }
     for (uInt i=0; i<ncolumn(); i++) {
 	headerFile >> dtype;
@@ -1237,11 +1222,52 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
 	}
     }
     headerFile.getend();
-    //# The following can only be executed in case of TABLEREPAIR.
-    if (nrrow < nrrow_p) {
-      cubeSet_p[0]->extend (nrrow_p-nrrow, Record(),
-			    coordColSet_p[nrdim_p - 1]);
+    // If there is only one hypercube (as used by TiledColumnStMan), it is possible
+    // to guess the nr of rows from the size of the file which is useful if the
+    // program that filled the table ended prematurely.
+    if (doGuess) {
+        nrrowTSM = guessNrow();
     }
+    // The nr of rows in table and TSM should match.
+    if (nrrowTSM != nrrow_p) {
+	throw (DataManInternalError
+	          ("TiledStMan::headerFileGet: mismatch in #row; expected " +
+		   String::toString(nrrow_p) + ", found " +
+		   String::toString(nrrowTSM)));
+    }
+}
+
+rownr_t TiledStMan::guessNrow()
+{
+  // Make sure things are as expected.
+  AlwaysAssert (fileSet_p.nelements() == 1, AipsError);
+  AlwaysAssert (cubeSet_p.nelements() == 1, AipsError);
+  AlwaysAssert (cubeSet_p[0]->cubeShape().size() == cubeSet_p[0]->cellShape().size() + 1,
+                AipsError);
+  // Determine the file size and the nr of tiles.
+  fileSet_p[0]->open();
+  Int64 fsize = fileSet_p[0]->fileSize();
+  Int64 ntile = fsize / cubeSet_p[0]->bucketSize();
+  // An array in a row can be spread over multiple tiles as defined by the
+  // the cube and tile shape. Row number is the last dimension in the shapes.
+  uInt last = cubeSet_p[0]->tileShape().size() - 1;
+  Int64 nrowPerTile = cubeSet_p[0]->tileShape()[last];
+  Int64 ntilePerRow = 1;
+  for (uInt i=0; i<last; ++i) {
+    ntilePerRow *= ((cubeSet_p[0]->cubeShape()[i] + cubeSet_p[0]->tileShape()[i] - 1) /
+                    cubeSet_p[0]->tileShape()[i]);
+  }
+  // All tiles of a row must be present, so the nr of tiles that can be used
+  // must be a multiple of the nr of tiles per row.
+  Int64 nToUse = ntile / ntilePerRow;
+  rownr_t nrrow = nToUse * nrowPerTile;
+  // If writing ended normally, the actual nr of rows can be a bit less because
+  // the last tile does not need to be filled completely.
+  // So similar to StandardStMan the new nr of rows is used if it higher.
+  if (nrrow_p < nrrow-nrowPerTile) {
+    nrrow_p = nrrow;
+  }
+  return nrrow_p;
 }
 
 void TiledStMan::headerFileClose (AipsIO* headerFile)

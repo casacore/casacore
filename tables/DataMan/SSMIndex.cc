@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/BinarySearch.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/tables/Tables/TableError.h>
+#include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/iostream.h>
 
 
@@ -238,10 +238,10 @@ uInt SSMIndex::getIndex (rownr_t aRowNumber, const String& colName) const
   uInt anIndex = binarySearchBrackets( isFound, itsLastRow, aRowNumber, 
 				       itsNUsed );
   if (anIndex >= itsNUsed) {
-    throw TableError ("SSMIndex::getIndex - access to non-existing row "
-                      + String::toString(aRowNumber) +
-                      " in column " + colName + " of table " + 
-		      itsSSMPtr->table().tableName());
+    throw DataManError ("SSMIndex::getIndex - access to non-existing row "
+                        + String::toString(aRowNumber) +
+                        " in column " + colName + " of table " + 
+                        itsSSMPtr->table().tableName());
   }
   return anIndex;
 }
@@ -343,6 +343,41 @@ void SSMIndex::find (rownr_t aRowNumber, uInt& aBucketNr,
   if (anIndex > 0) {
     aStartRow = itsLastRow[anIndex-1]+1;
   }
+}
+
+void SSMIndex::checkSeqIndex() const
+{
+  rownr_t rownr = 0;
+  for (uInt bnr=0; bnr<itsNUsed; ++bnr) {
+    rownr += itsRowsPerBucket;
+    if (itsBucketNumber[bnr] != bnr) {
+      throw DataManError("StandardStMan Failover mode needs sequential bucket numbers - "
+                         "expected " + String::toString(bnr) +
+                         " but found " + String::toString(itsBucketNumber[bnr]));
+    }
+    // The last bucket may contain less rows, but others must be full.
+    if (bnr < itsNUsed-1) {
+      if (itsLastRow[bnr]+1 != rownr) {
+        throw DataManError("StandardStMan Failover mode needs full buckets - "
+                           "expected " + String::toString(itsRowsPerBucket) +
+                           " but found " + String::toString(itsLastRow[bnr] + 1 - rownr));
+      }
+    }
+  }
+}
+
+void SSMIndex::generate (rownr_t nrows, uInt ncolumns)
+{
+  itsNUsed = (nrows +itsRowsPerBucket - 1) / itsRowsPerBucket;
+  itsLastRow.resize (itsNUsed);
+  rownr_t rownr = 0;
+  itsBucketNumber.resize (itsNUsed);
+  for (uInt i=0; i<itsNUsed; ++i) {
+    rownr += itsRowsPerBucket;
+    itsLastRow[i] = std::min(nrows,rownr) - 1;
+    itsBucketNumber[i] = i;
+  }
+  itsNrColumns = ncolumns;
 }
 
 } //# NAMESPACE CASACORE - END

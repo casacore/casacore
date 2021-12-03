@@ -127,11 +127,11 @@ private:
   virtual Bool flush (AipsIO&, Bool fsync);
 
   // Let the storage manager create the nr of rows needed.
+  // It fills the rows with 0 values.
   virtual void create64 (rownr_t nrrow);
 
   // Open the storage manager file for an existing table.
-  // It fills the rows with 0 values.
-  virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
+  virtual Fallible<rownr_t> open64 (rownr_t nrrow, AipsIO&);
 
   // Let the data manager initialize itself further.
   // It creates nr of rows (given to create) if needed.
@@ -142,7 +142,7 @@ private:
   // It adds or removes rows as needed.
   // It cannot know which rows are deleted, so it always deletes
   // the last rows.
-  virtual rownr_t resync64 (rownr_t nrrow);
+  virtual Fallible<rownr_t> resync64 (rownr_t nrrow);
 
   // The data manager will be deleted (because all its columns are
   // requested to be deleted).

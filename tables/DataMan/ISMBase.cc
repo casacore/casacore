@@ -591,7 +591,7 @@ Bool ISMBase::flush (AipsIO& ios, Bool fsync)
     return changed;
 }
 
-rownr_t ISMBase::resync64 (rownr_t nrrow)
+Fallible<rownr_t> ISMBase::resync64 (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     if (index_p != 0) {
@@ -618,7 +618,7 @@ void ISMBase::create64 (rownr_t nrrow)
     addRow64 (nrrow);
 }
 
-rownr_t ISMBase::open64 (rownr_t tabNrrow, AipsIO& ios)
+Fallible<rownr_t> ISMBase::open64 (rownr_t tabNrrow, AipsIO& ios)
 {
     nrrow_p = tabNrrow;
     // Do not check the bucketsize for an existing table.

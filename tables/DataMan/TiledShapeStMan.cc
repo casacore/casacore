@@ -232,7 +232,7 @@ void TiledShapeStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
     AipsIO* headerFile = headerFileOpen();
     headerFile->getstart ("TiledShapeStMan");
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime, 1);
+    headerFileGet (*headerFile, tabNrrow, firstTime, 1, False);
     // Read the data for this object.
     *headerFile >> defaultTileShape_p;
     *headerFile >> nrUsedRowMap_p;

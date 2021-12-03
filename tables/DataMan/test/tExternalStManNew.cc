@@ -131,14 +131,14 @@ namespace casacore {
   
     // Open the storage manager file for an existing table.
     // Return the number of rows in the data file.
-    virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
+    virtual Fallible<rownr_t> open64 (rownr_t nrrow, AipsIO&);
 
     // Prepare the columns.
     virtual void prepare();
 
     // Resync the storage manager with the new file contents.
     // It does nothing.
-    virtual rownr_t resync64 (rownr_t nrrow);
+    virtual Fallible<rownr_t> resync64 (rownr_t nrrow);
   
     // Reopen the storage manager files for read/write.
     // It does nothing.
@@ -688,7 +688,7 @@ namespace casacore {
   void LofarStMan::create64 (rownr_t)
   {}
 
-  rownr_t LofarStMan::open64 (rownr_t, AipsIO&)
+  Fallible<rownr_t> LofarStMan::open64 (rownr_t, AipsIO&)
   {
     return getNRow();
   }
@@ -696,7 +696,7 @@ namespace casacore {
   void LofarStMan::prepare()
   {}
 
-  rownr_t LofarStMan::resync64 (rownr_t)
+  Fallible<rownr_t> LofarStMan::resync64 (rownr_t)
   {
     return getNRow();
   }

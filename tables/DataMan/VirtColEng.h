@@ -171,8 +171,9 @@ private:
 
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
-    // The default implementation does nothing.
-    virtual rownr_t resync64 (rownr_t nrrow);
+    // The default implementation returns an invalid Fallible object indicating
+    // that it does not know the nr of rows.
+    virtual Fallible<rownr_t> resync64 (rownr_t nrrow);
 
     // Initialize the object for a new table containing initially nrrow rows.
     // It can be used to initialize variables (possibly using data
@@ -184,8 +185,9 @@ private:
     // It can be used to read values back (written by close) and/or
     // to initialize variables (possibly using data from other columns
     // in the table).
-    // The default implementation does nothing.
-    virtual rownr_t open64 (rownr_t nrrow, AipsIO& mainTableFile);
+    // The default implementation returns an invalid Fallible object indicating
+    // that it does not know the nr of rows.
+    virtual Fallible<rownr_t> open64 (rownr_t nrrow, AipsIO& mainTableFile);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all
