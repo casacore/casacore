@@ -503,7 +503,7 @@ select ab from $1;tTableGram_tmp.tab
 select ab from $1::subtab;tTableGram_tmp.tab
 
 Caught an exception: Error in TaQL command: 'select ab from $1::subtab'
-  Error in select expression: $1::subtab is an unknown (sub)table
+  Error in select expression: subtab is an unknown keyword in $1::subtab
 select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]
     has been executed
     select result of 4 rows

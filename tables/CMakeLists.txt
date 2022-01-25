@@ -95,6 +95,7 @@ Tables/TableRow.cc
 Tables/TableRowProxy.cc
 Tables/TableSyncData.cc
 Tables/TableTrace.cc
+Tables/TableUtil.cc
 DataMan/BitFlagsEngine.cc
 DataMan/CompressComplex.cc
 DataMan/CompressFloat.cc

@@ -119,11 +119,13 @@ STYLE     [Uu][Ss][Ii][Nn][Gg]{WHITE}[Ss][Tt][Yy][Ll][Ee]{WHITE1}
 TIMEWORD  [Tt][Ii][Mm][Ee]
 SHOW      ([Ss][Hh][Oo][Ww])|([Hh][Ee][Ll][Pp])
 WITH      [Ww][Ii][Tt][Hh]
+TABLE     [Tt][Aa][Bb][Ll][Ee]
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
 DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
-DROP      ([Dd][Rr][Oo][Pp])|{DELETE}
+DROP      [Dd][Rr][Oo][Pp]
+DROPDEL   {DROP}|{DELETE}
 ADD       [Aa][Dd][Dd]
 RENAME    [Rr][Ee][Nn][Aa][Mm][Ee]
 SET       [Ss][Ee][Tt]
@@ -134,17 +136,19 @@ ROW       [Rr][Oo][Ww]([Ss])?
 COUNT     [Cc][Oo][Uu][Nn][Tt]
 COUNTALL  [Gg]{COUNT}{WHITE}"("{WHITE}"*"?{WHITE}")"
 CALC      [Cc][Aa][Ll][Cc]
-CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
-ALTERTAB  [Aa][Ll][Tt][Ee][Rr]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
+CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}{TABLE}{WHITE1}
+ALTERTAB  [Aa][Ll][Tt][Ee][Rr]{WHITE}{TABLE}{WHITE1}
+DROPTAB   {DROP}{WHITE}{TABLE}{WHITE1}
 /* Optionally the ALTER TABLE subcommands can be separated by commas;
    they need a space after the subcommand name. */
 ADDCOL    ,?{WHITE}{ADD}{WHITE}{COLUMN}{WHITE1}
+COPYCOL   ,?{WHITE}{COPY}{WHITE}{COLUMN}{WHITE1}
 RENAMECOL ,?{WHITE}{RENAME}{WHITE}{COLUMN}{WHITE1}
-DROPCOL   ,?{WHITE}{DROP}{WHITE}{COLUMN}{WHITE1}
+DROPCOL   ,?{WHITE}{DROPDEL}{WHITE}{COLUMN}{WHITE1}
 SETKEY    ,?{WHITE}{SET}{WHITE}{KEYWORD}{WHITE1}
 COPYKEY   ,?{WHITE}{COPY}{WHITE}{KEYWORD}{WHITE1}
 RENAMEKEY ,?{WHITE}{RENAME}{WHITE}{KEYWORD}{WHITE1}
-DROPKEY   ,?{WHITE}{DROP}{WHITE}{KEYWORD}{WHITE1}
+DROPKEY   ,?{WHITE}{DROPDEL}{WHITE}{KEYWORD}{WHITE1}
 ADDROW    ,?{WHITE}{ADD}{WHITE}{ROW}{WHITE1}
 DMINFO    [Dd][Mm][Ii][Nn][Ff][Oo]
 VALUES    [Vv][Aa][Ll][Uu][Ee][Ss]
@@ -189,7 +193,7 @@ NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 /* A field name is a name with dots or double colons */
 NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}("."{NAME})*
 /* A temporary table name can be followed by field names */
-TEMPTAB   [$]{INT}(("."{NAME})?"::"{NAME}("."{NAME})*)?
+TEMPTAB   [$]{INT}(("."{NAME})?("::"{NAME}("."{NAME})*)*)
 /* A table name can contain about every character
    (but is recognized in specific states only).
    It can be a mix of quoted and unquoted strings (with escaped characters).
@@ -337,10 +341,20 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    BEGIN(TABLENAMEstate);
 	    return ALTERTAB;
 	  }
+{DROPTAB} {
+            tableGramPosition() += yyleng;
+	    BEGIN(TABLENAMEstate);
+	    return DROPTAB;
+	  }
 {ADDCOL}  {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return ADDCOL;
+          } 
+{COPYCOL}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return COPYCOL;
           } 
 {RENAMECOL} {
             tableGramPosition() += yyleng;

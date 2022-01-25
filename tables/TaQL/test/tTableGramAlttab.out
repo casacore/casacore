@@ -299,3 +299,65 @@ select iscolumn("col1b"), iskeyword("ac"), iscolumn("col2b"), iskeyword("col1::s
     select result of 1 rows
 10 selected columns:  Col_1 Col_2 Col_3 Col_4 Col_5 Col_6 Col_7 Col_8 Col_9 Col_10
  0 0 1 1 1 1 1 1 0 0
+
+create table tTableGramAlttab_tmp.tab4 LIKE tTableGramAlttab_tmp.tab2 limit 1
+    has been executed
+    cretab result of 1 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab4
+------------------ 
+1 rows, 2 columns in an endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    MaxCacheSize=1 PERSCACHESIZE=1
+  col1  Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=SSM  bucketsize=260
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=126
+  col2b Bool     scalar
+select iscolumn("col1b"), iskeyword("ac"), iscolumn("col2b"), iskeyword("col1::subrec"), iskeyword("col1::subrec.k2"), iskeyword("key1n") from tTableGramAlttab_tmp.tab4 limit 1
+    has been executed
+    select result of 1 rows
+6 selected columns:  Col_1 Col_2 Col_3 Col_4 Col_5 Col_6
+ 0 0 1 1 1 1
+create table tTableGramAlttab_tmp.tab4 LIKE tTableGramAlttab_tmp.tab2 drop column col1
+    has been executed
+    cretab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab4
+------------------ 
+0 rows, 1 columns in an endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=SSM  bucketsize=260
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2b Bool     scalar
+create table tTableGramAlttab_tmp.tab4 LIKE tTableGramAlttab_tmp.tab2 t1 drop column col1 add column (col1 LIKE t1.col1 complex)
+    has been executed
+    cretab result of 0 rows
+1 selected columns:  col1
+
+Structure of table tTableGramAlttab_tmp.tab4
+------------------ 
+0 rows, 2 columns in an endian format (using 2 data managers)
+
+ StandardStMan file=table.f0  name=SSM  bucketsize=260
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2b Bool     scalar
+
+ IncrementalStMan file=table.f1  name=ISM1  bucketsize=16384
+    MaxCacheSize=1 PERSCACHESIZE=1
+  col1  Complex  shape=[2,3] unit=[m]
+insert into [create table tTableGramAlttab_tmp.tab5 as [storage="multifile"] col1 I4, col2 S] (col1,col2) VALUES (0,"v1"),(1,"val2")
+    has been executed
+    insert result of 2 rows
+2 selected columns:  col1 col2
+ 0 v1
+ 1 val2
+select * from [alter table tTableGramAlttab_tmp.tab5 copy column col1c=col1,col2c=col2]
+    has been executed
+    select result of 2 rows
+4 selected columns:  col1 col2 col1c col2c
+ 0 v1 0 v1
+ 1 val2 1 val2

@@ -120,18 +120,31 @@ public:
   TableParse& operator= (const TableParse&);
 
   // Associate the table and the shorthand.
-  TableParse (const Table& table, const String& shorthand);
+  TableParse (const Table& table, Int tabnr, const String& name,
+              const String& shorthand);
 
   // Test if shorthand matches.
   Bool test (const String& shortHand) const;
+
+  // Get the given table number (of $i tables in TempTables)
+  Int tabnr() const;
+
+  // Get the given table name.
+  const String& name() const;
 
   // Get the shorthand.
   const String& shorthand() const;
 
   // Get table object.
   const Table& table() const;
+  Table& table();
+
+  // Replace the Table object.
+  void replaceTable (const Table&);
 
 private:
+  Int     tabnr_p;
+  String  name_p;
   String  shorthand_p;
   Table   table_p;
 };
@@ -390,6 +403,7 @@ public:
     PCALC,
     PCRETAB,
     PALTTAB,
+    PDROPTAB,
     PSHOW
   };
 
@@ -413,7 +427,7 @@ public:
   TableExprNode getNode() const
     { return node_p; }
 
-  // Create a temporary table in no tables are given in FROM.
+  // Create a temporary table if no tables are given in FROM.
   void makeTableNoFrom (const vector<TableParseSelect*>& stack);
 
   // Execute the select command (select/sort/projection/groupby/having/giving).
@@ -424,7 +438,9 @@ public:
   // It will be used as the default value for the LIMIT clause.
   // 0 = no maximum.
   void execute (Bool showTimings, Bool setInGiving,
-                Bool mustSelect, rownr_t maxRow, Bool doTracing=False);
+                Bool mustSelect, rownr_t maxRow, Bool doTracing=False,
+                const vector<const Table*>& tempTables = vector<const Table*>(),
+                const vector<TableParseSelect*>& stack = vector<TableParseSelect*>());
 
   // Execute a query in a from clause resulting in a Table.
   Table doFromQuery (Bool showTimings);
@@ -453,11 +469,18 @@ public:
   // Keep the expression of a calculate command.
   void handleCalcComm (const TableExprNode&);
 
+  // Handle the DROP TABLE command.
+  void handleDropTab (const vector<const Table*>& tempTables,
+                      const vector<TableParseSelect*>& stack);
+  
   // Keep the create table command.
-  void handleCreTab (const Record& dmInfo);
+  void handleCreTab (const Record& dmInfo,
+                     const vector<const Table*>& tempTables,
+                     const vector<TableParseSelect*>& stack);
 
   // Keep the column specification in a create table command.
-  void handleColSpec (const String& columnName, const String& dataType,
+  void handleColSpec (const String& columnName, const String& likeColName,
+                      const String& dataType,
                       const Record& spec, Bool isCOrder=False);
 
   // Reopen the table (for update) used in the ALTER TABLE command.
@@ -466,6 +489,9 @@ public:
   // Add columns to the table of ALTER TABLE.
   // The column descriptions have already been added to tableDesc_p.
   void handleAddCol (const Record& dmInfo);
+
+  // Initialize the table and data manager descriptions.
+  void initDescriptions (const TableDesc&, const Record& dminfo);
 
   // Add a keyword or replace a keyword with the value of another keyword.
   // The keywords can be table or column keywords (col::key).
@@ -481,6 +507,9 @@ public:
   // data type.
   static String getTypeString (const String& typeStr, DataType type);
 
+  // Handle copying of columns.
+  void handleCopyCol (Bool showTimings);
+  
   // Add a keyword or replace a keyword with a value.
   // The keyword can be a table or column keyword (col::key).
   // The data type string can be empty leaving the data type unchanged.
@@ -496,7 +525,9 @@ public:
   // Split the given name into optional shorthand, column and fields.
   // Find the keywordset for it and fill in the final keyword name.
   // It is a helper function for handleSetKey, etc.
-  TableRecord& findKeyword (const String& name, String& keyName);
+  // If update=True, rwKeywordSet() is used to ensure the table is updated.
+  TableRecord& findKeyword (const String& name, String& keyName,
+                            Bool update=True);
 
   // Add an update object.
   void addUpdate (const CountedPtr<TableParseUpdate>& upd);
@@ -537,23 +568,22 @@ public:
   void handleAddRow (const TableExprNode& expr);
 
   // Add a table nr, name, or object to the container.
-  void addTable (Int tabnr, const String& name,
-                 const Table& table,
-                 const String& shorthand,
-                 Bool addToFromList,
-                 const vector<const Table*> tempTables,
-                 const vector<TableParseSelect*>& stack);
+  Table addTable (Int tabnr, const String& name,
+                  const Table& table,
+                  const String& shorthand,
+                  Bool addToFromList,
+                  const vector<const Table*>& tempTables,
+                  const vector<TableParseSelect*>& stack);
 
   // Make a Table object for given name, seqnr or so.
   // If <src>alwaysOpen=False</src> the table will only be looked up,
   // but not opened if not found. This is meant for concatenated tables
   // in TaQLNodeHandler.
-  Table makeTable (Int tabnr, const String& name,
-                   const Table& ftab,
-                   const String& shorthand,
-                   const vector<const Table*> tempTables,
-                   const vector<TableParseSelect*>& stack,
-                   Bool alwaysOpen=True);
+  Table getTable (Int tabnr, const String& name,
+                  const Table& ftab,
+                  const vector<const Table*>& tempTables,
+                  const vector<TableParseSelect*>& stack,
+                  Bool alwaysOpen=True);
 
   // Replace the first table (used by CALC command).
   void replaceTable (const Table& table);
@@ -613,15 +643,16 @@ public:
   String getTableInfo (const Vector<String>& parts, const TaQLStyle& style);
 
   // Split a name into its parts (shorthand, column and field names).
-  // True is returned if the name contained a keyword part.
+  // If isKeyword is True, the first part of name is a keyword, even if no :: is given.
+  // True is returned if the name contains a keyword part.
   // In that case fieldNames contains the keyword name and the possible
   // subfields. The possible shorthand and the column name are
   // filled in if it is a column keyword.
   // If the name represents a column, fieldNames contains the subfields
   // of the column (for the case where the column contains records).
-  // If the name is invalid, an exception is thrown if checkError=True.
+  // If allowNoKey is True, a single :: is allowed, otherwise the name is invalid.
+  // If the name is invalid, exceptions are only thrown if checkError=True.
   // Otherwise the name is treated as a normal name without keyword.
-  // If allowEmtpy is True, :: is allowed, otherwise an error is thrown.
   static Bool splitName (String& shorthand, String& columnName,
                          Vector<String>& fieldNames, const String& name,
                          Bool checkError, Bool isKeyword, Bool allowNoKey);
@@ -681,8 +712,21 @@ private:
   // Create a table using the given parameters.
   // The variables set by handleGiven are used for name and type.
   Table createTable (const TableDesc& td,
-                     Int64 nrow, const Record& dmInfo);
+                     Int64 nrow, const Record& dmInfo,
+                     const vector<const Table*>& tempTables,
+                     const vector<TableParseSelect*>& stack);
+  Table createSubTable (const String& subtableName,
+                        const TableDesc& td, Int64 nrow,
+                        const Record& dmInfo,
+                        const vector<const Table*>& tempTables,
+                        const vector<TableParseSelect*>& stack);
 
+  // Open the parent table of a subtable.
+  Table openParentTable (const String& fullName,
+                         const String& subTableName,
+                         const vector<const Table*>& tempTables,
+                         const vector<TableParseSelect*>& stack);
+  
   // Make the (empty) table for the epxression in the SELECT clause.
   void makeProjectExprTable();
 
@@ -728,7 +772,9 @@ private:
   Table doDistinct (Bool showTimings, const Table& table);
 
   // Finish the table (rename, copy, and/or flush).
-  Table doFinish (Bool showTimings, Table& table);
+  Table doFinish (Bool showTimings, Table& table,
+                  const vector<const Table*>& tempTables,
+                  const vector<TableParseSelect*>& stack);
 
   // Update the values in the columns (helpers of doUpdate).
   // <group>
@@ -790,6 +836,8 @@ private:
   // If no shorthand is given, the first table is returned (if there).
   // If not found, a null Table object is returned.
   Table findTable (const String& shorthand, Bool doWith) const;
+  Table findTable (const String& shorthand, Bool doWith,
+                   const vector<TableParseSelect*>& stack) const;
 
   // Handle the selection of a wildcarded column name.
   void handleWildColumn (Int stringType, const String& name);
@@ -805,22 +853,15 @@ private:
                       const Vector<String>& unitName,
                       const Record& attributes);
 
+  // Find the ColumnDesc and data manager info of another column (a LIKE column).
+  // The LIKE column name can be qualified to use another table.
+  // It sets the new column name in the data manager info.
+  // An exception is thrown if colName is invalid or unknown.
+  std::pair<ColumnDesc,Record> findColumnInfo (const String& colName,
+                                               const String& newColName) const;
+  
   // Find the names of all stored columns in a table.
   Block<String> getStoredColumns (const Table& tab) const;
-
-  // Try to find the keyword representing a table in one of the tables
-  // in any select block (from inner to outer).
-  // If not found, an exception is thrown.
-  static Table tableKey (const String& fullName,
-                         const String& shorthand, const String& columnName,
-                         const Vector<String>& fieldNames,
-                         const vector<TableParseSelect*>& stack);
-
-  // Try to find the keyword representing a table in the given table.
-  // If the columnName is empty, the keyword is a table keyword.
-  // If not found, a null Table object is returned.
-  static Table findTableKey (const Table& table, const String& columnName,
-                             const Vector<String>& keyNames);
 
   // Check if the tables used in selection columns have the same
   // size as the first table given in FROM.
@@ -872,8 +913,10 @@ private:
 
   //# Command type.
   CommandType commandType_p;
-  //# Table description for a series of column descriptions.
-  TableDesc tableDesc_p;
+  //# Table and data manager description for a series of column descriptions.
+  //# TableDesc has no copy ctor, so use a shared_ptr.
+  std::shared_ptr<TableDesc> tableDesc_p;
+  Record dminfo_p;
   //# Vector of TableParse objects (from WITH and FROM clause).
   //# This is needed for the functions above, otherwise they have no
   //# way to communicate.
@@ -902,7 +945,6 @@ private:
   StorageOption storageOption_p;
   Table::EndianFormat endianFormat_p;
   Bool overwrite_p;
-  Record dminfo_p;
   //# Resulting set (from GIVING part).
   TableExprNodeSet* resultSet_p;
   //# The WHERE expression tree.
@@ -956,13 +998,25 @@ private:
 
 //# Implement the inline functions.
 inline Bool TableParse::test (const String& str) const
-  { return (shorthand_p == str  ?  True : False); }
+  { return (str.empty()  ||  shorthand_p == str); }
+
+inline Int TableParse::tabnr() const
+  { return tabnr_p; }
+
+inline const String& TableParse::name() const
+  { return name_p; }
 
 inline const String& TableParse::shorthand() const
   { return shorthand_p; }
 
 inline const Table& TableParse::table() const
   { return table_p; }
+
+inline Table& TableParse::table()
+  { return table_p; }
+
+inline void TableParse::replaceTable (const Table& table)
+  { table_p = table; }
 
 
 inline void TableParseUpdate::setColumnName (const String& name)

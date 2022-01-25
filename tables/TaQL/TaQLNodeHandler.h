@@ -140,6 +140,8 @@ public:
   virtual TaQLNodeResult visitAddRowNode   (const TaQLAddRowNodeRep& node);
   virtual TaQLNodeResult visitConcTabNode  (const TaQLConcTabNodeRep& node);
   virtual TaQLNodeResult visitShowNode     (const TaQLShowNodeRep& node);
+  virtual TaQLNodeResult visitCopyColNode  (const TaQLCopyColNodeRep& node);
+  virtual TaQLNodeResult visitDropTabNode  (const TaQLDropTabNodeRep& node);
   // </group>
 
   // Get the actual result object from the result.
@@ -187,7 +189,10 @@ private:
   // Handle the INSERT values.
   void handleInsVal (const TaQLNode&);
 
-  // Handle a column specification in a create table.
+  // Handle the possible LIKE table DROP COLUMN part.
+  void handleLikeDrop (const TaQLMultiNode& node);
+
+  // Handle a column specification in a create table or add column.
   void handleColSpecs (const TaQLMultiNode&);
 
   // Handle a Multi RecFld representing a Record.

@@ -95,6 +95,25 @@ public:
   static Record adjustStMan (const Record& dminfo, const String& dmType,
                              Bool replaceMSM = True);
 
+  // Merge the second DataManagerInfo record into the first one.
+  // If the same column occurs in both records, the second one is used.
+  // Columns having the same data manager name are combined in one data manager.
+  // If the second one has no name, it is considered to be equal to the first
+  // data manager of that type.
+  // The possible new data manager names and types are set in the TableDesc.
+  static void mergeInfo (Record&, const Record&);
+
+  // Finalize the merge by using the data manager type and name and dminfo
+  // to create the final dminfo record.
+  // The final dminfo record gets all columns in the TableDesc object.
+  // The given dminfo object is leading in determining the column's data manager.
+  // If not present, the data manager type given in the TableDesc is used.
+  // If empty, StandardStMan is used.
+  static Record finalizeMerge (const TableDesc&, const Record& dminfo);
+
+  // Adapt data manager names in dminfo if already used in the table.
+  static void adaptNames (Record& dminfo, const Table&);
+
   // Set the data managers of the given column(s) to the given tiled storage
   // manager (normally TiledShapeStMan or TiledColumnStMan).
   // The columns are combined in a single storage manager, so the function
@@ -119,6 +138,11 @@ public:
 
   // Show the Table IO statistics.
   static void showDataManStats (const Table&, ostream&);
+
+private:
+  // Merge the columns mentioned in dm into dminfo, where dm is the possibly
+  // changed inxdm-th dm record of dminfo. Those columns will be merged into dm.
+  static void mergeColumns (Record& dminfo, uInt inxdm, Record& dm);
 };
 
 

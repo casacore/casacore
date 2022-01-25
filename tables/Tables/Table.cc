@@ -36,6 +36,7 @@
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -362,6 +363,7 @@ Table& Table::operator= (const Table& that)
     return *this;
 }
 
+/*
 Table Table::openTable (const String& tableName,
                         TableOption option,
                         const TSMOption& tsmOption)
@@ -378,40 +380,101 @@ Table Table::openTable (const String& tableName,
   if (Table::isReadable(tableName)) {
     return Table(tableName, lockOptions, option, tsmOption);
   }
-  // Try to open the table using subtables by splitting at ::
+  // Try to find and open the last subtable by splitting at ::
+  // It throws an exception if not possible.
+  std::pair<Table,String> t = tryFindSubTable (tableName, True);
+  return t.first;
+}
+
+Table Table::createTable (const String& tableName, const TableDesc& desc,
+                          Table::TableOption tabOpt,
+                          const StorageOption& storageOption,
+                          const Record& dmInfo,
+                          const TableLock& lockOptions,
+                          rownr_t nrrow, Bool initialize,
+                          EndianFormat endian,
+                          const TSMOption& tsmOpt)
+{
+  // Find and open the one but last subtable and get the name of the last one.
+  std::pair<Table,String> t = tryFindSubTable (tableName, False);
+  return createSubTable (t.first, t.second, desc, tabOpt, storageOption,
+                         dmInfo, lockOptions, nrrow, initialize, endian, tsmOpt);
+}
+
+Table Table::createSubTable (Table& parent, const String& subName,
+                             const TableDesc& desc,
+                             Table::TableOption tabOpt,
+                             const StorageOption& storageOption,
+                             const Record& dmInfo,
+                             const TableLock& lockOptions,
+                             rownr_t nrrow, Bool initialize,
+                             EndianFormat endian,
+                             const TSMOption& tsmOpt)
+{
+  // See if the subtable and its keyword already exist.
+  Int inx = parent.keywordSet().fieldNumber(subName);
+  if (inx >= 0) {
+    if (parent.keywordSet().type(inx) != TpTable) {
+      throw TableError("Subtable " + subName + " cannot be created in " +
+                       parent.tableName() +
+                       "; a keyword with that name already exists");
+    }
+    if (tabOpt == Table::NewNoReplace) {
+      throw TableError("Subtable " + parent.tableName() + '/' + subName +
+                       " already exists");
+    }
+    // Remove the subtable.
+    
+  }
+  // Setup creation of the table and attach data managers.
+  SetupNewTable newtab(parent.tableName() + '/' + subName, desc, tabOpt, storageOption);
+  newtab.bindCreate (dmInfo);
+  // Create the table and define the keyword for it.
+  Table subtab(newtab, lockOptions, nrrow, initialize, endian, tsmOpt);
+  parent.reopenRW();
+  parent.rwKeywordSet().defineTable (subName, subtab);
+  return subtab;
+}
+
+// Return Table and name of last part.
+std::pair<Table,String> Table::tryFindSubTable (const String& fullName, Bool mustExist)
+{
   Table tab;
-  String name = tableName;
-  String msg;
-  int j = name.index("::");
-  if (j >= 0) {
-    String tabName (name.before(j));
-    name = name.after(j+1);
-    if (Table::isReadable (tabName)) {
-      tab = Table(tabName, lockOptions, option, tsmOption);
-      while (! name.empty()) {
-        j = name.index("::");
-        if (j >= 0) {
-          tabName = name.before(j);
-          name = name.after(j+1);
-        } else {
-          tabName = name;
-          name = String();
+  String lastPart, msg;
+  // Split the name on :: to get the main and subtable names.
+  Vector<String> names = stringToVector(fullName, std::regex("::"));
+  AlwaysAssert (!names.empty(), AipsError);
+  // Check that no empty parts are given.
+  if (anyEQ (names, String())) {
+    msg = "empty name part given";
+  } else {
+    // Check if main table exists.
+    if (! Table::isReadable (names[0])) {
+      msg = "main table " + names[0] + " does not exist";
+    } else {
+      tab = Table(names[0]);
+      // Get name of last subtable.
+      if (names.size() > 1) {
+        lastPart = names[names.size()-1];
+        // Check if all subtables exist, maybe except last one.
+        uInt nrname = mustExist ? names.size() : names.size()-1;
+        for (uInt i=1; i<nrname; ++i) {
+          if (! tab.keywordSet().isDefined(names[i])) {
+            msg = "subtable " + names[i] + " is unknown";
+            tab = Table();
+            break;
+          }
+          tab = tab.keywordSet().asTable (names[i]);
         }
-        if (! tab.keywordSet().isDefined(tabName)) {
-          msg = " (subtable " + tabName + " is unknown)";
-          tab = Table();
-          break;
-        }
-        tab = tab.keywordSet().asTable (tabName);
       }
     }
   }
   if (tab.isNull()) {
-    throw TableError ("Table " + tableName + " does not exist" + msg);
+    throw TableError ("Table name " + fullName + " is invalid (" + msg + ')');
   }
-  return tab;
+  return std::make_pair (tab, lastPart);
 }
-
+*/
 
 Block<String> Table::getPartNames (Bool recursive) const
 {
@@ -425,6 +488,7 @@ void Table::closeSubTables() const
   return keywordSet().closeTables();
 }
 
+/*
 Bool Table::canDeleteTable (const String& tableName, Bool checkSubTables)
 {
     String message;
@@ -454,25 +518,80 @@ Bool Table::canDeleteTable (String& message, const String& tableName,
     return True;
 }
 
+Bool Table::canDeleteSubTable (String& message, const Table& parent,
+                               const String& subtableName,
+                               Bool checkSubTables)
+{
+    // Get the full table name of the subtable.
+    // Make sure the Table object is deleted, otherwise isOpened is always true.
+    String fullName;
+    {
+      Table table = parent.keywordSet().asTable (subtableName);
+      fullName = table.tableName();
+    }
+    if (isOpened (fullName)) {
+	message = "table is still open in this process";
+	return False;
+    }
+    Table table(fullName);
+    if (table.isMultiUsed()) {
+	message = "table is still open in another process";
+	return False;
+    }
+    if (checkSubTables  &&  table.isMultiUsed(True)) {
+	message = "a subtable of the table is still open in another process";
+	return False;
+    }
+    return True;
+}
 
 void Table::deleteTable (const String& tableName, Bool checkSubTables)
 {
-    // Escape from attempt to delete a nameless "table"
-    //   because absolute path handling below is potentially
-    //   catastrophic!
+    // Check that the name is not empty, because making it absolute results in /
     if (tableName.empty()) {
-        throw TableError
-	  ("Empty string provided for tableName; will not attempt delete.");
+      throw TableError
+        ("Empty string provided for tableName; will not attempt delete.");
     }
+    // See if the name represents a table.
+    if (! Table::isReadable(tableName)) {
+      // See if the name contains subtable names using ::
+      std::pair<Table,String> t = tryFindSubTable (tableName, False);
+      if (! (t.first.isNull()  ||  t.second.empty())) {
+        deleteSubTable (t.first, t.second, checkSubTables);
+        return;
+      }
+    }
+    // Delete the table (which fails if it is not a table or still in use).
     String tabName = Path(tableName).absoluteName();
     String message;
     if (! canDeleteTable (message, tabName, checkSubTables)) {
-	throw (TableError ("Table " + tabName + " cannot be deleted: " +
-			   message));
+      throw (TableError ("Table " + tabName + " cannot be deleted: " +
+                         message));
     }
     Table table(tabName, Table::Delete);
 }
 
+
+void Table::deleteSubTable (Table& parent, String& subtableName, Bool checkSubTables)
+{
+    String message;
+    if (! canDeleteSubTable (message, parent, subtableName, checkSubTables)) {
+      throw (TableError ("Subtable " + subtableName + " in " +
+                         parent.tableName() + " cannot be deleted: " +
+                         message));
+    }
+    Table subtab = parent.keywordSet().asTable(subtableName);
+    subtab.markForDelete();
+    // If there, remove the keyword referring the subtable.
+    Int inx = parent.keywordSet().fieldNumber(subtableName);
+    if (inx >= 0) {
+      if (parent.keywordSet().type(inx) == TpTable) {
+        parent.reopenRW();
+        parent.rwKeywordSet().removeField (subtableName);
+      }
+    }
+}
+*/
 
 Vector<String> Table::nonWritableFiles (const String& tableName)
 {
@@ -505,42 +624,6 @@ Bool Table::isNativeDataType (DataType dtype)
     return StManColumnBase::isNativeDataType (dtype);
 }
 
-
-//# The logic is similar to that in open.
-rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
-{
-    String tabName = Path(tableName).absoluteName();
-    rownr_t nrow;
-    uInt format;
-    String tp;
-    AipsIO ios (Table::fileName(tabName));
-    uInt version = ios.getstart ("Table");
-    if (version > 3) {
-      throw TableError ("Table version " + String::toString(version) +
-                        " not supported by this version of Casacore");
-    }
-    if (version > 2) {
-      ios >> nrow;
-    } else {
-      uInt n;
-      ios >> n;
-      nrow = n;
-    }
-    ios >> format;
-    ios >> tp;
-    if (tp == "PlainTable") {
-	PlainTable::getLayout (desc, ios);
-    } else if (tp == "RefTable") {
-        RefTable::getLayout (desc, ios);
-    } else if (tp == "ConcatTable") {
-        ConcatTable::getLayout (desc, ios);
-    } else {
-        throw (TableInternalError
-		              ("Table::getLayout: unknown table kind " + tp));
-    }
-    ios.close();
-    return nrow;
-}
 
 
 void Table::copy (const String& newName, TableOption option,
@@ -629,6 +712,8 @@ void Table::open (const String& name, const String& type, int tableOption,
     }
 }
 
+// NOTE: When changing this function because of new Table versions, also change
+// TableUtil::getLayout !!!!!
 BaseTable* Table::makeBaseTable (const String& name, const String& type,
 				 int tableOption, const TableLock& lockOptions,
 				 const TSMOption& tsmOpt,
@@ -1156,5 +1241,30 @@ void Table::showKeywordSets (ostream& ios,
     ios << endl;
   }
 }
+
+
+// Deprecated functions; now in TableUtil.h.
+Table Table::openTable (const String& tableName,
+                            TableOption tabOpt,
+                            const TSMOption& tsmOpt)
+  { return TableUtil::openTable (tableName, tabOpt, tsmOpt); }
+Table Table::openTable (const String& tableName,
+                        const TableLock& lockOptions,
+                        TableOption tabOpt,
+                        const TSMOption& tsmOpt)
+  { return TableUtil::openTable (tableName, lockOptions, tabOpt, tsmOpt); }
+Bool Table::canDeleteTable (const String& tableName,
+                            Bool checkSubTables)
+  { return TableUtil::canDeleteTable (tableName, checkSubTables); }
+Bool Table::canDeleteTable (String& message, const String& tableName,
+                            Bool checkSubTables)
+  { return TableUtil::canDeleteTable (message, tableName, checkSubTables); }
+void Table::deleteTable (const String& tableName,
+                         Bool checkSubTables)
+  { TableUtil::deleteTable (tableName, checkSubTables); }
+rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
+  { return TableUtil::getLayout (desc, tableName); }
+TableInfo Table::tableInfo (const String& tableName)
+  { return TableUtil::tableInfo (tableName); }
 
 } //# NAMESPACE CASACORE - END

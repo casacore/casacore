@@ -45,6 +45,7 @@
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/TableRow.h>
 #include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>
@@ -260,6 +261,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // When the table is opened, the data managers are reinstantiated
 // according to their definition at table creation.
+// <p>
+// <ANCHOR NAME="Tables:openTable">
+// The static function <src>TableUtil::openTable</src> can be used to open a table,
+// in particular a subtable, in a simple way by means of the :: notation like
+// <src>maintable::subtable</src>. The :: notation is much better than specifying
+// an explicit path (such as <src>maintable/subtable</src>, because it also works
+// fine if the main table is a reference table (e.g. the result of a selection).
 
 // <ANCHOR NAME="Tables:read">
 // <h3>Reading from a Table</h3></ANCHOR>
@@ -354,7 +362,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // can be bound to any data manager. <src>MemoryTable</src> will rebind 
 // stored columns to the <linkto class=MemoryStMan>MemoryStMan</linkto>
 // storage manager, but virtual columns bindings are not changed.
-
 //
 // The following example shows how you can create a table. An example
 // specifically illustrating the creation of the
@@ -417,6 +424,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 //     Table tab(newtab, Table::Memory, 10);
 // </srcblock>
+//
+//  <LI> <A HREF="#Tables:write">writing</A> into a table,
+// Note that the function <src>TableUtil::createTable</src> can be used to create a table
+// in a simpler way. It can also be used to create a subtable using the :: notation
+// similar to the <A HREF="#Tables:openTable"><src>Tableutil::openTable</src></A>
+// function described above.
 
 // <ANCHOR NAME="Tables:write">
 // <h3>Writing into a Table</h3></ANCHOR>
@@ -1471,9 +1484,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <src>Table::isMultiUsed()</src> can be used to check if a table
 // is open in other processes.
 // <br>
-// The function <src>deleteTable</src> should be used to delete
+// The function <src>TableUtil::deleteTable</src> should be used to delete
 // a table. Before deleting the table it ensures that it is writable
-// and that it is not open in the current or another process
+// and that it is not open in the current or another process.
 // <p>
 // The following example wants to read the table uninterrupted, thus it uses
 // the <src>PermanentLocking</src> option. It also wants to wait

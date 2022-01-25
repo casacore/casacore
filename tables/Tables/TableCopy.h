@@ -145,21 +145,24 @@ public:
 			     const Block<String>& omit=Block<String>());
 
   // Clone a column in the from table to a new column in the to table.
-  // The new column gets the same table description and data manager as the
-  // from column. It has to get a unique data manager name. If not given,
-  // it is the new column name.
+  // The new column gets the same table description as the source column.
+  // If newdmInfo is empty, the same data manager type as the source column is used.
+  // It has to have a unique data manager name. If not given, it is the new column name.
   static void cloneColumn (const Table& fromTable,
                            const String& fromColumn,
                            Table& toTable,
                            const String& newColumn,
-                           const String& dataManagerName = String());
+                           const String& dataManagerName = String(),
+                           const Record& newdmInfo = Record());
+
   // Cloning as above, but the data type is set to the template parameter.
   template<typename T> 
   static void cloneColumnTyped (const Table& fromTable,
                                 const String& fromColumn,
                                 Table& toTable,
                                 const String& newColumn,
-                                const String& dataManagerName = String());
+                                const String& dataManagerName = String(),
+                                const Record& newdmInfo = Record());
 
   // Copy the data from one column to another.
   // It can be used after function cloneColumn to populate the new column.
@@ -221,49 +224,12 @@ public:
                               Bool preserveTileShape=True)
     { fillColumnData (table, column, String(value), fromTable, fromColumn,
                       preserveTileShape); }
-                              
-
-  // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
-  // Since TiledShapeStMan does not support ID columns, they are
-  // adjusted as well in tabDesc and dminfo.
-  static void adjustTSM (TableDesc& tabDesc, Record& dminfo)
-    { DataManInfo::adjustTSM (tabDesc, dminfo); }
-
-  // Replace non-writable storage managers by StandardStMan. This is needed
-  // for special storage managers like LofarStMan.
-  static Record adjustStMan (const Record& dminfo)
-    { return DataManInfo::adjustStMan (dminfo, "StandardStMan"); }
-
-  // Set the data managers of the given column(s) to the given tiled storage
-  // manager (normally TiledShapeStMan or TiledColumnStMan).
-  // The columns are combined in a single storage manager, so the function
-  // has to be called multiple times if, say, one per column is needed.
-  // The columns already having a tiled storage manager are not changed.
-  static void setTiledStMan (Record& dminfo, const Vector<String>& columns,
-                             const String& dmType, const String& dmName,
-                             const IPosition& defaultTileShape)
-    { DataManInfo::setTiledStMan (dminfo, columns, dmType, dmName,
-                                  defaultTileShape); }
-
-  // Remove the columns from the dminfo record and return a vector with the
-  // names of the columns actually removed.
-  // The columns having a data manager matching <src>keepType</src> are not
-  // removed. Matching means that the beginning of the data manager name
-  // have to match, so "Tiled" matches all tiled storagemanagers.
-  static Vector<String> removeDminfoColumns (Record& dminfo,
-                                             const Vector<String>& columns,
-                                             const String& keepType= String())
-    { return DataManInfo::removeDminfoColumns (dminfo, columns, keepType); }
-
-  // Adjust the data manager types and groups and the
-  // hypercolumn definitions to the actual data manager info.
-  static void adjustDesc (TableDesc& tabDesc, const Record& dminfo)
-    { DataManInfo::adjustDesc (tabDesc, dminfo); }
 
 private:
   static void doCloneColumn (const Table& fromTable, const String& fromColumn,
                              Table& toTable, const ColumnDesc& newColumn,
-                             const String& dataManagerName);
+                             const String& dataManagerName,
+                             const Record& newdmInfo);
 };
 
 

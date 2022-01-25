@@ -1034,7 +1034,8 @@ class TaQLCreTabNodeRep: public TaQLQueryNodeRep
 {
 public:
   TaQLCreTabNodeRep (const TaQLMultiNode& with,
-                     const TaQLNode& giving, const TaQLMultiNode& cols,
+                     const TaQLNode& giving, const TaQLMultiNode& likeDrop,
+                     const TaQLMultiNode& cols,
                      const TaQLNode& limit, const TaQLMultiNode& dminfo);
   virtual ~TaQLCreTabNodeRep();
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
@@ -1044,6 +1045,7 @@ public:
 
   TaQLMultiNode itsWith;
   TaQLNode      itsGiving;
+  TaQLMultiNode itsLikeDrop;
   TaQLMultiNode itsColumns;
   TaQLNode      itsLimit;
   TaQLMultiNode itsDMInfo;
@@ -1068,8 +1070,8 @@ public:
 class TaQLColSpecNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLColSpecNodeRep (const String& name, const String& dtype,
-                      const TaQLMultiNode& spec);
+  TaQLColSpecNodeRep (const String& name, const String& likeCol,
+                      const String& dtype, const TaQLMultiNode& spec);
   virtual ~TaQLColSpecNodeRep();
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void show (std::ostream& os) const;
@@ -1077,6 +1079,7 @@ public:
   static TaQLColSpecNodeRep* restore (AipsIO& aio);
 
   String        itsName;
+  String        itsLikeCol;
   String        itsDtype;
   TaQLMultiNode itsSpec;
 };
@@ -1164,8 +1167,7 @@ class TaQLAltTabNodeRep: public TaQLQueryNodeRep
 {
 public:
   TaQLAltTabNodeRep (const TaQLMultiNode& with, const TaQLNode& table,
-                     const TaQLMultiNode& from,
-                     const TaQLMultiNode& commands);
+                     const TaQLMultiNode& from, const TaQLMultiNode& commands);
   virtual ~TaQLAltTabNodeRep();
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void showDerived (std::ostream& os) const;
@@ -1350,6 +1352,64 @@ public:
   static TaQLShowNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsNames;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining an alter table copy column command.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding the parts of the copy column subcommand.
+// </synopsis> 
+
+class TaQLCopyColNodeRep: public TaQLNodeRep
+{
+public:
+  TaQLCopyColNodeRep (const TaQLMultiNode& names, const TaQLMultiNode& dminfo);
+  virtual ~TaQLCopyColNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLCopyColNodeRep* restore (AipsIO& aio);
+
+  TaQLMultiNode itsNames;
+  TaQLMultiNode itsDMInfo;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a DROP TABLE command.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding the tables of a drop table command.
+// </synopsis> 
+
+class TaQLDropTabNodeRep: public TaQLNodeRep
+{
+public:
+  TaQLDropTabNodeRep (const TaQLMultiNode& with, const TaQLMultiNode& tables);
+  virtual ~TaQLDropTabNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLDropTabNodeRep* restore (AipsIO& aio);
+
+  TaQLMultiNode itsWith;
+  TaQLMultiNode itsTables;
 };
 
 

@@ -28,6 +28,7 @@
 
 #include <casacore/images/Images/ImageOpener.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableInfo.h>
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/HDF5Image.h>
@@ -71,13 +72,13 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
       return IMAGEEXPR;
     }
     if (Table::isReadable(name)) {
-      TableInfo info = Table::tableInfo (name);
+      TableInfo info = TableUtil::tableInfo (name);
       if (info.type() == TableInfo::type(TableInfo::PAGEDIMAGE)) {
 	return AIPSPP;
       }
       else if (info.type() == TableInfo::type(TableInfo::COMPONENTLIST)) {
           TableDesc tableDesc;
-          Table::getLayout(tableDesc, name);
+          TableUtil::getLayout(tableDesc, name);
           if (tableDesc.keywordSet().isDefined("coords")) {
               return COMPLISTIMAGE;
           }
