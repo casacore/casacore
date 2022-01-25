@@ -3863,7 +3863,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
       firstWeather=False;
     }
 
-    if (firstWeather && extname == "GAIN_CURVE") {
+    if (firstGainCurve && extname == "GAIN_CURVE") {
       addGainCurve=True;
       firstGainCurve=False;
     }
