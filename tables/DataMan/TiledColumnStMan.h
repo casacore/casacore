@@ -74,6 +74,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <p>
 // The TiledColumnStMan has the following (extra) properties:
 // <ul>
+//  <li> By default the dimensionality of the hypercube is one more than
+//       the (fixed) shape of the data arrays in the column. The row number
+//       forms the last axis of the entire data cube.
+//       However, it is possible to use more tiling axes. In that case the
+//       row shape has to be specified which defines how the rows are
+//       divided over the tiles. For example, in a MeasurementSet the data
+//       are usually 4-dim (say 4 pols, 64 freqs, 90 baselines, ntimes) where
+//       each data array contains 4 pol and 64 freqs. By giving a tile shape
+//       [4,64,400] the baselines and times are flattened into the row numbers
+//       making access in baseline order slowish. But one can tell there are
+//       90 baselines by defining the row shape as [90,0]. Setting the
+//       tile shape to e.g. [4,64,10,40] has the effect that a single
+//       tile will contain only 10 baselines instead of 90. It will speed
+//       up reading in baseline order because lesser tiles have to be read.
+//       Note that the zero in the row shape mean that the value is not
+//       important to know how to divide the rows (the last axis is not
+//       needed to know the division).
 //  <li> Addition of a row results in the extension of the hypercube.
 //       The data cells in all rows have to have the same shape. Therefore
 //       the columns stored by a TiledColumnStMan storage manager
@@ -157,6 +174,8 @@ public:
     // with the given name. The columns used should have the FixedShape
     // attribute set.
     // The hypercolumn name is also the name of the storage manager.
+    // The cube shaope can be given to know how to divide the rows over the
+    // tiles as discussed in the synopsis.
     // The given tile shape will be used.
     // The given maximum cache size in bytes (default is unlimited) is
     // persistent, thus will be reused when the table is read back.
@@ -169,6 +188,10 @@ public:
     // the name of the arguments in uppercase. If not defined, their
     // default value is used.
     // <group>
+    TiledColumnStMan (const String& hypercolumnName,
+                      const IPosition& tileShape,
+                      const IPosition& rowShape,
+                      uInt64 maximumCacheSize = 0);
     TiledColumnStMan (const String& hypercolumnName,
 		      const IPosition& tileShape,
 		      uInt64 maximumCacheSize = 0);
@@ -234,9 +257,17 @@ private:
     // Read the header info.
     virtual void readHeader (rownr_t nrrow, Bool firstTime);
 
+    // Create the 'map' to calculate index from row number.
+    void setupRowMap();
+
+    // Calculate the array position from the row number and put it at
+    // the latter values of <src>pos</src>.
+    void rowToPosition (IPosition& pos, rownr_t row) const;
 
     //# Declare data members.
     IPosition tileShape_p;
+    IPosition rowShape_p;
+    IPosition rowMap_p;
 };
 
 

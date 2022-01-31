@@ -1,16 +1,23 @@
+
+Test writeFixed [13, 1]
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
-tileShape: [5, 6, 1]
-maxCacheSz:0
-cacheSize: 1 (*240)
-#buckets:  816         (<  #reads + #writes!)
-#reads:    2448
-#inits:    816
-#writes:   1632
-#accesses: 3264        hit-rate:  0%
+cubeShape: [16, 20, 13, 44]
+tileShape: [5, 6, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 16 (*1440)
+#buckets:  2032         (<  #reads + #writes!)
+#reads:    2032
+#inits:    2032
+#writes:   2032
+#accesses: 35264        hit-rate:  88.4755%
 <<<
+hypercubeShape = [16, 20, 13, 44]
+tileShape = [5, 6, 6, 1]
+
+Test readTable [13, 1]
 >>> No TSMCube cache statistics (uses mmap)
 <<<
+X = [34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 94]
 get's have been done
 >>> No TSMCube cache statistics (uses mmap)
 <<<
@@ -27,10 +34,28 @@ getSlice's have been done
 >>> No TSMCube cache statistics (uses mmap)
 <<<
 getSlice's with strides have been done
+
+Test writeFixed [13, 15, 0]
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 13, 15, 4]
+tileShape: [5, 6, 6, 5, 1]
+maxCacheSz:0 MiB
+cacheSize: 48 (*7200)
+#buckets:  432         (<  #reads + #writes!)
+#reads:    432
+#inits:    432
+#writes:   432
+#accesses: 35264        hit-rate:  97.5499%
+<<<
+hypercubeShape = [16, 20, 13, 15, 4]
+tileShape = [5, 6, 6, 5, 1]
+
+Test readTable [13, 15, 0]
 >>> No TSMCube cache statistics (uses mmap)
 <<<
->>> No TSMCube cache statistics (uses mmap)
-<<<
+X = [34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 94]
+Y = [3, 1, -1, -3, -5, -7, -9, -11, -13, -15, -17, -19, -21, -23, -25]
+Z = [-2, -1.5, -1, 0]
 get's have been done
 >>> No TSMCube cache statistics (uses mmap)
 <<<
@@ -47,65 +72,188 @@ getSlice's have been done
 >>> No TSMCube cache statistics (uses mmap)
 <<<
 getSlice's with strides have been done
->>> No TSMCube cache statistics (uses mmap)
-<<<
+
+Test writeFixed [0]
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
+cubeShape: [16, 20, 552]
 tileShape: [5, 6, 1]
-maxCacheSz:0
+maxCacheSz:0 MiB
 cacheSize: 1 (*240)
-#buckets:  816         (<  #reads + #writes!)
-#reads:    1632
-#accesses: 1632        hit-rate:  0%
+#buckets:  8816         (<  #reads + #writes!)
+#reads:    26448
+#inits:    8816
+#writes:   17632
+#accesses: 35264        hit-rate:  0%
+<<<
+hypercubeShape = [16, 20, 552]
+tileShape = [5, 6, 1]
+
+Test readTable []
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    17632
+#accesses: 17632        hit-rate:  0%
 <<<
 get's have been done
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
+cubeShape: [16, 20, 552]
 tileShape: [5, 6, 1]
-maxCacheSz:0
+maxCacheSz:0 MiB
 cacheSize: 1 (*240)
-#buckets:  816
-#reads:    816
-#accesses: 816        hit-rate:  0%
+#buckets:  8832
+#reads:    8832
+#accesses: 8832        hit-rate:  0%
 <<<
 getColumn has been done
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
+cubeShape: [16, 20, 552]
 tileShape: [5, 6, 1]
-maxCacheSz:0
-cacheSize: 204 (*240)
-#buckets:  816
-#reads:    816
-#accesses: 16320        hit-rate:  95%
+maxCacheSz:0 MiB
+cacheSize: 2208 (*240)
+#buckets:  8832
+#reads:    8832
+#accesses: 176640        hit-rate:  95%
 <<<
 getColumnSlice's have been done
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
+cubeShape: [16, 20, 552]
 tileShape: [5, 6, 1]
-maxCacheSz:0
-cacheSize: 204 (*240)
-#buckets:  816         (<  #reads + #writes!)
-#reads:    5100
-#accesses: 16320        hit-rate:  68.75%
+maxCacheSz:0 MiB
+cacheSize: 2208 (*240)
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    55200
+#accesses: 176640        hit-rate:  68.75%
 <<<
 strided getColumnSlice's have been done
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
+cubeShape: [16, 20, 552]
 tileShape: [5, 6, 1]
-maxCacheSz:0
+maxCacheSz:0 MiB
 cacheSize: 4 (*240)
-#buckets:  816         (<  #reads + #writes!)
-#reads:    1224
-#accesses: 3570        hit-rate:  65.7143%
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    13224
+#accesses: 38570        hit-rate:  65.7143%
 <<<
 getSlice's have been done
 >>> TSMCube cache statistics:
-cubeShape: [16, 20, 51]
+cubeShape: [16, 20, 552]
 tileShape: [5, 6, 1]
-maxCacheSz:0
+maxCacheSz:0 MiB
 cacheSize: 4 (*240)
-#buckets:  816         (<  #reads + #writes!)
-#reads:    4998
-#accesses: 4998        hit-rate:  0%
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    53998
+#accesses: 53998        hit-rate:  0%
 <<<
 getSlice's with strides have been done
+
+Test writeNoHyper 
+>>> No TSMCube cache statistics (uses mmap)
+<<<
+hypercubeShape = [16, 20, 552]
+tileShape = [5, 6, 1]
+
+Test readTable []
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+get's have been done
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+getColumn has been done
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+getColumnSlice's have been done
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+strided getColumnSlice's have been done
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+getSlice's have been done
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+getSlice's with strides have been done
+
+Test writeFixed [0]
+>>> No TSMCube cache statistics (uses buffered IO)
+<<<
+hypercubeShape = [16, 20, 552]
+tileShape = [5, 6, 1]
+
+Test readTable []
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    17632
+#accesses: 17632        hit-rate:  0%
+<<<
+get's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 1 (*240)
+#buckets:  8832
+#reads:    8832
+#accesses: 8832        hit-rate:  0%
+<<<
+getColumn has been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 2208 (*240)
+#buckets:  8832
+#reads:    8832
+#accesses: 176640        hit-rate:  95%
+<<<
+getColumnSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 2208 (*240)
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    55200
+#accesses: 176640        hit-rate:  68.75%
+<<<
+strided getColumnSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 4 (*240)
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    13224
+#accesses: 38570        hit-rate:  65.7143%
+<<<
+getSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 552]
+tileShape: [5, 6, 1]
+maxCacheSz:0 MiB
+cacheSize: 4 (*240)
+#buckets:  8832         (<  #reads + #writes!)
+#reads:    53998
+#accesses: 53998        hit-rate:  0%
+<<<
+getSlice's with strides have been done
+
+Test extendOnly 
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 389]
+tileShape: [5, 6, 420]
+maxCacheSz:0 MiB
+cacheSize: 1 (*50400)
+#buckets:  16
+#inits:    16
+#writes:   16
+#accesses: 0
+<<<
+hypercubeShape = [16, 20, 389]
+tileShape = [5, 6, 420]

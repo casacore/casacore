@@ -760,7 +760,7 @@ void createTable()
   td.addColumn (ArrayColumnDesc<Bool>("FLAG"));
   td.addColumn (ArrayColumnDesc<Bool>("FLAG_CATEGORY"));
   // Now create a new table from the description.
-  SetupNewTable newtab("tLofarStMan_tmp.data", td, Table::New);
+  SetupNewTable newtab("tExternalStManNew_tmp.data", td, Table::New);
   // Create the storage manager and bind all columns to it.
   LofarStMan sm1;
   newtab.bindAll (sm1);
@@ -774,7 +774,7 @@ void createTable()
 void readTable()
 {
   // Open the table and check if #rows is as expected.
-  Table tab("tLofarStMan_tmp.data");
+  Table tab("tExternalStManNew_tmp.data");
   rownr_t nrow = tab.nrow();
   uInt nbasel = nant*nant;
   AlwaysAssertExit (nrow = ntime*nbasel);
@@ -886,7 +886,7 @@ void readTable()
 void updateTable()
 {
   // Open the table for write.
-  Table tab("tLofarStMan_tmp.data", Table::Update);
+  Table tab("tExternalStManNew_tmp.data", Table::Update);
   // Create object for DATA column.
   ArrayColumn<Complex> dataCol(tab, "DATA");
   // Check we can write the column, but not change the shape.
@@ -900,9 +900,9 @@ void updateTable()
 
 void copyTable()
 {
-  Table tab("tLofarStMan_tmp.data");
+  Table tab("tExternalStManNew_tmp.data");
   // Deep copy the table.
-  tab.deepCopy ("tLofarStMan_tmp.datcp", Table::New, true);
+  tab.deepCopy ("tExternalStManNew_tmp.datcp", Table::New, true);
 }
 
 
