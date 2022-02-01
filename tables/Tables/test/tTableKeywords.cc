@@ -140,11 +140,6 @@ void readFromOtherDir()
     Table subtab4 = subtab3.keywordSet().asTable ("SubTab4");
     AlwaysAssertExit (subtab4.nrow() == 4);
   }
-  {
-    // Open the table using the :: syntax.
-    Table subtab3 (Table::openTable("main3data::SubTab2"));
-    AlwaysAssertExit (subtab3.nrow() == 3);
-  }
 }    
 
 

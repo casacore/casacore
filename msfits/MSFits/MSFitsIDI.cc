@@ -42,6 +42,7 @@
 #include <casacore/tables/DataMan/TiledColumnStMan.h>
 #include <casacore/tables/DataMan/TiledShapeStMan.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableUtil.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -151,7 +152,7 @@ Bool MSFitsIDI::fillMS()
   
   // Delete the MS if it already exits and overwrite selected
   if (itsMSExists){
-      Table::deleteTable(itsMSOut);
+      TableUtil::deleteTable(itsMSOut);
   }
 
   // new MS will be created within readFITSFile

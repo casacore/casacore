@@ -48,6 +48,7 @@
 #include <casacore/tables/Tables/TableRow.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
@@ -316,7 +317,7 @@ Table TableParseSelect::makeTable (Int tabnr, const String& name,
         }
       }
       if (!foundSH  &&  alwaysOpen) {
-        table = Table::openTable(name);
+        table = TableUtil::openTable(name);
       }
     }
   }
@@ -348,7 +349,7 @@ Table TableParseSelect::tableKey (const String& name,
   }
   // Apparently it is no keyword in an outer table.
   // Try to open the table using subtables by splitting at the ::.
-  return Table::openTable (name);
+  return TableUtil::openTable (name);
 }
 
 Table TableParseSelect::findTableKey (const Table& table,
@@ -4050,7 +4051,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
            overwrite_p ? Table::New : Table::NewNoReplace,
            True, endianFormat_p);
         projectExprTable_p = Table(resultName_p);
-        Table::deleteTable (resultName_p + "_tmpproject");
+        TableUtil::deleteTable (resultName_p + "_tmpproject");
         // Indicate it does not have to be created anymore.
         resultCreated_p = True;
       }

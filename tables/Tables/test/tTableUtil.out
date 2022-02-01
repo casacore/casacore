@@ -1,0 +1,45 @@
+Expected exception: Table name tTableUtil_tmp/maindata::SubTab2::SubSubTab5 is invalid (subtable SubSubTab5 is unknown)
+Expected exception: Subtable SubSubTab5 in tTableUtil_tmp/maindata/SubTab2a cannot be deleted: table is still open in this process
+Expected exception: Table name tTableUtil_tmp/maindata::SubTab22::SubSubTab4 is invalid (subtable SubTab22 is unknown)
+Expected exception: Table name tTableUtil_tmp/main33data::SubTab2::SubSubTab4 is invalid (main table tTableUtil_tmp/main33data does not exist)
+Expected exception: Subtable tTableUtil_tmp/maindata/SubTab2a/SubSubTab4 already exists
+Expected exception: Table name tTableUtil_tmp/main3data::::SubTab2::SubSubTab4 is invalid (empty name part given)
+
+Test getLayout and tableInfo ...
+TableUtil::getlayout #rows = 0
+TableDesc    version    (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 1
+0  SubTab2 : TableDesc 
+  #Columns  = 1
+   Name=RowNr   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=1
+0  SubTab3 : TableDesc 
+
+
+type = 
+subtype = 
+
+Test getLayout and tableInfo ...
+TableUtil::getlayout #rows = 2
+TableDesc    version    (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 3
+0  SubSubTab4 : TableDesc 
+1  SubSubTab5 : TableDesc 
+2  SubSubTab6 : TableDesc 
+  #Columns  = 1
+   Name=col1   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+type = 
+subtype = 
+
+OK

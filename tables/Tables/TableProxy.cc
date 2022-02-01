@@ -27,6 +27,7 @@
 
 
 #include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/ReadAsciiTable.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
@@ -75,8 +76,8 @@ TableProxy::TableProxy (const String& tableName,
 			const Record& lockOptions,
 			int option)
 {
-  table_p = Table::openTable (tableName, makeLockOptions(lockOptions),
-                              Table::TableOption(option));
+  table_p = TableUtil::openTable (tableName, makeLockOptions(lockOptions),
+                                  Table::TableOption(option));
 }
 
 TableProxy::TableProxy (const String& tableName,
@@ -105,12 +106,10 @@ TableProxy::TableProxy (const String& tableName,
     throw TableError (tableName + " failed: " + message);
   }
   // Try to create the table (scratch if no table name given).
-  SetupNewTable newtab(tableName, tabdesc,
-                       tableName.empty()  ?  Table::Scratch : Table::New);
-  // Apply a possible dminfo object.
-  newtab.bindCreate (dmInfo);
-  table_p = Table (newtab, type, makeLockOptions(lockOptions),
-		   nrow, False, endOpt);
+  table_p = TableUtil::createTable (tableName, tabdesc, Table::New,
+                                    type, StorageOption(), dmInfo,
+                                    makeLockOptions(lockOptions),
+                                    nrow, False, endOpt);
 }
 
 TableProxy::TableProxy (const Vector<String>& tableNames,
@@ -123,8 +122,8 @@ TableProxy::TableProxy (const Vector<String>& tableNames,
   TableLock lockOpt = makeLockOptions(lockOptions);
   Block<Table> tabs(tableNames.size());
   for (uInt i=0; i<tableNames.size(); ++i) {
-    tabs[i] = Table::openTable (tableNames[i], lockOpt,
-                                Table::TableOption(option));
+    tabs[i] = TableUtil::openTable (tableNames[i], lockOpt,
+                                    Table::TableOption(option));
   }
   Block<String> subNames(concatenateSubTableNames.size());
   std::copy (concatenateSubTableNames.begin(), concatenateSubTableNames.end(),

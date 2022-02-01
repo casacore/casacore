@@ -181,7 +181,7 @@ void doDefineAssign (const Record& inrecord)
     } catch (std::exception& x) {
         cout << x.what() << endl;
     } 
-    // Do an erronous get.
+    // Do an erroneous get.
     try {
       record.asString(0);       // invalid data type
     } catch (const AipsError& x) {

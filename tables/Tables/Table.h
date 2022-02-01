@@ -36,6 +36,7 @@
 #include <casacore/tables/Tables/RowNumbers.h>
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
 
@@ -95,9 +96,6 @@ template<class T> class CountedPtr;
 //   <li> Update         update existing table
 //   <li> Delete         delete table
 // </ul>
-// The function <src>openTable</src> makes it possible to open a subtable
-// of a table in a convenient way, even if the table is only a reference
-// to another table (e.g., a selection).
 //
 // Creating a new table requires more work, because columns have
 // to be bound to storage managers or virtual column engines.
@@ -109,6 +107,9 @@ template<class T> class CountedPtr;
 // <code>Table::LocalEndian</code> (thus the endian format of the
 // machine being used).
 //
+// Note that TableUtil contains convenience function to open, create or delete a table.
+// They make it possible to use the :: notation to denote subtables.
+// <p>
 // It is possible to create a Table object as the virtual concatenation of
 // Tables having identical table descriptions. Subtables of those tables
 // can optionally be concatenated as well.
@@ -365,37 +366,6 @@ public:
     // Assignment (reference semantics).
     Table& operator= (const Table&);
 
-    // Try to open a table. The name of the table can contain subtable names
-    // using :: as separator. In this way it is possible to directly open a
-    // subtable of a RefTable or ConcatTable, which is not possible if the
-    // table name is specified with slashes.
-    // <br>The open process is as follows:
-    // <ul>
-    //  <li> It is tried to open the table with the given name.
-    //  <li> If unsuccessful, the name is split into its parts using ::
-    //       The first part is the main table which will be opened temporarily.
-    //       The other parts are the successive subtable names (usually one).
-    //       Each subtable is opened by looking it up in the keywords of the
-    //       table above. The final subtable is returned.
-    // </ul>
-    // <br>An exception is thrown if the table cannot be opened.
-    // <example>
-    // Open the ANTENNA subtable of an MS which might be a selection of
-    // a real MS.
-    // <srcblock>
-    // Table tab(Table::openTable ("sel.ms::ANTENNA");
-    // </srcblock>
-    // </example>
-    // <group>
-    static Table openTable (const String& tableName,
-                            TableOption = Table::Old,
-                            const TSMOption& = TSMOption());
-    static Table openTable (const String& tableName,
-                            const TableLock& lockOptions,
-                            TableOption = Table::Old,
-                            const TSMOption& = TSMOption());
-    // </group>
-
     // Get the names of the tables this table consists of.
     // For a plain table it returns its name,
     // for a RefTable the name of the parent, and
@@ -406,29 +376,6 @@ public:
 
     // Is the root table of this table the same as that of the other one?
     Bool isSameRoot (const Table& other) const;
-
-    // Can the table be deleted?
-    // If true, function deleteTable can safely be called.
-    // If not, message contains the reason why (e.g. 'table is not writable').
-    // It checks if the table is writable, is not open in this process
-    // and is not open in another process.
-    // <br>If <src>checkSubTables</src> is set, it also checks if
-    // a subtable is not open in another process.
-    // <group>
-    static Bool canDeleteTable (const String& tableName,
-				Bool checkSubTables=False);
-    static Bool canDeleteTable (String& message, const String& tableName,
-				Bool checkSubTables=False);
-    // </group>
-
-    // Delete the table.
-    // An exception is thrown if the table cannot be deleted because
-    // its is not writable or because it is still open in this or
-    // another process.
-    // <br>If <src>checkSubTables</src> is set, it is also checked if
-    // a subtable is used in another process.
-    static void deleteTable (const String& tableName,
-			     Bool checkSubTables=False);
 
     // Close all open subtables.
     void closeSubTables() const;
@@ -547,19 +494,6 @@ public:
     // Test if a table with the given name exists and is readable.
     // If not, an exception is thrown if <src>throwIf==True</src>.
     static Bool isReadable (const String& tableName, bool throwIf=False);
-
-    // Return the layout of a table (i.e. description and #rows).
-    // This function has the advantage that only the minimal amount of
-    // information required is read from the table, thus it is much
-    // faster than a normal table open.
-    // <br> The number of rows is returned. The description of the table
-    // is stored in desc (its contents will be overwritten).
-    // <br> An exception is thrown if the table does not exist.
-    static rownr_t getLayout (TableDesc& desc, const String& tableName);
-
-    // Get the table info of the table with the given name.
-    // An empty object is returned if the table is unknown.
-    static TableInfo tableInfo (const String& tableName);
 
     // Show the structure of the table.
     // It shows the columns (with types), the data managers, and the subtables.
@@ -1066,6 +1000,39 @@ public:
     DataManager* findDataManager (const String& name,
                                   Bool byColumn=False) const;
 
+    // Some deprecated functions for backward compatibility, now in TableUtil.h.
+    // Use old way of indicating deprecate to avoid -Wc++14-extensions warnings.
+    // <group>
+     // [[deprecated ("Now use TableUtil::openTable")]]
+    static Table openTable (const String& tableName,
+                            TableOption = Table::Old,
+                            const TSMOption& = TSMOption())
+      __attribute__ ((deprecated ("Now use TableUtil::openTable")));
+     // [[deprecated ("Now use TableUtil::openTable")]]
+    static Table openTable (const String& tableName,
+                            const TableLock& lockOptions,
+                            TableOption = Table::Old,
+                            const TSMOption& = TSMOption())
+      __attribute__ ((deprecated ("Now use TableUtil::openTable")));
+     // [[deprecated ("Now use TableUtil::canDeleteTable")]]
+    static Bool canDeleteTable (const String& tableName,
+                                Bool checkSubTables=False)
+      __attribute__ ((deprecated ("Now use TableUtil::canDeleteTable")));
+     // [[deprecated ("Now use TableUtil::canDeleteTable")]]
+    static Bool canDeleteTable (String& message, const String& tableName,
+                                Bool checkSubTables=False)
+      __attribute__ ((deprecated ("Now use TableUtil::canDeleteTable")));
+     // [[deprecated ("Now use TableUtil::deleteTable")]]
+    static void deleteTable (const String& tableName,
+                             Bool checkSubTables=False)
+      __attribute__ ((deprecated ("Now use TableUtil::deleteTable")));
+     // [[deprecated ("Now use TableUtil::getLayout")]]
+    static rownr_t getLayout (TableDesc& desc, const String& tableName)
+      __attribute__ ((deprecated ("Now use TableUtil::getLayout")));
+     // [[deprecated ("Now use TableUtil::tableInfo")]]
+    static TableInfo tableInfo (const String& tableName)
+      __attribute__ ((deprecated ("Now use TableUtil::tableInfo")));
+    // </group>
 
 protected:
     BaseTable*  baseTabPtr_p;                 //# ptr to table representation
@@ -1091,7 +1058,6 @@ protected:
     // Open an existing table.
     void open (const String& name, const String& type, int tableOption,
 	       const TableLock& lockOptions, const TSMOption& tsmOpt);
-
 
 private:
     // Construct a BaseTable object from the table file.
@@ -1209,8 +1175,6 @@ inline const TableDesc& Table::tableDesc() const
 inline const TableRecord& Table::keywordSet() const
     { return baseTabPtr_p->keywordSet(); }
 
-inline TableInfo Table::tableInfo (const String& tableName)
-    { return BaseTable::tableInfo (tableName); }
 inline const TableInfo& Table::tableInfo() const
     { return baseTabPtr_p->tableInfo(); }
 inline TableInfo& Table::tableInfo()

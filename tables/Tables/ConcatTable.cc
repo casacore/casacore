@@ -30,6 +30,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/BlockIO.h>
 #include <casacore/casa/IO/ArrayIO.h>
@@ -397,7 +398,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     ios >> subNames;
     ios.getend();
-    Table::getLayout (desc, rootNames[0]);
+    TableUtil::getLayout (desc, rootNames[0]);
   }
 
   //# Create a ConcatColumn object for all columns in the description.
