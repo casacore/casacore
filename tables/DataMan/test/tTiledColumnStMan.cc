@@ -69,7 +69,7 @@ void extendOnly(const TSMOption&);
 int main () {
     try {
       {
-        IPosition rowShape(2,13,1);
+        IPosition rowShape(2,13,10);
         writeFixed(TSMOption::Cache, rowShape);
 	readTable(TSMOption::MMap, True, rowShape);
       }
