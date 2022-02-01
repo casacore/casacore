@@ -197,37 +197,43 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 
 void TableCopy::cloneColumn (const Table& fromTable, const String& fromColumn,
                              Table& toTable, const String& newColumn,
-                             const String& dataManagerName)
+                             const String& dataManagerName,
+                             const Record& newdmInfo)
 {
   // Use existing column description and give it the new name.
   ColumnDesc cd(fromTable.tableDesc()[fromColumn]);
   cd.setName (newColumn);
-  doCloneColumn (fromTable, fromColumn, toTable, cd, dataManagerName);
+  doCloneColumn (fromTable, fromColumn, toTable, cd, dataManagerName, newdmInfo);
 }
 
 void TableCopy::doCloneColumn (const Table& fromTable, const String& fromColumn,
                                Table& toTable, const ColumnDesc& newColumn,
-                               const String& dataManagerName)
+                               const String& dataManagerName,
+                               const Record& newdmInfo)
 {
   // Use existing column description and give it the new name.
   TableDesc td;
   td.addColumn (newColumn);
-  // Get datamanager info of DATA column.
+  // Get datamanager info of source column.
   Block<String> selcol(1);
   selcol[0] = fromColumn;
-  // Do the selection to only get dminfo of DATA
-  Table t1(fromTable.project (selcol));
-  Record dminfo = t1.dataManagerInfo();
-  // Set the datamananger name if not given.
-  String dmName (dataManagerName);
-  if (dmName.empty()) {
-    dmName = newColumn.name();
+  // Use the given datamanager info; if empty use that of input column.
+  Record dminfo(newdmInfo);
+  if (dminfo.nfields() == 0) {
+    // Do the selection to only get dminfo of source column.
+    Table t1(fromTable.project (selcol));
+    dminfo = t1.dataManagerInfo();
+    // Set the datamanager name if not given.
+    String dmName (dataManagerName);
+    if (dmName.empty()) {
+      dmName = newColumn.name();
+    }
+    // Adjust the dminfo.
+    // It has a subrecord per dataman, thus in this case only 1.
+    Record& rec = dminfo.rwSubRecord(0);
+    rec.define ("COLUMNS", Vector<String>(1, newColumn.name()));
+    rec.define ("NAME", dmName);
   }
-  // Adjust the dminfo.
-  // It has a subrecord per dataman, thus in this case only 1.
-  Record& rec = dminfo.rwSubRecord(0);
-  rec.define ("COLUMNS", Vector<String>(1, newColumn.name()));
-  rec.define ("NAME", dmName);
   // Now add the column.
   toTable.addColumn (td, dminfo);
 }
