@@ -48,17 +48,18 @@ namespace casacore {
     }
 
     Table openTable (const String& tableName,
-                     const TableLock& lockOptions,
-                     Table::TableOption option,
-                     const TSMOption& tsmOption)
+                     const TableLock& lockOpt,
+                     Table::TableOption tabOpt,
+                     const TSMOption& tsmOpt)
     {
       // See if the table can be opened as such.
       if (Table::isReadable(tableName)) {
-        return Table(tableName, lockOptions, option, tsmOption);
+        return Table(tableName, lockOpt, tabOpt, tsmOpt);
       }
       // Try to find and open the last subtable by splitting at ::
-      std::pair<Table,String> t(findParentTable(tableName));
+      std::pair<Table,String> t(findParentTable(tableName, lockOpt, tabOpt, tsmOpt));
       if (t.first.isNull()) {
+        // Note that tableName was already tried to be opened at beginning.
         throw TableError ("Table " + tableName + " does not exist");
       }
       // Find the last subtable in the parent.
@@ -85,7 +86,10 @@ namespace casacore {
       if (! tableName.empty()) {
         t = findParentTable (tableName);
       }
-      if (t.second.empty()) {
+      if (! t.second.empty()) {
+        return createSubTable (t.first, t.second, desc, tabOpt, storageOption,
+                               dmInfo, lockOptions, nrrow, initialize, endian, tsmOpt);
+      } else {
         // No subtable given, so create a main table.
         SetupNewTable newtab(tableName, desc,
                              tableName.empty() ? Table::Scratch : tabOpt,
@@ -94,8 +98,6 @@ namespace casacore {
         // Create the table.
         return Table(newtab, tabType, lockOptions, nrrow, initialize, endian, tsmOpt);
       }
-      return createSubTable (t.first, t.second, desc, tabOpt, storageOption,
-                             dmInfo, lockOptions, nrrow, initialize, endian, tsmOpt);
     }
 
     Table createSubTable (Table& parent, const String& subName,
@@ -145,7 +147,7 @@ namespace casacore {
     {
       if (splitColons) {
         std::pair<Table,String> t = findParentTable (tableName);
-        if (! (t.first.isNull()  ||  t.second.empty())) {
+        if (! t.first.isNull()) {
           return canDeleteSubTable (message, t.first, t.second, checkSubTables);
         }
       }
@@ -190,9 +192,9 @@ namespace casacore {
       }
       // See if the name represents a table.
       if (! Table::isReadable(tableName)) {
-        // See< if the name contains subtable names using ::
+        // See if the name contains subtable names using ::
         std::pair<Table,String> t = findParentTable (tableName);
-        if (! (t.first.isNull()  ||  t.second.empty())) {
+        if (! t.first.isNull()) {
           deleteSubTable (t.first, t.second, checkSubTables);
           return;
         }
@@ -273,7 +275,7 @@ namespace casacore {
       // See if a subtable is given using ::.
       String tabName;
       std::pair<Table,String> t = findParentTable (tableName);
-      if (t.first.isNull()  ||  t.second.empty()) {
+      if (t.first.isNull()) {
         tabName = Path(tableName).absoluteName();
       } else {
         tabName = t.first.keywordSet().tableAttributes(t.second).name();
@@ -282,7 +284,10 @@ namespace casacore {
     }
     
     // Return Table and name of last part.
-    std::pair<Table,String> findParentTable (const String& fullName)
+    std::pair<Table,String> findParentTable (const String& fullName,
+                                             const TableLock& lockOpt,
+                                             Table::TableOption tabOpt,
+                                             const TSMOption& tsmOpt)
     {
       Table tab;
       String lastPart, msg;
@@ -298,14 +303,13 @@ namespace casacore {
         if (! Table::isReadable (names[0])) {
           msg = "main table " + names[0] + " does not exist";
         } else {
-          tab = Table(names[0]);
+          tab = Table(names[0], lockOpt, tabOpt, tsmOpt);
           // Get name of last subtable.
           lastPart = names[names.size()-1];
           // Check if all subtables exist, except last one.
           for (uInt i=1; i<names.size()-1; ++i) {
             if (! tab.keywordSet().isDefined(names[i])) {
               msg = "subtable " + names[i] + " is unknown";
-              tab = Table();
               break;
             }
             tab = tab.keywordSet().asTable (names[i]);

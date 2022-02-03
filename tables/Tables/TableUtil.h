@@ -179,8 +179,11 @@ namespace casacore {
     // the last subtable. An empty Table is returned if the table name does
     // not contain subtable names.
     // In case of an error, an exception is thrown.
-    std::pair<Table,String> findParentTable (const String& fullName);
-  
+    std::pair<Table,String> findParentTable (const String& fullName,
+                                             const TableLock& lockOptions=TableLock(),
+                                             Table::TableOption option=Table::Old,
+                                             const TSMOption& tsmOption=TSMOption());
+
   } //# NAMESPACE TableUtil - END
 } //# NAMESPACE CASACORE - END
 
