@@ -1003,33 +1003,33 @@ public:
     // Some deprecated functions for backward compatibility, now in TableUtil.h.
     // Use old way of indicating deprecate to avoid -Wc++14-extensions warnings.
     // <group>
-     // [[deprecated ("Now use TableUtil::openTable")]]
+     //# [[deprecated ("Now use TableUtil::openTable")]]
     static Table openTable (const String& tableName,
                             TableOption = Table::Old,
                             const TSMOption& = TSMOption())
       __attribute__ ((deprecated ("Now use TableUtil::openTable")));
-     // [[deprecated ("Now use TableUtil::openTable")]]
+     //# [[deprecated ("Now use TableUtil::openTable")]]
     static Table openTable (const String& tableName,
                             const TableLock& lockOptions,
                             TableOption = Table::Old,
                             const TSMOption& = TSMOption())
       __attribute__ ((deprecated ("Now use TableUtil::openTable")));
-     // [[deprecated ("Now use TableUtil::canDeleteTable")]]
+     //# [[deprecated ("Now use TableUtil::canDeleteTable")]]
     static Bool canDeleteTable (const String& tableName,
                                 Bool checkSubTables=False)
       __attribute__ ((deprecated ("Now use TableUtil::canDeleteTable")));
-     // [[deprecated ("Now use TableUtil::canDeleteTable")]]
+     //# [[deprecated ("Now use TableUtil::canDeleteTable")]]
     static Bool canDeleteTable (String& message, const String& tableName,
                                 Bool checkSubTables=False)
       __attribute__ ((deprecated ("Now use TableUtil::canDeleteTable")));
-     // [[deprecated ("Now use TableUtil::deleteTable")]]
+     //# [[deprecated ("Now use TableUtil::deleteTable")]]
     static void deleteTable (const String& tableName,
                              Bool checkSubTables=False)
       __attribute__ ((deprecated ("Now use TableUtil::deleteTable")));
-     // [[deprecated ("Now use TableUtil::getLayout")]]
+     //# [[deprecated ("Now use TableUtil::getLayout")]]
     static rownr_t getLayout (TableDesc& desc, const String& tableName)
       __attribute__ ((deprecated ("Now use TableUtil::getLayout")));
-     // [[deprecated ("Now use TableUtil::tableInfo")]]
+     //# [[deprecated ("Now use TableUtil::tableInfo")]]
     static TableInfo tableInfo (const String& tableName)
       __attribute__ ((deprecated ("Now use TableUtil::tableInfo")));
     // </group>

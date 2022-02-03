@@ -42,4 +42,4 @@ TableDesc    version    (Directory **SCRATCH**)
 type = 
 subtype = 
 
-OK
+tTableUtil ended OK

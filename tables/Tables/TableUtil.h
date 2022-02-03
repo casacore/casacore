@@ -28,8 +28,6 @@
 #ifndef TABLES_TABLEUTIL_H
 #define TABLES_TABLEUTIL_H
 
-
-//# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableLock.h>
@@ -175,15 +173,13 @@ namespace casacore {
     // be a subtable specification using ::.
     String getFullName (const String& tableName);
 
-    // Try to find the table name as a subtable if a name like name::sub is used.
-    // If mustExist=True, the full name must exist as a subtable.
-    // If False, it is the name of a table to be created, so all but the last part
-    // must exist.
-    // It returns the Table object of the last subtable to check and the
-    // name of the last subtable.
+    // Find the parent table of the last subtable in a table name containing
+    // :: to indicate subtables.
+    // It returns the Table object of that parent table and the name of
+    // the last subtable. An empty Table is returned if the table name does
+    // not contain subtable names.
     // In case of an error, an exception is thrown.
-    std::pair<Table,String> tryFindSubTable (const String& fullName,
-                                             Bool mustExist);
+    std::pair<Table,String> findParentTable (const String& fullName);
   
   } //# NAMESPACE TableUtil - END
 } //# NAMESPACE CASACORE - END

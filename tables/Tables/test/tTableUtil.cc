@@ -25,7 +25,6 @@
 //#
 //# $Id$
 
-//# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -36,10 +35,12 @@
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/iostream.h>
 
-#include <casacore/casa/namespace.h>
+using namespace casacore;
 
 // This program tests some table utility functions.
 
+// Define the main table name.
+const String mainName("tTableUtil_tmp/maindata");
 
 // Create a table and various subtables.
 void createTables()
@@ -47,14 +48,14 @@ void createTables()
   // Create a main table.
   TableDesc td("", "", TableDesc::Scratch);
   td.addColumn (ScalarColumnDesc<Int>("RowNr"));
-  Table tab(TableUtil::createTable("tTableUtil_tmp/maindata", td, Table::New));
+  Table tab(TableUtil::createTable(mainName, td, Table::New));
   // Create 3 subtables (in different directories).
   TableDesc std("", "", TableDesc::Scratch);
   std.addColumn (ScalarColumnDesc<Int>("col1"));
-  SetupNewTable newtab2("tTableUtil_tmp/maindata/SubTab2a", std, Table::New);
+  SetupNewTable newtab2(mainName + "/SubTab2a", std, Table::New);
   Table subtab2(newtab2, 2);
   std.addColumn (ScalarColumnDesc<Int>("col2"));
-  SetupNewTable newtab3("tTableUtil_tmp/maindata/subdata", std, Table::New);
+  SetupNewTable newtab3(mainName + "/subdata", std, Table::New);
   Table subtab3(newtab3, 3);
   // Store one subtable as a keyword in the main table, the
   // other as a column keyword.
@@ -63,7 +64,7 @@ void createTables()
   col.rwKeywordSet().defineTable ("SubTab3", subtab3);
   // Store another subtable as a keyword in SubTab3.
   std.addColumn (ScalarColumnDesc<Int>("col3"));
-  SetupNewTable newtab4("tTableUtil_tmp/maindata/subdata/sub4", std,
+  SetupNewTable newtab4(mainName + "/subdata/sub4", std,
                         Table::New);
   Table subtab4(newtab4, 4);
   subtab3.rwKeywordSet().defineTable ("SubTab4", subtab4);
@@ -78,7 +79,7 @@ void readTables()
 {
   // Reconstruct the main table.
   // Get the sub table from the keyword.
-  Table tab = TableUtil::openTable("tTableUtil_tmp/maindata");
+  Table tab = TableUtil::openTable(mainName);
   AlwaysAssertExit (tab.nrow() == 0);
   AlwaysAssertExit (tab.keywordSet().nfields() == 1);
   AlwaysAssertExit (tab.tableDesc().ncolumn() == 1);
@@ -100,7 +101,7 @@ void testColons()
 {
   {
     // Open the table using the :: syntax.
-    Table subtab2(TableUtil::openTable("tTableUtil_tmp/maindata::SubTab2"));
+    Table subtab2(TableUtil::openTable(mainName + "::SubTab2"));
     AlwaysAssertExit (subtab2.nrow() == 2);
     AlwaysAssertExit (subtab2.tableDesc().ncolumn() == 1);
   }
@@ -108,19 +109,19 @@ void testColons()
     // Create a subtable of the subtable. It will have 1 column and 10 rows.
     TableDesc td;
     td.addColumn(ScalarColumnDesc<String>("col2"));
-    Table subtab4(TableUtil::createTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab4",
+    Table subtab4(TableUtil::createTable(mainName + "::SubTab2::SubSubTab4",
                                          td, Table::NewNoReplace, Table::Plain,
                                          StorageOption(), Record(), TableLock(), 10));
   }
   {
     // Open the subtable just created.
-    Table tab(TableUtil::openTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab4"));
+    Table tab(TableUtil::openTable(mainName + "::SubTab2::SubSubTab4"));
     AlwaysAssertExit (tab.nrow() == 10);
     AlwaysAssertExit (tab.tableDesc().ncolumn() == 1);
   }
   {
     // Do the same, but use slashes.
-    Table tab(TableUtil::openTable("tTableUtil_tmp/maindata/SubTab2a/SubSubTab4"));
+    Table tab(TableUtil::openTable(mainName + "/SubTab2a/SubSubTab4"));
     AlwaysAssertExit (tab.nrow() == 10);
     AlwaysAssertExit (tab.tableDesc().ncolumn() == 1);
   }
@@ -131,14 +132,14 @@ void testDelete()
   // Create and delete a subtable.
   {
     TableDesc td;
-    Table tab(TableUtil::createTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab5",
+    Table tab(TableUtil::createTable(mainName + "::SubTab2::SubSubTab5",
                                      td, Table::NewNoReplace));
   }
-  TableUtil::deleteTable ("tTableUtil_tmp/maindata::SubTab2::SubSubTab5");
+  TableUtil::deleteTable (mainName + "::SubTab2::SubSubTab5");
   // Check it is deleted.
   Bool ok = False;
   try {
-    Table tab(TableUtil::openTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab5"));
+    Table tab(TableUtil::openTable(mainName + "::SubTab2::SubSubTab5"));
   } catch (const TableError& x) {
     ok = True;
     cout << "Expected exception: " << x.what() << endl;
@@ -146,17 +147,17 @@ void testDelete()
   AlwaysAssertExit (ok);
   {
     // Also check the keyword does not exist anymore.
-    Table tab(TableUtil::openTable("tTableUtil_tmp/maindata::SubTab2"));
+    Table tab(TableUtil::openTable(mainName + "::SubTab2"));
     AlwaysAssertExit (! tab.keywordSet().isDefined("SubSubTab5"));
   }
   {
     // Do the same, but leave the created table open to make deletion fail.
     TableDesc td;
-    Table tab(TableUtil::createTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab5",
+    Table tab(TableUtil::createTable(mainName + "::SubTab2::SubSubTab5",
                                      td, Table::NewNoReplace));
     ok = False;
     try {
-      TableUtil::deleteTable ("tTableUtil_tmp/maindata::SubTab2::SubSubTab5");
+      TableUtil::deleteTable (mainName + "::SubTab2::SubSubTab5");
     } catch (const TableError& x) {
       ok = True;
       cout << "Expected exception: " << x.what() << endl;
@@ -171,7 +172,7 @@ void testReplace()
   {
     TableDesc td;
     td.addColumn(ScalarColumnDesc<String>("col2"));
-    Table tab(TableUtil::createTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab6",
+    Table tab(TableUtil::createTable(mainName + "::SubTab2::SubSubTab6",
                                      td, Table::NewNoReplace));
     AlwaysAssertExit (tab.nrow() == 0);
     AlwaysAssertExit (tab.tableDesc().ncolumn() == 1);
@@ -182,7 +183,7 @@ void testReplace()
     TableDesc td;
     td.addColumn(ScalarColumnDesc<String>("col1"));
     td.addColumn(ScalarColumnDesc<String>("col3"));
-    Table tab(TableUtil::createTable("tTableUtil_tmp/maindata::SubTab2::SubSubTab6",
+    Table tab(TableUtil::createTable(mainName + "::SubTab2::SubSubTab6",
                                      td, Table::New));
     AlwaysAssertExit (tab.nrow() == 0);
     AlwaysAssertExit (tab.tableDesc().ncolumn() == 2);
@@ -198,7 +199,7 @@ void testErrors()
   Bool ok = False;
   try {
     // SubTab22 does not exist
-    TableUtil::createTable ("tTableUtil_tmp/maindata::SubTab22::SubSubTab4",
+    TableUtil::createTable (mainName + "::SubTab22::SubSubTab4",
                             td, Table::New);
   } catch (const TableError& x) {
     ok = True;
@@ -218,7 +219,7 @@ void testErrors()
   ok = False;
   try {
     // SubSubTab4 already exists.
-    TableUtil::createTable ("tTableUtil_tmp/maindata::SubTab2::SubSubTab4",
+    TableUtil::createTable (mainName + "::SubTab2::SubSubTab4",
                             td, Table::NewNoReplace);
   } catch (const TableError& x) {
     ok = True;
@@ -264,13 +265,13 @@ int main()
     testDelete();
     testReplace();
     testErrors();
-    testLayoutInfo("tTableUtil_tmp/maindata");
-    testLayoutInfo("tTableUtil_tmp/maindata::SubTab2");
+    testLayoutInfo(mainName);
+    testLayoutInfo(mainName + "::SubTab2");
   } catch (const std::exception& x) {
     cout << "Caught an exception : " << x.what() << endl;
     return 1;
   } 
-  cout << "OK" << endl;
+  cout << "tTableUtil ended OK" << endl;
   return 0; 
 }
 
