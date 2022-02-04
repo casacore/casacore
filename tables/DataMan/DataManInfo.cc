@@ -213,38 +213,23 @@ void DataManInfo::mergeInfo (Record& dminfo1, const Record& dminfo2)
   // See for each new data manager what to do.
   for (uInt i2=0; i2<dminfo2.nfields(); ++i2) {
     Record dm2 = dminfo2.subRecord(i2);
-    String type2;
-    String name2;
-    Vector<String> cols2;
-    if (dm2.isDefined("TYPE")) {
-      type2 = dm2.asString ("TYPE");
-    }
-    if (dm2.isDefined("NAME")) {
-      name2 = dm2.asString ("NAME");
-    }
+    String type2 (dm2.isDefined("TYPE")  ?  dm2.asString("TYPE") : String());
+    String name2 (dm2.isDefined("NAME")  ?  dm2.asString("NAME") : String());
     // Add the data manager to the first, but overwrite if already there.
     uInt inx = dminfo1.nfields();
     for (uInt i1=0; i1<dminfo1.nfields(); ++i1) {
       const Record& dm1 = dminfo1.subRecord(i1);
-      String type1;
-      String name1;
       // An empty or undefined type/name means use the other.
-      if (dm1.isDefined("TYPE")) {
-        type1 = dm1.asString ("TYPE");
-      }
-      if (dm1.isDefined("NAME")) {
-        name1 = dm1.asString ("NAME");
-      }
+      String type1 (dm1.isDefined("TYPE")  ?  dm1.asString("TYPE") : String());
+      String name1 (dm1.isDefined("NAME")  ?  dm1.asString("NAME") : String());
       if (type1.empty()) {
         type1 = type2;
+      } else if (type2.empty()) {
+        type2 = type1;
       }
       if (name1.empty()) {
         name1 = name2;
-      }
-      if (type2.empty()) {
-        type2 = type1;
-      }
-      if (name2.empty()) {
+      } else if (name2.empty()) {
         name2 = name1;
       }
       if (type1==type2 && name1==name2) {
@@ -266,7 +251,7 @@ void DataManInfo::mergeColumns (Record& dminfo, uInt inxdm, Record& dm)
   // Get the columns from the new dm.
   Vector<String> cols;
   if (dm.isDefined("COLUMNS")) {
-    cols.reference(dm.asArrayString ("COLUMNS"));
+    cols.reference (dm.asArrayString("COLUMNS"));
   }
   if (! cols.empty()) {
     // Iterate over all dm-s.
@@ -276,21 +261,14 @@ void DataManInfo::mergeColumns (Record& dminfo, uInt inxdm, Record& dm)
         Vector<String> cols2(dm2.asArrayString("COLUMNS"));
         if (! cols2.empty()) {
           std::vector<String> colsnew;
-          // Keep column if not equal to one in new dm.
+          // Keep columns not equal to a column in the new dm.
           for (auto col2 : cols2) {
-            Bool fnd = False;
-            for (auto col : cols) {
-              if (col2 == col) {
-                fnd = True;
-                break;
-              }
-              if (!fnd) {
-                colsnew.push_back (col2);
-              }
+            if (std::find (cols.begin(), cols.end(), col2) == cols.end()) {
+              colsnew.push_back (col2);
             }
           }
           if (i != inxdm) {
-            // dm is not the new one, so update the COLUMNS in it.
+            // dm is not the new one, so update the COLUMNS in it (if changed).
             if (colsnew.size() != cols2.size()) {
               dm2.define ("COLUMNS", Vector<String>(colsnew));
               dminfo.defineRecord (i, dm2);

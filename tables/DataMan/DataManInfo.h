@@ -57,9 +57,16 @@ class Record;
 // </prerequisite>
 
 // <synopsis> 
-// DataManInfo is a class to manipulate a datamanager info record and table
-// descriptions.
-// Often an existing table description and datamanager info record is used to
+// DataManInfo is a class to manipulate a datamanager info record and/or table
+// description. A datamanager info record tells how the columns are stored.
+// It is a Record containing the following fields. If omitted, a default is used.
+// <ul>
+//  <li> TYPE: data manager type (default StandardStMan)
+//  <li> NAME: unique data manager name
+//  <li> COLUMNS: string vector containing columns stored with this data manager
+//  <li> SPEC: subrecord containing data manager specific parameters
+// </ul>
+// Often an existing table description and datamanager info record are used to
 // construct a new table, but it might be necessary to change it somewhat.
 // <ul>
 //  <li> Remove hypercolumn definitions from a table description. They are
@@ -67,9 +74,8 @@ class Record;
 //  <li> Replace non-writable storage managers (like LofarStMan) by a
 //       writable one.
 //  <li> Replace the deprecated TiledDataStMan by TiledShapeStMan.
+//  <li> Merge two datamanager info records.
 // </ul>
-//
-// Such things might be necessary in a number
 // </synopsis> 
 
 //# <todo asof="$DATE:$">
@@ -100,13 +106,12 @@ public:
   // Columns having the same data manager name are combined in one data manager.
   // If the second one has no name, it is considered to be equal to the first
   // data manager of that type.
-  // The possible new data manager names and types are set in the TableDesc.
   static void mergeInfo (Record&, const Record&);
 
-  // Finalize the merge by using the data manager type and name and dminfo
+  // Finalize the merge by merging the dminfo record with the table description
   // to create the final dminfo record.
   // The final dminfo record gets all columns in the TableDesc object.
-  // The given dminfo object is leading in determining the column's data manager.
+  // The given dminfo object is leading in determining a column's data manager.
   // If not present, the data manager type given in the TableDesc is used.
   // If empty, StandardStMan is used.
   static Record finalizeMerge (const TableDesc&, const Record& dminfo);
@@ -123,11 +128,11 @@ public:
                              const String& dmType, const String& dmName,
                              const IPosition& defaultTileShape);
 
-  // Remove the columns from the dminfo record and return a vector with the
-  // names of the columns actually removed.
+  // Remove the given columns from the dminfo record and return a vector
+  // containing the names of the columns actually removed.
   // The columns having a data manager matching <src>keepType</src> are not
   // removed. Matching means that the beginning of the data manager name
-  // have to match, so "Tiled" matches all tiled storagemanagers.
+  // has to match, so "Tiled" matches all tiled storagemanagers.
   static Vector<String> removeDminfoColumns (Record& dminfo,
                                              const Vector<String>& columns,
                                              const String& keepType= String());

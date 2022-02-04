@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
-#include <casacore/casa/namespace.h>
+using namespace casacore;
 using namespace std;
 
 // <summary>
@@ -65,60 +65,60 @@ void testDM()
     cout << dminfo << endl;
 }
 
-void mergeTest()
+void mergeTestEmpty()
 {
-  {
-    Record rec;
-    DataManInfo::mergeInfo (rec, Record());
-    AlwaysAssertExit (rec.nfields() == 0);
-  }
-  {
-    Record dminfo;
-    Record sub;
-    sub.define("TYPE", "abc");
-    sub.define ("COLUMNS", Vector<String>(1, "col1"));
-    dminfo.defineRecord (0, sub);
-    Record rec;
-    DataManInfo::mergeInfo (rec, dminfo);
-    AlwaysAssertExit (rec.nfields() == 1);
-    const Record& dm1 = rec.subRecord(0);
-    AlwaysAssertExit (dm1.asString("TYPE") =="abc");
-    AlwaysAssertExit (! dm1.isDefined("NAME"));
-    AlwaysAssertExit (dm1.asArrayString("COLUMNS").size() == 1);
-    AlwaysAssertExit (dm1.asArrayString("COLUMNS").data()[0] == "col1");
-  }
+  Record rec;
+  DataManInfo::mergeInfo (rec, Record());
+  AlwaysAssertExit (rec.nfields() == 0);
 }
 
-void finalizeTest()
+void mergeTestNonEmpty()
 {
+  Record dminfo;
+  Record sub;
+  sub.define("TYPE", "abc");
+  sub.define ("COLUMNS", Vector<String>(1, "col1"));
+  dminfo.defineRecord (0, sub);
+  Record rec;
+  DataManInfo::mergeInfo (rec, dminfo);
+  AlwaysAssertExit (rec.nfields() == 1);
+  const Record& dm1 = rec.subRecord(0);
+  AlwaysAssertExit (dm1.asString("TYPE") =="abc");
+  AlwaysAssertExit (! dm1.isDefined("NAME"));
+  AlwaysAssertExit (dm1.asArrayString("COLUMNS").size() == 1);
+  AlwaysAssertExit (dm1.asArrayString("COLUMNS").data()[0] == "col1");
+}
+
+void finalizeTestEmpty()
+{
+  Record rec = DataManInfo::finalizeMerge (TableDesc(), Record());
+  AlwaysAssertExit (rec.nfields() == 0);
+}
+
+void finalizeTestNonEmpty()
+{
+  Record dminfo;
+  Record sub;
+  sub.define("TYPE", "abc");
+  sub.define("NAME", String());
+  sub.define ("COLUMNS", Vector<String>(1, "col1"));
+  dminfo.defineRecord (0, sub);
   {
-    Record rec = DataManInfo::finalizeMerge (TableDesc(), Record());
+    Record rec = DataManInfo::finalizeMerge (TableDesc(), dminfo);
     AlwaysAssertExit (rec.nfields() == 0);
   }
-  {
-    Record dminfo;
-    Record sub;
-    sub.define("TYPE", "abc");
-    sub.define("NAME", String());
-    sub.define ("COLUMNS", Vector<String>(1, "col1"));
-    dminfo.defineRecord (0, sub);
-    {
-      Record rec = DataManInfo::finalizeMerge (TableDesc(), dminfo);
-      AlwaysAssertExit (rec.nfields() == 0);
-    }
-    TableDesc desc;
-    desc.addColumn (ScalarColumnDesc<Int>("col1"));
-    Record rec;
-    DataManInfo::mergeInfo (rec, dminfo);
-    rec = DataManInfo::finalizeMerge (desc, dminfo);
-    AlwaysAssertExit (rec.nfields() == 1);
-    const Record& dm1 = rec.subRecord(0);
-    AlwaysAssertExit (dm1.nfields() == 3);
-    AlwaysAssertExit (dm1.asString("TYPE") =="abc");
-    AlwaysAssertExit (dm1.asString("NAME") == "col1");
-    AlwaysAssertExit (dm1.asArrayString("COLUMNS").size() == 1);
-    AlwaysAssertExit (dm1.asArrayString("COLUMNS").data()[0] == "col1");
-  }
+  TableDesc desc;
+  desc.addColumn (ScalarColumnDesc<Int>("col1"));
+  Record rec;
+  DataManInfo::mergeInfo (rec, dminfo);
+  rec = DataManInfo::finalizeMerge (desc, dminfo);
+  AlwaysAssertExit (rec.nfields() == 1);
+  const Record& dm1 = rec.subRecord(0);
+  AlwaysAssertExit (dm1.nfields() == 3);
+  AlwaysAssertExit (dm1.asString("TYPE") =="abc");
+  AlwaysAssertExit (dm1.asString("NAME") == "col1");
+  AlwaysAssertExit (dm1.asArrayString("COLUMNS").size() == 1);
+  AlwaysAssertExit (dm1.asArrayString("COLUMNS").data()[0] == "col1");
 }
 
 void largeTest()
@@ -217,8 +217,10 @@ int main()
 {
   try {
     testDM();
-    mergeTest();
-    finalizeTest();
+    mergeTestEmpty();
+    mergeTestNonEmpty();
+    finalizeTestEmpty();
+    finalizeTestNonEmpty();
     largeTest();
   } catch (const std::exception& x) {
     cout << "Caught exception: " << x.what() << endl;
