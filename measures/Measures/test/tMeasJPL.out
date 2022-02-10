@@ -176,3 +176,11 @@ Sun   APP:  [-145.963, -13.639] deg
 Moon  JNAT: Direction: [0.81807, -0.530141, -0.222963]
 Moon  APP:  Direction: [0.817893, -0.53038, -0.223043]
 Moon  APP:  [-32.9623, -12.8878] deg
+Venus offset JNAT: Direction: [-0.79725, -0.565086, -0.212298]
+Venus offset APP:  Direction: [-0.797514, -0.564774, -0.212138]
+Sun offset   JNAT: Direction: [-0.797087, -0.559381, -0.227474]
+Sun offset   APP:  Direction: [-0.797352, -0.559069, -0.227315]
+Sun offset   APP:  [-144.963, -13.139] deg
+Moon offset  JNAT: Direction: [0.828817, -0.516793, -0.214448]
+Moon offset  APP:  Direction: [0.828646, -0.517034, -0.214529]
+Moon offset  APP:  [-31.9621, -12.3879] deg
