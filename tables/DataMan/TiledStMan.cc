@@ -1108,7 +1108,7 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt64 nrCube)
     headerFile.putend();
 }
 
-void TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
+uInt TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
 				Bool firstTime, Int extraNdim)
 {
     nrrow_p = tabNrrow;
@@ -1242,6 +1242,7 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
       cubeSet_p[0]->extend (nrrow_p-nrrow, Record(),
 			    coordColSet_p[nrdim_p - 1]);
     }
+    return version;
 }
 
 void TiledStMan::headerFileClose (AipsIO* headerFile)

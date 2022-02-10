@@ -462,7 +462,8 @@ protected:
     // Read the data from the header file.
     // When done for the first time, setup() is called to initialize
     // the various variables (using the extraNdim variable).
-    void headerFileGet (AipsIO& headerFile, rownr_t tabNrrow, Bool firstTime,
+    // It returns the version of the AipsIO object in the header.
+    uInt headerFileGet (AipsIO& headerFile, rownr_t tabNrrow, Bool firstTime,
 			Int extraNdim);
 
     // Close the header file.

@@ -33,6 +33,7 @@
 #include <casacore/tables/DataMan/TiledStMan.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -445,11 +446,9 @@ private:
 
     //# Declare the data members.
     // The map of row number to cube and position in cube.
-    Block<uInt> rowMap_p;
-    Block<uInt> cubeMap_p;
-    Block<uInt> posMap_p;
-    // The nr of elements used in the map blocks.
-    uInt nrUsedRowMap_p;
+    std::vector<rownr_t> rowMap_p;
+    std::vector<uInt> cubeMap_p;
+    std::vector<uInt> posMap_p;
     // The row number since the last hypercube extension.
     rownr_t nrrowLast_p;
 };
