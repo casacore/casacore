@@ -292,7 +292,7 @@ namespace casacore {
       Table tab;
       String lastPart, msg;
       // Split the name on :: to get the main and subtable names.
-      Vector<String> names = stringToVector(fullName, std::regex("::"));
+      const Vector<String> names = stringToVector(fullName, std::regex("::"));
       AlwaysAssert (!names.empty(), AipsError);
       // Check that no empty parts are given.
       if (anyEQ (names, String())) {
