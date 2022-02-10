@@ -22,3 +22,6 @@ jobs:
         
       - name: Build container
         run: docker build . -t ${{ matrix.dist }} -f docker/${{ matrix.dist }}.docker
+
+      - name: Test
+        run: docker run --rm ${{ matrix.dist }} /bin/bash -c 'cd /code/build && make test'
