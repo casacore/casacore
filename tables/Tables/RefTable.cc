@@ -30,6 +30,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableTrace.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -432,7 +433,7 @@ void RefTable::getLayout (TableDesc& desc, AipsIO& ios)
     }
     // Get description of the parent table.
     TableDesc pdesc;
-    Table::getLayout (pdesc, rootName);
+    TableUtil::getLayout (pdesc, rootName);
     makeDesc (desc, pdesc, nameMap, names);
 }
 

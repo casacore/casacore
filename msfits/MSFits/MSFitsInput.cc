@@ -70,6 +70,7 @@
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/DataMan/StandardStMan.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableInfo.h>
 #include <casacore/tables/Tables/TableLock.h>
@@ -593,7 +594,7 @@ void MSFitsInput::readFitsFile(Int obsType) {
     		_ms.relinquishAutoLocks(True);
     		// detach to close
     		_ms = MeasurementSet();
-    		Table::deleteTable(name, True);
+    		TableUtil::deleteTable(name, True);
     	}
     	ThrowCc(ex.what());
     }

@@ -29,6 +29,7 @@
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -228,11 +229,11 @@ void b (Bool doExcp)
     // Get the description and #rows of the Table.
     cout << "get layout in static way" << endl;
     TableDesc layout;
-    cout << "Table::getlayout #rows = "
-	  << Table::getLayout (layout, "tTable_tmp.data");
+    cout << "TableUtil::getlayout #rows = "
+	  << TableUtil::getLayout (layout, "tTable_tmp.data");
     layout.show (cout);
     cout << endl;
-    TableInfo info(Table::tableInfo ("tTable_tmp.data"));
+    TableInfo info(TableUtil::tableInfo ("tTable_tmp.data"));
     cout << "type = " << info.type() << endl;
     cout << "subtype = " << info.subType() << endl;
     cout << info.readme() << endl;

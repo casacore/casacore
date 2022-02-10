@@ -45,6 +45,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -164,7 +165,7 @@ int main()
                              String("tPagedImage_tmp.img3"),
                              TableLock(TableLock::AutoLocking));
     }
-    Table::deleteTable(String("tPagedImage_tmp.img3"));
+    TableUtil::deleteTable(String("tPagedImage_tmp.img3"));
     {
        Table table = makeScrTable(String("tPagedImage_tmp.img4"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
@@ -343,7 +344,7 @@ int main()
        AlwaysAssert(info.restoringBeam().getMinor()==a2, AipsError);
        AlwaysAssert(info.restoringBeam().getPA()==a3, AipsError);
      }
-     Table::deleteTable(String("tPagedImage_tmp.img5"));
+     TableUtil::deleteTable(String("tPagedImage_tmp.img5"));
 //
 // do{Put,Get}Slice tests
 //

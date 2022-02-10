@@ -36,6 +36,7 @@
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -362,57 +363,6 @@ Table& Table::operator= (const Table& that)
     return *this;
 }
 
-Table Table::openTable (const String& tableName,
-                        TableOption option,
-                        const TSMOption& tsmOption)
-{
-  return openTable (tableName, TableLock(), option, tsmOption);
-}
-
-Table Table::openTable (const String& tableName,
-                        const TableLock& lockOptions,
-                        TableOption option,
-                        const TSMOption& tsmOption)
-{
-  // See if the table can be opened as such.
-  if (Table::isReadable(tableName)) {
-    return Table(tableName, lockOptions, option, tsmOption);
-  }
-  // Try to open the table using subtables by splitting at ::
-  Table tab;
-  String name = tableName;
-  String msg;
-  int j = name.index("::");
-  if (j >= 0) {
-    String tabName (name.before(j));
-    name = name.after(j+1);
-    if (Table::isReadable (tabName)) {
-      tab = Table(tabName, lockOptions, option, tsmOption);
-      while (! name.empty()) {
-        j = name.index("::");
-        if (j >= 0) {
-          tabName = name.before(j);
-          name = name.after(j+1);
-        } else {
-          tabName = name;
-          name = String();
-        }
-        if (! tab.keywordSet().isDefined(tabName)) {
-          msg = " (subtable " + tabName + " is unknown)";
-          tab = Table();
-          break;
-        }
-        tab = tab.keywordSet().asTable (tabName);
-      }
-    }
-  }
-  if (tab.isNull()) {
-    throw TableError ("Table " + tableName + " does not exist" + msg);
-  }
-  return tab;
-}
-
-
 Block<String> Table::getPartNames (Bool recursive) const
 {
     Block<String> names;
@@ -424,55 +374,6 @@ void Table::closeSubTables() const
 {
   return keywordSet().closeTables();
 }
-
-Bool Table::canDeleteTable (const String& tableName, Bool checkSubTables)
-{
-    String message;
-    return canDeleteTable (message, tableName, checkSubTables);
-}
-Bool Table::canDeleteTable (String& message, const String& tableName,
-			    Bool checkSubTables)
-{
-    String tabName = Path(tableName).absoluteName();
-    if (! isWritable (tabName)) {
-	message = "table is not writable";
-	return False;
-    }
-    if (isOpened (tabName)) {
-	message = "table is still open in this process";
-	return False;
-    }
-    Table table(tabName);
-    if (table.isMultiUsed()) {
-	message = "table is still open in another process";
-	return False;
-    }
-    if (checkSubTables  &&  table.isMultiUsed(True)) {
-	message = "a subtable of the table is still open in another process";
-	return False;
-    }
-    return True;
-}
-
-
-void Table::deleteTable (const String& tableName, Bool checkSubTables)
-{
-    // Escape from attempt to delete a nameless "table"
-    //   because absolute path handling below is potentially
-    //   catastrophic!
-    if (tableName.empty()) {
-        throw TableError
-	  ("Empty string provided for tableName; will not attempt delete.");
-    }
-    String tabName = Path(tableName).absoluteName();
-    String message;
-    if (! canDeleteTable (message, tabName, checkSubTables)) {
-	throw (TableError ("Table " + tabName + " cannot be deleted: " +
-			   message));
-    }
-    Table table(tabName, Table::Delete);
-}
-
 
 Vector<String> Table::nonWritableFiles (const String& tableName)
 {
@@ -505,42 +406,6 @@ Bool Table::isNativeDataType (DataType dtype)
     return StManColumnBase::isNativeDataType (dtype);
 }
 
-
-//# The logic is similar to that in open.
-rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
-{
-    String tabName = Path(tableName).absoluteName();
-    rownr_t nrow;
-    uInt format;
-    String tp;
-    AipsIO ios (Table::fileName(tabName));
-    uInt version = ios.getstart ("Table");
-    if (version > 3) {
-      throw TableError ("Table version " + String::toString(version) +
-                        " not supported by this version of Casacore");
-    }
-    if (version > 2) {
-      ios >> nrow;
-    } else {
-      uInt n;
-      ios >> n;
-      nrow = n;
-    }
-    ios >> format;
-    ios >> tp;
-    if (tp == "PlainTable") {
-	PlainTable::getLayout (desc, ios);
-    } else if (tp == "RefTable") {
-        RefTable::getLayout (desc, ios);
-    } else if (tp == "ConcatTable") {
-        ConcatTable::getLayout (desc, ios);
-    } else {
-        throw (TableInternalError
-		              ("Table::getLayout: unknown table kind " + tp));
-    }
-    ios.close();
-    return nrow;
-}
 
 
 void Table::copy (const String& newName, TableOption option,
@@ -629,6 +494,8 @@ void Table::open (const String& name, const String& type, int tableOption,
     }
 }
 
+// NOTE: When changing this function because of new Table versions, also change
+// TableUtil::getLayout !!!!!
 BaseTable* Table::makeBaseTable (const String& name, const String& type,
 				 int tableOption, const TableLock& lockOptions,
 				 const TSMOption& tsmOpt,
@@ -1156,5 +1023,30 @@ void Table::showKeywordSets (ostream& ios,
     ios << endl;
   }
 }
+
+
+// Deprecated functions; now in TableUtil.h.
+Table Table::openTable (const String& tableName,
+                            TableOption tabOpt,
+                            const TSMOption& tsmOpt)
+  { return TableUtil::openTable (tableName, tabOpt, tsmOpt); }
+Table Table::openTable (const String& tableName,
+                        const TableLock& lockOptions,
+                        TableOption tabOpt,
+                        const TSMOption& tsmOpt)
+  { return TableUtil::openTable (tableName, lockOptions, tabOpt, tsmOpt); }
+Bool Table::canDeleteTable (const String& tableName,
+                            Bool checkSubTables)
+  { return TableUtil::canDeleteTable (tableName, checkSubTables); }
+Bool Table::canDeleteTable (String& message, const String& tableName,
+                            Bool checkSubTables)
+  { return TableUtil::canDeleteTable (message, tableName, checkSubTables); }
+void Table::deleteTable (const String& tableName,
+                         Bool checkSubTables)
+  { TableUtil::deleteTable (tableName, checkSubTables); }
+rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
+  { return TableUtil::getLayout (desc, tableName); }
+TableInfo Table::tableInfo (const String& tableName)
+  { return TableUtil::tableInfo (tableName); }
 
 } //# NAMESPACE CASACORE - END
