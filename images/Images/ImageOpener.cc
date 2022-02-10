@@ -252,11 +252,18 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
    if (fileName.empty()) {
      return 0;
    }
+
    ImageOpener::ImageTypes type = ImageOpener::imageType(fileName);
-   // override default open functions
+
+   // Override default openFunction
    if (theirOpenFuncMap.find(type) != theirOpenFuncMap.end()) {
-     return theirOpenFuncMap[type] (fileName, spec);
+     try {
+       return theirOpenFuncMap[type] (fileName, spec);
+     } catch (const AipsError&) {
+       // Try default openFunction if theirOpenFunction fails
+     }
    }
+
    // Do not require the registration of a PagedImage or HDF5Image openFunction.
    if (type == AIPSPP) {
      return openPagedImage (fileName, spec);
