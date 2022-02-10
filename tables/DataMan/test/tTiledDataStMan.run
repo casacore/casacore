@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Script to run tTiledDataStMan with an older dataset in the tgz file
+
+tar zxf tTiledDataStMan.in_tgz
+
+$casa_checktool ./tTiledDataStMan

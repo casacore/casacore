@@ -58,11 +58,20 @@
 void a();
 void b();
 
+void testOldTable()
+{
+  // Being able to open this old table is sufficient.
+  cout << endl << "Test with version 1 table" << endl;
+  Table tab("tTiledDataStMan_tmp.ms");
+  cout << "tTiledDataStMan_tmp.ms contains " << tab.nrow() << " rows" << endl;
+}
+
 int main()
 {
     try {
 	a ();
 	b ();
+        testOldTable();
     } catch (std::exception& x) {
 	cout << "Caught an exception: " << x.what() << endl;
 	return 1;

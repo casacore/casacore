@@ -20,3 +20,6 @@ cacheSize: 60 (*6720)
 #writes:   0
 hit-rate:  98.8095%
 <<<
+
+Test with version 1 table
+tTiledDataStMan_tmp.ms contains 8820 rows
