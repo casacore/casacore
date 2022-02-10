@@ -63,3 +63,43 @@
     }
   }
 
+  *1: {
+    COLUMNS: String array with shape [2]
+      [col1, col8]
+    TYPE: String "StandardStMan"
+    NAME: String "StandardStMan"
+  }
+  *2: {
+    COLUMNS: String array with shape [1]
+      [col5]
+    TYPE: String "StandardStMan"
+    NAME: String "dmname3"
+  }
+  *3: {
+    TYPE: String "dmtype1"
+    NAME: String "dmname1a"
+    COLUMNS: String array with shape [2]
+      [col2, col6]
+  }
+  *4: {
+    TYPE: String "dmtype1"
+    NAME: String "dmname2"
+    SPEC: {
+      BSZ: Int 10
+    }
+    COLUMNS: String array with shape [1]
+      [col4]
+  }
+  *5: {
+    TYPE: String "dmtype2"
+    NAME: String "dmname2a"
+    COLUMNS: String array with shape [1]
+      [col7]
+  }
+  *6: {
+    COLUMNS: String array with shape [1]
+      [col3]
+    TYPE: String "dmtype2"
+    NAME: String "dmtype2"
+  }
+

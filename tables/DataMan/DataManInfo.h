@@ -101,6 +101,18 @@ public:
   static Record adjustStMan (const Record& dminfo, const String& dmType,
                              Bool replaceMSM = True);
 
+  // Ensure all data manager names in <src>dminfo</src> are unique by
+  // adding a unique suffix as needed (using function <src>uniqueName</src>).
+  // Empty names are set to "EMPTY".
+  static void makeUniqueNames (Record& dminfo);
+
+  // Return a unique data manager name by testing if the name already
+  // exist in of the the dm-s in the <src>dminfo</src> record.
+  // If so, a suffix _i is added where i makes the name unique.
+  // The excludeDM-th dm is excluded, so comparing to itself can be avoided.
+  static String uniqueName (const Record& dminfo, const String& name,
+                            Int excludeDM=-1);
+
   // Merge the second DataManagerInfo record into the first one.
   // If the same column occurs in both records, the second one is used.
   // Columns having the same data manager name are combined in one data manager.
@@ -145,9 +157,17 @@ public:
   static void showDataManStats (const Table&, ostream&);
 
 private:
-  // Merge the columns mentioned in dm into dminfo, where dm is the possibly
-  // changed inxdm-th dm record of dminfo. Those columns will be merged into dm.
-  static void mergeColumns (Record& dminfo, uInt inxdm, Record& dm);
+  // Merge the column info of data manager definitions.
+  // It is used by <src>mergeInfo</src> to merge the new dm definitions into
+  // the existing one defined in <src>dminfo</src>. It is called for each new
+  // dm, whose name/type already exists as the dmindex-th record in dminfo.
+  // It does two things:
+  // <ul>
+  //  <li>Columns mentioned in newdm are removed from dm definitions in dminfo.
+  //  <li>Columns in the dmindex-th dminfo record are merged into newdm,
+  //      so mergeInfo can redefine that dm in the overall dminfo.
+  // </ul>
+  static void mergeColumns (Record& dminfo, uInt dmindex, Record& newdm);
 };
 
 

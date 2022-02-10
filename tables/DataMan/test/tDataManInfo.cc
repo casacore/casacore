@@ -211,6 +211,28 @@ void largeTest()
     AlwaysAssertExit (dminfoRes.subRecord(1).subRecord("SPEC").nfields() == 1);
     AlwaysAssertExit (dminfoRes.subRecord(1).subRecord("SPEC").asInt("BSZ") == 10);
   }
+  Record dminfoFinal = DataManInfo::finalizeMerge (desc, dminfoRes);
+  cout << dminfoFinal;
+}
+
+void testUniqueName()
+{
+  Record dminfo;
+  Record dm;
+  dminfo.defineRecord (0, dm);    // no NAME
+  dm.define ("NAME", "nma");
+  dminfo.defineRecord (1, dm);
+  dm.define ("NAME", "nma_1");
+  dminfo.defineRecord (2, dm);
+  dm.define ("NAME", "");
+  dminfo.defineRecord (3, dm);
+  AlwaysAssertExit (DataManInfo::uniqueName(dminfo, "nma") == "nma_2");
+  AlwaysAssertExit (DataManInfo::uniqueName(dminfo, "nmb") == "nmb");
+  DataManInfo::makeUniqueNames (dminfo);
+  AlwaysAssertExit (dminfo.subRecord(0).asString("NAME") == "EMPTY_1");
+  AlwaysAssertExit (dminfo.subRecord(1).asString("NAME") == "nma");
+  AlwaysAssertExit (dminfo.subRecord(2).asString("NAME") == "nma_1");
+  AlwaysAssertExit (dminfo.subRecord(3).asString("NAME") == "EMPTY");
 }
 
 int main()
@@ -222,6 +244,7 @@ int main()
     finalizeTestEmpty();
     finalizeTestNonEmpty();
     largeTest();
+    testUniqueName();
   } catch (const std::exception& x) {
     cout << "Caught exception: " << x.what() << endl;
     return 1;

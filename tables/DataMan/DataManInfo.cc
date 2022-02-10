@@ -216,7 +216,7 @@ void DataManInfo::mergeInfo (Record& dminfo1, const Record& dminfo2)
     String type2 (dm2.isDefined("TYPE")  ?  dm2.asString("TYPE") : String());
     String name2 (dm2.isDefined("NAME")  ?  dm2.asString("NAME") : String());
     // Add the data manager to the first, but overwrite if already there.
-    uInt inx = dminfo1.nfields();
+    uInt dmindex1 = dminfo1.nfields();
     for (uInt i1=0; i1<dminfo1.nfields(); ++i1) {
       const Record& dm1 = dminfo1.subRecord(i1);
       // An empty or undefined type/name means use the other.
@@ -233,28 +233,29 @@ void DataManInfo::mergeInfo (Record& dminfo1, const Record& dminfo2)
         name2 = name1;
       }
       if (type1==type2 && name1==name2) {
-        inx = i1;
+        dmindex1 = i1;
         // Use the old specs if undefined in new one.
         if (!dm2.isDefined("SPEC")  &&  dm1.isDefined("SPEC")) {
           dm2.defineRecord ("SPEC", dm1.subRecord("SPEC"));
         }
-        mergeColumns (dminfo1, inx, dm2);
+        mergeColumns (dminfo1, dmindex1, dm2);
         break;
       }
     }
-    dminfo1.defineRecord (inx, dm2);
+    // Define the new dm
+    dminfo1.defineRecord (dmindex1, dm2);
   }
 }
 
-void DataManInfo::mergeColumns (Record& dminfo, uInt inxdm, Record& dm)
+void DataManInfo::mergeColumns (Record& dminfo, uInt dmindex, Record& dm)
 {
-  // Get the columns from the new dm.
+  // Get the columns given in the new dm.
   Vector<String> cols;
   if (dm.isDefined("COLUMNS")) {
     cols.reference (dm.asArrayString("COLUMNS"));
   }
   if (! cols.empty()) {
-    // Iterate over all dm-s.
+    // Iterate over all dm-s to find the ones containing columns of the new dm.
     for (uInt i=0; i<dminfo.nfields(); ++i) {
       Record dm2 = dminfo.subRecord(i);
       if (dm2.isDefined("COLUMNS")) {
@@ -267,7 +268,7 @@ void DataManInfo::mergeColumns (Record& dminfo, uInt inxdm, Record& dm)
               colsnew.push_back (col2);
             }
           }
-          if (i != inxdm) {
+          if (i != dmindex) {
             // dm is not the new one, so update the COLUMNS in it (if changed).
             if (colsnew.size() != cols2.size()) {
               dm2.define ("COLUMNS", Vector<String>(colsnew));
@@ -304,7 +305,7 @@ Record DataManInfo::finalizeMerge (const TableDesc& desc, const Record& dminfo)
       }
       dmMap[std::make_pair(type,name)] = i;
       if (dm.isDefined("COLUMNS")) {
-        Vector<String> cols (dm.asArrayString("COLUMNS"));
+        Vector<String> cols(dm.asArrayString("COLUMNS"));
         for (auto col : cols) {
           colMap[col] = i;
         }
@@ -317,11 +318,12 @@ Record DataManInfo::finalizeMerge (const TableDesc& desc, const Record& dminfo)
   for (uInt i=0; i<desc.ncolumn(); ++i) {
     const ColumnDesc& cd = desc[i];
     // Take the data manager type and name from dminfo if defined there.
-    // Otherwise use StandardStMan.
+    // Use type StandardStMan if none is given.
     String type = cd.dataManagerType();
     String name = cd.dataManagerGroup();
     auto iter = colMap.find (cd.name());
     if (iter != colMap.end()) {
+      // The column is defined in dminfo; get name and type.
       const Record& dm = dminfo.subRecord(iter->second);
       if (dm.isDefined("TYPE")) {
         type = dm.asString("TYPE");
@@ -336,33 +338,77 @@ Record DataManInfo::finalizeMerge (const TableDesc& desc, const Record& dminfo)
     // Add the column to the vector.
     descMap[std::make_pair(type, name)].push_back (cd.name());
   }
-  // Create a dminfo entry for each one found in the description.
+  // Create a dminfo entry for each column set found above.
   // Use dm parameters if found.
-  // Use the first column name one for a dm entry without a name.
   Record newdm;
   for (auto desc : descMap) {
     String type = desc.first.first;
     String name = desc.first.second;
-    if (name.empty()) {
-      name = desc.second[0];
-    }
     Record dm;
     // Try to find this type/name in the dminfo map to copy its specs.
-    // Use an empty name if not found.
+    // Define the columns.
     auto iter = dmMap.find (std::make_pair(type, name));
-    if (iter == dmMap.end()) {
-      iter = dmMap.find (std::make_pair(type, String()));
-    }
     if (iter != dmMap.end()) {
       dm = dminfo.subRecord(iter->second);
     }
-    // Fill in type and name.
+    dm.define ("COLUMNS", Vector<String>(desc.second));
+    // Use the first column name one for a dm entry without a name.
+    if (name.empty()) {
+      name = desc.second[0];
+    }
+    // Ensure the name is unique.
     dm.define ("TYPE", type);
-    dm.define ("NAME", name);
+    dm.define ("NAME", uniqueName (newdm, name));
     // Add the the overall dminfo record.
     newdm.defineRecord (newdm.size(), dm);
   }
   return newdm;
+}
+
+void DataManInfo::makeUniqueNames (Record& dminfo)
+{
+  // Ensure that data manager names are unique by adding a suffix if needed.
+  // Empty names are initially set to 'EMPTY'.
+  // Start at the back, so the oldest entries keep their name.
+  for (uInt i=dminfo.nfields(); i>0;) {
+    --i;
+    Record& dm = dminfo.rwSubRecord(i);
+    String origName (dm.isDefined("NAME")  ?  dm.asString("NAME") : String());
+    String name(origName);
+    if (name.empty()) {
+      name = "EMPTY";
+    }
+    String newName = uniqueName (dminfo, name, i);
+    if (newName != origName) {
+      dm.define ("NAME", newName);
+    }
+  }
+}
+
+String DataManInfo::uniqueName (const Record& dminfo, const String& name,
+                                Int excludeField)
+{
+  String newName = name;
+  uInt suffix = 0;
+  Bool unique = False;
+  while (!unique) {
+    unique = True;
+    for (uInt i=0; i<dminfo.nfields(); ++i) {
+      if (Int(i) != excludeField) {
+        const Record& dm = dminfo.subRecord(i);
+        if (dm.isDefined("NAME")) {
+          String nm = dm.asString("NAME");
+          if (newName == nm) {
+            // Not unique, so add increased suffix and try again.
+            newName = name + '_' + String::toString(++suffix);
+            unique = False;
+            break;
+          }
+        }
+      }
+    }
+  }
+  return newName;
 }
 
 void DataManInfo::adaptNames (Record& dminfo, const Table& tab)
