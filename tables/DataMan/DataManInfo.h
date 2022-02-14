@@ -103,7 +103,7 @@ public:
 
   // Ensure all data manager names in <src>dminfo</src> are unique by
   // adding a unique suffix as needed (using function <src>uniqueName</src>).
-  // Empty names are set to "EMPTY".
+  // Empty names are set to the name of the first column (DM if no columns).
   static void makeUniqueNames (Record& dminfo);
 
   // Return a unique data manager name by testing if the name already

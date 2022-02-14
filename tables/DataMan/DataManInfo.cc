@@ -368,7 +368,7 @@ Record DataManInfo::finalizeMerge (const TableDesc& desc, const Record& dminfo)
 void DataManInfo::makeUniqueNames (Record& dminfo)
 {
   // Ensure that data manager names are unique by adding a suffix if needed.
-  // Empty names are initially set to 'EMPTY'.
+  // Empty names are initially set to the name of the first column.
   // Start at the back, so the oldest entries keep their name.
   for (uInt i=dminfo.nfields(); i>0;) {
     --i;
@@ -376,8 +376,15 @@ void DataManInfo::makeUniqueNames (Record& dminfo)
     String origName (dm.isDefined("NAME")  ?  dm.asString("NAME") : String());
     String name(origName);
     if (name.empty()) {
-      name = "EMPTY";
+      name = "DM";      // use default DM in case no columns are defined
+      if (dm.isDefined("COLUMNS")) {
+        Vector<String> cols(dm.asArrayString("COLUMNS"));
+        if (! cols.empty()) {
+          name = cols[0];
+        }
+      }
     }
+    // Make the name unique if needed.
     String newName = uniqueName (dminfo, name, i);
     if (newName != origName) {
       dm.define ("NAME", newName);
