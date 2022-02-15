@@ -259,7 +259,7 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
    if (theirOpenFuncMap.find(type) != theirOpenFuncMap.end()) {
      try {
        return theirOpenFuncMap[type] (fileName, spec);
-     } catch (const AipsError&) {
+     } catch (...) {
        // Try default openFunction if theirOpenFunction fails
      }
    }
