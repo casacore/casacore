@@ -219,25 +219,31 @@ void testUniqueName()
 {
   Record dminfo;
   Record dm;
-  dminfo.defineRecord (0, dm);    // no NAME, becomes DM_1
+  dminfo.defineRecord (0, dm);    // no NAME, becomes DM
   dm.define ("NAME", "nma");
   dminfo.defineRecord (1, dm);
   dminfo.defineRecord (2, dm);    // nma becomes nma_2    
   dm.define ("NAME", "nma_1");
   dminfo.defineRecord (3, dm);
   dm.define ("NAME", "");
-  dminfo.defineRecord (4, dm);    // becomes DM
+  dminfo.defineRecord (4, dm);    // becomes DM_1
+  dminfo.defineRecord (5, dm);    // becomes DM_2
+  dminfo.defineRecord (6, dm);    // becomes DM_3
+  dminfo.defineRecord (7, dm);    // becomes DM_4
   dm.define ("COLUMNS", Vector<String>(1, "col1"));
-  dminfo.defineRecord (5, dm);    // becomes col1
+  dminfo.defineRecord (8, dm);    // becomes col1
   AlwaysAssertExit (DataManInfo::uniqueName(dminfo, "nma") == "nma_2");
   AlwaysAssertExit (DataManInfo::uniqueName(dminfo, "nmb") == "nmb");
   DataManInfo::makeUniqueNames (dminfo);
-  AlwaysAssertExit (dminfo.subRecord(0).asString("NAME") == "DM_1");
+  AlwaysAssertExit (dminfo.subRecord(0).asString("NAME") == "DM");
   AlwaysAssertExit (dminfo.subRecord(1).asString("NAME") == "nma");
   AlwaysAssertExit (dminfo.subRecord(2).asString("NAME") == "nma_2");
   AlwaysAssertExit (dminfo.subRecord(3).asString("NAME") == "nma_1");
-  AlwaysAssertExit (dminfo.subRecord(4).asString("NAME") == "DM");
-  AlwaysAssertExit (dminfo.subRecord(5).asString("NAME") == "col1");
+  AlwaysAssertExit (dminfo.subRecord(4).asString("NAME") == "DM_1");
+  AlwaysAssertExit (dminfo.subRecord(5).asString("NAME") == "DM_2");
+  AlwaysAssertExit (dminfo.subRecord(6).asString("NAME") == "DM_3");
+  AlwaysAssertExit (dminfo.subRecord(7).asString("NAME") == "DM_4");
+  AlwaysAssertExit (dminfo.subRecord(8).asString("NAME") == "col1");
 }
 
 int main()

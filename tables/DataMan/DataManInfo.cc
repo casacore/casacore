@@ -36,6 +36,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <map>
+#include <set>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -368,10 +369,8 @@ Record DataManInfo::finalizeMerge (const TableDesc& desc, const Record& dminfo)
 void DataManInfo::makeUniqueNames (Record& dminfo)
 {
   // Ensure that data manager names are unique by adding a suffix if needed.
-  // Empty names are initially set to the name of the first column.
-  // Start at the back, so the oldest entries keep their name.
-  for (uInt i=dminfo.nfields(); i>0;) {
-    --i;
+  // First set empty names to the name of the first column.
+  for (uInt i=0; i<dminfo.nfields(); ++i) {
     Record& dm = dminfo.rwSubRecord(i);
     String origName (dm.isDefined("NAME")  ?  dm.asString("NAME") : String());
     String name(origName);
@@ -383,11 +382,24 @@ void DataManInfo::makeUniqueNames (Record& dminfo)
           name = cols[0];
         }
       }
+      dm.define ("NAME", name);
     }
-    // Make the name unique if needed.
-    String newName = uniqueName (dminfo, name, i);
-    if (newName != origName) {
-      dm.define ("NAME", newName);
+  }
+  // Now make the names unique if needed.
+  // The first instance is kept as is, others get suffix _1, _2, etc.
+  std::set<String> firstNames;
+  for (uInt i=0; i<dminfo.nfields(); ++i) {
+    Record& dm = dminfo.rwSubRecord(i);
+    String name = dm.asString("NAME");
+    if (firstNames.find(name) == firstNames.end()) {
+      // The first instance of this name is kept as is.
+      firstNames.insert (name);
+    } else {
+      // Make the name unique by adding the suffix.
+      String newName = uniqueName (dminfo, name, i);
+      if (newName != name) {
+        dm.define ("NAME", newName);
+      }
     }
   }
 }
@@ -403,14 +415,11 @@ String DataManInfo::uniqueName (const Record& dminfo, const String& name,
     for (uInt i=0; i<dminfo.nfields(); ++i) {
       if (Int(i) != excludeField) {
         const Record& dm = dminfo.subRecord(i);
-        if (dm.isDefined("NAME")) {
-          String nm = dm.asString("NAME");
-          if (newName == nm) {
-            // Not unique, so add increased suffix and try again.
-            newName = name + '_' + String::toString(++suffix);
-            unique = False;
-            break;
-          }
+        if (dm.isDefined("NAME")  &&  dm.asString("NAME") == newName) {
+          // Not unique, so add increased suffix and try again.
+          newName = name + '_' + String::toString(++suffix);
+          unique = False;
+          break;
         }
       }
     }
