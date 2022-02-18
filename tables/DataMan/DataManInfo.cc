@@ -391,15 +391,12 @@ void DataManInfo::makeUniqueNames (Record& dminfo)
   for (uInt i=0; i<dminfo.nfields(); ++i) {
     Record& dm = dminfo.rwSubRecord(i);
     String name = dm.asString("NAME");
-    if (firstNames.find(name) == firstNames.end()) {
-      // The first instance of this name is kept as is.
-      firstNames.insert (name);
-    } else {
-      // Make the name unique by adding the suffix.
+    // The first instance of this name is kept as is.
+    auto result = firstNames.insert(name);
+    if (! result.second) {
+      // Not first instance of name; make it unique by adding the suffix.
       String newName = uniqueName (dminfo, name, i);
-      if (newName != name) {
-        dm.define ("NAME", newName);
-      }
+      dm.define ("NAME", newName);
     }
   }
 }
