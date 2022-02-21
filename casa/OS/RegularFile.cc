@@ -58,6 +58,12 @@ RegularFile::RegularFile (const String& path)
     checkPath();
 }
 
+RegularFile::RegularFile (const char* path)
+: File(String(path))
+{
+    checkPath();
+}
+
 RegularFile::RegularFile (const File& file)
 : File(file)
 {

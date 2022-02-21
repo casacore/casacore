@@ -57,7 +57,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <example>
   // <srcblock>
   //    // Create a new MultiFile using a block size of 1 MB.
-  //    MultiFile mfile("file.mf', ByteIO::New, 1048576);
+  //    shared_ptr<MultiFileBase> mfile
+  //          (new MultiFile("file.mf', ByteIO::New, 1048576));
   //    // Create a virtual file in it.
   //    MFFileIO mf1(mfile, "mf1", ByteIO::New);
   //    // Use it (for example) as the sink of AipsIO.
@@ -80,11 +81,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a virtual file with the given name. Note that only the
     // basename of the file name is actually used.
     // It is created in the given MultiFileBase.
-    MFFileIO (MultiFileBase&, const String& name,
-              ByteIO::OpenOption = ByteIO::Old);
+    // <br>nested=True indicates that the MFFileIO object is used for a
+    // nested MultiFile.
+    MFFileIO (const std::shared_ptr<MultiFileBase>&, const String& name,
+              ByteIO::OpenOption = ByteIO::Old, Bool nested=False);
 
     // The destructor flushes and closes the file.
     virtual ~MFFileIO();
+
+    // Is the MFFileIO object used for a nested MultiFile?
+    Bool isNested() const
+      { return itsIsNested; }
 
     // Read <src>size</src> bytes from the byte stream. Returns the number of
     // bytes actually read, or a negative number if an error occurred. Will also
@@ -92,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // not be read unless throwException is set to False.
     virtual Int64 read (Int64 size, void* buf, Bool throwException=True);
 
-    // Write a block at the given offset.
+    // Write a block at the current offset.
     virtual void write (Int64 size, const void* buffer);
 
     // Reopen the file (and possibly underlying MultiFileBase) for read/write access.
@@ -126,16 +133,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Fsync the file (i.e. force the data to be physically written).
     virtual void fsync();
 
+    // Truncate the file to the given size.
+    virtual void truncate (Int64 size);
+  
     // Reset the position pointer to the given value. It returns the
     // new position.
     virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
 
+    // Get the MultiFileInfo object for this file.
+    const MultiFileInfo& getInfo() const;
+
   private:
     //# Data members
-    MultiFileBase& itsFile;
+    std::shared_ptr<MultiFileBase> itsFile;
     Int64          itsPosition;
     String         itsName;
     Int            itsId;
+    Bool           itsIsNested;
+    Bool           itsIsWritable;
   };
 
 

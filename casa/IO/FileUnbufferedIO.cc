@@ -1,5 +1,5 @@
-//# ByteIO.cc: Abstract base class for IO on a byte stream
-//# Copyright (C) 1996,2001
+//# FileUnbufferedIO.cc: Class for unbuffered IO on a file
+//# Copyright (C) 2019
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,71 +25,42 @@
 //#
 //# $Id$
 
-#include <casacore/casa/IO/ByteIO.h>
-#include <casacore/casa/Exceptions/Error.h>
-
+//# Includes
+#include <casacore/casa/IO/FileUnbufferedIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ByteIO::~ByteIO()
-{}
+  FileUnbufferedIO::FileUnbufferedIO (const RegularFile& fileName,
+                                      ByteIO::OpenOption option,
+                                      Bool useODirect)
+    : itsUseODirect (useODirect)
+  {
+    attach (RegularFileIO::openCreate (fileName, option, useODirect),
+            fileName.path().originalName());
+  }
 
+  FileUnbufferedIO::~FileUnbufferedIO()
+  {
+    close (fd());
+    detach();
+  }
 
-void ByteIO::reopenRW()
-{
-    if (! isWritable()) {
-	throw (AipsError ("ByteIO: reopenRW is not possible"));
+  void FileUnbufferedIO::reopenRW()
+  {
+    if (isWritable()) {
+      return;
     }
-}
-
-void ByteIO::pwrite (Int64 size, Int64 offset, const void* buf)
-{
-    Int64 cur = doSeek(0, ByteIO::Current);
-    doSeek(offset, ByteIO::Begin);
-    try {
-        write(size, buf);
-    }
-    catch (...) {
-        doSeek(cur, ByteIO::Begin);
-        throw;
-    }
-    doSeek(cur, ByteIO::Begin);
-}
-
-Int64 ByteIO::pread (Int64 size, Int64 offset, void* buf,
-                     Bool throwException)
-{
-    Int64 r = -1;
-    Int64 cur = doSeek(0, ByteIO::Current);
-    doSeek(offset, ByteIO::Begin);
-    try {
-        r = read(size, buf, throwException);
-    }
-    catch (...) {
-        doSeek(cur, ByteIO::Begin);
-        throw;
-    }
-    doSeek(cur, ByteIO::Begin);
-    return r;
-}
-
-void ByteIO::flush()
-{}
-
-void ByteIO::fsync()
-{}
-
-void ByteIO::resync()
-{}
-
-void ByteIO::truncate (Int64)
-{}
-
-String ByteIO::fileName() const
-{
-  return String();
-}
+    // First try if the file can be opened as read/write.
+    // An exception is thrown if not possible.
+    int newfd = RegularFileIO::openCreate (fileName(), ByteIO::Update,
+                                           itsUseODirect);
+    // Now close the readonly file and reset fd.
+    close (fd());
+    detach();
+    attach (newfd, fileName());
+    setWritable();
+  }
 
 
 } //# NAMESPACE CASACORE - END
-

@@ -84,11 +84,12 @@ void doit (Bool doExcp)
   }
   {
     cout << endl << "Test using MultiFile files ..." << endl;
-    MultiFile mfile ("tAipsIO_tmp.mf", ByteIO::New);
-    AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, &mfile); // open output file
+    std::shared_ptr<MultiFileBase> mfile
+      (new MultiFile("tAipsIO_tmp.mf", ByteIO::New));
+    AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, mfile); // open output file
     doIO (doExcp, True, io);
     io.close();
-    io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, &mfile);
+    io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, mfile);
     doIO (doExcp, False, io);
     // Now do some open calls; some of them are erroneous which are caught.
     // Delete the file in case it exists.

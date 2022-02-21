@@ -10,6 +10,7 @@ tByteSink
 tByteSinkSource
 tFilebufIO
 tFileIO
+tFileUnbufferedIO
 tLargeFileIO
 tLockFile
 tMFFileIO

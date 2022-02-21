@@ -110,6 +110,10 @@ public:
     const StorageOption& storageOption() const
       { return storageOpt_p; }
 
+    // Get the possible MultiFileBase object used to combine files.
+    std::shared_ptr<MultiFileBase> getMultiFile() const
+      { return multiFile_p; }
+
     // Are subtables used in other processes.
     Bool areTablesMultiUsed() const;
 
@@ -315,7 +319,7 @@ private:
     //# Declare the variables.
     TableDesc*              tdescPtr_p;
     StorageOption           storageOpt_p;
-    MultiFileBase*          multiFile_p;
+    std::shared_ptr<MultiFileBase> multiFile_p;
     rownr_t                 nrrow_p;          //# #rows
     BaseTable*              baseTablePtr_p;
     TableLockData*          lockPtr_p;        //# lock object

@@ -97,6 +97,7 @@ IO/ConversionIO.cc
 IO/FilebufIO.cc
 IO/FiledesIO.cc
 IO/FileLocker.cc
+IO/FileUnbufferedIO.cc
 IO/IPositionIO.cc
 IO/LECanonicalIO.cc
 IO/LockFile.cc
@@ -464,6 +465,7 @@ IO/ConversionIO.h
 IO/FilebufIO.h
 IO/FiledesIO.h
 IO/FileLocker.h
+IO/FileUnbufferedIO.h
 IO/LargeIOFuncDef.h
 IO/LECanonicalIO.h
 IO/LockFile.h

@@ -180,7 +180,7 @@ public:
 		     ByteIO::OpenOption = ByteIO::Old,
 		     uInt filebufSize=65536,
 ////		     uInt filebufSize=1048576,
-                     MultiFileBase* mfile=0);
+                     const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Construct from a stream object derived from ByteIO.
     // This can for instance by used to use AipsIO on a file descriptor
@@ -198,8 +198,11 @@ public:
 
     // Open/create file (either a regular file or a MultiFileBase virtual file).
     // An exception is thrown if the object contains an already open file.
-    void open (const String& fileName, ByteIO::OpenOption = ByteIO::Old,
-	       uInt filebufSize=65536, MultiFileBase* mfile=0);
+    void open (const String& fileName,
+               ByteIO::OpenOption = ByteIO::Old,
+               uInt filebufSize=65536,
+               ////		     uInt filebufSize=1048576,
+               const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Open by connecting to the given byte stream.
     // This can for instance by used to use AipsIO on a file descriptor
@@ -400,6 +403,10 @@ public:
     uInt getend();
 
 private:
+    // Copy constructor and assignment are not allowed.
+    AipsIO (const AipsIO&);
+    AipsIO& operator= (const AipsIO&);
+
     // Initialize everything for the open.
     // It checks if there is no outstanding open file.
     void openInit (ByteIO::OpenOption);

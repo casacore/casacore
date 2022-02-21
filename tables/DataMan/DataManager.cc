@@ -69,7 +69,6 @@ DataManager::DataManager()
   seqnr_p       (0),
   asBigEndian_p (False),
   tsmOption_p   (TSMOption::Buffer, 0, 0),
-  multiFile_p   (0),
   clone_p       (0)
 {
     table_p = new Table;
@@ -162,11 +161,11 @@ void DataManager::showCacheStatistics (ostream&) const
 
 void DataManager::setTsmOption (const TSMOption& tsmOption)
 {
-  AlwaysAssert (multiFile_p==0, AipsError);
+  AlwaysAssert (!multiFile_p, AipsError);
   tsmOption_p = tsmOption;
 }
 
-void DataManager::setMultiFile (MultiFileBase* mfile)
+void DataManager::setMultiFile (const std::shared_ptr<MultiFileBase>& mfile)
 {
   multiFile_p = mfile;
   // Only caching can be used with a MultiFile.

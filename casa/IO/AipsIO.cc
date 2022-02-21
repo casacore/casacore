@@ -34,6 +34,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <cstring>                  //# for strcmp with gcc-4.3
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -57,7 +58,7 @@ AipsIO::AipsIO()
 {}
 
 AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
-		uInt filebufSize, MultiFileBase* mfile)
+		uInt filebufSize, const std::shared_ptr<MultiFileBase>& mfile)
 : opened_p (0),
   maxlev_p (10),
   objlen_p (10),
@@ -98,12 +99,13 @@ AipsIO::~AipsIO()
 
 
 void AipsIO::open (const String& fileName, ByteIO::OpenOption fop,
-		   uInt filebufSize, MultiFileBase* mfile)
+		   uInt filebufSize,
+                   const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Initialize everything for the open.
     openInit (fop);
     if (mfile) {
-      file_p = new MFFileIO (*mfile, fileName, fopt_p);
+      file_p = new MFFileIO (mfile, fileName, fopt_p);
     } else {
       file_p = new RegularFileIO (fileName, fopt_p, filebufSize);
     }

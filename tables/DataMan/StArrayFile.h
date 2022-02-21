@@ -34,6 +34,7 @@
 #include <casacore/casa/IO/TypeIO.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -139,7 +140,7 @@ public:
     StManArrayFile (const String& name, ByteIO::OpenOption,
 		    uInt version=0, Bool bigEndian=True,
 		    uInt bufferSize=0,
-                    MultiFileBase* mfile=0);
+                    const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Close the possibly opened file.
     ~StManArrayFile();

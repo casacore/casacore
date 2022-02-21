@@ -138,6 +138,10 @@ public:
     // Resync the file (i.e. empty the current buffer).
     // The default implementation does nothing.
     virtual void resync();
+
+    // Truncate the file to the given size.
+    // The default implementation does nothing.
+    virtual void truncate (Int64 size);
   
     // Get the file name of the file attached.
     // The default implementation returns an empty string.

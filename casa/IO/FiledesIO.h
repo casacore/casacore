@@ -148,6 +148,9 @@ public:
     // Fsync the file (i.e. force the data to be physically written).
     virtual void fsync();
 
+    // Truncate the file to the given size.
+    virtual void truncate (Int64 size);
+  
     // Some static convenience functions for file create/open/close.
     // Close is only done if the fd is non-negative.
     // <group>

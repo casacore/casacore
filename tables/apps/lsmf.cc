@@ -23,11 +23,12 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: showtable.cc 21480 2014-08-27 08:01:36Z gervandiepen $
+//# $Id: lsmf.cc 21480 2014-08-27 08:01:36Z gervandiepen $
 
 #include <casacore/casa/IO/MultiFile.h>
 #include <casacore/casa/IO/MultiHDF5.h>
 #include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/OS/File.h>
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <vector>
 #include <stdexcept>
@@ -36,22 +37,23 @@
 using namespace casacore;
 using namespace std;
 
-void show (MultiFileBase& mfile, Bool showbl, const String& mftype)
+void show (const std::shared_ptr<MultiFileBase>& mfile,
+           Bool showbl, const String& mftype)
 {
   cout << endl;
-  cout << mftype << " = " << mfile.fileName() << endl;
-  cout << "  blocksize = " << mfile.blockSize()
-       << "    nfile = " << mfile.nfile()
-       << "    nfreeblocks = " << mfile.freeBlocks().size() << endl;
+  cout << mftype << " = " << mfile->fileName() << endl;
+  cout << "  blocksize = " << mfile->blockSize()
+       << "    nfile = " << mfile->nfile()
+       << "    nfreeblocks = " << mfile->freeBlocks().size() << endl;
   if (showbl) {
-    cout << "  freeblocks = " << mfile.freeBlocks() << endl;
+    cout << "  freeblocks = " << mfile->freeBlocks() << endl;
   }
-  for (uInt i=0; i<mfile.nfile(); ++i) {
-    const MultiFileInfo& info = mfile.info()[i];
+  for (uInt i=0; i<mfile->nfile(); ++i) {
+    const MultiFileInfo& info = mfile->info()[i];
     cout << ' ' << info.name
          << "   size=" << info.fsize
          << "   nblocks="
-         << (info.fsize+mfile.blockSize()-1) / mfile.blockSize()
+         << (info.fsize+mfile->blockSize()-1) / mfile->blockSize()
          << endl;
     if (showbl) {
       cout << ' ' << info.blockNrs << endl;
@@ -80,13 +82,17 @@ int main (int argc, char* argv[])
     for (vector<String>::const_iterator iter=fname.begin();
          iter!=fname.end(); ++iter) {
       if (iter->empty()) {
-        cerr << "*** Empty file name given" << endl;
+        cerr << "lsmf: Empty file name given" << endl;
       } else {
-        if (HDF5File::isHDF5(*iter)) {
-          MultiHDF5 mfile (*iter, ByteIO::Old);
+        if (! File(*iter).exists()) {
+          cerr << "lsmf: File " << *iter << " does not exist" << endl;
+        } else if (HDF5File::isHDF5(*iter)) {
+          std::shared_ptr<MultiFileBase> mfile
+            (new MultiHDF5(*iter, ByteIO::Old));
           show (mfile, showbl, "MultiHDF5");
         } else {
-          MultiFile mfile (*iter, ByteIO::Old);
+          std::shared_ptr<MultiFileBase> mfile
+            (new MultiFile(*iter, ByteIO::Old));
           show (mfile, showbl, "MultiFile");
         }
       }

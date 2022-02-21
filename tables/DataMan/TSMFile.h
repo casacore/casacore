@@ -84,18 +84,20 @@ public:
     // Create a TSMFile object (with corresponding file).
     // The sequence number gets part of the file name.
     TSMFile (const TiledStMan* stMan, uInt fileSequenceNr,
-             const TSMOption&, MultiFileBase* mfile=0);
+             const TSMOption&,
+             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Create a TSMFile object for the given existing file.
     TSMFile (const String& fileName, Bool writable, const TSMOption&,
-             MultiFileBase* mfile=0);
+             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Read the object back.
     // The file is not opened until the first access,
     // thus until the file descriptor is asked for the first time.
     // It checks if the sequence number matches the expected one.
     TSMFile (const TiledStMan* stMan, AipsIO& ios, uInt seqnr,
-             const TSMOption&, MultiFileBase* mfile=0);
+             const TSMOption&,
+             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // The destructor closes the file.
     ~TSMFile();

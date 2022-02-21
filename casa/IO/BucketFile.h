@@ -115,7 +115,7 @@ public:
     // cannot be used and mappedFile is ignored.
     explicit BucketFile (const String& fileName,
                          uInt bufSizeFile=0, Bool mappedFile=False,
-                         MultiFileBase* mfile=0);
+                         const std::shared_ptr<MultiFileBase>& mfile=std::shared_ptr<MultiFileBase>());
 
     // Create a BucketFile object for an existing file.
     // The file should be opened by the <src>open</src>.
@@ -125,7 +125,7 @@ public:
     // cannot be used and mappedFile is ignored.
     BucketFile (const String& fileName, Bool writable,
                 uInt bufSizeFile=0, Bool mappedFile=False,
-                MultiFileBase* mfile=0);
+                         const std::shared_ptr<MultiFileBase>& mfile=std::shared_ptr<MultiFileBase>());
 
     // The destructor closes the file (if open).
     virtual ~BucketFile();
@@ -202,7 +202,7 @@ private:
     // The optional buffered file.
     FilebufIO* bufferedFile_p;
     // The possibly used MultiFileBase.
-    MultiFileBase* mfile_p;
+    std::shared_ptr<MultiFileBase> mfile_p;
 	    
 
     // Forbid copy constructor.
