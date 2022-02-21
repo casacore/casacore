@@ -76,15 +76,14 @@ public:
   explicit TaQLConstNodeRep (const String& value, Bool isTableName=False);
   explicit TaQLConstNodeRep (const MVTime& value);
   explicit TaQLConstNodeRep (Int64 value, const String& subTableName);
-  virtual ~TaQLConstNodeRep();
   void setIsTableName()
     { itsIsTableName = True; }
   const String& getString() const;
   const String& getUnit() const
     { return itsUnit; }
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLConstNodeRep* restore (AipsIO& aio);
 
   Type     itsType;
@@ -122,10 +121,9 @@ public:
   explicit TaQLRegexNodeRep (const String& value);
   TaQLRegexNodeRep (const String& value, Bool caseInsensitive, Bool negate,
                     Bool ignoreBlanks, Int maxDistance);
-  virtual ~TaQLRegexNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLRegexNodeRep* restore (AipsIO& aio);
 
   String itsValue;
@@ -163,10 +161,9 @@ public:
              U_NOTEXISTS=3,
              U_BITNOT   =4};
   TaQLUnaryNodeRep (Type type, const TaQLNode& child);
-  virtual ~TaQLUnaryNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLUnaryNodeRep* restore (AipsIO& aio);
 
   Type     itsType;
@@ -218,10 +215,9 @@ public:
              B_BITXOR     =20,
              B_BITOR      =21};
   TaQLBinaryNodeRep (Type type, const TaQLNode& left, const TaQLNode& right);
-  virtual ~TaQLBinaryNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLBinaryNodeRep* restore (AipsIO& aio);
   // Handle a comparison wih a regex. The operator (~ or !~) is extracted
   // from the regex.
@@ -254,7 +250,6 @@ public:
   explicit TaQLMultiNodeRep (Bool isSetOrArray=False);
   TaQLMultiNodeRep(const String& prefix, const String& postfix,
                    Bool isSetOrArray=False);
-  virtual ~TaQLMultiNodeRep();
   void setIsSetOrArray()
     { itsIsSetOrArray = True; }
   void setPPFix (const String& prefix, const String& postfix)
@@ -267,9 +262,9 @@ public:
     { itsNodes.push_back (node); }
   const std::vector<TaQLNode>& getNodes() const
     { return itsNodes; }
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLMultiNodeRep* restore (AipsIO& aio);
 
   std::vector<TaQLNode> itsNodes;
@@ -301,10 +296,9 @@ class TaQLFuncNodeRep: public TaQLNodeRep
 public:
   TaQLFuncNodeRep (const String& name);
   TaQLFuncNodeRep (const String& name, const TaQLMultiNode& args);
-  virtual ~TaQLFuncNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLFuncNodeRep* restore (AipsIO& aio);
 
   String        itsName;
@@ -334,10 +328,9 @@ public:
                     const TaQLNode& end, Bool rightClosed);
   TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start);
   TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed);
-  virtual ~TaQLRangeNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLRangeNodeRep* restore (AipsIO& aio);
 
   Bool     itsLeftClosed;
@@ -367,10 +360,9 @@ class TaQLIndexNodeRep: public TaQLNodeRep
 public:
   TaQLIndexNodeRep (const TaQLNode& start, const TaQLNode& end,
                     const TaQLNode& incr);
-  virtual ~TaQLIndexNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLIndexNodeRep* restore (AipsIO& aio);
 
   TaQLNode itsStart;
@@ -398,10 +390,9 @@ class TaQLJoinNodeRep: public TaQLNodeRep
 {
 public:
   TaQLJoinNodeRep (const TaQLMultiNode& tables, const TaQLNode& condition);
-  virtual ~TaQLJoinNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLJoinNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsTables;
@@ -428,10 +419,9 @@ class TaQLKeyColNodeRep: public TaQLNodeRep
 {
 public:
   TaQLKeyColNodeRep (const String& name, const String& nameMask = String());
-  virtual ~TaQLKeyColNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLKeyColNodeRep* restore (AipsIO& aio);
 
   String itsName;
@@ -459,10 +449,9 @@ class TaQLTableNodeRep: public TaQLNodeRep
 {
 public:
   TaQLTableNodeRep (const TaQLNode& table, const String& alias);
-  virtual ~TaQLTableNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLTableNodeRep* restore (AipsIO& aio);
 
   TaQLNode itsTable;
@@ -493,10 +482,9 @@ class TaQLColNodeRep: public TaQLNodeRep
 public:
   TaQLColNodeRep (const TaQLNode& expr, const String& name,
                   const String& nameMask, const String& dtype);
-  virtual ~TaQLColNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLColNodeRep* restore (AipsIO& aio);
 
   TaQLNode itsExpr;
@@ -525,10 +513,9 @@ class TaQLColumnsNodeRep: public TaQLNodeRep
 {
 public:
   TaQLColumnsNodeRep (Bool distinct, const TaQLMultiNode& nodes);
-  virtual ~TaQLColumnsNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLColumnsNodeRep* restore (AipsIO& aio);
 
   Bool          itsDistinct;
@@ -558,10 +545,9 @@ public:
   enum Type {Normal=0,
              Rollup=1};  //# in the future type Cube could be added
   TaQLGroupNodeRep (Type type, const TaQLMultiNode& nodes);
-  virtual ~TaQLGroupNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLGroupNodeRep* restore (AipsIO& aio);
 
   Type          itsType;
@@ -592,10 +578,9 @@ public:
              Descending=1,
              None      =2};
   TaQLSortKeyNodeRep (Type type, const TaQLNode& child);
-  virtual ~TaQLSortKeyNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLSortKeyNodeRep* restore (AipsIO& aio);
 
   Type     itsType;
@@ -625,10 +610,9 @@ public:
   enum Type {Ascending =0,
              Descending=1};
   TaQLSortNodeRep (Bool unique, Type type, const TaQLMultiNode& keys);
-  virtual ~TaQLSortNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLSortNodeRep* restore (AipsIO& aio);
 
   Bool          itsUnique;
@@ -656,10 +640,9 @@ class TaQLLimitOffNodeRep: public TaQLNodeRep
 {
 public:
   TaQLLimitOffNodeRep (const TaQLNode& limit, const TaQLNode& offset);
-  virtual ~TaQLLimitOffNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLLimitOffNodeRep* restore (AipsIO& aio);
 
   TaQLNode itsLimit;
@@ -687,10 +670,9 @@ class TaQLGivingNodeRep: public TaQLNodeRep
 public:
   explicit TaQLGivingNodeRep (const String& name, const TaQLMultiNode& type);
   explicit TaQLGivingNodeRep (const TaQLMultiNode& exprlist);
-  virtual ~TaQLGivingNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLGivingNodeRep* restore (AipsIO& aio);
 
   String        itsName;
@@ -728,10 +710,9 @@ public:
                       const TaQLMultiNode& indices1,
                       const TaQLMultiNode& indices2,
                       const TaQLNode& expr);
-  virtual ~TaQLUpdExprNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLUpdExprNodeRep* restore (AipsIO& aio);
 
   String        itsName;
@@ -763,7 +744,6 @@ class TaQLQueryNodeRep: public TaQLNodeRep
 {
 public:
   TaQLQueryNodeRep (int nodeType);
-  virtual ~TaQLQueryNodeRep();
   void setBrackets()
     { itsBrackets = True; }
   void setNoExecute()
@@ -776,10 +756,10 @@ public:
     { return itsNoExecute; }
   Bool getFromExecute() const
     { return itsFromExecute; }
-  virtual void show (std::ostream& os) const;
+  virtual void show (std::ostream& os) const override;
 protected:
-  virtual void saveSuper (AipsIO& aio) const;
-  virtual void restoreSuper (AipsIO& aio);
+  void saveSuper (AipsIO& aio) const;
+  void restoreSuper (AipsIO& aio);
 private:
   virtual void showDerived (std::ostream& os) const = 0;
   Bool itsBrackets;
@@ -819,10 +799,9 @@ public:
                      const TaQLNode& groupby, const TaQLNode& having,
                      const TaQLNode& sort, const TaQLNode& limitoff,
                      const TaQLNode& giving, const TaQLMultiNode& dminfo);
-  virtual ~TaQLSelectNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void showDerived (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void showDerived (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLSelectNodeRep* restore (AipsIO& aio);
 
   TaQLNode      itsColumns;
@@ -858,10 +837,9 @@ class TaQLCountNodeRep: public TaQLQueryNodeRep
 public:
   TaQLCountNodeRep (const TaQLMultiNode& with, const TaQLNode& columns,
                     const TaQLMultiNode& tables, const TaQLNode& where);
-  virtual ~TaQLCountNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void showDerived (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void showDerived (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLCountNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -894,10 +872,9 @@ public:
                      const TaQLMultiNode& tables, const TaQLMultiNode& update,
                      const TaQLMultiNode& from, const TaQLNode& where,
                      const TaQLNode& sort, const TaQLNode& limitoff);
-  virtual ~TaQLUpdateNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLUpdateNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -933,10 +910,9 @@ public:
                      const TaQLNode& values, const TaQLNode& limit);
   TaQLInsertNodeRep (const TaQLMultiNode& with, const TaQLMultiNode& tables,
                      const TaQLMultiNode& insert);
-  virtual ~TaQLInsertNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLInsertNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -967,10 +943,9 @@ public:
   TaQLDeleteNodeRep (const TaQLMultiNode& with, const TaQLMultiNode& tables,
                      const TaQLNode& where,
                      const TaQLNode& sort, const TaQLNode& limitoff);
-  virtual ~TaQLDeleteNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLDeleteNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -1001,10 +976,9 @@ public:
   TaQLCalcNodeRep (const TaQLMultiNode& withTables, const TaQLMultiNode& fromTables,
                    const TaQLNode& expr, const TaQLNode& where,
                    const TaQLNode& sort, const TaQLNode& limitoff);
-  virtual ~TaQLCalcNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLCalcNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -1037,10 +1011,9 @@ public:
                      const TaQLNode& giving, const TaQLMultiNode& likeDrop,
                      const TaQLMultiNode& cols,
                      const TaQLNode& limit, const TaQLMultiNode& dminfo);
-  virtual ~TaQLCreTabNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void showDerived (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void showDerived (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLCreTabNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -1072,10 +1045,9 @@ class TaQLColSpecNodeRep: public TaQLNodeRep
 public:
   TaQLColSpecNodeRep (const String& name, const String& likeCol,
                       const String& dtype, const TaQLMultiNode& spec);
-  virtual ~TaQLColSpecNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLColSpecNodeRep* restore (AipsIO& aio);
 
   String        itsName;
@@ -1107,10 +1079,9 @@ public:
   TaQLRecFldNodeRep (const String& name, const TaQLRecFldNodeRep&);
   TaQLRecFldNodeRep (const String& name, const String& fromName,
                      const String& dtype);
-  virtual ~TaQLRecFldNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLRecFldNodeRep* restore (AipsIO& aio);
 
   String   itsName;
@@ -1138,10 +1109,9 @@ class TaQLUnitNodeRep: public TaQLNodeRep
 {
 public:
   TaQLUnitNodeRep (const String& unit, const TaQLNode& child);
-  virtual ~TaQLUnitNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLUnitNodeRep* restore (AipsIO& aio);
 
   String   itsUnit;
@@ -1168,10 +1138,9 @@ class TaQLAltTabNodeRep: public TaQLQueryNodeRep
 public:
   TaQLAltTabNodeRep (const TaQLMultiNode& with, const TaQLNode& table,
                      const TaQLMultiNode& from, const TaQLMultiNode& commands);
-  virtual ~TaQLAltTabNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void showDerived (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void showDerived (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLAltTabNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;
@@ -1199,10 +1168,9 @@ class TaQLAddColNodeRep: public TaQLNodeRep
 {
 public:
   TaQLAddColNodeRep (const TaQLMultiNode& cols, const TaQLMultiNode& dminfo);
-  virtual ~TaQLAddColNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLAddColNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsColumns;
@@ -1228,10 +1196,9 @@ class TaQLRenDropNodeRep: public TaQLNodeRep
 {
 public:
   TaQLRenDropNodeRep (Int type, const TaQLMultiNode& cols);
-  virtual ~TaQLRenDropNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLRenDropNodeRep* restore (AipsIO& aio);
 
   Int           itsType;
@@ -1257,10 +1224,9 @@ class TaQLSetKeyNodeRep: public TaQLNodeRep
 {
 public:
   TaQLSetKeyNodeRep (const TaQLMultiNode& keyvals);
-  virtual ~TaQLSetKeyNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLSetKeyNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsKeyVals;
@@ -1285,10 +1251,9 @@ class TaQLAddRowNodeRep: public TaQLNodeRep
 {
 public:
   TaQLAddRowNodeRep (const TaQLNode& nrow);
-  virtual ~TaQLAddRowNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLAddRowNodeRep* restore (AipsIO& aio);
 
   TaQLNode itsNRow;
@@ -1315,10 +1280,9 @@ public:
   TaQLConcTabNodeRep (const String& tableName,
                       const TaQLMultiNode& tables,
                       const TaQLMultiNode& subtableNames);
-  virtual ~TaQLConcTabNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void showDerived (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void showDerived (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLConcTabNodeRep* restore (AipsIO& aio);
 
   String        itsTableName;
@@ -1345,10 +1309,9 @@ class TaQLShowNodeRep: public TaQLNodeRep
 {
 public:
   TaQLShowNodeRep (const TaQLMultiNode& names);
-  virtual ~TaQLShowNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLShowNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsNames;
@@ -1373,10 +1336,9 @@ class TaQLCopyColNodeRep: public TaQLNodeRep
 {
 public:
   TaQLCopyColNodeRep (const TaQLMultiNode& names, const TaQLMultiNode& dminfo);
-  virtual ~TaQLCopyColNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLCopyColNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsNames;
@@ -1402,10 +1364,9 @@ class TaQLDropTabNodeRep: public TaQLNodeRep
 {
 public:
   TaQLDropTabNodeRep (const TaQLMultiNode& with, const TaQLMultiNode& tables);
-  virtual ~TaQLDropTabNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
+  virtual void show (std::ostream& os) const override;
+  virtual void save (AipsIO& aio) const override;
   static TaQLDropTabNodeRep* restore (AipsIO& aio);
 
   TaQLMultiNode itsWith;

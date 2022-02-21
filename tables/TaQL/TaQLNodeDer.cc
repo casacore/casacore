@@ -107,8 +107,6 @@ TaQLConstNodeRep::TaQLConstNodeRep (Int64 value, const String& subTableName)
     itsCValue      (value, 0.),
     itsSValue      (subTableName)
 {}
-TaQLConstNodeRep::~TaQLConstNodeRep()
-{}
 const String& TaQLConstNodeRep::getString() const
 {
   AlwaysAssert (itsType == CTString, AipsError);
@@ -296,8 +294,6 @@ TaQLRegexNodeRep::TaQLRegexNodeRep (const String& value,
     itsIgnoreBlanks    (ignoreBlanks),
     itsMaxDistance     (maxDistance)
 {}
-TaQLRegexNodeRep::~TaQLRegexNodeRep()
-{}
 TaQLNodeResult TaQLRegexNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitRegexNode (*this);
@@ -340,8 +336,6 @@ TaQLUnaryNodeRep::TaQLUnaryNodeRep (Type type, const TaQLNode& child)
   : TaQLNodeRep (TaQLNode_Unary),
     itsType  (type),
     itsChild (child)
-{}
-TaQLUnaryNodeRep::~TaQLUnaryNodeRep()
 {}
 TaQLNodeResult TaQLUnaryNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -395,8 +389,6 @@ TaQLBinaryNodeRep::TaQLBinaryNodeRep (Type type, const TaQLNode& left,
     itsType  (type),
     itsLeft  (left),
     itsRight (right)
-{}
-TaQLBinaryNodeRep::~TaQLBinaryNodeRep()
 {}
 TaQLBinaryNodeRep* TaQLBinaryNodeRep::handleRegex (const TaQLNode& left,
                                                    const TaQLRegexNode& right)
@@ -526,8 +518,6 @@ TaQLMultiNodeRep::TaQLMultiNodeRep(const String& prefix,
     itsSep          (","),
     itsIncr         (1)
 {}
-TaQLMultiNodeRep::~TaQLMultiNodeRep()
-{}
 TaQLNodeResult TaQLMultiNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitMultiNode (*this);
@@ -580,8 +570,6 @@ TaQLFuncNodeRep::TaQLFuncNodeRep (const String& name,
     itsName (name),
     itsArgs (args)
 {}
-TaQLFuncNodeRep::~TaQLFuncNodeRep()
-{}
 TaQLNodeResult TaQLFuncNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitFuncNode (*this);
@@ -626,8 +614,6 @@ TaQLRangeNodeRep::TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed)
     itsEnd        (end),
     itsRightClosed(rightClosed)
 {}
-TaQLRangeNodeRep::~TaQLRangeNodeRep()
-{}
 TaQLNodeResult TaQLRangeNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitRangeNode (*this);
@@ -671,8 +657,6 @@ TaQLIndexNodeRep::TaQLIndexNodeRep (const TaQLNode& start,
     itsEnd   (end),
     itsIncr  (incr)
 {}
-TaQLIndexNodeRep::~TaQLIndexNodeRep()
-{}
 TaQLNodeResult TaQLIndexNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitIndexNode (*this);
@@ -711,8 +695,6 @@ TaQLJoinNodeRep::TaQLJoinNodeRep (const TaQLMultiNode& tables,
     itsTables    (tables),
     itsCondition (condition)
 {}
-TaQLJoinNodeRep::~TaQLJoinNodeRep()
-{}
 TaQLNodeResult TaQLJoinNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitJoinNode (*this);
@@ -745,8 +727,6 @@ TaQLKeyColNodeRep::TaQLKeyColNodeRep (const String& name,
   itsName     (name),
   itsNameMask (nameMask)
 {}
-TaQLKeyColNodeRep::~TaQLKeyColNodeRep()
-{}
 TaQLNodeResult TaQLKeyColNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitKeyColNode (*this);
@@ -775,8 +755,6 @@ TaQLTableNodeRep::TaQLTableNodeRep (const TaQLNode& table,
   : TaQLNodeRep (TaQLNode_Table),
     itsTable (table),
     itsAlias (alias)
-{}
-TaQLTableNodeRep::~TaQLTableNodeRep()
 {}
 TaQLNodeResult TaQLTableNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -808,8 +786,6 @@ TaQLColNodeRep::TaQLColNodeRep (const TaQLNode& expr, const String& name,
     itsName     (name),
     itsNameMask (nameMask),
     itsDtype    (checkDataType(dtype))
-{}
-TaQLColNodeRep::~TaQLColNodeRep()
 {}
 TaQLNodeResult TaQLColNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -850,8 +826,6 @@ TaQLColumnsNodeRep::TaQLColumnsNodeRep (Bool distinct,
     itsDistinct (distinct),
     itsNodes    (nodes)
 {}
-TaQLColumnsNodeRep::~TaQLColumnsNodeRep()
-{}
 TaQLNodeResult TaQLColumnsNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitColumnsNode (*this);
@@ -883,8 +857,6 @@ TaQLGroupNodeRep::TaQLGroupNodeRep (Type type, const TaQLMultiNode& nodes)
     itsType  (type),
     itsNodes (nodes)
 {}
-TaQLGroupNodeRep::~TaQLGroupNodeRep()
-{}
 TaQLNodeResult TaQLGroupNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitGroupNode (*this);
@@ -915,8 +887,6 @@ TaQLSortKeyNodeRep::TaQLSortKeyNodeRep (Type type, const TaQLNode& child)
   : TaQLNodeRep (TaQLNode_SortKey),
     itsType  (type),
     itsChild (child)
-{}
-TaQLSortKeyNodeRep::~TaQLSortKeyNodeRep()
 {}
 TaQLNodeResult TaQLSortKeyNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -956,8 +926,6 @@ TaQLSortNodeRep::TaQLSortNodeRep (Bool unique, Type type,
     itsType   (type),
     itsKeys   (keys)
 {}
-TaQLSortNodeRep::~TaQLSortNodeRep()
-{}
 TaQLNodeResult TaQLSortNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitSortNode (*this);
@@ -993,8 +961,6 @@ TaQLLimitOffNodeRep::TaQLLimitOffNodeRep (const TaQLNode& limit,
   : TaQLNodeRep (TaQLNode_LimitOff),
     itsLimit (limit),
     itsOffset (offset)
-{}
-TaQLLimitOffNodeRep::~TaQLLimitOffNodeRep()
 {}
 TaQLNodeResult TaQLLimitOffNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1032,8 +998,6 @@ TaQLGivingNodeRep::TaQLGivingNodeRep (const String& name,
 TaQLGivingNodeRep::TaQLGivingNodeRep (const TaQLMultiNode& exprlist)
   : TaQLNodeRep (TaQLNode_Giving),
     itsExprList (exprlist)
-{}
-TaQLGivingNodeRep::~TaQLGivingNodeRep()
 {}
 TaQLNodeResult TaQLGivingNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1101,8 +1065,6 @@ TaQLUpdExprNodeRep::TaQLUpdExprNodeRep (const String& name,
     itsIndices2 (indices2),
     itsExpr     (expr)
 {}
-TaQLUpdExprNodeRep::~TaQLUpdExprNodeRep()
-{}
 TaQLNodeResult TaQLUpdExprNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitUpdExprNode (*this);
@@ -1141,8 +1103,6 @@ TaQLQueryNodeRep::TaQLQueryNodeRep (int nodeType)
     itsBrackets    (False),
     itsNoExecute   (False),
     itsFromExecute (False)
-{}
-TaQLQueryNodeRep::~TaQLQueryNodeRep()
 {}
 void TaQLQueryNodeRep::show (std::ostream& os) const
 {
@@ -1194,8 +1154,6 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
     itsJoin(join), itsWhere(where), itsGroupby(groupby), itsHaving(having),
     itsSort(sort), itsLimitOff(limitoff), itsGiving(giving),
     itsDMInfo(dminfo)
-{}
-TaQLSelectNodeRep::~TaQLSelectNodeRep()
 {}
 TaQLNodeResult TaQLSelectNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1261,13 +1219,12 @@ TaQLSelectNodeRep* TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode limitoff = TaQLNode::restoreNode (aio);
   TaQLNode giving = TaQLNode::restoreNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
-  TaQLSelectNodeRep* node = new TaQLSelectNodeRep (columns, with,
-                                                   tables, join,
-                                                   where, groupby, having,
-                                                   sort, limitoff, giving,
-                                                   dminfo);
+  std::unique_ptr<TaQLSelectNodeRep> node
+    (new TaQLSelectNodeRep (columns, with, tables, join,
+                            where, groupby, having,
+                            sort, limitoff, giving, dminfo));
   node->restoreSuper (aio);
-  return node;
+  return node.release();
 }
 
 TaQLCountNodeRep::TaQLCountNodeRep (const TaQLMultiNode& with,
@@ -1276,8 +1233,6 @@ TaQLCountNodeRep::TaQLCountNodeRep (const TaQLMultiNode& with,
                                     const TaQLNode& where)
   : TaQLQueryNodeRep (TaQLNode_Count),
     itsWith(with), itsColumns(columns), itsTables(tables), itsWhere(where)
-{}
-TaQLCountNodeRep::~TaQLCountNodeRep()
 {}
 TaQLNodeResult TaQLCountNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1309,9 +1264,10 @@ TaQLCountNodeRep* TaQLCountNodeRep::restore (AipsIO& aio)
   TaQLNode columns = TaQLNode::restoreNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
   TaQLNode where = TaQLNode::restoreNode (aio);
-  TaQLCountNodeRep* node = new TaQLCountNodeRep (with, columns, tables, where);
+  std::unique_ptr<TaQLCountNodeRep> node
+    (new TaQLCountNodeRep (with, columns, tables, where));
   node->restoreSuper (aio);
-  return node;
+  return node.release();
 }
 
 TaQLUpdateNodeRep::TaQLUpdateNodeRep (const TaQLMultiNode& with,
@@ -1329,8 +1285,6 @@ TaQLUpdateNodeRep::TaQLUpdateNodeRep (const TaQLMultiNode& with,
     itsWhere    (where),
     itsSort     (sort),
     itsLimitOff (limitoff)
-{}
-TaQLUpdateNodeRep::~TaQLUpdateNodeRep()
 {}
 TaQLNodeResult TaQLUpdateNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1420,8 +1374,6 @@ TaQLInsertNodeRep::TaQLInsertNodeRep (const TaQLMultiNode& with,
   valuesList.add (values);
   itsValues = valuesList;
 }
-TaQLInsertNodeRep::~TaQLInsertNodeRep()
-{}
 TaQLNodeResult TaQLInsertNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitInsertNode (*this);
@@ -1474,8 +1426,6 @@ TaQLDeleteNodeRep::TaQLDeleteNodeRep (const TaQLMultiNode& with,
     itsSort     (sort),
     itsLimitOff (limitoff)
 {}
-TaQLDeleteNodeRep::~TaQLDeleteNodeRep()
-{}
 TaQLNodeResult TaQLDeleteNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitDeleteNode (*this);
@@ -1523,8 +1473,6 @@ TaQLCalcNodeRep::TaQLCalcNodeRep (const TaQLMultiNode& with,
     itsWhere    (where),
     itsSort     (sort),
     itsLimitOff (limitoff)
-{}
-TaQLCalcNodeRep::~TaQLCalcNodeRep()
 {}
 TaQLNodeResult TaQLCalcNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1580,8 +1528,6 @@ TaQLCreTabNodeRep::TaQLCreTabNodeRep (const TaQLMultiNode& with,
     itsLimit   (limit),
     itsDMInfo  (dminfo)
 {}
-TaQLCreTabNodeRep::~TaQLCreTabNodeRep()
-{}
 TaQLNodeResult TaQLCreTabNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitCreTabNode (*this);
@@ -1600,6 +1546,8 @@ void TaQLCreTabNodeRep::showDerived (std::ostream& os) const
       nodes[1].show (os);
     }
   }
+  // If a column-list is given, it must be preceded by ADD COLUMN if
+  // the LIKE clause is given as well.
   if (itsColumns.isValid() && !itsColumns.getMultiRep()->getNodes().empty()) {
     if (itsLikeDrop.isValid()) {
       os << " ADD COLUMN ";
@@ -1635,10 +1583,11 @@ TaQLCreTabNodeRep* TaQLCreTabNodeRep::restore (AipsIO& aio)
   TaQLMultiNode columns = TaQLNode::restoreMultiNode (aio);
   TaQLNode limit = TaQLNode::restoreNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
-  TaQLCreTabNodeRep* node = new TaQLCreTabNodeRep (with, giving, likeDrop,
-                                                   columns, limit, dminfo);
+  std::unique_ptr<TaQLCreTabNodeRep> node
+    (new TaQLCreTabNodeRep (with, giving, likeDrop,
+                            columns, limit, dminfo));
   node->restoreSuper (aio);
-  return node;
+  return node.release();
 }
 
 TaQLColSpecNodeRep::TaQLColSpecNodeRep (const String& name,
@@ -1650,8 +1599,6 @@ TaQLColSpecNodeRep::TaQLColSpecNodeRep (const String& name,
     itsLikeCol (likeCol),
     itsDtype   (checkDataType(dtype)),
     itsSpec    (spec)
-{}
-TaQLColSpecNodeRep::~TaQLColSpecNodeRep()
 {}
 TaQLNodeResult TaQLColSpecNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1707,8 +1654,6 @@ TaQLRecFldNodeRep::TaQLRecFldNodeRep (const String& name,
     itsFromName (fromName),
     itsDtype    (checkDataType(dtype))
 {}
-TaQLRecFldNodeRep::~TaQLRecFldNodeRep()
-{}
 TaQLNodeResult TaQLRecFldNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitRecFldNode (*this);
@@ -1757,8 +1702,6 @@ TaQLUnitNodeRep::TaQLUnitNodeRep (const String& unit,
     itsUnit  (unit),
     itsChild (child)
 {}
-TaQLUnitNodeRep::~TaQLUnitNodeRep()
-{}
 TaQLNodeResult TaQLUnitNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitUnitNode (*this);
@@ -1791,8 +1734,6 @@ TaQLAltTabNodeRep::TaQLAltTabNodeRep (const TaQLMultiNode& with,
     itsTable    (table),
     itsFrom     (from),
     itsCommands (commands)
-{}
-TaQLAltTabNodeRep::~TaQLAltTabNodeRep()
 {}
 TaQLNodeResult TaQLAltTabNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1832,8 +1773,6 @@ TaQLAddColNodeRep::TaQLAddColNodeRep (const TaQLMultiNode& cols,
     itsColumns (cols),
     itsDMInfo  (dminfo)
 {}
-TaQLAddColNodeRep::~TaQLAddColNodeRep()
-{}
 TaQLNodeResult TaQLAddColNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitAddColNode (*this);
@@ -1863,8 +1802,6 @@ TaQLRenDropNodeRep::TaQLRenDropNodeRep (Int type, const TaQLMultiNode& names)
   : TaQLNodeRep (TaQLNode_RenDrop),
     itsType  (type),
     itsNames (names)
-{}
-TaQLRenDropNodeRep::~TaQLRenDropNodeRep()
 {}
 TaQLNodeResult TaQLRenDropNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1900,8 +1837,6 @@ TaQLSetKeyNodeRep::TaQLSetKeyNodeRep (const TaQLMultiNode& keyvals)
   : TaQLNodeRep (TaQLNode_SetKey),
     itsKeyVals (keyvals)
 {}
-TaQLSetKeyNodeRep::~TaQLSetKeyNodeRep()
-{}
 TaQLNodeResult TaQLSetKeyNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitSetKeyNode (*this);
@@ -1924,8 +1859,6 @@ TaQLSetKeyNodeRep* TaQLSetKeyNodeRep::restore (AipsIO& aio)
 TaQLAddRowNodeRep::TaQLAddRowNodeRep (const TaQLNode& nrow)
   : TaQLNodeRep (TaQLNode_AddRow),
     itsNRow(nrow)
-{}
-TaQLAddRowNodeRep::~TaQLAddRowNodeRep()
 {}
 TaQLNodeResult TaQLAddRowNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1953,8 +1886,6 @@ TaQLConcTabNodeRep::TaQLConcTabNodeRep (const String& tableName,
     itsTableName (tableName),
     itsTables    (tables),
     itsSubTables (subtableNames)
-{}
-TaQLConcTabNodeRep::~TaQLConcTabNodeRep()
 {}
 TaQLNodeResult TaQLConcTabNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -1992,8 +1923,6 @@ TaQLShowNodeRep::TaQLShowNodeRep (const TaQLMultiNode& names)
   : TaQLNodeRep (TaQLNode_Show),
     itsNames (names)
 {}
-TaQLShowNodeRep::~TaQLShowNodeRep()
-{}
 TaQLNodeResult TaQLShowNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitShowNode (*this);
@@ -2020,8 +1949,6 @@ TaQLCopyColNodeRep::TaQLCopyColNodeRep (const TaQLMultiNode& names,
   : TaQLNodeRep (TaQLNode_CopyCol),
     itsNames  (names),
     itsDMInfo (dminfo)
-{}
-TaQLCopyColNodeRep::~TaQLCopyColNodeRep()
 {}
 TaQLNodeResult TaQLCopyColNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -2053,8 +1980,6 @@ TaQLDropTabNodeRep::TaQLDropTabNodeRep (const TaQLMultiNode& with,
   : TaQLNodeRep (TaQLNode_DropTab),
     itsWith   (with),
     itsTables (tables)
-{}
-TaQLDropTabNodeRep::~TaQLDropTabNodeRep()
 {}
 TaQLNodeResult TaQLDropTabNodeRep::visit (TaQLNodeVisitor& visitor) const
 {

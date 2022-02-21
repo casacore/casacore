@@ -634,7 +634,8 @@ calccomm:  withpart CALC FROM tables CALC orexpr {
            }
          ;
 
-/* The CREATE TABLE command has a few flavours
+/* The CREATE TABLE command has a few flavours.
+   Optionally LIKE-DROP can be given, followed by ADDCOLUMN.
    Note that the first rule requires a non-empty column list,
    otherwise there is a reduce conflict with the 2nd rule. */
 cretabcomm: withpart CREATETAB tabnmtyp colspecl nrowspec dminfo {
@@ -1256,10 +1257,10 @@ colspec:   NAME NAME {
 	   }
          ;
 
-/* Optional LIKE tab with an optional DROP COLUMN columname-list.
-   If LIKE is given, ADDCOLUMN must be used. */
-likedrop:  likedropac {
-               $$ = $1;
+/* Optional 'LIKE tab' with an optional DROP COLUMN columname-list */
+likedrop:  {   /* no LIKE table given */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | LIKE tabalias {
                $$ = new TaQLMultiNode(False);
@@ -1273,7 +1274,12 @@ likedrop:  likedropac {
                $$->add (*$4);
            }
          ;
+/* Optional 'LIKE tab DROP COLUMN' where ADDCOLUMN must be used. */
 likedropac: {   /* no LIKE table given */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | ADDCOL {   /* A superfluous ADDCOLUMN is possible */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }

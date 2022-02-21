@@ -268,205 +268,205 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return NAME;
-	  }
+            return NAME;
+          }
 
 {UNION}  {
             tableGramPosition() += yyleng;
             throw (TableInvExpr ("UNION is not supported yet"));
-	  }
+          }
 {INTERSECT}  {
             tableGramPosition() += yyleng;
             throw (TableInvExpr ("INTERSECT is not supported yet"));
-	  }
+          }
 {EXCEPT}  {
             tableGramPosition() += yyleng;
-	    return EXCEPT;
-	  }
+            return EXCEPT;
+          }
 {STYLE}   {
             tableGramPosition() += yyleng;
             BEGIN(STYLEstate);
-	    return STYLE;
-	  }
+            return STYLE;
+          }
 {SELECT}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return SELECT;
-	  }
+            BEGIN(EXPRstate);
+            return SELECT;
+          }
 {UPDATE}  {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return UPDATE;
-	  }
+            BEGIN(TABLENAMEstate);
+            return UPDATE;
+          }
 {SET}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return UPDSET;
-	  }
+            BEGIN(EXPRstate);
+            return UPDSET;
+          }
 {INSERT}  {
             tableGramPosition() += yyleng;
-	    return INSERT;
-	  }
+            return INSERT;
+          }
 {VALUES}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return VALUES;
+            BEGIN(EXPRstate);
+            return VALUES;
           }
 {DELETE}  {
             tableGramPosition() += yyleng;
-	    return DELETE;
-	  }
+            return DELETE;
+          }
 {COUNT}   {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return COUNT;
-	  }
+            BEGIN(EXPRstate);
+            return COUNT;
+          }
 {COUNTALL} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return COUNTALL;
-	  }
+            BEGIN(EXPRstate);
+            return COUNTALL;
+          }
 {CALC}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return CALC;
-	  }
+            BEGIN(EXPRstate);
+            return CALC;
+          }
 {CREATETAB} {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return CREATETAB;
-	  }
+            BEGIN(TABLENAMEstate);
+            return CREATETAB;
+          }
 {ALTERTAB} {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return ALTERTAB;
-	  }
+            BEGIN(TABLENAMEstate);
+            return ALTERTAB;
+          }
 {DROPTAB} {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return DROPTAB;
-	  }
+            BEGIN(TABLENAMEstate);
+            return DROPTAB;
+          }
 {ADDCOL}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return ADDCOL;
+            BEGIN(EXPRstate);
+            return ADDCOL;
           } 
 {COPYCOL}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return COPYCOL;
+            BEGIN(EXPRstate);
+            return COPYCOL;
           } 
 {RENAMECOL} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return RENAMECOL;
+            BEGIN(EXPRstate);
+            return RENAMECOL;
           } 
 {DROPCOL} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return DROPCOL;
+            BEGIN(EXPRstate);
+            return DROPCOL;
           } 
 {SETKEY}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return SETKEY;
+            BEGIN(EXPRstate);
+            return SETKEY;
           } 
 {COPYKEY} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return COPYKEY;
+            BEGIN(EXPRstate);
+            return COPYKEY;
           } 
 {RENAMEKEY} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return RENAMEKEY;
+            BEGIN(EXPRstate);
+            return RENAMEKEY;
           } 
 {DROPKEY} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return DROPKEY;
+            BEGIN(EXPRstate);
+            return DROPKEY;
           } 
 {ADDROW}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return ADDROW;
+            BEGIN(EXPRstate);
+            return ADDROW;
           } 
 {DMINFO}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return DMINFO;
-	  }
+            BEGIN(EXPRstate);
+            return DMINFO;
+          }
 {WITH}    {
             tableGramPosition() += yyleng;
             BEGIN(TABLENAMEstate);
-	    return WITH;
-	  }
+            return WITH;
+          }
 {FROM}    {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return FROM;
-	  }
+            BEGIN(TABLENAMEstate);
+            return FROM;
+          }
 {WHERE}   {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return WHERE;
-	  }
+            BEGIN(EXPRstate);
+            return WHERE;
+          }
 {ORDERBY} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return ORDERBY;
+            BEGIN(EXPRstate);
+            return ORDERBY;
           }
 {NODUPL}  {
             tableGramPosition() += yyleng;
-	    return NODUPL;
+            return NODUPL;
           }
 {DESC}    {
             tableGramPosition() += yyleng;
-	    return SORTDESC;
+            return SORTDESC;
           }
 {ASC}     {
             tableGramPosition() += yyleng;
-	    return SORTASC;
+            return SORTASC;
           }
 {GIVING}  {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return GIVING;
+            BEGIN(TABLENAMEstate);
+            return GIVING;
           }
 {INTO}    {
             tableGramPosition() += yyleng;
-	    BEGIN(TABLENAMEstate);
-	    return INTO;
+            BEGIN(TABLENAMEstate);
+            return INTO;
           }
 {SUBTABLES}    {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return SUBTABLES;
+            BEGIN(EXPRstate);
+            return SUBTABLES;
           }
 {LIMIT}   {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return LIMIT;
+            BEGIN(EXPRstate);
+            return LIMIT;
           }
 {OFFSET}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return OFFSET;
+            BEGIN(EXPRstate);
+            return OFFSET;
           }
 {GROUPBY} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return GROUPBY;
+            BEGIN(EXPRstate);
+            return GROUPBY;
           }
 {GROUPROLL} {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return GROUPROLL;
+            BEGIN(EXPRstate);
+            return GROUPROLL;
           }
 {HAVING}  {
             tableGramPosition() += yyleng;
-	    BEGIN(EXPRstate);
-	    return HAVING;
+            BEGIN(EXPRstate);
+            return HAVING;
           }
 {JOIN} {
             tableGramPosition() += yyleng;
@@ -520,8 +520,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return UDFLIBSYN;
-	  }
+            return UDFLIBSYN;
+          }
 
  /* regular expression and pattern handling */
 <EXPRstate>{PATTREX} {
@@ -529,8 +529,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->valre = new TaQLRegexNode(
                 new TaQLRegexNodeRep (String(TableGramtext,yyleng)));
             TaQLNode::theirNodesCreated.push_back (lvalp->valre);
-	    return REGEX;
-	  }
+            return REGEX;
+          }
 
  /* operators */
 "<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
@@ -589,19 +589,19 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {COMPLEX} {
             tableGramPosition() += yyleng;
             double v;
-	    sscanf (TableGramtext, "%lf%*c", &v);
+            sscanf (TableGramtext, "%lf%*c", &v);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (DComplex(0, v)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 {FLOAT}   {
             tableGramPosition() += yyleng;
-	    double v = atof(TableGramtext);
+            double v = atof(TableGramtext);
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (v));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 {INT}     {
             tableGramPosition() += yyleng;
             char* endPtr;
@@ -612,7 +612,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (v));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
-	  }
+          }
 {HEXINT}  {
             tableGramPosition() += yyleng;
             char* endPtr;
@@ -623,51 +623,51 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (v));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
-	  }
+          }
 {TRUE}    {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (True));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 {FALSE}   {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (False));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 {STRING}  {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveQuotes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return STRINGLITERAL;
-	  }
+            return STRINGLITERAL;
+          }
 {DATETIME} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramParseDateTime (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 <EXPRstate>{TIME} {
             tableGramPosition() += yyleng;
             double v = tableGramParseTime (TableGramtext);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (v, String("rad")));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 <EXPRstate>{FLINTUNIT} {
             tableGramPosition() += yyleng;
             double v;
             char unit[32];
-	    sscanf (TableGramtext, "%lf%31s", &v, unit);
+            sscanf (TableGramtext, "%lf%31s", &v, unit);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (v, String(unit)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return LITERAL;
-	  }
+            return LITERAL;
+          }
 
  /* In most states the word TIME is a normal column or function name.
     Otherwise it is the TIME keyword (to show timings).
@@ -678,24 +678,24 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return NAME;
-	  }
+            return NAME;
+          }
 {TIMEWORD} {
             tableGramPosition() += yyleng;
-	    return TIMING;
-	  }
+            return TIMING;
+          }
 <EXPRstate,TABLENAMEstate>{SHOW} { 
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return NAME;
-	  }
+            return NAME;
+          }
 {SHOW}    {
             tableGramPosition() += yyleng;
             BEGIN(SHOWstate);
-	    return SHOW;
-	  }
+            return SHOW;
+          }
             
  /* In the FROM clause a shorthand (for a table) can be given.
     In the WHERE and ORDERBY clause a function name can be given.
@@ -712,27 +712,27 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (String("ALL")));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return NAME;
-	  }
+            return NAME;
+          }
 {ALL}     {
             tableGramPosition() += yyleng;
-	    return ALL;
-	  }
+            return ALL;
+          }
 {NAME}    {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return NAME;
-	  }
+            return NAME;
+          }
  /* Field names can be used in the SELECT, FROM, WHERE, and ORDERBY clause */
 {NAMEFLD} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return FLDNAME;
-	  }
+            return FLDNAME;
+          }
 
  /* A temporary table number possibly followed by a subtable name*/
 {TEMPTAB} {
@@ -741,16 +741,16 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return TABNAME;
-	  }
+            return TABNAME;
+          }
 <SHOWstate>{TEMPTAB} {
             tableGramPosition() += yyleng;
             Int64 ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return TABNAME;
-	  }
+            return TABNAME;
+          }
 
  /* An unquoted table file name can be given at several places */
 <TABLENAMEstate,SHOWstate>{NAMETAB} {
@@ -758,8 +758,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new TaQLConstNode(
                          new TaQLConstNodeRep (tableGramRemoveEscapesQuotes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
-	    return TABNAME;
-	  }
+            return TABNAME;
+          }
 
  /* Whitespace is skipped */
 {WHITE}   { tableGramPosition() += yyleng; }

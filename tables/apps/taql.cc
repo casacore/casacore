@@ -272,9 +272,6 @@ Bool readLineSkip (String& line, const String& prompt)
 {
   Bool fnd = False;
   while (!fnd  &&  readLine (line, prompt)) {
-    if (line=="exit" || line=="quit" || line=="q") {
-      break;
-    }
     fnd = !line.empty();
   }
 #ifdef HAVE_READLINE
