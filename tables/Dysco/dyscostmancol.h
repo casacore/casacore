@@ -4,7 +4,7 @@
 #include "dyscodistribution.h"
 #include "dysconormalization.h"
 
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 
 #include <casa/Arrays/IPosition.h>
 
@@ -19,7 +19,7 @@ class DyscoStMan;
  * Base class for columns of the DyscoStMan.
  * @author André Dysco
  */
-class DyscoStManColumn : public casacore::StManColumn {
+class DyscoStManColumn : public casacore::StManColumnBase {
  public:
   /**
    * Constructor, to be overloaded by subclass.
@@ -27,7 +27,7 @@ class DyscoStManColumn : public casacore::StManColumn {
    * @param dtype The column's type as defined by Casacore.
    */
   explicit DyscoStManColumn(DyscoStMan *parent, int dtype)
-      : casacore::StManColumn(dtype),
+      : casacore::StManColumnBase(dtype),
         _offsetInBlock(0),
         _storageManager(parent) {}
 
