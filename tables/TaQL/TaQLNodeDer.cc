@@ -1219,12 +1219,13 @@ TaQLSelectNodeRep* TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode limitoff = TaQLNode::restoreNode (aio);
   TaQLNode giving = TaQLNode::restoreNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
-  std::unique_ptr<TaQLSelectNodeRep> node
-    (new TaQLSelectNodeRep (columns, with, tables, join,
-                            where, groupby, having,
-                            sort, limitoff, giving, dminfo));
+  TaQLSelectNodeRep* node = new TaQLSelectNodeRep (columns, with,
+                                                   tables, join,
+                                                   where, groupby, having,
+                                                   sort, limitoff, giving,
+                                                   dminfo);
   node->restoreSuper (aio);
-  return node.release();
+  return node;
 }
 
 TaQLCountNodeRep::TaQLCountNodeRep (const TaQLMultiNode& with,
@@ -1264,10 +1265,9 @@ TaQLCountNodeRep* TaQLCountNodeRep::restore (AipsIO& aio)
   TaQLNode columns = TaQLNode::restoreNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
   TaQLNode where = TaQLNode::restoreNode (aio);
-  std::unique_ptr<TaQLCountNodeRep> node
-    (new TaQLCountNodeRep (with, columns, tables, where));
+  TaQLCountNodeRep* node = new TaQLCountNodeRep (with, columns, tables, where);
   node->restoreSuper (aio);
-  return node.release();
+  return node;
 }
 
 TaQLUpdateNodeRep::TaQLUpdateNodeRep (const TaQLMultiNode& with,
