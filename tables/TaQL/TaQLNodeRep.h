@@ -117,6 +117,8 @@ public:
   #define TaQLNode_AddRow   char(34)
   #define TaQLNode_ConcTab  char(35)
   #define TaQLNode_Show     char(36)
+  #define TaQLNode_CopyCol  char(37)
+  #define TaQLNode_DropTab  char(38)
   // </group>
 
   // Constructor for derived classes specifying the type.

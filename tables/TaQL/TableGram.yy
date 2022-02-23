@@ -57,6 +57,7 @@ Expect them, so bison does not generate an error message.
 %token CALC
 %token CREATETAB
 %token ALTERTAB
+%token DROPTAB
 %token WITH
 %token FROM
 %token WHERE
@@ -74,6 +75,7 @@ Expect them, so bison does not generate an error message.
 %token LIMIT
 %token OFFSET
 %token ADDCOL
+%token COPYCOL
 %token RENAMECOL
 %token DROPCOL
 %token SETKEY
@@ -131,6 +133,7 @@ Expect them, so bison does not generate an error message.
 %type <node> updcomm
 %type <node> inscomm
 %type <node> delcomm
+%type <node> dropcomm
 %type <node> calccomm
 %type <nodeselect> nestedcomm
 %type <nodeselect> countcomm
@@ -141,8 +144,11 @@ Expect them, so bison does not generate an error message.
 %type <node> selcol
 %type <node> normcol
 %type <nodelist> withpart
+%type <nodelist> fromtabs
 %type <nodelist> tables
 %type <nodelist> tablist
+%type <nodelist> likedrop
+%type <nodelist> likedropac
 %type <nodelist> concsub
 %type <nodelist> concslist
 %type <nodename> concinto
@@ -176,8 +182,9 @@ Expect them, so bison does not generate an error message.
 %type <nodelist> insvlist
 %type <node> altcomm
 %type <nodelist> altlist
+%type <nodelist> copycols
 %type <nodelist> rencols
-%type <nodelist> dropcols
+%type <nodelist> namelist
 %type <nodelist> renkeys
 %type <nodelist> dropkeys
 %type <nodelist> setkeys
@@ -312,6 +319,8 @@ command:   selcomm
              { TaQLNode::theirNode = *$1; }
          | delcomm
              { TaQLNode::theirNode = *$1; }
+         | dropcomm
+             { TaQLNode::theirNode = *$1; }
          | calccomm
              { TaQLNode::theirNode = *$1; }
          | nestedcomm
@@ -396,7 +405,8 @@ withpart:  {   /* no WITH part */
          ;
 
 /* The SELECT command; note that many parts are optional which is handled
-   in the rule of that part. The FROM part being optional is handled here. */
+   in the rule of that part. The FROM part being optional is handled here
+   because later a join might be added. */
 selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limitoff given dminfo {
                $$ = new TaQLQueryNode(
                     new TaQLSelectNodeRep (*$3, *$1, *$5, 0, *$6, *$7, *$8,
@@ -455,14 +465,9 @@ countcomm: withpart COUNT normcol FROM tables whexpr {
          ;
 
 /* The UPDATE command */
-updcomm:   withpart UPDATE tables UPDSET updlist FROM tables whexpr order limitoff {
+updcomm:   withpart UPDATE tables UPDSET updlist fromtabs whexpr order limitoff {
                $$ = new TaQLNode(
-                    new TaQLUpdateNodeRep (*$1, *$3, *$5, *$7, *$8, *$9, *$10));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-         | withpart UPDATE tables UPDSET updlist whexpr order limitoff {
-               $$ = new TaQLNode(
-                    new TaQLUpdateNodeRep (*$1, *$3, *$5, 0, *$6, *$7, *$8));
+                    new TaQLUpdateNodeRep (*$1, *$3, *$5, *$6, *$7, *$8, *$9));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -607,6 +612,14 @@ delcomm:   withpart DELETE FROM tables whexpr order limitoff {
            }
          ;
 
+/* The DROP TABLE command */
+dropcomm:  withpart DROPTAB tables {
+               $$ = new TaQLNode(
+                    new TaQLDropTabNodeRep (*$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         ;
+
 /* The CALC command can calculate a single expression */
 calccomm:  withpart CALC FROM tables CALC orexpr {
 	       $$ = new TaQLNode(
@@ -614,47 +627,45 @@ calccomm:  withpart CALC FROM tables CALC orexpr {
                                          TaQLNode(), TaQLNode(), TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | withpart CALC orexpr {
-               TaQLMultiNode tabNode((TaQLMultiNodeRep*)0);
+         | withpart CALC orexpr fromtabs whexpr order limitoff {
 	       $$ = new TaQLNode(
-               new TaQLCalcNodeRep (*$1, tabNode, *$3,
-                                    TaQLNode(), TaQLNode(), TaQLNode()));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-         | withpart CALC orexpr FROM tables whexpr order limitoff {
-	       $$ = new TaQLNode(
-                    new TaQLCalcNodeRep (*$1, *$5, *$3, *$6, *$7, *$8));
+                    new TaQLCalcNodeRep (*$1, *$4, *$3, *$5, *$6, *$7));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
-/* The CREATE TABLE command has a few flavours */
-cretabcomm: withpart CREATETAB tabnmtyp colspecs nrowspec dminfo {
+/* The CREATE TABLE command has a few flavours.
+   Optionally LIKE-DROP can be given, followed by ADDCOLUMN.
+   Note that the first rule requires a non-empty column list,
+   otherwise there is a reduce conflict with the 2nd rule. */
+cretabcomm: withpart CREATETAB tabnmtyp colspecl nrowspec dminfo {
 	       $$ = new TaQLQueryNode(
-                    new TaQLCreTabNodeRep (*$1, *$3, *$4, *$5, *$6));
+                    new TaQLCreTabNodeRep (*$1, *$3, TaQLMultiNode(), *$4, *$5, *$6));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-          | withpart CREATETAB tabnmtyp LPAREN colspecs RPAREN nrowspec dminfo {
+          | withpart CREATETAB tabnmtyp likedrop nrowspec dminfo {
 	       $$ = new TaQLQueryNode(
-                    new TaQLCreTabNodeRep (*$1, *$3, *$5, *$7, *$8));
+                    new TaQLCreTabNodeRep (*$1, *$3, *$4, TaQLMultiNode(False), *$5, *$6));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-          | withpart CREATETAB tabnmtyp LBRACKET colspecs RBRACKET nrowspec dminfo {
+          | withpart CREATETAB tabnmtyp likedropac LPAREN colspecs RPAREN nrowspec dminfo {
+               $6->setPPFix ("(", ")");
 	       $$ = new TaQLQueryNode(
-                    new TaQLCreTabNodeRep (*$1, *$3, *$5, *$7, *$8));
+                    new TaQLCreTabNodeRep (*$1, *$3, *$4, *$6, *$8, *$9));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+          | withpart CREATETAB tabnmtyp likedropac LBRACKET colspecs RBRACKET nrowspec dminfo {
+               $6->setPPFix ("[", "]");
+	       $$ = new TaQLQueryNode(
+                    new TaQLCreTabNodeRep (*$1, *$3, *$4, *$6, *$8, *$9));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
 /* The ALTER TABLE command */
-alttabcomm: withpart ALTERTAB tabalias altlist {
+alttabcomm: withpart ALTERTAB tabalias fromtabs altlist {
                $$ = new TaQLQueryNode(
-                    new TaQLAltTabNodeRep (*$1, *$3, TaQLMultiNode(), *$4));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-           | withpart ALTERTAB tabalias FROM tables altlist {
-               $$ = new TaQLQueryNode(
-                    new TaQLAltTabNodeRep (*$1, *$3, *$5, *$6));
+                    new TaQLAltTabNodeRep (*$1, *$3, *$4, *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -678,12 +689,17 @@ altcomm:   ADDCOL colspecl dminfo {
                     new TaQLAddColNodeRep(*$2, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         | COPYCOL copycols dminfo {
+	       $$ = new TaQLNode(
+                    new TaQLCopyColNodeRep(*$2, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
          | RENAMECOL rencols {
 	       $$ = new TaQLNode(
                     new TaQLRenDropNodeRep(0, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | DROPCOL dropcols {
+         | DROPCOL namelist {
 	       $$ = new TaQLNode(
                     new TaQLRenDropNodeRep(1, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -715,6 +731,21 @@ altcomm:   ADDCOL colspecl dminfo {
            }
          ;
 
+/* COPY COLUMN subcommand can copy multiple columns */
+copycols:  copycols COMMA NAME EQASS namefld {
+               $$ = $1;
+               $$->add (new TaQLKeyColNodeRep ($3->getString()));
+               $$->add (new TaQLKeyColNodeRep ($5->getString()));
+           }
+         | NAME EQASS namefld {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+               $$->setSeparator (2, "=");
+               $$->add (new TaQLKeyColNodeRep ($1->getString()));
+               $$->add (new TaQLKeyColNodeRep ($3->getString()));
+           }
+         ;
+
 /* RENAME COLUMN subcommand can rename multiple columns */
 rencols:   rencols COMMA NAME TO NAME {
                $$ = $1;
@@ -730,8 +761,8 @@ rencols:   rencols COMMA NAME TO NAME {
            }
          ;
 
-/* DROP COLUMN subcommand can remove multiple columns */
-dropcols:  dropcols COMMA NAME {
+/* A comma separated liost of names */
+namelist:  namelist COMMA NAME {
                $$ = $1;
                $$->add (new TaQLKeyColNodeRep ($3->getString()));
            }
@@ -986,28 +1017,6 @@ tabnmtyp:  tabname {
                     new TaQLGivingNodeRep ("", *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-/*
-         | tabname LIKE tabname {
-	       $$ = new TaQLNode(
-                    new TaQLGivingNodeRep ($1->getString(), TaQLMultiNode()));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | tabname LIKE tabname AS tabnmopts {
-	       $$ = new TaQLNode(
-                    new TaQLGivingNodeRep ($1->getString(), *$5));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | tabname FROM tabname {
-	       $$ = new TaQLNode(
-                    new TaQLGivingNodeRep ($1->getString(), TaQLMultiNode()));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | tabname FROM tabname AS tabnmopts {
-	       $$ = new TaQLNode(
-                    new TaQLGivingNodeRep ($1->getString(), *$5));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-*/
          ;
 
 /* The table creation options specified as a bracketed keyword=value list */
@@ -1162,7 +1171,7 @@ nrowspec:  {   /* no nrows given */
 
 /* Optional column specifications can be given in CREATE TABLE */
 colspecs:  {   /* no column specifications given */
-               $$ = new TaQLMultiNode();
+               $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | colspecl {
@@ -1188,7 +1197,7 @@ colspecl: colspec {
 */
 colspec:   NAME NAME {
 	       $$ = new TaQLNode(
-		    new TaQLColSpecNodeRep($1->getString(), $2->getString(),
+                    new TaQLColSpecNodeRep($1->getString(), String(), $2->getString(),
 		                           TaQLMultiNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -1196,21 +1205,20 @@ colspec:   NAME NAME {
                TaQLMultiNode re(False);
 	       re.add (*$3);
 	       $$ = new TaQLNode(
-                    new TaQLColSpecNodeRep($1->getString(), $2->getString(),
+                    new TaQLColSpecNodeRep($1->getString(), String(), $2->getString(),
 		                           re));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | NAME NAME LBRACKET recexpr RBRACKET {
 	       $$ = new TaQLNode(
-                    new TaQLColSpecNodeRep($1->getString(), $2->getString(),
+                    new TaQLColSpecNodeRep($1->getString(), String(), $2->getString(),
 		                           *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-/*
          | NAME LIKE namefld {
 	       $$ = new TaQLNode(
 		    new TaQLColSpecNodeRep($1->getString(), $3->getString(),
-		                           TaQLMultiNode()));
+		                           String(), TaQLMultiNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | NAME LIKE namefld srecfield {	
@@ -1218,24 +1226,93 @@ colspec:   NAME NAME {
 	       re.add (*$4);
 	       $$ = new TaQLNode(
                     new TaQLColSpecNodeRep($1->getString(), $3->getString(),
-		                           re));
+		                           String(), re));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | NAME LIKE namefld LBRACKET recexpr RBRACKET {
 	       $$ = new TaQLNode(
                     new TaQLColSpecNodeRep($1->getString(), $3->getString(),
-		                           *$5));
+		                           String(), *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-*/
+         | NAME LIKE namefld NAME {
+	       $$ = new TaQLNode(
+		    new TaQLColSpecNodeRep($1->getString(), $3->getString(),
+		                           $4->getString(), TaQLMultiNode()));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | NAME LIKE namefld NAME srecfield {	
+               TaQLMultiNode re(False);
+	       re.add (*$4);
+	       $$ = new TaQLNode(
+                    new TaQLColSpecNodeRep($1->getString(), $3->getString(),
+		                           $4->getString(), re));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | NAME LIKE namefld NAME LBRACKET recexpr RBRACKET {
+	       $$ = new TaQLNode(
+                    new TaQLColSpecNodeRep($1->getString(), $3->getString(),
+		                           $4->getString(), *$6));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         ;
+
+/* Optional 'LIKE tab' with an optional DROP COLUMN columname-list */
+likedrop:  {   /* no LIKE table given */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | LIKE tabalias {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	       $$->add (*$2);
+           }
+         | LIKE tabalias DROPCOL namelist {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	       $$->add (*$2);
+               $$->add (*$4);
+           }
+         ;
+/* Optional 'LIKE tab DROP COLUMN' where ADDCOLUMN must be used. */
+likedropac: {   /* no LIKE table given */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | ADDCOL {   /* A superfluous ADDCOLUMN is possible */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | LIKE tabalias ADDCOL {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	       $$->add (*$2);
+           }
+         | LIKE tabalias DROPCOL namelist ADDCOL {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	       $$->add (*$2);
+               $$->add (*$4);
+           }
+         ;
+
+/* An optional list of FROM tables */
+fromtabs:  {   /* no FROM tables given */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | FROM tables {
+               $$ = $2;
+           }
          ;
 
 /* A list of tables with optional aliases. */
 tables:    tablist {
                $$ = $1;
-               /* All table names processed, thus expressions hereafter */
+               /* All table names are processed, thus expressions hereafter */
                setEXPRstate();
            }
+         ;
 tablist:   tabalias {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1252,7 +1329,7 @@ tablist:   tabalias {
          ;
 
 /* If NAME is given, it is purely alphanumeric, so it can be used as alias.
-   This is not the case if another type of name is given, so in that case
+   This is not the case if another type or name is given, so in that case
    there is no alias.
    Hence the 2 cases have to be handled differently.
    Note that the alias can be given with or without AS. It can also be
@@ -1732,7 +1809,7 @@ namefld:   NAME {            /* simple name */
            }
          ;
 
-/* Simple unit or compund unit enclosed in quotes */
+/* Simple unit or compound unit enclosed in quotes */
 unit:      namefld {
                $$ = $1;
            }
