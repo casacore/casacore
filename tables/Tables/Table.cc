@@ -546,7 +546,7 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
 BaseTable* Table::lookCache (const String& name, int tableOption,
 			     const TableLock& lockOptions)
 {
-    return PlainTable::tableCache().lookCache (name, tableOption,
+    return PlainTable::tableCache()->lookCache (name, tableOption,
                                                lockOptions);
 }
 
@@ -561,7 +561,7 @@ void Table::throwIfNull() const
 
 Bool Table::isOpened (const String& tableName)
 {
-    return (PlainTable::tableCache()(Path(tableName).absoluteName()) != 0);
+    return ((*PlainTable::tableCache())(Path(tableName).absoluteName()) != 0);
 }
 
 
@@ -588,18 +588,18 @@ Bool Table::hasDataChanged()
 
 uInt Table::nAutoLocks()
 {
-  return PlainTable::tableCache().nAutoLocks();
+  return PlainTable::tableCache()->nAutoLocks();
 }
 
 void Table::relinquishAutoLocks (Bool all)
 {
-  PlainTable::tableCache().relinquishAutoLocks (all);
+  PlainTable::tableCache()->relinquishAutoLocks (all);
 }
 
 Vector<String> Table::getLockedTables (FileLocker::LockType lockType,
                                        int lockOption)
 {
-  return PlainTable::tableCache().getLockedTables (lockType, lockOption);
+  return PlainTable::tableCache()->getLockedTables (lockType, lockOption);
 }
 
 
@@ -845,7 +845,7 @@ Bool Table::isReadable (const String& tableName, Bool throwIf)
     String tabName = Path(tableName).absoluteName();
     // First see if it is in the table cache. By doing so a new table
     // does not need to exist on disk yet.
-    if (PlainTable::tableCache()(tabName)) {
+    if ((*PlainTable::tableCache())(tabName)) {
       return True;
     }
     //# Check if the table directory exists.

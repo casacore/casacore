@@ -257,7 +257,7 @@ public:
 
 
     // Get access to the TableCache.
-    static TableCache& tableCache()
+    static std::shared_ptr<TableCache> tableCache()
       { return TableCache::get_process_instance(); }
 
 private:

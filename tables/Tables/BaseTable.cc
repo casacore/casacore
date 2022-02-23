@@ -432,7 +432,7 @@ void BaseTable::prepareCopyRename (const String& newName,
     }
     // Copy and rename is not allowed if the target table is open.
     Path path(newName);
-    PlainTable* ptr = PlainTable::tableCache()(path.absoluteName());
+    PlainTable* ptr = (*PlainTable::tableCache())(path.absoluteName());
     if (ptr) {
         throw (TableInvOper ("Cannot copy/rename; target table " + newName +
 			     " is still open (is in the table cache)"));
@@ -490,7 +490,7 @@ void BaseTable::rename (const String& newName, int tableOption)
 	renameSubTables (absNewName, oldName);
 	//# Okay, the table file has been renamed.
 	//# Now rename in the cache (if there) and internally.
-        PlainTable::tableCache().rename (absNewName, oldName);
+        PlainTable::tableCache()->rename (absNewName, oldName);
 	name_p = absNewName;
     }
     //# (Un)mark for delete when necessary.

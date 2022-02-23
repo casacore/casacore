@@ -173,7 +173,7 @@ void TableKeyword::flush (Bool fsync) const
 	} else {
 	    // The table is not open here, but might be open elsewhere.
 	    // So only flush if open elsewhere, thus in the TableCache.
-        TableCache::get_process_instance().flushTable (attr_p.name(), fsync, True);
+        PlainTable::tableCache()->flushTable (attr_p.name(), fsync, True);
 	}
     }
 }

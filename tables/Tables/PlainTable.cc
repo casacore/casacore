@@ -91,13 +91,13 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
 	             ("SetupNewTable object already used for another Table"));
     }
     //# Check if a table with this name is not in the table cache.
-    if (tableCache()(name_p) != 0) {
+    if ((*tableCache())(name_p) != 0) {
         // OK it's in the cache but is it really there?
         if(File(name_p).exists()){
 	   throw (TableInvOper ("SetupNewTable " + name_p +
 			     " is already opened (is in the table cache)"));
         } else {
-          tableCache().remove (name_p);
+          tableCache()->remove (name_p);
         }
     }
     //# If the table already exists, exit if it is in use.
@@ -152,7 +152,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
     //# The destructor can (in principle) write.
     noWrite_p = False;
     //# Add it to the table cache.
-    tableCache().define (name_p, this);
+    tableCache()->define (name_p, this);
     //# Trace if needed.
     itsTraceId = TableTrace::traceTable (name_p, 'n');
   } catch (std::exception&) {
@@ -273,7 +273,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     noWrite_p = False;
     //# Add it to the table cache.
     if (addToCache) {
-      tableCache().define (name_p, this);
+      tableCache()->define (name_p, this);
     }
     //# Trace if needed.
     itsTraceId = TableTrace::traceTable (name_p, 'o');
@@ -329,7 +329,7 @@ void PlainTable::closeObject()
     }
     //# Remove it from the table cache (if added).
     if (addToCache_p) {
-      tableCache().remove (name_p);
+      tableCache()->remove (name_p);
     }
     //# Trace if needed.
     TableTrace::traceClose (name_p);

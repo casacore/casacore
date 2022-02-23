@@ -46,7 +46,7 @@ TableInfo::TableInfo (const String& fileName)
 {
     String absName = Path(fileName).absoluteName();
     // check cache first, table may not be flushed yet
-    PlainTable * tb = PlainTable::tableCache()(Path(absName).dirName());
+    PlainTable * tb = (*PlainTable::tableCache())(Path(absName).dirName());
     if (tb) {
         *this = tb->tableInfo();
         return;
