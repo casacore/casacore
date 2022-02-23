@@ -378,6 +378,7 @@ Containers/RecordInterface.h
 Containers/RecordRep.h
 Containers/ValueHolder.h
 Containers/ValueHolderRep.h
+Containers/Multiton.h
 DESTINATION include/casacore/casa/Containers
 )
 

@@ -205,13 +205,13 @@ if (NOT CMAKE_BUILD_TYPE)
     endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# Detect if the compiler supports C++11 if we want to use it.
-check_cxx_compiler_flag(-std=c++11 HAS_CXX11)
-if (HAS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+# Detect if the compiler supports C++14 if we want to use it.
+check_cxx_compiler_flag(-std=c++14 HAS_CXX14)
+if (HAS_CXX14)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 else()
-    message(FATAL_ERROR "Casacore build requires a c++11 compatible compiler")
-endif (HAS_CXX11)
+    message(FATAL_ERROR "Casacore build requires a c++14 compatible compiler")
+endif (HAS_CXX14)
 
 # Ensure clang is not complaining about unused arguments.
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

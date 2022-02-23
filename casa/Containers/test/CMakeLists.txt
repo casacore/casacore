@@ -5,6 +5,7 @@ tObjectStack
 tRecord
 tRecordDesc
 tValueHolder
+tMultiton
 )
 
 if (BUILD_DEPRECATED)
