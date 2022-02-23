@@ -32,18 +32,36 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-TableCache::TableCache()
-{}
+// initialize static methods
+std::map<std::string, TableCache*> TableCache::multitons;
+std::mutex TableCache::instantiator_lock;
 
-TableCache::~TableCache()
-{}
+TableCache::TableCache(pid_t creator_pid, pthread_t creator_tid)
+{
+    this->creator_pid = creator_pid;
+    this->creator_tid = creator_tid;
+}
+
+TableCache& TableCache::get_process_instance()
+{
+    std::lock_guard<std::mutex> sg(TableCache::instantiator_lock);
+    std::string mypid = std::to_string(getpid()) + "_" + std::to_string(pthread_self());
+    if (TableCache::multitons.find(mypid) == TableCache::multitons.end()) {
+        // no table cache yet for this fork / thread, create one and return instance
+        TableCache * cache = new TableCache(getpid(), pthread_self());
+        TableCache::multitons[mypid] = cache;
+        return *cache;
+    } else {
+        // another table already created a tablecache for this pid
+        // just return that one
+        return *TableCache::multitons[mypid];
+    }
+}
 
 PlainTable* TableCache::operator() (const String& tableName) const
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     return getTable (tableName);
 }
 
@@ -58,7 +76,6 @@ PlainTable* TableCache::getTable (const String& tableName) const
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     tableMap_p.insert (std::make_pair(tableName, tab));
 }
 
@@ -68,7 +85,6 @@ void TableCache::remove (const String& tableName)
     // deleted before the Table.
     // Therefore do not delete if the map is already empty
     // (otherwise an exception is thrown).
-    std::lock_guard<std::mutex> sc(itsMutex);
     if (tableMap_p.size() > 0) {
       try {
         tableMap_p.erase (tableName);
@@ -85,7 +101,6 @@ void TableCache::remove (const String& tableName)
 
 void TableCache::rename (const String& newName, const String& oldName)
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     if (tableMap_p.find (oldName) != tableMap_p.end()) {
         void* ptr = tableMap_p.at(oldName);
         tableMap_p.erase (oldName);
@@ -95,7 +110,6 @@ void TableCache::rename (const String& newName, const String& oldName)
 
 uInt TableCache::nAutoLocks()
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     uInt n=0;
     for (const auto& x : tableMap_p) {
 	PlainTable& table = *static_cast<PlainTable*>(x.second);
@@ -111,7 +125,6 @@ uInt TableCache::nAutoLocks()
 
 void TableCache::relinquishAutoLocks (Bool all)
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     for (const auto& x : tableMap_p) {
 	PlainTable& table = *static_cast<PlainTable*>(x.second);
 	if (table.lockOptions().option() == TableLock::AutoLocking) {
@@ -129,7 +142,6 @@ void TableCache::relinquishAutoLocks (Bool all)
 
 Vector<String> TableCache::getTableNames() const
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     uInt ntab = tableMap_p.size();
     Vector<String> names(ntab);
     ntab = 0;
@@ -143,7 +155,6 @@ Vector<String> TableCache::getTableNames() const
 Vector<String> TableCache::getLockedTables (FileLocker::LockType lockType,
                                             int lockOption)
 {
-    std::lock_guard<std::mutex> sc(itsMutex);
     vector<String> names;
     for (const auto& x : tableMap_p) {
 	PlainTable& table = *static_cast<PlainTable*>(x.second);
@@ -159,7 +170,6 @@ Vector<String> TableCache::getLockedTables (FileLocker::LockType lockType,
 void TableCache::flushTable (const String& name,
                              Bool fsync, Bool recursive)
 {
-  std::lock_guard<std::mutex> sc(itsMutex);
   PlainTable* tab = getTable(name);
   if (tab) {
     tab->flush (fsync, recursive);

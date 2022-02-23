@@ -46,9 +46,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Initialize the static TableCache object.
-TableCache PlainTable::theirTableCache;
-
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
                         const TSMOption& tsmOption)

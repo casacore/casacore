@@ -258,7 +258,7 @@ public:
 
     // Get access to the TableCache.
     static TableCache& tableCache()
-      { return theirTableCache; }
+      { return TableCache::get_process_instance(); }
 
 private:
     // Copy constructor is forbidden, because copying a table requires
@@ -313,8 +313,6 @@ private:
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
-    //# cache of open (plain) tables
-    static TableCache theirTableCache;
 };
 
 
