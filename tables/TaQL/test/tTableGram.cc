@@ -345,10 +345,12 @@ void seltab (const String& str)
       s = str.substr(spos, epos-spos);
       s.downcase();
       addCalc = !(s=="with" || s=="select" || s=="update" || s=="insert" ||
-                  s=="calc" || s=="delete" || s=="count" ||
+                  s=="calc" || s=="delete" || s=="count"  ||
                   s=="create" || s=="createtable" ||
-                  s=="alter" || s=="altertable" ||
-                  s=="using"  || s=="usingstyle"  || s=="time");
+                  s=="drop"   || s=="droptable"   ||
+                  s=="alter"  || s=="altertable"  ||
+                  s=="using"  || s=="usingstyle"  || s=="time" ||
+                  s=="show"   || s=="help");
     }
   } 
   String strc(str);

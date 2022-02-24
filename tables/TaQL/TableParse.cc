@@ -40,24 +40,25 @@
 #include <casacore/tables/TaQL/ExprGroupAggrFunc.h>
 #include <casacore/tables/TaQL/ExprRange.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/TableIter.h>
 #include <casacore/tables/Tables/TableRow.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/TableDesc.h>
-#include <casacore/tables/Tables/TableUtil.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/DataMan/DataManInfo.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Sort.h>
@@ -67,8 +68,9 @@
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/ostream.h>
+#include <algorithm>
 
-#include <casacore/casa/Containers/BlockIO.h>
+//#include <casacore/casa/Containers/BlockIO.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -79,19 +81,26 @@ TableParse::TableParse()
 {}
 
 //# Constructor with given table name and possible shorthand.
-TableParse::TableParse (const Table& table, const String& shorthand)
-  : shorthand_p (shorthand),
+TableParse::TableParse (const Table& table, Int tabnr, const String& name,
+                          const String& shorthand)
+  : tabnr_p     (tabnr),
+    name_p      (name),
+    shorthand_p (shorthand),
     table_p     (table)
 {}
 
 TableParse::TableParse (const TableParse& that)
-  : shorthand_p (that.shorthand_p),
+  : tabnr_p     (that.tabnr_p),
+    name_p      (that.name_p),
+    shorthand_p (that.shorthand_p),
     table_p     (that.table_p)
 {}
 
 TableParse& TableParse::operator= (const TableParse& that)
 {
   if (this != &that) {
+    tabnr_p     = that.tabnr_p;
+    name_p      = that.name_p;
     shorthand_p = that.shorthand_p;
     table_p     = that.table_p;
   }
@@ -216,6 +225,7 @@ void TableParseSort::checkNode() const
 
 TableParseSelect::TableParseSelect (CommandType commandType)
   : commandType_p   (commandType),
+    tableDesc_p     (new TableDesc()),
     nrSelExprUsed_p (0),
     distinct_p      (False),
     resultType_p    (0),
@@ -242,84 +252,144 @@ TableParseSelect::~TableParseSelect()
 
 
 //# Construct a TableParse object and add it to the container.
-void TableParseSelect::addTable (Int tabnr, const String& name,
-                                 const Table& ftab,
-                                 const String& shorthand,
-                                 Bool addToFromList,
-                                 const vector<const Table*> tempTables,
-                                 const vector<TableParseSelect*>& stack)
+Table TableParseSelect::addTable (Int tabnr, const String& name,
+                                  const Table& ftab,
+                                  const String& shorthand,
+                                  Bool addToFromList,
+                                  const vector<const Table*>& tempTables,
+                                  const vector<TableParseSelect*>& stack)
 {
-  Table table = makeTable (tabnr, name, ftab, shorthand, tempTables, stack);
+  Table table = getTable (tabnr, name, ftab, tempTables, stack);
   if (addToFromList) {
-    fromTables_p.push_back (TableParse(table, shorthand));
+    fromTables_p.push_back (TableParse(table, tabnr, name, shorthand));
   } else {
-    withTables_p.push_back (TableParse(table, shorthand));
+    withTables_p.push_back (TableParse(table, tabnr, name, shorthand));
   }
+  return table;
 }
 
-Table TableParseSelect::makeTable (Int tabnr, const String& name,
-                                   const Table& ftab,
-                                   const String& shorthand,
-                                   const vector<const Table*> tempTables,
-                                   const vector<TableParseSelect*>& stack,
-                                   Bool alwaysOpen)
+// Handle a table name and create a Table object for it as needed.
+// This is quite complex, because a table name can be given in many ways:
+// 1. an ordinary name such as 'my.tab'
+// 2. a wildcarded name (for table concatenation) such as 'my*.tab'. Note that for
+//    such a case the alwaysOpen=False, so no Table object is created.
+// 3. a table number in the temporary table list such as $1
+// 4. a shorthand referring to another table at this or a higher query level
+// 5.  :: or . indicating the first available table at this or a higher query level
+// 6.  a Table object resulting from a nested query
+// 7. a subtable indicated by a keyword such as tabspec::sub or tabspec::sub1::sub2
+//    where tabspec can be a table name as in 1, 3, 4 or 5 above.
+//    - the subtable can be a table keyword as above, but also a column keyword
+//      such as shorthand.column::key. Note that a column can only be given after
+//      a shorthand to distinguish it from an ordinary table name.
+//      The first part before a . is tried as a shorthand and can be empty indicating
+//      the first available table as in 5.
+//    - keywords can be nested thus tab::key1.key2.key3
+//      It means that sh.col::a1.a2.s1::b1.s2::c1.c2.c3.s4 is a valid specification
+//      and indicates subtable s4 in subtable s3 in subtable s1 using nested
+//      keywords in column col. But this example is very esoteric.
+// In practice column keywords and nested keywords will hardly ever be used,
+// so usually something like my.ms::ANTENNA is the only 'complicated' spec used.
+Table TableParseSelect::getTable (Int tabnr, const String& name,
+                                  const Table& ftab,
+                                  const vector<const Table*>& tempTables,
+                                  const vector<TableParseSelect*>& stack,
+                                  Bool alwaysOpen)
 {
+  // A table from a nested query.
+  if (! ftab.isNull()) {
+    return ftab;
+  }
+  // Split the name into its subtable parts using :: as separator.
   Table table;
-  //# If the table name is numeric, we have a temporary table number
-  //# which will be made 0-based.
-  //# Find it in the block of temporary tables.
-  if (tabnr >= 0) {
-    tabnr -= 1;
-    if (tabnr < 0  ||  tabnr >= Int(tempTables.size())
-    ||  tempTables[tabnr] == 0) {
-      throw (TableInvExpr ("Invalid temporary table number given"));
+  uInt stSub  = 0;
+  uInt stPart = 0;
+  Vector<String> subs = stringToVector(name, std::regex("::"));
+  // No part, except first one, can be empty (unless :: is given).
+  if (name != "::") {
+    if (subs.size() == 0  ||
+        (subs.size() > 1  &&  anyEQ(subs(Slice(1, subs.size()-1)), String()))) {
+      throw TableInvExpr("'"+ name + "' is an invalid table name specification");
     }
-    table = *(tempTables[tabnr]);
-    // See if $i is followed by a subtable specification by splitting the name.
-    // Note that $i is part of the name and is (unfortunately) regarded as a
-    // column name if no column name is given.
-    String shand, columnName;
-    Vector<String> fieldNames;
-    if (splitName (shand, columnName, fieldNames, name, False, False, True)) {
-      if (shand.empty()) {
-        columnName = String();
-      }
-      Table result = findTableKey (table, columnName, fieldNames);
-      if (result.isNull()) {
-        throw TableInvExpr (name + " is an unknown (sub)table");
-      }
-      table = result;
+  }
+  // Split the first subtable name into parts using a dot as separator.
+  // The first part can be empty, a shorthand or a temporary table number.
+  // An empty part means the first available table.
+  stPart = 1;          // indicate first part is handled.
+  Vector<String> parts = stringToVector(subs[0], '.');
+  if (parts.size() == 0  ||  parts[0].empty()) {
+    table = findTable (String(), True, stack);
+    if (table.isNull()) {
+      throw TableInvExpr(":: or . is invalid in table name " + name +
+                         ": no previous table available");
     }
-  } else if (! ftab.isNull()) {
-    //# The table is a temporary table (from a select clause).
-    table = ftab;
   } else {
-    //# The table name is a string.
-    //# If the name contains ::, it is a table keyword in a table at an outer
-    //# SELECT statement.
-    String shand, columnName;
-    Vector<String> fieldNames;
-    if (splitName (shand, columnName, fieldNames, name, False, False, True)) {
-      table = tableKey (name, shand, columnName, fieldNames, stack);
+    if (tabnr >= 0) {
+      // Temporary table number (1-based) given.
+      if (tabnr < 1  ||  tabnr > Int(tempTables.size())
+          ||  tempTables[tabnr-1] == 0) {
+        throw (TableInvExpr ("Invalid temporary table number given in " + name));
+      }
+      table = *(tempTables[tabnr-1]);
     } else {
-      // If no or equal shorthand is given, try to see if the
-      // given name is already used as a shorthand (also in the WITH tables).
-      // If so, take the table of that shorthand.
-      Bool foundSH = False;
-      if (shorthand.empty()  ||  name == shorthand) {
-        for (Int i=stack.size()-1; i>=0; i--) {
-          Table tab = stack[i]->findTable (name, True);
-          if (! tab.isNull()) {
-            table = tab;
-            foundSH = True;
-            break;
+      // See if the first part is a shorthand.
+      table = findTable (parts[0], True, stack);
+      if (table.isNull()) {
+        // It was not something like shorthand.column, thus try as a full name.
+        // However, do not open if alwaysOpen=False.
+        // In that case the table is opened when needed
+        // (because the name can contain a wildcard as well).
+        if (!alwaysOpen) {
+          return table;
+        }
+        stPart = 0;
+        stSub = 1;
+        table = Table (subs[0]);
+        if (table.isNull()) {
+          throw TableInvExpr("Table " + subs[0] + " is unknown");
+        }
+      }
+    }
+  }
+  // Okay; we have found the first table.
+  AlwaysAssert (!table.isNull(), AipsError);
+  // Now process all parts in all subtable names, where the first name or
+  // first part might need to be skipped because already processed.
+  const TableRecord* keywords = &(table.keywordSet());
+  for (uInt k=stSub; k<subs.size(); ++k) {
+    Vector<String> parts = stringToVector(subs[k], '.');
+    for (uInt p=stPart; p<parts.size(); ++p) {
+      // See if the first part is a column name. If so, it must be the last part
+      // in this name, but not be the last name.
+      if (k<subs.size()-1  &&  stPart==parts.size()-1  &&
+          table.tableDesc().isColumn(parts[p])) {
+        keywords = &(table.tableDesc()[parts[p]].keywordSet());
+      } else if (subs[k] != ".") {
+        // . indicates first available table.
+        // The last keyword must be a Table; the others nested TableRecords.
+        Int fieldNr = keywords->fieldNumber(parts[p]);
+        if (fieldNr < 0) {
+          throw TableInvExpr(parts[p] + " is an unknown keyword/subtable" +
+                             (p==1 && k<subs.size()-1 ? " (or column)" : "") +
+                             " in " + name);
+        } else {
+          DataType dtype = keywords->dataType (fieldNr);
+          if (p == parts.size()-1) {
+            if (dtype != TpTable) {
+              throw TableInvExpr(parts[p] + " is no table keyword in " + name);
+            }
+            table = keywords->asTable (fieldNr);
+            keywords = &(table.keywordSet());
+          } else {
+            if (dtype != TpRecord) {
+              throw TableInvExpr(parts[p] + " is no record keyword in " + name);
+            }
+            keywords = &(keywords->subRecord (fieldNr));
           }
         }
       }
-      if (!foundSH  &&  alwaysOpen) {
-        table = TableUtil::openTable(name);
-      }
     }
+    stPart = 0;
   }
   return table;
 }
@@ -327,62 +397,9 @@ Table TableParseSelect::makeTable (Int tabnr, const String& name,
 void TableParseSelect::replaceTable (const Table& table)
 {
   AlwaysAssert (!fromTables_p.empty(), AipsError);
-  // Replace table, but use same shorthand.
-  fromTables_p[0] = TableParse(table, fromTables_p[0].shorthand());
+  fromTables_p[0].replaceTable (table);
 }
 
-Table TableParseSelect::tableKey (const String& name,
-                                  const String& shorthand,
-                                  const String& columnName,
-                                  const Vector<String>& fieldNames,
-                                  const vector<TableParseSelect*>& stack)
-{
-  //# Try to find the given shorthand on all levels (also the WITH tables).
-  for (Int i=stack.size()-1; i>=0; i--) {
-    Table tab = stack[i]->findTable (shorthand, True);
-    if (! tab.isNull()) {
-      Table result = findTableKey (tab, columnName, fieldNames);
-      if (! result.isNull()) {
-        return result;
-      }
-    }
-  }
-  // Apparently it is no keyword in an outer table.
-  // Try to open the table using subtables by splitting at the ::.
-  return TableUtil::openTable (name);
-}
-
-Table TableParseSelect::findTableKey (const Table& table,
-                                      const String& columnName,
-                                      const Vector<String>& fieldNames)
-{
-  //# Pick the table or column keyword set.
-  if (columnName.empty()  ||  table.tableDesc().isColumn (columnName)) {
-    if (columnName.empty() && fieldNames.empty()) {
-        return table;
-    }
-    const TableRecord* keyset = columnName.empty()  ?
-      &(table.keywordSet()) :
-      &(TableColumn (table, columnName).keywordSet());
-    // All fieldnames, except last one, should be records.
-    uInt last = fieldNames.size() - 1;
-    for (uInt i=0; i<last; i++) {
-      //# If the keyword does not exist or is not a record, return.
-      Int fieldnr = keyset->fieldNumber (fieldNames(i));
-      if (fieldnr < 0  ||  keyset->dataType(fieldnr) != TpRecord) {
-        return Table();
-      }
-      keyset = &(keyset->subRecord(fieldnr));
-    }
-    //# If the keyword exists and is a table, take it.
-    Int fieldnr = keyset->fieldNumber (fieldNames(last));
-    if (fieldnr >= 0  &&  keyset->dataType(fieldnr) == TpTable) {
-      return keyset->asTable (fieldnr);
-    }
-  }
-  //# Not found.
-  return Table();
-}
 
 // This function can split a name.
 // The name can consist of an optional shorthand, a column or keyword name,
@@ -390,7 +407,7 @@ Table TableParseSelect::findTableKey (const Table& table,
 // In the future it should also be possible to have a subfield name
 // followed by a keyword name, etc. to cater for something like:
 //   shorthand::key.subtable::key.subsubtable::key.
-// If that gets possible, TableGram.l should also be changed to accept
+// If that gets possible, TableGram.ll should also be changed to accept
 // such a string in the scanner.
 // It is a question whether :: should be part of the scanner or grammar.
 // For columns one can go a bit further by accepting something like:
@@ -496,24 +513,31 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
   return isKey;
 }
 
+Table TableParseSelect::findTable (const String& shorthand, Bool doWith,
+                                   const vector<TableParseSelect*>& stack) const
+{
+  Table table;
+  for (Int i=stack.size()-1; i>=0; i--) {
+    table = stack[i]->findTable (shorthand, doWith);
+    if (! table.isNull()) {
+      break;
+    }
+  }
+  return table;
+}
+
 Table TableParseSelect::findTable (const String& shorthand, Bool doWith) const
 {
-  //# If no shorthand given, take first table (if there).
-  if (shorthand.empty()) {
-    if (fromTables_p.size() > 0) {
-      return fromTables_p[0].table();
+  //# If no shorthand given, first table is taken (if there).
+  for (uInt i=0; i<fromTables_p.size(); i++) {
+    if (fromTables_p[i].test (shorthand)) {
+      return fromTables_p[i].table();
     }
-  } else {
-    for (uInt i=0; i<fromTables_p.size(); i++) {
-      if (fromTables_p[i].test (shorthand)) {
-        return fromTables_p[i].table();
-      }
-    }
-    if (doWith) {
-      for (uInt i=0; i<withTables_p.size(); i++) {
-        if (withTables_p[i].test (shorthand)) {
-          return withTables_p[i].table();
-        }
+  }
+  if (doWith) {
+    for (uInt i=0; i<withTables_p.size(); i++) {
+      if (withTables_p[i].test (shorthand)) {
+        return withTables_p[i].table();
       }
     }
   }
@@ -1559,8 +1583,17 @@ void TableParseSelect::handleColumnFinish (Bool distinct)
 }
 
 Table TableParseSelect::createTable (const TableDesc& td,
-                                     Int64 nrow, const Record& dmInfo)
+                                     Int64 nrow, const Record& dmInfo,
+                                     const vector<const Table*>& tempTables,
+                                     const vector<TableParseSelect*>& stack)
 {
+  // If the table name contains ::, a subtable has to be created.
+  // Split the name at the last ::.
+  Vector<String> parts = stringToVector(resultName_p, std::regex("::"));
+  if (parts.size() > 1) {
+    return createSubTable (parts[parts.size()-1], td, nrow, dmInfo,
+                           tempTables, stack);
+  } 
   // Create the table.
   // The types are defined in function handleGiving.
   Table::TableType   ttype = Table::Plain;
@@ -1579,6 +1612,37 @@ Table TableParseSelect::createTable (const TableDesc& td,
   Table tab(newtab, ttype, nrow, False, endianFormat_p);
   resultCreated_p = True;
   return tab;
+}
+
+Table TableParseSelect::openParentTable (const String& fullName,
+                                         const String& subTableName,
+                                         const vector<const Table*>& tempTables,
+                                         const vector<TableParseSelect*>& stack)
+{
+  // Remove ::subtableName from the full table name to get the parent's name.
+  String tableName (fullName.substr(0,
+                                    fullName.size() - subTableName.size() - 2));
+  // Open the parent table.
+  Table parent = getTable (-1, tableName, Table(), tempTables, stack, True);
+  // Create the subtable and define the keyword in the parent referring it.
+  String parentName = parent.tableName();
+  if (parentName.empty()) {
+    throw TableError("Parent table in " + resultName_p + " seems to be transient");
+  }
+  return parent;
+}
+
+Table TableParseSelect::createSubTable (const String& subtableName,
+                                        const TableDesc& td, Int64 nrow,
+                                        const Record& dmInfo,
+                                        const vector<const Table*>& tempTables,
+                                        const vector<TableParseSelect*>& stack)
+{
+  Table parent (openParentTable(resultName_p, subtableName, tempTables, stack));
+  return TableUtil::createSubTable (parent, subtableName, td,
+                                    overwrite_p ? Table::New : Table::NewNoReplace,
+                                    storageOption_p, dmInfo, TableLock(),
+                                    nrow, False, endianFormat_p, TSMOption());
 }
 
 void TableParseSelect::makeProjectExprTable()
@@ -1623,7 +1687,9 @@ void TableParseSelect::makeProjectExprTable()
     }
   }
   // Create the table.
-  projectExprTable_p = createTable (td, 0, dminfo_p);
+  projectExprTable_p = createTable (td, 0, dminfo_p,
+                                    vector<const Table*>(),
+                                    vector<TableParseSelect*>());
 }
 
 void TableParseSelect::makeProjectExprSel()
@@ -1650,11 +1716,13 @@ void TableParseSelect::makeProjectExprSel()
 
 //# Add a column specification.
 void TableParseSelect::handleColSpec (const String& colName,
+                                      const String& likeColName,
                                       const String& dtstr,
                                       const Record& spec,
                                       Bool isCOrder)
 {
   // Check if specific column info is given.
+  DataType dtype = TpOther;
   Int options = 0;
   Int ndim = -1;
   IPosition shape;
@@ -1662,6 +1730,34 @@ void TableParseSelect::handleColSpec (const String& colName,
   String dmGroup;
   String comment;
   Vector<String> unit;
+  TableRecord keywords;
+  // See if the column is like another column.
+  if (likeColName.empty()) {
+    AlwaysAssert (! dtstr.empty(), AipsError);
+  } else {
+    // Use the description of the LIKE column.
+    std::pair<ColumnDesc,Record> cdr = findColumnInfo (likeColName, colName);
+    const ColumnDesc& cd = cdr.first;
+    dtype = cd.dataType();
+    options = cd.options();
+    if (cd.isArray()) {
+      ndim = cd.ndim();
+    }
+    shape = cd.shape();
+    dmType = cd.dataManagerType();
+    dmGroup = cd.dataManagerGroup();
+    comment = cd.comment();
+    keywords = cd.keywordSet();
+    if (keywords.isDefined ("QuantumUnits")) {
+      unit.reference (cd.keywordSet().asArrayString ("QuantumUnits"));
+    }
+    // Merge its dminfo into the overall one.
+    DataManInfo::mergeInfo (dminfo_p, cdr.second);
+  }
+  if (! dtstr.empty()) {
+    dtype = makeDataType (TpOther, dtstr, colName);
+  }
+  // Get the possible specifications (which override the LIKE column).
   for (uInt i=0; i<spec.nfields(); i++) {
     String name = spec.name(i);
     name.upcase();
@@ -1669,9 +1765,9 @@ void TableParseSelect::handleColSpec (const String& colName,
       ndim = spec.asInt(i);
     } else if (name == "SHAPE") {
       Vector<Int> ivec(spec.toArrayInt(i));
+      Int nd = ivec.size();
+      shape.resize (nd);
       if (isCOrder) {
-        Int nd = ivec.size();
-        shape.resize (nd);
         for (Int i=0; i<nd; ++i) {
           shape[i] = ivec[nd-i-1];
         }
@@ -1693,9 +1789,9 @@ void TableParseSelect::handleColSpec (const String& colName,
       comment = spec.asString(i);
     } else if (name == "UNIT") {
       if (spec.dataType(i) == TpString) {
-        unit = Vector<String>(1, spec.asString(i));
+        unit.reference (Vector<String>(1, spec.asString(i)));
       } else {
-        unit = spec.asArrayString(i);
+        unit.reference (spec.asArrayString(i));
       }
     } else {
       throw TableError ("TableParseSelect::handleColSpec - "
@@ -1704,9 +1800,8 @@ void TableParseSelect::handleColSpec (const String& colName,
     }
   }
   // Now add the scalar or array column description.
-  DataType dtype = makeDataType (TpOther, dtstr, colName);
-  addColumnDesc (tableDesc_p, dtype, colName, options, ndim, shape,
-                 dmType, dmGroup, comment, TableRecord(), unit, Record());
+  addColumnDesc (*tableDesc_p, dtype, colName, options, ndim, shape,
+                 dmType, dmGroup, comment, keywords, unit, Record());
   Int nrcol = columnNames_p.size();
   columnNames_p.resize (nrcol+1);
   columnNames_p[nrcol] = colName;
@@ -1736,9 +1831,36 @@ void TableParseSelect::handleHaving (const TableExprNode& node)
   }
 }
 
-void TableParseSelect::handleCreTab (const Record& dmInfo)
+void TableParseSelect::handleDropTab(const vector<const Table*>& tempTables,
+                                     const vector<TableParseSelect*>& stack)
 {
-  table_p = createTable (tableDesc_p, limit_p, dmInfo);
+  // Delete all tables. It has already been checked they exist.
+  for (TableParse& tab : fromTables_p) {
+    // Split the name on :: to see if a subtable has to be deleted.
+    Vector<String> parts = stringToVector(tab.name(), std::regex("::"));
+    if (parts.size() > 1) {
+      // There is a subtable, so delete the keyword in its parent.
+      // First get the size of the parent name.
+      const String& subName(parts[parts.size() - 1]);
+      size_t sz = tab.name().size() - subName.size() - 2;
+      Table parent(getTable (tab.tabnr(), tab.name().substr(0,sz),
+                              Table(), tempTables, stack));
+      // Make sure subtable is closed, otherwise cannot be deleted.
+      tab.table() = Table();
+      TableUtil::deleteSubTable (parent, subName);
+    } else {
+      tab.table().markForDelete();
+    }
+  }
+}
+
+void TableParseSelect::handleCreTab (const Record& dmInfo,
+                                     const vector<const Table*>& tempTables,
+                                     const vector<TableParseSelect*>& stack)
+{
+  DataManInfo::mergeInfo (dminfo_p, dmInfo);
+  DataManInfo::finalizeMerge (*tableDesc_p, dminfo_p);
+  table_p = createTable (*tableDesc_p, limit_p, dminfo_p, tempTables, stack);
 }
 
 void TableParseSelect::handleAltTab()
@@ -1754,18 +1876,29 @@ void TableParseSelect::handleAltTab()
 
 void TableParseSelect::handleAddCol (const Record& dmInfo)
 {
-  if (dmInfo.empty()) {
+  // Merge the given dminfo into the dataman-info of the columns.
+  DataManInfo::mergeInfo (dminfo_p, dmInfo);
+  DataManInfo::finalizeMerge (*tableDesc_p, dminfo_p);
+  DataManInfo::adaptNames (dminfo_p, table_p);
+  if (dminfo_p.empty()) {
     StandardStMan ssm;
-    table_p.addColumn (tableDesc_p, ssm);
+    table_p.addColumn (*tableDesc_p, ssm);
   } else {
-    table_p.addColumn (tableDesc_p, dmInfo);
+    table_p.addColumn (*tableDesc_p, dminfo_p);
   }
+}
+
+void TableParseSelect::initDescriptions (const TableDesc& desc,
+                                         const Record& dminfo)
+{
+  tableDesc_p = std::shared_ptr<TableDesc>(new TableDesc(desc));
+  dminfo_p    = dminfo;
 }
 
 ValueHolder TableParseSelect::getRecFld (const String& name)
 {
   String keyName;
-  TableRecord& keyset = findKeyword (name, keyName);
+  const TableRecord& keyset = findKeyword (name, keyName, False);
   Int fieldnr = keyset.fieldNumber (keyName);
   if (fieldnr < 0) {
     throw (TableInvExpr ("Keyword " + name + " does not exist"));
@@ -1899,7 +2032,8 @@ String TableParseSelect::getTypeString (const String& typeStr, DataType type)
 }
 
 TableRecord& TableParseSelect::findKeyword (const String& name,
-                                            String& keyName)
+                                            String& keyName,
+                                            Bool update)
 {
   //# Split the name into optional shorthand, column, and keyword.
   String shand, columnName;
@@ -1912,11 +2046,21 @@ TableRecord& TableParseSelect::findKeyword (const String& name,
   TableRecord* rec;
   String fullName;
   if (columnName.empty()) {
-    rec = TableExprNode::findLastKeyRec (tab.rwKeywordSet(),
-                                         fieldNames, fullName);
+    if (update) {
+      rec = TableExprNode::findLastKeyRec (tab.rwKeywordSet(),
+                                           fieldNames, fullName);
+    } else {
+      rec = TableExprNode::findLastKeyRec (tab.keywordSet(),
+                                           fieldNames, fullName);
+    }
   } else {
-    TableRecord& colkeys (TableColumn(tab, columnName).rwKeywordSet());
-    rec = TableExprNode::findLastKeyRec (colkeys, fieldNames, fullName);
+    if (update) {
+      TableRecord& colkeys (TableColumn(tab, columnName).rwKeywordSet());
+      rec = TableExprNode::findLastKeyRec (colkeys, fieldNames, fullName);
+    } else {
+      const TableRecord& colkeys (TableColumn(tab, columnName).keywordSet());
+      rec = TableExprNode::findLastKeyRec (colkeys, fieldNames, fullName);
+    }
   }
   keyName = fieldNames[fieldNames.size() -1 ];
   return *rec;
@@ -1932,6 +2076,17 @@ void TableParseSelect::handleSetKey (const String& name,
     keyset.defineFromValueHolder (keyName, value);
   } else {
     setRecFld (keyset, keyName, dtype, value);
+  }
+}
+
+void TableParseSelect::handleCopyCol (Bool showTimings)
+{
+  // Note that table_p, tableDesc_p and dminfo_p have already been set.
+  Timer timer;
+  handleAddCol (Record());
+  doUpdate (False, Table(), table_p, table_p.rowNumbers());
+  if (showTimings) {
+    timer.show ("  Copy Column ");
   }
 }
 
@@ -3436,26 +3591,43 @@ Table TableParseSelect::doProjectExpr
   return projectExprTable_p;
 }
 
-Table TableParseSelect::doFinish (Bool showTimings, Table& table)
+Table TableParseSelect::doFinish (Bool showTimings, Table& table,
+                                  const vector<const Table*>& tempTables,
+                                  const vector<TableParseSelect*>& stack)
 {
   Timer timer;
-  Table result(table);;
+  Table result(table);
+  // If the table name contains ::, a subtable has to be created.
+  // Split the name at the last ::.
+  Vector<String> parts = stringToVector(resultName_p, std::regex("::"));
+  Table parent;
+  String fullName (resultName_p);
+  if (parts.size() > 1) {
+    parent = openParentTable (resultName_p, parts[parts.size()-1],
+                              tempTables, stack);
+    fullName = parent.tableName() + '/' + parts[parts.size()-1];
+  }
   if (resultType_p == 1) {
     if (table.tableType() != Table::Memory) {
-      result = table.copyToMemoryTable (resultName_p);
+      result = table.copyToMemoryTable (fullName);
     }
   } else if (! resultCreated_p) {
     if (resultType_p > 0) {
-      table.deepCopy (resultName_p, dminfo_p, storageOption_p,
+      table.deepCopy (fullName, dminfo_p, storageOption_p,
                       overwrite_p ? Table::New : Table::NewNoReplace,
                       True, endianFormat_p);
-      result = Table(resultName_p);
+      result = Table(fullName);
     } else {
       // Normal reference table.
-      table.rename (resultName_p,
+      table.rename (fullName,
                     overwrite_p ? Table::New : Table::NewNoReplace);
       table.flush();
     }
+  }
+  // Create a subtable keyword if needed.
+  if (parts.size() > 1) {
+    parent.reopenRW();
+    parent.rwKeywordSet().defineTable (parts[parts.size()-1], table);
   }
   if (showTimings) {
     timer.show ("  Giving      ");
@@ -3691,6 +3863,36 @@ void TableParseSelect::addColumnDesc (TableDesc& td,
   }
 }
 
+std::pair<ColumnDesc,Record> TableParseSelect::findColumnInfo
+(const String& colName, const String& newColName) const
+{
+  String columnName, shorthand;
+  Vector<String> fieldNames;
+  if (splitName (shorthand, columnName, fieldNames, colName, True, False, True)) {
+    throw TableInvExpr ("Column name " + colName + " is a keyword, no column");
+  }
+  Table tab = findTable (shorthand, True);
+  if (tab.isNull()) {
+    throw TableInvExpr("Shorthand " + shorthand + " has not been defined");
+  }
+  Record dminfo = tab.dataManagerInfo();
+  // Try to find the column in the info.
+  // If found, create a dminfo record for this column only.
+  Record dmrec;
+  for (uInt i=0; i<dminfo.nfields(); ++i) {
+    Record dm(dminfo.subRecord(i));
+    if (dm.isDefined("COLUMNS")) {
+      Vector<String> cols(dm.asArrayString("COLUMNS"));
+      if (std::find(cols.begin(), cols.end(), columnName) != cols.end()) {
+        dm.define ("COLUMNS", Vector<String>(1, newColName));
+        dmrec.defineRecord (0, dm);
+        break;
+      }
+    }
+  }
+  return std::make_pair (tab.tableDesc().columnDesc(columnName), dmrec);
+}
+
 Table TableParseSelect::doDistinct (Bool showTimings, const Table& table)
 {
   Timer timer;
@@ -3867,7 +4069,9 @@ void TableParseSelect::checkTableProjSizes() const
 //# Execute all parts of a TaQL command doing some selection.
 void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
                                 Bool mustSelect, rownr_t maxRow,
-                                Bool doTracing)
+                                Bool doTracing,
+                                const vector<const Table*>& tempTables,
+                                const vector<TableParseSelect*>& stack)
 {
   //# A selection query consists of:
   //#  - SELECT to do projection
@@ -4093,7 +4297,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
     }
     //# Finally rename or copy using the given name (and flush it).
     if (resultType_p != 0  ||  ! resultName_p.empty()) {
-      resultTable = doFinish (showTimings, resultTable);
+      resultTable = doFinish (showTimings, resultTable, tempTables, stack);
       if (doTracing) {
         cerr << "Finished the GIVING command" << endl;
       }
