@@ -6,6 +6,7 @@ tRecord
 tRecordDesc
 tValueHolder
 tMultiton
+tWeakptrProcessGuard
 )
 
 if (BUILD_DEPRECATED)

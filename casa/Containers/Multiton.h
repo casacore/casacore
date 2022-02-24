@@ -14,7 +14,7 @@ namespace casacore {
 
     // <summary>
     // Generic Multiton pattern
-    // Contribution y Simon Perkins, Radio Astronomy Research Group, SARAO
+    // Contribution by Simon Perkins, Radio Astronomy Research Group, SARAO
     // </summary>
     //
     // <use visibility=export>
