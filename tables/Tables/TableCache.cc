@@ -31,24 +31,15 @@
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Containers/Multiton.h>
+
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-TableCache::TableCache(pid_t creator_pid, pthread_t creator_tid)
-    : creator_pid(creator_pid),
-      creator_tid(creator_tid) {}
-
 TableCache::TableCache()
-    : creator_pid(getpid()),
-      creator_tid(pthread_self()) {}
+{}
 
-TableCache::~TableCache() {}
-
-std::shared_ptr<TableCache> TableCache::get_process_instance()
-{
-    return multiton_get<TableCache>(getpid(), pthread_self());
-}
+TableCache::~TableCache()
+{}
 
 PlainTable* TableCache::operator() (const String& tableName) const
 {

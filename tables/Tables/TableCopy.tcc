@@ -43,8 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableCopy::cloneColumnTyped (const Table& fromTable,
                                     const String& fromColumn,
                                     Table& toTable, const String& newColumn,
-                                    const String& dataManagerName,
-                                    const Record& newdmInfo)
+                                    const String& dataManagerName)
   {
     // Get existing column description.
     ColumnDesc cd(fromTable.tableDesc()[fromColumn]);
@@ -58,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                              cd.shape(), cd.options(), cd.ndim());
       cd = ColumnDesc(acd);
     }
-    doCloneColumn (fromTable, fromColumn, toTable, cd, dataManagerName, newdmInfo);
+    doCloneColumn (fromTable, fromColumn, toTable, cd, dataManagerName);
   }
 
   template<typename T>

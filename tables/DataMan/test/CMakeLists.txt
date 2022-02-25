@@ -6,7 +6,6 @@ nISMBucket
 tBitFlagsEngine
 tCompressComplex
 tCompressFloat
-tDataManInfo
 tExternalStMan
 tExternalStManNew
 tForwardCol
