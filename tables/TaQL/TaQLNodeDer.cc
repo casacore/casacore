@@ -1667,7 +1667,7 @@ void TaQLRecFldNodeRep::show (std::ostream& os) const
     os << itsFromName;
   } else if (itsValues.isValid()) {
     if (itsValues.nodeType() == TaQLNode_Multi  &&
-        dynamic_cast<const TaQLMultiNodeRep*>(itsValues.getRep())->itsNodes.empty()) {
+        dynamic_cast<const TaQLMultiNodeRep&>(*(itsValues.getRep())).itsNodes.empty()) {
       os << "[=]";
     } else {
       itsValues.show (os);
