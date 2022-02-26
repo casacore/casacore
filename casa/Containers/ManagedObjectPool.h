@@ -83,8 +83,7 @@ namespace {
             
         TemplateType& operator=(TemplateType&& other) {
             if (this != &other) {
-                std::lock_guard<std::mutex> lg(other.poolmutex);
-                std::lock_guard<std::mutex> lg2(this->poolmutex);
+                std::lock_guard<std::mutex> lg(ManagedObjectPool::classmutex);
                 for (auto i = other.objects.begin(); i != other.objects.end(); ++i) {
                     objects[i->first] = i->second;
                 }
@@ -167,8 +166,10 @@ namespace {
             return objects.find(key) != objects.end();
         }
     private:
-        std::mutex poolmutex;
+        mutable std::mutex poolmutex;
+        static std::mutex classmutex;
         MapType objects;
     };
+    std::mutex classmutex;
 } //cc
 #endif
