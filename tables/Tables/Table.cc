@@ -52,7 +52,6 @@
 #include <casacore/casa/OS/DirectoryIterator.h>
 #include <casacore/casa/iostream.h>
 
-
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Table::ScratchCallback* Table::scratchCallback_p = 0;
@@ -71,6 +70,7 @@ Table::Table()
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new NullTable();
     baseTabPtr_p->link();
 }
@@ -80,7 +80,8 @@ Table::Table()
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-  open (name, "", option, TableLock(), tsmOpt);
+    initializeProcessIdentifier();
+    open (name, "", option, TableLock(), tsmOpt);
 }
 
 Table::Table (const String& name, const TableLock& lockOptions,
@@ -89,7 +90,8 @@ Table::Table (const String& name, const TableLock& lockOptions,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-  open (name, "", option, lockOptions, tsmOpt);
+    initializeProcessIdentifier();
+    open (name, "", option, lockOptions, tsmOpt);
 }
 
   Table::Table (const String& name, const String& type, TableOption option,
@@ -98,7 +100,8 @@ Table::Table (const String& name, const TableLock& lockOptions,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-  open (name, type, option, TableLock(), tsmOpt);
+    initializeProcessIdentifier();
+    open (name, type, option, TableLock(), tsmOpt);
 }
 
 Table::Table (const String& name, const String& type,
@@ -108,7 +111,8 @@ Table::Table (const String& name, const String& type,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-  open (name, type, option, lockOptions, tsmOpt);
+    initializeProcessIdentifier();
+    open (name, type, option, lockOptions, tsmOpt);
 }
 
   Table::Table (Table::TableType type, Table::EndianFormat endianFormat,
@@ -117,6 +121,7 @@ Table::Table (const String& name, const String& type,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     SetupNewTable newtab("", TableDesc(), Table::Scratch);
     if (type == Table::Memory) {
         baseTabPtr_p = new MemoryTable (newtab, 0, False);
@@ -133,6 +138,7 @@ Table::Table (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
 				   TableLock(), endianFormat, tsmOpt);
     baseTabPtr_p->link();
@@ -144,6 +150,7 @@ Table::Table (SetupNewTable& newtab, Table::TableType type,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     if (type == Table::Memory) {
         baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
     } else {
@@ -160,6 +167,7 @@ Table::Table (SetupNewTable& newtab, Table::TableType type,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     if (type == Table::Memory) {
         baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
     } else {
@@ -175,6 +183,7 @@ Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
 				   TableLock(lockOption),
 				   endianFormat, tsmOpt);
@@ -187,6 +196,7 @@ Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize, lockOptions,
 				   endianFormat, tsmOpt);
     baseTabPtr_p->link();
@@ -200,6 +210,7 @@ Table::Table (MPI_Comm mpiComm, Table::TableType type, Table::EndianFormat endia
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     SetupNewTable newtab("", TableDesc(), Table::Scratch);
     if (type == Table::Memory) {
         baseTabPtr_p = new MemoryTable (newtab, 0, False);
@@ -216,6 +227,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow, Bool initi
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize,
 				   TableLock(), endianFormat, tsmOpt);
     baseTabPtr_p->link();
@@ -228,6 +240,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     if (type == Table::Memory) {
         baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
     } else {
@@ -245,6 +258,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     if (type == Table::Memory) {
         baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
     } else {
@@ -261,6 +275,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, TableLock::LockOption loc
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize,
 				   TableLock(lockOption),
 				   endianFormat, tsmOpt);
@@ -274,6 +289,7 @@ Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, const TableLock& lockOpti
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize, lockOptions,
 				   endianFormat, tsmOpt);
     baseTabPtr_p->link();
@@ -288,6 +304,7 @@ Table::Table (const Block<Table>& tables,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new ConcatTable (tables, subTables, subDirName);
     baseTabPtr_p->link();
 }
@@ -300,6 +317,7 @@ Table::Table (const Block<String>& tableNames,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();
     baseTabPtr_p = new ConcatTable (tableNames, subTables, subDirName,
 				    option, TableLock(), tsmOpt);
     baseTabPtr_p->link();
@@ -313,7 +331,8 @@ Table::Table (const Block<String>& tableNames,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-  baseTabPtr_p = new ConcatTable (tableNames, subTables, String(),
+    initializeProcessIdentifier();
+    baseTabPtr_p = new ConcatTable (tableNames, subTables, String(),
 				    option, lockOptions, tsmOpt);
     baseTabPtr_p->link();
 }
@@ -323,6 +342,7 @@ Table::Table (BaseTable* btp, Bool countIt)
   isCounted_p      (countIt),
   lastModCounter_p (0)
 {
+    initializeProcessIdentifier();;
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	baseTabPtr_p->link();
     }
@@ -333,6 +353,7 @@ Table::Table (const Table& that)
   isCounted_p      (that.isCounted_p),
   lastModCounter_p (that.lastModCounter_p)
 {
+    initializeProcessIdentifier();;
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	baseTabPtr_p->link();
     }
@@ -341,6 +362,7 @@ Table::Table (const Table& that)
 
 Table::~Table()
 {
+    verifyProcessIdentifier();
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 #ifdef CASACORE_UNLOCK_TABLE_ON_DESTRUCT
         unlock();
@@ -351,6 +373,7 @@ Table::~Table()
 
 Table& Table::operator= (const Table& that)
 {
+    verifyProcessIdentifier();
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	BaseTable::unlink (baseTabPtr_p);
     }
@@ -365,6 +388,7 @@ Table& Table::operator= (const Table& that)
 
 Block<String> Table::getPartNames (Bool recursive) const
 {
+    verifyProcessIdentifier();
     Block<String> names;
     baseTabPtr_p->getPartNames (names, recursive);
     return names;
@@ -372,6 +396,7 @@ Block<String> Table::getPartNames (Bool recursive) const
 
 void Table::closeSubTables() const
 {
+  verifyProcessIdentifier();
   return keywordSet().closeTables();
 }
 
@@ -398,6 +423,7 @@ Vector<String> Table::nonWritableFiles (const String& tableName)
 
 Table::EndianFormat Table::endianFormat() const
 {
+  verifyProcessIdentifier();
   return baseTabPtr_p->asBigEndian() ?  Table::BigEndian : Table::LittleEndian;
 }
 
@@ -411,6 +437,7 @@ Bool Table::isNativeDataType (DataType dtype)
 void Table::copy (const String& newName, TableOption option,
 		  Bool noRows) const
 {
+    verifyProcessIdentifier();
     if (noRows) {
         baseTabPtr_p->deepCopy (newName, Record(), StorageOption(),
                                 option, False, AipsrcEndian, noRows);
@@ -425,12 +452,14 @@ void Table::deepCopy (const String& newName,
 		      EndianFormat endianFormat,
 		      Bool noRows) const
 {
+    verifyProcessIdentifier();
     baseTabPtr_p->deepCopy (newName, Record(), StorageOption(),
                             option, valueCopy, endianFormat, noRows);
 }
 
 Table Table::copyToMemoryTable (const String& newName, Bool noRows) const
 {
+  verifyProcessIdentifier();
   Table newtab = TableCopy::makeEmptyMemoryTable (newName, *this, noRows);
   if (!noRows) {
     TableCopy::copyRows (newtab, *this);
@@ -445,6 +474,7 @@ Table Table::copyToMemoryTable (const String& newName, Bool noRows) const
 void Table::open (const String& name, const String& type, int tableOption,
 		  const TableLock& lockOptions, const TSMOption& tsmOpt)
 {
+    verifyProcessIdentifier();
     //# Option Delete is effectively the same as Old followed by a
     //# markForDelete.
     Bool deleteOpt = False;
@@ -546,6 +576,7 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
 BaseTable* Table::lookCache (const String& name, int tableOption,
 			     const TableLock& lockOptions)
 {
+    verifyProcessIdentifier();
     return PlainTable::tableCache().lookCache (name, tableOption,
                                                lockOptions);
 }
@@ -553,6 +584,7 @@ BaseTable* Table::lookCache (const String& name, int tableOption,
 
 void Table::throwIfNull() const
 {
+    verifyProcessIdentifier();
     if (isNull()) {
 	throw (TableInvOper ("Table is null"));
     }
@@ -568,6 +600,7 @@ Bool Table::isOpened (const String& tableName)
 // Check if the table data has changed.
 Bool Table::hasDataChanged()
 {
+    verifyProcessIdentifier();
     // If the table is not read locked try to get one (without waiting).
     // If not succeeding, another process is writing, thus data is changing.
     // Otherwise unlock immediately.
@@ -597,14 +630,13 @@ void Table::relinquishAutoLocks (Bool all)
 }
 
 Vector<String> Table::getLockedTables (FileLocker::LockType lockType,
-                                       int lockOption)
-{
+                                       int lockOption) {
   return PlainTable::tableCache().getLockedTables (lockType, lockOption);
 }
 
 
-TableRecord& Table::rwKeywordSet()
-{
+TableRecord& Table::rwKeywordSet() {
+    verifyProcessIdentifier();
     if (! isWritable()) {
 	throw (TableError ("Table::rwKeywordSet cannot be used: table "
 			   + tableName() + " is not writable"));
@@ -612,20 +644,22 @@ TableRecord& Table::rwKeywordSet()
     return baseTabPtr_p->rwKeywordSet();
 }
 
-Bool Table::canRemoveColumn (const String& columnName) const
-{
+Bool Table::canRemoveColumn (const String& columnName) const {
+    verifyProcessIdentifier();
     return baseTabPtr_p->canRemoveColumn (Vector<String>(1, columnName));
 }
-void Table::removeColumn (const String& columnName)
-{
+void Table::removeColumn (const String& columnName) {
+    verifyProcessIdentifier();
     baseTabPtr_p->removeColumn (Vector<String>(1, columnName));
 }
 
-RowNumbers Table::rowNumbers () const
-    { return baseTabPtr_p->rowNumbers(); }
+RowNumbers Table::rowNumbers () const { 
+    verifyProcessIdentifier();
+    return baseTabPtr_p->rowNumbers(); 
+}
 
-RowNumbers Table::rowNumbers (const Table& that, Bool tryFast) const
-{
+RowNumbers Table::rowNumbers (const Table& that, Bool tryFast) const {
+    verifyProcessIdentifier();
     Vector<rownr_t> thisRows(rowNumbers());
     const rownr_t highValue = std::numeric_limits<rownr_t>::max();
     // If that is the root table of this, we can simply use rowNumbers().
@@ -692,8 +726,8 @@ RowNumbers Table::rowNumbers (const Table& that, Bool tryFast) const
 }
 
 Bool Table::fastRowNumbers (const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
-                            Vector<rownr_t>& rows) const
-{
+                            Vector<rownr_t>& rows) const {
+  verifyProcessIdentifier();
   // v1 cannot be a superset of v2.
   if (v1.size() > v2.size()) {
     return False;
@@ -729,8 +763,8 @@ Bool Table::fastRowNumbers (const Vector<rownr_t>& v1, const Vector<rownr_t>& v2
 
 //# Sort on a single column.
 //# This is converted to a sort on a vector of column names.
-Table Table::sort (const String& name, int order, int option) const
-{
+Table Table::sort (const String& name, int order, int option) const {
+    verifyProcessIdentifier();
     //# Turn the name argument into a block.
     return sort (Block<String>(1, name), order, option);
 }
@@ -738,16 +772,16 @@ Table Table::sort (const String& name, int order, int option) const
 //# Sort on multiple columns, where a global order is given.
 //# This is converted to a sort with mixed orders.
 Table Table::sort (const Block<String>& names,
-		   int order, int option) const
-{
+		   int order, int option) const {
+    verifyProcessIdentifier();
     //# Expand the order argument into a block.
     return sort (names, Block<Int>(names.nelements(), order), option);
 }
 
 //# Sort on multiple columns and orders.
 Table Table::sort (const Block<String>& names,
-		   const Block<Int>& orders, int option) const
-{
+		   const Block<Int>& orders, int option) const {
+    verifyProcessIdentifier();
     //# Insert a block with null compare objects.
     return sort (names,
                  Block<CountedPtr<BaseCompare> >(names.nelements()),
@@ -757,8 +791,10 @@ Table Table::sort (const Block<String>& names,
 //# Sort on multiple columns and orders with given functions.
 Table Table::sort (const Block<String>& names,
 		   const Block<CountedPtr<BaseCompare> >& cmpObjs,
-		   const Block<Int>& orders, int option) const
-    { return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option)); }
+		   const Block<Int>& orders, int option) const { 
+    verifyProcessIdentifier();
+    return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option)); 
+}
 
 
 //# Create an expression node to handle a keyword.
@@ -766,22 +802,26 @@ Table Table::sort (const Block<String>& names,
 //# differentation between data types is being made.
 TableExprNode Table::key (const String& keywordName) const
 {
+    verifyProcessIdentifier();
     Vector<String> names(1);
     names(0) = keywordName;
     return TableExprNode::newKeyConst (keywordSet(), names);
 }
 TableExprNode Table::key (const Vector<String>& fieldNames) const
 {
+    verifyProcessIdentifier();
     return TableExprNode::newKeyConst (keywordSet(), fieldNames);
 }
 TableExprNode Table::col (const String& columnName) const
 {
+    verifyProcessIdentifier();
     Vector<String> fieldNames;
     return TableExprNode::newColumnNode (*this, columnName, fieldNames);
 }
 TableExprNode Table::col (const String& columnName,
 			  const Vector<String>& fieldNames) const
 {
+    verifyProcessIdentifier();
     return TableExprNode::newColumnNode (*this, columnName, fieldNames);
 }
 
@@ -789,6 +829,7 @@ TableExprNode Table::col (const String& columnName,
 TableExprNode Table::keyCol (const String& name,
 			     const Vector<String>& fieldNames) const
 {
+    verifyProcessIdentifier();
     if (tableDesc().isColumn (name)) {
 	return col (name, fieldNames);
     }else{
@@ -802,41 +843,61 @@ TableExprNode Table::keyCol (const String& name,
 
 TableExprNode Table::nodeRownr(rownr_t origin) const
 {
+    verifyProcessIdentifier();
     return TableExprNode::newRownrNode (*this, origin);
 }
 
 TableExprNode Table::nodeRandom () const
 {
+    verifyProcessIdentifier();
     return TableExprNode::newRandomNode (*this);
 }
 
 
 //# Select rows based on an expression.
 Table Table::operator() (const TableExprNode& expr,
-                         rownr_t maxRow, rownr_t offset) const
-    { return Table (baseTabPtr_p->select (expr, maxRow, offset)); }
+                         rownr_t maxRow, rownr_t offset) const { 
+    verifyProcessIdentifier();
+    return Table (baseTabPtr_p->select (expr, maxRow, offset)); 
+}
 //# Select rows based on row numbers.
-Table Table::operator() (const RowNumbers& rownrs) const
-    { return Table (baseTabPtr_p->select (rownrs)); }
+Table Table::operator() (const RowNumbers& rownrs) const { 
+    verifyProcessIdentifier();
+    return Table (baseTabPtr_p->select (rownrs)); 
+}
 //# Select rows based on a mask.
-Table Table::operator() (const Block<Bool>& mask) const
-    { return Table (baseTabPtr_p->select (mask)); }
+Table Table::operator() (const Block<Bool>& mask) const { 
+    verifyProcessIdentifier();
+    return Table (baseTabPtr_p->select (mask)); 
+}
 
 //# Select columns.
-Table Table::project (const Block<String>& names) const
-    { return Table (baseTabPtr_p->project (names)); }
+Table Table::project (const Block<String>& names) const { 
+    verifyProcessIdentifier();
+    return Table (baseTabPtr_p->project (names)); 
+}
 
 //# Combine tables.
-Table Table::operator& (const Table& that) const
-    { return Table(baseTabPtr_p->tabAnd (that.baseTabPtr_p)); }
-Table Table::operator| (const Table& that) const
-    { return Table(baseTabPtr_p->tabOr  (that.baseTabPtr_p)); }
-Table Table::operator- (const Table& that) const
-    { return Table(baseTabPtr_p->tabSub (that.baseTabPtr_p)); }
-Table Table::operator^ (const Table& that) const
-    { return Table(baseTabPtr_p->tabXor (that.baseTabPtr_p)); }
-Table Table::operator! () const
-    { return Table(baseTabPtr_p->tabNot()); }
+Table Table::operator& (const Table& that) const { 
+    verifyProcessIdentifier();
+    return Table(baseTabPtr_p->tabAnd (that.baseTabPtr_p)); 
+}
+Table Table::operator| (const Table& that) const { 
+    verifyProcessIdentifier();
+    return Table(baseTabPtr_p->tabOr  (that.baseTabPtr_p)); 
+}
+Table Table::operator- (const Table& that) const { 
+    verifyProcessIdentifier();
+    return Table(baseTabPtr_p->tabSub (that.baseTabPtr_p)); 
+}
+Table Table::operator^ (const Table& that) const { 
+    verifyProcessIdentifier();
+    return Table(baseTabPtr_p->tabXor (that.baseTabPtr_p)); 
+}
+Table Table::operator! () const { 
+    verifyProcessIdentifier();
+    return Table(baseTabPtr_p->tabNot()); 
+}
 
 
 //# Test if table exists and is readable.
@@ -908,11 +969,13 @@ Bool Table::isWritable (const String& tableName, Bool throwIf)
 
 TableDesc Table::actualTableDesc() const
 {
+    verifyProcessIdentifier();
     return baseTabPtr_p->actualTableDesc();
 }
 
 Record Table::dataManagerInfo() const
 {
+    verifyProcessIdentifier();
     return baseTabPtr_p->dataManagerInfo();
 }
 
@@ -926,6 +989,7 @@ String Table::fileName (const String& tableName)
 //# Write a table to AipsIO (for TypedKeywords<Table>).
 AipsIO& operator<< (AipsIO& ios, const Table& tab)
 {
+    tab.verifyProcessIdentifier();
     ios << tab.tableName();
     return ios;
 }
@@ -938,12 +1002,14 @@ AipsIO& operator<< (AipsIO& ios, const Table& tab)
 //#//    the table is done).
 AipsIO& operator>> (AipsIO& ios, Table& tab)
 {
+    tab.verifyProcessIdentifier();
     tab.getTableKeyword (ios, True);
     return ios;
 }
 
 void Table::getTableKeyword (AipsIO& ios, Bool openWritable)
 {
+    verifyProcessIdentifier();
     String name;
     ios >> name;
     TableOption opt = Table::Old;
@@ -957,6 +1023,7 @@ void Table::getTableKeyword (AipsIO& ios, Bool openWritable)
 //# Write a table to ostream (for TypedKeywords<Table>).
 ostream& operator<< (ostream& ios, const Table& tab)
 {
+    tab.verifyProcessIdentifier();
     ios << "Table ";
     ios << tab.tableName();
     ios << "  (";
@@ -970,6 +1037,7 @@ void Table::showKeywords (ostream& ios, Bool showSubTables,
                           Bool showTabKey, Bool showColKey,
                           Int maxVal) const
 {
+  verifyProcessIdentifier();
   if (showTabKey || showColKey) {
     // Show table and/or column keywords.
     ios << endl
@@ -998,6 +1066,7 @@ void Table::showKeywordSets (ostream& ios,
                              Bool showTabKey, Bool showColKey,
                              Int maxVal) const
 {
+  verifyProcessIdentifier();
   Bool shown = False;
   if (showTabKey) {
     if (keywordSet().size() > 0) {
@@ -1025,28 +1094,45 @@ void Table::showKeywordSets (ostream& ios,
 }
 
 
+void Table::initializeProcessIdentifier() {
+    constructorPid = getpid();
+    constructorTid = pthread_self();
+}
+void Table::verifyProcessIdentifier() const{
+    if (constructorPid != getpid() || constructorTid != pthread_self()) {
+        throw NotThreadSafeError();
+    }
+}
+
 // Deprecated functions; now in TableUtil.h.
 Table Table::openTable (const String& tableName,
                             TableOption tabOpt,
-                            const TSMOption& tsmOpt)
-  { return TableUtil::openTable (tableName, tabOpt, tsmOpt); }
+                            const TSMOption& tsmOpt) { 
+    return TableUtil::openTable (tableName, tabOpt, tsmOpt); 
+}
 Table Table::openTable (const String& tableName,
                         const TableLock& lockOptions,
                         TableOption tabOpt,
-                        const TSMOption& tsmOpt)
-  { return TableUtil::openTable (tableName, lockOptions, tabOpt, tsmOpt); }
+                        const TSMOption& tsmOpt) { 
+    return TableUtil::openTable (tableName, lockOptions, tabOpt, tsmOpt); 
+}
 Bool Table::canDeleteTable (const String& tableName,
-                            Bool checkSubTables)
-  { return TableUtil::canDeleteTable (tableName, checkSubTables); }
+                            Bool checkSubTables) { 
+    return TableUtil::canDeleteTable (tableName, checkSubTables); 
+}
 Bool Table::canDeleteTable (String& message, const String& tableName,
-                            Bool checkSubTables)
-  { return TableUtil::canDeleteTable (message, tableName, checkSubTables); }
+                            Bool checkSubTables) { 
+    return TableUtil::canDeleteTable (message, tableName, checkSubTables); 
+}
 void Table::deleteTable (const String& tableName,
-                         Bool checkSubTables)
-  { TableUtil::deleteTable (tableName, checkSubTables); }
-rownr_t Table::getLayout (TableDesc& desc, const String& tableName)
-  { return TableUtil::getLayout (desc, tableName); }
-TableInfo Table::tableInfo (const String& tableName)
-  { return TableUtil::tableInfo (tableName); }
+                         Bool checkSubTables) { 
+    TableUtil::deleteTable (tableName, checkSubTables); 
+}
+rownr_t Table::getLayout (TableDesc& desc, const String& tableName) { 
+    return TableUtil::getLayout (desc, tableName); 
+}
+TableInfo Table::tableInfo (const String& tableName) { 
+    return TableUtil::tableInfo (tableName); 
+}
 
 } //# NAMESPACE CASACORE - END
