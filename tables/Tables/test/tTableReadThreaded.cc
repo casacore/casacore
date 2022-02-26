@@ -137,7 +137,8 @@ int main()
       return 1;
     } 
   }
-  // Usage pattern 2 - MultiThreaded
+  // Usage pattern 2 - MultiThreaded - table per thread
+  // (The performant case)
   {
     cout << "Running multi-threaded test" << endl;
     try {

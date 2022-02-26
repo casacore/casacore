@@ -47,8 +47,7 @@ namespace {
     // </example>
     //
     // <motivation>
-    // Could be useful to simplify allocation of objects with large buffers for reuse system wide,
-    // or instances where caches should only be invalidated, by e.g. different threads
+    // Constructs and manages the lifetime of a pool objects / resources.
     // </motivation>
     // <todo asof="2022/02/23">
     // </todo>
