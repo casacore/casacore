@@ -29,6 +29,9 @@
 #include <casacore/casa/Containers/Multiton.h>
 #include <iostream>
 #include <string>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+
 class MyClass
 {
 public:
@@ -45,12 +48,12 @@ int main()
  	auto p1 = multiton_get<double>(5.0);
 	auto p2 = multiton_get<double>(5.0);
 
-	assert(p1 == p2);
+	AlwaysAssert(p1 == p2, AipsError);
 
 	auto p3 = multiton_get<MyClass>(5,true,std::string("bla"));
 	auto p4 = multiton_get<MyClass>(5,true,std::string("bla"));
 
-	assert(p3 == p4);
+	AlwaysAssert(p3 == p4, AipsError);
 
     std::cout << "OK\n";
     return 0;

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cassert>
 
 #include <memory>
 #include <mutex>
@@ -14,7 +13,7 @@ namespace casacore {
 
     // <summary>
     // Generic Multiton pattern
-    // Contribution y Simon Perkins, Radio Astronomy Research Group, SARAO
+    // Contribution by Simon Perkins, Radio Astronomy Research Group, SARAO
     // </summary>
     //
     // <use visibility=export>
@@ -176,7 +175,7 @@ namespace casacore {
                 });
 
             std::weak_ptr<T> data(result);
-            auto insert_it = store.insert({key, data});
+            store.insert({key, data});
 
             return result;
         }

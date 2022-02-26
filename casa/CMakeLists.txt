@@ -379,6 +379,7 @@ Containers/RecordRep.h
 Containers/ValueHolder.h
 Containers/ValueHolderRep.h
 Containers/Multiton.h
+Containers/ManagedObjectPool.h
 DESTINATION include/casacore/casa/Containers
 )
 

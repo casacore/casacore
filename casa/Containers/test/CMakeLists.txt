@@ -6,6 +6,7 @@ tRecord
 tRecordDesc
 tValueHolder
 tMultiton
+tManagedObjectPool
 )
 
 if (BUILD_DEPRECATED)
