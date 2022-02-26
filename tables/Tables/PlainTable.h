@@ -37,6 +37,11 @@
 #include <casacore/tables/Tables/TableSyncData.h>
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <utility>
+#include <casacore/casa/Containers/ManagedObjectPool.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <pthread.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -257,8 +262,7 @@ public:
 
 
     // Get access to the TableCache.
-    static TableCache& tableCache()
-      { return theirTableCache; }
+    static TableCache& tableCache();
 
 private:
     // Copy constructor is forbidden, because copying a table requires

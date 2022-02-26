@@ -45,8 +45,7 @@
 #include <time.h>    //# for nanosleep
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Initialize the static TableCache object.
+// static defines
 TableCache PlainTable::theirTableCache;
 
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
@@ -816,6 +815,18 @@ void PlainTable::checkWritable (const char* func) const
         throw (TableInvOper ("Table::" + String(func) + "; table "
                              + tableName() + " is not writable"));
     }
+}
+
+TableCache& PlainTable::tableCache() { //static
+    return PlainTable::theirTableCache;
+    // std::pair<pid_t,pthread_t> key(getpid(), pthread_self());
+    // if (PlainTable::theirTableCache.find(key) == theirTableCache.end()) { 
+    //     // these caches are lightweight objects existing for the lifetime of the
+    //     // process. For efficiency when multithreading one should have a cache
+    //     // per thread so that multiple tables to the same database can be used
+    //     PlainTable::theirTableCache[key] = new TableCache(); 
+    // }
+    // return *PlainTable::theirTableCache[key]; 
 }
 
 } //# NAMESPACE CASACORE - END
