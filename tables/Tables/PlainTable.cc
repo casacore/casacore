@@ -46,7 +46,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // static defines
-TableCache PlainTable::theirTableCache;
+ManagedObjectPool<TableCacheKeyType, TableCache> PlainTable::theirTableCache;
 
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
@@ -816,17 +816,16 @@ void PlainTable::checkWritable (const char* func) const
                              + tableName() + " is not writable"));
     }
 }
-
+// Gets the TableCache object for this table
+// To ensure that this cache does not become the bottle neck for readonly accesses
+// a pool of TableCaches are used internally, issueing a TableCache per thread
+// In order to get performant code each thread should therefore open its own Table (or TableProxy)
+// object with its own bucket caches, etc.
 TableCache& PlainTable::tableCache() { //static
-    return PlainTable::theirTableCache;
-    // std::pair<pid_t,pthread_t> key(getpid(), pthread_self());
-    // if (PlainTable::theirTableCache.find(key) == theirTableCache.end()) { 
-    //     // these caches are lightweight objects existing for the lifetime of the
-    //     // process. For efficiency when multithreading one should have a cache
-    //     // per thread so that multiple tables to the same database can be used
-    //     PlainTable::theirTableCache[key] = new TableCache(); 
-    // }
-    // return *PlainTable::theirTableCache[key]; 
+    auto pid = getpid();
+    auto tid = pthread_self();
+    TableCacheKeyType key(pid, tid);
+    return PlainTable::theirTableCache.checkConstructObject(key);
 }
 
 } //# NAMESPACE CASACORE - END

@@ -44,18 +44,20 @@
 #include <thread>
 #include <pthread.h>
 #include <random>
-
+#include <casacore/tables/Tables/PlainTable.h>
 // <summary>
 // Test program for threaded table reading with locks
 // </summary>
 
-rownr_t nrowStep = 2 << 14;
+size_t num_threads = 50;//std::thread::hardware_concurrency(); 
+rownr_t nrowStep = 2 << 10;
+
 
 template <class TStorageMan, typename... Args>
 void createTable(const String& tablename, Args... args)
 {
-  cout << "Creating table with 10*" << nrowStep << \
-          " rows (" << 10*nrowStep / (1024.*1024.) << "MiB)...";
+  cout << "Creating table with " << num_threads << "*" << nrowStep << \
+          " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn (ArrayColumnDesc<Int>("ad", IPosition(1,1)));
@@ -68,7 +70,7 @@ void createTable(const String& tablename, Args... args)
   ArrayColumn<Int> ad(tab,"ad");
   Vector<Int> vec(1);
   rownr_t rownr = 0;
-  for (Int i=0; i<10; i++) {
+  for (rownr_t i=0; i<num_threads; i++) {
     tab.addRow (nrowStep);
     vec[0] = i;
     ad.put (rownr, vec);
@@ -81,18 +83,28 @@ void createTable(const String& tablename, Args... args)
     ad.put (rownr-2, vec);
     ad.put (rownr-1, vec);
   }
-  AlwaysAssertExit (tab.nrow() == 10 * nrowStep);
+  AlwaysAssertExit (tab.nrow() == num_threads * nrowStep);
+  // for testing purposes close the Cache so that we can keep tally in the reading later
+  //PlainTable::tableCache().remove("tVeryBigTable_tmp.tbl");
 }
 
-void readTableAll (const String& name)
+void readTableChunk (const String& name, bool doLock=true, size_t chunkNo=0)
 {
-  TableLock lock(TableLock::LockOption::UserLocking);
-  Table tab(name, lock, Table::Old);
-  tab.lock(false); //no-write
-  AlwaysAssertExit (tab.nrow() == 10 * nrowStep);
-  ArrayColumn<Int> ad(tab,"ad");
+  //cout << endl << "\nCache number" << &PlainTable::tableCache() << endl;
+  //AlwaysAssertExit (PlainTable::tableCache().getTableNames().size() == 0);
+  Table* tab = nullptr;
+  if (doLock) {
+    TableLock lock(TableLock::LockOption::UserLocking);
+    tab = new Table(name, lock, Table::Old);
+  } else {
+    tab = new Table(name);
+  }
+  AlwaysAssertExit (PlainTable::tableCache().getTableNames().size() == 1);
+  if (doLock) tab->lock(false); //no-write
+  AlwaysAssertExit (tab->nrow() == num_threads * nrowStep);
+  ArrayColumn<Int> ad(*tab,"ad");
   // seq access
-  for (rownr_t i=0; i<10 * nrowStep; i++) {
+  for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
     Vector<int> res = ad.get(i);
     if (i % nrowStep == 0)
       AlwaysAssertExit (res[0] == Int(i / nrowStep));
@@ -103,11 +115,12 @@ void readTableAll (const String& name)
   std::uniform_int_distribution<rownr_t> distr;
 
   // random access
-  for (rownr_t i=0; i<10 * nrowStep; i++) {
-    rownr_t rr = distr(eng) % (10 * nrowStep) ;
+  for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i++) {
+    rownr_t rr = distr(eng) % (num_threads * nrowStep) ;
     Vector<int> res = ad.get(rr);
   }
-  tab.unlock();
+  if (doLock) tab->unlock();
+  delete tab;
 }
 
 int main()
@@ -128,9 +141,10 @@ int main()
   {
     cout << "Running single threaded test" << endl;
     try { 
-      cout << "\tReading some rows from table with " << \
-        10*nrowStep << " rows...";
-      readTableAll("tVeryBigTable_tmp.tbl");
+      cout << "\tReading from table with " << \
+        num_threads*nrowStep << " rows...";
+      for (size_t iChunk=0; iChunk<num_threads; ++iChunk)
+        readTableChunk("tVeryBigTable_tmp.tbl", false, iChunk);
       cout << "\t<OK>" << endl;
     } catch (AipsError& x) {
       cout << "Caught an exception: " << x.getMesg() << endl;
@@ -140,21 +154,26 @@ int main()
   // Usage pattern 2 - MultiThreaded - table per thread
   // (The performant case)
   {
+    // empty the cache - lets check if it stays empty in the parent
+    //PlainTable::tableCache().remove("tVeryBigTable_tmp.tbl");
     cout << "Running multi-threaded test" << endl;
     try {
-      size_t num_threads = 50;//std::thread::hardware_concurrency(); 
-      cout << "\tReading some rows from table with " << \
-        10*nrowStep << " rows with " << num_threads << " threads...";
+      //parent thread does not contain table at this point
+      //AlwaysAssertExit (PlainTable::tableCache().getTableNames().size() == 0);
+      cout << "\tReading from table with " << \
+        num_threads*nrowStep << " rows with " << num_threads << " threads...";
       std::vector<std::thread> threads;
       // async start a few threads each reading
-      for (size_t i = 0; i < num_threads; ++i) {
-        threads.push_back(std::thread(readTableAll, "tVeryBigTable_tmp.tbl"));
+      for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+        threads.push_back(std::thread(readTableChunk, "tVeryBigTable_tmp.tbl", false, iChunk));
       }
       // await results
       for (size_t i = 0; i < num_threads; ++i) {
         threads.back().join();
         threads.pop_back();
       }
+      //parent thread does not contain table at this point
+      //AlwaysAssertExit (PlainTable::tableCache().getTableNames().size() == 0);
       cout << "\t<OK>" << endl;
     } catch (AipsError& x) {
       cout << "Caught an exception: " << x.getMesg() << endl;

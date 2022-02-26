@@ -53,7 +53,7 @@ class ColumnSet;
 class IPosition;
 class AipsIO;
 class MemoryIO;
-
+using TableCacheKeyType=std::pair<pid_t, pthread_t>;
 
 // <summary>
 // Class defining a plain regular table
@@ -318,7 +318,7 @@ private:
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
     //# cache of open (plain) tables
-    static TableCache theirTableCache;
+    static ManagedObjectPool<TableCacheKeyType, TableCache> theirTableCache;
 };
 
 
