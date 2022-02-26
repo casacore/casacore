@@ -49,14 +49,14 @@
 // Test program for threaded table reading with locks
 // </summary>
 
-size_t num_threads = 50;//std::thread::hardware_concurrency(); 
-rownr_t nrowStep = 2 << 10;
+size_t num_threads = std::thread::hardware_concurrency(); 
+rownr_t nrowStep = 2 << 12;
 
 
 template <class TStorageMan, typename... Args>
-void createTable(const String& tablename, Args... args)
+void createTable(const String& tablename, const String& smName, Args... args)
 {
-  cout << "Creating table with " << num_threads << "*" << nrowStep << \
+  cout << "\tCreating " << smName << " table with " << num_threads << "*" << nrowStep << \
           " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
@@ -123,25 +123,12 @@ void readTableChunk (const String& name, bool doLock=true, size_t chunkNo=0)
   delete tab;
 }
 
-int main()
-{
-  try {
-    createTable<IncrementalStMan>("tVeryBigTable_tmp.tbl", 
-                                  256, //bucket size
-                                  True, //check bucket
-                                  30); //cachesize
-    //createTable<StandardStMan>("tVeryBigTable_tmp.tbl", 4*1024*1024);
-    //createTable<TiledShapeStMan>("tVeryBigTable_tmp.tbl", IPosition(2,1,1024*1024));
-    cout << "\t<OK>" << endl;
-  } catch (AipsError& x) {
-      cout << "Caught an exception: " << x.getMesg() << endl;
-      return 1;
-  } 
+int runSManTestLock(bool doLock) {
   // Usage pattern 1 - SingleThreaded
   {
-    cout << "Running single threaded test" << endl;
+    cout << "\tRunning single threaded test (" << (doLock ? "Lock":"NoLock") << ")" << endl;
     try { 
-      cout << "\tReading from table with " << \
+      cout << "\t\tReading from table with " << \
         num_threads*nrowStep << " rows...";
       for (size_t iChunk=0; iChunk<num_threads; ++iChunk)
         readTableChunk("tVeryBigTable_tmp.tbl", false, iChunk);
@@ -154,13 +141,9 @@ int main()
   // Usage pattern 2 - MultiThreaded - table per thread
   // (The performant case)
   {
-    // empty the cache - lets check if it stays empty in the parent
-    //PlainTable::tableCache().remove("tVeryBigTable_tmp.tbl");
-    cout << "Running multi-threaded test" << endl;
+    cout << "\tRunning multi-threaded test (" << (doLock ? "Lock":"NoLock") << ")" << endl;
     try {
-      //parent thread does not contain table at this point
-      //AlwaysAssertExit (PlainTable::tableCache().getTableNames().size() == 0);
-      cout << "\tReading from table with " << \
+      cout << "\t\tReading from table with " << \
         num_threads*nrowStep << " rows with " << num_threads << " threads...";
       std::vector<std::thread> threads;
       // async start a few threads each reading
@@ -172,15 +155,41 @@ int main()
         threads.back().join();
         threads.pop_back();
       }
-      //parent thread does not contain table at this point
-      //AlwaysAssertExit (PlainTable::tableCache().getTableNames().size() == 0);
       cout << "\t<OK>" << endl;
     } catch (AipsError& x) {
       cout << "Caught an exception: " << x.getMesg() << endl;
       return 1;
     } 
   }
-  // Usage pattern 1 - Threads each with their own table -- cache should not be shared between them
+  return 0;
+}
+
+template<class, typename... Args>
+int runSManTest(const String& smName, Args... smArgs) {
+  cout << "Testing " << smName << " storage manager" << endl;
+  try {
+    createTable<IncrementalStMan>("tVeryBigTable_tmp.tbl",
+                                  smName,
+                                  smArgs...); //cachesize
+    cout << "\t<OK>" << endl;
+  } catch (AipsError& x) {
+      cout << "Caught an exception: " << x.getMesg() << endl;
+      return 1;
+  } 
+  if (runSManTestLock(false)) return 1;
+  if (runSManTestLock(true)) return 1;
+  return 0;
+}
+
+int main()
+{
+  runSManTest<IncrementalStMan>("IncrementalStMan",
+                                256, //bucket size
+                                True, //check bucket
+                                30); //cachesize
+  runSManTest<StandardStMan>("StandardStMan",
+                             4*1024*1024);
+  runSManTest<TiledShapeStMan>("TiledStMan");
   cout << "OK" << endl;
   return 0;                           // exit with success status
 }
