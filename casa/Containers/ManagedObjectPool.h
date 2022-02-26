@@ -59,7 +59,7 @@ namespace {
 
         ManagedObjectPool() {}
         ~ManagedObjectPool() {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             for(auto i = objects.begin();  i != objects.end(); ++i) {
                 if (i->second != nullptr) {
                     delete i->second;
@@ -74,7 +74,7 @@ namespace {
 
         // Pool resources rvalue move
         ManagedObjectPool(TemplateType&& other) {
-            std::lock_guard<std::mutex> lg(other.poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(other.poolmutex);
             for (auto i = other.objects.begin(); i != other.objects.end(); ++i) {
                 objects[i->first] = i->second;
             }
@@ -83,7 +83,7 @@ namespace {
             
         TemplateType& operator=(TemplateType&& other) {
             if (this != &other) {
-                std::lock_guard<std::mutex> lg(ManagedObjectPool::classmutex);
+                std::lock_guard<std::recursive_mutex> lg(ManagedObjectPool::classmutex);
                 for (auto i = other.objects.begin(); i != other.objects.end(); ++i) {
                     objects[i->first] = i->second;
                 }
@@ -94,7 +94,7 @@ namespace {
         // Adds an object to the pool under a unique user-defined key
         template <typename... Args>
         ValueType& constructObject(KeyType key, const Args&... constructorArgs) {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             if (objects.find(key) != objects.end()) {
                 throw std::invalid_argument("Cannot create object on pool - key already exists");
             }
@@ -107,7 +107,7 @@ namespace {
         // constructs if an object with the same key is not yet created
         template <typename... Args>
         ValueType& checkConstructObject(KeyType key, const Args&... constructorArgs) {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             ValueType* newobj = nullptr;
             auto it = objects.find(key);
             if (it == objects.end()) {
@@ -120,7 +120,7 @@ namespace {
         }
         // accesses an object on the pool under given key
         ValueType& operator[](const KeyType& key) {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             if (objects.find(key) == objects.end()) {
                 throw std::invalid_argument("Cannot retrieve object on pool - key not found");
             }
@@ -128,7 +128,7 @@ namespace {
         }
         // delete managed object for given key
         void erase(const KeyType& key) {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             auto it = objects.find(key); 
             if (it == objects.end()) {
                 throw std::invalid_argument("Cannot delete object on pool - key not found");
@@ -141,7 +141,7 @@ namespace {
         }
         // delete all managed objects
         void clear() {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             for (auto i = objects.begin(); i != objects.end(); ++i) {
                 if (i->second != nullptr) {
                     delete i->second;
@@ -152,24 +152,24 @@ namespace {
         }
         // Checks whether the pool is empty
         bool empty() {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             return objects.empty();
         }
         // Gets number of objects in pool
         size_t size() {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             return objects.size();
         }
         // Checks wether the pool contains a specified key
         bool contains(const KeyType & key) {
-            std::lock_guard<std::mutex> lg(poolmutex);
+            std::lock_guard<std::recursive_mutex> lg(poolmutex);
             return objects.find(key) != objects.end();
         }
     private:
-        mutable std::mutex poolmutex;
-        static std::mutex classmutex;
+        mutable std::recursive_mutex poolmutex;
+        static std::recursive_mutex classmutex;
         MapType objects;
     };
-    std::mutex classmutex;
+    std::recursive_mutex classmutex;
 } //cc
 #endif
