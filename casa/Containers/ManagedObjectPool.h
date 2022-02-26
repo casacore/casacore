@@ -91,12 +91,30 @@ namespace {
         }
         // Adds an object to the pool under a unique user-defined key
         template <typename... Args>
-        void constructObject(KeyType key, const Args&... constructorArgs) {
+        ValueType& constructObject(KeyType key, const Args&... constructorArgs) {
             std::lock_guard<std::mutex> lg(poolmutex);
             if (objects.find(key) != objects.end()) {
                 throw std::invalid_argument("Cannot create object on pool - key already exists");
             }
-            objects[key] = new ValueType(constructorArgs...);
+            ValueType* newobj = new ValueType(constructorArgs...);
+            objects[key] = newobj;
+            return *newobj; 
+        }
+        // Adds an object to the pool under a unique user-defined key
+        // this is the non throwing version of constructObject which only
+        // constructs if an object with the same key is not yet created
+        template <typename... Args>
+        ValueType& checkConstructObject(KeyType key, const Args&... constructorArgs) {
+            std::lock_guard<std::mutex> lg(poolmutex);
+            ValueType* newobj = nullptr;
+            auto it = objects.find(key);
+            if (it == objects.end()) {
+                newobj = new ValueType(constructorArgs...);
+                objects[key] = newobj;
+            } else {
+                newobj = it->second;
+            }
+            return *newobj;
         }
         // accesses an object on the pool under given key
         ValueType& operator[](const KeyType& key) {
@@ -139,6 +157,11 @@ namespace {
         size_t size() {
             std::lock_guard<std::mutex> lg(poolmutex);
             return objects.size();
+        }
+        // Checks wether the pool contains a specified key
+        bool contains(const KeyType & key) {
+            std::lock_guard<std::mutex> lg(poolmutex);
+            return objects.find(key) != objects.end();
         }
     private:
         std::mutex poolmutex;
