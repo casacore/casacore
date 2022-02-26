@@ -82,11 +82,14 @@ namespace {
         }
             
         TemplateType& operator=(TemplateType&& other) {
-            std::lock_guard<std::mutex> lg(other.poolmutex);
-            for (auto i = other.objects.begin(); i != other.objects.end(); ++i) {
-                objects[i->first] = i->second;
+            if (this != &other) {
+                std::lock_guard<std::mutex> lg(other.poolmutex);
+                std::lock_guard<std::mutex> lg2(this->poolmutex);
+                for (auto i = other.objects.begin(); i != other.objects.end(); ++i) {
+                    objects[i->first] = i->second;
+                }
+                other.objects.clear();
             }
-            other.objects.clear();
             return *this;
         }
         // Adds an object to the pool under a unique user-defined key
