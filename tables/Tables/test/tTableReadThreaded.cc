@@ -46,7 +46,7 @@
 #include <random>
 
 // <summary>
-// Test program for a very large table.
+// Test program for threaded table reading with locks
 // </summary>
 
 rownr_t nrowStep = 2 << 14;
@@ -112,7 +112,7 @@ void readTableAll (const String& name)
 
 int main()
 {
-  try { 
+  try {
     createTable<IncrementalStMan>("tVeryBigTable_tmp.tbl", 
                                   256, //bucket size
                                   True, //check bucket
