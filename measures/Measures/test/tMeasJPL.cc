@@ -94,7 +94,7 @@ int main()
       os << "Pluto:      " << val << endl;
     }
     MeasIERS::closeTables();
-    Vector<String> openTables = PlainTable::tableCache()->getTableNames();
+    Vector<String> openTables = PlainTable::tableCache().getTableNames();
     if (openTables.size() > 0){
       cout << "ERROR: cache not empty!" << endl;
       for (uInt i=0; i<openTables.size(); ++i) {

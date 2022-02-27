@@ -35,10 +35,6 @@
 
 #include <map>
 #include <mutex>
-#include <sys/types.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <string>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -98,12 +94,11 @@ class TableLock;
 class TableCache
 {
 public:
-    TableCache();
-    ~TableCache();
-    TableCache(pid_t creator_pid, pthread_t creator_tid);
 
-    // Gets a TableCache that is unique to this process
-    static std::shared_ptr<TableCache> get_process_instance();
+    // Construct an empty cache of open tables.
+    TableCache();
+
+    ~TableCache();
 
     // Try to find a table with the given name in the cache.
     // Return a pointer to a table if found (thus if already open).
@@ -151,17 +146,12 @@ public:
     PlainTable* lookCache (const String& name, int tableOption,
                            const TableLock& tableInfo);
 
-    // Multiton pattern - same reference throughout current PID
-    // Only get_process_instance() will initialize a new instance if not existant
-    // for the current PID
-    
-protected:
-
 private:
     // The copy constructor is forbidden.
     TableCache (const TableCache&);
-    // Copy constructor is not available
-    TableCache& operator= (const TableCache&) = delete;
+    // The assignment operator is forbidden.
+    TableCache& operator= (const TableCache&);
+
     // Get the table without doing a mutex lock (for operator()).
     PlainTable* getTable (const String& tableName) const;
 
@@ -169,9 +159,6 @@ private:
     //# to reduce the number of template instantiations.
     //# The .cc file will use (fully safe) casts.
     std::map<String,void*> tableMap_p;
-    // Multiton pattern used to ensure no PID shares the same TableCache
-    pid_t creator_pid;
-    pthread_t creator_tid;
     //# A mutex to synchronize access to the cache.
     mutable std::mutex itsMutex;
 };

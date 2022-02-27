@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cassert>
 
 #include <memory>
 #include <mutex>
@@ -176,7 +175,7 @@ namespace casacore {
                 });
 
             std::weak_ptr<T> data(result);
-            auto insert_it = store.insert({key, data});
+            store.insert({key, data});
 
             return result;
         }

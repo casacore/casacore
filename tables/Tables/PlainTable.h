@@ -37,6 +37,11 @@
 #include <casacore/tables/Tables/TableSyncData.h>
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <utility>
+#include <casacore/casa/Containers/ManagedObjectPool.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <pthread.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -48,7 +53,7 @@ class ColumnSet;
 class IPosition;
 class AipsIO;
 class MemoryIO;
-
+using TableCacheKeyType=std::pair<pid_t, pthread_t>;
 
 // <summary>
 // Class defining a plain regular table
@@ -257,8 +262,7 @@ public:
 
 
     // Get access to the TableCache.
-    static std::shared_ptr<TableCache> tableCache()
-      { return TableCache::get_process_instance(); }
+    static TableCache& tableCache();
 
 private:
     // Copy constructor is forbidden, because copying a table requires
@@ -313,6 +317,8 @@ private:
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
+    //# cache of open (plain) tables
+    static ManagedObjectPool<TableCacheKeyType, TableCache> theirTableCache;
 };
 
 

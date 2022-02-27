@@ -57,6 +57,13 @@ namespace casacore {
             Ttypename = other.Ttypename;
             return *this;
         }
+        WeakptrProcessGuard<T>& operator=(T* other) {
+            pid = getpid();
+            tid = pthread_self();
+            ptr = other;
+            Ttypename = "T";
+            return *this;
+        }
         ~WeakptrProcessGuard() {}
         //smart pointer supporting dereferencing syntax
         T& operator *(void) {

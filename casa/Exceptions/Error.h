@@ -511,6 +511,8 @@ public:
 class InitError : public AipsError {
 };
 
+class NotThreadSafeError : public AipsError {
+};
 } //# NAMESPACE CASACORE - END
 
 #ifdef AIPS_NEEDS_RETHROW

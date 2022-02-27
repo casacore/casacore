@@ -45,6 +45,8 @@
 #include <time.h>    //# for nanosleep
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
+// static defines
+ManagedObjectPool<TableCacheKeyType, TableCache> PlainTable::theirTableCache;
 
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
@@ -91,13 +93,13 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
 	             ("SetupNewTable object already used for another Table"));
     }
     //# Check if a table with this name is not in the table cache.
-    if ((*tableCache())(name_p) != 0) {
+    if (tableCache()(name_p) != 0) {
         // OK it's in the cache but is it really there?
         if(File(name_p).exists()){
 	   throw (TableInvOper ("SetupNewTable " + name_p +
 			     " is already opened (is in the table cache)"));
         } else {
-          tableCache()->remove (name_p);
+          tableCache().remove (name_p);
         }
     }
     //# If the table already exists, exit if it is in use.
@@ -152,7 +154,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
     //# The destructor can (in principle) write.
     noWrite_p = False;
     //# Add it to the table cache.
-    tableCache()->define (name_p, this);
+    tableCache().define (name_p, this);
     //# Trace if needed.
     itsTraceId = TableTrace::traceTable (name_p, 'n');
   } catch (std::exception&) {
@@ -273,7 +275,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     noWrite_p = False;
     //# Add it to the table cache.
     if (addToCache) {
-      tableCache()->define (name_p, this);
+      tableCache().define (name_p, this);
     }
     //# Trace if needed.
     itsTraceId = TableTrace::traceTable (name_p, 'o');
@@ -329,7 +331,7 @@ void PlainTable::closeObject()
     }
     //# Remove it from the table cache (if added).
     if (addToCache_p) {
-      tableCache()->remove (name_p);
+      tableCache().remove (name_p);
     }
     //# Trace if needed.
     TableTrace::traceClose (name_p);
@@ -813,6 +815,17 @@ void PlainTable::checkWritable (const char* func) const
         throw (TableInvOper ("Table::" + String(func) + "; table "
                              + tableName() + " is not writable"));
     }
+}
+// Gets the TableCache object for this table
+// To ensure that this cache does not become the bottle neck for readonly accesses
+// a pool of TableCaches are used internally, issueing a TableCache per thread
+// In order to get performant code each thread should therefore open its own Table (or TableProxy)
+// object with its own bucket caches, etc.
+TableCache& PlainTable::tableCache() { //static
+    auto pid = getpid();
+    auto tid = pthread_self();
+    TableCacheKeyType key(pid, tid);
+    return PlainTable::theirTableCache.checkConstructObject(key);
 }
 
 } //# NAMESPACE CASACORE - END

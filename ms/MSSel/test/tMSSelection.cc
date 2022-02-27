@@ -87,7 +87,7 @@ void UI(int argc, char **argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy,
 //
 void showTableCache()
 {
-  const TableCache& cache = *PlainTable::tableCache();
+  const TableCache& cache = PlainTable::tableCache();
   Vector<String> lockedTables = cache.getTableNames();
 
   Int n=lockedTables.nelements();
