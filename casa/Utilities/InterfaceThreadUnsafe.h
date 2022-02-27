@@ -42,7 +42,7 @@ namespace casacore {
         void verifyProcessIdentifier() const;
         // callback method specifying what to do when this object was passed to another thread
         // probably want a nice error message here. Must be overwriten by inheriting classes
-        virtual void onMultithreadedAccess(pid_t fromPid, pthread_t fromTid) const = 0;
+        virtual void onMultithreadedAccess() const = 0;
     private:
         pid_t constructorPid;
         pthread_t constructorTid;

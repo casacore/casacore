@@ -35,6 +35,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <vector>
+#include <casacore/casa/Utilities/InterfaceThreadUnsafe.h>
 
 
 //# Forward Declarations
@@ -99,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Different front-ends (e.g. GlishTableProxy) can be put on top of it.
 // </motivation>
 
-class TableProxy
+class TableProxy : InterfaceThreadUnsafe
 {
 public:
   // Default constructor initializes to not open.
@@ -589,10 +590,14 @@ public:
 
   // Return the table object.
   // <group>
-  Table& table()
-    { return table_p; }
-  const Table& table() const
-    { return table_p; }
+  Table& table() { 
+    verifyProcessIdentifier();
+    return table_p; 
+  }
+  const Table& table() const { 
+    verifyProcessIdentifier();
+    return table_p; 
+  }
   // </group>
 
   // Get or put the values of all keywords.
@@ -685,6 +690,8 @@ public:
     }
     return arr;
   }
+protected:
+  virtual void onMultithreadedAccess() const;
 
 private:
 
@@ -699,18 +706,30 @@ private:
   template<typename T>
   void printArray (const Array<T>& arr, ostream& os,
                    const String& sep) const;
-  void printArrayValue (ostream& os, Bool v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, Int v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, Int64 v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, Double v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, const DComplex& v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, const String& v, const String&) const
-    {os << '"' << v << '"';}
+  void printArrayValue (ostream& os, Bool v, const String&) const {
+    verifyProcessIdentifier();
+    os << v;
+  }
+  void printArrayValue (ostream& os, Int v, const String&) const {
+    verifyProcessIdentifier();
+    os << v;
+  }
+  void printArrayValue (ostream& os, Int64 v, const String&) const {
+    verifyProcessIdentifier();
+    os << v;
+  }
+  void printArrayValue (ostream& os, Double v, const String&) const {
+    verifyProcessIdentifier();
+    os << v;
+  }
+  void printArrayValue (ostream& os, const DComplex& v, const String&) const {
+    verifyProcessIdentifier();
+    os << v;
+  }
+  void printArrayValue (ostream& os, const String& v, const String&) const {
+    verifyProcessIdentifier();
+    os << '"' << v << '"';
+  }
   // </group>
 
   // Sync table to get correct nr of rows and check the row number.

@@ -43,7 +43,7 @@ public:
         return 42;
     }
 protected:
-    virtual void onMultithreadedAccess(pid_t fromPid, pthread_t fromTid) const{
+    virtual void onMultithreadedAccess() const{
         throw NotThreadSafeError();
     }
 };

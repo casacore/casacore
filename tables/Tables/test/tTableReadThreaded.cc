@@ -30,6 +30,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -47,6 +48,7 @@
 #include <pthread.h>
 #include <random>
 #include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Exceptions/Error.h>
 // <summary>
 // Test program for threaded table reading with locks
@@ -56,6 +58,8 @@ size_t num_threads = std::thread::hardware_concurrency();
 rownr_t nrowStep = 2 << 14;
 // fine grain locking.... make this a bit faster with a few random checks
 rownr_t rwRowStep = nrowStep >> 3;
+
+
 
 template <class TStorageMan, typename... Args>
 void createTable(const String& tablename, const String& smName, Args... args)
@@ -121,17 +125,15 @@ void readTableChunk (const String& name, bool doLock=true, size_t chunkNo=0)
   delete tab;
 }
 
-int readTableChunkSharedTable (Table & tab, bool doLock=true, size_t chunkNo=0)
+int readTableChunkSharedTable (TableProxy & tab, bool doLock=true, size_t chunkNo=0)
 {
   try {
-    if (doLock) tab.lock(false); //no-write
-    ArrayColumn<Int> ad(tab,"ad");
+    if (doLock) tab.lock(false, 0); //no-write
     // seq access
     for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
-      Vector<int> res = ad.get(i);
+      Vector<Int> res = tab.getColumn("ad",i,1,1).asArrayInt();
       if (i % nrowStep == 0)
         AlwaysAssertExit (res[0] == Int(i / nrowStep));
-      ad(i); // just read the rest
     }
     std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
     std::mt19937_64 eng(rd());
@@ -140,7 +142,7 @@ int readTableChunkSharedTable (Table & tab, bool doLock=true, size_t chunkNo=0)
     // random access
     for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i++) {
       rownr_t rr = distr(eng) % (nrowStep) + chunkNo*nrowStep;
-      Vector<int> res = ad.get(rr);
+      Vector<Int> res = tab.getColumn("ad",rr,1,1).asArrayInt();
     }
     if (doLock) tab.unlock();
   }  catch (NotThreadSafeError& x) {
@@ -218,41 +220,42 @@ int runSManTestLock(bool doLock) {
   // // Usage pattern 3 - MultiThreaded - one table across many threads
   // // Currently not implemented -- should bomb with a decent exception
   // // prior behaviour is to fall over with segfault...
-  // {
-  //   cout << "\tRunning single Table object with multiple threads test (" << (doLock ? "Lock":"NoLock") << ")" << endl;
-  //   Table* tab = nullptr;
-  //   try {
-  //     cout << "\t\tReading from table with " << \
-  //       num_threads*nrowStep << " rows with " << num_threads << " threads...";
-  //     if (doLock) {
-  //       TableLock lock(TableLock::LockOption::UserLocking);
-  //       tab = new Table("tVeryBigTable_tmp.tbl", lock, Table::Old);
-  //     } else {
-  //       tab = new Table("tVeryBigTable_tmp.tbl");
-  //     }
-  //     std::vector<std::thread> threads;
-  //     // async start a few threads each reading
-  //     for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-  //       threads.push_back(std::thread(readTableChunkSharedTable, std::ref(*tab), false, iChunk));
-  //     }
-  //     // await results
-  //     for (size_t i = 0; i < num_threads; ++i) {
-  //       threads.back().join();
-  //       threads.pop_back();
-  //     }
-  //     cout << "\t<NotImplemented -- OK>" << endl;
-  //     // Reset the stale cache due to exception for the next test to start afresh
-  //     for (size_t i = 0; i < PlainTable::tableCache().getTableNames().size(); ++i) {
-  //       PlainTable::tableCache().remove(PlainTable::tableCache().getTableNames()[i]);
-  //     }
-  //     AlwaysAssertExit(PlainTable::tableCache().getTableNames().size() == 0)
-  //     return 0; 
-  //   } catch (AipsError& x) {
-  //     cout << "Caught an exception: " << x.getMesg() << endl;
-  //     if (tab != nullptr) { delete tab; }
-  //     return 1;
-  //   } 
-  // }
+  {
+    cout << "\tRunning single TableProxy object with multiple threads test (" << (doLock ? "Lock":"NoLock") << ")" << endl;
+    Table* tab = nullptr;
+    try {
+      cout << "\t\tReading from table with " << \
+        num_threads*nrowStep << " rows with " << num_threads << " threads...";
+      if (doLock) {
+        TableLock lock(TableLock::LockOption::UserLocking);
+        tab = new Table("tVeryBigTable_tmp.tbl", lock, Table::Old);
+      } else {
+        tab = new Table("tVeryBigTable_tmp.tbl");
+      }
+      TableProxy tabp(*tab);
+      std::vector<std::thread> threads;
+      // async start a few threads each reading
+      for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+        threads.push_back(std::thread(readTableChunkSharedTable, std::ref(tabp), false, iChunk));
+      }
+      // await results
+      for (size_t i = 0; i < num_threads; ++i) {
+        threads.back().join();
+        threads.pop_back();
+      }
+      cout << "\t<NotImplemented -- OK>" << endl;
+      // Reset the stale cache due to exception for the next test to start afresh
+      for (size_t i = 0; i < PlainTable::tableCache().getTableNames().size(); ++i) {
+        PlainTable::tableCache().remove(PlainTable::tableCache().getTableNames()[i]);
+      }
+      AlwaysAssertExit(PlainTable::tableCache().getTableNames().size() == 0)
+      return 0; 
+    } catch (AipsError& x) {
+      cout << "Caught an exception: " << x.getMesg() << endl;
+      if (tab != nullptr) { delete tab; }
+      return 1;
+    } 
+  }
   return 0;
 }
 
