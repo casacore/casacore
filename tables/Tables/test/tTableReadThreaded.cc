@@ -1,4 +1,6 @@
-//# tTableReadThreaded.cc: Test program for a very large table
+//# tTableReadThreaded.cc: Test program for threaded access for table
+//# WARNING:: mostly a problem reproducer at the moment
+//# Table system is NOT threadsafe
 //# Copyright (C) 2019
 //# Associated Universities, Inc. Washington DC, USA.
 //#
