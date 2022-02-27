@@ -139,6 +139,7 @@ void TableLock::merge (const TableLock& that)
 
 Bool TableLock::lockingDisabled()
 {
+std::lock_guard<std::recursive_mutex> lg(TableLock::classmutex);
 #ifdef AIPS_TABLE_NOLOCKING
   return True;
 #else
