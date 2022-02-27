@@ -63,6 +63,19 @@ protected:
     }
 };
 
+class DummySafe : InterfaceThreadUnsafe {
+public:
+    DummySafe() : InterfaceThreadUnsafe(false, false) {}
+    int foobar() {
+        verifyProcessIdentifier();
+        return 42;
+    }
+protected:
+    virtual void onMultithreadedAccess() const{
+        throw NotThreadSafeError();
+    }
+};
+
 int main() {
     // check threading
     {
@@ -112,6 +125,81 @@ int main() {
                 doraise=true;
             }
             _exit(doraise);
+        }
+    }
+    // check process safe thread unsafe
+    {
+        DummyThreadUnsafe dummy; 
+        pid_t c_pid = fork();
+        // fork should not fail, thread should
+        AlwaysAssert(c_pid != -1, AipsError);
+        if (c_pid > 0) { // parent
+            bool doraise=false;
+            try {
+                dummy.foobar();
+            } catch (NotThreadSafeError& x) {
+                doraise=true;
+            }
+            int child_doraise;
+            wait(&child_doraise);
+            // parent must not raise
+            AlwaysAssert(!doraise, AipsError);
+            AlwaysAssert(!child_doraise, AipsError);
+        } else { // child process
+            bool doraiseProcess=false;
+            try {
+                dummy.foobar();
+            } catch (NotThreadSafeError& x) {
+                doraiseProcess=true;
+            }
+            doraiseProcess=false;
+            bool doraiseThread=false;
+            auto t = thread([&](){ 
+                try {
+                    dummy.foobar(); 
+                } catch (NotThreadSafeError& x) {
+                    doraiseThread=true;
+                }
+            });
+            t.join();
+            _exit(doraiseProcess || !doraiseThread);
+        }
+    }
+    // check process safe thread safe
+    {
+        DummySafe dummy; 
+        pid_t c_pid = fork();
+        // fork should not fail
+        AlwaysAssert(c_pid != -1, AipsError);
+        if (c_pid > 0) { // parent
+            bool doraise=false;
+            try {
+                dummy.foobar();
+            } catch (NotThreadSafeError& x) {
+                doraise=true;
+            }
+            int child_doraise;
+            wait(&child_doraise);
+            // parent must not raise
+            AlwaysAssert(!doraise, AipsError);
+            AlwaysAssert(!child_doraise, AipsError);
+        } else { // child process
+            bool doraiseProcess=false;
+            try {
+                dummy.foobar();
+            } catch (NotThreadSafeError& x) {
+                doraiseProcess=true;
+            }
+            bool doraiseThread=false;
+            auto t = thread([&](){ 
+                try {
+                    dummy.foobar(); 
+                } catch (NotThreadSafeError& x) {
+                    doraiseThread=true;
+                }
+            });
+            t.join();
+            _exit(doraiseProcess || doraiseThread);
         }
     }
     cout << "OK" << endl;
