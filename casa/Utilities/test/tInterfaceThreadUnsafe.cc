@@ -31,13 +31,28 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <iostream>
 #include <thread>
+#include <sys/wait.h>
+#include <unistd.h>
 
 using namespace casacore;
 using namespace std;
 
-class Dummy : InterfaceThreadUnsafe {
+class DummyThreadUnsafe : InterfaceThreadUnsafe {
 public:
-    Dummy() {}
+    DummyThreadUnsafe() {}
+    int foobar() {
+        verifyProcessIdentifier();
+        return 42;
+    }
+protected:
+    virtual void onMultithreadedAccess() const{
+        throw NotThreadSafeError();
+    }
+};
+
+class DummyProcessUnsafe : InterfaceThreadUnsafe {
+public:
+    DummyProcessUnsafe() : InterfaceThreadUnsafe(true, true) {}
     int foobar() {
         verifyProcessIdentifier();
         return 42;
@@ -49,26 +64,56 @@ protected:
 };
 
 int main() {
-    Dummy dummy;
-    bool doraise=false;
-    try {
-        dummy.foobar();
-    } catch (NotThreadSafeError& x) {
-        doraise=true;
-    }
-    doraise=false;
-    AlwaysAssert(!doraise, AipsError);
-    
-    auto t = thread([&](){ 
+    // check threading
+    {
+        DummyThreadUnsafe dummy;
         bool doraise=false;
         try {
-            dummy.foobar(); 
+            dummy.foobar();
         } catch (NotThreadSafeError& x) {
             doraise=true;
         }
-        AlwaysAssert(doraise, AipsError);
-    });
-    t.join();
+        AlwaysAssert(!doraise, AipsError);
+        doraise=false;
+        auto t = thread([&](){ 
+            bool doraise=false;
+            try {
+                dummy.foobar(); 
+            } catch (NotThreadSafeError& x) {
+                doraise=true;
+            }
+            AlwaysAssert(doraise, AipsError);
+        });
+        t.join();
+    }
+    // check process
+    {
+        DummyProcessUnsafe dummy;
+        pid_t c_pid = fork();
+        // fork should not fail
+        AlwaysAssert(c_pid != -1, AipsError);
+        if (c_pid > 0) { // parent
+            bool doraise=false;
+            try {
+                dummy.foobar();
+            } catch (NotThreadSafeError& x) {
+                doraise=true;
+            }
+            int child_doraise;
+            wait(&child_doraise);
+            // parent must not raise
+            AlwaysAssert(!doraise, AipsError);
+            AlwaysAssert(child_doraise, AipsError);
+        } else { // child process
+            bool doraise=false;
+            try {
+                dummy.foobar();
+            } catch (NotThreadSafeError& x) {
+                doraise=true;
+            }
+            _exit(doraise);
+        }
+    }
     cout << "OK" << endl;
     return 0;
 }

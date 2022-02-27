@@ -277,27 +277,27 @@ int runSManTestRW() {
   // Segfaults even with a pooled TableCache
   // // Usage pattern 2 - MultiThreaded - table per thread
   // // (The performant case)
-  // {
-  //   cout << "\tRunning multi-threaded test (UserLock)" << endl;
-  //   try {
-  //     cout << "\t\tReading from and writing to table with " << \
-  //       num_threads*nrowStep << " rows with " << num_threads << " threads...";
-  //     std::vector<std::thread> threads;
-  //     // async start a few threads each reading
-  //     for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-  //       threads.push_back(std::thread(readWriteTableChunk, "tVeryBigTable_tmp.tbl", iChunk));
-  //     }
-  //     // await results
-  //     for (size_t i = 0; i < num_threads; ++i) {
-  //       threads.back().join();
-  //       threads.pop_back();
-  //     }
-  //     cout << "\t<OK>" << endl;
-  //   } catch (AipsError& x) {
-  //     cout << "Caught an exception: " << x.getMesg() << endl;
-  //     return 1;
-  //   } 
-  // }
+  {
+    cout << "\tRunning multi-threaded test (UserLock)" << endl;
+    try {
+      cout << "\t\tReading from and writing to table with " << \
+        num_threads*nrowStep << " rows with " << num_threads << " threads...";
+      std::vector<std::thread> threads;
+      // async start a few threads each reading
+      for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+        threads.push_back(std::thread(readWriteTableChunk, "tVeryBigTable_tmp.tbl", iChunk));
+      }
+      // await results
+      for (size_t i = 0; i < num_threads; ++i) {
+        threads.back().join();
+        threads.pop_back();
+      }
+      cout << "\t<OK>" << endl;
+    } catch (AipsError& x) {
+      cout << "Caught an exception: " << x.getMesg() << endl;
+      return 1;
+    } 
+  }
   return 0;
 }
 

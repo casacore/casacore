@@ -34,7 +34,9 @@ namespace casacore {
     public:
         // sets this object's pid and tid ids
         // inheriting objects must call this constructor upon constructor
-        InterfaceThreadUnsafe();
+        // can override to also check the caller process pid although
+        // objects with MPI support probably don't want this
+        InterfaceThreadUnsafe(bool checkPid=false, bool checkTid=true);
     protected:
         // verifies this object's pid and tid ids with the current thread
         // raises an exception if they are different -- currently table cannot be used safely
@@ -46,6 +48,8 @@ namespace casacore {
     private:
         pid_t constructorPid;
         pthread_t constructorTid;
+        bool checkPid;
+        bool checkTid;
     };
 } //cc
 #endif //CASACORE_UTILITY_INTERFACETHREADUNSAFE

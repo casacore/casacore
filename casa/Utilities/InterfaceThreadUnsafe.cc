@@ -2,14 +2,20 @@
 
 using namespace casacore;
 
-InterfaceThreadUnsafe::InterfaceThreadUnsafe() :
+InterfaceThreadUnsafe::InterfaceThreadUnsafe(bool checkPid, bool checkTid) :
     constructorPid(getpid()),
-    constructorTid(pthread_self()) { }
+    constructorTid(pthread_self()),
+    checkPid(checkPid),
+    checkTid(checkTid)
+{ 
+
+}
 
 void InterfaceThreadUnsafe::verifyProcessIdentifier() const {
     pid_t fromPid = getpid();
     pthread_t fromTid = pthread_self();
-    if (constructorPid != fromPid || constructorTid != fromTid) {
+    if ((checkPid && (constructorPid != fromPid)) ||
+        (checkTid && (constructorTid != fromTid))) {
         onMultithreadedAccess();
     }
 }
