@@ -58,6 +58,7 @@ Converters/PycExcp.h
 Converters/PycRecord.h
 Converters/PycValueHolder.h
 Converters/PycArray.tcc
+Converters/PyNotThreadSafe.cc
 )
 
 target_link_libraries (casa_python casa_casa ${PYTHON2_Boost_LIBRARIES} ${PYTHON2_LIBRARIES} ${CASACORE_ARCH_LIBS})
@@ -79,6 +80,7 @@ Converters/PycExcp.h
 Converters/PycRecord.h
 Converters/PycValueHolder.h
 Converters/PycArray.tcc
+Converters/PyNotThreadSafe.h
 DESTINATION include/casacore/python/Converters
 )
 

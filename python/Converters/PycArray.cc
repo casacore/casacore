@@ -1,6 +1,6 @@
-//# PycArray.cc: Class to convert an Array to/from Python
-//# Copyright (C) 2006
-//# Associated Universities, Inc. Washington DC, USA.
+//# PyNotThreadSafe.cc: NotThreadSafe exception translation for Python
+//# Copyright (C) 2022
+//# South African Radio Astronomy Observatory
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -23,7 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: PycArray.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
