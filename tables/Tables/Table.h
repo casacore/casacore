@@ -39,9 +39,6 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <pthread.h>
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -1062,12 +1059,6 @@ protected:
     void open (const String& name, const String& type, int tableOption,
 	       const TableLock& lockOptions, const TSMOption& tsmOpt);
 
-    // sets this object's pid and tid ids
-    void initializeProcessIdentifier();
-    // verifies this object's pid and tid ids with the current thread
-    // raises an exception if they are different -- currently table cannot be used safely
-    void verifyProcessIdentifier() const;
-
 private:
     // Construct a BaseTable object from the table file.
     static BaseTable* makeBaseTable (const String& name, const String& type,
@@ -1096,246 +1087,148 @@ private:
     // Sort the columns if needed.
     void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
                          const Array<String>& columnNames, Bool sort) const;
-    pid_t constructorPid;
-    pthread_t constructorTid;
 };
 
 
 
-inline Bool Table::isSameRoot (const Table& other) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->root() == other.baseTabPtr_p->root(); 
-}
+inline Bool Table::isSameRoot (const Table& other) const
+    { return baseTabPtr_p->root() == other.baseTabPtr_p->root(); }
 
-inline void Table::reopenRW() { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->reopenRW(); 
-}
-inline void Table::flush (Bool fsync, Bool recursive) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->flush (fsync, recursive); 
-}
-inline void Table::resync() { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->resync(); 
-}
+inline void Table::reopenRW()
+    { baseTabPtr_p->reopenRW(); }
+inline void Table::flush (Bool fsync, Bool recursive)
+    { baseTabPtr_p->flush (fsync, recursive); }
+inline void Table::resync()
+    { baseTabPtr_p->resync(); }
 
-inline const StorageOption& Table::storageOption() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->storageOption(); 
-}
-inline Bool Table::isMultiUsed(Bool checkSubTables) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isMultiUsed(checkSubTables); 
-}
-inline const TableLock& Table::lockOptions() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->lockOptions(); 
-}
-inline Bool Table::lock (FileLocker::LockType type, uInt nattempts) { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->lock (type, nattempts); 
-}
+inline const StorageOption& Table::storageOption() const
+    { return baseTabPtr_p->storageOption(); }
+inline Bool Table::isMultiUsed(Bool checkSubTables) const
+    { return baseTabPtr_p->isMultiUsed(checkSubTables); }
+inline const TableLock& Table::lockOptions() const
+    { return baseTabPtr_p->lockOptions(); }
+inline Bool Table::lock (FileLocker::LockType type, uInt nattempts)
+    { return baseTabPtr_p->lock (type, nattempts); }
 inline Bool Table::lock (Bool write, uInt nattempts)
 {
-    verifyProcessIdentifier();
     return baseTabPtr_p->lock (write ? FileLocker::Write : FileLocker::Read,
 			       nattempts);
 }
-inline void Table::unlock() { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->unlock(); 
-}
-inline Bool Table::hasLock (FileLocker::LockType type) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->hasLock (type); 
-}
-inline Bool Table::hasLock (Bool write) const {
-    verifyProcessIdentifier();
+inline void Table::unlock()
+    { baseTabPtr_p->unlock(); }
+inline Bool Table::hasLock (FileLocker::LockType type) const
+    { return baseTabPtr_p->hasLock (type); }
+inline Bool Table::hasLock (Bool write) const
+{
     return baseTabPtr_p->hasLock (write ? FileLocker::Write : FileLocker::Read);
 }
 
-inline Bool Table::isRootTable() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p == baseTabPtr_p->root(); 
-}
+inline Bool Table::isRootTable() const
+    { return baseTabPtr_p == baseTabPtr_p->root(); }
 
-inline Bool Table::isWritable() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isWritable(); 
-}
-inline Bool Table::isColumnWritable (const String& columnName) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isColumnWritable (columnName); 
-}
-inline Bool Table::isColumnWritable (uInt columnIndex) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isColumnWritable (columnIndex); 
-}
+inline Bool Table::isWritable() const
+    { return baseTabPtr_p->isWritable(); }
+inline Bool Table::isColumnWritable (const String& columnName) const
+    { return baseTabPtr_p->isColumnWritable (columnName); }
+inline Bool Table::isColumnWritable (uInt columnIndex) const
+    { return baseTabPtr_p->isColumnWritable (columnIndex); }
 
-inline Bool Table::isColumnStored (const String& columnName) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isColumnStored (columnName); 
-}
-inline Bool Table::isColumnStored (uInt columnIndex) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isColumnStored (columnIndex); 
-}
+inline Bool Table::isColumnStored (const String& columnName) const
+    { return baseTabPtr_p->isColumnStored (columnName); }
+inline Bool Table::isColumnStored (uInt columnIndex) const
+    { return baseTabPtr_p->isColumnStored (columnIndex); }
 
-inline void Table::rename (const String& newName, TableOption option) {
-    verifyProcessIdentifier();
-    baseTabPtr_p->rename (newName, option); 
-}
-
+inline void Table::rename (const String& newName, TableOption option)
+    { baseTabPtr_p->rename (newName, option); }
 inline void Table::deepCopy (const String& newName,
 			     const Record& dataManagerInfo,
 			     TableOption option,
 			     Bool valueCopy,
 			     EndianFormat endianFormat,
-			     Bool noRows) const { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->deepCopy (newName, dataManagerInfo, StorageOption(),
+			     Bool noRows) const
+    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, StorageOption(),
                               option, valueCopy,
-			      endianFormat, noRows); 
-}
+			      endianFormat, noRows); }
 inline void Table::deepCopy (const String& newName,
 			     const Record& dataManagerInfo,
                              const StorageOption& stopt,
 			     TableOption option,
 			     Bool valueCopy,
 			     EndianFormat endianFormat,
-			     Bool noRows) const {
-    verifyProcessIdentifier();
-    baseTabPtr_p->deepCopy (newName, dataManagerInfo, stopt,
+			     Bool noRows) const
+    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, stopt,
                               option, valueCopy,
-			      endianFormat, noRows); 
-}
-inline void Table::markForDelete() { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->markForDelete (True, ""); 
-}
-inline void Table::unmarkForDelete() { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->unmarkForDelete(True, ""); 
-}
-inline Bool Table::isMarkedForDelete() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->isMarkedForDelete(); 
-}
+			      endianFormat, noRows); }
+inline void Table::markForDelete()
+    { baseTabPtr_p->markForDelete (True, ""); }
+inline void Table::unmarkForDelete()
+    { baseTabPtr_p->unmarkForDelete(True, ""); }
+inline Bool Table::isMarkedForDelete() const
+    { return baseTabPtr_p->isMarkedForDelete(); }
 
-inline rownr_t Table::nrow() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->nrow(); 
-}
-inline BaseTable* Table::baseTablePtr() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p; 
-}
-inline const TableDesc& Table::tableDesc() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->tableDesc(); 
-}
-inline const TableRecord& Table::keywordSet() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->keywordSet(); 
-}
+inline rownr_t Table::nrow() const
+    { return baseTabPtr_p->nrow(); }
+inline BaseTable* Table::baseTablePtr() const
+    { return baseTabPtr_p; }
+inline const TableDesc& Table::tableDesc() const
+    { return baseTabPtr_p->tableDesc(); }
+inline const TableRecord& Table::keywordSet() const
+    { return baseTabPtr_p->keywordSet(); }
 
-inline const TableInfo& Table::tableInfo() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->tableInfo(); 
-}
-inline TableInfo& Table::tableInfo() { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->tableInfo(); 
-}
-inline void Table::flushTableInfo() const { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->flushTableInfo(); 
-}
+inline const TableInfo& Table::tableInfo() const
+    { return baseTabPtr_p->tableInfo(); }
+inline TableInfo& Table::tableInfo()
+    { return baseTabPtr_p->tableInfo(); }
+inline void Table::flushTableInfo() const
+    { baseTabPtr_p->flushTableInfo(); }
 
-inline const String& Table::tableName() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->tableName(); 
-}
-inline Table::TableType Table::tableType() const { 
-    verifyProcessIdentifier();
-    return TableType(baseTabPtr_p->tableType()); 
-}
-inline int Table::tableOption() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->tableOption(); 
-}
+inline const String& Table::tableName() const
+    { return baseTabPtr_p->tableName(); }
+inline Table::TableType Table::tableType() const
+    { return TableType(baseTabPtr_p->tableType()); }
+inline int Table::tableOption() const
+    { return baseTabPtr_p->tableOption(); }
 
-inline Bool Table::canAddRow() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->canAddRow(); 
-}
-inline Bool Table::canRemoveRow() const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->canRemoveRow(); 
-}
-inline Bool Table::canRemoveColumn (const Vector<String>& columnNames) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->canRemoveColumn (columnNames); 
-}
-inline Bool Table::canRenameColumn (const String& columnName) const { 
-    verifyProcessIdentifier();
-    return baseTabPtr_p->canRenameColumn (columnName); 
-}
+inline Bool Table::canAddRow() const
+    { return baseTabPtr_p->canAddRow(); }
+inline Bool Table::canRemoveRow() const
+    { return baseTabPtr_p->canRemoveRow(); }
+inline Bool Table::canRemoveColumn (const Vector<String>& columnNames) const
+    { return baseTabPtr_p->canRemoveColumn (columnNames); }
+inline Bool Table::canRenameColumn (const String& columnName) const
+    { return baseTabPtr_p->canRenameColumn (columnName); }
 
-inline void Table::addRow (rownr_t nrrow, Bool initialize) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->addRow (nrrow, initialize); 
-}
-inline void Table::removeRow (rownr_t rownr) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->removeRow (rownr); 
-}
-inline void Table::removeRow (const RowNumbers& rownrs) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->removeRow (rownrs); 
-}
-inline void Table::addColumn (const ColumnDesc& columnDesc, Bool addToParent) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->addColumn (columnDesc, addToParent); 
-}
+inline void Table::addRow (rownr_t nrrow, Bool initialize)
+    { baseTabPtr_p->addRow (nrrow, initialize); }
+inline void Table::removeRow (rownr_t rownr)
+    { baseTabPtr_p->removeRow (rownr); }
+inline void Table::removeRow (const RowNumbers& rownrs)
+    { baseTabPtr_p->removeRow (rownrs); }
+inline void Table::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
+    { baseTabPtr_p->addColumn (columnDesc, addToParent); }
 inline void Table::addColumn (const ColumnDesc& columnDesc,
 			      const String& dataManager, Bool byName,
-                              Bool addToParent) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->addColumn (columnDesc, dataManager, byName, addToParent); 
-}
+                              Bool addToParent)
+    { baseTabPtr_p->addColumn (columnDesc, dataManager, byName, addToParent); }
 inline void Table::addColumn (const ColumnDesc& columnDesc,
-			      const DataManager& dataManager, Bool addToParent) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->addColumn (columnDesc, dataManager, addToParent); 
-}
+			      const DataManager& dataManager, Bool addToParent)
+    { baseTabPtr_p->addColumn (columnDesc, dataManager, addToParent); }
 inline void Table::addColumn (const TableDesc& tableDesc,
-			      const DataManager& dataManager, Bool addToParent) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->addColumn (tableDesc, dataManager, addToParent); 
-}
+			      const DataManager& dataManager, Bool addToParent)
+    { baseTabPtr_p->addColumn (tableDesc, dataManager, addToParent); }
 inline void Table::addColumn (const TableDesc& tableDesc,
-			      const Record& dataManagerInfo, Bool addToParent) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->addColumns (tableDesc, dataManagerInfo, addToParent); 
-}
-inline void Table::removeColumn (const Vector<String>& columnNames) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->removeColumn (columnNames); 
-}
-inline void Table::renameColumn (const String& newName, const String& oldName) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->renameColumn (newName, oldName); 
-}
-inline void Table::renameHypercolumn (const String& newName, const String& oldName) { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->renameHypercolumn (newName, oldName); 
-}
+			      const Record& dataManagerInfo, Bool addToParent)      { baseTabPtr_p->addColumns (tableDesc, dataManagerInfo, addToParent); }
+inline void Table::removeColumn (const Vector<String>& columnNames)
+    { baseTabPtr_p->removeColumn (columnNames); }
+inline void Table::renameColumn (const String& newName, const String& oldName)
+    { baseTabPtr_p->renameColumn (newName, oldName); }
+inline void Table::renameHypercolumn (const String& newName, const String& oldName)
+    { baseTabPtr_p->renameHypercolumn (newName, oldName); }
 
 inline DataManager* Table::findDataManager (const String& name,
-                                            Bool byColumn) const{
-    return baseTabPtr_p->findDataManager (name, byColumn);
+                                            Bool byColumn) const
+{
+  return baseTabPtr_p->findDataManager (name, byColumn);
 }
 
 inline void Table::showStructure (std::ostream& os,
@@ -1343,11 +1236,9 @@ inline void Table::showStructure (std::ostream& os,
                                   Bool showColumns,
                                   Bool showSubTables,
                                   Bool sortColumns,
-                                  Bool cOrder) const { 
-    verifyProcessIdentifier();
-    baseTabPtr_p->showStructure (os, showDataMans, showColumns,
-                                   showSubTables, sortColumns, cOrder); 
-}
+                                  Bool cOrder) const
+    { baseTabPtr_p->showStructure (os, showDataMans, showColumns,
+                                   showSubTables, sortColumns, cOrder); }
 
 
 

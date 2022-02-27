@@ -379,7 +379,6 @@ Containers/RecordRep.h
 Containers/ValueHolder.h
 Containers/ValueHolderRep.h
 Containers/Multiton.h
-Containers/WeakptrProcessGuard.h
 Containers/ManagedObjectPool.h
 DESTINATION include/casacore/casa/Containers
 )
