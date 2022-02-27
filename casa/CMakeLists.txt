@@ -225,6 +225,7 @@ Utilities/Sort.cc
 Utilities/SortError.cc
 Utilities/StringDistance.cc
 Utilities/ValType.cc
+Utilities/InterfaceThreadUnsafe.cc
 aips.cc
 version.cc
 ${BISON_JsonGram_OUTPUTS}
@@ -649,6 +650,7 @@ Utilities/Template.h
 Utilities/Template.tcc
 Utilities/ValType.h
 Utilities/ValTypeId.h
+Utilities/InterfaceThreadUnsafe.h
 DESTINATION include/casacore/casa/Utilities
 )
 

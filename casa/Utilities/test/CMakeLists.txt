@@ -23,6 +23,7 @@ tRegister
 tSort_1
 tSort
 tStringDistance
+tInterfaceThreadUnsafe
 )
 
 foreach (test ${tests})

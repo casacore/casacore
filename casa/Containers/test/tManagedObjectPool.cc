@@ -1,4 +1,4 @@
-//# tMultiton.cc: This program tests the ManagedObjectPool class
+//# tManagedObjectPool.cc: This program tests the ManagedObjectPool class
 //# Copyright (C) 2022
 //# NRF South African Radio Astronomy Observatory and
 //# Benjamin Hugo
