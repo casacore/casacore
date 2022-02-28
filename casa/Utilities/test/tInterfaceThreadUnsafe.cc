@@ -128,6 +128,7 @@ int main() {
         }
     }
     // check process safe thread unsafe
+    // (this is generally allowed -- OS will copy all pages upon touch)
     {
         DummyThreadUnsafe dummy; 
         pid_t c_pid = fork();
@@ -162,7 +163,7 @@ int main() {
                 }
             });
             t.join();
-            _exit(doraiseProcess || !doraiseThread);
+            _exit(doraiseProcess || doraiseThread);
         }
     }
     // check process safe thread safe
