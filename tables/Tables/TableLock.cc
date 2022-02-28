@@ -32,8 +32,6 @@
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-// static defines
-std::recursive_mutex TableLock::classmutex;
 
 TableLock::TableLock (LockOption option)
 : itsOption            (option),
@@ -71,7 +69,9 @@ TableLock::TableLock (const TableLock& that) {
 TableLock& TableLock::operator= (const TableLock& that)
 {
   if (this != &that) {
-    std::lock_guard<std::recursive_mutex> lg(TableLock::classmutex);
+    std::unique_lock<std::recursive_mutex> _me(this->itsmutex, std::defer_lock),
+                                           _other(that.itsmutex, std::defer_lock);
+    std::lock(_me, _other);
     itsOption            = that.itsOption;
     itsReadLocking       = that.itsReadLocking;
     itsMaxWait           = that.itsMaxWait;
@@ -115,8 +115,9 @@ std::lock_guard<std::recursive_mutex> lg(this->itsmutex);
 void TableLock::merge (const TableLock& that)
 {
   if (this != &that) {
-    // possible race between this and that merging at the same time -- use common lock
-    std::lock_guard<std::recursive_mutex> lg(TableLock::classmutex);
+    std::unique_lock<std::recursive_mutex> _me(this->itsmutex, std::defer_lock),
+                                           _other(that.itsmutex, std::defer_lock);
+    std::lock(_me, _other);
     if (! that.itsIsDefaultLocking) {
       if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
         itsOption  = that.itsOption;
@@ -139,7 +140,6 @@ void TableLock::merge (const TableLock& that)
 
 Bool TableLock::lockingDisabled()
 {
-std::lock_guard<std::recursive_mutex> lg(TableLock::classmutex);
 #ifdef AIPS_TABLE_NOLOCKING
   return True;
 #else

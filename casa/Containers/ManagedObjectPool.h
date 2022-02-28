@@ -83,7 +83,9 @@ namespace {
             
         TemplateType& operator=(TemplateType&& other) {
             if (this != &other) {
-                std::lock_guard<std::recursive_mutex> lg(ManagedObjectPool::classmutex);
+                std::unique_lock<std::recursive_mutex> _me(this->poolmutex, std::defer_lock),
+                                                       _other(other.poolmutex, std::defer_lock);
+                std::lock(_me, _other);
                 for (auto i = other.objects.begin(); i != other.objects.end(); ++i) {
                     objects[i->first] = i->second;
                 }
@@ -167,9 +169,7 @@ namespace {
         }
     private:
         mutable std::recursive_mutex poolmutex;
-        static std::recursive_mutex classmutex;
         MapType objects;
     };
-    std::recursive_mutex classmutex;
 } //cc
 #endif

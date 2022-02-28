@@ -178,7 +178,6 @@ private:
     // Set itsOption and itsReadLocking when needed.
     void init();
     mutable std::recursive_mutex itsmutex;
-    static std::recursive_mutex classmutex;
 };
 
 
