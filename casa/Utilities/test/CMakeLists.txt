@@ -24,6 +24,7 @@ tSort_1
 tSort
 tStringDistance
 tInterfaceThreadUnsafe
+tLockAll
 )
 
 foreach (test ${tests})
