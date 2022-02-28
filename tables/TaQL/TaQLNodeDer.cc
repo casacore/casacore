@@ -191,7 +191,7 @@ void TaQLConstNodeRep::save (AipsIO& aio) const
     break;
   }
 }
-TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLConstNodeRep::restore (AipsIO& aio)
 {
   char type;
   Bool isTableName;
@@ -320,7 +320,7 @@ void TaQLRegexNodeRep::save (AipsIO& aio) const
   aio << itsValue << itsCaseInsensitive << itsNegate << itsIgnoreBlanks
       << itsMaxDistance;
 }
-TaQLRegexNodeRep* TaQLRegexNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLRegexNodeRep::restore (AipsIO& aio)
 {
   String value;
   Bool caseInsensitive, negate, ignoreBlanks;
@@ -374,7 +374,7 @@ void TaQLUnaryNodeRep::save (AipsIO& aio) const
   aio << char(itsType);
   itsChild.saveNode (aio);
 }
-TaQLUnaryNodeRep* TaQLUnaryNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLUnaryNodeRep::restore (AipsIO& aio)
 {
   char ctype;
   aio >> ctype;
@@ -492,7 +492,7 @@ void TaQLBinaryNodeRep::save (AipsIO& aio) const
   itsLeft.saveNode (aio);
   itsRight.saveNode (aio);
 }
-TaQLBinaryNodeRep* TaQLBinaryNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLBinaryNodeRep::restore (AipsIO& aio)
 {
   char ctype;
   aio >> ctype;
@@ -542,7 +542,7 @@ void TaQLMultiNodeRep::save (AipsIO& aio) const
     itsNodes[i].saveNode (aio);
   }
 }
-TaQLMultiNodeRep* TaQLMultiNodeRep::restore (AipsIO& aio)
+TaQLMultiNode TaQLMultiNodeRep::restore (AipsIO& aio)
 {
   uInt size, incr;
   Bool isSetOrArray;
@@ -550,13 +550,14 @@ TaQLMultiNodeRep* TaQLMultiNodeRep::restore (AipsIO& aio)
   aio >> isSetOrArray >> prefix >> postfix
       >> sep >> sep2 >> incr;
   aio >> size;
-  TaQLMultiNodeRep* node = new TaQLMultiNodeRep(prefix, postfix, isSetOrArray);
+  std::unique_ptr<TaQLMultiNodeRep> node
+    (new TaQLMultiNodeRep(prefix, postfix, isSetOrArray));
   node->setSeparator (sep);
   node->setSeparator (incr, sep2);
   for (uInt i=0; i<size; ++i) {
     node->add (TaQLNode::restoreNode (aio));
   }
-  return node;
+  return node.release();
 }
 
 TaQLFuncNodeRep::TaQLFuncNodeRep (const String& name)
@@ -585,7 +586,7 @@ void TaQLFuncNodeRep::save (AipsIO& aio) const
   aio << itsName;
   itsArgs.saveNode (aio);
 }
-TaQLFuncNodeRep* TaQLFuncNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLFuncNodeRep::restore (AipsIO& aio)
 {
   String name;
   aio >> name;
@@ -640,7 +641,7 @@ void TaQLRangeNodeRep::save (AipsIO& aio) const
   itsStart.saveNode (aio);
   itsEnd.saveNode (aio);
 }
-TaQLRangeNodeRep* TaQLRangeNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLRangeNodeRep::restore (AipsIO& aio)
 {
   Bool leftClosed, rightClosed;
   aio >> leftClosed >> rightClosed;
@@ -681,7 +682,7 @@ void TaQLIndexNodeRep::save (AipsIO& aio) const
   itsEnd.saveNode (aio);
   itsIncr.saveNode (aio);
 }
-TaQLIndexNodeRep* TaQLIndexNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLIndexNodeRep::restore (AipsIO& aio)
 {
   TaQLNode start = TaQLNode::restoreNode (aio);
   TaQLNode end = TaQLNode::restoreNode (aio);
@@ -714,7 +715,7 @@ void TaQLJoinNodeRep::save (AipsIO& aio) const
   itsTables.saveNode (aio);
   itsCondition.saveNode (aio);
 }
-TaQLJoinNodeRep* TaQLJoinNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLJoinNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
   TaQLNode condition = TaQLNode::restoreNode (aio);
@@ -743,7 +744,7 @@ void TaQLKeyColNodeRep::save (AipsIO& aio) const
 {
   aio << itsName << itsNameMask;
 }
-TaQLKeyColNodeRep* TaQLKeyColNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLKeyColNodeRep::restore (AipsIO& aio)
 {
   String name, nameMask;
   aio >> name >> nameMask;
@@ -772,7 +773,7 @@ void TaQLTableNodeRep::save (AipsIO& aio) const
   aio << itsAlias;
   itsTable.saveNode (aio);
 }
-TaQLTableNodeRep* TaQLTableNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLTableNodeRep::restore (AipsIO& aio)
 {
   String alias;
   aio >> alias;
@@ -811,13 +812,12 @@ void TaQLColNodeRep::save (AipsIO& aio) const
   aio << itsName << itsNameMask << itsDtype;
   itsExpr.saveNode (aio);
 }
-TaQLColNodeRep* TaQLColNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLColNodeRep::restore (AipsIO& aio)
 {
   String name, nameMask, dtype;
   aio >> name >> nameMask >> dtype;
-  TaQLColNodeRep* node = new TaQLColNodeRep (TaQLNode::restoreNode(aio),
-                                             name, nameMask, dtype);
-  return node;
+  return new TaQLColNodeRep (TaQLNode::restoreNode(aio),
+                             name, nameMask, dtype);
 }
 
 TaQLColumnsNodeRep::TaQLColumnsNodeRep (Bool distinct,
@@ -845,7 +845,7 @@ void TaQLColumnsNodeRep::save (AipsIO& aio) const
   aio << itsDistinct;
   itsNodes.saveNode (aio);
 }
-TaQLColumnsNodeRep* TaQLColumnsNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLColumnsNodeRep::restore (AipsIO& aio)
 {
   Bool distinct;
   aio >> distinct;
@@ -875,7 +875,7 @@ void TaQLGroupNodeRep::save (AipsIO& aio) const
   aio << char(itsType);
   itsNodes.saveNode (aio);
 }
-TaQLGroupNodeRep* TaQLGroupNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLGroupNodeRep::restore (AipsIO& aio)
 {
   char ctype;
   aio >> ctype;
@@ -911,7 +911,7 @@ void TaQLSortKeyNodeRep::save (AipsIO& aio) const
   aio << char(itsType);
   itsChild.saveNode (aio);
 }
-TaQLSortKeyNodeRep* TaQLSortKeyNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLSortKeyNodeRep::restore (AipsIO& aio)
 {
   char ctype;
   aio >> ctype;
@@ -947,7 +947,7 @@ void TaQLSortNodeRep::save (AipsIO& aio) const
   aio << itsUnique << char(itsType);
   itsKeys.saveNode (aio);
 }
-TaQLSortNodeRep* TaQLSortNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLSortNodeRep::restore (AipsIO& aio)
 {
   Bool unique;
   char ctype;
@@ -982,7 +982,7 @@ void TaQLLimitOffNodeRep::save (AipsIO& aio) const
   itsLimit.saveNode (aio);
   itsOffset.saveNode (aio);
 }
-TaQLLimitOffNodeRep* TaQLLimitOffNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLLimitOffNodeRep::restore (AipsIO& aio)
 {
   TaQLNode limit = TaQLNode::restoreNode (aio);
   TaQLNode offset = TaQLNode::restoreNode (aio);
@@ -1023,7 +1023,7 @@ void TaQLGivingNodeRep::save (AipsIO& aio) const
     itsType.saveNode (aio);
   }
 }
-TaQLGivingNodeRep* TaQLGivingNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLGivingNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode node = TaQLNode::restoreMultiNode(aio);
   if (node.isValid()) {
@@ -1088,7 +1088,7 @@ void TaQLUpdExprNodeRep::save (AipsIO& aio) const
   itsIndices2.saveNode (aio);
   itsExpr.saveNode (aio);
 }
-TaQLUpdExprNodeRep* TaQLUpdExprNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLUpdExprNodeRep::restore (AipsIO& aio)
 {
   String name, nameMask;
   aio >> name >> nameMask;
@@ -1206,7 +1206,7 @@ void TaQLSelectNodeRep::save (AipsIO& aio) const
   itsDMInfo.saveNode (aio);
   saveSuper (aio);
 }
-TaQLSelectNodeRep* TaQLSelectNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLSelectNodeRep::restore (AipsIO& aio)
 {
   TaQLNode columns = TaQLNode::restoreNode (aio);
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
@@ -1219,13 +1219,12 @@ TaQLSelectNodeRep* TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode limitoff = TaQLNode::restoreNode (aio);
   TaQLNode giving = TaQLNode::restoreNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
-  TaQLSelectNodeRep* node = new TaQLSelectNodeRep (columns, with,
-                                                   tables, join,
-                                                   where, groupby, having,
-                                                   sort, limitoff, giving,
-                                                   dminfo);
+  std::unique_ptr<TaQLSelectNodeRep> node
+    (new TaQLSelectNodeRep (columns, with, tables, join,
+                            where, groupby, having,
+                            sort, limitoff, giving, dminfo));
   node->restoreSuper (aio);
-  return node;
+  return node.release();
 }
 
 TaQLCountNodeRep::TaQLCountNodeRep (const TaQLMultiNode& with,
@@ -1259,15 +1258,16 @@ void TaQLCountNodeRep::save (AipsIO& aio) const
   itsWhere.saveNode (aio);
   saveSuper (aio);
 }
-TaQLCountNodeRep* TaQLCountNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLCountNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLNode columns = TaQLNode::restoreNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
   TaQLNode where = TaQLNode::restoreNode (aio);
-  TaQLCountNodeRep* node = new TaQLCountNodeRep (with, columns, tables, where);
+  std::unique_ptr<TaQLCountNodeRep> node
+    (new TaQLCountNodeRep (with, columns, tables, where));
   node->restoreSuper (aio);
-  return node;
+  return node.release();
 }
 
 TaQLUpdateNodeRep::TaQLUpdateNodeRep (const TaQLMultiNode& with,
@@ -1318,7 +1318,7 @@ void TaQLUpdateNodeRep::save (AipsIO& aio) const
   itsSort.saveNode (aio);
   itsLimitOff.saveNode (aio);
 }
-TaQLUpdateNodeRep* TaQLUpdateNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLUpdateNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
@@ -1404,7 +1404,7 @@ void TaQLInsertNodeRep::save (AipsIO& aio) const
   itsValues.saveNode (aio);
   itsLimit.saveNode (aio);
 }
-TaQLInsertNodeRep* TaQLInsertNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLInsertNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
@@ -1450,7 +1450,7 @@ void TaQLDeleteNodeRep::save (AipsIO& aio) const
   itsSort.saveNode (aio);
   itsLimitOff.saveNode (aio);
 }
-TaQLDeleteNodeRep* TaQLDeleteNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLDeleteNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
@@ -1503,7 +1503,7 @@ void TaQLCalcNodeRep::save (AipsIO& aio) const
   itsSort.saveNode (aio);
   itsLimitOff.saveNode (aio);
 }
-TaQLCalcNodeRep* TaQLCalcNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLCalcNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
@@ -1575,7 +1575,7 @@ void TaQLCreTabNodeRep::save (AipsIO& aio) const
   itsDMInfo.saveNode (aio);
   saveSuper (aio);
 }
-TaQLCreTabNodeRep* TaQLCreTabNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLCreTabNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLNode giving = TaQLNode::restoreNode (aio);
@@ -1623,7 +1623,7 @@ void TaQLColSpecNodeRep::save (AipsIO& aio) const
   aio << itsName << itsLikeCol << itsDtype;
   itsSpec.saveNode (aio);
 }
-TaQLColSpecNodeRep* TaQLColSpecNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLColSpecNodeRep::restore (AipsIO& aio)
 {
   String name, likeCol, dtype;
   aio >> name >> likeCol >> dtype;
@@ -1667,7 +1667,7 @@ void TaQLRecFldNodeRep::show (std::ostream& os) const
     os << itsFromName;
   } else if (itsValues.isValid()) {
     if (itsValues.nodeType() == TaQLNode_Multi  &&
-        ((const TaQLMultiNodeRep*)(itsValues.getRep()))->itsNodes.empty()) {
+        dynamic_cast<const TaQLMultiNodeRep&>(*(itsValues.getRep())).itsNodes.empty()) {
       os << "[=]";
     } else {
       itsValues.show (os);
@@ -1684,7 +1684,7 @@ void TaQLRecFldNodeRep::save (AipsIO& aio) const
   aio << itsName << itsFromName << itsDtype;
   itsValues.saveNode (aio);
 }
-TaQLRecFldNodeRep* TaQLRecFldNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLRecFldNodeRep::restore (AipsIO& aio)
 {
   String name, fromName, dtype;
   aio >> name >> fromName >> dtype;
@@ -1717,7 +1717,7 @@ void TaQLUnitNodeRep::save (AipsIO& aio) const
   aio << itsUnit;
   itsChild.saveNode (aio);
 }
-TaQLUnitNodeRep* TaQLUnitNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLUnitNodeRep::restore (AipsIO& aio)
 {
   String unit;
   aio >> unit;
@@ -1758,7 +1758,7 @@ void TaQLAltTabNodeRep::save (AipsIO& aio) const
   itsFrom.saveNode (aio);
   itsCommands.saveNode (aio);
 }
-TaQLAltTabNodeRep* TaQLAltTabNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLAltTabNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with     = TaQLNode::restoreMultiNode (aio);
   TaQLNode table         = TaQLNode::restoreNode (aio);
@@ -1791,7 +1791,7 @@ void TaQLAddColNodeRep::save (AipsIO& aio) const
   itsColumns.saveNode(aio);
   itsDMInfo.saveNode(aio);
 }
-TaQLAddColNodeRep* TaQLAddColNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLAddColNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode cols   = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
@@ -1825,7 +1825,7 @@ void TaQLRenDropNodeRep::save (AipsIO& aio) const
   aio << itsType;
   itsNames.saveNode (aio);
 }
-TaQLRenDropNodeRep* TaQLRenDropNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLRenDropNodeRep::restore (AipsIO& aio)
 {
   Int type;
   aio >> type;
@@ -1850,7 +1850,7 @@ void TaQLSetKeyNodeRep::save (AipsIO& aio) const
 {
   itsKeyVals.saveNode (aio);
 }
-TaQLSetKeyNodeRep* TaQLSetKeyNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLSetKeyNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode keyvals = TaQLNode::restoreMultiNode (aio);
   return new TaQLSetKeyNodeRep (keyvals);
@@ -1873,7 +1873,7 @@ void TaQLAddRowNodeRep::save (AipsIO& aio) const
 {
   itsNRow.saveNode (aio);
 }
-TaQLAddRowNodeRep* TaQLAddRowNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLAddRowNodeRep::restore (AipsIO& aio)
 {
   TaQLNode nrow = TaQLNode::restoreNode (aio);
   return new TaQLAddRowNodeRep (nrow);
@@ -1910,7 +1910,7 @@ void TaQLConcTabNodeRep::save (AipsIO& aio) const
   itsTables.saveNode (aio);
   itsSubTables.saveNode (aio);
 }
-TaQLConcTabNodeRep* TaQLConcTabNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLConcTabNodeRep::restore (AipsIO& aio)
 {
   String tableName;
   aio >> tableName;
@@ -1938,7 +1938,7 @@ void TaQLShowNodeRep::save (AipsIO& aio) const
 {
   itsNames.saveNode (aio);
 }
-TaQLShowNodeRep* TaQLShowNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLShowNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode names = TaQLNode::restoreMultiNode (aio);
   return new TaQLShowNodeRep (names);
@@ -1968,7 +1968,7 @@ void TaQLCopyColNodeRep::save (AipsIO& aio) const
   itsNames.saveNode(aio);
   itsDMInfo.saveNode(aio);
 }
-TaQLCopyColNodeRep* TaQLCopyColNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLCopyColNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode names  = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
@@ -1996,7 +1996,7 @@ void TaQLDropTabNodeRep::save (AipsIO& aio) const
   itsWith.saveNode(aio);
   itsTables.saveNode(aio);
 }
-TaQLDropTabNodeRep* TaQLDropTabNodeRep::restore (AipsIO& aio)
+TaQLNode TaQLDropTabNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode with   = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
