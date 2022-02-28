@@ -204,7 +204,8 @@ TableProxy::TableProxy (const String& fileName,
 }
 
 TableProxy::TableProxy (const TableProxy& that)
-: table_p (that.table_p)
+: InterfaceThreadUnsafe(),
+  table_p (that.table_p)
 {
   that.verifyProcessIdentifier();
 }
