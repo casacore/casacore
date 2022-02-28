@@ -50,6 +50,10 @@
 #include <casacore/tables/Tables/PlainTable.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <stdio.h>
+
 // <summary>
 // Test program for threaded table reading with locks
 // </summary>
@@ -59,6 +63,38 @@ rownr_t nrowStep = 2 << 14;
 // fine grain locking.... make this a bit faster with a few random checks
 rownr_t rwRowStep = nrowStep >> 3;
 
+// helper method to create a non persistent fork pool
+template <typename func, typename... Args>
+int processpool(size_t no_processes, func& afunc, Args... args){
+  // create "list" of processes using fork from child each time
+  for(size_t id = 0; id < no_processes; ++id) {
+    pid_t c_pid = fork();
+    if (c_pid > 0) { // parent
+      //nothing continue on to next thread
+    } else if(c_pid == 0) { // child process
+      try { 
+        afunc(id, std::forward<Args>(args)...);
+      } catch (AipsError& x) {
+        cout << "Caught an AIPS exception in child process: " << x.getMesg() << endl;
+        _exit(1);
+      } catch (std::exception& x) {
+        cout << "Caught an exception in child process: " << x.what() << endl;
+        _exit(1);
+      }
+      _exit(0);
+    } else {
+      cout << "Forking failed" << endl;
+      return -1;
+    }
+  }
+  int retval = 0;
+  for(size_t id = 0; id < no_processes; ++id) {
+    int childres = 0;
+    wait(&childres);
+    retval = childres | retval;
+  }
+  return retval;
+}
 
 // Build a fresh table with given StorageMan
 template <class TStorageMan, typename... Args>
@@ -96,7 +132,7 @@ void createTable(const String& tablename, const String& smName, Args... args)
 
 // Opens the table, do basic verification reads and then read randomly anywhere
 // 0...nthread*nchunk, up to chunksize per thread times
-void readTableChunk (const String& name, bool doLock=true, size_t chunkNo=0)
+void readTableChunk (size_t chunkNo, const String& name, bool doLock=true)
 {
   Table* tab = nullptr;
   if (doLock) {
@@ -130,7 +166,7 @@ void readTableChunk (const String& name, bool doLock=true, size_t chunkNo=0)
 
 // Reads from a provided Table object, do basic verification reads and then read randomly anywhere
 // 0...nthread*nchunk, up to chunksize per thread times
-void readTableChunkSharedTable (Table& tab, bool doLock=true, size_t chunkNo=0)
+void readTableChunkSharedTable (size_t chunkNo, Table& tab, bool doLock=true)
 {
   if (doLock) tab.lock(false); //no-write
   ArrayColumn<Int> ad(tab,"ad");
@@ -156,7 +192,7 @@ void readTableChunkSharedTable (Table& tab, bool doLock=true, size_t chunkNo=0)
 
 // Reads from a provided TableProxy object, do basic verification reads and then read randomly anywhere
 // 0...nthread*nchunk, up to chunksize per thread times
-int readTableChunkSharedTableProxy (TableProxy & tab, bool doLock=true, size_t chunkNo=0)
+int readTableChunkSharedTableProxy (size_t chunkNo, TableProxy & tab, bool doLock=true)
 {
   try {
     if (doLock) tab.lock(false, 0); //no-write
@@ -185,7 +221,7 @@ int readTableChunkSharedTableProxy (TableProxy & tab, bool doLock=true, size_t c
 
 // Opens the table and alternate randomly between reading and writing
 // with a UserLock anywhere inside the chunk assigned to this call
-void readWriteTableChunk (const String& name, size_t chunkNo=0)
+void readWriteTableChunk (size_t chunkNo, const String& name)
 {
   
   TableLock lock(TableLock::LockOption::UserLocking);
@@ -223,7 +259,7 @@ int runSManTestLock(bool doLock) {
       cout << "\t\tReading from table with " << \
         num_threads*nrowStep << " rows...";
       for (size_t iChunk=0; iChunk<num_threads; ++iChunk)
-        readTableChunk("tVeryBigTable_tmp.tbl", false, iChunk);
+        readTableChunk(iChunk, "tVeryBigTable_tmp.tbl", false);
       cout << "\t<OK>" << endl;
     } catch (AipsError& x) {
       cout << "Caught an exception: " << x.getMesg() << endl;
@@ -240,7 +276,7 @@ int runSManTestLock(bool doLock) {
       std::vector<std::thread> threads;
       // async start a few threads each reading
       for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-        threads.push_back(std::thread(readTableChunk, "tVeryBigTable_tmp.tbl", false, iChunk));
+        threads.push_back(std::thread(readTableChunk, iChunk, "tVeryBigTable_tmp.tbl", false));
       }
       // await results
       for (size_t i = 0; i < num_threads; ++i) {
@@ -273,7 +309,7 @@ int runSManTestLock(bool doLock) {
       std::vector<std::thread> threads;
       // async start a few threads each reading
       for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-        threads.push_back(std::thread(readTableChunkSharedTableProxy, std::ref(tabp), false, iChunk));
+        threads.push_back(std::thread(readTableChunkSharedTableProxy, iChunk, std::ref(tabp), false));
       }
       // await results
       for (size_t i = 0; i < num_threads; ++i) {
@@ -312,7 +348,7 @@ int runSManTestLock(bool doLock) {
   //     std::vector<std::thread> threads;
   //     // async start a few threads each reading
   //     for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-  //       threads.push_back(std::thread(readTableChunkSharedTable, std::ref(*tab), false, iChunk));
+  //       threads.push_back(std::thread(readTableChunkSharedTable, iChunk, std::ref(*tab), false));
   //     }
   //     // await results
   //     for (size_t i = 0; i < num_threads; ++i) {
@@ -332,6 +368,19 @@ int runSManTestLock(bool doLock) {
   //   }
   //   delete tab;
   // }
+  // Usage pattern 5 reading with a pool of processes
+  {
+    cout << "\tRunning multiple processes test (MPI-style) (" << (doLock ? "Lock":"NoLock") << ")" << endl;
+    try { 
+      cout << "\t\tReading from table with " << \
+        num_threads*nrowStep << " rows...";
+      processpool(num_threads, readTableChunk, "tVeryBigTable_tmp.tbl", false);
+      cout << "\t<OK>" << endl;
+    } catch (AipsError& x) {
+      cout << "Caught an exception: " << x.getMesg() << endl;
+      return 1;
+    } 
+  }
   return 0;
 }
 
@@ -343,7 +392,7 @@ int runSManTestRW() {
       cout << "\t\tReading from and writing to table with " << \
         num_threads*nrowStep << " rows...";
       for (size_t iChunk=0; iChunk<num_threads; ++iChunk)
-        readWriteTableChunk("tVeryBigTable_tmp.tbl", iChunk);
+        readWriteTableChunk(iChunk, "tVeryBigTable_tmp.tbl");
       cout << "\t<OK>" << endl;
     } catch (AipsError& x) {
       cout << "Caught an exception: " << x.getMesg() << endl;
@@ -361,7 +410,7 @@ int runSManTestRW() {
   //     std::vector<std::thread> threads;
   //     // async start a few threads each reading
   //     for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-  //       threads.push_back(std::thread(readWriteTableChunk, "tVeryBigTable_tmp.tbl", iChunk));
+  //       threads.push_back(std::thread(readWriteTableChunk, iChunk, "tVeryBigTable_tmp.tbl"));
   //     }
   //     // await results
   //     for (size_t i = 0; i < num_threads; ++i) {
@@ -374,6 +423,19 @@ int runSManTestRW() {
   //     return 1;
   //   } 
   // }
+  // Usage pattern 3 - Processpooled processing
+  {
+    cout << "\tRunning multiple processes test (MPI-style) (UserLock)" << endl;
+    try { 
+      cout << "\t\tReading from and writing to table with " << \
+        num_threads*nrowStep << " rows...";
+      processpool(num_threads, readWriteTableChunk, "tVeryBigTable_tmp.tbl");
+      cout << "\t<OK>" << endl;
+    } catch (AipsError& x) {
+      cout << "Caught an exception: " << x.getMesg() << endl;
+      return 1;
+    } 
+  }
   return 0;
 }
 
@@ -397,7 +459,7 @@ int runSManTest(const String& smName, Args... smArgs) {
 }
 
 int main()
-{
+{  
   if (runSManTest<IncrementalStMan>("IncrementalStMan",
                                     256, //bucket size
                                     True, //check bucket
