@@ -37,7 +37,7 @@ if (BUILD_FFTPACK_DEPRECATED)
 endif ()
 
 add_library (casa_scimath_f ${buildfiles})
-
+target_compile_options (casa_scimath_f PRIVATE -std=legacy)
 target_link_libraries (casa_scimath_f casa_tables ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CASACORE_ARCH_LIBS})
 
 install (
