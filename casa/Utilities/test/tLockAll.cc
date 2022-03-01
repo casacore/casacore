@@ -170,49 +170,6 @@ int main() {
             });
             t3.join();
         }
-        // check ptr array create
-        {
-            Dummy d1;
-            Dummy d2;
-            Dummy d3;
-            vector<const LockableObject<std::recursive_mutex>> vecDummy;
-            vecDummy.push_back(d1);
-            vecDummy.push_back(d2);
-            vecDummy.push_back(d3);
-            {
-                auto vecPtr = LockAll<std::recursive_mutex>::givePtrArray(vecDummy);
-                //LockAll<std::recursive_mutex> lg(LockableObject<std::recursive_mutex>, 3);
-                // LockAll<std::recursive_mutex> lg(vecDummy, 3);
-                // vector<const LockableObject<std::recursive_mutex>*> vecDummy2;
-                // LockAll<std::recursive_mutex> lg2(vecDummy2, 0);
-                // lg2 = std::move(lg);
-                // std::thread t1([&d1](){
-                //     AlwaysAssert(!d1.object_mutex().try_lock(), AipsError);
-                // });
-                // t1.join();
-                // std::thread t2([&d2](){
-                //     AlwaysAssert(!d2.object_mutex().try_lock(), AipsError);
-                // });
-                // t2.join();
-                // std::thread t3([&d3](){
-                //     AlwaysAssert(!d3.object_mutex().try_lock(), AipsError);
-                // });
-                // t3.join();
-            }
-            //all must be lockable again after the guard exits scope
-            std::thread t1([&d1](){
-                    AlwaysAssert(d1.object_mutex().try_lock(), AipsError);
-                });
-            t1.join();
-            std::thread t2([&d2](){
-                AlwaysAssert(d2.object_mutex().try_lock(), AipsError);
-            });
-            t2.join();
-            std::thread t3([&d3](){
-                AlwaysAssert(d3.object_mutex().try_lock(), AipsError);
-            });
-            t3.join();
-        }
         // check fail not lock all
         {
             Dummy d1;

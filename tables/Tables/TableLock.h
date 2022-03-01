@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/LockFile.h>
-
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -177,33 +177,39 @@ private:
 
     // Set itsOption and itsReadLocking when needed.
     void init();
+    mutable std::recursive_mutex itsmutex;
 };
 
 
 
 inline TableLock::LockOption TableLock::option() const
 {
+    std::lock_guard<std::recursive_mutex> lg(itsmutex);
     return itsOption;
 }
 
 inline Bool TableLock::readLocking() const
 {
+    std::lock_guard<std::recursive_mutex> lg(itsmutex);
     return itsReadLocking;
 }
 
 inline Bool TableLock::isPermanent() const
 {
+    std::lock_guard<std::recursive_mutex> lg(itsmutex);
     return  (itsOption == PermanentLocking
 	       ||  itsOption == PermanentLockingWait);
 }
 
 inline double TableLock::interval() const
 {
+    std::lock_guard<std::recursive_mutex> lg(itsmutex);
     return itsInterval;
 }
 
 inline uInt TableLock::maxWait() const
 {
+    std::lock_guard<std::recursive_mutex> lg(itsmutex);
     return itsMaxWait;
 }
 

@@ -56,18 +56,22 @@ TableLock::TableLock (LockOption option, double inspectionInterval,
   init();
 }
 
-TableLock::TableLock (const TableLock& that)
-: itsOption            (that.itsOption),
-  itsReadLocking       (that.itsReadLocking),
-  itsMaxWait           (that.itsMaxWait),
-  itsInterval          (that.itsInterval),
-  itsIsDefaultLocking  (that.itsIsDefaultLocking),
-  itsIsDefaultInterval (that.itsIsDefaultInterval)
-{}
+TableLock::TableLock (const TableLock& that) {
+  std::lock_guard<std::recursive_mutex> lg(that.itsmutex);
+  itsOption            =that.itsOption;
+  itsReadLocking       =that.itsReadLocking;
+  itsMaxWait           =that.itsMaxWait;
+  itsInterval          =that.itsInterval;
+  itsIsDefaultLocking  =that.itsIsDefaultLocking;
+  itsIsDefaultInterval =that.itsIsDefaultInterval;
+}
 
 TableLock& TableLock::operator= (const TableLock& that)
 {
   if (this != &that) {
+    std::unique_lock<std::recursive_mutex> _me(this->itsmutex, std::defer_lock),
+                                           _other(that.itsmutex, std::defer_lock);
+    std::lock(_me, _other);
     itsOption            = that.itsOption;
     itsReadLocking       = that.itsReadLocking;
     itsMaxWait           = that.itsMaxWait;
@@ -81,6 +85,7 @@ TableLock& TableLock::operator= (const TableLock& that)
 
 void TableLock::init()
 {
+std::lock_guard<std::recursive_mutex> lg(this->itsmutex);
 #ifdef AIPS_TABLE_NOLOCKING
   itsOption = NoLocking;
 #else
@@ -109,20 +114,25 @@ void TableLock::init()
 
 void TableLock::merge (const TableLock& that)
 {
-  if (! that.itsIsDefaultLocking) {
-    if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
-      itsOption  = that.itsOption;
-      itsMaxWait = that.itsMaxWait;
-      itsIsDefaultLocking = that.itsIsDefaultLocking;
-    }
-    if (itsIsDefaultLocking) {
-      itsReadLocking = that.itsReadLocking;
-    } else if (that.itsReadLocking) {
-      itsReadLocking = True;
-    }
-    if (! that.itsIsDefaultInterval) {
-      if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
-	itsInterval = that.itsInterval;
+  if (this != &that) {
+    std::unique_lock<std::recursive_mutex> _me(this->itsmutex, std::defer_lock),
+                                           _other(that.itsmutex, std::defer_lock);
+    std::lock(_me, _other);
+    if (! that.itsIsDefaultLocking) {
+      if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
+        itsOption  = that.itsOption;
+        itsMaxWait = that.itsMaxWait;
+        itsIsDefaultLocking = that.itsIsDefaultLocking;
+      }
+      if (itsIsDefaultLocking) {
+        itsReadLocking = that.itsReadLocking;
+      } else if (that.itsReadLocking) {
+        itsReadLocking = True;
+      }
+      if (! that.itsIsDefaultInterval) {
+        if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
+    itsInterval = that.itsInterval;
+        }
       }
     }
   }
