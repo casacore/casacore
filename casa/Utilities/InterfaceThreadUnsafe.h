@@ -39,9 +39,12 @@ namespace casacore {
         InterfaceThreadUnsafe(bool checkPid=false, bool checkTid=true);
     protected:
         // verifies this object's pid and tid ids with the current thread
-        // raises an exception if they are different -- currently table cannot be used safely
+        // raises an exception if they are different
         // inheriting and friend objects should call this method before making changes to the object
         void verifyProcessIdentifier() const;
+        // verifies this object's pid and tid ids with the current thread
+        // similar to verifyProcessIdentifier() but does not throw
+        bool testProcessIdentifier() const;
         // callback method specifying what to do when this object was passed to another thread
         // probably want a nice error message here. Must be overwriten by inheriting classes
         virtual void onMultithreadedAccess() const = 0;
