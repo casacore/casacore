@@ -110,10 +110,10 @@ namespace casacore {
         LockAll(const LockAll& rhs) = delete;
         // on construction implement a deadlock-avoiding algorithm to aquire all locks
         // if cannot aquire all locks retry indefinitely if retry == 0
-        LockAll(const std::vector<LockableObject<mutexType>*>& listLockableObject, size_t retry=0) :
+        LockAll(const std::vector<const LockableObject<mutexType>*>& listLockableObject, size_t retry=0) :
             myLockedObjects(listLockableObject.size()) {
             // the algorithm only works if a total order can be established on the set of objects
-            std::vector<LockableObject<mutexType>*> obs = LockAll::giveTotalOrder(listLockableObject);
+            std::vector<const LockableObject<mutexType>*> obs = LockAll::giveTotalOrder(listLockableObject);
             // check total order all uniquely labelled
             for (size_t i = 1; i < obs.size(); ++i) {
                 if (obs[i-1] == obs[i]) {
@@ -157,26 +157,57 @@ namespace casacore {
         }
         // at scope end implement a deadlock-avoiding algorithm to release all locks
         ~LockAll() {
+            releaseLockedResources();
+        }
+        LockAll& operator=(const LockAll& rhs) = delete;
+        // Move assignment operator hands control of the locked resources to the lhs
+        // the pool will have no locks after this and essentially goes defunct
+        LockAll& operator=(LockAll&& rhs) {
+            if (this != &rhs) {
+                std::unique_lock<std::mutex> _me(this->lockpoolMutex, std::defer_lock),
+                                             _other(rhs.lockpoolMutex, std::defer_lock);
+                std::lock(_me, _other);
+                this->myLockedObjects.resize(rhs.myLockedObjects.size());
+                for (size_t i = 0; i < rhs.myLockedObjects.size(); ++i) {
+                    this->myLockedObjects[i] = rhs.myLockedObjects[i];
+                }
+                // clear without releaseing the other pool -- its destructor will have no effect
+                rhs.myLockedObjects.clear();
+            }
+            return *this;
+        }
+        // Move constructr hands control of the locked resources to the lhs
+        // the pool will have no locks after this and essentially goes defunct
+        LockAll(LockAll&& rhs) {
+            std::lock_guard<std::mutex> lg(rhs.lockpoolMutex);
+            this->myLockedObjects.resize(rhs.myLockedObjects.size());
+            for (size_t i = 0; i < rhs.myLockedObjects.size(); ++i) {
+                this->myLockedObjects[i] = rhs.myLockedObjects[i];
+            }
+            // clear without releaseing the other pool -- its destructor will have no effect
+            rhs.myLockedObjects.clear();
+        }
+    private:
+        std::mutex lockpoolMutex;
+        std::vector<const LockableObject<mutexType>*> myLockedObjects;
+        void releaseLockedResources() {
             // guarenteed that myLockedObjects are already a total order by the constructor sort
             // guarenteed that myLockedObjects are all locked
             // we always unlock from the inverse order that was used in the constructor (ie. desc)
             for (auto it = myLockedObjects.rbegin(); it != myLockedObjects.rend(); ++it) {
                 (*it)->object_mutex().unlock();
             }
+            myLockedObjects.clear();
         }
-        LockAll& operator=(const LockAll& rhs) = delete;
-        LockAll& operator=(LockAll&& rhs) = delete;
-    private:
-        std::vector<LockableObject<mutexType>*> myLockedObjects;
         // give a global (total) order (ascending default)
-        static std::vector<LockableObject<mutexType>*> giveTotalOrder(const std::vector<LockableObject<mutexType>*>& unsortedLockableObject, 
-                                                                      bool asnd=true) {
-            std::vector<LockableObject<mutexType>*> result(unsortedLockableObject.size());
+        static std::vector<const LockableObject<mutexType>*> giveTotalOrder(const std::vector<const LockableObject<mutexType>*>& unsortedLockableObject, 
+                                                                            bool asnd=true) {
+            std::vector<const LockableObject<mutexType>*> result(unsortedLockableObject.size());
             std::copy(unsortedLockableObject.begin(), unsortedLockableObject.end(), result.begin());
             std::sort(result.begin(), result.end(), 
-                        [&asnd](LockableObject<mutexType>* a, LockableObject<mutexType>* b) -> bool {
+                        [&asnd](const LockableObject<mutexType>* a, const LockableObject<mutexType>* b) -> bool {
                         return asnd ? a->__object_uniq_id__ < b->__object_uniq_id__ : \
-                                    a->__object_uniq_id__ > b->__object_uniq_id__;
+                                      a->__object_uniq_id__ > b->__object_uniq_id__;
                         });
             return result;
         }
