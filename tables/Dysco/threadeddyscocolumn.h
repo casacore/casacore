@@ -50,7 +50,7 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
   virtual void setShapeColumn(const casacore::IPosition &shape) override;
 
   /** Get the dimensions of the values in a particular row.
-   * @param rownr The row to get the shape for. */
+   * The rownr parameter is not used as the shape is the same for all rows. */
   virtual casacore::IPosition shape(casacore::uInt /*rownr*/) override {
     return _shape;
   }

@@ -109,6 +109,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       scalar value.
 //  <li> An empty numpy object (e.g. <src>array([])</src>) is handled as
 //       a None value.
+// </ul>
 // </synopsis>
 
 // </module>

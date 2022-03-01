@@ -51,7 +51,7 @@ class DyscoStMan : public casacore::DataManager {
    * initialized to AF normalization with a truncated Gaussian distribution for
    * the quantization, and a truncation of sigma = 2.5. To change the settings,
    * use one of the Set...Distribution() methods and SetNormalization().
-   * @param databitRate The number of bits per float used for visibilities.
+   * @param dataBitRate The number of bits per float used for visibilities.
    * @param weightBitRate The number of bits per float used for the weight
    * column.
    * @param name Storage manager name.
@@ -299,6 +299,7 @@ class DyscoStMan : public casacore::DataManager {
    * To be called by a column once it determines rowsPerBlock and antennaCount.
    * @param rowsPerBlock Number of measurement set rows in one time block.
    * @param antennaCount Highest antenna index+1 used in a time block.
+   * @param writeToHeader Write the header?
    */
   void initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount,
                               bool writeToHeader);
