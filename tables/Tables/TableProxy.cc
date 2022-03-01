@@ -135,8 +135,20 @@ TableProxy::TableProxy (const std::vector<TableProxy>& tables,
 			const Vector<String>& concatenateSubTableNames,
 			int, int, int)
 {
+  // use casacore::LockAll pattern instead of std::lock because 
+  // we need to ensure total order for all TableProxy
+  // when aquiring more than one lock
+  vector<const LockableObject*> objs(tables.size());
+  for (size_t i = 0; i < tables.size(); ++i){
+    objs[i] = &(tables[i]);
+  }
+  TableProxyLockAllType lg(objs);
+
   Block<Table> tabs(tables.size());
   for (uInt i=0; i<tables.size(); ++i) {
+    // BH_WARNING_FIXME May only link to other TableProxies if they are owned
+    // by this thread
+    // BH_WARNING_FIXME NEEDS_TEST
     tables[i].verifyProcessIdentifier();
     tabs[i] = tables[i].table();
   }
@@ -149,8 +161,20 @@ TableProxy::TableProxy (const std::vector<TableProxy>& tables,
 TableProxy::TableProxy (const String& command,
 			const std::vector<TableProxy>& tables)
 {
+  // use casacore::LockAll pattern instead of std::lock because 
+  // we need to ensure total order for all TableProxy
+  // when aquiring more than one lock
+  vector<const LockableObject*> objs(tables.size());
+  for (size_t i = 0; i < tables.size(); ++i){
+    objs[i] = &(tables[i]);
+  }
+  TableProxyLockAllType lg(objs);
+
   std::vector<const Table*> tabs(tables.size());
   for (uInt i=0; i<tabs.size(); i++) {
+    // BH_WARNING: May only link to other TableProxies if they are owned b
+    // the current thread
+    // BH_WARNING_FIXME NEEDS_TEST
     tables[i].verifyProcessIdentifier();
     tabs[i] = &(tables[i].table());
   }
@@ -204,20 +228,29 @@ TableProxy::TableProxy (const String& fileName,
 }
 
 TableProxy::TableProxy (const TableProxy& that)
-: InterfaceThreadUnsafe(),
-  table_p (that.table_p)
+: InterfaceThreadUnsafe()
 {
+  // use casacore::LockAll pattern instead of std::lock because 
+  // we need to ensure total order for all TableProxy
+  // when aquiring more than one lock
+  vector<const LockableObject*> objs(2);
+  objs[0] = this;
+  objs[1] = &that;
+  TableProxyLockAllType lg(objs);
+  // may only copy construct if this thread is owning that
   that.verifyProcessIdentifier();
+  table_p = that.table_p;
 }
 
 TableProxy::~TableProxy()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
 }
 
 TableProxy& TableProxy::operator= (const TableProxy& that)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
+  //BH_WARNING Cannot at present copy assign to a TableProxy we do not own in this thread
   that.verifyProcessIdentifier();
   if (this != &that) {
     table_p = that.table_p;
@@ -228,7 +261,7 @@ TableProxy& TableProxy::operator= (const TableProxy& that)
 
 String TableProxy::endianFormat() const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Return the endian format as a string.
   if (table_p.endianFormat() == Table::BigEndian) {
     return "big";
@@ -238,31 +271,31 @@ String TableProxy::endianFormat() const
 
 void TableProxy::lock (Bool mode, Int nattempts)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.lock (mode, nattempts);
 }
 
 void TableProxy::unlock()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.unlock();
 }
 
 Bool TableProxy::hasDataChanged()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.hasDataChanged();
 }
 
 Bool TableProxy::hasLock (Bool mode)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.hasLock (mode);
 }
 
 Record TableProxy::lockOptions()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Return the lock options as a record.
   const TableLock& lock = table_p.lockOptions();
   Record rec;
@@ -299,7 +332,7 @@ Record TableProxy::lockOptions()
 
 Bool TableProxy::isMultiUsed (Bool checkSubTables)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.isMultiUsed (checkSubTables);
 }
 
@@ -310,7 +343,7 @@ String TableProxy::toAscii (const String& asciiFile,
                             const Vector<Int>& precision,
                             Bool useBrackets)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Possible warning message.
   String message;
   // Determine separator
@@ -403,7 +436,7 @@ String TableProxy::toAscii (const String& asciiFile,
 Bool TableProxy::getColInfo (const String& colName, Bool useBrackets,
                              String& colType, String& message)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Bool good = True;
   ColumnDesc colDesc(table_p.tableDesc().columnDesc (colName));
   // Ignore columns containing Records or variable shaped arrays
@@ -493,7 +526,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
                                    const String& sep, Int prec,
                                    bool useBrackets) const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Int defPrec = 18;
   switch (vh.dataType()) {
   case TpBool:
@@ -651,7 +684,7 @@ template<typename T>
 void TableProxy::printArray (const Array<T>& arr, ostream& os,
                              const String& sep) const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (arr.empty()) {
     cout << "[]";
   } else {
@@ -683,7 +716,7 @@ void TableProxy::printArray (const Array<T>& arr, ostream& os,
 
 void TableProxy::rename (const String& newTableName)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.rename (newTableName, Table::New);
 }
 
@@ -695,7 +728,7 @@ TableProxy TableProxy::copy (const String& newTableName,
 			     const Record& dminfo,
 			     Bool noRows)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Table::EndianFormat endOpt = makeEndianFormat (endianFormat);
   // Always valuecopy if dminfo is not empty or if no rows are copied.
   if (dminfo.nfields() > 0  ||  noRows) {
@@ -721,8 +754,14 @@ void TableProxy::copyRows (TableProxy& out,
 			   Int64 startOut,
 			   Int64 nrow)
 {
-  verifyProcessIdentifier();
-  out.verifyProcessIdentifier();
+  // use casacore::LockAll pattern instead of std::lock because 
+  // we need to ensure total order for all TableProxy
+  // when aquiring more than one lock
+  vector<const LockableObject*> objs(2);
+  objs[0] = this;
+  objs[1] = &out;
+  TableProxyLockAllType lg(objs);
+  
   Table tableOut = out.table();
   if (startOut < 0) {
     startOut = tableOut.nrow();
@@ -737,7 +776,7 @@ void TableProxy::copyRows (TableProxy& out,
 
 void TableProxy::deleteTable (Bool checkSubTables)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (table_p.isMultiUsed (False)) {
     throw TableError ("Table " + table_p.tableName() +
 		      " cannot be deleted; it is used by another process");
@@ -755,7 +794,7 @@ void TableProxy::deleteTable (Bool checkSubTables)
 TableProxy TableProxy::selectRows (const Vector<Int64>& rownrs,
 				   const String& outName)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // If needed, synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   if (anyLT (rownrs, Int64(0))  ||  anyGE (rownrs, Int64(table_p.nrow()))) {
@@ -919,13 +958,13 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 
 Record TableProxy::getDataManagerInfo()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.dataManagerInfo();
 }
 
 Record TableProxy::getProperties (const String& name, Bool byColumn)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   RODataManAccessor acc (table_p, name, byColumn);
   return acc.getProperties();
 }
@@ -933,14 +972,14 @@ Record TableProxy::getProperties (const String& name, Bool byColumn)
 void TableProxy::setProperties (const String& name, const Record& properties,
                                 Bool byColumn)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   RODataManAccessor acc (table_p, name, byColumn);
   acc.setProperties (properties);
 }
 
 Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Get the table description.
   std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
@@ -983,7 +1022,7 @@ Record TableProxy::getTableDesc(const TableDesc & tabdesc, Bool cOrder)
 Record TableProxy::getColumnDescription (const String& columnName,
 					 Bool actual, Bool cOrder)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Get the table description.
   std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
@@ -999,33 +1038,33 @@ Record TableProxy::getColumnDescription (const String& columnName,
 
 String TableProxy::tableName()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.tableName();
 }
 
 Vector<String> TableProxy::getPartNames (Bool recursive)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
 	Block<String> partNames(table_p.getPartNames (recursive));
   return Vector<String>(partNames.begin(), partNames.end());
 }
 
 String TableProxy::getAsciiFormat() const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return asciiFormat_p;
 }
 
 Record TableProxy::getCalcResult() const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return calcResult_p;
 }
 
 String TableProxy::showStructure (Bool showDataMan, Bool showColumns,
                                   Bool showSubTables, Bool sortColumns) const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   ostringstream ostr;
   table_p.showStructure (ostr, showDataMan, showColumns, showSubTables,
                          sortColumns);
@@ -1034,7 +1073,7 @@ String TableProxy::showStructure (Bool showDataMan, Bool showColumns,
 
 Int64 TableProxy::nrows()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   return table_p.nrow();
@@ -1042,13 +1081,13 @@ Int64 TableProxy::nrows()
 
 Int TableProxy::ncolumns()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.tableDesc().ncolumn();
 }
 
 Vector<Int64> TableProxy::shape()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   Vector<Int64> result(2);
@@ -1059,8 +1098,13 @@ Vector<Int64> TableProxy::shape()
 
 Vector<Int64> TableProxy::rowNumbers (TableProxy& other)
 {
-  verifyProcessIdentifier();
-  other.verifyProcessIdentifier();
+  // use casacore::LockAll pattern instead of std::lock because 
+  // we need to ensure total order for all TableProxy
+  // when aquiring more than one lock
+  vector<const LockableObject*> objs(2);
+  objs[0] = this;
+  objs[1] = &other;
+  TableProxyLockAllType lg(objs);
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   table_p.unlock();
@@ -1075,7 +1119,7 @@ Vector<Int64> TableProxy::rowNumbers (TableProxy& other)
 
 Vector<String> TableProxy::columnNames()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Put the column names into a vector.
   const TableDesc& tabdesc = table_p.tableDesc();
   Vector<String> result (tabdesc.ncolumn());
@@ -1088,21 +1132,21 @@ Vector<String> TableProxy::columnNames()
 void TableProxy::setMaximumCacheSize (const String& columnName,
 				      Int nbytes)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableColumn col (table_p, columnName);
   col.setMaximumCacheSize (nbytes);
 }
 
 Bool TableProxy::isScalarColumn (const String& columnName)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableDesc& tabdesc = table_p.tableDesc();
   return tabdesc.columnDesc(columnName).isScalar();
 }
 
 String TableProxy::columnDataType (const String& columnName)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableDesc& tabdesc = table_p.tableDesc();
   DataType type = tabdesc.columnDesc(columnName).dataType();
   return getTypeStr(type);
@@ -1110,7 +1154,7 @@ String TableProxy::columnDataType (const String& columnName)
 
 String TableProxy::columnArrayType (const String& columnName)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableDesc& tableDesc = table_p.tableDesc();
   const ColumnDesc& coldesc = tableDesc.columnDesc (columnName);
   if (coldesc.isScalar()) {
@@ -1135,7 +1179,7 @@ String TableProxy::columnArrayType (const String& columnName)
 ValueHolder TableProxy::getCell (const String& columnName,
 				 Int64 row)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Int64 nrow = getRowsCheck (columnName, row, 1, 1, "getCell");
   return getValueFromTable (columnName, row, nrow, 1, True);
 }
@@ -1143,7 +1187,7 @@ ValueHolder TableProxy::getCell (const String& columnName,
 void TableProxy::getCellVH (const String& columnName,
                             Int64 row, const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Int64 nrow = getRowsCheck (columnName, row, 1, 1, "getCellVH");
   getValueFromTable (columnName, row, nrow, 1, True, vh);
 }
@@ -1154,7 +1198,7 @@ ValueHolder TableProxy::getCellSlice (const String& columnName,
 				      const Vector<Int>& trc,
 				      const Vector<Int>& inc)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return getCellSliceIP (columnName, row, blc, trc, inc);
 }
 
@@ -1165,7 +1209,7 @@ void TableProxy::getCellSliceVH (const String& columnName,
                                  const Vector<Int>& inc,
                                  const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return getCellSliceVHIP (columnName, row, blc, trc, inc, vh);
 }
 
@@ -1175,7 +1219,7 @@ ValueHolder TableProxy::getCellSliceIP (const String& columnName,
                                         const IPosition& trc,
                                         const IPosition& inc)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Slicer slicer;
   Int64 nrow = getRowsSliceCheck (slicer, columnName, row, 1, 1,
                                   blc, trc, inc, "getCellSlice");
@@ -1189,7 +1233,7 @@ void TableProxy::getCellSliceVHIP (const String& columnName,
                                    const IPosition& inc,
                                    const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Slicer slicer;
   Int64 nrow = getRowsSliceCheck (slicer, columnName, row, 1, 1,
                                   blc, trc, inc, "getCellSliceVH");
@@ -1201,7 +1245,7 @@ ValueHolder TableProxy::getColumn (const String& columnName,
 				   Int64 nrow,
 				   Int64 incr)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Int64 nrows = getRowsCheck (columnName, row, nrow, incr, "getColumn");
   return getValueFromTable (columnName, row, nrows, incr, False);
 }
@@ -1212,7 +1256,7 @@ void TableProxy::getColumnVH (const String& columnName,
                               Int64 incr,
                               const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Int64 nrows = getRowsCheck (columnName, row, nrow, incr, "getColumnVH");
   return getValueFromTable (columnName, row, nrows, incr, False, vh);
 }
@@ -1222,7 +1266,7 @@ Record TableProxy::getVarColumn (const String& columnName,
 				 Int64 nrow,
 				 Int64 incr)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Int64 nrows = getRowsCheck (columnName, row, nrow, incr, "getVarColumn");
   TableColumn tabcol (table_p, columnName);
   Record rec;
@@ -1249,7 +1293,7 @@ ValueHolder TableProxy::getColumnSlice (const String& columnName,
 					const Vector<Int>& trc,
 					const Vector<Int>& inc)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return getColumnSliceIP (columnName, blc, trc, inc, row, nrow, incr);
 }
 
@@ -1261,7 +1305,7 @@ ValueHolder TableProxy::getColumnSliceIP (const String& columnName,
 					  Int64 nrow,
 					  Int64 incr)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Slicer slicer;
   Int64 nrows = getRowsSliceCheck (slicer, columnName, row, nrow, incr,
                                    blc, trc, inc, "getColumnSlice");
@@ -1277,7 +1321,7 @@ void TableProxy::getColumnSliceVH (const String& columnName,
                                    const Vector<Int>& inc,
                                    const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   getColumnSliceVHIP (columnName, blc, trc, inc, row, nrow, incr, vh);
 }
 
@@ -1290,7 +1334,7 @@ void TableProxy::getColumnSliceVHIP (const String& columnName,
                                      Int64 incr,
                                      const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   Slicer slicer;
   Int64 nrows = getRowsSliceCheck (slicer, columnName, row, nrow, incr,
                                    blc, trc, inc, "getColumnSliceVH");
@@ -1303,7 +1347,7 @@ void TableProxy::putColumn (const String& columnName,
 			    Int64 incr,
 			    const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
   syncTable (table_p);
@@ -1318,7 +1362,7 @@ void TableProxy::putVarColumn (const String& columnName,
 			       Int64 incr,
 			       const Record& values)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
   syncTable (table_p);
@@ -1344,7 +1388,7 @@ void TableProxy::putColumnSlice (const String& columnName,
 				 const Vector<Int>& inc,
 				 const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   putColumnSliceIP (columnName, value, blc, trc, inc, row, nrow, incr);
 }
 
@@ -1357,7 +1401,7 @@ void TableProxy::putColumnSliceIP (const String& columnName,
 				   Int64 nrow,
 				   Int64 incr)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
@@ -1381,7 +1425,7 @@ void TableProxy::putCell (const String& columnName,
 			  const Vector<Int64>& rownrs,
 			  const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Synchronize table to get up-to-date #rows.
   syncTable (table_p);
   for (rownr_t i=0; i<rownrs.nelements(); i++) {
@@ -1400,7 +1444,7 @@ void TableProxy::putCellSlice (const String& columnName,
 			       const Vector<Int>& inc,
 			       const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   putCellSliceIP (columnName, row, value, blc, trc, inc);
 }
 
@@ -1411,7 +1455,7 @@ void TableProxy::putCellSliceIP (const String& columnName,
 				 const IPosition& trc,
 				 const IPosition& inc)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
@@ -1437,7 +1481,7 @@ Vector<String> TableProxy::getColumnShapeString (const String& columnName,
 						 Int64 incr,
 						 Bool cOrder)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   // Check that the row number is within the table bounds.
@@ -1483,7 +1527,7 @@ Vector<String> TableProxy::getColumnShapeString (const String& columnName,
 Bool TableProxy::cellContentsDefined (const String& columnName,
 				      Int64 rownr)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableColumn tabColumn (table_p, columnName);
   return tabColumn.isDefined (rownr);
 }
@@ -1492,7 +1536,7 @@ ValueHolder TableProxy::getKeyword (const String& columnName,
 				    const String& keywordName,
 				    Int keywordIndex)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableRecord* keySet;
   if (columnName.empty()) {
     keySet = &(table_p.keywordSet());
@@ -1511,7 +1555,7 @@ ValueHolder TableProxy::getKeyword (const String& columnName,
 
 Record TableProxy::getKeywordSet (const String& columnName)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableRecord* keySet;
   if (columnName.empty()) {
     keySet = &(table_p.keywordSet());
@@ -1528,7 +1572,7 @@ void TableProxy::putKeyword (const String& columnName,
 			     Bool makeSubRecord,
 			     const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableRecord* keySet;
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
@@ -1549,7 +1593,7 @@ void TableProxy::putKeyword (const String& columnName,
 void TableProxy::putKeywordSet (const String& columnName,
 				const Record& valueSet)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableRecord* keySet;
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
@@ -1564,7 +1608,7 @@ void TableProxy::removeKeyword (const String& columnName,
 				const String& keywordName,
 				Int keywordIndex)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableRecord* keySet;
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
@@ -1586,7 +1630,7 @@ Vector<String> TableProxy::getFieldNames (const String& columnName,
 					  const String& keywordName,
 					  Int keywordIndex)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableRecord* keySet;
   if (columnName.empty()) {
     keySet = &(table_p.keywordSet());
@@ -1618,13 +1662,13 @@ Vector<String> TableProxy::getFieldNames (const String& columnName,
 
 void TableProxy::flush (Bool recursive)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.flush (False, recursive);
 }
 
 void TableProxy::close()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (! table_p.isNull()) {
     flush(True);
     unlock();
@@ -1634,19 +1678,19 @@ void TableProxy::close()
 
 void TableProxy::reopenRW()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.reopenRW();
 }
 
 void TableProxy::resync()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.resync();
 }
 
 Record TableProxy::tableInfo()
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const TableInfo& info = table_p.tableInfo();
   Record rec;
   rec.define ("type", info.type());
@@ -1657,7 +1701,7 @@ Record TableProxy::tableInfo()
 
 void TableProxy::putTableInfo (const Record& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (! table_p.isWritable()) {
     throw TableError("Table " + table_p.tableName() + " is not writable");
   }
@@ -1685,7 +1729,7 @@ void TableProxy::putTableInfo (const Record& value)
 
 void TableProxy::addReadmeLine (const String& line)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (! table_p.isWritable()) {
     throw TableError("Table " + table_p.tableName() + " is not writable");
   }
@@ -1697,13 +1741,13 @@ void TableProxy::addReadmeLine (const String& line)
 
 Bool TableProxy::isReadable() const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return True;
 }
 
 Bool TableProxy::isWritable() const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   return table_p.isWritable();
 }
 
@@ -1711,7 +1755,7 @@ void TableProxy::addColumns (const Record& tableDesc,
 			     const Record& dminfo,
                              Bool addToParent)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableDesc tabdesc;
   String message;
   if (! makeTableDesc (tableDesc, tabdesc, message)) {
@@ -1729,25 +1773,25 @@ void TableProxy::addColumns (const Record& tableDesc,
 void TableProxy::renameColumn (const String& nameOld,
 			       const String& nameNew)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.renameColumn (nameNew, nameOld);
 }
 
 void TableProxy::removeColumns (const Vector<String>& columnNames)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.removeColumn (columnNames);
 }
 
 void TableProxy::addRow (Int64 nrow)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   table_p.addRow (nrow);
 }
 
 void TableProxy::removeRow (const Vector<Int64>& rownrs)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   Vector<rownr_t> rows(rownrs.nelements());
@@ -2148,7 +2192,7 @@ Int64 TableProxy::getRowsCheck (const String& columnName,
                                 Int64 row, Int64 nrow, Int64 incr,
                                 const String& caller)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
   syncTable (table_p);
@@ -2163,7 +2207,7 @@ Int64 TableProxy::getRowsSliceCheck (Slicer& slicer,
                                      const IPosition& inc,
                                      const String& caller)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
@@ -2182,7 +2226,7 @@ Int64 TableProxy::checkRowColumn (Table& table,
 				Int64 rownr, Int64 nrow, Int64 incr,
 				const String& caller)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Check that the row number is within the table bounds.
   // However, accept a row number equal to nrow when no rows are needed.
   Int64 tabnrow = table.nrow();
@@ -2206,7 +2250,7 @@ Int64 TableProxy::checkRowColumn (Table& table,
 
 ValueHolder TableProxy::makeEmptyArray (DataType dtype)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   IPosition shape(1,0);
   switch (dtype) {
   case TpBool:
@@ -2243,7 +2287,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
 					   Int64 incr,
 					   Bool isCell)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Exit immediately if no rows have to be done.
   const ColumnDesc& cdesc = table_p.tableDesc().columnDesc(colName);
   Bool isScalar = cdesc.isScalar();
@@ -2523,7 +2567,7 @@ void TableProxy::getValueFromTable (const String& colName,
                                     Bool isCell,
                                     const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   const ColumnDesc& cdesc = table_p.tableDesc().columnDesc(colName);
   Bool isScalar = cdesc.isScalar();
   DataType dtype = cdesc.dataType();
@@ -2672,7 +2716,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
 						Int64 rownr, Int64 nrow, Int64 incr,
 						Bool isCell)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Check that the column is an array.
   const ColumnDesc& cdesc = table_p.tableDesc().columnDesc(colName);
   if (! cdesc.isArray()) {
@@ -2827,7 +2871,7 @@ void TableProxy::getValueSliceFromTable (const String& colName,
                                          Bool isCell,
                                          const ValueHolder& vh)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Check that the column is an array.
   const ColumnDesc& cdesc = table_p.tableDesc().columnDesc(colName);
   if (! cdesc.isArray()) {
@@ -2952,7 +2996,7 @@ void TableProxy::putValueInTable (const String& colName,
 				  Int64 rownr, Int64 nrow, Int64 incr,
 				  Bool isCell, const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Exit immediately if no rows have to be done.
   if (nrow == 0) {
     return;
@@ -3255,7 +3299,7 @@ void TableProxy::putValueSliceInTable (const String& colName,
 				       Int64 rownr, Int64 nrow, Int64 incr,
 				       Bool isCell, const ValueHolder& value)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   // Exit immediately if no rows have to be done.
   if (nrow == 0) {
     return;
@@ -3403,7 +3447,7 @@ void TableProxy::findKeyId (RecordFieldId& fieldid,
 			    const String& keyname,
 			    const String& column)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   TableRecord* ksPtr = const_cast<TableRecord*>(keySet);
   findKeyId (fieldid, ksPtr, keyname, column, True, False, False);
   keySet = ksPtr;
@@ -3416,7 +3460,7 @@ void TableProxy::findKeyId (RecordFieldId& fieldid,
 			    Bool mustExist,
 			    Bool change, Bool makeSubRecord)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (keyname.empty()) {
     throw TableError ("Empty keyword name given");
   }
@@ -3466,7 +3510,7 @@ void TableProxy::findKeyId (RecordFieldId& fieldid,
 
 void TableProxy::syncTable (Table& table)
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   if (table.lockOptions().readLocking()) {
     table.lock (FileLocker::Read);
   }
@@ -3474,7 +3518,7 @@ void TableProxy::syncTable (Table& table)
 
 void TableProxy::setDefaultForSlicer (IPosition& vec) const
 {
-  verifyProcessIdentifier();
+  TableProxyLockguardType lg(this->object_mutex());
   for (uInt i=0; i<vec.nelements(); i++) {
     if (vec(i) < 0) {
       vec(i) = Slicer::MimicSource;

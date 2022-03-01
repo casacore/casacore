@@ -62,6 +62,8 @@ size_t num_threads = std::thread::hardware_concurrency();
 rownr_t nrowStep = 2 << 14;
 // fine grain locking.... make this a bit faster with a few random checks
 rownr_t rwRowStep = nrowStep >> 3;
+// single proxy -- internal locking between threads, decrase number of rows read
+rownr_t rSPStep = nrowStep >> 1;
 
 // helper method to create a non persistent fork pool
 template <typename func, typename... Args>
@@ -146,7 +148,7 @@ void readTableChunk (size_t chunkNo, const String& name, bool doLock=true)
   // seq access
   for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
     Vector<int> res = ad.get(i);
-    if (i % nrowStep == 0)
+    if (i % nrowStep == 0) 
       AlwaysAssertExit (res[0] == Int(i / nrowStep));
     ad(i); // just read the rest
   }
@@ -172,17 +174,17 @@ void readTableChunkSharedTable (size_t chunkNo, Table& tab, bool doLock=true)
   ArrayColumn<Int> ad(tab,"ad");
   // seq access
   for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
-    Vector<int> res = ad.get(i);
-    if (i % nrowStep == 0)
+    if (i % nrowStep == 0) {
+      Vector<int> res = ad.get(i);
       AlwaysAssertExit (res[0] == Int(i / nrowStep));
-    ad(i); // just read the rest
+    }
   }
   std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
   std::mt19937_64 eng(rd());
   std::uniform_int_distribution<rownr_t> distr;
 
   // random access
-  for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i++) {
+  for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i+=rSPStep) {
     // read anywhere in the array not just the assigned chunk
     rownr_t rr = distr(eng) % (nrowStep*num_threads);
     Vector<int> res = ad.get(rr);
@@ -194,29 +196,93 @@ void readTableChunkSharedTable (size_t chunkNo, Table& tab, bool doLock=true)
 // 0...nthread*nchunk, up to chunksize per thread times
 int readTableChunkSharedTableProxy (size_t chunkNo, TableProxy & tab, bool doLock=true)
 {
+  if (doLock) tab.lock(false, 0); //no-write
+  // seq access
+  for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
+    if (i % nrowStep == 0) {
+      Vector<Int> res = tab.getColumn("ad",i,1,1).asArrayInt();
+      AlwaysAssertExit (res[0] == Int(i / nrowStep));
+    }
+  }
+  std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
+  std::mt19937_64 eng(rd());
+  std::uniform_int_distribution<rownr_t> distr;
+
+  // random access
+  for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i+=rSPStep) {
+    // read anywhere in the array not just the assigned chunk
+    rownr_t rr = distr(eng) % (nrowStep*num_threads);
+    Vector<Int> res = tab.getColumn("ad",rr,1,1).asArrayInt();
+  }
+  if (doLock) tab.unlock();
+  return 0;
+}
+
+// Reads from a provided TableProxy object, 
+// Copy constructs a reference TP of its own
+// do basic verification reads and then read randomly anywhere
+// 0...nthread*nchunk, up to chunksize per thread times
+int readTableChunkSharedTableProxyCreateTPRefAssign (size_t chunkNo, TableProxy & tab, bool doLock=true)
+{
   try {
-    if (doLock) tab.lock(false, 0); //no-write
+    TableProxy thisthreadTP;
+    thisthreadTP = tab; // test assignment op
+    if (doLock) thisthreadTP.lock(false, 0); //no-write
     // seq access
     for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
-      Vector<Int> res = tab.getColumn("ad",i,1,1).asArrayInt();
-      if (i % nrowStep == 0)
+      if (i % nrowStep == 0) {
+        Vector<Int> res = thisthreadTP.getColumn("ad",i,1,1).asArrayInt();
         AlwaysAssertExit (res[0] == Int(i / nrowStep));
+      }
     }
     std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
     std::mt19937_64 eng(rd());
     std::uniform_int_distribution<rownr_t> distr;
 
     // random access
-    for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i++) {
+    for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i+=rSPStep) {
       // read anywhere in the array not just the assigned chunk
       rownr_t rr = distr(eng) % (nrowStep*num_threads);
-      Vector<Int> res = tab.getColumn("ad",rr,1,1).asArrayInt();
+      Vector<Int> res = thisthreadTP.getColumn("ad",rr,1,1).asArrayInt();
     }
-    if (doLock) tab.unlock();
-  }  catch (NotThreadSafeError& x) {
-      return 0;
+    if (doLock) thisthreadTP.unlock();
+  } catch (casacore::NotThreadSafeError& x) {
+    return 1;
   }
-  return 1;
+  return 0;
+}
+
+// Reads from a provided TableProxy object, 
+// copy constructs a reference table proxy
+// do basic verification reads and then read randomly anywhere
+// 0...nthread*nchunk, up to chunksize per thread times
+int readTableChunkSharedTableProxyCreateTPRefs (size_t chunkNo, TableProxy & tab, bool doLock=true)
+{
+  try {
+    TableProxy thisthreadTP = tab; // test copy construct (ref)
+    if (doLock) thisthreadTP.lock(false, 0); //no-write
+    // seq access
+    for (rownr_t i=chunkNo*nrowStep; i<(chunkNo+1) * nrowStep; i++) {
+      if (i % nrowStep == 0) {
+        Vector<Int> res = thisthreadTP.getColumn("ad",i,1,1).asArrayInt();
+        AlwaysAssertExit (res[0] == Int(i / nrowStep));
+      }
+    }
+    std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
+    std::mt19937_64 eng(rd());
+    std::uniform_int_distribution<rownr_t> distr;
+
+    // random access
+    for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i+=rSPStep) {
+      // read anywhere in the array not just the assigned chunk
+      rownr_t rr = distr(eng) % (nrowStep*num_threads);
+      Vector<Int> res = thisthreadTP.getColumn("ad",rr,1,1).asArrayInt();
+    }
+    if (doLock) thisthreadTP.unlock();
+  } catch (casacore::NotThreadSafeError& x) {
+    return 1;
+  }
+  return 0;
 }
 
 // Opens the table and alternate randomly between reading and writing
@@ -246,6 +312,46 @@ void readWriteTableChunk (size_t chunkNo, const String& name)
       tab.unlock();
     }
   }
+}
+
+// Runs a storage manager locking test use case with threads
+// can set whether the use case should be supported or not
+int runSManTestLockTPThreaded(int (*fn)(size_t, TableProxy &, bool), 
+                              bool doLock,
+                              bool should_be_supported=true) {
+  {
+    Table* tab = nullptr;
+    
+    cout << "\t\tReading from table with " << \
+      num_threads*nrowStep << " rows with " << num_threads << " threads...";
+    if (doLock) {
+      TableLock lock(TableLock::LockOption::UserLocking);
+      tab = new Table("tVeryBigTable_tmp.tbl", lock, Table::Old);
+    } else {
+      tab = new Table("tVeryBigTable_tmp.tbl");
+    }
+    TableProxy tabp(*tab);
+    std::vector<std::thread> threads;
+    // async start a few threads each reading
+    for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+      threads.push_back(std::thread(fn, iChunk, std::ref(tabp), false));
+    }
+    // await results
+    for (size_t i = 0; i < num_threads; ++i) {
+      threads.back().join();
+      threads.pop_back();
+    }
+    cout << (should_be_supported ? "\t<OK>" : "\t<NotImplemented -- OK>") << endl;
+    if (!should_be_supported) {
+      // Reset the stale cache due to exception for the next test to start afresh
+      for (size_t i = 0; i < PlainTable::tableCache().getTableNames().size(); ++i) {
+        PlainTable::tableCache().remove(PlainTable::tableCache().getTableNames()[i]);
+      }
+      AlwaysAssertExit(PlainTable::tableCache().getTableNames().size() == 0) 
+    }
+    delete tab;
+  }
+  return 0;
 }
 
 // Do a series of *ReadOnly* tests with or without UserLocking
@@ -291,43 +397,10 @@ int runSManTestLock(bool doLock) {
   }
   
   // Usage pattern 3 - MultiThreaded - one table proxy across many threads
-  // Currently not implemented -- should bomb with a decent exception
-  // prior behaviour is to fall over with segfault...
   {
     cout << "\tRunning single TableProxy object with multiple threads test (" << (doLock ? "Lock":"NoLock") << ")" << endl;
-    Table* tab = nullptr;
-    try {
-      cout << "\t\tReading from table with " << \
-        num_threads*nrowStep << " rows with " << num_threads << " threads...";
-      if (doLock) {
-        TableLock lock(TableLock::LockOption::UserLocking);
-        tab = new Table("tVeryBigTable_tmp.tbl", lock, Table::Old);
-      } else {
-        tab = new Table("tVeryBigTable_tmp.tbl");
-      }
-      TableProxy tabp(*tab);
-      std::vector<std::thread> threads;
-      // async start a few threads each reading
-      for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-        threads.push_back(std::thread(readTableChunkSharedTableProxy, iChunk, std::ref(tabp), false));
-      }
-      // await results
-      for (size_t i = 0; i < num_threads; ++i) {
-        threads.back().join();
-        threads.pop_back();
-      }
-      cout << "\t<NotImplemented -- OK>" << endl;
-      // Reset the stale cache due to exception for the next test to start afresh
-      for (size_t i = 0; i < PlainTable::tableCache().getTableNames().size(); ++i) {
-        PlainTable::tableCache().remove(PlainTable::tableCache().getTableNames()[i]);
-      }
-      AlwaysAssertExit(PlainTable::tableCache().getTableNames().size() == 0) 
-    } catch (AipsError& x) {
-      cout << "Caught an exception: " << x.getMesg() << endl;
-      if (tab != nullptr) { delete tab; }
-      return 1;
-    }
-    delete tab;
+    runSManTestLockTPThreaded(readTableChunkSharedTableProxy,
+                              doLock, true);
   }
   // Segfaults -- Unimplemented not threadsafe
   // // Usage pattern 4 - MultiThreaded - one Table across many threads
@@ -380,6 +453,20 @@ int runSManTestLock(bool doLock) {
       cout << "Caught an exception: " << x.getMesg() << endl;
       return 1;
     } 
+  }
+  // Usage pattern 6 - MultiThreaded - one table proxy across many threads, assign ref
+  {
+    cout << "\tRunning single TableProxy object with multiple threads test, " \
+              "thread copy construct shallow copy TabProxy (" << (doLock ? "Lock":"NoLock") << ")" << endl;
+    runSManTestLockTPThreaded(readTableChunkSharedTableProxyCreateTPRefAssign,
+                              doLock, false);
+  }
+  // Usage pattern 7 - MultiThreaded - one table proxy across many threads, shallow copy
+  {
+    cout << "\tRunning single TableProxy object with multiple threads test, " \
+              "thread construct shallow copy TabProxy via assignment (" << (doLock ? "Lock":"NoLock") << ")" << endl;
+    runSManTestLockTPThreaded(readTableChunkSharedTableProxyCreateTPRefs,
+                              doLock, false);
   }
   return 0;
 }
