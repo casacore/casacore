@@ -148,7 +148,6 @@ TableProxy::TableProxy (const std::vector<TableProxy>& tables,
   for (uInt i=0; i<tables.size(); ++i) {
     // BH_WARNING_FIXME May only link to other TableProxies if they are owned
     // by this thread
-    // BH_WARNING_FIXME NEEDS_TEST
     tables[i].verifyProcessIdentifier();
     tabs[i] = tables[i].table();
   }
@@ -174,7 +173,6 @@ TableProxy::TableProxy (const String& command,
   for (uInt i=0; i<tabs.size(); i++) {
     // BH_WARNING: May only link to other TableProxies if they are owned b
     // the current thread
-    // BH_WARNING_FIXME NEEDS_TEST
     tables[i].verifyProcessIdentifier();
     tabs[i] = &(tables[i].table());
   }
