@@ -31,6 +31,7 @@
 #include <iostream>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <functional>
 
 class dummy {
 private:
@@ -50,6 +51,7 @@ public:
     static size_t size () { return dummy::alive; } 
     std::string to_string() { return std::to_string(a) + (b ? "_yes_" : "_no_") + c; }
     bool operator==(const dummy & rhs) { return this->objid == rhs.objid; }
+    void setc(std::string newval) { c = newval; }
 };
 size_t dummy::alive = 0;
 size_t dummy::objidcntr = 0;
@@ -112,6 +114,24 @@ int main() {
             AlwaysAssert(dummy::size() == 3, AipsError);
         }
         AlwaysAssert(dummy::size() == 0, AipsError);
+    }
+    // test applyop
+    {
+        auto setString = [](dummy& mydum, std::string& newval) {
+            mydum.setc(newval);
+        };
+        MOP pool;
+        pool.constructObject("1", 1,true,"bla");
+        pool.constructObject("2", 2,true,"bla");
+        pool.constructObject("3", 3,true,"bla");
+        AlwaysAssert(pool["1"].to_string() == "1_yes_bla", AipsError);
+        AlwaysAssert(pool["2"].to_string() == "2_yes_bla", AipsError);
+        AlwaysAssert(pool["3"].to_string() == "3_yes_bla", AipsError);
+        std::string newval = "myval";
+        pool.applyOp(setString, std::ref(newval));
+        AlwaysAssert(pool["1"].to_string() == "1_yes_myval", AipsError);
+        AlwaysAssert(pool["2"].to_string() == "2_yes_myval", AipsError);
+        AlwaysAssert(pool["3"].to_string() == "3_yes_myval", AipsError);
     }
     cout<<"OK"<<endl;
     return 0;
