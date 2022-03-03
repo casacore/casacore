@@ -42,6 +42,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <tuple>
+#include <atomic>
+#include <casacore/casa/Logging/LogMessage.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -53,7 +56,7 @@ class ColumnSet;
 class IPosition;
 class AipsIO;
 class MemoryIO;
-using TableCacheKeyType=std::pair<pid_t, pthread_t>;
+using TableCacheKeyType=std::tuple<bool, pid_t, pthread_t>;
 
 // <summary>
 // Class defining a plain regular table
@@ -261,10 +264,57 @@ public:
                                           Bool byColumn) const;
 
 
-    // Get access to the TableCache.
+    // Gets the TableCache object for this table
+    // Default is use the process-wide table cache (traditional casacore behaviour)
+    // To ensure that this cache does not become the bottleneck for readonly accesses
+    // a pool of TableCaches *may* used internally, issueing a TableCache per thread, assuming
+    // the thread is the sole custodian of a table resources within the process.
+    // See also:: PlainTable::useProcessWideTableCache() and
+    //            PlainTable::useTableCachePerThread()
     static TableCache& tableCache();
 
+    // Switch the CC API to use a table cache over the entire
+    // process. This is the default behaviour of the table system,
+    // meaning that the process is aware of all tables open on the
+    // process. Only one PlainTable object per table may then
+    // be open at any point in time. The calling process is aware of all
+    // such open tables across all threads. At present the table
+    // system itself is not threadsafe, but this method is provided to ensure
+    // the traditionally assumed behaviour of the TableCache
+    // system. This globally-aware caching has the side-effect
+    // of synchronizing IO to a PlainTable (or derived object) on the process.
+    // When a PlainTable is reopened in e.g. update mode any existing
+    // table object within the process pointing to the same disk 
+    // location is upgraded to writable as well through this system
+    // WARNING :-: calling this closes all open tables across
+    // Has no effect if already on a cache per process mode
+    // the **process**. 
+    static void useProcessWideTableCache();
+    // New: switch the CC API to use a table cache per thread.
+    // Each thread is treated as sole-custodian of the tables
+    // it creates in auto locking and is unaware of tables created
+    // in other threads (regardless of auto-locking mode). If autolocking
+    // is used it is restricted to automatically apply within the current
+    // thread. E.g.:: 
+    // - when a PlainTable object is reopened in Update mode
+    //   only other PlainTable objects *within the thread* are upgraded to
+    //   writable mode. It is the responsibility of the user to consistently
+    //   manage locking modes across threads. 
+    // - Any Auto/UserNoRead locked tables in other threads may become stale 
+    //   and should be re-synced by the user, as would have been the case as if
+    //   they lived in other processes. This mode gives substantial improvements 
+    //   in the casacore noreadlock IO cases
+    // Has no effect if already on a cache per thread mode
+    // WARNING :-: calling this closes all open tables across
+    // the **process*
+    static void useTableCachePerThread();
+    
+
 private:
+    // Internal method
+    // See also:: PlainTable::useProcessWideTableCache() and
+    //            PlainTable::useTableCachePerThread()
+    static void globalTableCacheReset();
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
     // Declaring it private, makes it unusable.
@@ -318,7 +368,10 @@ private:
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
     //# cache of open (plain) tables
+
     static ManagedObjectPool<TableCacheKeyType, TableCache> theirTableCache;
+    // **warning**: this variable should not be accessed without locking on theirTableCache
+    static bool usingProcesswideTabCache;
 };
 
 

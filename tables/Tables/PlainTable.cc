@@ -43,10 +43,13 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/AipsrcValue.h>
 #include <time.h>    //# for nanosleep
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // static defines
 ManagedObjectPool<TableCacheKeyType, TableCache> PlainTable::theirTableCache;
+// global (processwide) cache behaviour to maintain backwards API compatibility
+bool PlainTable::usingProcesswideTabCache = true; 
 
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
@@ -816,16 +819,55 @@ void PlainTable::checkWritable (const char* func) const
                              + tableName() + " is not writable"));
     }
 }
-// Gets the TableCache object for this table
-// To ensure that this cache does not become the bottle neck for readonly accesses
-// a pool of TableCaches are used internally, issueing a TableCache per thread
-// In order to get performant code each thread should therefore open its own Table (or TableProxy)
-// object with its own bucket caches, etc.
-TableCache& PlainTable::tableCache() { //static
+
+TableCache& PlainTable::tableCache() { 
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
     auto pid = getpid();
     auto tid = pthread_self();
-    TableCacheKeyType key(pid, tid);
+    TableCacheKeyType key = PlainTable::usingProcesswideTabCache ? \
+                            TableCacheKeyType(true, 0, 0) :
+                            TableCacheKeyType(false, pid, tid);
+    
     return PlainTable::theirTableCache.checkConstructObject(key);
+}
+
+void PlainTable::globalTableCacheReset() {
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    auto apply = [](TableCache& cache) -> void {
+        Vector<String> cachedTables = cache.getTableNames();
+        for (auto it = cachedTables.begin(); it != cachedTables.end(); ++it) {
+            // deletes files on disk if markedfordelete was previously set
+            // removes from global cache
+            cache(*it)->closeObject(); 
+        }
+    };
+    PlainTable::theirTableCache.applyOp(apply);
+}
+
+void PlainTable::useProcessWideTableCache() {
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    if (!PlainTable::usingProcesswideTabCache) {
+        PlainTable::globalTableCacheReset();
+        PlainTable::usingProcesswideTabCache = true;
+
+        casacore::LogMessage("Warning:: Switching to process-wide Table cache system. "
+                             "All tables have been flushed and closed",
+                             LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"),
+                             casacore::LogMessage::WARN);
+    }
+}
+
+void PlainTable::useTableCachePerThread() {
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    if (PlainTable::usingProcesswideTabCache) {
+        PlainTable::globalTableCacheReset();
+        PlainTable::usingProcesswideTabCache = false;
+
+        casacore::LogMessage("Warning:: Switching to thread-wide Table cache system. "
+                             "All tables have been flushed and closed",
+                             LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"),
+                             casacore::LogMessage::WARN);
+    }
 }
 
 } //# NAMESPACE CASACORE - END
