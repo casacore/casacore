@@ -100,10 +100,8 @@ int processpool(size_t no_processes, func& afunc, Args... args){
 
 // Build a fresh table with given StorageMan
 template <class TStorageMan, typename... Args>
-void createTable(const String& tablename, const String& smName, Args... args)
+void createTable(const String& tablename, Args... args)
 {
-  cout << "\tCreating " << smName << " table with " << num_threads << "*" << nrowStep << \
-          " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
   // Build the table description.
   TableDesc td("MYTABLESCHEMA", "1", TableDesc::Scratch);
   td.addColumn (ArrayColumnDesc<Int>("ad", IPosition(1,1)));
@@ -580,30 +578,24 @@ void runSManTestRW(const String& tbname) {
       readWriteTableChunk(iChunk, tbname);
     cout << "\t<OK>" << endl;
   }
-  // Segfaults even with a pooled TableCache
-  // // Usage pattern 2 - MultiThreaded - table per thread
-  // // (The performant case)
-  // {
-  //   cout << "\tRunning multi-threaded test (UserLock)" << endl;
-  //   try {
-  //     cout << "\t\tReading from and writing to table with " << \
-  //       num_threads*nrowStep << " rows with " << num_threads << " threads...";
-  //     std::vector<std::thread> threads;
-  //     // async start a few threads each reading
-  //     for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-  //       threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
-  //     }
-  //     // await results
-  //     for (size_t i = 0; i < num_threads; ++i) {
-  //       threads.back().join();
-  //       threads.pop_back();
-  //     }
-  //     cout << "\t<OK>" << endl;
-  //   } catch (AipsError& x) {
-  //     cout << "Caught an exception: " << x.getMesg() << endl;
-  //     return 1;
-  //   } 
-  // }
+  // Usage pattern 2 - MultiThreaded - table per thread
+  // (The performant case)
+  {
+    cout << "\t\tRunning multi-threaded test (UserLock)" << endl;
+    cout << "\t\t\tReading from and writing to table with " << \
+      num_threads*nrowStep << " rows with " << num_threads << " threads...";
+    std::vector<std::thread> threads;
+    // async start a few threads each reading
+    for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+      threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
+    }
+    // await results
+    for (size_t i = 0; i < num_threads; ++i) {
+      threads.back().join();
+      threads.pop_back();
+    }
+    cout << "\t<OK>" << endl; 
+  }
   // Usage pattern 3 - Processpooled processing
   {
     cout << "\t\tRunning multiple processes test (MPI-style)" << endl; 
@@ -619,16 +611,23 @@ int runSManTest(const String& smName, Args... smArgs) {
   String tbname = "tVeryBigTable_tmp.tbl";
   cout << "Testing " << smName << " storage manager" << endl;
   try {
+    cout << "\tCreating " << smName << " table with " << num_threads << "*" << nrowStep << \
+        " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
     createTable<StMan>(tbname,
-                       smName,
+                       smArgs...); //cachesize
+    cout << "\t<OK>" << endl;
+    cout<<"\tRunning ReadWrite tests..."<<endl;
+    runSManTestRW(tbname);
+    cout << "\tReinitializing validation pattern in " << smName << " table with " << num_threads << "*" << nrowStep << \
+            " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
+    createTable<StMan>(tbname,
                        smArgs...); //cachesize
     cout << "\t<OK>" << endl;
     cout<<"\tRunning ReadOnly tests (UserLock)"<<endl;
     runSManTestLock(true, tbname);
     cout<<"\tRunning ReadOnly tests (NoLock)..."<<endl;
     runSManTestLock(false, tbname);
-    cout<<"\tRunning ReadWrite tests..."<<endl;
-    runSManTestRW(tbname);
+    // Done for this Sm
     cout << "\t<" << smName << " -- all OK>" << endl;
   } catch (AipsError& x) {
       cout << "Caught an exception: " << x.getMesg() << endl;

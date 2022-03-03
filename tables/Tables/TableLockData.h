@@ -32,10 +32,12 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableLock.h>
-
+#include <casacore/casa/Containers/ManagedObjectPool.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+using TableLockDataKeyType = std::pair<pid_t, String>;
 // <summary> 
 // Class to hold table lock data.
 // </summary>
@@ -122,43 +124,49 @@ private:
     // Assignment is forbidden.
     TableLockData& operator= (const TableLockData& that);
 
+    // Lockfilename -- used as handle (can only have one for the process)
+    String lockFileName;
 
-    //# Define the lock file.
-    LockFile*        itsLock;
     //# Define if the file is already read or write locked.
     ReleaseCallBack* itsReleaseCallBack;
     void*            itsReleaseParent;
+
+    // will only create one lockfile to a spcific file throughout this process
+    // as there is no way to tell from a fcntl flock file (used by AIPSIO)
+    // whether that lockfile was created by another thread of this pid
+    static ManagedObjectPool<String, LockFile> processLocks;
+    TableLockDataKeyType getProcLockKey();
 };
 
 
 inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-    TableLockLockAllType lg(*this);
-    return (itsLock == 0  ?  True : itsLock->hasLock (type));
+    TableLockLockAllType lg(processLocks);
+    return (processLocks.contains(lockFileName)  ?  True : processLocks[lockFileName].hasLock (type));
 }
 inline void TableLockData::autoRelease (Bool always)
 {
-    TableLockLockAllType lg(*this);
-    if (option() == AutoLocking  &&  itsLock->inspect(always)) {
+    TableLockLockAllType lg(processLocks);
+    if (option() == AutoLocking  &&  processLocks[lockFileName].inspect(always)) {
 	release();
     }
 }
 inline Bool TableLockData::isMultiUsed() const
 {
-    TableLockLockAllType lg(*this);
-    return itsLock->isMultiUsed();
+    TableLockLockAllType lg(processLocks);
+    return processLocks[lockFileName].isMultiUsed();
 }
 
 
 inline void TableLockData::getInfo (MemoryIO& info)
 {
-    TableLockLockAllType lg(*this);
-    itsLock->getInfo (info);
+    TableLockLockAllType lg(processLocks);
+    processLocks[lockFileName].getInfo (info);
 }
 inline void TableLockData::putInfo (const MemoryIO& info)
 {
-    TableLockLockAllType lg(*this);
-    itsLock->putInfo (info);
+    TableLockLockAllType lg(processLocks);
+    processLocks[lockFileName].putInfo (info);
 }
 
 
