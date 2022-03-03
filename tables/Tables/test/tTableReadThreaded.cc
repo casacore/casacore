@@ -26,7 +26,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-
+#include <casacore/tables/Tables/PlainTable.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
@@ -638,7 +638,10 @@ int runSManTest(const String& smName, Args... smArgs) {
 }
 
 int main()
-{  
+{
+  // Switch the pool per thread system
+  PlainTable::useTableCachePerThread();
+
   if (runSManTest<IncrementalStMan>("IncrementalStMan",
                                     256, //bucket size
                                     True, //check bucket
