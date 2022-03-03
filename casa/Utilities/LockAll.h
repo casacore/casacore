@@ -113,16 +113,13 @@ namespace casacore {
         LockAll(const LockAll& rhs) = delete;
         // on construction implement a deadlock-avoiding algorithm to aquire all locks
         // if cannot aquire all locks retry indefinitely if retry == 0
-        LockAll(const std::vector<const LockableObject<MutexType>*>& listLockableObject, size_t retry=0) :
-            myLockedObjects(listLockableObject.size()) {
+        LockAll(const std::vector<const LockableObject<MutexType>*>& listLockableObject, size_t retry=0) {
             // the algorithm only works if a total order can be established on the set of objects
             std::vector<const LockableObject<MutexType>*> obs = LockAll::giveTotalOrder(listLockableObject);
-            // check total order all uniquely labelled
-            for (size_t i = 1; i < obs.size(); ++i) {
-                if (obs[i-1] == obs[i]) {
-                    throw LockAllNotAllUnique(); // should never happen unless the base constructor was not called...
-                }
-            }
+            // ensure no duplicate locking objects are passed to LockAll (assert uniquely labelled total order)
+            auto it = std::unique(obs.begin(), obs.end());
+            obs.resize(std::distance(obs.begin(), it));
+            myLockedObjects.resize(obs.size());
             // pickup ascending - if we cannot pick up we release all we picked up thus far
             auto pickupAll = [&listLockableObject,&retry,&obs]() -> bool {
                 bool obtainedAllThusFar = true;

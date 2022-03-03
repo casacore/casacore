@@ -163,6 +163,58 @@ int main() {
             });
             t2.join();
         }
+        {
+            cout<< "--- LockAll variable number object with duplicates constructor test ---"<<endl;
+            Dummy d1;
+            Dummy d2;
+            Dummy d3;
+            vector<const LockableObject<std::recursive_mutex>*> vecDummy;
+            vecDummy.push_back(&d1);
+            vecDummy.push_back(&d2);
+            vecDummy.push_back(&d1);
+            vecDummy.push_back(&d3);
+            vecDummy.push_back(&d2);
+            vecDummy.push_back(&d3);
+            {
+                LockAll<std::recursive_mutex> lg(vecDummy, 3);
+                cout<<"parent aquired locks"<<endl;
+                std::thread t1([&d1](){
+                    AlwaysAssert(!d1.object_mutex().try_lock(), AipsError);
+                    cout<<"thread1 failed to lock"<<endl;
+                });
+                t1.join();
+                std::thread t2([&d2](){
+                    AlwaysAssert(!d2.object_mutex().try_lock(), AipsError);
+                    cout<<"thread2 failed to lock"<<endl;
+                });
+                t2.join();
+                std::thread t3([&d3](){
+                    AlwaysAssert(!d3.object_mutex().try_lock(), AipsError);
+                    cout<<"thread3 failed to lock"<<endl;
+                });
+                t3.join();
+            }
+            //all must be lockable again after the guard exits scope
+            cout<<"parent released all locks"<<endl;
+            std::thread t1([&d1](){
+                    AlwaysAssert(d1.object_mutex().try_lock(), AipsError);
+                    d1.object_mutex().unlock();
+                    cout<<"thread1 locked and unlocked success"<<endl;
+                });
+            t1.join();
+            std::thread t2([&d2](){
+                AlwaysAssert(d2.object_mutex().try_lock(), AipsError);
+                d2.object_mutex().unlock();
+                cout<<"thread2 locked and unlocked success"<<endl;
+            });
+            t2.join();
+            std::thread t3([&d3](){
+                AlwaysAssert(d3.object_mutex().try_lock(), AipsError);
+                d3.object_mutex().unlock();
+                cout<<"thread3 locked and unlocked success"<<endl;
+            });
+            t3.join();
+        }
         // single object constructor lock successful test
         {
             cout<< "--- LockAll single object constructor test ---"<<endl;
