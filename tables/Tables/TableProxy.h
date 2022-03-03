@@ -49,7 +49,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprNode;
   class Slicer;
   using TableProxyMutexType=std::recursive_mutex;
-  using TableProxyLockguardType=std::lock_guard<TableProxyMutexType>;
   using TableProxyLockAllType=LockAll<TableProxyMutexType>;
 
 // <summary>
@@ -600,11 +599,11 @@ public:
   // Return the table object.
   // <group>
   Table& table() { 
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     return table_p; 
   }
   const Table& table() const { 
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     return table_p; 
   }
   // </group>
@@ -716,27 +715,27 @@ private:
   void printArray (const Array<T>& arr, ostream& os,
                    const String& sep) const;
   void printArrayValue (ostream& os, Bool v, const String&) const {
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     os << v;
   }
   void printArrayValue (ostream& os, Int v, const String&) const {
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     os << v;
   }
   void printArrayValue (ostream& os, Int64 v, const String&) const {
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     os << v;
   }
   void printArrayValue (ostream& os, Double v, const String&) const {
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     os << v;
   }
   void printArrayValue (ostream& os, const DComplex& v, const String&) const {
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     os << v;
   }
   void printArrayValue (ostream& os, const String& v, const String&) const {
-    TableProxyLockguardType lg(this->object_mutex());
+    TableProxyLockAllType lg(*this);
     os << '"' << v << '"';
   }
   // </group>
