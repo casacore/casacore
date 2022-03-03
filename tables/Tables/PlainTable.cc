@@ -870,4 +870,7 @@ void PlainTable::useTableCachePerThread() {
     }
 }
 
+bool PlainTable::isUsingTableCachePerProcess() {
+    return PlainTable::usingProcesswideTabCache;
+}
 } //# NAMESPACE CASACORE - END

@@ -309,7 +309,13 @@ public:
     // the **process*
     static void useTableCachePerThread();
     
-
+    // Check if the table system is currently set to cache process wide
+    // See also:: PlainTable::useProcessWideTableCache() and
+    //            PlainTable::useTableCachePerThread()
+    // Warning:: boolean returned may become stale while you are checking
+    // if running in threaded mode. It is strongly suggested that you set this
+    // behaviour only in the main thread
+    static bool isUsingTableCachePerProcess();
 private:
     // Internal method
     // See also:: PlainTable::useProcessWideTableCache() and
