@@ -57,7 +57,7 @@ TableLock::TableLock (LockOption option, double inspectionInterval,
 }
 
 TableLock::TableLock (const TableLock& that) {
-  std::lock_guard<std::recursive_mutex> lg(that.itsmutex);
+  TableLockLockAllType lg(*this);
   itsOption            =that.itsOption;
   itsReadLocking       =that.itsReadLocking;
   itsMaxWait           =that.itsMaxWait;
@@ -69,9 +69,7 @@ TableLock::TableLock (const TableLock& that) {
 TableLock& TableLock::operator= (const TableLock& that)
 {
   if (this != &that) {
-    std::unique_lock<std::recursive_mutex> _me(this->itsmutex, std::defer_lock),
-                                           _other(that.itsmutex, std::defer_lock);
-    std::lock(_me, _other);
+    TableLockLockAllType lg(*this, that);
     itsOption            = that.itsOption;
     itsReadLocking       = that.itsReadLocking;
     itsMaxWait           = that.itsMaxWait;
@@ -85,7 +83,7 @@ TableLock& TableLock::operator= (const TableLock& that)
 
 void TableLock::init()
 {
-std::lock_guard<std::recursive_mutex> lg(this->itsmutex);
+TableLockLockAllType lg(*this);
 #ifdef AIPS_TABLE_NOLOCKING
   itsOption = NoLocking;
 #else
@@ -115,9 +113,7 @@ std::lock_guard<std::recursive_mutex> lg(this->itsmutex);
 void TableLock::merge (const TableLock& that)
 {
   if (this != &that) {
-    std::unique_lock<std::recursive_mutex> _me(this->itsmutex, std::defer_lock),
-                                           _other(that.itsmutex, std::defer_lock);
-    std::lock(_me, _other);
+    TableLockLockAllType lg(*this, that);
     if (! that.itsIsDefaultLocking) {
       if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
         itsOption  = that.itsOption;

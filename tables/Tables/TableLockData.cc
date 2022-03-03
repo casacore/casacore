@@ -45,6 +45,7 @@ TableLockData::TableLockData (const TableLock& lockOptions,
 
 TableLockData::~TableLockData()
 {
+	TableLockLockAllType lg(*this);
     delete itsLock;
 }
 
@@ -52,6 +53,7 @@ TableLockData::~TableLockData()
 void TableLockData::makeLock (const String& name, Bool create,
 			      FileLocker::LockType type, uInt locknr)
 {
+	TableLockLockAllType lg(*this);
     //# Create lock file object only when not created yet.
     //# It is acceptable that no lock file exists for a readonly table
     //# (to be able to read older tables).
@@ -77,6 +79,7 @@ void TableLockData::makeLock (const String& name, Bool create,
 Bool TableLockData::acquire (MemoryIO* info,
 			     FileLocker::LockType type, uInt nattempts)
 {
+	TableLockLockAllType lg(*this);
     //# Try to acquire a lock.
     //# Show a message when we have to wait for a long time.
     //# Start with n attempts, show a message and continue thereafter.
@@ -123,6 +126,7 @@ Bool TableLockData::acquire (MemoryIO* info,
 
 void TableLockData::release (Bool always)
 {
+	TableLockLockAllType lg(*this);
     //# Only release if not permanently locked.
     if (always  ||  !isPermanent()) {
 	MemoryIO* memIO = 0;

@@ -32,9 +32,12 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/LockFile.h>
+#include <casacore/casa/Utilities/LockAll.h>
 #include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
+using TableProxyMutexType=std::recursive_mutex;
+using TableLockLockAllType=LockAll<TableProxyMutexType>;
 
 // <summary> 
 // Class to hold table lock options.
@@ -65,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 
-class TableLock
+class TableLock : public RecursiveLockableObject
 {
 public: 
     // Define the possible table locking options.
@@ -139,6 +142,7 @@ public:
     // Assignment.
     TableLock& operator= (const TableLock& that);
 
+    virtual ~TableLock() { TableLockLockAllType lg(*this); }
     // Merge that TableLock with this TableLock object by taking the
     // maximum option and minimum inspection interval.
     // The option order (ascending) is UserLocking, AutoLocking,
@@ -177,39 +181,38 @@ private:
 
     // Set itsOption and itsReadLocking when needed.
     void init();
-    mutable std::recursive_mutex itsmutex;
 };
 
 
 
 inline TableLock::LockOption TableLock::option() const
 {
-    std::lock_guard<std::recursive_mutex> lg(itsmutex);
+    TableLockLockAllType lg(*this);
     return itsOption;
 }
 
 inline Bool TableLock::readLocking() const
 {
-    std::lock_guard<std::recursive_mutex> lg(itsmutex);
+    TableLockLockAllType lg(*this);
     return itsReadLocking;
 }
 
 inline Bool TableLock::isPermanent() const
 {
-    std::lock_guard<std::recursive_mutex> lg(itsmutex);
+    TableLockLockAllType lg(*this);
     return  (itsOption == PermanentLocking
 	       ||  itsOption == PermanentLockingWait);
 }
 
 inline double TableLock::interval() const
 {
-    std::lock_guard<std::recursive_mutex> lg(itsmutex);
+    TableLockLockAllType lg(*this);
     return itsInterval;
 }
 
 inline uInt TableLock::maxWait() const
 {
-    std::lock_guard<std::recursive_mutex> lg(itsmutex);
+    TableLockLockAllType lg(*this);
     return itsMaxWait;
 }
 

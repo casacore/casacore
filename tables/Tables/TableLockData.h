@@ -133,26 +133,31 @@ private:
 
 inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
+    TableLockLockAllType lg(*this);
     return (itsLock == 0  ?  True : itsLock->hasLock (type));
 }
 inline void TableLockData::autoRelease (Bool always)
 {
+    TableLockLockAllType lg(*this);
     if (option() == AutoLocking  &&  itsLock->inspect(always)) {
 	release();
     }
 }
 inline Bool TableLockData::isMultiUsed() const
 {
+    TableLockLockAllType lg(*this);
     return itsLock->isMultiUsed();
 }
 
 
 inline void TableLockData::getInfo (MemoryIO& info)
 {
+    TableLockLockAllType lg(*this);
     itsLock->getInfo (info);
 }
 inline void TableLockData::putInfo (const MemoryIO& info)
 {
+    TableLockLockAllType lg(*this);
     itsLock->putInfo (info);
 }
 
