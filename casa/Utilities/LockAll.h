@@ -52,25 +52,28 @@ namespace casacore {
     // </motivation>
     // <todo asof="2022/02/23">
     // </todo>
-    template <typename mutexType>
+    template <class MutexType>
     class LockableObject {
     public:
         // Note:: Inheriting object ****!!MUST!!**** call the base constructor
         LockableObject() :
             __object_uniq_id__(LockableObject::__num_allocated_objects__++) {}
     protected:
-        virtual mutexType& object_mutex() const {
+        virtual MutexType& object_mutex() const {
             return itsmutex;
         }
     private:
-        mutable mutexType itsmutex;
+        mutable MutexType itsmutex;
         size_t __object_uniq_id__;
         static size_t __num_allocated_objects__;
-        friend class LockAll<mutexType>;
+        friend class LockAll<MutexType>;
     };
-    template <typename mutexType>
-    size_t LockableObject<mutexType>::__num_allocated_objects__ = 0;
+    template <typename MutexType>
+    size_t LockableObject<MutexType>::__num_allocated_objects__ = 0;
 
+    // convenience type declarations
+    class NonRecursiveLockableObject : public LockableObject<std::mutex> {};
+    class RecursiveLockableObject : public LockableObject<std::recursive_mutex> {};
     // <summary>
     // LockAll simultaneous locking pattern
     // Contribution by Benjamin Hugo, Radio Astronomy Research Group, SARAO
@@ -103,17 +106,17 @@ namespace casacore {
     // </motivation>
     // <todo asof="2022/02/23">
     // </todo>
-    template <typename mutexType>
+    template <typename MutexType>
     class LockAll {
     public:
         LockAll() = delete;
         LockAll(const LockAll& rhs) = delete;
         // on construction implement a deadlock-avoiding algorithm to aquire all locks
         // if cannot aquire all locks retry indefinitely if retry == 0
-        LockAll(const std::vector<const LockableObject<mutexType>*>& listLockableObject, size_t retry=0) :
+        LockAll(const std::vector<const LockableObject<MutexType>*>& listLockableObject, size_t retry=0) :
             myLockedObjects(listLockableObject.size()) {
             // the algorithm only works if a total order can be established on the set of objects
-            std::vector<const LockableObject<mutexType>*> obs = LockAll::giveTotalOrder(listLockableObject);
+            std::vector<const LockableObject<MutexType>*> obs = LockAll::giveTotalOrder(listLockableObject);
             // check total order all uniquely labelled
             for (size_t i = 1; i < obs.size(); ++i) {
                 if (obs[i-1] == obs[i]) {
@@ -155,6 +158,16 @@ namespace casacore {
             // aquired all -- need to keep them handy for releasing them later on RAII scope end
             std::copy(obs.begin(), obs.end(), myLockedObjects.begin());
         }
+        // Construct lock guard on single object
+        LockAll(const LockableObject<MutexType>& obj, size_t retry=0) :
+            LockAll(std::vector<const LockableObject<MutexType>*>{&obj}, retry){
+        }
+        // Construct lock guard two objects
+        LockAll(const LockableObject<MutexType>& obj1,
+                const LockableObject<MutexType>& obj2,
+                size_t retry=0) :
+            LockAll(std::vector<const LockableObject<MutexType>*>{&obj1, &obj2}, retry){
+        }
         // at scope end implement a deadlock-avoiding algorithm to release all locks
         ~LockAll() {
             releaseLockedResources();
@@ -189,7 +202,7 @@ namespace casacore {
         }
     private:
         std::mutex lockpoolMutex;
-        std::vector<const LockableObject<mutexType>*> myLockedObjects;
+        std::vector<const LockableObject<MutexType>*> myLockedObjects;
         void releaseLockedResources() {
             // guarenteed that myLockedObjects are already a total order by the constructor sort
             // guarenteed that myLockedObjects are all locked
@@ -200,12 +213,12 @@ namespace casacore {
             myLockedObjects.clear();
         }
         // give a global (total) order (ascending default)
-        static std::vector<const LockableObject<mutexType>*> giveTotalOrder(const std::vector<const LockableObject<mutexType>*>& unsortedLockableObject, 
+        static std::vector<const LockableObject<MutexType>*> giveTotalOrder(const std::vector<const LockableObject<MutexType>*>& unsortedLockableObject, 
                                                                             bool asnd=true) {
-            std::vector<const LockableObject<mutexType>*> result(unsortedLockableObject.size());
+            std::vector<const LockableObject<MutexType>*> result(unsortedLockableObject.size());
             std::copy(unsortedLockableObject.begin(), unsortedLockableObject.end(), result.begin());
             std::sort(result.begin(), result.end(), 
-                        [&asnd](const LockableObject<mutexType>* a, const LockableObject<mutexType>* b) -> bool {
+                        [&asnd](const LockableObject<MutexType>* a, const LockableObject<MutexType>* b) -> bool {
                         return asnd ? a->__object_uniq_id__ < b->__object_uniq_id__ : \
                                       a->__object_uniq_id__ > b->__object_uniq_id__;
                         });
