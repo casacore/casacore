@@ -514,7 +514,7 @@ void runSManTestLock(bool doLock, const String & tbname) {
     cout << "\t\tRunning multiple processes test (MPI-style) "<< endl;
     cout << "\t\t\tReading from table with " << \
       num_threads*nrowStep << " rows...";
-    processpool(num_threads, readTableChunk, "tVeryBigTable_tmp.tbl", false);
+    AlwaysAssertExit(!processpool(num_threads, readTableChunk, "tVeryBigTable_tmp.tbl", false));
     cout << "\t\t<OK>" << endl;
   }
   // Usage pattern 7 - MultiThreaded - one table proxy across many threads, assign ref
@@ -540,31 +540,49 @@ void runSManTestLock(bool doLock, const String & tbname) {
   }
 }
 
-// Opens the table and alternate randomly between reading and writing
-// with a UserLock anywhere inside the chunk assigned to this call
+// Opens the table to write and read back chunks of random numbers
+// starting at random positions. Each call (ie thread/process) will
+// writeread num_threads worth of such chunks of length(rwRowStep)
+// obtaining userlocks as needed. The input chunk is validated
+// against the output chunk to ensure successful locking
+// chunkNo has to stay to identify thread/process in pool here but is unused on purpose
 void readWriteTableChunk (size_t chunkNo, const String& name)
 {
   TableLock lock(TableLock::LockOption::UserLocking);
   Table tab(name, lock, Table::Update);
-  ArrayColumn<Int> ad(tab,"ad");
   
   std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
   std::mt19937_64 eng(rd());
   std::uniform_int_distribution<rownr_t> distr;
 
-  // random access
-  for (rownr_t i=chunkNo; i<(chunkNo+1) * nrowStep; i+=rwRowStep) {
-    rownr_t rr = distr(eng) % (nrowStep) + chunkNo*nrowStep;
-    // flip flop between even/odd random numbers to determine if writing or reading
-    if (rr % 1) { 
-      tab.lock(false); //read lock
-      Vector<int> res = ad.get(rr);
-      tab.unlock();
-    } else {
-      tab.lock(true); //write lock
-      ad.put(rr, Vector<int>(1));
-      tab.unlock();
+  ArrayColumn<Int> ad(tab,"ad");
+  Vector<Int> putvec(1);
+  // each thread/process puts num_threads number of chunks back into the database
+  // each starting at random position
+  for (rownr_t i=0; i < num_threads; ++i) {
+    rownr_t startrow = (distr(eng) % (num_threads*(rwRowStep-1)));
+    Slice position(startrow, rwRowStep, 1);
+    Array<Int> writevals(IPosition(1, rwRowStep), Int(0));
+    for (auto ii = writevals.begin(); ii != writevals.end(); ++ii ) {
+      (*ii) = Int(distr(eng) % (nrowStep * num_threads));
     }
+    // test that the lock is keeping others at bay
+    tab.lock(true);
+    auto ii = writevals.begin();
+    for (rownr_t i=0; i<rwRowStep; ++i, ++ii) {
+      putvec[0] = (*ii);
+      ad.put(startrow+i, putvec);
+    }
+    Vector<Int> readvals = ad.getColumnRange(position);
+    tab.unlock();
+    AlwaysAssertExit(writevals.size() == readvals.size());
+    bool allEqual = true;
+    for (auto iW = writevals.begin(), iR = readvals.begin();
+         iW != writevals.end(), iR != readvals.end();
+         ++iW, ++iR) {
+        allEqual = allEqual && (*iW == *iR);
+    }
+    AlwaysAssertExit(allEqual);
   }
 }
 
@@ -580,28 +598,28 @@ void runSManTestRW(const String& tbname) {
   }
   // Usage pattern 2 - MultiThreaded - table per thread
   // (The performant case)
-  {
-    cout << "\t\tRunning multi-threaded test (UserLock)" << endl;
-    cout << "\t\t\tReading from and writing to table with " << \
-      num_threads*nrowStep << " rows with " << num_threads << " threads...";
-    std::vector<std::thread> threads;
-    // async start a few threads each reading
-    for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-      threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
-    }
-    // await results
-    for (size_t i = 0; i < num_threads; ++i) {
-      threads.back().join();
-      threads.pop_back();
-    }
-    cout << "\t<OK>" << endl; 
-  }
+  // {
+  //   cout << "\t\tRunning multi-threaded test (UserLock)" << endl;
+  //   cout << "\t\t\tReading from and writing to table with " << \
+  //     num_threads*nrowStep << " rows with " << num_threads << " threads...";
+  //   std::vector<std::thread> threads;
+  //   // async start a few threads each reading
+  //   for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+  //     threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
+  //   }
+  //   // await results
+  //   for (size_t i = 0; i < num_threads; ++i) {
+  //     threads.back().join();
+  //     threads.pop_back();
+  //   }
+  //   cout << "\t<OK>" << endl; 
+  // }
   // Usage pattern 3 - Processpooled processing
   {
     cout << "\t\tRunning multiple processes test (MPI-style)" << endl; 
     cout << "\t\t\tReading from and writing to table with " << \
       num_threads*nrowStep << " rows...";
-    processpool(num_threads, readWriteTableChunk, tbname);
+    AlwaysAssertExit(!processpool(num_threads, readWriteTableChunk, tbname));
     cout << "\t<OK>" << endl;
   }
 }
@@ -630,8 +648,8 @@ int runSManTest(const String& smName, Args... smArgs) {
     // Done for this Sm
     cout << "\t<" << smName << " -- all OK>" << endl;
   } catch (AipsError& x) {
-      cout << "Caught an exception: " << x.getMesg() << endl;
-      return 1;
+     cout << "Caught an exception: " << x.getMesg() << endl;
+     return 1;
   }
   return 0;
 }
