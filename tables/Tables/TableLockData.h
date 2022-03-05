@@ -32,10 +32,14 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableLock.h>
-
+#include <casacore/casa/Containers/ManagedObjectPool.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <tuple>
+#include <condition_variable>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
 // <summary> 
 // Class to hold table lock data.
 // </summary>
@@ -63,6 +67,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TableLockData : public TableLock
 {
 public: 
+    using CustodianThreadLockKeyType=String;
+    // We need the pthread id that is the custodian of the pid's table lock and a way to block and notify
+    // per file each other thread within the pid trying to get 
+    enum ThreadLockState { NoLock, LockedRead, LockedWrite };
+    using CustodianThreadValueRecordType=std::tuple<ThreadLockState,
+                                                    pthread_t,
+                                                    pid_t>;
+    using CustodianThreadLockValueType=std::vector<CustodianThreadValueRecordType>;
+                                                  
     // Define the signature of the callback function when a lock is released.
     // The flag <src>always</src> tells if the callback function should
     // always write its main data (meant for case that table gets closed).
@@ -114,7 +127,8 @@ public:
     void getInfo (MemoryIO& info);
     void putInfo (const MemoryIO& info);
     // </group>
-
+    Bool doTidHaveCustody(const ThreadLockState& state) const;
+    Bool doAnyTidHaveCustody(const ThreadLockState& state) const;
 private:
     // Copy constructor is forbidden.
     TableLockData (const TableLockData& that);
@@ -128,36 +142,36 @@ private:
     //# Define if the file is already read or write locked.
     ReleaseCallBack* itsReleaseCallBack;
     void*            itsReleaseParent;
+
+    static ManagedObjectPool<CustodianThreadLockKeyType, 
+                             CustodianThreadLockValueType> fileThreadLocks;
+    CustodianThreadLockKeyType giveThreadLockKey() const;
+    size_t getPiDThreadCustodianRecord() const;
+    bool acquireThreadLock(FileLocker::LockType type);
 };
 
-
-inline Bool TableLockData::hasLock (FileLocker::LockType type) const
-{
-    TableLockLockAllType lg(*this);
-    return (itsLock == 0  ?  True : itsLock->hasLock (type));
-}
 inline void TableLockData::autoRelease (Bool always)
 {
-    TableLockLockAllType lg(*this);
+    TableLockLockAllType lg(fileThreadLocks);
     if (option() == AutoLocking  &&  itsLock->inspect(always)) {
 	release();
     }
 }
 inline Bool TableLockData::isMultiUsed() const
 {
-    TableLockLockAllType lg(*this);
+    TableLockLockAllType lg(fileThreadLocks);
     return itsLock->isMultiUsed();
 }
 
 
 inline void TableLockData::getInfo (MemoryIO& info)
 {
-    TableLockLockAllType lg(*this);
+    TableLockLockAllType lg(fileThreadLocks);
     itsLock->getInfo (info);
 }
 inline void TableLockData::putInfo (const MemoryIO& info)
 {
-    TableLockLockAllType lg(*this);
+    TableLockLockAllType lg(fileThreadLocks);
     itsLock->putInfo (info);
 }
 

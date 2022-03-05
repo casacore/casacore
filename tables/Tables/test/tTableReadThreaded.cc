@@ -59,11 +59,12 @@
 // </summary>
 
 size_t num_threads = std::thread::hardware_concurrency(); 
-const rownr_t nrowStep = 2 << 14;
+const rownr_t nrowStep = 2 << 12;
 // fine grain locking.... make this a bit faster with a few random checks
 const rownr_t rwRowStep = nrowStep >> 3;
+const size_t nrwBlocksPerThread = 2<<3;
 // single proxy -- internal locking between threads, decrase number of rows read
-const rownr_t rSPStep = nrowStep >> 1;
+const rownr_t rSPStep = nrowStep >> 3;
 
 // helper method to create a non persistent fork pool
 template <typename func, typename... Args>
@@ -112,6 +113,9 @@ void createTable(const String& tablename, Args... args)
   newtab.bindColumn("ad", TStorageMan("SM", args...));
   
   // Create a concrete table for this table setup
+  //TableLock lock(TableLock::LockOption::UserLocking);
+  //Table concreteTab(newtab, lock);
+  //concreteTab.lock(true);
   Table concreteTab(newtab);
   ArrayColumn<Int> ad(concreteTab, "ad");
   ScalarColumn<Int> ic(concreteTab, "indexcol");
@@ -139,6 +143,7 @@ void createTable(const String& tablename, Args... args)
     ad.put (rownr-1, vec);
   }
   AlwaysAssertExit (concreteTab.nrow() == num_threads * nrowStep);
+  //concreteTab.unlock();
 }
 
 void __verifyPattern(rownr_t i, ArrayColumn<Int>& ad, bool doReverse=false) {
@@ -196,7 +201,8 @@ void readTableChunk (size_t chunkNo, const String& name, bool doLock=true)
     TableLock lock(TableLock::LockOption::UserLocking);
     tab = new Table(name, lock, Table::Old);
   } else {
-    tab = new Table(name);
+    TableLock lock(TableLock::LockOption::UserNoReadLocking);
+    tab = new Table(name, lock);
   }
   if (doLock) tab->lock(false); //no-write
   ArrayColumn<Int> ad(*tab,"ad");
@@ -230,12 +236,12 @@ void readTableChunkDoSelect (size_t chunkNo, const String& name, bool doLock=tru
     TableLock lock(TableLock::LockOption::UserLocking);
     tab = new Table(name, lock, Table::Old);
   } else {
-    tab = new Table(name);
+    TableLock lock(TableLock::LockOption::UserNoReadLocking);
+    tab = new Table(name, lock);
   }
   TableProxy tabP(*tab);
   std::vector<TableProxy> tabPs(1);
   tabPs[0] = tabP;
-  AlwaysAssertExit(doLock); // TaQL requires the userlock locked
   if (doLock) tab->lock(false); //no-write
   TableProxy tabPTaQL("SELECT * FROM " + tabP.table().getPartNames()[0] + " ORDERBY DISTINCT indexcol DESC", tabPs);
   ArrayColumn<Int> ad(*tab,"ad");
@@ -412,7 +418,8 @@ void runSManTestLockSharedTPThreaded(void (*fn)(size_t, TableProxy &, bool),
       TableLock lock(TableLock::LockOption::UserLocking);
       tab = new Table(name, lock, Table::Old);
     } else {
-      tab = new Table(name);
+      TableLock lock(TableLock::LockOption::UserNoReadLocking);
+      tab = new Table(name, lock);
     }
     TableProxy tabp(*tab);
     std::vector<std::thread> threads;
@@ -485,7 +492,6 @@ void runSManTestLock(bool doLock, const String & tbname) {
     runSManTestLockUniqTab(readTableChunk, tbname, doLock, true, false);
   }
   // Usage pattern 2 - SingleThreaded
-  if (doLock) // must have a lock to use TaQL
   {
     cout << "\t\tRunning single threaded test with a unique table, exec TaQL op"<<endl;
     runSManTestLockUniqTab(readTableChunkDoSelect, tbname, doLock, true, false);
@@ -498,7 +504,6 @@ void runSManTestLock(bool doLock, const String & tbname) {
   }
   // Usage pattern 4 - MultiThreaded - table per thread, exec some TaQL
   // (The performant case)
-  if (doLock) // must have a lock to use TaQL
   {
     cout << "\t\tRunning multithreaded test with unique table per thread, exec TaQL op per table"<<endl;
     runSManTestLockUniqTab(readTableChunkDoSelect, tbname, doLock, true, true);
@@ -542,7 +547,7 @@ void runSManTestLock(bool doLock, const String & tbname) {
 
 // Opens the table to write and read back chunks of random numbers
 // starting at random positions. Each call (ie thread/process) will
-// writeread num_threads worth of such chunks of length(rwRowStep)
+// writeread nrwBlocksPerThread worth of such chunks of length(rwRowStep)
 // obtaining userlocks as needed. The input chunk is validated
 // against the output chunk to ensure successful locking
 // chunkNo has to stay to identify thread/process in pool here but is unused on purpose
@@ -557,9 +562,9 @@ void readWriteTableChunk (size_t chunkNo, const String& name)
 
   ArrayColumn<Int> ad(tab,"ad");
   Vector<Int> putvec(1);
-  // each thread/process puts num_threads number of chunks back into the database
+  // each thread/process puts nrwBlocksPerThread number of chunks back into the database
   // each starting at random position
-  for (rownr_t i=0; i < num_threads; ++i) {
+  for (rownr_t i=0; i < nrwBlocksPerThread; ++i) {
     rownr_t startrow = (distr(eng) % (num_threads*(rwRowStep-1)));
     Slice position(startrow, rwRowStep, 1);
     Array<Int> writevals(IPosition(1, rwRowStep), Int(0));
@@ -598,22 +603,22 @@ void runSManTestRW(const String& tbname) {
   }
   // Usage pattern 2 - MultiThreaded - table per thread
   // (The performant case)
-  // {
-  //   cout << "\t\tRunning multi-threaded test (UserLock)" << endl;
-  //   cout << "\t\t\tReading from and writing to table with " << \
-  //     num_threads*nrowStep << " rows with " << num_threads << " threads...";
-  //   std::vector<std::thread> threads;
-  //   // async start a few threads each reading
-  //   for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-  //     threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
-  //   }
-  //   // await results
-  //   for (size_t i = 0; i < num_threads; ++i) {
-  //     threads.back().join();
-  //     threads.pop_back();
-  //   }
-  //   cout << "\t<OK>" << endl; 
-  // }
+  {
+    cout << "\t\tRunning multi-threaded test (UserLock)" << endl;
+    cout << "\t\t\tReading from and writing to table with " << \
+      num_threads*nrowStep << " rows with " << num_threads << " threads...";
+    std::vector<std::thread> threads;
+    // async start a few threads each reading
+    for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
+      threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
+    }
+    // await results
+    for (size_t i = 0; i < num_threads; ++i) {
+      threads.back().join();
+      threads.pop_back();
+    }
+    cout << "\t<OK>" << endl; 
+  }
   // Usage pattern 3 - Processpooled processing
   {
     cout << "\t\tRunning multiple processes test (MPI-style)" << endl; 
@@ -634,17 +639,12 @@ int runSManTest(const String& smName, Args... smArgs) {
     createTable<StMan>(tbname,
                        smArgs...); //cachesize
     cout << "\t<OK>" << endl;
-    cout<<"\tRunning ReadWrite tests..."<<endl;
-    runSManTestRW(tbname);
-    cout << "\tReinitializing validation pattern in " << smName << " table with " << num_threads << "*" << nrowStep << \
-            " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
-    createTable<StMan>(tbname,
-                       smArgs...); //cachesize
-    cout << "\t<OK>" << endl;
     cout<<"\tRunning ReadOnly tests (UserLock)"<<endl;
     runSManTestLock(true, tbname);
-    cout<<"\tRunning ReadOnly tests (NoLock)..."<<endl;
+    cout<<"\tRunning ReadOnly tests (UserNoReadLock)..."<<endl;
     runSManTestLock(false, tbname);
+    cout<<"\tRunning ReadWrite tests..."<<endl;
+    runSManTestRW(tbname);
     // Done for this Sm
     cout << "\t<" << smName << " -- all OK>" << endl;
   } catch (AipsError& x) {
@@ -658,7 +658,10 @@ int main()
 {
   // Switch the pool per thread system
   PlainTable::useTableCachePerThread();
-
+  if (runSManTest<TiledShapeStMan>("TiledStMan",
+                                   IPosition(2,1,1024*1024))) {
+      return 1;
+  }
   if (runSManTest<IncrementalStMan>("IncrementalStMan",
                                     256, //bucket size
                                     True, //check bucket
@@ -667,10 +670,6 @@ int main()
   }
   if (runSManTest<StandardStMan>("StandardStMan",
                                  4*1024*1024)) {
-      return 1;
-  }
-  if (runSManTest<TiledShapeStMan>("TiledStMan",
-                                   IPosition(2,1,1024*1024))) {
       return 1;
   }
   cout << "OK" << endl;

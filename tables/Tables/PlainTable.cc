@@ -419,7 +419,11 @@ void PlainTable::mergeLock (const TableLock& lockOptions)
 }
 Bool PlainTable::hasLock (FileLocker::LockType type) const
 {
-    return lockPtr_p->hasLock (type);
+    TableLockData::ThreadLockState translateState = \
+        type == FileLocker::LockType::Read ? TableLockData::ThreadLockState::LockedRead
+                                           : TableLockData::ThreadLockState::LockedWrite;
+    return lockPtr_p->doTidHaveCustody(translateState) &&
+           lockPtr_p->hasLock (type);
 }
 Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 {
@@ -849,8 +853,12 @@ void PlainTable::useProcessWideTableCache() {
     if (!PlainTable::usingProcesswideTabCache) {
         PlainTable::globalTableCacheReset();
         PlainTable::usingProcesswideTabCache = true;
-
-        casacore::LogMessage("Warning:: Switching to process-wide Table cache system. "
+        LogIO os(LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"));
+        os.priority(casacore::LogMessage::WARN);
+        os << "Switching to process-wide Table cache system. "
+              "All tables have been flushed and closed";
+        os.post();
+        casacore::LogMessage("Switching to process-wide Table cache system. "
                              "All tables have been flushed and closed",
                              LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"),
                              casacore::LogMessage::WARN);
@@ -862,10 +870,14 @@ void PlainTable::useTableCachePerThread() {
     if (PlainTable::usingProcesswideTabCache) {
         PlainTable::globalTableCacheReset();
         PlainTable::usingProcesswideTabCache = false;
-
-        casacore::LogMessage("Warning:: Switching to thread-wide Table cache system. "
+        LogIO os(LogOrigin("casacore::tables::Tables::PlainTable::useTableCachePerThread()"));
+        os.priority(casacore::LogMessage::WARN);
+        os << "Switching to thread-wide Table cache system. "
+              "All tables have been flushed and closed";
+        os.post();        
+        casacore::LogMessage("Switching to thread-wide Table cache system. "
                              "All tables have been flushed and closed",
-                             LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"),
+                             LogOrigin("casacore::tables::Tables::PlainTable::useTableCachePerThread()"),
                              casacore::LogMessage::WARN);
     }
 }
