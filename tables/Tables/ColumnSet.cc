@@ -948,14 +948,11 @@ void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
     if (lockPtr_p->option() != TableLock::AutoLocking) {
         String str = "PermanentLocking";
         if (lockPtr_p->option() == TableLock::UserLocking) {
-    	    str = "UserLocking";
-	    }
-        if (!lockPtr_p->hasLock(type)) { // user forgot to lock
-            throw (TableError ("ColumnSet::doLock: table " +
-                    baseTablePtr_p->tableName() +
-                    " should be locked when using " + str));
-        } // else another TiD may already hold custody
-        // we follow same path as with autolocks
+	    str = "UserLocking";
+	}
+	throw (TableError ("ColumnSet::doLock: table " +
+			   baseTablePtr_p->tableName() +
+			   " should be locked when using " + str));
     }
     uInt nattempts = (wait  ?  baseTablePtr_p->lockOptions().maxWait() : 1);
     baseTablePtr_p->lock (type, nattempts);

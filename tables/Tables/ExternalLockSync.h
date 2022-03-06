@@ -124,11 +124,7 @@ private:
 
 inline Bool ExternalLockSync::hasLock (FileLocker::LockType type) const
 {
-    TableLockData::ThreadLockState translateState = \
-        type == FileLocker::LockType::Read ? TableLockData::ThreadLockState::LockedRead
-                                           : TableLockData::ThreadLockState::LockedWrite;
-    return itsLock.doTidHaveCustody(translateState) &&
-           itsLock.hasLock (type);
+    return itsLock.hasLock (type);
 }
 inline void ExternalLockSync::release (rownr_t nrrow)
 {

@@ -347,17 +347,14 @@ inline void ColumnSet::linkToLockObject (TableLockData* lockObject)
 inline void ColumnSet::checkReadLock (Bool wait)
 {
     if (lockPtr_p->readLocking()
-        &&  ! (lockPtr_p->hasLock (FileLocker::Read) &&
-               lockPtr_p->doTidHaveCustody(TableLockData::ThreadLockState::LockedRead))) {
-	    doLock (FileLocker::Read, wait);
+    &&  ! lockPtr_p->hasLock (FileLocker::Read)) {
+	doLock (FileLocker::Read, wait);
     }
 }
 inline void ColumnSet::checkWriteLock (Bool wait)
 {
-    if (lockPtr_p->readLocking()
-        &&  ! (lockPtr_p->hasLock (FileLocker::Write) &&
-               lockPtr_p->doTidHaveCustody(TableLockData::ThreadLockState::LockedWrite))) {
-	    doLock (FileLocker::Write, wait);
+    if (! lockPtr_p->hasLock (FileLocker::Write)) {
+	doLock (FileLocker::Write, wait);
     }
 }
 inline void ColumnSet::userUnlock (Bool releaseFlag)
