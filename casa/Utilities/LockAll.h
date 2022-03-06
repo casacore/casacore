@@ -58,13 +58,13 @@ namespace casacore {
         // Note:: Inheriting object ****!!MUST!!**** call the base constructor
         LockableObject() :
             __object_uniq_id__(LockableObject::__num_allocated_objects__++) {}
-        virtual void lock() const{
+        virtual void mutexLock() const{
             itsmutex.lock();
         }
-        virtual bool tryLock() const{
+        virtual bool tryMutexLock() const{
             return itsmutex.try_lock();
         }
-        virtual void unlock() const{
+        virtual void mutexUnlock() const{
             itsmutex.unlock();
         }
     protected:
@@ -134,7 +134,7 @@ namespace casacore {
                 bool obtainedAllThusFar = true;
                 for (size_t it = 0; it != obs.size(); ) {
                     // try acquire successful => continue upwards
-                    if (obtainedAllThusFar && obs[it]->tryLock()) {
+                    if (obtainedAllThusFar && obs[it]->tryMutexLock()) {
                         ++it;
                     } else { // cannot acquire this one... start backtracking
                         obtainedAllThusFar = false;
@@ -214,7 +214,7 @@ namespace casacore {
             // guarenteed that myLockedObjects are all locked
             // we always unlock from the inverse order that was used in the constructor (ie. desc)
             for (auto it = myLockedObjects.rbegin(); it != myLockedObjects.rend(); ++it) {
-                (*it)->unlock();
+                (*it)->mutexUnlock();
             }
             myLockedObjects.clear();
         }
