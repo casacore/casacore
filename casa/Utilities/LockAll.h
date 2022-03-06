@@ -62,6 +62,15 @@ namespace casacore {
         virtual MutexType& object_mutex() const {
             return itsmutex;
         }
+        virtual void lock() const{
+            itsmutex.lock();
+        }
+        virtual bool tryLock() const{
+            return itsmutex.try_lock();
+        }
+        void unlock() const{
+            itsmutex.unlock();
+        }
     private:
         mutable MutexType itsmutex;
         size_t __object_uniq_id__;
@@ -125,7 +134,7 @@ namespace casacore {
                 bool obtainedAllThusFar = true;
                 for (size_t it = 0; it != obs.size(); ) {
                     // try acquire successful => continue upwards
-                    if (obtainedAllThusFar && obs[it]->object_mutex().try_lock()) {
+                    if (obtainedAllThusFar && obs[it]->tryLock()) {
                         ++it;
                     } else { // cannot acquire this one... start backtracking
                         obtainedAllThusFar = false;
@@ -205,7 +214,7 @@ namespace casacore {
             // guarenteed that myLockedObjects are all locked
             // we always unlock from the inverse order that was used in the constructor (ie. desc)
             for (auto it = myLockedObjects.rbegin(); it != myLockedObjects.rend(); ++it) {
-                (*it)->object_mutex().unlock();
+                (*it)->unlock();
             }
             myLockedObjects.clear();
         }
