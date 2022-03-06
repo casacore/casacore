@@ -55,6 +55,13 @@ void TableLockData::makeLock (const String& name, Bool create,
     //# Create lock file object only when not created yet.
     //# It is acceptable that no lock file exists for a readonly table
     //# (to be able to read older tables).
+
+	// May be trying to write to the same table
+	// across multiple threads -- there is no way to guarrantee
+	// this, without serializing all locks across the entire process
+	if (type == FileLocker::LockType::Write &&
+		!PlainTable::isUsingTableCachePerProcess())
+		throw NotThreadSafeError();
     if (itsLock == 0) {
 	itsLock = new LockFile (name + "/table.lock", interval(), create,
 				True, False, locknr, isPermanent(),
@@ -77,6 +84,12 @@ void TableLockData::makeLock (const String& name, Bool create,
 Bool TableLockData::acquire (MemoryIO* info,
 			     FileLocker::LockType type, uInt nattempts)
 {
+	// May be trying to write to the same table
+	// across multiple threads -- there is no way to guarrantee
+	// this, without serializing all locks across the entire process
+	if (type == FileLocker::LockType::Write &&
+		!PlainTable::isUsingTableCachePerProcess())
+		throw NotThreadSafeError();
     //# Try to acquire a lock.
     //# Show a message when we have to wait for a long time.
     //# Start with n attempts, show a message and continue thereafter.

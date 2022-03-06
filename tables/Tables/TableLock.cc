@@ -56,8 +56,10 @@ TableLock::TableLock (LockOption option, double inspectionInterval,
   init();
 }
 
-TableLock::TableLock (const TableLock& that) {
+TableLock::TableLock (const TableLock& that) :
+  InterfaceThreadUnsafe() {
   TableLockLockAllType lg(*this);
+  
   itsOption            =that.itsOption;
   itsReadLocking       =that.itsReadLocking;
   itsMaxWait           =that.itsMaxWait;
@@ -145,5 +147,6 @@ Bool TableLock::lockingDisabled()
 #endif
 }
 
+void TableLock::onMultithreadedAccess() const {}
 } //# NAMESPACE CASACORE - END
 

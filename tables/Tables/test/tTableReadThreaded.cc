@@ -551,80 +551,91 @@ void runSManTestLock(bool doLock, const String & tbname) {
 // obtaining userlocks as needed. The input chunk is validated
 // against the output chunk to ensure successful locking
 // chunkNo has to stay to identify thread/process in pool here but is unused on purpose
-void readWriteTableChunk (size_t chunkNo, const String& name)
+void readWriteTableChunk (size_t chunkNo, const String& name, bool isSupported=true)
 {
-  TableLock lock(TableLock::LockOption::UserLocking);
-  Table tab(name, lock, Table::Update);
-  
-  std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
-  std::mt19937_64 eng(rd());
-  std::uniform_int_distribution<rownr_t> distr;
+  bool doThrow = false;
+  try {
+    TableLock lock(TableLock::LockOption::UserLocking);
+    Table tab(name, lock, Table::Update);
+    
+    std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
+    std::mt19937_64 eng(rd());
+    std::uniform_int_distribution<rownr_t> distr;
 
-  ArrayColumn<Int> ad(tab,"ad");
-  Vector<Int> putvec(1);
-  // each thread/process puts nrwBlocksPerThread number of chunks back into the database
-  // each starting at random position
-  for (rownr_t i=0; i < nrwBlocksPerThread; ++i) {
-    rownr_t startrow = (distr(eng) % (num_threads*(rwRowStep-1)));
-    Slice position(startrow, rwRowStep, 1);
-    Array<Int> writevals(IPosition(1, rwRowStep), Int(0));
-    for (auto ii = writevals.begin(); ii != writevals.end(); ++ii ) {
-      (*ii) = Int(distr(eng) % (nrowStep * num_threads));
+    ArrayColumn<Int> ad(tab,"ad");
+    Vector<Int> putvec(1);
+    // each thread/process puts nrwBlocksPerThread number of chunks back into the database
+    // each starting at random position
+    for (rownr_t i=0; i < nrwBlocksPerThread; ++i) {
+      rownr_t startrow = (distr(eng) % (num_threads*(rwRowStep-1)));
+      Slice position(startrow, rwRowStep, 1);
+      Array<Int> writevals(IPosition(1, rwRowStep), Int(0));
+      for (auto ii = writevals.begin(); ii != writevals.end(); ++ii ) {
+        (*ii) = Int(distr(eng) % (nrowStep * num_threads));
+      }
+      // test that the lock is keeping others at bay
+      tab.lock(true);
+      auto ii = writevals.begin();
+      for (rownr_t i=0; i<rwRowStep; ++i, ++ii) {
+        putvec[0] = (*ii);
+        ad.put(startrow+i, putvec);
+      }
+      Vector<Int> readvals = ad.getColumnRange(position);
+      tab.unlock();
+      AlwaysAssertExit(writevals.size() == readvals.size());
+      bool allEqual = true;
+      for (auto iW = writevals.begin(), iR = readvals.begin();
+          iW != writevals.end(), iR != readvals.end();
+          ++iW, ++iR) {
+          allEqual = allEqual && (*iW == *iR);
+      }
+      AlwaysAssertExit(allEqual);
     }
-    // test that the lock is keeping others at bay
-    tab.lock(true);
-    auto ii = writevals.begin();
-    for (rownr_t i=0; i<rwRowStep; ++i, ++ii) {
-      putvec[0] = (*ii);
-      ad.put(startrow+i, putvec);
-    }
-    Vector<Int> readvals = ad.getColumnRange(position);
-    tab.unlock();
-    AlwaysAssertExit(writevals.size() == readvals.size());
-    bool allEqual = true;
-    for (auto iW = writevals.begin(), iR = readvals.begin();
-         iW != writevals.end(), iR != readvals.end();
-         ++iW, ++iR) {
-        allEqual = allEqual && (*iW == *iR);
-    }
-    AlwaysAssertExit(allEqual);
+  } catch (NotThreadSafeError& x) {
+    doThrow = true;
+  }
+  if (!isSupported) {
+    AlwaysAssertExit(doThrow);
   }
 }
 
 void runSManTestRW(const String& tbname) {
   // Usage pattern 1 - SingleThreaded
   {
+    PlainTable::useProcessWideTableCache();
     cout << "\t\tRunning single threaded test" << endl;
     cout << "\t\t\tReading from and writing to table with " << \
       num_threads*nrowStep << " rows...";
     for (size_t iChunk=0; iChunk<num_threads; ++iChunk)
-      readWriteTableChunk(iChunk, tbname);
+      readWriteTableChunk(iChunk, tbname, true);
     cout << "\t<OK>" << endl;
   }
   // Usage pattern 2 - MultiThreaded - table per thread
   // (The performant case)
   {
+    PlainTable::useTableCachePerThread();
     cout << "\t\tRunning multi-threaded test (UserLock)" << endl;
     cout << "\t\t\tReading from and writing to table with " << \
       num_threads*nrowStep << " rows with " << num_threads << " threads...";
     std::vector<std::thread> threads;
     // async start a few threads each reading
     for (size_t iChunk = 0; iChunk < num_threads; ++iChunk) {
-      threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname));
+      threads.push_back(std::thread(readWriteTableChunk, iChunk, tbname, false));
     }
     // await results
     for (size_t i = 0; i < num_threads; ++i) {
       threads.back().join();
       threads.pop_back();
     }
-    cout << "\t<OK>" << endl; 
-  }
+    cout << "\t<NotImplemented -- OK>" << endl;
+  }  
   // Usage pattern 3 - Processpooled processing
   {
+    PlainTable::useProcessWideTableCache();
     cout << "\t\tRunning multiple processes test (MPI-style)" << endl; 
     cout << "\t\t\tReading from and writing to table with " << \
       num_threads*nrowStep << " rows...";
-    AlwaysAssertExit(!processpool(num_threads, readWriteTableChunk, tbname));
+    AlwaysAssertExit(!processpool(num_threads, readWriteTableChunk, tbname, true));
     cout << "\t<OK>" << endl;
   }
 }
@@ -634,11 +645,13 @@ int runSManTest(const String& smName, Args... smArgs) {
   String tbname = "tVeryBigTable_tmp.tbl";
   cout << "Testing " << smName << " storage manager" << endl;
   try {
+    PlainTable::useProcessWideTableCache();
     cout << "\tCreating " << smName << " table with " << num_threads << "*" << nrowStep << \
         " rows (" << num_threads*nrowStep / (1024.*1024.) << "MiB)...";
     createTable<StMan>(tbname,
                        smArgs...); //cachesize
     cout << "\t<OK>" << endl;
+    PlainTable::useTableCachePerThread();
     cout<<"\tRunning ReadOnly tests (UserLock)"<<endl;
     runSManTestLock(true, tbname);
     cout<<"\tRunning ReadOnly tests (UserNoReadLock)..."<<endl;
@@ -657,7 +670,6 @@ int runSManTest(const String& smName, Args... smArgs) {
 int main()
 {
   // Switch the pool per thread system
-  PlainTable::useTableCachePerThread();
   if (runSManTest<TiledShapeStMan>("TiledStMan",
                                    IPosition(2,1,1024*1024))) {
       return 1;

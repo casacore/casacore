@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/LockFile.h>
 #include <casacore/casa/Utilities/LockAll.h>
+#include <casacore/casa/Utilities/InterfaceThreadUnsafe.h>
 #include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -68,7 +69,8 @@ using TableLockLockAllType=LockAll<TableProxyMutexType>;
 // </motivation>
 
 
-class TableLock : public RecursiveLockableObject
+class TableLock : InterfaceThreadUnsafe,
+                  public RecursiveLockableObject
 {
 public: 
     // Define the possible table locking options.
@@ -169,7 +171,9 @@ public:
     // Is table locking disabled (because AIPS_TABLE_NOLOCKING or table.nolocking is set)?
     static Bool lockingDisabled();
 
-
+protected:
+    protected:
+    virtual void onMultithreadedAccess() const;
 private:
     LockOption  itsOption;
     Bool        itsReadLocking;

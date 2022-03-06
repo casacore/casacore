@@ -295,15 +295,10 @@ public:
     // it creates in auto locking and is unaware of tables created
     // in other threads (regardless of auto-locking mode). If autolocking
     // is used it is restricted to automatically apply within the current
-    // thread. E.g.:: 
-    // - when a PlainTable object is reopened in Update mode
-    //   only other PlainTable objects *within the thread* are upgraded to
-    //   writable mode. It is the responsibility of the user to consistently
-    //   manage locking modes across threads. 
-    // - Any Auto/UserNoRead locked tables in other threads may become stale 
-    //   and should be re-synced by the user, as would have been the case as if
-    //   they lived in other processes. This mode gives substantial improvements 
-    //   in the casacore noreadlock IO cases
+    // thread.
+    // WARNING :-: This mode switches the entirety of the casacore::tables system
+    // to ReadOnly mode to guarrantee data integrity. The user may not
+    // request a Write lock under this mode
     // Has no effect if already on a cache per thread mode
     // WARNING :-: calling this closes all open tables across
     // the **process*

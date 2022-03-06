@@ -32,6 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/PlainTable.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -114,7 +115,6 @@ public:
     void getInfo (MemoryIO& info);
     void putInfo (const MemoryIO& info);
     // </group>
-
 private:
     // Copy constructor is forbidden.
     TableLockData (const TableLockData& that);

@@ -419,11 +419,7 @@ void PlainTable::mergeLock (const TableLock& lockOptions)
 }
 Bool PlainTable::hasLock (FileLocker::LockType type) const
 {
-    TableLockData::ThreadLockState translateState = \
-        type == FileLocker::LockType::Read ? TableLockData::ThreadLockState::LockedRead
-                                           : TableLockData::ThreadLockState::LockedWrite;
-    return lockPtr_p->doTidHaveCustody(translateState) &&
-           lockPtr_p->hasLock (type);
+    return lockPtr_p->hasLock (type);
 }
 Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 {
@@ -873,10 +869,10 @@ void PlainTable::useTableCachePerThread() {
         LogIO os(LogOrigin("casacore::tables::Tables::PlainTable::useTableCachePerThread()"));
         os.priority(casacore::LogMessage::WARN);
         os << "Switching to thread-wide Table cache system. "
-              "All tables have been flushed and closed";
+              "All tables have been flushed and closed. New tables opened may only request read locking.";
         os.post();        
         casacore::LogMessage("Switching to thread-wide Table cache system. "
-                             "All tables have been flushed and closed",
+                             "All tables have been flushed and closed. New tables opened may only request read locking.",
                              LogOrigin("casacore::tables::Tables::PlainTable::useTableCachePerThread()"),
                              casacore::LogMessage::WARN);
     }
