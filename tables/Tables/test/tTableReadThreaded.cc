@@ -591,7 +591,7 @@ void readWriteTableChunk (size_t chunkNo, const String& name, bool isSupported=t
       }
       AlwaysAssertExit(allEqual);
     }
-  } catch (NotThreadSafeError& x) {
+  } catch (TableError& x) {
     doThrow = true;
   }
   if (!isSupported) {

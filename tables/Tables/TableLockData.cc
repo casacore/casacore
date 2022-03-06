@@ -27,7 +27,6 @@
 
 
 #include <casacore/tables/Tables/TableLockData.h>
-#include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <unistd.h>
 
@@ -38,14 +37,17 @@ TableLockData::TableLockData (const TableLock& lockOptions,
 			      TableLockData::ReleaseCallBack* releaseCallBack,
 			      void* releaseParentObject)
 : TableLock          (lockOptions),
-  itsLock            (0),
+  itsLock            (nullptr),
   itsReleaseCallBack (releaseCallBack),
   itsReleaseParent   (releaseParentObject)
 {}
 
 TableLockData::~TableLockData()
 {
-    delete itsLock;
+	if (itsLock != nullptr) {
+    	delete itsLock;
+		itsLock = nullptr;
+	}
 }
 
 
@@ -61,8 +63,9 @@ void TableLockData::makeLock (const String& name, Bool create,
 	// this, without serializing all locks across the entire process
 	if (type == FileLocker::LockType::Write &&
 		!PlainTable::isUsingTableCachePerProcess())
-		throw NotThreadSafeError();
-    if (itsLock == 0) {
+		throw (TableError ("Error -- Table system in Threaded readonly mode. "
+						   "You may not request write locks at this time "));
+    if (itsLock == nullptr) {
 	itsLock = new LockFile (name + "/table.lock", interval(), create,
 				True, False, locknr, isPermanent(),
                                 option() == NoLocking);
@@ -89,7 +92,8 @@ Bool TableLockData::acquire (MemoryIO* info,
 	// this, without serializing all locks across the entire process
 	if (type == FileLocker::LockType::Write &&
 		!PlainTable::isUsingTableCachePerProcess())
-		throw NotThreadSafeError();
+		throw (TableError ("Error -- Table system in Threaded readonly mode. "
+						   "You may not acquire write locks at this time "));
     //# Try to acquire a lock.
     //# Show a message when we have to wait for a long time.
     //# Start with n attempts, show a message and continue thereafter.
@@ -138,17 +142,19 @@ void TableLockData::release (Bool always)
 {
     //# Only release if not permanently locked.
     if (always  ||  !isPermanent()) {
-	MemoryIO* memIO = 0;
-	if (hasLock (FileLocker::Write)) {
-	    if (itsReleaseCallBack != 0) {
-		memIO = itsReleaseCallBack (itsReleaseParent, always);
-	    }
+		MemoryIO* memIO = 0;
+		if (hasLock (FileLocker::Write)) {
+			if (itsReleaseCallBack != 0) {
+			memIO = itsReleaseCallBack (itsReleaseParent, always);
+			}
+		}
+		if (hasLock(FileLocker::Write) || hasLock(FileLocker::Read)) {
+			if (! itsLock->release (memIO)) {
+				throw (TableError ("Error (" + itsLock->lastMessage() +
+						") when releasing lock on " + itsLock->name()));
+			}
+		}
 	}
-	if (! itsLock->release (memIO)) {
-	    throw (TableError ("Error (" + itsLock->lastMessage() +
-			       ") when releasing lock on " + itsLock->name()));
-	}
-    }
 }
 
 } //# NAMESPACE CASACORE - END
