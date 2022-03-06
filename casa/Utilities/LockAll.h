@@ -58,18 +58,18 @@ namespace casacore {
         // Note:: Inheriting object ****!!MUST!!**** call the base constructor
         LockableObject() :
             __object_uniq_id__(LockableObject::__num_allocated_objects__++) {}
-    protected:
-        virtual MutexType& object_mutex() const {
-            return itsmutex;
-        }
         virtual void lock() const{
             itsmutex.lock();
         }
         virtual bool tryLock() const{
             return itsmutex.try_lock();
         }
-        void unlock() const{
+        virtual void unlock() const{
             itsmutex.unlock();
+        }
+    protected:
+        virtual MutexType& object_mutex() const {
+            return itsmutex;
         }
     private:
         mutable MutexType itsmutex;
