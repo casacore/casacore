@@ -406,10 +406,13 @@ void readback (int nx, int ny, int nz, int ntx, int nty, int ntz,
 int main(int argc, char* argv[])
 {
   if (argc <= 6) {
+    cerr << "tHDF5 writes 3-dim chunked arrays (4-byte floats) chunk by chunk" << endl;
+    cerr << "and can read them back in various ways" << endl;
     cerr << "Run as:   tHDF5 nx ny nz ntx nty ntz         to create" << endl;
     cerr << "or        tHDF5 nx ny nz ntx nty ntz type ch to read back" << endl;
+    cerr << "  nx,ny,nz define array shape;  ntx,nty,ntz define chunk shape" << endl;
     cerr << "  type x,y or z   read vectors along that axis" << endl;
-    cerr << "       else       read tile by tile" << endl;
+    cerr << "       else       read chunk by chunk (i.e., sequentially)" << endl;
     cerr << "  ch 1 means check the values read; else is no checking" << endl;
     exit(0);
   }

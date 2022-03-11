@@ -57,9 +57,16 @@ class Record;
 // </prerequisite>
 
 // <synopsis> 
-// DataManInfo is a class to manipulate a datamanager info record and table
-// descriptions.
-// Often an existing table description and datamanager info record is used to
+// DataManInfo is a class to manipulate a datamanager info record and/or table
+// description. A datamanager info record tells how the columns are stored.
+// It is a Record containing the following fields. If omitted, a default is used.
+// <ul>
+//  <li> TYPE: data manager type (default StandardStMan)
+//  <li> NAME: unique data manager name
+//  <li> COLUMNS: string vector containing columns stored with this data manager
+//  <li> SPEC: subrecord containing data manager specific parameters
+// </ul>
+// Often an existing table description and datamanager info record are used to
 // construct a new table, but it might be necessary to change it somewhat.
 // <ul>
 //  <li> Remove hypercolumn definitions from a table description. They are
@@ -67,9 +74,8 @@ class Record;
 //  <li> Replace non-writable storage managers (like LofarStMan) by a
 //       writable one.
 //  <li> Replace the deprecated TiledDataStMan by TiledShapeStMan.
+//  <li> Merge two datamanager info records.
 // </ul>
-//
-// Such things might be necessary in a number
 // </synopsis> 
 
 //# <todo asof="$DATE:$">
@@ -95,6 +101,36 @@ public:
   static Record adjustStMan (const Record& dminfo, const String& dmType,
                              Bool replaceMSM = True);
 
+  // Ensure all data manager names in <src>dminfo</src> are unique by
+  // adding a unique suffix as needed (using function <src>uniqueName</src>).
+  // Empty names are set to the name of the first column (DM if no columns).
+  static void makeUniqueNames (Record& dminfo);
+
+  // Return a unique data manager name by testing if the name already
+  // exist in of the the dm-s in the <src>dminfo</src> record.
+  // If so, a suffix _i is added where i makes the name unique.
+  // The excludeDM-th dm is excluded, so comparing to itself can be avoided.
+  static String uniqueName (const Record& dminfo, const String& name,
+                            Int excludeDM=-1);
+
+  // Merge the second DataManagerInfo record into the first one.
+  // If the same column occurs in both records, the second one is used.
+  // Columns having the same data manager name are combined in one data manager.
+  // If the second one has no name, it is considered to be equal to the first
+  // data manager of that type.
+  static void mergeInfo (Record&, const Record&);
+
+  // Finalize the merge by merging the dminfo record with the table description
+  // to create the final dminfo record.
+  // The final dminfo record gets all columns in the TableDesc object.
+  // The given dminfo object is leading in determining a column's data manager.
+  // If not present, the data manager type given in the TableDesc is used.
+  // If empty, StandardStMan is used.
+  static Record finalizeMerge (const TableDesc&, const Record& dminfo);
+
+  // Adapt data manager names in dminfo if already used in the table.
+  static void adaptNames (Record& dminfo, const Table&);
+
   // Set the data managers of the given column(s) to the given tiled storage
   // manager (normally TiledShapeStMan or TiledColumnStMan).
   // The columns are combined in a single storage manager, so the function
@@ -104,11 +140,11 @@ public:
                              const String& dmType, const String& dmName,
                              const IPosition& defaultTileShape);
 
-  // Remove the columns from the dminfo record and return a vector with the
-  // names of the columns actually removed.
+  // Remove the given columns from the dminfo record and return a vector
+  // containing the names of the columns actually removed.
   // The columns having a data manager matching <src>keepType</src> are not
   // removed. Matching means that the beginning of the data manager name
-  // have to match, so "Tiled" matches all tiled storagemanagers.
+  // has to match, so "Tiled" matches all tiled storagemanagers.
   static Vector<String> removeDminfoColumns (Record& dminfo,
                                              const Vector<String>& columns,
                                              const String& keepType= String());
@@ -119,6 +155,19 @@ public:
 
   // Show the Table IO statistics.
   static void showDataManStats (const Table&, ostream&);
+
+private:
+  // Merge the column info of data manager definitions.
+  // It is used by <src>mergeInfo</src> to merge the new dm definitions into
+  // the existing one defined in <src>dminfo</src>. It is called for each new
+  // dm, whose name/type already exists as the dmindex-th record in dminfo.
+  // It does two things:
+  // <ul>
+  //  <li>Columns mentioned in newdm are removed from dm definitions in dminfo.
+  //  <li>Columns in the dmindex-th dminfo record are merged into newdm,
+  //      so mergeInfo can redefine that dm in the overall dminfo.
+  // </ul>
+  static void mergeColumns (Record& dminfo, uInt dmindex, Record& newdm);
 };
 
 

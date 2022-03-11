@@ -8,12 +8,12 @@ RecordGram
 TableGram
 )
 
- 
+
 foreach (src ${parser_inputs})
     BISON_TARGET (${src} TaQL/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
     FLEX_TARGET (${src} TaQL/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
- 
+
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
@@ -310,6 +310,7 @@ Tables/TableRow.h
 Tables/TableRowProxy.h
 Tables/TableSyncData.h
 Tables/TableTrace.h
+Tables/TableUtil.h
 Tables/TableVector.h
 Tables/TableVector.tcc
 DESTINATION include/casacore/tables/Tables

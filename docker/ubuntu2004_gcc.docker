@@ -18,7 +18,9 @@ RUN docker-apt-install \
     libhdf5-serial-dev \
     libboost-dev \
     libboost-python-dev \
+    libboost-test-dev \
     libgsl-dev \
+    python-is-python3 \
     python3-numpy
 ADD . /code
 RUN useradd -ms /bin/bash casacore

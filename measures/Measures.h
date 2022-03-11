@@ -154,11 +154,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class="MBaseline">MBaseline</linkto>: a baseline
 //   <li> <linkto class="Muvw">Muvw</linkto>: a uvw value
 //   <li> <linkto class="MEarthMagnetic">MEarthMagnetic</linkto>: an
-//		 earth' magnetic field value
+//		 earth magnetic field value
 // </ul>
-// Others are being, or could be, considered.<br>
+// Others are being, or could be, considered.
 // <note role=tip>The current set can be deduced from the class list at the end of
-// the html version of this module description.</note><br>
+// the html version of this module description.</note>
 // <p>
 // The main role of the Measure (and related) classes is to be able to convert
 // an observed (or to be calculated) physical entity from one reference frame
@@ -169,15 +169,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <linkto module="Quanta">Quanta</linkto> module classes.
 // <p>
 // Each measure has a <em>value</em> (<linkto class=MeasValue>MeasValue</linkto>) and
-// a <em>reference</em> (<linkto class=MeasRef>MeasRef</linkto>).<br>
+// a <em>reference</em> (<linkto class=MeasRef>MeasRef</linkto>).
 // The values are in general measure specific, weakly derived from MeasValue,
 // and named with an initial <em>MV</em>. Examples are:
-// <ul>  
+// <ul>
 // <li> <linkto class=MVEpoch>MVEpoch</linkto> (a high precision single value), 
 // <li> <linkto class=MVDirection>MVDirection</linkto> (direction cosines), 
 // <li> <linkto class=MVPosition>MVPosition</linkto> (3-vector positions),
 // <li> <linkto class=MVFrequency>MVFrequency</linkto> (single, unit depended
-// value).<br>
+// value).
 // <li> <linkto class=MVDoppler>MVDoppler</linkto> (single, unit depended value)
 // <li> <linkto class=MVRadialVelocity>MVRadialVelocity</linkto> (single value)
 // </ul>

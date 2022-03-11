@@ -1030,6 +1030,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return hr;
   }
 
+  TaQLNodeResult TaQLNodeHandler::visitCopyColNode
+  (const TaQLCopyColNodeRep&)
+  {
+    throw TableInvExpr("COPY COLUMN not implemented");
+  }
+  
+  TaQLNodeResult TaQLNodeHandler::visitDropTabNode
+  (const TaQLDropTabNodeRep&)
+  {
+    throw TableInvExpr("DROP TABLE not implemented");
+  }
+  
   void TaQLNodeHandler::handleWhere (const TaQLNode& node)
   {
     if (node.isValid()) {
