@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -551,8 +552,8 @@ Private Attributes</h2></td></tr>
 Static Private Attributes</h2></td></tr>
 <tr class="memitem:a21330210e3830fd138cf359b87706ad5"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1CoordinateSystem.html#a21330210e3830fd138cf359b87706ad5">_class</a></td></tr>
 <tr class="separator:a21330210e3830fd138cf359b87706ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8e2267c7e79a7462592dbb3db6ab5f9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1CoordinateSystem.html#aa8e2267c7e79a7462592dbb3db6ab5f9">_mapInitMutex</a></td></tr>
-<tr class="separator:aa8e2267c7e79a7462592dbb3db6ab5f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2948fcbf913d5ff30eb3971d495cae1"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1CoordinateSystem.html#aa2948fcbf913d5ff30eb3971d495cae1">_mapInitMutex</a></td></tr>
+<tr class="separator:aa2948fcbf913d5ff30eb3971d495cae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66878e2c8b6cba293c020604a6a53f12"><td class="memItemLeft" align="right" valign="top">static std::map&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1CoordinateSystem.html#a66878e2c8b6cba293c020604a6a53f12">_friendlyAxisMap</a></td></tr>
 <tr class="separator:a66878e2c8b6cba293c020604a6a53f12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -801,7 +802,7 @@ Check if the classes are thread safe in general </li>
 
 <p>Definition at line <a class="el" href="CoordinateSystem_8h_source.html#l00987">987</a> of file <a class="el" href="CoordinateSystem_8h_source.html">CoordinateSystem.h</a>.</p>
 
-<p>References <a class="el" href="ExprNode_8h_source.html#l01430">casacore::downcase()</a>, and <a class="el" href="ArrayBase_8h_source.html#l00101">casacore::ArrayBase::size()</a>.</p>
+<p>References <a class="el" href="ExprNode_8h_source.html#l01473">casacore::downcase()</a>, and <a class="el" href="ArrayBase_8h_source.html#l00105">casacore::ArrayBase::size()</a>.</p>
 
 </div>
 </div>
@@ -1067,7 +1068,7 @@ Check if the classes are thread safe in general </li>
 <p>General coordinate conversion. </p>
 <p>Only works if no axes have been removed and no axis reordering has occurred. That is pixel axes and world axes are the same.</p>
 <p>Specify the input coordinate values, input units, whether value is absolute (or relative). For output specify units and abs/rel. Units may be 'pix' and velocity consistent units (e.g. m/s). Specify doppler types if velocities involved. The pixel offsets allow for the input and output pixel coordinates to be something other than 0-rel. If your pixel coordinates are 1-rel input and output, set the offsets to -1 and 1</p>
-<p>The <a class="el" href="classcasacore_1_1Matrix.html" title="A 2-D Specialization of the Array class. ">Matrix</a> interface lets you do many conversions efficiently. Use <code>Matrix(nAxes, nConversions) </code> and <code><a class="el" href="classcasacore_1_1Matrix.html#a1085a56f19f0b24e8edf7421ae7667d5" title="Returns a reference to the j&#39;th column. ">Matrix.column()</a>=coordinate</code> or <code>Matrix(axis, iConversion)</code> to get the order right.</p>
+<p>The <a class="el" href="classcasacore_1_1Matrix.html" title="A 2-D Specialization of the Array class. ">Matrix</a> interface lets you do many conversions efficiently. Use <code>Matrix(nAxes, nConversions) </code> and <code><a class="el" href="classcasacore_1_1Matrix.html#ad96c551d42e408a87f31ac4eeb7955b1" title="Returns a reference to the j&#39;th column. ">Matrix.column()</a>=coordinate</code> or <code>Matrix(axis, iConversion)</code> to get the order right.</p>
 <p>These functions invoke <code>toMix</code> so make sure you call <code>setWorldMixRanges</code> first to set up the world ranges. </p>
 
 </div>
@@ -5023,7 +5024,7 @@ Check if the classes are thread safe in general </li>
 
 </div>
 </div>
-<a class="anchor" id="aa8e2267c7e79a7462592dbb3db6ab5f9"></a>
+<a class="anchor" id="aa2948fcbf913d5ff30eb3971d495cae1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -5031,7 +5032,7 @@ Check if the classes are thread safe in general </li>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::CoordinateSystem::_mapInitMutex</td>
+          <td class="memname">std::mutex casacore::CoordinateSystem::_mapInitMutex</td>
         </tr>
       </table>
   </td>

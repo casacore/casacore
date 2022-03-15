@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -95,7 +96,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Basic class for math on <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> objects.  
+<p>Basic class for math on <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> objects.  
  <a href="classcasacore_1_1ArrayFunctorBase.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ArrayMathBase_8h_source.html">ArrayMathBase.h</a>&gt;</code></p>
@@ -105,8 +106,8 @@ Inheritance diagram for casacore::ArrayFunctorBase&lt; T, RES &gt;:</div>
  <div class="center">
   <img src="classcasacore_1_1ArrayFunctorBase.png" usemap="#casacore::ArrayFunctorBase&lt; T, RES &gt;_map" alt=""/>
   <map id="casacore::ArrayFunctorBase&lt; T, RES &gt;_map" name="casacore::ArrayFunctorBase&lt; T, RES &gt;_map">
-<area href="classcasacore_1_1NFalseFunc.html" alt="casacore::NFalseFunc&lt; T, RES &gt;" shape="rect" coords="0,56,240,80"/>
-<area href="classcasacore_1_1NTrueFunc.html" alt="casacore::NTrueFunc&lt; T, RES &gt;" shape="rect" coords="250,56,490,80"/>
+<area href="classcasacore_1_1NFalseFunc.html" title="Logical functor to count the number of false elements. " alt="casacore::NFalseFunc&lt; T, RES &gt;" shape="rect" coords="0,56,240,80"/>
+<area href="classcasacore_1_1NTrueFunc.html" title="Logical functor to count the number of true elements. " alt="casacore::NTrueFunc&lt; T, RES &gt;" shape="rect" coords="250,56,490,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -121,7 +122,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><h3>template&lt;typename T, typename RES = T&gt;<br/>
 class casacore::ArrayFunctorBase&lt; T, RES &gt;</h3>
 
-<p>Basic class for math on <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> objects. </p>
+<p>Basic class for math on <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> objects. </p>
 <p><a class="anchor" id="ArrayMathBase_summary"></a> </p>
 <h3>Review Status</h3>
 <dl>
@@ -138,7 +139,7 @@ class casacore::ArrayFunctorBase&lt; T, RES &gt;</h3>
 <h3>Synopsis</h3>
 <p>The abstract base class <a class="el" href="classcasacore_1_1ArrayFunctorBase.html" title="Basic class for math on Array objects. ">ArrayFunctorBase</a> is defined for functors to be used in functions like slidingXXX. Virtual functions instead of templated functions are used to avoid code bloat when used in functions like partialArrayMath. Because a reduction operation usually takes much more time than the call, using virtual functions hardly imposes a performance penalty. </p>
 
-<p>Definition at line <a class="el" href="ArrayMathBase_8h_source.html#l00057">57</a> of file <a class="el" href="ArrayMathBase_8h_source.html">ArrayMathBase.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayMathBase_8h_source.html#l00053">53</a> of file <a class="el" href="ArrayMathBase_8h_source.html">ArrayMathBase.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ae4cb1a285dc1d4f67f1b604bad464f38"></a>
 <div class="memitem">
@@ -163,7 +164,7 @@ template&lt;typename T, typename RES = T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ArrayMathBase_8h_source.html#l00059">59</a> of file <a class="el" href="ArrayMathBase_8h_source.html">ArrayMathBase.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayMathBase_8h_source.html#l00055">55</a> of file <a class="el" href="ArrayMathBase_8h_source.html">ArrayMathBase.h</a>.</p>
 
 </div>
 </div>
@@ -192,7 +193,7 @@ template&lt;typename T, typename RES = T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classcasacore_1_1NFalseFunc.html#ac5663ba2b49ebed53251023fbd8a68ab">casacore::NFalseFunc&lt; T, RES &gt;</a>, <a class="el" href="classcasacore_1_1NTrueFunc.html#a14b87a83a08a842337d5ffbf5205df7f">casacore::NTrueFunc&lt; T, RES &gt;</a>, <a class="el" href="classcasacore_1_1AnyFunc.html#ab5d2d85ab07673b80427fff42fcf1863">casacore::AnyFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1AllFunc.html#a76c67e5a234b82c0d6cba1f6be8571c6">casacore::AllFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1FractileFunc.html#aa714f56ef0a2e7f19af2701a005f900a">casacore::ArrayPartMath_global_functions_Array_partial_operations::FractileFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1MadfmFunc.html#a7224f26f0e0d9abb4bdc7f388a35e591">casacore::ArrayPartMath_global_functions_Array_partial_operations::MadfmFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1MedianFunc.html#aabc81fdfba2e285c1ae7b2405d8ebab4">casacore::ArrayPartMath_global_functions_Array_partial_operations::MedianFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1RmsFunc.html#af9517c45f55b0d428d0357f9af3966d7">casacore::ArrayPartMath_global_functions_Array_partial_operations::RmsFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1AvdevFunc.html#a53a8f8a2523f4e73cebd1f6a1625e62e">casacore::ArrayPartMath_global_functions_Array_partial_operations::AvdevFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1StddevFunc.html#af66f008cfd2c8aae15b27b64965cfe9c">casacore::ArrayPartMath_global_functions_Array_partial_operations::StddevFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1VarianceFunc.html#afe4aa81a1d48f57ade4421852bcee09a">casacore::ArrayPartMath_global_functions_Array_partial_operations::VarianceFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1MeanFunc.html#a50fd5468c39dc5776aa2d90468ccd898">casacore::ArrayPartMath_global_functions_Array_partial_operations::MeanFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1MaxFunc.html#a1a3e7fc98ad6b5348a99b9e1fafcb6c4">casacore::ArrayPartMath_global_functions_Array_partial_operations::MaxFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1MinFunc.html#a1f844afdf0b7e735fe2839adc1af81b9">casacore::ArrayPartMath_global_functions_Array_partial_operations::MinFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1ProductFunc.html#a7d756a356e80bf1b539cfb4c0476825b">casacore::ArrayPartMath_global_functions_Array_partial_operations::ProductFunc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1SumSqrFunc.html#aca9de7ad4c9d818f1de299571c2a2a5b">casacore::ArrayPartMath_global_functions_Array_partial_operations::SumSqrFunc&lt; T &gt;</a>, and <a class="el" href="classcasacore_1_1ArrayPartMath__global__functions__Array__partial__operations_1_1SumFunc.html#a271377f28ca8670ecd89efac4beff58a">casacore::ArrayPartMath_global_functions_Array_partial_operations::SumFunc&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classcasacore_1_1NFalseFunc.html#a62ab46c03f7741d31560f852eda12c6d">casacore::NFalseFunc&lt; T, RES &gt;</a>, <a class="el" href="classcasacore_1_1NTrueFunc.html#a77f35a208a240567078ba30095ad2dfb">casacore::NTrueFunc&lt; T, RES &gt;</a>, <a class="el" href="classcasacore_1_1AnyFunc.html#a7281583dad8fd0d5499aa7c2f3ae2e13">casacore::AnyFunc&lt; T &gt;</a>, and <a class="el" href="classcasacore_1_1AllFunc.html#a7d25d5f93e4525c2c6e56cdda5901f9a">casacore::AllFunc&lt; T &gt;</a>.</p>
 
 </div>
 </div>

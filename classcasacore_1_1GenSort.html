@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -181,7 +182,7 @@ class casacore::GenSort&lt; T &gt;</h3>
 <li>
 C-arrays of values; </li>
 <li>
-<code><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a></code>s of values &ndash; the array can have any shape and the increment can be &gt;1; </li>
+<code><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a></code>s of values &ndash; the array can have any shape and the increment can be &gt;1; </li>
 <li>
 <code><a class="el" href="classcasacore_1_1Block.html" title="simple 1-D array ">Block</a></code>s of values &ndash; there is a special function to sort less elements than the size of the <code><a class="el" href="classcasacore_1_1Block.html" title="simple 1-D array ">Block</a></code>. </li>
 </ul>
@@ -216,7 +217,7 @@ The previous sort functionality is still available through the functions quickSo
 default constructor to allocate a temporary </li>
 </ul>
 
-<p>Definition at line <a class="el" href="GenSort_8h_source.html#l00114">114</a> of file <a class="el" href="GenSort_8h_source.html">GenSort.h</a>.</p>
+<p>Definition at line <a class="el" href="GenSort_8h_source.html#l00113">113</a> of file <a class="el" href="GenSort_8h_source.html">GenSort.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a6d5051e32c5341f201d2047467fb8d85"></a>
 <div class="memitem">
@@ -878,7 +879,7 @@ template&lt;class T &gt; </div>
 <p>The sort is done in place and is always stable (thus equal keys keep their original order). It returns the number of values, which can be different if a NoDuplicates sort is done. <br/>
 Insertion sort is used for short arrays (&lt;50 elements). Otherwise, a merge sort is used which will be parallelized if casacore is built with OpenMP support. </p>
 
-<p>Referenced by <a class="el" href="GenSort_8h_source.html#l00312">casacore::genSort()</a>.</p>
+<p>Referenced by <a class="el" href="GenSort_8h_source.html#l00311">casacore::genSort()</a>.</p>
 
 </div>
 </div>
@@ -1009,7 +1010,7 @@ template&lt;class T &gt; </div>
 <p>Swap 2 elements in array. </p>
 <p>Implement inline member functions.</p>
 
-<p>Definition at line <a class="el" href="GenSort_8h_source.html#l00387">387</a> of file <a class="el" href="GenSort_8h_source.html">GenSort.h</a>.</p>
+<p>Definition at line <a class="el" href="GenSort_8h_source.html#l00386">386</a> of file <a class="el" href="GenSort_8h_source.html">GenSort.h</a>.</p>
 
 </div>
 </div>

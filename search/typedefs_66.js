@@ -1,6 +1,8 @@
 var searchData=
 [
   ['facade_5ftype',['facade_type',['../classcasacore_1_1BaseAllocator.html#a310fca7b526f02d73476e07c5b15fe9e',1,'casacore::BaseAllocator']]],
+  ['fbuffer',['FBuffer',['../classTimeBlockEncoder.html#a65b6e6f2e004bd7c294ea1df9755451e',1,'TimeBlockEncoder']]],
+  ['fbufferrow',['FBufferRow',['../classTimeBlockEncoder.html#a9128a7125086ffacb872aca4a3bcc742',1,'TimeBlockEncoder']]],
   ['findfuncptr',['FindFuncPtr',['../classcasacore_1_1TableExprNodeSet.html#a7557b36d553c1e2c2d2dfc460a2e99f4',1,'casacore::TableExprNodeSet']]],
   ['firstexposuretimemap',['FirstExposureTimeMap',['../classcasacore_1_1MSMetaData.html#a47a06a2a88b7801fd7b86169e215fdf6',1,'casacore::MSMetaData']]],
   ['fitserrorhandler',['FITSErrorHandler',['../group__FITS__module.html#gaee882035f11fda0ba1e04f23626a4ec2',1,'casacore']]],

@@ -27,7 +27,6 @@ var searchData=
   ['erfc',['ERFC',['../classcasacore_1_1FuncExprData.html#aafbdc1b0d09c856cab3d98af7eea4853ab826e636b4156acf871e9f360d8d0fc8',1,'casacore::FuncExprData']]],
   ['erlang',['ERLANG',['../classcasacore_1_1Random.html#a0f05cda3ea06093acc46b4e01d81b940ad6f2424bdf9c7fb9a029688c62fdb3be',1,'casacore::Random']]],
   ['error',['ERROR',['../classcasacore_1_1Quality.html#a70e5e744624e8ad0f040a602f0b1ad68ace8d232d8c9a3d4d7359885913969a7f',1,'casacore::Quality']]],
-  ['errorcheck',['ErrorCheck',['../classcasacore_1_1Mutex.html#a5b6829baaa1b64e1554abd97cbc76bcfaa2c70b7c6ee9d725454b74b6186522d4',1,'casacore::Mutex']]],
   ['errword',['ERRWORD',['../classcasacore_1_1FITS.html#a2c0d2efeac76cd71c5eab280cf3a9913a0d9b6bf15114f91dec81ae04aa3761e3',1,'casacore::FITS']]],
   ['et',['ET',['../classcasacore_1_1MEpoch.html#a2fc56ab6e1a929ff816161d18fd2f9e8a054c712f9b5942b921be3d071ab0d94b',1,'casacore::MEpoch']]],
   ['evenpolynomial',['EVENPOLYNOMIAL',['../classcasacore_1_1FunctionHolder.html#aac0e88e8974f4c618d58b87edda11015aaf6b0c098dc8e6c682f286c42a14fd52',1,'casacore::FunctionHolder']]],

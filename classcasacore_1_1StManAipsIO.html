@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -108,6 +109,7 @@ Inheritance diagram for casacore::StManAipsIO:</div>
  <div class="center">
   <img src="classcasacore_1_1StManAipsIO.png" usemap="#casacore::StManAipsIO_map" alt=""/>
   <map id="casacore::StManAipsIO_map" name="casacore::StManAipsIO_map">
+<area href="classcasacore_1_1MSMBase.html" title="Base class for memory-based table storage manager class. " alt="casacore::MSMBase" shape="rect" coords="0,56,148,80"/>
 <area href="classcasacore_1_1DataManager.html" title="Abstract base class for a data manager. " alt="casacore::DataManager" shape="rect" coords="0,0,148,24"/>
 </map>
  </div></div>
@@ -122,41 +124,52 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a71b5ccdd7e2e4ab91234864ec3db6def"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adad4d10c398b6204c9c6814cba7fc4b0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#adad4d10c398b6204c9c6814cba7fc4b0">StManAipsIO</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;storageManagerName, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;)</td></tr>
 <tr class="separator:adad4d10c398b6204c9c6814cba7fc4b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e4f20f7678e1808240531a62cf3be55"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a7e4f20f7678e1808240531a62cf3be55">~StManAipsIO</a> ()</td></tr>
-<tr class="separator:a7e4f20f7678e1808240531a62cf3be55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeadaa9944f27965591ea0834f3ceb74d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#aeadaa9944f27965591ea0834f3ceb74d">clone</a> () const </td></tr>
-<tr class="memdesc:aeadaa9944f27965591ea0834f3ceb74d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clone this object.  <a href="#aeadaa9944f27965591ea0834f3ceb74d">More...</a><br/></td></tr>
-<tr class="separator:aeadaa9944f27965591ea0834f3ceb74d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab99c42001e96c4edb4c8d558c2408a36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#ab99c42001e96c4edb4c8d558c2408a36">dataManagerType</a> () const </td></tr>
-<tr class="memdesc:ab99c42001e96c4edb4c8d558c2408a36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the type name of the data manager (i.e.  <a href="#ab99c42001e96c4edb4c8d558c2408a36">More...</a><br/></td></tr>
-<tr class="separator:ab99c42001e96c4edb4c8d558c2408a36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a497ff54c2d3888d68527d544c43feb64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a497ff54c2d3888d68527d544c43feb64">dataManagerName</a> () const </td></tr>
-<tr class="memdesc:a497ff54c2d3888d68527d544c43feb64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name given to this storage manager.  <a href="#a497ff54c2d3888d68527d544c43feb64">More...</a><br/></td></tr>
-<tr class="separator:a497ff54c2d3888d68527d544c43feb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade62433a4736840c7011de2cbc5414d6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#ade62433a4736840c7011de2cbc5414d6">~StManAipsIO</a> ()</td></tr>
+<tr class="separator:ade62433a4736840c7011de2cbc5414d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab40f05045ea6b7b716bc17a7f86bfc64"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#ab40f05045ea6b7b716bc17a7f86bfc64">clone</a> () const </td></tr>
+<tr class="memdesc:ab40f05045ea6b7b716bc17a7f86bfc64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clone this object.  <a href="#ab40f05045ea6b7b716bc17a7f86bfc64">More...</a><br/></td></tr>
+<tr class="separator:ab40f05045ea6b7b716bc17a7f86bfc64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9aca92f97866925b1cf3d363cdca5aa8"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a9aca92f97866925b1cf3d363cdca5aa8">dataManagerType</a> () const </td></tr>
+<tr class="memdesc:a9aca92f97866925b1cf3d363cdca5aa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the type name of the data manager (i.e.  <a href="#a9aca92f97866925b1cf3d363cdca5aa8">More...</a><br/></td></tr>
+<tr class="separator:a9aca92f97866925b1cf3d363cdca5aa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97447ed60ff84ff28c8b197e4fa2fdc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a97447ed60ff84ff28c8b197e4fa2fdc3">uniqueNr</a> ()</td></tr>
 <tr class="memdesc:a97447ed60ff84ff28c8b197e4fa2fdc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a unique column number for the column (it is only unique for this storage manager).  <a href="#a97447ed60ff84ff28c8b197e4fa2fdc3">More...</a><br/></td></tr>
 <tr class="separator:a97447ed60ff84ff28c8b197e4fa2fdc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11974b4d0cbabe099196af944fd78416"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a11974b4d0cbabe099196af944fd78416">nrow</a> () const </td></tr>
-<tr class="memdesc:a11974b4d0cbabe099196af944fd78416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the nr of rows in this storage manager.  <a href="#a11974b4d0cbabe099196af944fd78416">More...</a><br/></td></tr>
-<tr class="separator:a11974b4d0cbabe099196af944fd78416"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e39136a69da53f372b67a3e9f6b8413"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a7e39136a69da53f372b67a3e9f6b8413">setHasPut</a> ()</td></tr>
-<tr class="memdesc:a7e39136a69da53f372b67a3e9f6b8413"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the hasPut_p flag.  <a href="#a7e39136a69da53f372b67a3e9f6b8413">More...</a><br/></td></tr>
-<tr class="separator:a7e39136a69da53f372b67a3e9f6b8413"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3891c6a88e818a0b82e82a20d3d757f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a3891c6a88e818a0b82e82a20d3d757f1">canAddRow</a> () const </td></tr>
-<tr class="memdesc:a3891c6a88e818a0b82e82a20d3d757f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to add rows? (yes)  <a href="#a3891c6a88e818a0b82e82a20d3d757f1">More...</a><br/></td></tr>
-<tr class="separator:a3891c6a88e818a0b82e82a20d3d757f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a204558e17973c9496febd62ec7282a96"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a204558e17973c9496febd62ec7282a96">canRemoveRow</a> () const </td></tr>
-<tr class="memdesc:a204558e17973c9496febd62ec7282a96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to delete rows? (yes)  <a href="#a204558e17973c9496febd62ec7282a96">More...</a><br/></td></tr>
-<tr class="separator:a204558e17973c9496febd62ec7282a96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc079440340263b24d7c028685089236"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#abc079440340263b24d7c028685089236">canAddColumn</a> () const </td></tr>
-<tr class="memdesc:abc079440340263b24d7c028685089236"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to add columns? (yes)  <a href="#abc079440340263b24d7c028685089236">More...</a><br/></td></tr>
-<tr class="separator:abc079440340263b24d7c028685089236"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6785c42c125704378eb209bfee4665d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#aa6785c42c125704378eb209bfee4665d">canRemoveColumn</a> () const </td></tr>
-<tr class="memdesc:aa6785c42c125704378eb209bfee4665d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to delete columns? (yes)  <a href="#aa6785c42c125704378eb209bfee4665d">More...</a><br/></td></tr>
-<tr class="separator:aa6785c42c125704378eb209bfee4665d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa1fff035acaca23b8aefa14993b409b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1StManArrayFile.html">StManArrayFile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#afa1fff035acaca23b8aefa14993b409b">openArrayFile</a> (<a class="el" href="classcasacore_1_1ByteIO.html#afa01b2ceb18a6e7db1ef40ebcd7158df">ByteIO::OpenOption</a> opt)</td></tr>
 <tr class="memdesc:afa1fff035acaca23b8aefa14993b409b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open (if needed) the file for indirect arrays with the given mode.  <a href="#afa1fff035acaca23b8aefa14993b409b">More...</a><br/></td></tr>
 <tr class="separator:afa1fff035acaca23b8aefa14993b409b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcasacore_1_1MSMBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1MSMBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1MSMBase.html">casacore::MSMBase</a></td></tr>
+<tr class="memitem:a4132008e52debfc7489194cd0b8e5663 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a4132008e52debfc7489194cd0b8e5663">MSMBase</a> ()</td></tr>
+<tr class="memdesc:a4132008e52debfc7489194cd0b8e5663 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a memory storage manager.  <a href="#a4132008e52debfc7489194cd0b8e5663">More...</a><br/></td></tr>
+<tr class="separator:a4132008e52debfc7489194cd0b8e5663 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99104c0eb2e08b8e165a1396c202324e inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a99104c0eb2e08b8e165a1396c202324e">MSMBase</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;storageManagerName)</td></tr>
+<tr class="memdesc:a99104c0eb2e08b8e165a1396c202324e inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a memory storage manager with the given name.  <a href="#a99104c0eb2e08b8e165a1396c202324e">More...</a><br/></td></tr>
+<tr class="separator:a99104c0eb2e08b8e165a1396c202324e inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a615cf509be132a9d1ccb82033c8b0727 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a615cf509be132a9d1ccb82033c8b0727">MSMBase</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;storageManagerName, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;)</td></tr>
+<tr class="separator:a615cf509be132a9d1ccb82033c8b0727 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60cc500f3996be291b06b3e5e3f6dcdb inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a60cc500f3996be291b06b3e5e3f6dcdb">~MSMBase</a> ()</td></tr>
+<tr class="separator:a60cc500f3996be291b06b3e5e3f6dcdb inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad28b72e04ce9da1aacc85d6e841c6422 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#ad28b72e04ce9da1aacc85d6e841c6422">dataManagerName</a> () const </td></tr>
+<tr class="memdesc:ad28b72e04ce9da1aacc85d6e841c6422 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name given to this storage manager.  <a href="#ad28b72e04ce9da1aacc85d6e841c6422">More...</a><br/></td></tr>
+<tr class="separator:ad28b72e04ce9da1aacc85d6e841c6422 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabef7775f80e262fc8094f056a62ec03 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#aabef7775f80e262fc8094f056a62ec03">setHasPut</a> ()</td></tr>
+<tr class="memdesc:aabef7775f80e262fc8094f056a62ec03 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the hasPut_p flag.  <a href="#aabef7775f80e262fc8094f056a62ec03">More...</a><br/></td></tr>
+<tr class="separator:aabef7775f80e262fc8094f056a62ec03 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab0a6ef2e483e5aa90c38335dbb8b096 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#aab0a6ef2e483e5aa90c38335dbb8b096">nrow</a> () const </td></tr>
+<tr class="memdesc:aab0a6ef2e483e5aa90c38335dbb8b096 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the nr of rows in this storage manager.  <a href="#aab0a6ef2e483e5aa90c38335dbb8b096">More...</a><br/></td></tr>
+<tr class="separator:aab0a6ef2e483e5aa90c38335dbb8b096 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17b2476d3a365f8bfcdb4df293cfee78 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a17b2476d3a365f8bfcdb4df293cfee78">canAddRow</a> () const </td></tr>
+<tr class="memdesc:a17b2476d3a365f8bfcdb4df293cfee78 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to add rows? (yes)  <a href="#a17b2476d3a365f8bfcdb4df293cfee78">More...</a><br/></td></tr>
+<tr class="separator:a17b2476d3a365f8bfcdb4df293cfee78 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9acfabd75b178b208175083f396e9359 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a9acfabd75b178b208175083f396e9359">canRemoveRow</a> () const </td></tr>
+<tr class="memdesc:a9acfabd75b178b208175083f396e9359 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to delete rows? (yes)  <a href="#a9acfabd75b178b208175083f396e9359">More...</a><br/></td></tr>
+<tr class="separator:a9acfabd75b178b208175083f396e9359 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad373715c0b68df30f31efd3d018742e0 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#ad373715c0b68df30f31efd3d018742e0">canAddColumn</a> () const </td></tr>
+<tr class="memdesc:ad373715c0b68df30f31efd3d018742e0 inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to add columns? (yes)  <a href="#ad373715c0b68df30f31efd3d018742e0">More...</a><br/></td></tr>
+<tr class="separator:ad373715c0b68df30f31efd3d018742e0 inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a863f2d9adaf489eb9a51c10059990a9e inherit pub_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a863f2d9adaf489eb9a51c10059990a9e">canRemoveColumn</a> () const </td></tr>
+<tr class="memdesc:a863f2d9adaf489eb9a51c10059990a9e inherit pub_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the storage manager allow to delete columns? (yes)  <a href="#a863f2d9adaf489eb9a51c10059990a9e">More...</a><br/></td></tr>
+<tr class="separator:a863f2d9adaf489eb9a51c10059990a9e inherit pub_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
 <tr class="memitem:a7d6511049dabf21d1db07b3019f5de52 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a7d6511049dabf21d1db07b3019f5de52">DataManager</a> ()</td></tr>
 <tr class="memdesc:a7d6511049dabf21d1db07b3019f5de52 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a7d6511049dabf21d1db07b3019f5de52">More...</a><br/></td></tr>
@@ -178,12 +191,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aae09dc8a4331b76b0347e1f56da7d818 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#aae09dc8a4331b76b0347e1f56da7d818">isStorageManager</a> () const </td></tr>
 <tr class="memdesc:aae09dc8a4331b76b0347e1f56da7d818 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the data manager a storage manager? The default is yes.  <a href="#aae09dc8a4331b76b0347e1f56da7d818">More...</a><br/></td></tr>
 <tr class="separator:aae09dc8a4331b76b0347e1f56da7d818 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ea149d8f4783310caef9ad1f910fc1b inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a1ea149d8f4783310caef9ad1f910fc1b">canReallocateColumns</a> () const </td></tr>
-<tr class="memdesc:a1ea149d8f4783310caef9ad1f910fc1b inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tell if the data manager wants to reallocate the data manager column objects.  <a href="#a1ea149d8f4783310caef9ad1f910fc1b">More...</a><br/></td></tr>
-<tr class="separator:a1ea149d8f4783310caef9ad1f910fc1b inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad67fa61e9ecb5d9ee9ce652f6a5550fa inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#ad67fa61e9ecb5d9ee9ce652f6a5550fa">reallocateColumn</a> (<a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *column)</td></tr>
-<tr class="memdesc:ad67fa61e9ecb5d9ee9ce652f6a5550fa inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reallocate the column object if it is part of this data manager.  <a href="#ad67fa61e9ecb5d9ee9ce652f6a5550fa">More...</a><br/></td></tr>
-<tr class="separator:ad67fa61e9ecb5d9ee9ce652f6a5550fa inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ca47283c8831c54ea5377452a5e85f9 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a0ca47283c8831c54ea5377452a5e85f9">sequenceNr</a> () const </td></tr>
 <tr class="memdesc:a0ca47283c8831c54ea5377452a5e85f9 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the (unique) sequence nr of this data manager.  <a href="#a0ca47283c8831c54ea5377452a5e85f9">More...</a><br/></td></tr>
 <tr class="separator:a0ca47283c8831c54ea5377452a5e85f9 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -217,9 +224,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a25a417865a89463ce7f3ec565f350a74">canRenameColumn</a> () const </td></tr>
 <tr class="memdesc:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the data manager allow to rename columns? (default yes)  <a href="#a25a417865a89463ce7f3ec565f350a74">More...</a><br/></td></tr>
 <tr class="separator:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a36062cc49d6197e9df045cff38d37a7a">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nbytes)</td></tr>
-<tr class="memdesc:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#a36062cc49d6197e9df045cff38d37a7a">More...</a><br/></td></tr>
-<tr class="separator:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#ac56c0624343f204b2236ee69eeaa6ed2">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nMiB)</td></tr>
+<tr class="memdesc:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#ac56c0624343f204b2236ee69eeaa6ed2">More...</a><br/></td></tr>
+<tr class="separator:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a75e6607644f05a6168e326fdc902668f">showCacheStatistics</a> (std::ostream &amp;) const </td></tr>
 <tr class="memdesc:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the data manager's IO statistics.  <a href="#a75e6607644f05a6168e326fdc902668f">More...</a><br/></td></tr>
 <tr class="separator:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -241,9 +248,13 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ad85922280982f734058887f25238c3e8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#ad85922280982f734058887f25238c3e8">makeObject</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1StManAipsIO.html#ab99c42001e96c4edb4c8d558c2408a36">dataManagerType</a>, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;spec)</td></tr>
+<tr class="memitem:ad85922280982f734058887f25238c3e8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#ad85922280982f734058887f25238c3e8">makeObject</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1StManAipsIO.html#a9aca92f97866925b1cf3d363cdca5aa8">dataManagerType</a>, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;spec)</td></tr>
 <tr class="memdesc:ad85922280982f734058887f25238c3e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the object from the string.  <a href="#ad85922280982f734058887f25238c3e8">More...</a><br/></td></tr>
 <tr class="separator:ad85922280982f734058887f25238c3e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classcasacore_1_1MSMBase"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcasacore_1_1MSMBase')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcasacore_1_1MSMBase.html">casacore::MSMBase</a></td></tr>
+<tr class="memitem:a4793fd81a74110e0f77fcbb5bc8a590f inherit pub_static_methods_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a4793fd81a74110e0f77fcbb5bc8a590f">makeObject</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1MSMBase.html#a098375270f07b6ad69937118191d80bc">dataManagerType</a>, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;spec)</td></tr>
+<tr class="memdesc:a4793fd81a74110e0f77fcbb5bc8a590f inherit pub_static_methods_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the object from the string.  <a href="#a4793fd81a74110e0f77fcbb5bc8a590f">More...</a><br/></td></tr>
+<tr class="separator:a4793fd81a74110e0f77fcbb5bc8a590f inherit pub_static_methods_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
 <tr class="memitem:ad404d1d05028df115b8cee7cde68ed8a inherit pub_static_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#ad404d1d05028df115b8cee7cde68ed8a">registerCtor</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;type, DataManagerCtor func)</td></tr>
 <tr class="memdesc:ad404d1d05028df115b8cee7cde68ed8a inherit pub_static_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a mapping of a data manager type to its static construction function.  <a href="#ad404d1d05028df115b8cee7cde68ed8a">More...</a><br/></td></tr>
@@ -269,27 +280,21 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a59ae709b73cdf9d5a3cacf6144f37a0e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a59ae709b73cdf9d5a3cacf6144f37a0e">flush</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> fsync)</td></tr>
 <tr class="memdesc:a59ae709b73cdf9d5a3cacf6144f37a0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush and optionally fsync the data.  <a href="#a59ae709b73cdf9d5a3cacf6144f37a0e">More...</a><br/></td></tr>
 <tr class="separator:a59ae709b73cdf9d5a3cacf6144f37a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc74422a67beccab144358f2d7ee07cc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#abc74422a67beccab144358f2d7ee07cc">create</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow)</td></tr>
-<tr class="memdesc:abc74422a67beccab144358f2d7ee07cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the storage manager create files as needed for a new table.  <a href="#abc74422a67beccab144358f2d7ee07cc">More...</a><br/></td></tr>
-<tr class="separator:abc74422a67beccab144358f2d7ee07cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87794387d9248fa52c86eb995b7ea50b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a87794387d9248fa52c86eb995b7ea50b">open</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow, <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;)</td></tr>
-<tr class="memdesc:a87794387d9248fa52c86eb995b7ea50b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the storage manager file for an existing table and read in the data and let the <a class="el" href="classcasacore_1_1StManColumnAipsIO.html" title="AipsIO table column storage manager class. ">StManColumnAipsIO</a> objects read their data.  <a href="#a87794387d9248fa52c86eb995b7ea50b">More...</a><br/></td></tr>
-<tr class="separator:a87794387d9248fa52c86eb995b7ea50b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5929c27f6cc30a5803137ceb7656b77b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a5929c27f6cc30a5803137ceb7656b77b">resync</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow)</td></tr>
-<tr class="memdesc:a5929c27f6cc30a5803137ceb7656b77b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resync the storage manager with the new file contents.  <a href="#a5929c27f6cc30a5803137ceb7656b77b">More...</a><br/></td></tr>
-<tr class="separator:a5929c27f6cc30a5803137ceb7656b77b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e2b373a5bea860aa9fc117cb1916f44"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a8e2b373a5bea860aa9fc117cb1916f44">create64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow)</td></tr>
+<tr class="memdesc:a8e2b373a5bea860aa9fc117cb1916f44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the storage manager create files as needed for a new table.  <a href="#a8e2b373a5bea860aa9fc117cb1916f44">More...</a><br/></td></tr>
+<tr class="separator:a8e2b373a5bea860aa9fc117cb1916f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10f46a9d1401c413780c7ee5533331ee"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a10f46a9d1401c413780c7ee5533331ee">open64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow, <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;)</td></tr>
+<tr class="memdesc:a10f46a9d1401c413780c7ee5533331ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the storage manager file for an existing table and read in the data and let the <a class="el" href="classcasacore_1_1StManColumnAipsIO.html" title="AipsIO table column storage manager class. ">StManColumnAipsIO</a> objects read their data.  <a href="#a10f46a9d1401c413780c7ee5533331ee">More...</a><br/></td></tr>
+<tr class="separator:a10f46a9d1401c413780c7ee5533331ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a368eb89290e247275cb7db252155d48b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a368eb89290e247275cb7db252155d48b">resync64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow)</td></tr>
+<tr class="memdesc:a368eb89290e247275cb7db252155d48b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resync the storage manager with the new file contents.  <a href="#a368eb89290e247275cb7db252155d48b">More...</a><br/></td></tr>
+<tr class="separator:a368eb89290e247275cb7db252155d48b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef17779a80a52825267ff9cabdb04d3c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#aef17779a80a52825267ff9cabdb04d3c">reopenRW</a> ()</td></tr>
 <tr class="memdesc:aef17779a80a52825267ff9cabdb04d3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reopen the storage manager files for read/write.  <a href="#aef17779a80a52825267ff9cabdb04d3c">More...</a><br/></td></tr>
 <tr class="separator:aef17779a80a52825267ff9cabdb04d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12d7b08f9419f1e4d9997d864e47b916"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a12d7b08f9419f1e4d9997d864e47b916">deleteManager</a> ()</td></tr>
 <tr class="memdesc:a12d7b08f9419f1e4d9997d864e47b916"><td class="mdescLeft">&#160;</td><td class="mdescRight">The data manager will be deleted (because all its columns are requested to be deleted).  <a href="#a12d7b08f9419f1e4d9997d864e47b916">More...</a><br/></td></tr>
 <tr class="separator:a12d7b08f9419f1e4d9997d864e47b916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a414cd27f260eaeee1d20f108cfc2ee9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a414cd27f260eaeee1d20f108cfc2ee9f">addRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow)</td></tr>
-<tr class="memdesc:a414cd27f260eaeee1d20f108cfc2ee9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to all columns.  <a href="#a414cd27f260eaeee1d20f108cfc2ee9f">More...</a><br/></td></tr>
-<tr class="separator:a414cd27f260eaeee1d20f108cfc2ee9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2987ecfb3feb82553788c3e3a7f8849e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a2987ecfb3feb82553788c3e3a7f8849e">removeRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr)</td></tr>
-<tr class="memdesc:a2987ecfb3feb82553788c3e3a7f8849e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#a2987ecfb3feb82553788c3e3a7f8849e">More...</a><br/></td></tr>
-<tr class="separator:a2987ecfb3feb82553788c3e3a7f8849e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add57296e33ad3b24ca07be7edbb751ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#add57296e33ad3b24ca07be7edbb751ed">makeScalarColumn</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, int dataType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataTypeID)</td></tr>
 <tr class="memdesc:add57296e33ad3b24ca07be7edbb751ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a column in the storage manager on behalf of a table column.  <a href="#add57296e33ad3b24ca07be7edbb751ed">More...</a><br/></td></tr>
 <tr class="separator:add57296e33ad3b24ca07be7edbb751ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -299,36 +304,22 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:ae26ccbe8c85f04020f7d7abbe1aa9baf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#ae26ccbe8c85f04020f7d7abbe1aa9baf">makeIndArrColumn</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, int dataType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataTypeID)</td></tr>
 <tr class="memdesc:ae26ccbe8c85f04020f7d7abbe1aa9baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an indirect array column.  <a href="#ae26ccbe8c85f04020f7d7abbe1aa9baf">More...</a><br/></td></tr>
 <tr class="separator:ae26ccbe8c85f04020f7d7abbe1aa9baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a025f343aa6972c890adf19fe6453e892"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a025f343aa6972c890adf19fe6453e892">addColumn</a> (<a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *)</td></tr>
-<tr class="memdesc:a025f343aa6972c890adf19fe6453e892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a column.  <a href="#a025f343aa6972c890adf19fe6453e892">More...</a><br/></td></tr>
-<tr class="separator:a025f343aa6972c890adf19fe6453e892"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb03c2d4eb319c8cc164df043f35601e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#afb03c2d4eb319c8cc164df043f35601e">removeColumn</a> (<a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *)</td></tr>
-<tr class="memdesc:afb03c2d4eb319c8cc164df043f35601e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a column.  <a href="#afb03c2d4eb319c8cc164df043f35601e">More...</a><br/></td></tr>
-<tr class="separator:afb03c2d4eb319c8cc164df043f35601e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:aab0e24c193b8adeb8992791bafefecfa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#aab0e24c193b8adeb8992791bafefecfa">stmanName_p</a></td></tr>
-<tr class="memdesc:aab0e24c193b8adeb8992791bafefecfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name given by user to this storage manager.  <a href="#aab0e24c193b8adeb8992791bafefecfa">More...</a><br/></td></tr>
-<tr class="separator:aab0e24c193b8adeb8992791bafefecfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a704c0eff45d233fc0ef99fd56afac808"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a704c0eff45d233fc0ef99fd56afac808">uniqnr_p</a></td></tr>
 <tr class="memdesc:a704c0eff45d233fc0ef99fd56afac808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique nr for column in this storage manager.  <a href="#a704c0eff45d233fc0ef99fd56afac808">More...</a><br/></td></tr>
 <tr class="separator:a704c0eff45d233fc0ef99fd56afac808"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c4930b9482ecadd4e7d5d567abcd0cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a5c4930b9482ecadd4e7d5d567abcd0cd">nrrow_p</a></td></tr>
-<tr class="memdesc:a5c4930b9482ecadd4e7d5d567abcd0cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of rows in the columns.  <a href="#a5c4930b9482ecadd4e7d5d567abcd0cd">More...</a><br/></td></tr>
-<tr class="separator:a5c4930b9482ecadd4e7d5d567abcd0cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af23f806688b22176d4d39d2936962a02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1PtrBlock.html">PtrBlock</a>&lt; <a class="el" href="classcasacore_1_1StManColumnAipsIO.html">StManColumnAipsIO</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#af23f806688b22176d4d39d2936962a02">colSet_p</a></td></tr>
-<tr class="memdesc:af23f806688b22176d4d39d2936962a02"><td class="mdescLeft">&#160;</td><td class="mdescRight">The assembly of all columns.  <a href="#af23f806688b22176d4d39d2936962a02">More...</a><br/></td></tr>
-<tr class="separator:af23f806688b22176d4d39d2936962a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ece70eb3065ed7302679935673ea527"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a4ece70eb3065ed7302679935673ea527">hasPut_p</a></td></tr>
-<tr class="memdesc:a4ece70eb3065ed7302679935673ea527"><td class="mdescLeft">&#160;</td><td class="mdescRight">Has anything been put since the last flush?  <a href="#a4ece70eb3065ed7302679935673ea527">More...</a><br/></td></tr>
-<tr class="separator:a4ece70eb3065ed7302679935673ea527"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1eec3dc769072029b65d24cb079c4994"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1StManArrayFile.html">StManArrayFile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1StManAipsIO.html#a1eec3dc769072029b65d24cb079c4994">iosfile_p</a></td></tr>
 <tr class="memdesc:a1eec3dc769072029b65d24cb079c4994"><td class="mdescLeft">&#160;</td><td class="mdescRight">The file containing the indirect arrays.  <a href="#a1eec3dc769072029b65d24cb079c4994">More...</a><br/></td></tr>
 <tr class="separator:a1eec3dc769072029b65d24cb079c4994"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_attribs_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
+<tr class="memitem:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#af8e69129a6b42ff06aec5c43066c5b01">MAXROWNR32</a></td></tr>
+<tr class="memdesc:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the highest row number that can be represented as signed 32-bit.  <a href="#af8e69129a6b42ff06aec5c43066c5b01">More...</a><br/></td></tr>
+<tr class="separator:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
 <tr class="memitem:a4c32d0e690566949850a11b26566e5aa inherit pro_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a4c32d0e690566949850a11b26566e5aa">decrementNcolumn</a> ()</td></tr>
 <tr class="memdesc:a4c32d0e690566949850a11b26566e5aa inherit pro_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrement number of columns (in case a column is deleted).  <a href="#a4c32d0e690566949850a11b26566e5aa">More...</a><br/></td></tr>
@@ -348,6 +339,22 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a0ab52846ffc43f5b49f99ea03cdb7fbe inherit pro_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a0ab52846ffc43f5b49f99ea03cdb7fbe">throwDataTypeOther</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, int dataType) const </td></tr>
 <tr class="memdesc:a0ab52846ffc43f5b49f99ea03cdb7fbe inherit pro_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw an exception in case data type is TpOther, because the storage managers (and maybe other data managers) do not support such columns.  <a href="#a0ab52846ffc43f5b49f99ea03cdb7fbe">More...</a><br/></td></tr>
 <tr class="separator:a0ab52846ffc43f5b49f99ea03cdb7fbe inherit pro_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcasacore_1_1MSMBase"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcasacore_1_1MSMBase')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcasacore_1_1MSMBase.html">casacore::MSMBase</a></td></tr>
+<tr class="memitem:ae1ac387f622162f21bb5f27eeb445faa inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#ae1ac387f622162f21bb5f27eeb445faa">stmanName_p</a></td></tr>
+<tr class="memdesc:ae1ac387f622162f21bb5f27eeb445faa inherit pro_attribs_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name given by user to this storage manager.  <a href="#ae1ac387f622162f21bb5f27eeb445faa">More...</a><br/></td></tr>
+<tr class="separator:ae1ac387f622162f21bb5f27eeb445faa inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4eb9fe3919629d588c0e3f26e2fea18 inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#af4eb9fe3919629d588c0e3f26e2fea18">nrrow_p</a></td></tr>
+<tr class="memdesc:af4eb9fe3919629d588c0e3f26e2fea18 inherit pro_attribs_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of rows in the columns.  <a href="#af4eb9fe3919629d588c0e3f26e2fea18">More...</a><br/></td></tr>
+<tr class="separator:af4eb9fe3919629d588c0e3f26e2fea18 inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac652ccadd0aa438083a4d0acfe360472 inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#ac652ccadd0aa438083a4d0acfe360472">nrrowCreate_p</a></td></tr>
+<tr class="memdesc:ac652ccadd0aa438083a4d0acfe360472 inherit pro_attribs_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of rows in <a class="el" href="classcasacore_1_1DataManager.html#adceb1b5a7fffd55144ba1e21095a2a98">create()</a>.  <a href="#ac652ccadd0aa438083a4d0acfe360472">More...</a><br/></td></tr>
+<tr class="separator:ac652ccadd0aa438083a4d0acfe360472 inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70379b4e878c94f6b21cf108564de2bc inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1PtrBlock.html">PtrBlock</a>&lt; <a class="el" href="classcasacore_1_1MSMColumn.html">MSMColumn</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a70379b4e878c94f6b21cf108564de2bc">colSet_p</a></td></tr>
+<tr class="memdesc:a70379b4e878c94f6b21cf108564de2bc inherit pro_attribs_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">The assembly of all columns.  <a href="#a70379b4e878c94f6b21cf108564de2bc">More...</a><br/></td></tr>
+<tr class="separator:a70379b4e878c94f6b21cf108564de2bc inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cb15a3e73e73df37543c0bacace39bc inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMBase.html#a5cb15a3e73e73df37543c0bacace39bc">hasPut_p</a></td></tr>
+<tr class="memdesc:a5cb15a3e73e73df37543c0bacace39bc inherit pro_attribs_classcasacore_1_1MSMBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Has anything been put since the last flush?  <a href="#a5cb15a3e73e73df37543c0bacace39bc">More...</a><br/></td></tr>
+<tr class="separator:a5cb15a3e73e73df37543c0bacace39bc inherit pro_attribs_classcasacore_1_1MSMBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> table storage manager class. </p>
@@ -374,7 +381,7 @@ Additional Inherited Members</h2></td></tr>
 <p>The <a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> storage manager does fully support addition and removal of rows and columns.</p>
 <p>All data, except indirect columns, for this storage manager are kept in one file. The file name is the table name appended with .N_AipsIO, where N is the (unique) storage manager sequence number. Each column containing indirect arrays is stored in a separate file using class StManIndArrayColumnAipsIO. The name of such a file is the storage manager file name appended with _cM, where M is a unique column sequence number acquired using function <a class="el" href="classcasacore_1_1StManAipsIO.html#a97447ed60ff84ff28c8b197e4fa2fdc3" title="Get a unique column number for the column (it is only unique for this storage manager). ">uniqueNr()</a>. </p>
 
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00367">367</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
+<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00194">194</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a19a529e6c63bf03af03aea60efbe7eba"></a>
 <div class="memitem">
@@ -440,17 +447,25 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7e4f20f7678e1808240531a62cf3be55"></a>
+<a class="anchor" id="ade62433a4736840c7011de2cbc5414d6"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">casacore::StManAipsIO::~StManAipsIO </td>
+          <td class="memname">virtual casacore::StManAipsIO::~StManAipsIO </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -482,7 +497,7 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a025f343aa6972c890adf19fe6453e892"></a>
+<a class="anchor" id="ab40f05045ea6b7b716bc17a7f86bfc64"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -490,171 +505,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void casacore::StManAipsIO::addColumn </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add a column. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a0d0ac8db0d525c304a59a81ae7b5353b">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a414cd27f260eaeee1d20f108cfc2ee9f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void casacore::StManAipsIO::addRow </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
-          <td class="paramname"><em>nrrow</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add rows to all columns. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a7bf4d388de87925f3da206a37060c548">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="abc079440340263b24d7c028685089236"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::StManAipsIO::canAddColumn </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Does the storage manager allow to add columns? (yes) </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#abcd46ab0b0680506e7d3e9b39810b700">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a3891c6a88e818a0b82e82a20d3d757f1"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::StManAipsIO::canAddRow </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Does the storage manager allow to add rows? (yes) </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a3a47210089af13bfb2ee7484c8c58649">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aa6785c42c125704378eb209bfee4665d"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::StManAipsIO::canRemoveColumn </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Does the storage manager allow to delete columns? (yes) </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a6b221a501646cc8005aa248568a1ec33">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a204558e17973c9496febd62ec7282a96"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::StManAipsIO::canRemoveRow </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Does the storage manager allow to delete rows? (yes) </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a9a0d2d3a051fbaa947b8d243933b96ca">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aeadaa9944f27965591ea0834f3ceb74d"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1DataManager.html">DataManager</a>* casacore::StManAipsIO::clone </td>
+          <td class="memname">virtual <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a>* casacore::StManAipsIO::clone </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -670,11 +521,11 @@ Additional Inherited Members</h2></td></tr>
 <p>Clone this object. </p>
 <p>It does not clone StManAipsIOColumn objects possibly used. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#ab8d98544ba7a3fdfb204fc69da324fda">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#ae0eb6a820ab08e265098b1ef3d955d5e">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="abc74422a67beccab144358f2d7ee07cc"></a>
+<a class="anchor" id="a8e2b373a5bea860aa9fc117cb1916f44"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -682,9 +533,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::StManAipsIO::create </td>
+          <td class="memname">virtual void casacore::StManAipsIO::create64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -699,11 +550,11 @@ Additional Inherited Members</h2></td></tr>
 <p>Let the storage manager create files as needed for a new table. </p>
 <p>This allows a column with an indirect array to create its file. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a1d88428031895eea8c7f25c6579d34a1">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#a5e923e033df1243c70e007c168cb35e1">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a497ff54c2d3888d68527d544c43feb64"></a>
+<a class="anchor" id="a9aca92f97866925b1cf3d363cdca5aa8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -711,34 +562,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::StManAipsIO::dataManagerName </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the name given to this storage manager. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#aff8dac6ac2e5f95952a40c0a3ee4ea17">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ab99c42001e96c4edb4c8d558c2408a36"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::StManAipsIO::dataManagerType </td>
+          <td class="memname">virtual <a class="el" href="classcasacore_1_1String.html">String</a> casacore::StManAipsIO::dataManagerType </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -754,7 +578,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the type name of the data manager (i.e. </p>
 <p><a class="el" href="classcasacore_1_1StManAipsIO.html" title="AipsIO table storage manager class. ">StManAipsIO</a>). </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a03a6c5d513990679a001c5ae37db4552">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#a098375270f07b6ad69937118191d80bc">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -782,7 +606,7 @@ Additional Inherited Members</h2></td></tr>
 <p>The data manager will be deleted (because all its columns are requested to be deleted). </p>
 <p>So clean up the things needed (e.g. delete files). </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a2b1d0e44fa51dba277be969352d41ee1">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#a0cf9073a4c755526a9796c3da50e2977">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -821,7 +645,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Flush and optionally fsync the data. </p>
 <p>It returns a True status if it had to flush (i.e. if data have changed). </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#ae6f97af4692207bb5a294de3ad42e208">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#a56117a0a21c7c9d5d01b8126a2eb18db">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -865,7 +689,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Create a direct array column. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#aa0173eb7ccaa78c490cc62bed40a5f5c">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#ac39ee1cc50d1a9423f356aecffd93744">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -909,7 +733,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Create an indirect array column. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a9bd5f265a51e0982252756d7b95054db">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#a16e403bc62fa76cb7b588056138d7296">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -991,11 +815,11 @@ Additional Inherited Members</h2></td></tr>
 <p>Create a column in the storage manager on behalf of a table column. </p>
 <p>Create a scalar column. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a6d64d92ae257a93225a6e1a6e7ba507d">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#acd14d8764441ba98a7f6c26b679f11ad">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a11974b4d0cbabe099196af944fd78416"></a>
+<a class="anchor" id="a10f46a9d1401c413780c7ee5533331ee"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1003,38 +827,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::StManAipsIO::nrow </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::StManAipsIO::open64 </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the nr of rows in this storage manager. </p>
-
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00404">404</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
-
-<p>References <a class="el" href="StManAipsIO_8h_source.html#l00496">nrrow_p</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a87794387d9248fa52c86eb995b7ea50b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void casacore::StManAipsIO::open </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em>, </td>
         </tr>
         <tr>
@@ -1058,7 +853,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Open the storage manager file for an existing table and read in the data and let the <a class="el" href="classcasacore_1_1StManColumnAipsIO.html" title="AipsIO table column storage manager class. ">StManColumnAipsIO</a> objects read their data. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#add9a81a6668484432520d2f0591ae767">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#a0added2b36957bf63d4882049a51409e">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -1107,62 +902,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afb03c2d4eb319c8cc164df043f35601e"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void casacore::StManAipsIO::removeColumn </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Delete a column. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a0c58c1caa379d505e4efe586c599f295">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a2987ecfb3feb82553788c3e3a7f8849e"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void casacore::StManAipsIO::removeRow </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
-          <td class="paramname"><em>rownr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Delete a row from all columns. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a43ab87fc030fdf69ef193a1217c3226f">casacore::DataManager</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="aef17779a80a52825267ff9cabdb04d3c"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1190,7 +929,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a5929c27f6cc30a5803137ceb7656b77b"></a>
+<a class="anchor" id="a368eb89290e247275cb7db252155d48b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1198,9 +937,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::StManAipsIO::resync </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::StManAipsIO::resync64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1215,37 +954,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Resync the storage manager with the new file contents. </p>
 <p>This is done by clearing the cache. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#aef4c82e212caf10b40bc1469a677f215">casacore::DataManager</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a7e39136a69da53f372b67a3e9f6b8413"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void casacore::StManAipsIO::setHasPut </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Set the hasPut_p flag. </p>
-<p>In this way the StManAipsIOColumn objects can indicate that data have been put. </p>
-
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00409">409</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
-
-<p>References <a class="el" href="StManAipsIO_8h_source.html#l00500">hasPut_p</a>, and <a class="el" href="aipstype_8h_source.html#l00043">casacore::True</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1MSMBase.html#ad7ad70768b86d6270bc0e99e5aaa4d3b">casacore::MSMBase</a>.</p>
 
 </div>
 </div>
@@ -1273,63 +982,13 @@ Additional Inherited Members</h2></td></tr>
 <p>Get a unique column number for the column (it is only unique for this storage manager). </p>
 <p>This is used by StManIndArrayColumnAipsIO to create a unique file name. </p>
 
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00400">400</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
+<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00224">224</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
 
-<p>References <a class="el" href="StManAipsIO_8h_source.html#l00494">uniqnr_p</a>.</p>
+<p>References <a class="el" href="StManAipsIO_8h_source.html#l00283">uniqnr_p</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="af23f806688b22176d4d39d2936962a02"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1PtrBlock.html">PtrBlock</a>&lt;<a class="el" href="classcasacore_1_1StManColumnAipsIO.html">StManColumnAipsIO</a>*&gt; casacore::StManAipsIO::colSet_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The assembly of all columns. </p>
-
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00498">498</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a4ece70eb3065ed7302679935673ea527"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::StManAipsIO::hasPut_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Has anything been put since the last flush? </p>
-
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00500">500</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
-
-<p>Referenced by <a class="el" href="StManAipsIO_8h_source.html#l00409">setHasPut()</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="a1eec3dc769072029b65d24cb079c4994"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1350,57 +1009,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>The file containing the indirect arrays. </p>
 
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00502">502</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a5c4930b9482ecadd4e7d5d567abcd0cd"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::StManAipsIO::nrrow_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The number of rows in the columns. </p>
-
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00496">496</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
-
-<p>Referenced by <a class="el" href="StManAipsIO_8h_source.html#l00404">nrow()</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aab0e24c193b8adeb8992791bafefecfa"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::StManAipsIO::stmanName_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Name given by user to this storage manager. </p>
-
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00492">492</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
+<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00285">285</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
 
 </div>
 </div>
@@ -1424,9 +1033,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Unique nr for column in this storage manager. </p>
 
-<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00494">494</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
+<p>Definition at line <a class="el" href="StManAipsIO_8h_source.html#l00283">283</a> of file <a class="el" href="StManAipsIO_8h_source.html">StManAipsIO.h</a>.</p>
 
-<p>Referenced by <a class="el" href="StManAipsIO_8h_source.html#l00400">uniqueNr()</a>.</p>
+<p>Referenced by <a class="el" href="StManAipsIO_8h_source.html#l00224">uniqueNr()</a>.</p>
 
 </div>
 </div>

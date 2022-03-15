@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -131,7 +132,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afee7ec414c60c52dd10e5eeb3b7d4ac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c64671faa88b70568d0d416db3c6c73"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a9c64671faa88b70568d0d416db3c6c73"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1JsonOut.html#a9c64671faa88b70568d0d416db3c6c73">write</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, T <a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;comment=<a class="el" href="classcasacore_1_1String.html">String</a>())</td></tr>
-<tr class="memdesc:a9c64671faa88b70568d0d416db3c6c73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write one or more lines defining a keyword-value pair, where value can be of any type including <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>, <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>, and <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a>.  <a href="#a9c64671faa88b70568d0d416db3c6c73">More...</a><br/></td></tr>
+<tr class="memdesc:a9c64671faa88b70568d0d416db3c6c73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write one or more lines defining a keyword-value pair, where value can be of any type including <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>, <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>, and <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a>.  <a href="#a9c64671faa88b70568d0d416db3c6c73">More...</a><br/></td></tr>
 <tr class="separator:a9c64671faa88b70568d0d416db3c6c73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d3ce43bf7560118ef9585125fc77f34"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1JsonOut.html#a2d3ce43bf7560118ef9585125fc77f34">writeComment</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;comment)</td></tr>
 <tr class="memdesc:a2d3ce43bf7560118ef9585125fc77f34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a comment on a separate line.  <a href="#a2d3ce43bf7560118ef9585125fc77f34">More...</a><br/></td></tr>
@@ -233,9 +234,9 @@ Private Attributes</h2></td></tr>
 </dl>
 <h3>Synopsis</h3>
 <p><a class="el" href="classcasacore_1_1JsonOut.html" title="Class to fill a file or stream in JSON format. ">JsonOut</a> is a class to create a JSON file. <a class="el" href="JsonParser_8h.html">JsonParser.h</a> can be used to interpret a JSON file whereafter <a class="el" href="classcasacore_1_1JsonKVMap.html" title="Class to hold a collection of JSON key:value pairs. ">JsonKVMap</a> gets out the information.</p>
-<p>Besides the standard JSON types (bool, int, float, string), sequences and nested structs, <a class="el" href="classcasacore_1_1JsonOut.html" title="Class to fill a file or stream in JSON format. ">JsonOut</a> also supports Casacore data type (D)Complex, <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>, <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>, and <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a>. <br/>
+<p>Besides the standard JSON types (bool, int, float, string), sequences and nested structs, <a class="el" href="classcasacore_1_1JsonOut.html" title="Class to fill a file or stream in JSON format. ">JsonOut</a> also supports Casacore data type (D)Complex, <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>, <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>, and <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a>. <br/>
 - A complex number is written as a nested struct with fields "r" and "i". <br/>
-- An <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> is written as a (possibly nested) sequence of values. <br/>
+- An <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> is written as a (possibly nested) sequence of values. <br/>
 - A <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a> is written as a nested struct; subrecords are supported. <br/>
 - A <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a> is written depending on the data type it contains. <br/>
 Note that floating point values are written with high accuracy (7 digits for single precision, 16 digits for double precision).</p>
@@ -258,7 +259,7 @@ Note that floating point values are written with high accuracy (7 digits for sin
 <h3>Motivation</h3>
 <p>JSON is a commonly used interchange format. </p>
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00109">109</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00111">111</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aa057fe899eb4d9a2c7b895b8b3abe602"></a>
 <div class="memitem">
@@ -893,7 +894,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Write one or more lines defining a keyword-value pair, where value can be of any type including <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>, <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>, and <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a>. </p>
+<p>Write one or more lines defining a keyword-value pair, where value can be of any type including <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>, <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>, and <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a>. </p>
 <p>A non-finite floating point number and a null <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a> are written as a null value. If supported, the comment is written on a line preceeding the 'key:value' line. </p>
 
 </div>
@@ -1049,7 +1050,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00234">234</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00236">236</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1071,7 +1072,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00233">233</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00235">235</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1093,7 +1094,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00228">228</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00230">230</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1115,7 +1116,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00235">235</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00237">237</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1137,7 +1138,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00230">230</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00232">232</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1159,7 +1160,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00231">231</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00233">233</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1181,7 +1182,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00232">232</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00234">234</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>
@@ -1203,7 +1204,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00229">229</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
+<p>Definition at line <a class="el" href="JsonOut_8h_source.html#l00231">231</a> of file <a class="el" href="JsonOut_8h_source.html">JsonOut.h</a>.</p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -115,6 +116,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1c79e78d24f7ee47911e959d4d80b48c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableArrayConformanceError.html#a1c79e78d24f7ee47911e959d4d80b48c">TableArrayConformanceError</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1AipsError.html#ad1e4f31006063dac2207773a4067025b">message</a>, <a class="el" href="classcasacore_1_1AipsError.html#ade732ac0b39ae4a0778358fa4bd81e29">Category</a> c=<a class="el" href="classcasacore_1_1AipsError.html#ade732ac0b39ae4a0778358fa4bd81e29ab816d9c7f3d0be7851bc1dd59aee0d5e">CONFORMANCE</a>)</td></tr>
 <tr class="memdesc:a1c79e78d24f7ee47911e959d4d80b48c"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor appends ": Table array conformance error" to the given message.  <a href="#a1c79e78d24f7ee47911e959d4d80b48c">More...</a><br/></td></tr>
 <tr class="separator:a1c79e78d24f7ee47911e959d4d80b48c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0918d68ed7740d85e6efe3e0d56db66d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableArrayConformanceError.html#a0918d68ed7740d85e6efe3e0d56db66d">TableArrayConformanceError</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1AipsError.html#ad1e4f31006063dac2207773a4067025b">message</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">shape</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;expectedShape, <a class="el" href="classcasacore_1_1AipsError.html#ade732ac0b39ae4a0778358fa4bd81e29">Category</a> c=<a class="el" href="classcasacore_1_1AipsError.html#ade732ac0b39ae4a0778358fa4bd81e29ab816d9c7f3d0be7851bc1dd59aee0d5e">CONFORMANCE</a>)</td></tr>
+<tr class="memdesc:a0918d68ed7740d85e6efe3e0d56db66d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor appends ": Table array conformance error" to the given message with the given and expected shape.  <a href="#a0918d68ed7740d85e6efe3e0d56db66d">More...</a><br/></td></tr>
+<tr class="separator:a0918d68ed7740d85e6efe3e0d56db66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad1bc345fadea7bc471abd2703e3fede"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableArrayConformanceError.html#aad1bc345fadea7bc471abd2703e3fede">~TableArrayConformanceError</a> () noexcept</td></tr>
 <tr class="separator:aad1bc345fadea7bc471abd2703e3fede"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcasacore_1_1TableError"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1TableError')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1TableError.html">casacore::TableError</a></td></tr>
@@ -219,7 +223,7 @@ Additional Inherited Members</h2></td></tr>
 <h3>Synopsis</h3>
 <p>When putting a direct array, the shape of the array must conform the shape as defined for the table array. When getting an array, the receiving array must be zero-length or it must conform the shape of the table array. </p>
 
-<p>Definition at line <a class="el" href="TableError_8h_source.html#l00360">360</a> of file <a class="el" href="TableError_8h_source.html">TableError.h</a>.</p>
+<p>Definition at line <a class="el" href="TableError_8h_source.html#l00364">364</a> of file <a class="el" href="TableError_8h_source.html">TableError.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a1c79e78d24f7ee47911e959d4d80b48c"></a>
 <div class="memitem">
@@ -246,6 +250,46 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This constructor appends ": Table array conformance error" to the given message. </p>
+
+</div>
+</div>
+<a class="anchor" id="a0918d68ed7740d85e6efe3e0d56db66d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::TableArrayConformanceError::TableArrayConformanceError </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
+          <td class="paramname"><em>shape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
+          <td class="paramname"><em>expectedShape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1AipsError.html#ade732ac0b39ae4a0778358fa4bd81e29">Category</a>&#160;</td>
+          <td class="paramname"><em>c</em> = <code><a class="el" href="classcasacore_1_1AipsError.html#ade732ac0b39ae4a0778358fa4bd81e29ab816d9c7f3d0be7851bc1dd59aee0d5e">CONFORMANCE</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This constructor appends ": Table array conformance error" to the given message with the given and expected shape. </p>
 
 </div>
 </div>

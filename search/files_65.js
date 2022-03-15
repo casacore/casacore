@@ -5,6 +5,7 @@ var searchData=
   ['earthmagneticmachine_2eh',['EarthMagneticMachine.h',['../EarthMagneticMachine_8h.html',1,'']]],
   ['earthmagneticudf_2eh',['EarthMagneticUDF.h',['../EarthMagneticUDF_8h.html',1,'']]],
   ['eclecticfunctionfactory_2eh',['EclecticFunctionFactory.h',['../EclecticFunctionFactory_8h.html',1,'']]],
+  ['elementfunctions_2eh',['ElementFunctions.h',['../ElementFunctions_8h.html',1,'']]],
   ['envvar_2eh',['EnvVar.h',['../EnvVar_8h.html',1,'']]],
   ['epochengine_2eh',['EpochEngine.h',['../EpochEngine_8h.html',1,'']]],
   ['epochudf_2eh',['EpochUDF.h',['../EpochUDF_8h.html',1,'']]],

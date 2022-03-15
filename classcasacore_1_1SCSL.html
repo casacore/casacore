@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -307,7 +308,7 @@ Static Public Member Functions</h2></td></tr>
 <dt><b>scale</b> </dt>
 <dd>Scale factor. <code>ccfft</code>: real. <code>zzfft</code>: double precision. Each element of the output array is multiplied by scale after taking the Fourier transform, as defined by the previous formula. </dd>
 <dt><b>x</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:n-1). <code>ccfft</code>: complex array. <code>zzfft</code>: double complex array.</p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:n-1). <code>ccfft</code>: complex array. <code>zzfft</code>: double complex array.</p>
 <p class="enddd"><a class="el" href="classcasacore_1_1Input.html" title="Input.h: A simple command-line argument method for applications. ">Input</a> array of values to be transformed. </p>
 </dd>
 <dt><b>isys</b> </dt>
@@ -316,7 +317,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Output parameters: </p>
 <dl>
 <dt><b>y</b> </dt>
-<dd><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:n-1). <code>ccfft</code>: complex array. <code>zzfft</code>: double complex array. Output array of transformed values. The output array may be the same as the input array. In that case, the transform is done in place and the input array is overwritten with the transformed values. </dd>
+<dd><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:n-1). <code>ccfft</code>: complex array. <code>zzfft</code>: double complex array. Output array of transformed values. The output array may be the same as the input array. In that case, the transform is done in place and the input array is overwritten with the transformed values. </dd>
 <dt><b>table</b> </dt>
 <dd><p class="startdd"><a class="el" href="structcasacore_1_1Real.html" title="Functor to apply complex function real. ">Real</a> array; dimension 2*n+30.</p>
 <p><a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> of factors and trigonometric functions.</p>
@@ -561,7 +562,7 @@ Static Public Member Functions</h2></td></tr>
 <dt><b>scale</b> </dt>
 <dd>Scale factor. ccfft2d: real. zzfft2d: double precision. Each element of the output array is multiplied by scale factor after taking the Fourier transform, as defined previously. </dd>
 <dt><b>x</b> </dt>
-<dd><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldx-1, 0:n2-1). ccfft2d: complex array. zzfft2d: double complex array. <a class="el" href="classcasacore_1_1Input.html" title="Input.h: A simple command-line argument method for applications. ">Input</a> array of values to be transformed. </dd>
+<dd><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldx-1, 0:n2-1). ccfft2d: complex array. zzfft2d: double complex array. <a class="el" href="classcasacore_1_1Input.html" title="Input.h: A simple command-line argument method for applications. ">Input</a> array of values to be transformed. </dd>
 <dt><b>ldx</b> </dt>
 <dd>Integer. The number of rows in the x array, as it was declared in the calling program (the leading dimension of x). ldx &gt;= MAX(n1, 1). </dd>
 <dt><b>ldy</b> </dt>
@@ -574,7 +575,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Output parameters: </p>
 <dl>
 <dt><b>y</b> </dt>
-<dd><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldy-1, 0:n2-1). ccfft2d: complex array. zzfft2d: double complex array. Output array of transformed values. The output array may be the same as the input array, in which case, the transform is done in place (the input array is overwritten with the transformed values). In this case, it is necessary that ldx = ldy. </dd>
+<dd><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldy-1, 0:n2-1). ccfft2d: complex array. zzfft2d: double complex array. Output array of transformed values. The output array may be the same as the input array, in which case, the transform is done in place (the input array is overwritten with the transformed values). In this case, it is necessary that ldx = ldy. </dd>
 <dt><b>table</b> </dt>
 <dd><p class="startdd"><a class="el" href="structcasacore_1_1Real.html" title="Functor to apply complex function real. ">Real</a> array; dimension (30+ 2 * n1) + (30 + 2 * n2).</p>
 <p><a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> of factors and trigonometric functions.</p>
@@ -775,7 +776,7 @@ Static Public Member Functions</h2></td></tr>
 <p class="enddd"></p>
 </dd>
 <dt><b>x</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldx-1, 0:ldx2-1, 0:n3-1). <code>ccfft3d</code>: complex array. <code>zzfft3d</code>: double complex array.</p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldx-1, 0:ldx2-1, 0:n3-1). <code>ccfft3d</code>: complex array. <code>zzfft3d</code>: double complex array.</p>
 <p><a class="el" href="classcasacore_1_1Input.html" title="Input.h: A simple command-line argument method for applications. ">Input</a> array of values to be transformed.</p>
 <p class="enddd"></p>
 </dd>
@@ -803,7 +804,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Output parameters: </p>
 <dl>
 <dt><b>y</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldy-1, 0:ldy2-1, 0:n3-1). <code>ccfft3d</code>: complex array. <code>zzfft3d</code>: double complex array.</p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldy-1, 0:ldy2-1, 0:n3-1). <code>ccfft3d</code>: complex array. <code>zzfft3d</code>: double complex array.</p>
 <p>Output array of transformed values. The output array may be the same as the input array, in which case, the transform is done in place; that is, the input array is overwritten with the transformed values. In this case, it is necessary that ldx = ldy, and ldx2 = ldy2.</p>
 <p class="enddd"></p>
 </dd>
@@ -978,7 +979,7 @@ Static Public Member Functions</h2></td></tr>
 <dt><b>scale</b> </dt>
 <dd>Scale factor. <code>ccfftm</code>: real. <code>zzfftm</code>: double precision. Each element of the output array is multiplied by scale factor after taking the Fourier transform, as defined previously. </dd>
 <dt><b>x</b> </dt>
-<dd><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldx-1, 0:n2-1). <code>ccfftm</code>: real array. <code>zzfftm</code>: double precision array. <a class="el" href="classcasacore_1_1Input.html" title="Input.h: A simple command-line argument method for applications. ">Input</a> array of values to be transformed. </dd>
+<dd><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldx-1, 0:n2-1). <code>ccfftm</code>: real array. <code>zzfftm</code>: double precision array. <a class="el" href="classcasacore_1_1Input.html" title="Input.h: A simple command-line argument method for applications. ">Input</a> array of values to be transformed. </dd>
 <dt><b>ldx</b> </dt>
 <dd>The number of rows in the x array, as it was declared in the calling program (the leading dimension of X). ldx &gt;= MAX(n, 1). </dd>
 <dt><b>ldy</b> </dt>
@@ -992,7 +993,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Output parameters: </p>
 <dl>
 <dt><b>y</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldy-1, 0:lot-1). <code>ccfftm</code>: complex array. <code>zzfftm</code>: double complex array. Output array of transformed values. Each column of the output array, y, is the FFT of the corresponding column of the input array, x, computed according to the preceding formula.</p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldy-1, 0:lot-1). <code>ccfftm</code>: complex array. <code>zzfftm</code>: double complex array. Output array of transformed values. Each column of the output array, y, is the FFT of the corresponding column of the input array, x, computed according to the preceding formula.</p>
 <p class="enddd">The output array may be the same as the input array. In that case, the transform is done in place. The input array is overwritten with the transformed values. In this case, it is necessary that ldx = ldy. </p>
 </dd>
 <dt><b>table</b> </dt>
@@ -2207,8 +2208,8 @@ Static Public Member Functions</h2></td></tr>
 <dt><b>scale</b> </dt>
 <dd>Scale factor. <code>scfft2d</code>: real. <code>dzfft2d</code>: double precision. <code>csfft2d</code>: real. <code>zdfft2d</code>: double precision. Each element of the output array is multiplied by scale factor after taking the Fourier transform, as defined previously. </dd>
 <dt><b>x</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldx-1, 0:n2-1). <code>scfft2d</code>: real array. <code>dzfft2d</code>: double precision array. <code>csfft2d</code>: complex array. <code>zdfft2d</code>: double complex array.</p>
-<p class="enddd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of values to be transformed. </p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldx-1, 0:n2-1). <code>scfft2d</code>: real array. <code>dzfft2d</code>: double precision array. <code>csfft2d</code>: complex array. <code>zdfft2d</code>: double complex array.</p>
+<p class="enddd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of values to be transformed. </p>
 </dd>
 <dt><b>ldx</b> </dt>
 <dd>Integer. The number of rows in the x array, as it was declared in the calling program. That is, the leading dimension of x. <code>scfft2d, dzfft2d</code>: ldx &gt;= MAX(n1, 1). <code>csfft2d, zdfft2d</code>: ldx &gt;= MAX(n1/2 + 1, 1). </dd>
@@ -2471,8 +2472,8 @@ Static Public Member Functions</h2></td></tr>
 <p class="enddd"></p>
 </dd>
 <dt><b>x</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldx-1, 0:ldx2-1, 0:n3-1). <code>scfft3d</code>: real array. <code>dzfft3d</code>: double precision array. <code>csfft3d</code>: complex array. <code>zdfft3d</code>: double complex array.</p>
-<p><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of values to be transformed.</p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldx-1, 0:ldx2-1, 0:n3-1). <code>scfft3d</code>: real array. <code>dzfft3d</code>: double precision array. <code>csfft3d</code>: complex array. <code>zdfft3d</code>: double complex array.</p>
+<p><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of values to be transformed.</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>ldx</b> </dt>
@@ -2502,7 +2503,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Output parameters: </p>
 <dl>
 <dt><b>y</b> </dt>
-<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of dimension (0:ldy-1, 0:ldy2-1, 0:n3-1). <code>scfft3d</code>: complex array. <code>dzfft3d</code>: double complex array. <code>csfft3d</code>: real array. <code>zdfft3d</code>: double precision array.</p>
+<dd><p class="startdd"><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of dimension (0:ldy-1, 0:ldy2-1, 0:n3-1). <code>scfft3d</code>: complex array. <code>dzfft3d</code>: double complex array. <code>csfft3d</code>: real array. <code>zdfft3d</code>: double precision array.</p>
 <p>Output array of transformed values. The output array can be the same as the input array, in which case, the transform is done in place; that is, the input array is overwritten with the transformed values. In this case, it is necessary that the following equalities hold:</p>
 <p><code>scfft3d, dzfft3d</code>: ldx = 2 * ldy, and ldx2 = ldy2. <code>csfft3d, zdfft3d</code>: ldy = 2 * ldx, and ldx2 = ldy2.</p>
 <p class="enddd"></p>

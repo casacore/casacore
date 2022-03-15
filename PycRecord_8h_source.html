@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -124,7 +125,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">// include first to avoid _POSIX_C_SOURCE redefined warnings</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;boost/python.hpp&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;boost/python/dict.hpp&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Containers/Record.h&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Record_8h.html">casacore/casa/Containers/Record.h</a>&gt;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span>casacore { <span class="keyword">namespace </span>python {</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
@@ -191,6 +192,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="structcasacore_1_1python_1_1casa__record__from__python_html"><div class="ttname"><a href="structcasacore_1_1python_1_1casa__record__from__python.html">casacore::python::casa_record_from_python</a></div><div class="ttdef"><b>Definition:</b> <a href="PycRecord_8h_source.html#l00062">PycRecord.h:62</a></div></div>
 <div class="ttc" id="classcasacore_1_1Record_html"><div class="ttname"><a href="classcasacore_1_1Record.html">casacore::Record</a></div><div class="ttdoc">A hierarchical collection of named fields of various types. </div><div class="ttdef"><b>Definition:</b> <a href="Record_8h_source.html#l00180">Record.h:180</a></div></div>
 <div class="ttc" id="structcasacore_1_1python_1_1convert__casa__record_html_a3af7de4c1711c8b0d60753adddec1049"><div class="ttname"><a href="structcasacore_1_1python_1_1convert__casa__record.html#a3af7de4c1711c8b0d60753adddec1049">casacore::python::convert_casa_record::_done</a></div><div class="ttdeci">static bool _done</div><div class="ttdef"><b>Definition:</b> <a href="PycRecord_8h_source.html#l00088">PycRecord.h:88</a></div></div>
+<div class="ttc" id="Record_8h_html"><div class="ttname"><a href="Record_8h.html">Record.h</a></div></div>
 <div class="ttc" id="structcasacore_1_1python_1_1casa__record__to__python_html"><div class="ttname"><a href="structcasacore_1_1python_1_1casa__record__to__python.html">casacore::python::casa_record_to_python</a></div><div class="ttdoc">A class to convert a (Table)Record to/from Python objects. </div><div class="ttdef"><b>Definition:</b> <a href="PycRecord_8h_source.html#l00052">PycRecord.h:52</a></div></div>
 <div class="ttc" id="structcasacore_1_1python_1_1casa__record__to__python_html_a381aa3615088372e75a25d92e6519ecc"><div class="ttname"><a href="structcasacore_1_1python_1_1casa__record__to__python.html#a381aa3615088372e75a25d92e6519ecc">casacore::python::casa_record_to_python::makeobject</a></div><div class="ttdeci">static boost::python::dict makeobject(Record const &amp;rec)</div></div>
 <div class="ttc" id="structcasacore_1_1python_1_1casa__record__from__python_html_abd86bacae8a149f7a7c59a284a751f52"><div class="ttname"><a href="structcasacore_1_1python_1_1casa__record__from__python.html#abd86bacae8a149f7a7c59a284a751f52">casacore::python::casa_record_from_python::construct</a></div><div class="ttdeci">static void construct(PyObject *obj_ptr, boost::python::converter::rvalue_from_python_stage1_data *data)</div><div class="ttdoc">Constructs a Record from a Python object. </div></div>

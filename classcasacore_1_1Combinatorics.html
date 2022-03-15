@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -122,8 +123,8 @@ Static Private Attributes</h2></td></tr>
 <tr class="separator:a2dad9560f02f3962834f96f9a49e6575"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a786f7fc6df49cdedf001ba1c8f003c15"><td class="memItemLeft" align="right" valign="top">static volatile <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Combinatorics.html#a786f7fc6df49cdedf001ba1c8f003c15">_factorialCacheSize</a></td></tr>
 <tr class="separator:a786f7fc6df49cdedf001ba1c8f003c15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b10e944335d8e871f588b0949be5b7c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Combinatorics.html#a2b10e944335d8e871f588b0949be5b7c">theirMutex</a></td></tr>
-<tr class="separator:a2b10e944335d8e871f588b0949be5b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb2c2351a1b502af007e551b8c764b6a"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Combinatorics.html#aeb2c2351a1b502af007e551b8c764b6a">theirMutex</a></td></tr>
+<tr class="separator:aeb2c2351a1b502af007e551b8c764b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classcasacore_1_1Combinatorics.html" title="Combinatorics related functions. ">Combinatorics</a> related functions. </p>
@@ -149,7 +150,7 @@ Static Private Attributes</h2></td></tr>
 <h3>Motivation</h3>
 <p><a class="el" href="classcasacore_1_1Binomial.html" title="Binomial distribution. ">Binomial</a> coefficients needed for Images/ImageProfileFitter </p>
 
-<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00067">67</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
+<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00068">68</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a1095580f02170d704de9c30bd7557707"></a>
 <div class="memitem">
@@ -211,9 +212,9 @@ Static Private Attributes</h2></td></tr>
 
 <p>Get n! </p>
 
-<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00072">72</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
+<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00073">73</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
 
-<p>References <a class="el" href="Combinatorics_8h_source.html#l00085">_factorialCache</a>, and <a class="el" href="classcasacore_1_1Combinatorics.html#a631f419bc3945ebb7cbad7bd9ad9d1ba">fillCache()</a>.</p>
+<p>References <a class="el" href="Combinatorics_8h_source.html#l00086">_factorialCache</a>, and <a class="el" href="classcasacore_1_1Combinatorics.html#a631f419bc3945ebb7cbad7bd9ad9d1ba">fillCache()</a>.</p>
 
 </div>
 </div>
@@ -239,7 +240,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Referenced by <a class="el" href="Combinatorics_8h_source.html#l00072">factorial()</a>.</p>
+<p>Referenced by <a class="el" href="Combinatorics_8h_source.html#l00073">factorial()</a>.</p>
 
 </div>
 </div>
@@ -262,9 +263,9 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00085">85</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
+<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00086">86</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
 
-<p>Referenced by <a class="el" href="Combinatorics_8h_source.html#l00072">factorial()</a>.</p>
+<p>Referenced by <a class="el" href="Combinatorics_8h_source.html#l00073">factorial()</a>.</p>
 
 </div>
 </div>
@@ -286,11 +287,11 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00086">86</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
+<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00087">87</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2b10e944335d8e871f588b0949be5b7c"></a>
+<a class="anchor" id="aeb2c2351a1b502af007e551b8c764b6a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -298,7 +299,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::Combinatorics::theirMutex</td>
+          <td class="memname">std::mutex casacore::Combinatorics::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -308,7 +309,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00087">87</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
+<p>Definition at line <a class="el" href="Combinatorics_8h_source.html#l00088">88</a> of file <a class="el" href="Combinatorics_8h_source.html">Combinatorics.h</a>.</p>
 
 </div>
 </div>

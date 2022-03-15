@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,8 +121,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_QVECTOR_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/Quantum.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Quantum_8h.html">casacore/casa/Quanta/Quantum.h</a>&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
@@ -164,49 +165,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="comment">// to the same unit.</span></div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html#aa497cdf3623962b8bbdfcf214319204e">QVector</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> &gt;&amp; q);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="comment">// Copy constructor (deep copy)</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html#aa497cdf3623962b8bbdfcf214319204e">QVector</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1QVector.html">QVector</a>&amp; other);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="comment">// access single element</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#a59ac0e669868ed85b9477ea69b15e10c">operator[]</a>(<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html#a098b5653eb058cfe0c31f39d7ab8eb93">~QVector</a>();</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="comment">// access single element</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#a59ac0e669868ed85b9477ea69b15e10c">operator[]</a>(<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="classcasacore_1_1QVector.html#a4d6711830e1521dc4673c7c626e350e6">size</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="classcasacore_1_1QVector.html#a7deffbb7f1ad4aecdfad7b1f3c969703">nelements</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="classcasacore_1_1QVector.html#a4d6711830e1521dc4673c7c626e350e6">size</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1QVector.html#a1dada2c9ea3bd5ff07a3c15fd08f273b">scale</a>(T d);</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="classcasacore_1_1QVector.html#a7deffbb7f1ad4aecdfad7b1f3c969703">nelements</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1QVector.html#a1dada2c9ea3bd5ff07a3c15fd08f273b">scale</a>(T d);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="comment">// add operators as needed</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a> <a class="code" href="classcasacore_1_1Quantum.html#a361c1a1b6ed6bdbcfa66777bc59f433c">operator+</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a>&amp; d) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a> <a class="code" href="classcasacore_1_1Quantum.html#aa3f13d5d15333413599de02c3711f8fc">operator-</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a>&amp; d) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#a6d9c0419b2f8af8e6be2fb316c557185">operator/</a>(T d) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="comment">// add operators as needed</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a> <a class="code" href="classcasacore_1_1Quantum.html#a361c1a1b6ed6bdbcfa66777bc59f433c">operator+</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a>&amp; d) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a> <a class="code" href="classcasacore_1_1Quantum.html#aa3f13d5d15333413599de02c3711f8fc">operator-</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a>&amp; d) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <a class="code" href="classcasacore_1_1QVector.html">QVector&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#a6d9c0419b2f8af8e6be2fb316c557185">operator/</a>(T d) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#ac427ed0a518324a6a956e1ffdad1be15">min</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#ab9aefe66d2bf4b7c2cd32026dd9f52f6">max</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#ac427ed0a518324a6a956e1ffdad1be15">min</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;};</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;T&gt;</a> <a class="code" href="classcasacore_1_1QVector.html#ab9aefe66d2bf4b7c2cd32026dd9f52f6">max</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#ifndef CASACORE_NO_AUTO_TEMPLATES</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;casacore/casa/Quanta/QVector.tcc&gt;</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector</a></div><div class="ttdoc">A 1-D Specialization of the Array class. </div><div class="ttdef"><b>Definition:</b> <a href="ArrayIO_8h_source.html#l00045">ArrayIO.h:45</a></div></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#ifndef CASACORE_NO_AUTO_TEMPLATES</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;casacore/casa/Quanta/QVector.tcc&gt;</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector&lt; T &gt;</a></div></div>
+<div class="ttc" id="Quantum_8h_html"><div class="ttname"><a href="Quantum_8h.html">Quantum.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html_a59ac0e669868ed85b9477ea69b15e10c"><div class="ttname"><a href="classcasacore_1_1QVector.html#a59ac0e669868ed85b9477ea69b15e10c">casacore::QVector::operator[]</a></div><div class="ttdeci">Quantum&lt; T &gt; operator[](uInt index) const </div><div class="ttdoc">access single element </div></div>
 <div class="ttc" id="classcasacore_1_1Quantum_html_a361c1a1b6ed6bdbcfa66777bc59f433c"><div class="ttname"><a href="classcasacore_1_1Quantum.html#a361c1a1b6ed6bdbcfa66777bc59f433c">casacore::Quantum&lt; Vector&lt; T &gt; &gt;::operator+</a></div><div class="ttdeci">const Quantum&lt; Vector&lt; T &gt; &gt; &amp; operator+() const</div><div class="ttdoc">Unary operations. </div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html"><div class="ttname"><a href="classcasacore_1_1QVector.html">casacore::QVector</a></div><div class="ttdoc">Specialization for Quantum&amp;lt;Vector&amp;lt;T&amp;gt; &amp;gt; </div><div class="ttdef"><b>Definition:</b> <a href="QVector_8h_source.html#l00037">QVector.h:37</a></div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html_ab9aefe66d2bf4b7c2cd32026dd9f52f6"><div class="ttname"><a href="classcasacore_1_1QVector.html#ab9aefe66d2bf4b7c2cd32026dd9f52f6">casacore::QVector::max</a></div><div class="ttdeci">Quantum&lt; T &gt; max() const </div></div>
 <div class="ttc" id="classcasacore_1_1Unit_html"><div class="ttname"><a href="classcasacore_1_1Unit.html">casacore::Unit</a></div><div class="ttdoc">defines physical units </div><div class="ttdef"><b>Definition:</b> <a href="Unit_8h_source.html#l00189">Unit.h:189</a></div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html_a4d6711830e1521dc4673c7c626e350e6"><div class="ttname"><a href="classcasacore_1_1QVector.html#a4d6711830e1521dc4673c7c626e350e6">casacore::QVector::size</a></div><div class="ttdeci">size_t size() const </div></div>
-<div class="ttc" id="classcasacore_1_1QVector_html_a098b5653eb058cfe0c31f39d7ab8eb93"><div class="ttname"><a href="classcasacore_1_1QVector.html#a098b5653eb058cfe0c31f39d7ab8eb93">casacore::QVector::~QVector</a></div><div class="ttdeci">~QVector()</div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html_a6d9c0419b2f8af8e6be2fb316c557185"><div class="ttname"><a href="classcasacore_1_1QVector.html#a6d9c0419b2f8af8e6be2fb316c557185">casacore::QVector::operator/</a></div><div class="ttdeci">QVector&lt; T &gt; operator/(T d) const </div></div>
 <div class="ttc" id="namespacecasacore_html_a76017ac62ace773f15aef6b1bfa8d25d"><div class="ttname"><a href="namespacecasacore.html#a76017ac62ace773f15aef6b1bfa8d25d">casacore::QVD</a></div><div class="ttdeci">QVector&lt; Double &gt; QVD</div><div class="ttdef"><b>Definition:</b> <a href="QVector_8h_source.html#l00037">QVector.h:37</a></div></div>
-<div class="ttc" id="classcasacore_1_1Quantum_html"><div class="ttname"><a href="classcasacore_1_1Quantum.html">casacore::Quantum</a></div><div class="ttdoc">Quantities (i.e. dimensioned values) </div><div class="ttdef"><b>Definition:</b> <a href="MeasValue_8h_source.html#l00040">MeasValue.h:40</a></div></div>
+<div class="ttc" id="classcasacore_1_1Quantum_html"><div class="ttname"><a href="classcasacore_1_1Quantum.html">casacore::Quantum</a></div><div class="ttdoc">Quantities (i.e. dimensioned values) </div><div class="ttdef"><b>Definition:</b> <a href="MeasValue_8h_source.html#l00041">MeasValue.h:41</a></div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html_a1dada2c9ea3bd5ff07a3c15fd08f273b"><div class="ttname"><a href="classcasacore_1_1QVector.html#a1dada2c9ea3bd5ff07a3c15fd08f273b">casacore::QVector::scale</a></div><div class="ttdeci">void scale(T d)</div></div>
 <div class="ttc" id="classcasacore_1_1Quantum_html_aa3f13d5d15333413599de02c3711f8fc"><div class="ttname"><a href="classcasacore_1_1Quantum.html#aa3f13d5d15333413599de02c3711f8fc">casacore::Quantum&lt; Vector&lt; T &gt; &gt;::operator-</a></div><div class="ttdeci">Quantum&lt; Vector&lt; T &gt; &gt; operator-() const</div></div>
 <div class="ttc" id="classcasacore_1_1QVector_html_ac427ed0a518324a6a956e1ffdad1be15"><div class="ttname"><a href="classcasacore_1_1QVector.html#ac427ed0a518324a6a956e1ffdad1be15">casacore::QVector::min</a></div><div class="ttdeci">Quantum&lt; T &gt; min() const </div></div>

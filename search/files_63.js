@@ -60,7 +60,6 @@ var searchData=
   ['copyrecord_2eh',['CopyRecord.h',['../CopyRecord_8h.html',1,'']]],
   ['countedptr_2eh',['CountedPtr.h',['../CountedPtr_8h.html',1,'']]],
   ['cowptr_2eh',['COWPtr.h',['../COWPtr_8h.html',1,'']]],
-  ['cregex_2eh',['cregex.h',['../cregex_8h.html',1,'']]],
   ['cube_2eh',['Cube.h',['../Cube_8h.html',1,'']]],
   ['curvedimage2d_2eh',['CurvedImage2D.h',['../CurvedImage2D_8h.html',1,'']]],
   ['curvedlattice2d_2eh',['CurvedLattice2D.h',['../CurvedLattice2D_8h.html',1,'']]]

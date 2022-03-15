@@ -1,7 +1,6 @@
 var searchData=
 [
   ['mask',['mask',['../classcasacore_1_1LatticeExprNode.html#a2f4023c555fe3bd1bd1c6baaf900d3ab',1,'casacore::LatticeExprNode']]],
-  ['matrix_3c_20t_20_3e',['Matrix&lt; T &gt;',['../classcasacore_1_1Array.html#a17fc06682c9f9c46f1e0e38b7af25b80',1,'casacore::Array']]],
   ['max',['max',['../classcasacore_1_1LatticeExprNode.html#a6c54df7d0f3b1174f7b9b5ee8af8bcf1',1,'casacore::LatticeExprNode::max()'],['../classcasacore_1_1LatticeExprNode.html#a1df00c416fe35c31acfdffeb4e0f559d',1,'casacore::LatticeExprNode::max()']]],
   ['mcframe',['MCFrame',['../classcasacore_1_1MeasFrame.html#a2e27d07bcfa1eb4bd3926b6392728b7d',1,'casacore::MeasFrame']]],
   ['mcframegetdbl',['MCFrameGetdbl',['../classcasacore_1_1MeasFrame.html#af44a1a4c31f3948532eebc2471dbcdc7',1,'casacore::MeasFrame']]],

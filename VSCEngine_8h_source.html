@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,9 +121,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define TABLES_VSCENGINE_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/VirtColEng.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/tables/DataMan/VirtScaCol.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="VirtColEng_8h.html">casacore/tables/DataMan/VirtColEng.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="VirtScaCol_8h.html">casacore/tables/DataMan/VirtScaCol.h</a>&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -253,7 +254,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">//      }</span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment">//      // Store the target column names in the source column keywords.</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment">//      virtual void create (uInt)</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment">//      virtual void create (rownr_t)</span></div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment">//      {</span></div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment">//          TableColumn src (table(), sourceColumnName());</span></div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment">//          src.keywordSet().keysString()(&quot;_xTargetName&quot;) = xTargetName_p;</span></div>
@@ -276,14 +277,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="comment">//      }</span></div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="comment">//      // Get the data from a row.</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment">//      virtual void get (uInt rownr, A&amp; value)</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment">//      virtual void get (rownr_t rownr, A&amp; value)</span></div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="comment">//      {</span></div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="comment">//          rocolx.get (rownr, value.x());</span></div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="comment">//          rocoly.get (rownr, value.y());</span></div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="comment">//      }</span></div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment">//      // Put the data in a row.</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment">//      virtual void put (uInt rownr, const A&amp; value)</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment">//      virtual void put (rownr_t rownr, const A&amp; value)</span></div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">//      {</span></div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment">//          colx.put (rownr, value.x());</span></div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="comment">//          coly.put (rownr, value.y());</span></div>
@@ -427,7 +428,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    <span class="comment">// column name. This assures that the engine is bound to the</span></div>
 <div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="comment">// correct column.</span></div>
 <div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <a class="code" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a>* <a class="code" href="classcasacore_1_1VSCEngine.html#aab9d92ca18aa46be5ea2d1d8082fcc42">makeScalarColumn</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1String.html">String</a>&amp; <a class="code" href="classcasacore_1_1DataManagerColumn.html#a0dcaef5c1d920e75d36f105dbfd6a57a">columnName</a>,</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                     <span class="keywordtype">int</span> <a class="code" href="classcasacore_1_1VirtualScalarColumn.html#a7b898da40a35d16b0b4405fea426a6a6">dataType</a>,</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                     <span class="keywordtype">int</span> <a class="code" href="classcasacore_1_1VirtualScalarColumn.html#a2edac51366e2b3b3a66ba5a56101d7db">dataType</a>,</div>
 <div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                     <span class="keyword">const</span> <a class="code" href="classcasacore_1_1String.html">String</a>&amp; dataTypeID);</div>
 <div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;</div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
@@ -444,20 +445,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="preprocessor">#endif //# CASACORE_NO_AUTO_TEMPLATES</span></div>
 <div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1VirtualColumnEngine_html"><div class="ttname"><a href="classcasacore_1_1VirtualColumnEngine.html">casacore::VirtualColumnEngine</a></div><div class="ttdoc">Abstract base class for virtual column handling. </div><div class="ttdef"><b>Definition:</b> <a href="VirtColEng_8h_source.html#l00111">VirtColEng.h:111</a></div></div>
-<div class="ttc" id="classcasacore_1_1DataManagerColumn_html_a0dcaef5c1d920e75d36f105dbfd6a57a"><div class="ttname"><a href="classcasacore_1_1DataManagerColumn.html#a0dcaef5c1d920e75d36f105dbfd6a57a">casacore::DataManagerColumn::columnName</a></div><div class="ttdeci">const String &amp; columnName() const </div><div class="ttdoc">Get rhe column name. </div><div class="ttdef"><b>Definition:</b> <a href="DataManager_8h_source.html#l01003">DataManager.h:1003</a></div></div>
-<div class="ttc" id="classcasacore_1_1DataManagerColumn_html"><div class="ttname"><a href="classcasacore_1_1DataManagerColumn.html">casacore::DataManagerColumn</a></div><div class="ttdoc">Abstract base class for a column in a data manager. </div><div class="ttdef"><b>Definition:</b> <a href="DataManager_8h_source.html#l00611">DataManager.h:611</a></div></div>
+<div class="ttc" id="classcasacore_1_1DataManagerColumn_html_a0dcaef5c1d920e75d36f105dbfd6a57a"><div class="ttname"><a href="classcasacore_1_1DataManagerColumn.html#a0dcaef5c1d920e75d36f105dbfd6a57a">casacore::DataManagerColumn::columnName</a></div><div class="ttdeci">const String &amp; columnName() const </div><div class="ttdoc">Get rhe column name. </div><div class="ttdef"><b>Definition:</b> <a href="DataManagerColumn_8h_source.html#l00425">DataManagerColumn.h:425</a></div></div>
+<div class="ttc" id="classcasacore_1_1DataManagerColumn_html"><div class="ttname"><a href="classcasacore_1_1DataManagerColumn.html">casacore::DataManagerColumn</a></div><div class="ttdoc">Abstract base class for a column in a data manager. </div><div class="ttdef"><b>Definition:</b> <a href="DataManagerColumn_8h_source.html#l00150">DataManagerColumn.h:150</a></div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_ac53719f313269e9f09031a3859f9fd4f"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#ac53719f313269e9f09031a3859f9fd4f">casacore::VSCEngine::sourceColumnName</a></div><div class="ttdeci">const String &amp; sourceColumnName() const </div><div class="ttdoc">Get the name of the source column. </div><div class="ttdef"><b>Definition:</b> <a href="VSCEngine_8h_source.html#l00315">VSCEngine.h:315</a></div></div>
-<div class="ttc" id="classcasacore_1_1VirtualScalarColumn_html"><div class="ttname"><a href="classcasacore_1_1VirtualScalarColumn.html">casacore::VirtualScalarColumn</a></div><div class="ttdoc">Templated base class for virtual scalar column. </div><div class="ttdef"><b>Definition:</b> <a href="VirtScaCol_8h_source.html#l00126">VirtScaCol.h:126</a></div></div>
+<div class="ttc" id="VirtColEng_8h_html"><div class="ttname"><a href="VirtColEng_8h.html">VirtColEng.h</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1VirtualScalarColumn_html"><div class="ttname"><a href="classcasacore_1_1VirtualScalarColumn.html">casacore::VirtualScalarColumn</a></div><div class="ttdef"><b>Definition:</b> <a href="VirtScaCol_8h_source.html#l00160">VirtScaCol.h:160</a></div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_acc7822f84de2e1774c604acfd53b4ee2"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#acc7822f84de2e1774c604acfd53b4ee2">casacore::VSCEngine::~VSCEngine</a></div><div class="ttdeci">~VSCEngine()</div><div class="ttdoc">Destructor is mandatory. </div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_adda211f0d7611e5e1caa4a94e7b31e4e"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#adda211f0d7611e5e1caa4a94e7b31e4e">casacore::VSCEngine::sourceName_p</a></div><div class="ttdeci">String sourceName_p</div><div class="ttdef"><b>Definition:</b> <a href="VSCEngine_8h_source.html#l00344">VSCEngine.h:344</a></div></div>
-<div class="ttc" id="classcasacore_1_1VirtualScalarColumn_html_a7b898da40a35d16b0b4405fea426a6a6"><div class="ttname"><a href="classcasacore_1_1VirtualScalarColumn.html#a7b898da40a35d16b0b4405fea426a6a6">casacore::VirtualScalarColumn::dataType</a></div><div class="ttdeci">int dataType() const </div><div class="ttdoc">Return the data type of the column. </div></div>
 <div class="ttc" id="namespacecasacore_html_abd5691f9e13acc90d901e4007740ff98"><div class="ttname"><a href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a></div><div class="ttdeci">bool Bool</div><div class="ttdoc">Define the standard types used by Casacore. </div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00042">aipstype.h:42</a></div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_a6227751f44784c46d7d4c5aecdc65d21"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#a6227751f44784c46d7d4c5aecdc65d21">casacore::VSCEngine::VSCEngine</a></div><div class="ttdeci">VSCEngine()</div><div class="ttdoc">The default constructor is required for reconstruction of the engine when a table is read back...</div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_af76457697e94fd8200120b098512bbb4"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#af76457697e94fd8200120b098512bbb4">casacore::VSCEngine::operator=</a></div><div class="ttdeci">VSCEngine&lt; T &gt; &amp; operator=(const VSCEngine&lt; T &gt; &amp;)</div><div class="ttdoc">Assignment is not needed and therefore forbidden (so it is made private). </div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_af7dd248e539c6361e4228613064caf2d"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#af7dd248e539c6361e4228613064caf2d">casacore::VSCEngine::dataManagerType</a></div><div class="ttdeci">String dataManagerType() const </div><div class="ttdoc">Return the data manager type name. </div></div>
-<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00223">String.h:223</a></div></div>
+<div class="ttc" id="classcasacore_1_1VirtualScalarColumn_html_a2edac51366e2b3b3a66ba5a56101d7db"><div class="ttname"><a href="classcasacore_1_1VirtualScalarColumn.html#a2edac51366e2b3b3a66ba5a56101d7db">casacore::VirtualScalarColumn::dataType</a></div><div class="ttdeci">virtual int dataType() const </div><div class="ttdoc">Return the data type of the column. </div></div>
+<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00225">String.h:225</a></div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_ae39ae7436d9ae57cc2b2a0342329a3c7"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#ae39ae7436d9ae57cc2b2a0342329a3c7">casacore::VSCEngine::isWritable</a></div><div class="ttdeci">Bool isWritable() const </div><div class="ttdoc">The column is in principle writable. </div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html">casacore::VSCEngine</a></div><div class="ttdoc">Base virtual column for a scalar column with any type. </div><div class="ttdef"><b>Definition:</b> <a href="VSCEngine_8h_source.html#l00288">VSCEngine.h:288</a></div></div>
+<div class="ttc" id="VirtScaCol_8h_html"><div class="ttname"><a href="VirtScaCol_8h.html">VirtScaCol.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1VSCEngine_html_aab9d92ca18aa46be5ea2d1d8082fcc42"><div class="ttname"><a href="classcasacore_1_1VSCEngine.html#aab9d92ca18aa46be5ea2d1d8082fcc42">casacore::VSCEngine::makeScalarColumn</a></div><div class="ttdeci">DataManagerColumn * makeScalarColumn(const String &amp;columnName, int dataType, const String &amp;dataTypeID)</div><div class="ttdoc">Create the column object for the scalar column in this engine. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

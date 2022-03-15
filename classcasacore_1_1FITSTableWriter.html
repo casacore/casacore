@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -106,9 +107,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a13b7a495f65f733c2a5f07c3e9f35292"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1FITSTableWriter.html#a13b7a495f65f733c2a5f07c3e9f35292aa081a05c8c7943e8efee827fb5b55f41">DefaultMaxStringSize</a>
+<tr class="memitem:a3759ca70233a4b86dc7ece6ae88a8102"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1FITSTableWriter.html#a3759ca70233a4b86dc7ece6ae88a8102aa081a05c8c7943e8efee827fb5b55f41">DefaultMaxStringSize</a>
  }</td></tr>
-<tr class="separator:a13b7a495f65f733c2a5f07c3e9f35292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a3759ca70233a4b86dc7ece6ae88a8102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -185,7 +186,7 @@ probably much </li>
 
 <p>Definition at line <a class="el" href="FITSTable_8h_source.html#l00346">346</a> of file <a class="el" href="FITSTable_8h_source.html">FITSTable.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
-<a class="anchor" id="a13b7a495f65f733c2a5f07c3e9f35292"></a>
+<a class="anchor" id="a3759ca70233a4b86dc7ece6ae88a8102"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -195,7 +196,7 @@ probably much </li>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a13b7a495f65f733c2a5f07c3e9f35292aa081a05c8c7943e8efee827fb5b55f41"></a>DefaultMaxStringSize</em>&nbsp;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a3759ca70233a4b86dc7ece6ae88a8102aa081a05c8c7943e8efee827fb5b55f41"></a>DefaultMaxStringSize</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
 </table>
 
@@ -265,7 +266,7 @@ probably much </li>
 </div><div class="memdoc">
 
 <p>You MUST have already written a first HDU to <a class="el" href="classcasacore_1_1FitsOutput.html" title="fixed-length sequential blocked FITS output ">FitsOutput</a>. </p>
-<p>description contains the names and types of the table columns to be written. The row is not rearranged (i.e. they are used in order) for alignment purposes. <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> columns must have fixed shape unless tdimColumns is used. Use the maxLengths record to indicate any string columns which should have a length other than the default value by providing an int field of the same name as the string field in this record. The size of the table (nrows) must be given at creation. Use extraKeywords to indicate any keywords not automatically created. The units record is used to indicate the units for any column. Provide a string field with the same name as the column field in description. If freeOutput is True, file must come from new since it will be deleted upon destruction. You might not want this to happen if you are going to write many tables to the same fits file. Use variableShapes to signal which array columns have variable shape and use maxLengths to indicate the maximum size of those variable shaped columns. The variableShapes record should contain a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> corresponding to the longest TDIM value appropriate for each variable shaped column. The maxLengths record should contain an int field for each variable shaped column which indicates the maximum number of elements to be found in that column. Unused values in any cell in the variable shaped columns will be filled with zero. These columns will use the SDFITS TDIM convention where for column nnn there is a corresponding TDIMnnn column where the values in each row are the true shape of the data in column nnn. variableShapes appears as the last argument for backwards compatibility with existing code. </p>
+<p>description contains the names and types of the table columns to be written. The row is not rearranged (i.e. they are used in order) for alignment purposes. <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> columns must have fixed shape unless tdimColumns is used. Use the maxLengths record to indicate any string columns which should have a length other than the default value by providing an int field of the same name as the string field in this record. The size of the table (nrows) must be given at creation. Use extraKeywords to indicate any keywords not automatically created. The units record is used to indicate the units for any column. Provide a string field with the same name as the column field in description. If freeOutput is True, file must come from new since it will be deleted upon destruction. You might not want this to happen if you are going to write many tables to the same fits file. Use variableShapes to signal which array columns have variable shape and use maxLengths to indicate the maximum size of those variable shaped columns. The variableShapes record should contain a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> corresponding to the longest TDIM value appropriate for each variable shaped column. The maxLengths record should contain an int field for each variable shaped column which indicates the maximum number of elements to be found in that column. Unused values in any cell in the variable shaped columns will be filled with zero. These columns will use the SDFITS TDIM convention where for column nnn there is a corresponding TDIMnnn column where the values in each row are the true shape of the data in column nnn. variableShapes appears as the last argument for backwards compatibility with existing code. </p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -117,164 +118,150 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">//#</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">//# $Id$</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#ifndef CASA_AXESMAPPING_H</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_AXESMAPPING_H</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#ifndef CASA_AXESMAPPING_2_H</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_AXESMAPPING_2_H</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Arrays/IPosition.h&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">//# Forward Declarations</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">class </span>Slicer;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">// &lt;summary&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">// Info about mapping array axes to another order.</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">// &lt;/summary&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">//# Includes</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="IPosition_8h.html">IPosition.h</a>&quot;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">//# Forward Declarations</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">class </span>Slicer;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">// &lt;summary&gt;</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">// Info about mapping array axes to another order.</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">// &lt;/summary&gt;</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">// &lt;use visibility=local&gt;</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">// &lt;use visibility=local&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">// &lt;reviewed reviewer=&quot;&quot; date=&quot;yyyy/mm/dd&quot; tests=&quot;tAxesSpecifier.cc&quot; demos=&quot;&quot;&gt;</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// &lt;/reviewed&gt;</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">// &lt;prerequisite&gt;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=&quot;IPosition&quot;&gt;IPosition&lt;/linkto&gt;</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=&quot;AxesSpecifier&quot;&gt;AxesSpecifier&lt;/linkto&gt;</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// &lt;/prerequisite&gt;</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">// AxesMapping holds the information about mapping axes to another order.</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">// It can be constructed by &lt;linkto class=AxesSpecifier&gt;AxesSpecifier&lt;/linkto&gt;</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// by applying a shape to the axes specification.</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">// &lt;br&gt;AxesMapping is thereafter used to map positions, shapes, and</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// slices to the new axes or backwards.</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// &lt;note role=caution&gt;</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// Shapes and positions are both represented by class IPosition.</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// However, they have to be treated differently in this class,</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// because removed axes for a position have value 0, while for a</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// shape they have value 1. Hence there are different functions for them</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">// and the user has to take care that the correct function is called.</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">// &lt;/note&gt;</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// &lt;example&gt;</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">// &lt;srcblock&gt;</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">// &lt;/srcblock&gt;</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// &lt;/example&gt;</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// &lt;motivation&gt;</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">// The class encapsulates the mapping functionality.</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">// It is meant as a helper class for</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">// &lt;linkto class=SubLattice&gt;SubLattice&lt;/linkto&gt;.</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">// &lt;/motivation&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">// &lt;reviewed reviewer=&quot;&quot; date=&quot;yyyy/mm/dd&quot; tests=&quot;tAxesSpecifier.cc&quot; demos=&quot;&quot;&gt;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">// &lt;/reviewed&gt;</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// &lt;prerequisite&gt;</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=&quot;IPosition&quot;&gt;IPosition&lt;/linkto&gt;</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=&quot;AxesSpecifier&quot;&gt;AxesSpecifier&lt;/linkto&gt;</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">// &lt;/prerequisite&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// AxesMapping holds the information about mapping axes to another order.</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// It can be constructed by &lt;linkto class=AxesSpecifier&gt;AxesSpecifier&lt;/linkto&gt;</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">// by applying a shape to the axes specification.</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">// &lt;br&gt;AxesMapping is thereafter used to map positions, shapes, and</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// slices to the new axes or backwards.</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">// &lt;note role=caution&gt;</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// Shapes and positions are both represented by class IPosition.</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// However, they have to be treated differently in this class,</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// because removed axes for a position have value 0, while for a</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// shape they have value 1. Hence there are different functions for them</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// and the user has to take care that the correct function is called.</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// &lt;/note&gt;</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// &lt;example&gt;</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// &lt;srcblock&gt;</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">// &lt;/srcblock&gt;</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">// &lt;/example&gt;</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// &lt;motivation&gt;</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">// The class encapsulates the mapping functionality.</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// It is meant as a helper class for casacore&#39;s SubLattice.</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">// &lt;/motivation&gt;</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">//# &lt;todo asof=&quot;yyyy/mm/dd&quot;&gt;</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">//# &lt;/todo&gt;</span></div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">//# &lt;todo asof=&quot;yyyy/mm/dd&quot;&gt;</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">//# &lt;/todo&gt;</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html">   87</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcasacore_1_1AxesMapping.html">AxesMapping</a></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;{</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="comment">// The default constructor creates empty maps.</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <a class="code" href="classcasacore_1_1AxesMapping.html#ad50a5e99f0e8fe7a0e95dc1cc843d6ac">AxesMapping</a>();</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="comment">// Construct it with the mapping from old to new axes order.</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="comment">// A value of -1 means that the old axes is ignored in the new one.</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="comment">// Another value gives the new axis number.</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="comment">// &lt;br&gt;It determines if axes are removed and/or reordered.</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classcasacore_1_1AxesMapping.html#ad50a5e99f0e8fe7a0e95dc1cc843d6ac">AxesMapping</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; oldToNew);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="comment">// Copy constructor (copy semantics).</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <a class="code" href="classcasacore_1_1AxesMapping.html#ad50a5e99f0e8fe7a0e95dc1cc843d6ac">AxesMapping</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1AxesMapping.html">AxesMapping</a>&amp; other);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <a class="code" href="classcasacore_1_1AxesMapping.html#a78aa881b4e3977aba9464d8afb851a30">~AxesMapping</a>();</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html">   84</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcasacore_1_1AxesMapping.html">AxesMapping</a></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// The default constructor creates empty maps.</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <a class="code" href="classcasacore_1_1AxesMapping.html#ad50a5e99f0e8fe7a0e95dc1cc843d6ac">AxesMapping</a>();</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="comment">// Construct it with the mapping from old to new axes order.</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// A value of -1 means that the old axes is ignored in the new one.</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// Another value gives the new axis number.</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="comment">// &lt;br&gt;It determines if axes are removed and/or reordered.</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classcasacore_1_1AxesMapping.html#ad50a5e99f0e8fe7a0e95dc1cc843d6ac">AxesMapping</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; oldToNew);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="comment">// Are axes removed?</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#ae3d028745c13cb2729a87b979edb69dd">   97</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classcasacore_1_1AxesMapping.html#ae3d028745c13cb2729a87b979edb69dd">isRemoved</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a23630a51a3505da2cf919c12dfab999a">itsRemoved</a>; }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="comment">// Is the axes order reordered?</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a0f20beefdb88d9bf24b5af40d3dfc7e0">  101</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a0f20beefdb88d9bf24b5af40d3dfc7e0">isReordered</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a58bc9e96c21c1b168b8b43b27b7f2f95">itsReordered</a>; }</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="comment">// Assignment (copy semantics).</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="comment">// This and that do not have to have the same length.</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <a class="code" href="classcasacore_1_1AxesMapping.html">AxesMapping</a>&amp; <a class="code" href="classcasacore_1_1AxesMapping.html#aa45466b73a5bad532806b877cf11e702">operator= </a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1AxesMapping.html">AxesMapping</a>&amp; other);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="comment">// Are axes removed?</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#abd4e3001b524c1722663744af4f78bdf">  109</a></span>&#160;  <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1AxesMapping.html#abd4e3001b524c1722663744af4f78bdf">isRemoved</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a72cde0b616cf6bdda21a30503c89b8cd">itsRemoved</a>; }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="comment">// Get the mapping of old-&gt;new.</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="comment">// The length of the resulting IPosition is the dimensionality of</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="comment">// the original lattice. A value of -1 indicates that the corresponding</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="comment">// axis in the original lattice is removed.</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="comment">// Another value is the axis number in the new lattice,</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#adaf463ef4920332fd9dce0d0fc61f9da">  109</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="classcasacore_1_1AxesMapping.html#adaf463ef4920332fd9dce0d0fc61f9da">getToNew</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">itsToNew</a>; }</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="comment">// Is the axes order reordered?</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#aceba063fd358fd9a45cf00b9db8c91c3">  113</a></span>&#160;  <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1AxesMapping.html#aceba063fd358fd9a45cf00b9db8c91c3">isReordered</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a3913cf99ac86401a84cc7def9048e9a6">itsReordered</a>; }</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="comment">// Get the mapping of old-&gt;new.</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="comment">// The length of the resulting IPosition is the dimensionality of</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <span class="comment">// the original lattice. A value of -1 indicates that the corresponding</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="comment">// axis in the original lattice is removed.</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="comment">// Another value is the axis number in the new lattice,</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#adaf463ef4920332fd9dce0d0fc61f9da">  121</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="classcasacore_1_1AxesMapping.html#adaf463ef4920332fd9dce0d0fc61f9da">getToNew</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">itsToNew</a>; }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="comment">// Get the mapping of new-&gt;old.</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="comment">// The length of the resulting IPosition is the dimensionality of</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="comment">// the new lattice. Its values give the axes in the original lattice.</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#af840d02310a8415057a24b196dd84da2">  127</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="classcasacore_1_1AxesMapping.html#af840d02310a8415057a24b196dd84da2">getToOld</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">itsToOld</a>; }</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="comment">// Map an old position to the new one.</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="comment">// In debug-mode it checks if the removed axes have position 0</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="comment">// in the input position.</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#af36ab9a53980e8435994da5c44cdc2c3">posToNew</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; pos) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  <span class="comment">// Map a new position or shape to the old one.</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a9420d1943bccdd25fddc0cc9d7fff890">posToOld</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; pos) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="comment">// Map an old shape to the new one.</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="comment">// In debug-mode it checks if the removed axes have length 1</span></div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="comment">// in the input shape.</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a440a77290ace959eb426b2e6cc569ef9">shapeToNew</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">shape</a>) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  <span class="comment">// Map a new position or shape to the old one.</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#ab345bd36ec868d90f8fa40d83b2ea1cd">shapeToOld</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">shape</a>) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <span class="comment">// Map an old shape to the new one.</span></div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="comment">// In debug-mode it checks if the removed axes have length 1</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="comment">// in the input slicer.</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a> <a class="code" href="classcasacore_1_1AxesMapping.html#acec8126f8862a222b6798e85c072e325">slicerToNew</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a>&amp; slicer) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="comment">// Get the mapping of new-&gt;old.</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="comment">// The length of the resulting IPosition is the dimensionality of</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <span class="comment">// the new lattice. Its values give the axes in the original lattice.</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#af840d02310a8415057a24b196dd84da2">  115</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="classcasacore_1_1AxesMapping.html#af840d02310a8415057a24b196dd84da2">getToOld</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">itsToOld</a>; }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <span class="comment">// Map an old position to the new one.</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="comment">// In debug-mode it checks if the removed axes have position 0</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="comment">// in the input position.</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#af36ab9a53980e8435994da5c44cdc2c3">posToNew</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; pos) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="comment">// Map a new position or shape to the old one.</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a9420d1943bccdd25fddc0cc9d7fff890">posToOld</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; pos) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="comment">// Map an old shape to the new one.</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="comment">// In debug-mode it checks if the removed axes have length 1</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="comment">// in the input shape.</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a440a77290ace959eb426b2e6cc569ef9">shapeToNew</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">shape</a>) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="comment">// Map a new position or shape to the old one.</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#ab345bd36ec868d90f8fa40d83b2ea1cd">shapeToOld</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="code" href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">shape</a>) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="comment">// Map an old shape to the new one.</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  <span class="comment">// In debug-mode it checks if the removed axes have length 1</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="comment">// in the input slicer.</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a> <a class="code" href="classcasacore_1_1AxesMapping.html#acec8126f8862a222b6798e85c072e325">slicerToNew</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a>&amp; slicer) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="comment">// Map a new position or shape to the old one.</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a> <a class="code" href="classcasacore_1_1AxesMapping.html#afee403d66c627cf3378223786b46d6cb">slicerToOld</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a>&amp; slicer) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">  143</a></span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">itsToNew</a>;</div>
+<div class="line"><a name="l00144"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">  144</a></span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">itsToOld</a>;</div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a23630a51a3505da2cf919c12dfab999a">  145</a></span>&#160;  <span class="keywordtype">bool</span>      <a class="code" href="classcasacore_1_1AxesMapping.html#a23630a51a3505da2cf919c12dfab999a">itsRemoved</a>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a58bc9e96c21c1b168b8b43b27b7f2f95">  146</a></span>&#160;  <span class="keywordtype">bool</span>      <a class="code" href="classcasacore_1_1AxesMapping.html#a58bc9e96c21c1b168b8b43b27b7f2f95">itsReordered</a>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;};</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="comment">// Map a new position or shape to the old one.</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a> <a class="code" href="classcasacore_1_1AxesMapping.html#afee403d66c627cf3378223786b46d6cb">slicerToOld</a> (<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Slicer.html">Slicer</a>&amp; slicer) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">  155</a></span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">itsToNew</a>;</div>
-<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">  156</a></span>&#160;  <a class="code" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="code" href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">itsToOld</a>;</div>
-<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a72cde0b616cf6bdda21a30503c89b8cd">  157</a></span>&#160;  <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>      <a class="code" href="classcasacore_1_1AxesMapping.html#a72cde0b616cf6bdda21a30503c89b8cd">itsRemoved</a>;</div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classcasacore_1_1AxesMapping.html#a3913cf99ac86401a84cc7def9048e9a6">  158</a></span>&#160;  <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>      <a class="code" href="classcasacore_1_1AxesMapping.html#a3913cf99ac86401a84cc7def9048e9a6">itsReordered</a>;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;};</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classcasacore_1_1IPosition_html"><div class="ttname"><a href="classcasacore_1_1IPosition.html">casacore::IPosition</a></div><div class="ttdoc">A Vector of integers, for indexing into Array&amp;lt;T&amp;gt; objects. </div><div class="ttdef"><b>Definition:</b> <a href="IPosition_8h_source.html#l00119">IPosition.h:119</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_a78aa881b4e3977aba9464d8afb851a30"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a78aa881b4e3977aba9464d8afb851a30">casacore::AxesMapping::~AxesMapping</a></div><div class="ttdeci">~AxesMapping()</div></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classcasacore_1_1IPosition_html"><div class="ttname"><a href="classcasacore_1_1IPosition.html">casacore::IPosition</a></div><div class="ttdoc">A Vector of integers, for indexing into Array&amp;lt;T&amp;gt; objects. </div><div class="ttdef"><b>Definition:</b> <a href="IPosition_8h_source.html#l00118">IPosition.h:118</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_a58bc9e96c21c1b168b8b43b27b7f2f95"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a58bc9e96c21c1b168b8b43b27b7f2f95">casacore::AxesMapping::itsReordered</a></div><div class="ttdeci">bool itsReordered</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00146">AxesMapping.h:146</a></div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_acec8126f8862a222b6798e85c072e325"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#acec8126f8862a222b6798e85c072e325">casacore::AxesMapping::slicerToNew</a></div><div class="ttdeci">Slicer slicerToNew(const Slicer &amp;slicer) const </div><div class="ttdoc">Map an old shape to the new one. </div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_a9420d1943bccdd25fddc0cc9d7fff890"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a9420d1943bccdd25fddc0cc9d7fff890">casacore::AxesMapping::posToOld</a></div><div class="ttdeci">IPosition posToOld(const IPosition &amp;pos) const </div><div class="ttdoc">Map a new position or shape to the old one. </div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_a35bb7422bba6ae5cefcad97fe1aa6c6d"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">casacore::AxesMapping::itsToNew</a></div><div class="ttdeci">IPosition itsToNew</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00155">AxesMapping.h:155</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html">casacore::AxesMapping</a></div><div class="ttdoc">Info about mapping array axes to another order. </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00087">AxesMapping.h:87</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_aa45466b73a5bad532806b877cf11e702"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#aa45466b73a5bad532806b877cf11e702">casacore::AxesMapping::operator=</a></div><div class="ttdeci">AxesMapping &amp; operator=(const AxesMapping &amp;other)</div><div class="ttdoc">Assignment (copy semantics). </div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_a35bb7422bba6ae5cefcad97fe1aa6c6d"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a35bb7422bba6ae5cefcad97fe1aa6c6d">casacore::AxesMapping::itsToNew</a></div><div class="ttdeci">IPosition itsToNew</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00143">AxesMapping.h:143</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html">casacore::AxesMapping</a></div><div class="ttdoc">Info about mapping array axes to another order. </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00084">AxesMapping.h:84</a></div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_ad50a5e99f0e8fe7a0e95dc1cc843d6ac"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#ad50a5e99f0e8fe7a0e95dc1cc843d6ac">casacore::AxesMapping::AxesMapping</a></div><div class="ttdeci">AxesMapping()</div><div class="ttdoc">The default constructor creates empty maps. </div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_a3913cf99ac86401a84cc7def9048e9a6"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a3913cf99ac86401a84cc7def9048e9a6">casacore::AxesMapping::itsReordered</a></div><div class="ttdeci">Bool itsReordered</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00158">AxesMapping.h:158</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_a23630a51a3505da2cf919c12dfab999a"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a23630a51a3505da2cf919c12dfab999a">casacore::AxesMapping::itsRemoved</a></div><div class="ttdeci">bool itsRemoved</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00145">AxesMapping.h:145</a></div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_af36ab9a53980e8435994da5c44cdc2c3"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#af36ab9a53980e8435994da5c44cdc2c3">casacore::AxesMapping::posToNew</a></div><div class="ttdeci">IPosition posToNew(const IPosition &amp;pos) const </div><div class="ttdoc">Map an old position to the new one. </div></div>
-<div class="ttc" id="namespacecasacore_html_abd5691f9e13acc90d901e4007740ff98"><div class="ttname"><a href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a></div><div class="ttdeci">bool Bool</div><div class="ttdoc">Define the standard types used by Casacore. </div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00042">aipstype.h:42</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_a47f510e475841622d73624b8f4228f8e"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">casacore::AxesMapping::itsToOld</a></div><div class="ttdeci">IPosition itsToOld</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00156">AxesMapping.h:156</a></div></div>
-<div class="ttc" id="namespacecasacore_html_a6c80d55c1617e8540e006c12e3dc990c"><div class="ttname"><a href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">casacore::shape</a></div><div class="ttdeci">TableExprNode shape(const TableExprNode &amp;array)</div><div class="ttdoc">Function operating on any scalar or array resulting in a Double array containing the shape...</div><div class="ttdef"><b>Definition:</b> <a href="ExprNode_8h_source.html#l01944">ExprNode.h:1944</a></div></div>
-<div class="ttc" id="classcasacore_1_1Slicer_html"><div class="ttname"><a href="classcasacore_1_1Slicer.html">casacore::Slicer</a></div><div class="ttdoc">Specify which elements to extract from an n-dimensional array. </div><div class="ttdef"><b>Definition:</b> <a href="Slicer_8h_source.html#l00289">Slicer.h:289</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_a72cde0b616cf6bdda21a30503c89b8cd"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a72cde0b616cf6bdda21a30503c89b8cd">casacore::AxesMapping::itsRemoved</a></div><div class="ttdeci">Bool itsRemoved</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00157">AxesMapping.h:157</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_aceba063fd358fd9a45cf00b9db8c91c3"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#aceba063fd358fd9a45cf00b9db8c91c3">casacore::AxesMapping::isReordered</a></div><div class="ttdeci">Bool isReordered() const </div><div class="ttdoc">Is the axes order reordered? </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00113">AxesMapping.h:113</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_abd4e3001b524c1722663744af4f78bdf"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#abd4e3001b524c1722663744af4f78bdf">casacore::AxesMapping::isRemoved</a></div><div class="ttdeci">Bool isRemoved() const </div><div class="ttdoc">Are axes removed? </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00109">AxesMapping.h:109</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_a0f20beefdb88d9bf24b5af40d3dfc7e0"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a0f20beefdb88d9bf24b5af40d3dfc7e0">casacore::AxesMapping::isReordered</a></div><div class="ttdeci">bool isReordered() const </div><div class="ttdoc">Is the axes order reordered? </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00101">AxesMapping.h:101</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_a47f510e475841622d73624b8f4228f8e"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a47f510e475841622d73624b8f4228f8e">casacore::AxesMapping::itsToOld</a></div><div class="ttdeci">IPosition itsToOld</div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00144">AxesMapping.h:144</a></div></div>
+<div class="ttc" id="namespacecasacore_html_a6c80d55c1617e8540e006c12e3dc990c"><div class="ttname"><a href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">casacore::shape</a></div><div class="ttdeci">TableExprNode shape(const TableExprNode &amp;array)</div><div class="ttdoc">Function operating on any scalar or array resulting in a Double array containing the shape...</div><div class="ttdef"><b>Definition:</b> <a href="ExprNode_8h_source.html#l01987">ExprNode.h:1987</a></div></div>
+<div class="ttc" id="classcasacore_1_1Slicer_html"><div class="ttname"><a href="classcasacore_1_1Slicer.html">casacore::Slicer</a></div><div class="ttdoc">Specify which elements to extract from an n-dimensional array. </div><div class="ttdef"><b>Definition:</b> <a href="Slicer_8h_source.html#l00288">Slicer.h:288</a></div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_afee403d66c627cf3378223786b46d6cb"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#afee403d66c627cf3378223786b46d6cb">casacore::AxesMapping::slicerToOld</a></div><div class="ttdeci">Slicer slicerToOld(const Slicer &amp;slicer) const </div><div class="ttdoc">Map a new position or shape to the old one. </div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_a440a77290ace959eb426b2e6cc569ef9"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#a440a77290ace959eb426b2e6cc569ef9">casacore::AxesMapping::shapeToNew</a></div><div class="ttdeci">IPosition shapeToNew(const IPosition &amp;shape) const </div><div class="ttdoc">Map an old shape to the new one. </div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_adaf463ef4920332fd9dce0d0fc61f9da"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#adaf463ef4920332fd9dce0d0fc61f9da">casacore::AxesMapping::getToNew</a></div><div class="ttdeci">const IPosition &amp; getToNew() const </div><div class="ttdoc">Get the mapping of old-&amp;gt;new. </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00121">AxesMapping.h:121</a></div></div>
-<div class="ttc" id="classcasacore_1_1AxesMapping_html_af840d02310a8415057a24b196dd84da2"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#af840d02310a8415057a24b196dd84da2">casacore::AxesMapping::getToOld</a></div><div class="ttdeci">const IPosition &amp; getToOld() const </div><div class="ttdoc">Get the mapping of new-&amp;gt;old. </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00127">AxesMapping.h:127</a></div></div>
+<div class="ttc" id="IPosition_8h_html"><div class="ttname"><a href="IPosition_8h.html">IPosition.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_adaf463ef4920332fd9dce0d0fc61f9da"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#adaf463ef4920332fd9dce0d0fc61f9da">casacore::AxesMapping::getToNew</a></div><div class="ttdeci">const IPosition &amp; getToNew() const </div><div class="ttdoc">Get the mapping of old-&amp;gt;new. </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00109">AxesMapping.h:109</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_ae3d028745c13cb2729a87b979edb69dd"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#ae3d028745c13cb2729a87b979edb69dd">casacore::AxesMapping::isRemoved</a></div><div class="ttdeci">bool isRemoved() const </div><div class="ttdoc">Are axes removed? </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00097">AxesMapping.h:97</a></div></div>
+<div class="ttc" id="classcasacore_1_1AxesMapping_html_af840d02310a8415057a24b196dd84da2"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#af840d02310a8415057a24b196dd84da2">casacore::AxesMapping::getToOld</a></div><div class="ttdeci">const IPosition &amp; getToOld() const </div><div class="ttdoc">Get the mapping of new-&amp;gt;old. </div><div class="ttdef"><b>Definition:</b> <a href="AxesMapping_8h_source.html#l00115">AxesMapping.h:115</a></div></div>
 <div class="ttc" id="classcasacore_1_1AxesMapping_html_ab345bd36ec868d90f8fa40d83b2ea1cd"><div class="ttname"><a href="classcasacore_1_1AxesMapping.html#ab345bd36ec868d90f8fa40d83b2ea1cd">casacore::AxesMapping::shapeToOld</a></div><div class="ttdeci">IPosition shapeToOld(const IPosition &amp;shape) const </div><div class="ttdoc">Map a new position or shape to the old one. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

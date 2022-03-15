@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -172,7 +173,7 @@ class casacore::InterpolateArray1D&lt; Domain, Range &gt;</h3>
 <a class="el" href="classcasacore_1_1Vector.html">Vector</a> </li>
 </ul>
 <h3>Etymology</h3>
-<p>The <a class="el" href="classcasacore_1_1InterpolateArray1D.html" title="Interpolate in one dimension. ">InterpolateArray1D</a> class does interpolation in one dimension of an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> only.</p>
+<p>The <a class="el" href="classcasacore_1_1InterpolateArray1D.html" title="Interpolate in one dimension. ">InterpolateArray1D</a> class does interpolation in one dimension of an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> only.</p>
 <h3>Synopsis</h3>
 <p>This class will, given the abscissa and ordinates of a set of one dimensional data, interpolate on this data set giving the value at any specified ordinate. It will extrapolate if necessary, but this is will usually give a poor result. There is no requirement for the ordinates to be regularly spaced, however they do need to be sorted and each abscissa should have a unique value.</p>
 <p>Interpolation can be done using the following methods: </p>
@@ -186,12 +187,12 @@ Cubic <a class="el" href="classcasacore_1_1Polynomial.html" title="A one dimensi
 <li>
 Natural Cubic Spline </li>
 </ul>
-<p>The abscissa must be a simple type (scalar value) that can be ordered. ie. an uInt, Int, Float or Double (not Complex). The ordinate can be an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of any data type that has addition, and subtraction defined as well as multiplication by a scalar of the abcissa type. So the ordinate can be complex numbers, where the interpolation is done separately on the real and imaginary components. Use of Arrays as the the Range type is discouraged, operations will be very slow, it would be better to construct a single higher dimensional array that contains all the data.</p>
+<p>The abscissa must be a simple type (scalar value) that can be ordered. ie. an uInt, Int, Float or Double (not Complex). The ordinate can be an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of any data type that has addition, and subtraction defined as well as multiplication by a scalar of the abcissa type. So the ordinate can be complex numbers, where the interpolation is done separately on the real and imaginary components. Use of Arrays as the the Range type is discouraged, operations will be very slow, it would be better to construct a single higher dimensional array that contains all the data.</p>
 <p>Note: this class (and these docs) are heavily based on the <a class="el" href="classcasacore_1_1Interpolate1D.html">Interpolate1D</a> class in aips/Functionals. That class proved to be too slow for interpolation of large data volumes (i.e. spectral line visibility datasets) mainly due to the interface which forced the creation of large numbers of temporary Vectors and Arrays. This class is 5-10 times faster than <a class="el" href="classcasacore_1_1Interpolate1D.html" title="Interpolate in one dimension. ">Interpolate1D</a> in cases where large amounts of data are to be interpolated.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="InterpolateArray1D_example1"></a> This code fragment does cubic interpolation on (xin,yin) pairs to produce (xout,yout) pairs. </p>
-<div class="fragment"><div class="line">Vector&lt;Float&gt; xin(4); <a class="code" href="namespacecasacore.html#a083fbd9fc55516dfcc88ec19db08c8f5">indgen</a>(xin); </div>
-<div class="line">Vector&lt;Double&gt; yin(4); <a class="code" href="namespacecasacore.html#a083fbd9fc55516dfcc88ec19db08c8f5">indgen</a>(yin); yin = yin*yin*yin;</div>
+<div class="fragment"><div class="line">Vector&lt;Float&gt; xin(4); <a class="code" href="namespacecasacore.html#a3cd469ce2294c9f726fe06d19f1fa0c7">indgen</a>(xin); </div>
+<div class="line">Vector&lt;Double&gt; yin(4); <a class="code" href="namespacecasacore.html#a3cd469ce2294c9f726fe06d19f1fa0c7">indgen</a>(yin); yin = yin*yin*yin;</div>
 <div class="line">Vector&lt;Float&gt; xout(20); </div>
 <div class="line"><span class="keywordflow">for</span> (<a class="code" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> i=0; i&lt;20; i++) xout(i) = 1 + i*0.1;</div>
 <div class="line">Vector&lt;Double&gt; yout;</div>
@@ -220,7 +221,7 @@ The Range class must have addition and subtraction of Range objects with each ot
 Implement flagging in cubic and spline interpolation </li>
 </ul>
 
-<p>Definition at line <a class="el" href="InterpolateArray1D_8h_source.html#l00137">137</a> of file <a class="el" href="InterpolateArray1D_8h_source.html">InterpolateArray1D.h</a>.</p>
+<p>Definition at line <a class="el" href="InterpolateArray1D_8h_source.html#l00134">134</a> of file <a class="el" href="InterpolateArray1D_8h_source.html">InterpolateArray1D.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a08d8af8883d1698ff3f42fb293c76171"></a>
 <div class="memitem">
@@ -250,7 +251,7 @@ template&lt;class Domain, class Range&gt; </div>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="InterpolateArray1D_8h_source.html#l00141">141</a> of file <a class="el" href="InterpolateArray1D_8h_source.html">InterpolateArray1D.h</a>.</p>
+<p>Definition at line <a class="el" href="InterpolateArray1D_8h_source.html#l00138">138</a> of file <a class="el" href="InterpolateArray1D_8h_source.html">InterpolateArray1D.h</a>.</p>
 
 </div>
 </div>

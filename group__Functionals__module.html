@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -356,7 +357,7 @@ Classes</h2></td></tr>
 <p>Combinatory <a class="el" href="classcasacore_1_1Function.html" title="Numerical functional interface class. ">Function</a> objects are provided to easily combine and create function objects: </p>
 <dl>
 <dt><a class="el" href="classcasacore_1_1CompoundFunction.html">CompoundFunction</a> </dt>
-<dd>creates a new, compound, function object from one or more other function objects (including compounds...). The new function will have the sum of the parameters of the input functions as the new parameters (i.e the compound function created from a 1-dimensional Gaussian (with 3 parameters) and a third-order polynomial (with 4 parameters) will have 7 parameters). </dd>
+<dd>creates a new, compound, function object from one or more other function objects (including compounds...). The new function will have the sum of the parameters of the input functions as the new parameters (i.e. the compound function created from a 1-dimensional Gaussian (with 3 parameters) and a third-order polynomial (with 4 parameters) will have 7 parameters). </dd>
 <dt><a class="el" href="classcasacore_1_1CombiFunction.html">CombiFunction</a> </dt>
 <dd>creates a (linear) combination of a number of input functions. The number of parameters of the newly created function will be equal to the number of input functions (i.e. the combi function created from a 1-dimensional Gaussian (with 3 parameters) and a third-order polynomial (with 4 parameters) will have 2 parameters). The function will be <code>param0*gauss(x) + param1*poly(x)</code> </dd>
 <dt><a class="el" href="classcasacore_1_1FunctionWrapper.html">FunctionWrapper</a> </dt>

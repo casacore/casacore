@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -88,7 +89,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -98,86 +98,96 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>A <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of integers, for indexing into Array&lt;T&gt; objects.  
+<p>A <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of integers, for indexing into <a class="el" href="classcasacore_1_1Array.html">Array&lt;T&gt;</a> objects.  
  <a href="classcasacore_1_1IPosition.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="IPosition_8h_source.html">IPosition.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:ae90dc4f7b1fccbd871fa0504170934ce"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>
- }</td></tr>
-<tr class="separator:ae90dc4f7b1fccbd871fa0504170934ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6d46c0c04bbe82057a0ac3d45636caba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a6d46c0c04bbe82057a0ac3d45636caba">IPosition</a> ()</td></tr>
-<tr class="memdesc:a6d46c0c04bbe82057a0ac3d45636caba"><td class="mdescLeft">&#160;</td><td class="mdescRight">A zero-length <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a6d46c0c04bbe82057a0ac3d45636caba">More...</a><br/></td></tr>
-<tr class="separator:a6d46c0c04bbe82057a0ac3d45636caba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe327e9aee3ad710cc04168584082e90"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#abe327e9aee3ad710cc04168584082e90">IPosition</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">length</a>)</td></tr>
-<tr class="memdesc:abe327e9aee3ad710cc04168584082e90"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." The values in the object are undefined.  <a href="#abe327e9aee3ad710cc04168584082e90">More...</a><br/></td></tr>
-<tr class="separator:abe327e9aee3ad710cc04168584082e90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad30ea4ee41453261944336012c2ccdca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ad30ea4ee41453261944336012c2ccdca">IPosition</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">length</a>, ssize_t val)</td></tr>
-<tr class="memdesc:ad30ea4ee41453261944336012c2ccdca"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." The values in the object get initialized to val.  <a href="#ad30ea4ee41453261944336012c2ccdca">More...</a><br/></td></tr>
-<tr class="separator:ad30ea4ee41453261944336012c2ccdca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3c20fdea13991de1945b8ca63b44b38"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ab3c20fdea13991de1945b8ca63b44b38">IPosition</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">length</a>, ssize_t val0, ssize_t val1, ssize_t val2=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val3=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val4=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val5=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val6=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val7=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val8=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>, ssize_t val9=<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a>)</td></tr>
-<tr class="memdesc:ab3c20fdea13991de1945b8ca63b44b38"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length" with defined values.  <a href="#ab3c20fdea13991de1945b8ca63b44b38">More...</a><br/></td></tr>
-<tr class="separator:ab3c20fdea13991de1945b8ca63b44b38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3255991cbdce7b0289caf1e11ef4e6b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a3255991cbdce7b0289caf1e11ef4e6b3">IPosition</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other)</td></tr>
-<tr class="memdesc:a3255991cbdce7b0289caf1e11ef4e6b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy (copy, NOT reference, semantics) of other.  <a href="#a3255991cbdce7b0289caf1e11ef4e6b3">More...</a><br/></td></tr>
-<tr class="separator:a3255991cbdce7b0289caf1e11ef4e6b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5003c4522b330c0b0ff647e5b8ce146a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a5003c4522b330c0b0ff647e5b8ce146a">IPosition</a> () noexcept</td></tr>
+<tr class="memdesc:a5003c4522b330c0b0ff647e5b8ce146a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A zero-length <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a5003c4522b330c0b0ff647e5b8ce146a">More...</a><br/></td></tr>
+<tr class="separator:a5003c4522b330c0b0ff647e5b8ce146a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a049f5db491dc6e4eb2e65c7454d3c971"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a049f5db491dc6e4eb2e65c7454d3c971">IPosition</a> (size_t <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">length</a>)</td></tr>
+<tr class="memdesc:a049f5db491dc6e4eb2e65c7454d3c971"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." The values in the object are uninitialized.  <a href="#a049f5db491dc6e4eb2e65c7454d3c971">More...</a><br/></td></tr>
+<tr class="separator:a049f5db491dc6e4eb2e65c7454d3c971"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbc055c3b5b5bfd2ce0a4a95e3717f13"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#afbc055c3b5b5bfd2ce0a4a95e3717f13">IPosition</a> (std::initializer_list&lt; ssize_t &gt; list)</td></tr>
+<tr class="memdesc:afbc055c3b5b5bfd2ce0a4a95e3717f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> initialized from the given list.  <a href="#afbc055c3b5b5bfd2ce0a4a95e3717f13">More...</a><br/></td></tr>
+<tr class="separator:afbc055c3b5b5bfd2ce0a4a95e3717f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb28308be4a9ee0432803bd813e69e08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#afb28308be4a9ee0432803bd813e69e08">IPosition</a> (size_t <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">length</a>, ssize_t val)</td></tr>
+<tr class="memdesc:afb28308be4a9ee0432803bd813e69e08"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." All values in the object are initialized to val.  <a href="#afb28308be4a9ee0432803bd813e69e08">More...</a><br/></td></tr>
+<tr class="separator:afb28308be4a9ee0432803bd813e69e08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9edc5e4f7b2ea485926d806b87dbd1cb"><td class="memTemplParams" colspan="2">template&lt;typename... Vals&gt; </td></tr>
+<tr class="memitem:a9edc5e4f7b2ea485926d806b87dbd1cb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a9edc5e4f7b2ea485926d806b87dbd1cb">IPosition</a> (size_t, ssize_t val1, ssize_t val2, Vals...vals)</td></tr>
+<tr class="memdesc:a9edc5e4f7b2ea485926d806b87dbd1cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> initialized from a variable number of parameters.  <a href="#a9edc5e4f7b2ea485926d806b87dbd1cb">More...</a><br/></td></tr>
+<tr class="separator:a9edc5e4f7b2ea485926d806b87dbd1cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d32b61b1e48aef46ecbbf3b487e062f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a6d32b61b1e48aef46ecbbf3b487e062f">IPosition</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;source)</td></tr>
+<tr class="memdesc:a6d32b61b1e48aef46ecbbf3b487e062f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy (copy, NOT reference, semantics) of source.  <a href="#a6d32b61b1e48aef46ecbbf3b487e062f">More...</a><br/></td></tr>
+<tr class="separator:a6d32b61b1e48aef46ecbbf3b487e062f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54405d0588bfb502ed2d01fd1bf9a94d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a54405d0588bfb502ed2d01fd1bf9a94d">IPosition</a> (<a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&amp;source) noexcept</td></tr>
+<tr class="separator:a54405d0588bfb502ed2d01fd1bf9a94d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad23eb624698a62bbfc3d8744842f01dd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ad23eb624698a62bbfc3d8744842f01dd">~IPosition</a> ()</td></tr>
 <tr class="separator:ad23eb624698a62bbfc3d8744842f01dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02a43b411b7ecb41c2f7b94b2d02e78c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a02a43b411b7ecb41c2f7b94b2d02e78c">operator=</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other)</td></tr>
-<tr class="memdesc:a02a43b411b7ecb41c2f7b94b2d02e78c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes this a copy of other.  <a href="#a02a43b411b7ecb41c2f7b94b2d02e78c">More...</a><br/></td></tr>
-<tr class="separator:a02a43b411b7ecb41c2f7b94b2d02e78c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ae7476057f1343ef0659582ccae39ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2ae7476057f1343ef0659582ccae39ad">operator=</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;source)</td></tr>
+<tr class="memdesc:a2ae7476057f1343ef0659582ccae39ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes this a copy of other.  <a href="#a2ae7476057f1343ef0659582ccae39ad">More...</a><br/></td></tr>
+<tr class="separator:a2ae7476057f1343ef0659582ccae39ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e1f09ae0fd9577efe8fe1fbebf5d2d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a1e1f09ae0fd9577efe8fe1fbebf5d2d0">operator=</a> (<a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&amp;source)</td></tr>
+<tr class="separator:a1e1f09ae0fd9577efe8fe1fbebf5d2d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeef24874c2c2319b312802644e230760"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aeef24874c2c2319b312802644e230760">operator=</a> (ssize_t <a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
 <tr class="memdesc:aeef24874c2c2319b312802644e230760"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy "value" into every position of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#aeef24874c2c2319b312802644e230760">More...</a><br/></td></tr>
 <tr class="separator:aeef24874c2c2319b312802644e230760"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affe9c92c9f9d8b948761aff813f21319"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#affe9c92c9f9d8b948761aff813f21319">IPosition</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;other)</td></tr>
-<tr class="memdesc:affe9c92c9f9d8b948761aff813f21319"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html">Array&lt;Int&gt;</a>.  <a href="#affe9c92c9f9d8b948761aff813f21319">More...</a><br/></td></tr>
-<tr class="separator:affe9c92c9f9d8b948761aff813f21319"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b3279f204935f471b6b0301846d17e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a3b3279f204935f471b6b0301846d17e5">asVector</a> () const </td></tr>
-<tr class="separator:a3b3279f204935f471b6b0301846d17e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1472da31e1e14df66ce27ad5976500cc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a1472da31e1e14df66ce27ad5976500cc">IPosition</a> (const std::vector&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;other)</td></tr>
-<tr class="memdesc:a1472da31e1e14df66ce27ad5976500cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html">Array&lt;Int&gt;</a>.  <a href="#a1472da31e1e14df66ce27ad5976500cc">More...</a><br/></td></tr>
-<tr class="separator:a1472da31e1e14df66ce27ad5976500cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66e76e7da44264fb7efa9d66323d1722"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a66e76e7da44264fb7efa9d66323d1722">asStdVector</a> () const </td></tr>
-<tr class="separator:a66e76e7da44264fb7efa9d66323d1722"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a710e202b50b4de08320a6adb8136a30b"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator &gt; </td></tr>
-<tr class="memitem:a710e202b50b4de08320a6adb8136a30b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a710e202b50b4de08320a6adb8136a30b">fill</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1IPosition.html#ae2c15e5631683ef30fc7bef88b185c12">size</a>, InputIterator iter)</td></tr>
-<tr class="memdesc:a710e202b50b4de08320a6adb8136a30b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize and fill this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> object.  <a href="#a710e202b50b4de08320a6adb8136a30b">More...</a><br/></td></tr>
-<tr class="separator:a710e202b50b4de08320a6adb8136a30b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2152ea6de27396cfcd020f50853b9431"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2152ea6de27396cfcd020f50853b9431">IPosition</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; int &gt; &amp;other)</td></tr>
+<tr class="memdesc:a2152ea6de27396cfcd020f50853b9431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>&lt;int/int64&gt;.  <a href="#a2152ea6de27396cfcd020f50853b9431">More...</a><br/></td></tr>
+<tr class="separator:a2152ea6de27396cfcd020f50853b9431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ef64f1786c335d797d5b35e94f0ceda"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a1ef64f1786c335d797d5b35e94f0ceda">IPosition</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; long long &gt; &amp;other)</td></tr>
+<tr class="separator:a1ef64f1786c335d797d5b35e94f0ceda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3575e560e8d24551fa5ff1143c6f6a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ac3575e560e8d24551fa5ff1143c6f6a3">asVector</a> () const </td></tr>
+<tr class="separator:ac3575e560e8d24551fa5ff1143c6f6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef62e27a5731085624b6ab6cb1263580"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; long long &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aef62e27a5731085624b6ab6cb1263580">asVector64</a> () const </td></tr>
+<tr class="separator:aef62e27a5731085624b6ab6cb1263580"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae22e83b3dadab1841146f8c7f5e68331"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ae22e83b3dadab1841146f8c7f5e68331">IPosition</a> (const std::vector&lt; int &gt; &amp;other)</td></tr>
+<tr class="memdesc:ae22e83b3dadab1841146f8c7f5e68331"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>&lt;int/int64&gt;.  <a href="#ae22e83b3dadab1841146f8c7f5e68331">More...</a><br/></td></tr>
+<tr class="separator:ae22e83b3dadab1841146f8c7f5e68331"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a3abb7ba258dfbd8b4fb660d0225867"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a8a3abb7ba258dfbd8b4fb660d0225867">IPosition</a> (const std::vector&lt; long long &gt; &amp;other)</td></tr>
+<tr class="separator:a8a3abb7ba258dfbd8b4fb660d0225867"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a790d8b05a709d4af90de2c776575a41f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a790d8b05a709d4af90de2c776575a41f">asStdVector</a> () const </td></tr>
+<tr class="separator:a790d8b05a709d4af90de2c776575a41f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a880ff634bbc60f88f5c75bcfa65f0f54"><td class="memItemLeft" align="right" valign="top">std::vector&lt; long long &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a880ff634bbc60f88f5c75bcfa65f0f54">asStdVector64</a> () const </td></tr>
+<tr class="separator:a880ff634bbc60f88f5c75bcfa65f0f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8bb132a2b6363a8fb932028c7a9d95f"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator &gt; </td></tr>
+<tr class="memitem:ad8bb132a2b6363a8fb932028c7a9d95f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ad8bb132a2b6363a8fb932028c7a9d95f">fill</a> (size_t <a class="el" href="classcasacore_1_1IPosition.html#a81c3be3be2e7c0fe01d7ce03eb7e41cd">size</a>, InputIterator iter)</td></tr>
+<tr class="memdesc:ad8bb132a2b6363a8fb932028c7a9d95f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize and fill this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> object.  <a href="#ad8bb132a2b6363a8fb932028c7a9d95f">More...</a><br/></td></tr>
+<tr class="separator:ad8bb132a2b6363a8fb932028c7a9d95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa95544ed1740adbe607c3b26bc93c430"><td class="memTemplParams" colspan="2">template&lt;typename OutputIterator &gt; </td></tr>
 <tr class="memitem:aa95544ed1740adbe607c3b26bc93c430"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aa95544ed1740adbe607c3b26bc93c430">copy</a> (OutputIterator iter) const </td></tr>
 <tr class="memdesc:aa95544ed1740adbe607c3b26bc93c430"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the contents of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> object to the output iterator.  <a href="#aa95544ed1740adbe607c3b26bc93c430">More...</a><br/></td></tr>
 <tr class="separator:aa95544ed1740adbe607c3b26bc93c430"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a691429f4578d40ff6d93bd647789303e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a691429f4578d40ff6d93bd647789303e">nonDegenerate</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> startingAxis=0) const </td></tr>
-<tr class="memdesc:a691429f4578d40ff6d93bd647789303e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This member functions return an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> which has degenerate (length==1) axes removed and the dimensionality reduced appropriately.  <a href="#a691429f4578d40ff6d93bd647789303e">More...</a><br/></td></tr>
-<tr class="separator:a691429f4578d40ff6d93bd647789303e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59d3d9cc59bca27459293626b8f1b4a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a59d3d9cc59bca27459293626b8f1b4a6">nonDegenerate</a> (size_t startingAxis=0) const </td></tr>
+<tr class="memdesc:a59d3d9cc59bca27459293626b8f1b4a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">This member functions return an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> which has degenerate (length==1) axes removed and the dimensionality reduced appropriately.  <a href="#a59d3d9cc59bca27459293626b8f1b4a6">More...</a><br/></td></tr>
+<tr class="separator:a59d3d9cc59bca27459293626b8f1b4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a736f04fd70bb77d8d9fe9289b6643086"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a736f04fd70bb77d8d9fe9289b6643086">nonDegenerate</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;ignoreAxes) const </td></tr>
 <tr class="separator:a736f04fd70bb77d8d9fe9289b6643086"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec59107726dbb8de7781862a408fa2f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aec59107726dbb8de7781862a408fa2f0">resize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> newSize, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1IPosition.html#aa95544ed1740adbe607c3b26bc93c430">copy</a>=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>)</td></tr>
-<tr class="memdesc:aec59107726dbb8de7781862a408fa2f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Old values are copied on resize if copy==True.  <a href="#aec59107726dbb8de7781862a408fa2f0">More...</a><br/></td></tr>
-<tr class="separator:aec59107726dbb8de7781862a408fa2f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafa878b0a4e507ae18a4f095ea9182d7"><td class="memItemLeft" align="right" valign="top">ssize_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aafa878b0a4e507ae18a4f095ea9182d7">operator[]</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index)</td></tr>
-<tr class="memdesc:aafa878b0a4e507ae18a4f095ea9182d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index into the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#aafa878b0a4e507ae18a4f095ea9182d7">More...</a><br/></td></tr>
-<tr class="separator:aafa878b0a4e507ae18a4f095ea9182d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b6f8bde66ee783d0cdb0aa2f00c0d51"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a1b6f8bde66ee783d0cdb0aa2f00c0d51">operator[]</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index) const </td></tr>
-<tr class="separator:a1b6f8bde66ee783d0cdb0aa2f00c0d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54d9d228e6c1b5069ca10a414b501ed4"><td class="memItemLeft" align="right" valign="top">ssize_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a54d9d228e6c1b5069ca10a414b501ed4">operator()</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index)</td></tr>
-<tr class="separator:a54d9d228e6c1b5069ca10a414b501ed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1512a8ee6b34f958da83bd9244e3cdef"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a1512a8ee6b34f958da83bd9244e3cdef">operator()</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index) const </td></tr>
-<tr class="separator:a1512a8ee6b34f958da83bd9244e3cdef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5459e34b65e1998d2b5d14274256b684"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a5459e34b65e1998d2b5d14274256b684">resize</a> (size_t newSize, bool <a class="el" href="classcasacore_1_1IPosition.html#aa95544ed1740adbe607c3b26bc93c430">copy</a>=true)</td></tr>
+<tr class="memdesc:a5459e34b65e1998d2b5d14274256b684"><td class="mdescLeft">&#160;</td><td class="mdescRight">Old values are copied on resize if copy==true.  <a href="#a5459e34b65e1998d2b5d14274256b684">More...</a><br/></td></tr>
+<tr class="separator:a5459e34b65e1998d2b5d14274256b684"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a072e8ef52cc376b59e747e2e848f5ced"><td class="memItemLeft" align="right" valign="top">ssize_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a072e8ef52cc376b59e747e2e848f5ced">operator[]</a> (size_t index)</td></tr>
+<tr class="memdesc:a072e8ef52cc376b59e747e2e848f5ced"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index into the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a072e8ef52cc376b59e747e2e848f5ced">More...</a><br/></td></tr>
+<tr class="separator:a072e8ef52cc376b59e747e2e848f5ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0541aa0c01ce988ef326a1bbc82b5ddf"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a0541aa0c01ce988ef326a1bbc82b5ddf">operator[]</a> (size_t index) const </td></tr>
+<tr class="separator:a0541aa0c01ce988ef326a1bbc82b5ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a228ec54a0a21660e3362b0d250b0d05e"><td class="memItemLeft" align="right" valign="top">ssize_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a228ec54a0a21660e3362b0d250b0d05e">operator()</a> (size_t index)</td></tr>
+<tr class="separator:a228ec54a0a21660e3362b0d250b0d05e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9477f1d8bcefb4c3215267c8bdcff96a"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a9477f1d8bcefb4c3215267c8bdcff96a">operator()</a> (size_t index) const </td></tr>
+<tr class="separator:a9477f1d8bcefb4c3215267c8bdcff96a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa60c64d24efea60a6841ab5e53abf645"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aa60c64d24efea60a6841ab5e53abf645">operator()</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;axes) const </td></tr>
 <tr class="memdesc:aa60c64d24efea60a6841ab5e53abf645"><td class="mdescLeft">&#160;</td><td class="mdescRight"><pre class="fragment">Make an IPosition by using only the specified elements of the current
 </pre><p> <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#aa60c64d24efea60a6841ab5e53abf645">More...</a><br/></td></tr>
 <tr class="separator:aa60c64d24efea60a6841ab5e53abf645"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4585273862043210b4e49c7a75a1064"><td class="memItemLeft" align="right" valign="top">ssize_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ad4585273862043210b4e49c7a75a1064">last</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index=0)</td></tr>
-<tr class="memdesc:ad4585273862043210b4e49c7a75a1064"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index into the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the end.  <a href="#ad4585273862043210b4e49c7a75a1064">More...</a><br/></td></tr>
-<tr class="separator:ad4585273862043210b4e49c7a75a1064"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6af3171f6df377febad3b4e151f42a4c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a6af3171f6df377febad3b4e151f42a4c">last</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> index=0) const </td></tr>
-<tr class="separator:a6af3171f6df377febad3b4e151f42a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5591ef1842c819a9ef5cd1d72f7a6c"><td class="memItemLeft" align="right" valign="top">ssize_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#acc5591ef1842c819a9ef5cd1d72f7a6c">last</a> (size_t index=0)</td></tr>
+<tr class="memdesc:acc5591ef1842c819a9ef5cd1d72f7a6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index into the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the end.  <a href="#acc5591ef1842c819a9ef5cd1d72f7a6c">More...</a><br/></td></tr>
+<tr class="separator:acc5591ef1842c819a9ef5cd1d72f7a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad83728846e4b7f8073fdbecbbb8886d9"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ad83728846e4b7f8073fdbecbbb8886d9">last</a> (size_t index=0) const </td></tr>
+<tr class="separator:ad83728846e4b7f8073fdbecbbb8886d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdf9415c7a0ff599d7f3aa09f94cb29a"><td class="memItemLeft" align="right" valign="top">const ssize_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#afdf9415c7a0ff599d7f3aa09f94cb29a">storage</a> () const </td></tr>
 <tr class="memdesc:afdf9415c7a0ff599d7f3aa09f94cb29a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the storage.  <a href="#afdf9415c7a0ff599d7f3aa09f94cb29a">More...</a><br/></td></tr>
 <tr class="separator:afdf9415c7a0ff599d7f3aa09f94cb29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -196,29 +206,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2a8c04700f6883b507e1bb4e5719e8be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2a8c04700f6883b507e1bb4e5719e8be">setLast</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other)</td></tr>
 <tr class="memdesc:a2a8c04700f6883b507e1bb4e5719e8be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the last values of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to another <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a2a8c04700f6883b507e1bb4e5719e8be">More...</a><br/></td></tr>
 <tr class="separator:a2a8c04700f6883b507e1bb4e5719e8be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa67a4ce9a7fa8f3af10acd5e3a3c8121"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aa67a4ce9a7fa8f3af10acd5e3a3c8121">getFirst</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> n) const </td></tr>
-<tr class="memdesc:aa67a4ce9a7fa8f3af10acd5e3a3c8121"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the first <code>n</code> values of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#aa67a4ce9a7fa8f3af10acd5e3a3c8121">More...</a><br/></td></tr>
-<tr class="separator:aa67a4ce9a7fa8f3af10acd5e3a3c8121"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09f39edd6bee6289f0a69a9ac3baeaff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a09f39edd6bee6289f0a69a9ac3baeaff">getLast</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> n) const </td></tr>
-<tr class="memdesc:a09f39edd6bee6289f0a69a9ac3baeaff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the last <code>n</code> values of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a09f39edd6bee6289f0a69a9ac3baeaff">More...</a><br/></td></tr>
-<tr class="separator:a09f39edd6bee6289f0a69a9ac3baeaff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5d8ed8be09f9788da1cc3ab529b36d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ae5d8ed8be09f9788da1cc3ab529b36d8">getFirst</a> (size_t n) const </td></tr>
+<tr class="memdesc:ae5d8ed8be09f9788da1cc3ab529b36d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the first <code>n</code> values of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#ae5d8ed8be09f9788da1cc3ab529b36d8">More...</a><br/></td></tr>
+<tr class="separator:ae5d8ed8be09f9788da1cc3ab529b36d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72ef66a411f96ba63d9bc933c80230fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a72ef66a411f96ba63d9bc933c80230fd">getLast</a> (size_t n) const </td></tr>
+<tr class="memdesc:a72ef66a411f96ba63d9bc933c80230fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the last <code>n</code> values of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a72ef66a411f96ba63d9bc933c80230fd">More...</a><br/></td></tr>
+<tr class="separator:a72ef66a411f96ba63d9bc933c80230fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ff0670372acd9f639978f10dd4692ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a4ff0670372acd9f639978f10dd4692ba">removeAxes</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;axes) const </td></tr>
 <tr class="memdesc:a4ff0670372acd9f639978f10dd4692ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> where the given axes are reoved.  <a href="#a4ff0670372acd9f639978f10dd4692ba">More...</a><br/></td></tr>
 <tr class="separator:a4ff0670372acd9f639978f10dd4692ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55b215e7cbe02f84bf6c05b116194383"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a55b215e7cbe02f84bf6c05b116194383">keepAxes</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;axes) const </td></tr>
 <tr class="memdesc:a55b215e7cbe02f84bf6c05b116194383"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> containing the given axes only.  <a href="#a55b215e7cbe02f84bf6c05b116194383">More...</a><br/></td></tr>
 <tr class="separator:a55b215e7cbe02f84bf6c05b116194383"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8269829ccc8033abc5734d7cf32afbcc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a8269829ccc8033abc5734d7cf32afbcc">nelements</a> () const </td></tr>
-<tr class="memdesc:a8269829ccc8033abc5734d7cf32afbcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of elements in this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#a8269829ccc8033abc5734d7cf32afbcc">More...</a><br/></td></tr>
-<tr class="separator:a8269829ccc8033abc5734d7cf32afbcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2c15e5631683ef30fc7bef88b185c12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ae2c15e5631683ef30fc7bef88b185c12">size</a> () const </td></tr>
-<tr class="separator:ae2c15e5631683ef30fc7bef88b185c12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b6c022dbc1fbd5fa8414fa137d2b86c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2b6c022dbc1fbd5fa8414fa137d2b86c">empty</a> () const </td></tr>
-<tr class="memdesc:a2b6c022dbc1fbd5fa8414fa137d2b86c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> empty (i.e.  <a href="#a2b6c022dbc1fbd5fa8414fa137d2b86c">More...</a><br/></td></tr>
-<tr class="separator:a2b6c022dbc1fbd5fa8414fa137d2b86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a133e107b38c67babe389701f7a43fa5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a133e107b38c67babe389701f7a43fa5f">conform</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other) const </td></tr>
-<tr class="memdesc:a133e107b38c67babe389701f7a43fa5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">conform returns true if <a class="el" href="classcasacore_1_1IPosition.html#a8269829ccc8033abc5734d7cf32afbcc" title="The number of elements in this IPosition. ">nelements()</a> == <a class="el" href="namespacecasacore.html#adfd652c4018497747cfa235c8fa22bba" title="1-argument function to get the number of elements in a lattice. ">other.nelements()</a>.  <a href="#a133e107b38c67babe389701f7a43fa5f">More...</a><br/></td></tr>
-<tr class="separator:a133e107b38c67babe389701f7a43fa5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af55be1a7157fab3ef8207fd5c35262b2"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#af55be1a7157fab3ef8207fd5c35262b2">nelements</a> () const </td></tr>
+<tr class="memdesc:af55be1a7157fab3ef8207fd5c35262b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of elements in this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.  <a href="#af55be1a7157fab3ef8207fd5c35262b2">More...</a><br/></td></tr>
+<tr class="separator:af55be1a7157fab3ef8207fd5c35262b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81c3be3be2e7c0fe01d7ce03eb7e41cd"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a81c3be3be2e7c0fe01d7ce03eb7e41cd">size</a> () const </td></tr>
+<tr class="separator:a81c3be3be2e7c0fe01d7ce03eb7e41cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76b007934264666ad7c1e040de9de354"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a76b007934264666ad7c1e040de9de354">empty</a> () const </td></tr>
+<tr class="memdesc:a76b007934264666ad7c1e040de9de354"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> empty (i.e.  <a href="#a76b007934264666ad7c1e040de9de354">More...</a><br/></td></tr>
+<tr class="separator:a76b007934264666ad7c1e040de9de354"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9f3ce01299108aadd3364661933fdd0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ae9f3ce01299108aadd3364661933fdd0">conform</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other) const </td></tr>
+<tr class="memdesc:ae9f3ce01299108aadd3364661933fdd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">conform returns true if <a class="el" href="classcasacore_1_1IPosition.html#af55be1a7157fab3ef8207fd5c35262b2" title="The number of elements in this IPosition. ">nelements()</a> == <a class="el" href="namespacecasacore.html#adfd652c4018497747cfa235c8fa22bba" title="1-argument function to get the number of elements in a lattice. ">other.nelements()</a>.  <a href="#ae9f3ce01299108aadd3364661933fdd0">More...</a><br/></td></tr>
+<tr class="separator:ae9f3ce01299108aadd3364661933fdd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ae48fd2698aed3f119583be070d350e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a4ae48fd2698aed3f119583be070d350e">operator+=</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other)</td></tr>
 <tr class="memdesc:a4ae48fd2698aed3f119583be070d350e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element arithmetic.  <a href="#a4ae48fd2698aed3f119583be070d350e">More...</a><br/></td></tr>
 <tr class="separator:a4ae48fd2698aed3f119583be070d350e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,42 +246,46 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa8c5dce7983bcd0919f8f16547194586"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4851a56286c22f28f5cc464a5d3e6e00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a4851a56286c22f28f5cc464a5d3e6e00">operator/=</a> (ssize_t val)</td></tr>
 <tr class="separator:a4851a56286c22f28f5cc464a5d3e6e00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2616a192fa3573ecfd87306d128dc057"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2616a192fa3573ecfd87306d128dc057">product</a> () const </td></tr>
-<tr class="memdesc:a2616a192fa3573ecfd87306d128dc057"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns 0 if <a class="el" href="classcasacore_1_1IPosition.html#a8269829ccc8033abc5734d7cf32afbcc" title="The number of elements in this IPosition. ">nelements()</a> == 0, otherwise it returns the product of its elements.  <a href="#a2616a192fa3573ecfd87306d128dc057">More...</a><br/></td></tr>
-<tr class="separator:a2616a192fa3573ecfd87306d128dc057"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add444b6ebea2196fb47cc8bb376cec8b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#add444b6ebea2196fb47cc8bb376cec8b">allOne</a> () const </td></tr>
-<tr class="memdesc:add444b6ebea2196fb47cc8bb376cec8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are all elements equal to 1? Useful to check if a given stride is really a stride.  <a href="#add444b6ebea2196fb47cc8bb376cec8b">More...</a><br/></td></tr>
-<tr class="separator:add444b6ebea2196fb47cc8bb376cec8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef419bb4ae5e20c6702a8d4b7ae465e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aef419bb4ae5e20c6702a8d4b7ae465e2">isEqual</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other) const </td></tr>
-<tr class="memdesc:aef419bb4ae5e20c6702a8d4b7ae465e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element comparison for equality.  <a href="#aef419bb4ae5e20c6702a8d4b7ae465e2">More...</a><br/></td></tr>
-<tr class="separator:aef419bb4ae5e20c6702a8d4b7ae465e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a831ee7be6c2e3d9605c8a0ffac13fabf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a831ee7be6c2e3d9605c8a0ffac13fabf">isEqual</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> skipDegeneratedAxes) const </td></tr>
-<tr class="memdesc:a831ee7be6c2e3d9605c8a0ffac13fabf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element comparison for equality.  <a href="#a831ee7be6c2e3d9605c8a0ffac13fabf">More...</a><br/></td></tr>
-<tr class="separator:a831ee7be6c2e3d9605c8a0ffac13fabf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9496e4d4db4d75c7189c8d72db62ea3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#af9496e4d4db4d75c7189c8d72db62ea3">isEqual</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrCompare) const </td></tr>
-<tr class="memdesc:af9496e4d4db4d75c7189c8d72db62ea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element comparison for (partial) equality.  <a href="#af9496e4d4db4d75c7189c8d72db62ea3">More...</a><br/></td></tr>
-<tr class="separator:af9496e4d4db4d75c7189c8d72db62ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5501e8d4f2e8013492b2da71fca1560d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a5501e8d4f2e8013492b2da71fca1560d">isSubSet</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other) const </td></tr>
-<tr class="memdesc:a5501e8d4f2e8013492b2da71fca1560d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the other <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> a subset of (or equal to) this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>? It is a subset if zero or more axes of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> do not occur or are degenerated in the other and if the remaining axes are in the same order.  <a href="#a5501e8d4f2e8013492b2da71fca1560d">More...</a><br/></td></tr>
-<tr class="separator:a5501e8d4f2e8013492b2da71fca1560d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadd24d059c842438589a03aa8f52ee45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aadd24d059c842438589a03aa8f52ee45">toString</a> () const </td></tr>
-<tr class="memdesc:aadd24d059c842438589a03aa8f52ee45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> into a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a>.  <a href="#aadd24d059c842438589a03aa8f52ee45">More...</a><br/></td></tr>
-<tr class="separator:aadd24d059c842438589a03aa8f52ee45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6578d7cc8da66fa475abfc388df0559a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a6578d7cc8da66fa475abfc388df0559a">ok</a> () const </td></tr>
-<tr class="memdesc:a6578d7cc8da66fa475abfc388df0559a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> consistent?  <a href="#a6578d7cc8da66fa475abfc388df0559a">More...</a><br/></td></tr>
-<tr class="separator:a6578d7cc8da66fa475abfc388df0559a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9918129306e14e733f96acfcfd84a2af"><td class="memItemLeft" align="right" valign="top">long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a9918129306e14e733f96acfcfd84a2af">product</a> () const </td></tr>
+<tr class="memdesc:a9918129306e14e733f96acfcfd84a2af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns 0 if <a class="el" href="classcasacore_1_1IPosition.html#af55be1a7157fab3ef8207fd5c35262b2" title="The number of elements in this IPosition. ">nelements()</a> == 0, otherwise it returns the product of its elements.  <a href="#a9918129306e14e733f96acfcfd84a2af">More...</a><br/></td></tr>
+<tr class="separator:a9918129306e14e733f96acfcfd84a2af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee89b6bdbd93d8bb2f8ff824fbe443ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aee89b6bdbd93d8bb2f8ff824fbe443ea">allOne</a> () const </td></tr>
+<tr class="memdesc:aee89b6bdbd93d8bb2f8ff824fbe443ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are all elements equal to 1? Useful to check if a given stride is really a stride.  <a href="#aee89b6bdbd93d8bb2f8ff824fbe443ea">More...</a><br/></td></tr>
+<tr class="separator:aee89b6bdbd93d8bb2f8ff824fbe443ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99ccb53659369c0850147b3a0dd88d9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a99ccb53659369c0850147b3a0dd88d9f">isEqual</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other) const </td></tr>
+<tr class="memdesc:a99ccb53659369c0850147b3a0dd88d9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element comparison for equality.  <a href="#a99ccb53659369c0850147b3a0dd88d9f">More...</a><br/></td></tr>
+<tr class="separator:a99ccb53659369c0850147b3a0dd88d9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2356e6e861b8dcf1c6b7a418bfe41369"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2356e6e861b8dcf1c6b7a418bfe41369">isEqual</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other, bool skipDegeneratedAxes) const </td></tr>
+<tr class="memdesc:a2356e6e861b8dcf1c6b7a418bfe41369"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element comparison for equality.  <a href="#a2356e6e861b8dcf1c6b7a418bfe41369">More...</a><br/></td></tr>
+<tr class="separator:a2356e6e861b8dcf1c6b7a418bfe41369"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5a1a97131ce382acbebe329f3dda89d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ac5a1a97131ce382acbebe329f3dda89d">isEqual</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other, size_t nrCompare) const </td></tr>
+<tr class="memdesc:ac5a1a97131ce382acbebe329f3dda89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element-by-element comparison for (partial) equality.  <a href="#ac5a1a97131ce382acbebe329f3dda89d">More...</a><br/></td></tr>
+<tr class="separator:ac5a1a97131ce382acbebe329f3dda89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a92dd23e1516481b4d28833f56e99dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a7a92dd23e1516481b4d28833f56e99dc">isSubSet</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;other) const </td></tr>
+<tr class="memdesc:a7a92dd23e1516481b4d28833f56e99dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the other <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> a subset of (or equal to) this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>? It is a subset if zero or more axes of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> do not occur or are degenerated in the other and if the remaining axes are in the same order.  <a href="#a7a92dd23e1516481b4d28833f56e99dc">More...</a><br/></td></tr>
+<tr class="separator:a7a92dd23e1516481b4d28833f56e99dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dea3281164bb9839a59b1a2f3afdccd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a1dea3281164bb9839a59b1a2f3afdccd">toString</a> () const </td></tr>
+<tr class="memdesc:a1dea3281164bb9839a59b1a2f3afdccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> into a string.  <a href="#a1dea3281164bb9839a59b1a2f3afdccd">More...</a><br/></td></tr>
+<tr class="separator:a1dea3281164bb9839a59b1a2f3afdccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b903d4f5a783a6e6f6af79e1e6c83d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a0b903d4f5a783a6e6f6af79e1e6c83d3">ok</a> () const </td></tr>
+<tr class="memdesc:a0b903d4f5a783a6e6f6af79e1e6c83d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> consistent?  <a href="#a0b903d4f5a783a6e6f6af79e1e6c83d3">More...</a><br/></td></tr>
+<tr class="separator:a0b903d4f5a783a6e6f6af79e1e6c83d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a7307568c022ac9350aa4e34ccbefdc03"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a7307568c022ac9350aa4e34ccbefdc03">makeAxisPath</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrdim)</td></tr>
-<tr class="memdesc:a7307568c022ac9350aa4e34ccbefdc03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a default axis path consisting of the values 0.  <a href="#a7307568c022ac9350aa4e34ccbefdc03">More...</a><br/></td></tr>
-<tr class="separator:a7307568c022ac9350aa4e34ccbefdc03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0c72f0bec973cd31d045487c4570d18"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aa0c72f0bec973cd31d045487c4570d18">makeAxisPath</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrdim, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;partialPath)</td></tr>
-<tr class="memdesc:aa0c72f0bec973cd31d045487c4570d18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a full axis path from a (partially) given axis path.  <a href="#aa0c72f0bec973cd31d045487c4570d18">More...</a><br/></td></tr>
-<tr class="separator:aa0c72f0bec973cd31d045487c4570d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30ff223d082f32ceaa5bb60489430b8b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a30ff223d082f32ceaa5bb60489430b8b">otherAxes</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrdim, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;axes)</td></tr>
-<tr class="memdesc:a30ff223d082f32ceaa5bb60489430b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a list of axes which are the axes not given in <code>axes</code> up to the given dimension.  <a href="#a30ff223d082f32ceaa5bb60489430b8b">More...</a><br/></td></tr>
-<tr class="separator:a30ff223d082f32ceaa5bb60489430b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1b6a91d353bcc0c83da6987f349aaf8"><td class="memTemplParams" colspan="2">template&lt;typename... Vals&gt; </td></tr>
+<tr class="memitem:af1b6a91d353bcc0c83da6987f349aaf8"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#af1b6a91d353bcc0c83da6987f349aaf8">Make</a> (Vals...vals)</td></tr>
+<tr class="memdesc:af1b6a91d353bcc0c83da6987f349aaf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> that is initialized from a variable number of parameter.  <a href="#af1b6a91d353bcc0c83da6987f349aaf8">More...</a><br/></td></tr>
+<tr class="separator:af1b6a91d353bcc0c83da6987f349aaf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75a0939740bf2bf5a5b7c670cfed06e9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a75a0939740bf2bf5a5b7c670cfed06e9">makeAxisPath</a> (size_t nrdim)</td></tr>
+<tr class="memdesc:a75a0939740bf2bf5a5b7c670cfed06e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a default axis path consisting of the values 0.  <a href="#a75a0939740bf2bf5a5b7c670cfed06e9">More...</a><br/></td></tr>
+<tr class="separator:a75a0939740bf2bf5a5b7c670cfed06e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a936eaf1a625df92abf249c5aec4d17cb"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a936eaf1a625df92abf249c5aec4d17cb">makeAxisPath</a> (size_t nrdim, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;partialPath)</td></tr>
+<tr class="memdesc:a936eaf1a625df92abf249c5aec4d17cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a full axis path from a (partially) given axis path.  <a href="#a936eaf1a625df92abf249c5aec4d17cb">More...</a><br/></td></tr>
+<tr class="separator:a936eaf1a625df92abf249c5aec4d17cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae00eea5f71e16458694952b9fba93b9b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#ae00eea5f71e16458694952b9fba93b9b">otherAxes</a> (size_t nrdim, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;axes)</td></tr>
+<tr class="memdesc:ae00eea5f71e16458694952b9fba93b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a list of axes which are the axes not given in <code>axes</code> up to the given dimension.  <a href="#ae00eea5f71e16458694952b9fba93b9b">More...</a><br/></td></tr>
+<tr class="separator:ae00eea5f71e16458694952b9fba93b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -280,15 +294,9 @@ Friends</h2></td></tr>
 <tr class="memitem:a8bc6ff1263cd67a9936b6581309d4dfa"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a8bc6ff1263cd67a9936b6581309d4dfa">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;ip)</td></tr>
 <tr class="memdesc:a8bc6ff1263cd67a9936b6581309d4dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to an ostream in a simple text form.  <a href="#a8bc6ff1263cd67a9936b6581309d4dfa">More...</a><br/></td></tr>
 <tr class="separator:a8bc6ff1263cd67a9936b6581309d4dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad24ee428e5790d7c23ff055c089df1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aad24ee428e5790d7c23ff055c089df1a">operator&lt;&lt;</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;ip)</td></tr>
-<tr class="memdesc:aad24ee428e5790d7c23ff055c089df1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to an <a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> stream in a binary format.  <a href="#aad24ee428e5790d7c23ff055c089df1a">More...</a><br/></td></tr>
-<tr class="separator:aad24ee428e5790d7c23ff055c089df1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefa5b4895e238992cc6246cc196466f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1LogIO.html">LogIO</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aefa5b4895e238992cc6246cc196466f5">operator&lt;&lt;</a> (<a class="el" href="classcasacore_1_1LogIO.html">LogIO</a> &amp;io, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;ip)</td></tr>
-<tr class="memdesc:aefa5b4895e238992cc6246cc196466f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to a <a class="el" href="classcasacore_1_1LogIO.html" title="ostream-like interface to creating log messages. ">LogIO</a> stream.  <a href="#aefa5b4895e238992cc6246cc196466f5">More...</a><br/></td></tr>
-<tr class="separator:aefa5b4895e238992cc6246cc196466f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf75d53108a08101a2de7bb55f1b8f33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#adf75d53108a08101a2de7bb55f1b8f33">operator&gt;&gt;</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio, <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;ip)</td></tr>
-<tr class="memdesc:adf75d53108a08101a2de7bb55f1b8f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from an <a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> stream in a binary format.  <a href="#adf75d53108a08101a2de7bb55f1b8f33">More...</a><br/></td></tr>
-<tr class="separator:adf75d53108a08101a2de7bb55f1b8f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90dc4f7b1fccbd871fa0504170934ce"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934ceafeeb72c8c173a6a797d3c391ff1cfdb7">BufferLength</a>
+ }</td></tr>
+<tr class="separator:ae90dc4f7b1fccbd871fa0504170934ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2777ef2e3c5a4cb8f79294a35a629929"><td class="memItemLeft" align="right" valign="top">typedef ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a2777ef2e3c5a4cb8f79294a35a629929">value_type</a></td></tr>
 <tr class="memdesc:a2777ef2e3c5a4cb8f79294a35a629929"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the STL-style iterators.  <a href="#a2777ef2e3c5a4cb8f79294a35a629929">More...</a><br/></td></tr>
 <tr class="separator:a2777ef2e3c5a4cb8f79294a35a629929"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,12 +316,9 @@ Friends</h2></td></tr>
 <tr class="separator:a7f1b444b84ae9063b88f78035e525044"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a74cb27dff34b09077ad0ad6338b549"><td class="memItemLeft" align="right" valign="top">typedef ptrdiff_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a0a74cb27dff34b09077ad0ad6338b549">difference_type</a></td></tr>
 <tr class="separator:a0a74cb27dff34b09077ad0ad6338b549"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b298f40f3d6043eba96301b1270e8d6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1IPosition.html#a5b298f40f3d6043eba96301b1270e8d6afeeb72c8c173a6a797d3c391ff1cfdb7">BufferLength</a>
- }</td></tr>
-<tr class="separator:a5b298f40f3d6043eba96301b1270e8d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ecc117711452653b4d74c08089e0892"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a0ecc117711452653b4d74c08089e0892">size_p</a></td></tr>
-<tr class="separator:a0ecc117711452653b4d74c08089e0892"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc816b4f9ff6a87e031d521e97b296e4"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#acc816b4f9ff6a87e031d521e97b296e4">buffer_p</a> [<a class="el" href="classcasacore_1_1IPosition.html#a5b298f40f3d6043eba96301b1270e8d6afeeb72c8c173a6a797d3c391ff1cfdb7">BufferLength</a>]</td></tr>
+<tr class="memitem:a0c55b9ab7a66673d83fb55475fb579ad"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#a0c55b9ab7a66673d83fb55475fb579ad">size_p</a></td></tr>
+<tr class="separator:a0c55b9ab7a66673d83fb55475fb579ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc816b4f9ff6a87e031d521e97b296e4"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#acc816b4f9ff6a87e031d521e97b296e4">buffer_p</a> [<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934ceafeeb72c8c173a6a797d3c391ff1cfdb7">BufferLength</a>]</td></tr>
 <tr class="separator:acc816b4f9ff6a87e031d521e97b296e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadc48a57dd4218498e10acd55d8226c4"><td class="memItemLeft" align="right" valign="top">ssize_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPosition.html#aadc48a57dd4218498e10acd55d8226c4">data_p</a></td></tr>
 <tr class="memdesc:aadc48a57dd4218498e10acd55d8226c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">When the iposition is length BufferSize or less data is just buffer_p, avoiding calls to new and delete.  <a href="#aadc48a57dd4218498e10acd55d8226c4">More...</a><br/></td></tr>
@@ -335,7 +340,7 @@ Friends</h2></td></tr>
 <tr class="separator:a43227733c1051f088b013d01a73a9ae4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of integers, for indexing into Array&lt;T&gt; objects. </p>
+<div class="textblock"><p>A <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of integers, for indexing into <a class="el" href="classcasacore_1_1Array.html">Array&lt;T&gt;</a> objects. </p>
 <p><a class="anchor" id="IPosition_summary"></a> </p>
 <h3>Intended use:</h3>
 <p>Public interface</p>
@@ -349,31 +354,31 @@ Friends</h2></td></tr>
 <h3>Etymology</h3>
 <p><a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> is an Index Position in an n-dimensional array.</p>
 <h3>Synopsis</h3>
-<p><a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> is "logically" a <a class="el" href="classcasacore_1_1Vector.html">Vector&lt;Int&gt;</a> constrained so that its origin is zero-based, and in fact that used to be the way it was implemented. It was split out into a separate class to make the inheritance from Arrays simpler (since Arrays use IPositions). The template instantiation mechanism is complicated enough that this simplification was felt to be a good idea. </p>
+<p><a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> is "logically" a Vector&lt;int&gt; constrained so that its origin is zero-based, and in fact that used to be the way it was implemented. It was split out into a separate class to make the inheritance from Arrays simpler (since Arrays use IPositions). The template instantiation mechanism is complicated enough that this simplification was felt to be a good idea. </p>
 <p><a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> objects are normally used to index into, and define the shapes of, multi-dimensional arrays. For example, if you have a 5 dimensional array, you need an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of length 5 to index into the array (or to define its shape, etc.). </p>
 <p>Unlike Vectors, IPositions always use copy semantics. </p>
-<div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a6d46c0c04bbe82057a0ac3d45636caba">IPosition</a> ip1(5);                         <span class="comment">// An IPosition of length 5</span></div>
+<div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a5003c4522b330c0b0ff647e5b8ce146a">IPosition</a> ip1(5);                         <span class="comment">// An IPosition of length 5</span></div>
 <div class="line">ip1(0) = 11; ip1(1) = 5;... ip1(4) = 6;  <span class="comment">// Indices 0-based</span></div>
-<div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a6d46c0c04bbe82057a0ac3d45636caba">IPosition</a> ip2(ip1);                       <span class="comment">// Copy constructor; a COPY</span></div>
+<div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a5003c4522b330c0b0ff647e5b8ce146a">IPosition</a> ip2(ip1);                       <span class="comment">// Copy constructor; a COPY</span></div>
 </div><!-- fragment --><p>Binary operations must take place either with a conformnat (same size) <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> or with an integer, which behaves as if it was an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of the same size (i.e., length). All the usual binary arithmetic operations are available, as well as logical operations, which return Booleans. These all operate "element-by-element". </p>
-<p>All non-inlined member functions of <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> check invariants if the preprocessor symbol AIPS_DEBUG is defined. That is, the member functions check that <a class="el" href="classcasacore_1_1IPosition.html#a6578d7cc8da66fa475abfc388df0559a" title="Is this IPosition consistent? ">ok()</a> is true (constructors check after construction, other functions on entry to the function). If these tests fail, an <a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a> exception is thrown; its message contains the line number and source file of the failure (it is thrown by the lAssert macro defined in aips/Assert.h).</p>
+<p>All non-inlined member functions of <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> check invariants if the preprocessor symbol AIPS_DEBUG is defined. That is, the member functions check that <a class="el" href="classcasacore_1_1IPosition.html#a0b903d4f5a783a6e6f6af79e1e6c83d3" title="Is this IPosition consistent? ">ok()</a> is true (constructors check after construction, other functions on entry to the function). If these tests fail, an <a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a> exception is thrown; its message contains the line number and source file of the failure (it is thrown by the lAssert macro defined in aips/Assert.h).</p>
 <p>Constructors and functions exist to construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> directly from a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> or std::vector object or to convert to it. Furthermore the <code>fill</code> and <code>copy</code> can be used to fill from or copy to any STL-type iterator.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="IPosition_example1"></a></p>
-<div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a6d46c0c04bbe82057a0ac3d45636caba">IPosition</a> blc(5), trc(5,1,2,3,4,5);</div>
+<div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a5003c4522b330c0b0ff647e5b8ce146a">IPosition</a> blc(5), trc(5,1,2,3,4,5);</div>
 <div class="line">blc = 0;            <span class="comment">// OR IPosition blc(5,0);</span></div>
 <div class="line"><span class="comment">//..\.</span></div>
 <div class="line"><span class="keywordflow">if</span> (blc &gt; trc) {</div>
-<div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a6d46c0c04bbe82057a0ac3d45636caba">IPosition</a> tmp;</div>
+<div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a5003c4522b330c0b0ff647e5b8ce146a">IPosition</a> tmp;</div>
 <div class="line">tmp = trc;       <span class="comment">// Swap</span></div>
 <div class="line">trc = blc;</div>
 <div class="line">blc = tmp;</div>
 <div class="line">}</div>
 <div class="line"><span class="comment">//..\.</span></div>
 <div class="line">trc += 5;           <span class="comment">// make the box 5 larger in all dimensions</span></div>
-<div class="line">std::vector&lt;Int&gt; vec(trc.toStdVector());</div>
+<div class="line">std::vector&lt;int&gt; vec(trc.toStdVector());</div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00119">119</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00118">118</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="aeca1afcdef22d004727bc4b6f36c3f8f"></a>
 <div class="memitem">
@@ -385,7 +390,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00383">383</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00407">407</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -399,7 +404,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00385">385</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00409">409</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -413,7 +418,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00387">387</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00411">411</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -427,7 +432,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00389">389</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00413">413</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -441,7 +446,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00382">382</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00406">406</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -455,7 +460,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00384">384</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00408">408</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -469,7 +474,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00386">386</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00410">410</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -483,7 +488,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00388">388</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00412">412</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -499,36 +504,18 @@ Friends</h2></td></tr>
 
 <p>Define the STL-style iterators. </p>
 <p>It makes it possible to iterate through all data elements. </p>
-<div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a6d46c0c04bbe82057a0ac3d45636caba">IPosition</a> shp(2,0);</div>
+<div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1IPosition.html#a5003c4522b330c0b0ff647e5b8ce146a">IPosition</a> shp(2,0);</div>
 <div class="line"><span class="keywordflow">for</span> (<a class="code" href="classcasacore_1_1IPosition.html#a83a5b881a6cf196a8b056c3bf2e825db">IPosition::iterator</a> iter=shp.begin(); iter!=shp.end(); iter++) {</div>
 <div class="line">*iter += 1;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p> <a class="anchor" id="IPosition_STL-iterator"></a> STL-style typedefs. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00381">381</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00405">405</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="ae90dc4f7b1fccbd871fa0504170934ce"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">anonymous enum</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7"></a>MIN_INT</em>&nbsp;</td><td class="fielddoc">
-</td></tr>
-</table>
-
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00123">123</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a5b298f40f3d6043eba96301b1270e8d6"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -546,16 +533,16 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a5b298f40f3d6043eba96301b1270e8d6afeeb72c8c173a6a797d3c391ff1cfdb7"></a>BufferLength</em>&nbsp;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ae90dc4f7b1fccbd871fa0504170934ceafeeb72c8c173a6a797d3c391ff1cfdb7"></a>BufferLength</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00411">411</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00435">435</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a6d46c0c04bbe82057a0ac3d45636caba"></a>
+<a class="anchor" id="a5003c4522b330c0b0ff647e5b8ce146a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -571,20 +558,20 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>A zero-length <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00534">534</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00558">558</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00539">makeAxisPath()</a>.</p>
+<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00151">IPosition()</a>, and <a class="el" href="IPosition_8h_source.html#l00563">makeAxisPath()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="abe327e9aee3ad710cc04168584082e90"></a>
+<a class="anchor" id="a049f5db491dc6e4eb2e65c7454d3c971"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -594,7 +581,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">casacore::IPosition::IPosition </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>length</em></td><td>)</td>
           <td></td>
         </tr>
@@ -606,18 +593,36 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." The values in the object are undefined. </p>
+<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." The values in the object are uninitialized. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad30ea4ee41453261944336012c2ccdca"></a>
+<a class="anchor" id="afbc055c3b5b5bfd2ce0a4a95e3717f13"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">casacore::IPosition::IPosition </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">std::initializer_list&lt; ssize_t &gt;&#160;</td>
+          <td class="paramname"><em>list</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> initialized from the given list. </p>
+
+</div>
+</div>
+<a class="anchor" id="afb28308be4a9ee0432803bd813e69e08"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::IPosition::IPosition </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>length</em>, </td>
         </tr>
         <tr>
@@ -634,25 +639,24 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." The values in the object get initialized to val. </p>
+<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length." All values in the object are initialized to val. </p>
 
 </div>
 </div>
-<a class="anchor" id="ab3c20fdea13991de1945b8ca63b44b38"></a>
+<a class="anchor" id="a9edc5e4f7b2ea485926d806b87dbd1cb"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Vals&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">casacore::IPosition::IPosition </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
-          <td class="paramname"><em>length</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val0</em>, </td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -664,49 +668,13 @@ Friends</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val2</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
+          <td class="paramname"><em>val2</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val3</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val4</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val5</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val6</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val7</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val8</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
-          <td class="paramname"><em>val9</em> = <code><a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934cead8e315d15650199bbb1b3e86bd3991d7">MIN_INT</a></code>&#160;</td>
+          <td class="paramtype">Vals...&#160;</td>
+          <td class="paramname"><em>vals</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -714,14 +682,25 @@ Friends</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size "length" with defined values. </p>
-<p>You need to supply a value for each element of the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> (up to 10). [Unfortunately varargs might not be sufficiently portable.] </p>
+<p>An <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> initialized from a variable number of parameters. </p>
+<p>The first parameter should specify the size, but the actual size of the resulting <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> is determined from the number of parameters (the first argument is ignored).</p>
+<p>This constructor should be disfavoured, because i) of the dummy parameter and ii) because it may narrow the specified parameter without a warning.</p>
+<p>Instead, use an initializer list constructor whenever possible. If an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> is created inside a macro, an initializer list is not possible. In those cases, use the Make(Vals...) factory method. Both of those methods do not have the above issues. [[ deprecated("Use the initializer list constructor or Make() method") ]] </p>
+
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00151">151</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+
+<p>References <a class="el" href="IPosition_8h_source.html#l00558">IPosition()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#ad23eb624698a62bbfc3d8744842f01dd">~IPosition()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3255991cbdce7b0289caf1e11ef4e6b3"></a>
+<a class="anchor" id="a6d32b61b1e48aef46ecbbf3b487e062f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -729,13 +708,37 @@ Friends</h2></td></tr>
           <td class="memname">casacore::IPosition::IPosition </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
-          <td class="paramname"><em>other</em></td><td>)</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Makes a copy (copy, NOT reference, semantics) of other. </p>
+<p>Makes a copy (copy, NOT reference, semantics) of source. </p>
+
+</div>
+</div>
+<a class="anchor" id="a54405d0588bfb502ed2d01fd1bf9a94d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::IPosition::IPosition </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -752,43 +755,77 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00151">IPosition()</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="affe9c92c9f9d8b948761aff813f21319"></a>
+<a class="anchor" id="a2152ea6de27396cfcd020f50853b9431"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">casacore::IPosition::IPosition </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; int &gt; &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html">Array&lt;Int&gt;</a>. </p>
+<p>Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>&lt;int/int64&gt;. </p>
 <p>In either case, the array must be one dimensional. </p>
 
 </div>
 </div>
-<a class="anchor" id="a1472da31e1e14df66ce27ad5976500cc"></a>
+<a class="anchor" id="a1ef64f1786c335d797d5b35e94f0ceda"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">casacore::IPosition::IPosition </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; long long &gt; &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html">Array&lt;Int&gt;</a>. </p>
+</div>
+</div>
+<a class="anchor" id="ae22e83b3dadab1841146f8c7f5e68331"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::IPosition::IPosition </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to and from an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>&lt;int/int64&gt;. </p>
 <p>In either case, the array must be one dimensional. </p>
+
+</div>
+</div>
+<a class="anchor" id="a8a3abb7ba258dfbd8b4fb660d0225867"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::IPosition::IPosition </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; long long &gt; &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -818,12 +855,12 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="add444b6ebea2196fb47cc8bb376cec8b"></a>
+<a class="anchor" id="aee89b6bdbd93d8bb2f8ff824fbe443ea"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::allOne </td>
+          <td class="memname">bool casacore::IPosition::allOne </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -851,16 +888,16 @@ Friends</h2></td></tr>
 
 <p>Append this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> with another one (causing a resize). </p>
 
-<p>Referenced by <a class="el" href="ExprGroup_8h_source.html#l00393">casacore::TableExprGroupAggr::getArray()</a>, and <a class="el" href="TableProxy_8h_source.html#l00673">casacore::TableProxy::record2Array()</a>.</p>
+<p>Referenced by <a class="el" href="ExprGroup_8h_source.html#l00393">casacore::TableExprGroupAggr::getArray()</a>, and <a class="el" href="TableProxy_8h_source.html#l00672">casacore::TableProxy::record2Array()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a66e76e7da44264fb7efa9d66323d1722"></a>
+<a class="anchor" id="a790d8b05a709d4af90de2c776575a41f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&gt; casacore::IPosition::asStdVector </td>
+          <td class="memname">std::vector&lt;int&gt; casacore::IPosition::asStdVector </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -870,12 +907,42 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3b3279f204935f471b6b0301846d17e5"></a>
+<a class="anchor" id="a880ff634bbc60f88f5c75bcfa65f0f54"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&gt; casacore::IPosition::asVector </td>
+          <td class="memname">std::vector&lt;long long&gt; casacore::IPosition::asStdVector64 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac3575e560e8d24551fa5ff1143c6f6a3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;int&gt; casacore::IPosition::asVector </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aef62e27a5731085624b6ab6cb1263580"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;long long&gt; casacore::IPosition::asVector64 </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -908,9 +975,9 @@ Friends</h2></td></tr>
 
 <p>Get the begin and end iterator object for this object. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00393">393</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00417">417</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>.</p>
 
 </div>
 </div>
@@ -935,9 +1002,9 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00395">395</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00419">419</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>.</p>
 
 </div>
 </div>
@@ -957,11 +1024,11 @@ Friends</h2></td></tr>
 
 <p>Return an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> as the concetanation of this and another <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>. </p>
 
-<p>Referenced by <a class="el" href="ScaledComplexData_8h_source.html#l00372">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;::storedShape()</a>.</p>
+<p>Referenced by <a class="el" href="ScaledComplexData_8h_source.html#l00369">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;::storedShape()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a133e107b38c67babe389701f7a43fa5f"></a>
+<a class="anchor" id="ae9f3ce01299108aadd3364661933fdd0"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -969,7 +1036,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::conform </td>
+          <td class="memname">bool casacore::IPosition::conform </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
@@ -983,11 +1050,11 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>conform returns true if <a class="el" href="classcasacore_1_1IPosition.html#a8269829ccc8033abc5734d7cf32afbcc" title="The number of elements in this IPosition. ">nelements()</a> == <a class="el" href="namespacecasacore.html#adfd652c4018497747cfa235c8fa22bba" title="1-argument function to get the number of elements in a lattice. ">other.nelements()</a>. </p>
+<p>conform returns true if <a class="el" href="classcasacore_1_1IPosition.html#af55be1a7157fab3ef8207fd5c35262b2" title="The number of elements in this IPosition. ">nelements()</a> == <a class="el" href="namespacecasacore.html#adfd652c4018497747cfa235c8fa22bba" title="1-argument function to get the number of elements in a lattice. ">other.nelements()</a>. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00612">612</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00636">636</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
 <p>Referenced by <a class="el" href="TSMShape_8h_source.html#l00174">casacore::TSMShape::conform()</a>.</p>
 
@@ -1020,13 +1087,13 @@ template&lt;typename OutputIterator &gt; </div>
 <p>Copy the contents of this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> object to the output iterator. </p>
 <p>The size of the output must be sufficient. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00196">196</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00230">230</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, and <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, and <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2b6c022dbc1fbd5fa8414fa137d2b86c"></a>
+<a class="anchor" id="a76b007934264666ad7c1e040de9de354"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1034,7 +1101,7 @@ template&lt;typename OutputIterator &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::empty </td>
+          <td class="memname">bool casacore::IPosition::empty </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1050,9 +1117,9 @@ template&lt;typename OutputIterator &gt; </div>
 <p>Is the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> empty (i.e. </p>
 <p>no elements)? </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00552">552</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00576">576</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
 </div>
 </div>
@@ -1077,9 +1144,9 @@ template&lt;typename OutputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00397">397</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00421">421</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, and <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, and <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
 </div>
 </div>
@@ -1104,13 +1171,13 @@ template&lt;typename OutputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00399">399</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00423">423</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, and <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, and <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a710e202b50b4de08320a6adb8136a30b"></a>
+<a class="anchor" id="ad8bb132a2b6363a8fb932028c7a9d95f"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -1122,7 +1189,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">void casacore::IPosition::fill </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>size</em>, </td>
         </tr>
         <tr>
@@ -1146,20 +1213,20 @@ template&lt;typename InputIterator &gt; </div>
 
 <p>Resize and fill this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> object. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00185">185</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00219">219</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, <a class="el" href="classcasacore_1_1IPosition.html#aec59107726dbb8de7781862a408fa2f0">resize()</a>, and <a class="el" href="IPosition_8h_source.html#l00548">size()</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, <a class="el" href="classcasacore_1_1IPosition.html#a5459e34b65e1998d2b5d14274256b684">resize()</a>, and <a class="el" href="IPosition_8h_source.html#l00572">size()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa67a4ce9a7fa8f3af10acd5e3a3c8121"></a>
+<a class="anchor" id="ae5d8ed8be09f9788da1cc3ab529b36d8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::getFirst </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1171,14 +1238,14 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a09f39edd6bee6289f0a69a9ac3baeaff"></a>
+<a class="anchor" id="a72ef66a411f96ba63d9bc933c80230fd"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::getLast </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1190,12 +1257,12 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aef419bb4ae5e20c6702a8d4b7ae465e2"></a>
+<a class="anchor" id="a99ccb53659369c0850147b3a0dd88d9f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::isEqual </td>
+          <td class="memname">bool casacore::IPosition::isEqual </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
@@ -1205,19 +1272,19 @@ template&lt;typename InputIterator &gt; </div>
 </div><div class="memdoc">
 
 <p>Element-by-element comparison for equality. </p>
-<p>It returns True if the lengths and all elements are equal. <br/>
- Note that an important difference between this function and <a class="el" href="namespacecasacore.html#a73229c80012490d15b12e22bf7a931b9">operator==()</a> is that if the two IPositions have different lengths, this function returns False, instead of throwing an exception as <a class="el" href="namespacecasacore.html#a73229c80012490d15b12e22bf7a931b9">operator==()</a> does. </p>
+<p>It returns true if the lengths and all elements are equal. <br/>
+ Note that an important difference between this function and <a class="el" href="namespacecasacore.html#a73229c80012490d15b12e22bf7a931b9">operator==()</a> is that if the two IPositions have different lengths, this function returns false, instead of throwing an exception as <a class="el" href="namespacecasacore.html#a73229c80012490d15b12e22bf7a931b9">operator==()</a> does. </p>
 
-<p>Referenced by <a class="el" href="ArrayBase_8h_source.html#l00320">casacore::checkArrayShapes()</a>, <a class="el" href="LatticeBase_8h_source.html#l00183">casacore::LatticeBase::conform()</a>, and <a class="el" href="ArrayBase_8h_source.html#l00239">casacore::ArrayBase::conform2()</a>.</p>
+<p>Referenced by <a class="el" href="ArrayBase_8h_source.html#l00325">casacore::checkArrayShapes()</a>, <a class="el" href="LatticeBase_8h_source.html#l00183">casacore::LatticeBase::conform()</a>, and <a class="el" href="ArrayBase_8h_source.html#l00247">casacore::ArrayBase::conform2()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a831ee7be6c2e3d9605c8a0ffac13fabf"></a>
+<a class="anchor" id="a2356e6e861b8dcf1c6b7a418bfe41369"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::isEqual </td>
+          <td class="memname">bool casacore::IPosition::isEqual </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em>, </td>
@@ -1225,7 +1292,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>skipDegeneratedAxes</em>&#160;</td>
         </tr>
         <tr>
@@ -1237,16 +1304,16 @@ template&lt;typename InputIterator &gt; </div>
 </div><div class="memdoc">
 
 <p>Element-by-element comparison for equality. </p>
-<p>It returns True if all elements are equal. When <code>skipDegeneratedAxes</code> is True, axes with length 1 are skipped in both operands. </p>
+<p>It returns true if all elements are equal. When <code>skipDegeneratedAxes</code> is true, axes with length 1 are skipped in both operands. </p>
 
 </div>
 </div>
-<a class="anchor" id="af9496e4d4db4d75c7189c8d72db62ea3"></a>
+<a class="anchor" id="ac5a1a97131ce382acbebe329f3dda89d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::isEqual </td>
+          <td class="memname">bool casacore::IPosition::isEqual </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em>, </td>
@@ -1254,7 +1321,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>nrCompare</em>&#160;</td>
         </tr>
         <tr>
@@ -1266,16 +1333,16 @@ template&lt;typename InputIterator &gt; </div>
 </div><div class="memdoc">
 
 <p>Element-by-element comparison for (partial) equality. </p>
-<p>It returns True if the lengths and the first <code>nrCompare</code> elements are equal. </p>
+<p>It returns true if the lengths and the first <code>nrCompare</code> elements are equal. </p>
 
 </div>
 </div>
-<a class="anchor" id="a5501e8d4f2e8013492b2da71fca1560d"></a>
+<a class="anchor" id="a7a92dd23e1516481b4d28833f56e99dc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::isSubSet </td>
+          <td class="memname">bool casacore::IPosition::isSubSet </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
@@ -1306,7 +1373,7 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ad4585273862043210b4e49c7a75a1064"></a>
+<a class="anchor" id="acc5591ef1842c819a9ef5cd1d72f7a6c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1316,7 +1383,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">ssize_t &amp; casacore::IPosition::last </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>index</em> = <code>0</code></td><td>)</td>
           <td></td>
         </tr>
@@ -1331,13 +1398,13 @@ template&lt;typename InputIterator &gt; </div>
 <p>Index into the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from the end. </p>
 <p>By default the last value is returned. If the preprocessor symbol AIPS_ARRAY_INDEX_CHECK is defined, it will check if the index is not out of bounds. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00587">587</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00611">611</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a6af3171f6df377febad3b4e151f42a4c"></a>
+<a class="anchor" id="ad83728846e4b7f8073fdbecbbb8886d9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1347,7 +1414,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">ssize_t casacore::IPosition::last </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>index</em> = <code>0</code></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1359,13 +1426,46 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00597">597</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00621">621</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a7307568c022ac9350aa4e34ccbefdc03"></a>
+<a class="anchor" id="af1b6a91d353bcc0c83da6987f349aaf8"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Vals&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::Make </td>
+          <td>(</td>
+          <td class="paramtype">Vals...&#160;</td>
+          <td class="paramname"><em>vals</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> that is initialized from a variable number of parameter. </p>
+<p>The resulting size of the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> will equal the number of parameters specified.</p>
+<p>In general, using the initializer list constructor should be preferred. Defining an initializer list inside macros is however not possible. In those cases, this method can be used to construct the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>.</p>
+<p>Example: IPosition::Make(3, 5) creates an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> of size 2, with values 3 and 5. It is identical to <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>{3, 5}. A program is ill-formed when narrowing of a parameter is required, causing a compiler warning or error. </p>
+
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00172">172</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a75a0939740bf2bf5a5b7c670cfed06e9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1375,7 +1475,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::makeAxisPath </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>nrdim</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1390,13 +1490,13 @@ template&lt;typename InputIterator &gt; </div>
 <p>Construct a default axis path consisting of the values 0. </p>
 <p>. nrdim-1. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00539">539</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00563">563</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00534">IPosition()</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00558">IPosition()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa0c72f0bec973cd31d045487c4570d18"></a>
+<a class="anchor" id="a936eaf1a625df92abf249c5aec4d17cb"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1406,7 +1506,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::makeAxisPath </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>nrdim</em>, </td>
         </tr>
         <tr>
@@ -1433,7 +1533,7 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a8269829ccc8033abc5734d7cf32afbcc"></a>
+<a class="anchor" id="af55be1a7157fab3ef8207fd5c35262b2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1441,7 +1541,7 @@ template&lt;typename InputIterator &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::IPosition::nelements </td>
+          <td class="memname">size_t casacore::IPosition::nelements </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1455,24 +1555,24 @@ template&lt;typename InputIterator &gt; </div>
 </div><div class="memdoc">
 
 <p>The number of elements in this <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>. </p>
-<p>Since <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> objects use zero-based indexing, the maximum available index is <a class="el" href="classcasacore_1_1IPosition.html#a8269829ccc8033abc5734d7cf32afbcc" title="The number of elements in this IPosition. ">nelements()</a> - 1. </p>
+<p>Since <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> objects use zero-based indexing, the maximum available index is <a class="el" href="classcasacore_1_1IPosition.html#af55be1a7157fab3ef8207fd5c35262b2" title="The number of elements in this IPosition. ">nelements()</a> - 1. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00544">544</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00568">568</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ArrayPosIter_8h_source.html#l00177">casacore::ArrayPositionIterator::dimIter()</a>, <a class="el" href="Adios2StManColumn_8h_source.html#l00253">casacore::Adios2StManColumnT&lt; T &gt;::getArrayColumnCellsV()</a>, <a class="el" href="ArrayPosIter_8h_source.html#l00193">casacore::ArrayPositionIterator::ndim()</a>, <a class="el" href="Slicer_8h_source.html#l00456">casacore::Slicer::ndim()</a>, <a class="el" href="IPosition_8h_source.html#l00567">operator()()</a>, <a class="el" href="Adios2StManColumn_8h_source.html#l00230">casacore::Adios2StManColumnT&lt; T &gt;::putArrayColumnCellsV()</a>, and <a class="el" href="TSMCube_8h_source.html#l00470">casacore::TSMCube::setLastColSlice()</a>.</p>
+<p>Referenced by <a class="el" href="ArrayPosIter_8h_source.html#l00176">casacore::ArrayPositionIterator::dimIter()</a>, <a class="el" href="ArrayPosIter_8h_source.html#l00192">casacore::ArrayPositionIterator::ndim()</a>, <a class="el" href="Slicer_8h_source.html#l00449">casacore::Slicer::ndim()</a>, <a class="el" href="IPosition_8h_source.html#l00591">operator()()</a>, and <a class="el" href="TSMCube_8h_source.html#l00470">casacore::TSMCube::setLastColSlice()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a691429f4578d40ff6d93bd647789303e"></a>
+<a class="anchor" id="a59d3d9cc59bca27459293626b8f1b4a6"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::nonDegenerate </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>startingAxis</em> = <code>0</code></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1501,12 +1601,12 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a6578d7cc8da66fa475abfc388df0559a"></a>
+<a class="anchor" id="a0b903d4f5a783a6e6f6af79e1e6c83d3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::IPosition::ok </td>
+          <td class="memname">bool casacore::IPosition::ok </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1518,7 +1618,7 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a54d9d228e6c1b5069ca10a414b501ed4"></a>
+<a class="anchor" id="a228ec54a0a21660e3362b0d250b0d05e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1528,7 +1628,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">ssize_t &amp; casacore::IPosition::operator() </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1540,13 +1640,13 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00567">567</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00591">591</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00544">nelements()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00568">nelements()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a1512a8ee6b34f958da83bd9244e3cdef"></a>
+<a class="anchor" id="a9477f1d8bcefb4c3215267c8bdcff96a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1556,7 +1656,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">ssize_t casacore::IPosition::operator() </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1568,9 +1668,9 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00577">577</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00601">601</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00544">nelements()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>, <a class="el" href="IPosition_8h_source.html#l00568">nelements()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a43227733c1051f088b013d01a73a9ae4">throwIndexError()</a>.</p>
 
 </div>
 </div>
@@ -1726,7 +1826,7 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a02a43b411b7ecb41c2f7b94b2d02e78c"></a>
+<a class="anchor" id="a2ae7476057f1343ef0659582ccae39ad"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1734,14 +1834,30 @@ template&lt;typename InputIterator &gt; </div>
           <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; casacore::IPosition::operator= </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
-          <td class="paramname"><em>other</em></td><td>)</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Makes this a copy of other. </p>
-<p>"this" and "other" must either be conformant (same size) or this must be 0-length, in which case it will resize itself to be the same length as other. </p>
+<p>When the dest is not of the same size, it will resize itself to be the same length as the source. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1e1f09ae0fd9577efe8fe1fbebf5d2d0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; casacore::IPosition::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1763,7 +1879,7 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aafa878b0a4e507ae18a4f095ea9182d7"></a>
+<a class="anchor" id="a072e8ef52cc376b59e747e2e848f5ced"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1773,7 +1889,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">ssize_t &amp; casacore::IPosition::operator[] </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1788,13 +1904,13 @@ template&lt;typename InputIterator &gt; </div>
 <p>Index into the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>. </p>
 <p>Indices are zero-based. If the preprocessor symbol AIPS_ARRAY_INDEX_CHECK is defined, operator() will check "index" to ensure it is not out of bounds. If this check fails, an <a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a> will be thrown. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00557">557</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00581">581</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a1b6f8bde66ee783d0cdb0aa2f00c0d51"></a>
+<a class="anchor" id="a0541aa0c01ce988ef326a1bbc82b5ddf"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1804,7 +1920,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">ssize_t casacore::IPosition::operator[] </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1816,13 +1932,13 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00562">562</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00586">586</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a30ff223d082f32ceaa5bb60489430b8b"></a>
+<a class="anchor" id="ae00eea5f71e16458694952b9fba93b9b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1832,7 +1948,7 @@ template&lt;typename InputIterator &gt; </div>
         <tr>
           <td class="memname">static <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::IPosition::otherAxes </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>nrdim</em>, </td>
         </tr>
         <tr>
@@ -1876,12 +1992,12 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a2616a192fa3573ecfd87306d128dc057"></a>
+<a class="anchor" id="a9918129306e14e733f96acfcfd84a2af"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> casacore::IPosition::product </td>
+          <td class="memname">long long casacore::IPosition::product </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1889,7 +2005,7 @@ template&lt;typename InputIterator &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Returns 0 if <a class="el" href="classcasacore_1_1IPosition.html#a8269829ccc8033abc5734d7cf32afbcc" title="The number of elements in this IPosition. ">nelements()</a> == 0, otherwise it returns the product of its elements. </p>
+<p>Returns 0 if <a class="el" href="classcasacore_1_1IPosition.html#af55be1a7157fab3ef8207fd5c35262b2" title="The number of elements in this IPosition. ">nelements()</a> == 0, otherwise it returns the product of its elements. </p>
 
 <p>Referenced by <a class="el" href="LatticeIndexer_8h_source.html#l00259">casacore::LatticeIndexer::nelements()</a>.</p>
 
@@ -1911,23 +2027,25 @@ template&lt;typename InputIterator &gt; </div>
 
 <p>Return an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> where the given axes are reoved. </p>
 
+<p>Referenced by <a class="el" href="MArrayMath_8h_source.html#l00197">casacore::MArrayMath_global_functions_MArray_mathematical_operations::partialArrayMath()</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="aec59107726dbb8de7781862a408fa2f0"></a>
+<a class="anchor" id="a5459e34b65e1998d2b5d14274256b684"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void casacore::IPosition::resize </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>newSize</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>copy</em> = <code><a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a></code>&#160;</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>copy</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1937,10 +2055,10 @@ template&lt;typename InputIterator &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Old values are copied on resize if copy==True. </p>
+<p>Old values are copied on resize if copy==true. </p>
 <p>If the size increases, values beyond the former size are undefined. </p>
 
-<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00185">fill()</a>, <a class="el" href="TSMCube_8h_source.html#l00470">casacore::TSMCube::setLastColSlice()</a>, and <a class="el" href="ExprNodeSet_8h_source.html#l00508">casacore::TableExprNodeSet::toArray()</a>.</p>
+<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00219">fill()</a>, <a class="el" href="TSMCube_8h_source.html#l00470">casacore::TSMCube::setLastColSlice()</a>, and <a class="el" href="ExprNodeSet_8h_source.html#l00507">casacore::TableExprNodeSet::toArray()</a>.</p>
 
 </div>
 </div>
@@ -1982,7 +2100,7 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ae2c15e5631683ef30fc7bef88b185c12"></a>
+<a class="anchor" id="a81c3be3be2e7c0fe01d7ce03eb7e41cd"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1990,7 +2108,7 @@ template&lt;typename InputIterator &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::IPosition::size </td>
+          <td class="memname">size_t casacore::IPosition::size </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -2003,11 +2121,11 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00548">548</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00572">572</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00412">size_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00436">size_p</a>.</p>
 
-<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00185">fill()</a>, <a class="el" href="ExprGroup_8h_source.html#l00393">casacore::TableExprGroupAggr::getArray()</a>, <a class="el" href="PycBasicData_8h_source.html#l00261">casacore::python::to_list&lt; casacore::IPosition &gt;::makeobject()</a>, <a class="el" href="MArrayBase_8h_source.html#l00143">casacore::MArrayBase::ndim()</a>, and <a class="el" href="ExprNodeSet_8h_source.html#l00508">casacore::TableExprNodeSet::toArray()</a>.</p>
+<p>Referenced by <a class="el" href="Array_8h_source.html#l00942">casacore::Array&lt; T, std::allocator&lt; T &gt; &gt;::checkBeforeResize()</a>, <a class="el" href="ArrayMath_8h_source.html#l01043">casacore::ArrayMath_global_functions_Array_mathematical_operations::expandArray()</a>, <a class="el" href="IPosition_8h_source.html#l00219">fill()</a>, <a class="el" href="ExprGroup_8h_source.html#l00393">casacore::TableExprGroupAggr::getArray()</a>, <a class="el" href="PycBasicData_8h_source.html#l00261">casacore::python::to_list&lt; casacore::IPosition &gt;::makeobject()</a>, <a class="el" href="MArrayBase_8h_source.html#l00143">casacore::MArrayBase::ndim()</a>, and <a class="el" href="ExprNodeSet_8h_source.html#l00507">casacore::TableExprNodeSet::toArray()</a>.</p>
 
 </div>
 </div>
@@ -2034,11 +2152,11 @@ template&lt;typename InputIterator &gt; </div>
 
 <p>Get the storage. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00607">607</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00631">631</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>References <a class="el" href="IPosition_8h_source.html#l00416">data_p</a>.</p>
+<p>References <a class="el" href="IPosition_8h_source.html#l00440">data_p</a>.</p>
 
-<p>Referenced by <a class="el" href="MArrayMath_8h_source.html#l00874">casacore::MArrayMath_global_functions_MArray_mathematical_operations::fractile()</a>, and <a class="el" href="MArrayMath_8h_source.html#l00845">casacore::MArrayMath_global_functions_MArray_mathematical_operations::median()</a>.</p>
+<p>Referenced by <a class="el" href="MArrayMath_8h_source.html#l00878">casacore::MArrayMath_global_functions_MArray_mathematical_operations::fractile()</a>, and <a class="el" href="MArrayMath_8h_source.html#l00849">casacore::MArrayMath_global_functions_MArray_mathematical_operations::median()</a>.</p>
 
 </div>
 </div>
@@ -2065,16 +2183,16 @@ template&lt;typename InputIterator &gt; </div>
 
 <p>Throw an index error exception. </p>
 
-<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00587">last()</a>, and <a class="el" href="IPosition_8h_source.html#l00567">operator()()</a>.</p>
+<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00611">last()</a>, and <a class="el" href="IPosition_8h_source.html#l00591">operator()()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aadd24d059c842438589a03aa8f52ee45"></a>
+<a class="anchor" id="a1dea3281164bb9839a59b1a2f3afdccd"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::IPosition::toString </td>
+          <td class="memname">std::string casacore::IPosition::toString </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -2082,7 +2200,8 @@ template&lt;typename InputIterator &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Write the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> into a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a>. </p>
+<p>Write the <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> into a string. </p>
+<p>TODO deprecate in favour of <a class="el" href="namespacecasacore.html#a9738457a8fff0095897ec10ac5af87ac">to_string(const IPosition&amp;)</a> </p>
 
 </div>
 </div>
@@ -2105,7 +2224,7 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00121">121</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00120">120</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -2145,115 +2264,6 @@ template&lt;typename InputIterator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aad24ee428e5790d7c23ff055c089df1a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a>&amp; operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td>
-          <td class="paramname"><em>aio</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
-          <td class="paramname"><em>ip</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to an <a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> stream in a binary format. </p>
-
-</div>
-</div>
-<a class="anchor" id="aefa5b4895e238992cc6246cc196466f5"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1LogIO.html">LogIO</a>&amp; operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1LogIO.html">LogIO</a> &amp;&#160;</td>
-          <td class="paramname"><em>io</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
-          <td class="paramname"><em>ip</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to a <a class="el" href="classcasacore_1_1LogIO.html" title="ostream-like interface to creating log messages. ">LogIO</a> stream. </p>
-
-</div>
-</div>
-<a class="anchor" id="adf75d53108a08101a2de7bb55f1b8f33"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a>&amp; operator&gt;&gt; </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td>
-          <td class="paramname"><em>aio</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
-          <td class="paramname"><em>ip</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Read an <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> from an <a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> stream in a binary format. </p>
-<p>Will throw an <a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a> if the current <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> Version does not match that of the one on disk. </p>
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="acc816b4f9ff6a87e031d521e97b296e4"></a>
 <div class="memitem">
@@ -2263,7 +2273,7 @@ template&lt;typename InputIterator &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ssize_t casacore::IPosition::buffer_p[<a class="el" href="classcasacore_1_1IPosition.html#a5b298f40f3d6043eba96301b1270e8d6afeeb72c8c173a6a797d3c391ff1cfdb7">BufferLength</a>]</td>
+          <td class="memname">ssize_t casacore::IPosition::buffer_p[<a class="el" href="classcasacore_1_1IPosition.html#ae90dc4f7b1fccbd871fa0504170934ceafeeb72c8c173a6a797d3c391ff1cfdb7">BufferLength</a>]</td>
         </tr>
       </table>
   </td>
@@ -2273,7 +2283,7 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00413">413</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00437">437</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
 </div>
 </div>
@@ -2297,13 +2307,13 @@ template&lt;typename InputIterator &gt; </div>
 
 <p>When the iposition is length BufferSize or less data is just buffer_p, avoiding calls to new and delete. </p>
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00416">416</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00440">440</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00393">begin()</a>, <a class="el" href="IPosition_8h_source.html#l00196">copy()</a>, <a class="el" href="IPosition_8h_source.html#l00397">end()</a>, <a class="el" href="IPosition_8h_source.html#l00185">fill()</a>, <a class="el" href="IPosition_8h_source.html#l00587">last()</a>, <a class="el" href="IPosition_8h_source.html#l00567">operator()()</a>, <a class="el" href="IPosition_8h_source.html#l00557">operator[]()</a>, and <a class="el" href="IPosition_8h_source.html#l00607">storage()</a>.</p>
+<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00417">begin()</a>, <a class="el" href="IPosition_8h_source.html#l00230">copy()</a>, <a class="el" href="IPosition_8h_source.html#l00421">end()</a>, <a class="el" href="IPosition_8h_source.html#l00219">fill()</a>, <a class="el" href="IPosition_8h_source.html#l00611">last()</a>, <a class="el" href="IPosition_8h_source.html#l00591">operator()()</a>, <a class="el" href="IPosition_8h_source.html#l00581">operator[]()</a>, and <a class="el" href="IPosition_8h_source.html#l00631">storage()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a0ecc117711452653b4d74c08089e0892"></a>
+<a class="anchor" id="a0c55b9ab7a66673d83fb55475fb579ad"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2311,7 +2321,7 @@ template&lt;typename InputIterator &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::IPosition::size_p</td>
+          <td class="memname">size_t casacore::IPosition::size_p</td>
         </tr>
       </table>
   </td>
@@ -2321,9 +2331,9 @@ template&lt;typename InputIterator &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00412">412</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00436">436</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 
-<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00612">conform()</a>, <a class="el" href="IPosition_8h_source.html#l00196">copy()</a>, <a class="el" href="IPosition_8h_source.html#l00552">empty()</a>, <a class="el" href="IPosition_8h_source.html#l00397">end()</a>, <a class="el" href="IPosition_8h_source.html#l00587">last()</a>, <a class="el" href="IPosition_8h_source.html#l00544">nelements()</a>, and <a class="el" href="IPosition_8h_source.html#l00548">size()</a>.</p>
+<p>Referenced by <a class="el" href="IPosition_8h_source.html#l00636">conform()</a>, <a class="el" href="IPosition_8h_source.html#l00230">copy()</a>, <a class="el" href="IPosition_8h_source.html#l00576">empty()</a>, <a class="el" href="IPosition_8h_source.html#l00421">end()</a>, <a class="el" href="IPosition_8h_source.html#l00611">last()</a>, <a class="el" href="IPosition_8h_source.html#l00568">nelements()</a>, and <a class="el" href="IPosition_8h_source.html#l00572">size()</a>.</p>
 
 </div>
 </div>

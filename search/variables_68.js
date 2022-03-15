@@ -20,7 +20,7 @@ var searchData=
   ['hasms_5fp',['hasMS_p',['../classcasacore_1_1MSDerivedValues.html#a717b3c23ffa821b3e5c6d4d0b2b18d7d',1,'casacore::MSDerivedValues']]],
   ['hasposition_5fp',['hasPosition_p',['../classcasacore_1_1SDSourceHandler.html#a40c9f70ce265d4b053dece667b6ea501',1,'casacore::SDSourceHandler']]],
   ['hasposrefsys_5fp',['hasPosrefsys_p',['../classcasacore_1_1MeasComet.html#a8e7a09c1fdea808381fc3312cd44c50e',1,'casacore::MeasComet']]],
-  ['hasput_5fp',['hasPut_p',['../classcasacore_1_1StManArrayFile.html#aa335292d47063a747d4ef4feb64d83e0',1,'casacore::StManArrayFile::hasPut_p()'],['../classcasacore_1_1StManAipsIO.html#a4ece70eb3065ed7302679935673ea527',1,'casacore::StManAipsIO::hasPut_p()']]],
+  ['hasput_5fp',['hasPut_p',['../classcasacore_1_1MSMBase.html#a5cb15a3e73e73df37543c0bacace39bc',1,'casacore::MSMBase::hasPut_p()'],['../classcasacore_1_1StManArrayFile.html#aa335292d47063a747d4ef4feb64d83e0',1,'casacore::StManArrayFile::hasPut_p()']]],
   ['hasrestfreq_5fp',['hasRestFreq_p',['../classcasacore_1_1SDSourceHandler.html#ae0bc22eebc240133b6213c211a4aa863',1,'casacore::SDSourceHandler']]],
   ['hassource_5fp',['hasSource_p',['../classcasacore_1_1MSValidIds.html#a5f83ff57c6b3232b02588ff259dd62f6',1,'casacore::MSValidIds']]],
   ['hassysvel_5fp',['hasSysVel_p',['../classcasacore_1_1SDSourceHandler.html#aee6fefef57d9ab06df905891e2e570ff',1,'casacore::SDSourceHandler']]],

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -1083,7 +1084,7 @@ The following data types can be used to instantiate the <a class="el" href="clas
 <p><a class="anchor" id="GenericL2Fit_example1"></a> In the following a polynomial is fitted through the first 20 prime numbers. The data is given in the x vector (1 to 20) and in the primesTable (2, 3,..., 71) (see tLinearFitSVD test program). In the following all four methods to calculate a polynomial through the data is used </p>
 <div class="fragment"><div class="line"><span class="comment">// The list of coordinate x-values</span></div>
 <div class="line">Vector&lt;Double&gt; x(nPrimes);</div>
-<div class="line"><a class="code" href="namespacecasacore.html#a083fbd9fc55516dfcc88ec19db08c8f5">indgen</a>(x, 1.0);  <span class="comment">// 1, 2,..\.</span></div>
+<div class="line"><a class="code" href="namespacecasacore.html#a3cd469ce2294c9f726fe06d19f1fa0c7">indgen</a>(x, 1.0);  <span class="comment">// 1, 2,..\.</span></div>
 <div class="line">Vector&lt;Double&gt; primesTable(nPrimes);</div>
 <div class="line"><span class="keywordflow">for</span> (<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> i=1; i &lt; nPrimes; i++) {</div>
 <div class="line">primesTable(i) =</div>
@@ -1108,7 +1109,7 @@ The following data types can be used to instantiate the <a class="el" href="clas
 <div class="line">solution = fitad.fit(x, primesTable, sigma);</div>
 </div><!-- fragment --><p> In the test program examples are given on how to get the other information, and other examples. </p>
 
-<p>Definition at line <a class="el" href="FittingProxy_8h_source.html#l00039">39</a> of file <a class="el" href="FittingProxy_8h_source.html">FittingProxy.h</a>.</p>
+<p>Definition at line <a class="el" href="FittingProxy_8h_source.html#l00040">40</a> of file <a class="el" href="FittingProxy_8h_source.html">FittingProxy.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a73ea83c217d7cb070735e7500270e0ee"></a>
 <div class="memitem">
@@ -1306,7 +1307,7 @@ template&lt;class T&gt; </div>
 <p>Set sigma values to be interpreted as weight (i.e. </p>
 <p>1/sigma/sigma). A value of zero or -1 will be skipped. The switch will stay in effect until set False again explicitly. Default is False. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00289">289</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00288">288</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -1426,7 +1427,7 @@ template&lt;class T&gt; </div>
 </div><div class="memdoc">
 
 <p>Generate the normal equations by one or more calls to the <a class="el" href="classcasacore_1_1GenericL2Fit.html#a9e49d43756ec786f27110c542bed484e" title="Generate the normal equations by one or more calls to the buildNormalMatrix(), before calling a fit()...">buildNormalMatrix()</a>, before calling a <a class="el" href="classcasacore_1_1GenericL2Fit.html#a54fcdfe34881be905d570c7ba2fd248d" title="Fit the function to the data. ">fit()</a> without arguments. </p>
-<p>The arguments are the same as for the fit(arguments) function. A False is returned if the <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> sizes are unmatched. </p>
+<p>The arguments are the same as for the fit(arguments) function. A False is returned if the <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> sizes are unmatched. </p>
 
 </div>
 </div>
@@ -1614,7 +1615,7 @@ template&lt;class T&gt; </div>
 <p>Obtain the chi squared. </p>
 <p>It has already been calculated during the fitting process. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00389">389</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00388">388</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2196,7 +2197,7 @@ template&lt;class T&gt; </div>
 <p>Return a pointer to the function being fitted. </p>
 <p>Should never delete this pointer. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00299">299</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00298">298</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2223,7 +2224,7 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00303">303</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00302">302</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2252,7 +2253,7 @@ template&lt;class T&gt; </div>
 
 <p>Return the number of fitted parameters. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00306">306</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00305">305</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2280,7 +2281,7 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00314">314</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00313">313</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2310,7 +2311,7 @@ template&lt;class T&gt; </div>
 <p>Get the rank of the solution (or zero of no <a class="el" href="classcasacore_1_1GenericL2Fit.html#a54fcdfe34881be905d570c7ba2fd248d" title="Fit the function to the data. ">fit()</a> done yet). </p>
 <p>A valid solution will have the same rank as the number of unknowns (or double that number in the complex case). For SVD solutions the rank could be less. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00455">455</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00454">454</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2432,7 +2433,7 @@ template&lt;class T&gt; </div>
 <p>Return the number of constraints, and pointers to constraint functions. </p>
 <p>A <code>0-pointer</code> will be returned if no such constraint present. This pointer should never be destroyed. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00312">312</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00311">311</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2481,7 +2482,7 @@ template&lt;class T&gt; </div>
 
 <p>Reset all the input. </p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00241">casacore::GenericL2Fit&lt; DComplex &gt;::setFunction()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00240">casacore::GenericL2Fit&lt; DComplex &gt;::setFunction()</a>.</p>
 
 </div>
 </div>
@@ -2639,7 +2640,7 @@ template&lt;class U &gt; </div>
 <p>The <code>addConstraint</code> will add one; the <code>setConstraint</code> will [re-]set the <code>n</code>th constraint. If unsucessful, False returned.<br/>
  Constraint functional can only be set when the function to be fitted has been set. It should have the same number of parameters as the function to be fitted. The <code>x</code> should have the correct dimension. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00252">252</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00251">251</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2747,7 +2748,7 @@ template&lt;class T&gt; </div>
 
 <p>Set Constraint properties. </p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00252">casacore::GenericL2Fit&lt; DComplex &gt;::setConstraint()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00251">casacore::GenericL2Fit&lt; DComplex &gt;::setConstraint()</a>.</p>
 
 </div>
 </div>
@@ -2780,7 +2781,7 @@ template&lt;class U &gt; </div>
 <p>Sets the function to be fitted. </p>
 <p>Upon entry, the argument function object is cloned. The cloned copy is used in the later fitting process. A valid function should be an instance of the <a class="el" href="classcasacore_1_1Function.html">Function</a> class, so that derivatives with respect to the adjustable parameters can be calculated. The current values of the "available" parameters of the function are taken as the initial guess for the non-linear fitting. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00241">241</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00240">240</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2809,7 +2810,7 @@ template&lt;class T&gt; </div>
 
 <p>Set function properties. </p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00241">casacore::GenericL2Fit&lt; DComplex &gt;::setFunction()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00240">casacore::GenericL2Fit&lt; DComplex &gt;::setFunction()</a>.</p>
 
 </div>
 </div>
@@ -2924,9 +2925,9 @@ template&lt;class T&gt; </div>
 
 <p>Adjustable. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00461">461</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00460">460</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00306">casacore::GenericL2Fit&lt; DComplex &gt;::fittedNumber()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00305">casacore::GenericL2Fit&lt; DComplex &gt;::fittedNumber()</a>.</p>
 
 </div>
 </div>
@@ -2952,7 +2953,7 @@ template&lt;class T&gt; </div>
 
 <p>Contiguous argument areas. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00501">501</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00500">500</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -2978,9 +2979,9 @@ template&lt;class T&gt; </div>
 
 <p>Interpret as weights rather than as sigma the given values. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00492">492</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00491">491</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00289">casacore::GenericL2Fit&lt; DComplex &gt;::asWeight()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00288">casacore::GenericL2Fit&lt; DComplex &gt;::asWeight()</a>.</p>
 
 </div>
 </div>
@@ -3004,7 +3005,7 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00502">502</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00501">501</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3022,7 +3023,7 @@ template&lt;class T&gt; </div>
 
 <p>Default collinearity test for SVD. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00218">218</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00217">217</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3048,7 +3049,7 @@ template&lt;class T&gt; </div>
 
 <p>Condition equation parameters (for number of adjustable parameters) </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00496">496</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00495">495</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3074,7 +3075,7 @@ template&lt;class T&gt; </div>
 
 <p><a class="el" href="classcasacore_1_1List.html" title="Doubly linked list. ">List</a> of vectors describing the constraint equations' arguments. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00476">476</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00475">475</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3101,9 +3102,9 @@ template&lt;class T&gt; </div>
 <p><a class="el" href="classcasacore_1_1List.html" title="Doubly linked list. ">List</a> of functions describing the possible constraint equations e.g. </p>
 <p>The sum of 3 angles w`could be described by a <code>HyperPlane(3)</code> function with <code>[1,1,1]</code> as parameters; giving <code>[1,1,1]</code> as argument vector and <code>3.1415</code> as value. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00474">474</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00473">473</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00314">casacore::GenericL2Fit&lt; DComplex &gt;::getConstraint()</a>, <a class="el" href="GenericL2Fit_8h_source.html#l00312">casacore::GenericL2Fit&lt; DComplex &gt;::NConstraints()</a>, and <a class="el" href="GenericL2Fit_8h_source.html#l00252">casacore::GenericL2Fit&lt; DComplex &gt;::setConstraint()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00313">casacore::GenericL2Fit&lt; DComplex &gt;::getConstraint()</a>, <a class="el" href="GenericL2Fit_8h_source.html#l00311">casacore::GenericL2Fit&lt; DComplex &gt;::NConstraints()</a>, and <a class="el" href="GenericL2Fit_8h_source.html#l00251">casacore::GenericL2Fit&lt; DComplex &gt;::setConstraint()</a>.</p>
 
 </div>
 </div>
@@ -3129,7 +3130,7 @@ template&lt;class T&gt; </div>
 
 <p><a class="el" href="classcasacore_1_1List.html" title="Doubly linked list. ">List</a> of values describing the constraint equations' value. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00478">478</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00477">477</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3155,7 +3156,7 @@ template&lt;class T&gt; </div>
 
 <p>Local SVD constraints. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00518">518</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00517">517</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3181,7 +3182,7 @@ template&lt;class T&gt; </div>
 
 <p>Local error area. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00511">511</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00510">510</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3207,7 +3208,7 @@ template&lt;class T&gt; </div>
 
 <p>Have errors. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00489">489</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00488">488</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3231,7 +3232,7 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00512">512</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00511">511</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3255,7 +3256,7 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00490">490</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00489">489</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3279,7 +3280,7 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00507">507</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00506">506</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3305,7 +3306,7 @@ template&lt;class T&gt; </div>
 
 <p>Equation for all available parameters. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00498">498</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00497">497</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3331,7 +3332,7 @@ template&lt;class T&gt; </div>
 
 <p>Number of dimensions of input data. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00483">483</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00482">482</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3357,7 +3358,7 @@ template&lt;class T&gt; </div>
 
 <p>No normal equations yet. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00485">485</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00484">484</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3383,7 +3384,7 @@ template&lt;class T&gt; </div>
 
 <p>The rank of the solution. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00494">494</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00493">493</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3409,7 +3410,7 @@ template&lt;class T&gt; </div>
 
 <p>Number of available parameters. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00481">481</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00480">480</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3435,9 +3436,9 @@ template&lt;class T&gt; </div>
 
 <p><a class="el" href="classcasacore_1_1Function.html" title="Numerical functional interface class. ">Function</a> to use in evaluating condition equation. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00466">466</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00465">465</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00299">casacore::GenericL2Fit&lt; DComplex &gt;::fittedFunction()</a>, <a class="el" href="GenericL2Fit_8h_source.html#l00252">casacore::GenericL2Fit&lt; DComplex &gt;::setConstraint()</a>, and <a class="el" href="GenericL2Fit_8h_source.html#l00241">casacore::GenericL2Fit&lt; DComplex &gt;::setFunction()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00298">casacore::GenericL2Fit&lt; DComplex &gt;::fittedFunction()</a>, <a class="el" href="GenericL2Fit_8h_source.html#l00251">casacore::GenericL2Fit&lt; DComplex &gt;::setConstraint()</a>, and <a class="el" href="GenericL2Fit_8h_source.html#l00240">casacore::GenericL2Fit&lt; DComplex &gt;::setFunction()</a>.</p>
 
 </div>
 </div>
@@ -3463,7 +3464,7 @@ template&lt;class T&gt; </div>
 
 <p>Local solution area. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00506">506</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00505">505</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3489,9 +3490,9 @@ template&lt;class T&gt; </div>
 
 <p>Have solution. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00487">487</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00486">486</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
-<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00455">casacore::GenericL2Fit&lt; DComplex &gt;::getRank()</a>.</p>
+<p>Referenced by <a class="el" href="GenericL2Fit_8h_source.html#l00454">casacore::GenericL2Fit&lt; DComplex &gt;::getRank()</a>.</p>
 
 </div>
 </div>
@@ -3517,7 +3518,7 @@ template&lt;class T&gt; </div>
 
 <p>SVD indicator. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00463">463</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00462">462</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>
@@ -3543,7 +3544,7 @@ template&lt;class T&gt; </div>
 
 <p>Local value and derivatives. </p>
 
-<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00515">515</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
+<p>Definition at line <a class="el" href="GenericL2Fit_8h_source.html#l00514">514</a> of file <a class="el" href="GenericL2Fit_8h_source.html">GenericL2Fit.h</a>.</p>
 
 </div>
 </div>

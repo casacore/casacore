@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,15 +121,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_QUANTA_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/Unit.h&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Unit_8h.html">casacore/casa/Quanta/Unit.h</a>&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">//# Next one at this place</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/QC.h&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/UnitMap.h&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/Quantum.h&gt;</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/QMath.h&gt;</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Quanta/QLogical.h&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="QC_8h.html">casacore/casa/Quanta/QC.h</a>&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="UnitMap_8h.html">casacore/casa/Quanta/UnitMap.h</a>&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Quantum_8h.html">casacore/casa/Quanta/Quantum.h</a>&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="QMath_8h.html">casacore/casa/Quanta/QMath.h</a>&gt;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="QLogical_8h.html">casacore/casa/Quanta/QLogical.h</a>&gt;</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
@@ -205,8 +206,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">// an &#39;_&#39;. Possible legal names are e.g. Jy, R0, R_1, &quot;_2.</span></div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">// &lt;note role=tip&gt;</span></div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">// &lt;ul&gt;</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">//   &lt;li&gt; &#39; is used for arcmin</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">//   &lt;li&gt; &#39;&#39; or &quot; for arcsec </span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">//   &lt;li&gt; &lt;src&gt;&#39;&lt;/src&gt; is used for arcmin</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">//   &lt;li&gt; &lt;src&gt;&#39;&#39;&lt;/src&gt; or &lt;src&gt;&quot;&lt;/src&gt; for arcsec </span></div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment">//   &lt;li&gt; : :: and ::: are used for h, min, s respectively.</span></div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">// &lt;/ul&gt;</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment">// &lt;/note&gt;</span></div>
@@ -699,6 +700,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;</div>
 <div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;</div>
+<div class="ttc" id="Quantum_8h_html"><div class="ttname"><a href="Quantum_8h.html">Quantum.h</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
+<div class="ttc" id="QMath_8h_html"><div class="ttname"><a href="QMath_8h.html">QMath.h</a></div></div>
+<div class="ttc" id="QLogical_8h_html"><div class="ttname"><a href="QLogical_8h.html">QLogical.h</a></div></div>
+<div class="ttc" id="UnitMap_8h_html"><div class="ttname"><a href="UnitMap_8h.html">UnitMap.h</a></div></div>
+<div class="ttc" id="Unit_8h_html"><div class="ttname"><a href="Unit_8h.html">Unit.h</a></div></div>
+<div class="ttc" id="QC_8h_html"><div class="ttname"><a href="QC_8h.html">QC.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

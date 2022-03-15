@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -188,7 +189,7 @@ Basic principles can be found in <a href="../notes/224.html">Note 224</a>. </li>
 <p>We now consider the situation where the fitted function depends <em>nonlinearly</em> on the set of <em>M</em> adjustable parameters. But with nonlinear dependences the minimisation of chi<sup>2</sup> cannot proceed as in the linear case. However, we can <em>linearise</em> the problem, find an approximate solution, and then iteratively seek the minimising solution. The iteration stops when e.g. the adjusted parameters do not change anymore. In general it is very difficult to find a general solution that finds a global minimum, and the solution has to be matched with the problem. The Levenberg-Marquardt algorithm is a general non-linear fitting method which can produce correct results in many cases. It has been included, but always be aware of possible problems with non-linear solutions.</p>
 <h3>What Is Available?</h3>
 <p>The basic classes are <a class="el" href="classcasacore_1_1LSQFit.html">LSQFit</a> and <a class="el" href="classcasacore_1_1LSQaips.html">LSQaips</a>. They provide the basic framework for normal equation generation, solving the normal equations and iterating in the case of non-linear equations.</p>
-<p>The <em><a class="el" href="classcasacore_1_1LSQFit.html" title="Basic class for the least squares fitting. ">LSQFit</a></em> class uses a native C++ interface (pointers and iterators). They handle real data and complex data. The <em><a class="el" href="classcasacore_1_1LSQaips.html" title="Interface for Casacore Vectors in least squares fitting. ">LSQaips</a></em> class offers the functionality of <em><a class="el" href="classcasacore_1_1LSQFit.html" title="Basic class for the least squares fitting. ">LSQFit</a></em>, but with an additional Casacore <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> interface.<br/>
+<p>The <em><a class="el" href="classcasacore_1_1LSQFit.html" title="Basic class for the least squares fitting. ">LSQFit</a></em> class uses a native C++ interface (pointers and iterators). They handle real data and complex data. The <em><a class="el" href="classcasacore_1_1LSQaips.html" title="Interface for Casacore Vectors in least squares fitting. ">LSQaips</a></em> class offers the functionality of <em><a class="el" href="classcasacore_1_1LSQFit.html" title="Basic class for the least squares fitting. ">LSQFit</a></em>, but with an additional Casacore <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> interface.<br/>
 </p>
 <p>Functionality is </p>
 <ol>

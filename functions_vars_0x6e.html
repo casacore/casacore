@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -291,8 +292,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1LSQFit.html#a74f3ce5e1f30a37f642da71afbcc180d">casacore::LSQFit</a>
 </li>
 <li>ncum_p
-: <a class="el" href="classcasacore_1_1MSMColumn.html#aecbdb56a6508c83fa9019a92e2e6eace">casacore::MSMColumn</a>
-, <a class="el" href="classcasacore_1_1StManColumnAipsIO.html#a34d76c58bd80d52de5b917fe0fc4b1b2">casacore::StManColumnAipsIO</a>
+: <a class="el" href="classcasacore_1_1MSMColumn.html#a40fed8577338d2f48df61fc5f9dc3a46">casacore::MSMColumn</a>
 </li>
 <li>ncur
 : <a class="el" href="classcasacore_1_1ListNotice.html#a2969c9f69ee70ae3aad748626c3eb013">casacore::ListNotice&lt; t &gt;</a>
@@ -316,7 +316,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classcasacore_1_1TableExprNodeRep.html#adbf638be6d0d96a1700b3d5742e138eb">casacore::TableExprNodeRep</a>
 </li>
 <li>ndimen_p
-: <a class="el" href="classcasacore_1_1ArrayBase.html#aff8454c5d925e0408d27bc460a8cf7ae">casacore::ArrayBase</a>
+: <a class="el" href="classcasacore_1_1ArrayBase.html#a7ad07fdbd04830846d9847e3ea32e620">casacore::ArrayBase</a>
 </li>
 <li>ndx
 : <a class="el" href="classcasacore_1_1FitsKeyword.html#aacd0100905c38a5b1a34584936cae096">casacore::FitsKeyword</a>
@@ -350,10 +350,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1Interpolate1D.html#a54e069ac2cfb72cd59d0e1db163a2ffe">casacore::Interpolate1D&lt; Domain, Range &gt;</a>
 </li>
 <li>nelemValid
-: <a class="el" href="classcasacore_1_1MaskedArray.html#a14b1d60be195b8a147a6fe2608d71c27">casacore::MaskedArray&lt; T &gt;</a>
+: <a class="el" href="classcasacore_1_1MaskedArray.html#ad4a2f3d2ce848c9d6acab1b52798b31b">casacore::MaskedArray&lt; T, ArrayAlloc, MaskAlloc &gt;</a>
 </li>
 <li>nelemValidIsOK
-: <a class="el" href="classcasacore_1_1MaskedArray.html#ab49118e4439504545933c4a7cb801dd0">casacore::MaskedArray&lt; T &gt;</a>
+: <a class="el" href="classcasacore_1_1MaskedArray.html#abe9c0cfcd223a1a6b539aada687f5654">casacore::MaskedArray&lt; T, ArrayAlloc, MaskAlloc &gt;</a>
 </li>
 <li>nels_p
 : <a class="el" href="classcasacore_1_1ArrayBase.html#a4d5272ad5674505e20d8945acfe9c666">casacore::ArrayBase</a>
@@ -376,14 +376,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>neval_p
 : <a class="el" href="classcasacore_1_1Nutation.html#a1870020fe066292ed20ca6d024b83b16">casacore::Nutation</a>
 </li>
-<li>newArray_p
-: <a class="el" href="classcasacore_1_1MSIter.html#a46f12cced56ddfb5ec31da2d1c4e6ed6">casacore::MSIter</a>
+<li>newArrayId_p
+: <a class="el" href="classcasacore_1_1MSIter.html#a55c5300406a5e6103a2bf391922a0f62">casacore::MSIter</a>
 </li>
 <li>newDataDescId_p
 : <a class="el" href="classcasacore_1_1MSIter.html#a192bd4198ef5ae5e46ed03878cc28f31">casacore::MSIter</a>
 </li>
-<li>newField_p
-: <a class="el" href="classcasacore_1_1MSIter.html#a4b8e7f6d8a4c02e4943e878a62890b67">casacore::MSIter</a>
+<li>newFieldId_p
+: <a class="el" href="classcasacore_1_1MSIter.html#a379400c58d5202dbc3c8d2686cd2b888">casacore::MSIter</a>
 </li>
 <li>newMS_p
 : <a class="el" href="classcasacore_1_1MSIter.html#ade56b1259e4258b37d3c22a642bd9eac">casacore::MSIter</a>
@@ -412,21 +412,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>newSourceIndex_p
 : <a class="el" href="classcasacore_1_1MSConcat.html#a584e63cc9bb452e23945c5293f401bb9">casacore::MSConcat</a>
 </li>
-<li>newSpectralWindow_p
-: <a class="el" href="classcasacore_1_1MSIter.html#ac7a0c4ea473f2f3a9a606337c9466c72">casacore::MSIter</a>
+<li>newSpectralWindowId_p
+: <a class="el" href="classcasacore_1_1MSIter.html#a2eb705507afbf1c1e07706370cf7d4ff">casacore::MSIter</a>
 </li>
 <li>newSPWIndex_p
 : <a class="el" href="classcasacore_1_1MSConcat.html#a5c84f2d893ddf7a8b8b9f7ba87331e26">casacore::MSConcat</a>
 </li>
 <li>newTable_p
-: <a class="el" href="classcasacore_1_1SetupNewTable.html#ae4e53db62aa671164e125bc32fd2a79d">casacore::SetupNewTable</a>
+: <a class="el" href="classcasacore_1_1SetupNewTable.html#a0077c053a60c7eb94519da08e58c5c48">casacore::SetupNewTable</a>
 </li>
 <li>next
-: <a class="el" href="classcasacore_1_1RegSequence.html#ac03770b5e23e0256dee4ae816111c4ff">casacore::RegSequence</a>
-, <a class="el" href="classcasacore_1_1uIntSequence.html#ac8a4cae44920d8c43a7e6aa0947b808f">casacore::uIntSequence</a>
+: <a class="el" href="classcasacore_1_1uIntSequence.html#ac8a4cae44920d8c43a7e6aa0947b808f">casacore::uIntSequence</a>
 </li>
 <li>Next
 : <a class="el" href="classcasacore_1_1Link.html#a285fcfd1243b1250902106bdcbfca274">casacore::Link&lt; t &gt;</a>
+</li>
+<li>next
+: <a class="el" href="classcasacore_1_1RegSequence.html#ac03770b5e23e0256dee4ae816111c4ff">casacore::RegSequence</a>
 </li>
 <li>next_
 : <a class="el" href="classcasacore_1_1FitsKeyword.html#ad555ea6072f0d754b7881a61e49dd224">casacore::FitsKeyword</a>
@@ -492,7 +494,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="structcasacore_1_1FuncExprData_1_1ExprOperator.html#a3efd914a9301f5843ec3ee9a37889aa5">casacore::FuncExprData::ExprOperator</a>
 </li>
 <li>nMS_p
-: <a class="el" href="classcasacore_1_1MSIter.html#a848afe87b95c83c17be7301d53ca39ef">casacore::MSIter</a>
+: <a class="el" href="classcasacore_1_1MSIter.html#a5dbdb13d30e03235cd78b37fcbdff00c">casacore::MSIter</a>
 </li>
 <li>nmsg_p
 : <a class="el" href="classcasacore_1_1MemoryLogSink.html#ae5bdf805add7c7cc5c9f238d4746a397">casacore::MemoryLogSink</a>
@@ -535,22 +537,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1FitsValueResult.html#af8bb94f5ce75cebe5b7536a194816ad0">casacore::FitsValueResult</a>
 </li>
 <li>node_p
-: <a class="el" href="classcasacore_1_1TableExprNode.html#a101ae312168d99962e17de9dbb0689f2">casacore::TableExprNode</a>
-, <a class="el" href="classcasacore_1_1MSArrayParse.html#a4081f83505e6dac8b92df0fede16c211">casacore::MSArrayParse</a>
-, <a class="el" href="classcasacore_1_1MSObservationParse.html#ae828755b90902248f22800cac556e3fd">casacore::MSObservationParse</a>
+: <a class="el" href="classcasacore_1_1TableParseSort.html#ae1a9bd634a6ee884dfc4938a469485cc">casacore::TableParseSort</a>
+, <a class="el" href="classcasacore_1_1MSPolnParse.html#a445880e4d0aa7de6092e0dbbc7a7d50c">casacore::MSPolnParse</a>
+, <a class="el" href="classcasacore_1_1MSCorrParse.html#a35e5681a6fff3d0606b8d18bb455ccea">casacore::MSCorrParse</a>
 , <a class="el" href="classcasacore_1_1LogOrigin.html#a1eebeac0a7081e3a70fee9e7958e4508">casacore::LogOrigin</a>
 , <a class="el" href="classcasacore_1_1MSAntennaParse.html#a68736dd4613278f6a93bbfe275d3ae8f">casacore::MSAntennaParse</a>
-, <a class="el" href="classcasacore_1_1MSCorrParse.html#a35e5681a6fff3d0606b8d18bb455ccea">casacore::MSCorrParse</a>
+, <a class="el" href="classcasacore_1_1MSArrayParse.html#a4081f83505e6dac8b92df0fede16c211">casacore::MSArrayParse</a>
 , <a class="el" href="classcasacore_1_1MSFeedParse.html#a977b7fa162b1611dac77735cd0218ae7">casacore::MSFeedParse</a>
 , <a class="el" href="classcasacore_1_1MSFieldParse.html#af752fbda0ff77a74421a9ec5551f8cd8">casacore::MSFieldParse</a>
-, <a class="el" href="classcasacore_1_1MSPolnParse.html#a445880e4d0aa7de6092e0dbbc7a7d50c">casacore::MSPolnParse</a>
+, <a class="el" href="classcasacore_1_1MSObservationParse.html#ae828755b90902248f22800cac556e3fd">casacore::MSObservationParse</a>
 , <a class="el" href="classcasacore_1_1MSScanParse.html#a291e6deb771340f1e343c04bd97f2d70">casacore::MSScanParse</a>
 , <a class="el" href="classcasacore_1_1MSSpwParse.html#a334fae8d93ab5e7ef74c829aa9f194e6">casacore::MSSpwParse</a>
 , <a class="el" href="classcasacore_1_1MSStateParse.html#ab456f035b816a4a78dfd73ef9874b643">casacore::MSStateParse</a>
 , <a class="el" href="classcasacore_1_1MSTimeParse.html#adccd6c85bc461c8db5ad5bf6f303abca">casacore::MSTimeParse</a>
 , <a class="el" href="classcasacore_1_1MSUvDistParse.html#adbcedef0f9ce81fde3110fb64e953f08">casacore::MSUvDistParse</a>
 , <a class="el" href="classcasacore_1_1TableExprFuncNodeArray.html#a59215813e8fd08e97ac14d1e960277ba">casacore::TableExprFuncNodeArray</a>
-, <a class="el" href="classcasacore_1_1TableParseSort.html#ae1a9bd634a6ee884dfc4938a469485cc">casacore::TableParseSort</a>
+, <a class="el" href="classcasacore_1_1TableExprNode.html#a101ae312168d99962e17de9dbb0689f2">casacore::TableExprNode</a>
 , <a class="el" href="classcasacore_1_1TableParseUpdate.html#a47a9537fa0a4d9db16a7e202c900635f">casacore::TableParseUpdate</a>
 , <a class="el" href="classcasacore_1_1TableParseSelect.html#ae0281736fb423dc6aff2966313e06011">casacore::TableParseSelect</a>
 </li>
@@ -614,8 +616,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classcasacore_1_1GenericL2Fit.html#a190d21ee087143a457cfd51fdc31e5bf">casacore::GenericL2Fit&lt; T &gt;</a>
 </li>
 <li>nralloc_p
-: <a class="el" href="classcasacore_1_1MSMColumn.html#aa05d5db455b2ffbb0a06a236b2e7dba1">casacore::MSMColumn</a>
-, <a class="el" href="classcasacore_1_1StManColumnAipsIO.html#aced00cccb1b1e663c00372b0b11fe0ca">casacore::StManColumnAipsIO</a>
+: <a class="el" href="classcasacore_1_1MSMColumn.html#aea22543b8d8d1ace231179f4c0f88fed">casacore::MSMColumn</a>
 </li>
 <li>nrbuf_p
 : <a class="el" href="classcasacore_1_1DynBuffer.html#aa1646d2a76363d8d924b89d84ef5bc98">casacore::DynBuffer</a>
@@ -631,8 +632,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>nrdim_p
 : <a class="el" href="classcasacore_1_1TSMCube.html#a9b64cb55198e8e9a910040d386208716">casacore::TSMCube</a>
-, <a class="el" href="classcasacore_1_1TiledStMan.html#a56f745a1e9fdfa1001bbc807cefc83b0">casacore::TiledStMan</a>
 , <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a6ebd21f87680aba128fd708ddf4d8c28">casacore::BaseColumnDesc</a>
+, <a class="el" href="classcasacore_1_1TiledStMan.html#a56f745a1e9fdfa1001bbc807cefc83b0">casacore::TiledStMan</a>
 </li>
 <li>nrDir_p
 : <a class="el" href="classcasacore_1_1TabPath.html#a6995fe74a958d9c2d3cc2801e575e0b6">casacore::TabPath</a>
@@ -644,15 +645,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1FittingProxy_1_1FitType.html#a39923ef73e87408681c762a8928beb02">casacore::FittingProxy::FitType</a>
 </li>
 <li>nrecpt_p
-: <a class="el" href="classcasacore_1_1SDFeedHandler.html#ac132c99d537aa2105fa00e929d725479">casacore::SDFeedHandler</a>
-, <a class="el" href="classcasacore_1_1SDSysCalHandler.html#ae90132214bf90d749186662b8ac9162a">casacore::SDSysCalHandler</a>
+: <a class="el" href="classcasacore_1_1SDSysCalHandler.html#ae90132214bf90d749186662b8ac9162a">casacore::SDSysCalHandler</a>
+, <a class="el" href="classcasacore_1_1SDFeedHandler.html#ac132c99d537aa2105fa00e929d725479">casacore::SDFeedHandler</a>
 </li>
 <li>nrel_p
-: <a class="el" href="classcasacore_1_1TabVecRep.html#a32f50cc96658ed590a1d43f967e4f383">casacore::TabVecRep&lt; T &gt;</a>
+: <a class="el" href="classcasacore_1_1TabVecRep.html#a31083dbe97802b34c11189fb220a00d9">casacore::TabVecRep&lt; T &gt;</a>
 </li>
 <li>nrelem_p
 : <a class="el" href="classcasacore_1_1ISMColumn.html#a6e7540bbfd7460bdb532d656e6d25202">casacore::ISMColumn</a>
-, <a class="el" href="classcasacore_1_1MSMDirColumn.html#a0fa018801018d0ab58660b8aec903f28">casacore::MSMDirColumn</a>
+, <a class="el" href="classcasacore_1_1MSMDirColumn.html#aee3495152dd04505ced4e9570f4aeb92">casacore::MSMDirColumn</a>
 , <a class="el" href="classcasacore_1_1StManColumnArrayAipsIO.html#ac0db7e392ee32d888ac10db3b31db48d">casacore::StManColumnArrayAipsIO</a>
 </li>
 <li>nresult
@@ -660,14 +661,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>nrext_p
 : <a class="el" href="classcasacore_1_1MSMColumn.html#ae48aa2f71e74181d97df61db9d509473">casacore::MSMColumn</a>
-, <a class="el" href="classcasacore_1_1StManColumnAipsIO.html#aa27117f90b5275e6405499d36b181957">casacore::StManColumnAipsIO</a>
 </li>
 <li>nrincr
-: <a class="el" href="classcasacore_1_1OrderedMapRep.html#a617ba798d02a35a96c1933e33475a8c7">casacore::OrderedMapRep&lt; t, v &gt;</a>
-, <a class="el" href="classcasacore_1_1SimpleOrderedMap.html#ab6f4e31de45e6f8b3f8b81e4632ae2fe">casacore::SimpleOrderedMap&lt; K, V &gt;</a>
+: <a class="el" href="classcasacore_1_1SimpleOrderedMap.html#ab6f4e31de45e6f8b3f8b81e4632ae2fe">casacore::SimpleOrderedMap&lt; K, V &gt;</a>
+, <a class="el" href="classcasacore_1_1OrderedMapRep.html#a617ba798d02a35a96c1933e33475a8c7">casacore::OrderedMapRep&lt; t, v &gt;</a>
 </li>
 <li>nrkey_p
-: <a class="el" href="classcasacore_1_1Sort.html#a984b7293c4351ae051177a87b1250bdd">casacore::Sort</a>
+: <a class="el" href="classcasacore_1_1Sort.html#a41b720a7774ed7046f301b7fc32c5b8b">casacore::Sort</a>
 </li>
 <li>nrkeys_p
 : <a class="el" href="classcasacore_1_1BaseTableIterator.html#a2b50cb35c53044802f9ab36851c1f5a3">casacore::BaseTableIterator</a>
@@ -679,17 +679,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1MeasComet.html#ae45e4cc158623ba3768944f7eaf67022">casacore::MeasComet</a>
 </li>
 <li>nrows
-: <a class="el" href="structcasacore_1_1MSMetaData_1_1TimeStampProperties.html#ac19bcabb7df1d64f0e0b0aa0d1e56175">casacore::MSMetaData::TimeStampProperties</a>
+: <a class="el" href="structcasacore_1_1MSMetaData_1_1TimeStampProperties.html#a9e9ab52afdb432a666473d2adb4e11ef">casacore::MSMetaData::TimeStampProperties</a>
 </li>
 <li>nrows_p
-: <a class="el" href="classcasacore_1_1MSDataDescIndex.html#a9d4a96ebef19059cf50a9dcb950ae9e4">casacore::MSDataDescIndex</a>
-, <a class="el" href="classcasacore_1_1MSTableIndex.html#aadaf51f4cc418533f35ca8eda54bdcd2">casacore::MSTableIndex</a>
+: <a class="el" href="classcasacore_1_1MSPolarizationIndex.html#a7b7b11843979779825201bb94503f554">casacore::MSPolarizationIndex</a>
+, <a class="el" href="classcasacore_1_1MSSpWindowIndex.html#aad0111fb4fba9ad440026518f72b09ab">casacore::MSSpWindowIndex</a>
 , <a class="el" href="classcasacore_1_1MSFieldIndex.html#a9277f86faaea9c09caf4ebb7cd7b9c6f">casacore::MSFieldIndex</a>
-, <a class="el" href="classcasacore_1_1MSObservationIndex.html#aa7b0f8e6a11670e225953153305fbd5b">casacore::MSObservationIndex</a>
 , <a class="el" href="classcasacore_1_1MSStateIndex.html#ae25dcd3461eac856ce46013cfeaa2a6e">casacore::MSStateIndex</a>
 , <a class="el" href="classcasacore_1_1MSAntennaIndex.html#a293ee9e5b0b797840a0458fadb7e1b5e">casacore::MSAntennaIndex</a>
-, <a class="el" href="classcasacore_1_1MSPolarizationIndex.html#a7b7b11843979779825201bb94503f554">casacore::MSPolarizationIndex</a>
-, <a class="el" href="classcasacore_1_1MSSpWindowIndex.html#aad0111fb4fba9ad440026518f72b09ab">casacore::MSSpWindowIndex</a>
+, <a class="el" href="classcasacore_1_1MSDataDescIndex.html#a9d4a96ebef19059cf50a9dcb950ae9e4">casacore::MSDataDescIndex</a>
+, <a class="el" href="classcasacore_1_1MSObservationIndex.html#aa7b0f8e6a11670e225953153305fbd5b">casacore::MSObservationIndex</a>
+, <a class="el" href="classcasacore_1_1MSTableIndex.html#abbc0792df7b52c69b4768e008a2119db">casacore::MSTableIndex</a>
 </li>
 <li>nrows_total_p
 : <a class="el" href="classcasacore_1_1FITSGroupWriter.html#a17191ba08f134cc4ced0f5cbc891d8f6">casacore::FITSGroupWriter</a>
@@ -699,21 +699,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classcasacore_1_1FITSTableWriter.html#a2c8822285cfaefb01cb46c351702cbba">casacore::FITSTableWriter</a>
 </li>
 <li>nrrow_p
-: <a class="el" href="classcasacore_1_1BaseTable.html#aa1b6f3a26f9640d222ea6b27714eb387">casacore::BaseTable</a>
-, <a class="el" href="classcasacore_1_1ISMBase.html#af32040839720775f9dc7b7090315d9ad">casacore::ISMBase</a>
-, <a class="el" href="classcasacore_1_1StManAipsIO.html#a5c4930b9482ecadd4e7d5d567abcd0cd">casacore::StManAipsIO</a>
-, <a class="el" href="classcasacore_1_1MSMBase.html#a08fa1b566a75006d818b1b891cad83a2">casacore::MSMBase</a>
-, <a class="el" href="classcasacore_1_1TiledStMan.html#a6e234ef2ec0e8e7801366260e0011ed6">casacore::TiledStMan</a>
-, <a class="el" href="classcasacore_1_1ColumnSet.html#a2dfaea1630789aa5ca1226837f9d28c4">casacore::ColumnSet</a>
+: <a class="el" href="classcasacore_1_1MSMBase.html#af4eb9fe3919629d588c0e3f26e2fea18">casacore::MSMBase</a>
+, <a class="el" href="classcasacore_1_1TiledStMan.html#a558782d287e7023a584f1a1b211878d3">casacore::TiledStMan</a>
+, <a class="el" href="classcasacore_1_1BaseTable.html#ae80cdce40014f97e2cf6129a4f2d4d6e">casacore::BaseTable</a>
+, <a class="el" href="classcasacore_1_1ISMBase.html#a021de3f6683d1fb9bf3a02c5d9387b75">casacore::ISMBase</a>
+, <a class="el" href="classcasacore_1_1ColumnSet.html#a9027751cf9f1045f672cceada2654bbb">casacore::ColumnSet</a>
 </li>
 <li>nrrowCreate_p
-: <a class="el" href="classcasacore_1_1MSMBase.html#aa92ab6bba9a77a06534bb689ceb89433">casacore::MSMBase</a>
+: <a class="el" href="classcasacore_1_1MSMBase.html#ac652ccadd0aa438083a4d0acfe360472">casacore::MSMBase</a>
 </li>
 <li>nrrowLast_p
-: <a class="el" href="classcasacore_1_1TiledDataStMan.html#a3f5ec3a01cf1c95834b4185d885d5c7f">casacore::TiledDataStMan</a>
+: <a class="el" href="classcasacore_1_1TiledDataStMan.html#af689d434f2a335ba6ed2f8ab7957e39b">casacore::TiledDataStMan</a>
 </li>
 <li>nrrowToAdd_p
-: <a class="el" href="classcasacore_1_1BaseTable.html#a81e4c4aa40eebb5dc62e7a839bc4792b">casacore::BaseTable</a>
+: <a class="el" href="classcasacore_1_1BaseTable.html#a9c077d8c336e278499bccf203b8f9418">casacore::BaseTable</a>
 </li>
 <li>nrSelExprUsed_p
 : <a class="el" href="classcasacore_1_1TableParseSelect.html#a1c36db6c9cccd27b997addafd1e4a868">casacore::TableParseSelect</a>
@@ -731,12 +730,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1OrderedMapRep.html#aec98565ade9b8585c4c81cb8605a9b6b">casacore::OrderedMapRep&lt; t, v &gt;</a>
 </li>
 <li>nrused
-: <a class="el" href="classcasacore_1_1OrderedMapRep.html#abd553e64aa2a16c60c0c508f25827ccf">casacore::OrderedMapRep&lt; t, v &gt;</a>
-, <a class="el" href="classcasacore_1_1SimpleOrderedMap.html#ad99895bca2e8b6aa8cb1932d6138a086">casacore::SimpleOrderedMap&lt; K, V &gt;</a>
+: <a class="el" href="classcasacore_1_1SimpleOrderedMap.html#ad99895bca2e8b6aa8cb1932d6138a086">casacore::SimpleOrderedMap&lt; K, V &gt;</a>
+, <a class="el" href="classcasacore_1_1OrderedMapRep.html#abd553e64aa2a16c60c0c508f25827ccf">casacore::OrderedMapRep&lt; t, v &gt;</a>
 </li>
 <li>nrUsedRowMap_p
 : <a class="el" href="classcasacore_1_1TiledShapeStMan.html#a4283e71ec13b47938a30fef41c7439cf">casacore::TiledShapeStMan</a>
-, <a class="el" href="classcasacore_1_1TiledDataStMan.html#abffe6d86c94db644d2c70477c16aa56b">casacore::TiledDataStMan</a>
 </li>
 <li>ns_obsidKey_p
 : <a class="el" href="classcasacore_1_1SDObservationHandler.html#ad53aa2414d8fd0d4824a8c21fa41e266">casacore::SDObservationHandler</a>
@@ -760,11 +758,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classcasacore_1_1MultiTermLatticeCleaner.html#ae78817dedb95344a2b5d7acff965eae6">casacore::MultiTermLatticeCleaner&lt; T &gt;</a>
 </li>
 <li>ntlst
-: <a class="el" href="classcasacore_1_1AipsrcValue.html#aaeea861290e1204688dc90614453a530">casacore::AipsrcValue&lt; T &gt;</a>
-, <a class="el" href="classcasacore_1_1AipsrcVector.html#aa4eba801bef43367067e0073f31dfcce">casacore::AipsrcVector&lt; T &gt;</a>
-, <a class="el" href="classcasacore_1_1AipsrcValue_3_01Bool_01_4.html#a61d8fc4c9ffa8beac3a626f8304c0213">casacore::AipsrcValue&lt; Bool &gt;</a>
+: <a class="el" href="classcasacore_1_1AipsrcVector.html#aa4eba801bef43367067e0073f31dfcce">casacore::AipsrcVector&lt; T &gt;</a>
 , <a class="el" href="classcasacore_1_1AipsrcVector__String_3_01String_01_4.html#a5124a621874a253517610f91f4cbe698">casacore::AipsrcVector_String&lt; String &gt;</a>
 , <a class="el" href="classcasacore_1_1AipsrcVector__Bool_3_01Bool_01_4.html#a37c3a0585b16af38152afd2a2341a4b4">casacore::AipsrcVector_Bool&lt; Bool &gt;</a>
+, <a class="el" href="classcasacore_1_1AipsrcValue.html#aaeea861290e1204688dc90614453a530">casacore::AipsrcValue&lt; T &gt;</a>
+, <a class="el" href="classcasacore_1_1AipsrcValue_3_01Bool_01_4.html#a61d8fc4c9ffa8beac3a626f8304c0213">casacore::AipsrcValue&lt; Bool &gt;</a>
 </li>
 <li>Ntypedef
 : <a class="el" href="classcasacore_1_1Template.html#a1f81b36d8d71792694c2d5f4a831e1f2">casacore::Template</a>
@@ -851,8 +849,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classcasacore_1_1Nutation.html#a3b2f8a3e9cf7a4bcec91b7df2c50b205">casacore::Nutation</a>
 </li>
 <li>nValues_p
-: <a class="el" href="classcasacore_1_1StokesCoordinate.html#a4c6c845461634e38a31950a96d204972">casacore::StokesCoordinate</a>
-, <a class="el" href="classcasacore_1_1QualityCoordinate.html#ab0a70f51857f83950490cae23ee5d968">casacore::QualityCoordinate</a>
+: <a class="el" href="classcasacore_1_1QualityCoordinate.html#ab0a70f51857f83950490cae23ee5d968">casacore::QualityCoordinate</a>
+, <a class="el" href="classcasacore_1_1StokesCoordinate.html#a4c6c845461634e38a31950a96d204972">casacore::StokesCoordinate</a>
 </li>
 <li>nvariance
 : <a class="el" href="structcasacore_1_1StatsData.html#a093faa298180597dd95b47fb88054931">casacore::StatsData&lt; AccumType &gt;</a>

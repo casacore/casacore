@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -90,7 +91,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classcasacore_1_1ArrayColumnDesc-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -101,13 +101,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Templated class for description of table array columns.  
  <a href="classcasacore_1_1ArrayColumnDesc.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="ArrColData_8h_source.html">ArrColData.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="ArrColDesc_8h_source.html">ArrColDesc.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for casacore::ArrayColumnDesc&lt; T &gt;:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classcasacore_1_1ArrayColumnDesc.png" usemap="#casacore::ArrayColumnDesc&lt; T &gt;_map" alt=""/>
   <map id="casacore::ArrayColumnDesc&lt; T &gt;_map" name="casacore::ArrayColumnDesc&lt; T &gt;_map">
+<area href="classcasacore_1_1ArrayColumnDescBase.html" title="Abstract base class for description of table array columns. " alt="casacore::ArrayColumnDescBase" shape="rect" coords="0,56,206,80"/>
 <area href="classcasacore_1_1BaseColumnDesc.html" title="An abstract base class for table column descriptions. " alt="casacore::BaseColumnDesc" shape="rect" coords="0,0,206,24"/>
 </map>
  </div></div>
@@ -143,18 +144,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa2d53bc5459c787edb6c0f669cc55173"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1BaseColumnDesc.html">BaseColumnDesc</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#aa2d53bc5459c787edb6c0f669cc55173">clone</a> () const </td></tr>
 <tr class="memdesc:aa2d53bc5459c787edb6c0f669cc55173"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clone this column description to another.  <a href="#aa2d53bc5459c787edb6c0f669cc55173">More...</a><br/></td></tr>
 <tr class="separator:aa2d53bc5459c787edb6c0f669cc55173"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f50113d0dcd0692a877dd53248e2af2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a7f50113d0dcd0692a877dd53248e2af2">className</a> () const </td></tr>
-<tr class="memdesc:a7f50113d0dcd0692a877dd53248e2af2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of this class.  <a href="#a7f50113d0dcd0692a877dd53248e2af2">More...</a><br/></td></tr>
-<tr class="separator:a7f50113d0dcd0692a877dd53248e2af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a918822703bdb9f0903059863c766ff76"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1PlainColumn.html">PlainColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a918822703bdb9f0903059863c766ff76">makeColumn</a> (<a class="el" href="classcasacore_1_1ColumnSet.html">ColumnSet</a> *) const </td></tr>
-<tr class="memdesc:a918822703bdb9f0903059863c766ff76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Column object out of this.  <a href="#a918822703bdb9f0903059863c766ff76">More...</a><br/></td></tr>
-<tr class="separator:a918822703bdb9f0903059863c766ff76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab2d516b9eabc56f2597d62c5f76328f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#aab2d516b9eabc56f2597d62c5f76328f">show</a> (ostream &amp;os) const </td></tr>
-<tr class="memdesc:aab2d516b9eabc56f2597d62c5f76328f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the column.  <a href="#aab2d516b9eabc56f2597d62c5f76328f">More...</a><br/></td></tr>
-<tr class="separator:aab2d516b9eabc56f2597d62c5f76328f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81e6b153918661ea8d92e563c2d2d9bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a81e6b153918661ea8d92e563c2d2d9bd">registerClass</a> () const </td></tr>
 <tr class="memdesc:a81e6b153918661ea8d92e563c2d2d9bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register the construction function of this class.  <a href="#a81e6b153918661ea8d92e563c2d2d9bd">More...</a><br/></td></tr>
 <tr class="separator:a81e6b153918661ea8d92e563c2d2d9bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcasacore_1_1ArrayColumnDescBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1ArrayColumnDescBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html">casacore::ArrayColumnDescBase</a></td></tr>
+<tr class="memitem:aa8ece528fd2451bed6759807eb53a02c inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#aa8ece528fd2451bed6759807eb53a02c">ArrayColumnDescBase</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#aba0943a8655547494a2c1952dbdbec96">name</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#ac901b9b2a8127dd844ebeec217d66cec">comment</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#afc5ae68b3f21dd11b4ff057327efc592">dataManagerType</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#a790027220fd1a1ec1fc17e9477806b38">dataManagerGroup</a>, DataType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#a2ab39582223743c9e78072a944d5fea5">dataTypeId</a>, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#aa5bd370f824356272219b3e23ed1816f">options</a>, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a2ce6741896415c63aa9c60577293169e">ndim</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#a02df64b2893d3eb983a5f40df155fce8">shape</a>)</td></tr>
+<tr class="memdesc:aa8ece528fd2451bed6759807eb53a02c inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with given parameters.  <a href="#aa8ece528fd2451bed6759807eb53a02c">More...</a><br/></td></tr>
+<tr class="separator:aa8ece528fd2451bed6759807eb53a02c inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1c912998f76712b3665604fe8b08a41 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#af1c912998f76712b3665604fe8b08a41">ArrayColumnDescBase</a> (const <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html">ArrayColumnDescBase</a> &amp;)</td></tr>
+<tr class="memdesc:af1c912998f76712b3665604fe8b08a41 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor (copy semantics);.  <a href="#af1c912998f76712b3665604fe8b08a41">More...</a><br/></td></tr>
+<tr class="separator:af1c912998f76712b3665604fe8b08a41 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0cc72c0ff223f91b9f0e62ec3f8b839 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#af0cc72c0ff223f91b9f0e62ec3f8b839">~ArrayColumnDescBase</a> ()</td></tr>
+<tr class="separator:af0cc72c0ff223f91b9f0e62ec3f8b839 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a583f2e3858a3b4c35f1ee354b3d4c3aa inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html">ArrayColumnDescBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#a583f2e3858a3b4c35f1ee354b3d4c3aa">operator=</a> (const <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html">ArrayColumnDescBase</a> &amp;)</td></tr>
+<tr class="memdesc:a583f2e3858a3b4c35f1ee354b3d4c3aa inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment (copy semantics);.  <a href="#a583f2e3858a3b4c35f1ee354b3d4c3aa">More...</a><br/></td></tr>
+<tr class="separator:a583f2e3858a3b4c35f1ee354b3d4c3aa inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6d5f8e50080471b5d62c1f3c17d0173 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#ac6d5f8e50080471b5d62c1f3c17d0173">className</a> () const </td></tr>
+<tr class="memdesc:ac6d5f8e50080471b5d62c1f3c17d0173 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of this class.  <a href="#ac6d5f8e50080471b5d62c1f3c17d0173">More...</a><br/></td></tr>
+<tr class="separator:ac6d5f8e50080471b5d62c1f3c17d0173 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7325ef79d6e6bc0c94ab6ece635e0e9d inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1PlainColumn.html">PlainColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#a7325ef79d6e6bc0c94ab6ece635e0e9d">makeColumn</a> (<a class="el" href="classcasacore_1_1ColumnSet.html">ColumnSet</a> *) const </td></tr>
+<tr class="memdesc:a7325ef79d6e6bc0c94ab6ece635e0e9d inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Column object out of this.  <a href="#a7325ef79d6e6bc0c94ab6ece635e0e9d">More...</a><br/></td></tr>
+<tr class="separator:a7325ef79d6e6bc0c94ab6ece635e0e9d inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c57dd4a05979b6233c264e6b8fcf3c3 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#a2c57dd4a05979b6233c264e6b8fcf3c3">show</a> (ostream &amp;os) const </td></tr>
+<tr class="memdesc:a2c57dd4a05979b6233c264e6b8fcf3c3 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the column.  <a href="#a2c57dd4a05979b6233c264e6b8fcf3c3">More...</a><br/></td></tr>
+<tr class="separator:a2c57dd4a05979b6233c264e6b8fcf3c3 inherit pub_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcasacore_1_1BaseColumnDesc"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1BaseColumnDesc')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1BaseColumnDesc.html">casacore::BaseColumnDesc</a></td></tr>
 <tr class="memitem:a8c362cfb60cb94a1a226e27b1b634b52 inherit pub_methods_classcasacore_1_1BaseColumnDesc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumnDesc.html#a8c362cfb60cb94a1a226e27b1b634b52">BaseColumnDesc</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#aba0943a8655547494a2c1952dbdbec96">name</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#ac901b9b2a8127dd844ebeec217d66cec">comment</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#afc5ae68b3f21dd11b4ff057327efc592">dataManagerType</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#a790027220fd1a1ec1fc17e9477806b38">dataManagerGroup</a>, DataType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#a2ab39582223743c9e78072a944d5fea5">dataTypeId</a>, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#aa5bd370f824356272219b3e23ed1816f">options</a>, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a2ce6741896415c63aa9c60577293169e">ndim</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1BaseColumnDesc.html#a02df64b2893d3eb983a5f40df155fce8">shape</a>, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#abf525a7e8adf84080e8c1f5564057783">isScalar</a>, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a44a1eec3b12378cd6ac03589926e00ba">isArray</a>, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a4ccd94a8374c7e5816feb3e78797859b">isTable</a>)</td></tr>
 <tr class="memdesc:a8c362cfb60cb94a1a226e27b1b634b52 inherit pub_methods_classcasacore_1_1BaseColumnDesc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the column base object.  <a href="#a8c362cfb60cb94a1a226e27b1b634b52">More...</a><br/></td></tr>
@@ -247,14 +260,20 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa023f0b7c5e04758e336784ce240b19e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the object from <a class="el" href="classcasacore_1_1AipsIO.html" title="AipsIO is the object persistency mechanism of Casacore. ">AipsIO</a> (this function is registered).  <a href="#aa023f0b7c5e04758e336784ce240b19e">More...</a><br/></td></tr>
 <tr class="separator:aa023f0b7c5e04758e336784ce240b19e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a507b1cfaba80854d20d1be5ac688f700"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a507b1cfaba80854d20d1be5ac688f700">putDesc</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;) const </td></tr>
-<tr class="memdesc:a507b1cfaba80854d20d1be5ac688f700"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the object.  <a href="#a507b1cfaba80854d20d1be5ac688f700">More...</a><br/></td></tr>
-<tr class="separator:a507b1cfaba80854d20d1be5ac688f700"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5aea3e5917d1872d37b7dae85156d7d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a5aea3e5917d1872d37b7dae85156d7d0">getDesc</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;)</td></tr>
-<tr class="memdesc:a5aea3e5917d1872d37b7dae85156d7d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the object.  <a href="#a5aea3e5917d1872d37b7dae85156d7d0">More...</a><br/></td></tr>
-<tr class="separator:a5aea3e5917d1872d37b7dae85156d7d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a193e46898e5eacbde335ff7e3d63d82f"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a193e46898e5eacbde335ff7e3d63d82f">ColumnDesc</a></td></tr>
+<tr class="separator:a193e46898e5eacbde335ff7e3d63d82f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classcasacore_1_1ArrayColumnDescBase"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcasacore_1_1ArrayColumnDescBase')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html">casacore::ArrayColumnDescBase</a></td></tr>
+<tr class="memitem:ab823ab3acefb545c8f0c2059bfa7ef6c inherit pro_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#ab823ab3acefb545c8f0c2059bfa7ef6c">putDesc</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;) const </td></tr>
+<tr class="memdesc:ab823ab3acefb545c8f0c2059bfa7ef6c inherit pro_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the object.  <a href="#ab823ab3acefb545c8f0c2059bfa7ef6c">More...</a><br/></td></tr>
+<tr class="separator:ab823ab3acefb545c8f0c2059bfa7ef6c inherit pro_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad36fe2843247e44f33f7359cd3615f2c inherit pro_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#ad36fe2843247e44f33f7359cd3615f2c">getDesc</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;)</td></tr>
+<tr class="memdesc:ad36fe2843247e44f33f7359cd3615f2c inherit pro_methods_classcasacore_1_1ArrayColumnDescBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the object.  <a href="#ad36fe2843247e44f33f7359cd3615f2c">More...</a><br/></td></tr>
+<tr class="separator:ad36fe2843247e44f33f7359cd3615f2c inherit pro_methods_classcasacore_1_1ArrayColumnDescBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcasacore_1_1BaseColumnDesc"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcasacore_1_1BaseColumnDesc')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcasacore_1_1BaseColumnDesc.html">casacore::BaseColumnDesc</a></td></tr>
 <tr class="memitem:a64d6445da0562696ff1f56db77886253 inherit pro_methods_classcasacore_1_1BaseColumnDesc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1BaseColumnDesc.html">BaseColumnDesc</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumnDesc.html#a64d6445da0562696ff1f56db77886253">operator=</a> (const <a class="el" href="classcasacore_1_1BaseColumnDesc.html">BaseColumnDesc</a> &amp;)</td></tr>
 <tr class="memdesc:a64d6445da0562696ff1f56db77886253 inherit pro_methods_classcasacore_1_1BaseColumnDesc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment (copy semantics).  <a href="#a64d6445da0562696ff1f56db77886253">More...</a><br/></td></tr>
@@ -271,14 +290,6 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:af4f01977b0a82553d12812bb0bca8b44 inherit pro_methods_classcasacore_1_1BaseColumnDesc"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1ConcatColumn.html">ConcatColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumnDesc.html#af4f01977b0a82553d12812bb0bca8b44">makeConcatColumn</a> (<a class="el" href="classcasacore_1_1ConcatTable.html">ConcatTable</a> *) const </td></tr>
 <tr class="memdesc:af4f01977b0a82553d12812bb0bca8b44 inherit pro_methods_classcasacore_1_1BaseColumnDesc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a <a class="el" href="classcasacore_1_1ConcatColumn.html" title="A column in a concatenated table. ">ConcatColumn</a> object out of the description.  <a href="#af4f01977b0a82553d12812bb0bca8b44">More...</a><br/></td></tr>
 <tr class="separator:af4f01977b0a82553d12812bb0bca8b44 inherit pro_methods_classcasacore_1_1BaseColumnDesc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
-Friends</h2></td></tr>
-<tr class="memitem:a193e46898e5eacbde335ff7e3d63d82f"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a193e46898e5eacbde335ff7e3d63d82f">ColumnDesc</a></td></tr>
-<tr class="separator:a193e46898e5eacbde335ff7e3d63d82f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_classcasacore_1_1BaseColumnDesc"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcasacore_1_1BaseColumnDesc')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcasacore_1_1BaseColumnDesc.html">casacore::BaseColumnDesc</a></td></tr>
 <tr class="memitem:a9e1574b071f43ecd23859ac12a409a28 inherit pro_attribs_classcasacore_1_1BaseColumnDesc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumnDesc.html#a9e1574b071f43ecd23859ac12a409a28">colName_p</a></td></tr>
 <tr class="separator:a9e1574b071f43ecd23859ac12a409a28 inherit pro_attribs_classcasacore_1_1BaseColumnDesc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -314,7 +325,6 @@ Additional Inherited Members</h2></td></tr>
 class casacore::ArrayColumnDesc&lt; T &gt;</h3>
 
 <p>Templated class for description of table array columns. </p>
-<p><a class="anchor" id="ArrColDesc_summary"></a> </p>
 <h3>Intended use:</h3>
 <p>Public interface</p>
 <h3>Review Status</h3>
@@ -327,7 +337,7 @@ class casacore::ArrayColumnDesc&lt; T &gt;</h3>
 <h3>Prerequisite</h3>
 <ul>
 <li>
-<a class="el" href="classcasacore_1_1BaseColumnDesc.html" title="An abstract base class for table column descriptions. ">BaseColumnDesc</a> (and its prerequisites) </li>
+<a class="el" href="classcasacore_1_1ArrayColumnDescBase.html" title="Abstract base class for description of table array columns. ">ArrayColumnDescBase</a> (and its prerequisites) </li>
 <li>
 <a class="el" href="classcasacore_1_1TableDesc.html" title="Define the structure of a Casacore table. ">TableDesc</a> </li>
 </ul>
@@ -367,7 +377,7 @@ Options. These are defined in <a class="el" href="ColumnDesc_8h.html">ColumnDesc
 Default keyword set, which defaults to an empty set. When a table column gets created from the description, it gets a copy of this keyword set as its initial keyword set. </li>
 </ul>
 <p>There are several constructors, which allow the definition of most of the above mentioned attributes. Others, like the default keyword set, have to be defined explicitly.</p>
-<p>This class is derived from <a class="el" href="classcasacore_1_1BaseColumnDesc.html" title="An abstract base class for table column descriptions. ">BaseColumnDesc</a>, thus the functions in there also apply to this class.</p>
+<p>This class is derived from <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html" title="Abstract base class for description of table array columns. ">ArrayColumnDescBase</a>, thus the functions in there also apply to this class.</p>
 <p>Once a column description is set up satisfactorily, it must be added to a table description before it can be used by the table system.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="ArrColDesc_example1"></a></p>
@@ -403,13 +413,13 @@ Assignment operator </li>
 <code>static <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a2ab39582223743c9e78072a944d5fea5" title="Get the type id for non-standard data types (i.e. ">dataTypeId()</a>; // (not needed for builtin types)</code> This should return the unique "name" of the class. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="ArrColData_8h_source.html#l00040">40</a> of file <a class="el" href="ArrColData_8h_source.html">ArrColData.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrColDesc_8h_source.html#l00236">236</a> of file <a class="el" href="ArrColDesc_8h_source.html">ArrColDesc.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afa5f20a2e105f0e08476287f6165cb97"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -454,7 +464,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -497,7 +507,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -552,7 +562,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -589,7 +599,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -632,7 +642,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -693,7 +703,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -713,7 +723,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::~<a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a> </td>
@@ -727,41 +737,11 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a7f50113d0dcd0692a877dd53248e2af2"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::className </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the name of this class. </p>
-<p>It is used by the registration process. The template argument gets part of the name. </p>
-
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a936f928ee9b8492d950a560b9317ff63">casacore::BaseColumnDesc</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="aa2d53bc5459c787edb6c0f669cc55173"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -786,72 +766,11 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a5aea3e5917d1872d37b7dae85156d7d0"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::getDesc </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the object. </p>
-
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a6fb0025d97c5f01c72f72fa86f72fd82">casacore::BaseColumnDesc</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a918822703bdb9f0903059863c766ff76"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="classcasacore_1_1PlainColumn.html">PlainColumn</a>* <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::makeColumn </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1ColumnSet.html">ColumnSet</a> *&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Create a Column object out of this. </p>
-<p>This is used by class <a class="el" href="classcasacore_1_1ColumnSet.html" title="Class to manage a set of table columns. ">ColumnSet</a> to construct a table column object. </p>
-
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a4f870087bb9512834d41ac0e91cd73bc">casacore::BaseColumnDesc</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="aa023f0b7c5e04758e336784ce240b19e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -879,7 +798,7 @@ template&lt;class T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1ArrayColumnDesc.html">ArrayColumnDesc</a>&lt;T&gt;&amp; <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::operator= </td>
@@ -895,41 +814,11 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a507b1cfaba80854d20d1be5ac688f700"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::putDesc </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Put the object. </p>
-
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumnDesc.html#ab3779645f71a0c0a61d540d33307de05">casacore::BaseColumnDesc</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="a81e6b153918661ea8d92e563c2d2d9bd"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::registerClass </td>
@@ -944,42 +833,12 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aab2d516b9eabc56f2597d62c5f76328f"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classcasacore_1_1ArrayColumnDesc.html">casacore::ArrayColumnDesc</a>&lt; T &gt;::show </td>
-          <td>(</td>
-          <td class="paramtype">ostream &amp;&#160;</td>
-          <td class="paramname"><em>os</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Show the column. </p>
-
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a1fc71bef9b3a5e07535bbb5b0c021d75">casacore::BaseColumnDesc</a>.</p>
-
-</div>
-</div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
 <a class="anchor" id="a193e46898e5eacbde335ff7e3d63d82f"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -995,12 +854,11 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ArrColDesc_8h_source.html#l00181">181</a> of file <a class="el" href="ArrColDesc_8h_source.html">ArrColDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrColDesc_8h_source.html#l00238">238</a> of file <a class="el" href="ArrColDesc_8h_source.html">ArrColDesc.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
-<li>tables/Tables/<a class="el" href="ArrColData_8h_source.html">ArrColData.h</a></li>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>tables/Tables/<a class="el" href="ArrColDesc_8h_source.html">ArrColDesc.h</a></li>
 </ul>
 </div><!-- contents -->

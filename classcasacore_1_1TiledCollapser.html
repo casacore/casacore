@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -267,7 +268,7 @@ template&lt;class T, class U&gt; </div>
 </div><div class="memdoc">
 
 <p>End the accumulator. </p>
-<p>It should return the accumulator as an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> of datatype U (e.g. double the precision of type T) with the given shape. The accumulator should thereafter be deleted when needed. </p>
+<p>It should return the accumulator as an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> of datatype U (e.g. double the precision of type T) with the given shape. The accumulator should thereafter be deleted when needed. </p>
 
 <p>Implemented in <a class="el" href="classcasacore_1_1HistTiledCollapser.html#afaa5e7c75c0922fc5ef74f722224c7ac">casacore::HistTiledCollapser&lt; T &gt;</a>, and <a class="el" href="classcasacore_1_1StatsTiledCollapser.html#aa7840361eca667a2d614061029f40229">casacore::StatsTiledCollapser&lt; T, U &gt;</a>.</p>
 
@@ -342,7 +343,7 @@ template&lt;class T, class U&gt; </div>
 <p>Create and initialize the accumulator. </p>
 <p>The accumulator can be a cube with shape [n1,n2,n3], where <code>n2</code> is equal to <code>nOutPixelsPerCollapse</code>. However, one can also use several matrices as accumulator. <br/>
  The data type of the accumulator can be any. E.g. when accumulating Float lattices, the accumulator could be of type Double to have enough precision. <br/>
-In the <code>endAccumulator</code> function the accumulator data has to be copied into an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> object with the correct shape and data type. </p>
+In the <code>endAccumulator</code> function the accumulator data has to be copied into an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> object with the correct shape and data type. </p>
 
 <p>Implemented in <a class="el" href="classcasacore_1_1HistTiledCollapser.html#aef90ce4c38012657bf8c164c6381ec4c">casacore::HistTiledCollapser&lt; T &gt;</a>, and <a class="el" href="classcasacore_1_1StatsTiledCollapser.html#a7493266dedee12f45562b1383ae3022c">casacore::StatsTiledCollapser&lt; T, U &gt;</a>.</p>
 

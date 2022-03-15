@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>casacore: casacore::GenSortIndirect&lt; T &gt; Class Template Reference</title>
+<title>casacore: casacore::GenSortIndirect&lt; T, INX &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -92,7 +93,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="classcasacore_1_1GenSortIndirect-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">casacore::GenSortIndirect&lt; T &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Utilities__module__internal__classes.html">Utilities_module_internal_classes</a></div></div>  </div>
+<div class="title">casacore::GenSortIndirect&lt; T, INX &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Utilities__module__internal__classes.html">Utilities_module_internal_classes</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -103,64 +104,64 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a0ef2a8b589717ef1ac770a15ec1be0a4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a0ef2a8b589717ef1ac770a15ec1be0a4">sort</a> (<a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;indexVector, const T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>=<a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8ca673791f898abcfa422fe314bdba2dd2e">Sort::Ascending</a>, int options=<a class="el" href="classcasacore_1_1Sort.html#a19a126bffd5e0fda13f568f20e04b004a91054e658e9042e65c73d370495b6e5b">Sort::QuickSort</a>)</td></tr>
-<tr class="memdesc:a0ef2a8b589717ef1ac770a15ec1be0a4"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects.  <a href="#a0ef2a8b589717ef1ac770a15ec1be0a4">More...</a><br/></td></tr>
-<tr class="separator:a0ef2a8b589717ef1ac770a15ec1be0a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a532c79b21206ab00a1fd48649efd5d2b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a532c79b21206ab00a1fd48649efd5d2b">sort</a> (<a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;indexVector, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;data, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>=<a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8ca673791f898abcfa422fe314bdba2dd2e">Sort::Ascending</a>, int options=<a class="el" href="classcasacore_1_1Sort.html#a19a126bffd5e0fda13f568f20e04b004a91054e658e9042e65c73d370495b6e5b">Sort::QuickSort</a>)</td></tr>
-<tr class="memdesc:a532c79b21206ab00a1fd48649efd5d2b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects.  <a href="#a532c79b21206ab00a1fd48649efd5d2b">More...</a><br/></td></tr>
-<tr class="separator:a532c79b21206ab00a1fd48649efd5d2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0df38f13f839b1cc49369f3dec92b12"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#ab0df38f13f839b1cc49369f3dec92b12">sort</a> (<a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;indexVector, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; T &gt; &amp;data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>=<a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8ca673791f898abcfa422fe314bdba2dd2e">Sort::Ascending</a>, int options=<a class="el" href="classcasacore_1_1Sort.html#a19a126bffd5e0fda13f568f20e04b004a91054e658e9042e65c73d370495b6e5b">Sort::QuickSort</a>)</td></tr>
-<tr class="memdesc:ab0df38f13f839b1cc49369f3dec92b12"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects.  <a href="#ab0df38f13f839b1cc49369f3dec92b12">More...</a><br/></td></tr>
-<tr class="separator:ab0df38f13f839b1cc49369f3dec92b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adadb21653ef4ce50f685f3932099ca66"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#adadb21653ef4ce50f685f3932099ca66">kthLargest</a> (T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> k)</td></tr>
-<tr class="memdesc:adadb21653ef4ce50f685f3932099ca66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the index of the k-th largest value.  <a href="#adadb21653ef4ce50f685f3932099ca66">More...</a><br/></td></tr>
-<tr class="separator:adadb21653ef4ce50f685f3932099ca66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79f0f1f41b6fc4cd069386fec6368b7b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a79f0f1f41b6fc4cd069386fec6368b7b">quickSort</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options)</td></tr>
-<tr class="memdesc:a79f0f1f41b6fc4cd069386fec6368b7b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using quicksort.  <a href="#a79f0f1f41b6fc4cd069386fec6368b7b">More...</a><br/></td></tr>
-<tr class="separator:a79f0f1f41b6fc4cd069386fec6368b7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48b4a35540719e85556c6bad2cc11fd5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a48b4a35540719e85556c6bad2cc11fd5">heapSort</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options)</td></tr>
-<tr class="memdesc:a48b4a35540719e85556c6bad2cc11fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using heapsort.  <a href="#a48b4a35540719e85556c6bad2cc11fd5">More...</a><br/></td></tr>
-<tr class="separator:a48b4a35540719e85556c6bad2cc11fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5c1f0c9077290b76a341ea566ca7293"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#ae5c1f0c9077290b76a341ea566ca7293">insSort</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options)</td></tr>
-<tr class="memdesc:ae5c1f0c9077290b76a341ea566ca7293"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using insertion sort.  <a href="#ae5c1f0c9077290b76a341ea566ca7293">More...</a><br/></td></tr>
-<tr class="separator:ae5c1f0c9077290b76a341ea566ca7293"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3c1e04f891e16d8478b4b928b6231e9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#ae3c1e04f891e16d8478b4b928b6231e9">parSort</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options, int nthreads=0)</td></tr>
-<tr class="memdesc:ae3c1e04f891e16d8478b4b928b6231e9"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using parallel merge sort (using OpenMP).  <a href="#ae3c1e04f891e16d8478b4b928b6231e9">More...</a><br/></td></tr>
-<tr class="separator:ae3c1e04f891e16d8478b4b928b6231e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adff542649f54f81329270a000bdee3b4"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#adff542649f54f81329270a000bdee3b4">sort</a> (<a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; INX &gt; &amp;indexVector, const T *data, INX nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>=<a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8ca673791f898abcfa422fe314bdba2dd2e">Sort::Ascending</a>, int options=<a class="el" href="classcasacore_1_1Sort.html#a19a126bffd5e0fda13f568f20e04b004a91054e658e9042e65c73d370495b6e5b">Sort::QuickSort</a>)</td></tr>
+<tr class="memdesc:adff542649f54f81329270a000bdee3b4"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects.  <a href="#adff542649f54f81329270a000bdee3b4">More...</a><br/></td></tr>
+<tr class="separator:adff542649f54f81329270a000bdee3b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a199f3c982f0d46133f5d3c0a351180b6"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a199f3c982f0d46133f5d3c0a351180b6">sort</a> (<a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; INX &gt; &amp;indexVector, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;data, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>=<a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8ca673791f898abcfa422fe314bdba2dd2e">Sort::Ascending</a>, int options=<a class="el" href="classcasacore_1_1Sort.html#a19a126bffd5e0fda13f568f20e04b004a91054e658e9042e65c73d370495b6e5b">Sort::QuickSort</a>)</td></tr>
+<tr class="memdesc:a199f3c982f0d46133f5d3c0a351180b6"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects.  <a href="#a199f3c982f0d46133f5d3c0a351180b6">More...</a><br/></td></tr>
+<tr class="separator:a199f3c982f0d46133f5d3c0a351180b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6889a16a06f984ff5d5d752e09627370"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a6889a16a06f984ff5d5d752e09627370">sort</a> (<a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; INX &gt; &amp;indexVector, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; T &gt; &amp;data, INX nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>=<a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8ca673791f898abcfa422fe314bdba2dd2e">Sort::Ascending</a>, int options=<a class="el" href="classcasacore_1_1Sort.html#a19a126bffd5e0fda13f568f20e04b004a91054e658e9042e65c73d370495b6e5b">Sort::QuickSort</a>)</td></tr>
+<tr class="memdesc:a6889a16a06f984ff5d5d752e09627370"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects.  <a href="#a6889a16a06f984ff5d5d752e09627370">More...</a><br/></td></tr>
+<tr class="separator:a6889a16a06f984ff5d5d752e09627370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa53efe62ba6b5cf2b0c5ed34a80d5e87"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#aa53efe62ba6b5cf2b0c5ed34a80d5e87">kthLargest</a> (T *data, INX nr, INX k)</td></tr>
+<tr class="memdesc:aa53efe62ba6b5cf2b0c5ed34a80d5e87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the index of the k-th largest value.  <a href="#aa53efe62ba6b5cf2b0c5ed34a80d5e87">More...</a><br/></td></tr>
+<tr class="separator:aa53efe62ba6b5cf2b0c5ed34a80d5e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05012d859f98f65cabf9d0977dc28413"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a05012d859f98f65cabf9d0977dc28413">quickSort</a> (INX *inx, const T *data, INX nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options)</td></tr>
+<tr class="memdesc:a05012d859f98f65cabf9d0977dc28413"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using quicksort.  <a href="#a05012d859f98f65cabf9d0977dc28413">More...</a><br/></td></tr>
+<tr class="separator:a05012d859f98f65cabf9d0977dc28413"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69d023ca7a6397421dad06775bba6113"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a69d023ca7a6397421dad06775bba6113">heapSort</a> (INX *inx, const T *data, INX nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options)</td></tr>
+<tr class="memdesc:a69d023ca7a6397421dad06775bba6113"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using heapsort.  <a href="#a69d023ca7a6397421dad06775bba6113">More...</a><br/></td></tr>
+<tr class="separator:a69d023ca7a6397421dad06775bba6113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47b04b26d9ed1a182f0a2dfc01d50ee4"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a47b04b26d9ed1a182f0a2dfc01d50ee4">insSort</a> (INX *inx, const T *data, INX nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options)</td></tr>
+<tr class="memdesc:a47b04b26d9ed1a182f0a2dfc01d50ee4"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using insertion sort.  <a href="#a47b04b26d9ed1a182f0a2dfc01d50ee4">More...</a><br/></td></tr>
+<tr class="separator:a47b04b26d9ed1a182f0a2dfc01d50ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d18ad16416b389dd5f4c86c40504e5b"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a9d18ad16416b389dd5f4c86c40504e5b">parSort</a> (INX *inx, const T *data, INX nr, <a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>, int options, int nthreads=0)</td></tr>
+<tr class="memdesc:a9d18ad16416b389dd5f4c86c40504e5b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> container using parallel merge sort (using OpenMP).  <a href="#a9d18ad16416b389dd5f4c86c40504e5b">More...</a><br/></td></tr>
+<tr class="separator:a9d18ad16416b389dd5f4c86c40504e5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
-<tr class="memitem:a41d56db40ec8aff9b5a731c1923ef83c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a41d56db40ec8aff9b5a731c1923ef83c">swapInx</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;index1, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;index2)</td></tr>
-<tr class="memdesc:a41d56db40ec8aff9b5a731c1923ef83c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap 2 indices.  <a href="#a41d56db40ec8aff9b5a731c1923ef83c">More...</a><br/></td></tr>
-<tr class="separator:a41d56db40ec8aff9b5a731c1923ef83c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cb12c51f2afafd51d93dd634eeec215"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a2cb12c51f2afafd51d93dd634eeec215">merge</a> (const T *data, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *tmp, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrec, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *index, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nparts)</td></tr>
-<tr class="memdesc:a2cb12c51f2afafd51d93dd634eeec215"><td class="mdescLeft">&#160;</td><td class="mdescRight">The<code>data</code> buffer is divided in <code>nparts</code> parts.  <a href="#a2cb12c51f2afafd51d93dd634eeec215">More...</a><br/></td></tr>
-<tr class="separator:a2cb12c51f2afafd51d93dd634eeec215"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76108704616bbe374d6b0c3c01552a1d"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a76108704616bbe374d6b0c3c01552a1d">isAscending</a> (const T *data, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> index1, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> index2)</td></tr>
-<tr class="memdesc:a76108704616bbe374d6b0c3c01552a1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if 2 values are in ascending order.  <a href="#a76108704616bbe374d6b0c3c01552a1d">More...</a><br/></td></tr>
-<tr class="separator:a76108704616bbe374d6b0c3c01552a1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d994955eddea4b885aab2490459d893"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a8d994955eddea4b885aab2490459d893">quickSortAsc</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nr, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> multiThread=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> rec_lim=128)</td></tr>
-<tr class="memdesc:a8d994955eddea4b885aab2490459d893"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quicksort in ascending order.  <a href="#a8d994955eddea4b885aab2490459d893">More...</a><br/></td></tr>
-<tr class="separator:a8d994955eddea4b885aab2490459d893"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61227e8133b6f346804c7c396fd5a187"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a61227e8133b6f346804c7c396fd5a187">heapSortAsc</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nr)</td></tr>
-<tr class="memdesc:a61227e8133b6f346804c7c396fd5a187"><td class="mdescLeft">&#160;</td><td class="mdescRight">Heapsort in ascending order.  <a href="#a61227e8133b6f346804c7c396fd5a187">More...</a><br/></td></tr>
-<tr class="separator:a61227e8133b6f346804c7c396fd5a187"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6bd2e9634b8aabfad5abde810c6df52"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#ab6bd2e9634b8aabfad5abde810c6df52">heapAscSiftDown</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>, const T *)</td></tr>
-<tr class="memdesc:ab6bd2e9634b8aabfad5abde810c6df52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for ascending heapsort.  <a href="#ab6bd2e9634b8aabfad5abde810c6df52">More...</a><br/></td></tr>
-<tr class="separator:ab6bd2e9634b8aabfad5abde810c6df52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a433bfe7859602f1e77ca493aee4ae985"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a433bfe7859602f1e77ca493aee4ae985">insSortAsc</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nr, int option)</td></tr>
-<tr class="memdesc:a433bfe7859602f1e77ca493aee4ae985"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion sort in ascending order.  <a href="#a433bfe7859602f1e77ca493aee4ae985">More...</a><br/></td></tr>
-<tr class="separator:a433bfe7859602f1e77ca493aee4ae985"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94ae3abbcf9905285bbbfcbe32b99bd6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a94ae3abbcf9905285bbbfcbe32b99bd6">insSortAscDup</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nr)</td></tr>
-<tr class="memdesc:a94ae3abbcf9905285bbbfcbe32b99bd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion sort in ascending order allowing duplicates.  <a href="#a94ae3abbcf9905285bbbfcbe32b99bd6">More...</a><br/></td></tr>
-<tr class="separator:a94ae3abbcf9905285bbbfcbe32b99bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0229d1718ca1f6624494e68a872ca97b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a0229d1718ca1f6624494e68a872ca97b">insSortAscNoDup</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *inx, const T *, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nr)</td></tr>
-<tr class="memdesc:a0229d1718ca1f6624494e68a872ca97b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion sort in ascending order allowing no duplicates.  <a href="#a0229d1718ca1f6624494e68a872ca97b">More...</a><br/></td></tr>
-<tr class="separator:a0229d1718ca1f6624494e68a872ca97b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33cb2c78d84ae30e698504696bbc5e41"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a33cb2c78d84ae30e698504696bbc5e41">swapInx</a> (INX &amp;index1, INX &amp;index2)</td></tr>
+<tr class="memdesc:a33cb2c78d84ae30e698504696bbc5e41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap 2 indices.  <a href="#a33cb2c78d84ae30e698504696bbc5e41">More...</a><br/></td></tr>
+<tr class="separator:a33cb2c78d84ae30e698504696bbc5e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa12726ccefb22d473e5b0c158d4af1d0"><td class="memItemLeft" align="right" valign="top">static INX *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#aa12726ccefb22d473e5b0c158d4af1d0">merge</a> (const T *data, INX *inx, INX *tmp, INX nrrec, INX *index, INX nparts)</td></tr>
+<tr class="memdesc:aa12726ccefb22d473e5b0c158d4af1d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The<code>data</code> buffer is divided in <code>nparts</code> parts.  <a href="#aa12726ccefb22d473e5b0c158d4af1d0">More...</a><br/></td></tr>
+<tr class="separator:aa12726ccefb22d473e5b0c158d4af1d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6224bcc6a8257063a6aa2b02aaf3f11"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#ab6224bcc6a8257063a6aa2b02aaf3f11">isAscending</a> (const T *data, INX index1, INX index2)</td></tr>
+<tr class="memdesc:ab6224bcc6a8257063a6aa2b02aaf3f11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if 2 values are in ascending order.  <a href="#ab6224bcc6a8257063a6aa2b02aaf3f11">More...</a><br/></td></tr>
+<tr class="separator:ab6224bcc6a8257063a6aa2b02aaf3f11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfd581482735be1e7bdf5f1a4fb24ac2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#abfd581482735be1e7bdf5f1a4fb24ac2">quickSortAsc</a> (INX *inx, const T *, INX nr, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> multiThread=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> rec_lim=128)</td></tr>
+<tr class="memdesc:abfd581482735be1e7bdf5f1a4fb24ac2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quicksort in ascending order.  <a href="#abfd581482735be1e7bdf5f1a4fb24ac2">More...</a><br/></td></tr>
+<tr class="separator:abfd581482735be1e7bdf5f1a4fb24ac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a317f8227bd9ab25511ae9abb2dde8681"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a317f8227bd9ab25511ae9abb2dde8681">heapSortAsc</a> (INX *inx, const T *, INX nr)</td></tr>
+<tr class="memdesc:a317f8227bd9ab25511ae9abb2dde8681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Heapsort in ascending order.  <a href="#a317f8227bd9ab25511ae9abb2dde8681">More...</a><br/></td></tr>
+<tr class="separator:a317f8227bd9ab25511ae9abb2dde8681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e43d43b45f75ff3439d7f6b449c0e25"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a8e43d43b45f75ff3439d7f6b449c0e25">heapAscSiftDown</a> (INX *inx, INX, INX, const T *)</td></tr>
+<tr class="memdesc:a8e43d43b45f75ff3439d7f6b449c0e25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for ascending heapsort.  <a href="#a8e43d43b45f75ff3439d7f6b449c0e25">More...</a><br/></td></tr>
+<tr class="separator:a8e43d43b45f75ff3439d7f6b449c0e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5107a73fa068769324b68c54fea1db61"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a5107a73fa068769324b68c54fea1db61">insSortAsc</a> (INX *inx, const T *, INX nr, int option)</td></tr>
+<tr class="memdesc:a5107a73fa068769324b68c54fea1db61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion sort in ascending order.  <a href="#a5107a73fa068769324b68c54fea1db61">More...</a><br/></td></tr>
+<tr class="separator:a5107a73fa068769324b68c54fea1db61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e63eff97fd4967b0b0c183bf089f58e"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a8e63eff97fd4967b0b0c183bf089f58e">insSortAscDup</a> (INX *inx, const T *, INX nr)</td></tr>
+<tr class="memdesc:a8e63eff97fd4967b0b0c183bf089f58e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion sort in ascending order allowing duplicates.  <a href="#a8e63eff97fd4967b0b0c183bf089f58e">More...</a><br/></td></tr>
+<tr class="separator:a8e63eff97fd4967b0b0c183bf089f58e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01b1220d61803c7dfce6123eef2391e4"><td class="memItemLeft" align="right" valign="top">static INX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1GenSortIndirect.html#a01b1220d61803c7dfce6123eef2391e4">insSortAscNoDup</a> (INX *inx, const T *, INX nr)</td></tr>
+<tr class="memdesc:a01b1220d61803c7dfce6123eef2391e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion sort in ascending order allowing no duplicates.  <a href="#a01b1220d61803c7dfce6123eef2391e4">More...</a><br/></td></tr>
+<tr class="separator:a01b1220d61803c7dfce6123eef2391e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;class T&gt;<br/>
-class casacore::GenSortIndirect&lt; T &gt;</h3>
+<div class="textblock"><h3>template&lt;class T, class INX = uInt&gt;<br/>
+class casacore::GenSortIndirect&lt; T, INX &gt;</h3>
 
 <p>General indirect sort functions. </p>
 <h3>Intended use:</h3>
@@ -168,33 +169,33 @@ class casacore::GenSortIndirect&lt; T &gt;</h3>
 <h3>Synopsis</h3>
 <p>This class is similar to <a class="el" href="classcasacore_1_1GenSort.html">GenSort</a>. The only difference is that the functions in this class sort indirectly instead of in-place. They return the result of the sort as an sorted vector of indices This is slower, because an extra indirection is involved in each comparison. However, this sort allows to sort const data. Another advantage is that this sort is always stable (i.e. equal values are kept in their original order). </p>
 
-<p>Definition at line <a class="el" href="GenSort_8h_source.html#l00206">206</a> of file <a class="el" href="GenSort_8h_source.html">GenSort.h</a>.</p>
+<p>Definition at line <a class="el" href="GenSort_8h_source.html#l00205">205</a> of file <a class="el" href="GenSort_8h_source.html">GenSort.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ab6bd2e9634b8aabfad5abde810c6df52"></a>
+<a class="anchor" id="a8e43d43b45f75ff3439d7f6b449c0e25"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::heapAscSiftDown </td>
+          <td class="memname">static void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::heapAscSiftDown </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -220,19 +221,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a48b4a35540719e85556c6bad2cc11fd5"></a>
+<a class="anchor" id="a69d023ca7a6397421dad06775bba6113"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::heapSort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::heapSort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -244,7 +245,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -276,19 +277,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a61227e8133b6f346804c7c396fd5a187"></a>
+<a class="anchor" id="a317f8227bd9ab25511ae9abb2dde8681"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::heapSortAsc </td>
+          <td class="memname">static void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::heapSortAsc </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -300,7 +301,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>&#160;</td>
         </tr>
         <tr>
@@ -320,19 +321,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ae5c1f0c9077290b76a341ea566ca7293"></a>
+<a class="anchor" id="a47b04b26d9ed1a182f0a2dfc01d50ee4"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::insSort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::insSort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -344,7 +345,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -376,19 +377,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a433bfe7859602f1e77ca493aee4ae985"></a>
+<a class="anchor" id="a5107a73fa068769324b68c54fea1db61"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::insSortAsc </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::insSortAsc </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -400,7 +401,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -426,19 +427,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a94ae3abbcf9905285bbbfcbe32b99bd6"></a>
+<a class="anchor" id="a8e63eff97fd4967b0b0c183bf089f58e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::insSortAscDup </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::insSortAscDup </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -450,7 +451,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>&#160;</td>
         </tr>
         <tr>
@@ -471,19 +472,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0229d1718ca1f6624494e68a872ca97b"></a>
+<a class="anchor" id="a01b1220d61803c7dfce6123eef2391e4"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::insSortAscNoDup </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::insSortAscNoDup </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -495,7 +496,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>&#160;</td>
         </tr>
         <tr>
@@ -516,17 +517,17 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a76108704616bbe374d6b0c3c01552a1d"></a>
+<a class="anchor" id="ab6224bcc6a8257063a6aa2b02aaf3f11"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::isAscending </td>
+          <td class="memname">int <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::isAscending </td>
           <td>(</td>
           <td class="paramtype">const T *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -534,13 +535,13 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>index1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>index2</em>&#160;</td>
         </tr>
         <tr>
@@ -563,17 +564,17 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="adadb21653ef4ce50f685f3932099ca66"></a>
+<a class="anchor" id="aa53efe62ba6b5cf2b0c5ed34a80d5e87"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::kthLargest </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::kthLargest </td>
           <td>(</td>
           <td class="paramtype">T *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -581,13 +582,13 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>k</em>&#160;</td>
         </tr>
         <tr>
@@ -607,17 +608,17 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a2cb12c51f2afafd51d93dd634eeec215"></a>
+<a class="anchor" id="aa12726ccefb22d473e5b0c158d4af1d0"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>* <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::merge </td>
+          <td class="memname">static INX* <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::merge </td>
           <td>(</td>
           <td class="paramtype">const T *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -625,31 +626,31 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>tmp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nrrec</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>index</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nparts</em>&#160;</td>
         </tr>
         <tr>
@@ -671,19 +672,19 @@ If possible, merging the parts is done in parallel (using OpenMP). </p>
 
 </div>
 </div>
-<a class="anchor" id="ae3c1e04f891e16d8478b4b928b6231e9"></a>
+<a class="anchor" id="a9d18ad16416b389dd5f4c86c40504e5b"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::parSort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::parSort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -695,7 +696,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -734,19 +735,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a79f0f1f41b6fc4cd069386fec6368b7b"></a>
+<a class="anchor" id="a05012d859f98f65cabf9d0977dc28413"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::quickSort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::quickSort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -758,7 +759,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -791,19 +792,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a8d994955eddea4b885aab2490459d893"></a>
+<a class="anchor" id="abfd581482735be1e7bdf5f1a4fb24ac2"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::quickSortAsc </td>
+          <td class="memname">static void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::quickSortAsc </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> *&#160;</td>
+          <td class="paramtype">INX *&#160;</td>
           <td class="paramname"><em>inx</em>, </td>
         </tr>
         <tr>
@@ -815,7 +816,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -847,19 +848,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0ef2a8b589717ef1ac770a15ec1be0a4"></a>
+<a class="anchor" id="adff542649f54f81329270a000bdee3b4"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::sort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::sort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; INX &gt; &amp;&#160;</td>
           <td class="paramname"><em>indexVector</em>, </td>
         </tr>
         <tr>
@@ -871,7 +872,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -902,23 +903,23 @@ template&lt;class T &gt; </div>
 <p><a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> a C-array containing <code>nr</code> <code>T</code>-type objects. </p>
 <p>The resulting index vector gives the sorted indices. </p>
 
-<p>Referenced by <a class="el" href="GenSort_8h_source.html#l00358">casacore::genSort()</a>.</p>
+<p>Referenced by <a class="el" href="GenSort_8h_source.html#l00357">casacore::genSort()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a532c79b21206ab00a1fd48649efd5d2b"></a>
+<a class="anchor" id="a199f3c982f0d46133f5d3c0a351180b6"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::sort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::sort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; INX &gt; &amp;&#160;</td>
           <td class="paramname"><em>indexVector</em>, </td>
         </tr>
         <tr>
@@ -957,19 +958,19 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ab0df38f13f839b1cc49369f3dec92b12"></a>
+<a class="anchor" id="a6889a16a06f984ff5d5d752e09627370"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX  = uInt&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::sort </td>
+          <td class="memname">static INX <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::sort </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; INX &gt; &amp;&#160;</td>
           <td class="paramname"><em>indexVector</em>, </td>
         </tr>
         <tr>
@@ -981,7 +982,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">INX&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -1014,25 +1015,25 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a41d56db40ec8aff9b5a731c1923ef83c"></a>
+<a class="anchor" id="a33cb2c78d84ae30e698504696bbc5e41"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , class INX &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T &gt;::swapInx </td>
+          <td class="memname">void <a class="el" href="classcasacore_1_1GenSortIndirect.html">casacore::GenSortIndirect</a>&lt; T, INX &gt;::swapInx </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;&#160;</td>
+          <td class="paramtype">INX &amp;&#160;</td>
           <td class="paramname"><em>index1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;&#160;</td>
+          <td class="paramtype">INX &amp;&#160;</td>
           <td class="paramname"><em>index2</em>&#160;</td>
         </tr>
         <tr>

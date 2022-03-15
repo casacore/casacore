@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -89,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="classcasacore_1_1DataManInfo-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">casacore::DataManInfo Class Reference<div class="ingroups"><a class="el" href="group__DataMan__module.html">DataMan_module</a></div></div>  </div>
@@ -111,11 +113,26 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac71cc927803dbe837c2031180d5784b1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Record.html">Record</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#ac71cc927803dbe837c2031180d5784b1">adjustStMan</a> (const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dmType, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> replaceMSM=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>)</td></tr>
 <tr class="memdesc:ac71cc927803dbe837c2031180d5784b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace non-writable storage managers by the given storage manager (usually <a class="el" href="classcasacore_1_1StandardStMan.html" title="The Standard Storage Manager. ">StandardStMan</a> or <a class="el" href="classcasacore_1_1IncrementalStMan.html" title="The Incremental Storage Manager. ">IncrementalStMan</a>).  <a href="#ac71cc927803dbe837c2031180d5784b1">More...</a><br/></td></tr>
 <tr class="separator:ac71cc927803dbe837c2031180d5784b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95b75a22e5f4d752a36a735731143dd0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a95b75a22e5f4d752a36a735731143dd0">makeUniqueNames</a> (<a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo)</td></tr>
+<tr class="memdesc:a95b75a22e5f4d752a36a735731143dd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensure all data manager names in <code>dminfo</code> are unique by adding a unique suffix as needed (using function <code>uniqueName</code>).  <a href="#a95b75a22e5f4d752a36a735731143dd0">More...</a><br/></td></tr>
+<tr class="separator:a95b75a22e5f4d752a36a735731143dd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a031bcac1b2f1ff46108c3c5819031c3b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a031bcac1b2f1ff46108c3c5819031c3b">uniqueName</a> (const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> excludeDM=-1)</td></tr>
+<tr class="memdesc:a031bcac1b2f1ff46108c3c5819031c3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a unique data manager name by testing if the name already exist in of the the dm-s in the <code>dminfo</code> record.  <a href="#a031bcac1b2f1ff46108c3c5819031c3b">More...</a><br/></td></tr>
+<tr class="separator:a031bcac1b2f1ff46108c3c5819031c3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acab20d3cd337e77a39ce2296396baf0e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#acab20d3cd337e77a39ce2296396baf0e">mergeInfo</a> (<a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;)</td></tr>
+<tr class="memdesc:acab20d3cd337e77a39ce2296396baf0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merge the second DataManagerInfo record into the first one.  <a href="#acab20d3cd337e77a39ce2296396baf0e">More...</a><br/></td></tr>
+<tr class="separator:acab20d3cd337e77a39ce2296396baf0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a641d0abf13e179bf080c785b6773e386"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Record.html">Record</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a641d0abf13e179bf080c785b6773e386">finalizeMerge</a> (const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo)</td></tr>
+<tr class="memdesc:a641d0abf13e179bf080c785b6773e386"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalize the merge by merging the dminfo record with the table description to create the final dminfo record.  <a href="#a641d0abf13e179bf080c785b6773e386">More...</a><br/></td></tr>
+<tr class="separator:a641d0abf13e179bf080c785b6773e386"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19e08fa23d05a335bb09f8f2ec4af70a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a19e08fa23d05a335bb09f8f2ec4af70a">adaptNames</a> (<a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;)</td></tr>
+<tr class="memdesc:a19e08fa23d05a335bb09f8f2ec4af70a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adapt data manager names in dminfo if already used in the table.  <a href="#a19e08fa23d05a335bb09f8f2ec4af70a">More...</a><br/></td></tr>
+<tr class="separator:a19e08fa23d05a335bb09f8f2ec4af70a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a560c7c29908d82d091b6d2a9290bfa65"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a560c7c29908d82d091b6d2a9290bfa65">setTiledStMan</a> (<a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;columns, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dmType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dmName, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;defaultTileShape)</td></tr>
 <tr class="memdesc:a560c7c29908d82d091b6d2a9290bfa65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the data managers of the given column(s) to the given tiled storage manager (normally <a class="el" href="classcasacore_1_1TiledShapeStMan.html" title="Tiled Data Storage Manager using the shape as id. ">TiledShapeStMan</a> or <a class="el" href="classcasacore_1_1TiledColumnStMan.html" title="Tiled Column Storage Manager. ">TiledColumnStMan</a>).  <a href="#a560c7c29908d82d091b6d2a9290bfa65">More...</a><br/></td></tr>
 <tr class="separator:a560c7c29908d82d091b6d2a9290bfa65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4947aecaa01c5c6d4fa2b2bbf411a0f3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a4947aecaa01c5c6d4fa2b2bbf411a0f3">removeDminfoColumns</a> (<a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;columns, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;keepType=<a class="el" href="classcasacore_1_1String.html">String</a>())</td></tr>
-<tr class="memdesc:a4947aecaa01c5c6d4fa2b2bbf411a0f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the columns from the dminfo record and return a vector with the names of the columns actually removed.  <a href="#a4947aecaa01c5c6d4fa2b2bbf411a0f3">More...</a><br/></td></tr>
+<tr class="memdesc:a4947aecaa01c5c6d4fa2b2bbf411a0f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the given columns from the dminfo record and return a vector containing the names of the columns actually removed.  <a href="#a4947aecaa01c5c6d4fa2b2bbf411a0f3">More...</a><br/></td></tr>
 <tr class="separator:a4947aecaa01c5c6d4fa2b2bbf411a0f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d6efdccf993c3d4048c6dc031e7c29f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a8d6efdccf993c3d4048c6dc031e7c29f">adjustDesc</a> (<a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;tabDesc, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo)</td></tr>
 <tr class="memdesc:a8d6efdccf993c3d4048c6dc031e7c29f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust the data manager types and groups and the hypercolumn definitions to the actual data manager info.  <a href="#a8d6efdccf993c3d4048c6dc031e7c29f">More...</a><br/></td></tr>
@@ -123,6 +140,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a23404593dd953ea189b8da05a09a7c04"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a23404593dd953ea189b8da05a09a7c04">showDataManStats</a> (const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;, ostream &amp;)</td></tr>
 <tr class="memdesc:a23404593dd953ea189b8da05a09a7c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> IO statistics.  <a href="#a23404593dd953ea189b8da05a09a7c04">More...</a><br/></td></tr>
 <tr class="separator:a23404593dd953ea189b8da05a09a7c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a1b0d6da4b76d3c25544014c8a0ea5f41"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManInfo.html#a1b0d6da4b76d3c25544014c8a0ea5f41">mergeColumns</a> (<a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> dmindex, <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;newdm)</td></tr>
+<tr class="memdesc:a1b0d6da4b76d3c25544014c8a0ea5f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merge the column info of data manager definitions.  <a href="#a1b0d6da4b76d3c25544014c8a0ea5f41">More...</a><br/></td></tr>
+<tr class="separator:a1b0d6da4b76d3c25544014c8a0ea5f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class with static functions to manipulate a datamanager record. </p>
@@ -144,7 +167,18 @@ Static Public Member Functions</h2></td></tr>
 <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> </li>
 </ul>
 <h3>Synopsis</h3>
-<p><a class="el" href="classcasacore_1_1DataManInfo.html" title="Class with static functions to manipulate a datamanager record. ">DataManInfo</a> is a class to manipulate a datamanager info record and table descriptions. Often an existing table description and datamanager info record is used to construct a new table, but it might be necessary to change it somewhat. </p>
+<p><a class="el" href="classcasacore_1_1DataManInfo.html" title="Class with static functions to manipulate a datamanager record. ">DataManInfo</a> is a class to manipulate a datamanager info record and/or table description. A datamanager info record tells how the columns are stored. It is a <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a> containing the following fields. If omitted, a default is used. </p>
+<ul>
+<li>
+TYPE: data manager type (default <a class="el" href="classcasacore_1_1StandardStMan.html" title="The Standard Storage Manager. ">StandardStMan</a>) </li>
+<li>
+NAME: unique data manager name </li>
+<li>
+COLUMNS: string vector containing columns stored with this data manager </li>
+<li>
+SPEC: subrecord containing data manager specific parameters </li>
+</ul>
+<p>Often an existing table description and datamanager info record are used to construct a new table, but it might be necessary to change it somewhat. </p>
 <ul>
 <li>
 Remove hypercolumn definitions from a table description. They are not needed anymore and can be a burden. </li>
@@ -152,11 +186,48 @@ Remove hypercolumn definitions from a table description. They are not needed any
 Replace non-writable storage managers (like LofarStMan) by a writable one. </li>
 <li>
 Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html" title="Tiled Data Storage Manager. ">TiledDataStMan</a> by <a class="el" href="classcasacore_1_1TiledShapeStMan.html" title="Tiled Data Storage Manager using the shape as id. ">TiledShapeStMan</a>. </li>
+<li>
+Merge two datamanager info records. </li>
 </ul>
-<p>Such things might be necessary in a number </p>
 
-<p>Definition at line <a class="el" href="DataManInfo_8h_source.html#l00078">78</a> of file <a class="el" href="DataManInfo_8h_source.html">DataManInfo.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManInfo_8h_source.html#l00085">85</a> of file <a class="el" href="DataManInfo_8h_source.html">DataManInfo.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a19e08fa23d05a335bb09f8f2ec4af70a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void casacore::DataManInfo::adaptNames </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dminfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adapt data manager names in dminfo if already used in the table. </p>
+
+</div>
+</div>
 <a class="anchor" id="a8d6efdccf993c3d4048c6dc031e7c29f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -190,8 +261,6 @@ Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html"
 </div><div class="memdoc">
 
 <p>Adjust the data manager types and groups and the hypercolumn definitions to the actual data manager info. </p>
-
-<p>Referenced by <a class="el" href="TableCopy_8h_source.html#l00260">casacore::TableCopy::adjustDesc()</a>.</p>
 
 </div>
 </div>
@@ -236,8 +305,6 @@ Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html"
 <p>Replace non-writable storage managers by the given storage manager (usually <a class="el" href="classcasacore_1_1StandardStMan.html" title="The Standard Storage Manager. ">StandardStMan</a> or <a class="el" href="classcasacore_1_1IncrementalStMan.html" title="The Incremental Storage Manager. ">IncrementalStMan</a>). </p>
 <p>It is possible to specify the new data manager type to use. This is needed for special storage managers like LofarStMan. If replaceMSM is set, <a class="el" href="classcasacore_1_1MemoryStMan.html" title="Memory-based table storage manager class. ">MemoryStMan</a> is also replaced. </p>
 
-<p>Referenced by <a class="el" href="TableCopy_8h_source.html#l00234">casacore::TableCopy::adjustStMan()</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="abc49201aac4ec4bebe01c5eff853960d"></a>
@@ -275,7 +342,155 @@ Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html"
 <p>Replace <a class="el" href="classcasacore_1_1TiledDataStMan.html" title="Tiled Data Storage Manager. ">TiledDataStMan</a> by <a class="el" href="classcasacore_1_1TiledShapeStMan.html" title="Tiled Data Storage Manager using the shape as id. ">TiledShapeStMan</a> in the DataManagerInfo record. </p>
 <p>Since <a class="el" href="classcasacore_1_1TiledShapeStMan.html" title="Tiled Data Storage Manager using the shape as id. ">TiledShapeStMan</a> does not support ID columns, they are adjusted as well in tabDesc and dminfo. </p>
 
-<p>Referenced by <a class="el" href="TableCopy_8h_source.html#l00229">casacore::TableCopy::adjustTSM()</a>.</p>
+</div>
+</div>
+<a class="anchor" id="a641d0abf13e179bf080c785b6773e386"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classcasacore_1_1Record.html">Record</a> casacore::DataManInfo::finalizeMerge </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dminfo</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Finalize the merge by merging the dminfo record with the table description to create the final dminfo record. </p>
+<p>The final dminfo record gets all columns in the <a class="el" href="classcasacore_1_1TableDesc.html" title="Define the structure of a Casacore table. ">TableDesc</a> object. The given dminfo object is leading in determining a column's data manager. If not present, the data manager type given in the <a class="el" href="classcasacore_1_1TableDesc.html" title="Define the structure of a Casacore table. ">TableDesc</a> is used. If empty, <a class="el" href="classcasacore_1_1StandardStMan.html" title="The Standard Storage Manager. ">StandardStMan</a> is used. </p>
+
+</div>
+</div>
+<a class="anchor" id="a95b75a22e5f4d752a36a735731143dd0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void casacore::DataManInfo::makeUniqueNames </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dminfo</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Ensure all data manager names in <code>dminfo</code> are unique by adding a unique suffix as needed (using function <code>uniqueName</code>). </p>
+<p>Empty names are set to the name of the first column (DM if no columns). </p>
+
+</div>
+</div>
+<a class="anchor" id="a1b0d6da4b76d3c25544014c8a0ea5f41"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void casacore::DataManInfo::mergeColumns </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dminfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramname"><em>dmindex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>newdm</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Merge the column info of data manager definitions. </p>
+<p>It is used by <code>mergeInfo</code> to merge the new dm definitions into the existing one defined in <code>dminfo</code>. It is called for each new dm, whose name/type already exists as the dmindex-th record in dminfo. It does two things: </p>
+<ul>
+<li>
+Columns mentioned in newdm are removed from dm definitions in dminfo. </li>
+<li>
+Columns in the dmindex-th dminfo record are merged into newdm, so mergeInfo can redefine that dm in the overall dminfo. </li>
+</ul>
+
+</div>
+</div>
+<a class="anchor" id="acab20d3cd337e77a39ce2296396baf0e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void casacore::DataManInfo::mergeInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Merge the second DataManagerInfo record into the first one. </p>
+<p>If the same column occurs in both records, the second one is used. Columns having the same data manager name are combined in one data manager. If the second one has no name, it is considered to be equal to the first data manager of that type. </p>
 
 </div>
 </div>
@@ -317,10 +532,8 @@ Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html"
 </table>
 </div><div class="memdoc">
 
-<p>Remove the columns from the dminfo record and return a vector with the names of the columns actually removed. </p>
-<p>The columns having a data manager matching <code>keepType</code> are not removed. Matching means that the beginning of the data manager name have to match, so "Tiled" matches all tiled storagemanagers. </p>
-
-<p>Referenced by <a class="el" href="TableCopy_8h_source.html#l00253">casacore::TableCopy::removeDminfoColumns()</a>.</p>
+<p>Remove the given columns from the dminfo record and return a vector containing the names of the columns actually removed. </p>
+<p>The columns having a data manager matching <code>keepType</code> are not removed. Matching means that the beginning of the data manager name has to match, so "Tiled" matches all tiled storagemanagers. </p>
 
 </div>
 </div>
@@ -403,8 +616,6 @@ Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html"
 <p>Set the data managers of the given column(s) to the given tiled storage manager (normally <a class="el" href="classcasacore_1_1TiledShapeStMan.html" title="Tiled Data Storage Manager using the shape as id. ">TiledShapeStMan</a> or <a class="el" href="classcasacore_1_1TiledColumnStMan.html" title="Tiled Column Storage Manager. ">TiledColumnStMan</a>). </p>
 <p>The columns are combined in a single storage manager, so the function has to be called multiple times if, say, one per column is needed. The columns already having a tiled storage manager are not changed. </p>
 
-<p>Referenced by <a class="el" href="TableCopy_8h_source.html#l00242">casacore::TableCopy::setTiledStMan()</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a23404593dd953ea189b8da05a09a7c04"></a>
@@ -440,6 +651,49 @@ Replace the deprecated <a class="el" href="classcasacore_1_1TiledDataStMan.html"
 </div><div class="memdoc">
 
 <p>Show the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> IO statistics. </p>
+
+</div>
+</div>
+<a class="anchor" id="a031bcac1b2f1ff46108c3c5819031c3b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classcasacore_1_1String.html">String</a> casacore::DataManInfo::uniqueName </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dminfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>excludeDM</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return a unique data manager name by testing if the name already exist in of the the dm-s in the <code>dminfo</code> record. </p>
+<p>If so, a suffix _i is added where i makes the name unique. The excludeDM-th dm is excluded, so comparing to itself can be avoided. </p>
 
 </div>
 </div>

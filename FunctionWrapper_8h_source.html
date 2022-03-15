@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,14 +121,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCIMATH_FUNCTIONWRAPPER_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/scimath/Functionals/WrapperParam.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Utilities/CountedPtr.h&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">//# Forward declarations</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span>Vector;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="WrapperParam_8h.html">casacore/scimath/Functionals/WrapperParam.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="CountedPtr_8h.html">casacore/casa/Utilities/CountedPtr.h</a>&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ArrayFwd_8h.html">casacore/casa/Arrays/ArrayFwd.h</a>&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">//# Forward declarations</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classcasacore_1_1WrapperBase.html">   40</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span><a class="code" href="classcasacore_1_1WrapperBase.html">WrapperBase</a>;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">// &lt;summary&gt; Construct nD function objects from C++ functions </span></div>
@@ -245,14 +246,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;casacore/scimath/Functionals/FunctionWrapper.tcc&gt;</span></div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">#endif //# CASACORE_NO_AUTO_TEMPLATES</span></div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector</a></div><div class="ttdoc">A 1-D Specialization of the Array class. </div><div class="ttdef"><b>Definition:</b> <a href="ArrayIO_8h_source.html#l00045">ArrayIO.h:45</a></div></div>
+<div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector&lt; T &gt;</a></div></div>
 <div class="ttc" id="namespacecasacore_html_abb6e2c1bac472ca1ebadadf96cc8426f"><div class="ttname"><a href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">casacore::Int</a></div><div class="ttdeci">int Int</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00050">aipstype.h:50</a></div></div>
+<div class="ttc" id="CountedPtr_8h_html"><div class="ttname"><a href="CountedPtr_8h.html">CountedPtr.h</a></div></div>
+<div class="ttc" id="ArrayFwd_8h_html"><div class="ttname"><a href="ArrayFwd_8h.html">ArrayFwd.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1WrapperParam_html"><div class="ttname"><a href="classcasacore_1_1WrapperParam.html">casacore::WrapperParam</a></div><div class="ttdoc">Parameter handling for wrapped function objects. </div><div class="ttdef"><b>Definition:</b> <a href="WrapperParam_8h_source.html#l00081">WrapperParam.h:81</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1FunctionWrapper_html_ab349e0dfa27be2c1b89c3ae83bd1fa86"><div class="ttname"><a href="classcasacore_1_1FunctionWrapper.html#ab349e0dfa27be2c1b89c3ae83bd1fa86">casacore::FunctionWrapper::operator=</a></div><div class="ttdeci">FunctionWrapper&lt; T &gt; &amp; operator=(const FunctionWrapper&lt; T &gt; &amp;other)</div><div class="ttdoc">Copy assignment (reference semantics) </div></div>
 <div class="ttc" id="classcasacore_1_1FunctionWrapper_html"><div class="ttname"><a href="classcasacore_1_1FunctionWrapper.html">casacore::FunctionWrapper</a></div><div class="ttdoc">Construct nD function objects from C++ functions. </div><div class="ttdef"><b>Definition:</b> <a href="FunctionWrapper_8h_source.html#l00085">FunctionWrapper.h:85</a></div></div>
 <div class="ttc" id="classcasacore_1_1FunctionWrapper_html_adee1bfe75b5cf8561765ce0795bc1c42"><div class="ttname"><a href="classcasacore_1_1FunctionWrapper.html#adee1bfe75b5cf8561765ce0795bc1c42">casacore::FunctionWrapper::clone</a></div><div class="ttdeci">virtual Function&lt; T &gt; * clone() const </div><div class="ttdoc">Return a copy of this object from the heap. </div><div class="ttdef"><b>Definition:</b> <a href="FunctionWrapper_8h_source.html#l00136">FunctionWrapper.h:136</a></div></div>
 <div class="ttc" id="classcasacore_1_1CountedPtr_html"><div class="ttname"><a href="classcasacore_1_1CountedPtr.html">casacore::CountedPtr</a></div><div class="ttdoc">Referenced counted pointer for constant data. </div><div class="ttdef"><b>Definition:</b> <a href="CountedPtr_8h_source.html#l00080">CountedPtr.h:80</a></div></div>
-<div class="ttc" id="classcasacore_1_1Function_html"><div class="ttname"><a href="classcasacore_1_1Function.html">casacore::Function</a></div><div class="ttdoc">Numerical functional interface class. </div><div class="ttdef"><b>Definition:</b> <a href="GenericL2Fit_8h_source.html#l00047">GenericL2Fit.h:47</a></div></div>
+<div class="ttc" id="classcasacore_1_1Function_html"><div class="ttname"><a href="classcasacore_1_1Function.html">casacore::Function</a></div><div class="ttdoc">Numerical functional interface class. </div><div class="ttdef"><b>Definition:</b> <a href="GenericL2Fit_8h_source.html#l00046">GenericL2Fit.h:46</a></div></div>
 <div class="ttc" id="namespacecasacore_html_abd5691f9e13acc90d901e4007740ff98"><div class="ttname"><a href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a></div><div class="ttdeci">bool Bool</div><div class="ttdoc">Define the standard types used by Casacore. </div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00042">aipstype.h:42</a></div></div>
 <div class="ttc" id="classcasacore_1_1FunctionWrapper_html_a8311db0f8ba66d58082608e1b92fb9d0"><div class="ttname"><a href="classcasacore_1_1FunctionWrapper.html#a8311db0f8ba66d58082608e1b92fb9d0">casacore::FunctionWrapper::eval</a></div><div class="ttdeci">virtual T eval(typename Function&lt; T &gt;::FunctionArg x) const </div><div class="ttdoc">Evaluate the function at x. </div></div>
 <div class="ttc" id="classcasacore_1_1FunctionWrapper_html_a9bbab16ebfa8ef40c41161d56ad63fb9"><div class="ttname"><a href="classcasacore_1_1FunctionWrapper.html#a9bbab16ebfa8ef40c41161d56ad63fb9">casacore::FunctionWrapper::doit_p</a></div><div class="ttdeci">CountedPtr&lt; WrapperBase&lt; T &gt; &gt; doit_p</div><div class="ttdoc">The function aid object. </div><div class="ttdef"><b>Definition:</b> <a href="FunctionWrapper_8h_source.html#l00143">FunctionWrapper.h:143</a></div></div>
@@ -261,6 +265,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1FunctionWrapper_html_a4076477aa87fcb3f87355a34317cc6e4"><div class="ttname"><a href="classcasacore_1_1FunctionWrapper.html#a4076477aa87fcb3f87355a34317cc6e4">casacore::FunctionWrapper::ndim</a></div><div class="ttdeci">virtual uInt ndim() const </div><div class="ttdoc">Get the dimensionality. </div></div>
 <div class="ttc" id="classcasacore_1_1WrapperBase_html"><div class="ttname"><a href="classcasacore_1_1WrapperBase.html">casacore::WrapperBase</a></div><div class="ttdoc">Aid in constructing function objects from C++ functions. </div><div class="ttdef"><b>Definition:</b> <a href="FunctionWrapper_8h_source.html#l00040">FunctionWrapper.h:40</a></div></div>
 <div class="ttc" id="namespacecasacore_html_a5c559d8d8bf2ae7f67b439955d6be88a"><div class="ttname"><a href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a></div><div class="ttdeci">unsigned int uInt</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00051">aipstype.h:51</a></div></div>
+<div class="ttc" id="WrapperParam_8h_html"><div class="ttname"><a href="WrapperParam_8h.html">WrapperParam.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

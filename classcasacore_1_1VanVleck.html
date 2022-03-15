@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -208,9 +209,9 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:a0d0d42d3ec19c4989405e57a7f8374de"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VanVleck.html#a0d0d42d3ec19c4989405e57a7f8374de">itsQx1Qy1diffs</a></td></tr>
 <tr class="memdesc:a0d0d42d3ec19c4989405e57a7f8374de"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is (Qx1[i+1]-Qx1[i])*(Qy1[j+1]*Qy1[j])  <a href="#a0d0d42d3ec19c4989405e57a7f8374de">More...</a><br/></td></tr>
 <tr class="separator:a0d0d42d3ec19c4989405e57a7f8374de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9435e54dc30e4abb9e3fcf2477b5eaa4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VanVleck.html#a9435e54dc30e4abb9e3fcf2477b5eaa4">theirMutex</a></td></tr>
-<tr class="memdesc:a9435e54dc30e4abb9e3fcf2477b5eaa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mutex to make the functions thread-safe.  <a href="#a9435e54dc30e4abb9e3fcf2477b5eaa4">More...</a><br/></td></tr>
-<tr class="separator:a9435e54dc30e4abb9e3fcf2477b5eaa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad83f26a1fc909f195982544f8001d658"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VanVleck.html#ad83f26a1fc909f195982544f8001d658">theirMutex</a></td></tr>
+<tr class="memdesc:ad83f26a1fc909f195982544f8001d658"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mutex to make the functions thread-safe.  <a href="#ad83f26a1fc909f195982544f8001d658">More...</a><br/></td></tr>
+<tr class="separator:ad83f26a1fc909f195982544f8001d658"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A class of static functions to aid with vanVleck corrections of lag data. </p>
@@ -1312,7 +1313,7 @@ The inverse error functions may be more generally useful. It exists here only as
 
 </div>
 </div>
-<a class="anchor" id="a9435e54dc30e4abb9e3fcf2477b5eaa4"></a>
+<a class="anchor" id="ad83f26a1fc909f195982544f8001d658"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1320,7 +1321,7 @@ The inverse error functions may be more generally useful. It exists here only as
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::VanVleck::theirMutex</td>
+          <td class="memname">std::mutex casacore::VanVleck::theirMutex</td>
         </tr>
       </table>
   </td>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -408,9 +409,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a55f3f4cc6384d9dbc8da1ac1ddd8373a inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a916bd7a674beb5e30b91502a472c6650 inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ArrayColumn.html">ArrayColumn</a>&lt; <a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a916bd7a674beb5e30b91502a472c6650">weightSpectrumCorrected</a> () const </td></tr>
 <tr class="separator:a916bd7a674beb5e30b91502a472c6650 inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f52ee45e931160e98833a84aa55061e inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a3f52ee45e931160e98833a84aa55061e">nrow</a> () const </td></tr>
-<tr class="memdesc:a3f52ee45e931160e98833a84aa55061e inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that returns the number of rows in any of the columns.  <a href="#a3f52ee45e931160e98833a84aa55061e">More...</a><br/></td></tr>
-<tr class="separator:a3f52ee45e931160e98833a84aa55061e inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a431f2746f4e7e0fb4fdd629e150968b9 inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a431f2746f4e7e0fb4fdd629e150968b9">nrow</a> () const </td></tr>
+<tr class="memdesc:a431f2746f4e7e0fb4fdd629e150968b9 inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that returns the number of rows in any of the columns.  <a href="#a431f2746f4e7e0fb4fdd629e150968b9">More...</a><br/></td></tr>
+<tr class="separator:a431f2746f4e7e0fb4fdd629e150968b9 inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66338fafcd8bb7c36f804763658e4b3a inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a66338fafcd8bb7c36f804763658e4b3a">flagCategories</a> () const </td></tr>
 <tr class="memdesc:a66338fafcd8bb7c36f804763658e4b3a inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the category labels for the FLAG_CATEGORY column.  <a href="#a66338fafcd8bb7c36f804763658e4b3a">More...</a><br/></td></tr>
 <tr class="separator:a66338fafcd8bb7c36f804763658e4b3a inherit pub_methods_classcasacore_1_1MSMainColumns"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -505,7 +506,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="line"><span class="comment">// change name of antenna on row 3 in antenna table</span></div>
 <div class="line">msc.antenna().name().put(3,<span class="stringliteral">&quot;NewAnt-3&quot;</span>);</div>
 </div><!-- fragment --><h3>Motivation</h3>
-<p>Having to type long lists of Scalar and <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> column declarations gets very tedious. This class attempts to relieve some of that tedium, while at the same time concentrating all the declarations in one place, making Type errors in the column declaration (only caught at run-time) less probable. Type errors in the use of the columns is caught at compile time.</p>
+<p>Having to type long lists of Scalar and <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> column declarations gets very tedious. This class attempts to relieve some of that tedium, while at the same time concentrating all the declarations in one place, making Type errors in the column declaration (only caught at run-time) less probable. Type errors in the use of the columns is caught at compile time.</p>
 <h3>To Do</h3>
 <ul>
 <li>

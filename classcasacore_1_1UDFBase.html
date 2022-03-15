@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -198,9 +199,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae3859a8d0d9285094953033a90b2bb66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#ae3859a8d0d9285094953033a90b2bb66">disableApplySelection</a> ()</td></tr>
 <tr class="memdesc:ae3859a8d0d9285094953033a90b2bb66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do not apply the selection.  <a href="#ae3859a8d0d9285094953033a90b2bb66">More...</a><br/></td></tr>
 <tr class="separator:ae3859a8d0d9285094953033a90b2bb66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51b364b841edf7e2c4ca736584f2b29c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#a51b364b841edf7e2c4ca736584f2b29c">applySelection</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="memdesc:a51b364b841edf7e2c4ca736584f2b29c"><td class="mdescLeft">&#160;</td><td class="mdescRight">If needed, let the UDF re-create column objects for a selection of rows.  <a href="#a51b364b841edf7e2c4ca736584f2b29c">More...</a><br/></td></tr>
-<tr class="separator:a51b364b841edf7e2c4ca736584f2b29c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a733cb58ffe0186206c10e3142cdf43fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#a733cb58ffe0186206c10e3142cdf43fb">applySelection</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="memdesc:a733cb58ffe0186206c10e3142cdf43fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">If needed, let the UDF re-create column objects for a selection of rows.  <a href="#a733cb58ffe0186206c10e3142cdf43fb">More...</a><br/></td></tr>
+<tr class="separator:a733cb58ffe0186206c10e3142cdf43fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -237,9 +238,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a8aec4c74a3156bd17090736bc4d58b83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#a8aec4c74a3156bd17090736bc4d58b83">setAggregate</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1UDFBase.html#aa0c91d23dae3e87a9fac5e5bc62d0d26">isAggregate</a>)</td></tr>
 <tr class="memdesc:a8aec4c74a3156bd17090736bc4d58b83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define if the UDF is an aggregate function (usually used in GROUPBY).  <a href="#a8aec4c74a3156bd17090736bc4d58b83">More...</a><br/></td></tr>
 <tr class="separator:a8aec4c74a3156bd17090736bc4d58b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af77cde8b5cd941b79f54cf3d2fe01d1b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#af77cde8b5cd941b79f54cf3d2fe01d1b">recreateColumnObjects</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="memdesc:af77cde8b5cd941b79f54cf3d2fe01d1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let a derived class recreate its column objects in case a selection has to be applied.  <a href="#af77cde8b5cd941b79f54cf3d2fe01d1b">More...</a><br/></td></tr>
-<tr class="separator:af77cde8b5cd941b79f54cf3d2fe01d1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7af204494710a507e21436e8ef25580"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#aa7af204494710a507e21436e8ef25580">recreateColumnObjects</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="memdesc:aa7af204494710a507e21436e8ef25580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let a derived class recreate its column objects in case a selection has to be applied.  <a href="#aa7af204494710a507e21436e8ef25580">More...</a><br/></td></tr>
+<tr class="separator:aa7af204494710a507e21436e8ef25580"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -273,8 +274,8 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:adfc2048c7f34884efd690becab45f92d"><td class="memItemLeft" align="right" valign="top">static map&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <br class="typebreak"/>
 <a class="el" href="classcasacore_1_1UDFBase.html#a8e6622536d87feee2f02c7d3a77e1a49">MakeUDFObject</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#adfc2048c7f34884efd690becab45f92d">theirRegistry</a></td></tr>
 <tr class="separator:adfc2048c7f34884efd690becab45f92d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a963d5ed222049420cef1c83cf83a9706"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#a963d5ed222049420cef1c83cf83a9706">theirMutex</a></td></tr>
-<tr class="separator:a963d5ed222049420cef1c83cf83a9706"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6d33b366cea947a0ff78877d7f521a2"><td class="memItemLeft" align="right" valign="top">static std::recursive_mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1UDFBase.html#ad6d33b366cea947a0ff78877d7f521a2">theirMutex</a></td></tr>
+<tr class="separator:ad6d33b366cea947a0ff78877d7f521a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract base class for a user-defined TaQL function. </p>
@@ -393,7 +394,7 @@ It returns True if the function argument matches 1. It can be seen that it check
 <div class="line">};</div>
 </div><!-- fragment --><p>More examples of UDF functions can be found in classes <a class="el" href="classcasacore_1_1UDFMSCal.html" title="TaQL UDFs to calculate derived MS values. ">UDFMSCal</a> and <a class="el" href="classcasacore_1_1DirectionUDF.html" title="TaQL UDFs for Direction conversions. ">DirectionUDF</a>. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00236">236</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00235">235</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a8e6622536d87feee2f02c7d3a77e1a49"></a>
 <div class="memitem">
@@ -407,7 +408,7 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>The signature of a global or static member function creating an object of the UDF. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00241">241</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00240">240</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
 </div>
 </div>
@@ -455,14 +456,14 @@ It returns True if the function argument matches 1. It can be seen that it check
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a51b364b841edf7e2c4ca736584f2b29c"></a>
+<a class="anchor" id="a733cb58ffe0186206c10e3142cdf43fb"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void casacore::UDFBase::applySelection </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -534,9 +535,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Get the data type. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00339">339</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00338">338</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00375">itsDataType</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00374">itsDataType</a>.</p>
 
 </div>
 </div>
@@ -563,9 +564,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Do not apply the selection. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00360">360</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00359">359</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="aipstype_8h_source.html#l00044">casacore::False</a>, and <a class="el" href="UDFBase_8h_source.html#l00382">itsApplySelection</a>.</p>
+<p>References <a class="el" href="aipstype_8h_source.html#l00044">casacore::False</a>, and <a class="el" href="UDFBase_8h_source.html#l00381">itsApplySelection</a>.</p>
 
 </div>
 </div>
@@ -766,9 +767,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Get the attributes. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00272">272</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00271">271</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00379">itsAttributes</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00378">itsAttributes</a>.</p>
 
 </div>
 </div>
@@ -994,9 +995,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Get the unit. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00268">268</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00267">267</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00378">itsUnit</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00377">itsUnit</a>.</p>
 
 </div>
 </div>
@@ -1057,9 +1058,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Tell if the UDF is an aggregate function. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00356">356</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00355">355</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00381">itsIsAggregate</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00380">itsIsAggregate</a>.</p>
 
 <p>Referenced by <a class="el" href="ExprUDFNode_8h_source.html#l00087">casacore::TableExprUDFNode::isAggregate()</a>.</p>
 
@@ -1088,9 +1089,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Tell if the UDF gives a constant result. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00352">352</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00351">351</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00380">itsIsConstant</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00379">itsIsConstant</a>.</p>
 
 </div>
 </div>
@@ -1118,9 +1119,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 <p>Get the dimensionality of the results. </p>
 <p>(0=scalar, -1=array with variable ndim, &gt;0=array with fixed ndim </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00344">344</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00343">343</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00376">itsNDim</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00375">itsNDim</a>.</p>
 
 </div>
 </div>
@@ -1147,13 +1148,13 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Get the operands. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00288">288</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00287">287</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00374">itsOperands</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00373">itsOperands</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af77cde8b5cd941b79f54cf3d2fe01d1b"></a>
+<a class="anchor" id="aa7af204494710a507e21436e8ef25580"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1163,7 +1164,7 @@ It returns True if the function argument matches 1. It can be seen that it check
         <tr>
           <td class="memname">virtual void casacore::UDFBase::recreateColumnObjects </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1178,7 +1179,7 @@ It returns True if the function argument matches 1. It can be seen that it check
 <p>Let a derived class recreate its column objects in case a selection has to be applied. </p>
 <p>The default implementation does nothing. </p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1UDFMSCal.html#a8c209ce8d6bc1fad429fcbf627e47815">casacore::UDFMSCal</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1UDFMSCal.html#a701345af74b61bf81703ee24c4c37b9b">casacore::UDFMSCal</a>.</p>
 
 </div>
 </div>
@@ -1470,9 +1471,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 
 <p>Get the result shape if the same for all results. </p>
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00348">348</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00347">347</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>References <a class="el" href="UDFBase_8h_source.html#l00377">itsShape</a>.</p>
+<p>References <a class="el" href="UDFBase_8h_source.html#l00376">itsShape</a>.</p>
 
 </div>
 </div>
@@ -1495,9 +1496,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00382">382</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00381">381</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00360">disableApplySelection()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00359">disableApplySelection()</a>.</p>
 
 </div>
 </div>
@@ -1519,9 +1520,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00379">379</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00378">378</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00272">getAttributes()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00271">getAttributes()</a>.</p>
 
 </div>
 </div>
@@ -1543,9 +1544,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00375">375</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00374">374</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00339">dataType()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00338">dataType()</a>.</p>
 
 </div>
 </div>
@@ -1567,9 +1568,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00381">381</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00380">380</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00356">isAggregate()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00355">isAggregate()</a>.</p>
 
 </div>
 </div>
@@ -1591,9 +1592,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00380">380</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00379">379</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00352">isConstant()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00351">isConstant()</a>.</p>
 
 </div>
 </div>
@@ -1615,9 +1616,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00376">376</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00375">375</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00344">ndim()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00343">ndim()</a>.</p>
 
 </div>
 </div>
@@ -1639,9 +1640,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00374">374</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00373">373</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00288">operands()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00287">operands()</a>.</p>
 
 </div>
 </div>
@@ -1663,9 +1664,9 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00377">377</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00376">376</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00348">shape()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00347">shape()</a>.</p>
 
 </div>
 </div>
@@ -1687,13 +1688,13 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00378">378</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00377">377</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00268">getUnit()</a>.</p>
+<p>Referenced by <a class="el" href="UDFBase_8h_source.html#l00267">getUnit()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a963d5ed222049420cef1c83cf83a9706"></a>
+<a class="anchor" id="ad6d33b366cea947a0ff78877d7f521a2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1701,7 +1702,7 @@ It returns True if the function argument matches 1. It can be seen that it check
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::UDFBase::theirMutex</td>
+          <td class="memname">std::recursive_mutex casacore::UDFBase::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -1711,7 +1712,7 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00389">389</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00388">388</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
 </div>
 </div>
@@ -1733,7 +1734,7 @@ It returns True if the function argument matches 1. It can be seen that it check
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00388">388</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
+<p>Definition at line <a class="el" href="UDFBase_8h_source.html#l00387">387</a> of file <a class="el" href="UDFBase_8h_source.html">UDFBase.h</a>.</p>
 
 </div>
 </div>

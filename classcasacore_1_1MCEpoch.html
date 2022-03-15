@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -233,9 +234,9 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:a1c9687e08b45edb6e87c144370b7d4ba"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCEpoch.html#a1c9687e08b45edb6e87c144370b7d4ba">FromTo_p</a> [<a class="el" href="classcasacore_1_1MEpoch.html#a2fc56ab6e1a929ff816161d18fd2f9e8a68a2a657fa356281e856fdcf715d1892">MEpoch::N_Types</a>][<a class="el" href="classcasacore_1_1MEpoch.html#a2fc56ab6e1a929ff816161d18fd2f9e8a68a2a657fa356281e856fdcf715d1892">MEpoch::N_Types</a>]</td></tr>
 <tr class="memdesc:a1c9687e08b45edb6e87c144370b7d4ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transition matrix.  <a href="#a1c9687e08b45edb6e87c144370b7d4ba">More...</a><br/></td></tr>
 <tr class="separator:a1c9687e08b45edb6e87c144370b7d4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adad01332d207f26d69500a5b017e4c2f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCEpoch.html#adad01332d207f26d69500a5b017e4c2f">theirInitOnce</a></td></tr>
-<tr class="memdesc:adad01332d207f26d69500a5b017e4c2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#adad01332d207f26d69500a5b017e4c2f">More...</a><br/></td></tr>
-<tr class="separator:adad01332d207f26d69500a5b017e4c2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a824b1baf261f7a673ed1f07d45bf15"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCEpoch.html#a9a824b1baf261f7a673ed1f07d45bf15">theirInitOnceFlag</a></td></tr>
+<tr class="memdesc:a9a824b1baf261f7a673ed1f07d45bf15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#a9a824b1baf261f7a673ed1f07d45bf15">More...</a><br/></td></tr>
+<tr class="separator:a9a824b1baf261f7a673ed1f07d45bf15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -287,9 +288,9 @@ Additional Inherited Members</h2></td></tr>
 <p>Contains state machinery and caching for actual conversions</p>
 <h3>Example</h3>
 <p><a class="anchor" id="MCEpoch_example1"></a> Convert (with all steps explicit) a UTC to an IAT time. </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MEpoch.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MCEpoch.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Measures_8h.html">casacore/measures/Measures.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MEpoch_8h.html">casacore/measures/Measures/MEpoch.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MCEpoch_8h.html">casacore/measures/Measures/MCEpoch.h</a>&gt;</span></div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;TAI for UTC = MJD(50237.29): &quot;</span> &lt;&lt;</div>
 <div class="line"><a class="code" href="classcasacore_1_1MEpoch.html#a7efea6bfd1420cb15b28f154d794cad0">MEpoch::Convert</a>(MEpoch(MVEpoch(<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(50237.29, <span class="stringliteral">&quot;d&quot;</span>)),</div>
 <div class="line"><a class="code" href="classcasacore_1_1MEpoch.html#a54dde91c14ace58b893c48cc04f94de6">MEpoch::Ref</a>(<a class="code" href="classcasacore_1_1MEpoch.html#a2fc56ab6e1a929ff816161d18fd2f9e8adc86b244d2d6bfc428f23cd8dc9026e9">MEpoch::UTC</a>)),</div>
@@ -302,7 +303,7 @@ Additional Inherited Members</h2></td></tr>
 Nothing I know </li>
 </ul>
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00092">92</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00091">91</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="ab0a0b9d7a31d04a034b5f861a024a146"></a>
 <div class="memitem">
@@ -377,7 +378,7 @@ Nothing I know </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00117">117</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00116">116</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>
@@ -744,7 +745,7 @@ Nothing I know </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00097">97</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00096">96</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>
@@ -769,7 +770,7 @@ Nothing I know </li>
 
 <p>Transition matrix. </p>
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00160">160</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00159">159</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>
@@ -791,7 +792,7 @@ Nothing I know </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00153">153</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00152">152</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>
@@ -813,11 +814,11 @@ Nothing I know </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00154">154</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00153">153</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="adad01332d207f26d69500a5b017e4c2f"></a>
+<a class="anchor" id="a9a824b1baf261f7a673ed1f07d45bf15"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -825,7 +826,7 @@ Nothing I know </li>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> casacore::MCEpoch::theirInitOnce</td>
+          <td class="memname">std::once_flag casacore::MCEpoch::theirInitOnceFlag</td>
         </tr>
       </table>
   </td>
@@ -837,7 +838,7 @@ Nothing I know </li>
 
 <p>Object to ensure safe multi-threaded lazy single initialization. </p>
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00162">162</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00161">161</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>
@@ -861,7 +862,7 @@ Nothing I know </li>
 
 <p>Transition list. </p>
 
-<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00158">158</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEpoch_8h_source.html#l00157">157</a> of file <a class="el" href="MCEpoch_8h_source.html">MCEpoch.h</a>.</p>
 
 </div>
 </div>

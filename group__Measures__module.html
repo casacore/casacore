@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -243,8 +244,8 @@ Classes</h2></td></tr>
 <p>The <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> model deals with measures (i.e. quantities with a reference frame). Measures are handled in the <a href="#Measure">Measure</a> section (see <a class="el" href="classcasacore_1_1Measure.html">Measure.h</a>).</p>
 <h3>Includes</h3>
 <p>Including the <code><a class="el" href="Measures_8h.html">measures/Measures.h</a></code> will take care of all includes necessary for the handling of Units and Quantities, and the general <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> interface. For the use of individual Measures, the appropiate include files should be added. E.g. to be able to handle Directions, the following includes could be given: </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MDirection.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Measures_8h.html">casacore/measures/Measures.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MDirection_8h.html">casacore/measures/Measures/MDirection.h</a>&gt;</span></div>
 </div><!-- fragment --><p> An inclusion of the appropiate measure file, will also take care of the connected measure value (in this case <code><a class="el" href="classcasacore_1_1MVDirection.html" title="Vector of three direction cosines. ">MVDirection</a></code>). However, if only the value suffices, it can be included on its own (from the Quanta directory).<br/>
  When doing actual conversions (see <a class="el" href="classcasacore_1_1MeasConvert.html" title="Conversion of Measures. ">MeasConvert</a> later on), by using the explicit <a class="el" href="classcasacore_1_1Measure.html#a4a933983bfd09a670b1a82fdfae41245" title="Each Measure should have typedefs of the form: ">Measure::Convert</a> types, the description of the actual conversions (called MCmeasure, e.g. <a class="el" href="MCEpoch_8h.html">MCEpoch.h</a>) should be included as well; in adition to general <a class="el" href="MeasConvert_8h.html">MeasConvert.h</a>.</p>
 <p><a class="anchor" id="Measure"></a><a class="anchor" id="Measure"></a></p>
@@ -309,16 +310,13 @@ Classes</h2></td></tr>
 <li>
 <a class="el" href="classcasacore_1_1Muvw.html">Muvw</a> : a uvw value </li>
 <li>
-<a class="el" href="classcasacore_1_1MEarthMagnetic.html">MEarthMagnetic</a> : an earth' magnetic field value </li>
+<a class="el" href="classcasacore_1_1MEarthMagnetic.html">MEarthMagnetic</a> : an earth magnetic field value </li>
 </ul>
-<p>Others are being, or could be, considered.<br/>
- <br/>
+<p>Others are being, or could be, considered. <br/>
 <b>Tip:</b><em> The current set can be deduced from the class list at the end of the html version of this module description;</em><br/>
-<br/>
  </p>
 <p>The main role of the <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> (and related) classes is to be able to convert an observed (or to be calculated) physical entity from one reference frame to another, e.g. a J2000 coordinate to galactic coordinates, or an TAI time to a local sidereal time (LAST). Simple unit conversions (e.g. an angle from mrad to deg), or calculations with values with attached units, are sufficiently catered for by the <a class="el" href="group__Quanta__module.html#Quanta_module_anchor">Quanta</a> module classes. </p>
-<p>Each measure has a <em>value</em> (<a class="el" href="classcasacore_1_1MeasValue.html">MeasValue</a>) and a <em>reference</em> (<a class="el" href="classcasacore_1_1MeasRef.html">MeasRef</a>).<br/>
- The values are in general measure specific, weakly derived from <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a>, and named with an initial <em>MV</em>. Examples are: </p>
+<p>Each measure has a <em>value</em> (<a class="el" href="classcasacore_1_1MeasValue.html">MeasValue</a>) and a <em>reference</em> (<a class="el" href="classcasacore_1_1MeasRef.html">MeasRef</a>). The values are in general measure specific, weakly derived from <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a>, and named with an initial <em>MV</em>. Examples are: </p>
 <ul>
 <li>
 <a class="el" href="classcasacore_1_1MVEpoch.html">MVEpoch</a> (a high precision single value), </li>
@@ -327,8 +325,7 @@ Classes</h2></td></tr>
 <li>
 <a class="el" href="classcasacore_1_1MVPosition.html">MVPosition</a> (3-vector positions), </li>
 <li>
-<a class="el" href="classcasacore_1_1MVFrequency.html">MVFrequency</a> (single, unit depended value).<br/>
- </li>
+<a class="el" href="classcasacore_1_1MVFrequency.html">MVFrequency</a> (single, unit depended value). </li>
 <li>
 <a class="el" href="classcasacore_1_1MVDoppler.html">MVDoppler</a> (single, unit depended value) </li>
 <li>
@@ -439,7 +436,7 @@ Classes</h2></td></tr>
 <div class="fragment"><div class="line"><a class="code" href="classcasacore_1_1MDirection.html#a1eeb7f4eaf045fcf4eb41de390822429">MDirection::Convert</a> conv(<a class="code" href="classcasacore_1_1MDirection.html#a800c0954dea1bda35a2f2b04939b3ed4">MDirection::Ref</a>(<a class="code" href="classcasacore_1_1MDirection.html#a8d354a7146791b1bcb1a6a7d73bca2d1a7efd5b49f04df1e469358cada77c7259">MDirection::B1950</a>),</div>
 <div class="line"><a class="code" href="classcasacore_1_1MDirection.html#a800c0954dea1bda35a2f2b04939b3ed4">MDirection::Ref</a>(<a class="code" href="classcasacore_1_1MDirection.html#a8d354a7146791b1bcb1a6a7d73bca2d1ab4560518808e7cd4baa13fec1113a73a">MDirection::J2000</a>));</div>
 <div class="line"><span class="comment">// We have some coordinates from somewhere, say coord(0:N-1):</span></div>
-<div class="line"><span class="keywordflow">for</span> (<a class="code" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> i=0; i&lt;<a class="code" href="ArrayAccessor_8h.html#aa99313f9f1e98192e3702515aac79c0a">N</a>; i++) {</div>
+<div class="line"><span class="keywordflow">for</span> (<a class="code" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> i=0; i&lt;<a class="code" href="ArrayAccessor_8h.html#aa6d2142329b3b553ce8a778f8239db33">N</a>; i++) {</div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;B1950: &quot;</span> &lt;&lt; coord(i) &lt;&lt; <span class="stringliteral">&quot;= J2000: &quot;</span> &lt;&lt;</div>
 <div class="line">conv(coord(i)) &lt;&lt; endl;</div>
 <div class="line">};</div>

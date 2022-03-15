@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -248,8 +249,8 @@ Private Attributes</h2></td></tr>
 Static Private Attributes</h2></td></tr>
 <tr class="memitem:ab6a9a4d6e18c5d6993bb7f54efae8c41"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1AipsrcValue.html">AipsrcValue</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1AipsrcValue_3_01Bool_01_4.html#ab6a9a4d6e18c5d6993bb7f54efae8c41">myp_p</a></td></tr>
 <tr class="separator:ab6a9a4d6e18c5d6993bb7f54efae8c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad91508a196679f4c81af274a6bff3861"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1AipsrcValue_3_01Bool_01_4.html#ad91508a196679f4c81af274a6bff3861">theirMutex</a></td></tr>
-<tr class="separator:ad91508a196679f4c81af274a6bff3861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8d727451ba143d41a1cad2aa29e5555"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1AipsrcValue_3_01Bool_01_4.html#ae8d727451ba143d41a1cad2aa29e5555">theirMutex</a></td></tr>
+<tr class="separator:ae8d727451ba143d41a1cad2aa29e5555"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -274,7 +275,7 @@ class casacore::AipsrcValue&lt; Bool &gt;</h3>
 <p>Specialization of <a class="el" href="classcasacore_1_1AipsrcValue.html" title="Class to read values from the Aipsrc general resource files. ">AipsrcValue</a> for Bool. </p>
 <h3>Synopsis</h3>
 
-<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00251">251</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
+<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00253">253</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a78ca76404d8d2c8399c614f022728883"></a>
 <div class="memitem">
@@ -564,7 +565,7 @@ class casacore::AipsrcValue&lt; Bool &gt;</h3>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00262">262</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
+<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00264">264</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
 
 </div>
 </div>
@@ -586,11 +587,11 @@ class casacore::AipsrcValue&lt; Bool &gt;</h3>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00265">265</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
+<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00267">267</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad91508a196679f4c81af274a6bff3861"></a>
+<a class="anchor" id="ae8d727451ba143d41a1cad2aa29e5555"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -598,7 +599,7 @@ class casacore::AipsrcValue&lt; Bool &gt;</h3>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> <a class="el" href="classcasacore_1_1AipsrcValue.html">casacore::AipsrcValue</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;::theirMutex</td>
+          <td class="memname">std::mutex <a class="el" href="classcasacore_1_1AipsrcValue.html">casacore::AipsrcValue</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -608,7 +609,7 @@ class casacore::AipsrcValue&lt; Bool &gt;</h3>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00263">263</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
+<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00265">265</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
 
 </div>
 </div>
@@ -630,7 +631,7 @@ class casacore::AipsrcValue&lt; Bool &gt;</h3>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00264">264</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
+<p>Definition at line <a class="el" href="AipsrcValue_8h_source.html#l00266">266</a> of file <a class="el" href="AipsrcValue_8h_source.html">AipsrcValue.h</a>.</p>
 
 </div>
 </div>

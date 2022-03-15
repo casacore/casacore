@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -172,10 +173,10 @@ The <a class="el" href="namespacecasacore_1_1C.html">C</a> language int main(int
 <div class="line">36  } <span class="keywordflow">catch</span> (AipsIOError x) {</div>
 <div class="line">37       ; <span class="comment">// nothing - no more data</span></div>
 <div class="line">38  } <span class="keywordflow">catch</span> (AllocError x) {</div>
-<div class="line">39       cerr &lt;&lt; <span class="stringliteral">&quot;AllocError : &quot;</span> &lt;&lt; x.getMesg() &lt;&lt; endl;</div>
+<div class="line">39       cerr &lt;&lt; <span class="stringliteral">&quot;AllocError : &quot;</span> &lt;&lt; x.what() &lt;&lt; endl;</div>
 <div class="line">40       cerr &lt;&lt; <span class="stringliteral">&quot;Size is : &quot;</span> &lt;&lt; x.size() &lt;&lt; endl;</div>
-<div class="line">41  } <span class="keywordflow">catch</span> (AipsError x) {</div>
-<div class="line">42       cerr &lt;&lt; <span class="stringliteral">&quot;aipserror: error &quot;</span> &lt;&lt; x.getMesg() &lt;&lt; endl;</div>
+<div class="line">41  } <span class="keywordflow">catch</span> (std::exception x) {</div>
+<div class="line">42       cerr &lt;&lt; <span class="stringliteral">&quot;aipserror: error &quot;</span> &lt;&lt; x.what() &lt;&lt; endl;</div>
 <div class="line">43       <span class="keywordflow">return</span> 1;</div>
 <div class="line">44  }</div>
 <div class="line">45</div>

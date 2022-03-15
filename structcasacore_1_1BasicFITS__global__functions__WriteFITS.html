@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -116,7 +117,7 @@ Public Member Functions</h2></td></tr>
 <dd>before2004/08/25</dd>
 </dl>
 <h3>Synopsis</h3>
-<p>Write a <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> file from a Casacore <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>. Returns False if there is any proglem. The data is written into the primary data array, and the data is written in floating point (BITPIX=-32). If the operation fails, ErrorMessage will contain an informative error. At the moment this probably isn't bulletproof enough at finding errors on output.</p>
+<p>Write a <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> file from a Casacore <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>. Returns False if there is any proglem. The data is written into the primary data array, and the data is written in floating point (BITPIX=-32). If the operation fails, ErrorMessage will contain an informative error. At the moment this probably isn't bulletproof enough at finding errors on output.</p>
 <p>If any of unitName, axisNames, refPixel, refLocation, or delta are non-null, the corresponding <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> keywords (BUNIT, CTYPEn, CRPIXn, CRVALn, CDELTn) are set. CRVALn is corrected for the difference in addressing between <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> and Casacore (1 vs. 0). If a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> pointer is non-null, then that vector must be the correct length.</p>
 <p>If keywords is non-null, the contents are written out as <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> keywords. The names are upper-cased and truncated to 8 characters (yuck). No other validation is done (e.g. that SIMPLE or NAXIS is not in the map).</p>
 <p>If objectName is non-null, the OBJECT keyword is set.</p>

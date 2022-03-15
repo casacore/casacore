@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -196,9 +197,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a928fcffed1e2bcbef8b36700ea2e5b79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCube.html#a928fcffed1e2bcbef8b36700ea2e5b79">matches</a> (const <a class="el" href="classcasacore_1_1PtrBlock.html">PtrBlock</a>&lt; <a class="el" href="classcasacore_1_1TSMColumn.html">TSMColumn</a> * &gt; &amp;idColSet, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;idValues)</td></tr>
 <tr class="memdesc:a928fcffed1e2bcbef8b36700ea2e5b79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if the id values match.  <a href="#a928fcffed1e2bcbef8b36700ea2e5b79">More...</a><br/></td></tr>
 <tr class="separator:a928fcffed1e2bcbef8b36700ea2e5b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ca96d4104bb9f896bfaf22275b03eaa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCube.html#a0ca96d4104bb9f896bfaf22275b03eaa">extend</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;coordValues, const <a class="el" href="classcasacore_1_1TSMColumn.html">TSMColumn</a> *lastCoordColumn)</td></tr>
-<tr class="memdesc:a0ca96d4104bb9f896bfaf22275b03eaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extend the last dimension of the cube with the given number.  <a href="#a0ca96d4104bb9f896bfaf22275b03eaa">More...</a><br/></td></tr>
-<tr class="separator:a0ca96d4104bb9f896bfaf22275b03eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e762b77e1e2200e899bde2085782f5c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCube.html#a5e762b77e1e2200e899bde2085782f5c">extend</a> (<a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a> nr, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;coordValues, const <a class="el" href="classcasacore_1_1TSMColumn.html">TSMColumn</a> *lastCoordColumn)</td></tr>
+<tr class="memdesc:a5e762b77e1e2200e899bde2085782f5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extend the last dimension of the cube with the given number.  <a href="#a5e762b77e1e2200e899bde2085782f5c">More...</a><br/></td></tr>
+<tr class="separator:a5e762b77e1e2200e899bde2085782f5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0756a6c5714c7097d257a70f0b5bbdd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCube.html#a0756a6c5714c7097d257a70f0b5bbdd7">extendCoordinates</a> (const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;coordValues, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;coordName, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">length</a>)</td></tr>
 <tr class="memdesc:a0756a6c5714c7097d257a70f0b5bbdd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extend the coordinates vector for the given coordinate to the given length with the given coordValues.  <a href="#a0756a6c5714c7097d257a70f0b5bbdd7">More...</a><br/></td></tr>
 <tr class="separator:a0756a6c5714c7097d257a70f0b5bbdd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1198,7 +1199,7 @@ If the cubeshape is empty, the hypercube is still undefined and can be added lat
 
 </div>
 </div>
-<a class="anchor" id="a0ca96d4104bb9f896bfaf22275b03eaa"></a>
+<a class="anchor" id="a5e762b77e1e2200e899bde2085782f5c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1208,7 +1209,7 @@ If the cubeshape is empty, the hypercube is still undefined and can be added lat
         <tr>
           <td class="memname">virtual void casacore::TSMCube::extend </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a>&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -1239,7 +1240,7 @@ If the cubeshape is empty, the hypercube is still undefined and can be added lat
 <p>Extend the last dimension of the cube with the given number. </p>
 <p>The record can contain the coordinates of the elements added. </p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1TSMCubeMMap.html#abe1963752bad8c93812413d677d8e497">casacore::TSMCubeMMap</a>, and <a class="el" href="classcasacore_1_1TSMCubeBuff.html#a9d28c552b87f8363f8995279d2e139ac">casacore::TSMCubeBuff</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1TSMCubeMMap.html#a5dd291a11306cc7865ff16d8048a7715">casacore::TSMCubeMMap</a>, and <a class="el" href="classcasacore_1_1TSMCubeBuff.html#a04892ea99413f89f786f6ec08ddc38dc">casacore::TSMCubeBuff</a>.</p>
 
 </div>
 </div>
@@ -1914,7 +1915,7 @@ The flag <code>userSet</code> inidicates if the cache size is set by the user (b
 
 <p>Definition at line <a class="el" href="TSMCube_8h_source.html#l00470">470</a> of file <a class="el" href="TSMCube_8h_source.html">TSMCube.h</a>.</p>
 
-<p>References <a class="el" href="TSMCube_8h_source.html#l00402">lastColSlice_p</a>, <a class="el" href="IPosition_8h_source.html#l00544">casacore::IPosition::nelements()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#aec59107726dbb8de7781862a408fa2f0">casacore::IPosition::resize()</a>.</p>
+<p>References <a class="el" href="TSMCube_8h_source.html#l00402">lastColSlice_p</a>, <a class="el" href="IPosition_8h_source.html#l00568">casacore::IPosition::nelements()</a>, and <a class="el" href="classcasacore_1_1IPosition.html#a5459e34b65e1998d2b5d14274256b684">casacore::IPosition::resize()</a>.</p>
 
 </div>
 </div>

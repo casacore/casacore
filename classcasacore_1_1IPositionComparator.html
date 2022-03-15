@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -95,6 +96,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
+<p>Allows a way for <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to be used as keys in a std::map.  
+ <a href="classcasacore_1_1IPositionComparator.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="IPosition_8h_source.html">IPosition.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for casacore::IPositionComparator:</div>
@@ -108,12 +112,13 @@ Inheritance diagram for casacore::IPositionComparator:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d2584501b7b08448ea8164d6c389f15"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1IPositionComparator.html#a0d2584501b7b08448ea8164d6c389f15">operator()</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;lhs, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;rhs) const </td></tr>
-<tr class="memdesc:a0d2584501b7b08448ea8164d6c389f15"><td class="mdescLeft">&#160;</td><td class="mdescRight">allows a way for <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to be used as keys in a std::map  <a href="#a0d2584501b7b08448ea8164d6c389f15">More...</a><br/></td></tr>
+<tr class="memdesc:a0d2584501b7b08448ea8164d6c389f15"><td class="mdescLeft">&#160;</td><td class="mdescRight">if sizes aren't equal, returns true if lhs.size() &lt; rhs.size(), false otherwise.  <a href="#a0d2584501b7b08448ea8164d6c389f15">More...</a><br/></td></tr>
 <tr class="separator:a0d2584501b7b08448ea8164d6c389f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00419">419</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
+<div class="textblock"><p>Allows a way for <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to be used as keys in a std::map. </p>
+
+<p>Definition at line <a class="el" href="IPosition_8h_source.html#l00444">444</a> of file <a class="el" href="IPosition_8h_source.html">IPosition.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a0d2584501b7b08448ea8164d6c389f15"></a>
 <div class="memitem">
@@ -139,8 +144,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>allows a way for <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> to be used as keys in a std::map </p>
-<p>if sizes aren't equal, returns True if lhs.size() &lt; rhs.size(), false otherwise. If sizes are equal, does an element by element comparison. The first corresponding elements that are not equal, returns True if the rhs element is less than the lhs element, False otherwise. Returns False if all elements are equal. </p>
+<p>if sizes aren't equal, returns true if lhs.size() &lt; rhs.size(), false otherwise. </p>
+<p>If sizes are equal, does an element by element comparison. The first corresponding elements that are not equal, returns true if the rhs element is less than the lhs element, false otherwise. Returns false if all elements are equal. </p>
 
 </div>
 </div>

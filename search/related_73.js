@@ -10,5 +10,6 @@ var searchData=
   ['statisticsalgorithmfactory',['StatisticsAlgorithmFactory',['../classcasacore_1_1StatisticsAlgorithmFactory.html#a4e8cbbf20f279d261a343286c5600a81',1,'casacore::StatisticsAlgorithmFactory']]],
   ['stddev',['stddev',['../classcasacore_1_1LatticeExprNode.html#a698e592f2efcc80d4a8df6c6d044f7cb',1,'casacore::LatticeExprNode']]],
   ['string',['String',['../classcasacore_1_1SubString.html#a7fb804f7dc96dd9f705c84095f37f1ca',1,'casacore::SubString']]],
-  ['sum',['sum',['../classcasacore_1_1LatticeExprNode.html#ad1d5f931e6db784761329d50c0f4a44d',1,'casacore::LatticeExprNode']]]
+  ['sum',['sum',['../classcasacore_1_1LatticeExprNode.html#ad1d5f931e6db784761329d50c0f4a44d',1,'casacore::LatticeExprNode']]],
+  ['swap',['swap',['../classcasacore_1_1Array.html#a0632a4c3d541a4d5b70d2d0d31718396',1,'casacore::Array']]]
 ];

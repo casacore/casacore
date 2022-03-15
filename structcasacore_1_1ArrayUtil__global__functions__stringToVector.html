@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -95,20 +96,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Split a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> into its elements.  
+<p>Split a std::string into its elements.  
  <a href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a29735c1bb26409cd8326bcafc17028fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#a29735c1bb26409cd8326bcafc17028fc">stringToVector</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;string, char delim= ',')</td></tr>
-<tr class="separator:a29735c1bb26409cd8326bcafc17028fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70d426a36f1d860dc6d6855168d5267d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#a70d426a36f1d860dc6d6855168d5267d">stringToVector</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;string, const <a class="el" href="classcasacore_1_1Regex.html">Regex</a> &amp;delim)</td></tr>
-<tr class="separator:a70d426a36f1d860dc6d6855168d5267d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8209db0b942c328c4ab5221a6c84028"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#ae8209db0b942c328c4ab5221a6c84028">strToVector</a> (const std::string &amp;string, char delim= ',')</td></tr>
+<tr class="separator:ae8209db0b942c328c4ab5221a6c84028"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12e715dac8c49124a540ea77610fe980"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#a12e715dac8c49124a540ea77610fe980">strToVector</a> (const std::string &amp;string, const std::regex &amp;delim)</td></tr>
+<tr class="separator:a12e715dac8c49124a540ea77610fe980"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Split a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> into its elements. </p>
+<div class="textblock"><p>Split a std::string into its elements. </p>
 <p><a class="anchor" id="ArrayUtil_summary"></a> </p>
 <h3>Review Status</h3>
 <dl>
@@ -124,41 +125,41 @@ Public Member Functions</h2></td></tr>
 <li>
 <a class="el" href="classcasacore_1_1Vector.html">Vector</a> </li>
 <li>
-<a class="el" href="classcasacore_1_1String.html">String</a> </li>
+std::string </li>
 </ul>
 <h3>Etymology</h3>
-<p>stringToVector converts a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> to a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of Strings.</p>
+<p>stringToVector converts a std::string to a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of Strings.</p>
 <h3>Synopsis</h3>
-<p>The function stringToVector splits a string into its elements using the given delimiter and returns them in a <code><a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a>&lt;<a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a>&gt;</code>. The default delimiter is a comma (,). It is very useful when using a function taking a vector of strings as shown in the example. </p>
-<p>A more advanced way of splitting a string is by using a <a class="el" href="classcasacore_1_1Regex.html">regular expression</a> as delimiter. It makes it, for example, possible to treat whitespace around a comma as part of the delimiter (as shown in an example below). </p>
+<p>The function stringToVector splits a string into its elements using the given delimiter and returns them in a <code><a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a>&lt;std::string&gt;</code>. The default delimiter is a comma (,). It is very useful when using a function taking a vector of strings as shown in the example. </p>
+<p>A more advanced way of splitting a string is by using a regular expression as delimiter. It makes it, for example, possible to treat whitespace around a comma as part of the delimiter (as shown in an example below). </p>
 <p>A string with length 0 results in a zero-length vector.</p>
 <h3>Motivation</h3>
 <p>As shown in the example, the function stringToVector makes passing a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> of Strings far easier.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="ArrayUtil_example1"></a></p>
-<div class="fragment"><div class="line">someFunction (<a class="code" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#a29735c1bb26409cd8326bcafc17028fc">stringToVector</a> (<span class="stringliteral">&quot;abc,def,,gh&quot;</span>));</div>
+<div class="fragment"><div class="line">someFunction (<a class="code" href="ArrayIO_8h.html#a8fc155a8dfaabbc7e2ef6f67775a70aa">stringToVector</a> (<span class="stringliteral">&quot;abc,def,,gh&quot;</span>));</div>
 </div><!-- fragment --><p> This results in a vector with 4 elements containing the values "abc", "def ", "", and "gh". The vector is passed to someFunction. This is far easier than having to do it as: </p>
-<div class="fragment"><div class="line">Vector&lt;String&gt; vector(4);</div>
+<div class="fragment"><div class="line">Vector&lt;std::string&gt; vector(4);</div>
 <div class="line">vector(0) = <span class="stringliteral">&quot;abc&quot;</span>;</div>
 <div class="line">vector(1) = <span class="stringliteral">&quot;def &quot;</span>;</div>
 <div class="line">vector(2) = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line">vector(3) = <span class="stringliteral">&quot;gh&quot;</span>;</div>
 <div class="line">someFunction (vector);</div>
 </div><!-- fragment --><p>The following example shows how to use a delimiter consisting of a comma surrounded by possible whitespace. </p>
-<div class="fragment"><div class="line">Vector&lt;String&gt; result = <a class="code" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#a29735c1bb26409cd8326bcafc17028fc">stringToVector</a> (source, Regex(<span class="stringliteral">&quot; *, *&quot;</span>));</div>
+<div class="fragment"><div class="line">Vector&lt;std::string&gt; result = <a class="code" href="ArrayIO_8h.html#a8fc155a8dfaabbc7e2ef6f67775a70aa">stringToVector</a> (source, Regex(<span class="stringliteral">&quot; *, *&quot;</span>));</div>
 </div><!-- fragment --> <h3>Example</h3>
 <p><a class="anchor" id="ArrayUtil_example2"></a> <a class="anchor" id="ArrayUtil_stringToVector"></a> </p>
 
-<p>Definition at line <a class="el" href="ArrayUtil_8h_source.html#l00101">101</a> of file <a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayUtil_8h_source.html#l00099">99</a> of file <a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a29735c1bb26409cd8326bcafc17028fc"></a>
+<a class="anchor" id="ae8209db0b942c328c4ab5221a6c84028"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1String.html">String</a>&gt; casacore::ArrayUtil_global_functions_stringToVector::stringToVector </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;std::string&gt; casacore::ArrayUtil_global_functions_stringToVector::strToVector </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>string</em>, </td>
         </tr>
         <tr>
@@ -177,20 +178,20 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a70d426a36f1d860dc6d6855168d5267d"></a>
+<a class="anchor" id="a12e715dac8c49124a540ea77610fe980"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1String.html">String</a>&gt; casacore::ArrayUtil_global_functions_stringToVector::stringToVector </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;std::string&gt; casacore::ArrayUtil_global_functions_stringToVector::strToVector </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>string</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Regex.html">Regex</a> &amp;&#160;</td>
+          <td class="paramtype">const std::regex &amp;&#160;</td>
           <td class="paramname"><em>delim</em>&#160;</td>
         </tr>
         <tr>

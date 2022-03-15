@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -187,6 +188,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a588c55f3eb96742e6c80e39c25e2587b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fd1e724aa592322c5da663718e2036a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a9fd1e724aa592322c5da663718e2036a">visitShowNode</a> (const <a class="el" href="classcasacore_1_1TaQLShowNodeRep.html">TaQLShowNodeRep</a> &amp;node)=0</td></tr>
 <tr class="separator:a9fd1e724aa592322c5da663718e2036a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24cde4a09ce5888e86125ef54d2d6518"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a24cde4a09ce5888e86125ef54d2d6518">visitCopyColNode</a> (const <a class="el" href="classcasacore_1_1TaQLCopyColNodeRep.html">TaQLCopyColNodeRep</a> &amp;node)=0</td></tr>
+<tr class="separator:a24cde4a09ce5888e86125ef54d2d6518"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03ea80780acb4ef8a6ba65cf4c9fdaa6"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a03ea80780acb4ef8a6ba65cf4c9fdaa6">visitDropTabNode</a> (const <a class="el" href="classcasacore_1_1TaQLDropTabNodeRep.html">TaQLDropTabNodeRep</a> &amp;node)=0</td></tr>
+<tr class="separator:a03ea80780acb4ef8a6ba65cf4c9fdaa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -505,6 +510,32 @@ Note 199 describing <a href="../notes/199.html">TaQL</a> </li>
 
 </div>
 </div>
+<a class="anchor" id="a24cde4a09ce5888e86125ef54d2d6518"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a> casacore::TaQLNodeVisitor::visitCopyColNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TaQLCopyColNodeRep.html">TaQLCopyColNodeRep</a> &amp;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a101e14016f872d6ff587edc2524753d0">casacore::TaQLNodeHandler</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a026cf12e1852bee77fb4f0db11ac8299"></a>
 <div class="memitem">
 <div class="memproto">
@@ -580,6 +611,32 @@ Note 199 describing <a href="../notes/199.html">TaQL</a> </li>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a67818cb0fe5ee1a3fe0d850834291cf6">casacore::TaQLNodeHandler</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a03ea80780acb4ef8a6ba65cf4c9fdaa6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a> casacore::TaQLNodeVisitor::visitDropTabNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TaQLDropTabNodeRep.html">TaQLDropTabNodeRep</a> &amp;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a4b1bdc33e99dafe361c8665affd96069">casacore::TaQLNodeHandler</a>.</p>
 
 </div>
 </div>
@@ -841,9 +898,9 @@ Note 199 describing <a href="../notes/199.html">TaQL</a> </li>
 
 <p>A convenience function to visit the given node using this visitor. </p>
 
-<p>Definition at line <a class="el" href="TaQLNodeVisitor_8h_source.html#l00120">120</a> of file <a class="el" href="TaQLNodeVisitor_8h_source.html">TaQLNodeVisitor.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeVisitor_8h_source.html#l00122">122</a> of file <a class="el" href="TaQLNodeVisitor_8h_source.html">TaQLNodeVisitor.h</a>.</p>
 
-<p>References <a class="el" href="TaQLNode_8h_source.html#l00131">casacore::TaQLNode::visit()</a>.</p>
+<p>References <a class="el" href="TaQLNode_8h_source.html#l00133">casacore::TaQLNode::visit()</a>.</p>
 
 </div>
 </div>

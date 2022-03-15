@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,8 +121,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#ifndef CASA_NULLLOGSINK_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_NULLLOGSINK_H</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Logging/LogSinkInterface.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="LogSinkInterface_8h.html">casacore/casa/Logging/LogSinkInterface.h</a>&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
@@ -192,6 +193,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
 <div class="ttc" id="classcasacore_1_1LogFilterInterface_html"><div class="ttname"><a href="classcasacore_1_1LogFilterInterface.html">casacore::LogFilterInterface</a></div><div class="ttdoc">Abstract base class for filtering LogMessages. </div><div class="ttdef"><b>Definition:</b> <a href="LogFilterInterface_8h_source.html#l00084">LogFilterInterface.h:84</a></div></div>
 <div class="ttc" id="classcasacore_1_1NullLogSink_html"><div class="ttname"><a href="classcasacore_1_1NullLogSink.html">casacore::NullLogSink</a></div><div class="ttdoc">Throw away all messages. </div><div class="ttdef"><b>Definition:</b> <a href="NullLogSink_8h_source.html#l00074">NullLogSink.h:74</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1LogSinkInterface_html"><div class="ttname"><a href="classcasacore_1_1LogSinkInterface.html">casacore::LogSinkInterface</a></div><div class="ttdoc">Accepts LogMessages and posts them to some destination. </div><div class="ttdef"><b>Definition:</b> <a href="LogSinkInterface_8h_source.html#l00099">LogSinkInterface.h:99</a></div></div>
 <div class="ttc" id="classcasacore_1_1NullLogSink_html_aa72e681f8e7452c4cfb1f683ffe3fac4"><div class="ttname"><a href="classcasacore_1_1NullLogSink.html#aa72e681f8e7452c4cfb1f683ffe3fac4">casacore::NullLogSink::operator=</a></div><div class="ttdeci">NullLogSink &amp; operator=(const NullLogSink &amp;other)</div></div>
 <div class="ttc" id="classcasacore_1_1NullLogSink_html_a12ceb7ef9d36659c3cbf7c901c432456"><div class="ttname"><a href="classcasacore_1_1NullLogSink.html#a12ceb7ef9d36659c3cbf7c901c432456">casacore::NullLogSink::id</a></div><div class="ttdeci">String id() const </div><div class="ttdoc">Returns the id of the LogSink in use... </div></div>
@@ -199,10 +201,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="namespacecasacore_html_abd5691f9e13acc90d901e4007740ff98"><div class="ttname"><a href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a></div><div class="ttdeci">bool Bool</div><div class="ttdoc">Define the standard types used by Casacore. </div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00042">aipstype.h:42</a></div></div>
 <div class="ttc" id="classcasacore_1_1LogSinkInterface_html_a44653d1ebb204f2afaddae69cb4ed2a3"><div class="ttname"><a href="classcasacore_1_1LogSinkInterface.html#a44653d1ebb204f2afaddae69cb4ed2a3">casacore::LogSinkInterface::filter</a></div><div class="ttdeci">virtual const LogFilterInterface &amp; filter() const </div><div class="ttdoc">Get/set the filter. </div></div>
 <div class="ttc" id="classcasacore_1_1LogMessage_html_a9390a9080539b47c70f284640dd401f4"><div class="ttname"><a href="classcasacore_1_1LogMessage.html#a9390a9080539b47c70f284640dd401f4">casacore::LogMessage::Priority</a></div><div class="ttdeci">Priority</div><div class="ttdoc">An &amp;quot;importance&amp;quot; which is assigned to each LogMessage. </div><div class="ttdef"><b>Definition:</b> <a href="LogMessage_8h_source.html#l00105">LogMessage.h:105</a></div></div>
-<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00223">String.h:223</a></div></div>
+<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00225">String.h:225</a></div></div>
 <div class="ttc" id="classcasacore_1_1NullLogSink_html_a80c2b05d9ae9f3545fa3ef1862366145"><div class="ttname"><a href="classcasacore_1_1NullLogSink.html#a80c2b05d9ae9f3545fa3ef1862366145">casacore::NullLogSink::NullLogSink</a></div><div class="ttdeci">NullLogSink()</div></div>
 <div class="ttc" id="classcasacore_1_1NullLogSink_html_ac3a5b4b02c913bba09273ac777478cda"><div class="ttname"><a href="classcasacore_1_1NullLogSink.html#ac3a5b4b02c913bba09273ac777478cda">casacore::NullLogSink::postLocally</a></div><div class="ttdeci">virtual Bool postLocally(const LogMessage &amp;message)</div><div class="ttdoc">Always throws the message away, but it does return True or False depending on whether or not message ...</div></div>
 <div class="ttc" id="classcasacore_1_1LogMessage_html"><div class="ttname"><a href="classcasacore_1_1LogMessage.html">casacore::LogMessage</a></div><div class="ttdoc">Informational log messages with with time, priority, and origin. </div><div class="ttdef"><b>Definition:</b> <a href="LogMessage_8h_source.html#l00101">LogMessage.h:101</a></div></div>
+<div class="ttc" id="LogSinkInterface_8h_html"><div class="ttname"><a href="LogSinkInterface_8h.html">LogSinkInterface.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1NullLogSink_html_ae88f6cfb0471e084df4de77290dc631f"><div class="ttname"><a href="classcasacore_1_1NullLogSink.html#ae88f6cfb0471e084df4de77290dc631f">casacore::NullLogSink::localId</a></div><div class="ttdeci">static String localId()</div><div class="ttdoc">Returns the id for this class... </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

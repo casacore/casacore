@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -130,9 +131,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aab01bf15666a34122ebc35ac413b8c83"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCubeBuff.html#aab01bf15666a34122ebc35ac413b8c83">setShape</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1TSMCube.html#a436861298607738061e87eea5b76c713">cubeShape</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1TSMCube.html#a8d68638de84f422839a67027306996ab">tileShape</a>)</td></tr>
 <tr class="memdesc:aab01bf15666a34122ebc35ac413b8c83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the hypercube shape.  <a href="#aab01bf15666a34122ebc35ac413b8c83">More...</a><br/></td></tr>
 <tr class="separator:aab01bf15666a34122ebc35ac413b8c83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d28c552b87f8363f8995279d2e139ac"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCubeBuff.html#a9d28c552b87f8363f8995279d2e139ac">extend</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nr, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;coordValues, const <a class="el" href="classcasacore_1_1TSMColumn.html">TSMColumn</a> *lastCoordColumn)</td></tr>
-<tr class="memdesc:a9d28c552b87f8363f8995279d2e139ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extend the last dimension of the cube with the given number.  <a href="#a9d28c552b87f8363f8995279d2e139ac">More...</a><br/></td></tr>
-<tr class="separator:a9d28c552b87f8363f8995279d2e139ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04892ea99413f89f786f6ec08ddc38dc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCubeBuff.html#a04892ea99413f89f786f6ec08ddc38dc">extend</a> (<a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a> nr, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;coordValues, const <a class="el" href="classcasacore_1_1TSMColumn.html">TSMColumn</a> *lastCoordColumn)</td></tr>
+<tr class="memdesc:a04892ea99413f89f786f6ec08ddc38dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extend the last dimension of the cube with the given number.  <a href="#a04892ea99413f89f786f6ec08ddc38dc">More...</a><br/></td></tr>
+<tr class="separator:a04892ea99413f89f786f6ec08ddc38dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abec318f74bf2b3a9daded7c0a3d62a59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TSMCubeBuff.html#abec318f74bf2b3a9daded7c0a3d62a59">accessSection</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;start, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;end, char *section, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> colnr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> localPixelSize, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> externalPixelSize, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> writeFlag)</td></tr>
 <tr class="memdesc:abec318f74bf2b3a9daded7c0a3d62a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read or write a section in the cube.  <a href="#abec318f74bf2b3a9daded7c0a3d62a59">More...</a><br/></td></tr>
 <tr class="separator:abec318f74bf2b3a9daded7c0a3d62a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -731,7 +732,7 @@ If the cubeshape is empty, the hypercube is still undefined and can be added lat
 
 </div>
 </div>
-<a class="anchor" id="a9d28c552b87f8363f8995279d2e139ac"></a>
+<a class="anchor" id="a04892ea99413f89f786f6ec08ddc38dc"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -741,7 +742,7 @@ If the cubeshape is empty, the hypercube is still undefined and can be added lat
         <tr>
           <td class="memname">virtual void casacore::TSMCubeBuff::extend </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a>&#160;</td>
           <td class="paramname"><em>nr</em>, </td>
         </tr>
         <tr>
@@ -772,7 +773,7 @@ If the cubeshape is empty, the hypercube is still undefined and can be added lat
 <p>Extend the last dimension of the cube with the given number. </p>
 <p>The record can contain the coordinates of the elements added. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TSMCube.html#a0ca96d4104bb9f896bfaf22275b03eaa">casacore::TSMCube</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TSMCube.html#a5e762b77e1e2200e899bde2085782f5c">casacore::TSMCube</a>.</p>
 
 </div>
 </div>

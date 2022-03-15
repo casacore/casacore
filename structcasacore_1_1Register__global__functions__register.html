@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -133,7 +134,7 @@ Public Member Functions</h2></td></tr>
 </p>
 <p>This RTTI mechanism is simple, it does not require extra functions to be added to the classes which are to be <em>identified</em>, and it is similar to the RTTI mechanism which will be a part of the C++ language in the future.</p>
 <p>To be useful, however, this mechanism must be used as part of the implementation of a <em>virtual</em> member function. For example: </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/casa/Utilities/Register.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="casa_2Utilities_2Register_8h.html">casacore/casa/Utilities/Register.h</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"></div>
 <div class="line"><span class="keyword">class </span>foo { <span class="keyword">public</span>: <span class="keyword">virtual</span> <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> type() { <span class="keywordflow">return</span> <a class="code" href="structcasacore_1_1Register__global__functions__register.html#af75c40f1f5c1472d26e2aee2acbc7730">Register</a>(<span class="keyword">this</span>);}};</div>

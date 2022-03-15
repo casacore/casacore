@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -87,40 +88,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">ArrayLogical.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;casacore/casa/aips.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/Array.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/LogiArray.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/ArrayMathBase.h&gt;</code><br/>
+<div class="textblock"><code>#include &quot;<a class="el" href="ArrayFwd_8h_source.html">ArrayFwd.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="IPosition_8h_source.html">IPosition.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="ArrayMathBase_8h_source.html">ArrayMathBase.h</a>&quot;</code><br/>
+<code>#include &quot;ArrayLogical.tcc&quot;</code><br/>
 </div>
 <p><a href="ArrayLogical_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Vector.html">casacore::Vector&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 1-D Specialization of the <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> class.  <a href="classcasacore_1_1Vector.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Matrix.html">casacore::Matrix&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 2-D Specialization of the <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> class.  <a href="classcasacore_1_1Matrix.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Cube.html">casacore::Cube&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 3-D Specialization of the <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> class.  <a href="classcasacore_1_1Cube.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayLogical__global__functions__Array__logical__operations.html">casacore::ArrayLogical_global_functions_Array_logical_operations</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logical operations for Arrays.  <a href="structcasacore_1_1ArrayLogical__global__functions__Array__logical__operations.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1AllFunc.html">casacore::AllFunc&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define logical Functors.  <a href="classcasacore_1_1AllFunc.html#details">More...</a><br/></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logical functor to test if all elements are true.  <a href="classcasacore_1_1AllFunc.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1AnyFunc.html">casacore::AnyFunc&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logical functor to test if any elements are true.  <a href="classcasacore_1_1AnyFunc.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1NTrueFunc.html">casacore::NTrueFunc&lt; T, RES &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logical functor to count the number of true elements.  <a href="classcasacore_1_1NTrueFunc.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1NFalseFunc.html">casacore::NFalseFunc&lt; T, RES &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logical functor to count the number of false elements.  <a href="classcasacore_1_1NFalseFunc.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -128,7 +124,25 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacecasacore"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore.html">casacore</a></td></tr>
 <tr class="memdesc:namespacecasacore"><td class="mdescLeft">&#160;</td><td class="mdescRight">this file contains all the compiler specific defines <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a7781824317978a094349c2e35075711d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ArrayStr_8h.html#a7781824317978a094349c2e35075711d">CASA_ARRAYLOGICAL_2_H</a></td></tr>
+<tr class="separator:a7781824317978a094349c2e35075711d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a7781824317978a094349c2e35075711d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CASA_ARRAYLOGICAL_2_H</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

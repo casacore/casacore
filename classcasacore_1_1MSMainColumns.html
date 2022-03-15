@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -325,9 +326,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a55f3f4cc6384d9dbc8da1ac1ddd8373a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a916bd7a674beb5e30b91502a472c6650"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ArrayColumn.html">ArrayColumn</a>&lt; <a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a916bd7a674beb5e30b91502a472c6650">weightSpectrumCorrected</a> () const </td></tr>
 <tr class="separator:a916bd7a674beb5e30b91502a472c6650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f52ee45e931160e98833a84aa55061e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a3f52ee45e931160e98833a84aa55061e">nrow</a> () const </td></tr>
-<tr class="memdesc:a3f52ee45e931160e98833a84aa55061e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that returns the number of rows in any of the columns.  <a href="#a3f52ee45e931160e98833a84aa55061e">More...</a><br/></td></tr>
-<tr class="separator:a3f52ee45e931160e98833a84aa55061e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a431f2746f4e7e0fb4fdd629e150968b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a431f2746f4e7e0fb4fdd629e150968b9">nrow</a> () const </td></tr>
+<tr class="memdesc:a431f2746f4e7e0fb4fdd629e150968b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that returns the number of rows in any of the columns.  <a href="#a431f2746f4e7e0fb4fdd629e150968b9">More...</a><br/></td></tr>
+<tr class="separator:a431f2746f4e7e0fb4fdd629e150968b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66338fafcd8bb7c36f804763658e4b3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMainColumns.html#a66338fafcd8bb7c36f804763658e4b3a">flagCategories</a> () const </td></tr>
 <tr class="memdesc:a66338fafcd8bb7c36f804763658e4b3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the category labels for the FLAG_CATEGORY column.  <a href="#a66338fafcd8bb7c36f804763658e4b3a">More...</a><br/></td></tr>
 <tr class="separator:a66338fafcd8bb7c36f804763658e4b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -497,14 +498,14 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="comment">// change name of antenna on row 3 in antenna table</span></div>
 <div class="line">msc.antenna().name().put(3,<span class="stringliteral">&quot;NewAnt-3&quot;</span>);</div>
 </div><!-- fragment --><h3>Motivation</h3>
-<p>Having to type long lists of Scalar and <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> column declarations gets very tedious. This class attempts to relieve some of that tedium, while at the same time concentrating all the declarations in one place, making Type errors in the column declaration (only caught at run-time) less probable. Type errors in the use of the columns is caught at compile time.</p>
+<p>Having to type long lists of Scalar and <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> column declarations gets very tedious. This class attempts to relieve some of that tedium, while at the same time concentrating all the declarations in one place, making Type errors in the column declaration (only caught at run-time) less probable. Type errors in the use of the columns is caught at compile time.</p>
 <h3>To Do</h3>
 <ul>
 <li>
 We might decide to merge this class with the <a class="el" href="classcasacore_1_1MeasurementSet.html" title="A Table intended to hold astronomical data (a set of Measurements). ">MeasurementSet</a> </li>
 </ul>
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00106">106</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00105">105</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a2ea179817a0206929a0efd313000dd19"></a>
 <div class="memitem">
@@ -612,9 +613,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 
 <p>Access to required columns. </p>
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00118">118</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00117">117</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00300">antenna1_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00299">antenna1_p</a>.</p>
 
 </div>
 </div>
@@ -641,9 +642,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 
 <p>Const access to required columns. </p>
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00187">187</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00186">186</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00300">antenna1_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00299">antenna1_p</a>.</p>
 
 </div>
 </div>
@@ -668,9 +669,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00119">119</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00118">118</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00301">antenna2_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00300">antenna2_p</a>.</p>
 
 </div>
 </div>
@@ -695,9 +696,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00188">188</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00187">187</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00301">antenna2_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00300">antenna2_p</a>.</p>
 
 </div>
 </div>
@@ -724,9 +725,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 
 <p>Access to optional columns. </p>
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00159">159</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00158">158</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00322">antenna3_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00321">antenna3_p</a>.</p>
 
 </div>
 </div>
@@ -753,9 +754,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 
 <p>Access to optional columns. </p>
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00228">228</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00227">227</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00322">antenna3_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00321">antenna3_p</a>.</p>
 
 </div>
 </div>
@@ -780,9 +781,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00120">120</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00119">119</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00302">arrayId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00301">arrayId_p</a>.</p>
 
 </div>
 </div>
@@ -807,9 +808,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00189">189</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00188">188</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00302">arrayId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00301">arrayId_p</a>.</p>
 
 </div>
 </div>
@@ -882,9 +883,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00160">160</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00159">159</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00323">baselineRef_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00322">baselineRef_p</a>.</p>
 
 </div>
 </div>
@@ -909,9 +910,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00229">229</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00228">228</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00323">baselineRef_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00322">baselineRef_p</a>.</p>
 
 </div>
 </div>
@@ -936,9 +937,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00161">161</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00160">160</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00339">correctedData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00338">correctedData_p</a>.</p>
 
 </div>
 </div>
@@ -963,9 +964,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00230">230</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00229">229</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00339">correctedData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00338">correctedData_p</a>.</p>
 
 </div>
 </div>
@@ -990,9 +991,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00162">162</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00161">161</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00324">data_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00323">data_p</a>.</p>
 
 </div>
 </div>
@@ -1017,9 +1018,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00231">231</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00230">230</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00324">data_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00323">data_p</a>.</p>
 
 </div>
 </div>
@@ -1044,9 +1045,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00121">121</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00120">120</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00303">dataDescId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00302">dataDescId_p</a>.</p>
 
 </div>
 </div>
@@ -1071,9 +1072,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00190">190</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00189">189</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00303">dataDescId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00302">dataDescId_p</a>.</p>
 
 </div>
 </div>
@@ -1098,9 +1099,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00122">122</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00121">121</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00304">exposure_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00303">exposure_p</a>.</p>
 
 </div>
 </div>
@@ -1125,9 +1126,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00191">191</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00190">190</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00304">exposure_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00303">exposure_p</a>.</p>
 
 </div>
 </div>
@@ -1152,9 +1153,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00123">123</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00122">122</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00351">exposureQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00350">exposureQuant_p</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSelectableMainColumn_8h_source.html#l00080">casacore::MSMainColInterface::exposureQuant()</a>.</p>
 
@@ -1181,9 +1182,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00192">192</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00191">191</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00351">exposureQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00350">exposureQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1208,9 +1209,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00125">125</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00124">124</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00305">feed1_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00304">feed1_p</a>.</p>
 
 </div>
 </div>
@@ -1235,9 +1236,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00194">194</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00193">193</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00305">feed1_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00304">feed1_p</a>.</p>
 
 </div>
 </div>
@@ -1262,9 +1263,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00126">126</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00125">125</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00306">feed2_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00305">feed2_p</a>.</p>
 
 </div>
 </div>
@@ -1289,9 +1290,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00195">195</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00194">194</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00306">feed2_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00305">feed2_p</a>.</p>
 
 </div>
 </div>
@@ -1316,9 +1317,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00163">163</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00162">162</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00325">feed3_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00324">feed3_p</a>.</p>
 
 </div>
 </div>
@@ -1343,9 +1344,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00232">232</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00231">231</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00325">feed3_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00324">feed3_p</a>.</p>
 
 </div>
 </div>
@@ -1370,9 +1371,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00127">127</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00126">126</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00307">fieldId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00306">fieldId_p</a>.</p>
 
 </div>
 </div>
@@ -1397,9 +1398,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00196">196</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00195">195</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00307">fieldId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00306">fieldId_p</a>.</p>
 
 </div>
 </div>
@@ -1424,9 +1425,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00128">128</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00127">127</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00308">flag_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00307">flag_p</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSelectableMainColumn_8h_source.html#l00076">casacore::MSMainColInterface::flag()</a>.</p>
 
@@ -1453,9 +1454,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00197">197</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00196">196</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00308">flag_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00307">flag_p</a>.</p>
 
 </div>
 </div>
@@ -1497,9 +1498,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00129">129</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00128">128</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00309">flagCategory_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00308">flagCategory_p</a>.</p>
 
 </div>
 </div>
@@ -1524,9 +1525,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00198">198</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00197">197</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00309">flagCategory_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00308">flagCategory_p</a>.</p>
 
 </div>
 </div>
@@ -1551,9 +1552,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00130">130</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00129">129</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00310">flagRow_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00309">flagRow_p</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSelectableMainColumn_8h_source.html#l00079">casacore::MSMainColInterface::flagRow()</a>.</p>
 
@@ -1580,9 +1581,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00199">199</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00198">198</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00310">flagRow_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00309">flagRow_p</a>.</p>
 
 </div>
 </div>
@@ -1607,9 +1608,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00164">164</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00163">163</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00326">floatData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00325">floatData_p</a>.</p>
 
 </div>
 </div>
@@ -1634,9 +1635,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00233">233</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00232">232</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00326">floatData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00325">floatData_p</a>.</p>
 
 </div>
 </div>
@@ -1661,9 +1662,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00165">165</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00164">164</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00340">imagingWeight_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00339">imagingWeight_p</a>.</p>
 
 </div>
 </div>
@@ -1688,9 +1689,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00234">234</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00233">233</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00340">imagingWeight_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00339">imagingWeight_p</a>.</p>
 
 </div>
 </div>
@@ -1715,9 +1716,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00131">131</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00130">130</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00311">interval_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00310">interval_p</a>.</p>
 
 </div>
 </div>
@@ -1742,9 +1743,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00200">200</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00199">199</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00311">interval_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00310">interval_p</a>.</p>
 
 </div>
 </div>
@@ -1769,9 +1770,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00132">132</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00131">131</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00352">intervalQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00351">intervalQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1796,9 +1797,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00201">201</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00200">200</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00352">intervalQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00351">intervalQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1823,9 +1824,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00166">166</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00165">165</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00327">lagData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00326">lagData_p</a>.</p>
 
 </div>
 </div>
@@ -1850,9 +1851,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00235">235</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00234">234</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00327">lagData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00326">lagData_p</a>.</p>
 
 </div>
 </div>
@@ -1877,9 +1878,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00167">167</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00166">166</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00341">modelData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00340">modelData_p</a>.</p>
 
 </div>
 </div>
@@ -1904,13 +1905,13 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00236">236</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00235">235</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00341">modelData_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00340">modelData_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3f52ee45e931160e98833a84aa55061e"></a>
+<a class="anchor" id="a431f2746f4e7e0fb4fdd629e150968b9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1918,7 +1919,7 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::MSMainColumns::nrow </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::MSMainColumns::nrow </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1933,9 +1934,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 
 <p>Convenience function that returns the number of rows in any of the columns. </p>
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00255">255</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00254">254</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00300">antenna1_p</a>, and <a class="el" href="TableColumn_8h_source.html#l00197">casacore::TableColumn::nrow()</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00299">antenna1_p</a>, and <a class="el" href="TableColumn_8h_source.html#l00197">casacore::TableColumn::nrow()</a>.</p>
 
 </div>
 </div>
@@ -1960,9 +1961,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00134">134</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00133">133</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00312">observationId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00311">observationId_p</a>.</p>
 
 </div>
 </div>
@@ -1987,9 +1988,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00203">203</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00202">202</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00312">observationId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00311">observationId_p</a>.</p>
 
 </div>
 </div>
@@ -2038,9 +2039,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00168">168</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00167">167</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00328">phaseId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00327">phaseId_p</a>.</p>
 
 </div>
 </div>
@@ -2065,9 +2066,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00237">237</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00236">236</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00328">phaseId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00327">phaseId_p</a>.</p>
 
 </div>
 </div>
@@ -2092,9 +2093,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00135">135</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00134">134</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00313">processorId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00312">processorId_p</a>.</p>
 
 </div>
 </div>
@@ -2119,9 +2120,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00204">204</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00203">203</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00313">processorId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00312">processorId_p</a>.</p>
 
 </div>
 </div>
@@ -2146,9 +2147,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00169">169</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00168">168</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00329">pulsarBin_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00328">pulsarBin_p</a>.</p>
 
 </div>
 </div>
@@ -2173,9 +2174,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00238">238</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00237">237</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00329">pulsarBin_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00328">pulsarBin_p</a>.</p>
 
 </div>
 </div>
@@ -2200,9 +2201,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00170">170</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00169">169</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00330">pulsarGateId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00329">pulsarGateId_p</a>.</p>
 
 </div>
 </div>
@@ -2227,9 +2228,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00239">239</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00238">238</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00330">pulsarGateId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00329">pulsarGateId_p</a>.</p>
 
 </div>
 </div>
@@ -2254,9 +2255,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00136">136</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00135">135</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00314">scanNumber_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00313">scanNumber_p</a>.</p>
 
 </div>
 </div>
@@ -2281,9 +2282,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00205">205</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00204">204</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00314">scanNumber_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00313">scanNumber_p</a>.</p>
 
 </div>
 </div>
@@ -2377,9 +2378,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00137">137</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00136">136</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00315">sigma_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00314">sigma_p</a>.</p>
 
 </div>
 </div>
@@ -2404,9 +2405,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00206">206</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00205">205</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00315">sigma_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00314">sigma_p</a>.</p>
 
 </div>
 </div>
@@ -2431,9 +2432,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00171">171</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00170">170</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00331">sigmaSpectrum_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00330">sigmaSpectrum_p</a>.</p>
 
 </div>
 </div>
@@ -2458,9 +2459,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00240">240</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00239">239</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00331">sigmaSpectrum_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00330">sigmaSpectrum_p</a>.</p>
 
 </div>
 </div>
@@ -2485,9 +2486,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00138">138</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00137">137</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00316">stateId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00315">stateId_p</a>.</p>
 
 </div>
 </div>
@@ -2512,9 +2513,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00207">207</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00206">206</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00316">stateId_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00315">stateId_p</a>.</p>
 
 </div>
 </div>
@@ -2539,9 +2540,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00139">139</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00138">138</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00317">time_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00316">time_p</a>.</p>
 
 </div>
 </div>
@@ -2566,9 +2567,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00208">208</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00207">207</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00317">time_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00316">time_p</a>.</p>
 
 </div>
 </div>
@@ -2593,9 +2594,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00144">144</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00143">143</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00318">timeCentroid_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00317">timeCentroid_p</a>.</p>
 
 </div>
 </div>
@@ -2620,9 +2621,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00213">213</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00212">212</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00318">timeCentroid_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00317">timeCentroid_p</a>.</p>
 
 </div>
 </div>
@@ -2647,9 +2648,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00147">147</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00146">146</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00345">timeCentroidMeas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00344">timeCentroidMeas_p</a>.</p>
 
 </div>
 </div>
@@ -2674,9 +2675,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00216">216</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00215">215</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00345">timeCentroidMeas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00344">timeCentroidMeas_p</a>.</p>
 
 </div>
 </div>
@@ -2701,9 +2702,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00145">145</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00144">144</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00354">timeCentroidQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00353">timeCentroidQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2728,9 +2729,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00214">214</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00213">213</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00354">timeCentroidQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00353">timeCentroidQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2755,9 +2756,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00172">172</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00171">171</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00332">timeExtraPrec_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00331">timeExtraPrec_p</a>.</p>
 
 </div>
 </div>
@@ -2782,9 +2783,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00241">241</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00240">240</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00332">timeExtraPrec_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00331">timeExtraPrec_p</a>.</p>
 
 </div>
 </div>
@@ -2809,9 +2810,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00173">173</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00172">172</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00357">timeExtraPrecQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00356">timeExtraPrecQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2836,9 +2837,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00242">242</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00241">241</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00357">timeExtraPrecQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00356">timeExtraPrecQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2863,9 +2864,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00142">142</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00141">141</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00344">timeMeas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00343">timeMeas_p</a>.</p>
 
 </div>
 </div>
@@ -2890,9 +2891,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00211">211</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00210">210</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00344">timeMeas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00343">timeMeas_p</a>.</p>
 
 </div>
 </div>
@@ -2917,9 +2918,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00140">140</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00139">139</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00353">timeQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00352">timeQuant_p</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSelectableMainColumn_8h_source.html#l00081">casacore::MSMainColInterface::timeQuant()</a>.</p>
 
@@ -2946,9 +2947,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00209">209</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00208">208</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00353">timeQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00352">timeQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2973,9 +2974,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00149">149</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00148">148</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00319">uvw_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00318">uvw_p</a>.</p>
 
 </div>
 </div>
@@ -3000,9 +3001,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00218">218</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00217">217</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00319">uvw_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00318">uvw_p</a>.</p>
 
 </div>
 </div>
@@ -3027,9 +3028,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00175">175</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00174">174</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00333">uvw2_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00332">uvw2_p</a>.</p>
 
 </div>
 </div>
@@ -3054,9 +3055,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00244">244</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00243">243</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00333">uvw2_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00332">uvw2_p</a>.</p>
 
 </div>
 </div>
@@ -3081,9 +3082,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00176">176</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00175">175</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00348">uvw2Meas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00347">uvw2Meas_p</a>.</p>
 
 </div>
 </div>
@@ -3108,9 +3109,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00245">245</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00244">244</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00348">uvw2Meas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00347">uvw2Meas_p</a>.</p>
 
 </div>
 </div>
@@ -3135,9 +3136,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00178">178</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00177">177</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00358">uvw2Quant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00357">uvw2Quant_p</a>.</p>
 
 </div>
 </div>
@@ -3162,9 +3163,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00247">247</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00246">246</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00358">uvw2Quant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00357">uvw2Quant_p</a>.</p>
 
 </div>
 </div>
@@ -3189,9 +3190,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00152">152</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00151">151</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00346">uvwMeas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00345">uvwMeas_p</a>.</p>
 
 </div>
 </div>
@@ -3216,9 +3217,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00221">221</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00220">220</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00346">uvwMeas_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00345">uvwMeas_p</a>.</p>
 
 </div>
 </div>
@@ -3243,9 +3244,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00150">150</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00149">149</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00355">uvwQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00354">uvwQuant_p</a>.</p>
 
 </div>
 </div>
@@ -3270,9 +3271,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00219">219</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00218">218</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00355">uvwQuant_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00354">uvwQuant_p</a>.</p>
 
 </div>
 </div>
@@ -3297,9 +3298,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00180">180</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00179">179</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00334">videoPoint_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00333">videoPoint_p</a>.</p>
 
 </div>
 </div>
@@ -3324,9 +3325,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00249">249</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00248">248</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00334">videoPoint_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00333">videoPoint_p</a>.</p>
 
 </div>
 </div>
@@ -3351,9 +3352,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00154">154</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00153">153</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00320">weight_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00319">weight_p</a>.</p>
 
 </div>
 </div>
@@ -3378,9 +3379,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00223">223</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00222">222</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00320">weight_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00319">weight_p</a>.</p>
 
 </div>
 </div>
@@ -3405,9 +3406,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00181">181</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00180">180</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00335">weightSpectrum_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00334">weightSpectrum_p</a>.</p>
 
 </div>
 </div>
@@ -3432,9 +3433,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00250">250</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00249">249</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00335">weightSpectrum_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00334">weightSpectrum_p</a>.</p>
 
 </div>
 </div>
@@ -3459,9 +3460,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00182">182</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00181">181</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00336">weightSpectrumCorrected_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00335">weightSpectrumCorrected_p</a>.</p>
 
 </div>
 </div>
@@ -3486,9 +3487,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00251">251</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00250">250</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSMainColumns_8h_source.html#l00336">weightSpectrumCorrected_p</a>.</p>
+<p>References <a class="el" href="MSMainColumns_8h_source.html#l00335">weightSpectrumCorrected_p</a>.</p>
 
 </div>
 </div>
@@ -3511,9 +3512,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00300">300</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00299">299</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00118">antenna1()</a>, and <a class="el" href="MSMainColumns_8h_source.html#l00255">nrow()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00117">antenna1()</a>, and <a class="el" href="MSMainColumns_8h_source.html#l00254">nrow()</a>.</p>
 
 </div>
 </div>
@@ -3535,9 +3536,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00301">301</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00300">300</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00119">antenna2()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00118">antenna2()</a>.</p>
 
 </div>
 </div>
@@ -3559,9 +3560,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00322">322</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00321">321</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00159">antenna3()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00158">antenna3()</a>.</p>
 
 </div>
 </div>
@@ -3583,9 +3584,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00302">302</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00301">301</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00120">arrayId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00119">arrayId()</a>.</p>
 
 </div>
 </div>
@@ -3607,9 +3608,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00323">323</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00322">322</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00160">baselineRef()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00159">baselineRef()</a>.</p>
 
 </div>
 </div>
@@ -3631,9 +3632,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00339">339</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00338">338</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00161">correctedData()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00160">correctedData()</a>.</p>
 
 </div>
 </div>
@@ -3655,9 +3656,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00324">324</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00323">323</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00162">data()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00161">data()</a>.</p>
 
 </div>
 </div>
@@ -3679,9 +3680,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00303">303</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00302">302</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00121">dataDescId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00120">dataDescId()</a>.</p>
 
 </div>
 </div>
@@ -3703,9 +3704,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00304">304</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00303">303</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00122">exposure()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00121">exposure()</a>.</p>
 
 </div>
 </div>
@@ -3727,9 +3728,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00351">351</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00350">350</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00123">exposureQuant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00122">exposureQuant()</a>.</p>
 
 </div>
 </div>
@@ -3751,9 +3752,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00305">305</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00304">304</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00125">feed1()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00124">feed1()</a>.</p>
 
 </div>
 </div>
@@ -3775,9 +3776,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00306">306</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00305">305</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00126">feed2()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00125">feed2()</a>.</p>
 
 </div>
 </div>
@@ -3799,9 +3800,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00325">325</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00324">324</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00163">feed3()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00162">feed3()</a>.</p>
 
 </div>
 </div>
@@ -3823,9 +3824,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00307">307</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00306">306</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00127">fieldId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00126">fieldId()</a>.</p>
 
 </div>
 </div>
@@ -3847,9 +3848,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00308">308</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00307">307</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00128">flag()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00127">flag()</a>.</p>
 
 </div>
 </div>
@@ -3871,9 +3872,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00309">309</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00308">308</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00129">flagCategory()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00128">flagCategory()</a>.</p>
 
 </div>
 </div>
@@ -3895,9 +3896,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00310">310</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00309">309</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00130">flagRow()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00129">flagRow()</a>.</p>
 
 </div>
 </div>
@@ -3919,9 +3920,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00326">326</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00325">325</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00164">floatData()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00163">floatData()</a>.</p>
 
 </div>
 </div>
@@ -3943,9 +3944,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00340">340</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00339">339</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00165">imagingWeight()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00164">imagingWeight()</a>.</p>
 
 </div>
 </div>
@@ -3967,9 +3968,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00311">311</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00310">310</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00131">interval()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00130">interval()</a>.</p>
 
 </div>
 </div>
@@ -3991,9 +3992,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00352">352</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00351">351</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00132">intervalQuant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00131">intervalQuant()</a>.</p>
 
 </div>
 </div>
@@ -4015,9 +4016,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00327">327</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00326">326</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00166">lagData()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00165">lagData()</a>.</p>
 
 </div>
 </div>
@@ -4039,9 +4040,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00341">341</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00340">340</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00167">modelData()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00166">modelData()</a>.</p>
 
 </div>
 </div>
@@ -4063,9 +4064,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00312">312</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00311">311</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00134">observationId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00133">observationId()</a>.</p>
 
 </div>
 </div>
@@ -4087,9 +4088,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00328">328</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00327">327</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00168">phaseId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00167">phaseId()</a>.</p>
 
 </div>
 </div>
@@ -4111,9 +4112,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00313">313</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00312">312</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00135">processorId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00134">processorId()</a>.</p>
 
 </div>
 </div>
@@ -4135,9 +4136,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00329">329</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00328">328</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00169">pulsarBin()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00168">pulsarBin()</a>.</p>
 
 </div>
 </div>
@@ -4159,9 +4160,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00330">330</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00329">329</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00170">pulsarGateId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00169">pulsarGateId()</a>.</p>
 
 </div>
 </div>
@@ -4183,9 +4184,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00314">314</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00313">313</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00136">scanNumber()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00135">scanNumber()</a>.</p>
 
 </div>
 </div>
@@ -4207,9 +4208,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00315">315</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00314">314</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00137">sigma()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00136">sigma()</a>.</p>
 
 </div>
 </div>
@@ -4231,9 +4232,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00331">331</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00330">330</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00171">sigmaSpectrum()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00170">sigmaSpectrum()</a>.</p>
 
 </div>
 </div>
@@ -4255,9 +4256,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00316">316</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00315">315</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00138">stateId()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00137">stateId()</a>.</p>
 
 </div>
 </div>
@@ -4279,9 +4280,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00317">317</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00316">316</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00139">time()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00138">time()</a>.</p>
 
 </div>
 </div>
@@ -4303,9 +4304,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00318">318</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00317">317</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00144">timeCentroid()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00143">timeCentroid()</a>.</p>
 
 </div>
 </div>
@@ -4327,9 +4328,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00345">345</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00344">344</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00147">timeCentroidMeas()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00146">timeCentroidMeas()</a>.</p>
 
 </div>
 </div>
@@ -4351,9 +4352,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00354">354</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00353">353</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00145">timeCentroidQuant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00144">timeCentroidQuant()</a>.</p>
 
 </div>
 </div>
@@ -4375,9 +4376,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00332">332</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00331">331</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00172">timeExtraPrec()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00171">timeExtraPrec()</a>.</p>
 
 </div>
 </div>
@@ -4399,9 +4400,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00357">357</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00356">356</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00173">timeExtraPrecQuant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00172">timeExtraPrecQuant()</a>.</p>
 
 </div>
 </div>
@@ -4423,9 +4424,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00344">344</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00343">343</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00142">timeMeas()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00141">timeMeas()</a>.</p>
 
 </div>
 </div>
@@ -4447,9 +4448,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00353">353</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00352">352</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00140">timeQuant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00139">timeQuant()</a>.</p>
 
 </div>
 </div>
@@ -4471,9 +4472,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00333">333</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00332">332</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00175">uvw2()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00174">uvw2()</a>.</p>
 
 </div>
 </div>
@@ -4495,9 +4496,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00348">348</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00347">347</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00176">uvw2Meas()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00175">uvw2Meas()</a>.</p>
 
 </div>
 </div>
@@ -4519,9 +4520,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00358">358</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00357">357</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00178">uvw2Quant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00177">uvw2Quant()</a>.</p>
 
 </div>
 </div>
@@ -4543,9 +4544,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00319">319</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00318">318</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00149">uvw()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00148">uvw()</a>.</p>
 
 </div>
 </div>
@@ -4567,9 +4568,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00346">346</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00345">345</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00152">uvwMeas()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00151">uvwMeas()</a>.</p>
 
 </div>
 </div>
@@ -4591,9 +4592,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00355">355</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00354">354</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00150">uvwQuant()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00149">uvwQuant()</a>.</p>
 
 </div>
 </div>
@@ -4615,9 +4616,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00334">334</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00333">333</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00180">videoPoint()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00179">videoPoint()</a>.</p>
 
 </div>
 </div>
@@ -4639,9 +4640,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00320">320</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00319">319</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00154">weight()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00153">weight()</a>.</p>
 
 </div>
 </div>
@@ -4663,9 +4664,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00335">335</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00334">334</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00181">weightSpectrum()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00180">weightSpectrum()</a>.</p>
 
 </div>
 </div>
@@ -4687,9 +4688,9 @@ We might decide to merge this class with the <a class="el" href="classcasacore_1
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00336">336</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMainColumns_8h_source.html#l00335">335</a> of file <a class="el" href="MSMainColumns_8h_source.html">MSMainColumns.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00182">weightSpectrumCorrected()</a>.</p>
+<p>Referenced by <a class="el" href="MSMainColumns_8h_source.html#l00181">weightSpectrumCorrected()</a>.</p>
 
 </div>
 </div>

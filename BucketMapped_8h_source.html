@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,9 +121,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_BUCKETMAPPED_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/IO/BucketBase.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/IO/MMapfdIO.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="BucketBase_8h.html">casacore/casa/IO/BucketBase.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MMapfdIO_8h.html">casacore/casa/IO/MMapfdIO.h</a>&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -219,8 +220,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1BucketMapped_html_a370de4b53ac8e70363a31aca58ce47e4"><div class="ttname"><a href="classcasacore_1_1BucketMapped.html#a370de4b53ac8e70363a31aca58ce47e4">casacore::BucketMapped::getBucket</a></div><div class="ttdeci">const char * getBucket(uInt bucketNr)</div><div class="ttdoc">Get a readonly pointer to the given bucket in memory. </div></div>
 <div class="ttc" id="classcasacore_1_1BucketMapped_html_a32e3dcc355b46f2f6a4365facbb0fc0c"><div class="ttname"><a href="classcasacore_1_1BucketMapped.html#a32e3dcc355b46f2f6a4365facbb0fc0c">casacore::BucketMapped::initializeBuckets</a></div><div class="ttdeci">virtual void initializeBuckets(uInt bucketNr)</div><div class="ttdoc">Initialize the bucket buffer. </div></div>
 <div class="ttc" id="classcasacore_1_1BucketMapped_html_ac99e14b245897326864ab491c1a34570"><div class="ttname"><a href="classcasacore_1_1BucketMapped.html#ac99e14b245897326864ab491c1a34570">casacore::BucketMapped::BucketMapped</a></div><div class="ttdeci">BucketMapped(BucketFile *file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets)</div><div class="ttdoc">Create the cache for (part of) a file. </div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
+<div class="ttc" id="MMapfdIO_8h_html"><div class="ttname"><a href="MMapfdIO_8h.html">MMapfdIO.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1BucketMapped_html_ab992f54b36f1e75f291fd5986664fc5f"><div class="ttname"><a href="classcasacore_1_1BucketMapped.html#ab992f54b36f1e75f291fd5986664fc5f">casacore::BucketMapped::doFlush</a></div><div class="ttdeci">virtual void doFlush()</div><div class="ttdoc">Flush the file. </div></div>
 <div class="ttc" id="classcasacore_1_1BucketMapped_html_adb4d172f2a156b649565b300f04ac241"><div class="ttname"><a href="classcasacore_1_1BucketMapped.html#adb4d172f2a156b649565b300f04ac241">casacore::BucketMapped::operator=</a></div><div class="ttdeci">BucketMapped &amp; operator=(const BucketMapped &amp;)</div><div class="ttdoc">Assignment is not possible. </div></div>
+<div class="ttc" id="BucketBase_8h_html"><div class="ttname"><a href="BucketBase_8h.html">BucketBase.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1BucketBase_html_a313fbbff847c2680aa314a55381559f1"><div class="ttname"><a href="classcasacore_1_1BucketBase.html#a313fbbff847c2680aa314a55381559f1">casacore::BucketBase::itsHasWritten</a></div><div class="ttdeci">Bool itsHasWritten</div><div class="ttdoc">Have data been written? </div><div class="ttdef"><b>Definition:</b> <a href="BucketBase_8h_source.html#l00131">BucketBase.h:131</a></div></div>
 <div class="ttc" id="classcasacore_1_1BucketMapped_html_a36d89a3a6f953071abf400b8dbf55533"><div class="ttname"><a href="classcasacore_1_1BucketMapped.html#a36d89a3a6f953071abf400b8dbf55533">casacore::BucketMapped::getrwBucket</a></div><div class="ttdeci">char * getrwBucket(uInt bucketNr)</div><div class="ttdoc">Get a writable pointer to the given bucket in memory. </div><div class="ttdef"><b>Definition:</b> <a href="BucketMapped_8h_source.html#l00095">BucketMapped.h:95</a></div></div>
 <div class="ttc" id="classcasacore_1_1BucketBase_html"><div class="ttname"><a href="classcasacore_1_1BucketBase.html">casacore::BucketBase</a></div><div class="ttdoc">Abstract base class for Bucket classes. </div><div class="ttdef"><b>Definition:</b> <a href="BucketBase_8h_source.html#l00059">BucketBase.h:59</a></div></div>

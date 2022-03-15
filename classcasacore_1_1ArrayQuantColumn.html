@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -99,7 +100,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Provides read/write access to <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a> columns in Tables.  
+<p>Provides read/write access to <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a> columns in Tables.  
  <a href="classcasacore_1_1ArrayQuantColumn.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ArrayQuantColumn_8h_source.html">ArrayQuantColumn.h</a>&gt;</code></p>
@@ -125,21 +126,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7f32782e1f837fd8361f161a1ca6a8ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a7f32782e1f837fd8361f161a1ca6a8ba">reference</a> (const <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">ArrayQuantColumn</a>&lt; T &gt; &amp;that)</td></tr>
 <tr class="memdesc:a7f32782e1f837fd8361f161a1ca6a8ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make this object reference the column in "that".  <a href="#a7f32782e1f837fd8361f161a1ca6a8ba">More...</a><br/></td></tr>
 <tr class="separator:a7f32782e1f837fd8361f161a1ca6a8ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f84e9f08839238605cf54fd062a7431"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a9f84e9f08839238605cf54fd062a7431">operator()</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr) const </td></tr>
-<tr class="memdesc:a9f84e9f08839238605cf54fd062a7431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row.  <a href="#a9f84e9f08839238605cf54fd062a7431">More...</a><br/></td></tr>
-<tr class="separator:a9f84e9f08839238605cf54fd062a7431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dd3612104742acf2b219674f7d6b419"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a0dd3612104742acf2b219674f7d6b419">operator()</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;) const </td></tr>
-<tr class="memdesc:a0dd3612104742acf2b219674f7d6b419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row, converted to the given unit.  <a href="#a0dd3612104742acf2b219674f7d6b419">More...</a><br/></td></tr>
-<tr class="separator:a0dd3612104742acf2b219674f7d6b419"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9156b11c2f2d8243c855bad352b4916a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a9156b11c2f2d8243c855bad352b4916a">operator()</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &gt; &amp;) const </td></tr>
-<tr class="memdesc:a9156b11c2f2d8243c855bad352b4916a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row, converted to the given units.  <a href="#a9156b11c2f2d8243c855bad352b4916a">More...</a><br/></td></tr>
-<tr class="separator:a9156b11c2f2d8243c855bad352b4916a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d84ff8e928018251ba331086d6b2836"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a0d84ff8e928018251ba331086d6b2836">operator()</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &amp;other) const </td></tr>
-<tr class="memdesc:a0d84ff8e928018251ba331086d6b2836"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row, converted to the unit in other.  <a href="#a0d84ff8e928018251ba331086d6b2836">More...</a><br/></td></tr>
-<tr class="separator:a0d84ff8e928018251ba331086d6b2836"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1fb49414ffb3c91e237422d3f7c0865"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#ae1fb49414ffb3c91e237422d3f7c0865">put</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q)</td></tr>
-<tr class="memdesc:ae1fb49414ffb3c91e237422d3f7c0865"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put an array of quanta into the specified row of the table.  <a href="#ae1fb49414ffb3c91e237422d3f7c0865">More...</a><br/></td></tr>
-<tr class="separator:ae1fb49414ffb3c91e237422d3f7c0865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e4073107e27d6d8a70cc9a97e3b5979"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a0e4073107e27d6d8a70cc9a97e3b5979">operator()</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr) const </td></tr>
+<tr class="memdesc:a0e4073107e27d6d8a70cc9a97e3b5979"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row.  <a href="#a0e4073107e27d6d8a70cc9a97e3b5979">More...</a><br/></td></tr>
+<tr class="separator:a0e4073107e27d6d8a70cc9a97e3b5979"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4924dcf42615e0b37ca94ce8f7cc2a8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a4924dcf42615e0b37ca94ce8f7cc2a8f">operator()</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;) const </td></tr>
+<tr class="memdesc:a4924dcf42615e0b37ca94ce8f7cc2a8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row, converted to the given unit.  <a href="#a4924dcf42615e0b37ca94ce8f7cc2a8f">More...</a><br/></td></tr>
+<tr class="separator:a4924dcf42615e0b37ca94ce8f7cc2a8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9831a6eb8525166fa82e18762ee8c41e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a9831a6eb8525166fa82e18762ee8c41e">operator()</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &gt; &amp;) const </td></tr>
+<tr class="memdesc:a9831a6eb8525166fa82e18762ee8c41e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row, converted to the given units.  <a href="#a9831a6eb8525166fa82e18762ee8c41e">More...</a><br/></td></tr>
+<tr class="separator:a9831a6eb8525166fa82e18762ee8c41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a959747929b0dcf654dd4884b4cd89857"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a959747929b0dcf654dd4884b4cd89857">operator()</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &amp;other) const </td></tr>
+<tr class="memdesc:a959747929b0dcf654dd4884b4cd89857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the quantum array stored in the specified row, converted to the unit in other.  <a href="#a959747929b0dcf654dd4884b4cd89857">More...</a><br/></td></tr>
+<tr class="separator:a959747929b0dcf654dd4884b4cd89857"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57de57978e84293e31bdf2eb6dd64ac5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a57de57978e84293e31bdf2eb6dd64ac5">put</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q)</td></tr>
+<tr class="memdesc:a57de57978e84293e31bdf2eb6dd64ac5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put an array of quanta into the specified row of the table.  <a href="#a57de57978e84293e31bdf2eb6dd64ac5">More...</a><br/></td></tr>
+<tr class="separator:a57de57978e84293e31bdf2eb6dd64ac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc8d272d19fa19ff37d56ac86b26de96"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#adc8d272d19fa19ff37d56ac86b26de96">isUnitVariable</a> () const </td></tr>
 <tr class="memdesc:adc8d272d19fa19ff37d56ac86b26de96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether the <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a> column has variable units.  <a href="#adc8d272d19fa19ff37d56ac86b26de96">More...</a><br/></td></tr>
 <tr class="separator:adc8d272d19fa19ff37d56ac86b26de96"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,18 +162,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5ec301f7a0485ed24e5450fabcab7bda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a5ec301f7a0485ed24e5450fabcab7bda">attach</a> (const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;tab, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &gt; &amp;)</td></tr>
 <tr class="separator:a5ec301f7a0485ed24e5450fabcab7bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader"></div></td></tr>
-<tr class="memitem:a9308dd536389edbfe62ee65340173031"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a9308dd536389edbfe62ee65340173031">get</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
-<tr class="memdesc:a9308dd536389edbfe62ee65340173031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#a9308dd536389edbfe62ee65340173031">More...</a><br/></td></tr>
-<tr class="separator:a9308dd536389edbfe62ee65340173031"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5dfd6a86360eb02d12f5650e35027a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#ad5dfd6a86360eb02d12f5650e35027a3">get</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
-<tr class="memdesc:ad5dfd6a86360eb02d12f5650e35027a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#ad5dfd6a86360eb02d12f5650e35027a3">More...</a><br/></td></tr>
-<tr class="separator:ad5dfd6a86360eb02d12f5650e35027a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb092331e3b54fe846dd2a8762f32c23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#adb092331e3b54fe846dd2a8762f32c23">get</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &gt; &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
-<tr class="memdesc:adb092331e3b54fe846dd2a8762f32c23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#adb092331e3b54fe846dd2a8762f32c23">More...</a><br/></td></tr>
-<tr class="separator:adb092331e3b54fe846dd2a8762f32c23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d9805ec9c2d661abfc8cdd0e5a136fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a2d9805ec9c2d661abfc8cdd0e5a136fb">get</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &amp;other, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
-<tr class="memdesc:a2d9805ec9c2d661abfc8cdd0e5a136fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#a2d9805ec9c2d661abfc8cdd0e5a136fb">More...</a><br/></td></tr>
-<tr class="separator:a2d9805ec9c2d661abfc8cdd0e5a136fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fff4f806621ae4de2bbeaf7326cfd2e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a5fff4f806621ae4de2bbeaf7326cfd2e">get</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
+<tr class="memdesc:a5fff4f806621ae4de2bbeaf7326cfd2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#a5fff4f806621ae4de2bbeaf7326cfd2e">More...</a><br/></td></tr>
+<tr class="separator:a5fff4f806621ae4de2bbeaf7326cfd2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad26324ac662f27710057c1aa3c5400dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#ad26324ac662f27710057c1aa3c5400dc">get</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
+<tr class="memdesc:ad26324ac662f27710057c1aa3c5400dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#ad26324ac662f27710057c1aa3c5400dc">More...</a><br/></td></tr>
+<tr class="separator:ad26324ac662f27710057c1aa3c5400dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a0c17b0cfdd06a6d30a1251d6e6ba51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a4a0c17b0cfdd06a6d30a1251d6e6ba51">get</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &gt; &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
+<tr class="memdesc:a4a0c17b0cfdd06a6d30a1251d6e6ba51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#a4a0c17b0cfdd06a6d30a1251d6e6ba51">More...</a><br/></td></tr>
+<tr class="separator:a4a0c17b0cfdd06a6d30a1251d6e6ba51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b118618432123c68b38677238cd5d1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a0b118618432123c68b38677238cd5d1d">get</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &amp;other, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>) const </td></tr>
+<tr class="memdesc:a0b118618432123c68b38677238cd5d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the quantum array in the specified row.  <a href="#a0b118618432123c68b38677238cd5d1d">More...</a><br/></td></tr>
+<tr class="separator:a0b118618432123c68b38677238cd5d1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -195,9 +196,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a5b47724c0927aaea0e5f40db760bdc1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a5b47724c0927aaea0e5f40db760bdc1a">cleanUp</a> ()</td></tr>
 <tr class="memdesc:a5b47724c0927aaea0e5f40db760bdc1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes allocated memory etc.  <a href="#a5b47724c0927aaea0e5f40db760bdc1a">More...</a><br/></td></tr>
 <tr class="separator:a5b47724c0927aaea0e5f40db760bdc1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd1b0417990aef155deed9fb7dd3cb79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#afd1b0417990aef155deed9fb7dd3cb79">getData</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize) const </td></tr>
-<tr class="memdesc:afd1b0417990aef155deed9fb7dd3cb79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data without possible conversion.  <a href="#afd1b0417990aef155deed9fb7dd3cb79">More...</a><br/></td></tr>
-<tr class="separator:afd1b0417990aef155deed9fb7dd3cb79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ff702b45bc26d3e99411059e1dcdfdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#a3ff702b45bc26d3e99411059e1dcdfdf">getData</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; T &gt; &gt; &amp;q, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> resize) const </td></tr>
+<tr class="memdesc:a3ff702b45bc26d3e99411059e1dcdfdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data without possible conversion.  <a href="#a3ff702b45bc26d3e99411059e1dcdfdf">More...</a><br/></td></tr>
+<tr class="separator:a3ff702b45bc26d3e99411059e1dcdfdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad079630a9c0adff51a907aac5d5bcfca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html">ArrayQuantColumn</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayQuantColumn.html#ad079630a9c0adff51a907aac5d5bcfca">operator=</a> (const <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">ArrayQuantColumn</a>&lt; T &gt; &amp;that)</td></tr>
 <tr class="memdesc:ad079630a9c0adff51a907aac5d5bcfca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment makes no sense in a read only class.  <a href="#ad079630a9c0adff51a907aac5d5bcfca">More...</a><br/></td></tr>
 <tr class="separator:ad079630a9c0adff51a907aac5d5bcfca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,7 +223,7 @@ Private Attributes</h2></td></tr>
 <div class="textblock"><h3>template&lt;class T&gt;<br/>
 class casacore::ArrayQuantColumn&lt; T &gt;</h3>
 
-<p>Provides read/write access to <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a> columns in Tables. </p>
+<p>Provides read/write access to <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a> columns in Tables. </p>
 <p><a class="anchor" id="ArrayQuantColumn_summary"></a> </p>
 <h3>Intended use:</h3>
 <p>Public interface</p>
@@ -274,7 +275,7 @@ Support for fixed unit per array element (e.g. for positions) In that case #unit
 <li>
 Functions like getColumn, getSlice. </li>
 <li>
-get as <code><a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;<a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>&lt;T&gt;&gt;</code>. </li>
+get as <code><a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;<a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>&lt;T&gt;&gt;</code>. </li>
 <li>
 optimize when converting when units are the same for entire array. </li>
 </ul>
@@ -597,7 +598,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a9308dd536389edbfe62ee65340173031"></a>
+<a class="anchor" id="a5fff4f806621ae4de2bbeaf7326cfd2e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -606,7 +607,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::get </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -634,7 +635,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ad5dfd6a86360eb02d12f5650e35027a3"></a>
+<a class="anchor" id="ad26324ac662f27710057c1aa3c5400dc"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -643,7 +644,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::get </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -677,7 +678,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="adb092331e3b54fe846dd2a8762f32c23"></a>
+<a class="anchor" id="a4a0c17b0cfdd06a6d30a1251d6e6ba51"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -686,7 +687,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::get </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -720,7 +721,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a2d9805ec9c2d661abfc8cdd0e5a136fb"></a>
+<a class="anchor" id="a0b118618432123c68b38677238cd5d1d"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -729,7 +730,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::get </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -763,7 +764,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="afd1b0417990aef155deed9fb7dd3cb79"></a>
+<a class="anchor" id="a3ff702b45bc26d3e99411059e1dcdfdf"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -775,7 +776,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::getData </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -923,7 +924,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a9f84e9f08839238605cf54fd062a7431"></a>
+<a class="anchor" id="a0e4073107e27d6d8a70cc9a97e3b5979"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -932,7 +933,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt;T&gt; &gt; <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::operator() </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -943,7 +944,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0dd3612104742acf2b219674f7d6b419"></a>
+<a class="anchor" id="a4924dcf42615e0b37ca94ce8f7cc2a8f"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -952,7 +953,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt;T&gt; &gt; <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::operator() </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -973,7 +974,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a9156b11c2f2d8243c855bad352b4916a"></a>
+<a class="anchor" id="a9831a6eb8525166fa82e18762ee8c41e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -982,7 +983,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt;T&gt; &gt; <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::operator() </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1003,7 +1004,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0d84ff8e928018251ba331086d6b2836"></a>
+<a class="anchor" id="a959747929b0dcf654dd4884b4cd89857"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -1012,7 +1013,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt;T&gt; &gt; <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::operator() </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1090,7 +1091,7 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ae1fb49414ffb3c91e237422d3f7c0865"></a>
+<a class="anchor" id="a57de57978e84293e31bdf2eb6dd64ac5"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -1099,7 +1100,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcasacore_1_1ArrayQuantColumn.html">casacore::ArrayQuantColumn</a>&lt; T &gt;::put </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>

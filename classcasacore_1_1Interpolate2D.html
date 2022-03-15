@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -248,7 +249,7 @@ Private Attributes</h2></td></tr>
 <h3>Etymology</h3>
 <p>This class is called <a class="el" href="classcasacore_1_1Interpolate2D.html" title="A two dimension interpolator for Matrices or Arrays. ">Interpolate2D</a> because it does 2 dimensional interpolations</p>
 <h3>Synopsis</h3>
-<p>Given a regular <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> or <a class="el" href="classcasacore_1_1Matrix.html" title="A 2-D Specialization of the Array class. ">Matrix</a> and a vector of pixel coordinates, interpolate the values of that array/matrix onto those pixel coordinates.</p>
+<p>Given a regular <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> or <a class="el" href="classcasacore_1_1Matrix.html" title="A 2-D Specialization of the Array class. ">Matrix</a> and a vector of pixel coordinates, interpolate the values of that array/matrix onto those pixel coordinates.</p>
 <p>Absolutely no checking of the consistency of the input data is done in order to preserve maximum speed. The coordinate vector must* have at least 2 elements (others will be ignored). If you supply data and mask, those arrays <em>must</em> be the same shape. Failure to follow these rules will result in your program crashing.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="Interpolate2D_example1"></a></p>
@@ -263,10 +264,10 @@ Private Attributes</h2></td></tr>
 <h3>To Do</h3>
 <ul>
 <li>
-Alternative approach: instantiate with an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>, take a block of vector locations, return a block of interpolation results </li>
+Alternative approach: instantiate with an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>, take a block of vector locations, return a block of interpolation results </li>
 </ul>
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00097">97</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00096">96</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="adf36d2722f56a4708b62ebf5a73ec276"></a>
 <div class="memitem">
@@ -286,7 +287,7 @@ Alternative approach: instantiate with an <a class="el" href="classcasacore_1_1A
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00271">271</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00270">270</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>
@@ -308,7 +309,7 @@ Alternative approach: instantiate with an <a class="el" href="classcasacore_1_1A
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00266">266</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00265">265</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>
@@ -332,7 +333,7 @@ Alternative approach: instantiate with an <a class="el" href="classcasacore_1_1A
 
 <p>Typedefs for function pointers. </p>
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00261">261</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00260">260</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>
@@ -361,7 +362,7 @@ Alternative approach: instantiate with an <a class="el" href="classcasacore_1_1A
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00100">100</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00099">99</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>
@@ -1448,7 +1449,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00277">277</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00276">276</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>
@@ -1470,7 +1471,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00276">276</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00275">275</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>
@@ -1492,7 +1493,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00275">275</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
+<p>Definition at line <a class="el" href="Interpolate2D_8h_source.html#l00274">274</a> of file <a class="el" href="Interpolate2D_8h_source.html">Interpolate2D.h</a>.</p>
 
 </div>
 </div>

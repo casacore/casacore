@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -269,8 +270,8 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:ac637aa43047c72610d27bc3edeb7a2b1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a><br class="typebreak"/>
 &lt; <a class="el" href="classcasacore_1_1LogSink_1_1LsiIntermediate.html">LsiIntermediate</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LogSink.html#ac637aa43047c72610d27bc3edeb7a2b1">global_sink_p</a></td></tr>
 <tr class="separator:ac637aa43047c72610d27bc3edeb7a2b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad80e24482c171e085653f67a735fc325"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LogSink.html#ad80e24482c171e085653f67a735fc325">theirCallOnce</a></td></tr>
-<tr class="separator:ad80e24482c171e085653f67a735fc325"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3b5eb4758f7feb044c4a453db53b51"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LogSink.html#aef3b5eb4758f7feb044c4a453db53b51">theirCallOnceFlag</a></td></tr>
+<tr class="separator:aef3b5eb4758f7feb044c4a453db53b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -346,7 +347,7 @@ More sink types - in particular to Glish. </li>
 A "tee" Sink type might be useful. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00141">141</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00142">142</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="abb1a57bae28057e692ae5d057dfa333c"></a>
 <div class="memitem">
@@ -1312,7 +1313,7 @@ template&lt;typename EXC &gt; </div>
 <p>Post <code>message</code> and then throw an <code><a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a></code> exception containing <code><a class="el" href="namespacecasacore.html#aa63dc6a0baa7934e8410d878027ea586">message.toString()</a></code>. </p>
 <p>It is always posted as a <code>SEVERE</code> priority message, no matter what <code>message.priority()</code> says. </p>
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00206">206</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00207">207</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 
 <p>References <a class="el" href="classcasacore_1_1LogSink.html#af9fe9cec9918f5c830ea01f372af51a4">preparePostThenThrow()</a>.</p>
 
@@ -1354,7 +1355,7 @@ template&lt;typename EXC &gt; </div>
 
 <p>Prepare for postThenThrow function. </p>
 
-<p>Referenced by <a class="el" href="LogSink_8h_source.html#l00206">postThenThrow()</a>.</p>
+<p>Referenced by <a class="el" href="LogSink_8h_source.html#l00207">postThenThrow()</a>.</p>
 
 </div>
 </div>
@@ -1434,7 +1435,7 @@ template&lt;typename EXC &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00308">308</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00309">309</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 
 </div>
 </div>
@@ -1459,7 +1460,7 @@ template&lt;typename EXC &gt; </div>
 <p>The following is a reference to the global sink. </p>
 <p>It is created to ensure that the global sink is not destroyed before the last local reference to it is destroyed. This can happen if you have a static <a class="el" href="classcasacore_1_1LogSink.html" title="Distribute LogMessages to their destination(s) ">LogSink</a> (or <a class="el" href="classcasacore_1_1LogIO.html" title="ostream-like interface to creating log messages. ">LogIO</a>). </p>
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00315">315</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00316">316</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 
 </div>
 </div>
@@ -1481,11 +1482,11 @@ template&lt;typename EXC &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00307">307</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00308">308</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad80e24482c171e085653f67a735fc325"></a>
+<a class="anchor" id="aef3b5eb4758f7feb044c4a453db53b51"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1493,7 +1494,7 @@ template&lt;typename EXC &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> casacore::LogSink::theirCallOnce</td>
+          <td class="memname">std::once_flag casacore::LogSink::theirCallOnceFlag</td>
         </tr>
       </table>
   </td>
@@ -1503,7 +1504,7 @@ template&lt;typename EXC &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00309">309</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00310">310</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 
 </div>
 </div>
@@ -1525,7 +1526,7 @@ template&lt;typename EXC &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00316">316</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
+<p>Definition at line <a class="el" href="LogSink_8h_source.html#l00317">317</a> of file <a class="el" href="LogSink_8h_source.html">LogSink.h</a>.</p>
 
 </div>
 </div>

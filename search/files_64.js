@@ -4,6 +4,7 @@ var searchData=
   ['dataman_2eh',['DataMan.h',['../DataMan_8h.html',1,'']]],
   ['datamanaccessor_2eh',['DataManAccessor.h',['../DataManAccessor_8h.html',1,'']]],
   ['datamanager_2eh',['DataManager.h',['../DataManager_8h.html',1,'']]],
+  ['datamanagercolumn_2eh',['DataManagerColumn.h',['../DataManagerColumn_8h.html',1,'']]],
   ['datamanerror_2eh',['DataManError.h',['../DataManError_8h.html',1,'']]],
   ['datamaninfo_2eh',['DataManInfo.h',['../DataManInfo_8h.html',1,'']]],
   ['datatype_2eh',['DataType.h',['../DataType_8h.html',1,'']]],
@@ -24,5 +25,12 @@ var searchData=
   ['dopplerengine_2eh',['DopplerEngine.h',['../DopplerEngine_8h.html',1,'']]],
   ['dopplerudf_2eh',['DopplerUDF.h',['../DopplerUDF_8h.html',1,'']]],
   ['dynbuffer_2eh',['DynBuffer.h',['../DynBuffer_8h.html',1,'']]],
-  ['dynlib_2eh',['DynLib.h',['../DynLib_8h.html',1,'']]]
+  ['dynlib_2eh',['DynLib.h',['../DynLib_8h.html',1,'']]],
+  ['dyscodatacolumn_2eh',['dyscodatacolumn.h',['../dyscodatacolumn_8h.html',1,'']]],
+  ['dyscodistribution_2eh',['dyscodistribution.h',['../dyscodistribution_8h.html',1,'']]],
+  ['dysconormalization_2eh',['dysconormalization.h',['../dysconormalization_8h.html',1,'']]],
+  ['dyscostman_2eh',['dyscostman.h',['../dyscostman_8h.html',1,'']]],
+  ['dyscostmancol_2eh',['dyscostmancol.h',['../dyscostmancol_8h.html',1,'']]],
+  ['dyscostmanerror_2eh',['dyscostmanerror.h',['../dyscostmanerror_8h.html',1,'']]],
+  ['dyscoweightcolumn_2eh',['dyscoweightcolumn.h',['../dyscoweightcolumn_8h.html',1,'']]]
 ];

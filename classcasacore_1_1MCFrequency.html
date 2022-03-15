@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -223,9 +224,9 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:af84e20062a7bc3f6efe3dc1886dd6494"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCFrequency.html#af84e20062a7bc3f6efe3dc1886dd6494">FromTo_p</a> [<a class="el" href="classcasacore_1_1MFrequency.html#a5033de7b159a385150bc49326e926164a0181408454f7ff62fe2919930650283a">MFrequency::N_Types</a>][<a class="el" href="classcasacore_1_1MFrequency.html#a5033de7b159a385150bc49326e926164a0181408454f7ff62fe2919930650283a">MFrequency::N_Types</a>]</td></tr>
 <tr class="memdesc:af84e20062a7bc3f6efe3dc1886dd6494"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transition matrix.  <a href="#af84e20062a7bc3f6efe3dc1886dd6494">More...</a><br/></td></tr>
 <tr class="separator:af84e20062a7bc3f6efe3dc1886dd6494"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29ca8225a30577d7d8c93d8c26a4060e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCFrequency.html#a29ca8225a30577d7d8c93d8c26a4060e">theirInitOnce</a></td></tr>
-<tr class="memdesc:a29ca8225a30577d7d8c93d8c26a4060e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#a29ca8225a30577d7d8c93d8c26a4060e">More...</a><br/></td></tr>
-<tr class="separator:a29ca8225a30577d7d8c93d8c26a4060e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78d7d09783245cea9307542bc4bb49b2"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCFrequency.html#a78d7d09783245cea9307542bc4bb49b2">theirInitOnceFlag</a></td></tr>
+<tr class="memdesc:a78d7d09783245cea9307542bc4bb49b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#a78d7d09783245cea9307542bc4bb49b2">More...</a><br/></td></tr>
+<tr class="separator:a78d7d09783245cea9307542bc4bb49b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -278,16 +279,16 @@ Additional Inherited Members</h2></td></tr>
 <p>Contains state machinery and caching for actual conversions</p>
 <h3>Example</h3>
 <p><a class="anchor" id="MCFrequency_example1"></a> Get the Doppler shift for an oberved HI frequency of 1380 MHz </p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MDoppler.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MFrequency.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Measures_8h.html">casacore/measures/Measures.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MDoppler_8h.html">casacore/measures/Measures/MDoppler.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MFrequency_8h.html">casacore/measures/Measures/MFrequency.h</a>&gt;</span></div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;Redshift for 1380 MHz: &quot;</span> &lt;&lt;</div>
 <div class="line"><a class="code" href="classcasacore_1_1MDoppler.html#a7e157fb7ae851bec999ce92d834ba9aa">MDoppler::Convert</a>(MFrequency(<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(1380., <span class="stringliteral">&quot;MHz&quot;</span>),</div>
 <div class="line"><a class="code" href="classcasacore_1_1MFrequency.html#a5033de7b159a385150bc49326e926164a9c50796c710b02eba283902bbcc3768d">MFrequency::TOPO</a>).toDoppler(<a class="code" href="classcasacore_1_1QC.html#aaa7fbf98687c4b0d8f0699e718379795">QC::HI</a>),</div>
 <div class="line"><a class="code" href="classcasacore_1_1MDoppler.html#acdcf5f4d8b46e24352dbd552a4d2aa3caf7006c2250937782a91ded09bdb77e05">MDoppler::Z</a>)() &lt;&lt; endl;</div>
 </div><!-- fragment --><h3>Motivation</h3>
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00093">93</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00092">92</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a7b19059d8427474c31cf7fc89740b536"></a>
 <div class="memitem">
@@ -348,7 +349,7 @@ Additional Inherited Members</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00118">118</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00117">117</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -717,7 +718,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="classcasacore_1_1Conversion.html" title="A class with general conversion definitions. ">Conversion</a> of data. </p>
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00098">98</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00097">97</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -740,7 +741,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00148">148</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00147">147</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -762,7 +763,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00149">149</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00148">148</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -786,7 +787,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Transition matrix. </p>
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00155">155</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00154">154</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +809,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00147">147</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00146">146</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -830,11 +831,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00146">146</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00145">145</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a29ca8225a30577d7d8c93d8c26a4060e"></a>
+<a class="anchor" id="a78d7d09783245cea9307542bc4bb49b2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -842,7 +843,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> casacore::MCFrequency::theirInitOnce</td>
+          <td class="memname">std::once_flag casacore::MCFrequency::theirInitOnceFlag</td>
         </tr>
       </table>
   </td>
@@ -854,7 +855,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Object to ensure safe multi-threaded lazy single initialization. </p>
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00157">157</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00156">156</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>
@@ -878,7 +879,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Transition list. </p>
 
-<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00153">153</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
+<p>Definition at line <a class="el" href="MCFrequency_8h_source.html#l00152">152</a> of file <a class="el" href="MCFrequency_8h_source.html">MCFrequency.h</a>.</p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -98,7 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p><a class="el" href="classcasacore_1_1Memory.html" title="Memory related information and utilities. use visibility=export&gt; ">Memory</a> related information and utilities. use visibility=export&gt;  
  <a href="classcasacore_1_1Memory.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="Memory_8h_source.html">Memory.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="OS_2Memory_8h_source.html">Memory.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -147,14 +148,14 @@ General knowledge of C/C++ memory allocation issues. </li>
 <div class="line"><a class="code" href="classcasacore_1_1Memory.html#ae8cfc480b2ef4046d2cc8623c4acf57e">Memory::releaseMemory</a>(); <span class="comment">// Attempt to release if more than 1M &quot;wasted&quot;</span></div>
 <div class="line">}</div>
 </div><!-- fragment --><h3>Motivation</h3>
-<p>At run time we need to be able to make decisions about whether we should keep things in memory or about whether we should do I/O (e.g. use an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> or a <a class="el" href="classcasacore_1_1PagedArray.html" title="A Lattice that is read from or written to disk. ">PagedArray</a>).</p>
+<p>At run time we need to be able to make decisions about whether we should keep things in memory or about whether we should do I/O (e.g. use an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> or a <a class="el" href="classcasacore_1_1PagedArray.html" title="A Lattice that is read from or written to disk. ">PagedArray</a>).</p>
 <h3>To Do</h3>
 <ul>
 <li>
 We might some day want to put actual allocation/deallocation functions in here if the <a class="el" href="structmallinfo.html">mallinfo()</a> interface turns out to not be portable. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="Memory_8h_source.html#l00110">110</a> of file <a class="el" href="Memory_8h_source.html">Memory.h</a>.</p>
+<p>Definition at line <a class="el" href="OS_2Memory_8h_source.html#l00110">110</a> of file <a class="el" href="OS_2Memory_8h_source.html">Memory.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a3d1f76afe47227d11943f885db81cf12"></a>
 <div class="memitem">
@@ -295,7 +296,7 @@ We might some day want to put actual allocation/deallocation functions in here i
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>casa/OS/<a class="el" href="Memory_8h_source.html">Memory.h</a></li>
+<li>casa/OS/<a class="el" href="OS_2Memory_8h_source.html">Memory.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

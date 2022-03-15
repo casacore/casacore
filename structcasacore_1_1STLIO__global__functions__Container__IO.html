@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -176,7 +177,7 @@ Public Member Functions</h2></td></tr>
 STL container concept </li>
 </ul>
 <h3>Synopsis</h3>
-<p>The function <code>showContainer</code> makes it possible to show any STL-like container (having forward iterators) on an ostream. This include casacore classes like <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>, <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>, and <a class="el" href="classcasacore_1_1Block.html" title="simple 1-D array ">Block</a>, but also STL classes like vector. The separator, prefix, and postfix can be defined at will (they default to, [ ]).</p>
+<p>The function <code>showContainer</code> makes it possible to show any STL-like container (having forward iterators) on an ostream. This include casacore classes like <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>, <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a>, and <a class="el" href="classcasacore_1_1Block.html" title="simple 1-D array ">Block</a>, but also STL classes like vector. The separator, prefix, and postfix can be defined at will (they default to, [ ]).</p>
 <p>The function <code>showDataIter</code> is similar to <code>showContainer</code>, but uses iterators directly.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="STLIO_example1"></a></p>
@@ -721,7 +722,7 @@ template&lt;class CONTAINER &gt; </div>
 </div><div class="memdoc">
 
 <p>Write out an ascii representation of any container having a forward iterator. </p>
-<p>Note that a multi-dimensional <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> object is linearized. An arbitrary separator, prefix, and postfix can be given. E.g. for separator ', ' the output looks like [1, 2, 3]. </p>
+<p>Note that a multi-dimensional <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> object is linearized. An arbitrary separator, prefix, and postfix can be given. E.g. for separator ', ' the output looks like [1, 2, 3]. </p>
 
 <p>Definition at line <a class="el" href="STLIO_8h_source.html#l00111">111</a> of file <a class="el" href="STLIO_8h_source.html">STLIO.h</a>.</p>
 

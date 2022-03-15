@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -88,22 +89,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">ArrayBase.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;casacore/casa/aips.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/IPosition.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Utilities/CountedPtr.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Containers/Allocator.h&gt;</code><br/>
+<div class="textblock"><code>#include &quot;<a class="el" href="IPosition_8h_source.html">IPosition.h</a>&quot;</code><br/>
+<code>#include &lt;memory&gt;</code><br/>
 </div>
 <p><a href="ArrayBase_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayBase.html">casacore::ArrayBase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-templated base class for templated <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> class.  <a href="classcasacore_1_1ArrayBase.html#details">More...</a><br/></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-templated base class for templated <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> class.  <a href="classcasacore_1_1ArrayBase.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -111,6 +111,11 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacecasacore"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore.html">casacore</a></td></tr>
 <tr class="memdesc:namespacecasacore"><td class="mdescLeft">&#160;</td><td class="mdescRight">this file contains all the compiler specific defines <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a26ae77f00d2b19caecb4b0defd95a922"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ArrayStr_8h.html#a26ae77f00d2b19caecb4b0defd95a922">CASA_ARRAYBASE_2_H</a></td></tr>
+<tr class="separator:a26ae77f00d2b19caecb4b0defd95a922"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -128,20 +133,33 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td colspan="2"><div class="groupHeader"></div></td></tr>
-<tr class="memitem:ga629307dd04d7d401ccdd07644cd466ba"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga629307dd04d7d401ccdd07644cd466ba">casacore::ArrayVolume</a> (uInt Ndim, const Int *Shape)</td></tr>
-<tr class="memdesc:ga629307dd04d7d401ccdd07644cd466ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">General global functions for Arrays.  <a href="group__Arrays__module.html#ga629307dd04d7d401ccdd07644cd466ba">More...</a><br/></td></tr>
-<tr class="separator:ga629307dd04d7d401ccdd07644cd466ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4453e4bce5255dcbf80b4fbbdc8c1c30"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga4453e4bce5255dcbf80b4fbbdc8c1c30">casacore::ArrayIndexOffset</a> (uInt Ndim, const ssize_t *Shape, const ssize_t *Origin, const ssize_t *Inc, const IPosition &amp;Index)</td></tr>
-<tr class="memdesc:ga4453e4bce5255dcbf80b4fbbdc8c1c30"><td class="mdescLeft">&#160;</td><td class="mdescRight">What is the linear index into an "Ndim" dimensional array of the given "Shape", "Origin", and "Increment" for a given <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> Index.  <a href="group__Arrays__module.html#ga4453e4bce5255dcbf80b4fbbdc8c1c30">More...</a><br/></td></tr>
-<tr class="separator:ga4453e4bce5255dcbf80b4fbbdc8c1c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9edfe728566315307e0fe7f12a21a4c5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga9edfe728566315307e0fe7f12a21a4c5">casacore::ArrayIndexOffset</a> (uInt Ndim, const ssize_t *Shape, const ssize_t *Inc, const IPosition &amp;Index)</td></tr>
-<tr class="separator:ga9edfe728566315307e0fe7f12a21a4c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5c999e43db5b22b41204275d1445ad42"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga5c999e43db5b22b41204275d1445ad42">casacore::ArrayVolume</a> (size_t Ndim, const int *Shape)</td></tr>
+<tr class="memdesc:ga5c999e43db5b22b41204275d1445ad42"><td class="mdescLeft">&#160;</td><td class="mdescRight">General global functions for Arrays.  <a href="group__Arrays__module.html#ga5c999e43db5b22b41204275d1445ad42">More...</a><br/></td></tr>
+<tr class="separator:ga5c999e43db5b22b41204275d1445ad42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3501006de6fc6e42edf21a051c36a588"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga3501006de6fc6e42edf21a051c36a588">casacore::ArrayIndexOffset</a> (size_t Ndim, const ssize_t *Shape, const ssize_t *Origin, const ssize_t *Inc, const IPosition &amp;Index)</td></tr>
+<tr class="memdesc:ga3501006de6fc6e42edf21a051c36a588"><td class="mdescLeft">&#160;</td><td class="mdescRight">What is the linear index into an "Ndim" dimensional array of the given "Shape", "Origin", and "Increment" for a given <a class="el" href="classcasacore_1_1IPosition.html" title="A Vector of integers, for indexing into Array&lt;T&gt; objects. ">IPosition</a> Index.  <a href="group__Arrays__module.html#ga3501006de6fc6e42edf21a051c36a588">More...</a><br/></td></tr>
+<tr class="separator:ga3501006de6fc6e42edf21a051c36a588"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5b5526fce2164da3625e5666d56614f4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga5b5526fce2164da3625e5666d56614f4">casacore::ArrayIndexOffset</a> (size_t Ndim, const ssize_t *Shape, const ssize_t *Inc, const IPosition &amp;Index)</td></tr>
+<tr class="separator:ga5b5526fce2164da3625e5666d56614f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa2adeec4bfede54bea79c0b6818e9ce0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#gaa2adeec4bfede54bea79c0b6818e9ce0">casacore::throwArrayShapes</a> (const IPosition &amp;shape1, const IPosition &amp;shape2, const char *name)</td></tr>
 <tr class="memdesc:gaa2adeec4bfede54bea79c0b6818e9ce0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Function.html" title="Numerical functional interface class. ">Function</a> to check the shapes.  <a href="group__Arrays__module.html#gaa2adeec4bfede54bea79c0b6818e9ce0">More...</a><br/></td></tr>
 <tr class="separator:gaa2adeec4bfede54bea79c0b6818e9ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga221aa22fedb69065075aac31bb563011"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Arrays__module.html#ga221aa22fedb69065075aac31bb563011">casacore::checkArrayShapes</a> (const ArrayBase &amp;left, const ArrayBase &amp;right, const char *name)</td></tr>
 <tr class="separator:ga221aa22fedb69065075aac31bb563011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a26ae77f00d2b19caecb4b0defd95a922"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CASA_ARRAYBASE_2_H</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

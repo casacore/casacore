@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -199,7 +200,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a7280fe44205ace21f9144685d038fa26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the cache size as to "fit" the indicated path.  <a href="#a7280fe44205ace21f9144685d038fa26">More...</a><br/></td></tr>
 <tr class="separator:a7280fe44205ace21f9144685d038fa26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeef05fc647f2887f8139facfba7d03f6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeRegion.html#aeef05fc647f2887f8139facfba7d03f6">setCacheSizeInTiles</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> howManyTiles)</td></tr>
-<tr class="memdesc:aeef05fc647f2887f8139facfba7d03f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the actual cache size for this <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> to be be big enough for the indicated number of tiles.  <a href="#aeef05fc647f2887f8139facfba7d03f6">More...</a><br/></td></tr>
+<tr class="memdesc:aeef05fc647f2887f8139facfba7d03f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the actual cache size for this <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> to be be big enough for the indicated number of tiles.  <a href="#aeef05fc647f2887f8139facfba7d03f6">More...</a><br/></td></tr>
 <tr class="separator:aeef05fc647f2887f8139facfba7d03f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a3892be89b3112da1d3a90971ca89c5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeRegion.html#a6a3892be89b3112da1d3a90971ca89c5">clearCache</a> ()</td></tr>
 <tr class="memdesc:a6a3892be89b3112da1d3a90971ca89c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears and frees up the caches, but the maximum allowed cache size is unchanged from when setCacheSize was called.  <a href="#a6a3892be89b3112da1d3a90971ca89c5">More...</a><br/></td></tr>
@@ -1395,7 +1396,7 @@ It is useful when only a subset of a lattice needs to be accessed. </p>
 </table>
 </div><div class="memdoc">
 
-<p>Set the actual cache size for this <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> to be be big enough for the indicated number of tiles. </p>
+<p>Set the actual cache size for this <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> to be be big enough for the indicated number of tiles. </p>
 <p>This cache is not shared with PagedArrays in other rows and is always clipped to be less than the maximum value set using the setMaximumCacheSize member function. tiles. Tiles are cached using a first in first out algorithm. </p>
 
 <p>Reimplemented from <a class="el" href="classcasacore_1_1LatticeBase.html#a5518633dc8333376f6da6e29663eb3e4">casacore::LatticeBase</a>.</p>

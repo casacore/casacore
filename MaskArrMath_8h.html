@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -93,12 +94,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">MaskArrMath.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;casacore/casa/aips.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/BasicMath/Math.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/Array.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/MaskedArray.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/IPosition.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/BasicSL/Complex.h&gt;</code><br/>
+<div class="textblock"><code>#include &quot;<a class="el" href="Array_8h_source.html">Array.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="MaskedArray_8h_source.html">MaskedArray.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="IPosition_8h_source.html">IPosition.h</a>&quot;</code><br/>
+<code>#include &quot;MaskArrMath.tcc&quot;</code><br/>
 </div>
 <p><a href="MaskArrMath_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -142,10 +141,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a66057af4e7daf1300402e985acd699f3"><td class="memTemplItemLeft" align="right" valign="top">MaskedArray&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecasacore.html#a66057af4e7daf1300402e985acd699f3">casacore::boxedArrayMath</a> (const MaskedArray&lt; T &gt; &amp;array, const IPosition &amp;boxSize, const FuncType &amp;funcObj)</td></tr>
 <tr class="memdesc:a66057af4e7daf1300402e985acd699f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply the given ArrayMath reduction function objects to each box in the array.  <a href="#a66057af4e7daf1300402e985acd699f3">More...</a><br/></td></tr>
 <tr class="separator:a66057af4e7daf1300402e985acd699f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf6435302cc0f8ff5ab92488f450391f"><td class="memTemplParams" colspan="2">template&lt;typename T , typename FuncType &gt; </td></tr>
-<tr class="memitem:aaf6435302cc0f8ff5ab92488f450391f"><td class="memTemplItemLeft" align="right" valign="top">Array&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecasacore.html#aaf6435302cc0f8ff5ab92488f450391f">casacore::slidingArrayMath</a> (const MaskedArray&lt; T &gt; &amp;array, const IPosition &amp;halfBoxSize, const FuncType &amp;funcObj, Bool fillEdge=True)</td></tr>
-<tr class="memdesc:aaf6435302cc0f8ff5ab92488f450391f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply for each element in the array the given ArrayMath reduction function object to the box around that element.  <a href="#aaf6435302cc0f8ff5ab92488f450391f">More...</a><br/></td></tr>
-<tr class="separator:aaf6435302cc0f8ff5ab92488f450391f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab94679daed3950472e771c537ed6166f"><td class="memTemplParams" colspan="2">template&lt;typename T , typename FuncType &gt; </td></tr>
+<tr class="memitem:ab94679daed3950472e771c537ed6166f"><td class="memTemplItemLeft" align="right" valign="top">Array&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecasacore.html#ab94679daed3950472e771c537ed6166f">casacore::slidingArrayMath</a> (const MaskedArray&lt; T &gt; &amp;array, const IPosition &amp;halfBoxSize, const FuncType &amp;funcObj, bool fillEdge=true)</td></tr>
+<tr class="memdesc:ab94679daed3950472e771c537ed6166f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply for each element in the array the given ArrayMath reduction function object to the box around that element.  <a href="#ab94679daed3950472e771c537ed6166f">More...</a><br/></td></tr>
+<tr class="separator:ab94679daed3950472e771c537ed6166f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

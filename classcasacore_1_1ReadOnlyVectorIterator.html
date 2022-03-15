@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>casacore: casacore::ReadOnlyVectorIterator&lt; T &gt; Class Template Reference</title>
+<title>casacore: casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -93,59 +94,60 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classcasacore_1_1ReadOnlyVectorIterator-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">casacore::ReadOnlyVectorIterator&lt; T &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Arrays__module.html">Arrays_module</a></div></div>  </div>
+<div class="title">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Arrays__module.html">Arrays_module</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Iterate a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> cursor through another <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>.  
+<p>Iterate a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> cursor through another <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>.  
  <a href="classcasacore_1_1ReadOnlyVectorIterator.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad2a02c4dbe4f15c203d22c7a0b4b279a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#ad2a02c4dbe4f15c203d22c7a0b4b279a">ReadOnlyVectorIterator</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;a, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> axis=0)</td></tr>
-<tr class="separator:ad2a02c4dbe4f15c203d22c7a0b4b279a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a641d4f44d7ed5e6c69ef68985e5daa87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a641d4f44d7ed5e6c69ef68985e5daa87">next</a> ()</td></tr>
-<tr class="separator:a641d4f44d7ed5e6c69ef68985e5daa87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8fdc1827b4bc9551137a9eaae9a567c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#af8fdc1827b4bc9551137a9eaae9a567c">reset</a> ()</td></tr>
-<tr class="separator:af8fdc1827b4bc9551137a9eaae9a567c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26e47dfa13d9642bfda725d2d69e417b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a26e47dfa13d9642bfda725d2d69e417b">origin</a> ()</td></tr>
-<tr class="separator:a26e47dfa13d9642bfda725d2d69e417b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1e428253aef3209d490ccd0d3b2349d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#ac1e428253aef3209d490ccd0d3b2349d">array</a> ()</td></tr>
-<tr class="separator:ac1e428253aef3209d490ccd0d3b2349d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cb9a65f446d16f2fbdc34854ce802ec"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a1cb9a65f446d16f2fbdc34854ce802ec">vector</a> ()</td></tr>
-<tr class="separator:a1cb9a65f446d16f2fbdc34854ce802ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65e5f3a7a6fbd39822848bc6ebe76a29"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a65e5f3a7a6fbd39822848bc6ebe76a29">atStart</a> () const </td></tr>
-<tr class="separator:a65e5f3a7a6fbd39822848bc6ebe76a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9355e6ad6959bc32b0cf7c46220e5f81"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a9355e6ad6959bc32b0cf7c46220e5f81">pastEnd</a> () const </td></tr>
-<tr class="separator:a9355e6ad6959bc32b0cf7c46220e5f81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31b91cda9cf83b5c39d5d033af997c47"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a31b91cda9cf83b5c39d5d033af997c47">pos</a> () const </td></tr>
-<tr class="separator:a31b91cda9cf83b5c39d5d033af997c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a01bc0d27630b56cbcf8f49e89abf07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a4a01bc0d27630b56cbcf8f49e89abf07">endPos</a> () const </td></tr>
-<tr class="separator:a4a01bc0d27630b56cbcf8f49e89abf07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2f8eec4de4bafea5b42a55bc04314da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#ab2f8eec4de4bafea5b42a55bc04314da">ndim</a> () const </td></tr>
-<tr class="separator:ab2f8eec4de4bafea5b42a55bc04314da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6296a9e70e5df680a6e89038c4a6abd3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a6296a9e70e5df680a6e89038c4a6abd3">ReadOnlyVectorIterator</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T, Alloc &gt; &amp;a, size_t axis=0)</td></tr>
+<tr class="separator:a6296a9e70e5df680a6e89038c4a6abd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ebd6891c5a6c554355329bb06c1944f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a6ebd6891c5a6c554355329bb06c1944f">next</a> ()</td></tr>
+<tr class="separator:a6ebd6891c5a6c554355329bb06c1944f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3d7d11efa7bce62f8b65a2c9a0963b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#af3d7d11efa7bce62f8b65a2c9a0963b6">reset</a> ()</td></tr>
+<tr class="separator:af3d7d11efa7bce62f8b65a2c9a0963b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54e27e8a4d506d2650ec0b3ad06d265d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a54e27e8a4d506d2650ec0b3ad06d265d">origin</a> ()</td></tr>
+<tr class="separator:a54e27e8a4d506d2650ec0b3ad06d265d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0698638d9b01c78b9425b8c80c477771"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T, Alloc &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a0698638d9b01c78b9425b8c80c477771">array</a> ()</td></tr>
+<tr class="separator:a0698638d9b01c78b9425b8c80c477771"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf70d30769ac202d42435174868a2d25"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; T, Alloc &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#adf70d30769ac202d42435174868a2d25">vector</a> ()</td></tr>
+<tr class="separator:adf70d30769ac202d42435174868a2d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a1cf1941ac671fcb42027b6338f8999"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a1a1cf1941ac671fcb42027b6338f8999">atStart</a> () const </td></tr>
+<tr class="separator:a1a1cf1941ac671fcb42027b6338f8999"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5386202c4995f411270e3db63a82a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a8e5386202c4995f411270e3db63a82a9">pastEnd</a> () const </td></tr>
+<tr class="separator:a8e5386202c4995f411270e3db63a82a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d3b4f5199c1ebeefc495ccc5231a845"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a3d3b4f5199c1ebeefc495ccc5231a845">pos</a> () const </td></tr>
+<tr class="separator:a3d3b4f5199c1ebeefc495ccc5231a845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fdb101354b1d85b6578ce11e9fd3a1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a4fdb101354b1d85b6578ce11e9fd3a1a">endPos</a> () const </td></tr>
+<tr class="separator:a4fdb101354b1d85b6578ce11e9fd3a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0880aaf16eca8d31387b75bea66d2894"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a0880aaf16eca8d31387b75bea66d2894">ndim</a> () const </td></tr>
+<tr class="separator:a0880aaf16eca8d31387b75bea66d2894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:af7196eb04142cbe87d8d69a5e0c9ed41"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#af7196eb04142cbe87d8d69a5e0c9ed41">ReadOnlyVectorIterator</a> (const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T &gt; &amp;)</td></tr>
-<tr class="memdesc:af7196eb04142cbe87d8d69a5e0c9ed41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not implemented.  <a href="#af7196eb04142cbe87d8d69a5e0c9ed41">More...</a><br/></td></tr>
-<tr class="separator:af7196eb04142cbe87d8d69a5e0c9ed41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6209e644f91613670e90d0d568a17491"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a6209e644f91613670e90d0d568a17491">operator=</a> (const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T &gt; &amp;)</td></tr>
-<tr class="memdesc:a6209e644f91613670e90d0d568a17491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not implemented.  <a href="#a6209e644f91613670e90d0d568a17491">More...</a><br/></td></tr>
-<tr class="separator:a6209e644f91613670e90d0d568a17491"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9540d1d6107e44d58ff484204e641d89"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a9540d1d6107e44d58ff484204e641d89">ReadOnlyVectorIterator</a> (const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T, Alloc &gt; &amp;)=delete</td></tr>
+<tr class="memdesc:a9540d1d6107e44d58ff484204e641d89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not implemented.  <a href="#a9540d1d6107e44d58ff484204e641d89">More...</a><br/></td></tr>
+<tr class="separator:a9540d1d6107e44d58ff484204e641d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35cfd1c1d2e02700414b7458f371cab1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T, <br class="typebreak"/>
+Alloc &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a35cfd1c1d2e02700414b7458f371cab1">operator=</a> (const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T, Alloc &gt; &amp;)=delete</td></tr>
+<tr class="memdesc:a35cfd1c1d2e02700414b7458f371cab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not implemented.  <a href="#a35cfd1c1d2e02700414b7458f371cab1">More...</a><br/></td></tr>
+<tr class="separator:a35cfd1c1d2e02700414b7458f371cab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a0e199da1dba8802148c51892a8d9d652"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1VectorIterator.html">VectorIterator</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a0e199da1dba8802148c51892a8d9d652">vi</a></td></tr>
-<tr class="separator:a0e199da1dba8802148c51892a8d9d652"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e5e00710f028b9021e072a9f1c18754"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1VectorIterator.html">VectorIterator</a>&lt; T, Alloc &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html#a0e5e00710f028b9021e072a9f1c18754">vi</a></td></tr>
+<tr class="separator:a0e5e00710f028b9021e072a9f1c18754"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;class T&gt;<br/>
-class casacore::ReadOnlyVectorIterator&lt; T &gt;</h3>
+<div class="textblock"><h3>template&lt;typename T, typename Alloc = std::allocator&lt;T&gt;&gt;<br/>
+class casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;</h3>
 
-<p>Iterate a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> cursor through another <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>. </p>
+<p>Iterate a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> cursor through another <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>. </p>
 <h3>Review Status</h3>
 <dl>
 <dt>Reviewed By:</dt>
@@ -158,27 +160,27 @@ class casacore::ReadOnlyVectorIterator&lt; T &gt;</h3>
 <b>Tip:</b><em> Note that the R/O <a class="el" href="classcasacore_1_1VectorIterator.html" title="Iterate an Vector cursor through another Array. ">VectorIterator</a> is not derived from R/O <a class="el" href="classcasacore_1_1ArrayIterator.html" title="Iterate an Array cursor through another Array. ">ArrayIterator</a>; </em><br/>
  </p>
 
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00103">103</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00102">102</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ad2a02c4dbe4f15c203d22c7a0b4b279a"></a>
+<a class="anchor" id="a6296a9e70e5df680a6e89038c4a6abd3"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a> </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::<a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T, Alloc &gt; &amp;&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>axis</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
@@ -194,30 +196,30 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00107">107</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00106">106</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af7196eb04142cbe87d8d69a5e0c9ed41"></a>
+<a class="anchor" id="a9540d1d6107e44d58ff484204e641d89"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::<a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a> </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::<a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T, Alloc &gt; &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">delete</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -227,17 +229,17 @@ template&lt;class T&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ac1e428253aef3209d490ccd0d3b2349d"></a>
+<a class="anchor" id="a0698638d9b01c78b9425b8c80c477771"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;T&gt;&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::array </td>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;T, Alloc&gt;&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::array </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -250,23 +252,23 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00114">114</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00113">113</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a65e5f3a7a6fbd39822848bc6ebe76a29"></a>
+<a class="anchor" id="a1a1cf1941ac671fcb42027b6338f8999"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::atStart </td>
+          <td class="memname">bool <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::atStart </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -279,196 +281,23 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00117">117</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00116">116</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4a01bc0d27630b56cbcf8f49e89abf07"></a>
+<a class="anchor" id="a4fdb101354b1d85b6578ce11e9fd3a1a"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::endPos </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00120">120</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
-
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ab2f8eec4de4bafea5b42a55bc04314da"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::ndim </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00121">121</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
-
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a641d4f44d7ed5e6c69ef68985e5daa87"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::next </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00110">110</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
-
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a6209e644f91613670e90d0d568a17491"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt;T&gt;&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::operator= </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Not implemented. </p>
-
-</div>
-</div>
-<a class="anchor" id="a26e47dfa13d9642bfda725d2d69e417b"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::origin </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00112">112</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
-
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a9355e6ad6959bc32b0cf7c46220e5f81"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::pastEnd </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00118">118</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
-
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a31b91cda9cf83b5c39d5d033af997c47"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::pos </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::endPos </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -483,21 +312,107 @@ template&lt;class T&gt; </div>
 
 <p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00119">119</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af8fdc1827b4bc9551137a9eaae9a567c"></a>
+<a class="anchor" id="a0880aaf16eca8d31387b75bea66d2894"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::reset </td>
+          <td class="memname">size_t <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::ndim </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00120">120</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6ebd6891c5a6c554355329bb06c1944f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::next </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00109">109</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a35cfd1c1d2e02700414b7458f371cab1"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt;T, Alloc&gt;&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">ReadOnlyVectorIterator</a>&lt; T, Alloc &gt; &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Not implemented. </p>
+
+</div>
+</div>
+<a class="anchor" id="a54e27e8a4d506d2650ec0b3ad06d265d"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::origin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -512,21 +427,79 @@ template&lt;class T&gt; </div>
 
 <p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00111">111</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a1cb9a65f446d16f2fbdc34854ce802ec"></a>
+<a class="anchor" id="a8e5386202c4995f411270e3db63a82a9"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;T&gt;&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::vector </td>
+          <td class="memname">bool <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::pastEnd </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00117">117</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3d3b4f5199c1ebeefc495ccc5231a845"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::pos </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00118">118</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af3d7d11efa7bce62f8b65a2c9a0963b6"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::reset </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -539,24 +512,53 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00115">115</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00110">110</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
-<p>References <a class="el" href="VectorIter_8h_source.html#l00129">casacore::ReadOnlyVectorIterator&lt; T &gt;::vi</a>.</p>
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a0e199da1dba8802148c51892a8d9d652"></a>
+<a class="anchor" id="adf70d30769ac202d42435174868a2d25"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T&gt; </div>
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1VectorIterator.html">VectorIterator</a>&lt;T&gt; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T &gt;::vi</td>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;T, Alloc&gt;&amp; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::vector </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00114">114</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+
+<p>References <a class="el" href="VectorIter_8h_source.html#l00128">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vi</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a0e5e00710f028b9021e072a9f1c18754"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Alloc  = std::allocator&lt;T&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1VectorIterator.html">VectorIterator</a>&lt;T, Alloc&gt; <a class="el" href="classcasacore_1_1ReadOnlyVectorIterator.html">casacore::ReadOnlyVectorIterator</a>&lt; T, Alloc &gt;::vi</td>
         </tr>
       </table>
   </td>
@@ -566,9 +568,9 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00129">129</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
+<p>Definition at line <a class="el" href="VectorIter_8h_source.html#l00128">128</a> of file <a class="el" href="VectorIter_8h_source.html">VectorIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="VectorIter_8h_source.html#l00114">casacore::ReadOnlyVectorIterator&lt; T &gt;::array()</a>, <a class="el" href="VectorIter_8h_source.html#l00117">casacore::ReadOnlyVectorIterator&lt; T &gt;::atStart()</a>, <a class="el" href="VectorIter_8h_source.html#l00120">casacore::ReadOnlyVectorIterator&lt; T &gt;::endPos()</a>, <a class="el" href="VectorIter_8h_source.html#l00121">casacore::ReadOnlyVectorIterator&lt; T &gt;::ndim()</a>, <a class="el" href="VectorIter_8h_source.html#l00110">casacore::ReadOnlyVectorIterator&lt; T &gt;::next()</a>, <a class="el" href="VectorIter_8h_source.html#l00112">casacore::ReadOnlyVectorIterator&lt; T &gt;::origin()</a>, <a class="el" href="VectorIter_8h_source.html#l00118">casacore::ReadOnlyVectorIterator&lt; T &gt;::pastEnd()</a>, <a class="el" href="VectorIter_8h_source.html#l00119">casacore::ReadOnlyVectorIterator&lt; T &gt;::pos()</a>, <a class="el" href="VectorIter_8h_source.html#l00111">casacore::ReadOnlyVectorIterator&lt; T &gt;::reset()</a>, and <a class="el" href="VectorIter_8h_source.html#l00115">casacore::ReadOnlyVectorIterator&lt; T &gt;::vector()</a>.</p>
+<p>Referenced by <a class="el" href="VectorIter_8h_source.html#l00113">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::array()</a>, <a class="el" href="VectorIter_8h_source.html#l00116">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::atStart()</a>, <a class="el" href="VectorIter_8h_source.html#l00119">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::endPos()</a>, <a class="el" href="VectorIter_8h_source.html#l00120">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::ndim()</a>, <a class="el" href="VectorIter_8h_source.html#l00109">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::next()</a>, <a class="el" href="VectorIter_8h_source.html#l00111">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::origin()</a>, <a class="el" href="VectorIter_8h_source.html#l00117">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::pastEnd()</a>, <a class="el" href="VectorIter_8h_source.html#l00118">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::pos()</a>, <a class="el" href="VectorIter_8h_source.html#l00110">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::reset()</a>, and <a class="el" href="VectorIter_8h_source.html#l00114">casacore::ReadOnlyVectorIterator&lt; T, Alloc &gt;::vector()</a>.</p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -119,7 +120,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define FITS_BLOCKIO_H</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">//# Include this file first, because it may set LFS variables used by cfitsio.</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">//# Make sure that cfitsio does not declare the wcs headers.</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span>{</div>
@@ -131,7 +132,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;fcntl.h&gt;</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;casacore/fits/FITS/FITSError.h&gt;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="FITSError_8h.html">casacore/fits/FITS/FITSError.h</a>&gt;</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
@@ -302,6 +303,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1BlockIO_html_a39349f65076c9b6017ea89873bfe01a8"><div class="ttname"><a href="classcasacore_1_1BlockIO.html#a39349f65076c9b6017ea89873bfe01a8">casacore::BlockIO::fname</a></div><div class="ttdeci">const char * fname() const </div><div class="ttdoc">name of file associated with I/O stream, if applicable </div><div class="ttdef"><b>Definition:</b> <a href="blockio_8h_source.html#l00087">blockio.h:87</a></div></div>
 <div class="ttc" id="classcasacore_1_1BlockIO_html_a0d6c57fc59ea82d3830a169022de8f39"><div class="ttname"><a href="classcasacore_1_1BlockIO.html#a0d6c57fc59ea82d3830a169022de8f39">casacore::BlockIO::close_file</a></div><div class="ttdeci">int close_file(fitsfile *fptr, int *status)</div><div class="ttdoc">fits_close_file() does not work for reasons that the file pointer does not have the knowledge of chdu...</div></div>
 <div class="ttc" id="classcasacore_1_1BlockIO_html"><div class="ttname"><a href="classcasacore_1_1BlockIO.html">casacore::BlockIO</a></div><div class="ttdoc"> </div><div class="ttdef"><b>Definition:</b> <a href="blockio_8h_source.html#l00061">blockio.h:61</a></div></div>
+<div class="ttc" id="FITSError_8h_html"><div class="ttname"><a href="FITSError_8h.html">FITSError.h</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1BlockIO_html_a1f226002733b5d2725ecf585bf4b9399acb0bffa308af49f98b0d08ee18438893"><div class="ttname"><a href="classcasacore_1_1BlockIO.html#a1f226002733b5d2725ecf585bf4b9399acb0bffa308af49f98b0d08ee18438893">casacore::BlockIO::NOMEM</a></div><div class="ttdef"><b>Definition:</b> <a href="blockio_8h_source.html#l00064">blockio.h:64</a></div></div>
 <div class="ttc" id="classcasacore_1_1BlockIO_html_a2403c0e124974f911724b1ed768a28a8"><div class="ttname"><a href="classcasacore_1_1BlockIO.html#a2403c0e124974f911724b1ed768a28a8">casacore::BlockIO::reset_iosize</a></div><div class="ttdeci">void reset_iosize()</div><div class="ttdoc">reset the m_iosize data member </div><div class="ttdef"><b>Definition:</b> <a href="blockio_8h_source.html#l00072">blockio.h:72</a></div></div>
 <div class="ttc" id="classcasacore_1_1BlockIO_html_a1f226002733b5d2725ecf585bf4b9399a390de87f4d33cb28e83fe3ae4f42fabf"><div class="ttname"><a href="classcasacore_1_1BlockIO.html#a1f226002733b5d2725ecf585bf4b9399a390de87f4d33cb28e83fe3ae4f42fabf">casacore::BlockIO::NOSUCHFILE</a></div><div class="ttdef"><b>Definition:</b> <a href="blockio_8h_source.html#l00064">blockio.h:64</a></div></div>

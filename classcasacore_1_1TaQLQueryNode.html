@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -155,7 +156,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad19c75ca35a967092eeb4c362ade5ff0 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the node (recursively) in the given stream.  <a href="#ad19c75ca35a967092eeb4c362ade5ff0">More...</a><br/></td></tr>
 <tr class="separator:ad19c75ca35a967092eeb4c362ade5ff0 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a251de30ace9a852ce586e4a332a4c617 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#a251de30ace9a852ce586e4a332a4c617">save</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio) const </td></tr>
-<tr class="memdesc:a251de30ace9a852ce586e4a332a4c617 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save and restore the entire tree.  <a href="#a251de30ace9a852ce586e4a332a4c617">More...</a><br/></td></tr>
+<tr class="memdesc:a251de30ace9a852ce586e4a332a4c617 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save and restore the entire parse tree.  <a href="#a251de30ace9a852ce586e4a332a4c617">More...</a><br/></td></tr>
 <tr class="separator:a251de30ace9a852ce586e4a332a4c617 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa96590bef096b4fc70b09735bda0e131 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#aa96590bef096b4fc70b09735bda0e131">saveNode</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio) const </td></tr>
 <tr class="memdesc:aa96590bef096b4fc70b09735bda0e131 inherit pub_methods_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper functions for save/restore of tree.  <a href="#aa96590bef096b4fc70b09735bda0e131">More...</a><br/></td></tr>
@@ -188,12 +189,12 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:af6181c659e14d03a2ef7b3052d78959b inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1TaQLStyle.html">TaQLStyle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#af6181c659e14d03a2ef7b3052d78959b">theirStyle</a></td></tr>
 <tr class="memdesc:af6181c659e14d03a2ef7b3052d78959b inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the TaQL style to use.  <a href="#af6181c659e14d03a2ef7b3052d78959b">More...</a><br/></td></tr>
 <tr class="separator:af6181c659e14d03a2ef7b3052d78959b inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bb52a0e426ea9b21457987d70932194 inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#a8bb52a0e426ea9b21457987d70932194">theirMutex</a></td></tr>
-<tr class="memdesc:a8bb52a0e426ea9b21457987d70932194 inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use a mutex to guard the statics.  <a href="#a8bb52a0e426ea9b21457987d70932194">More...</a><br/></td></tr>
-<tr class="separator:a8bb52a0e426ea9b21457987d70932194 inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72d3f870258e1e3c366a55d57ba84d44 inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#a72d3f870258e1e3c366a55d57ba84d44">theirMutex</a></td></tr>
+<tr class="memdesc:a72d3f870258e1e3c366a55d57ba84d44 inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use a mutex to guard the statics.  <a href="#a72d3f870258e1e3c366a55d57ba84d44">More...</a><br/></td></tr>
+<tr class="separator:a72d3f870258e1e3c366a55d57ba84d44 inherit pub_static_attribs_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcasacore_1_1TaQLNode"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcasacore_1_1TaQLNode')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcasacore_1_1TaQLNode.html">casacore::TaQLNode</a></td></tr>
-<tr class="memitem:aefa863def16b252b1763fc685eefaf42 inherit pro_attribs_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1TaQLNodeRep.html">TaQLNodeRep</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#aefa863def16b252b1763fc685eefaf42">itsRep</a></td></tr>
-<tr class="separator:aefa863def16b252b1763fc685eefaf42 inherit pro_attribs_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51b9dbc7dcd4afa4b0d97b58da861369 inherit pro_attribs_classcasacore_1_1TaQLNode"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1TaQLNodeRep.html">TaQLNodeRep</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNode.html#a51b9dbc7dcd4afa4b0d97b58da861369">itsRep</a></td></tr>
+<tr class="separator:a51b9dbc7dcd4afa4b0d97b58da861369 inherit pro_attribs_classcasacore_1_1TaQLNode"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Envelope class for a node containing a selection command. </p>
@@ -207,7 +208,7 @@ Additional Inherited Members</h2></td></tr>
 <h3>Synopsis</h3>
 <p>This is a specialization of the envelope class <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> for a node containing a selection command. </p>
 
-<p>Definition at line <a class="el" href="TaQLNode_8h_source.html#l00256">256</a> of file <a class="el" href="TaQLNode_8h_source.html">TaQLNode.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNode_8h_source.html#l00258">258</a> of file <a class="el" href="TaQLNode_8h_source.html">TaQLNode.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a5ef39261211e9368f2ae96f813f922c8"></a>
 <div class="memitem">
@@ -290,7 +291,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNode_8h_source.html#l00264">264</a> of file <a class="el" href="TaQLNode_8h_source.html">TaQLNode.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNode_8h_source.html#l00266">266</a> of file <a class="el" href="TaQLNode_8h_source.html">TaQLNode.h</a>.</p>
 
 </div>
 </div>

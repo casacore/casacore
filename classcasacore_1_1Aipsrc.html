@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -247,9 +248,9 @@ Static Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
-<tr class="memitem:aa1fc4fe93aaccb54a13c09acc10fbf78"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Aipsrc.html#aa1fc4fe93aaccb54a13c09acc10fbf78">theirCallOnce</a></td></tr>
-<tr class="memdesc:aa1fc4fe93aaccb54a13c09acc10fbf78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#aa1fc4fe93aaccb54a13c09acc10fbf78">More...</a><br/></td></tr>
-<tr class="separator:aa1fc4fe93aaccb54a13c09acc10fbf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bd27922535b118f32cb40959fc65fe3"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Aipsrc.html#a0bd27922535b118f32cb40959fc65fe3">theirCallOnceFlag</a></td></tr>
+<tr class="memdesc:a0bd27922535b118f32cb40959fc65fe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#a0bd27922535b118f32cb40959fc65fe3">More...</a><br/></td></tr>
+<tr class="separator:a0bd27922535b118f32cb40959fc65fe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad027720f4d57cb6f1b49e14079c921df"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Aipsrc.html#ad027720f4d57cb6f1b49e14079c921df">lastParse</a></td></tr>
 <tr class="memdesc:ad027720f4d57cb6f1b49e14079c921df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Last time data was (re)read.  <a href="#ad027720f4d57cb6f1b49e14079c921df">More...</a><br/></td></tr>
 <tr class="separator:ad027720f4d57cb6f1b49e14079c921df"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -407,7 +408,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 <a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a> if the environment variables HOME and/or AIPSPATH not set. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00218">218</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00219">219</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="af82f8f50f2d248a32e9610a4495fbd31"></a>
 <div class="memitem">
@@ -2074,7 +2075,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>AIPSARCH. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00401">401</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00402">402</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2096,7 +2097,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00416">416</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00417">417</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2120,7 +2121,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>The possibly set external AIPSPATH. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00397">397</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00398">398</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2144,7 +2145,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>The start of the non-home values. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00395">395</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00396">396</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2168,7 +2169,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>Indicate above filled. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00411">411</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00412">412</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2192,7 +2193,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>AIPSHOME. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00407">407</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00408">408</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2216,7 +2217,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>AIPSHOST. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00405">405</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00406">406</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2240,7 +2241,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p><a class="el" href="classcasacore_1_1List.html" title="Doubly linked list. ">List</a> of patterns deducted from names. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00393">393</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00394">394</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2264,7 +2265,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p><a class="el" href="classcasacore_1_1List.html" title="Doubly linked list. ">List</a> of values belonging to keywords found. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00391">391</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00392">392</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2288,7 +2289,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>Last time data was (re)read. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00389">389</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00390">390</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2310,7 +2311,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00417">417</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00418">418</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2332,7 +2333,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00415">415</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00416">416</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2356,7 +2357,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>AIPSROOT. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00399">399</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00400">400</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2380,7 +2381,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>AIPSSITE. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00403">403</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00404">404</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2404,11 +2405,11 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p><a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> register list. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00414">414</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00415">415</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa1fc4fe93aaccb54a13c09acc10fbf78"></a>
+<a class="anchor" id="a0bd27922535b118f32cb40959fc65fe3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2416,7 +2417,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> casacore::Aipsrc::theirCallOnce</td>
+          <td class="memname">std::once_flag casacore::Aipsrc::theirCallOnceFlag</td>
         </tr>
       </table>
   </td>
@@ -2428,7 +2429,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>Object to ensure safe multi-threaded lazy single initialization. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00387">387</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00388">388</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>
@@ -2452,7 +2453,7 @@ update the <code>$HOME/.aipsrc</code> keyword/value list with <a class="el" href
 
 <p>HOME. </p>
 
-<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00409">409</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
+<p>Definition at line <a class="el" href="Aipsrc_8h_source.html#l00410">410</a> of file <a class="el" href="Aipsrc_8h_source.html">Aipsrc.h</a>.</p>
 
 </div>
 </div>

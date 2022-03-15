@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -98,7 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p><a class="el" href="classcasacore_1_1Map.html" title="Abstract base class for associative arrays. ">Map</a> a domain object into a range object via operator().  
  <a href="classcasacore_1_1Functional.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="Array_8h_source.html">Array.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="Functional_8h_source.html">Functional.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -136,7 +137,7 @@ class casacore::Functional&lt; Domain, Range &gt;</h3>
 <div class="fragment"><div class="line"><a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> integrate1D(<span class="keyword">const</span> Functional&lt;Float,Float&gt; &amp;f,</div>
 <div class="line"><a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> x1, <a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> x2, <a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> dx) {</div>
 <div class="line"><a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> n = (xend - xstart) / dx;</div>
-<div class="line"><a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> <a class="code" href="namespacecasacore.html#a52e94a0f970eb5350dc39688ffd25a5f">sum</a> = 0.0;</div>
+<div class="line"><a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> sum = 0.0;</div>
 <div class="line"><span class="keywordflow">for</span> (<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> i=0; i &lt; n; i++) sum += f(x1 + i*dx) * dx;</div>
 <div class="line"><span class="keywordflow">return</span> <a class="code" href="namespacecasacore.html#a52e94a0f970eb5350dc39688ffd25a5f">sum</a>; </div>
 <div class="line">}</div>
@@ -161,7 +162,7 @@ Accessible default constructors, assignment operators, and destructors will almo
 For polymorphic access it could be that a <code>clone()</code> function is needed at this level. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="Array_8h_source.html#l00053">53</a> of file <a class="el" href="Array_8h_source.html">Array.h</a>.</p>
+<p>Definition at line <a class="el" href="Functional_8h_source.html#l00122">122</a> of file <a class="el" href="Functional_8h_source.html">Functional.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a30b4f2bfe0e9acfabfb6b785321922bc"></a>
 <div class="memitem">
@@ -221,8 +222,7 @@ template&lt;class Domain, class Range&gt; </div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
-<li>casa/Arrays/<a class="el" href="Array_8h_source.html">Array.h</a></li>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>casa/BasicMath/<a class="el" href="Functional_8h_source.html">Functional.h</a></li>
 </ul>
 </div><!-- contents -->

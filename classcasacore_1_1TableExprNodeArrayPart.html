@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -96,7 +97,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> column part in table select expression.  
+<p><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> column part in table select expression.  
  <a href="classcasacore_1_1TableExprNodeArrayPart.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ExprNodeArray_8h_source.html">ExprNodeArray.h</a>&gt;</code></p>
@@ -152,31 +153,31 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4613d2989e9495956645614b41645315"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a4613d2989e9495956645614b41645315">getColumnDataType</a> (DataType &amp;) const </td></tr>
 <tr class="memdesc:a4613d2989e9495956645614b41645315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data type of this column (if possible).  <a href="#a4613d2989e9495956645614b41645315">More...</a><br/></td></tr>
 <tr class="separator:a4613d2989e9495956645614b41645315"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e5bb4977df0bb8fdd69e1164b792d8d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a6e5bb4977df0bb8fdd69e1164b792d8d">getColumnBool</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="memdesc:a6e5bb4977df0bb8fdd69e1164b792d8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value of the expression evaluated for the entire column.  <a href="#a6e5bb4977df0bb8fdd69e1164b792d8d">More...</a><br/></td></tr>
-<tr class="separator:a6e5bb4977df0bb8fdd69e1164b792d8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a217843ffadc19aff4f042ff273105259"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a217843ffadc19aff4f042ff273105259">getColumnuChar</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a217843ffadc19aff4f042ff273105259"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a15389345687b3194a57bc7e5e27b83"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a1a15389345687b3194a57bc7e5e27b83">getColumnShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a1a15389345687b3194a57bc7e5e27b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73bfc4d5b33c8e72491bcdea7767e6bd"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a73bfc4d5b33c8e72491bcdea7767e6bd">getColumnuShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a73bfc4d5b33c8e72491bcdea7767e6bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af54bd8abd83bd162b0f8cb5527dda049"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#af54bd8abd83bd162b0f8cb5527dda049">getColumnInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:af54bd8abd83bd162b0f8cb5527dda049"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa41d67ba6c88243e5d157987a82f3f76"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#aa41d67ba6c88243e5d157987a82f3f76">getColumnuInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:aa41d67ba6c88243e5d157987a82f3f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47acc6880e0dbb4a62a4673af2009899"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a47acc6880e0dbb4a62a4673af2009899">getColumnInt64</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a47acc6880e0dbb4a62a4673af2009899"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad00aa806a4a494161dec81586d99b41c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#ad00aa806a4a494161dec81586d99b41c">getColumnFloat</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:ad00aa806a4a494161dec81586d99b41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a093aa51735f2f1ae6271057125a782f2"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a093aa51735f2f1ae6271057125a782f2">getColumnDouble</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a093aa51735f2f1ae6271057125a782f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa31a826a82f4ad792da9bc6213dbf6b7"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#aa31a826a82f4ad792da9bc6213dbf6b7">getColumnComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:aa31a826a82f4ad792da9bc6213dbf6b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58f2c2c98aaf64186df5473b7dea7531"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; DComplex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a58f2c2c98aaf64186df5473b7dea7531">getColumnDComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a58f2c2c98aaf64186df5473b7dea7531"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a6a036ad26cc5cb95c796834a5aa80"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a35a6a036ad26cc5cb95c796834a5aa80">getColumnString</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="separator:a35a6a036ad26cc5cb95c796834a5aa80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada313c92f2da982fa50628fe0dcbe7c5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#ada313c92f2da982fa50628fe0dcbe7c5">getColumnBool</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="memdesc:ada313c92f2da982fa50628fe0dcbe7c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value of the expression evaluated for the entire column.  <a href="#ada313c92f2da982fa50628fe0dcbe7c5">More...</a><br/></td></tr>
+<tr class="separator:ada313c92f2da982fa50628fe0dcbe7c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a66e8bd2271c3d7f0e247db16b6d48c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a4a66e8bd2271c3d7f0e247db16b6d48c">getColumnuChar</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:a4a66e8bd2271c3d7f0e247db16b6d48c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec3a7f7d6a2b7c3fa42a595b736217f7"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#aec3a7f7d6a2b7c3fa42a595b736217f7">getColumnShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:aec3a7f7d6a2b7c3fa42a595b736217f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7de780ada9e8ba91e53aad3077a23682"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a7de780ada9e8ba91e53aad3077a23682">getColumnuShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:a7de780ada9e8ba91e53aad3077a23682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a123228a811507f7bd6643e1ffbcf5684"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a123228a811507f7bd6643e1ffbcf5684">getColumnInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:a123228a811507f7bd6643e1ffbcf5684"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9eb8fd09edb7a6d1bd3e512f4e67e3f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#ac9eb8fd09edb7a6d1bd3e512f4e67e3f">getColumnuInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:ac9eb8fd09edb7a6d1bd3e512f4e67e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a237dc6921a8b46647f8c35576eda457a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a237dc6921a8b46647f8c35576eda457a">getColumnInt64</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:a237dc6921a8b46647f8c35576eda457a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af007b736f8da11e03314a4a127f02449"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#af007b736f8da11e03314a4a127f02449">getColumnFloat</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:af007b736f8da11e03314a4a127f02449"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9098541fce1a4c5264094836e2f00b7a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a9098541fce1a4c5264094836e2f00b7a">getColumnDouble</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:a9098541fce1a4c5264094836e2f00b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac835b80d5518387815c9ef353b1e6722"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#ac835b80d5518387815c9ef353b1e6722">getColumnComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:ac835b80d5518387815c9ef353b1e6722"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad71283be360fd1388e5c88e5811baea5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; DComplex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#ad71283be360fd1388e5c88e5811baea5">getColumnDComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:ad71283be360fd1388e5c88e5811baea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f19c027ef26d59188c50d2d308ae03c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a9f19c027ef26d59188c50d2d308ae03c">getColumnString</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="separator:a9f19c027ef26d59188c50d2d308ae03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81e2138e38d5b38fbda320b0daa25559"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1TableExprNodeIndex.html">TableExprNodeIndex</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArrayPart.html#a81e2138e38d5b38fbda320b0daa25559">getIndexNode</a> () const </td></tr>
 <tr class="memdesc:a81e2138e38d5b38fbda320b0daa25559"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the index node.  <a href="#a81e2138e38d5b38fbda320b0daa25559">More...</a><br/></td></tr>
 <tr class="separator:a81e2138e38d5b38fbda320b0daa25559"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -253,31 +254,31 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aefefe2f54779114c76a114670e9b509b inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82f11af71f4d0d7142707dcc443be434 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1MArray.html">MArray</a>&lt; <a class="el" href="classcasacore_1_1MVTime.html">MVTime</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a82f11af71f4d0d7142707dcc443be434">getSliceDate</a> (const <a class="el" href="classcasacore_1_1TableExprId.html">TableExprId</a> &amp;id, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
 <tr class="separator:a82f11af71f4d0d7142707dcc443be434 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac4d7a131aa27581f0212d8bb8ac6749 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#aac4d7a131aa27581f0212d8bb8ac6749">getElemColumnBool</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="memdesc:aac4d7a131aa27581f0212d8bb8ac6749 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a single element for the entire column (used by sort).  <a href="#aac4d7a131aa27581f0212d8bb8ac6749">More...</a><br/></td></tr>
-<tr class="separator:aac4d7a131aa27581f0212d8bb8ac6749 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac460f55c93baf47e668b53c9b6534181 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#ac460f55c93baf47e668b53c9b6534181">getElemColumnuChar</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:ac460f55c93baf47e668b53c9b6534181 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac61b80aee548d4ea1e924d3e7f8cf759 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#ac61b80aee548d4ea1e924d3e7f8cf759">getElemColumnShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:ac61b80aee548d4ea1e924d3e7f8cf759 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae305353642aa8cf1842a592b56b74ce2 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#ae305353642aa8cf1842a592b56b74ce2">getElemColumnuShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:ae305353642aa8cf1842a592b56b74ce2 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a691e9feb5a4643af06aed56eef872ca9 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a691e9feb5a4643af06aed56eef872ca9">getElemColumnInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:a691e9feb5a4643af06aed56eef872ca9 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17e223d18c052b3e6a2131d33e7b33af inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a17e223d18c052b3e6a2131d33e7b33af">getElemColumnuInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:a17e223d18c052b3e6a2131d33e7b33af inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d4de058543a8bafd04d562de70ff852 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a5d4de058543a8bafd04d562de70ff852">getElemColumnInt64</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:a5d4de058543a8bafd04d562de70ff852 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa87d0ed6dbb1426203b689fcf4379c24 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#aa87d0ed6dbb1426203b689fcf4379c24">getElemColumnFloat</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:aa87d0ed6dbb1426203b689fcf4379c24 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23672d156fe07e1769e74ef463a54935 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a23672d156fe07e1769e74ef463a54935">getElemColumnDouble</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:a23672d156fe07e1769e74ef463a54935 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa7743d77b069e0cd9d24feaf24590be inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#afa7743d77b069e0cd9d24feaf24590be">getElemColumnComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:afa7743d77b069e0cd9d24feaf24590be inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a358246866b16b46fb6fe05d6adada758 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; DComplex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a358246866b16b46fb6fe05d6adada758">getElemColumnDComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:a358246866b16b46fb6fe05d6adada758 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c22b24a1dcf739fe077d94b3497635b inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a1c22b24a1dcf739fe077d94b3497635b">getElemColumnString</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
-<tr class="separator:a1c22b24a1dcf739fe077d94b3497635b inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1340187dba9b58587c215ee18218f37 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#ad1340187dba9b58587c215ee18218f37">getElemColumnBool</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="memdesc:ad1340187dba9b58587c215ee18218f37 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a single element for the entire column (used by sort).  <a href="#ad1340187dba9b58587c215ee18218f37">More...</a><br/></td></tr>
+<tr class="separator:ad1340187dba9b58587c215ee18218f37 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b692fdd6519ff5723bb3611c0cf8cab inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a0b692fdd6519ff5723bb3611c0cf8cab">getElemColumnuChar</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a0b692fdd6519ff5723bb3611c0cf8cab inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a1b21b43b40347e61e025887c1273ce inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a6a1b21b43b40347e61e025887c1273ce">getElemColumnShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a6a1b21b43b40347e61e025887c1273ce inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25eb3dcb93e65c8913a7465be30c5419 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a25eb3dcb93e65c8913a7465be30c5419">getElemColumnuShort</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a25eb3dcb93e65c8913a7465be30c5419 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6846ae55bb0c2e228c4b5af6e1a5ddc5 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a6846ae55bb0c2e228c4b5af6e1a5ddc5">getElemColumnInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a6846ae55bb0c2e228c4b5af6e1a5ddc5 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a279ce7ad3d3c13353ffdfde2123c42d3 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a279ce7ad3d3c13353ffdfde2123c42d3">getElemColumnuInt</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a279ce7ad3d3c13353ffdfde2123c42d3 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ba3151a4a7c0e046021e0efd1e9dab2 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a3ba3151a4a7c0e046021e0efd1e9dab2">getElemColumnInt64</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a3ba3151a4a7c0e046021e0efd1e9dab2 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a638780c57767cf475ee5e213da20d0c1 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a638780c57767cf475ee5e213da20d0c1">getElemColumnFloat</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a638780c57767cf475ee5e213da20d0c1 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71170be7b506008080ef8ae24eb708bd inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a71170be7b506008080ef8ae24eb708bd">getElemColumnDouble</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a71170be7b506008080ef8ae24eb708bd inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69c717bfbc7e5fcc6526201e370226d4 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a69c717bfbc7e5fcc6526201e370226d4">getElemColumnComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a69c717bfbc7e5fcc6526201e370226d4 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0fda1511b0758874b77edf5e8227cf0 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; DComplex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#af0fda1511b0758874b77edf5e8227cf0">getElemColumnDComplex</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:af0fda1511b0758874b77edf5e8227cf0 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bf0283936858949631b7d1f2e099cd9 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeArray.html#a8bf0283936858949631b7d1f2e099cd9">getElemColumnString</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;)</td></tr>
+<tr class="separator:a8bf0283936858949631b7d1f2e099cd9 inherit pub_methods_classcasacore_1_1TableExprNodeArray"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcasacore_1_1TableExprNodeBinary"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1TableExprNodeBinary')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1TableExprNodeBinary.html">casacore::TableExprNodeBinary</a></td></tr>
 <tr class="memitem:ad7a7c0d242a8173aa51a558d030954e3 inherit pub_methods_classcasacore_1_1TableExprNodeBinary"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeBinary.html#ad7a7c0d242a8173aa51a558d030954e3">TableExprNodeBinary</a> (<a class="el" href="classcasacore_1_1TableExprNodeRep.html#a686c5215607365afcf83accd38a9e60a">NodeDataType</a>, <a class="el" href="classcasacore_1_1TableExprNodeRep.html#af5ad01f1e22a13942fb802e78354819b">ValueType</a>, <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a3fcfce0f312dcaf271b5a6f4dde27d0a">OperType</a>, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;)</td></tr>
 <tr class="memdesc:ad7a7c0d242a8173aa51a558d030954e3 inherit pub_methods_classcasacore_1_1TableExprNodeBinary"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad7a7c0d242a8173aa51a558d030954e3">More...</a><br/></td></tr>
@@ -323,9 +324,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af7a528c21d875dcbacb392574913688b inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#af7a528c21d875dcbacb392574913688b">disableApplySelection</a> ()</td></tr>
 <tr class="memdesc:af7a528c21d875dcbacb392574913688b inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do not apply the selection.  <a href="#af7a528c21d875dcbacb392574913688b">More...</a><br/></td></tr>
 <tr class="separator:af7a528c21d875dcbacb392574913688b inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45e0897160a1ab293930c1c3590410d5 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#a45e0897160a1ab293930c1c3590410d5">applySelection</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs)</td></tr>
-<tr class="memdesc:a45e0897160a1ab293930c1c3590410d5 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-create the column object for a selection of rows.  <a href="#a45e0897160a1ab293930c1c3590410d5">More...</a><br/></td></tr>
-<tr class="separator:a45e0897160a1ab293930c1c3590410d5 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a443be13e5d8b08ad1cba0b7e0083f2c3 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#a443be13e5d8b08ad1cba0b7e0083f2c3">applySelection</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs)</td></tr>
+<tr class="memdesc:a443be13e5d8b08ad1cba0b7e0083f2c3 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-create the column object for a selection of rows.  <a href="#a443be13e5d8b08ad1cba0b7e0083f2c3">More...</a><br/></td></tr>
+<tr class="separator:a443be13e5d8b08ad1cba0b7e0083f2c3 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac42d38eb8bbd1b5fdbaec61487261add inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#ac42d38eb8bbd1b5fdbaec61487261add">getUnitFactor</a> () const </td></tr>
 <tr class="memdesc:ac42d38eb8bbd1b5fdbaec61487261add inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the unit conversion factor.  <a href="#ac42d38eb8bbd1b5fdbaec61487261add">More...</a><br/></td></tr>
 <tr class="separator:ac42d38eb8bbd1b5fdbaec61487261add inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -379,9 +380,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2f7a54d62ac7a99f5f94349ebf61cdd3 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77fd3db62f8404d9168c4f3940dd059f inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1MArray.html">MArray</a>&lt; <a class="el" href="classcasacore_1_1MVTime.html">MVTime</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#a77fd3db62f8404d9168c4f3940dd059f">getDateAS</a> (const <a class="el" href="classcasacore_1_1TableExprId.html">TableExprId</a> &amp;id)</td></tr>
 <tr class="separator:a77fd3db62f8404d9168c4f3940dd059f inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b7197b446619d10f1be675b4dca5da4 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#a8b7197b446619d10f1be675b4dca5da4">nrow</a> () const </td></tr>
-<tr class="memdesc:a8b7197b446619d10f1be675b4dca5da4 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of rows in the table associated with this expression.  <a href="#a8b7197b446619d10f1be675b4dca5da4">More...</a><br/></td></tr>
-<tr class="separator:a8b7197b446619d10f1be675b4dca5da4 inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c1cca7fa119bc73ddcb7a76c587545d inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#a0c1cca7fa119bc73ddcb7a76c587545d">nrow</a> () const </td></tr>
+<tr class="memdesc:a0c1cca7fa119bc73ddcb7a76c587545d inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of rows in the table associated with this expression.  <a href="#a0c1cca7fa119bc73ddcb7a76c587545d">More...</a><br/></td></tr>
+<tr class="separator:a0c1cca7fa119bc73ddcb7a76c587545d inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaa95a67c1bd3f5bf9bca43e1f34592c inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableExprNodeRep.html#aaaa95a67c1bd3f5bf9bca43e1f34592c">ranges</a> (<a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1TableExprRange.html">TableExprRange</a> &gt; &amp;)</td></tr>
 <tr class="memdesc:aaaa95a67c1bd3f5bf9bca43e1f34592c inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert the tree to a number of range vectors which at least select the same things.  <a href="#aaaa95a67c1bd3f5bf9bca43e1f34592c">More...</a><br/></td></tr>
 <tr class="separator:aaaa95a67c1bd3f5bf9bca43e1f34592c inherit pub_methods_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -653,7 +654,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a90e9a26eb748ce13efe32bb62796fda8 inherit pro_attribs_classcasacore_1_1TableExprNodeRep"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> column part in table select expression. </p>
+<div class="textblock"><p><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> column part in table select expression. </p>
 <h3>Intended use:</h3>
 <p>Internal</p>
 <h3>Review Status</h3>
@@ -911,7 +912,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6e5bb4977df0bb8fdd69e1164b792d8d"></a>
+<a class="anchor" id="ada313c92f2da982fa50628fe0dcbe7c5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -921,7 +922,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&gt; casacore::TableExprNodeArrayPart::getColumnBool </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -936,11 +937,11 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the value of the expression evaluated for the entire column. </p>
 <p>The data of function called should match the data type as returned by function <code>getColumnDataType</code>. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a3b948a5ded70519bfa0132af0fa9d24c">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ac78e853d16c1a5273c0d17369babddcd">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa31a826a82f4ad792da9bc6213dbf6b7"></a>
+<a class="anchor" id="ac835b80d5518387815c9ef353b1e6722"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -950,7 +951,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;Complex&gt; casacore::TableExprNodeArrayPart::getColumnComplex </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -962,7 +963,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ac40839ee2678573dc95a6c99908e0337">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a9caadb1e1e478eadd10567f7de489e7a">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
@@ -995,7 +996,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a58f2c2c98aaf64186df5473b7dea7531"></a>
+<a class="anchor" id="ad71283be360fd1388e5c88e5811baea5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1005,7 +1006,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;DComplex&gt; casacore::TableExprNodeArrayPart::getColumnDComplex </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1017,11 +1018,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ac07fc7ba946997192259df7d9f76fd0a">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a146af11a7699435f0fdd05db77a3f5cd">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a093aa51735f2f1ae6271057125a782f2"></a>
+<a class="anchor" id="a9098541fce1a4c5264094836e2f00b7a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1031,7 +1032,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&gt; casacore::TableExprNodeArrayPart::getColumnDouble </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1043,11 +1044,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ad507cc61d075b5b4bfbe0e6ff0d5e486">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a8715e760dd771d8cbccc32ff168cc4bf">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad00aa806a4a494161dec81586d99b41c"></a>
+<a class="anchor" id="af007b736f8da11e03314a4a127f02449"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1057,7 +1058,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#a8e2f856944a61553ab74cd041314f696">Float</a>&gt; casacore::TableExprNodeArrayPart::getColumnFloat </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1069,11 +1070,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#aa1ee02cbd8731cb724d496b21bc5d977">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ad104ca8ae16afcdcc8be6ec1bedcacc2">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af54bd8abd83bd162b0f8cb5527dda049"></a>
+<a class="anchor" id="a123228a811507f7bd6643e1ffbcf5684"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1083,7 +1084,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&gt; casacore::TableExprNodeArrayPart::getColumnInt </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1095,11 +1096,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a5e519907200768a47c100ffbea795641">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a05b98324b71ae9c6c2890d90ab838978">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a47acc6880e0dbb4a62a4673af2009899"></a>
+<a class="anchor" id="a237dc6921a8b46647f8c35576eda457a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1109,7 +1110,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&gt; casacore::TableExprNodeArrayPart::getColumnInt64 </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1121,7 +1122,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a73c4eb081a782013b2a80541adec4649">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a17aa1d35688c0ea6149f1acb4f1989e4">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
@@ -1155,7 +1156,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1a15389345687b3194a57bc7e5e27b83"></a>
+<a class="anchor" id="aec3a7f7d6a2b7c3fa42a595b736217f7"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1165,7 +1166,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a>&gt; casacore::TableExprNodeArrayPart::getColumnShort </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1177,11 +1178,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a4a42dda1110bd783146dda8320ac5a49">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ab495ed15e4ed6f629ab8ea226b7811e6">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a35a6a036ad26cc5cb95c796834a5aa80"></a>
+<a class="anchor" id="a9f19c027ef26d59188c50d2d308ae03c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1191,7 +1192,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="classcasacore_1_1String.html">String</a>&gt; casacore::TableExprNodeArrayPart::getColumnString </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1203,11 +1204,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a6b8473cf5f04d5719d4c1bd0654eb16b">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#aefce20924ccc186bcf8a938dffa98c76">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a217843ffadc19aff4f042ff273105259"></a>
+<a class="anchor" id="a4a66e8bd2271c3d7f0e247db16b6d48c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1217,7 +1218,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a>&gt; casacore::TableExprNodeArrayPart::getColumnuChar </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1229,11 +1230,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#aaf4a1e6fee3c618bd13656c9d5913f97">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a77c6b47661aba5729631094236f660ac">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa41d67ba6c88243e5d157987a82f3f76"></a>
+<a class="anchor" id="ac9eb8fd09edb7a6d1bd3e512f4e67e3f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1243,7 +1244,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&gt; casacore::TableExprNodeArrayPart::getColumnuInt </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1255,11 +1256,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a51840823074f581a6d1ace798525d071">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#a4699c2e8eacd0d25506f6045c2101533">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a73bfc4d5b33c8e72491bcdea7767e6bd"></a>
+<a class="anchor" id="a7de780ada9e8ba91e53aad3077a23682"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1269,7 +1270,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt;<a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a>&gt; casacore::TableExprNodeArrayPart::getColumnuShort </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rownrs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1281,7 +1282,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ad91734e547924e77a72ea9756fd2cddf">casacore::TableExprNodeRep</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1TableExprNodeRep.html#ac05a7a58dd1e4ed91e78d6a942d4dc47">casacore::TableExprNodeRep</a>.</p>
 
 </div>
 </div>

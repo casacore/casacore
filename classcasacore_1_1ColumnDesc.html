@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -301,9 +302,9 @@ Static Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
-<tr class="memitem:a008570b15c9b1b87479fb920ee9075f9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnDesc.html#a008570b15c9b1b87479fb920ee9075f9">theirMutex</a></td></tr>
-<tr class="memdesc:a008570b15c9b1b87479fb920ee9075f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">A mutex for additions to the constructor map.  <a href="#a008570b15c9b1b87479fb920ee9075f9">More...</a><br/></td></tr>
-<tr class="separator:a008570b15c9b1b87479fb920ee9075f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbb7e9db5e392ea4f16378c7b4c6ef57"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnDesc.html#acbb7e9db5e392ea4f16378c7b4c6ef57">theirMutex</a></td></tr>
+<tr class="memdesc:acbb7e9db5e392ea4f16378c7b4c6ef57"><td class="mdescLeft">&#160;</td><td class="mdescRight">A mutex for additions to the constructor map.  <a href="#acbb7e9db5e392ea4f16378c7b4c6ef57">More...</a><br/></td></tr>
+<tr class="separator:acbb7e9db5e392ea4f16378c7b4c6ef57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -355,7 +356,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <dt>Direct </dt>
 <dd>This is only useful for columns containing arrays and tables. Direct means that the data is directly stored in the table. Direct forces option FixedShape. If not given, the array or table is indirect, which implies that the data will be stored in a separate file. </dd>
 <dt>Undefined </dt>
-<dd>Undefined is only useful for scalars. If not given, all possible values of the scalar have a meaning. If given, a value equal to the default value in the column description is an undefined value. The function <a class="el" href="classcasacore_1_1TableColumn.html#ad48e51345686e0fbaf0286b3300d96f2" title="Test if the given cell contains a defined value. ">TableColumn::isDefined</a> will return False for such values. </dd>
+<dd>Undefined is only useful for scalars. If not given, all possible values of the scalar have a meaning. If given, a value equal to the default value in the column description is an undefined value. The function <a class="el" href="classcasacore_1_1TableColumn.html#a596404a3ab1d813bffdc0f1483bb4e22" title="Test if the given cell contains a defined value. ">TableColumn::isDefined</a> will return False for such values. </dd>
 </dl>
 <h3>Example</h3>
 <p><a class="anchor" id="ColumnDesc_example1"></a></p>
@@ -371,7 +372,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>When getting the description of an arbitrary column, a pointer to that description is needed to allow proper execution of virtual functions. An envelope class is needed to hide this from the user. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00131">131</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00132">132</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a7d63cbec1c1800ac510f23b839e917c9"></a>
 <div class="memitem">
@@ -385,7 +386,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Define the type of a XXColumnDesc construction function. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00351">351</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00352">352</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +415,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00141">141</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00142">142</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -479,7 +480,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Default constructor (needed for <a class="el" href="classcasacore_1_1ColumnDescSet.html" title="Set of table column descriptions. ">ColumnDescSet</a>). </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00161">161</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00162">162</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -551,9 +552,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>It is called before the column gets actually added, etc..</p>
 <p>Check if the column can be added to the table description. It is implemented for a virtual column to check if the columns it uses really exist. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00385">385</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00386">386</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a41304fed603e39ea9f3a832bee22700d">casacore::BaseColumnDesc::checkAdd()</a>, and <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a41304fed603e39ea9f3a832bee22700d">casacore::BaseColumnDesc::checkAdd()</a>, and <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>.</p>
 
 </div>
 </div>
@@ -592,9 +593,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Check when a column gets renamed in a table description. </p>
 <p>It is not used. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00389">389</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00390">390</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a86f8b07c7f37d3ec4ef125ac9c0d5028">casacore::BaseColumnDesc::checkRename()</a>, and <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a86f8b07c7f37d3ec4ef125ac9c0d5028">casacore::BaseColumnDesc::checkRename()</a>, and <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>.</p>
 
 </div>
 </div>
@@ -621,9 +622,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get comment string. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00230">230</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00231">231</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00173">casacore::BaseColumnDesc::comment()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00173">casacore::BaseColumnDesc::comment()</a>.</p>
 
 </div>
 </div>
@@ -650,9 +651,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get comment string (allowing it to be changed). </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00234">234</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00235">235</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00173">casacore::BaseColumnDesc::comment()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00173">casacore::BaseColumnDesc::comment()</a>.</p>
 
 </div>
 </div>
@@ -679,9 +680,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get the data manager group. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00217">217</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00218">218</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00160">casacore::BaseColumnDesc::dataManagerGroup()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00160">casacore::BaseColumnDesc::dataManagerGroup()</a>.</p>
 
 </div>
 </div>
@@ -709,9 +710,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Get the data manager group. </p>
 <p>(allowing it to be changed). </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00222">222</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00223">223</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00160">casacore::BaseColumnDesc::dataManagerGroup()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00160">casacore::BaseColumnDesc::dataManagerGroup()</a>.</p>
 
 </div>
 </div>
@@ -738,9 +739,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get the type name of the default data manager. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00208">208</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00209">209</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00151">casacore::BaseColumnDesc::dataManagerType()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00151">casacore::BaseColumnDesc::dataManagerType()</a>.</p>
 
 </div>
 </div>
@@ -767,9 +768,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get the type name of the default data manager (allowing it to be changed). </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00213">213</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00214">214</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00151">casacore::BaseColumnDesc::dataManagerType()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00151">casacore::BaseColumnDesc::dataManagerType()</a>.</p>
 
 </div>
 </div>
@@ -797,9 +798,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Get the data type of the column. </p>
 <p>This always returns the type of a scalar, even when the column contains arrays. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00194">194</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00195">195</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00142">casacore::BaseColumnDesc::dataType()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00142">casacore::BaseColumnDesc::dataType()</a>.</p>
 
 </div>
 </div>
@@ -827,9 +828,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Get the type id for non-standard data types (i.e. </p>
 <p>for TpOther). For standard data types the returned string is empty. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00204">204</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00205">205</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00147">casacore::BaseColumnDesc::dataTypeId()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00147">casacore::BaseColumnDesc::dataTypeId()</a>.</p>
 
 </div>
 </div>
@@ -946,9 +947,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Take action after a column has been handled by <a class="el" href="classcasacore_1_1ColumnDescSet.html" title="Set of table column descriptions. ">ColumnDescSet</a>. </p>
 <p>It is called after the column has been actually added, etc.. This gives, for instance, the virtual column class the opportunity to update the virtual column list. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00398">398</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00399">399</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a9f546aae2c2281b92a9ba43d75042039">casacore::BaseColumnDesc::handleAdd()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a9f546aae2c2281b92a9ba43d75042039">casacore::BaseColumnDesc::handleAdd()</a>.</p>
 
 </div>
 </div>
@@ -974,9 +975,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00402">402</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00403">403</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a41970aea4a2b3189b91fcf16d8c6fa93">casacore::BaseColumnDesc::handleRemove()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a41970aea4a2b3189b91fcf16d8c6fa93">casacore::BaseColumnDesc::handleRemove()</a>.</p>
 
 </div>
 </div>
@@ -1012,9 +1013,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00400">400</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00401">401</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a4b3c42de56206a67b876907a16926ac2">casacore::BaseColumnDesc::handleRename()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a4b3c42de56206a67b876907a16926ac2">casacore::BaseColumnDesc::handleRename()</a>.</p>
 
 </div>
 </div>
@@ -1066,9 +1067,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Test if column is an array. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00257">257</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00258">258</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00188">casacore::BaseColumnDesc::isArray()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00188">casacore::BaseColumnDesc::isArray()</a>.</p>
 
 </div>
 </div>
@@ -1113,9 +1114,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Test if column is a scalar. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00254">254</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00255">255</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00186">casacore::BaseColumnDesc::isScalar()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00186">casacore::BaseColumnDesc::isScalar()</a>.</p>
 
 </div>
 </div>
@@ -1142,9 +1143,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Test if column is a table. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00260">260</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00261">261</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00190">casacore::BaseColumnDesc::isTable()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00190">casacore::BaseColumnDesc::isTable()</a>.</p>
 
 </div>
 </div>
@@ -1169,9 +1170,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00183">183</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00184">184</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00130">casacore::BaseColumnDesc::keywordSet()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00130">casacore::BaseColumnDesc::keywordSet()</a>.</p>
 
 </div>
 </div>
@@ -1199,9 +1200,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Create a <a class="el" href="classcasacore_1_1PlainColumn.html" title="Base class for a column in a plain table. ">PlainColumn</a> column object out of this column description. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00413">413</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00414">414</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a4f870087bb9512834d41ac0e91cd73bc">casacore::BaseColumnDesc::makeColumn()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a4f870087bb9512834d41ac0e91cd73bc">casacore::BaseColumnDesc::makeColumn()</a>.</p>
 
 </div>
 </div>
@@ -1229,9 +1230,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Create a <a class="el" href="classcasacore_1_1ConcatColumn.html" title="A column in a concatenated table. ">ConcatColumn</a> column object out of this column description. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00346">346</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00347">347</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#af4f01977b0a82553d12812bb0bca8b44">casacore::BaseColumnDesc::makeConcatColumn()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#af4f01977b0a82553d12812bb0bca8b44">casacore::BaseColumnDesc::makeConcatColumn()</a>.</p>
 
 </div>
 </div>
@@ -1269,9 +1270,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Create a <a class="el" href="classcasacore_1_1RefColumn.html" title="A column in a reference table. ">RefColumn</a> column object out of this column description. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00342">342</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00343">343</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a3fead71b54c89867d3bd42db1005b9b4">casacore::BaseColumnDesc::makeRefColumn()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a3fead71b54c89867d3bd42db1005b9b4">casacore::BaseColumnDesc::makeRefColumn()</a>.</p>
 
 </div>
 </div>
@@ -1298,9 +1299,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get the maximum value length. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00303">303</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00304">304</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00230">casacore::BaseColumnDesc::maxLength()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00230">casacore::BaseColumnDesc::maxLength()</a>.</p>
 
 </div>
 </div>
@@ -1344,9 +1345,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get the number of dimensions. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00264">264</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00265">265</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00195">casacore::BaseColumnDesc::ndim()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00195">casacore::BaseColumnDesc::ndim()</a>.</p>
 
 </div>
 </div>
@@ -1431,9 +1432,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <div class="line"><span class="comment">// the column has the Direct flag set</span></div>
 <div class="line">}</div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00245">245</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00246">246</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00181">casacore::BaseColumnDesc::options()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00181">casacore::BaseColumnDesc::options()</a>.</p>
 
 </div>
 </div>
@@ -1544,9 +1545,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>This function allows each column to act upon a rename of another column. </p>
 <p>If the old name is used internally, the column can update itself. It is called after handleRename has been called. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00409">409</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00410">410</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#addfe96ccd9f94514f71d43c2cae14bbc">casacore::BaseColumnDesc::renameAction()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#addfe96ccd9f94514f71d43c2cae14bbc">casacore::BaseColumnDesc::renameAction()</a>.</p>
 
 </div>
 </div>
@@ -1573,9 +1574,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get access to the set of keywords. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00181">181</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00182">182</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00128">casacore::BaseColumnDesc::rwKeywordSet()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00128">casacore::BaseColumnDesc::rwKeywordSet()</a>.</p>
 
 </div>
 </div>
@@ -1603,9 +1604,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>If <code>always==True</code> they are always set, otherwise only if empty. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00226">226</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00227">227</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a5d991045b55130fa14a7457c60991740">casacore::BaseColumnDesc::setDefaultDataManager()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a5d991045b55130fa14a7457c60991740">casacore::BaseColumnDesc::setDefaultDataManager()</a>.</p>
 
 </div>
 </div>
@@ -1634,9 +1635,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Set the maximum value length. </p>
 <p>So far, this is only possible for columns containing <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> values. An exception is thrown if the column data type is not TpString. Some storage managers support fixed length strings and can store them more efficiently than variable length strings. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00311">311</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00312">312</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a04426db1f30940dd651a989f9d0b900e">casacore::BaseColumnDesc::setMaxLength()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a04426db1f30940dd651a989f9d0b900e">casacore::BaseColumnDesc::setMaxLength()</a>.</p>
 
 </div>
 </div>
@@ -1664,9 +1665,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Set the name of the column. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00338">338</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00339">339</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00324">casacore::BaseColumnDesc::setName()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00324">casacore::BaseColumnDesc::setName()</a>.</p>
 
 </div>
 </div>
@@ -1695,9 +1696,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Set the number of dimensions. </p>
 <p>This is only allowed for arrays. <code>ndim</code> can be zero to clear the number of dimensions and the shape. Otherwise it can only be used if the dimensionality has not been defined yet. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00278">278</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00279">279</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a089c70bf183eb21165be7a0304e9dda6">casacore::BaseColumnDesc::setNdim()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#a089c70bf183eb21165be7a0304e9dda6">casacore::BaseColumnDesc::setNdim()</a>.</p>
 
 </div>
 </div>
@@ -1726,9 +1727,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Set the options to the given value. </p>
 <p>Option <code><a class="el" href="classcasacore_1_1ColumnDesc.html#a8345327ae9b644267a43d970370ef129a4f9ea1574b345a35326f151d80dafc0f" title="direct table or array ">ColumnDesc::Direct</a></code> forces <code>FixedShape</code>. If <code>FixedShape</code> is not given (implicitly or explicitly), the column can have no shape, so its shape is cleared. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00299">299</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00300">300</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#abc9c0481d53cf04d8a4c24dcfb5701e2">casacore::BaseColumnDesc::setOptions()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#abc9c0481d53cf04d8a4c24dcfb5701e2">casacore::BaseColumnDesc::setOptions()</a>.</p>
 
 </div>
 </div>
@@ -1758,9 +1759,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>This is only allowed for arrays, for which the shape has not been defined yet. If the dimensionality has already been defined, it must match. It will set the option <code>FixedShape</code> if not set yet. <br/>
  The first version leaves the <code>Direct</code> option as is. The second version sets the <code>Direct</code> option as given. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00289">289</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00290">290</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#acca98594838757cf6d0cb9014a740346">casacore::BaseColumnDesc::setShape()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#acca98594838757cf6d0cb9014a740346">casacore::BaseColumnDesc::setShape()</a>.</p>
 
 </div>
 </div>
@@ -1796,9 +1797,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00291">291</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00292">292</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#acca98594838757cf6d0cb9014a740346">casacore::BaseColumnDesc::setShape()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="classcasacore_1_1BaseColumnDesc.html#acca98594838757cf6d0cb9014a740346">casacore::BaseColumnDesc::setShape()</a>.</p>
 
 </div>
 </div>
@@ -1826,9 +1827,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 <p>Get the predefined shape. </p>
 <p>If not defined, a zero shape will be returned. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00269">269</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00270">270</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00200">casacore::BaseColumnDesc::shape()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00200">casacore::BaseColumnDesc::shape()</a>.</p>
 
 </div>
 </div>
@@ -1890,9 +1891,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>Get table description (in case column contains subtables). </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00316">316</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00317">317</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00244">casacore::BaseColumnDesc::tableDesc()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00244">casacore::BaseColumnDesc::tableDesc()</a>.</p>
 
 </div>
 </div>
@@ -1917,9 +1918,9 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00318">318</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00319">319</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>References <a class="el" href="ColumnDesc_8h_source.html#l00424">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00244">casacore::BaseColumnDesc::tableDesc()</a>.</p>
+<p>References <a class="el" href="ColumnDesc_8h_source.html#l00425">colPtr_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00244">casacore::BaseColumnDesc::tableDesc()</a>.</p>
 
 </div>
 </div>
@@ -1960,7 +1961,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00135">135</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00136">136</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -1982,7 +1983,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00133">133</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00134">134</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2004,7 +2005,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00134">134</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00135">135</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2135,7 +2136,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00425">425</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00426">426</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2157,13 +2158,13 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00424">424</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00425">425</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00385">checkAdd()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00389">checkRename()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00230">comment()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00217">dataManagerGroup()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00208">dataManagerType()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00194">dataType()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00204">dataTypeId()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00398">handleAdd()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00402">handleRemove()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00400">handleRename()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00257">isArray()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00254">isScalar()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00260">isTable()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00183">keywordSet()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00413">makeColumn()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00346">makeConcatColumn()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00342">makeRefColumn()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00303">maxLength()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00264">ndim()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00245">options()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00409">renameAction()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00181">rwKeywordSet()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00226">setDefaultDataManager()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00311">setMaxLength()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00338">setName()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00278">setNdim()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00299">setOptions()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00289">setShape()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00269">shape()</a>, and <a class="el" href="ColumnDesc_8h_source.html#l00316">tableDesc()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00386">checkAdd()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00390">checkRename()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00231">comment()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00218">dataManagerGroup()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00209">dataManagerType()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00195">dataType()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00205">dataTypeId()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00399">handleAdd()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00403">handleRemove()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00401">handleRename()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00258">isArray()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00255">isScalar()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00261">isTable()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00184">keywordSet()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00414">makeColumn()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00347">makeConcatColumn()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00343">makeRefColumn()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00304">maxLength()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00265">ndim()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00246">options()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00410">renameAction()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00182">rwKeywordSet()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00227">setDefaultDataManager()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00312">setMaxLength()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00339">setName()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00279">setNdim()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00300">setOptions()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00290">setShape()</a>, <a class="el" href="ColumnDesc_8h_source.html#l00270">shape()</a>, and <a class="el" href="ColumnDesc_8h_source.html#l00317">tableDesc()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a008570b15c9b1b87479fb920ee9075f9"></a>
+<a class="anchor" id="acbb7e9db5e392ea4f16378c7b4c6ef57"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2171,7 +2172,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::ColumnDesc::theirMutex</td>
+          <td class="memname">std::mutex casacore::ColumnDesc::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -2183,7 +2184,7 @@ Envelope/Letter class design (see J. Coplien, Advanced C++) </li>
 
 <p>A mutex for additions to the constructor map. </p>
 
-<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00361">361</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="ColumnDesc_8h_source.html#l00362">362</a> of file <a class="el" href="ColumnDesc_8h_source.html">ColumnDesc.h</a>.</p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -182,7 +183,7 @@ In this way getting the tile shape is completely transparent.</p>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>Classes <code><a class="el" href="classcasacore_1_1PagedArray.html" title="A Lattice that is read from or written to disk. ">PagedArray</a></code> and <code><a class="el" href="classcasacore_1_1PagedImage.html" title="Read, store, and manipulate astronomical images. ">PagedImage</a></code> contained several duplicated constructors to be able to pass a tile shape. This class makes it possible to have only one constructor instead of two. Furthermore it contains the logic to check if the shapes are conforming and the logic to calculate a default tile shape. </p>
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00099">99</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00096">96</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a0180ab217cde76b60a63e32b432cf1c9"></a>
 <div class="memitem">
@@ -311,7 +312,7 @@ In this way getting the tile shape is completely transparent.</p>
 <p>It is tried to get the same number of tiles for each dimension. When a weight vector is given, the number of tiles for a dimension is proportional to the weight. <br/>
 After the initial guess it tries to optimize it by trying to waste as little space as possible, while trying to keep as close as possible to the initial guess. The given tolerance (possibly per axis) gives the minimum and maximum possible length of a tile axis (minimum = initial_guess*tolerance; maximum = initial_guess/tolerance). The heuristic is such that a tile axis length dividing the cube length exactly is always favoured. The test program <code>tTiledShape</code> can be used to see how the algorithm works out for a given shape and tile size. </p>
 
-<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00172">tileShape()</a>.</p>
+<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00169">tileShape()</a>.</p>
 
 </div>
 </div>
@@ -370,9 +371,9 @@ After the initial guess it tries to optimize it by trying to waste as little spa
 
 <p>Is the tile shape defined? </p>
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00164">164</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00161">161</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 
-<p>References <a class="el" href="TiledShape_8h_source.html#l00160">itsTileDefined</a>.</p>
+<p>References <a class="el" href="TiledShape_8h_source.html#l00157">itsTileDefined</a>.</p>
 
 </div>
 </div>
@@ -417,9 +418,9 @@ After the initial guess it tries to optimize it by trying to waste as little spa
 
 <p>Return the shape. </p>
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00168">168</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00165">165</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 
-<p>References <a class="el" href="TiledShape_8h_source.html#l00158">itsShape</a>.</p>
+<p>References <a class="el" href="TiledShape_8h_source.html#l00155">itsShape</a>.</p>
 
 </div>
 </div>
@@ -459,9 +460,9 @@ After the initial guess it tries to optimize it by trying to waste as little spa
 <p>When the tile shape is undefined, the default tile shape will be calculated using the given tile size and tolerance. <br/>
  The tolerance is used to determine the boundaries where it is tried to fit an integral number of tiles. </p>
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00172">172</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00169">169</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1TiledShape.html#a57aea35cb09b6389d037cb472d088e98">defaultTileShape()</a>, <a class="el" href="TiledShape_8h_source.html#l00160">itsTileDefined</a>, and <a class="el" href="TiledShape_8h_source.html#l00159">itsTileShape</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1TiledShape.html#a57aea35cb09b6389d037cb472d088e98">defaultTileShape()</a>, <a class="el" href="TiledShape_8h_source.html#l00157">itsTileDefined</a>, and <a class="el" href="TiledShape_8h_source.html#l00156">itsTileShape</a>.</p>
 
 </div>
 </div>
@@ -484,9 +485,9 @@ After the initial guess it tries to optimize it by trying to waste as little spa
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00158">158</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00155">155</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00168">shape()</a>.</p>
+<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00165">shape()</a>.</p>
 
 </div>
 </div>
@@ -508,9 +509,9 @@ After the initial guess it tries to optimize it by trying to waste as little spa
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00160">160</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00157">157</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00164">isTileShapeDefined()</a>, and <a class="el" href="TiledShape_8h_source.html#l00172">tileShape()</a>.</p>
+<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00161">isTileShapeDefined()</a>, and <a class="el" href="TiledShape_8h_source.html#l00169">tileShape()</a>.</p>
 
 </div>
 </div>
@@ -532,9 +533,9 @@ After the initial guess it tries to optimize it by trying to waste as little spa
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00159">159</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
+<p>Definition at line <a class="el" href="TiledShape_8h_source.html#l00156">156</a> of file <a class="el" href="TiledShape_8h_source.html">TiledShape.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00172">tileShape()</a>.</p>
+<p>Referenced by <a class="el" href="TiledShape_8h_source.html#l00169">tileShape()</a>.</p>
 
 </div>
 </div>

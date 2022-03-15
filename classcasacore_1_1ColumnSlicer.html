@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -97,52 +98,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad688f0109b98e364a4e0af653ae98f34"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ad688f0109b98e364a4e0af653ae98f34">ColumnSlicer</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1ColumnSlicer.html#ae4ef898b78c7c75ee2e779c128719056">shape</a>, <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; dataSlicers, <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; destinationSlicers)</td></tr>
-<tr class="memdesc:ad688f0109b98e364a4e0af653ae98f34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classcasacore_1_1ColumnSlicer.html">ColumnSlicer</a> for use in one of the overloads of <a class="el" href="classcasacore_1_1ArrayColumn.html#a6b9140865bf757d0a46fd5062472976e">ArrayColumn::getColumnCells</a>.  <a href="#ad688f0109b98e364a4e0af653ae98f34">More...</a><br/></td></tr>
-<tr class="separator:ad688f0109b98e364a4e0af653ae98f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc4b4c81a6bcb2b02210822153da5a1d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#abc4b4c81a6bcb2b02210822153da5a1d">ColumnSlicer</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1ColumnSlicer.html#ae4ef898b78c7c75ee2e779c128719056">shape</a>, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;dataSlicers, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;destinationSlicers)</td></tr>
+<tr class="memdesc:abc4b4c81a6bcb2b02210822153da5a1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the object.  <a href="#abc4b4c81a6bcb2b02210822153da5a1d">More...</a><br/></td></tr>
+<tr class="separator:abc4b4c81a6bcb2b02210822153da5a1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5a24b7b9d657ec3698131c4d4d60789"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ad5a24b7b9d657ec3698131c4d4d60789">~ColumnSlicer</a> ()</td></tr>
-<tr class="memdesc:ad5a24b7b9d657ec3698131c4d4d60789"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kill off the <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects.  <a href="#ad5a24b7b9d657ec3698131c4d4d60789">More...</a><br/></td></tr>
+<tr class="memdesc:ad5a24b7b9d657ec3698131c4d4d60789"><td class="mdescLeft">&#160;</td><td class="mdescRight">The destructor deletes all <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects.  <a href="#ad5a24b7b9d657ec3698131c4d4d60789">More...</a><br/></td></tr>
 <tr class="separator:ad5a24b7b9d657ec3698131c4d4d60789"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49bbd71b69a58432bdb68e94b8bf1e0d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a49bbd71b69a58432bdb68e94b8bf1e0d">getDataSlicers</a> () const </td></tr>
-<tr class="memdesc:a49bbd71b69a58432bdb68e94b8bf1e0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor that returns the dataSlicers.  <a href="#a49bbd71b69a58432bdb68e94b8bf1e0d">More...</a><br/></td></tr>
-<tr class="separator:a49bbd71b69a58432bdb68e94b8bf1e0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed7e6caec8e4a9d9e8bbaaef267bc3a9"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#aed7e6caec8e4a9d9e8bbaaef267bc3a9">getDestinationSlicers</a> () const </td></tr>
-<tr class="memdesc:aed7e6caec8e4a9d9e8bbaaef267bc3a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor that returns the desintation slicers.  <a href="#aed7e6caec8e4a9d9e8bbaaef267bc3a9">More...</a><br/></td></tr>
-<tr class="separator:aed7e6caec8e4a9d9e8bbaaef267bc3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3d66466b7b698fd223dc68469c18391"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ae3d66466b7b698fd223dc68469c18391">getDataSlicers</a> () const </td></tr>
+<tr class="memdesc:ae3d66466b7b698fd223dc68469c18391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data slicers.  <a href="#ae3d66466b7b698fd223dc68469c18391">More...</a><br/></td></tr>
+<tr class="separator:ae3d66466b7b698fd223dc68469c18391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a500b32a4750f8a7132c381c7e2fe39d1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a500b32a4750f8a7132c381c7e2fe39d1">getDestinationSlicers</a> () const </td></tr>
+<tr class="memdesc:a500b32a4750f8a7132c381c7e2fe39d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the desintation slicers.  <a href="#a500b32a4750f8a7132c381c7e2fe39d1">More...</a><br/></td></tr>
+<tr class="separator:a500b32a4750f8a7132c381c7e2fe39d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4ef898b78c7c75ee2e779c128719056"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ae4ef898b78c7c75ee2e779c128719056">shape</a> () const </td></tr>
-<tr class="memdesc:ae4ef898b78c7c75ee2e779c128719056"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor that returns the shape.  <a href="#ae4ef898b78c7c75ee2e779c128719056">More...</a><br/></td></tr>
+<tr class="memdesc:ae4ef898b78c7c75ee2e779c128719056"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the shape.  <a href="#ae4ef898b78c7c75ee2e779c128719056">More...</a><br/></td></tr>
 <tr class="separator:ae4ef898b78c7c75ee2e779c128719056"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a857601c7419c2a05e37fb726f3e792b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a857601c7419c2a05e37fb726f3e792b0">freeSlicers</a> ()</td></tr>
+<tr class="memdesc:a857601c7419c2a05e37fb726f3e792b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete all <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects.  <a href="#a857601c7419c2a05e37fb726f3e792b0">More...</a><br/></td></tr>
 <tr class="separator:a857601c7419c2a05e37fb726f3e792b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5e3fcd047423e001f9472913981abb8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ab5e3fcd047423e001f9472913981abb8">validateParameters</a> ()</td></tr>
-<tr class="separator:ab5e3fcd047423e001f9472913981abb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10501466f50345791b27795bc1fbcb7d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a10501466f50345791b27795bc1fbcb7d">validateParameters</a> () const </td></tr>
+<tr class="memdesc:a10501466f50345791b27795bc1fbcb7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the slicers match the array shape.  <a href="#a10501466f50345791b27795bc1fbcb7d">More...</a><br/></td></tr>
+<tr class="separator:a10501466f50345791b27795bc1fbcb7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ab78570b2118bd89a3597cfb8465e34d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ab78570b2118bd89a3597cfb8465e34d3">dataSlicers_p</a></td></tr>
-<tr class="separator:ab78570b2118bd89a3597cfb8465e34d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a127f63617fc212f1b3fe88bf55219e3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a127f63617fc212f1b3fe88bf55219e3d">destinationSlicers_p</a></td></tr>
-<tr class="separator:a127f63617fc212f1b3fe88bf55219e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac163da57bff75d54d3d35500b8f23aa6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#ac163da57bff75d54d3d35500b8f23aa6">dataSlicers_p</a></td></tr>
+<tr class="separator:ac163da57bff75d54d3d35500b8f23aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f3408af565611a6ec7af9089d48b4c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a1f3408af565611a6ec7af9089d48b4c3">destinationSlicers_p</a></td></tr>
+<tr class="separator:a1f3408af565611a6ec7af9089d48b4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00e3b432bcc9c06af635a348c5d842a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ColumnSlicer.html#a00e3b432bcc9c06af635a348c5d842a1">shape_p</a></td></tr>
 <tr class="separator:a00e3b432bcc9c06af635a348c5d842a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00499">499</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<div class="textblock"><h3>Synopsis</h3>
+<p><a class="el" href="classcasacore_1_1ColumnSlicer.html">ColumnSlicer</a> is used in one of the <a class="el" href="classcasacore_1_1ArrayColumn.html#a6b9140865bf757d0a46fd5062472976e">ArrayColumn::getColumnCells</a> functions. That method takes a potentially complex/ selection of data out of a column cell (e.g., multiple slices along each axis) and then puts them into a selection of a destination array. This is most easily represented as a set of source,destination slicers where one is applied to the cell and the other to the destination array. </p>
+
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00375">375</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ad688f0109b98e364a4e0af653ae98f34"></a>
+<a class="anchor" id="abc4b4c81a6bcb2b02210822153da5a1d"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">casacore::ColumnSlicer::ColumnSlicer </td>
@@ -153,13 +155,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>dataSlicers</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>destinationSlicers</em>&#160;</td>
         </tr>
         <tr>
@@ -168,30 +170,16 @@ Private Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Create a <a class="el" href="classcasacore_1_1ColumnSlicer.html">ColumnSlicer</a> for use in one of the overloads of <a class="el" href="classcasacore_1_1ArrayColumn.html#a6b9140865bf757d0a46fd5062472976e">ArrayColumn::getColumnCells</a>. </p>
-<p>That method takes a potentially complex select of data out of a column cell (e.g., multiple slices along each axis) and then puts them into a selection of a destination array. This is most easily represnted as a set of source,destination slicers where one is applied to the cell and the other to the destination array.</p>
-<p>The shape paramter is the shape of the destination excluding the row axis.</p>
-<p>The <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects provided (by pointer) will be owned by the <a class="el" href="classcasacore_1_1ColumnSlicer.html">ColumnSlicer</a> object which will delete them in its destructor. </p>
-
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00517">517</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
-
-<p>References <a class="el" href="String_8h_source.html#l00375">casacore::String::empty()</a>, <a class="el" href="ArrayColumn_8h_source.html#l00561">freeSlicers()</a>, and <a class="el" href="ArrayColumn_8h_source.html#l00576">validateParameters()</a>.</p>
+<p>Construct the object. </p>
+<p>It takes over the pointers to the <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects and deletes them in the destructor. The shape parameter is the shape of the destination array excluding the row axis. </p>
 
 </div>
 </div>
 <a class="anchor" id="ad5a24b7b9d657ec3698131c4d4d60789"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">casacore::ColumnSlicer::~ColumnSlicer </td>
@@ -200,18 +188,9 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Kill off the <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects. </p>
-
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00533">533</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
-
-<p>References <a class="el" href="ArrayColumn_8h_source.html#l00561">freeSlicers()</a>.</p>
+<p>The destructor deletes all <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects. </p>
 
 </div>
 </div>
@@ -232,21 +211,16 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>The two Vectors contain pointers to objects so they need to be freed. They should have the same length normally, but during validation it's possible that they have different lengths.</p>
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00561">561</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
-
-<p>References <a class="el" href="ArrayColumn_8h_source.html#l00603">dataSlicers_p</a>, and <a class="el" href="ArrayColumn_8h_source.html#l00604">destinationSlicers_p</a>.</p>
-
-<p>Referenced by <a class="el" href="ArrayColumn_8h_source.html#l00517">ColumnSlicer()</a>, and <a class="el" href="ArrayColumn_8h_source.html#l00533">~ColumnSlicer()</a>.</p>
+<p>Delete all <a class="el" href="classcasacore_1_1Slicer.html" title="Specify which elements to extract from an n-dimensional array. ">Slicer</a> objects. </p>
 
 </div>
 </div>
-<a class="anchor" id="a49bbd71b69a58432bdb68e94b8bf1e0d"></a>
+<a class="anchor" id="ae3d66466b7b698fd223dc68469c18391"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -254,7 +228,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> *&gt;&amp; casacore::ColumnSlicer::getDataSlicers </td>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a>*&gt;&amp; casacore::ColumnSlicer::getDataSlicers </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -267,15 +241,15 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Accessor that returns the dataSlicers. </p>
+<p>Get the data slicers. </p>
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00540">540</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00392">392</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 
-<p>References <a class="el" href="ArrayColumn_8h_source.html#l00603">dataSlicers_p</a>.</p>
+<p>References <a class="el" href="ArrayColumnBase_8h_source.html#l00411">dataSlicers_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aed7e6caec8e4a9d9e8bbaaef267bc3a9"></a>
+<a class="anchor" id="a500b32a4750f8a7132c381c7e2fe39d1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -283,7 +257,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> *&gt;&amp; casacore::ColumnSlicer::getDestinationSlicers </td>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a>*&gt;&amp; casacore::ColumnSlicer::getDestinationSlicers </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -296,11 +270,11 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Accessor that returns the desintation slicers. </p>
+<p>Get the desintation slicers. </p>
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00547">547</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00396">396</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 
-<p>References <a class="el" href="ArrayColumn_8h_source.html#l00604">destinationSlicers_p</a>.</p>
+<p>References <a class="el" href="ArrayColumnBase_8h_source.html#l00412">destinationSlicers_p</a>.</p>
 
 </div>
 </div>
@@ -325,15 +299,15 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Accessor that returns the shape. </p>
+<p>Get the shape. </p>
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00554">554</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00400">400</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 
-<p>References <a class="el" href="ArrayColumn_8h_source.html#l00605">shape_p</a>.</p>
+<p>References <a class="el" href="ArrayColumnBase_8h_source.html#l00413">shape_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ab5e3fcd047423e001f9472913981abb8"></a>
+<a class="anchor" id="a10501466f50345791b27795bc1fbcb7d"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -344,27 +318,22 @@ Private Attributes</h2></td></tr>
           <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::ColumnSlicer::validateParameters </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Validate the contruction parameters to see if they are consistent.</p>
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00576">576</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
-
-<p>References <a class="el" href="ArrayColumn_8h_source.html#l00603">dataSlicers_p</a>, <a class="el" href="ArrayColumn_8h_source.html#l00604">destinationSlicers_p</a>, <a class="el" href="classcasacore_1_1String.html#a00208f8b2c30534c31395c696d13d30f">casacore::String::format()</a>, <a class="el" href="namespacecasacore.html#aa3e1dbeee65a01c280cee291859984bd">casacore::length()</a>, and <a class="el" href="namespacecasacore.html#aa63dc6a0baa7934e8410d878027ea586">casacore::toString()</a>.</p>
-
-<p>Referenced by <a class="el" href="ArrayColumn_8h_source.html#l00517">ColumnSlicer()</a>.</p>
+<p>Check if the slicers match the array shape. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="ab78570b2118bd89a3597cfb8465e34d3"></a>
+<a class="anchor" id="ac163da57bff75d54d3d35500b8f23aa6"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -372,7 +341,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> *&gt; casacore::ColumnSlicer::dataSlicers_p</td>
+          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a>*&gt; casacore::ColumnSlicer::dataSlicers_p</td>
         </tr>
       </table>
   </td>
@@ -382,13 +351,13 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00603">603</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00411">411</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ArrayColumn_8h_source.html#l00561">freeSlicers()</a>, <a class="el" href="ArrayColumn_8h_source.html#l00540">getDataSlicers()</a>, and <a class="el" href="ArrayColumn_8h_source.html#l00576">validateParameters()</a>.</p>
+<p>Referenced by <a class="el" href="ArrayColumnBase_8h_source.html#l00392">getDataSlicers()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a127f63617fc212f1b3fe88bf55219e3d"></a>
+<a class="anchor" id="a1f3408af565611a6ec7af9089d48b4c3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -396,7 +365,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> *&gt; casacore::ColumnSlicer::destinationSlicers_p</td>
+          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="classcasacore_1_1Slicer.html">Slicer</a>*&gt; casacore::ColumnSlicer::destinationSlicers_p</td>
         </tr>
       </table>
   </td>
@@ -406,9 +375,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00604">604</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00412">412</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ArrayColumn_8h_source.html#l00561">freeSlicers()</a>, <a class="el" href="ArrayColumn_8h_source.html#l00547">getDestinationSlicers()</a>, and <a class="el" href="ArrayColumn_8h_source.html#l00576">validateParameters()</a>.</p>
+<p>Referenced by <a class="el" href="ArrayColumnBase_8h_source.html#l00396">getDestinationSlicers()</a>.</p>
 
 </div>
 </div>
@@ -430,14 +399,14 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ArrayColumn_8h_source.html#l00605">605</a> of file <a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayColumnBase_8h_source.html#l00413">413</a> of file <a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ArrayColumn_8h_source.html#l00554">shape()</a>.</p>
+<p>Referenced by <a class="el" href="ArrayColumnBase_8h_source.html#l00400">shape()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>tables/Tables/<a class="el" href="ArrayColumn_8h_source.html">ArrayColumn.h</a></li>
+<li>tables/Tables/<a class="el" href="ArrayColumnBase_8h_source.html">ArrayColumnBase.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

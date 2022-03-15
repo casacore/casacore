@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -131,8 +132,8 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:a7d8a22e288c19d731bee1bb34f421b14"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Primes.html#a7d8a22e288c19d731bee1bb34f421b14">cacheTable</a></td></tr>
 <tr class="memdesc:a7d8a22e288c19d731bee1bb34f421b14"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the table which stores the prime numbers.  <a href="#a7d8a22e288c19d731bee1bb34f421b14">More...</a><br/></td></tr>
 <tr class="separator:a7d8a22e288c19d731bee1bb34f421b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0db4cfa91525e7bc80f8040fae8f39b9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Primes.html#a0db4cfa91525e7bc80f8040fae8f39b9">theirMutex</a></td></tr>
-<tr class="separator:a0db4cfa91525e7bc80f8040fae8f39b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5ab690796684713a33f73df529b827b"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Primes.html#ab5ab690796684713a33f73df529b827b">theirMutex</a></td></tr>
+<tr class="separator:ab5ab690796684713a33f73df529b827b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Creates a reference table of prime numbers, and some functions. </p>
@@ -160,7 +161,7 @@ Understanding <a class="el" href="classcasacore_1_1Block.html" title="simple 1-D
 <h3>Example</h3>
 <p><a class="anchor" id="Primes_example1"></a></p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/scimath/Mathematics/Primes.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Utilities/Assert.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Assert_8h.html">casacore/casa/Utilities/Assert.h</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Refer also to tPrimes.cc</span></div>
@@ -208,7 +209,7 @@ This class should not be used to generate large sets of prime numbers - it is no
 The size of the prime numbers are restricted by the size of an unsigned integer (2^31-1 on 32 bit machines). </li>
 </ul>
 
-<p>Definition at line <a class="el" href="Primes_8h_source.html#l00132">132</a> of file <a class="el" href="Primes_8h_source.html">Primes.h</a>.</p>
+<p>Definition at line <a class="el" href="Primes_8h_source.html#l00133">133</a> of file <a class="el" href="Primes_8h_source.html">Primes.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a11a736f77ca82dc3c738fefa6ac9c7e5"></a>
 <div class="memitem">
@@ -390,11 +391,11 @@ The size of the prime numbers are restricted by the size of an unsigned integer 
 
 <p>This is the table which stores the prime numbers. </p>
 
-<p>Definition at line <a class="el" href="Primes_8h_source.html#l00173">173</a> of file <a class="el" href="Primes_8h_source.html">Primes.h</a>.</p>
+<p>Definition at line <a class="el" href="Primes_8h_source.html#l00174">174</a> of file <a class="el" href="Primes_8h_source.html">Primes.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a0db4cfa91525e7bc80f8040fae8f39b9"></a>
+<a class="anchor" id="ab5ab690796684713a33f73df529b827b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -402,7 +403,7 @@ The size of the prime numbers are restricted by the size of an unsigned integer 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::Primes::theirMutex</td>
+          <td class="memname">std::mutex casacore::Primes::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -412,7 +413,7 @@ The size of the prime numbers are restricted by the size of an unsigned integer 
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Primes_8h_source.html#l00174">174</a> of file <a class="el" href="Primes_8h_source.html">Primes.h</a>.</p>
+<p>Definition at line <a class="el" href="Primes_8h_source.html#l00175">175</a> of file <a class="el" href="Primes_8h_source.html">Primes.h</a>.</p>
 
 </div>
 </div>

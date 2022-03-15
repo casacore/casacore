@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -116,86 +117,83 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">//#</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">//# $Id$</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#ifndef CASA_MASKLOGIARRFWD_H</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_MASKLOGIARRFWD_H</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#ifndef CASA_MASKLOGIARRFWD_2_H</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_MASKLOGIARRFWD_2_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# There is no source file, so this pragma is not needed.</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#if 0</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Arrays/LogiArrayFwd.h&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ArrayFwd_8h.html">ArrayFwd.h</a>&quot;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">// &lt;summary&gt;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">//    Forward declarations for MaskedLogicalArrays.</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">// &lt;/summary&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">// &lt;reviewed reviewer=&quot;UNKNOWN&quot; date=&quot;before2004/08/25&quot; tests=&quot;tMaskedArray&quot;&gt;</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">// &lt;prerequisite&gt;</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=Array&gt;Array&lt;/linkto&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=MaskedArray&gt;MaskedArray&lt;/linkto&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto group=&quot;LogiArray.h#LogicalArray&quot;&gt;LogicalArray&lt;/linkto&gt;</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// &lt;/prerequisite&gt;</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">// &lt;etymology&gt;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">// MaskLogiArrayFwd is short for MaskedLogicalArrayForwards, which is</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">// too long by the old AIPS++ file naming conventions.</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// It contains forwards for MaskedLogicalArrays.</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// &lt;/etymology&gt;</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">// This file contains forward definitions for MaskedLogicalArrays.</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// &lt;motivation&gt;</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// There are places where MaskedLogicalArrays cannot be defined, i.e. where</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// MaskLogiArr.h cannot be included.  In those places, one must provide</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// forward declarations for those objects which one is using.</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// This is particularly tricky for MaskedLogicalArrays, since they are not</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// classes, but are rather typedefs.  In order to make these forwards</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">// easier to get correct, and easier to maintain, this file was created.</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">// If MaskedLogicalArrays should ever be change to a class, only this file would</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// need to be changed, instead of every file where the current typedefs</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// would have to be changed to class forwards.</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// &lt;/motivation&gt;</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">// &lt;todo asof=&quot;$DATE:$&gt;</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">//   &lt;li&gt; Consider making these into classes.</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">//   &lt;li&gt; Consider replacing with builtin boolean class when that</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">//          makes it into the C++ compiler.</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// &lt;/todo&gt;</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">// &lt;linkfrom anchor=&quot;MaskedLogicalArray forwards&quot; classes=&quot;Array MaskedArray&quot;&gt;</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">//    &lt;here&gt;MaskedLogicalArray forwards&lt;/here&gt; -- Forward declarations for</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">//    MaskedLogicalArrays.</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">// &lt;/linkfrom&gt;</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">// &lt;group name=&quot;MaskedLogicalArray forwards&quot;&gt;</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html">   86</a></span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">// &lt;summary&gt;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">//    Forward declarations for MaskedLogicalArrays.</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">// &lt;/summary&gt;</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">// &lt;reviewed reviewer=&quot;UNKNOWN&quot; date=&quot;before2004/08/25&quot; tests=&quot;tMaskedArray&quot;&gt;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">// &lt;prerequisite&gt;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=Array&gt;Array&lt;/linkto&gt;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=MaskedArray&gt;MaskedArray&lt;/linkto&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto group=&quot;LogiArray.h#LogicalArray&quot;&gt;LogicalArray&lt;/linkto&gt;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">// &lt;/prerequisite&gt;</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// &lt;etymology&gt;</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">// MaskLogiArrayFwd is short for MaskedLogicalArrayForwards, which is</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">// too long by the old AIPS++ file naming conventions.</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">// It contains forwards for MaskedLogicalArrays.</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">// &lt;/etymology&gt;</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// This file contains forward definitions for MaskedLogicalArrays.</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// &lt;motivation&gt;</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">// There are places where MaskedLogicalArrays cannot be defined, i.e. where</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// MaskLogiArr.h cannot be included.  In those places, one must provide</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// forward declarations for those objects which one is using.</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// This is particularly tricky for MaskedLogicalArrays, since they are not</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// classes, but are rather typedefs.  In order to make these forwards</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// easier to get correct, and easier to maintain, this file was created.</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// If MaskedLogicalArrays should ever be change to a class, only this file would</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">// need to be changed, instead of every file where the current typedefs</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">// would have to be changed to class forwards.</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// &lt;/motivation&gt;</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// &lt;todo asof=&quot;$DATE:$&gt;</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">//   &lt;li&gt; Consider making these into classes.</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">//   &lt;li&gt; Consider replacing with builtin boolean class when that</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">//          makes it into the C++ compiler.</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// &lt;/todo&gt;</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// &lt;linkfrom anchor=&quot;MaskedLogicalArray forwards&quot; classes=&quot;Array MaskedArray&quot;&gt;</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">//    &lt;here&gt;MaskedLogicalArray forwards&lt;/here&gt; -- Forward declarations for</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">//    MaskedLogicalArrays.</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">// &lt;/linkfrom&gt;</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">// &lt;group name=&quot;MaskedLogicalArray forwards&quot;&gt;</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html">   84</a></span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">//# Forwards</span></div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">//# Forwards</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html#aa772b44aa2f0aefc1dd37d02fee87ef1">   88</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> ArrayAlloc=std::allocator&lt;T&gt;, <span class="keyword">typename</span> MaskAlloc=std::allocator&lt;LogicalArrayElem&gt;&gt; <span class="keyword">class </span><a class="code" href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray.html">MaskedArray</a>;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
-<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1Array.html">   90</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span><a class="code" href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1Array.html">Array</a>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html#aa772b44aa2f0aefc1dd37d02fee87ef1">   91</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span><a class="code" href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray.html">MaskedArray</a>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">// Define MaskedLogicalArray. </span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray.html">MaskedArray&lt;LogicalArrayElem&gt;</a> <a class="code" href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html#aa772b44aa2f0aefc1dd37d02fee87ef1">MaskedLogicalArray</a>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">// Define MaskedLogicalArray. </span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray.html">MaskedArray&lt;LogicalArrayElem&gt;</a> <a class="code" href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html#aa772b44aa2f0aefc1dd37d02fee87ef1">MaskedLogicalArray</a>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">// &lt;/group&gt;</span></div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">// &lt;/group&gt;</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray_html"><div class="ttname"><a href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray.html">casacore::MaskLogiArrFwd_global_functions_MaskedLogicalArray_forwards::MaskedArray</a></div><div class="ttdef"><b>Definition:</b> <a href="MaskLogiArrFwd_8h_source.html#l00091">MaskLogiArrFwd.h:91</a></div></div>
-<div class="ttc" id="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_html_aa772b44aa2f0aefc1dd37d02fee87ef1"><div class="ttname"><a href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html#aa772b44aa2f0aefc1dd37d02fee87ef1">casacore::MaskLogiArrFwd_global_functions_MaskedLogicalArray_forwards::MaskedLogicalArray</a></div><div class="ttdeci">MaskedArray&lt; LogicalArrayElem &gt; MaskedLogicalArray</div><div class="ttdoc">Define MaskedLogicalArray. </div><div class="ttdef"><b>Definition:</b> <a href="MaskLogiArrFwd_8h_source.html#l00091">MaskLogiArrFwd.h:91</a></div></div>
-<div class="ttc" id="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1Array_html"><div class="ttname"><a href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1Array.html">casacore::MaskLogiArrFwd_global_functions_MaskedLogicalArray_forwards::Array</a></div><div class="ttdef"><b>Definition:</b> <a href="MaskLogiArrFwd_8h_source.html#l00090">MaskLogiArrFwd.h:90</a></div></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="ArrayFwd_8h_html"><div class="ttname"><a href="ArrayFwd_8h.html">ArrayFwd.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray_html"><div class="ttname"><a href="classcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_1_1MaskedArray.html">casacore::MaskLogiArrFwd_global_functions_MaskedLogicalArray_forwards::MaskedArray</a></div><div class="ttdef"><b>Definition:</b> <a href="MaskLogiArrFwd_8h_source.html#l00088">MaskLogiArrFwd.h:88</a></div></div>
+<div class="ttc" id="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards_html_aa772b44aa2f0aefc1dd37d02fee87ef1"><div class="ttname"><a href="structcasacore_1_1MaskLogiArrFwd__global__functions__MaskedLogicalArray__forwards.html#aa772b44aa2f0aefc1dd37d02fee87ef1">casacore::MaskLogiArrFwd_global_functions_MaskedLogicalArray_forwards::MaskedLogicalArray</a></div><div class="ttdeci">MaskedArray&lt; LogicalArrayElem &gt; MaskedLogicalArray</div><div class="ttdoc">Define MaskedLogicalArray. </div><div class="ttdef"><b>Definition:</b> <a href="MaskLogiArrFwd_8h_source.html#l00088">MaskLogiArrFwd.h:88</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

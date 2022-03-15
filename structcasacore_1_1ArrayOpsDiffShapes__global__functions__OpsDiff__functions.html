@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -102,17 +103,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aae77256d8e5fb8a1f8d5a9ae420592ea"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aae77256d8e5fb8a1f8d5a9ae420592ea"><td class="memTemplItemLeft" align="right" valign="top">LogicalArray&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayOpsDiffShapes__global__functions__OpsDiff__functions.html#aae77256d8e5fb8a1f8d5a9ae420592ea">reformedMask</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;data, const T truthvalue, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;desiredform)</td></tr>
-<tr class="memdesc:aae77256d8e5fb8a1f8d5a9ae420592ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a LogicalArray with elements (at pos) set to (data(pos) == truthvalue).  <a href="#aae77256d8e5fb8a1f8d5a9ae420592ea">More...</a><br/></td></tr>
-<tr class="separator:aae77256d8e5fb8a1f8d5a9ae420592ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a519e497784f8962f08dd02ae094a93d6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayOpsDiffShapes__global__functions__OpsDiff__functions.html#a519e497784f8962f08dd02ae094a93d6">rightExpandableToLeft</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;leftShape, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;rightShape)</td></tr>
-<tr class="memdesc:a519e497784f8962f08dd02ae094a93d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can arrays left and right with respective shapes leftShape and rightShape be used in function(left, right,...) for the other functions declared here?  <a href="#a519e497784f8962f08dd02ae094a93d6">More...</a><br/></td></tr>
-<tr class="separator:a519e497784f8962f08dd02ae094a93d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7366d3ec6166369d08516af6b5896b0c"><td class="memTemplParams" colspan="2">template&lt;typename L , typename R , typename BinaryOperator &gt; </td></tr>
-<tr class="memitem:a7366d3ec6166369d08516af6b5896b0c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayOpsDiffShapes__global__functions__OpsDiff__functions.html#a7366d3ec6166369d08516af6b5896b0c">binOpExpandInPlace</a> (<a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; L &gt; &amp;left, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; R &gt; &amp;right, BinaryOperator op)</td></tr>
-<tr class="memdesc:a7366d3ec6166369d08516af6b5896b0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply op elementwise to left and right, replicating elements of right as necessary (see example above).  <a href="#a7366d3ec6166369d08516af6b5896b0c">More...</a><br/></td></tr>
-<tr class="separator:a7366d3ec6166369d08516af6b5896b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c435bbc0dff4d80dd0338061cf566c9"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Alloc &gt; </td></tr>
+<tr class="memitem:a6c435bbc0dff4d80dd0338061cf566c9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a863dbf26a1e602513158145a3fb71183">LogicalArray</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayOpsDiffShapes__global__functions__OpsDiff__functions.html#a6c435bbc0dff4d80dd0338061cf566c9">reformedMask</a> (const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T, Alloc &gt; &amp;data, const T truthvalue, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;desiredform)</td></tr>
+<tr class="memdesc:a6c435bbc0dff4d80dd0338061cf566c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a LogicalArray with elements (at pos) set to (data(pos) == truthvalue).  <a href="#a6c435bbc0dff4d80dd0338061cf566c9">More...</a><br/></td></tr>
+<tr class="separator:a6c435bbc0dff4d80dd0338061cf566c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a70e3c4bbcced1e4199e2200a294efc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayOpsDiffShapes__global__functions__OpsDiff__functions.html#a1a70e3c4bbcced1e4199e2200a294efc">rightExpandableToLeft</a> (const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;leftShape, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;rightShape)</td></tr>
+<tr class="memdesc:a1a70e3c4bbcced1e4199e2200a294efc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can arrays left and right with respective shapes leftShape and rightShape be used in function(left, right,...) for the other functions declared here?  <a href="#a1a70e3c4bbcced1e4199e2200a294efc">More...</a><br/></td></tr>
+<tr class="separator:a1a70e3c4bbcced1e4199e2200a294efc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebbc0916d9a80674bc5713a433f72270"><td class="memTemplParams" colspan="2">template&lt;typename L , typename AllocL , typename R , typename AllocR , typename BinaryOperator &gt; </td></tr>
+<tr class="memitem:aebbc0916d9a80674bc5713a433f72270"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayOpsDiffShapes__global__functions__OpsDiff__functions.html#aebbc0916d9a80674bc5713a433f72270">binOpExpandInPlace</a> (<a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; L, AllocL &gt; &amp;left, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; R, AllocR &gt; &amp;right, BinaryOperator op)</td></tr>
+<tr class="memdesc:aebbc0916d9a80674bc5713a433f72270"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply op elementwise to left and right, replicating elements of right as necessary (see example above).  <a href="#aebbc0916d9a80674bc5713a433f72270">More...</a><br/></td></tr>
+<tr class="separator:aebbc0916d9a80674bc5713a433f72270"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Operations for 2 Arrays with possibly different shapes. </p>
@@ -132,31 +133,31 @@ Public Member Functions</h2></td></tr>
 <h3>Example</h3>
 <p><a class="anchor" id="ArrayOpsDiffShapes_example1"></a></p>
 <div class="fragment"><div class="line">Array&lt;Complex&gt; a(10, 6);</div>
-<div class="line">Vector&lt;Int&gt;    b(10);</div>
+<div class="line">Vector&lt;int&gt;    b(10);</div>
 <div class="line">Array&lt;Complex&gt; <a class="code" href="namespacecasacore_1_1C.html#a2aff9552bacab8d7213d5c70f7f23dc9">c</a>(10, 6);</div>
 <div class="line"></div>
 <div class="line">c = binOpExpandR(a, b, std::plus&lt;Complex&gt;());</div>
-</div><!-- fragment --><p> This example sets c(i, j) to a(i, j) + b(i). It checks that either b's shape can be reformed to a's (same # of elements) or that a's shape is the same as b's where b's dimensions are defined. The result of this operation is an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>.</p>
+</div><!-- fragment --><p> This example sets c(i, j) to a(i, j) + b(i). It checks that either b's shape can be reformed to a's (same # of elements) or that a's shape is the same as b's where b's dimensions are defined. The result of this operation is an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>.</p>
 <p><a class="anchor" id="ArrayOpsDiffShapes_OpsDiff_functions"></a> </p>
 
-<p>Definition at line <a class="el" href="ArrayOpsDiffShapes_8h_source.html#l00086">86</a> of file <a class="el" href="ArrayOpsDiffShapes_8h_source.html">ArrayOpsDiffShapes.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayOpsDiffShapes_8h_source.html#l00082">82</a> of file <a class="el" href="ArrayOpsDiffShapes_8h_source.html">ArrayOpsDiffShapes.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a7366d3ec6166369d08516af6b5896b0c"></a>
+<a class="anchor" id="aebbc0916d9a80674bc5713a433f72270"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename L , typename R , typename BinaryOperator &gt; </div>
+template&lt;typename L , typename AllocL , typename R , typename AllocR , typename BinaryOperator &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void casacore::ArrayOpsDiffShapes_global_functions_OpsDiff_functions::binOpExpandInPlace </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; L &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; L, AllocL &gt; &amp;&#160;</td>
           <td class="paramname"><em>left</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; R &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; R, AllocR &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em>, </td>
         </tr>
         <tr>
@@ -180,16 +181,16 @@ template&lt;typename L , typename R , typename BinaryOperator &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aae77256d8e5fb8a1f8d5a9ae420592ea"></a>
+<a class="anchor" id="a6c435bbc0dff4d80dd0338061cf566c9"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;typename T , typename Alloc &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">LogicalArray casacore::ArrayOpsDiffShapes_global_functions_OpsDiff_functions::reformedMask </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#a863dbf26a1e602513158145a3fb71183">LogicalArray</a> casacore::ArrayOpsDiffShapes_global_functions_OpsDiff_functions::reformedMask </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T, Alloc &gt; &amp;&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -217,12 +218,12 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a519e497784f8962f08dd02ae094a93d6"></a>
+<a class="anchor" id="a1a70e3c4bbcced1e4199e2200a294efc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::ArrayOpsDiffShapes_global_functions_OpsDiff_functions::rightExpandableToLeft </td>
+          <td class="memname">bool casacore::ArrayOpsDiffShapes_global_functions_OpsDiff_functions::rightExpandableToLeft </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>leftShape</em>, </td>

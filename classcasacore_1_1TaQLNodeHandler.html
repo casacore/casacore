@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -192,6 +193,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a91f6777ae87916ef2815a6343190678e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a710749843c91c1ea67d2d614644cbe28"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a710749843c91c1ea67d2d614644cbe28">visitShowNode</a> (const <a class="el" href="classcasacore_1_1TaQLShowNodeRep.html">TaQLShowNodeRep</a> &amp;node)</td></tr>
 <tr class="separator:a710749843c91c1ea67d2d614644cbe28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a101e14016f872d6ff587edc2524753d0"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a101e14016f872d6ff587edc2524753d0">visitCopyColNode</a> (const <a class="el" href="classcasacore_1_1TaQLCopyColNodeRep.html">TaQLCopyColNodeRep</a> &amp;node)</td></tr>
+<tr class="separator:a101e14016f872d6ff587edc2524753d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b1bdc33e99dafe361c8665affd96069"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a4b1bdc33e99dafe361c8665affd96069">visitDropTabNode</a> (const <a class="el" href="classcasacore_1_1TaQLDropTabNodeRep.html">TaQLDropTabNodeRep</a> &amp;node)</td></tr>
+<tr class="separator:a4b1bdc33e99dafe361c8665affd96069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcasacore_1_1TaQLNodeVisitor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1TaQLNodeVisitor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1TaQLNodeVisitor.html">casacore::TaQLNodeVisitor</a></td></tr>
 <tr class="memitem:a7bb108b31aeb5d98a4a9712bf4e4cf86 inherit pub_methods_classcasacore_1_1TaQLNodeVisitor"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a7bb108b31aeb5d98a4a9712bf4e4cf86">~TaQLNodeVisitor</a> ()</td></tr>
 <tr class="separator:a7bb108b31aeb5d98a4a9712bf4e4cf86 inherit pub_methods_classcasacore_1_1TaQLNodeVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -371,7 +376,7 @@ It is possible to use expressions in the column list. That could not be done bef
 
 <p>Get the actual result object from the result. </p>
 
-<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00319">319</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00321">321</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
 
 <p>References <a class="el" href="TaQLNodeResult_8h_source.html#l00161">casacore::TaQLNodeResult::getRep()</a>.</p>
 
@@ -1061,6 +1066,32 @@ It is possible to use expressions in the column list. That could not be done bef
 
 </div>
 </div>
+<a class="anchor" id="a101e14016f872d6ff587edc2524753d0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a> casacore::TaQLNodeHandler::visitCopyColNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TaQLCopyColNodeRep.html">TaQLCopyColNodeRep</a> &amp;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a24cde4a09ce5888e86125ef54d2d6518">casacore::TaQLNodeVisitor</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="aab564c31d347081198735933629612c0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1136,6 +1167,32 @@ It is possible to use expressions in the column list. That could not be done bef
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a7a6d1dd79430e0d88cdc92938ff56c26">casacore::TaQLNodeVisitor</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4b1bdc33e99dafe361c8665affd96069"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a> casacore::TaQLNodeHandler::visitDropTabNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TaQLDropTabNodeRep.html">TaQLDropTabNodeRep</a> &amp;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classcasacore_1_1TaQLNodeVisitor.html#a03ea80780acb4ef8a6ba65cf4c9fdaa6">casacore::TaQLNodeVisitor</a>.</p>
 
 </div>
 </div>
@@ -1756,7 +1813,7 @@ It is possible to use expressions in the column list. That could not be done bef
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00199">199</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00201">201</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
 
 </div>
 </div>
@@ -1778,7 +1835,7 @@ It is possible to use expressions in the column list. That could not be done bef
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00201">201</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00203">203</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
 
 </div>
 </div>

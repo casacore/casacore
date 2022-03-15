@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -243,7 +244,7 @@ Public Member Functions</h2></td></tr>
 <p>Quantities are values with a unit. Their basic specification can be one of two forms: </p>
 <div class="fragment"><div class="line"><a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(<a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> value, String unit);   <span class="comment">// or: Unit unit</span></div>
 <div class="line">Quantum&lt;Type&gt; (Type <a class="code" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>, String unit)    <span class="comment">// or: Unit unit</span></div>
-</div><!-- fragment --><p>A unit is a string of known unit fields separated by 'space' or '.' (to indicate multiply) or '/' (to indicate divide). See the <a class="el" href="classcasacore_1_1Unit.html">Unit</a> class for details. Example: km/s/(Mpc.s)2 is identical to km.s-1.Mpc-2.s-2</p>
+</div><!-- fragment --><p>A unit is a string of known unit fields separated by a space or a. (to indicate multiply) or a / (to indicate divide). See the <a class="el" href="classcasacore_1_1Unit.html">Unit</a> class for details. Example: km/s/(Mpc.s)2 is identical to km.s-1.Mpc-2.s-2</p>
 <p>This file defines the mathematical operations that can be done on <a class="el" href="classcasacore_1_1Quantum.html"><code>Quantum&lt;T&gt;</code></a>.</p>
 <p>They can be subdivided into various groupings: </p>
 <ul>
@@ -271,7 +272,7 @@ unary <code>-(<a class="el" href="classcasacore_1_1Quantum.html" title="Quantiti
 <li>
 <code>*=<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;, *=T; /=<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;; /=T;</code> </li>
 <li>
-<code>+/-/*//</code> for <code><a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;,<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;; T,<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;; <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;,T;</code> </li>
+<code>+,-,*,/</code> for <code><a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;,<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;; T,<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;; <a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;,T;</code> </li>
 <li>
 <code>abs, ceil, floor(<a class="el" href="classcasacore_1_1Quantum.html" title="Quantities (i.e. dimensioned values) ">Quantum</a>&lt;T&gt;)</code> </li>
 <li>
@@ -295,7 +296,7 @@ Some inlining (did not work first go) </li>
 </ul>
 <p><a class="anchor" id="QMath_Quantum_mathematical_operations"></a> </p>
 
-<p>Definition at line <a class="el" href="QMath_8h_source.html#l00120">120</a> of file <a class="el" href="QMath_8h_source.html">QMath.h</a>.</p>
+<p>Definition at line <a class="el" href="QMath_8h_source.html#l00119">119</a> of file <a class="el" href="QMath_8h_source.html">QMath.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a8d5b0fc326a2d116c261f61a1151cdd7"></a>
 <div class="memitem">

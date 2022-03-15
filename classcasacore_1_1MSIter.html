@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -124,6 +125,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af1565cf39523c0dbb17acfc510c721c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#af1565cf39523c0dbb17acfc510c721c5">MSIter</a> (const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &gt; &amp;mss, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;sortColumns, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> timeInterval=0, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> addDefaultSortColumns=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> storeSorted=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>)</td></tr>
 <tr class="memdesc:af1565cf39523c0dbb17acfc510c721c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as above with multiple MSs as input.  <a href="#af1565cf39523c0dbb17acfc510c721c5">More...</a><br/></td></tr>
 <tr class="separator:af1565cf39523c0dbb17acfc510c721c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace867c60b0b9144a1e29d7a8781b63de"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ace867c60b0b9144a1e29d7a8781b63de">MSIter</a> (const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;<a class="el" href="classcasacore_1_1MSIter.html#a48e93ced25aa42ab290daa97669c3001">ms</a>, const std::vector&lt; std::pair&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt;&gt;&gt; &amp;sortColumns)</td></tr>
+<tr class="memdesc:ace867c60b0b9144a1e29d7a8781b63de"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor is similar to the previous ones but the comparison functions used to group the iterations are given explicitly, making the constructor more generic.  <a href="#ace867c60b0b9144a1e29d7a8781b63de">More...</a><br/></td></tr>
+<tr class="separator:ace867c60b0b9144a1e29d7a8781b63de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cb46084b4788b5406107a1cfba187bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a6cb46084b4788b5406107a1cfba187bb">MSIter</a> (const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &gt; &amp;mss, const std::vector&lt; std::pair&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt;&gt;&gt; &amp;sortColumns)</td></tr>
+<tr class="memdesc:a6cb46084b4788b5406107a1cfba187bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as above with multiple MSs as input.  <a href="#a6cb46084b4788b5406107a1cfba187bb">More...</a><br/></td></tr>
+<tr class="separator:a6cb46084b4788b5406107a1cfba187bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad886d9d1a36908764e95b27d46a82920"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ad886d9d1a36908764e95b27d46a82920">MSIter</a> (const <a class="el" href="classcasacore_1_1MSIter.html">MSIter</a> &amp;other)</td></tr>
 <tr class="memdesc:ad886d9d1a36908764e95b27d46a82920"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy construct.  <a href="#ad886d9d1a36908764e95b27d46a82920">More...</a><br/></td></tr>
 <tr class="separator:ad886d9d1a36908764e95b27d46a82920"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,50 +168,59 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3863d3debef30d10800127b7666b91d4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1MSColumns.html">MSColumns</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a3863d3debef30d10800127b7666b91d4">msColumns</a> () const </td></tr>
 <tr class="memdesc:a3863d3debef30d10800127b7666b91d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return reference to the current <a class="el" href="classcasacore_1_1MSColumns.html" title="A class to provide easy access to MeasurementSet columns. ">MSColumns</a>.  <a href="#a3863d3debef30d10800127b7666b91d4">More...</a><br/></td></tr>
 <tr class="separator:a3863d3debef30d10800127b7666b91d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10ae9f227dd1fc5f50f05367d7680347"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a10ae9f227dd1fc5f50f05367d7680347">msId</a> () const </td></tr>
-<tr class="memdesc:a10ae9f227dd1fc5f50f05367d7680347"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current MS Id (according to the order in which they appeared in the constructor)  <a href="#a10ae9f227dd1fc5f50f05367d7680347">More...</a><br/></td></tr>
-<tr class="separator:a10ae9f227dd1fc5f50f05367d7680347"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37c64cc7d662df280f56951fd4f1a102"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a37c64cc7d662df280f56951fd4f1a102">msId</a> () const </td></tr>
+<tr class="memdesc:a37c64cc7d662df280f56951fd4f1a102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current MS Id (according to the order in which they appeared in the constructor)  <a href="#a37c64cc7d662df280f56951fd4f1a102">More...</a><br/></td></tr>
+<tr class="separator:a37c64cc7d662df280f56951fd4f1a102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a33d26069931c5df7d254abebc0cef9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a9a33d26069931c5df7d254abebc0cef9">newMS</a> () const </td></tr>
 <tr class="memdesc:a9a33d26069931c5df7d254abebc0cef9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if msId has changed since last iteration.  <a href="#a9a33d26069931c5df7d254abebc0cef9">More...</a><br/></td></tr>
 <tr class="separator:a9a33d26069931c5df7d254abebc0cef9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a6fc20758d4a5eec0dc3336e6d3f8f3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a1a6fc20758d4a5eec0dc3336e6d3f8f3">colArrayIds</a> () const </td></tr>
+<tr class="memdesc:a1a6fc20758d4a5eec0dc3336e6d3f8f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current ArrayIds for all rows in this iteration.  <a href="#a1a6fc20758d4a5eec0dc3336e6d3f8f3">More...</a><br/></td></tr>
+<tr class="separator:a1a6fc20758d4a5eec0dc3336e6d3f8f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f740e7ca0fe012bf1b8e55792b53f30"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a9f740e7ca0fe012bf1b8e55792b53f30">colFieldIds</a> () const </td></tr>
+<tr class="memdesc:a9f740e7ca0fe012bf1b8e55792b53f30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current FieldIds for all rows in this iteration.  <a href="#a9f740e7ca0fe012bf1b8e55792b53f30">More...</a><br/></td></tr>
+<tr class="separator:a9f740e7ca0fe012bf1b8e55792b53f30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b82c51e5722b9e52ff58b071bfb4c67"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a0b82c51e5722b9e52ff58b071bfb4c67">colDataDescriptionIds</a> () const </td></tr>
+<tr class="memdesc:a0b82c51e5722b9e52ff58b071bfb4c67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current DataDescriptionIds for all rows in this iteration.  <a href="#a0b82c51e5722b9e52ff58b071bfb4c67">More...</a><br/></td></tr>
+<tr class="separator:a0b82c51e5722b9e52ff58b071bfb4c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad972859df2fc17cd73352b99c0f380a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ad972859df2fc17cd73352b99c0f380a0">arrayId</a> () const </td></tr>
-<tr class="memdesc:ad972859df2fc17cd73352b99c0f380a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current ArrayId.  <a href="#ad972859df2fc17cd73352b99c0f380a0">More...</a><br/></td></tr>
+<tr class="memdesc:ad972859df2fc17cd73352b99c0f380a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the ArrayId of the first element in this iteration.  <a href="#ad972859df2fc17cd73352b99c0f380a0">More...</a><br/></td></tr>
 <tr class="separator:ad972859df2fc17cd73352b99c0f380a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd5df08a727a289acdfae927eddb0a09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#acd5df08a727a289acdfae927eddb0a09">newArray</a> () const </td></tr>
-<tr class="memdesc:acd5df08a727a289acdfae927eddb0a09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if ArrayId has changed since last iteration.  <a href="#acd5df08a727a289acdfae927eddb0a09">More...</a><br/></td></tr>
+<tr class="memdesc:acd5df08a727a289acdfae927eddb0a09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if ArrayId has changed since last iteration Note that if MS_ARRAY is not part of the sorting columns this will always be true.  <a href="#acd5df08a727a289acdfae927eddb0a09">More...</a><br/></td></tr>
 <tr class="separator:acd5df08a727a289acdfae927eddb0a09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11a1049393400f5d737674a75764f0cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a11a1049393400f5d737674a75764f0cd">fieldId</a> () const </td></tr>
-<tr class="memdesc:a11a1049393400f5d737674a75764f0cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current FieldId.  <a href="#a11a1049393400f5d737674a75764f0cd">More...</a><br/></td></tr>
+<tr class="memdesc:a11a1049393400f5d737674a75764f0cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the FieldId of the first element in this iteration.  <a href="#a11a1049393400f5d737674a75764f0cd">More...</a><br/></td></tr>
 <tr class="separator:a11a1049393400f5d737674a75764f0cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bfa23f70b30d33d6a91ef4736355d61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a1bfa23f70b30d33d6a91ef4736355d61">newField</a> () const </td></tr>
-<tr class="memdesc:a1bfa23f70b30d33d6a91ef4736355d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if FieldId/Source has changed since last iteration.  <a href="#a1bfa23f70b30d33d6a91ef4736355d61">More...</a><br/></td></tr>
+<tr class="memdesc:a1bfa23f70b30d33d6a91ef4736355d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if FieldId/Source has changed since last iteration Note that if MS_FIELD_ID is not part of the sorting columns this will always be true.  <a href="#a1bfa23f70b30d33d6a91ef4736355d61">More...</a><br/></td></tr>
 <tr class="separator:a1bfa23f70b30d33d6a91ef4736355d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acef02aaed9891e2e9891d57660606b24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#acef02aaed9891e2e9891d57660606b24">spectralWindowId</a> () const </td></tr>
-<tr class="memdesc:acef02aaed9891e2e9891d57660606b24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current SpectralWindow.  <a href="#acef02aaed9891e2e9891d57660606b24">More...</a><br/></td></tr>
+<tr class="memdesc:acef02aaed9891e2e9891d57660606b24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return SpectralWindow of the first element in this iteration.  <a href="#acef02aaed9891e2e9891d57660606b24">More...</a><br/></td></tr>
 <tr class="separator:acef02aaed9891e2e9891d57660606b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1b24481892935553200430f5c7fe6a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae1b24481892935553200430f5c7fe6a8">newSpectralWindow</a> () const </td></tr>
-<tr class="memdesc:ae1b24481892935553200430f5c7fe6a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if SpectralWindow has changed since last iteration.  <a href="#ae1b24481892935553200430f5c7fe6a8">More...</a><br/></td></tr>
+<tr class="memdesc:ae1b24481892935553200430f5c7fe6a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if SpectralWindow has changed since last iteration Note that if MS_DATA_DESC_ID is not part of the sorting columns this will always be true.  <a href="#ae1b24481892935553200430f5c7fe6a8">More...</a><br/></td></tr>
 <tr class="separator:ae1b24481892935553200430f5c7fe6a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c18687999de297c0aa18e6f7141f542"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a5c18687999de297c0aa18e6f7141f542">dataDescriptionId</a> () const </td></tr>
-<tr class="memdesc:a5c18687999de297c0aa18e6f7141f542"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current DataDescriptionId.  <a href="#a5c18687999de297c0aa18e6f7141f542">More...</a><br/></td></tr>
+<tr class="memdesc:a5c18687999de297c0aa18e6f7141f542"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return DataDescriptionId of the first element in this iteration.  <a href="#a5c18687999de297c0aa18e6f7141f542">More...</a><br/></td></tr>
 <tr class="separator:a5c18687999de297c0aa18e6f7141f542"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab47f7a862ff14e641578bc0db79b324d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ab47f7a862ff14e641578bc0db79b324d">newDataDescriptionId</a> () const </td></tr>
-<tr class="memdesc:ab47f7a862ff14e641578bc0db79b324d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if DataDescriptionId has changed since last iteration.  <a href="#ab47f7a862ff14e641578bc0db79b324d">More...</a><br/></td></tr>
+<tr class="memdesc:ab47f7a862ff14e641578bc0db79b324d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if DataDescriptionId has changed since last iteration Note that if MS_DATA_DESC_ID is not part of the sorting columns this will always be true.  <a href="#ab47f7a862ff14e641578bc0db79b324d">More...</a><br/></td></tr>
 <tr class="separator:ab47f7a862ff14e641578bc0db79b324d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a203493b4b350a0163bfc34ea6208b413"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a203493b4b350a0163bfc34ea6208b413">polarizationId</a> () const </td></tr>
-<tr class="memdesc:a203493b4b350a0163bfc34ea6208b413"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current PolarizationId.  <a href="#a203493b4b350a0163bfc34ea6208b413">More...</a><br/></td></tr>
+<tr class="memdesc:a203493b4b350a0163bfc34ea6208b413"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return PolarizationId of the first element in this iteration.  <a href="#a203493b4b350a0163bfc34ea6208b413">More...</a><br/></td></tr>
 <tr class="separator:a203493b4b350a0163bfc34ea6208b413"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b71f81393f78c5454596dbc0ce355aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a4b71f81393f78c5454596dbc0ce355aa">newPolarizationId</a> () const </td></tr>
-<tr class="memdesc:a4b71f81393f78c5454596dbc0ce355aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if polarization has changed since last iteration.  <a href="#a4b71f81393f78c5454596dbc0ce355aa">More...</a><br/></td></tr>
+<tr class="memdesc:a4b71f81393f78c5454596dbc0ce355aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return True if polarization has changed since last iteration Note that if MS_DATA_DESC_ID is not part of the sorting columns this will always be true.  <a href="#a4b71f81393f78c5454596dbc0ce355aa">More...</a><br/></td></tr>
 <tr class="separator:a4b71f81393f78c5454596dbc0ce355aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2cd6ec98c9c0c36f9b377a45172e221"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae2cd6ec98c9c0c36f9b377a45172e221">polFrame</a> () const </td></tr>
-<tr class="memdesc:ae2cd6ec98c9c0c36f9b377a45172e221"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return frame for polarization (returns PolFrame enum)  <a href="#ae2cd6ec98c9c0c36f9b377a45172e221">More...</a><br/></td></tr>
+<tr class="memdesc:ae2cd6ec98c9c0c36f9b377a45172e221"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return frame for polarization of the first element in this iteration.  <a href="#ae2cd6ec98c9c0c36f9b377a45172e221">More...</a><br/></td></tr>
 <tr class="separator:ae2cd6ec98c9c0c36f9b377a45172e221"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6867bdfc3c84923896d7fc0da5c54ad7"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a6867bdfc3c84923896d7fc0da5c54ad7">frequency</a> () const </td></tr>
 <tr class="memdesc:a6867bdfc3c84923896d7fc0da5c54ad7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the frequencies corresponding to the DATA matrix.  <a href="#a6867bdfc3c84923896d7fc0da5c54ad7">More...</a><br/></td></tr>
 <tr class="separator:a6867bdfc3c84923896d7fc0da5c54ad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab867d98584bc532e3978be836bfded95"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ab867d98584bc532e3978be836bfded95">frequency0</a> () const </td></tr>
-<tr class="memdesc:ab867d98584bc532e3978be836bfded95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return frequency of first channel with reference frame as a <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a>.  <a href="#ab867d98584bc532e3978be836bfded95">More...</a><br/></td></tr>
+<tr class="memdesc:ab867d98584bc532e3978be836bfded95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return frequency of first channel of the first element in iteration with reference frame as a <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a>.  <a href="#ab867d98584bc532e3978be836bfded95">More...</a><br/></td></tr>
 <tr class="separator:ab867d98584bc532e3978be836bfded95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40ba9b09d048708f47fb3f6d46e1e9d7"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a40ba9b09d048708f47fb3f6d46e1e9d7">restFrequency</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> line=0) const </td></tr>
 <tr class="memdesc:a40ba9b09d048708f47fb3f6d46e1e9d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the rest frequency of the specified line as a <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a>.  <a href="#a40ba9b09d048708f47fb3f6d46e1e9d7">More...</a><br/></td></tr>
@@ -239,12 +255,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3cb8a951be99b7a8a54628c677c65d21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a3cb8a951be99b7a8a54628c677c65d21">getSpwInFreqRange</a> (<a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &gt; &amp;spw, <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &gt; &amp;start, <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &gt; &amp;nchan, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> freqStart, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> freqEnd, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> freqStep)</td></tr>
 <tr class="memdesc:a3cb8a951be99b7a8a54628c677c65d21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the spw, start and nchan for all the ms's is this msiter that match the frequecy "freqstart-freqStep" and "freqEnd+freqStep" range.  <a href="#a3cb8a951be99b7a8a54628c677c65d21">More...</a><br/></td></tr>
 <tr class="separator:a3cb8a951be99b7a8a54628c677c65d21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e37b50c41c925afca4fe2c111d2ab75"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a4e37b50c41c925afca4fe2c111d2ab75">numMS</a> () const </td></tr>
-<tr class="memdesc:a4e37b50c41c925afca4fe2c111d2ab75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of actual ms's associated wth this iterator.  <a href="#a4e37b50c41c925afca4fe2c111d2ab75">More...</a><br/></td></tr>
-<tr class="separator:a4e37b50c41c925afca4fe2c111d2ab75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:accdb46e99543ff24e184d77085bec44b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacecasacore.html#aa5e78960516bef4822a438d3e84c9079">MS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#accdb46e99543ff24e184d77085bec44b">ms</a> (const <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> n) const </td></tr>
-<tr class="memdesc:accdb46e99543ff24e184d77085bec44b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the nth ms in the list of ms associated with this iterator.  <a href="#accdb46e99543ff24e184d77085bec44b">More...</a><br/></td></tr>
-<tr class="separator:accdb46e99543ff24e184d77085bec44b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7993341dcd814c03a3310e27df39886a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a7993341dcd814c03a3310e27df39886a">numMS</a> () const </td></tr>
+<tr class="memdesc:a7993341dcd814c03a3310e27df39886a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of actual ms's associated wth this iterator.  <a href="#a7993341dcd814c03a3310e27df39886a">More...</a><br/></td></tr>
+<tr class="separator:a7993341dcd814c03a3310e27df39886a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a791de217855ccdbec61e572905a1e649"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacecasacore.html#aa5e78960516bef4822a438d3e84c9079">MS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a791de217855ccdbec61e572905a1e649">ms</a> (const size_t n) const </td></tr>
+<tr class="memdesc:a791de217855ccdbec61e572905a1e649"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the nth ms in the list of ms associated with this iterator.  <a href="#a791de217855ccdbec61e572905a1e649">More...</a><br/></td></tr>
+<tr class="separator:a791de217855ccdbec61e572905a1e649"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78ed3673e9a4c12d8bec7be62c90e474"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1MDirection.html">MDirection</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a78ed3673e9a4c12d8bec7be62c90e474">phaseCenter</a> () const </td></tr>
 <tr class="memdesc:a78ed3673e9a4c12d8bec7be62c90e474"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the phasecenter for the first time stamp of the iteration The time is important for field tables that have polynomial or ephemerides phasecenters, i.e time varying for a given field_id.  <a href="#a78ed3673e9a4c12d8bec7be62c90e474">More...</a><br/></td></tr>
 <tr class="separator:a78ed3673e9a4c12d8bec7be62c90e474"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -262,6 +278,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ac3ad470663a6766ee2f67bfc5d73041a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ac3ad470663a6766ee2f67bfc5d73041a">construct</a> (const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;sortColumns, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> addDefaultSortColumns)</td></tr>
 <tr class="memdesc:ac3ad470663a6766ee2f67bfc5d73041a"><td class="mdescLeft">&#160;</td><td class="mdescRight">handle the construction details  <a href="#ac3ad470663a6766ee2f67bfc5d73041a">More...</a><br/></td></tr>
 <tr class="separator:ac3ad470663a6766ee2f67bfc5d73041a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6013d2ad1512dbe8f1e9df6a00c08a5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a6013d2ad1512dbe8f1e9df6a00c08a5c">construct</a> (const std::vector&lt; std::pair&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt;&gt;&gt; &amp;sortColumns)</td></tr>
+<tr class="memdesc:a6013d2ad1512dbe8f1e9df6a00c08a5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">handle the construction details using explicit comparison functions  <a href="#a6013d2ad1512dbe8f1e9df6a00c08a5c">More...</a><br/></td></tr>
+<tr class="separator:a6013d2ad1512dbe8f1e9df6a00c08a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76255a53d2ea08de78f8eaa6b1f0c75e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a76255a53d2ea08de78f8eaa6b1f0c75e">advance</a> ()</td></tr>
 <tr class="memdesc:a76255a53d2ea08de78f8eaa6b1f0c75e"><td class="mdescLeft">&#160;</td><td class="mdescRight">advance the iteration  <a href="#a76255a53d2ea08de78f8eaa6b1f0c75e">More...</a><br/></td></tr>
 <tr class="separator:a76255a53d2ea08de78f8eaa6b1f0c75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -272,15 +291,19 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a41b5a9a661e2b5061a64f96056dcf287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9382d28b38a351ee9d4329d877169b28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a9382d28b38a351ee9d4329d877169b28">setArrayInfo</a> ()</td></tr>
 <tr class="separator:a9382d28b38a351ee9d4329d877169b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04ee160a2e5675c9039b18c9d516a136"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a04ee160a2e5675c9039b18c9d516a136">setFeedInfo</a> ()</td></tr>
-<tr class="separator:a04ee160a2e5675c9039b18c9d516a136"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaa610bf378bda623bccb47a1fc82164"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#adaa610bf378bda623bccb47a1fc82164">setDataDescInfo</a> ()</td></tr>
-<tr class="separator:adaa610bf378bda623bccb47a1fc82164"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae625299ba947d98d3e3df8f49fd3b7c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae625299ba947d98d3e3df8f49fd3b7c8">setFieldInfo</a> ()</td></tr>
-<tr class="separator:ae625299ba947d98d3e3df8f49fd3b7c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1416d10d167bf2627f6397106f162a4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a1416d10d167bf2627f6397106f162a4e">isSubSet</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;r1, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;r2)</td></tr>
-<tr class="memdesc:a1416d10d167bf2627f6397106f162a4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if the numbers in r1 are a sorted subset of those in r2.  <a href="#a1416d10d167bf2627f6397106f162a4e">More...</a><br/></td></tr>
-<tr class="separator:a1416d10d167bf2627f6397106f162a4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40cba542f492fdfebdb26b8b53bddf48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo</a> () const </td></tr>
+<tr class="separator:a40cba542f492fdfebdb26b8b53bddf48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08dbd04b6ca07ec753913627099348f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a08dbd04b6ca07ec753913627099348f5">cacheCurrentDDInfo</a> () const </td></tr>
+<tr class="memdesc:a08dbd04b6ca07ec753913627099348f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the current DD, SPW, Pol ID.  <a href="#a08dbd04b6ca07ec753913627099348f5">More...</a><br/></td></tr>
+<tr class="separator:a08dbd04b6ca07ec753913627099348f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81ba00c01b41e04bb55730e79407c788"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788">cacheExtraDDInfo</a> () const </td></tr>
+<tr class="memdesc:a81ba00c01b41e04bb55730e79407c788"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store extra info related to the DD.  <a href="#a81ba00c01b41e04bb55730e79407c788">More...</a><br/></td></tr>
+<tr class="separator:a81ba00c01b41e04bb55730e79407c788"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a023f5daf70006c44ca9495181dfb97bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a023f5daf70006c44ca9495181dfb97bc">setFieldInfo</a> () const </td></tr>
+<tr class="separator:a023f5daf70006c44ca9495181dfb97bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0803415eb013cd2b065649f789a4d105"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a0803415eb013cd2b065649f789a4d105">isSubSet</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;r1, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;r2)</td></tr>
+<tr class="memdesc:a0803415eb013cd2b065649f789a4d105"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if the numbers in r1 are a sorted subset of those in r2.  <a href="#a0803415eb013cd2b065649f789a4d105">More...</a><br/></td></tr>
+<tr class="separator:a0803415eb013cd2b065649f789a4d105"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -292,75 +315,87 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ad48c86daa8f3b499dcad15fb591838e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a975f3d235477cc3cbd3ea6b91769c33d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a975f3d235477cc3cbd3ea6b91769c33d">tabIterAtStart_p</a></td></tr>
 <tr class="separator:a975f3d235477cc3cbd3ea6b91769c33d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a848afe87b95c83c17be7301d53ca39ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a848afe87b95c83c17be7301d53ca39ef">nMS_p</a></td></tr>
-<tr class="separator:a848afe87b95c83c17be7301d53ca39ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a8c0c6e70dacd56577753ccdb67c65f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a8a8c0c6e70dacd56577753ccdb67c65f">timeInSort_p</a></td></tr>
+<tr class="memdesc:a8a8c0c6e70dacd56577753ccdb67c65f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This booleans determine if given columns are part of the sorting.  <a href="#a8a8c0c6e70dacd56577753ccdb67c65f">More...</a><br/></td></tr>
+<tr class="separator:a8a8c0c6e70dacd56577753ccdb67c65f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04c7c7f1702b2737f10c3806838e629b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a04c7c7f1702b2737f10c3806838e629b">arrayInSort_p</a></td></tr>
+<tr class="separator:a04c7c7f1702b2737f10c3806838e629b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fd08c4dd3297184961296a7a0288408"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a6fd08c4dd3297184961296a7a0288408">ddInSort_p</a></td></tr>
+<tr class="separator:a6fd08c4dd3297184961296a7a0288408"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10968f77565f70a26e045144f73afd84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a10968f77565f70a26e045144f73afd84">fieldInSort_p</a></td></tr>
+<tr class="separator:a10968f77565f70a26e045144f73afd84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dbdb13d30e03235cd78b37fcbdff00c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a5dbdb13d30e03235cd78b37fcbdff00c">nMS_p</a></td></tr>
+<tr class="separator:a5dbdb13d30e03235cd78b37fcbdff00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8b5fcafb028c666d390f404cf07ca34"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#af8b5fcafb028c666d390f404cf07ca34">curMS_p</a></td></tr>
+<tr class="separator:af8b5fcafb028c666d390f404cf07ca34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57502fc54e07863b9bb08683f58e6b32"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a57502fc54e07863b9bb08683f58e6b32">lastMS_p</a></td></tr>
+<tr class="separator:a57502fc54e07863b9bb08683f58e6b32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7c48be3f3b76ce95138e34bac8eb60f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1MSColumns.html">MSColumns</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#af7c48be3f3b76ce95138e34bac8eb60f">msc_p</a></td></tr>
 <tr class="separator:af7c48be3f3b76ce95138e34bac8eb60f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74b256ef4abbb5f026a0dd92ff3c62bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a74b256ef4abbb5f026a0dd92ff3c62bd">curTable_p</a></td></tr>
 <tr class="separator:a74b256ef4abbb5f026a0dd92ff3c62bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08a53e5411fbf03f41d5c987fe77c18e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a08a53e5411fbf03f41d5c987fe77c18e">curMS_p</a></td></tr>
-<tr class="separator:a08a53e5411fbf03f41d5c987fe77c18e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac67a471d7c51e0ba667a0affa88a7bcd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ac67a471d7c51e0ba667a0affa88a7bcd">lastMS_p</a></td></tr>
-<tr class="separator:ac67a471d7c51e0ba667a0affa88a7bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae58a7e4ed6f2cf03b02a4f279e5a5a2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae58a7e4ed6f2cf03b02a4f279e5a5a2f">curArray_p</a></td></tr>
-<tr class="separator:ae58a7e4ed6f2cf03b02a4f279e5a5a2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a582b93dd60472444870fabaa15de4098"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a582b93dd60472444870fabaa15de4098">lastArray_p</a></td></tr>
-<tr class="separator:a582b93dd60472444870fabaa15de4098"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a175c29d4d84d7dfa840144d8568a2496"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a175c29d4d84d7dfa840144d8568a2496">curSource_p</a></td></tr>
-<tr class="separator:a175c29d4d84d7dfa840144d8568a2496"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40ec18aeffacaee94309a2c745e15e61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a40ec18aeffacaee94309a2c745e15e61">curFieldName_p</a></td></tr>
-<tr class="separator:a40ec18aeffacaee94309a2c745e15e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74023d0a24d80b30a3d69304129d8071"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a74023d0a24d80b30a3d69304129d8071">curSourceName_p</a></td></tr>
-<tr class="separator:a74023d0a24d80b30a3d69304129d8071"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82e0f2a3fc2a68de8cca333a13dffb3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a82e0f2a3fc2a68de8cca333a13dffb3f">curField_p</a></td></tr>
-<tr class="separator:a82e0f2a3fc2a68de8cca333a13dffb3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ceb4368634f10ff30070222d2817767"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a2ceb4368634f10ff30070222d2817767">lastField_p</a></td></tr>
-<tr class="separator:a2ceb4368634f10ff30070222d2817767"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4633bcba7f206bfb9d83cac1fc249c01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a4633bcba7f206bfb9d83cac1fc249c01">curSpectralWindow_p</a></td></tr>
-<tr class="separator:a4633bcba7f206bfb9d83cac1fc249c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:accdfe5c1abf110f1cbd7d7c4e8db4747"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#accdfe5c1abf110f1cbd7d7c4e8db4747">lastSpectralWindow_p</a></td></tr>
-<tr class="separator:accdfe5c1abf110f1cbd7d7c4e8db4747"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcf40a09c02c4d1445f132a4c278414f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#afcf40a09c02c4d1445f132a4c278414f">curPolarizationId_p</a></td></tr>
-<tr class="separator:afcf40a09c02c4d1445f132a4c278414f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a984f85cb87901369f21fb2a524402ce5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a984f85cb87901369f21fb2a524402ce5">curArrayIdFirst_p</a></td></tr>
+<tr class="separator:a984f85cb87901369f21fb2a524402ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7e4fe7e84834e5337c4a15d7a3c22c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#aa7e4fe7e84834e5337c4a15d7a3c22c8">lastArrayId_p</a></td></tr>
+<tr class="separator:aa7e4fe7e84834e5337c4a15d7a3c22c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60daefd584c9905f0725651d6c7236c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a60daefd584c9905f0725651d6c7236c8">curSourceIdFirst_p</a></td></tr>
+<tr class="separator:a60daefd584c9905f0725651d6c7236c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dab7bfc53135a1b43858fa548d95207"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a1dab7bfc53135a1b43858fa548d95207">curFieldNameFirst_p</a></td></tr>
+<tr class="separator:a1dab7bfc53135a1b43858fa548d95207"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae69ef72205eacd0940a0b32517195d06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae69ef72205eacd0940a0b32517195d06">curSourceNameFirst_p</a></td></tr>
+<tr class="separator:ae69ef72205eacd0940a0b32517195d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b9735603b3a3d88ecd5e8666c1ab417"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a1b9735603b3a3d88ecd5e8666c1ab417">curFieldIdFirst_p</a></td></tr>
+<tr class="separator:a1b9735603b3a3d88ecd5e8666c1ab417"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab71c3fca01fcce10e8adec2b123a00e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#aab71c3fca01fcce10e8adec2b123a00e">lastFieldId_p</a></td></tr>
+<tr class="separator:aab71c3fca01fcce10e8adec2b123a00e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a9655323d672cdfd2e41f9e81d64cdc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a9a9655323d672cdfd2e41f9e81d64cdc">curDataDescIdFirst_p</a></td></tr>
+<tr class="memdesc:a9a9655323d672cdfd2e41f9e81d64cdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">These variables point to the current (as in this iteration) DD, SPW and polarization IDs.  <a href="#a9a9655323d672cdfd2e41f9e81d64cdc">More...</a><br/></td></tr>
+<tr class="separator:a9a9655323d672cdfd2e41f9e81d64cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac83cc3fd497c1a8cfda1a674d3d207e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ac83cc3fd497c1a8cfda1a674d3d207e2">curSpectralWindowIdFirst_p</a></td></tr>
+<tr class="separator:ac83cc3fd497c1a8cfda1a674d3d207e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad86cf6f2d98e743939f437dd42d148fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ad86cf6f2d98e743939f437dd42d148fa">curPolarizationIdFirst_p</a></td></tr>
+<tr class="separator:ad86cf6f2d98e743939f437dd42d148fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a696602d7f1ab9e79d8d9b7adc77e7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a7a696602d7f1ab9e79d8d9b7adc77e7b">lastDataDescId_p</a></td></tr>
+<tr class="memdesc:a7a696602d7f1ab9e79d8d9b7adc77e7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">These variables point to the IDs of the previous iteration.  <a href="#a7a696602d7f1ab9e79d8d9b7adc77e7b">More...</a><br/></td></tr>
+<tr class="separator:a7a696602d7f1ab9e79d8d9b7adc77e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73a3321c163a142323338a2a3f7e34fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a73a3321c163a142323338a2a3f7e34fd">lastSpectralWindowId_p</a></td></tr>
+<tr class="separator:a73a3321c163a142323338a2a3f7e34fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a374f517cd369027cc5febe579f59da00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a374f517cd369027cc5febe579f59da00">lastPolarizationId_p</a></td></tr>
 <tr class="separator:a374f517cd369027cc5febe579f59da00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6da22acb68a6dc5db11322db6d7efef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ad6da22acb68a6dc5db11322db6d7efef">curDataDescId_p</a></td></tr>
-<tr class="separator:ad6da22acb68a6dc5db11322db6d7efef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a696602d7f1ab9e79d8d9b7adc77e7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a7a696602d7f1ab9e79d8d9b7adc77e7b">lastDataDescId_p</a></td></tr>
-<tr class="separator:a7a696602d7f1ab9e79d8d9b7adc77e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade8f3f4a5a57d7153b7af18fcaf53178"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ade8f3f4a5a57d7153b7af18fcaf53178">more_p</a></td></tr>
 <tr class="separator:ade8f3f4a5a57d7153b7af18fcaf53178"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade56b1259e4258b37d3c22a642bd9eac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ade56b1259e4258b37d3c22a642bd9eac">newMS_p</a></td></tr>
 <tr class="separator:ade56b1259e4258b37d3c22a642bd9eac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46f12cced56ddfb5ec31da2d1c4e6ed6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a46f12cced56ddfb5ec31da2d1c4e6ed6">newArray_p</a></td></tr>
-<tr class="separator:a46f12cced56ddfb5ec31da2d1c4e6ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b8e7f6d8a4c02e4943e878a62890b67"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a4b8e7f6d8a4c02e4943e878a62890b67">newField_p</a></td></tr>
-<tr class="separator:a4b8e7f6d8a4c02e4943e878a62890b67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7a0c4ea473f2f3a9a606337c9466c72"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ac7a0c4ea473f2f3a9a606337c9466c72">newSpectralWindow_p</a></td></tr>
-<tr class="separator:ac7a0c4ea473f2f3a9a606337c9466c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55c5300406a5e6103a2bf391922a0f62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a55c5300406a5e6103a2bf391922a0f62">newArrayId_p</a></td></tr>
+<tr class="separator:a55c5300406a5e6103a2bf391922a0f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a379400c58d5202dbc3c8d2686cd2b888"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a379400c58d5202dbc3c8d2686cd2b888">newFieldId_p</a></td></tr>
+<tr class="separator:a379400c58d5202dbc3c8d2686cd2b888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2eb705507afbf1c1e07706370cf7d4ff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a2eb705507afbf1c1e07706370cf7d4ff">newSpectralWindowId_p</a></td></tr>
+<tr class="separator:a2eb705507afbf1c1e07706370cf7d4ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21637580d90436c60391704b1247f8f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a21637580d90436c60391704b1247f8f6">newPolarizationId_p</a></td></tr>
 <tr class="separator:a21637580d90436c60391704b1247f8f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a192bd4198ef5ae5e46ed03878cc28f31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a192bd4198ef5ae5e46ed03878cc28f31">newDataDescId_p</a></td></tr>
 <tr class="separator:a192bd4198ef5ae5e46ed03878cc28f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80f0dfee6c1d0b68d127fc2a28c10d3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a80f0dfee6c1d0b68d127fc2a28c10d3f">timeDepFeed_p</a></td></tr>
-<tr class="separator:a80f0dfee6c1d0b68d127fc2a28c10d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d416d2365607a10ed48b696b7311311"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a5d416d2365607a10ed48b696b7311311">spwDepFeed_p</a></td></tr>
-<tr class="separator:a5d416d2365607a10ed48b696b7311311"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d1b3a0113029857b127aa2ce057959e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a9d1b3a0113029857b127aa2ce057959e">checkFeed_p</a></td></tr>
-<tr class="separator:a9d1b3a0113029857b127aa2ce057959e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a824c66a9ae6aa3bf2604beb0eebd73ab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a824c66a9ae6aa3bf2604beb0eebd73ab">spwDepFeed_p</a></td></tr>
+<tr class="separator:a824c66a9ae6aa3bf2604beb0eebd73ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a759f4f4058269c0f806b5d344ca37f7a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a759f4f4058269c0f806b5d344ca37f7a">checkFeed_p</a></td></tr>
+<tr class="separator:a759f4f4058269c0f806b5d344ca37f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69ddecd393c42e6017eb3cec86fe0f23"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a69ddecd393c42e6017eb3cec86fe0f23">feedInfoCached_p</a></td></tr>
+<tr class="memdesc:a69ddecd393c42e6017eb3cec86fe0f23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable to know whether the feed info is already computed.  <a href="#a69ddecd393c42e6017eb3cec86fe0f23">More...</a><br/></td></tr>
+<tr class="separator:a69ddecd393c42e6017eb3cec86fe0f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cb52e9fd1fa887b2151435e83545c4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a8cb52e9fd1fa887b2151435e83545c4e">storeSorted_p</a></td></tr>
 <tr class="memdesc:a8cb52e9fd1fa887b2151435e83545c4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Globally control disk storage of SORTED_TABLE.  <a href="#a8cb52e9fd1fa887b2151435e83545c4e">More...</a><br/></td></tr>
 <tr class="separator:a8cb52e9fd1fa887b2151435e83545c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb62ce4b40fccd747fe240dd1cede838"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#afb62ce4b40fccd747fe240dd1cede838">interval_p</a></td></tr>
 <tr class="memdesc:afb62ce4b40fccd747fe240dd1cede838"><td class="mdescLeft">&#160;</td><td class="mdescRight">time selection  <a href="#afb62ce4b40fccd747fe240dd1cede838">More...</a><br/></td></tr>
 <tr class="separator:afb62ce4b40fccd747fe240dd1cede838"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24b6394fa7bd5299034b4b51f08210d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a24b6394fa7bd5299034b4b51f08210d0">colArray_p</a></td></tr>
-<tr class="memdesc:a24b6394fa7bd5299034b4b51f08210d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">columns  <a href="#a24b6394fa7bd5299034b4b51f08210d0">More...</a><br/></td></tr>
-<tr class="separator:a24b6394fa7bd5299034b4b51f08210d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0506d2a9a483a88ee7f0472aff649c57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a0506d2a9a483a88ee7f0472aff649c57">colDataDesc_p</a></td></tr>
+<tr class="memdesc:a0506d2a9a483a88ee7f0472aff649c57"><td class="mdescLeft">&#160;</td><td class="mdescRight">This column is mutable since it is only attached when it is neccesary to read the DD Ids.  <a href="#a0506d2a9a483a88ee7f0472aff649c57">More...</a><br/></td></tr>
 <tr class="separator:a0506d2a9a483a88ee7f0472aff649c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61df989c8d13800ffe52b6c3f3807683"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a61df989c8d13800ffe52b6c3f3807683">colField_p</a></td></tr>
 <tr class="separator:a61df989c8d13800ffe52b6c3f3807683"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24b6394fa7bd5299034b4b51f08210d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a24b6394fa7bd5299034b4b51f08210d0">colArray_p</a></td></tr>
+<tr class="separator:a24b6394fa7bd5299034b4b51f08210d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1f34458fc0a3f5c9d8f772a6fcd672d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1MDirection.html">MDirection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ad1f34458fc0a3f5c9d8f772a6fcd672d">phaseCenter_p</a></td></tr>
 <tr class="separator:ad1f34458fc0a3f5c9d8f772a6fcd672d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae238c31bd767b91bf727c6ba24706bfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae238c31bd767b91bf727c6ba24706bfe">prevFirstTimeStamp_p</a></td></tr>
@@ -388,6 +423,7 @@ Protected Attributes</h2></td></tr>
 <tr class="memdesc:a827ae96aa3c2c688ad96b680a5fddea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">are zero (to speed things up in a single beam case)  <a href="#a827ae96aa3c2c688ad96b680a5fddea2">More...</a><br/></td></tr>
 <tr class="separator:a827ae96aa3c2c688ad96b680a5fddea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ccda489f4acd46291251289d9f82661"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#a5ccda489f4acd46291251289d9f82661">freqCacheOK_p</a></td></tr>
+<tr class="memdesc:a5ccda489f4acd46291251289d9f82661"><td class="mdescLeft">&#160;</td><td class="mdescRight">hence mutable.  <a href="#a5ccda489f4acd46291251289d9f82661">More...</a><br/></td></tr>
 <tr class="separator:a5ccda489f4acd46291251289d9f82661"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae690473206ca9f1dc65974627f538ccb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSIter.html#ae690473206ca9f1dc65974627f538ccb">frequency_p</a></td></tr>
 <tr class="separator:ae690473206ca9f1dc65974627f538ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -418,7 +454,7 @@ Protected Attributes</h2></td></tr>
 <div class="fragment"><div class="line"><span class="comment">// The following code iterates by by ARRAY_ID, FIELD_ID, DATA_DESC_ID and</span></div>
 <div class="line"><span class="comment">// TIME (all implicitly added columns) and then by baseline (antenna pair),</span></div>
 <div class="line"><span class="comment">// in 3000s intervals.</span></div>
-<div class="line">MeasurementSet <a class="code" href="classcasacore_1_1MSIter.html#a48e93ced25aa42ab290daa97669c3001">ms</a>(<span class="stringliteral">&quot;3C273XC1.ms&quot;</span>); </div>
+<div class="line">MeasurementSet <a class="code" href="classcasacore_1_1MSIter.html#a48e93ced25aa42ab290daa97669c3001">ms</a>(<span class="stringliteral">&quot;3C273XC1.ms&quot;</span>);</div>
 <div class="line">Block&lt;int&gt; sort(2);</div>
 <div class="line">sort[0] = <a class="code" href="classcasacore_1_1MSMainEnums.html#a612b887846f70716850e235c411e48a9a963680b3bf15604795aeb47e2c2f8c78">MS::ANTENNA1</a>;</div>
 <div class="line">sort[1] = <a class="code" href="classcasacore_1_1MSMainEnums.html#a612b887846f70716850e235c411e48a9a2e226e66cb10d2a220f1fcc4a690ac75">MS::ANTENNA2</a>;</div>
@@ -434,14 +470,14 @@ Protected Attributes</h2></td></tr>
 <div class="line">process(msIter.table()); <span class="comment">// process the data in the current iteration</span></div>
 <div class="line">}</div>
 <div class="line"><span class="comment">// Output shows only 1 row at a time because the table is sorted on TIME</span></div>
-<div class="line"><span class="comment">// first and ANTENNA1, ANTENNA2 next and each baseline occurs only once per </span></div>
+<div class="line"><span class="comment">// first and ANTENNA1, ANTENNA2 next and each baseline occurs only once per</span></div>
 <div class="line"><span class="comment">// TIME stamp. The interval has no effect in this case.</span></div>
 </div><!-- fragment --><h3>Example</h3>
 <p><a class="anchor" id="MSIter_example2"></a></p>
 <div class="fragment"><div class="line"><span class="comment">// The following code iterates by baseline (antenna pair), TIME, and,</span></div>
 <div class="line"><span class="comment">// implicitly, by ARRAY_ID, FIELD_ID and DATA_DESC_ID in 3000s</span></div>
 <div class="line"><span class="comment">// intervals.</span></div>
-<div class="line">MeasurementSet <a class="code" href="classcasacore_1_1MSIter.html#a48e93ced25aa42ab290daa97669c3001">ms</a>(<span class="stringliteral">&quot;3C273XC1.ms&quot;</span>); </div>
+<div class="line">MeasurementSet <a class="code" href="classcasacore_1_1MSIter.html#a48e93ced25aa42ab290daa97669c3001">ms</a>(<span class="stringliteral">&quot;3C273XC1.ms&quot;</span>);</div>
 <div class="line">Block&lt;int&gt; sort(3);</div>
 <div class="line">sort[0] = <a class="code" href="classcasacore_1_1MSMainEnums.html#a612b887846f70716850e235c411e48a9a963680b3bf15604795aeb47e2c2f8c78">MS::ANTENNA1</a>;</div>
 <div class="line">sort[1] = <a class="code" href="classcasacore_1_1MSMainEnums.html#a612b887846f70716850e235c411e48a9a2e226e66cb10d2a220f1fcc4a690ac75">MS::ANTENNA2</a>;</div>
@@ -604,6 +640,63 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 </div>
 </div>
+<a class="anchor" id="ace867c60b0b9144a1e29d7a8781b63de"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::MSIter::MSIter </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::pair&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt;&gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>sortColumns</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This constructor is similar to the previous ones but the comparison functions used to group the iterations are given explicitly, making the constructor more generic. </p>
+<p>Also, the column is specified as a string, to support sorting by columns not part of the standard MS definition. Note that with this constructor TIME is not treated in any special way and there are no default sorting columns, i.e., the sorting needs have to be set explicitly. The last element in vector sortColumns will be the column that will change faster in the iteration loop, whereas the first element will be the slower. For instance, if sortColumns[0].first = "DATA_DESC_ID" nad sortColumns[1].first = "ANTENNA1" then the first iterations will go through all possible values of ANTENNA1 for the first DDId, then it will start the iterations for the second DDId and so on. </p>
+
+</div>
+</div>
+<a class="anchor" id="a6cb46084b4788b5406107a1cfba187bb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">casacore::MSIter::MSIter </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mss</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::pair&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt;&gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>sortColumns</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Same as above with multiple MSs as input. </p>
+
+</div>
+</div>
 <a class="anchor" id="ad886d9d1a36908764e95b27d46a82920"></a>
 <div class="memitem">
 <div class="memproto">
@@ -697,9 +790,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>True if all elements of the cube returned by getBeamOffsets are zero. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00471">471</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00557">557</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00423">allBeamOffsetsZero_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00494">allBeamOffsetsZero_p</a>, <a class="el" href="MSIter_8h_source.html#l00462">feedInfoCached_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo()</a>.</p>
 
 </div>
 </div>
@@ -726,9 +819,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return a string mount identifier for each antenna. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00467">467</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00553">553</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00417">antennaMounts_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00488">antennaMounts_p</a>.</p>
 
 </div>
 </div>
@@ -753,11 +846,67 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return the current ArrayId. </p>
+<p>Return the ArrayId of the first element in this iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00448">448</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00527">527</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00388">curArray_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00442">curArrayIdFirst_p</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a08dbd04b6ca07ec753913627099348f5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::MSIter::cacheCurrentDDInfo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store the current DD, SPW, Pol ID. </p>
+<p>It can be called in logically const objects although it modifies caching (mutable) variables for performance reasons. </p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00524">colDataDescriptionIds()</a>, <a class="el" href="MSIter_8h_source.html#l00535">dataDescriptionId()</a>, <a class="el" href="MSIter_8h_source.html#l00532">polarizationId()</a>, <a class="el" href="MSIter_8h_source.html#l00540">polFrame()</a>, and <a class="el" href="MSIter_8h_source.html#l00529">spectralWindowId()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a81ba00c01b41e04bb55730e79407c788"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::MSIter::cacheExtraDDInfo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store extra info related to the DD. </p>
+<p>It can be called in logically const objects although it modifies caching (mutable) variables for performance reasons. </p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00524">colDataDescriptionIds()</a>, <a class="el" href="MSIter_8h_source.html#l00535">dataDescriptionId()</a>, <a class="el" href="MSIter_8h_source.html#l00532">polarizationId()</a>, <a class="el" href="MSIter_8h_source.html#l00540">polFrame()</a>, and <a class="el" href="MSIter_8h_source.html#l00529">spectralWindowId()</a>.</p>
 
 </div>
 </div>
@@ -784,9 +933,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return the feed configuration/leakage matrix for feed 0 on each antenna TODO: CJonesAll can be used instead of this method in all instances. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00459">459</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00545">545</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00414">CJonesFeed0_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00485">CJonesFeed0_p</a>, <a class="el" href="MSIter_8h_source.html#l00462">feedInfoCached_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo()</a>.</p>
 
 </div>
 </div>
@@ -814,9 +963,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 <p>Return the feed configuration/leakage matrix for all feeds and antennae First axis is antennaId, 2nd axis is feedId. </p>
 <p>Result of <a class="el" href="classcasacore_1_1MSIter.html#a2dd0e7872e261504c928c44a98dd945c" title="Return the feed configuration/leakage matrix for feed 0 on each antenna TODO: CJonesAll can be used i...">CJones()</a> is a reference to the first column of the matrix returned by this method </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00461">461</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00547">547</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00416">CJones_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00487">CJones_p</a>, <a class="el" href="MSIter_8h_source.html#l00462">feedInfoCached_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo()</a>.</p>
 
 </div>
 </div>
@@ -832,6 +981,93 @@ multiple observatories in a single MS are not handled correctly (need to sort on
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1a6fc20758d4a5eec0dc3336e6d3f8f3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp; casacore::MSIter::colArrayIds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the current ArrayIds for all rows in this iteration. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00520">520</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>References <a class="el" href="MSIter_8h_source.html#l00475">colArray_p</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0b82c51e5722b9e52ff58b071bfb4c67"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp; casacore::MSIter::colDataDescriptionIds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the current DataDescriptionIds for all rows in this iteration. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00524">524</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>References <a class="el" href="classcasacore_1_1MSIter.html#a08dbd04b6ca07ec753913627099348f5">cacheCurrentDDInfo()</a>, <a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788">cacheExtraDDInfo()</a>, <a class="el" href="MSIter_8h_source.html#l00474">colDataDesc_p</a>, and <a class="el" href="MSIter_8h_source.html#l00453">curDataDescIdFirst_p</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9f740e7ca0fe012bf1b8e55792b53f30"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp; casacore::MSIter::colFieldIds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the current FieldIds for all rows in this iteration. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00522">522</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>References <a class="el" href="MSIter_8h_source.html#l00474">colField_p</a>.</p>
 
 </div>
 </div>
@@ -871,6 +1107,32 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 </div>
 </div>
+<a class="anchor" id="a6013d2ad1512dbe8f1e9df6a00c08a5c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::MSIter::construct </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; std::pair&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt;&gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>sortColumns</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>handle the construction details using explicit comparison functions </p>
+
+</div>
+</div>
 <a class="anchor" id="a5c18687999de297c0aa18e6f7141f542"></a>
 <div class="memitem">
 <div class="memproto">
@@ -892,11 +1154,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return current DataDescriptionId. </p>
+<p>Return DataDescriptionId of the first element in this iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00453">453</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00535">535</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00392">curDataDescId_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1MSIter.html#a08dbd04b6ca07ec753913627099348f5">cacheCurrentDDInfo()</a>, <a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788">cacheExtraDDInfo()</a>, and <a class="el" href="MSIter_8h_source.html#l00453">curDataDescIdFirst_p</a>.</p>
 
 </div>
 </div>
@@ -921,11 +1183,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return the current FieldId. </p>
+<p>Return the FieldId of the first element in this iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00449">449</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00528">528</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00390">curField_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00445">curFieldIdFirst_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a023f5daf70006c44ca9495181dfb97bc">setFieldInfo()</a>.</p>
 
 </div>
 </div>
@@ -976,7 +1238,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
 </div><div class="memdoc">
 
-<p>Return frequency of first channel with reference frame as a <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a>. </p>
+<p>Return frequency of first channel of the first element in iteration with reference frame as a <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a>. </p>
 <p>The reference frame Epoch is that of the first row, reset it as needed for each row. The reference frame Position is the average of the antenna positions. </p>
 
 </div>
@@ -1005,9 +1267,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 <p>Return a cube containing pairs of coordinate offset for each receptor of each feed (values are in radians, coordinate system is fixed with antenna and is the same as used to define the BEAM_OFFSET parameter in the feed table). </p>
 <p>The cube axes are receptor, antenna, feed. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00469">469</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00555">555</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00419">beamOffsets_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00490">beamOffsets_p</a>, <a class="el" href="MSIter_8h_source.html#l00462">feedInfoCached_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo()</a>.</p>
 
 </div>
 </div>
@@ -1063,7 +1325,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 </div>
 </div>
-<a class="anchor" id="a1416d10d167bf2627f6397106f162a4e"></a>
+<a class="anchor" id="a0803415eb013cd2b065649f789a4d105"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1073,13 +1335,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::isSubSet </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>r1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>r2</em>&#160;</td>
         </tr>
         <tr>
@@ -1139,9 +1401,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return False if there is no more data. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00437">437</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00509">509</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">more_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">more_p</a>.</p>
 
 </div>
 </div>
@@ -1168,20 +1430,20 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return reference to the current MS. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00439">439</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00511">511</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00381">bms_p</a>, and <a class="el" href="MSIter_8h_source.html#l00388">curMS_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00431">bms_p</a>, and <a class="el" href="MSIter_8h_source.html#l00438">curMS_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="accdb46e99543ff24e184d77085bec44b"></a>
+<a class="anchor" id="a791de217855ccdbec61e572905a1e649"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">const <a class="el" href="namespacecasacore.html#aa5e78960516bef4822a438d3e84c9079">MS</a>&amp; casacore::MSIter::ms </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1189,7 +1451,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </div><div class="memdoc">
 
 <p>Get a reference to the nth ms in the list of ms associated with this iterator. </p>
-<p>If larger than the list of ms's current ms is returned So better check wth <a class="el" href="classcasacore_1_1MSIter.html#a4e37b50c41c925afca4fe2c111d2ab75" title="Get the number of actual ms&#39;s associated wth this iterator. ">numMS()</a> before making the call </p>
+<p>If larger than the list of ms's current ms is returned So better check wth <a class="el" href="classcasacore_1_1MSIter.html#a7993341dcd814c03a3310e27df39886a" title="Get the number of actual ms&#39;s associated wth this iterator. ">numMS()</a> before making the call </p>
 
 </div>
 </div>
@@ -1216,13 +1478,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return reference to the current <a class="el" href="classcasacore_1_1MSColumns.html" title="A class to provide easy access to MeasurementSet columns. ">MSColumns</a>. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00440">440</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00512">512</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00386">msc_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00440">msc_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a10ae9f227dd1fc5f50f05367d7680347"></a>
+<a class="anchor" id="a37c64cc7d662df280f56951fd4f1a102"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1230,7 +1492,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::msId </td>
+          <td class="memname">size_t casacore::MSIter::msId </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1245,9 +1507,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return the current MS Id (according to the order in which they appeared in the constructor) </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00446">446</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00518">518</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00388">curMS_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00438">curMS_p</a>.</p>
 
 </div>
 </div>
@@ -1272,11 +1534,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return True if ArrayId has changed since last iteration. </p>
+<p>Return True if ArrayId has changed since last iteration Note that if MS_ARRAY is not part of the sorting columns this will always be true. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00442">442</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00514">514</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">newArray_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">newArrayId_p</a>.</p>
 
 </div>
 </div>
@@ -1301,11 +1563,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return True if DataDescriptionId has changed since last iteration. </p>
+<p>Return True if DataDescriptionId has changed since last iteration Note that if MS_DATA_DESC_ID is not part of the sorting columns this will always be true. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00455">455</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00539">539</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">newDataDescId_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">newDataDescId_p</a>.</p>
 
 </div>
 </div>
@@ -1330,11 +1592,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return True if FieldId/Source has changed since last iteration. </p>
+<p>Return True if FieldId/Source has changed since last iteration Note that if MS_FIELD_ID is not part of the sorting columns this will always be true. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00443">443</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00515">515</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">newField_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">newFieldId_p</a>.</p>
 
 </div>
 </div>
@@ -1361,9 +1623,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return true if msId has changed since last iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00441">441</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00513">513</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">newMS_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">newMS_p</a>.</p>
 
 </div>
 </div>
@@ -1388,11 +1650,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return True if polarization has changed since last iteration. </p>
+<p>Return True if polarization has changed since last iteration Note that if MS_DATA_DESC_ID is not part of the sorting columns this will always be true. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00454">454</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00538">538</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">newPolarizationId_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">newPolarizationId_p</a>.</p>
 
 </div>
 </div>
@@ -1417,15 +1679,15 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return True if SpectralWindow has changed since last iteration. </p>
+<p>Return True if SpectralWindow has changed since last iteration Note that if MS_DATA_DESC_ID is not part of the sorting columns this will always be true. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00444">444</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00516">516</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00393">newSpectralWindow_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00457">newSpectralWindowId_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4e37b50c41c925afca4fe2c111d2ab75"></a>
+<a class="anchor" id="a7993341dcd814c03a3310e27df39886a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1433,7 +1695,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::numMS </td>
+          <td class="memname">size_t casacore::MSIter::numMS </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1448,9 +1710,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Get the number of actual ms's associated wth this iterator. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00447">447</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00519">519</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00385">nMS_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00438">nMS_p</a>.</p>
 
 </div>
 </div>
@@ -1614,11 +1876,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return current PolarizationId. </p>
+<p>Return PolarizationId of the first element in this iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00452">452</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00532">532</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00391">curPolarizationId_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1MSIter.html#a08dbd04b6ca07ec753913627099348f5">cacheCurrentDDInfo()</a>, <a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788">cacheExtraDDInfo()</a>, and <a class="el" href="MSIter_8h_source.html#l00453">curPolarizationIdFirst_p</a>.</p>
 
 </div>
 </div>
@@ -1643,11 +1905,12 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return frame for polarization (returns PolFrame enum) </p>
+<p>Return frame for polarization of the first element in this iteration. </p>
+<dl class="section return"><dt>Returns</dt><dd>PolFrame enum </dd></dl>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00456">456</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00540">540</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00426">polFrame_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1MSIter.html#a08dbd04b6ca07ec753913627099348f5">cacheCurrentDDInfo()</a>, <a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788">cacheExtraDDInfo()</a>, <a class="el" href="MSIter_8h_source.html#l00453">curPolarizationIdFirst_p</a>, and <a class="el" href="MSIter_8h_source.html#l00497">polFrame_p</a>.</p>
 
 </div>
 </div>
@@ -1675,9 +1938,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 <p>Return the receptor angle for feed 0 on each antenna. </p>
 <p>First axis is receptor number, 2nd axis is antennaId. TODO: <a class="el" href="classcasacore_1_1MSIter.html#aa3eb674aca4abd4e2df721a7741052e7" title="Return the receptor angles for all feeds and antennae First axis is a receptor number, 2nd axis is antennaId, 3rd axis is feedId. ">receptorAngles()</a> can be used instead of this method </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00463">463</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00549">549</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00409">receptorAnglesFeed0_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00462">feedInfoCached_p</a>, <a class="el" href="MSIter_8h_source.html#l00480">receptorAnglesFeed0_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo()</a>.</p>
 
 </div>
 </div>
@@ -1705,9 +1968,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 <p>Return the receptor angles for all feeds and antennae First axis is a receptor number, 2nd axis is antennaId, 3rd axis is feedId. </p>
 <p>Result of <a class="el" href="classcasacore_1_1MSIter.html#a1b7b3323a4afbe534e966f6580c8c31b" title="Return the receptor angle for feed 0 on each antenna. ">receptorAngle()</a> is just a reference to the first plane of the cube returned by this method </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00465">465</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00551">551</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00413">receptorAngles_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00462">feedInfoCached_p</a>, <a class="el" href="MSIter_8h_source.html#l00484">receptorAngles_p</a>, and <a class="el" href="classcasacore_1_1MSIter.html#a40cba542f492fdfebdb26b8b53bddf48">setFeedInfo()</a>.</p>
 
 </div>
 </div>
@@ -1752,30 +2015,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 </div>
 </div>
-<a class="anchor" id="adaa610bf378bda623bccb47a1fc82164"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void casacore::MSIter::setDataDescInfo </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a04ee160a2e5675c9039b18c9d516a136"></a>
+<a class="anchor" id="a40cba542f492fdfebdb26b8b53bddf48"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1786,7 +2026,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
           <td class="memname">void casacore::MSIter::setFeedInfo </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -1796,9 +2036,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00557">allBeamOffsetsZero()</a>, <a class="el" href="MSIter_8h_source.html#l00545">CJones()</a>, <a class="el" href="MSIter_8h_source.html#l00547">CJonesAll()</a>, <a class="el" href="MSIter_8h_source.html#l00555">getBeamOffsets()</a>, <a class="el" href="MSIter_8h_source.html#l00549">receptorAngle()</a>, and <a class="el" href="MSIter_8h_source.html#l00551">receptorAngles()</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="ae625299ba947d98d3e3df8f49fd3b7c8"></a>
+<a class="anchor" id="a023f5daf70006c44ca9495181dfb97bc"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1809,7 +2051,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
           <td class="memname">void casacore::MSIter::setFieldInfo </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -1818,6 +2060,8 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00528">fieldId()</a>.</p>
 
 </div>
 </div>
@@ -1924,11 +2168,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Return current SpectralWindow. </p>
+<p>Return SpectralWindow of the first element in this iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00450">450</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00529">529</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00390">curSpectralWindow_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1MSIter.html#a08dbd04b6ca07ec753913627099348f5">cacheCurrentDDInfo()</a>, <a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788">cacheExtraDDInfo()</a>, and <a class="el" href="MSIter_8h_source.html#l00453">curSpectralWindowIdFirst_p</a>.</p>
 
 </div>
 </div>
@@ -1955,9 +2199,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return the current <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> iteration. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00438">438</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00510">510</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00387">curTable_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00441">curTable_p</a>.</p>
 
 </div>
 </div>
@@ -1984,9 +2228,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Return the telescope position (if a known telescope) or the position of the first antenna (if unknown) </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00543">543</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>References <a class="el" href="MSIter_8h_source.html#l00431">telescopePosition_p</a>.</p>
+<p>References <a class="el" href="MSIter_8h_source.html#l00503">telescopePosition_p</a>.</p>
 
 </div>
 </div>
@@ -2004,7 +2248,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2012,9 +2256,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 <p>each element of the cube in radians) in the antenna coordinate system. </p>
 <p><a class="el" href="classcasacore_1_1Cube.html" title="A 3-D Specialization of the Array class. ">Cube</a> axes are: receptor, antenna, feed. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00423">423</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00494">494</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00471">allBeamOffsetsZero()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00557">allBeamOffsetsZero()</a>.</p>
 
 </div>
 </div>
@@ -2036,9 +2280,31 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00417">417</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00488">488</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00467">antennaMounts()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00553">antennaMounts()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a04c7c7f1702b2737f10c3806838e629b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::arrayInSort_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00436">436</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2055,7 +2321,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2063,9 +2329,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 <p>antenna (e.g. </p>
 <p>EQUATORIAL, ALT-AZ,...) </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00419">419</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00490">490</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00469">getBeamOffsets()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00555">getBeamOffsets()</a>.</p>
 
 </div>
 </div>
@@ -2087,13 +2353,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00381">381</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00431">431</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00439">ms()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00511">ms()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a9d1b3a0113029857b127aa2ce057959e"></a>
+<a class="anchor" id="a759f4f4058269c0f806b5d344ca37f7a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2101,17 +2367,17 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::checkFeed_p</td>
+          <td class="memname">bool casacore::MSIter::checkFeed_p</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00459">459</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2128,16 +2394,16 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>similar to receptorAngle_p </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00416">416</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00487">487</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00461">CJonesAll()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00547">CJonesAll()</a>.</p>
 
 </div>
 </div>
@@ -2154,14 +2420,14 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00414">414</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00485">485</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00459">CJones()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00545">CJones()</a>.</p>
 
 </div>
 </div>
@@ -2183,9 +2449,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>columns </p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00475">475</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00404">404</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00520">colArrayIds()</a>.</p>
 
 </div>
 </div>
@@ -2202,12 +2468,17 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00404">404</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>This column is mutable since it is only attached when it is neccesary to read the DD Ids. </p>
+<p>That might happen when calling a const accesor like <a class="el" href="classcasacore_1_1MSIter.html#a5c18687999de297c0aa18e6f7141f542" title="Return DataDescriptionId of the first element in this iteration. ">dataDescriptionId()</a>. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00474">474</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00524">colDataDescriptionIds()</a>.</p>
 
 </div>
 </div>
@@ -2224,16 +2495,18 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00404">404</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00474">474</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00522">colFieldIds()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae58a7e4ed6f2cf03b02a4f279e5a5a2f"></a>
+<a class="anchor" id="a984f85cb87901369f21fb2a524402ce5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2241,7 +2514,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curArray_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curArrayIdFirst_p</td>
         </tr>
       </table>
   </td>
@@ -2251,13 +2524,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00388">388</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00442">442</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00448">arrayId()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00527">arrayId()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad6da22acb68a6dc5db11322db6d7efef"></a>
+<a class="anchor" id="a9a9655323d672cdfd2e41f9e81d64cdc"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2265,7 +2538,80 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curDataDescId_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curDataDescIdFirst_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>These variables point to the current (as in this iteration) DD, SPW and polarization IDs. </p>
+<p>They are mutable since they are evaluated in a lazy way, i.e., only when needed. If the DDId is part of the sorting columns then it is always computed when calling next(), otherwise it is only computed when some accesor of metadata that depends on them is called by the application. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00453">453</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00524">colDataDescriptionIds()</a>, and <a class="el" href="MSIter_8h_source.html#l00535">dataDescriptionId()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1b9735603b3a3d88ecd5e8666c1ab417"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curFieldIdFirst_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00445">445</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00528">fieldId()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1dab7bfc53135a1b43858fa548d95207"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::MSIter::curFieldNameFirst_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00443">443</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af8b5fcafb028c666d390f404cf07ca34"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t casacore::MSIter::curMS_p</td>
         </tr>
       </table>
   </td>
@@ -2275,13 +2621,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00392">392</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00438">438</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00453">dataDescriptionId()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00511">ms()</a>, and <a class="el" href="MSIter_8h_source.html#l00518">msId()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a82e0f2a3fc2a68de8cca333a13dffb3f"></a>
+<a class="anchor" id="ad86cf6f2d98e743939f437dd42d148fa"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2289,7 +2635,31 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curField_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curPolarizationIdFirst_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00453">453</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00532">polarizationId()</a>, and <a class="el" href="MSIter_8h_source.html#l00540">polFrame()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a60daefd584c9905f0725651d6c7236c8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curSourceIdFirst_p</td>
         </tr>
       </table>
   </td>
@@ -2299,13 +2669,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00390">390</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
-
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00449">fieldId()</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00442">442</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a40ec18aeffacaee94309a2c745e15e61"></a>
+<a class="anchor" id="ae69ef72205eacd0940a0b32517195d06"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2313,7 +2681,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::MSIter::curFieldName_p</td>
+          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::MSIter::curSourceNameFirst_p</td>
         </tr>
       </table>
   </td>
@@ -2323,11 +2691,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00389">389</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00444">444</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a08a53e5411fbf03f41d5c987fe77c18e"></a>
+<a class="anchor" id="ac83cc3fd497c1a8cfda1a674d3d207e2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2335,111 +2703,19 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curMS_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curSpectralWindowIdFirst_p</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00388">388</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00453">453</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00439">ms()</a>, and <a class="el" href="MSIter_8h_source.html#l00446">msId()</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="afcf40a09c02c4d1445f132a4c278414f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curPolarizationId_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00391">391</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
-
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00452">polarizationId()</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a175c29d4d84d7dfa840144d8568a2496"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curSource_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00388">388</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a74023d0a24d80b30a3d69304129d8071"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1String.html">String</a> casacore::MSIter::curSourceName_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00389">389</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a4633bcba7f206bfb9d83cac1fc249c01"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::curSpectralWindow_p</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00390">390</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
-
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00450">spectralWindowId()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00529">spectralWindowId()</a>.</p>
 
 </div>
 </div>
@@ -2461,9 +2737,79 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00387">387</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00441">441</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00438">table()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00510">table()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6fd08c4dd3297184961296a7a0288408"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::ddInSort_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00436">436</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a69ddecd393c42e6017eb3cec86fe0f23"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool casacore::MSIter::feedInfoCached_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Variable to know whether the feed info is already computed. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00462">462</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00557">allBeamOffsetsZero()</a>, <a class="el" href="MSIter_8h_source.html#l00545">CJones()</a>, <a class="el" href="MSIter_8h_source.html#l00547">CJonesAll()</a>, <a class="el" href="MSIter_8h_source.html#l00555">getBeamOffsets()</a>, <a class="el" href="MSIter_8h_source.html#l00549">receptorAngle()</a>, and <a class="el" href="MSIter_8h_source.html#l00551">receptorAngles()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a10968f77565f70a26e045144f73afd84"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::fieldInSort_p</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00436">436</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2480,12 +2826,15 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00427">427</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>hence mutable. </p>
+<p>See <a class="el" href="classcasacore_1_1MSIter.html#a81ba00c01b41e04bb55730e79407c788" title="Store extra info related to the DD. ">cacheExtraDDInfo()</a> </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00499">499</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2507,7 +2856,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00429">429</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00501">501</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2524,12 +2873,12 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00428">428</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00500">500</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2553,11 +2902,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>time selection </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00401">401</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00469">469</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a582b93dd60472444870fabaa15de4098"></a>
+<a class="anchor" id="aa7e4fe7e84834e5337c4a15d7a3c22c8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2565,7 +2914,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastArray_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastArrayId_p</td>
         </tr>
       </table>
   </td>
@@ -2575,7 +2924,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00388">388</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00442">442</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2597,11 +2946,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00392">392</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>These variables point to the IDs of the previous iteration. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00456">456</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2ceb4368634f10ff30070222d2817767"></a>
+<a class="anchor" id="aab71c3fca01fcce10e8adec2b123a00e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2609,7 +2960,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastField_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastFieldId_p</td>
         </tr>
       </table>
   </td>
@@ -2619,11 +2970,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00390">390</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00446">446</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac67a471d7c51e0ba667a0affa88a7bcd"></a>
+<a class="anchor" id="a57502fc54e07863b9bb08683f58e6b32"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2631,7 +2982,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastMS_p</td>
+          <td class="memname">ssize_t casacore::MSIter::lastMS_p</td>
         </tr>
       </table>
   </td>
@@ -2641,7 +2992,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00388">388</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00439">439</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2663,11 +3014,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00391">391</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00456">456</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="accdfe5c1abf110f1cbd7d7c4e8db4747"></a>
+<a class="anchor" id="a73a3321c163a142323338a2a3f7e34fd"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2675,7 +3026,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastSpectralWindow_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::lastSpectralWindowId_p</td>
         </tr>
       </table>
   </td>
@@ -2685,7 +3036,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00390">390</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00456">456</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2707,9 +3058,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00437">more()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00509">more()</a>.</p>
 
 </div>
 </div>
@@ -2731,13 +3082,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00386">386</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00440">440</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00440">msColumns()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00512">msColumns()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a46f12cced56ddfb5ec31da2d1c4e6ed6"></a>
+<a class="anchor" id="a55c5300406a5e6103a2bf391922a0f62"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2745,7 +3096,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::newArray_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::newArrayId_p</td>
         </tr>
       </table>
   </td>
@@ -2755,9 +3106,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00442">newArray()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00514">newArray()</a>.</p>
 
 </div>
 </div>
@@ -2779,13 +3130,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00455">newDataDescriptionId()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00539">newDataDescriptionId()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4b8e7f6d8a4c02e4943e878a62890b67"></a>
+<a class="anchor" id="a379400c58d5202dbc3c8d2686cd2b888"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2793,7 +3144,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::newField_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::newFieldId_p</td>
         </tr>
       </table>
   </td>
@@ -2803,9 +3154,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00443">newField()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00515">newField()</a>.</p>
 
 </div>
 </div>
@@ -2827,9 +3178,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00441">newMS()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00513">newMS()</a>.</p>
 
 </div>
 </div>
@@ -2851,13 +3202,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00454">newPolarizationId()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00538">newPolarizationId()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac7a0c4ea473f2f3a9a606337c9466c72"></a>
+<a class="anchor" id="a2eb705507afbf1c1e07706370cf7d4ff"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2865,7 +3216,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::newSpectralWindow_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::newSpectralWindowId_p</td>
         </tr>
       </table>
   </td>
@@ -2875,13 +3226,13 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00457">457</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00444">newSpectralWindow()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00516">newSpectralWindow()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a848afe87b95c83c17be7301d53ca39ef"></a>
+<a class="anchor" id="a5dbdb13d30e03235cd78b37fcbdff00c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2889,7 +3240,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSIter::nMS_p</td>
+          <td class="memname">size_t casacore::MSIter::nMS_p</td>
         </tr>
       </table>
   </td>
@@ -2899,9 +3250,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00385">385</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00438">438</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00447">numMS()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00519">numMS()</a>.</p>
 
 </div>
 </div>
@@ -2918,12 +3269,12 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00406">406</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00477">477</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2940,16 +3291,16 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>are zero (to speed things up in a single beam case) </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00426">426</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00497">497</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00456">polFrame()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00540">polFrame()</a>.</p>
 
 </div>
 </div>
@@ -2966,12 +3317,12 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00407">407</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00478">478</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -2988,16 +3339,16 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>temporary retained for compatibility contain actually a reference to the first plane of receptorAngles_p </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00413">413</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00484">484</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00465">receptorAngles()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00551">receptorAngles()</a>.</p>
 
 </div>
 </div>
@@ -3014,16 +3365,16 @@ multiple observatories in a single MS are not handled correctly (need to sort on
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>cache for access functions </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00409">409</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00480">480</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00463">receptorAngle()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00549">receptorAngle()</a>.</p>
 
 </div>
 </div>
@@ -3045,11 +3396,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00430">430</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00502">502</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a5d416d2365607a10ed48b696b7311311"></a>
+<a class="anchor" id="a824c66a9ae6aa3bf2604beb0eebd73ab"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -3057,17 +3408,17 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::spwDepFeed_p</td>
+          <td class="memname">bool casacore::MSIter::spwDepFeed_p</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">mutable</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00459">459</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -3091,7 +3442,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 
 <p>Globally control disk storage of SORTED_TABLE. </p>
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00398">398</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00466">466</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -3113,7 +3464,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00382">382</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00432">432</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -3135,7 +3486,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00383">383</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00433">433</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -3157,9 +3508,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00431">431</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00503">503</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00457">telescopePosition()</a>.</p>
+<p>Referenced by <a class="el" href="MSIter_8h_source.html#l00543">telescopePosition()</a>.</p>
 
 </div>
 </div>
@@ -3181,7 +3532,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00380">380</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00430">430</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
@@ -3203,11 +3554,11 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00433">433</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00505">505</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a80f0dfee6c1d0b68d127fc2a28c10d3f"></a>
+<a class="anchor" id="a8a8c0c6e70dacd56577753ccdb67c65f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -3215,7 +3566,7 @@ multiple observatories in a single MS are not handled correctly (need to sort on
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::timeDepFeed_p</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSIter::timeInSort_p</td>
         </tr>
       </table>
   </td>
@@ -3225,7 +3576,9 @@ multiple observatories in a single MS are not handled correctly (need to sort on
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00393">393</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
+<p>This booleans determine if given columns are part of the sorting. </p>
+
+<p>Definition at line <a class="el" href="MSIter_8h_source.html#l00436">436</a> of file <a class="el" href="MSIter_8h_source.html">MSIter.h</a>.</p>
 
 </div>
 </div>

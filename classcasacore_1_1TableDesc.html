@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -402,13 +403,13 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <div class="line">td.addColumn (ScalarColumnDesc&lt;float&gt;(<span class="stringliteral">&quot;time&quot;</span>));</div>
 <div class="line">td.addColumn (ScalarColumnDesc&lt;float&gt;(<span class="stringliteral">&quot;baseline&quot;</span>));</div>
 <div class="line">td.defineHypercolumn (<span class="stringliteral">&quot;dataCube&quot;</span>, 4,</div>
-<div class="line">stringToVector (<span class="stringliteral">&quot;data&quot;</span>),</div>
-<div class="line">stringToVector (<span class="stringliteral">&quot;pol,freq,time,baseline&quot;</span>));</div>
+<div class="line"><a class="code" href="ArrayIO_8h.html#a8fc155a8dfaabbc7e2ef6f67775a70aa">stringToVector</a> (<span class="stringliteral">&quot;data&quot;</span>),</div>
+<div class="line"><a class="code" href="ArrayIO_8h.html#a8fc155a8dfaabbc7e2ef6f67775a70aa">stringToVector</a> (<span class="stringliteral">&quot;pol,freq,time,baseline&quot;</span>));</div>
 <div class="line">}</div>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>A table description specifies the structure, but not the contents, of a Casacore table. Since many tables will have identical structure and different content, it makes good sense to separate structure ("description") from content. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00187">187</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00188">188</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a70d5536aba94ee3dbf7d86ce4114c001"></a>
 <div class="memitem">
@@ -434,7 +435,7 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00192">192</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00193">193</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
 </div>
 </div>
@@ -766,9 +767,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </div><!-- fragment --><p> On the other hand this function can also be used to add a column description from another table as in: </p>
 <div class="fragment"><div class="line">tableDesc.addColumn (otherTableDesc.columnDesc(<span class="stringliteral">&quot;NAME&quot;</span>));</div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00568">568</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00569">569</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1ColumnDescSet.html#afda23e5fa61b5cddcb6a7a5dc596307e">casacore::ColumnDescSet::addColumn()</a>, and <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1ColumnDescSet.html#afda23e5fa61b5cddcb6a7a5dc596307e">casacore::ColumnDescSet::addColumn()</a>, and <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -807,9 +808,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>Add a column to the table description and give it another name. </p>
 <p>This may be useful to use a description of another column. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00571">571</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00572">572</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1ColumnDescSet.html#afda23e5fa61b5cddcb6a7a5dc596307e">casacore::ColumnDescSet::addColumn()</a>, and <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1ColumnDescSet.html#afda23e5fa61b5cddcb6a7a5dc596307e">casacore::ColumnDescSet::addColumn()</a>, and <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -852,8 +853,6 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>Adjust the hypercolumn definitions (for a <a class="el" href="classcasacore_1_1RefTable.html" title="Class for a table as a view of another table. ">RefTable</a>). </p>
 <p>It removes and/or renames columns as necessary. Column names which are not part of the map are removed if <code>keepUnknown==False</code>. If all data columns of a hypercolumn are removed, the entire hypercolumn is removed. </p>
 
-<p>Referenced by <a class="el" href="SetupNewTab_8h_source.html#l00391">casacore::SetupNewTable::adjustHypercolumns()</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a257549b61fc50ed97001152c099156bc"></a>
@@ -879,9 +878,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Check recursively if the descriptions of all subtables are known. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00586">586</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00587">587</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1ColumnDescSet.html#a2f99b266bfc7f279b6798451330c2ae7">casacore::ColumnDescSet::checkSubTableDesc()</a>, and <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1ColumnDescSet.html#a2f99b266bfc7f279b6798451330c2ae7">casacore::ColumnDescSet::checkSubTableDesc()</a>, and <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -910,9 +909,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>Get the column description by name or by index. </p>
 <p>An exception is thrown if the column does not exist. <a class="el" href="classcasacore_1_1Function.html" title="Numerical functional interface class. ">Function</a> isColumn should be used to test if a column exists. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00533">533</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00534">534</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -938,9 +937,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00537">537</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00538">538</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -968,9 +967,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>Get access to the set of column descriptions. </p>
 <p>In this way const <a class="el" href="classcasacore_1_1ColumnDescSet.html">ColumnDescSet</a> functions (e.g. isDisjoint) can be used. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00564">564</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00565">565</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -1014,9 +1013,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Get comment string. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00580">580</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00581">581</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00486">comm_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00487">comm_p</a>.</p>
 
 </div>
 </div>
@@ -1043,9 +1042,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Get comment string (allowing it to be changed). </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00583">583</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00584">584</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00486">comm_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00487">comm_p</a>.</p>
 
 </div>
 </div>
@@ -1148,8 +1147,8 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>For example:<br/>
  A table contains data matrices with axes pol and freq. Those axes are defined in columns pol and freq containing vectors with the same length as the corresponding axis. The table also contains scalar columns time and baseline, which superimpose dimensions upon the data. So the data will be stored in a 4-d hypercube with axes pol,freq,time,baseline. It would be defined as follows: </p>
 <div class="fragment"><div class="line">tableDesc.defineHypercolumn (<span class="stringliteral">&quot;dataCube&quot;</span>, 4,</div>
-<div class="line">stringToVector (<span class="stringliteral">&quot;data&quot;</span>),</div>
-<div class="line">stringToVector (<span class="stringliteral">&quot;pol,freq,time,baseline&quot;</span>));</div>
+<div class="line"><a class="code" href="ArrayIO_8h.html#a8fc155a8dfaabbc7e2ef6f67775a70aa">stringToVector</a> (<span class="stringliteral">&quot;data&quot;</span>),</div>
+<div class="line"><a class="code" href="ArrayIO_8h.html#a8fc155a8dfaabbc7e2ef6f67775a70aa">stringToVector</a> (<span class="stringliteral">&quot;pol,freq,time,baseline&quot;</span>));</div>
 </div><!-- fragment --><p> Note that the function <a class="el" href="structcasacore_1_1ArrayUtil__global__functions__stringToVector.html#ArrayUtil_stringToVector">stringToVector</a> is very convenient for creating a vector of Strings. <a class="anchor" id="TableDesc_defineHypercolumn"></a> </p>
 
 </div>
@@ -1288,9 +1287,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>Get the table type (i.e. </p>
 <p>name of table description). </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00548">548</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00549">549</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00483">name_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00484">name_p</a>.</p>
 
 </div>
 </div>
@@ -1402,9 +1401,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Test if a column with this name exists. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00529">529</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00530">530</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>, and <a class="el" href="ColDescSet_8h_source.html#l00114">casacore::ColumnDescSet::isDefined()</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>, and <a class="el" href="ColDescSet_8h_source.html#l00114">casacore::ColumnDescSet::isDefined()</a>.</p>
 
 </div>
 </div>
@@ -1474,9 +1473,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00558">558</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00559">559</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00489">key_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00490">key_p</a>.</p>
 
 </div>
 </div>
@@ -1503,9 +1502,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Get number of columns. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00525">525</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00526">526</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>, and <a class="el" href="ColDescSet_8h_source.html#l00110">casacore::ColumnDescSet::ncolumn()</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>, and <a class="el" href="ColDescSet_8h_source.html#l00110">casacore::ColumnDescSet::ncolumn()</a>.</p>
 
 </div>
 </div>
@@ -1558,9 +1557,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00535">535</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00536">536</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -1586,9 +1585,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00539">539</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00540">540</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -1615,9 +1614,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Get readonly access to the private set of keywords. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00560">560</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00561">561</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00490">privKey_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00491">privKey_p</a>.</p>
 
 </div>
 </div>
@@ -1675,9 +1674,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 <p>Remove a column. </p>
 <p>An exception is thrown if the column does not exist. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00576">576</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00577">577</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>, and <a class="el" href="classcasacore_1_1ColumnDescSet.html#ab6abde768703eb586078133921266481">casacore::ColumnDescSet::remove()</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>, and <a class="el" href="classcasacore_1_1ColumnDescSet.html#ab6abde768703eb586078133921266481">casacore::ColumnDescSet::remove()</a>.</p>
 
 </div>
 </div>
@@ -1797,9 +1796,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00541">541</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00542">542</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -1825,9 +1824,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00543">543</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00544">544</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00491">col_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00492">col_p</a>.</p>
 
 </div>
 </div>
@@ -1854,9 +1853,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Get access to the keyword set. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00556">556</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00557">557</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00489">key_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00490">key_p</a>.</p>
 
 </div>
 </div>
@@ -1954,9 +1953,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 
 <p>Get the table description version. </p>
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00552">552</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00553">553</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>References <a class="el" href="TableDesc_8h_source.html#l00484">vers_p</a>.</p>
+<p>References <a class="el" href="TableDesc_8h_source.html#l00485">vers_p</a>.</p>
 
 </div>
 </div>
@@ -1979,9 +1978,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00491">491</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00492">492</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00568">addColumn()</a>, <a class="el" href="TableDesc_8h_source.html#l00586">checkSubTableDesc()</a>, <a class="el" href="TableDesc_8h_source.html#l00533">columnDesc()</a>, <a class="el" href="TableDesc_8h_source.html#l00564">columnDescSet()</a>, <a class="el" href="TableDesc_8h_source.html#l00529">isColumn()</a>, <a class="el" href="TableDesc_8h_source.html#l00525">ncolumn()</a>, <a class="el" href="TableDesc_8h_source.html#l00535">operator[]()</a>, <a class="el" href="TableDesc_8h_source.html#l00576">removeColumn()</a>, and <a class="el" href="TableDesc_8h_source.html#l00541">rwColumnDesc()</a>.</p>
+<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00569">addColumn()</a>, <a class="el" href="TableDesc_8h_source.html#l00587">checkSubTableDesc()</a>, <a class="el" href="TableDesc_8h_source.html#l00534">columnDesc()</a>, <a class="el" href="TableDesc_8h_source.html#l00565">columnDescSet()</a>, <a class="el" href="TableDesc_8h_source.html#l00530">isColumn()</a>, <a class="el" href="TableDesc_8h_source.html#l00526">ncolumn()</a>, <a class="el" href="TableDesc_8h_source.html#l00536">operator[]()</a>, <a class="el" href="TableDesc_8h_source.html#l00577">removeColumn()</a>, and <a class="el" href="TableDesc_8h_source.html#l00542">rwColumnDesc()</a>.</p>
 
 </div>
 </div>
@@ -2003,9 +2002,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00486">486</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00487">487</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00580">comment()</a>.</p>
+<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00581">comment()</a>.</p>
 
 </div>
 </div>
@@ -2027,7 +2026,7 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00485">485</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00486">486</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2049,7 +2048,7 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00494">494</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00495">495</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2071,9 +2070,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00489">489</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00490">490</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00558">keywordSet()</a>, and <a class="el" href="TableDesc_8h_source.html#l00556">rwKeywordSet()</a>.</p>
+<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00559">keywordSet()</a>, and <a class="el" href="TableDesc_8h_source.html#l00557">rwKeywordSet()</a>.</p>
 
 </div>
 </div>
@@ -2095,9 +2094,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00483">483</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00484">484</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00548">getType()</a>.</p>
+<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00549">getType()</a>.</p>
 
 </div>
 </div>
@@ -2119,7 +2118,7 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00493">493</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00494">494</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2141,9 +2140,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00490">490</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00491">491</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00560">privateKeywordSet()</a>.</p>
+<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00561">privateKeywordSet()</a>.</p>
 
 </div>
 </div>
@@ -2165,7 +2164,7 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00492">492</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00493">493</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
 </div>
 </div>
@@ -2187,9 +2186,9 @@ Delete Delete the table description file. This gets done by the destructor. </li
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00484">484</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
+<p>Definition at line <a class="el" href="TableDesc_8h_source.html#l00485">485</a> of file <a class="el" href="TableDesc_8h_source.html">TableDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00552">version()</a>.</p>
+<p>Referenced by <a class="el" href="TableDesc_8h_source.html#l00553">version()</a>.</p>
 
 </div>
 </div>

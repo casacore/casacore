@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -229,21 +230,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad5c03980c9a7fd1020cab4e81f83ba2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d371fb3a0abcf835edb1d7b97dd50e0"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ScalarColumn.html">ScalarColumn</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a6d371fb3a0abcf835edb1d7b97dd50e0">receiverId</a> () const </td></tr>
 <tr class="separator:a6d371fb3a0abcf835edb1d7b97dd50e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74ba55112ba4faf8517fc3e3a6a46bd9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a74ba55112ba4faf8517fc3e3a6a46bd9">nrow</a> () const </td></tr>
-<tr class="memdesc:a74ba55112ba4faf8517fc3e3a6a46bd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that returns the number of rows in any of the columns.  <a href="#a74ba55112ba4faf8517fc3e3a6a46bd9">More...</a><br/></td></tr>
-<tr class="separator:a74ba55112ba4faf8517fc3e3a6a46bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6b9b423ec7a2d81ffd9c046d34c3131"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#ab6b9b423ec7a2d81ffd9c046d34c3131">matchSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> tryRow=-1) const </td></tr>
-<tr class="memdesc:ab6b9b423ec7a2d81ffd9c046d34c3131"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the last row that contains a spectral window that has the specified reference frequency, number of channels, total-bandwidth and IF conversion chain.  <a href="#ab6b9b423ec7a2d81ffd9c046d34c3131">More...</a><br/></td></tr>
-<tr class="separator:ab6b9b423ec7a2d81ffd9c046d34c3131"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86603dc8ff23a9274744a6c08bfa2e48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a86603dc8ff23a9274744a6c08bfa2e48">matchSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;chanFreq1, const <a class="el" href="classcasacore_1_1MeasFrame.html">MeasFrame</a> &amp;measFrm, const <a class="el" href="classcasacore_1_1MSDopplerColumns.html">MSDopplerColumns</a> &amp;msdopc, const <a class="el" href="classcasacore_1_1MSSourceColumns.html">MSSourceColumns</a> &amp;mssrcc, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> tryRow=-1) const </td></tr>
-<tr class="memdesc:a86603dc8ff23a9274744a6c08bfa2e48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similar to above, but also pass in the frame info.  <a href="#a86603dc8ff23a9274744a6c08bfa2e48">More...</a><br/></td></tr>
-<tr class="separator:a86603dc8ff23a9274744a6c08bfa2e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6069a518405081f9898af3854d961683"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a6069a518405081f9898af3854d961683">allMatchedSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance) const </td></tr>
-<tr class="memdesc:a6069a518405081f9898af3854d961683"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is to check that the channels are matched individually and also if the spw is matched in reverse;.  <a href="#a6069a518405081f9898af3854d961683">More...</a><br/></td></tr>
-<tr class="separator:a6069a518405081f9898af3854d961683"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00c273fb0de45518bc792519f50ee91c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a00c273fb0de45518bc792519f50ee91c">matchSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance, <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;otherFreqs, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reversed) const </td></tr>
-<tr class="memdesc:a00c273fb0de45518bc792519f50ee91c"><td class="mdescLeft">&#160;</td><td class="mdescRight">This version does a channel to channel match too and also return the reversed if it matches but the channels are in inverse order like an upper or lower side band having same characteristics.  <a href="#a00c273fb0de45518bc792519f50ee91c">More...</a><br/></td></tr>
-<tr class="separator:a00c273fb0de45518bc792519f50ee91c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24beb3853e84f81a56ad05e9c2cc6ab9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a24beb3853e84f81a56ad05e9c2cc6ab9">nrow</a> () const </td></tr>
+<tr class="memdesc:a24beb3853e84f81a56ad05e9c2cc6ab9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that returns the number of rows in any of the columns.  <a href="#a24beb3853e84f81a56ad05e9c2cc6ab9">More...</a><br/></td></tr>
+<tr class="separator:a24beb3853e84f81a56ad05e9c2cc6ab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb19bcd3973661223daee0b0b56ea501"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#abb19bcd3973661223daee0b0b56ea501">matchSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> tryRow=-1) const </td></tr>
+<tr class="memdesc:abb19bcd3973661223daee0b0b56ea501"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the last row that contains a spectral window that has the specified reference frequency, number of channels, total-bandwidth and IF conversion chain.  <a href="#abb19bcd3973661223daee0b0b56ea501">More...</a><br/></td></tr>
+<tr class="separator:abb19bcd3973661223daee0b0b56ea501"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7dcab17b052f1d5e8e5953d977d9263"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#ad7dcab17b052f1d5e8e5953d977d9263">matchSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;chanFreq1, const <a class="el" href="classcasacore_1_1MeasFrame.html">MeasFrame</a> &amp;measFrm, const <a class="el" href="classcasacore_1_1MSDopplerColumns.html">MSDopplerColumns</a> &amp;msdopc, const <a class="el" href="classcasacore_1_1MSSourceColumns.html">MSSourceColumns</a> &amp;mssrcc, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> tryRow=-1) const </td></tr>
+<tr class="memdesc:ad7dcab17b052f1d5e8e5953d977d9263"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similar to above, but also pass in the frame info.  <a href="#ad7dcab17b052f1d5e8e5953d977d9263">More...</a><br/></td></tr>
+<tr class="separator:ad7dcab17b052f1d5e8e5953d977d9263"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8baa0d05a7f3e195f3e277c93cbf984"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1RowNumbers.html">RowNumbers</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#ae8baa0d05a7f3e195f3e277c93cbf984">allMatchedSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance) const </td></tr>
+<tr class="memdesc:ae8baa0d05a7f3e195f3e277c93cbf984"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is to check that the channels are matched individually and also if the spw is matched in reverse;.  <a href="#ae8baa0d05a7f3e195f3e277c93cbf984">More...</a><br/></td></tr>
+<tr class="separator:ae8baa0d05a7f3e195f3e277c93cbf984"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a264bc09a9be2421315e03aba3df2f859"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a264bc09a9be2421315e03aba3df2f859">matchSpw</a> (const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nChan, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;bandwidth, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain, const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;tolerance, <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;otherFreqs, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reversed) const </td></tr>
+<tr class="memdesc:a264bc09a9be2421315e03aba3df2f859"><td class="mdescLeft">&#160;</td><td class="mdescRight">This version does a channel to channel match too and also return the reversed if it matches but the channels are in inverse order like an upper or lower side band having same characteristics.  <a href="#a264bc09a9be2421315e03aba3df2f859">More...</a><br/></td></tr>
+<tr class="separator:a264bc09a9be2421315e03aba3df2f859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -260,18 +261,18 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:ad6cbae51c26bbf850d9b75d71e0bbba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ed37e18e49048c05107164c6c28c31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a14ed37e18e49048c05107164c6c28c31">attachOptionalCols</a> (const <a class="el" href="classcasacore_1_1MSSpectralWindow.html">MSSpectralWindow</a> &amp;msSpWindow)</td></tr>
 <tr class="separator:a14ed37e18e49048c05107164c6c28c31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9c895d351b22e7e9fa1d39089341aa6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#ab9c895d351b22e7e9fa1d39089341aa6">matchRefFrequency</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> row, <a class="el" href="classcasacore_1_1MFrequency.html#a5033de7b159a385150bc49326e926164">MFrequency::Types</a> refType, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreqInHz, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
-<tr class="separator:ab9c895d351b22e7e9fa1d39089341aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad193594caacf28bfac6cf7b05e609e2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#ad193594caacf28bfac6cf7b05e609e2a">matchRefFreqCnvtrd</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> row, <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> refOrChanFreq, const <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> isRefFreq, const <a class="el" href="classcasacore_1_1MeasFrame.html">MeasFrame</a> &amp;measFrm, const <a class="el" href="classcasacore_1_1MSDopplerColumns.html">MSDopplerColumns</a> &amp;msdopc, const <a class="el" href="classcasacore_1_1MSSourceColumns.html">MSSourceColumns</a> &amp;mssrcc, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
-<tr class="separator:ad193594caacf28bfac6cf7b05e609e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3891941d11faf5f93f0868d0c513ef94"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a3891941d11faf5f93f0868d0c513ef94">matchChanFreq</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> row, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;chanFreqInHz, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
-<tr class="separator:a3891941d11faf5f93f0868d0c513ef94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad59dfcce420e60371305d4b6c05421b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#ad59dfcce420e60371305d4b6c05421b6">matchIfConvChain</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> row, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain) const </td></tr>
-<tr class="separator:ad59dfcce420e60371305d4b6c05421b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbedbee324d6e7bedbe9fb15fdef3811"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#afbedbee324d6e7bedbe9fb15fdef3811">matchTotalBandwidth</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> row, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> bandwidthInHz, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
-<tr class="separator:afbedbee324d6e7bedbe9fb15fdef3811"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfe453eac6301e2aa28bf104fa612522"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#acfe453eac6301e2aa28bf104fa612522">matchNumChan</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> row, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nChan) const </td></tr>
-<tr class="separator:acfe453eac6301e2aa28bf104fa612522"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38d015a212449e0c312a3d1c122e2d73"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a38d015a212449e0c312a3d1c122e2d73">matchRefFrequency</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, <a class="el" href="classcasacore_1_1MFrequency.html#a5033de7b159a385150bc49326e926164">MFrequency::Types</a> refType, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreqInHz, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
+<tr class="separator:a38d015a212449e0c312a3d1c122e2d73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b4878a634b79a57256aa7cc8c6d99d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a1b4878a634b79a57256aa7cc8c6d99d2">matchRefFreqCnvtrd</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> refOrChanFreq, const <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> isRefFreq, const <a class="el" href="classcasacore_1_1MeasFrame.html">MeasFrame</a> &amp;measFrm, const <a class="el" href="classcasacore_1_1MSDopplerColumns.html">MSDopplerColumns</a> &amp;msdopc, const <a class="el" href="classcasacore_1_1MSSourceColumns.html">MSSourceColumns</a> &amp;mssrcc, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
+<tr class="separator:a1b4878a634b79a57256aa7cc8c6d99d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f80a1382b5c03f4c4eac354f365cd30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a8f80a1382b5c03f4c4eac354f365cd30">matchChanFreq</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &amp;chanFreqInHz, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
+<tr class="separator:a8f80a1382b5c03f4c4eac354f365cd30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d503b2bc69c57cf877d2f66c2234f58"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a5d503b2bc69c57cf877d2f66c2234f58">matchIfConvChain</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> ifChain) const </td></tr>
+<tr class="separator:a5d503b2bc69c57cf877d2f66c2234f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd0eec617415947f9b1eb434b93d7fa3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#afd0eec617415947f9b1eb434b93d7fa3">matchTotalBandwidth</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> bandwidthInHz, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tolInHz) const </td></tr>
+<tr class="separator:afd0eec617415947f9b1eb434b93d7fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a005fa2bad810c482d65835e4fdc99270"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSSpWindowColumns.html#a005fa2bad810c482d65835e4fdc99270">matchNumChan</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nChan) const </td></tr>
+<tr class="separator:a005fa2bad810c482d65835e4fdc99270"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -445,12 +446,12 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a6069a518405081f9898af3854d961683"></a>
+<a class="anchor" id="ae8baa0d05a7f3e195f3e277c93cbf984"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&gt; casacore::MSSpWindowColumns::allMatchedSpw </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1RowNumbers.html">RowNumbers</a> casacore::MSSpWindowColumns::allMatchedSpw </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;&#160;</td>
           <td class="paramname"><em>refFreq</em>, </td>
@@ -517,7 +518,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00120">120</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00261">assocNature_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00264">assocNature_p</a>.</p>
 
 </div>
 </div>
@@ -546,7 +547,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00165">165</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00261">assocNature_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00264">assocNature_p</a>.</p>
 
 </div>
 </div>
@@ -573,7 +574,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00121">121</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00262">assocSpwId_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00265">assocSpwId_p</a>.</p>
 
 </div>
 </div>
@@ -600,7 +601,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00166">166</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00262">assocSpwId_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00265">assocSpwId_p</a>.</p>
 
 </div>
 </div>
@@ -675,7 +676,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00122">122</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00263">bbcNo_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00266">bbcNo_p</a>.</p>
 
 </div>
 </div>
@@ -702,7 +703,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00167">167</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00263">bbcNo_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00266">bbcNo_p</a>.</p>
 
 </div>
 </div>
@@ -729,7 +730,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00123">123</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00264">bbcSideband_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00267">bbcSideband_p</a>.</p>
 
 </div>
 </div>
@@ -756,7 +757,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00168">168</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00264">bbcSideband_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00267">bbcSideband_p</a>.</p>
 
 </div>
 </div>
@@ -785,7 +786,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00093">93</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00246">chanFreq_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">chanFreq_p</a>.</p>
 
 </div>
 </div>
@@ -814,7 +815,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00130">130</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00246">chanFreq_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">chanFreq_p</a>.</p>
 
 </div>
 </div>
@@ -841,7 +842,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00094">94</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00269">chanFreqMeas_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00272">chanFreqMeas_p</a>.</p>
 
 </div>
 </div>
@@ -868,7 +869,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00133">133</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00269">chanFreqMeas_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00272">chanFreqMeas_p</a>.</p>
 
 </div>
 </div>
@@ -895,7 +896,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00095">95</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00273">chanFreqQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00276">chanFreqQuant_p</a>.</p>
 
 </div>
 </div>
@@ -922,7 +923,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00131">131</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00273">chanFreqQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00276">chanFreqQuant_p</a>.</p>
 
 </div>
 </div>
@@ -949,7 +950,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00096">96</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00247">chanWidth_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00250">chanWidth_p</a>.</p>
 
 </div>
 </div>
@@ -976,7 +977,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00135">135</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00247">chanWidth_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00250">chanWidth_p</a>.</p>
 
 </div>
 </div>
@@ -1003,7 +1004,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00097">97</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00274">chanWidthQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00277">chanWidthQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1030,7 +1031,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00136">136</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00274">chanWidthQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00277">chanWidthQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1057,7 +1058,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00124">124</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00265">dopplerId_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00268">dopplerId_p</a>.</p>
 
 </div>
 </div>
@@ -1084,7 +1085,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00169">169</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00265">dopplerId_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00268">dopplerId_p</a>.</p>
 
 </div>
 </div>
@@ -1111,7 +1112,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00098">98</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00248">effectiveBW_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00251">effectiveBW_p</a>.</p>
 
 </div>
 </div>
@@ -1138,7 +1139,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00138">138</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00248">effectiveBW_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00251">effectiveBW_p</a>.</p>
 
 </div>
 </div>
@@ -1165,7 +1166,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00099">99</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00275">effectiveBWQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00278">effectiveBWQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1192,7 +1193,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00139">139</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00275">effectiveBWQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00278">effectiveBWQuant_p</a>.</p>
 
 </div>
 </div>
@@ -1219,7 +1220,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00100">100</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">flagRow_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00252">flagRow_p</a>.</p>
 
 </div>
 </div>
@@ -1246,7 +1247,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00144">144</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">flagRow_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00252">flagRow_p</a>.</p>
 
 </div>
 </div>
@@ -1273,7 +1274,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00101">101</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00250">freqGroup_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00253">freqGroup_p</a>.</p>
 
 </div>
 </div>
@@ -1300,7 +1301,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00141">141</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00250">freqGroup_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00253">freqGroup_p</a>.</p>
 
 </div>
 </div>
@@ -1327,7 +1328,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00102">102</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00251">freqGroupName_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00254">freqGroupName_p</a>.</p>
 
 </div>
 </div>
@@ -1354,7 +1355,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00142">142</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00251">freqGroupName_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00254">freqGroupName_p</a>.</p>
 
 </div>
 </div>
@@ -1381,7 +1382,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00103">103</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00252">ifConvChain_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00255">ifConvChain_p</a>.</p>
 
 </div>
 </div>
@@ -1408,11 +1409,11 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00143">143</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00252">ifConvChain_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00255">ifConvChain_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3891941d11faf5f93f0868d0c513ef94"></a>
+<a class="anchor" id="a8f80a1382b5c03f4c4eac354f365cd30"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1422,7 +1423,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSSpWindowColumns::matchChanFreq </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>row</em>, </td>
         </tr>
         <tr>
@@ -1452,7 +1453,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ad59dfcce420e60371305d4b6c05421b6"></a>
+<a class="anchor" id="a5d503b2bc69c57cf877d2f66c2234f58"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1462,7 +1463,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSSpWindowColumns::matchIfConvChain </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>row</em>, </td>
         </tr>
         <tr>
@@ -1486,7 +1487,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="acfe453eac6301e2aa28bf104fa612522"></a>
+<a class="anchor" id="a005fa2bad810c482d65835e4fdc99270"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1496,7 +1497,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSSpWindowColumns::matchNumChan </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>row</em>, </td>
         </tr>
         <tr>
@@ -1520,7 +1521,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ad193594caacf28bfac6cf7b05e609e2a"></a>
+<a class="anchor" id="a1b4878a634b79a57256aa7cc8c6d99d2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1530,7 +1531,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSSpWindowColumns::matchRefFreqCnvtrd </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>row</em>, </td>
         </tr>
         <tr>
@@ -1584,7 +1585,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab9c895d351b22e7e9fa1d39089341aa6"></a>
+<a class="anchor" id="a38d015a212449e0c312a3d1c122e2d73"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1594,7 +1595,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSSpWindowColumns::matchRefFrequency </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>row</em>, </td>
         </tr>
         <tr>
@@ -1630,12 +1631,12 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab6b9b423ec7a2d81ffd9c046d34c3131"></a>
+<a class="anchor" id="abb19bcd3973661223daee0b0b56ea501"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSSpWindowColumns::matchSpw </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> casacore::MSSpWindowColumns::matchSpw </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;&#160;</td>
           <td class="paramname"><em>refFreq</em>, </td>
@@ -1667,7 +1668,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td>
           <td class="paramname"><em>tryRow</em> = <code>-1</code>&#160;</td>
         </tr>
         <tr>
@@ -1683,12 +1684,12 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a86603dc8ff23a9274744a6c08bfa2e48"></a>
+<a class="anchor" id="ad7dcab17b052f1d5e8e5953d977d9263"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSSpWindowColumns::matchSpw </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> casacore::MSSpWindowColumns::matchSpw </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;&#160;</td>
           <td class="paramname"><em>refFreq</em>, </td>
@@ -1744,7 +1745,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td>
           <td class="paramname"><em>tryRow</em> = <code>-1</code>&#160;</td>
         </tr>
         <tr>
@@ -1759,12 +1760,12 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a00c273fb0de45518bc792519f50ee91c"></a>
+<a class="anchor" id="a264bc09a9be2421315e03aba3df2f859"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> casacore::MSSpWindowColumns::matchSpw </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> casacore::MSSpWindowColumns::matchSpw </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1MFrequency.html">MFrequency</a> &amp;&#160;</td>
           <td class="paramname"><em>refFreq</em>, </td>
@@ -1817,7 +1818,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afbedbee324d6e7bedbe9fb15fdef3811"></a>
+<a class="anchor" id="afd0eec617415947f9b1eb434b93d7fa3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1827,7 +1828,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSSpWindowColumns::matchTotalBandwidth </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>row</em>, </td>
         </tr>
         <tr>
@@ -1880,7 +1881,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00104">104</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00253">measFreqRef_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00256">measFreqRef_p</a>.</p>
 
 </div>
 </div>
@@ -1907,7 +1908,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00145">145</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00253">measFreqRef_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00256">measFreqRef_p</a>.</p>
 
 </div>
 </div>
@@ -1934,7 +1935,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00105">105</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00254">name_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00257">name_p</a>.</p>
 
 </div>
 </div>
@@ -1961,7 +1962,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00146">146</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00254">name_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00257">name_p</a>.</p>
 
 </div>
 </div>
@@ -1988,7 +1989,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00106">106</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00255">netSideband_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00258">netSideband_p</a>.</p>
 
 </div>
 </div>
@@ -2015,11 +2016,11 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00147">147</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00255">netSideband_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00258">netSideband_p</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a74ba55112ba4faf8517fc3e3a6a46bd9"></a>
+<a class="anchor" id="a24beb3853e84f81a56ad05e9c2cc6ab9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2027,7 +2028,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::MSSpWindowColumns::nrow </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::MSSpWindowColumns::nrow </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -2044,7 +2045,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00174">174</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00246">chanFreq_p</a>, and <a class="el" href="TableColumn_8h_source.html#l00197">casacore::TableColumn::nrow()</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">chanFreq_p</a>, and <a class="el" href="TableColumn_8h_source.html#l00197">casacore::TableColumn::nrow()</a>.</p>
 
 </div>
 </div>
@@ -2071,7 +2072,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00107">107</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00256">numChan_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00259">numChan_p</a>.</p>
 
 </div>
 </div>
@@ -2098,7 +2099,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00148">148</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00256">numChan_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00259">numChan_p</a>.</p>
 
 </div>
 </div>
@@ -2149,7 +2150,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00125">125</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00266">receiverId_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00269">receiverId_p</a>.</p>
 
 </div>
 </div>
@@ -2176,7 +2177,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00170">170</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00266">receiverId_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00269">receiverId_p</a>.</p>
 
 </div>
 </div>
@@ -2203,7 +2204,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00108">108</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00257">refFrequency_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00260">refFrequency_p</a>.</p>
 
 </div>
 </div>
@@ -2230,7 +2231,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00149">149</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00257">refFrequency_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00260">refFrequency_p</a>.</p>
 
 </div>
 </div>
@@ -2257,7 +2258,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00110">110</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00270">refFrequencyMeas_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00273">refFrequencyMeas_p</a>.</p>
 
 </div>
 </div>
@@ -2284,7 +2285,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00152">152</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00270">refFrequencyMeas_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00273">refFrequencyMeas_p</a>.</p>
 
 </div>
 </div>
@@ -2311,7 +2312,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00109">109</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00276">refFrequencyQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00279">refFrequencyQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2338,7 +2339,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00150">150</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00276">refFrequencyQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00279">refFrequencyQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2365,7 +2366,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00111">111</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00258">resolution_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00261">resolution_p</a>.</p>
 
 </div>
 </div>
@@ -2392,7 +2393,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00154">154</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00258">resolution_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00261">resolution_p</a>.</p>
 
 </div>
 </div>
@@ -2419,7 +2420,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00112">112</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00277">resolutionQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00280">resolutionQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2446,7 +2447,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00155">155</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00277">resolutionQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00280">resolutionQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2473,7 +2474,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00113">113</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00259">totalBandwidth_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00262">totalBandwidth_p</a>.</p>
 
 </div>
 </div>
@@ -2500,7 +2501,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00157">157</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00259">totalBandwidth_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00262">totalBandwidth_p</a>.</p>
 
 </div>
 </div>
@@ -2527,7 +2528,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00114">114</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00278">totalBandwidthQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00281">totalBandwidthQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2554,7 +2555,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00159">159</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
-<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00278">totalBandwidthQuant_p</a>.</p>
+<p>References <a class="el" href="MSSpWindowColumns_8h_source.html#l00281">totalBandwidthQuant_p</a>.</p>
 
 </div>
 </div>
@@ -2577,7 +2578,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00261">261</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00264">264</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00120">assocNature()</a>.</p>
 
@@ -2601,7 +2602,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00262">262</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00265">265</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00121">assocSpwId()</a>.</p>
 
@@ -2625,7 +2626,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00263">263</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00266">266</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00122">bbcNo()</a>.</p>
 
@@ -2649,7 +2650,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00264">264</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00267">267</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00123">bbcSideband()</a>.</p>
 
@@ -2673,7 +2674,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00246">246</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">249</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00093">chanFreq()</a>, and <a class="el" href="MSSpWindowColumns_8h_source.html#l00174">nrow()</a>.</p>
 
@@ -2697,7 +2698,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00269">269</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00272">272</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00094">chanFreqMeas()</a>.</p>
 
@@ -2721,7 +2722,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00273">273</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00276">276</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00095">chanFreqQuant()</a>.</p>
 
@@ -2745,7 +2746,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00247">247</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00250">250</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00096">chanWidth()</a>.</p>
 
@@ -2769,7 +2770,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00274">274</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00277">277</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00097">chanWidthQuant()</a>.</p>
 
@@ -2793,7 +2794,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00265">265</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00268">268</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00124">dopplerId()</a>.</p>
 
@@ -2817,7 +2818,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00248">248</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00251">251</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00098">effectiveBW()</a>.</p>
 
@@ -2841,7 +2842,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00275">275</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00278">278</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00099">effectiveBWQuant()</a>.</p>
 
@@ -2865,7 +2866,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00249">249</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00252">252</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00100">flagRow()</a>.</p>
 
@@ -2889,7 +2890,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00250">250</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00253">253</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00101">freqGroup()</a>.</p>
 
@@ -2913,7 +2914,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00251">251</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00254">254</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00102">freqGroupName()</a>.</p>
 
@@ -2937,7 +2938,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00252">252</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00255">255</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00103">ifConvChain()</a>.</p>
 
@@ -2961,7 +2962,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00253">253</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00256">256</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00104">measFreqRef()</a>.</p>
 
@@ -2985,7 +2986,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00254">254</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00257">257</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00105">name()</a>.</p>
 
@@ -3009,7 +3010,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00255">255</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00258">258</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00106">netSideband()</a>.</p>
 
@@ -3033,7 +3034,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00256">256</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00259">259</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00107">numChan()</a>.</p>
 
@@ -3057,7 +3058,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00266">266</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00269">269</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00125">receiverId()</a>.</p>
 
@@ -3081,7 +3082,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00257">257</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00260">260</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00108">refFrequency()</a>.</p>
 
@@ -3105,7 +3106,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00270">270</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00273">273</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00110">refFrequencyMeas()</a>.</p>
 
@@ -3129,7 +3130,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00276">276</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00279">279</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00109">refFrequencyQuant()</a>.</p>
 
@@ -3153,7 +3154,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00258">258</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00261">261</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00111">resolution()</a>.</p>
 
@@ -3177,7 +3178,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00277">277</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00280">280</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00112">resolutionQuant()</a>.</p>
 
@@ -3201,7 +3202,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00259">259</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00262">262</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00113">totalBandwidth()</a>.</p>
 
@@ -3225,7 +3226,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00278">278</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
+<p>Definition at line <a class="el" href="MSSpWindowColumns_8h_source.html#l00281">281</a> of file <a class="el" href="MSSpWindowColumns_8h_source.html">MSSpWindowColumns.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSSpWindowColumns_8h_source.html#l00114">totalBandwidthQuant()</a>.</p>
 

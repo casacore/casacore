@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -115,17 +116,15 @@ Inheritance diagram for casacore::TaQLCalcNodeRep:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac4719534c90b32d7d4f16943d5c7d53f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#ac4719534c90b32d7d4f16943d5c7d53f">TaQLCalcNodeRep</a> (const <a class="el" href="classcasacore_1_1TaQLMultiNode.html">TaQLMultiNode</a> &amp;withTables, const <a class="el" href="classcasacore_1_1TaQLMultiNode.html">TaQLMultiNode</a> &amp;fromTables, const <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> &amp;expr, const <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> &amp;where, const <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> &amp;sort, const <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> &amp;limitoff)</td></tr>
 <tr class="separator:ac4719534c90b32d7d4f16943d5c7d53f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a192fd973fca1848749c9ff6de7383365"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#a192fd973fca1848749c9ff6de7383365">~TaQLCalcNodeRep</a> ()</td></tr>
-<tr class="separator:a192fd973fca1848749c9ff6de7383365"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8970039c8780c7f2286530a3b594f049"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#a8970039c8780c7f2286530a3b594f049">visit</a> (<a class="el" href="classcasacore_1_1TaQLNodeVisitor.html">TaQLNodeVisitor</a> &amp;) const </td></tr>
-<tr class="memdesc:a8970039c8780c7f2286530a3b594f049"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visit a node for tree traversal.  <a href="#a8970039c8780c7f2286530a3b594f049">More...</a><br/></td></tr>
-<tr class="separator:a8970039c8780c7f2286530a3b594f049"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af92d74bbceb681aa39c9508afc82aab5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#af92d74bbceb681aa39c9508afc82aab5">show</a> (std::ostream &amp;os) const </td></tr>
-<tr class="memdesc:af92d74bbceb681aa39c9508afc82aab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the object in an ostream.  <a href="#af92d74bbceb681aa39c9508afc82aab5">More...</a><br/></td></tr>
-<tr class="separator:af92d74bbceb681aa39c9508afc82aab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2066f206b3bf15d9093429047a72895b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#a2066f206b3bf15d9093429047a72895b">save</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio) const </td></tr>
-<tr class="memdesc:a2066f206b3bf15d9093429047a72895b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the object.  <a href="#a2066f206b3bf15d9093429047a72895b">More...</a><br/></td></tr>
-<tr class="separator:a2066f206b3bf15d9093429047a72895b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cc433140d62b692a276e5bd50399069"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TaQLNodeResult.html">TaQLNodeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#a5cc433140d62b692a276e5bd50399069">visit</a> (<a class="el" href="classcasacore_1_1TaQLNodeVisitor.html">TaQLNodeVisitor</a> &amp;) const override</td></tr>
+<tr class="memdesc:a5cc433140d62b692a276e5bd50399069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visit a node for tree traversal.  <a href="#a5cc433140d62b692a276e5bd50399069">More...</a><br/></td></tr>
+<tr class="separator:a5cc433140d62b692a276e5bd50399069"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae83e3714f5d0ae48e935e3ab5de31a99"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#ae83e3714f5d0ae48e935e3ab5de31a99">show</a> (std::ostream &amp;os) const override</td></tr>
+<tr class="memdesc:ae83e3714f5d0ae48e935e3ab5de31a99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the object in an ostream.  <a href="#ae83e3714f5d0ae48e935e3ab5de31a99">More...</a><br/></td></tr>
+<tr class="separator:ae83e3714f5d0ae48e935e3ab5de31a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4b17fe66209b7fa27b4ac8ecf5a1b44"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#aa4b17fe66209b7fa27b4ac8ecf5a1b44">save</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio) const override</td></tr>
+<tr class="memdesc:aa4b17fe66209b7fa27b4ac8ecf5a1b44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the object.  <a href="#aa4b17fe66209b7fa27b4ac8ecf5a1b44">More...</a><br/></td></tr>
+<tr class="separator:aa4b17fe66209b7fa27b4ac8ecf5a1b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcasacore_1_1TaQLNodeRep"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcasacore_1_1TaQLNodeRep')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcasacore_1_1TaQLNodeRep.html">casacore::TaQLNodeRep</a></td></tr>
 <tr class="memitem:a74a74af7e13361a87786d46955f671c2 inherit pub_methods_classcasacore_1_1TaQLNodeRep"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeRep.html#a74a74af7e13361a87786d46955f671c2">TaQLNodeRep</a> (int <a class="el" href="classcasacore_1_1TaQLNodeRep.html#a14e94cf7e0331ab7afceca9ecacd6339">nodeType</a>)</td></tr>
 <tr class="memdesc:a74a74af7e13361a87786d46955f671c2 inherit pub_methods_classcasacore_1_1TaQLNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for derived classes specifying the type.  <a href="#a74a74af7e13361a87786d46955f671c2">More...</a><br/></td></tr>
@@ -144,8 +143,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a5d48ce43e42344fa064e3c8d8beb8500"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html">TaQLCalcNodeRep</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#a5d48ce43e42344fa064e3c8d8beb8500">restore</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio)</td></tr>
-<tr class="separator:a5d48ce43e42344fa064e3c8d8beb8500"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf0a607ae1109688592bb1bc6b862922"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html#acf0a607ae1109688592bb1bc6b862922">restore</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;aio)</td></tr>
+<tr class="separator:acf0a607ae1109688592bb1bc6b862922"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classcasacore_1_1TaQLNodeRep"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcasacore_1_1TaQLNodeRep')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcasacore_1_1TaQLNodeRep.html">casacore::TaQLNodeRep</a></td></tr>
 <tr class="memitem:abbcd6257f0b9a7d1b542a70e842e072f inherit pub_static_methods_classcasacore_1_1TaQLNodeRep"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeRep.html#abbcd6257f0b9a7d1b542a70e842e072f">checkDataType</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;)</td></tr>
 <tr class="memdesc:abbcd6257f0b9a7d1b542a70e842e072f inherit pub_static_methods_classcasacore_1_1TaQLNodeRep"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the data type string and return its standard form.  <a href="#abbcd6257f0b9a7d1b542a70e842e072f">More...</a><br/></td></tr>
@@ -183,7 +182,7 @@ Public Attributes</h2></td></tr>
 <h3>Synopsis</h3>
 <p>This class is a <a class="el" href="classcasacore_1_1TaQLNodeRep.html" title="Representation of a node in the raw TaQL parse tree. ">TaQLNodeRep</a> holding the parts of the calc command. </p>
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00998">998</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00973">973</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac4719534c90b32d7d4f16943d5c7d53f"></a>
 <div class="memitem">
@@ -235,31 +234,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a192fd973fca1848749c9ff6de7383365"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual casacore::TaQLCalcNodeRep::~TaQLCalcNodeRep </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a5d48ce43e42344fa064e3c8d8beb8500"></a>
+<a class="anchor" id="acf0a607ae1109688592bb1bc6b862922"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -267,7 +243,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="classcasacore_1_1TaQLCalcNodeRep.html">TaQLCalcNodeRep</a>* casacore::TaQLCalcNodeRep::restore </td>
+          <td class="memname">static <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> casacore::TaQLCalcNodeRep::restore </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;&#160;</td>
           <td class="paramname"><em>aio</em></td><td>)</td>
@@ -283,7 +259,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a2066f206b3bf15d9093429047a72895b"></a>
+<a class="anchor" id="aa4b17fe66209b7fa27b4ac8ecf5a1b44"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -300,7 +276,7 @@ Public Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -311,7 +287,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af92d74bbceb681aa39c9508afc82aab5"></a>
+<a class="anchor" id="ae83e3714f5d0ae48e935e3ab5de31a99"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -328,7 +304,7 @@ Public Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -339,7 +315,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8970039c8780c7f2286530a3b594f049"></a>
+<a class="anchor" id="a5cc433140d62b692a276e5bd50399069"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -356,7 +332,7 @@ Public Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -378,7 +354,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l01012">1012</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00986">986</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 
 </div>
 </div>
@@ -392,7 +368,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l01015">1015</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00989">989</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 
 </div>
 </div>
@@ -406,7 +382,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l01014">1014</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00988">988</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 
 </div>
 </div>
@@ -420,7 +396,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l01011">1011</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00985">985</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 
 </div>
 </div>
@@ -434,7 +410,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l01013">1013</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00987">987</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 
 </div>
 </div>
@@ -448,7 +424,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l01010">1010</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeDer_8h_source.html#l00984">984</a> of file <a class="el" href="TaQLNodeDer_8h_source.html">TaQLNodeDer.h</a>.</p>
 
 </div>
 </div>

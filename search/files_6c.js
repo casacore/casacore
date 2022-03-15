@@ -102,7 +102,6 @@ var searchData=
   ['loggerholder_2eh',['LoggerHolder.h',['../LoggerHolder_8h.html',1,'']]],
   ['logging_2eh',['Logging.h',['../Logging_8h.html',1,'']]],
   ['logiarray_2eh',['LogiArray.h',['../LogiArray_8h.html',1,'']]],
-  ['logiarrayfwd_2eh',['LogiArrayFwd.h',['../LogiArrayFwd_8h.html',1,'']]],
   ['logicube_2eh',['LogiCube.h',['../LogiCube_8h.html',1,'']]],
   ['logimatrix_2eh',['LogiMatrix.h',['../LogiMatrix_8h.html',1,'']]],
   ['logio_2eh',['LogIO.h',['../LogIO_8h.html',1,'']]],

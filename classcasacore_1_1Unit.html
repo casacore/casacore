@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -187,13 +188,13 @@ Private Attributes</h2></td></tr>
 <p>E.g. m.(m/s)-2 == m-1.s2) <br/>
 <b>Tip:</b><em> A 'space' or ';' before an opening '(' can be omitted; </em><br/>
  A name can consist of case-sensitive letters, '_', ''', ':', '"' and '0' ('0' not as first character). Digits 1-9 are allowed if preceded with an '_'.</p>
-<p>Possible legal names are e.g. Jy, R0, R_1, "_2. <br/>
+<p>Possible legal names are e.g. <code>Jy, R0, R_1, "_2</code>. <br/>
 <b>Tip:</b><em> </p>
 <ul>
 <li>
-' is used for arcmin </li>
+<code>'</code> is used for arcmin </li>
 <li>
-'' or " for arcsec </li>
+<code>''</code> or <code>"</code> for arcsec </li>
 <li>
 : :: and ::: are used for h, min, s respectively </li>
 <li>
@@ -229,9 +230,9 @@ Cached units: for speed in operations </li>
 <div class="fragment"><div class="line"><a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1UnitVal.html#ad886670038a21b1f270a5d858fc86d68">UnitVal::check</a>(<span class="stringliteral">&quot;string&quot;</span>);</div>
 </div><!-- fragment --><h3>Example</h3>
 <p><a class="anchor" id="Unit_example1"></a></p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/casa/Quanta.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Quanta_8h.html">casacore/casa/Quanta.h</a>&gt;</span></div>
 <div class="line"><span class="comment">// check if a string is a valid unit</span></div>
-<div class="line"><span class="keywordflow">if</span> (!<a class="code" href="classcasacore_1_1UnitVal.html#ad886670038a21b1f270a5d858fc86d68">UnitVal::check</a>(<span class="stringliteral">&quot;Km&quot;</span>)) { cout &lt;&lt; <span class="stringliteral">&quot;Invalid unit string &quot;</span> &lt;&lt; <span class="stringliteral">&quot;Km&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><span class="keywordflow">if</span> (!<a class="code" href="classcasacore_1_1UnitVal.html#ad886670038a21b1f270a5d858fc86d68">UnitVal::check</a>(<span class="stringliteral">&quot;Km&quot;</span>)) { cout &lt;&lt; <span class="stringliteral">&quot;Invalid unit string &quot;</span> &lt;&lt; <span class="stringliteral">&quot;Km&quot;</span> &lt;&lt; endl; }</div>
 <div class="line"><span class="comment">// define some units</span></div>
 <div class="line">String unit1=<span class="stringliteral">&quot;km/Mpc&quot;</span>;</div>
 <div class="line"><a class="code" href="classcasacore_1_1Unit.html#a18c80bcd58c3ea76c7c6c3a0b2ae6f54">Unit</a> unit2=<span class="stringliteral">&quot;uJy/Mpc&quot;</span>;</div>
@@ -240,7 +241,7 @@ Cached units: for speed in operations </li>
 <div class="line"><span class="comment">// use the units in model calculations</span></div>
 <div class="line">Quantity observed(8.97, <span class="stringliteral">&quot;Mmy_univ/a&quot;</span>);</div>
 <div class="line">Quantity theory (3.8<a class="code" href="namespacecasacore_1_1C.html#affe3d5b244c2ac147c007388050bae03">e</a>-9, <span class="stringliteral">&quot;mmy_univ/s&quot;</span>);</div>
-<div class="line"><span class="keywordflow">if</span> ((observed / theory) &lt; 1.) { cout &lt;&lt; <span class="stringliteral">&quot;Eureka&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><span class="keywordflow">if</span> ((observed / theory) &lt; 1.) { cout &lt;&lt; <span class="stringliteral">&quot;Eureka&quot;</span> &lt;&lt; endl; }</div>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>Make basis for all dimensioned values the SI system of units</p>
 <h3>To Do</h3>

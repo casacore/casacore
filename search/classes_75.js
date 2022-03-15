@@ -10,6 +10,7 @@ var searchData=
   ['unaryparam',['UnaryParam',['../classcasacore_1_1UnaryParam.html',1,'casacore']]],
   ['unequalshapecopier',['UnequalShapeCopier',['../classcasacore_1_1UnequalShapeCopier.html',1,'casacore']]],
   ['uniform',['Uniform',['../classcasacore_1_1Uniform.html',1,'casacore']]],
+  ['uninitializedtype',['uninitializedType',['../structcasacore_1_1Array_1_1uninitializedType.html',1,'casacore::Array']]],
   ['union1',['Union1',['../unioncasacore_1_1PrecTimer_1_1Union1.html',1,'casacore::PrecTimer']]],
   ['union2',['Union2',['../structcasacore_1_1PrecTimer_1_1Union2.html',1,'casacore::PrecTimer']]],
   ['unit',['Unit',['../classcasacore_1_1Unit.html',1,'casacore']]],
@@ -21,6 +22,11 @@ var searchData=
   ['unitval_5fstatic_5finitializer',['UnitVal_static_initializer',['../classcasacore_1_1UnitVal__static__initializer.html',1,'casacore']]],
   ['unrecognizedfunctionerror',['UnrecognizedFunctionError',['../classcasacore_1_1UnrecognizedFunctionError.html',1,'casacore']]],
   ['upcase',['Upcase',['../structcasacore_1_1Upcase.html',1,'casacore']]],
+  ['uvector',['uvector',['../classao_1_1uvector.html',1,'ao']]],
+  ['uvector_3c_20double_20_3e',['uvector&lt; double &gt;',['../classao_1_1uvector.html',1,'ao']]],
+  ['uvector_3c_20unsigned_20char_20_3e',['uvector&lt; unsigned char &gt;',['../classao_1_1uvector.html',1,'ao']]],
+  ['uvector_3c_20unsigned_20int_20_3e',['uvector&lt; unsigned int &gt;',['../classao_1_1uvector.html',1,'ao']]],
+  ['uvector_3c_20value_5ft_20_3e',['uvector&lt; value_t &gt;',['../classao_1_1uvector.html',1,'ao']]],
   ['uvwj2000column',['UVWJ2000Column',['../classcasacore_1_1UVWJ2000Column.html',1,'casacore']]],
   ['uvwmachine',['UVWMachine',['../classcasacore_1_1UVWMachine.html',1,'casacore']]]
 ];

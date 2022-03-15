@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -128,114 +129,99 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7ce64ca2b9e8419b1c7211b1b1b4a86a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a692258264769614a70daa0d8a18603a0"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a692258264769614a70daa0d8a18603a0">keywordSet</a> ()</td></tr>
 <tr class="separator:a692258264769614a70daa0d8a18603a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac36aeaf0e2a711ae0c9602026f6439a6"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ac36aeaf0e2a711ae0c9602026f6439a6">nrow</a> () const </td></tr>
-<tr class="memdesc:ac36aeaf0e2a711ae0c9602026f6439a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get nr of rows in the column.  <a href="#ac36aeaf0e2a711ae0c9602026f6439a6">More...</a><br/></td></tr>
-<tr class="separator:ac36aeaf0e2a711ae0c9602026f6439a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34d0495ca98e35b6d22c844c385139cd"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a34d0495ca98e35b6d22c844c385139cd">isDefined</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr) const </td></tr>
-<tr class="memdesc:a34d0495ca98e35b6d22c844c385139cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if a value in a particular cell has been defined.  <a href="#a34d0495ca98e35b6d22c844c385139cd">More...</a><br/></td></tr>
-<tr class="separator:a34d0495ca98e35b6d22c844c385139cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6a4c094f5d4313f60921e074fdf7df8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#af6a4c094f5d4313f60921e074fdf7df8">setShape</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1RefColumn.html#ab07fbaa5acb0c1fa75d83299a153d84e">shape</a>)</td></tr>
-<tr class="memdesc:af6a4c094f5d4313f60921e074fdf7df8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the shape of the array in the given row.  <a href="#af6a4c094f5d4313f60921e074fdf7df8">More...</a><br/></td></tr>
-<tr class="separator:af6a4c094f5d4313f60921e074fdf7df8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3028d8f413c4dabc5f176c4fa73851c2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a3028d8f413c4dabc5f176c4fa73851c2">setShape</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1RefColumn.html#ab07fbaa5acb0c1fa75d83299a153d84e">shape</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1BaseColumn.html#a7f4931e5110ee4fafa0619d5e15b42ee">tileShape</a>)</td></tr>
-<tr class="memdesc:a3028d8f413c4dabc5f176c4fa73851c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the shape and tile shape of the array in the given row.  <a href="#a3028d8f413c4dabc5f176c4fa73851c2">More...</a><br/></td></tr>
-<tr class="separator:a3028d8f413c4dabc5f176c4fa73851c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4630f291fbdcf355557cbdcc4ce0c33"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ab4630f291fbdcf355557cbdcc4ce0c33">nrow</a> () const </td></tr>
+<tr class="memdesc:ab4630f291fbdcf355557cbdcc4ce0c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get nr of rows in the column.  <a href="#ab4630f291fbdcf355557cbdcc4ce0c33">More...</a><br/></td></tr>
+<tr class="separator:ab4630f291fbdcf355557cbdcc4ce0c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48a7cc55aa5bc2f05f98ac1228ba4d1c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a48a7cc55aa5bc2f05f98ac1228ba4d1c">isDefined</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr) const </td></tr>
+<tr class="memdesc:a48a7cc55aa5bc2f05f98ac1228ba4d1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if a value in a particular cell has been defined.  <a href="#a48a7cc55aa5bc2f05f98ac1228ba4d1c">More...</a><br/></td></tr>
+<tr class="separator:a48a7cc55aa5bc2f05f98ac1228ba4d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e79b556962701097a8556d6a41178af"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a3e79b556962701097a8556d6a41178af">setShape</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1RefColumn.html#a03f6d73efe83ac653eb8b7b3daa878e3">shape</a>)</td></tr>
+<tr class="memdesc:a3e79b556962701097a8556d6a41178af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the shape of the array in the given row.  <a href="#a3e79b556962701097a8556d6a41178af">More...</a><br/></td></tr>
+<tr class="separator:a3e79b556962701097a8556d6a41178af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e7eaa55e44774293abb391752b484c1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a3e7eaa55e44774293abb391752b484c1">setShape</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1RefColumn.html#a03f6d73efe83ac653eb8b7b3daa878e3">shape</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="classcasacore_1_1BaseColumn.html#a9fa3a0b5dcf4155191bc7bdd2ea9c6ac">tileShape</a>)</td></tr>
+<tr class="memdesc:a3e7eaa55e44774293abb391752b484c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the shape and tile shape of the array in the given row.  <a href="#a3e7eaa55e44774293abb391752b484c1">More...</a><br/></td></tr>
+<tr class="separator:a3e7eaa55e44774293abb391752b484c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32762d7d37c8d7c91c34cd4cb18296dc"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a32762d7d37c8d7c91c34cd4cb18296dc">ndimColumn</a> () const </td></tr>
 <tr class="memdesc:a32762d7d37c8d7c91c34cd4cb18296dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the global #dimensions of an array (i.e.  <a href="#a32762d7d37c8d7c91c34cd4cb18296dc">More...</a><br/></td></tr>
 <tr class="separator:a32762d7d37c8d7c91c34cd4cb18296dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15328b6a7637cf54a818b0310c47fd88"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a15328b6a7637cf54a818b0310c47fd88">shapeColumn</a> () const </td></tr>
 <tr class="memdesc:a15328b6a7637cf54a818b0310c47fd88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the global shape of an array (i.e.  <a href="#a15328b6a7637cf54a818b0310c47fd88">More...</a><br/></td></tr>
 <tr class="separator:a15328b6a7637cf54a818b0310c47fd88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a346b15b185d975be42570a5d41bdf316"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a346b15b185d975be42570a5d41bdf316">ndim</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr) const </td></tr>
-<tr class="memdesc:a346b15b185d975be42570a5d41bdf316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the #dimensions of an array in a particular cell.  <a href="#a346b15b185d975be42570a5d41bdf316">More...</a><br/></td></tr>
-<tr class="separator:a346b15b185d975be42570a5d41bdf316"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab07fbaa5acb0c1fa75d83299a153d84e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ab07fbaa5acb0c1fa75d83299a153d84e">shape</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr) const </td></tr>
-<tr class="memdesc:ab07fbaa5acb0c1fa75d83299a153d84e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the shape of an array in a particular cell.  <a href="#ab07fbaa5acb0c1fa75d83299a153d84e">More...</a><br/></td></tr>
-<tr class="separator:ab07fbaa5acb0c1fa75d83299a153d84e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d720e99921c21fade69236e1c723e66"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a7d720e99921c21fade69236e1c723e66">ndim</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr) const </td></tr>
+<tr class="memdesc:a7d720e99921c21fade69236e1c723e66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the #dimensions of an array in a particular cell.  <a href="#a7d720e99921c21fade69236e1c723e66">More...</a><br/></td></tr>
+<tr class="separator:a7d720e99921c21fade69236e1c723e66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03f6d73efe83ac653eb8b7b3daa878e3"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a03f6d73efe83ac653eb8b7b3daa878e3">shape</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr) const </td></tr>
+<tr class="memdesc:a03f6d73efe83ac653eb8b7b3daa878e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the shape of an array in a particular cell.  <a href="#a03f6d73efe83ac653eb8b7b3daa878e3">More...</a><br/></td></tr>
+<tr class="separator:a03f6d73efe83ac653eb8b7b3daa878e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae217da4e923d378aa4fb7742b957129"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#aae217da4e923d378aa4fb7742b957129">canChangeShape</a> () const </td></tr>
 <tr class="memdesc:aae217da4e923d378aa4fb7742b957129"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can change shape if the underlying column can.  <a href="#aae217da4e923d378aa4fb7742b957129">More...</a><br/></td></tr>
 <tr class="separator:aae217da4e923d378aa4fb7742b957129"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae28775f47977f9c13e283e33ae6ed08f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ae28775f47977f9c13e283e33ae6ed08f">canAccessScalarColumn</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reask) const </td></tr>
-<tr class="memdesc:ae28775f47977f9c13e283e33ae6ed08f"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can handle a scalar column if the underlying column can handle cells in a scalar column.  <a href="#ae28775f47977f9c13e283e33ae6ed08f">More...</a><br/></td></tr>
-<tr class="separator:ae28775f47977f9c13e283e33ae6ed08f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac61eee9c7492440328ebb0710ff8572d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ac61eee9c7492440328ebb0710ff8572d">canAccessArrayColumn</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reask) const </td></tr>
-<tr class="memdesc:ac61eee9c7492440328ebb0710ff8572d"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can handle an array column if the underlying column can handle cells in an array column.  <a href="#ac61eee9c7492440328ebb0710ff8572d">More...</a><br/></td></tr>
-<tr class="separator:ac61eee9c7492440328ebb0710ff8572d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af748fc5c54224e701382c7aea73cdf33"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#af748fc5c54224e701382c7aea73cdf33">canAccessSlice</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reask) const </td></tr>
-<tr class="memdesc:af748fc5c54224e701382c7aea73cdf33"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can handle a cell slice if the underlying column can do it.  <a href="#af748fc5c54224e701382c7aea73cdf33">More...</a><br/></td></tr>
-<tr class="separator:af748fc5c54224e701382c7aea73cdf33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee0741398e862db91721c35d294440e8"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#aee0741398e862db91721c35d294440e8">canAccessColumnSlice</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reask) const </td></tr>
-<tr class="memdesc:aee0741398e862db91721c35d294440e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can handle a column slice if the underlying column can handle a collection of cells in a column and a column slice.  <a href="#aee0741398e862db91721c35d294440e8">More...</a><br/></td></tr>
-<tr class="separator:aee0741398e862db91721c35d294440e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81350a1c7452675168d6530b656005e8"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a81350a1c7452675168d6530b656005e8">canAccessScalarColumnCells</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reask) const </td></tr>
-<tr class="memdesc:a81350a1c7452675168d6530b656005e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can handle cells in a scalar column if the underlying column can do it.  <a href="#a81350a1c7452675168d6530b656005e8">More...</a><br/></td></tr>
-<tr class="separator:a81350a1c7452675168d6530b656005e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78f17666789ceb553ece27347cd314e9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a78f17666789ceb553ece27347cd314e9">canAccessArrayColumnCells</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;reask) const </td></tr>
-<tr class="memdesc:a78f17666789ceb553ece27347cd314e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">It can handle cells in an array column if the underlying column can do it.  <a href="#a78f17666789ceb553ece27347cd314e9">More...</a><br/></td></tr>
-<tr class="separator:a78f17666789ceb553ece27347cd314e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac78a22d9bf520e436ad7fa2d05bf9817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ac78a22d9bf520e436ad7fa2d05bf9817">initialize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> startRownr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> endRownr)</td></tr>
-<tr class="memdesc:ac78a22d9bf520e436ad7fa2d05bf9817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the rows from startRownr till endRownr (inclusive) with the default value defined in the column description (if defined).  <a href="#ac78a22d9bf520e436ad7fa2d05bf9817">More...</a><br/></td></tr>
-<tr class="separator:ac78a22d9bf520e436ad7fa2d05bf9817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a749c0f881ec7ec25b6d9bd561ae505ab"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a749c0f881ec7ec25b6d9bd561ae505ab">get</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, void *dataPtr) const </td></tr>
-<tr class="memdesc:a749c0f881ec7ec25b6d9bd561ae505ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value from a particular cell.  <a href="#a749c0f881ec7ec25b6d9bd561ae505ab">More...</a><br/></td></tr>
-<tr class="separator:a749c0f881ec7ec25b6d9bd561ae505ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae603a6a77dbd8919a056e65b01d62dd7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ae603a6a77dbd8919a056e65b01d62dd7">getSlice</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, void *dataPtr) const </td></tr>
-<tr class="memdesc:ae603a6a77dbd8919a056e65b01d62dd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a slice of an N-dimensional array in a particular cell.  <a href="#ae603a6a77dbd8919a056e65b01d62dd7">More...</a><br/></td></tr>
-<tr class="separator:ae603a6a77dbd8919a056e65b01d62dd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a513342b97d1c890cdd196e8b3bd7b853"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a513342b97d1c890cdd196e8b3bd7b853">getScalarColumn</a> (void *dataPtr) const </td></tr>
-<tr class="memdesc:a513342b97d1c890cdd196e8b3bd7b853"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the vector of all scalar values in a column.  <a href="#a513342b97d1c890cdd196e8b3bd7b853">More...</a><br/></td></tr>
-<tr class="separator:a513342b97d1c890cdd196e8b3bd7b853"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72159176121d85dc763c2d1853ef8c45"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a72159176121d85dc763c2d1853ef8c45">getArrayColumn</a> (void *dataPtr) const </td></tr>
-<tr class="memdesc:a72159176121d85dc763c2d1853ef8c45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of all array values in a column.  <a href="#a72159176121d85dc763c2d1853ef8c45">More...</a><br/></td></tr>
-<tr class="separator:a72159176121d85dc763c2d1853ef8c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59ae9c4ceb15931ce84fb661f5d45849"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a59ae9c4ceb15931ce84fb661f5d45849">getColumnSlice</a> (const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, void *dataPtr) const </td></tr>
-<tr class="memdesc:a59ae9c4ceb15931ce84fb661f5d45849"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get subsections from all arrays in the column.  <a href="#a59ae9c4ceb15931ce84fb661f5d45849">More...</a><br/></td></tr>
-<tr class="separator:a59ae9c4ceb15931ce84fb661f5d45849"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32a2e16b188c2cca77149db759f00c1b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a32a2e16b188c2cca77149db759f00c1b">getScalarColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, void *dataPtr) const </td></tr>
-<tr class="memdesc:a32a2e16b188c2cca77149db759f00c1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the vector of some scalar values in a column.  <a href="#a32a2e16b188c2cca77149db759f00c1b">More...</a><br/></td></tr>
-<tr class="separator:a32a2e16b188c2cca77149db759f00c1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f74cf226c2e5e133d0fbfbe503fe7c3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a0f74cf226c2e5e133d0fbfbe503fe7c3">getArrayColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, void *dataPtr) const </td></tr>
-<tr class="memdesc:a0f74cf226c2e5e133d0fbfbe503fe7c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of some array values in a column.  <a href="#a0f74cf226c2e5e133d0fbfbe503fe7c3">More...</a><br/></td></tr>
-<tr class="separator:a0f74cf226c2e5e133d0fbfbe503fe7c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24eddba6236d8a2b2026d4158b70db50"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a24eddba6236d8a2b2026d4158b70db50">getColumnSliceCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, void *dataPtr) const </td></tr>
-<tr class="memdesc:a24eddba6236d8a2b2026d4158b70db50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get subsections from some arrays in the column.  <a href="#a24eddba6236d8a2b2026d4158b70db50">More...</a><br/></td></tr>
-<tr class="separator:a24eddba6236d8a2b2026d4158b70db50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abba539339ba2459d43006d9f941a63f5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#abba539339ba2459d43006d9f941a63f5">put</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const void *dataPtr)</td></tr>
-<tr class="memdesc:abba539339ba2459d43006d9f941a63f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the value in a particular cell.  <a href="#abba539339ba2459d43006d9f941a63f5">More...</a><br/></td></tr>
-<tr class="separator:abba539339ba2459d43006d9f941a63f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1dd0ee3a460f38106163d12e11eabd2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#af1dd0ee3a460f38106163d12e11eabd2">putSlice</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, const void *dataPtr)</td></tr>
-<tr class="memdesc:af1dd0ee3a460f38106163d12e11eabd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a slice of an N-dimensional array in a particular cell.  <a href="#af1dd0ee3a460f38106163d12e11eabd2">More...</a><br/></td></tr>
-<tr class="separator:af1dd0ee3a460f38106163d12e11eabd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11ecdb7cd0caac214a29485fb0ead75d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a11ecdb7cd0caac214a29485fb0ead75d">putScalarColumn</a> (const void *dataPtr)</td></tr>
-<tr class="memdesc:a11ecdb7cd0caac214a29485fb0ead75d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the vector of all scalar values in the column.  <a href="#a11ecdb7cd0caac214a29485fb0ead75d">More...</a><br/></td></tr>
-<tr class="separator:a11ecdb7cd0caac214a29485fb0ead75d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6109c15cf9968101c79cdd488df7bcf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ae6109c15cf9968101c79cdd488df7bcf">putArrayColumn</a> (const void *dataPtr)</td></tr>
-<tr class="memdesc:ae6109c15cf9968101c79cdd488df7bcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the array of all array values in the column.  <a href="#ae6109c15cf9968101c79cdd488df7bcf">More...</a><br/></td></tr>
-<tr class="separator:ae6109c15cf9968101c79cdd488df7bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b935d8d1928ad01971498de4059678d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a7b935d8d1928ad01971498de4059678d">putColumnSlice</a> (const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, const void *dataPtr)</td></tr>
-<tr class="memdesc:a7b935d8d1928ad01971498de4059678d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put into subsections of all table arrays in the column.  <a href="#a7b935d8d1928ad01971498de4059678d">More...</a><br/></td></tr>
-<tr class="separator:a7b935d8d1928ad01971498de4059678d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29f695a24f5aa0a41ed8d1feb5325232"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a29f695a24f5aa0a41ed8d1feb5325232">putScalarColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const void *dataPtr)</td></tr>
-<tr class="memdesc:a29f695a24f5aa0a41ed8d1feb5325232"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the vector of some scalar values in a column.  <a href="#a29f695a24f5aa0a41ed8d1feb5325232">More...</a><br/></td></tr>
-<tr class="separator:a29f695a24f5aa0a41ed8d1feb5325232"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65d92dedeaca4b86d79ef71ab108c107"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a65d92dedeaca4b86d79ef71ab108c107">putArrayColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const void *dataPtr)</td></tr>
-<tr class="memdesc:a65d92dedeaca4b86d79ef71ab108c107"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of some array values in a column.  <a href="#a65d92dedeaca4b86d79ef71ab108c107">More...</a><br/></td></tr>
-<tr class="separator:a65d92dedeaca4b86d79ef71ab108c107"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dbe53aad53ea15bebff279d624e3591"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a3dbe53aad53ea15bebff279d624e3591">putColumnSliceCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, const void *dataPtr)</td></tr>
-<tr class="memdesc:a3dbe53aad53ea15bebff279d624e3591"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put subsections of some arrays in the column.  <a href="#a3dbe53aad53ea15bebff279d624e3591">More...</a><br/></td></tr>
-<tr class="separator:a3dbe53aad53ea15bebff279d624e3591"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a689d92e7aae436e8cc41822812b89660"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a689d92e7aae436e8cc41822812b89660">initialize</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> startRownr, <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> endRownr)</td></tr>
+<tr class="memdesc:a689d92e7aae436e8cc41822812b89660"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the rows from startRownr till endRownr (inclusive) with the default value defined in the column description (if defined).  <a href="#a689d92e7aae436e8cc41822812b89660">More...</a><br/></td></tr>
+<tr class="separator:a689d92e7aae436e8cc41822812b89660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4400c4d10b7ad5102d80257b185ee9d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ab4400c4d10b7ad5102d80257b185ee9d">get</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, void *dataPtr) const </td></tr>
+<tr class="memdesc:ab4400c4d10b7ad5102d80257b185ee9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value from a particular cell.  <a href="#ab4400c4d10b7ad5102d80257b185ee9d">More...</a><br/></td></tr>
+<tr class="separator:ab4400c4d10b7ad5102d80257b185ee9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1747296d59a6de6674c1a53e0ca2a431"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a1747296d59a6de6674c1a53e0ca2a431">getArray</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:a1747296d59a6de6674c1a53e0ca2a431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an array from a particular cell.  <a href="#a1747296d59a6de6674c1a53e0ca2a431">More...</a><br/></td></tr>
+<tr class="separator:a1747296d59a6de6674c1a53e0ca2a431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae16e577e5891a83abf815b7bf78c8405"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ae16e577e5891a83abf815b7bf78c8405">getSlice</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:ae16e577e5891a83abf815b7bf78c8405"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a slice of an N-dimensional array in a particular cell.  <a href="#ae16e577e5891a83abf815b7bf78c8405">More...</a><br/></td></tr>
+<tr class="separator:ae16e577e5891a83abf815b7bf78c8405"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a029989b465879d25cb33a090170fbfa9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a029989b465879d25cb33a090170fbfa9">getScalarColumn</a> (<a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:a029989b465879d25cb33a090170fbfa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the vector of all scalar values in a column.  <a href="#a029989b465879d25cb33a090170fbfa9">More...</a><br/></td></tr>
+<tr class="separator:a029989b465879d25cb33a090170fbfa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae05bd7c308271cb76c0d3f6a64d7abf4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ae05bd7c308271cb76c0d3f6a64d7abf4">getArrayColumn</a> (<a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:ae05bd7c308271cb76c0d3f6a64d7abf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of all array values in a column.  <a href="#ae05bd7c308271cb76c0d3f6a64d7abf4">More...</a><br/></td></tr>
+<tr class="separator:ae05bd7c308271cb76c0d3f6a64d7abf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab41e4ac5b89628a42d0f6c27b102142a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ab41e4ac5b89628a42d0f6c27b102142a">getColumnSlice</a> (const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:ab41e4ac5b89628a42d0f6c27b102142a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get subsections from all arrays in the column.  <a href="#ab41e4ac5b89628a42d0f6c27b102142a">More...</a><br/></td></tr>
+<tr class="separator:ab41e4ac5b89628a42d0f6c27b102142a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c60df3e0e8e1333a8e293d7a0984cb4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a8c60df3e0e8e1333a8e293d7a0984cb4">getScalarColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:a8c60df3e0e8e1333a8e293d7a0984cb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the vector of some scalar values in a column.  <a href="#a8c60df3e0e8e1333a8e293d7a0984cb4">More...</a><br/></td></tr>
+<tr class="separator:a8c60df3e0e8e1333a8e293d7a0984cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a582c94135d2b71a800decafd1436976c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a582c94135d2b71a800decafd1436976c">getArrayColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:a582c94135d2b71a800decafd1436976c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of some array values in a column.  <a href="#a582c94135d2b71a800decafd1436976c">More...</a><br/></td></tr>
+<tr class="separator:a582c94135d2b71a800decafd1436976c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e0cc80496e9a370f1b1152018d6c115"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a1e0cc80496e9a370f1b1152018d6c115">getColumnSliceCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr) const </td></tr>
+<tr class="memdesc:a1e0cc80496e9a370f1b1152018d6c115"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get subsections from some arrays in the column.  <a href="#a1e0cc80496e9a370f1b1152018d6c115">More...</a><br/></td></tr>
+<tr class="separator:a1e0cc80496e9a370f1b1152018d6c115"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3edc9b0121d12d853a9774a21198a62c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a3edc9b0121d12d853a9774a21198a62c">put</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const void *dataPtr)</td></tr>
+<tr class="memdesc:a3edc9b0121d12d853a9774a21198a62c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the value in a particular cell.  <a href="#a3edc9b0121d12d853a9774a21198a62c">More...</a><br/></td></tr>
+<tr class="separator:a3edc9b0121d12d853a9774a21198a62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcd93e076f10e0ff858c45437f070a39"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#abcd93e076f10e0ff858c45437f070a39">putArray</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:abcd93e076f10e0ff858c45437f070a39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the array value in a particular cell.  <a href="#abcd93e076f10e0ff858c45437f070a39">More...</a><br/></td></tr>
+<tr class="separator:abcd93e076f10e0ff858c45437f070a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a28379c23e4e2e04376ab08f3621f7c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a4a28379c23e4e2e04376ab08f3621f7c">putSlice</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:a4a28379c23e4e2e04376ab08f3621f7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a slice of an N-dimensional array in a particular cell.  <a href="#a4a28379c23e4e2e04376ab08f3621f7c">More...</a><br/></td></tr>
+<tr class="separator:a4a28379c23e4e2e04376ab08f3621f7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee647c3c487c8b77f17de74e2b549546"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#aee647c3c487c8b77f17de74e2b549546">putScalarColumn</a> (const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:aee647c3c487c8b77f17de74e2b549546"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the vector of all scalar values in the column.  <a href="#aee647c3c487c8b77f17de74e2b549546">More...</a><br/></td></tr>
+<tr class="separator:aee647c3c487c8b77f17de74e2b549546"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe7a25daf701b04b3ccdefd2b2dab354"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#afe7a25daf701b04b3ccdefd2b2dab354">putArrayColumn</a> (const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:afe7a25daf701b04b3ccdefd2b2dab354"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the array of all array values in the column.  <a href="#afe7a25daf701b04b3ccdefd2b2dab354">More...</a><br/></td></tr>
+<tr class="separator:afe7a25daf701b04b3ccdefd2b2dab354"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46080f40c82a79bcfcadfefbe4b943a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#ac46080f40c82a79bcfcadfefbe4b943a">putColumnSlice</a> (const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:ac46080f40c82a79bcfcadfefbe4b943a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put into subsections of all table arrays in the column.  <a href="#ac46080f40c82a79bcfcadfefbe4b943a">More...</a><br/></td></tr>
+<tr class="separator:ac46080f40c82a79bcfcadfefbe4b943a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b4bbc81e874cda754651377bf486da5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a8b4bbc81e874cda754651377bf486da5">putScalarColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:a8b4bbc81e874cda754651377bf486da5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the vector of some scalar values in a column.  <a href="#a8b4bbc81e874cda754651377bf486da5">More...</a><br/></td></tr>
+<tr class="separator:a8b4bbc81e874cda754651377bf486da5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a739442d169c1689947146f33d9ef1fec"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a739442d169c1689947146f33d9ef1fec">putArrayColumnCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:a739442d169c1689947146f33d9ef1fec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of some array values in a column.  <a href="#a739442d169c1689947146f33d9ef1fec">More...</a><br/></td></tr>
+<tr class="separator:a739442d169c1689947146f33d9ef1fec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a8626db806612e103232f83574b9d27"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a4a8626db806612e103232f83574b9d27">putColumnSliceCells</a> (const <a class="el" href="classcasacore_1_1RefRows.html">RefRows</a> &amp;rownrs, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> &amp;, const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;dataPtr)</td></tr>
+<tr class="memdesc:a4a8626db806612e103232f83574b9d27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put subsections of some arrays in the column.  <a href="#a4a8626db806612e103232f83574b9d27">More...</a><br/></td></tr>
+<tr class="separator:a4a8626db806612e103232f83574b9d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abecfada42a33801a9af46d91732e4699"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1ColumnCache.html">ColumnCache</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#abecfada42a33801a9af46d91732e4699">columnCache</a> ()</td></tr>
 <tr class="memdesc:abecfada42a33801a9af46d91732e4699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the underlying column cache.  <a href="#abecfada42a33801a9af46d91732e4699">More...</a><br/></td></tr>
 <tr class="separator:abecfada42a33801a9af46d91732e4699"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a811cdf55d3f823ff8100a82a0438cf85"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a811cdf55d3f823ff8100a82a0438cf85">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nbytes)</td></tr>
 <tr class="memdesc:a811cdf55d3f823ff8100a82a0438cf85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#a811cdf55d3f823ff8100a82a0438cf85">More...</a><br/></td></tr>
 <tr class="separator:a811cdf55d3f823ff8100a82a0438cf85"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85a7441a2ea997f9fc550517f12b43d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a85a7441a2ea997f9fc550517f12b43d0">makeSortKey</a> (<a class="el" href="classcasacore_1_1Sort.html">Sort</a> &amp;, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt; &amp;cmpObj, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> order, const void *&amp;dataSave)</td></tr>
-<tr class="memdesc:a85a7441a2ea997f9fc550517f12b43d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add this column and its data to the <a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> object.  <a href="#a85a7441a2ea997f9fc550517f12b43d0">More...</a><br/></td></tr>
-<tr class="separator:a85a7441a2ea997f9fc550517f12b43d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bfa2b7477d246d69dd417bf12cedd3a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#a6bfa2b7477d246d69dd417bf12cedd3a">freeSortKey</a> (const void *&amp;dataSave)</td></tr>
-<tr class="memdesc:a6bfa2b7477d246d69dd417bf12cedd3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free storage on the heap allocated by makeSortkey().  <a href="#a6bfa2b7477d246d69dd417bf12cedd3a">More...</a><br/></td></tr>
-<tr class="separator:a6bfa2b7477d246d69dd417bf12cedd3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acad1d9ee44ffc9832d6e4326580e87ed"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#acad1d9ee44ffc9832d6e4326580e87ed">makeSortKey</a> (<a class="el" href="classcasacore_1_1Sort.html">Sort</a> &amp;, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt; &amp;cmpObj, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> order, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &gt; &amp;dataSave)</td></tr>
+<tr class="memdesc:acad1d9ee44ffc9832d6e4326580e87ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add this column and its data to the <a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> object.  <a href="#acad1d9ee44ffc9832d6e4326580e87ed">More...</a><br/></td></tr>
+<tr class="separator:acad1d9ee44ffc9832d6e4326580e87ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee751c4d2605cfb5bd21054015b5640e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RefColumn.html#aee751c4d2605cfb5bd21054015b5640e">allocIterBuf</a> (void *&amp;lastVal, void *&amp;curVal, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt; &amp;cmpObj)</td></tr>
 <tr class="memdesc:aee751c4d2605cfb5bd21054015b5640e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate value buffers for the table iterator.  <a href="#aee751c4d2605cfb5bd21054015b5640e">More...</a><br/></td></tr>
 <tr class="separator:aee751c4d2605cfb5bd21054015b5640e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -251,71 +237,71 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa4b53af9303e3c182a232036ee65e419 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1ColumnDesc.html">ColumnDesc</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aa4b53af9303e3c182a232036ee65e419">columnDesc</a> () const </td></tr>
 <tr class="memdesc:aa4b53af9303e3c182a232036ee65e419 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get const access to the column description.  <a href="#aa4b53af9303e3c182a232036ee65e419">More...</a><br/></td></tr>
 <tr class="separator:aa4b53af9303e3c182a232036ee65e419 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f4931e5110ee4fafa0619d5e15b42ee inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a7f4931e5110ee4fafa0619d5e15b42ee">tileShape</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr) const </td></tr>
-<tr class="memdesc:a7f4931e5110ee4fafa0619d5e15b42ee inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the tile shape of an array in a particular cell.  <a href="#a7f4931e5110ee4fafa0619d5e15b42ee">More...</a><br/></td></tr>
-<tr class="separator:a7f4931e5110ee4fafa0619d5e15b42ee inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c7a76925c7f477750ca18fd4f741eb6 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a3c7a76925c7f477750ca18fd4f741eb6">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="memdesc:a3c7a76925c7f477750ca18fd4f741eb6 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value from the row and convert it to the required type.  <a href="#a3c7a76925c7f477750ca18fd4f741eb6">More...</a><br/></td></tr>
-<tr class="separator:a3c7a76925c7f477750ca18fd4f741eb6 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae44845dcf2293a46c03e7b410927205e inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#ae44845dcf2293a46c03e7b410927205e">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:ae44845dcf2293a46c03e7b410927205e inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a090bace7a9992d6b2046979fb3e13b66 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a090bace7a9992d6b2046979fb3e13b66">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:a090bace7a9992d6b2046979fb3e13b66 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a87c92122a0609bfac33df325ed1ba7 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a8a87c92122a0609bfac33df325ed1ba7">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:a8a87c92122a0609bfac33df325ed1ba7 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8230838fdd700c86f9382349191cdea inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aa8230838fdd700c86f9382349191cdea">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:aa8230838fdd700c86f9382349191cdea inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66e483c3a13e59869f88623dafa84938 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a66e483c3a13e59869f88623dafa84938">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:a66e483c3a13e59869f88623dafa84938 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c7f0bac475e781ccbf6137a8d7325e0 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a5c7f0bac475e781ccbf6137a8d7325e0">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:a5c7f0bac475e781ccbf6137a8d7325e0 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af70ed04f7b4ec870d3fc2b56e0b62160 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#af70ed04f7b4ec870d3fc2b56e0b62160">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, float &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:af70ed04f7b4ec870d3fc2b56e0b62160 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2de3e714f823c1f1fe92b3046a9d71c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#ac2de3e714f823c1f1fe92b3046a9d71c">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, double &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:ac2de3e714f823c1f1fe92b3046a9d71c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2f80915d4671e1ed3d9627fc1600d50 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#af2f80915d4671e1ed3d9627fc1600d50">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, Complex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:af2f80915d4671e1ed3d9627fc1600d50 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af77ea8eba27ed21ff8a1dc5acb6f8b0b inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#af77ea8eba27ed21ff8a1dc5acb6f8b0b">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, DComplex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:af77ea8eba27ed21ff8a1dc5acb6f8b0b inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97e384d6f55c67ca7c0620b9bb936a2d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a97e384d6f55c67ca7c0620b9bb936a2d">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:a97e384d6f55c67ca7c0620b9bb936a2d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e23b448569e6b2073fc72a97d45f0b6 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a8e23b448569e6b2073fc72a97d45f0b6">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, <a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
-<tr class="separator:a8e23b448569e6b2073fc72a97d45f0b6 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa216e5c4659fa436607747e1d6b35587 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aa216e5c4659fa436607747e1d6b35587">getScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, void *<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataTypeId) const </td></tr>
-<tr class="memdesc:aa216e5c4659fa436607747e1d6b35587 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a scalar for the other data types.  <a href="#aa216e5c4659fa436607747e1d6b35587">More...</a><br/></td></tr>
-<tr class="separator:aa216e5c4659fa436607747e1d6b35587 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bf6518ea37886f7ce6ba35e18e7defc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a2bf6518ea37886f7ce6ba35e18e7defc">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="memdesc:a2bf6518ea37886f7ce6ba35e18e7defc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the value into the row and convert it from the given type.  <a href="#a2bf6518ea37886f7ce6ba35e18e7defc">More...</a><br/></td></tr>
-<tr class="separator:a2bf6518ea37886f7ce6ba35e18e7defc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc8c59ea52a11b76457298376cce51d8 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#adc8c59ea52a11b76457298376cce51d8">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:adc8c59ea52a11b76457298376cce51d8 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a204be63e95176261f1a474d7999bc239 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a204be63e95176261f1a474d7999bc239">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:a204be63e95176261f1a474d7999bc239 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acaea81d86801b7186b4d34a201238322 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#acaea81d86801b7186b4d34a201238322">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:acaea81d86801b7186b4d34a201238322 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2dd3b7389729b1f08df50cc9f3692be inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aa2dd3b7389729b1f08df50cc9f3692be">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:aa2dd3b7389729b1f08df50cc9f3692be inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a507f57919f271957254491ec246c92ba inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a507f57919f271957254491ec246c92ba">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:a507f57919f271957254491ec246c92ba inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6628500ba3bf0679f366d9a46d9d543 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#af6628500ba3bf0679f366d9a46d9d543">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:af6628500ba3bf0679f366d9a46d9d543 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64b5f7e164cda189db7a65e80ca91e3c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a64b5f7e164cda189db7a65e80ca91e3c">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const float &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:a64b5f7e164cda189db7a65e80ca91e3c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0445a8c3ea4afccf89aea371d9331c12 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a0445a8c3ea4afccf89aea371d9331c12">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const double &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:a0445a8c3ea4afccf89aea371d9331c12 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45f62982b57ffc788dbaab58f0b77b93 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a45f62982b57ffc788dbaab58f0b77b93">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const Complex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:a45f62982b57ffc788dbaab58f0b77b93 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9e7504df1c0bbfbc4cd030901459755 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#af9e7504df1c0bbfbc4cd030901459755">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const DComplex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:af9e7504df1c0bbfbc4cd030901459755 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad81887d2029b782e75fad6250d5b8281 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#ad81887d2029b782e75fad6250d5b8281">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:ad81887d2029b782e75fad6250d5b8281 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f6087bb3c48d0c37d2e0be10b3f6c86 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a2f6087bb3c48d0c37d2e0be10b3f6c86">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="namespacecasacore.html#aee8247dad3ca180405bdb6835513a5ad">Char</a> *<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:a2f6087bb3c48d0c37d2e0be10b3f6c86 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa88aebf4e2d0fc9f1355eaf6d2b252dc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aa88aebf4e2d0fc9f1355eaf6d2b252dc">putScalar</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr, const <a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
-<tr class="separator:aa88aebf4e2d0fc9f1355eaf6d2b252dc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6bbc2c5104f97d48253d5892c325556 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#ab6bbc2c5104f97d48253d5892c325556">makeRefSortKey</a> (<a class="el" href="classcasacore_1_1Sort.html">Sort</a> &amp;, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt; &amp;cmpObj, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> order, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &amp;rownrs, const void *&amp;dataSave)</td></tr>
-<tr class="memdesc:ab6bbc2c5104f97d48253d5892c325556 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do it only for the given row numbers.  <a href="#ab6bbc2c5104f97d48253d5892c325556">More...</a><br/></td></tr>
-<tr class="separator:ab6bbc2c5104f97d48253d5892c325556 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fa3a0b5dcf4155191bc7bdd2ea9c6ac inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a9fa3a0b5dcf4155191bc7bdd2ea9c6ac">tileShape</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr) const </td></tr>
+<tr class="memdesc:a9fa3a0b5dcf4155191bc7bdd2ea9c6ac inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the tile shape of an array in a particular cell.  <a href="#a9fa3a0b5dcf4155191bc7bdd2ea9c6ac">More...</a><br/></td></tr>
+<tr class="separator:a9fa3a0b5dcf4155191bc7bdd2ea9c6ac inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a338095fededce5ddfe003d859576e846 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a338095fededce5ddfe003d859576e846">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="memdesc:a338095fededce5ddfe003d859576e846 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value from the row and convert it to the required type.  <a href="#a338095fededce5ddfe003d859576e846">More...</a><br/></td></tr>
+<tr class="separator:a338095fededce5ddfe003d859576e846 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bb00e3db8d7851fabac12ab9ea2718b inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a1bb00e3db8d7851fabac12ab9ea2718b">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a1bb00e3db8d7851fabac12ab9ea2718b inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49e794492144421a836e3478c4908fe7 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a49e794492144421a836e3478c4908fe7">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a49e794492144421a836e3478c4908fe7 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c3b48848a3d1da3fb1bfe47c5763049 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a4c3b48848a3d1da3fb1bfe47c5763049">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a4c3b48848a3d1da3fb1bfe47c5763049 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a638bd603ce91bd03eecb76813acdbb inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a1a638bd603ce91bd03eecb76813acdbb">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a1a638bd603ce91bd03eecb76813acdbb inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a914bdbf24911ae34c29545fe76c377a4 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a914bdbf24911ae34c29545fe76c377a4">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a914bdbf24911ae34c29545fe76c377a4 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6db65cd34d5a3df8e017be73b17031e0 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a6db65cd34d5a3df8e017be73b17031e0">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a6db65cd34d5a3df8e017be73b17031e0 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4382a13db137d4869b521972458dd5a3 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a4382a13db137d4869b521972458dd5a3">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, float &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a4382a13db137d4869b521972458dd5a3 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a521c6248f50d03af81fa71ce6c79c77d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a521c6248f50d03af81fa71ce6c79c77d">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, double &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a521c6248f50d03af81fa71ce6c79c77d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71b6ad70aa0c76006d260b1d0b93ee1c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a71b6ad70aa0c76006d260b1d0b93ee1c">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, Complex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a71b6ad70aa0c76006d260b1d0b93ee1c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abffa72ec5f0cf105171cb2045612f347 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#abffa72ec5f0cf105171cb2045612f347">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, DComplex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:abffa72ec5f0cf105171cb2045612f347 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad88f13b54b8fb858d5eabe6a399bd716 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#ad88f13b54b8fb858d5eabe6a399bd716">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:ad88f13b54b8fb858d5eabe6a399bd716 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aab5987e4826f1dd4fae9b1ccafd1fa inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a3aab5987e4826f1dd4fae9b1ccafd1fa">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, <a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>) const </td></tr>
+<tr class="separator:a3aab5987e4826f1dd4fae9b1ccafd1fa inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a677597318e1ecf818d21de57dc6d4c1d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a677597318e1ecf818d21de57dc6d4c1d">getScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, void *<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataTypeId) const </td></tr>
+<tr class="memdesc:a677597318e1ecf818d21de57dc6d4c1d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a scalar for the other data types.  <a href="#a677597318e1ecf818d21de57dc6d4c1d">More...</a><br/></td></tr>
+<tr class="separator:a677597318e1ecf818d21de57dc6d4c1d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedf5e09aa72fc600661a2cfa30bf8730 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aedf5e09aa72fc600661a2cfa30bf8730">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="memdesc:aedf5e09aa72fc600661a2cfa30bf8730 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the value into the row and convert it from the given type.  <a href="#aedf5e09aa72fc600661a2cfa30bf8730">More...</a><br/></td></tr>
+<tr class="separator:aedf5e09aa72fc600661a2cfa30bf8730 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60b778d609db609ef4bac952f580ad24 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a60b778d609db609ef4bac952f580ad24">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#a016442aacbe9faceef443b62ab555eb9">uChar</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a60b778d609db609ef4bac952f580ad24 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cd84f2fd3e3105cdba80d41c684356d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a1cd84f2fd3e3105cdba80d41c684356d">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#a53f2a3afd42e85d94a0a009052a442a6">Short</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a1cd84f2fd3e3105cdba80d41c684356d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdbf2b5f340e0ae4f79234681a738916 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#abdbf2b5f340e0ae4f79234681a738916">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#a659a7f6002b9b5c7984b02aef64b77ad">uShort</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:abdbf2b5f340e0ae4f79234681a738916 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8efb18af82564a1db2335e4be6bc15dc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a8efb18af82564a1db2335e4be6bc15dc">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a8efb18af82564a1db2335e4be6bc15dc inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae176a38f34229f6687888dd93280d2b1 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#ae176a38f34229f6687888dd93280d2b1">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:ae176a38f34229f6687888dd93280d2b1 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67c2905d05a1c191922c5d84b2250680 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a67c2905d05a1c191922c5d84b2250680">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a67c2905d05a1c191922c5d84b2250680 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d3ff0e4a463d7e846d7a2f0f133158f inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a9d3ff0e4a463d7e846d7a2f0f133158f">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const float &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a9d3ff0e4a463d7e846d7a2f0f133158f inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a1152b02d97a90f7bf9157b6f6c8303 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a2a1152b02d97a90f7bf9157b6f6c8303">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const double &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a2a1152b02d97a90f7bf9157b6f6c8303 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb840d32b70b1738fd046e1248b60a1c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#adb840d32b70b1738fd046e1248b60a1c">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const Complex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:adb840d32b70b1738fd046e1248b60a1c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3082ca4cb0594ec8d2ff85d63f9f0cb inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#af3082ca4cb0594ec8d2ff85d63f9f0cb">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const DComplex &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:af3082ca4cb0594ec8d2ff85d63f9f0cb inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe9506e5553eb93d718980c7e8694e6c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#afe9506e5553eb93d718980c7e8694e6c">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:afe9506e5553eb93d718980c7e8694e6c inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05f7817d75969173f443d7a17f89c4e5 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a05f7817d75969173f443d7a17f89c4e5">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="namespacecasacore.html#aee8247dad3ca180405bdb6835513a5ad">Char</a> *<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:a05f7817d75969173f443d7a17f89c4e5 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee906ec5a8675bb8c165615734534c02 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#aee906ec5a8675bb8c165615734534c02">putScalar</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr, const <a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
+<tr class="separator:aee906ec5a8675bb8c165615734534c02 inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a686e16d77471e3bb0eb687277b6cda7d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1BaseColumn.html#a686e16d77471e3bb0eb687277b6cda7d">makeRefSortKey</a> (<a class="el" href="classcasacore_1_1Sort.html">Sort</a> &amp;, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1BaseCompare.html">BaseCompare</a> &gt; &amp;cmpObj, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> order, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &gt; &amp;dataSave)</td></tr>
+<tr class="memdesc:a686e16d77471e3bb0eb687277b6cda7d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do it only for the given row numbers.  <a href="#a686e16d77471e3bb0eb687277b6cda7d">More...</a><br/></td></tr>
+<tr class="separator:a686e16d77471e3bb0eb687277b6cda7d inherit pub_methods_classcasacore_1_1BaseColumn"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -471,174 +457,6 @@ Act upon removal of rows or the underlying column </li>
 
 </div>
 </div>
-<a class="anchor" id="ac61eee9c7492440328ebb0710ff8572d"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::canAccessArrayColumn </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;&#160;</td>
-          <td class="paramname"><em>reask</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>It can handle an array column if the underlying column can handle cells in an array column. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ab1ff229d8113e7169e235b479017b32e">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a78f17666789ceb553ece27347cd314e9"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::canAccessArrayColumnCells </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;&#160;</td>
-          <td class="paramname"><em>reask</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>It can handle cells in an array column if the underlying column can do it. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ab8ee4502f04b9ddf4f74b27c673b736e">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aee0741398e862db91721c35d294440e8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::canAccessColumnSlice </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;&#160;</td>
-          <td class="paramname"><em>reask</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>It can handle a column slice if the underlying column can handle a collection of cells in a column and a column slice. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a4210f0295637a8d41842481c8070474e">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ae28775f47977f9c13e283e33ae6ed08f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::canAccessScalarColumn </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;&#160;</td>
-          <td class="paramname"><em>reask</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>It can handle a scalar column if the underlying column can handle cells in a scalar column. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a6c902445523545d2b59f2337b30a11a7">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a81350a1c7452675168d6530b656005e8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::canAccessScalarColumnCells </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;&#160;</td>
-          <td class="paramname"><em>reask</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>It can handle cells in a scalar column if the underlying column can do it. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ae1d7e20dc23ed0ddbea5e14c89b7ca9f">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="af748fc5c54224e701382c7aea73cdf33"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::canAccessSlice </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &amp;&#160;</td>
-          <td class="paramname"><em>reask</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>It can handle a cell slice if the underlying column can do it. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a365fb21eb5dab795ca3b04539b12fe16">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="aae217da4e923d378aa4fb7742b957129"></a>
 <div class="memitem">
 <div class="memproto">
@@ -731,36 +549,7 @@ Act upon removal of rows or the underlying column </li>
 
 </div>
 </div>
-<a class="anchor" id="a6bfa2b7477d246d69dd417bf12cedd3a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void casacore::RefColumn::freeSortKey </td>
-          <td>(</td>
-          <td class="paramtype">const void *&amp;&#160;</td>
-          <td class="paramname"><em>dataSave</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Free storage on the heap allocated by makeSortkey(). </p>
-<p>The pointer will be set to zero. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a7a197c5181ac6a2d45c42277878c113b">casacore::BaseColumn</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a749c0f881ec7ec25b6d9bd561ae505ab"></a>
+<a class="anchor" id="ab4400c4d10b7ad5102d80257b185ee9d"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -770,7 +559,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::get </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -795,11 +584,49 @@ Act upon removal of rows or the underlying column </li>
 <p>Get the value from a particular cell. </p>
 <p>This can be a scalar or an array. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#a19b5dc884a62b7adb76f8c06fb959b0b">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#af779e8dad7d85f6f84e9639e5aa9b1f6">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a72159176121d85dc763c2d1853ef8c45"></a>
+<a class="anchor" id="a1747296d59a6de6674c1a53e0ca2a431"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void casacore::RefColumn::getArray </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
+          <td class="paramname"><em>rownr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
+          <td class="paramname"><em>dataPtr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get an array from a particular cell. </p>
+
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a58714486c1778c537ac446fe14cdb4e4">casacore::BaseColumn</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae05bd7c308271cb76c0d3f6a64d7abf4"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -809,7 +636,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::getArrayColumn </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -824,11 +651,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Get the array of all array values in a column. </p>
 <p>If the column contains n-dim arrays, the resulting array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a5d2f8aa04adf131eba1ae2afd458b4c9">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a6ba88319cbe16edfd37581c4102e6b0b">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a0f74cf226c2e5e133d0fbfbe503fe7c3"></a>
+<a class="anchor" id="a582c94135d2b71a800decafd1436976c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -844,7 +671,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -863,11 +690,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Get the array of some array values in a column. </p>
 <p>If the column contains n-dim arrays, the resulting array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a69c5a178f455b7a39193cdeb568ca6c8">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#acb81471b8402cd8800ab9abdeb298d62">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a59ae9c4ceb15931ce84fb661f5d45849"></a>
+<a class="anchor" id="ab41e4ac5b89628a42d0f6c27b102142a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -883,7 +710,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -902,11 +729,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Get subsections from all arrays in the column. </p>
 <p>If the column contains n-dim arrays, the resulting array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ab43af58107a2377150b4f7f9f07d34e6">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a0619e139101c812ec4a1e759bacd8f00">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a24eddba6236d8a2b2026d4158b70db50"></a>
+<a class="anchor" id="a1e0cc80496e9a370f1b1152018d6c115"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -928,7 +755,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -947,11 +774,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Get subsections from some arrays in the column. </p>
 <p>If the column contains n-dim arrays, the resulting array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#aeac285cfbd388c285a5f4f1bb8947c19">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a449719136fe46030f4c39f8f5048e302">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a513342b97d1c890cdd196e8b3bd7b853"></a>
+<a class="anchor" id="a029989b465879d25cb33a090170fbfa9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -961,7 +788,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::getScalarColumn </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -975,11 +802,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get the vector of all scalar values in a column. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a43179054a4a4f933cd12dba82c103cab">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a1e1a0b13430174ddc922e14a94b75d38">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a32a2e16b188c2cca77149db759f00c1b"></a>
+<a class="anchor" id="a8c60df3e0e8e1333a8e293d7a0984cb4"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -995,7 +822,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1013,11 +840,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get the vector of some scalar values in a column. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a8edfc1d7c4bd6e9ec14386b14d7829c4">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a6b50ebb914bd7fd29579ac3f82ed556c">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae603a6a77dbd8919a056e65b01d62dd7"></a>
+<a class="anchor" id="ae16e577e5891a83abf815b7bf78c8405"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1027,7 +854,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::getSlice </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1039,7 +866,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1057,11 +884,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get a slice of an N-dimensional array in a particular cell. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a3b96cdbfcf4e7d2a9de6cc73e727aa51">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a986b6dc71d228fe12f2305f54a7bfb51">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac78a22d9bf520e436ad7fa2d05bf9817"></a>
+<a class="anchor" id="a689d92e7aae436e8cc41822812b89660"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1071,13 +898,13 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">void casacore::RefColumn::initialize </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>startRownr</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>endRownr</em>&#160;</td>
         </tr>
         <tr>
@@ -1095,11 +922,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Initialize the rows from startRownr till endRownr (inclusive) with the default value defined in the column description (if defined). </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#ad0d86df3926391749695fe79c707a8e1">casacore::BaseColumn</a>.</p>
+<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#abe68d9fec96eb2798d7d89c48c8671bb">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a34d0495ca98e35b6d22c844c385139cd"></a>
+<a class="anchor" id="a48a7cc55aa5bc2f05f98ac1228ba4d1c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1109,7 +936,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::RefColumn::isDefined </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1123,7 +950,7 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Test if a value in a particular cell has been defined. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#a11a43a244150c4ef584d61777e651e89">casacore::BaseColumn</a>.</p>
+<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#a7187f1e30ae5aa606098e610f830285a">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
@@ -1206,7 +1033,7 @@ Act upon removal of rows or the underlying column </li>
 
 </div>
 </div>
-<a class="anchor" id="a85a7441a2ea997f9fc550517f12b43d0"></a>
+<a class="anchor" id="acad1d9ee44ffc9832d6e4326580e87ed"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1234,7 +1061,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *&amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>dataSave</em>&#160;</td>
         </tr>
         <tr>
@@ -1253,11 +1080,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Add this column and its data to the <a class="el" href="classcasacore_1_1Sort.html" title="Sort on one or more keys, ascending and/or descending. ">Sort</a> object. </p>
 <p>It may allocate some storage on the heap, which will be saved in the argument dataSave. The function freeSortKey must be called to free this storage. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#af388f33a6bcfa9f1fd4ecfdaa2a37b2e">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a1feb0dfc48b7d8670e72f4f185d4b37d">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a346b15b185d975be42570a5d41bdf316"></a>
+<a class="anchor" id="a7d720e99921c21fade69236e1c723e66"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1267,7 +1094,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::RefColumn::ndim </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1281,7 +1108,7 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get the #dimensions of an array in a particular cell. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a35e9d074eda62a2a1c4eae574bb34c3d">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a3611517024b2d666d9e9ba5c9a176ced">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
@@ -1313,7 +1140,7 @@ Act upon removal of rows or the underlying column </li>
 
 </div>
 </div>
-<a class="anchor" id="ac36aeaf0e2a711ae0c9602026f6439a6"></a>
+<a class="anchor" id="ab4630f291fbdcf355557cbdcc4ce0c33"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1321,7 +1148,7 @@ Act upon removal of rows or the underlying column </li>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::RefColumn::nrow </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::RefColumn::nrow </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1336,11 +1163,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get nr of rows in the column. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#a4c8e3336ec46a3c8cb17bf8484d356f6">casacore::BaseColumn</a>.</p>
+<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#a0d68bd40628248cccd51cf096b9eafc6">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="abba539339ba2459d43006d9f941a63f5"></a>
+<a class="anchor" id="a3edc9b0121d12d853a9774a21198a62c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1350,7 +1177,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::put </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1375,11 +1202,49 @@ Act upon removal of rows or the underlying column </li>
 <p>Put the value in a particular cell. </p>
 <p>This can be a scalar or an array. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1BaseColumn.html#ad764416e5396d97e1353b9306830fcd5">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ae19d9d91fb99ef0b588a5095a54ed879">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae6109c15cf9968101c79cdd488df7bcf"></a>
+<a class="anchor" id="abcd93e076f10e0ff858c45437f070a39"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void casacore::RefColumn::putArray </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
+          <td class="paramname"><em>rownr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
+          <td class="paramname"><em>dataPtr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Put the array value in a particular cell. </p>
+
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a9d0095765b1291d81c1706665b561c6a">casacore::BaseColumn</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afe7a25daf701b04b3ccdefd2b2dab354"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1389,7 +1254,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::putArrayColumn </td>
           <td>(</td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1404,11 +1269,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Put the array of all array values in the column. </p>
 <p>If the column contains n-dim arrays, the source array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a1beb44f81f3fd1575471d700e3e6f295">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#abd23491e7550828dffc2dbb54a97d94d">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a65d92dedeaca4b86d79ef71ab108c107"></a>
+<a class="anchor" id="a739442d169c1689947146f33d9ef1fec"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1424,7 +1289,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1443,11 +1308,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Get the array of some array values in a column. </p>
 <p>If the column contains n-dim arrays, the resulting array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a0eea49213b1e51625084130935082a53">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ae041332a9d49d24eafbc01850a2de607">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a7b935d8d1928ad01971498de4059678d"></a>
+<a class="anchor" id="ac46080f40c82a79bcfcadfefbe4b943a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1463,7 +1328,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1482,11 +1347,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Put into subsections of all table arrays in the column. </p>
 <p>If the column contains n-dim arrays, the source array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a648faa4faa0609e0dbb750919d950224">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a4643eac97b5882c9b0a765b0d0aea25c">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3dbe53aad53ea15bebff279d624e3591"></a>
+<a class="anchor" id="a4a8626db806612e103232f83574b9d27"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1508,7 +1373,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1527,11 +1392,11 @@ Act upon removal of rows or the underlying column </li>
 <p>Put subsections of some arrays in the column. </p>
 <p>If the column contains n-dim arrays, the source array is (n+1)-dim. The arrays in the column have to have the same shape in all cells. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a4d0008e4d9f62024d668f6b9d6fad148">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a70a1962ff38c7463690459cb8c735289">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a11ecdb7cd0caac214a29485fb0ead75d"></a>
+<a class="anchor" id="aee647c3c487c8b77f17de74e2b549546"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1541,7 +1406,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::putScalarColumn </td>
           <td>(</td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1555,11 +1420,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Put the vector of all scalar values in the column. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ad5aa39f2c1a45e24580fa49a7d7074bd">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a1798688375ad84f2841fba5f12a4d0ec">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a29f695a24f5aa0a41ed8d1feb5325232"></a>
+<a class="anchor" id="a8b4bbc81e874cda754651377bf486da5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1575,7 +1440,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1593,11 +1458,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get the vector of some scalar values in a column. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a3f0904e24dd311b2ee0ec79249f552ac">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#af84f57945158b552565ed1e60167fa9e">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af1dd0ee3a460f38106163d12e11eabd2"></a>
+<a class="anchor" id="a4a28379c23e4e2e04376ab08f3621f7c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1607,7 +1472,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::putSlice </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1619,7 +1484,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1ArrayBase.html">ArrayBase</a> &amp;&#160;</td>
           <td class="paramname"><em>dataPtr</em>&#160;</td>
         </tr>
         <tr>
@@ -1637,7 +1502,7 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Put a slice of an N-dimensional array in a particular cell. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ad2d20c438d1310f0900f6bebe1476b9f">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#afc4838c819db83102430b11fa6974426">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
@@ -1697,7 +1562,7 @@ Act upon removal of rows or the underlying column </li>
 
 </div>
 </div>
-<a class="anchor" id="af6a4c094f5d4313f60921e074fdf7df8"></a>
+<a class="anchor" id="a3e79b556962701097a8556d6a41178af"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1707,7 +1572,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::setShape </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1731,11 +1596,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Set the shape of the array in the given row. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a14aedc38093f317124cdd49b65b242ed">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#ab9554976aa07469e0ffa616d78ce499d">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3028d8f413c4dabc5f176c4fa73851c2"></a>
+<a class="anchor" id="a3e7eaa55e44774293abb391752b484c1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1745,7 +1610,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual void casacore::RefColumn::setShape </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em>, </td>
         </tr>
         <tr>
@@ -1775,11 +1640,11 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Set the shape and tile shape of the array in the given row. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a5cbe22366e701b75cda8de2fabe8d84d">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a1a1e214e344e03697a3c5e961769447a">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ab07fbaa5acb0c1fa75d83299a153d84e"></a>
+<a class="anchor" id="a03f6d73efe83ac653eb8b7b3daa878e3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1789,7 +1654,7 @@ Act upon removal of rows or the underlying column </li>
         <tr>
           <td class="memname">virtual <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> casacore::RefColumn::shape </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -1803,7 +1668,7 @@ Act upon removal of rows or the underlying column </li>
 
 <p>Get the shape of an array in a particular cell. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a4b5f9f7268a1a6a9ea3716bb66ce6deb">casacore::BaseColumn</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1BaseColumn.html#a55d94d48e75bcef89a6900d6468f4138">casacore::BaseColumn</a>.</p>
 
 </div>
 </div>
@@ -1854,7 +1719,7 @@ Act upon removal of rows or the underlying column </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RefColumn_8h_source.html#l00271">271</a> of file <a class="el" href="RefColumn_8h_source.html">RefColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="RefColumn_8h_source.html#l00250">250</a> of file <a class="el" href="RefColumn_8h_source.html">RefColumn.h</a>.</p>
 
 </div>
 </div>
@@ -1876,7 +1741,7 @@ Act upon removal of rows or the underlying column </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RefColumn_8h_source.html#l00270">270</a> of file <a class="el" href="RefColumn_8h_source.html">RefColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="RefColumn_8h_source.html#l00249">249</a> of file <a class="el" href="RefColumn_8h_source.html">RefColumn.h</a>.</p>
 
 </div>
 </div>
@@ -1898,7 +1763,7 @@ Act upon removal of rows or the underlying column </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RefColumn_8h_source.html#l00269">269</a> of file <a class="el" href="RefColumn_8h_source.html">RefColumn.h</a>.</p>
+<p>Definition at line <a class="el" href="RefColumn_8h_source.html#l00248">248</a> of file <a class="el" href="RefColumn_8h_source.html">RefColumn.h</a>.</p>
 
 </div>
 </div>

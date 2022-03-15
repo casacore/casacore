@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -102,16 +103,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Associative <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> with a hash table implementation.  
+<p>Associative <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> with a hash table implementation.  
  <a href="classcasacore_1_1HashMap.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="HashMap_8h_source.html">HashMap.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ab9f19b4f7b0af9b351549b19fbd83bcc"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1HashMap.html#ab9f19b4f7b0af9b351549b19fbd83bcca3012c06b0ce998f776bbde7026562e3d">HashMapVersion</a>
+<tr class="memitem:a492b97960f6dacbf0dba520d9233a8aa"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classcasacore_1_1HashMap.html#a492b97960f6dacbf0dba520d9233a8aaa3012c06b0ce998f776bbde7026562e3d">HashMapVersion</a>
  }</td></tr>
-<tr class="separator:ab9f19b4f7b0af9b351549b19fbd83bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a492b97960f6dacbf0dba520d9233a8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a607d65109aa7bbda2db5e6b7ec851230"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1HashMap.html#a607d65109aa7bbda2db5e6b7ec851230">Func</a> )(const key &amp;)</td></tr>
 <tr class="memdesc:a607d65109aa7bbda2db5e6b7ec851230"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signature of the hash functions.  <a href="#a607d65109aa7bbda2db5e6b7ec851230">More...</a><br/></td></tr>
 <tr class="separator:a607d65109aa7bbda2db5e6b7ec851230"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -279,7 +280,7 @@ Friends</h2></td></tr>
 <div class="textblock"><h3>template&lt;class key, class val&gt;<br/>
 class casacore::HashMap&lt; key, val &gt;</h3>
 
-<p>Associative <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> with a hash table implementation. </p>
+<p>Associative <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> with a hash table implementation. </p>
 <h3>Intended use:</h3>
 <p>Public interface </p>
 <h3>Review Status</h3>
@@ -319,9 +320,9 @@ a default constructor or a specialization of <code>defaultHashValue()</code> for
 <p>each of these sources was utilized in the development of this set of classes, and in particular, the preliminary implementation was the source for the hashing algorithm used in this set of classes.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="HashMap_example2"></a></p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/casa/Containers/HashMap.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/casa/BasicSL/String.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/casa/iostream.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="HashMap_8h.html">casacore/casa/Containers/HashMap.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="String_8h.html">casacore/casa/BasicSL/String.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="iostream_8h.html">casacore/casa/iostream.h</a>&gt;</span></div>
 <div class="line"></div>
 <div class="line">main() {</div>
 <div class="line">HashMap&lt;String,Int&gt; <a class="code" href="classcasacore_1_1HashMap.html#adbd6551b431aeb325294c6e81708cdb7">hash</a>;</div>
@@ -411,7 +412,7 @@ template&lt;class key, class val&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
-<a class="anchor" id="ab9f19b4f7b0af9b351549b19fbd83bcc"></a>
+<a class="anchor" id="a492b97960f6dacbf0dba520d9233a8aa"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -423,7 +424,7 @@ template&lt;class key, class val&gt; </div>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ab9f19b4f7b0af9b351549b19fbd83bcca3012c06b0ce998f776bbde7026562e3d"></a>HashMapVersion</em>&nbsp;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a492b97960f6dacbf0dba520d9233a8aaa3012c06b0ce998f776bbde7026562e3d"></a>HashMapVersion</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
 </table>
 

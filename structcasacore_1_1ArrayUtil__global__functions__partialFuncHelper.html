@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -102,8 +103,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a245e7bd8d6feef89d80905a9b095d68a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayUtil__global__functions__partialFuncHelper.html#a245e7bd8d6feef89d80905a9b095d68a">partialFuncHelper</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;nelemCont, <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;resultShape, <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;incr, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;sourceShape, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;collapseAxes)</td></tr>
-<tr class="separator:a245e7bd8d6feef89d80905a9b095d68a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad91eb775d372fcc7e1265bb404af934c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1ArrayUtil__global__functions__partialFuncHelper.html#ad91eb775d372fcc7e1265bb404af934c">partialFuncHelper</a> (int &amp;nelemCont, <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;resultShape, <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;incr, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;sourceShape, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;collapseAxes)</td></tr>
+<tr class="separator:ad91eb775d372fcc7e1265bb404af934c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Helper function for partialX functions. </p>
@@ -112,16 +113,16 @@ Public Member Functions</h2></td></tr>
 <h3>Synopsis</h3>
 <p>This is a specialized helper function for functions like partialSums. It determines the shape of the resulting array and calculates the result increments when iterating linearly through the source array. It returns the first result axis which indicates the number of the first contiguous collapse axes. The number of contiguous data points is returned in nelemCont. <a class="anchor" id="ArrayUtil_partialFuncHelper"></a> </p>
 
-<p>Definition at line <a class="el" href="ArrayUtil_8h_source.html#l00186">186</a> of file <a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayUtil_8h_source.html#l00184">184</a> of file <a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a245e7bd8d6feef89d80905a9b095d68a"></a>
+<a class="anchor" id="ad91eb775d372fcc7e1265bb404af934c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::ArrayUtil_global_functions_partialFuncHelper::partialFuncHelper </td>
+          <td class="memname">size_t casacore::ArrayUtil_global_functions_partialFuncHelper::partialFuncHelper </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;&#160;</td>
+          <td class="paramtype">int &amp;&#160;</td>
           <td class="paramname"><em>nelemCont</em>, </td>
         </tr>
         <tr>

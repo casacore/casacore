@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -121,9 +122,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_SYMLINK_H</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/OS/Path.h&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/OS/File.h&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Path_8h.html">casacore/casa/OS/Path.h</a>&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="File_8h.html">casacore/casa/OS/File.h</a>&gt;</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -296,8 +297,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_ad550591baa9bba2e2ba2cb0544c974de"><div class="ttname"><a href="classcasacore_1_1SymLink.html#ad550591baa9bba2e2ba2cb0544c974de">casacore::SymLink::move</a></div><div class="ttdeci">void move(const Path &amp;target, Bool overwrite=True)</div><div class="ttdoc">Move the symlink to the target path using the system command mv. </div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_aa9cd6a610c4943a369f69f4036e82d7a"><div class="ttname"><a href="classcasacore_1_1SymLink.html#aa9cd6a610c4943a369f69f4036e82d7a">casacore::SymLink::getSymLink</a></div><div class="ttdeci">String getSymLink() const </div><div class="ttdoc">Get the value of the symlink. </div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html"><div class="ttname"><a href="classcasacore_1_1SymLink.html">casacore::SymLink</a></div><div class="ttdoc">Get information about, and manipulate symbolic links. </div><div class="ttdef"><b>Definition:</b> <a href="SymLink_8h_source.html#l00100">SymLink.h:100</a></div></div>
 <div class="ttc" id="classcasacore_1_1Path_html"><div class="ttname"><a href="classcasacore_1_1Path.html">casacore::Path</a></div><div class="ttdoc">Path name of a file. </div><div class="ttdef"><b>Definition:</b> <a href="Path_8h_source.html#l00126">Path.h:126</a></div></div>
+<div class="ttc" id="File_8h_html"><div class="ttname"><a href="File_8h.html">File.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_ae7887cb7dc4dae03e86816ef65e788c9"><div class="ttname"><a href="classcasacore_1_1SymLink.html#ae7887cb7dc4dae03e86816ef65e788c9">casacore::SymLink::checkPath</a></div><div class="ttdeci">void checkPath() const </div><div class="ttdoc">Check if the path of the file is valid. </div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_a1c673306762149f95426f53afaa0c313"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a1c673306762149f95426f53afaa0c313">casacore::SymLink::create</a></div><div class="ttdeci">void create(const Path &amp;target, Bool overwrite=True)</div><div class="ttdoc">Make a symbolic link to a file given by target. </div></div>
 <div class="ttc" id="classcasacore_1_1File_html"><div class="ttname"><a href="classcasacore_1_1File.html">casacore::File</a></div><div class="ttdoc">Class to get file information and a base for other file classes. </div><div class="ttdef"><b>Definition:</b> <a href="File_8h_source.html#l00101">File.h:101</a></div></div>
@@ -305,9 +308,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1SymLink_html_a0a2273ead3818368bd98e120d30731c0"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a0a2273ead3818368bd98e120d30731c0">casacore::SymLink::copy</a></div><div class="ttdeci">void copy(const Path &amp;target, Bool overwrite=True) const </div><div class="ttdoc">Copy the symlink to the target path using the system command cp. </div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_a07af576bf7989324192467b0eaaa0447"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a07af576bf7989324192467b0eaaa0447">casacore::SymLink::~SymLink</a></div><div class="ttdeci">~SymLink()</div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_a9457d11831e021c9a0c725112916dec5"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a9457d11831e021c9a0c725112916dec5">casacore::SymLink::readSymLink</a></div><div class="ttdeci">Path readSymLink() const </div><div class="ttdoc">Read value of a symbolic link and return it as a Path. </div></div>
+<div class="ttc" id="Path_8h_html"><div class="ttname"><a href="Path_8h.html">Path.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_a5bf5ed5b765388711b6ae2ee00a80836"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a5bf5ed5b765388711b6ae2ee00a80836">casacore::SymLink::followSymLink</a></div><div class="ttdeci">Path followSymLink() const </div><div class="ttdoc">As readSymLink, but the entire symlink chain is followed when the symlinks points to other symlinks...</div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_a9fff01a4b6e440022e1b73b6072ac723"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a9fff01a4b6e440022e1b73b6072ac723">casacore::SymLink::SymLink</a></div><div class="ttdeci">SymLink()</div><div class="ttdoc">The default constructor creates a SymLink with path &amp;quot;.&amp;quot;. </div></div>
-<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00223">String.h:223</a></div></div>
+<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00225">String.h:225</a></div></div>
 <div class="ttc" id="namespacecasacore_html_ad5c850f9e177173e0f7d0ad57091501d"><div class="ttname"><a href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">casacore::True</a></div><div class="ttdeci">const Bool True</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00043">aipstype.h:43</a></div></div>
 <div class="ttc" id="classcasacore_1_1SymLink_html_a5ec4921c800ff5c59dbda80dbdc9e14e"><div class="ttname"><a href="classcasacore_1_1SymLink.html#a5ec4921c800ff5c59dbda80dbdc9e14e">casacore::SymLink::operator=</a></div><div class="ttdeci">SymLink &amp; operator=(const SymLink &amp;that)</div><div class="ttdoc">Assignment (copy semantics). </div></div>
 </div><!-- fragment --></div><!-- contents -->

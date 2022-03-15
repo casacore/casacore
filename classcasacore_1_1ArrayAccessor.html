@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -88,17 +89,139 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">casacore::ArrayAccessor&lt; T, U &gt; Class Template Reference</div>  </div>
+<div class="title">casacore::ArrayAccessor&lt; T, U &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Arrays__module.html">Arrays_module</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Fast 1D accessor/iterator for nD array classes.  
+ <a href="classcasacore_1_1ArrayAccessor.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ArrayAccessor_8h_source.html">ArrayAccessor.h</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class T, class U&gt;<br/>
 class casacore::ArrayAccessor&lt; T, U &gt;</h3>
 
+<p>Fast 1D accessor/iterator for nD array classes. </p>
+<h3>Intended use:</h3>
+<p>Public interface </p>
+<h3>Review Status</h3>
+<dl>
+<dt>Reviewed By:</dt>
+<dd>Ger van Diepen</dd>
+<dt>Date Reviewed:</dt>
+<dd>2002/12/01</dd>
+<dt>Test programs:</dt>
+<dd>tArrayAccessor</dd>
+<dt>Demo programs:</dt>
+<dd>dArrayAccessor</dd>
+</dl>
+<h3>Prerequisite</h3>
+<ul>
+<li>
+<a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> indexing and access methods (<a class="el" href="classcasacore_1_1Array.html">Array</a>) </li>
+</ul>
+<h3>Etymology</h3>
+<p><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> and access, rather than Iterator, which would suggest more standard-like interfaces</p>
+<h3>Synopsis</h3>
+<p>Accessing a large multi-dimensional array by varying the indices of the array can be a slow process. Timing indications are that for a cube indexing with 3 indices was about seven times slower than using a standard 1D C-like index into an array of basic int types. Improvements have made this less, partly due to some pre-calculation necessary for this class, but can still be a factor of more than 3 slower. There are a variety of ways to access elements <code>cube(i,j,k)</code>: </p>
+<ul>
+<li>
+Complete random access in all dimensions will need the use of the indexing: <code>cube(i,j,k);</code> or <code>cube(IPosition(3))</code> as described in the <a class="el" href="classcasacore_1_1Array.html">Array</a> and <a class="el" href="classcasacore_1_1Cube.html">Cube</a> classes </li>
+<li>
+Ordered access of all (or most) elements in an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> (in memory order) can be best achieved by the use of <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>'s <a class="el" href="classcasacore_1_1Array_1_1BaseIteratorSTL.html#Array_STL-iterator">STLIterator</a> classes. This is the fastest way for non-contiguous arrays, and only slightly slower than the use of <code>getStorage</code> for contiguous arrays. </li>
+<li>
+<p class="startli">Ordered access along memory order can also be achieved by the use of the</p>
+<p class="endli"><a class="el" href="classcasacore_1_1Array.html#a1617712814c24c6c90b6d06eec147810"><code>getStorage()</code></a> method. For contiguous arrays this could be slightly faster than the use of the <code>STLIterator</code> (about 10% faster), but slower for non-contiguous arrays. In addition it needs additional memory resources, which will lead to extra overhead. The general use of getStorage is discouraged with the introduction of the STLIterator. It should only be used when an interface to routines in other languages is needed (like Fortran), or when a large <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> is known to be contiguous, and the data have to be referenced many times. </p>
+</li>
+<li>
+Access along one or more axes of a (large) multi-dimensional array is best achieved using the <a class="el" href="classcasacore_1_1ArrayAccessor.html" title="Fast 1D accessor/iterator for nD array classes. ">ArrayAccessor</a> class. Its total access time is about 2 times faster than indexing (for cubes, more for more indices), </li>
+<li>
+Special iteration (like in chunks) are catered for by the <a class="el" href="classcasacore_1_1ArrayIterator.html">ArrayIterator</a>, <a class="el" href="classcasacore_1_1MatrixIterator.html">MatrixIterator</a>, <a class="el" href="classcasacore_1_1VectorIterator.html">VectorIterator</a> classes. </li>
+</ul>
+<p>The <a class="el" href="classcasacore_1_1ArrayAccessor.html" title="Fast 1D accessor/iterator for nD array classes. ">ArrayAccessor</a> class is an iterator like pointer to the data in the array. It is a 1-dimensional accessor. It is created with either a constant (at compile time) axis indicator, or with a run-time axis selector. <a class="el" href="classcasacore_1_1ArrayAccessor.html" title="Fast 1D accessor/iterator for nD array classes. ">ArrayAccessor</a> constructor accepts a <code>const <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>&lt;&gt;</code>. However, the underlying <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> class can be modified at this moment. In future a ConstArrayAccessor class is foreseen. </p>
+<div class="fragment"><div class="line">Matrix&lt;double&gt; mat(1000,500); <span class="comment">// A 1000*500 matrix</span></div>
+<div class="line"><span class="comment">// Fill Matrix..\.</span></div>
+<div class="line"><span class="comment">// Loop over index 1, than index 0:</span></div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;<span class="keywordtype">double</span>, Axis&lt;1&gt; &gt; i(mat); i != i.end(); ++i) {</div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;<span class="keywordtype">double</span>, Axis&lt;0&gt; &gt; j(i); j |= j.end(); ++j) {</div>
+<div class="line"><span class="comment">// Actions on *j (which points to mat(j,i)) or j[n]</span></div>
+<div class="line"><span class="comment">// (which points to mat(j+n,i))</span></div>
+<div class="line">}}</div>
+</div><!-- fragment --><p> For run-time indices it would look like: </p>
+<div class="fragment"><div class="line">Matrix&lt;double&gt; mat(1000,500); <span class="comment">// A 1000*500 matrix</span></div>
+<div class="line"><span class="comment">// Fill Matrix..\.</span></div>
+<div class="line"><span class="comment">// Loop over index 1, than index 0:</span></div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;double, AxisN&gt; i(mat, AxisN(1));</div>
+<div class="line">i != i.end(); ++i) {</div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;double, AxisN&gt; j(i,AxisN(0)); j |= j.end(); ++j) {</div>
+<div class="line"><span class="comment">// Actions on *j (which points to mat(j,i)) or j[n]</span></div>
+<div class="line"><span class="comment">// (which points to mat(j+n,i))</span></div>
+<div class="line">}}</div>
+</div><!-- fragment --><p> Compile-time and run-time axes can be mixed in constructors and assignments.</p>
+<p><br/>
+<b>Tip:</b><em> Like in all comparable situations, memory allocation within a loop can slow down processes; For that reason the example above can be better written (about 25% faster) as: </p>
+<div class="fragment"><div class="line">Matrix&lt;double&gt; mat(1000,500); <span class="comment">// A 1000*500 matrix</span></div>
+<div class="line">ArrayAccessor&lt;double, Axis&lt;0&gt; &gt; j; <span class="comment">// accessor pre-allocated</span></div>
+<div class="line"><span class="comment">// Fill Matrix ;;;</span></div>
+<div class="line"><span class="comment">// Loop over index 1, than index 0:</span></div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;<span class="keywordtype">double</span>, Axis&lt;1&gt; &gt; i(mat); i != i;end(); ++i) {</div>
+<div class="line"><span class="keywordflow">for</span> (j=i; j |= j;end(); ++j) {</div>
+<div class="line"><span class="comment">// Actions on *j (which points to mat(j,i)) or j[n]</span></div>
+<div class="line"><span class="comment">// (which points to mat(j+n,i))</span></div>
+<div class="line">}}</div>
+</div><!-- fragment --><p> </em><br/>
+ <br/>
+<b>Tip:</b><em> The underlying <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> classes are structured with the first index varying fastest; This means that in general (due to caching and swapping) operations are fastest when <code>Axis&lt;0&gt; &gt;</code> is in the innermost loop (if possible of course); </em><br/>
+ The demonstrator and test programs have more examples.</p>
+<p>The accessors can be dereferenced by the dereference operator (<code>*</code>) and by the index operator (<code>[int]</code>), which can handle negative values. Points around the accessor in any axis direction can be addressed along any axis by the templated methods <code>next()</code>, <code>prev()</code> and <code>index(int)</code>. Either run-time or compile-time axes can be used (see example).</p>
+<p>An accessor can be re-initialized with the init() function. It can also be reset() to any pointer value. Mthods <code>end()</code>, <code>begin()</code>, <code>rbegin()</code> and <code>rend()</code> are available for loop control (like in the STL iterators). In addition each of these can have an optional integer argument, specifying an offset (in points along the current axis).</p>
+<p>Operations <code>++ &ndash; += -=</code> are available.</p>
+<p>This class is available for <code>Axis&lt;n&gt;</code> and <code>AxisN</code> specializations only.</p>
+<h3>Example</h3>
+<p><a class="anchor" id="ArrayAccessor_example1"></a></p>
+<div class="fragment"><div class="line"><span class="comment">// get a cube and fill it</span></div>
+<div class="line">Cube&lt;double&gt; cub(5,2,4);</div>
+<div class="line"><a class="code" href="namespacecasacore.html#a3cd469ce2294c9f726fe06d19f1fa0c7">indgen</a>(cub);</div>
+<div class="line"><span class="comment">// Loop over axes 2-0 and use index() over axis 1</span></div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;<span class="keywordtype">double</span>, Axis&lt;2&gt; &gt; i(cub); i != i.end() ; ++i) {</div>
+<div class="line"><span class="keywordflow">for</span> (ArrayAccessor&lt;<span class="keywordtype">double</span>, Axis&lt;0&gt; &gt; j(i);</div>
+<div class="line">j != j.end(); ++j) {</div>
+<div class="line"><span class="comment">// show result</span></div>
+<div class="line">cout &lt;&lt; *j &lt;&lt; <span class="stringliteral">&quot;, &quot;</span> &lt;&lt; j.index&lt;Axis&lt;1&gt; &gt;(1) &lt;&lt; endl;</div>
+<div class="line">};</div>
+<div class="line">};</div>
+</div><!-- fragment --><p> See the demonstrator program in <code>aips/implement/Arrays/test/dArrayAccessor.cc</code> and the test program <code>tArrayAccessor</code> for more examples.</p>
+<h3>Motivation</h3>
+<p>To speed up especially interpolation code</p>
+<h3>Template Type Argument Requirements (T)</h3>
+<ul>
+<li>
+Any valid <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> templating argument </li>
+</ul>
+<h3>Template Type Argument Requirements (U)</h3>
+<ul>
+<li>
+A class <code>Axis&lt;n&gt;</code> </li>
+<li>
+Class AxisN </li>
+</ul>
+<h3>Thrown Exceptions</h3>
+<ul>
+<li>
+Exceptions created in the <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> class </li>
+<li>
+Addressing errors </li>
+</ul>
+<h3>To Do</h3>
+<ul>
+<li>
+add a ConstArrayAccessor class </li>
+</ul>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classcasacore_1_1ArrayAccessor.html" title="Fast 1D accessor/iterator for nD array classes. ">ArrayAccessor</a>&lt;T, Axis&lt;U&gt; &gt; </dd>
+<dd>
+<a class="el" href="classcasacore_1_1ArrayAccessor_3_01T_00_01AxisN_01_4.html" title="Specialization for run-time axes. ">ArrayAccessor&lt;T, AxisN &gt;</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ArrayAccessor_8h_source.html#l00041">41</a> of file <a class="el" href="ArrayAccessor_8h_source.html">ArrayAccessor.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayAccessor_8h_source.html#l00347">347</a> of file <a class="el" href="ArrayAccessor_8h_source.html">ArrayAccessor.h</a>.</p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>casa/Arrays/<a class="el" href="ArrayAccessor_8h_source.html">ArrayAccessor.h</a></li>
 </ul>

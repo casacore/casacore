@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -283,9 +284,9 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:aea2a1f8f2be44230b216f382ce179a05"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCEarthMagnetic.html#aea2a1f8f2be44230b216f382ce179a05">FromTo_p</a> [<a class="el" href="classcasacore_1_1MEarthMagnetic.html#af7f165f3f0aedc1437d1f91f1f25b500a655ee779183b7f6fb7e87cd52842c6c6">MEarthMagnetic::N_Types</a>][<a class="el" href="classcasacore_1_1MEarthMagnetic.html#af7f165f3f0aedc1437d1f91f1f25b500a655ee779183b7f6fb7e87cd52842c6c6">MEarthMagnetic::N_Types</a>]</td></tr>
 <tr class="memdesc:aea2a1f8f2be44230b216f382ce179a05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transition matrix.  <a href="#aea2a1f8f2be44230b216f382ce179a05">More...</a><br/></td></tr>
 <tr class="separator:aea2a1f8f2be44230b216f382ce179a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68c7bb30f27a1f08f4fb268cc1bec19a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCEarthMagnetic.html#a68c7bb30f27a1f08f4fb268cc1bec19a">theirInitOnce</a></td></tr>
-<tr class="memdesc:a68c7bb30f27a1f08f4fb268cc1bec19a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#a68c7bb30f27a1f08f4fb268cc1bec19a">More...</a><br/></td></tr>
-<tr class="separator:a68c7bb30f27a1f08f4fb268cc1bec19a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add9a428ce921eb51cff791bcfc658a94"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCEarthMagnetic.html#add9a428ce921eb51cff791bcfc658a94">theirInitOnceFlag</a></td></tr>
+<tr class="memdesc:add9a428ce921eb51cff791bcfc658a94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#add9a428ce921eb51cff791bcfc658a94">More...</a><br/></td></tr>
+<tr class="separator:add9a428ce921eb51cff791bcfc658a94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -345,7 +346,7 @@ Additional Inherited Members</h2></td></tr>
 Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection conversion routines. ">MCDirection</a> routines directly </li>
 </ul>
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00086">86</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00087">87</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a7946f9b49728ede35bcb757aa57d9fbe"></a>
 <div class="memitem">
@@ -471,7 +472,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00112">112</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00113">113</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
@@ -840,7 +841,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 
 <p><a class="el" href="classcasacore_1_1Conversion.html" title="A class with general conversion definitions. ">Conversion</a> of data. </p>
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00092">92</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00093">93</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
@@ -863,7 +864,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00175">175</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00176">176</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
@@ -887,7 +888,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 
 <p>Transition matrix. </p>
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00182">182</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00183">183</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
@@ -909,7 +910,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00176">176</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00177">177</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
@@ -931,11 +932,11 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00174">174</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00175">175</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a68c7bb30f27a1f08f4fb268cc1bec19a"></a>
+<a class="anchor" id="add9a428ce921eb51cff791bcfc658a94"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -943,7 +944,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> casacore::MCEarthMagnetic::theirInitOnce</td>
+          <td class="memname">std::once_flag casacore::MCEarthMagnetic::theirInitOnceFlag</td>
         </tr>
       </table>
   </td>
@@ -955,7 +956,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 
 <p>Object to ensure safe multi-threaded lazy single initialization. </p>
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00184">184</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00185">185</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>
@@ -979,7 +980,7 @@ Use <a class="el" href="classcasacore_1_1MCDirection.html" title="MDirection con
 
 <p>Transition list. </p>
 
-<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00180">180</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
+<p>Definition at line <a class="el" href="MCEarthMagnetic_8h_source.html#l00181">181</a> of file <a class="el" href="MCEarthMagnetic_8h_source.html">MCEarthMagnetic.h</a>.</p>
 
 </div>
 </div>

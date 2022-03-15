@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -168,9 +169,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a08323d99b2a811ef8fb2fc6f4585ca7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a08323d99b2a811ef8fb2fc6f4585ca7c">getBucketSize</a> () const </td></tr>
 <tr class="memdesc:a08323d99b2a811ef8fb2fc6f4585ca7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bucket size.  <a href="#a08323d99b2a811ef8fb2fc6f4585ca7c">More...</a><br/></td></tr>
 <tr class="separator:a08323d99b2a811ef8fb2fc6f4585ca7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79a958a4b3649df1e868a999350c5ebb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a79a958a4b3649df1e868a999350c5ebb">getNRow</a> () const </td></tr>
-<tr class="memdesc:a79a958a4b3649df1e868a999350c5ebb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of rows in this storage manager.  <a href="#a79a958a4b3649df1e868a999350c5ebb">More...</a><br/></td></tr>
-<tr class="separator:a79a958a4b3649df1e868a999350c5ebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81937bb27884b834463a493f8ed2f14a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a81937bb27884b834463a493f8ed2f14a">getNRow</a> () const </td></tr>
+<tr class="memdesc:a81937bb27884b834463a493f8ed2f14a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of rows in this storage manager.  <a href="#a81937bb27884b834463a493f8ed2f14a">More...</a><br/></td></tr>
+<tr class="separator:a81937bb27884b834463a493f8ed2f14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e92ff865d96f03eecb40de788930830"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a2e92ff865d96f03eecb40de788930830">canAddRow</a> () const </td></tr>
 <tr class="memdesc:a2e92ff865d96f03eecb40de788930830"><td class="mdescLeft">&#160;</td><td class="mdescRight">The storage manager can add rows.  <a href="#a2e92ff865d96f03eecb40de788930830">More...</a><br/></td></tr>
 <tr class="separator:a2e92ff865d96f03eecb40de788930830"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,9 +196,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1a2031991c823a38677c4dc5d42d5681"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1StManArrayFile.html">StManArrayFile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a1a2031991c823a38677c4dc5d42d5681">openArrayFile</a> (<a class="el" href="classcasacore_1_1ByteIO.html#afa01b2ceb18a6e7db1ef40ebcd7158df">ByteIO::OpenOption</a> anOpt)</td></tr>
 <tr class="memdesc:a1a2031991c823a38677c4dc5d42d5681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open (if needed) the file for indirect arrays with the given mode.  <a href="#a1a2031991c823a38677c4dc5d42d5681">More...</a><br/></td></tr>
 <tr class="separator:a1a2031991c823a38677c4dc5d42d5681"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf18317dc92411225d8911301d69b4b7"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#abf18317dc92411225d8911301d69b4b7">find</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aRowNr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aColNr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;aStartRow, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;anEndRow, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;colName)</td></tr>
-<tr class="memdesc:abf18317dc92411225d8911301d69b4b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the bucket containing the column and row and return the pointer to the beginning of the column data in that bucket.  <a href="#abf18317dc92411225d8911301d69b4b7">More...</a><br/></td></tr>
-<tr class="separator:abf18317dc92411225d8911301d69b4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a371f6965c1e0f599cfddb47966e22376"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a371f6965c1e0f599cfddb47966e22376">find</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> aRowNr, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aColNr, <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &amp;aStartRow, <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &amp;anEndRow, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;colName)</td></tr>
+<tr class="memdesc:a371f6965c1e0f599cfddb47966e22376"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the bucket containing the column and row and return the pointer to the beginning of the column data in that bucket.  <a href="#a371f6965c1e0f599cfddb47966e22376">More...</a><br/></td></tr>
+<tr class="separator:a371f6965c1e0f599cfddb47966e22376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2faf88c0388a127400abc78bbacffa88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a2faf88c0388a127400abc78bbacffa88">getNewBucket</a> ()</td></tr>
 <tr class="memdesc:a2faf88c0388a127400abc78bbacffa88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new bucket and get its bucket number.  <a href="#a2faf88c0388a127400abc78bbacffa88">More...</a><br/></td></tr>
 <tr class="separator:a2faf88c0388a127400abc78bbacffa88"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -264,9 +265,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a25a417865a89463ce7f3ec565f350a74">canRenameColumn</a> () const </td></tr>
 <tr class="memdesc:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the data manager allow to rename columns? (default yes)  <a href="#a25a417865a89463ce7f3ec565f350a74">More...</a><br/></td></tr>
 <tr class="separator:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a36062cc49d6197e9df045cff38d37a7a">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nbytes)</td></tr>
-<tr class="memdesc:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#a36062cc49d6197e9df045cff38d37a7a">More...</a><br/></td></tr>
-<tr class="separator:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#ac56c0624343f204b2236ee69eeaa6ed2">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nMiB)</td></tr>
+<tr class="memdesc:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#ac56c0624343f204b2236ee69eeaa6ed2">More...</a><br/></td></tr>
+<tr class="separator:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a75e6607644f05a6168e326fdc902668f">showCacheStatistics</a> (std::ostream &amp;) const </td></tr>
 <tr class="memdesc:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the data manager's IO statistics.  <a href="#a75e6607644f05a6168e326fdc902668f">More...</a><br/></td></tr>
 <tr class="separator:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -331,15 +332,15 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a9fc7e89ea54a500d3700db35b0a29332"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a9fc7e89ea54a500d3700db35b0a29332">flush</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> doFsync)</td></tr>
 <tr class="memdesc:a9fc7e89ea54a500d3700db35b0a29332"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush and optionally fsync the data.  <a href="#a9fc7e89ea54a500d3700db35b0a29332">More...</a><br/></td></tr>
 <tr class="separator:a9fc7e89ea54a500d3700db35b0a29332"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a635d4bba4415702e5a749cdffac224fe"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a635d4bba4415702e5a749cdffac224fe">create</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aNrRows)</td></tr>
-<tr class="memdesc:a635d4bba4415702e5a749cdffac224fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the storage manager create files as needed for a new table.  <a href="#a635d4bba4415702e5a749cdffac224fe">More...</a><br/></td></tr>
-<tr class="separator:a635d4bba4415702e5a749cdffac224fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af69061f57d52a5f1739ab54f2982c51d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#af69061f57d52a5f1739ab54f2982c51d">open</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aRowNr, <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;)</td></tr>
-<tr class="memdesc:af69061f57d52a5f1739ab54f2982c51d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the storage manager file for an existing table, read in the data, and let the <a class="el" href="classcasacore_1_1SSMColumn.html" title="A Column in the Standard Storage Manager. ">SSMColumn</a> objects read their data.  <a href="#af69061f57d52a5f1739ab54f2982c51d">More...</a><br/></td></tr>
-<tr class="separator:af69061f57d52a5f1739ab54f2982c51d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77b0210d10dc0bc759d24b03771c3c1f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a77b0210d10dc0bc759d24b03771c3c1f">resync</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aRowNr)</td></tr>
-<tr class="memdesc:a77b0210d10dc0bc759d24b03771c3c1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resync the storage manager with the new file contents.  <a href="#a77b0210d10dc0bc759d24b03771c3c1f">More...</a><br/></td></tr>
-<tr class="separator:a77b0210d10dc0bc759d24b03771c3c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0284a321a73d9695f3a62aff564d4f13"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a0284a321a73d9695f3a62aff564d4f13">create64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> aNrRows)</td></tr>
+<tr class="memdesc:a0284a321a73d9695f3a62aff564d4f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the storage manager create files as needed for a new table.  <a href="#a0284a321a73d9695f3a62aff564d4f13">More...</a><br/></td></tr>
+<tr class="separator:a0284a321a73d9695f3a62aff564d4f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afef4698957525a793544ba495172a60a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#afef4698957525a793544ba495172a60a">open64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> aRowNr, <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;)</td></tr>
+<tr class="memdesc:afef4698957525a793544ba495172a60a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the storage manager file for an existing table, read in the data, and let the <a class="el" href="classcasacore_1_1SSMColumn.html" title="A Column in the Standard Storage Manager. ">SSMColumn</a> objects read their data.  <a href="#afef4698957525a793544ba495172a60a">More...</a><br/></td></tr>
+<tr class="separator:afef4698957525a793544ba495172a60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad19768c2905f94ea39afcf1f629efa78"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#ad19768c2905f94ea39afcf1f629efa78">resync64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> aRowNr)</td></tr>
+<tr class="memdesc:ad19768c2905f94ea39afcf1f629efa78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resync the storage manager with the new file contents.  <a href="#ad19768c2905f94ea39afcf1f629efa78">More...</a><br/></td></tr>
+<tr class="separator:ad19768c2905f94ea39afcf1f629efa78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9d42925fd1fc137ee5848ddcb65e189"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#aa9d42925fd1fc137ee5848ddcb65e189">reopenRW</a> ()</td></tr>
 <tr class="memdesc:aa9d42925fd1fc137ee5848ddcb65e189"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reopen the storage manager files for read/write.  <a href="#aa9d42925fd1fc137ee5848ddcb65e189">More...</a><br/></td></tr>
 <tr class="separator:aa9d42925fd1fc137ee5848ddcb65e189"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -355,12 +356,12 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:acf6e48acb473e8fe8ab40d8a56ff6cc9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#acf6e48acb473e8fe8ab40d8a56ff6cc9">getNrIndices</a> () const </td></tr>
 <tr class="memdesc:acf6e48acb473e8fe8ab40d8a56ff6cc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of indices in use.  <a href="#acf6e48acb473e8fe8ab40d8a56ff6cc9">More...</a><br/></td></tr>
 <tr class="separator:acf6e48acb473e8fe8ab40d8a56ff6cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7393a457c0033a7b7b51a1efffcdc751"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a7393a457c0033a7b7b51a1efffcdc751">addRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aNrRows)</td></tr>
-<tr class="memdesc:a7393a457c0033a7b7b51a1efffcdc751"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to the storage manager.  <a href="#a7393a457c0033a7b7b51a1efffcdc751">More...</a><br/></td></tr>
-<tr class="separator:a7393a457c0033a7b7b51a1efffcdc751"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46a3b210be4e2b239c4fcaee4d09d4ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a46a3b210be4e2b239c4fcaee4d09d4ba">removeRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> aRowNr)</td></tr>
-<tr class="memdesc:a46a3b210be4e2b239c4fcaee4d09d4ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#a46a3b210be4e2b239c4fcaee4d09d4ba">More...</a><br/></td></tr>
-<tr class="separator:a46a3b210be4e2b239c4fcaee4d09d4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1305b0dc7e6ff12dc721e9154b487191"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a1305b0dc7e6ff12dc721e9154b487191">addRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> aNrRows)</td></tr>
+<tr class="memdesc:a1305b0dc7e6ff12dc721e9154b487191"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to the storage manager.  <a href="#a1305b0dc7e6ff12dc721e9154b487191">More...</a><br/></td></tr>
+<tr class="separator:a1305b0dc7e6ff12dc721e9154b487191"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f1ee281fddf872f2a8253ebdaac85d9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a7f1ee281fddf872f2a8253ebdaac85d9">removeRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> aRowNr)</td></tr>
+<tr class="memdesc:a7f1ee281fddf872f2a8253ebdaac85d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#a7f1ee281fddf872f2a8253ebdaac85d9">More...</a><br/></td></tr>
+<tr class="separator:a7f1ee281fddf872f2a8253ebdaac85d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff0f846631ddae3f05278d6828797ddf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#aff0f846631ddae3f05278d6828797ddf">addColumn</a> (<a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *)</td></tr>
 <tr class="memdesc:aff0f846631ddae3f05278d6828797ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do the final addition of a column.  <a href="#aff0f846631ddae3f05278d6828797ddf">More...</a><br/></td></tr>
 <tr class="separator:aff0f846631ddae3f05278d6828797ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -400,9 +401,9 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:ad858d31760e231e954e047c4569f0578"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1StManArrayFile.html">StManArrayFile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#ad858d31760e231e954e047c4569f0578">itsIosFile</a></td></tr>
 <tr class="memdesc:ad858d31760e231e954e047c4569f0578"><td class="mdescLeft">&#160;</td><td class="mdescRight">The file containing the indirect arrays.  <a href="#ad858d31760e231e954e047c4569f0578">More...</a><br/></td></tr>
 <tr class="separator:ad858d31760e231e954e047c4569f0578"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bb8afe9f5ff8d473e46ae809f764fb9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a8bb8afe9f5ff8d473e46ae809f764fb9">itsNrRows</a></td></tr>
-<tr class="memdesc:a8bb8afe9f5ff8d473e46ae809f764fb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of rows in the columns.  <a href="#a8bb8afe9f5ff8d473e46ae809f764fb9">More...</a><br/></td></tr>
-<tr class="separator:a8bb8afe9f5ff8d473e46ae809f764fb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a2fcded4af7530d6a7294c46b8045f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#a6a2fcded4af7530d6a7294c46b8045f5">itsNrRows</a></td></tr>
+<tr class="memdesc:a6a2fcded4af7530d6a7294c46b8045f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of rows in the columns.  <a href="#a6a2fcded4af7530d6a7294c46b8045f5">More...</a><br/></td></tr>
+<tr class="separator:a6a2fcded4af7530d6a7294c46b8045f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5491089fea40ed821c113e1e2ad8526"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1SSMBase.html#aa5491089fea40ed821c113e1e2ad8526">itsColumnOffset</a></td></tr>
 <tr class="memdesc:aa5491089fea40ed821c113e1e2ad8526"><td class="mdescLeft">&#160;</td><td class="mdescRight">Column offset.  <a href="#aa5491089fea40ed821c113e1e2ad8526">More...</a><br/></td></tr>
 <tr class="separator:aa5491089fea40ed821c113e1e2ad8526"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -465,6 +466,10 @@ Private Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_attribs_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
+<tr class="memitem:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#af8e69129a6b42ff06aec5c43066c5b01">MAXROWNR32</a></td></tr>
+<tr class="memdesc:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the highest row number that can be represented as signed 32-bit.  <a href="#af8e69129a6b42ff06aec5c43066c5b01">More...</a><br/></td></tr>
+<tr class="separator:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
 <tr class="memitem:a4c32d0e690566949850a11b26566e5aa inherit pro_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a4c32d0e690566949850a11b26566e5aa">decrementNcolumn</a> ()</td></tr>
 <tr class="memdesc:a4c32d0e690566949850a11b26566e5aa inherit pro_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrement number of columns (in case a column is deleted).  <a href="#a4c32d0e690566949850a11b26566e5aa">More...</a><br/></td></tr>
@@ -721,7 +726,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="a7393a457c0033a7b7b51a1efffcdc751"></a>
+<a class="anchor" id="a1305b0dc7e6ff12dc721e9154b487191"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -729,9 +734,9 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::SSMBase::addRow </td>
+          <td class="memname">virtual void casacore::SSMBase::addRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>aNrRows</em></td><td>)</td>
           <td></td>
         </tr>
@@ -746,7 +751,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 <p>Add rows to the storage manager. </p>
 <p>Per column it extends number of rows. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a7bf4d388de87925f3da206a37060c548">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a6d34cc1c3c0ba9423927a2ee1fa31df9">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -904,7 +909,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="a635d4bba4415702e5a749cdffac224fe"></a>
+<a class="anchor" id="a0284a321a73d9695f3a62aff564d4f13"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -912,9 +917,9 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::SSMBase::create </td>
+          <td class="memname">virtual void casacore::SSMBase::create64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>aNrRows</em></td><td>)</td>
           <td></td>
         </tr>
@@ -929,7 +934,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 <p>Let the storage manager create files as needed for a new table. </p>
 <p>This allows a column with an indirect array to create its file. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a1d88428031895eea8c7f25c6579d34a1">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a356b5651589c07217c736e24c522eece">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -1077,14 +1082,14 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="abf18317dc92411225d8911301d69b4b7"></a>
+<a class="anchor" id="a371f6965c1e0f599cfddb47966e22376"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">char* casacore::SSMBase::find </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>aRowNr</em>, </td>
         </tr>
         <tr>
@@ -1096,13 +1101,13 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &amp;&#160;</td>
           <td class="paramname"><em>aStartRow</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &amp;&#160;</td>
           <td class="paramname"><em>anEndRow</em>, </td>
         </tr>
         <tr>
@@ -1375,7 +1380,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="a79a958a4b3649df1e868a999350c5ebb"></a>
+<a class="anchor" id="a81937bb27884b834463a493f8ed2f14a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1383,7 +1388,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::SSMBase::getNRow </td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::SSMBase::getNRow </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1448,7 +1453,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 <p>Get rows per bucket for the given column. </p>
 
-<p>Referenced by <a class="el" href="SSMColumn_8h_source.html#l00310">casacore::SSMColumn::getDataPtr()</a>.</p>
+<p>Referenced by <a class="el" href="SSMColumn_8h_source.html#l00284">casacore::SSMColumn::getDataPtr()</a>.</p>
 
 </div>
 </div>
@@ -1773,7 +1778,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="af69061f57d52a5f1739ab54f2982c51d"></a>
+<a class="anchor" id="afef4698957525a793544ba495172a60a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1781,9 +1786,9 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::SSMBase::open </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::SSMBase::open64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>aRowNr</em>, </td>
         </tr>
         <tr>
@@ -1807,7 +1812,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 <p>Open the storage manager file for an existing table, read in the data, and let the <a class="el" href="classcasacore_1_1SSMColumn.html" title="A Column in the Standard Storage Manager. ">SSMColumn</a> objects read their data. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#add9a81a6668484432520d2f0591ae767">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a9eb4efb4b5d3cd913f7c531da74c37cb">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -2014,7 +2019,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="a46a3b210be4e2b239c4fcaee4d09d4ba"></a>
+<a class="anchor" id="a7f1ee281fddf872f2a8253ebdaac85d9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2022,9 +2027,9 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::SSMBase::removeRow </td>
+          <td class="memname">virtual void casacore::SSMBase::removeRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>aRowNr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -2038,7 +2043,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 <p>Delete a row from all columns. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a43ab87fc030fdf69ef193a1217c3226f">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a42f418c608b8edfad8818177a4d48df4">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -2069,7 +2074,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="a77b0210d10dc0bc759d24b03771c3c1f"></a>
+<a class="anchor" id="ad19768c2905f94ea39afcf1f629efa78"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2077,9 +2082,9 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::SSMBase::resync </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::SSMBase::resync64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>aRowNr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -2094,7 +2099,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 <p>Resync the storage manager with the new file contents. </p>
 <p>This is done by clearing the cache. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#aef4c82e212caf10b40bc1469a677f215">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a1551eaef6b3e1701f4a5083859f33048">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -2112,7 +2117,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 </div><div class="memdoc">
 
 <p>Make the current bucket in the cache dirty (i.e. </p>
-<p>something has been changed in it and it needs to be written when removed from the cache). (used by <a class="el" href="classcasacore_1_1SSMColumn.html#a55390c871d69e1d134c54b3d6234fc56" title="Put the given value for the row into the correct data bucket. ">SSMColumn::putValue</a>). </p>
+<p>something has been changed in it and it needs to be written when removed from the cache). (used by <a class="el" href="classcasacore_1_1SSMColumn.html#a834da847e79a0e94c7a7d65a6298c941" title="Put the given value for the row into the correct data bucket. ">SSMColumn::putValue</a>). </p>
 
 </div>
 </div>
@@ -2765,7 +2770,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
 
 </div>
 </div>
-<a class="anchor" id="a8bb8afe9f5ff8d473e46ae809f764fb9"></a>
+<a class="anchor" id="a6a2fcded4af7530d6a7294c46b8045f5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2773,7 +2778,7 @@ When only 1 bucket in use addcolumn can check if there's enough room to fit the 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::SSMBase::itsNrRows</td>
+          <td class="memname"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::SSMBase::itsNrRows</td>
         </tr>
       </table>
   </td>

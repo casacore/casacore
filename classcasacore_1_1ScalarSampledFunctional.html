@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -182,13 +183,13 @@ class casacore::ScalarSampledFunctional&lt; T &gt;</h3>
 <h3>Etymology</h3>
 <p>A <a class="el" href="classcasacore_1_1SampledFunctional.html" title="A base class for indexing into arbitrary data types. ">SampledFunctional</a> is an interface that allows random access to a fixed size data set. I originally conceived this class as being used to access scalar values (Int's Float's etc.) stored in Vectors, using the <a class="el" href="classcasacore_1_1SampledFunctional.html" title="A base class for indexing into arbitrary data types. ">SampledFunctional</a> interface. It became generalised to incorporate Blocks and I now realise that a better name might be MemorySampledFunctional, to highlight that the data is stored in memory (and not on disk).</p>
 <h3>Synopsis</h3>
-<p>This derived class allows allows a Block&lt;T&gt; or Vector&lt;T&gt; object to be accessed through the <a class="el" href="classcasacore_1_1SampledFunctional.html">SampledFunctional&lt;T&gt;</a> interface. The principle advantage of this is that it unifies the different indexing operators (ie. [] for Blocks and () for Vectors). The disadvantage is that it hides just about all the other functionality of Vectors and Blocks. If all you are interested in is random access to various elements of these objects then this class is a suitable abstraction.</p>
+<p>This derived class allows allows a Block&lt;T&gt; or <a class="el" href="classcasacore_1_1Vector.html">Vector&lt;T&gt;</a> object to be accessed through the <a class="el" href="classcasacore_1_1SampledFunctional.html">SampledFunctional&lt;T&gt;</a> interface. The principle advantage of this is that it unifies the different indexing operators (ie. [] for Blocks and () for Vectors). The disadvantage is that it hides just about all the other functionality of Vectors and Blocks. If all you are interested in is random access to various elements of these objects then this class is a suitable abstraction.</p>
 <p>Reference semantics are used (ie. the class does not make a copy of the data but refers to the original data) whenever possible. It is not possible to use reference semantics (so a physical copy of the data is made), in the following cases: </p>
 <ul>
 <li>
 When constructing the class from a Block&lt;T&gt; </li>
 <li>
-When constructing the class from a const Vector&lt;T&gt; </li>
+When constructing the class from a const <a class="el" href="classcasacore_1_1Vector.html">Vector&lt;T&gt;</a> </li>
 </ul>
 <p>Reference semantics are always used for the copy constructor and assignment operators when the <a class="el" href="classcasacore_1_1ScalarSampledFunctional.html" title="A unified interface for indexing into Vectors or Blocks. ">ScalarSampledFunctional</a> is non-const. Otherwise copy semantics are used.</p>
 <p>When reference semantics are used you need to be aware that modifying the contents of the original <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> will modify the data used by this class.</p>

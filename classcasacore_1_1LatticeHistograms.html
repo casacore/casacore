@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -154,7 +155,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a6650cf1b66314c70555cca25d0827a1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the display axes.  <a href="#a6650cf1b66314c70555cca25d0827a1e">More...</a><br/></td></tr>
 <tr class="separator:a6650cf1b66314c70555cca25d0827a1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5159f14e2e2f61d5acb7b22a0de9316"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeHistograms.html#ac5159f14e2e2f61d5acb7b22a0de9316">getHistograms</a> (<a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;values, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;counts)</td></tr>
-<tr class="memdesc:ac5159f14e2e2f61d5acb7b22a0de9316"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function retrieves the histograms into <code><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a></code>.  <a href="#ac5159f14e2e2f61d5acb7b22a0de9316">More...</a><br/></td></tr>
+<tr class="memdesc:ac5159f14e2e2f61d5acb7b22a0de9316"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function retrieves the histograms into <code><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a></code>.  <a href="#ac5159f14e2e2f61d5acb7b22a0de9316">More...</a><br/></td></tr>
 <tr class="separator:ac5159f14e2e2f61d5acb7b22a0de9316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af369f8d44359ff27c638660292cb7b10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeHistograms.html#af369f8d44359ff27c638660292cb7b10">getHistograms</a> (<a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;values, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; T &gt; &amp;counts, <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; T &gt; &gt; &amp;stats)</td></tr>
 <tr class="memdesc:af369f8d44359ff27c638660292cb7b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">in this version, the set of stats for each histogram is also returned.  <a href="#af369f8d44359ff27c638660292cb7b10">More...</a><br/></td></tr>
@@ -933,7 +934,7 @@ template&lt;class T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>This function retrieves the histograms into <code><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a></code>. </p>
+<p>This function retrieves the histograms into <code><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a></code>. </p>
 <p>The shape of the first dimension of this array is the number of bins. The rest of the shape of the array is the shape of the display axes (e.g. if the shape of the lattice is [nx,ny,nz] and you ask for histograms of the y axis the shape of the returned array would be [nbins,nx,nz]. The histograms are retrieved in the form specified by the <code>setForm</code> function. The arrays are resized internally. A return value of <code>False</code> indicates that the internal status of the class is bad. </p>
 
 </div>

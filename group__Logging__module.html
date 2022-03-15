@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -172,7 +173,7 @@ What content do you want the message to have; and </li>
 what priority does the message have (DEBUGGING, NORMAL, WARN, SEVERE). </li>
 </ol>
 <p>Schematically, application programmers would use the logging system as follows: </p>
-<div class="fragment"><div class="line"><span class="preprocessor"> #include &lt;casacore/casa/Logging.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor"> #include &lt;<a class="code" href="Logging_8h.html">casacore/casa/Logging.h</a>&gt;</span></div>
 <div class="line">..\.</div>
 <div class="line"> <span class="keywordtype">void</span> MyClass:myFunction(LogIO &amp;os)</div>
 <div class="line"> {</div>
@@ -219,7 +220,7 @@ Change the priority to SEVERE and post an error message. </li>
 <div class="line">LogSink log_sink_p;                                      <span class="comment">// 8</span></div>
 <div class="line">LogIO os_p;                                              <span class="comment">// 9</span></div>
 <div class="line">};</div>
-</div><!-- fragment --><p>This toy class is meant to represent one which is to have "attached" logging information. Generally, these classes would be fairly high level astronomical classes, e.g. <code>Image</code>, not <code><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a></code>. Note that only operations which change the data should be logged in the internal log. Operations which only read the data should be logged either globally, or in the class that is taking the results and modifying its own data.</p>
+</div><!-- fragment --><p>This toy class is meant to represent one which is to have "attached" logging information. Generally, these classes would be fairly high level astronomical classes, e.g. <code>Image</code>, not <code><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a></code>. Note that only operations which change the data should be logged in the internal log. Operations which only read the data should be logged either globally, or in the class that is taking the results and modifying its own data.</p>
 <dl>
 <dt>1. </dt>
 <dd>Depending on the application, the <a class="el" href="classcasacore_1_1LogSink.html" title="Distribute LogMessages to their destination(s) ">LogSink</a> to be used might either be handed in to the class, as is the case here, or it might be created by the class. For example, a <code><a class="el" href="classcasacore_1_1MeasurementSet.html" title="A Table intended to hold astronomical data (a set of Measurements). ">MeasurementSet</a></code> will have a processing log table with a known name. </dd>

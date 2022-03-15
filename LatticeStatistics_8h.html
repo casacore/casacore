@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -94,27 +95,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">LatticeStatistics.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;casacore/casa/aips.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/Array.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Containers/Block.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/Vector.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Containers/Record.h&gt;</code><br/>
-<code>#include &lt;casacore/lattices/LatticeMath/LatticeStatsBase.h&gt;</code><br/>
-<code>#include &lt;casacore/lattices/LatticeMath/TiledCollapser.h&gt;</code><br/>
-<code>#include &lt;casacore/lattices/LEL/LatticeExprNode.h&gt;</code><br/>
-<code>#include &lt;casacore/lattices/LatticeMath/LatticeStatsDataProvider.h&gt;</code><br/>
-<code>#include &lt;casacore/lattices/LatticeMath/MaskedLatticeStatsDataProvider.h&gt;</code><br/>
-<code>#include &lt;casacore/scimath/Mathematics/NumericTraits.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Utilities/DataType.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/BasicSL/String.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Logging/LogIO.h&gt;</code><br/>
-<code>#include &lt;casacore/scimath/StatsFramework/FitToHalfStatisticsData.h&gt;</code><br/>
-<code>#include &lt;casacore/scimath/StatsFramework/StatisticsData.h&gt;</code><br/>
-<code>#include &lt;casacore/scimath/StatsFramework/StatisticsAlgorithm.h&gt;</code><br/>
-<code>#include &lt;casacore/scimath/StatsFramework/StatisticsAlgorithmFactory.h&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="aips_8h_source.html">casacore/casa/aips.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="Array_8h_source.html">casacore/casa/Arrays/Array.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="Block_8h_source.html">casacore/casa/Containers/Block.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="Vector_8h_source.html">casacore/casa/Arrays/Vector.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="Record_8h_source.html">casacore/casa/Containers/Record.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="LatticeStatsBase_8h_source.html">casacore/lattices/LatticeMath/LatticeStatsBase.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="TiledCollapser_8h_source.html">casacore/lattices/LatticeMath/TiledCollapser.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="LatticeExprNode_8h_source.html">casacore/lattices/LEL/LatticeExprNode.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="LatticeStatsDataProvider_8h_source.html">casacore/lattices/LatticeMath/LatticeStatsDataProvider.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="MaskedLatticeStatsDataProvider_8h_source.html">casacore/lattices/LatticeMath/MaskedLatticeStatsDataProvider.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="NumericTraits_8h_source.html">casacore/scimath/Mathematics/NumericTraits.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="DataType_8h_source.html">casacore/casa/Utilities/DataType.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="String_8h_source.html">casacore/casa/BasicSL/String.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="LogIO_8h_source.html">casacore/casa/Logging/LogIO.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="FitToHalfStatisticsData_8h_source.html">casacore/scimath/StatsFramework/FitToHalfStatisticsData.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="StatisticsData_8h_source.html">casacore/scimath/StatsFramework/StatisticsData.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="StatisticsAlgorithm_8h_source.html">casacore/scimath/StatsFramework/StatisticsAlgorithm.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="StatisticsAlgorithmFactory_8h_source.html">casacore/scimath/StatsFramework/StatisticsAlgorithmFactory.h</a>&gt;</code><br/>
 <code>#include &lt;vector&gt;</code><br/>
 <code>#include &lt;list&gt;</code><br/>
-<code>#include &lt;casacore/casa/iosstrfwd.h&gt;</code><br/>
+<code>#include &lt;<a class="el" href="iosstrfwd_8h_source.html">casacore/casa/iosstrfwd.h</a>&gt;</code><br/>
 </div>
 <p><a href="LatticeStatistics_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -175,7 +176,11 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a1f606c961c08fd75133a5b59178ad7bd"><td class="memItemLeft" align="right" valign="top">typedef unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore_1_1casacore.html#a1f606c961c08fd75133a5b59178ad7bd">casacore::casacore::uInt64</a></td></tr>
 <tr class="separator:a1f606c961c08fd75133a5b59178ad7bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48bb36229f405ed35914711b747e46d5"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore_1_1casacore.html#a48bb36229f405ed35914711b747e46d5">casacore::casacore::FitsLong</a></td></tr>
+<tr class="memdesc:a48bb36229f405ed35914711b747e46d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">All <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> code seems to assume longs are 4 bytes.  <a href="#a48bb36229f405ed35914711b747e46d5">More...</a><br/></td></tr>
 <tr class="separator:a48bb36229f405ed35914711b747e46d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa726d4c494b7bb8e2731e99714085d17"><td class="memItemLeft" align="right" valign="top">typedef uInt64&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore_1_1casacore.html#aa726d4c494b7bb8e2731e99714085d17">casacore::casacore::rownr_t</a></td></tr>
+<tr class="memdesc:aa726d4c494b7bb8e2731e99714085d17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the type of a row number in a table.  <a href="#aa726d4c494b7bb8e2731e99714085d17">More...</a><br/></td></tr>
+<tr class="separator:aa726d4c494b7bb8e2731e99714085d17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>

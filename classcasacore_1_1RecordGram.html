@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -217,8 +218,8 @@ Static Private Attributes</h2></td></tr>
 <tr class="separator:a701245d6b9532001000ec4c274008751"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c543ee8dc9bd56afd64cff04321ca53"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RecordGram.html#a7c543ee8dc9bd56afd64cff04321ca53">theirNodePtr</a></td></tr>
 <tr class="separator:a7c543ee8dc9bd56afd64cff04321ca53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79b24dddb33e8149793d0f703047b4cb"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RecordGram.html#a79b24dddb33e8149793d0f703047b4cb">theirMutex</a></td></tr>
-<tr class="separator:a79b24dddb33e8149793d0f703047b4cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a298f661c15e5a264e80307c03cf27a"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1RecordGram.html#a3a298f661c15e5a264e80307c03cf27a">theirMutex</a></td></tr>
+<tr class="separator:a3a298f661c15e5a264e80307c03cf27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Select-class for flex/bison scanner/parser for <a class="el" href="classcasacore_1_1RecordGram.html" title="Select-class for flex/bison scanner/parser for RecordGram. ">RecordGram</a>. </p>
@@ -242,7 +243,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
 <h3>Motivation</h3>
 <p>It is necessary to be able to give a record select command in ASCII. It is used by the ACSIS people. </p>
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00176">176</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00175">175</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="ac6d6c66da50a6327761117deb3dbc444"></a>
 <div class="memitem">
@@ -266,7 +267,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00180">180</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00179">179</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
 </div>
 </div>
@@ -404,9 +405,9 @@ RecordGram.l and.y (flex and bison grammar) </li>
 
 <p>Add a token to the list of tokens to be deleted. </p>
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00274">274</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00273">273</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
-<p>References <a class="el" href="RecordGram_8h_source.html#l00280">theirTokens</a>.</p>
+<p>References <a class="el" href="RecordGram_8h_source.html#l00279">theirTokens</a>.</p>
 
 </div>
 </div>
@@ -1207,9 +1208,9 @@ RecordGram.l and.y (flex and bison grammar) </li>
 
 <p>Remove a token from the list of tokens to be deleted. </p>
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00277">277</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00276">276</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
-<p>References <a class="el" href="RecordGram_8h_source.html#l00280">theirTokens</a>.</p>
+<p>References <a class="el" href="RecordGram_8h_source.html#l00279">theirTokens</a>.</p>
 
 </div>
 </div>
@@ -1237,14 +1238,14 @@ RecordGram.l and.y (flex and bison grammar) </li>
 
 <p>Set the final node pointer. </p>
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00244">244</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00243">243</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
-<p>References <a class="el" href="RecordGram_8h_source.html#l00283">theirNodePtr</a>.</p>
+<p>References <a class="el" href="RecordGram_8h_source.html#l00282">theirNodePtr</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a79b24dddb33e8149793d0f703047b4cb"></a>
+<a class="anchor" id="a3a298f661c15e5a264e80307c03cf27a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1252,7 +1253,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::RecordGram::theirMutex</td>
+          <td class="memname">std::mutex casacore::RecordGram::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -1262,7 +1263,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00284">284</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00283">283</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
 </div>
 </div>
@@ -1284,9 +1285,9 @@ RecordGram.l and.y (flex and bison grammar) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00283">283</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00282">282</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
-<p>Referenced by <a class="el" href="RecordGram_8h_source.html#l00244">setNodePtr()</a>.</p>
+<p>Referenced by <a class="el" href="RecordGram_8h_source.html#l00243">setNodePtr()</a>.</p>
 
 </div>
 </div>
@@ -1308,7 +1309,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00281">281</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00280">280</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
 </div>
 </div>
@@ -1330,7 +1331,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00282">282</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00281">281</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
 </div>
 </div>
@@ -1355,7 +1356,7 @@ RecordGram.l and.y (flex and bison grammar) </li>
 <p>Define the global <a class="el" href="classcasacore_1_1TaQLStyle.html" title="Class with static members defining the TaQL style. ">TaQLStyle</a> to use. </p>
 <p>By default it is glish style. </p>
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00249">249</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00248">248</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
 </div>
 </div>
@@ -1377,9 +1378,9 @@ RecordGram.l and.y (flex and bison grammar) </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00280">280</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
+<p>Definition at line <a class="el" href="RecordGram_8h_source.html#l00279">279</a> of file <a class="el" href="RecordGram_8h_source.html">RecordGram.h</a>.</p>
 
-<p>Referenced by <a class="el" href="RecordGram_8h_source.html#l00274">addToken()</a>, and <a class="el" href="RecordGram_8h_source.html#l00277">removeToken()</a>.</p>
+<p>Referenced by <a class="el" href="RecordGram_8h_source.html#l00273">addToken()</a>, and <a class="el" href="RecordGram_8h_source.html#l00276">removeToken()</a>.</p>
 
 </div>
 </div>

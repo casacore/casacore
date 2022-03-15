@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -321,9 +322,9 @@ Static Private Attributes</h2></td></tr>
 <tr class="memitem:a560da95d6076b49ffb4aa3cf09faa686"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCDirection.html#a560da95d6076b49ffb4aa3cf09faa686">FromTo_p</a> [<a class="el" href="classcasacore_1_1MDirection.html#a8d354a7146791b1bcb1a6a7d73bca2d1a44cc65c81277689cef6c7c5dc7d944e7">MDirection::N_Types</a>][<a class="el" href="classcasacore_1_1MDirection.html#a8d354a7146791b1bcb1a6a7d73bca2d1a44cc65c81277689cef6c7c5dc7d944e7">MDirection::N_Types</a>]</td></tr>
 <tr class="memdesc:a560da95d6076b49ffb4aa3cf09faa686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transition matrix.  <a href="#a560da95d6076b49ffb4aa3cf09faa686">More...</a><br/></td></tr>
 <tr class="separator:a560da95d6076b49ffb4aa3cf09faa686"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3d538a05ac6a7867d19fd9648c1bb32"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCDirection.html#ab3d538a05ac6a7867d19fd9648c1bb32">theirInitOnce</a></td></tr>
-<tr class="memdesc:ab3d538a05ac6a7867d19fd9648c1bb32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#ab3d538a05ac6a7867d19fd9648c1bb32">More...</a><br/></td></tr>
-<tr class="separator:ab3d538a05ac6a7867d19fd9648c1bb32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac33c527fade9b73649de9a1874410e3a"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MCDirection.html#ac33c527fade9b73649de9a1874410e3a">theirInitOnceFlag</a></td></tr>
+<tr class="memdesc:ac33c527fade9b73649de9a1874410e3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#ac33c527fade9b73649de9a1874410e3a">More...</a><br/></td></tr>
+<tr class="separator:ac33c527fade9b73649de9a1874410e3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -1025,7 +1026,7 @@ nothing I know </li>
 
 </div>
 </div>
-<a class="anchor" id="ab3d538a05ac6a7867d19fd9648c1bb32"></a>
+<a class="anchor" id="ac33c527fade9b73649de9a1874410e3a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1033,7 +1034,7 @@ nothing I know </li>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> casacore::MCDirection::theirInitOnce</td>
+          <td class="memname">std::once_flag casacore::MCDirection::theirInitOnceFlag</td>
         </tr>
       </table>
   </td>

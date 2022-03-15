@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -1488,7 +1489,7 @@ The array functions throw an exception if the data type mismatches. The toArrayX
 </div><div class="memdoc">
 
 <p>Define a value for the given field. </p>
-<p><a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> conformance rules will not be applied for variable shaped arrays. If the field and value data type mismatch, type promotion of scalars will be done if possible. If not possible, an exception is thrown. <br/>
+<p><a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> conformance rules will not be applied for variable shaped arrays. If the field and value data type mismatch, type promotion of scalars will be done if possible. If not possible, an exception is thrown. <br/>
  If the field does not exist, it will be added to the record. This results in an exception for fixed structured records. The field is checked by a possible field checking function before it gets added. </p>
 
 <p>Referenced by <a class="el" href="RecordInterface_8h_source.html#l00571">define()</a>, <a class="el" href="FunctionMarshallable_8h_source.html#l00114">casacore::FunctionMarshallable::loadFuncType()</a>, <a class="el" href="HDF5Record_8h_source.html#l00139">casacore::HDF5Record::readArr()</a>, and <a class="el" href="HDF5Record_8h_source.html#l00128">casacore::HDF5Record::readSca()</a>.</p>
@@ -2413,7 +2414,7 @@ The array functions throw an exception if the data type mismatches. The toArrayX
 
 <p>References <a class="el" href="RecordInterface_8h_source.html#l00228">size()</a>.</p>
 
-<p>Referenced by <a class="el" href="ImageAttrGroupHDF5_8h_source.html#l00075">casacore::ImageAttrGroupHDF5::isNull()</a>, and <a class="el" href="TableProxy_8h_source.html#l00673">casacore::TableProxy::record2Array()</a>.</p>
+<p>Referenced by <a class="el" href="ImageAttrGroupHDF5_8h_source.html#l00075">casacore::ImageAttrGroupHDF5::isNull()</a>, and <a class="el" href="TableProxy_8h_source.html#l00672">casacore::TableProxy::record2Array()</a>.</p>
 
 </div>
 </div>
@@ -2475,7 +2476,7 @@ The array functions throw an exception if the data type mismatches. The toArrayX
 <p>Get the value of the given field. </p>
 <p>If the field and value data type mismatch, type promotion will be done if possible. If not possible, an exception is thrown. If the value argument is an array, it will be reshaped if needed. </p>
 
-<p>Referenced by <a class="el" href="ColumnsIndex_8h_source.html#l00390">casacore::ColumnsIndex::copyKeyField()</a>, <a class="el" href="TableProxy_8h_source.html#l00673">casacore::TableProxy::record2Array()</a>, <a class="el" href="HDF5Record_8h_source.html#l00192">casacore::HDF5Record::writeArr()</a>, and <a class="el" href="HDF5Record_8h_source.html#l00181">casacore::HDF5Record::writeSca()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnsIndex_8h_source.html#l00390">casacore::ColumnsIndex::copyKeyField()</a>, <a class="el" href="TableProxy_8h_source.html#l00672">casacore::TableProxy::record2Array()</a>, <a class="el" href="HDF5Record_8h_source.html#l00192">casacore::HDF5Record::writeArr()</a>, and <a class="el" href="HDF5Record_8h_source.html#l00181">casacore::HDF5Record::writeSca()</a>.</p>
 
 </div>
 </div>
@@ -3184,7 +3185,7 @@ The array functions throw an exception if the data type mismatches. The toArrayX
 
 <p>References <a class="el" href="classcasacore_1_1RecordInterface.html#a6bcf22e4f36b4c909be4820cbe0c7921">fieldNumber()</a>.</p>
 
-<p>Referenced by <a class="el" href="SerialHelper_8h_source.html#l00128">casacore::SerialHelper::exists()</a>.</p>
+<p>Referenced by <a class="el" href="SerialHelper_8h_source.html#l00127">casacore::SerialHelper::exists()</a>.</p>
 
 </div>
 </div>
@@ -3592,7 +3593,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>References <a class="el" href="classcasacore_1_1RecordInterface.html#a1be1f7011cc610c372cd5d95f160b2a1">nfields()</a>.</p>
 
-<p>Referenced by <a class="el" href="RecordInterface_8h_source.html#l00233">empty()</a>, and <a class="el" href="TableProxy_8h_source.html#l00673">casacore::TableProxy::record2Array()</a>.</p>
+<p>Referenced by <a class="el" href="RecordInterface_8h_source.html#l00233">empty()</a>, and <a class="el" href="TableProxy_8h_source.html#l00672">casacore::TableProxy::record2Array()</a>.</p>
 
 </div>
 </div>
@@ -3656,7 +3657,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00429">429</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a5ba214657a59ba4b2009fe7a129a355b">toArrayBool()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a5ba214657a59ba4b2009fe7a129a355b">toArrayBool()</a>.</p>
 
 </div>
 </div>
@@ -3694,7 +3695,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00431">431</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a02c97abc7c91d7c6a26aa5f96a5dfc24">toArrayuChar()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a02c97abc7c91d7c6a26aa5f96a5dfc24">toArrayuChar()</a>.</p>
 
 </div>
 </div>
@@ -3732,7 +3733,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00433">433</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a828c2e972fd70494fb9074c5fad77fc1">toArrayShort()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a828c2e972fd70494fb9074c5fad77fc1">toArrayShort()</a>.</p>
 
 </div>
 </div>
@@ -3770,7 +3771,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00435">435</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#ab52f9bde890b648755b163c2b89a1772">toArrayInt()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#ab52f9bde890b648755b163c2b89a1772">toArrayInt()</a>.</p>
 
 </div>
 </div>
@@ -3808,7 +3809,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00437">437</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#ad4cb8da23fda7dcfc0edbe0bc5fc9699">toArrayuInt()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#ad4cb8da23fda7dcfc0edbe0bc5fc9699">toArrayuInt()</a>.</p>
 
 </div>
 </div>
@@ -3846,7 +3847,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00439">439</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a3adfb97c435fc333f09b6617b53a31c9">toArrayInt64()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a3adfb97c435fc333f09b6617b53a31c9">toArrayInt64()</a>.</p>
 
 </div>
 </div>
@@ -3884,7 +3885,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00441">441</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a4c5709aa98a625e99951f920a5c22887">toArrayFloat()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a4c5709aa98a625e99951f920a5c22887">toArrayFloat()</a>.</p>
 
 </div>
 </div>
@@ -3922,7 +3923,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00443">443</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a967a326742e43e7aed43608c245bb614">toArrayDouble()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a967a326742e43e7aed43608c245bb614">toArrayDouble()</a>.</p>
 
 </div>
 </div>
@@ -3960,7 +3961,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00445">445</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a2716c7cbf746be3aca7f0f99a3ae7ae0">toArrayComplex()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a2716c7cbf746be3aca7f0f99a3ae7ae0">toArrayComplex()</a>.</p>
 
 </div>
 </div>
@@ -3998,7 +3999,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00447">447</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#acb20c4854203228c528442899a160355">toArrayDComplex()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#acb20c4854203228c528442899a160355">toArrayDComplex()</a>.</p>
 
 </div>
 </div>
@@ -4036,7 +4037,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 
 <p>Definition at line <a class="el" href="RecordInterface_8h_source.html#l00449">449</a> of file <a class="el" href="RecordInterface_8h_source.html">RecordInterface.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1Array.html#adcfb6bd1f6e0a70dc1c2909739e09d07">casacore::Array&lt; T &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a5c738d83109f7c3615258c9f704365ac">toArrayString()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1Array.html#a115142801f497760a6859622ec4ea25b">casacore::Array&lt; T, Alloc &gt;::reference()</a>, and <a class="el" href="classcasacore_1_1RecordInterface.html#a5c738d83109f7c3615258c9f704365ac">toArrayString()</a>.</p>
 
 </div>
 </div>

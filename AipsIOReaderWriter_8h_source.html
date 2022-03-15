@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,9 +121,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define IMAGES_AIPSIOREADERWRITER_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/images/Regions/RFReaderWriter.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/images/Regions/ImageRegion.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="RFReaderWriter_8h.html">casacore/images/Regions/RFReaderWriter.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ImageRegion_8h.html">casacore/images/Regions/ImageRegion.h</a>&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
@@ -193,12 +194,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1RFWriter_html"><div class="ttname"><a href="classcasacore_1_1RFWriter.html">casacore::RFWriter</a></div><div class="ttdoc">Abstract superclass for any class that writes Regions to a region file format. </div><div class="ttdef"><b>Definition:</b> <a href="RFReaderWriter_8h_source.html#l00283">RFReaderWriter.h:283</a></div></div>
 <div class="ttc" id="classcasacore_1_1AipsIOReaderWriter_html"><div class="ttname"><a href="classcasacore_1_1AipsIOReaderWriter.html">casacore::AipsIOReaderWriter</a></div><div class="ttdoc">Implementation of CASA region AipsIO file reader and writer. </div><div class="ttdef"><b>Definition:</b> <a href="AipsIOReaderWriter_8h_source.html#l00067">AipsIOReaderWriter.h:67</a></div></div>
 <div class="ttc" id="classcasacore_1_1AipsIOReaderWriter_html_ad68c60e0235a979d5af9099cc6e8ba7a"><div class="ttname"><a href="classcasacore_1_1AipsIOReaderWriter.html#ad68c60e0235a979d5af9099cc6e8ba7a">casacore::AipsIOReaderWriter::setOptions</a></div><div class="ttdeci">void setOptions(const Record *options)</div><div class="ttdoc">RSFileWriter methods //. </div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1AipsIOReaderWriter_html_a0274aba4ae676e0f58993cf5017db226"><div class="ttname"><a href="classcasacore_1_1AipsIOReaderWriter.html#a0274aba4ae676e0f58993cf5017db226">casacore::AipsIOReaderWriter::read</a></div><div class="ttdeci">bool read(Record &amp;region)</div><div class="ttdoc">RSFileReader methods //. </div></div>
 <div class="ttc" id="classcasacore_1_1Record_html"><div class="ttname"><a href="classcasacore_1_1Record.html">casacore::Record</a></div><div class="ttdoc">A hierarchical collection of named fields of various types. </div><div class="ttdef"><b>Definition:</b> <a href="Record_8h_source.html#l00180">Record.h:180</a></div></div>
 <div class="ttc" id="classcasacore_1_1AipsIOReaderWriter_html_a30e0e7bb57851e925b827c09d1de1f3a"><div class="ttname"><a href="classcasacore_1_1AipsIOReaderWriter.html#a30e0e7bb57851e925b827c09d1de1f3a">casacore::AipsIOReaderWriter::~AipsIOReaderWriter</a></div><div class="ttdeci">~AipsIOReaderWriter()</div><div class="ttdoc">Destructor. </div></div>
 <div class="ttc" id="classcasacore_1_1ImageRegion_html"><div class="ttname"><a href="classcasacore_1_1ImageRegion.html">casacore::ImageRegion</a></div><div class="ttdoc">Class to hold a region of interest in an image. </div><div class="ttdef"><b>Definition:</b> <a href="ImageRegion_8h_source.html#l00086">ImageRegion.h:86</a></div></div>
 <div class="ttc" id="classcasacore_1_1RFReader_html_a838be54a3f85d0ffb14e0375a08f230c"><div class="ttname"><a href="classcasacore_1_1RFReader.html#a838be54a3f85d0ffb14e0375a08f230c">casacore::RFReader::options</a></div><div class="ttdeci">virtual Record * options()</div><div class="ttdoc">Provides access to the plotting options that were found in the region file. </div><div class="ttdef"><b>Definition:</b> <a href="RFReaderWriter_8h_source.html#l00233">RFReaderWriter.h:233</a></div></div>
 <div class="ttc" id="classcasacore_1_1AipsIOReaderWriter_html_a1ef51533156622ed454f1b492899b79d"><div class="ttname"><a href="classcasacore_1_1AipsIOReaderWriter.html#a1ef51533156622ed454f1b492899b79d">casacore::AipsIOReaderWriter::write</a></div><div class="ttdeci">bool write(const Record &amp;region) const </div><div class="ttdoc">Implements RSFileWriter::write. </div></div>
+<div class="ttc" id="ImageRegion_8h_html"><div class="ttname"><a href="ImageRegion_8h.html">ImageRegion.h</a></div></div>
+<div class="ttc" id="RFReaderWriter_8h_html"><div class="ttname"><a href="RFReaderWriter_8h.html">RFReaderWriter.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

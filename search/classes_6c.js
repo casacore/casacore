@@ -136,7 +136,6 @@ var searchData=
   ['logholderiter',['LogHolderIter',['../classcasacore_1_1LogHolderIter.html',1,'casacore']]],
   ['logholderiterentry',['LogHolderIterEntry',['../classcasacore_1_1LogHolderIterEntry.html',1,'casacore']]],
   ['logiarray_5fglobal_5ffunctions_5flogicalarray',['LogiArray_global_functions_LogicalArray',['../structcasacore_1_1LogiArray__global__functions__LogicalArray.html',1,'casacore']]],
-  ['logiarrayfwd_5fglobal_5ffunctions_5flogicalarray_5fforwards',['LogiArrayFwd_global_functions_LogicalArray_forwards',['../structcasacore_1_1LogiArrayFwd__global__functions__LogicalArray__forwards.html',1,'casacore']]],
   ['logicube_5fglobal_5ffunctions_5flogicalcube',['LogiCube_global_functions_LogicalCube',['../structcasacore_1_1LogiCube__global__functions__LogicalCube.html',1,'casacore']]],
   ['logimatrix_5fglobal_5ffunctions_5flogicalmatrix',['LogiMatrix_global_functions_LogicalMatrix',['../structcasacore_1_1LogiMatrix__global__functions__LogicalMatrix.html',1,'casacore']]],
   ['logio',['LogIO',['../classcasacore_1_1LogIO.html',1,'casacore']]],

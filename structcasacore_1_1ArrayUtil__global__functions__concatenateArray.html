@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -123,27 +124,27 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classcasacore_1_1Array.html">Array</a> </li>
 </ul>
 <h3>Etymology</h3>
-<p>concatenateArray concatenates two Arrays into a new <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>.</p>
+<p>concatenateArray concatenates two Arrays into a new <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>.</p>
 <h3>Synopsis</h3>
-<p>The function concatenates two Arrays into a new <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>. The shape of both arrays must match except for the last dimension. The shape of the resulting array is equal to that of the input arrays with its last dimension as the sum of both last dimensions. </p>
+<p>The function concatenates two Arrays into a new <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>. The shape of both arrays must match except for the last dimension. The shape of the resulting array is equal to that of the input arrays with its last dimension as the sum of both last dimensions. </p>
 <p>An exception <a class="el" href="classcasacore_1_1ArrayConformanceError.html" title="An error thrown when two arrays do not conform. ">ArrayConformanceError</a> is thrown when the shapes do not match.</p>
 <h3>Motivation</h3>
 <p>The table system needed this function.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="ArrayUtil_example3"></a></p>
-<div class="fragment"><div class="line">Vector&lt;Int&gt; vector1(5);</div>
-<div class="line">Vector&lt;Int&gt; vector2(10);</div>
-<div class="line"><a class="code" href="namespacecasacore.html#a083fbd9fc55516dfcc88ec19db08c8f5">indgen</a> (vector1);             <span class="comment">// fill with values 0..4</span></div>
-<div class="line"><a class="code" href="namespacecasacore.html#a083fbd9fc55516dfcc88ec19db08c8f5">indgen</a> (vector2);             <span class="comment">// fill with values 0..9</span></div>
-<div class="line">Vector&lt;Int&gt; result = concatenateVector (vector1, vector2);</div>
+<div class="fragment"><div class="line">Vector&lt;int&gt; vector1(5);</div>
+<div class="line">Vector&lt;int&gt; vector2(10);</div>
+<div class="line"><a class="code" href="namespacecasacore.html#a3cd469ce2294c9f726fe06d19f1fa0c7">indgen</a> (vector1);             <span class="comment">// fill with values 0..4</span></div>
+<div class="line"><a class="code" href="namespacecasacore.html#a3cd469ce2294c9f726fe06d19f1fa0c7">indgen</a> (vector2);             <span class="comment">// fill with values 0..9</span></div>
+<div class="line">Vector&lt;int&gt; result = concatenateVector (vector1, vector2);</div>
 </div><!-- fragment --><p> The example above results in a vector with length 15 and values 0,1,2,3,4,0,1,2,3,4,5,6,7,8,9. </p>
 <p>It can also be used with matrices or arrays with higher dimensionality as long as all dimensions but the last one have equal length. </p>
-<div class="fragment"><div class="line">Matrix&lt;Int&gt; matrix1 (3,4);</div>
-<div class="line">Matrix&lt;Int&gt; matrix2 (3,5);</div>
-<div class="line">Matrix&lt;Int&gt; matrix3 (4,4);</div>
+<div class="fragment"><div class="line">Matrix&lt;int&gt; matrix1 (3,4);</div>
+<div class="line">Matrix&lt;int&gt; matrix2 (3,5);</div>
+<div class="line">Matrix&lt;int&gt; matrix3 (4,4);</div>
 <div class="line"><span class="comment">// Concatenation of matrix1 and matrix 2 will succeed and result</span></div>
 <div class="line"><span class="comment">// in a 3x9 matrix.</span></div>
-<div class="line">Matrix&lt;Int&gt; matrixConc = <a class="code" href="structcasacore_1_1ArrayUtil__global__functions__concatenateArray.html#ac8ffdf86991c60222ff4f7eb57f4a698">concatenateArray</a> (matrix1, matrix2);</div>
+<div class="line">Matrix&lt;int&gt; matrixConc = <a class="code" href="structcasacore_1_1ArrayUtil__global__functions__concatenateArray.html#ac8ffdf86991c60222ff4f7eb57f4a698">concatenateArray</a> (matrix1, matrix2);</div>
 <div class="line"><span class="keywordflow">if</span> (matrixConc.shape() != IPosition(2,3,9)) {</div>
 <div class="line">cout &lt;&lt; <span class="stringliteral">&quot;Error in shape of concatenated matrices&quot;</span> &lt;&lt; endl;</div>
 <div class="line">}</div>
@@ -152,12 +153,12 @@ Public Member Functions</h2></td></tr>
 <div class="line"><span class="keywordflow">try</span> {</div>
 <div class="line"><a class="code" href="structcasacore_1_1ArrayUtil__global__functions__concatenateArray.html#ac8ffdf86991c60222ff4f7eb57f4a698">concatenateArray</a> (matrix1, matrix2);</div>
 <div class="line">} <span class="keywordflow">catch</span> (ArrayConformanceError x) {</div>
-<div class="line">cout &lt;&lt; x.getMesg() &lt;&lt; endl;</div>
+<div class="line">cout &lt;&lt; x.what() &lt;&lt; endl;</div>
 <div class="line">}</div>
 </div><!-- fragment --> <h3>Example</h3>
 <p><a class="anchor" id="ArrayUtil_example4"></a> <a class="anchor" id="ArrayUtil_concatenateArray"></a> </p>
 
-<p>Definition at line <a class="el" href="ArrayUtil_8h_source.html#l00169">169</a> of file <a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>.</p>
+<p>Definition at line <a class="el" href="ArrayUtil_8h_source.html#l00167">167</a> of file <a class="el" href="ArrayUtil_8h_source.html">ArrayUtil.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ac8ffdf86991c60222ff4f7eb57f4a698"></a>
 <div class="memitem">

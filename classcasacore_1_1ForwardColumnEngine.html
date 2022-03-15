@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -207,9 +208,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a25a417865a89463ce7f3ec565f350a74">canRenameColumn</a> () const </td></tr>
 <tr class="memdesc:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the data manager allow to rename columns? (default yes)  <a href="#a25a417865a89463ce7f3ec565f350a74">More...</a><br/></td></tr>
 <tr class="separator:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a36062cc49d6197e9df045cff38d37a7a">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nbytes)</td></tr>
-<tr class="memdesc:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#a36062cc49d6197e9df045cff38d37a7a">More...</a><br/></td></tr>
-<tr class="separator:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#ac56c0624343f204b2236ee69eeaa6ed2">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nMiB)</td></tr>
+<tr class="memdesc:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#ac56c0624343f204b2236ee69eeaa6ed2">More...</a><br/></td></tr>
+<tr class="separator:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a75e6607644f05a6168e326fdc902668f">showCacheStatistics</a> (std::ostream &amp;) const </td></tr>
 <tr class="memdesc:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the data manager's IO statistics.  <a href="#a75e6607644f05a6168e326fdc902668f">More...</a><br/></td></tr>
 <tr class="separator:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -305,12 +306,12 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:af247852cf0b52a8eedbc0c67f5119f48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#af247852cf0b52a8eedbc0c67f5119f48">canRemoveRow</a> () const </td></tr>
 <tr class="memdesc:af247852cf0b52a8eedbc0c67f5119f48"><td class="mdescLeft">&#160;</td><td class="mdescRight">This data manager allows to delete rows.  <a href="#af247852cf0b52a8eedbc0c67f5119f48">More...</a><br/></td></tr>
 <tr class="separator:af247852cf0b52a8eedbc0c67f5119f48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96e84e7e937088e7ba7f7d11c4125651"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a96e84e7e937088e7ba7f7d11c4125651">addRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow)</td></tr>
-<tr class="memdesc:a96e84e7e937088e7ba7f7d11c4125651"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to all columns.  <a href="#a96e84e7e937088e7ba7f7d11c4125651">More...</a><br/></td></tr>
-<tr class="separator:a96e84e7e937088e7ba7f7d11c4125651"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8eb6f7fe6e39dae557dcb23d0516060b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a8eb6f7fe6e39dae557dcb23d0516060b">removeRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr)</td></tr>
-<tr class="memdesc:a8eb6f7fe6e39dae557dcb23d0516060b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#a8eb6f7fe6e39dae557dcb23d0516060b">More...</a><br/></td></tr>
-<tr class="separator:a8eb6f7fe6e39dae557dcb23d0516060b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5881e09298e968e360d3876601f67ee1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a5881e09298e968e360d3876601f67ee1">addRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow)</td></tr>
+<tr class="memdesc:a5881e09298e968e360d3876601f67ee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to all columns.  <a href="#a5881e09298e968e360d3876601f67ee1">More...</a><br/></td></tr>
+<tr class="separator:a5881e09298e968e360d3876601f67ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada666fa43c7351a2313a928fc38836a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#ada666fa43c7351a2313a928fc38836a0">removeRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr)</td></tr>
+<tr class="memdesc:ada666fa43c7351a2313a928fc38836a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#ada666fa43c7351a2313a928fc38836a0">More...</a><br/></td></tr>
+<tr class="separator:ada666fa43c7351a2313a928fc38836a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2ec8744b3e0afd4067a8b5da921184"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#aef2ec8744b3e0afd4067a8b5da921184">canAddColumn</a> () const </td></tr>
 <tr class="memdesc:aef2ec8744b3e0afd4067a8b5da921184"><td class="mdescLeft">&#160;</td><td class="mdescRight">This data manager allows to add columns.  <a href="#aef2ec8744b3e0afd4067a8b5da921184">More...</a><br/></td></tr>
 <tr class="separator:aef2ec8744b3e0afd4067a8b5da921184"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,9 +330,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a9cc1f060760279ae468aa57035974743"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1DataManagerColumn.html">DataManagerColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a9cc1f060760279ae468aa57035974743">makeIndArrColumn</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, int dataType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataTypeId)</td></tr>
 <tr class="memdesc:a9cc1f060760279ae468aa57035974743"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the column object for the indirect array column in this engine.  <a href="#a9cc1f060760279ae468aa57035974743">More...</a><br/></td></tr>
 <tr class="separator:a9cc1f060760279ae468aa57035974743"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab108cfe701f76397a95716b64d8e77b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#ab108cfe701f76397a95716b64d8e77b2">create</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> initialNrrow)</td></tr>
-<tr class="memdesc:ab108cfe701f76397a95716b64d8e77b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the object for a new table.  <a href="#ab108cfe701f76397a95716b64d8e77b2">More...</a><br/></td></tr>
-<tr class="separator:ab108cfe701f76397a95716b64d8e77b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d82b7d9d3f55c195691cab19bb9a575"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a7d82b7d9d3f55c195691cab19bb9a575">create64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> initialNrrow)</td></tr>
+<tr class="memdesc:a7d82b7d9d3f55c195691cab19bb9a575"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the object for a new table.  <a href="#a7d82b7d9d3f55c195691cab19bb9a575">More...</a><br/></td></tr>
+<tr class="separator:a7d82b7d9d3f55c195691cab19bb9a575"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed975ed12530a6e4e1d60c03aced981d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#aed975ed12530a6e4e1d60c03aced981d">prepare</a> ()</td></tr>
 <tr class="memdesc:aed975ed12530a6e4e1d60c03aced981d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the engine.  <a href="#aed975ed12530a6e4e1d60c03aced981d">More...</a><br/></td></tr>
 <tr class="separator:aed975ed12530a6e4e1d60c03aced981d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -353,6 +354,13 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:ab7e9eacdae1654c711ef38300c83150c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ForwardColumnEngine.html#ab7e9eacdae1654c711ef38300c83150c">suffix_p</a></td></tr>
 <tr class="memdesc:ab7e9eacdae1654c711ef38300c83150c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The suffix to be used in names.  <a href="#ab7e9eacdae1654c711ef38300c83150c">More...</a><br/></td></tr>
 <tr class="separator:ab7e9eacdae1654c711ef38300c83150c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_attribs_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
+<tr class="memitem:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#af8e69129a6b42ff06aec5c43066c5b01">MAXROWNR32</a></td></tr>
+<tr class="memdesc:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the highest row number that can be represented as signed 32-bit.  <a href="#af8e69129a6b42ff06aec5c43066c5b01">More...</a><br/></td></tr>
+<tr class="separator:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Virtual column engine forwarding to other columns. </p>
@@ -392,7 +400,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="comment">// data manager (storage manager, calibration engine,...).</span></div>
 <div class="line">Table forwTab(newtab);</div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00416">416</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00404">404</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="af49f55d4c6025bc0f84177295a9b5bb2"></a>
 <div class="memitem">
@@ -568,7 +576,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a96e84e7e937088e7ba7f7d11c4125651"></a>
+<a class="anchor" id="a5881e09298e968e360d3876601f67ee1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -576,9 +584,9 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void casacore::ForwardColumnEngine::addRow </td>
+          <td class="memname">void casacore::ForwardColumnEngine::addRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -593,7 +601,7 @@ Private Attributes</h2></td></tr>
 <p>Add rows to all columns. </p>
 <p>This is not doing anything (but needed to override the default). </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1VirtualColumnEngine.html#abed3015a2ea06e4d543429d6db5bf38c">casacore::VirtualColumnEngine</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ad76c343a875f871c54e932d9a94dd183">casacore::VirtualColumnEngine</a>.</p>
 
 </div>
 </div>
@@ -810,7 +818,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab108cfe701f76397a95716b64d8e77b2"></a>
+<a class="anchor" id="a7d82b7d9d3f55c195691cab19bb9a575"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -818,9 +826,9 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void casacore::ForwardColumnEngine::create </td>
+          <td class="memname">void casacore::ForwardColumnEngine::create64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>initialNrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -835,9 +843,9 @@ Private Attributes</h2></td></tr>
 <p>Initialize the object for a new table. </p>
 <p>It defines the column keywords containing the name of the original table, which can be the parent of the referenced table. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a5e77f13217bd87cfd523e2ac832f1a18">casacore::VirtualColumnEngine</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ad8a0e6f737509a1ab9daadccd4ee0783">casacore::VirtualColumnEngine</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#a7aae600f6ffecb4868aecb901933a301">casacore::ForwardColumnIndexedRowEngine</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#a6d986b17e19f4c492af241a9d78e0999">casacore::ForwardColumnIndexedRowEngine</a>.</p>
 
 </div>
 </div>
@@ -1136,9 +1144,9 @@ Private Attributes</h2></td></tr>
 
 <p>Get access to the refTable_p data member. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00469">469</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00457">457</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
-<p>References <a class="el" href="ForwardCol_8h_source.html#l00543">refTable_p</a>.</p>
+<p>References <a class="el" href="ForwardCol_8h_source.html#l00531">refTable_p</a>.</p>
 
 </div>
 </div>
@@ -1196,7 +1204,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8eb6f7fe6e39dae557dcb23d0516060b"></a>
+<a class="anchor" id="ada666fa43c7351a2313a928fc38836a0"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1204,9 +1212,9 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void casacore::ForwardColumnEngine::removeRow </td>
+          <td class="memname">void casacore::ForwardColumnEngine::removeRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1221,7 +1229,7 @@ Private Attributes</h2></td></tr>
 <p>Delete a row from all columns. </p>
 <p>This is not doing anything (but needed to override the default). </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a74cccfe574ac8eec832e6046a312e582">casacore::VirtualColumnEngine</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ab30940249a0d66b9b9c2e4bd82c63d8f">casacore::VirtualColumnEngine</a>.</p>
 
 </div>
 </div>
@@ -1298,9 +1306,9 @@ Private Attributes</h2></td></tr>
 
 <p>Set the suffix. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00572">572</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00560">560</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
-<p>References <a class="el" href="ForwardCol_8h_source.html#l00569">suffix()</a>, and <a class="el" href="ForwardCol_8h_source.html#l00547">suffix_p</a>.</p>
+<p>References <a class="el" href="ForwardCol_8h_source.html#l00557">suffix()</a>, and <a class="el" href="ForwardCol_8h_source.html#l00535">suffix_p</a>.</p>
 
 </div>
 </div>
@@ -1327,11 +1335,11 @@ Private Attributes</h2></td></tr>
 
 <p>Get the suffix to be used for names. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00569">569</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00557">557</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
-<p>References <a class="el" href="ForwardCol_8h_source.html#l00547">suffix_p</a>.</p>
+<p>References <a class="el" href="ForwardCol_8h_source.html#l00535">suffix_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ForwardCol_8h_source.html#l00572">setSuffix()</a>.</p>
+<p>Referenced by <a class="el" href="ForwardCol_8h_source.html#l00560">setSuffix()</a>.</p>
 
 </div>
 </div>
@@ -1356,7 +1364,7 @@ Private Attributes</h2></td></tr>
 
 <p>The name of the data manager. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00545">545</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00533">533</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
 </div>
 </div>
@@ -1380,7 +1388,7 @@ Private Attributes</h2></td></tr>
 
 <p>Define the various engine column objects. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00538">538</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00526">526</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
 </div>
 </div>
@@ -1405,9 +1413,9 @@ Private Attributes</h2></td></tr>
 <p>The referenced table. </p>
 <p>For newly created tables this is filled in by the constructor. For existing tables this is filled in by the first <a class="el" href="classcasacore_1_1ForwardColumn.html" title="Virtual column forwarding to another column. ">ForwardColumn</a> object being constructed. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00543">543</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00531">531</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ForwardCol_8h_source.html#l00469">refTable()</a>.</p>
+<p>Referenced by <a class="el" href="ForwardCol_8h_source.html#l00457">refTable()</a>.</p>
 
 </div>
 </div>
@@ -1431,9 +1439,9 @@ Private Attributes</h2></td></tr>
 
 <p>The suffix to be used in names. </p>
 
-<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00547">547</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
+<p>Definition at line <a class="el" href="ForwardCol_8h_source.html#l00535">535</a> of file <a class="el" href="ForwardCol_8h_source.html">ForwardCol.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ForwardCol_8h_source.html#l00572">setSuffix()</a>, and <a class="el" href="ForwardCol_8h_source.html#l00569">suffix()</a>.</p>
+<p>Referenced by <a class="el" href="ForwardCol_8h_source.html#l00560">setSuffix()</a>, and <a class="el" href="ForwardCol_8h_source.html#l00557">suffix()</a>.</p>
 
 </div>
 </div>

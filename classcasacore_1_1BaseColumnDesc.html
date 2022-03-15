@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -109,10 +110,11 @@ Inheritance diagram for casacore::BaseColumnDesc:</div>
  <div class="center">
   <img src="classcasacore_1_1BaseColumnDesc.png" usemap="#casacore::BaseColumnDesc_map" alt=""/>
   <map id="casacore::BaseColumnDesc_map" name="casacore::BaseColumnDesc_map">
-<area href="classcasacore_1_1ArrayColumnDesc.html" title="Templated class for description of table array columns. " alt="casacore::ArrayColumnDesc&lt; T &gt;" shape="rect" coords="0,56,220,80"/>
+<area href="classcasacore_1_1ArrayColumnDescBase.html" title="Abstract base class for description of table array columns. " alt="casacore::ArrayColumnDescBase" shape="rect" coords="0,56,220,80"/>
 <area href="classcasacore_1_1ScalarColumnDesc.html" title="Templated class to define columns of scalars in tables. " alt="casacore::ScalarColumnDesc&lt; T &gt;" shape="rect" coords="230,56,450,80"/>
 <area href="classcasacore_1_1ScalarRecordColumnDesc.html" title="Class to define columns of scalar records in tables. " alt="casacore::ScalarRecordColumnDesc" shape="rect" coords="460,56,680,80"/>
 <area href="classcasacore_1_1SubTableDesc.html" title="Description of columns containing tables. " alt="casacore::SubTableDesc" shape="rect" coords="690,56,910,80"/>
+<area href="classcasacore_1_1ArrayColumnDesc.html" title="Templated class for description of table array columns. " alt="casacore::ArrayColumnDesc&lt; T &gt;" shape="rect" coords="0,112,220,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -482,7 +484,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>Check if a column can be handled by <a class="el" href="classcasacore_1_1ColumnDescSet.html" title="Set of table column descriptions. ">ColumnDescSet</a>. </p>
 <p>This gives, for instance, the virtual column class the opportunity to check if the used columns exist. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00385">casacore::ColumnDesc::checkAdd()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00386">casacore::ColumnDesc::checkAdd()</a>.</p>
 
 </div>
 </div>
@@ -518,7 +520,7 @@ The description of letter/envelope class design, and its application to the fami
 </table>
 </div><div class="memdoc">
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00389">casacore::ColumnDesc::checkRename()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00390">casacore::ColumnDesc::checkRename()</a>.</p>
 
 </div>
 </div>
@@ -545,7 +547,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Get the underlying class name. </p>
 
-<p>Implemented in <a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a7f50113d0dcd0692a877dd53248e2af2">casacore::ArrayColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a8257efd8d8c2e3bea40193972b9f39d7">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a6d4498661dddfd166e76c7bd3e3bc37e">casacore::SubTableDesc</a>, and <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#a5af1dcc3fad014aeb9c8dfa55f89fbef">casacore::ScalarRecordColumnDesc</a>.</p>
+<p>Implemented in <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a8257efd8d8c2e3bea40193972b9f39d7">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a6d4498661dddfd166e76c7bd3e3bc37e">casacore::SubTableDesc</a>, <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#a5af1dcc3fad014aeb9c8dfa55f89fbef">casacore::ScalarRecordColumnDesc</a>, and <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#ac6d5f8e50080471b5d62c1f3c17d0173">casacore::ArrayColumnDescBase</a>.</p>
 
 </div>
 </div>
@@ -603,7 +605,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00251">comment_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00230">casacore::ColumnDesc::comment()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00231">casacore::ColumnDesc::comment()</a>.</p>
 
 </div>
 </div>
@@ -663,7 +665,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00253">dataManGroup_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00217">casacore::ColumnDesc::dataManagerGroup()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00218">casacore::ColumnDesc::dataManagerGroup()</a>.</p>
 
 </div>
 </div>
@@ -724,7 +726,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00252">dataManType_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00208">casacore::ColumnDesc::dataManagerType()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00209">casacore::ColumnDesc::dataManagerType()</a>.</p>
 
 </div>
 </div>
@@ -785,7 +787,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00254">dtype_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00194">casacore::ColumnDesc::dataType()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00195">casacore::ColumnDesc::dataType()</a>.</p>
 
 </div>
 </div>
@@ -817,7 +819,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00255">dtypeId_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00204">casacore::ColumnDesc::dataTypeId()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00205">casacore::ColumnDesc::dataTypeId()</a>.</p>
 
 </div>
 </div>
@@ -845,7 +847,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Get the derived object. </p>
 
-<p>Implemented in <a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a5aea3e5917d1872d37b7dae85156d7d0">casacore::ArrayColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a9fb9eb119979a270a9320e5a6550fa98">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#acd17c1febcfb7d68495c0e2816474288">casacore::SubTableDesc</a>, and <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#a3b3fa61516b21adc5d263eaa3ecb6aba">casacore::ScalarRecordColumnDesc</a>.</p>
+<p>Implemented in <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a9fb9eb119979a270a9320e5a6550fa98">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#acd17c1febcfb7d68495c0e2816474288">casacore::SubTableDesc</a>, <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#a3b3fa61516b21adc5d263eaa3ecb6aba">casacore::ScalarRecordColumnDesc</a>, and <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#ad36fe2843247e44f33f7359cd3615f2c">casacore::ArrayColumnDescBase</a>.</p>
 
 </div>
 </div>
@@ -913,7 +915,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Reimplemented in <a class="el" href="classcasacore_1_1SubTableDesc.html#a882d35f1207ebe0a26a32b68bcb523b1">casacore::SubTableDesc</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00398">casacore::ColumnDesc::handleAdd()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00399">casacore::ColumnDesc::handleAdd()</a>.</p>
 
 </div>
 </div>
@@ -939,7 +941,7 @@ The description of letter/envelope class design, and its application to the fami
 </table>
 </div><div class="memdoc">
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00402">casacore::ColumnDesc::handleRemove()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00403">casacore::ColumnDesc::handleRemove()</a>.</p>
 
 </div>
 </div>
@@ -975,7 +977,7 @@ The description of letter/envelope class design, and its application to the fami
 </table>
 </div><div class="memdoc">
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00400">casacore::ColumnDesc::handleRename()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00401">casacore::ColumnDesc::handleRename()</a>.</p>
 
 </div>
 </div>
@@ -1004,7 +1006,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00262">isArray_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00257">casacore::ColumnDesc::isArray()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00258">casacore::ColumnDesc::isArray()</a>.</p>
 
 </div>
 </div>
@@ -1035,7 +1037,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00261">isScalar_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00254">casacore::ColumnDesc::isScalar()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00255">casacore::ColumnDesc::isScalar()</a>.</p>
 
 </div>
 </div>
@@ -1064,7 +1066,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00263">isTable_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00260">casacore::ColumnDesc::isTable()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00261">casacore::ColumnDesc::isTable()</a>.</p>
 
 </div>
 </div>
@@ -1093,7 +1095,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00260">keySetPtr_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00183">casacore::ColumnDesc::keywordSet()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00184">casacore::ColumnDesc::keywordSet()</a>.</p>
 
 </div>
 </div>
@@ -1121,9 +1123,9 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Make a <a class="el" href="classcasacore_1_1PlainColumn.html" title="Base class for a column in a plain table. ">PlainColumn</a> object out of the description. </p>
 
-<p>Implemented in <a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a918822703bdb9f0903059863c766ff76">casacore::ArrayColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a6a7f1d964231e002e1cbd38ae405b760">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a955f7c8169a30161d654a7aa56250abc">casacore::SubTableDesc</a>, and <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#ab8e758ab1842f8e0d0f5b6ad49fc0df9">casacore::ScalarRecordColumnDesc</a>.</p>
+<p>Implemented in <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a6a7f1d964231e002e1cbd38ae405b760">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a955f7c8169a30161d654a7aa56250abc">casacore::SubTableDesc</a>, <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#ab8e758ab1842f8e0d0f5b6ad49fc0df9">casacore::ScalarRecordColumnDesc</a>, and <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#a7325ef79d6e6bc0c94ab6ece635e0e9d">casacore::ArrayColumnDescBase</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00413">casacore::ColumnDesc::makeColumn()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00414">casacore::ColumnDesc::makeColumn()</a>.</p>
 
 </div>
 </div>
@@ -1154,7 +1156,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Reimplemented in <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a13a74ebf16f22bd79687a93af45997d3">casacore::ScalarColumnDesc&lt; T &gt;</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00346">casacore::ColumnDesc::makeConcatColumn()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00347">casacore::ColumnDesc::makeConcatColumn()</a>.</p>
 
 </div>
 </div>
@@ -1192,7 +1194,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Make a <a class="el" href="classcasacore_1_1RefColumn.html" title="A column in a reference table. ">RefColumn</a> object out of the description. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00342">casacore::ColumnDesc::makeRefColumn()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00343">casacore::ColumnDesc::makeRefColumn()</a>.</p>
 
 </div>
 </div>
@@ -1223,7 +1225,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00259">maxLength_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00303">casacore::ColumnDesc::maxLength()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00304">casacore::ColumnDesc::maxLength()</a>.</p>
 
 </div>
 </div>
@@ -1285,7 +1287,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00257">nrdim_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00264">casacore::ColumnDesc::ndim()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00265">casacore::ColumnDesc::ndim()</a>.</p>
 
 </div>
 </div>
@@ -1342,7 +1344,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00256">option_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00245">casacore::ColumnDesc::options()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00246">casacore::ColumnDesc::options()</a>.</p>
 
 </div>
 </div>
@@ -1370,7 +1372,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Put the derived object. </p>
 
-<p>Implemented in <a class="el" href="classcasacore_1_1ArrayColumnDesc.html#a507b1cfaba80854d20d1be5ac688f700">casacore::ArrayColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a3172994b54a87eceff67c145daefbb73">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a13e4e06feb4bc51c84e6c5041acd9f13">casacore::SubTableDesc</a>, and <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#a59b3312bc6a9e1113ff19e30e422b3d2">casacore::ScalarRecordColumnDesc</a>.</p>
+<p>Implemented in <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a3172994b54a87eceff67c145daefbb73">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a13e4e06feb4bc51c84e6c5041acd9f13">casacore::SubTableDesc</a>, <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#a59b3312bc6a9e1113ff19e30e422b3d2">casacore::ScalarRecordColumnDesc</a>, and <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#ab823ab3acefb545c8f0c2059bfa7ef6c">casacore::ArrayColumnDescBase</a>.</p>
 
 </div>
 </div>
@@ -1446,7 +1448,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>This function allows each column to act upon a rename of another column. </p>
 <p>If the old name is used internally, the column can update itself. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00409">casacore::ColumnDesc::renameAction()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00410">casacore::ColumnDesc::renameAction()</a>.</p>
 
 </div>
 </div>
@@ -1477,7 +1479,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00260">keySetPtr_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00181">casacore::ColumnDesc::rwKeywordSet()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00182">casacore::ColumnDesc::rwKeywordSet()</a>.</p>
 
 </div>
 </div>
@@ -1498,7 +1500,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>Set the data manager type and group to the default. </p>
 <p>If <code>always==True</code> they are always set, otherwise only if empty. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00226">casacore::ColumnDesc::setDefaultDataManager()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00227">casacore::ColumnDesc::setDefaultDataManager()</a>.</p>
 
 </div>
 </div>
@@ -1519,7 +1521,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>Set the maximum value length. </p>
 <p>So far, this is only possible for columns containing <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> values. An exception is thrown if the column data type is not TpString. Some storage managers support fixed length strings and can store them more efficiently than variable length strings. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00311">casacore::ColumnDesc::setMaxLength()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00312">casacore::ColumnDesc::setMaxLength()</a>.</p>
 
 </div>
 </div>
@@ -1551,7 +1553,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00250">colName_p</a>, and <a class="el" href="BaseColDesc_8h_source.html#l00138">name()</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00338">casacore::ColumnDesc::setName()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00339">casacore::ColumnDesc::setName()</a>.</p>
 
 </div>
 </div>
@@ -1572,7 +1574,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>Set the number of dimensions. </p>
 <p>This is only allowed for arrays. <code>ndim</code> can be zero to clear the number of dimensions and the shape. Otherwise it can only be used if the dimensionality has not been defined yet. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00278">casacore::ColumnDesc::setNdim()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00279">casacore::ColumnDesc::setNdim()</a>.</p>
 
 </div>
 </div>
@@ -1593,7 +1595,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>Set the options to the given value. </p>
 <p>Option <code><a class="el" href="classcasacore_1_1ColumnDesc.html#a8345327ae9b644267a43d970370ef129a4f9ea1574b345a35326f151d80dafc0f" title="direct table or array ">ColumnDesc::Direct</a></code> forces <code>FixedShape</code>. If <code>FixedShape</code> is not given (implicitly or explicitly), the column can have no shape, so its shape is cleared. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00299">casacore::ColumnDesc::setOptions()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00300">casacore::ColumnDesc::setOptions()</a>.</p>
 
 </div>
 </div>
@@ -1615,7 +1617,7 @@ The description of letter/envelope class design, and its application to the fami
 <p>This is only allowed for arrays, for which the shape has not been defined yet. If the dimensionality has already been defined, it must match. It will set the option FixedShape if not set yet. <br/>
  The first version leaves the <code>Direct</code> option as is. The second version sets the <code>Direct</code> option as given. </p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00289">casacore::ColumnDesc::setShape()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00290">casacore::ColumnDesc::setShape()</a>.</p>
 
 </div>
 </div>
@@ -1673,7 +1675,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>References <a class="el" href="BaseColDesc_8h_source.html#l00258">shape_p</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00269">casacore::ColumnDesc::shape()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00270">casacore::ColumnDesc::shape()</a>.</p>
 
 </div>
 </div>
@@ -1701,7 +1703,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Show the column. </p>
 
-<p>Implemented in <a class="el" href="classcasacore_1_1ArrayColumnDesc.html#aab2d516b9eabc56f2597d62c5f76328f">casacore::ArrayColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a2ff398f3c253f1acf34d54e967be4166">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a30e0114de79bdabf85aa61a36d8c3f46">casacore::SubTableDesc</a>, and <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#add13ce08244ac7153ac43823510ab126">casacore::ScalarRecordColumnDesc</a>.</p>
+<p>Implemented in <a class="el" href="classcasacore_1_1ScalarColumnDesc.html#a2ff398f3c253f1acf34d54e967be4166">casacore::ScalarColumnDesc&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1SubTableDesc.html#a30e0114de79bdabf85aa61a36d8c3f46">casacore::SubTableDesc</a>, <a class="el" href="classcasacore_1_1ScalarRecordColumnDesc.html#add13ce08244ac7153ac43823510ab126">casacore::ScalarRecordColumnDesc</a>, and <a class="el" href="classcasacore_1_1ArrayColumnDescBase.html#a2c57dd4a05979b6233c264e6b8fcf3c3">casacore::ArrayColumnDescBase</a>.</p>
 
 </div>
 </div>
@@ -1730,7 +1732,7 @@ The description of letter/envelope class design, and its application to the fami
 
 <p>Definition at line <a class="el" href="BaseColDesc_8h_source.html#l00244">244</a> of file <a class="el" href="BaseColDesc_8h_source.html">BaseColDesc.h</a>.</p>
 
-<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00316">casacore::ColumnDesc::tableDesc()</a>.</p>
+<p>Referenced by <a class="el" href="ColumnDesc_8h_source.html#l00317">casacore::ColumnDesc::tableDesc()</a>.</p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -113,8 +114,9 @@ Inheritance diagram for casacore::VirtualColumnEngine:</div>
 <area href="classcasacore_1_1BaseMappedArrayEngine.html" title="Templated virtual column engine for a table array of any type. " alt="casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;" shape="rect" coords="390,280,770,304"/>
 <area href="classcasacore_1_1DerivedMSCal.html" title="Virtual column engine to return derived MS values. " alt="casacore::DerivedMSCal" shape="rect" coords="390,336,770,360"/>
 <area href="classcasacore_1_1ForwardColumnEngine.html" title="Virtual column engine forwarding to other columns. " alt="casacore::ForwardColumnEngine" shape="rect" coords="390,392,770,416"/>
-<area href="classcasacore_1_1VirtualTaQLColumn.html" title="Virtual scalar column using TaQL. " alt="casacore::VirtualTaQLColumn" shape="rect" coords="390,448,770,472"/>
-<area href="classcasacore_1_1VSCEngine.html" title="Base virtual column for a scalar column with any type. " alt="casacore::VSCEngine&lt; T &gt;" shape="rect" coords="390,504,770,528"/>
+<area href="classcasacore_1_1VACEngine.html" title="Base virtual column for an array column with any type. " alt="casacore::VACEngine&lt; T &gt;" shape="rect" coords="390,448,770,472"/>
+<area href="classcasacore_1_1VirtualTaQLColumn.html" title="Virtual scalar column using TaQL. " alt="casacore::VirtualTaQLColumn" shape="rect" coords="390,504,770,528"/>
+<area href="classcasacore_1_1VSCEngine.html" title="Base virtual column for a scalar column with any type. " alt="casacore::VSCEngine&lt; T &gt;" shape="rect" coords="390,560,770,584"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -200,9 +202,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a25a417865a89463ce7f3ec565f350a74">canRenameColumn</a> () const </td></tr>
 <tr class="memdesc:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the data manager allow to rename columns? (default yes)  <a href="#a25a417865a89463ce7f3ec565f350a74">More...</a><br/></td></tr>
 <tr class="separator:a25a417865a89463ce7f3ec565f350a74 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a36062cc49d6197e9df045cff38d37a7a">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nbytes)</td></tr>
-<tr class="memdesc:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#a36062cc49d6197e9df045cff38d37a7a">More...</a><br/></td></tr>
-<tr class="separator:a36062cc49d6197e9df045cff38d37a7a inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#ac56c0624343f204b2236ee69eeaa6ed2">setMaximumCacheSize</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nMiB)</td></tr>
+<tr class="memdesc:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum cache size (in bytes) to be used by a storage manager.  <a href="#ac56c0624343f204b2236ee69eeaa6ed2">More...</a><br/></td></tr>
+<tr class="separator:ac56c0624343f204b2236ee69eeaa6ed2 inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a75e6607644f05a6168e326fdc902668f">showCacheStatistics</a> (std::ostream &amp;) const </td></tr>
 <tr class="memdesc:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the data manager's IO statistics.  <a href="#a75e6607644f05a6168e326fdc902668f">More...</a><br/></td></tr>
 <tr class="separator:a75e6607644f05a6168e326fdc902668f inherit pub_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -239,24 +241,24 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a9374512ca67b8acd54301c2fdf05aa80"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a9374512ca67b8acd54301c2fdf05aa80">canRemoveRow</a> () const </td></tr>
 <tr class="memdesc:a9374512ca67b8acd54301c2fdf05aa80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the data manager allow to delete rows? (default no)  <a href="#a9374512ca67b8acd54301c2fdf05aa80">More...</a><br/></td></tr>
 <tr class="separator:a9374512ca67b8acd54301c2fdf05aa80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abed3015a2ea06e4d543429d6db5bf38c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#abed3015a2ea06e4d543429d6db5bf38c">addRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow)</td></tr>
-<tr class="memdesc:abed3015a2ea06e4d543429d6db5bf38c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to all columns.  <a href="#abed3015a2ea06e4d543429d6db5bf38c">More...</a><br/></td></tr>
-<tr class="separator:abed3015a2ea06e4d543429d6db5bf38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74cccfe574ac8eec832e6046a312e582"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a74cccfe574ac8eec832e6046a312e582">removeRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr)</td></tr>
-<tr class="memdesc:a74cccfe574ac8eec832e6046a312e582"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#a74cccfe574ac8eec832e6046a312e582">More...</a><br/></td></tr>
-<tr class="separator:a74cccfe574ac8eec832e6046a312e582"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad76c343a875f871c54e932d9a94dd183"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ad76c343a875f871c54e932d9a94dd183">addRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow)</td></tr>
+<tr class="memdesc:ad76c343a875f871c54e932d9a94dd183"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to all columns.  <a href="#ad76c343a875f871c54e932d9a94dd183">More...</a><br/></td></tr>
+<tr class="separator:ad76c343a875f871c54e932d9a94dd183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab30940249a0d66b9b9c2e4bd82c63d8f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ab30940249a0d66b9b9c2e4bd82c63d8f">removeRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr)</td></tr>
+<tr class="memdesc:ab30940249a0d66b9b9c2e4bd82c63d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#ab30940249a0d66b9b9c2e4bd82c63d8f">More...</a><br/></td></tr>
+<tr class="separator:ab30940249a0d66b9b9c2e4bd82c63d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c3d60a7f795f673c27331ca1a0d9240"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a5c3d60a7f795f673c27331ca1a0d9240">flush</a> (<a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> fsync)</td></tr>
 <tr class="memdesc:a5c3d60a7f795f673c27331ca1a0d9240"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush the data in the engine object.  <a href="#a5c3d60a7f795f673c27331ca1a0d9240">More...</a><br/></td></tr>
 <tr class="separator:a5c3d60a7f795f673c27331ca1a0d9240"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0c32276af58ec1e3a1f0fb7f787c43e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ac0c32276af58ec1e3a1f0fb7f787c43e">resync</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow)</td></tr>
-<tr class="memdesc:ac0c32276af58ec1e3a1f0fb7f787c43e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resync the storage manager with the new file contents.  <a href="#ac0c32276af58ec1e3a1f0fb7f787c43e">More...</a><br/></td></tr>
-<tr class="separator:ac0c32276af58ec1e3a1f0fb7f787c43e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e77f13217bd87cfd523e2ac832f1a18"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a5e77f13217bd87cfd523e2ac832f1a18">create</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> initialNrrow)</td></tr>
-<tr class="memdesc:a5e77f13217bd87cfd523e2ac832f1a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the object for a new table containing initially nrrow rows.  <a href="#a5e77f13217bd87cfd523e2ac832f1a18">More...</a><br/></td></tr>
-<tr class="separator:a5e77f13217bd87cfd523e2ac832f1a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67a37c38083c206f57a9472adc65168c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a67a37c38083c206f57a9472adc65168c">open</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrrow, <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;mainTableFile)</td></tr>
-<tr class="memdesc:a67a37c38083c206f57a9472adc65168c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the object for an existing table containing nrrow rows.  <a href="#a67a37c38083c206f57a9472adc65168c">More...</a><br/></td></tr>
-<tr class="separator:a67a37c38083c206f57a9472adc65168c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb990490d906f9cd61ee21e52f32bbb4"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#abb990490d906f9cd61ee21e52f32bbb4">resync64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow)</td></tr>
+<tr class="memdesc:abb990490d906f9cd61ee21e52f32bbb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resync the storage manager with the new file contents.  <a href="#abb990490d906f9cd61ee21e52f32bbb4">More...</a><br/></td></tr>
+<tr class="separator:abb990490d906f9cd61ee21e52f32bbb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8a0e6f737509a1ab9daadccd4ee0783"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#ad8a0e6f737509a1ab9daadccd4ee0783">create64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> initialNrrow)</td></tr>
+<tr class="memdesc:ad8a0e6f737509a1ab9daadccd4ee0783"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the object for a new table containing initially nrrow rows.  <a href="#ad8a0e6f737509a1ab9daadccd4ee0783">More...</a><br/></td></tr>
+<tr class="separator:ad8a0e6f737509a1ab9daadccd4ee0783"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75537d8689b409f1a3367afe6752c8e8"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a75537d8689b409f1a3367afe6752c8e8">open64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> nrrow, <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> &amp;mainTableFile)</td></tr>
+<tr class="memdesc:a75537d8689b409f1a3367afe6752c8e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the object for an existing table containing nrrow rows.  <a href="#a75537d8689b409f1a3367afe6752c8e8">More...</a><br/></td></tr>
+<tr class="separator:a75537d8689b409f1a3367afe6752c8e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0983634d254d7c0e7cef3f6ea25e55d4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1VirtualColumnEngine.html#a0983634d254d7c0e7cef3f6ea25e55d4">prepare</a> ()</td></tr>
 <tr class="memdesc:a0983634d254d7c0e7cef3f6ea25e55d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the data manager initialize itself further.  <a href="#a0983634d254d7c0e7cef3f6ea25e55d4">More...</a><br/></td></tr>
 <tr class="separator:a0983634d254d7c0e7cef3f6ea25e55d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -288,6 +290,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a7ad18902bcfea995650b5d66d3469a09 inherit pub_static_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a7ad18902bcfea995650b5d66d3469a09">unknownDataManager</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1DataManager.html#a03a6c5d513990679a001c5ae37db4552">dataManagerType</a>, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;spec)</td></tr>
 <tr class="memdesc:a7ad18902bcfea995650b5d66d3469a09 inherit pub_static_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serve as default function for theirRegisterMap, which catches all unknown data manager types.  <a href="#a7ad18902bcfea995650b5d66d3469a09">More...</a><br/></td></tr>
 <tr class="separator:a7ad18902bcfea995650b5d66d3469a09 inherit pub_static_methods_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_attribs_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
+<tr class="memitem:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#af8e69129a6b42ff06aec5c43066c5b01">MAXROWNR32</a></td></tr>
+<tr class="memdesc:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the highest row number that can be represented as signed 32-bit.  <a href="#af8e69129a6b42ff06aec5c43066c5b01">More...</a><br/></td></tr>
+<tr class="separator:af8e69129a6b42ff06aec5c43066c5b01 inherit pub_static_attribs_classcasacore_1_1DataManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcasacore_1_1DataManager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcasacore_1_1DataManager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
 <tr class="memitem:a4c32d0e690566949850a11b26566e5aa inherit pro_methods_classcasacore_1_1DataManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html#a4c32d0e690566949850a11b26566e5aa">decrementNcolumn</a> ()</td></tr>
 <tr class="memdesc:a4c32d0e690566949850a11b26566e5aa inherit pro_methods_classcasacore_1_1DataManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrement number of columns (in case a column is deleted).  <a href="#a4c32d0e690566949850a11b26566e5aa">More...</a><br/></td></tr>
@@ -330,11 +336,11 @@ Additional Inherited Members</h2></td></tr>
 <h3>Etymology</h3>
 <p><a class="el" href="classcasacore_1_1VirtualColumnEngine.html" title="Abstract base class for virtual column handling. ">VirtualColumnEngine</a> is the abstract data manager class for specialized classes (engines) handling a group of virtual columns.</p>
 <h3>Synopsis</h3>
-<p><a class="el" href="classcasacore_1_1VirtualColumnEngine.html" title="Abstract base class for virtual column handling. ">VirtualColumnEngine</a> is the data manager for classes handling a group of virtual columns in tables. It is an abstract base class for the specialized virtual column engines. Each virtual column as such is represented by a class which has to be derived from the abstract base classes <a class="el" href="classcasacore_1_1VirtualScalarColumn.html" title="Templated base class for virtual scalar column. ">VirtualScalarColumn</a> or <a class="el" href="classcasacore_1_1VirtualArrayColumn.html" title="Templated base class for virtual array column. ">VirtualArrayColumn</a>. The engine has to create the various column objects via the functions makeXXXColumn.</p>
+<p><a class="el" href="classcasacore_1_1VirtualColumnEngine.html" title="Abstract base class for virtual column handling. ">VirtualColumnEngine</a> is the data manager for classes handling a group of virtual columns in tables. It is an abstract base class for the specialized virtual column engines. Each virtual column as such is represented by a class which has to be derived from the abstract base classes <a class="el" href="classcasacore_1_1VirtualScalarColumn.html">VirtualScalarColumn</a> or <a class="el" href="classcasacore_1_1VirtualArrayColumn.html">VirtualArrayColumn</a>. The engine has to create the various column objects via the functions makeXXXColumn.</p>
 <p>Initialization of the virtual column engine is done by the functions create (for new tables), open (for existing tables) and prepare. The engine can be flushed by the function flush, which allows to write some data. The function open can read these data back. <a class="el" href="classcasacore_1_1VirtualColumnEngine.html" title="Abstract base class for virtual column handling. ">VirtualColumnEngine</a> is closely related with the table system.</p>
 <p>A number of (pure) virtual functions have been defined. The pure virtual functions must be implemented in the derived class. The non-pure virtual functions have a default implementation throwing a "not possible" exception. They need to be implemented if they are used for this engine (e.g. makeIndArrColumn does not need to be implemented if the engine does not handle arrays). Furthermore the pure virtual function dataManagerType (defined in <a class="el" href="DataManager_8h.html">DataManager.h</a>) has to be implemented. This should return the name of the data manager, which is usually its class name. This name has to be unique; so if the engine is templated, the template parameter has to be part of the data manager name.</p>
 <p>The engine has to be registered before it can be used by the table system. This means that a special makeObject function has to be made known to the table system, which allows the table system to reconstruct the engine using its name.</p>
-<p>An example of a virtual column engine can be found in dVirtColEng.{h,cc} in the test directory of the Tables module. Another exanple is class ScaledArray.</p>
+<p>An example of a virtual column engine can be found in dVirtColEng.{h,cc} in the test directory of the Tables module. Another exanple is class <a class="el" href="classcasacore_1_1ScaledComplexData.html" title="Templated virtual column engine to scale a complex table array. ">ScaledComplexData</a>.</p>
 <h3>Motivation</h3>
 <p>It is nice if a table column can be expressed as a function of other columns (maybe even in other tables). A virtual column provides this functionality in a very flexible way. A specialized class can calculate the data of a virtual column, but a common base class is required to interface it to the table system. </p>
 
@@ -418,7 +424,7 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="abed3015a2ea06e4d543429d6db5bf38c"></a>
+<a class="anchor" id="ad76c343a875f871c54e932d9a94dd183"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -426,9 +432,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::VirtualColumnEngine::addRow </td>
+          <td class="memname">virtual void casacore::VirtualColumnEngine::addRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -443,9 +449,9 @@ Additional Inherited Members</h2></td></tr>
 <p>Add rows to all columns. </p>
 <p>The default implementation does nothing. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a7bf4d388de87925f3da206a37060c548">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a6d34cc1c3c0ba9423927a2ee1fa31df9">casacore::DataManager</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a96e84e7e937088e7ba7f7d11c4125651">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a572f330c629bd5f56ae836de8e15d22e">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a572f330c629bd5f56ae836de8e15d22e">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a572f330c629bd5f56ae836de8e15d22e">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, and <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a572f330c629bd5f56ae836de8e15d22e">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a5881e09298e968e360d3876601f67ee1">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#aa72771f347a78dd56df393aa013cfed1">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#aa72771f347a78dd56df393aa013cfed1">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#aa72771f347a78dd56df393aa013cfed1">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, and <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#aa72771f347a78dd56df393aa013cfed1">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>.</p>
 
 </div>
 </div>
@@ -507,7 +513,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a5e77f13217bd87cfd523e2ac832f1a18"></a>
+<a class="anchor" id="ad8a0e6f737509a1ab9daadccd4ee0783"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -515,9 +521,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::VirtualColumnEngine::create </td>
+          <td class="memname">virtual void casacore::VirtualColumnEngine::create64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>initialNrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -532,9 +538,9 @@ Additional Inherited Members</h2></td></tr>
 <p>Initialize the object for a new table containing initially nrrow rows. </p>
 <p>It can be used to initialize variables (possibly using data from other columns in the table). The default implementation does nothing. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a1d88428031895eea8c7f25c6579d34a1">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a356b5651589c07217c736e24c522eece">casacore::DataManager</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#ab108cfe701f76397a95716b64d8e77b2">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1RetypedArrayEngine.html#a083899c1ab2b0ebca5db8ea43c16d4df">casacore::RetypedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1CompressComplexSD.html#a536fe75cd4d41a56dacbd57d08bd1587">casacore::CompressComplexSD</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#a7aae600f6ffecb4868aecb901933a301">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9c43e6801afc7c4d7df4299835bcdb7f">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9c43e6801afc7c4d7df4299835bcdb7f">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9c43e6801afc7c4d7df4299835bcdb7f">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9c43e6801afc7c4d7df4299835bcdb7f">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BitFlagsEngine.html#ae71606d4b58430d95b2959b4a50791a3">casacore::BitFlagsEngine&lt; StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledComplexData.html#a8d2ad9e8a3f37b726d11338036651960">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledArrayEngine.html#a86f7d204269a244137b11fb7e9080a5f">casacore::ScaledArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1CompressComplex.html#a4ae909d402197c13be8c62542c035602">casacore::CompressComplex</a>, <a class="el" href="classcasacore_1_1CompressFloat.html#aaf49fb0b633b6855caf896801d0e85dd">casacore::CompressFloat</a>, and <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#ab8a8df593ac2ba26b1c03e8760d0cc1e">casacore::VirtualTaQLColumn</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1RetypedArrayEngine.html#a36a32de7b4b4d2cf2e49e61e2d892314">casacore::RetypedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a7d82b7d9d3f55c195691cab19bb9a575">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1CompressComplexSD.html#a1e93dc19226d2bb2c05208452e5abb5d">casacore::CompressComplexSD</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#a6d986b17e19f4c492af241a9d78e0999">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9e33932b879ba0a57c49b6423c93d1f0">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9e33932b879ba0a57c49b6423c93d1f0">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9e33932b879ba0a57c49b6423c93d1f0">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a9e33932b879ba0a57c49b6423c93d1f0">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BitFlagsEngine.html#a45a98271b8409d078c76b170d402523e">casacore::BitFlagsEngine&lt; StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledComplexData.html#a43730a4e932d91cff147deb331b4ac75">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledArrayEngine.html#ade7023163070762798d86cad5bea4c22">casacore::ScaledArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1CompressComplex.html#ac1fdd073e77a2dcffbbcbd683aebe31a">casacore::CompressComplex</a>, <a class="el" href="classcasacore_1_1CompressFloat.html#adee93056f9911b4c64ca4f3b58aac85e">casacore::CompressFloat</a>, and <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#a441aacadeb99d587c62117068b5877c1">casacore::VirtualTaQLColumn</a>.</p>
 
 </div>
 </div>
@@ -683,6 +689,8 @@ The default implementation does nothing and returns False. </p>
 
 <p>Implements <a class="el" href="classcasacore_1_1DataManager.html#aa0173eb7ccaa78c490cc62bed40a5f5c">casacore::DataManager</a>.</p>
 
+<p>Reimplemented in <a class="el" href="classcasacore_1_1VACEngine.html#af45aa830f3327cf292d91235a75f92e1">casacore::VACEngine&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="aaf061c908d93bf66bd5181ebbec7d3aa"></a>
@@ -728,7 +736,7 @@ The default implementation does nothing and returns False. </p>
 
 <p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a9bd5f265a51e0982252756d7b95054db">casacore::DataManager</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a9cc1f060760279ae468aa57035974743">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#aab5dae2c3e715f54bfce0dfcbe16fdd7">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1DerivedMSCal.html#a4b0a69d49a68b246b7c74965f876b44d">casacore::DerivedMSCal</a>, and <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#af687d55e382e4fa4ff2687663a7ec3b3">casacore::VirtualTaQLColumn</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a9cc1f060760279ae468aa57035974743">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#aab5dae2c3e715f54bfce0dfcbe16fdd7">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1VACEngine.html#a06347187d5109168d35398130b2f8699">casacore::VACEngine&lt; T &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#a8ecf9fe1b0f6193523dbbbb37862473f">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1DerivedMSCal.html#a4b0a69d49a68b246b7c74965f876b44d">casacore::DerivedMSCal</a>, and <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#af687d55e382e4fa4ff2687663a7ec3b3">casacore::VirtualTaQLColumn</a>.</p>
 
 </div>
 </div>
@@ -771,7 +779,7 @@ The default implementation does nothing and returns False. </p>
 </div><div class="memdoc">
 
 <p>Make a column object in the engine on behalf of a table column. </p>
-<p>This column object class is derived from <a class="el" href="classcasacore_1_1VirtualScalarColumn.html" title="Templated base class for virtual scalar column. ">VirtualScalarColumn</a> or <a class="el" href="classcasacore_1_1VirtualArrayColumn.html" title="Templated base class for virtual array column. ">VirtualArrayColumn</a>. It handles the gets and puts of data.</p>
+<p>This column object class is derived from <a class="el" href="classcasacore_1_1VirtualScalarColumn.html">VirtualScalarColumn</a> or <a class="el" href="classcasacore_1_1VirtualArrayColumn.html">VirtualArrayColumn</a>. It handles the gets and puts of data.</p>
 <p>Create a scalar column. The default implementation throws an exception that it cannot do it for this column. </p>
 
 <p>Implements <a class="el" href="classcasacore_1_1DataManager.html#a6d64d92ae257a93225a6e1a6e7ba507d">casacore::DataManager</a>.</p>
@@ -780,7 +788,7 @@ The default implementation does nothing and returns False. </p>
 
 </div>
 </div>
-<a class="anchor" id="a67a37c38083c206f57a9472adc65168c"></a>
+<a class="anchor" id="a75537d8689b409f1a3367afe6752c8e8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -788,9 +796,9 @@ The default implementation does nothing and returns False. </p>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::VirtualColumnEngine::open </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::VirtualColumnEngine::open64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em>, </td>
         </tr>
         <tr>
@@ -815,7 +823,7 @@ The default implementation does nothing and returns False. </p>
 <p>Initialize the object for an existing table containing nrrow rows. </p>
 <p>It can be used to read values back (written by close) and/or to initialize variables (possibly using data from other columns in the table). The default implementation does nothing. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#add9a81a6668484432520d2f0591ae767">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a9eb4efb4b5d3cd913f7c531da74c37cb">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -872,11 +880,11 @@ The default implementation does nothing and returns False. </p>
 
 <p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a79ac82e224396ef119c42658263b56df">casacore::DataManager</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#aed975ed12530a6e4e1d60c03aced981d">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1RetypedArrayEngine.html#a005bf96ccebb721c0fdbb0e6766cd067">casacore::RetypedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#a495f98fc8f666ff7ed9a3f37e65ea41d">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BitFlagsEngine.html#ae5a95ced6b4d4d54736ac7fcb95fb52b">casacore::BitFlagsEngine&lt; StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledComplexData.html#a96ca87276bbbece1cd405f515bdad4d1">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledArrayEngine.html#af1c6abfdc27ca18b70edf0396d350f76">casacore::ScaledArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1CompressComplex.html#ac0bea5f765dada8d0abe3a95f591cb06">casacore::CompressComplex</a>, <a class="el" href="classcasacore_1_1CompressFloat.html#a800b1f6a0422c3b2f18f8e45d8def501">casacore::CompressFloat</a>, <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#a6f0bf3455f9b9f15435e5b9fac8b3cb6">casacore::VirtualTaQLColumn</a>, and <a class="el" href="classcasacore_1_1DerivedMSCal.html#ad6bfaa0c5cb58d1f09b0b2185ab8ef30">casacore::DerivedMSCal</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1RetypedArrayEngine.html#a005bf96ccebb721c0fdbb0e6766cd067">casacore::RetypedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#aed975ed12530a6e4e1d60c03aced981d">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#a495f98fc8f666ff7ed9a3f37e65ea41d">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; Complex, Int &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; Float, Short &gt;</a>, <a class="el" href="classcasacore_1_1BaseMappedArrayEngine.html#ae6e140c9ada58e87738d85623a9109e0">casacore::BaseMappedArrayEngine&lt; Bool, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1BitFlagsEngine.html#ae5a95ced6b4d4d54736ac7fcb95fb52b">casacore::BitFlagsEngine&lt; StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledComplexData.html#a96ca87276bbbece1cd405f515bdad4d1">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledArrayEngine.html#af1c6abfdc27ca18b70edf0396d350f76">casacore::ScaledArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1CompressComplex.html#ac0bea5f765dada8d0abe3a95f591cb06">casacore::CompressComplex</a>, <a class="el" href="classcasacore_1_1CompressFloat.html#a800b1f6a0422c3b2f18f8e45d8def501">casacore::CompressFloat</a>, <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#a6f0bf3455f9b9f15435e5b9fac8b3cb6">casacore::VirtualTaQLColumn</a>, and <a class="el" href="classcasacore_1_1DerivedMSCal.html#ad6bfaa0c5cb58d1f09b0b2185ab8ef30">casacore::DerivedMSCal</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a74cccfe574ac8eec832e6046a312e582"></a>
+<a class="anchor" id="ab30940249a0d66b9b9c2e4bd82c63d8f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -884,9 +892,9 @@ The default implementation does nothing and returns False. </p>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::VirtualColumnEngine::removeRow </td>
+          <td class="memname">virtual void casacore::VirtualColumnEngine::removeRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>rownr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -901,13 +909,13 @@ The default implementation does nothing and returns False. </p>
 <p>Delete a row from all columns. </p>
 <p>The default implementation does nothing. </p>
 
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a43ab87fc030fdf69ef193a1217c3226f">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a42f418c608b8edfad8818177a4d48df4">casacore::DataManager</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#a8eb6f7fe6e39dae557dcb23d0516060b">casacore::ForwardColumnEngine</a>.</p>
+<p>Reimplemented in <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#ada666fa43c7351a2313a928fc38836a0">casacore::ForwardColumnEngine</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac0c32276af58ec1e3a1f0fb7f787c43e"></a>
+<a class="anchor" id="abb990490d906f9cd61ee21e52f32bbb4"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -915,9 +923,9 @@ The default implementation does nothing and returns False. </p>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void casacore::VirtualColumnEngine::resync </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> casacore::VirtualColumnEngine::resync64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -932,7 +940,7 @@ The default implementation does nothing and returns False. </p>
 <p>Resync the storage manager with the new file contents. </p>
 <p>This is done by clearing the cache. The default implementation does nothing. </p>
 
-<p>Implements <a class="el" href="classcasacore_1_1DataManager.html#aef4c82e212caf10b40bc1469a677f215">casacore::DataManager</a>.</p>
+<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a1551eaef6b3e1701f4a5083859f33048">casacore::DataManager</a>.</p>
 
 </div>
 </div>

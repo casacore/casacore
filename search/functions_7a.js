@@ -7,6 +7,7 @@ var searchData=
   ['zdfftm',['zdfftm',['../classcasacore_1_1SCSL.html#a73dffc5e3e0808d3993fd96aa3dbb43e',1,'casacore::SCSL']]],
   ['zgetrf',['zgetrf',['../namespacecasacore.html#a512a39899dde1e7e445abcd23750f306',1,'casacore']]],
   ['zgetri',['zgetri',['../namespacecasacore.html#a2fea7aeea0b24473eaef37d19640f89e',1,'casacore']]],
+  ['zinc',['zinc',['../classcasacore_1_1Cube.html#aad94e08dcc793faf97e5110bb2a20bd4',1,'casacore::Cube']]],
   ['zposv',['zposv',['../namespacecasacore.html#a6c0081991f7f5292980cc00e875c1e8c',1,'casacore']]],
   ['zpotri',['zpotri',['../namespacecasacore.html#a61cd6c0d4b2b23cfe6cc2431428b6f53',1,'casacore']]],
   ['zscorecalculator',['ZScoreCalculator',['../classcasacore_1_1ZScoreCalculator.html#afec9ad9c85836d2e8d5dcef97f2b0605',1,'casacore::ZScoreCalculator']]],

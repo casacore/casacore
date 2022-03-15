@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -100,7 +101,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a67236a0f4e81766e2e7b5a0a72c12e4b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1ValueHolder.html">ValueHolder</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1python_1_1casa__array__from__python.html#a67236a0f4e81766e2e7b5a0a72c12e4b">makeArray</a> (PyObject *obj_ptr, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> copyData=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>)</td></tr>
-<tr class="memdesc:a67236a0f4e81766e2e7b5a0a72c12e4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> from a Python object.  <a href="#a67236a0f4e81766e2e7b5a0a72c12e4b">More...</a><br/></td></tr>
+<tr class="memdesc:a67236a0f4e81766e2e7b5a0a72c12e4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> from a Python object.  <a href="#a67236a0f4e81766e2e7b5a0a72c12e4b">More...</a><br/></td></tr>
 <tr class="separator:a67236a0f4e81766e2e7b5a0a72c12e4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5141cbf78e4e73092cbaa6a73cd7586"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1ValueHolder.html">ValueHolder</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1python_1_1casa__array__from__python.html#ac5141cbf78e4e73092cbaa6a73cd7586">makeArrayFromDict</a> (PyObject *obj_ptr)</td></tr>
 <tr class="memdesc:ac5141cbf78e4e73092cbaa6a73cd7586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an Array&lt;String&gt; from a special Python dict object.  <a href="#ac5141cbf78e4e73092cbaa6a73cd7586">More...</a><br/></td></tr>
@@ -145,8 +146,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Constructs an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> from a Python object. </p>
-<p>If copyData=False, the array data is only copied if needed meaning that the <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> object in the <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a> can reference the data in Python array. That should only be used if the <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a> and its <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> will be destructed before the Python array. </p>
+<p>Constructs an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> from a Python object. </p>
+<p>If copyData=False, the array data is only copied if needed meaning that the <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> object in the <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a> can reference the data in Python array. That should only be used if the <a class="el" href="classcasacore_1_1ValueHolder.html" title="A holder for a value of any basic Casacore data type. ">ValueHolder</a> and its <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> will be destructed before the Python array. </p>
 
 </div>
 </div>

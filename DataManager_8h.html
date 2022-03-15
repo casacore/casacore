@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -92,32 +93,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">DataManager.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;casacore/casa/aips.h&gt;</code><br/>
-<code>#include &lt;casacore/tables/Tables/ColumnCache.h&gt;</code><br/>
-<code>#include &lt;casacore/tables/DataMan/TSMOption.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/BasicSL/String.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/BasicSL/Complex.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Utilities/CountedPtr.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/IO/ByteIO.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/OS/Mutex.h&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="aips_8h_source.html">casacore/casa/aips.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="DataManagerColumn_8h_source.html">casacore/tables/DataMan/DataManagerColumn.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="TSMOption_8h_source.html">casacore/tables/DataMan/TSMOption.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="ArrayFwd_8h_source.html">casacore/casa/Arrays/ArrayFwd.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="String_8h_source.html">casacore/casa/BasicSL/String.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="ByteIO_8h_source.html">casacore/casa/IO/ByteIO.h</a>&gt;</code><br/>
 <code>#include &lt;iosfwd&gt;</code><br/>
 <code>#include &lt;map&gt;</code><br/>
+<code>#include &lt;mutex&gt;</code><br/>
 </div>
 <p><a href="DataManager_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array.html">casacore::Array&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">template &lt;class T, class U&gt; class vector;  <a href="classcasacore_1_1Array.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1DataManager__global__functions__DataManagerCtor.html">casacore::DataManager_global_functions_DataManagerCtor</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the type of the static construction function.  <a href="structcasacore_1_1DataManager__global__functions__DataManagerCtor.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManager.html">casacore::DataManager</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class for a data manager.  <a href="classcasacore_1_1DataManager.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1DataManagerColumn.html">casacore::DataManagerColumn</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class for a column in a data manager.  <a href="classcasacore_1_1DataManagerColumn.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>

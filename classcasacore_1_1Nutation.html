@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -303,7 +304,7 @@ measures.nutation.b_useiers: use the IERS Database nutation corrections for IAU1
 </ul>
 <h3>Example</h3>
 <p><a class="anchor" id="Nutation_example1"></a></p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Measures_8h.html">casacore/measures/Measures.h</a>&gt;</span></div>
 <div class="line">MVDirection pos(<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(10,<span class="stringliteral">&quot;degree&quot;</span>),<a class="code" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a>(-10.5,<span class="stringliteral">&quot;degree&quot;</span>));</div>
 <div class="line"><span class="comment">// direction RA=10; DEC=-10.5</span></div>
 <div class="line"><a class="code" href="classcasacore_1_1Nutation.html#a2acfa5eaf04d32a311ca6af84fe4853a">Nutation</a> mine(<a class="code" href="classcasacore_1_1Nutation.html#a31c9d53ce01b6fb3bbb20d014c00f11cae87c9e19d642499afaf976e749e8a092">Nutation::IAU1980</a>);  <span class="comment">// define nutation type</span></div>

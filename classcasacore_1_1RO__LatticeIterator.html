@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -230,7 +231,7 @@ class casacore::RO_LatticeIterator&lt; T &gt;</h3>
 <p>This class provides a convenient way to traverse any class derived from <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a>. You can iterate through the <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a>'s data from "start" to "end" by calling <code>operator++</code>, and reverse direction by calling <code>operator--</code>. You can return immediately to the beginning by calling the <code>reset</code> function. The <a class="el" href="classcasacore_1_1RO__LatticeIterator.html" title="A readonly iterator for Lattices. ">RO_LatticeIterator</a> gives the user the opportunity to methodically walk through the data, in an efficient way. </p>
 <p>The supplied <a class="el" href="classcasacore_1_1LatticeNavigator.html">LatticeNavigator</a> determines how to step through the <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a>. It can, for instance, be line by line, but it can also be in a more complicated way. When no navigator is supplied, a default navigator will be used which steps in the optimum way. </p>
 <p>A cursor (which is an <a class="el" href="classcasacore_1_1Array.html">Array</a> object) is used to return the data for each step in the iteration process. Depending on the navigator used the cursor can have a different shape for each step of the iteration. This is especially true when the end of an axis is reached for a non-integrally fitting cursor shape. <br/>
- The <a class="el" href="classcasacore_1_1RO__LatticeIterator.html#ac330aeca0ac29263f159607613f81c49">cursor()</a> function returns an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> which has the same dimensionality as the <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a>. It is, however, also possible to get an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> with a lower dimensionality by using the correct function in the group <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#adb2d8399a8084da8a002c5d3d9ccd079" title="Functions which returns a window to the data in the Lattice. ">vectorCursor()</a></code>, <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#a8c8a9c1bb2004bc0edd8c6be724974ab">matrixCursor()</a></code>, and <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#a31a4b2eed4644eb242a89389dd6146dc">cubeCursor()</a></code>. Those functions remove (some) degenerated axes resulting in a vector, matrix or cube. When, for example, a <a class="el" href="classcasacore_1_1LatticeStepper.html" title="Traverse a Lattice by cursor shape. ">LatticeStepper</a> with shape [64,1,1] is used, the <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#adb2d8399a8084da8a002c5d3d9ccd079" title="Functions which returns a window to the data in the Lattice. ">vectorCursor()</a></code> can be used. It will remove the degenerated axes (length 1) and return the cursor as a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> object. Note that <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#a8c8a9c1bb2004bc0edd8c6be724974ab">matrixCursor()</a></code> cannot be used, because removing the degenerated axes results in a 1D array. </p>
+ The <a class="el" href="classcasacore_1_1RO__LatticeIterator.html#ac330aeca0ac29263f159607613f81c49">cursor()</a> function returns an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> which has the same dimensionality as the <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a>. It is, however, also possible to get an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> with a lower dimensionality by using the correct function in the group <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#adb2d8399a8084da8a002c5d3d9ccd079" title="Functions which returns a window to the data in the Lattice. ">vectorCursor()</a></code>, <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#a8c8a9c1bb2004bc0edd8c6be724974ab">matrixCursor()</a></code>, and <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#a31a4b2eed4644eb242a89389dd6146dc">cubeCursor()</a></code>. Those functions remove (some) degenerated axes resulting in a vector, matrix or cube. When, for example, a <a class="el" href="classcasacore_1_1LatticeStepper.html" title="Traverse a Lattice by cursor shape. ">LatticeStepper</a> with shape [64,1,1] is used, the <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#adb2d8399a8084da8a002c5d3d9ccd079" title="Functions which returns a window to the data in the Lattice. ">vectorCursor()</a></code> can be used. It will remove the degenerated axes (length 1) and return the cursor as a <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a> object. Note that <code><a class="el" href="classcasacore_1_1RO__LatticeIterator.html#a8c8a9c1bb2004bc0edd8c6be724974ab">matrixCursor()</a></code> cannot be used, because removing the degenerated axes results in a 1D array. </p>
 <p>Generally iterators should not be long-lived objects - create new ones when needed rather than keeping one around for a long time to be reused. This is because the cache memory used by the cursor will be released when the iterator is destroyed. </p>
 <p>The purpose of this class is to hide the possibly complicated implementation and structure of the <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a> classes, and allow you to iterate through a <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a> with the same ease as one iterates through a Fortran or <a class="el" href="namespacecasacore_1_1C.html">C</a> vector. For example, and assuming that initialization has been done properly, here's a typical 'for' loop: </p>
 <div class="fragment"><div class="line"><span class="comment">// code omitted  which associates Lattice object and the iterator</span></div>
@@ -251,7 +252,7 @@ class casacore::RO_LatticeIterator&lt; T &gt;</h3>
 <p>The class <a class="el" href="classcasacore_1_1LatticeApply.html">LatticeApply</a> is very useful to iterate through a <a class="el" href="classcasacore_1_1Lattice.html" title="A templated, abstract base class for array-like objects. ">Lattice</a> while applying an algorithm. It makes it possible for the user to concentrate on the algorithm. </p>
 <p>Here's a typical iterator declaration: </p>
 <div class="fragment"><div class="line">RO_LatticeIterator&lt;Float&gt; iterator(pagedArray, stepper);</div>
-</div><!-- fragment --><p> The template identifier <code>Float</code> defines the data type of <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> object that will be the iterator's cursor. <br/>
+</div><!-- fragment --><p> The template identifier <code>Float</code> defines the data type of <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> object that will be the iterator's cursor. <br/>
  The <code>pagedArray</code> constructor argument names a <a class="el" href="classcasacore_1_1PagedArray.html" title="A Lattice that is read from or written to disk. ">PagedArray</a> object, which is what the iterator will traverse. The <code>stepper</code> argument is a <a class="el" href="classcasacore_1_1LatticeStepper.html" title="Traverse a Lattice by cursor shape. ">LatticeStepper</a> which defines the method of iteration.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="LatticeIterator_example1"></a> When passed the name of a previously created <a class="el" href="classcasacore_1_1PagedArray.html" title="A Lattice that is read from or written to disk. ">PagedArray</a> stored on disk, this function will traverse the whole array, and report the average value of all of the elements. Imagine that the filename contains a <a class="el" href="classcasacore_1_1PagedArray.html" title="A Lattice that is read from or written to disk. ">PagedArray</a> with dimension 64 x 64 x 8. </p>
@@ -280,7 +281,7 @@ class casacore::RO_LatticeIterator&lt; T &gt;</h3>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>Iterator classes are a standard feature in C++ libraries &ndash; they provide convenience and allow the implementation of the "iteratee" to be kept hidden. </p>
 
-<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00208">208</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
+<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00204">204</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a397fe2ea9a0a9e5bd14cfe2fccf6a100"></a>
 <div class="memitem">
@@ -613,9 +614,9 @@ template&lt;class T&gt; </div>
 
 <p>Is the iterator object empty? </p>
 
-<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00259">259</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
+<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00255">255</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
 
-<p>References <a class="el" href="LatticeIterator_8h_source.html#l00344">casacore::RO_LatticeIterator&lt; T &gt;::itsIterPtr</a>.</p>
+<p>References <a class="el" href="LatticeIterator_8h_source.html#l00340">casacore::RO_LatticeIterator&lt; T &gt;::itsIterPtr</a>.</p>
 
 </div>
 </div>
@@ -644,9 +645,9 @@ template&lt;class T&gt; </div>
 
 <p>Return the underlying lattice. </p>
 
-<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00263">263</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
+<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00259">259</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
 
-<p>References <a class="el" href="LatticeIterator_8h_source.html#l00344">casacore::RO_LatticeIterator&lt; T &gt;::itsIterPtr</a>.</p>
+<p>References <a class="el" href="LatticeIterator_8h_source.html#l00340">casacore::RO_LatticeIterator&lt; T &gt;::itsIterPtr</a>.</p>
 
 </div>
 </div>
@@ -908,9 +909,9 @@ template&lt;class T&gt; </div>
 
 <p>The pointer to the Iterator. </p>
 
-<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00344">344</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
+<p>Definition at line <a class="el" href="LatticeIterator_8h_source.html#l00340">340</a> of file <a class="el" href="LatticeIterator_8h_source.html">LatticeIterator.h</a>.</p>
 
-<p>Referenced by <a class="el" href="LatticeIterator_8h_source.html#l00259">casacore::RO_LatticeIterator&lt; T &gt;::isNull()</a>, and <a class="el" href="LatticeIterator_8h_source.html#l00263">casacore::RO_LatticeIterator&lt; T &gt;::lattice()</a>.</p>
+<p>Referenced by <a class="el" href="LatticeIterator_8h_source.html#l00255">casacore::RO_LatticeIterator&lt; T &gt;::isNull()</a>, and <a class="el" href="LatticeIterator_8h_source.html#l00259">casacore::RO_LatticeIterator&lt; T &gt;::lattice()</a>.</p>
 
 </div>
 </div>

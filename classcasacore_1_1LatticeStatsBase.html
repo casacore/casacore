@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -154,9 +155,9 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa1bbe19bd842ddef54250ba04c041fd5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeStatsBase.html#aa1bbe19bd842ddef54250ba04c041fd5">toStatisticTypes</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;statistics, const <a class="el" href="classcasacore_1_1Regex.html">Regex</a> &amp;delimiter)</td></tr>
-<tr class="memdesc:aa1bbe19bd842ddef54250ba04c041fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to convert a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> containing a list of desired statistics to the correct <a class="el" href="classcasacore_1_1Vector.html">Vector&lt;Int&gt;</a> required for the LatticeStatistics&lt;T&gt;::setPlotting function.  <a href="#aa1bbe19bd842ddef54250ba04c041fd5">More...</a><br/></td></tr>
-<tr class="separator:aa1bbe19bd842ddef54250ba04c041fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a342f3acb50172383982dd198c11aad54"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeStatsBase.html#a342f3acb50172383982dd198c11aad54">toStatisticTypes</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;statistics, const std::regex &amp;delimiter)</td></tr>
+<tr class="memdesc:a342f3acb50172383982dd198c11aad54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to convert a <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a> containing a list of desired statistics to the correct <a class="el" href="classcasacore_1_1Vector.html">Vector&lt;Int&gt;</a> required for the LatticeStatistics&lt;T&gt;::setPlotting function.  <a href="#a342f3acb50172383982dd198c11aad54">More...</a><br/></td></tr>
+<tr class="separator:a342f3acb50172383982dd198c11aad54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36f51b1822128b537df9f250ef65c216"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeStatsBase.html#a36f51b1822128b537df9f250ef65c216">toStatisticTypes</a> (const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;statistics)</td></tr>
 <tr class="separator:a36f51b1822128b537df9f250ef65c216"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ba38f66c5ffc4d5d6a21ae8b68a826a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1String.html">String</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1LatticeStatsBase.html#a4ba38f66c5ffc4d5d6a21ae8b68a826a">toStatisticName</a> (<a class="el" href="classcasacore_1_1LatticeStatsBase.html#acb4b8232db2850c5616b7b7b92618233">StatisticsTypes</a> type)</td></tr>
@@ -202,7 +203,7 @@ Static Public Member Functions</h2></td></tr>
 <p>This base class provides an <code>enum</code> defining allowed statistics types and a helper function to convert between a <code><a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a></code> and a <code><a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a>&lt;Int&gt;</code> describing the desired statistics to plot. The reason for having it as a base class rather than just part of <a class="el" href="classcasacore_1_1LatticeStatistics.html" title="Compute and display various statistics from a lattice. ">LatticeStatistics</a> is that the latter is templated, and it doesn't make much sense to invoke the static function <code>setStatisticTypes</code> function with a templated type.</p>
 <h3>Example</h3>
 <p><a class="anchor" id="LatticeStatsBase_example1"></a></p>
-<div class="fragment"><div class="line">Vector&lt;Int&gt; statsToPlot = <a class="code" href="classcasacore_1_1LatticeStatsBase.html#aa1bbe19bd842ddef54250ba04c041fd5">LatticeStatsBase::toStatisticTypes</a>(<span class="stringliteral">&quot;mean,rms,sigma&quot;</span>);</div>
+<div class="fragment"><div class="line">Vector&lt;Int&gt; statsToPlot = <a class="code" href="classcasacore_1_1LatticeStatsBase.html#a342f3acb50172383982dd198c11aad54">LatticeStatsBase::toStatisticTypes</a>(<span class="stringliteral">&quot;mean,rms,sigma&quot;</span>);</div>
 </div><!-- fragment --> 
 <p>Definition at line <a class="el" href="LatticeStatsBase_8h_source.html#l00076">76</a> of file <a class="el" href="LatticeStatsBase_8h_source.html">LatticeStatsBase.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
@@ -504,7 +505,7 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa1bbe19bd842ddef54250ba04c041fd5"></a>
+<a class="anchor" id="a342f3acb50172383982dd198c11aad54"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -520,7 +521,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Regex.html">Regex</a> &amp;&#160;</td>
+          <td class="paramtype">const std::regex &amp;&#160;</td>
           <td class="paramname"><em>delimiter</em>&#160;</td>
         </tr>
         <tr>

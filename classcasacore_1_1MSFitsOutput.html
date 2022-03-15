@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -138,39 +139,42 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a3c82540dd5e0c7e544b5527697606e3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a3c82540dd5e0c7e544b5527697606e3e">_writeMain</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;refPixelFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;chanbw, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;outFITSFile, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrspw, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;fieldidMap, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> asMultiSource) const </td></tr>
-<tr class="memdesc:a3c82540dd5e0c7e544b5527697606e3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the main table.  <a href="#a3c82540dd5e0c7e544b5527697606e3e">More...</a><br/></td></tr>
-<tr class="separator:a3c82540dd5e0c7e544b5527697606e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fc67368e64b4ca385d3676ed963b08f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a7fc67368e64b4ca385d3676ed963b08f">_writeMain</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;refPixelFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;refFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;chanbw, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;outFITSFile, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrspw, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;fieldidMap, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> asMultiSource) const </td></tr>
+<tr class="memdesc:a7fc67368e64b4ca385d3676ed963b08f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the main table.  <a href="#a7fc67368e64b4ca385d3676ed963b08f">More...</a><br/></td></tr>
+<tr class="separator:a7fc67368e64b4ca385d3676ed963b08f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
-<tr class="memitem:a54234f39ecbad83323d88ff60f858cd0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a54234f39ecbad83323d88ff60f858cd0">writeFQ</a> (<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrspw, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreq, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> refPixelFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> chanbw, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> chanstart=0, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nchan=-1, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> chanstep=1, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> avgchan=1)</td></tr>
-<tr class="memdesc:a54234f39ecbad83323d88ff60f858cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the FQ table.  <a href="#a54234f39ecbad83323d88ff60f858cd0">More...</a><br/></td></tr>
-<tr class="separator:a54234f39ecbad83323d88ff60f858cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9430379893aeb21f3fb24c5cc40f6595"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a9430379893aeb21f3fb24c5cc40f6595">writeAN</a> (<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreq, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> writeStation)</td></tr>
-<tr class="memdesc:a9430379893aeb21f3fb24c5cc40f6595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the AN table.  <a href="#a9430379893aeb21f3fb24c5cc40f6595">More...</a><br/></td></tr>
-<tr class="separator:a9430379893aeb21f3fb24c5cc40f6595"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ae69c47f73b8bc98fcbffaa04b55e72"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a8ae69c47f73b8bc98fcbffaa04b55e72">writeSU</a> (<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;fieldidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrfield, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrspw)</td></tr>
-<tr class="memdesc:a8ae69c47f73b8bc98fcbffaa04b55e72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the SU table.  <a href="#a8ae69c47f73b8bc98fcbffaa04b55e72">More...</a><br/></td></tr>
-<tr class="separator:a8ae69c47f73b8bc98fcbffaa04b55e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7b26842042dda9369481b592db57310"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#ad7b26842042dda9369481b592db57310">writeTY</a> (<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;syscal, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrif, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw)</td></tr>
-<tr class="memdesc:ad7b26842042dda9369481b592db57310"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the TY table.  <a href="#ad7b26842042dda9369481b592db57310">More...</a><br/></td></tr>
-<tr class="separator:ad7b26842042dda9369481b592db57310"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aced0024697b63f452a330c40b0f4cff7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#aced0024697b63f452a330c40b0f4cff7">writeGC</a> (<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;syscal, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrif, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> sensitivity, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> refPixelFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> chanbw)</td></tr>
-<tr class="memdesc:aced0024697b63f452a330c40b0f4cff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the GC table.  <a href="#aced0024697b63f452a330c40b0f4cff7">More...</a><br/></td></tr>
-<tr class="separator:aced0024697b63f452a330c40b0f4cff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab096caca9ac80d78f86161836af696ca"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#ab096caca9ac80d78f86161836af696ca">writeWX</a> (<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms)</td></tr>
-<tr class="memdesc:ab096caca9ac80d78f86161836af696ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the WX table.  <a href="#ab096caca9ac80d78f86161836af696ca">More...</a><br/></td></tr>
-<tr class="separator:ab096caca9ac80d78f86161836af696ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ee8a19644796312ee1be9451c63db0a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a4ee8a19644796312ee1be9451c63db0a">_writeFQ</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrspw, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreq, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> refPixelFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> chanbw, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> chanstart=0, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nchan=-1, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> chanstep=1, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> avgchan=1)</td></tr>
+<tr class="memdesc:a4ee8a19644796312ee1be9451c63db0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the FQ table.  <a href="#a4ee8a19644796312ee1be9451c63db0a">More...</a><br/></td></tr>
+<tr class="separator:a4ee8a19644796312ee1be9451c63db0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54a59edd4bc5ee956646172008706e89"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a54a59edd4bc5ee956646172008706e89">_writeAN</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreq, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> writeStation)</td></tr>
+<tr class="memdesc:a54a59edd4bc5ee956646172008706e89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the AN table.  <a href="#a54a59edd4bc5ee956646172008706e89">More...</a><br/></td></tr>
+<tr class="separator:a54a59edd4bc5ee956646172008706e89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73277d294b87820642b90a99f148fb78"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a73277d294b87820642b90a99f148fb78">_writeSU</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;fieldidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrfield, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nrspw)</td></tr>
+<tr class="memdesc:a73277d294b87820642b90a99f148fb78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the SU table.  <a href="#a73277d294b87820642b90a99f148fb78">More...</a><br/></td></tr>
+<tr class="separator:a73277d294b87820642b90a99f148fb78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad32e1f054268c4806180734146094bfe"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#ad32e1f054268c4806180734146094bfe">_writeTY</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;syscal, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrif, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw)</td></tr>
+<tr class="memdesc:ad32e1f054268c4806180734146094bfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the TY table.  <a href="#ad32e1f054268c4806180734146094bfe">More...</a><br/></td></tr>
+<tr class="separator:ad32e1f054268c4806180734146094bfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eb7cbac1d44a4cf7ab32a6fa0e0b7db"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a5eb7cbac1d44a4cf7ab32a6fa0e0b7db">_writeGC</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;syscal, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwidMap, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> nrif, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> sensitivity, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> refPixelFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> refFreq, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> chanbw)</td></tr>
+<tr class="memdesc:a5eb7cbac1d44a4cf7ab32a6fa0e0b7db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the GC table.  <a href="#a5eb7cbac1d44a4cf7ab32a6fa0e0b7db">More...</a><br/></td></tr>
+<tr class="separator:a5eb7cbac1d44a4cf7ab32a6fa0e0b7db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4be6105bddd98db92823c9e30b9d335"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#ad4be6105bddd98db92823c9e30b9d335">_writeWX</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms)</td></tr>
+<tr class="memdesc:ad4be6105bddd98db92823c9e30b9d335"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the WX table.  <a href="#ad4be6105bddd98db92823c9e30b9d335">More...</a><br/></td></tr>
+<tr class="separator:ad4be6105bddd98db92823c9e30b9d335"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab16d62a4b0ca7f981612eaee7709121b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#ab16d62a4b0ca7f981612eaee7709121b">_writeSY</a> (std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt; output, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;syspower, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> nspw, const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwIDMap, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> combineSpw)</td></tr>
+<tr class="memdesc:ab16d62a4b0ca7f981612eaee7709121b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the SY table.  <a href="#ab16d62a4b0ca7f981612eaee7709121b">More...</a><br/></td></tr>
+<tr class="separator:ab16d62a4b0ca7f981612eaee7709121b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3a3ccae6b496f244b5e515f0eb67c22"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#ac3a3ccae6b496f244b5e515f0eb67c22">timeToDay</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;<a class="el" href="namespacecasacore.html#a6e2030dac1c9272a856814cfe4a42f49">day</a>, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;dayFraction, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> <a class="el" href="namespacecasacore.html#a46ef7060e7e3008633c2867c9b9b6c99">time</a>)</td></tr>
 <tr class="memdesc:ac3a3ccae6b496f244b5e515f0eb67c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert time to day and fraction.  <a href="#ac3a3ccae6b496f244b5e515f0eb67c22">More...</a><br/></td></tr>
 <tr class="separator:ac3a3ccae6b496f244b5e515f0eb67c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8b96a90636ddd379bee655d60c439a9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#af8b96a90636ddd379bee655d60c439a9">getStartHA</a> (<a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;startTime, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;startHA, const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr)</td></tr>
 <tr class="memdesc:af8b96a90636ddd379bee655d60c439a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the time and hourangle from the MS at the given row.  <a href="#af8b96a90636ddd379bee655d60c439a9">More...</a><br/></td></tr>
 <tr class="separator:af8b96a90636ddd379bee655d60c439a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fa93461ff3203ec69c10ab782b5aadc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#a6fa93461ff3203ec69c10ab782b5aadc">handleAntNumbers</a> (const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;antnumbers)</td></tr>
-<tr class="memdesc:a6fa93461ff3203ec69c10ab782b5aadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Discern the antenna numbers that go into UVFITS.  <a href="#a6fa93461ff3203ec69c10ab782b5aadc">More...</a><br/></td></tr>
-<tr class="separator:a6fa93461ff3203ec69c10ab782b5aadc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af74451eb89418dab122e2eb3f7a8d51a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#af74451eb89418dab122e2eb3f7a8d51a">_handleAntNumbers</a> (const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;antnumbers)</td></tr>
+<tr class="memdesc:af74451eb89418dab122e2eb3f7a8d51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Discern the antenna numbers that go into UVFITS.  <a href="#af74451eb89418dab122e2eb3f7a8d51a">More...</a><br/></td></tr>
+<tr class="separator:af74451eb89418dab122e2eb3f7a8d51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc9bbba067c4d8d8cfb38f8ce0b6e425"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSFitsOutput.html#adc9bbba067c4d8d8cfb38f8ce0b6e425">handleSysCal</a> (const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;ms, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;spwids, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> isSubset)</td></tr>
 <tr class="memdesc:adc9bbba067c4d8d8cfb38f8ce0b6e425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the SYSCAL table.  <a href="#adc9bbba067c4d8d8cfb38f8ce0b6e425">More...</a><br/></td></tr>
 <tr class="separator:adc9bbba067c4d8d8cfb38f8ce0b6e425"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -303,6 +307,42 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af74451eb89418dab122e2eb3f7a8d51a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void casacore::MSFitsOutput::_handleAntNumbers </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>antnumbers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Discern the antenna numbers that go into UVFITS. </p>
+
+</div>
+</div>
 <a class="anchor" id="afd82c0182a731f3946ed3fba803fa9a7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -354,7 +394,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3c82540dd5e0c7e544b5527697606e3e"></a>
+<a class="anchor" id="a54a59edd4bc5ee956646172008706e89"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -362,7 +402,236 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a>* casacore::MSFitsOutput::_writeMain </td>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeAN </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
+          <td class="paramname"><em>refFreq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>writeStation</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the AN table. </p>
+
+</div>
+</div>
+<a class="anchor" id="a4ee8a19644796312ee1be9451c63db0a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeFQ </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spwidMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>nrspw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
+          <td class="paramname"><em>refFreq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>refPixelFreq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
+          <td class="paramname"><em>chanbw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>combineSpw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>chanstart</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>nchan</em> = <code>-1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>chanstep</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>avgchan</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the FQ table. </p>
+<p>If combineSpw is True, all spectral-windows are written in one row of the <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> table. </p>
+
+</div>
+</div>
+<a class="anchor" id="a5eb7cbac1d44a4cf7ab32a6fa0e0b7db"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeGC </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
+          <td class="paramname"><em>syscal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spwidMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramname"><em>nrif</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>combineSpw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
+          <td class="paramname"><em>sensitivity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>refPixelFreq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
+          <td class="paramname"><em>refFreq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
+          <td class="paramname"><em>chanbw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the GC table. </p>
+
+</div>
+</div>
+<a class="anchor" id="a7fc67368e64b4ca385d3676ed963b08f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a>&gt; casacore::MSFitsOutput::_writeMain </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &amp;&#160;</td>
           <td class="paramname"><em>refPixelFreq</em>, </td>
@@ -436,6 +705,222 @@ Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a73277d294b87820642b90a99f148fb78"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeSU </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fieldidMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>nrfield</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spwidMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>nrspw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the SU table. </p>
+
+</div>
+</div>
+<a class="anchor" id="ab16d62a4b0ca7f981612eaee7709121b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeSY </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
+          <td class="paramname"><em>syspower</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>nspw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spwIDMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>combineSpw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the SY table. </p>
+
+</div>
+</div>
+<a class="anchor" id="ad32e1f054268c4806180734146094bfe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeTY </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
+          <td class="paramname"><em>syscal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spwidMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
+          <td class="paramname"><em>nrif</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>combineSpw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the TY table. </p>
+
+</div>
+</div>
+<a class="anchor" id="ad4be6105bddd98db92823c9e30b9d335"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::_writeWX </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> &gt;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
+          <td class="paramname"><em>ms</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the WX table. </p>
 
 </div>
 </div>
@@ -579,42 +1064,6 @@ Private Attributes</h2></td></tr>
 
 <p>Get the time and hourangle from the MS at the given row. </p>
 <p>It uses the field-id and observation-id to calculate the hourangle. </p>
-
-</div>
-</div>
-<a class="anchor" id="a6fa93461ff3203ec69c10ab782b5aadc"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void casacore::MSFitsOutput::handleAntNumbers </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>antnumbers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Discern the antenna numbers that go into UVFITS. </p>
 
 </div>
 </div>
@@ -931,54 +1380,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a9430379893aeb21f3fb24c5cc40f6595"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::writeAN </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
-          <td class="paramname"><em>refFreq</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>writeStation</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write the AN table. </p>
-
-</div>
-</div>
 <a class="anchor" id="af7e922287c76a2437a8cf22eae2688c3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1110,343 +1511,6 @@ Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a class="anchor" id="a54234f39ecbad83323d88ff60f858cd0"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::writeFQ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spwidMap</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>nrspw</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
-          <td class="paramname"><em>refFreq</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>refPixelFreq</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
-          <td class="paramname"><em>chanbw</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>combineSpw</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>chanstart</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>nchan</em> = <code>-1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>chanstep</em> = <code>1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>avgchan</em> = <code>1</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write the FQ table. </p>
-<p>If combineSpw is True, all spectral-windows are written in one row of the <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> table. </p>
-
-</div>
-</div>
-<a class="anchor" id="aced0024697b63f452a330c40b0f4cff7"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::writeGC </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
-          <td class="paramname"><em>syscal</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spwidMap</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
-          <td class="paramname"><em>nrif</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>combineSpw</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
-          <td class="paramname"><em>sensitivity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>refPixelFreq</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
-          <td class="paramname"><em>refFreq</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a>&#160;</td>
-          <td class="paramname"><em>chanbw</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write the GC table. </p>
-
-</div>
-</div>
-<a class="anchor" id="a8ae69c47f73b8bc98fcbffaa04b55e72"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::writeSU </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>fieldidMap</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>nrfield</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spwidMap</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>nrspw</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write the SU table. </p>
-
-</div>
-</div>
-<a class="anchor" id="ad7b26842042dda9369481b592db57310"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::writeTY </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
-          <td class="paramname"><em>syscal</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spwidMap</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td>
-          <td class="paramname"><em>nrif</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>combineSpw</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write the TY table. </p>
-
-</div>
-</div>
-<a class="anchor" id="ab096caca9ac80d78f86161836af696ca"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> casacore::MSFitsOutput::writeWX </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcasacore_1_1FitsOutput.html">FitsOutput</a> *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1MeasurementSet.html">MeasurementSet</a> &amp;&#160;</td>
-          <td class="paramname"><em>ms</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Write the WX table. </p>
 
 </div>
 </div>

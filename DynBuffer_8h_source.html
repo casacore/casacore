@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,8 +121,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_DYNBUFFER_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Containers/Block.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Block_8h.html">casacore/casa/Containers/Block.h</a>&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -283,6 +284,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_a024bfa17f17d7838c7846ab9bf62f61e"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#a024bfa17f17d7838c7846ab9bf62f61e">casacore::DynBuffer::alloc</a></div><div class="ttdeci">uInt alloc(uInt nrOfValues, uInt valueSize, Char *&amp;ptr)</div><div class="ttdoc">Allocate buffer space for nrOfValues values of size valueSize bytes, and return the pointer ptr to th...</div><div class="ttdef"><b>Definition:</b> <a href="DynBuffer_8h_source.html#l00177">DynBuffer.h:177</a></div></div>
 <div class="ttc" id="namespacecasacore_html_abb6e2c1bac472ca1ebadadf96cc8426f"><div class="ttname"><a href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">casacore::Int</a></div><div class="ttdeci">int Int</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00050">aipstype.h:50</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_afa2c10aa95a8710a50cd189a1347cb4e"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#afa2c10aa95a8710a50cd189a1347cb4e">casacore::DynBuffer::uselen_p</a></div><div class="ttdeci">Block&lt; uInt &gt; uselen_p</div><div class="ttdoc">used length per buffer </div><div class="ttdef"><b>Definition:</b> <a href="DynBuffer_8h_source.html#l00158">DynBuffer.h:158</a></div></div>
 <div class="ttc" id="namespacecasacore_html_aee8247dad3ca180405bdb6835513a5ad"><div class="ttname"><a href="namespacecasacore.html#aee8247dad3ca180405bdb6835513a5ad">casacore::Char</a></div><div class="ttdeci">char Char</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00046">aipstype.h:46</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_a158c4e2f5ddd04c797b2b4210b3c54bc"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#a158c4e2f5ddd04c797b2b4210b3c54bc">casacore::DynBuffer::bufsz_p</a></div><div class="ttdeci">uInt bufsz_p</div><div class="ttdoc">size of 1st buffer and min. </div><div class="ttdef"><b>Definition:</b> <a href="DynBuffer_8h_source.html#l00148">DynBuffer.h:148</a></div></div>
@@ -304,6 +306,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_aaa78ea1a9aef681d278161b93492da39"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#aaa78ea1a9aef681d278161b93492da39">casacore::DynBuffer::maxnrbuf_p</a></div><div class="ttdeci">Int maxnrbuf_p</div><div class="ttdoc">size of Blocks </div><div class="ttdef"><b>Definition:</b> <a href="DynBuffer_8h_source.html#l00156">DynBuffer.h:156</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_a4bfce6d926e834e3e89a4fa5243d28e9"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#a4bfce6d926e834e3e89a4fa5243d28e9">casacore::DynBuffer::nextbuf_p</a></div><div class="ttdeci">Int nextbuf_p</div><div class="ttdoc">buffernr for next function </div><div class="ttdef"><b>Definition:</b> <a href="DynBuffer_8h_source.html#l00150">DynBuffer.h:150</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_aaf9c5741b570ade2f7ce2680b65ebab3"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#aaf9c5741b570ade2f7ce2680b65ebab3">casacore::DynBuffer::next</a></div><div class="ttdeci">Bool next(uInt &amp;usedLength, Char *&amp;ptr)</div><div class="ttdoc">Get the pointer to the next buffer and its used length in bytes. </div></div>
+<div class="ttc" id="Block_8h_html"><div class="ttname"><a href="Block_8h.html">Block.h</a></div></div>
 <div class="ttc" id="namespacecasacore_html_a5c559d8d8bf2ae7f67b439955d6be88a"><div class="ttname"><a href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a></div><div class="ttdeci">unsigned int uInt</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00051">aipstype.h:51</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynBuffer_html_ad34b7fe7d22e3d09c28fb9b0150ac9c4"><div class="ttname"><a href="classcasacore_1_1DynBuffer.html#ad34b7fe7d22e3d09c28fb9b0150ac9c4">casacore::DynBuffer::bufptr_p</a></div><div class="ttdeci">PtrBlock&lt; Char * &gt; bufptr_p</div><div class="ttdoc">pointer to buffer </div><div class="ttdef"><b>Definition:</b> <a href="DynBuffer_8h_source.html#l00162">DynBuffer.h:162</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

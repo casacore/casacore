@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,14 +121,14 @@ Static Public Member Functions</h2></td></tr>
 Static Private Attributes</h2></td></tr>
 <tr class="memitem:a82a5eb17b3cf0340a300feb68c2d7802"><td class="memItemLeft" align="right" valign="top">static std::map&lt; <a class="el" href="namespacecasacore.html#afbaa0f0eab7b3a56a4c320715f577d4f">uInt64</a>, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ZScoreCalculator.html#a82a5eb17b3cf0340a300feb68c2d7802">_nptsToMaxZScore</a></td></tr>
 <tr class="separator:a82a5eb17b3cf0340a300feb68c2d7802"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36f7fe5289480a0ba756f08cfe93694d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ZScoreCalculator.html#a36f7fe5289480a0ba756f08cfe93694d">_mutex</a></td></tr>
-<tr class="separator:a36f7fe5289480a0ba756f08cfe93694d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a203d527940798129b32f96ff3d6237b0"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ZScoreCalculator.html#a203d527940798129b32f96ff3d6237b0">_mutex</a></td></tr>
+<tr class="separator:a203d527940798129b32f96ff3d6237b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class contains static methods related to z-scores. </p>
 <p>A z-score is the number of standard deviations from the mean in a normal distribution. </p>
 
-<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00043">43</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
+<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00044">44</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afec9ad9c85836d2e8d5dcef97f2b0605"></a>
 <div class="memitem">
@@ -204,14 +205,14 @@ Static Private Attributes</h2></td></tr>
 <p>Get the minimum number of points in a Gaussian distribution, such that the probability that the maximum of the distribution having the specified zscore is 0.5. </p>
 <p><code>zscore</code> should be non-negative. </p>
 
-<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00055">55</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
+<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00056">56</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
 
 <p>References <a class="el" href="namespacecasacore.html#a899e05bba1a97b1da6618998028d6e4c">casacore::sqrt()</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a36f7fe5289480a0ba756f08cfe93694d"></a>
+<a class="anchor" id="a203d527940798129b32f96ff3d6237b0"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -219,7 +220,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::ZScoreCalculator::_mutex</td>
+          <td class="memname">std::mutex casacore::ZScoreCalculator::_mutex</td>
         </tr>
       </table>
   </td>
@@ -229,7 +230,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00061">61</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
+<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00062">62</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
 
 </div>
 </div>
@@ -251,7 +252,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00060">60</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
+<p>Definition at line <a class="el" href="ZScoreCalculator_8h_source.html#l00061">61</a> of file <a class="el" href="ZScoreCalculator_8h_source.html">ZScoreCalculator.h</a>.</p>
 
 </div>
 </div>

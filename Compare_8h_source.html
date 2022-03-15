@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,8 +121,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_COMPARE_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Utilities/DataType.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="DataType_8h.html">casacore/casa/Utilities/DataType.h</a>&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
@@ -288,14 +289,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classcasacore_1_1CompareNoCase.html#a29f59e4679d633c70ae1cff9b23783d6">comp</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> * obj1, <span class="keyword">const</span> <span class="keywordtype">void</span> * obj2) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;};</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">#ifndef CASACORE_NO_AUTO_TEMPLATES</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;casacore/casa/Utilities/Compare.tcc&gt;</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="preprocessor">#endif //# CASACORE_NO_AUTO_TEMPLATES</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment">// &lt;summary&gt;Comparison class that is always true&lt;/summary&gt;</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="comment">// This class is meant to always give true and can be used to ensure</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment">// that all the values of a given column are grouped together.</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="classcasacore_1_1CompareAlwaysTrue.html">  206</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcasacore_1_1CompareAlwaysTrue.html">CompareAlwaysTrue</a> : <span class="keyword">public</span> <a class="code" href="classcasacore_1_1BaseCompare.html">BaseCompare</a></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;{</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1CompareAlwaysTrue.html#a1968ee4a1f7cc6fe3ed21079299d0875">~CompareAlwaysTrue</a>();</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="comment">// Comparison function that gives always true</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classcasacore_1_1CompareAlwaysTrue.html#acfeac80de2dbccb2dc32a08560bb6ba7">comp</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> * obj1, <span class="keyword">const</span> <span class="keywordtype">void</span> * obj2) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;};</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="preprocessor">#ifndef CASACORE_NO_AUTO_TEMPLATES</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;casacore/casa/Utilities/Compare.tcc&gt;</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">#endif //# CASACORE_NO_AUTO_TEMPLATES</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalInt_html_a701bf0430b35fea5a2e325bb1852df8d"><div class="ttname"><a href="classcasacore_1_1CompareIntervalInt.html#a701bf0430b35fea5a2e325bb1852df8d">casacore::CompareIntervalInt::comp</a></div><div class="ttdeci">virtual int comp(const void *obj1, const void *obj2) const </div><div class="ttdoc">Compare the interval the left and right value belong to. </div></div>
+<div class="ttc" id="classcasacore_1_1CompareAlwaysTrue_html"><div class="ttname"><a href="classcasacore_1_1CompareAlwaysTrue.html">casacore::CompareAlwaysTrue</a></div><div class="ttdoc">Comparison class that is always true. </div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00206">Compare.h:206</a></div></div>
+<div class="ttc" id="DataType_8h_html"><div class="ttname"><a href="DataType_8h.html">DataType.h</a></div></div>
 <div class="ttc" id="namespacecasacore_html_a79c2dfec4363785472512dbf384675a1"><div class="ttname"><a href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">casacore::Int64</a></div><div class="ttdeci">long long Int64</div><div class="ttdoc">Define the extra non-standard types used by Casacore (like proposed uSize, Size) </div><div class="ttdef"><b>Definition:</b> <a href="aipsxtype_8h_source.html#l00038">aipsxtype.h:38</a></div></div>
 <div class="ttc" id="classcasacore_1_1ObjCompare_html_a81be0fd6e3cd6157bb45245cd73aac66"><div class="ttname"><a href="classcasacore_1_1ObjCompare.html#a81be0fd6e3cd6157bb45245cd73aac66">casacore::ObjCompare::dataType</a></div><div class="ttdeci">virtual DataType dataType() const </div><div class="ttdoc">Get the data type of the sort comparison. </div></div>
 <div class="ttc" id="classcasacore_1_1BaseCompare_html_a007945d1dfc6eb069cfe0864283663d7"><div class="ttname"><a href="classcasacore_1_1BaseCompare.html#a007945d1dfc6eb069cfe0864283663d7">casacore::BaseCompare::comp</a></div><div class="ttdeci">virtual int comp(const void *obj1, const void *obj2) const =0</div><div class="ttdoc">Compare two objects, and return. </div></div>
@@ -303,6 +321,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1CompareIntervalReal_html"><div class="ttname"><a href="classcasacore_1_1CompareIntervalReal.html">casacore::CompareIntervalReal</a></div><div class="ttdoc">Real comparison class with intervals. </div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00166">Compare.h:166</a></div></div>
 <div class="ttc" id="classcasacore_1_1ObjCompare_html_a416fa70b1f2616a6e3f26dda6b23fe05"><div class="ttname"><a href="classcasacore_1_1ObjCompare.html#a416fa70b1f2616a6e3f26dda6b23fe05">casacore::ObjCompare::compare</a></div><div class="ttdeci">static int compare(const void *obj1, const void *obj2)</div><div class="ttdoc">Compare two objects, and return. </div></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalInt_html_a1c696dcaf81e0d5ef504343eef2bd8d5"><div class="ttname"><a href="classcasacore_1_1CompareIntervalInt.html#a1c696dcaf81e0d5ef504343eef2bd8d5">casacore::CompareIntervalInt::itsStart</a></div><div class="ttdeci">Int64 itsStart</div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00149">Compare.h:149</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1CompareAlwaysTrue_html_a1968ee4a1f7cc6fe3ed21079299d0875"><div class="ttname"><a href="classcasacore_1_1CompareAlwaysTrue.html#a1968ee4a1f7cc6fe3ed21079299d0875">casacore::CompareAlwaysTrue::~CompareAlwaysTrue</a></div><div class="ttdeci">virtual ~CompareAlwaysTrue()</div></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalReal_html_a081d6fe354075ae464df6c154e14f7c3"><div class="ttname"><a href="classcasacore_1_1CompareIntervalReal.html#a081d6fe354075ae464df6c154e14f7c3">casacore::CompareIntervalReal::itsStart</a></div><div class="ttdeci">Double itsStart</div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00179">Compare.h:179</a></div></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalReal_html_abe28ff6eed08efb100437b4d497fad1c"><div class="ttname"><a href="classcasacore_1_1CompareIntervalReal.html#abe28ff6eed08efb100437b4d497fad1c">casacore::CompareIntervalReal::CompareIntervalReal</a></div><div class="ttdeci">CompareIntervalReal(Double interval, Double start)</div><div class="ttdoc">Construct from the given interval values. </div></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalInt_html_ac6e05e7596a71dd17a5b6361e215b011"><div class="ttname"><a href="classcasacore_1_1CompareIntervalInt.html#ac6e05e7596a71dd17a5b6361e215b011">casacore::CompareIntervalInt::~CompareIntervalInt</a></div><div class="ttdeci">virtual ~CompareIntervalInt()</div></div>
@@ -311,6 +331,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="namespacecasacore_html_ada1f75eb2b38067e3eb1af7f5d69ebb2"><div class="ttname"><a href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">casacore::Double</a></div><div class="ttdeci">double Double</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00055">aipstype.h:55</a></div></div>
 <div class="ttc" id="classcasacore_1_1ObjCompare_html_ae69ecbc77913cc3054c03540583745f1"><div class="ttname"><a href="classcasacore_1_1ObjCompare.html#ae69ecbc77913cc3054c03540583745f1">casacore::ObjCompare::~ObjCompare</a></div><div class="ttdeci">virtual ~ObjCompare()</div></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalInt_html"><div class="ttname"><a href="classcasacore_1_1CompareIntervalInt.html">casacore::CompareIntervalInt</a></div><div class="ttdoc">Integer comparison class with intervals. </div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00136">Compare.h:136</a></div></div>
+<div class="ttc" id="classcasacore_1_1CompareAlwaysTrue_html_acfeac80de2dbccb2dc32a08560bb6ba7"><div class="ttname"><a href="classcasacore_1_1CompareAlwaysTrue.html#acfeac80de2dbccb2dc32a08560bb6ba7">casacore::CompareAlwaysTrue::comp</a></div><div class="ttdeci">virtual int comp(const void *obj1, const void *obj2) const </div><div class="ttdoc">Comparison function that gives always true. </div></div>
 <div class="ttc" id="classcasacore_1_1CompareIntervalReal_html_a9ae00496ca33b4e5ac1e9891378c8fcc"><div class="ttname"><a href="classcasacore_1_1CompareIntervalReal.html#a9ae00496ca33b4e5ac1e9891378c8fcc">casacore::CompareIntervalReal::itsInterval</a></div><div class="ttdeci">Double itsInterval</div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00178">Compare.h:178</a></div></div>
 <div class="ttc" id="classcasacore_1_1CompareNoCase_html_a29f59e4679d633c70ae1cff9b23783d6"><div class="ttname"><a href="classcasacore_1_1CompareNoCase.html#a29f59e4679d633c70ae1cff9b23783d6">casacore::CompareNoCase::comp</a></div><div class="ttdeci">virtual int comp(const void *obj1, const void *obj2) const </div><div class="ttdoc">Compare the left and right string value in a case-insensitive way. </div></div>
 <div class="ttc" id="classcasacore_1_1BaseCompare_html"><div class="ttname"><a href="classcasacore_1_1BaseCompare.html">casacore::BaseCompare</a></div><div class="ttdoc">abstract base class for comparing two objects </div><div class="ttdef"><b>Definition:</b> <a href="Compare_8h_source.html#l00064">Compare.h:64</a></div></div>

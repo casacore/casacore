@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -156,8 +157,8 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a8b43071dbefa97688495dafdfd5854ab"><td class="memItemLeft" align="right" valign="top">std::map&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, void * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableCache.html#a8b43071dbefa97688495dafdfd5854ab">tableMap_p</a></td></tr>
 <tr class="separator:a8b43071dbefa97688495dafdfd5854ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa11372727ba9ab7d7e26d9ab3ccf3f42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableCache.html#aa11372727ba9ab7d7e26d9ab3ccf3f42">itsMutex</a></td></tr>
-<tr class="separator:aa11372727ba9ab7d7e26d9ab3ccf3f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3b3cf7dca71fb4477c01a9d66c4bab3"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableCache.html#ad3b3cf7dca71fb4477c01a9d66c4bab3">itsMutex</a></td></tr>
+<tr class="separator:ad3b3cf7dca71fb4477c01a9d66c4bab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Cache of open tables. </p>
@@ -543,7 +544,7 @@ Currently only PlainTables are taken into account. Maybe RefTables should be too
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="aa11372727ba9ab7d7e26d9ab3ccf3f42"></a>
+<a class="anchor" id="ad3b3cf7dca71fb4477c01a9d66c4bab3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -551,7 +552,7 @@ Currently only PlainTables are taken into account. Maybe RefTables should be too
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::TableCache::itsMutex</td>
+          <td class="memname">std::mutex casacore::TableCache::itsMutex</td>
         </tr>
       </table>
   </td>

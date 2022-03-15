@@ -12,6 +12,8 @@ var searchData=
   ['wcpolygon_2eh',['WCPolygon.h',['../WCPolygon_8h.html',1,'']]],
   ['wcregion_2eh',['WCRegion.h',['../WCRegion_8h.html',1,'']]],
   ['wcunion_2eh',['WCUnion.h',['../WCUnion_8h.html',1,'']]],
+  ['weightblockencoder_2eh',['weightblockencoder.h',['../weightblockencoder_8h.html',1,'']]],
+  ['weightencoder_2eh',['weightencoder.h',['../weightencoder_8h.html',1,'']]],
   ['wrapperbase_2eh',['WrapperBase.h',['../WrapperBase_8h.html',1,'']]],
   ['wrapperdata_2eh',['WrapperData.h',['../WrapperData_8h.html',1,'']]],
   ['wrapperparam_2eh',['WrapperParam.h',['../WrapperParam_8h.html',1,'']]]

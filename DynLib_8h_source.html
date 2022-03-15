@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -120,7 +121,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CASA_DYNLIB_H</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
@@ -291,6 +292,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1DynLib_html_a6b83b81fe58ddb26cd09b01487dc6d22"><div class="ttname"><a href="classcasacore_1_1DynLib.html#a6b83b81fe58ddb26cd09b01487dc6d22">casacore::DynLib::tryOpen</a></div><div class="ttdeci">std::string tryOpen(const std::string &amp;name, const std::string &amp;libdir, const std::string &amp;prefix, const std::string &amp;version)</div><div class="ttdoc">Try to open the library with some prefixes, suffixes and versions If successful, itsHandle is filled ...</div></div>
 <div class="ttc" id="classcasacore_1_1DynLib_html_aa182600e3e5eaaf3153bcf1ceb605efa"><div class="ttname"><a href="classcasacore_1_1DynLib.html#aa182600e3e5eaaf3153bcf1ceb605efa">casacore::DynLib::DynLib</a></div><div class="ttdeci">DynLib(const std::string &amp;library, const std::string &amp;prefix=std::string(), const std::string &amp;funcName=std::string(), bool closeOnDestruction=True)</div><div class="ttdoc">Load the dynamic library. </div></div>
 <div class="ttc" id="classcasacore_1_1DynLib_html_a9958e6d3446ab9f3697eccadbdb0bd2f"><div class="ttname"><a href="classcasacore_1_1DynLib.html#a9958e6d3446ab9f3697eccadbdb0bd2f">casacore::DynLib::attach</a></div><div class="ttdeci">void attach(const std::string &amp;name, const std::string &amp;prefix, const std::string &amp;version, const std::string &amp;funcName)</div><div class="ttdoc">Try to open the library with some prefixes, suffixes and versions and to execute the initialization f...</div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynLib_html_aa239985002491b315b99e2e360ad9783"><div class="ttname"><a href="classcasacore_1_1DynLib.html#aa239985002491b315b99e2e360ad9783">casacore::DynLib::getError</a></div><div class="ttdeci">const std::string &amp; getError() const </div><div class="ttdoc">Get the possible error. </div><div class="ttdef"><b>Definition:</b> <a href="DynLib_8h_source.html#l00157">DynLib.h:157</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynLib_html"><div class="ttname"><a href="classcasacore_1_1DynLib.html">casacore::DynLib</a></div><div class="ttdoc">Class to handle loading of dynamic libraries. </div><div class="ttdef"><b>Definition:</b> <a href="DynLib_8h_source.html#l00087">DynLib.h:87</a></div></div>
 <div class="ttc" id="classcasacore_1_1DynLib_html_a3360ebc23dc4da6cf343e1a6b4f39e41"><div class="ttname"><a href="classcasacore_1_1DynLib.html#a3360ebc23dc4da6cf343e1a6b4f39e41">casacore::DynLib::getFunc</a></div><div class="ttdeci">void * getFunc(const std::string &amp;funcName)</div><div class="ttdoc">Get a pointer to a function in the dynamic library. </div></div>

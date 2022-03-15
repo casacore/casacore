@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -87,44 +88,41 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">Array.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;casacore/casa/aips.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/ArrayBase.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Containers/Block.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/Arrays/MaskLogiArrFwd.h&gt;</code><br/>
-<code>#include &lt;casacore/casa/ostream.h&gt;</code><br/>
+<div class="textblock"><code>#include &quot;<a class="el" href="ArrayBase_8h_source.html">ArrayBase.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="ArrayError_8h_source.html">ArrayError.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="IPosition_8h_source.html">IPosition.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="MaskLogiArrFwd_8h_source.html">MaskLogiArrFwd.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="Storage_8h_source.html">Storage.h</a>&quot;</code><br/>
+<code>#include &lt;complex&gt;</code><br/>
 <code>#include &lt;iterator&gt;</code><br/>
-<code>#include &lt;casacore/casa/stdvector.h&gt;</code><br/>
+<code>#include &lt;initializer_list&gt;</code><br/>
+<code>#include &lt;type_traits&gt;</code><br/>
+<code>#include &quot;<a class="el" href="ArrayStr_8h_source.html">ArrayStr.h</a>&quot;</code><br/>
+<code>#include &quot;Array.tcc&quot;</code><br/>
 </div>
 <p><a href="Array_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Matrix.html">casacore::Matrix&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 2-D Specialization of the <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> class.  <a href="classcasacore_1_1Matrix.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array.html">casacore::Array&lt; T, Alloc &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a> class is the base class for the <a class="el" href="classcasacore_1_1Vector.html" title="A 1-D Specialization of the Array class. ">Vector</a>, <a class="el" href="classcasacore_1_1Matrix.html" title="A 2-D Specialization of the Array class. ">Matrix</a>, and <a class="el" href="classcasacore_1_1Cube.html" title="A 3-D Specialization of the Array class. ">Cube</a> subclasses.  <a href="classcasacore_1_1Array.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayIterator.html">casacore::ArrayIterator&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterate an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> cursor through another <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>.  <a href="classcasacore_1_1ArrayIterator.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcasacore_1_1Array_1_1uninitializedType.html">casacore::Array&lt; T, Alloc &gt;::uninitializedType</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a tag for the constructor that may be used to construct an uninitialized <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>.  <a href="structcasacore_1_1Array_1_1uninitializedType.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MaskedArray.html">casacore::MaskedArray&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for masking an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a> for operations on that <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>.  <a href="classcasacore_1_1MaskedArray.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array_1_1BaseIteratorSTL.html">casacore::Array&lt; T, Alloc &gt;::BaseIteratorSTL</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">See the function <a class="el" href="classcasacore_1_1Array.html#ab04f0eaa446f7521324798154d94845a" title="Get the begin iterator object for any array. ">begin()</a> and <a class="el" href="classcasacore_1_1Array.html#aee82e2e53970cbcfa50a98ee0f7b5d7a">end()</a> for a detailed description of the STL iterator capability.  <a href="classcasacore_1_1Array_1_1BaseIteratorSTL.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Functional.html">casacore::Functional&lt; Domain, Range &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Map.html" title="Abstract base class for associative arrays. ">Map</a> a domain object into a range object via operator().  <a href="classcasacore_1_1Functional.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array_1_1IteratorSTL.html">casacore::Array&lt; T, Alloc &gt;::IteratorSTL</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array.html">casacore::Array&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">template &lt;class T, class U&gt; class vector;  <a href="classcasacore_1_1Array.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array_1_1BaseIteratorSTL.html">casacore::Array&lt; T &gt;::BaseIteratorSTL</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">See the function <a class="el" href="classcasacore_1_1Array.html#a29c4632d120dfa99fd2c3549593feb67" title="Get the begin iterator object for any array. ">begin()</a> and <a class="el" href="classcasacore_1_1Array.html#ad40f8c12830ed55a35c7d2e7a5fc24e5">end()</a> for a detailed description of the STL iterator capability.  <a href="classcasacore_1_1Array_1_1BaseIteratorSTL.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array_1_1IteratorSTL.html">casacore::Array&lt; T &gt;::IteratorSTL</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array_1_1ConstIteratorSTL.html">casacore::Array&lt; T &gt;::ConstIteratorSTL</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Array_1_1ConstIteratorSTL.html">casacore::Array&lt; T, Alloc &gt;::ConstIteratorSTL</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -132,7 +130,32 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacecasacore"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecasacore.html">casacore</a></td></tr>
 <tr class="memdesc:namespacecasacore"><td class="mdescLeft">&#160;</td><td class="mdescRight">this file contains all the compiler specific defines <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a79710b3c02f872b80f31b50448087bb7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ArrayStr_8h.html#a79710b3c02f872b80f31b50448087bb7">CASA_ARRAY_2_H</a></td></tr>
+<tr class="separator:a79710b3c02f872b80f31b50448087bb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:adfef05b06f78c93c7a75f8b0a485d1fa"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Alloc &gt; </td></tr>
+<tr class="memitem:adfef05b06f78c93c7a75f8b0a485d1fa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecasacore.html#adfef05b06f78c93c7a75f8b0a485d1fa">casacore::swap</a> (Array&lt; T, Alloc &gt; &amp;<a class="el" href="malloc_8h.html#a40bccbd73bd260de50b2b7feb2a528dc">first</a>, Array&lt; T, Alloc &gt; &amp;second)</td></tr>
+<tr class="memdesc:adfef05b06f78c93c7a75f8b0a485d1fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap the first array with the second.  <a href="#adfef05b06f78c93c7a75f8b0a485d1fa">More...</a><br/></td></tr>
+<tr class="separator:adfef05b06f78c93c7a75f8b0a485d1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a79710b3c02f872b80f31b50448087bb7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CASA_ARRAY_2_H</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

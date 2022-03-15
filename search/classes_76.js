@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['vacengine',['VACEngine',['../classcasacore_1_1VACEngine.html',1,'casacore']]],
   ['valtype',['ValType',['../classcasacore_1_1ValType.html',1,'casacore']]],
   ['valtypeid_5fglobal_5ffunctions_5ftypeid',['ValTypeId_global_functions_typeid',['../structcasacore_1_1ValTypeId__global__functions__typeid.html',1,'casacore']]],
   ['valueholder',['ValueHolder',['../classcasacore_1_1ValueHolder.html',1,'casacore']]],
@@ -36,6 +37,9 @@ var searchData=
   ['vector_3c_20ftype_20_3e',['Vector&lt; FType &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20int_20_3e',['Vector&lt; Int &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20int64_20_3e',['Vector&lt; Int64 &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
+  ['vector_3c_20rownr_5ft_20_3e',['Vector&lt; rownr_t &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
+  ['vector_3c_20size_5ft_20_3e',['Vector&lt; size_t &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
+  ['vector_3c_20t_20_3e',['Vector&lt; T &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20type_20_3e',['Vector&lt; Type &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20typename_20casacore_3a_3afunctiontraits_3c_20dcomplex_20_3e_3a_3aargtype_20_3e',['Vector&lt; typename casacore::FunctionTraits&lt; DComplex &gt;::ArgType &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20typename_20casacore_3a_3afunctiontraits_3c_20dcomplex_20_3e_3a_3abasetype_20_3e',['Vector&lt; typename casacore::FunctionTraits&lt; DComplex &gt;::BaseType &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
@@ -51,16 +55,18 @@ var searchData=
   ['vectorkernel',['VectorKernel',['../classcasacore_1_1VectorKernel.html',1,'casacore']]],
   ['vectorstliterator',['VectorSTLIterator',['../classcasacore_1_1VectorSTLIterator.html',1,'casacore']]],
   ['velocitymachine',['VelocityMachine',['../classcasacore_1_1VelocityMachine.html',1,'casacore']]],
-  ['virtscacol_5fglobal_5ffunctions_5fgetvirtualscalarcolumn',['VirtScaCol_global_functions_getVirtualScalarColumn',['../structcasacore_1_1VirtScaCol__global__functions__getVirtualScalarColumn.html',1,'casacore']]],
+  ['virtscacol_5fglobal_5ffunctions_5fget_5fputvirtualscalar',['VirtScaCol_global_functions_get_putVirtualScalar',['../structcasacore_1_1VirtScaCol__global__functions__get__putVirtualScalar.html',1,'casacore']]],
   ['virtualarraycolumn',['VirtualArrayColumn',['../classcasacore_1_1VirtualArrayColumn.html',1,'casacore']]],
   ['virtualarraycolumn_3c_20bool_20_3e',['VirtualArrayColumn&lt; Bool &gt;',['../classcasacore_1_1VirtualArrayColumn.html',1,'casacore']]],
   ['virtualarraycolumn_3c_20complex_20_3e',['VirtualArrayColumn&lt; Complex &gt;',['../classcasacore_1_1VirtualArrayColumn.html',1,'casacore']]],
   ['virtualarraycolumn_3c_20double_20_3e',['VirtualArrayColumn&lt; Double &gt;',['../classcasacore_1_1VirtualArrayColumn.html',1,'casacore']]],
   ['virtualarraycolumn_3c_20float_20_3e',['VirtualArrayColumn&lt; Float &gt;',['../classcasacore_1_1VirtualArrayColumn.html',1,'casacore']]],
   ['virtualarraycolumn_3c_20virtualtype_20_3e',['VirtualArrayColumn&lt; VirtualType &gt;',['../classcasacore_1_1VirtualArrayColumn.html',1,'casacore']]],
+  ['virtualarraycolumnbase',['VirtualArrayColumnBase',['../classcasacore_1_1VirtualArrayColumnBase.html',1,'casacore']]],
   ['virtualcolumnengine',['VirtualColumnEngine',['../classcasacore_1_1VirtualColumnEngine.html',1,'casacore']]],
   ['virtualscalarcolumn',['VirtualScalarColumn',['../classcasacore_1_1VirtualScalarColumn.html',1,'casacore']]],
   ['virtualscalarcolumn_3c_20double_20_3e',['VirtualScalarColumn&lt; Double &gt;',['../classcasacore_1_1VirtualScalarColumn.html',1,'casacore']]],
+  ['virtualscalarcolumnbase',['VirtualScalarColumnBase',['../classcasacore_1_1VirtualScalarColumnBase.html',1,'casacore']]],
   ['virtualtaqlcolumn',['VirtualTaQLColumn',['../classcasacore_1_1VirtualTaQLColumn.html',1,'casacore']]],
   ['vscengine',['VSCEngine',['../classcasacore_1_1VSCEngine.html',1,'casacore']]]
 ];

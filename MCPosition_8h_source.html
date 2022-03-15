@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -121,171 +122,176 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define MEASURES_MCPOSITION_H</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/measures/Measures/MeasBase.h&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;casacore/measures/Measures/MeasRef.h&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;casacore/measures/Measures/MCBase.h&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;casacore/measures/Measures/MConvertBase.h&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;casacore/measures/Measures/MPosition.h&gt;</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/OS/Mutex.h&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ArrayFwd_8h.html">casacore/casa/Arrays/ArrayFwd.h</a>&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MeasBase_8h.html">casacore/measures/Measures/MeasBase.h</a>&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MeasRef_8h.html">casacore/measures/Measures/MeasRef.h</a>&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MCBase_8h.html">casacore/measures/Measures/MCBase.h</a>&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MConvertBase_8h.html">casacore/measures/Measures/MConvertBase.h</a>&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="MPosition_8h.html">casacore/measures/Measures/MPosition.h</a>&gt;</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">//# Forward Declarations</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">class </span>MCPosition;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">class </span>String;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span>Vector;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">//# Typedefs</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// &lt;summary&gt; MPosition conversion routines &lt;/summary&gt;</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">// &lt;use visibility=local&gt;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">// &lt;reviewed reviewer=&quot;UNKNOWN&quot; date=&quot;before2004/08/25&quot; tests=&quot;tMeasure&quot; demos=&quot;&quot;&gt;</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// &lt;/reviewed&gt;</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// &lt;prerequisite&gt;</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=Measure&gt;Measure&lt;/linkto&gt; class </span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=MCBase&gt;MCBase&lt;/linkto&gt; base class</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=MConvertBase&gt;overall conversion&lt;/linkto&gt;  class</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">// &lt;/prerequisite&gt;</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// &lt;etymology&gt;</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// Measure, Convert and Position</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// &lt;/etymology&gt;</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">// Contains state machinery and caching for actual conversions</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// &lt;example&gt;</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// See &lt;linkto class=Measure&gt;Measure&lt;/linkto&gt; for conversion example.</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">// &lt;/example&gt;</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">// &lt;motivation&gt;</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// &lt;/motivation&gt;</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// &lt;todo asof=&quot;1996/02/21&quot;&gt;</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">//  &lt;li&gt;</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">// &lt;/todo&gt;</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html">   82</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> : <span class="keyword">public</span> <a class="code" href="classcasacore_1_1MCBase.html">MCBase</a> {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="comment">//# Friends</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// Conversion of data</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a8692b0aa4ed0fcc4db10a71403a90411">   88</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcasacore_1_1MeasConvert.html">MeasConvert</a>&lt;<a class="code" href="classcasacore_1_1MPosition.html">MPosition</a>&gt;;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="comment">//# Constructors</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// Default constructor</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html#a3fb29ab534ab6eb49a19e905bb0c7fb2">MCPosition</a>();</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="comment">//# Destructor</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html#aa8e7058f6d03ebed5952c3d8b86591e1">~MCPosition</a>();</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="comment">//# Member functions</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="comment">// Show the state of the conversion engine (mainly for debugging purposes)</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keyword">static</span> <a class="code" href="classcasacore_1_1String.html">String</a> <a class="code" href="classcasacore_1_1MCPosition.html#ae9c1b9dbdd57373109f691fc7d7d79d4">showState</a>();</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="comment">//# Enumerations</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="comment">// The list of actual routines provided.</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="comment">// &lt;note role=warning&gt; Each &lt;src&gt;AA_BB&lt;/src&gt; in the list points to routine</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="comment">// that can be used in the FromTo list in the getConvert routine.</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="comment">// In addition the type to which each is converted should be in the</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="comment">// ToRef array, again in the proper order. &lt;/note&gt;</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16">  108</a></span>&#160;  <span class="keyword">enum</span> <a class="code" href="classcasacore_1_1MCBase.html#a6571b5577233e7ca202e23fc17a30af5">Routes</a> {</div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5">  109</a></span>&#160;    <a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5">ITRF_WGS84</a>,</div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323">  110</a></span>&#160;    <a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323">WGS84_ITRF</a>,</div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">  111</a></span>&#160;    <a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">N_Routes</a> };</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="comment">//# Typedefs</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="comment">//# Operators</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="comment">//# General Member Functions</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="comment">//# Enumerations</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <span class="comment">//# Cached Data</span></div>
-<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a358c9629ec1417b72ea6f6cae7550ba2">  122</a></span>&#160;  <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Double&gt;</a> *<a class="code" href="classcasacore_1_1MCPosition.html#a358c9629ec1417b72ea6f6cae7550ba2">DVEC1</a>;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="comment">//# State machine data</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="comment">// Transition list</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a8bfa447eb688d2cea84e43b08ddbcbb5">  126</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="code" href="classcasacore_1_1MCPosition.html#a8bfa447eb688d2cea84e43b08ddbcbb5">ToRef_p</a>[<a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">N_Routes</a>][3];</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="comment">// Transition matrix</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a93600ca863cfc64c17410ba669c11037">  128</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="code" href="classcasacore_1_1MCPosition.html#a93600ca863cfc64c17410ba669c11037">FromTo_p</a>[<a class="code" href="classcasacore_1_1MPosition.html#a27a281e66a485ef884d5739fed06fc37aa9c4aae2baef9114ff2bf1588257cc43">MPosition::N_Types</a>][<a class="code" href="classcasacore_1_1MPosition.html#a27a281e66a485ef884d5739fed06fc37aa9c4aae2baef9114ff2bf1588257cc43">MPosition::N_Types</a>];</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="comment">// Object to ensure safe multi-threaded lazy single initialization</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a7dd230c52762513f1c43353af7927e1d">  130</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classcasacore_1_1CallOnce0.html">CallOnce0</a> <a class="code" href="classcasacore_1_1MCPosition.html#a7dd230c52762513f1c43353af7927e1d">theirInitOnce</a>;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="comment">//# Constructors</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="comment">// Copy constructor (not implemented)</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html#a3fb29ab534ab6eb49a19e905bb0c7fb2">MCPosition</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> &amp;other);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  <span class="comment">// Assignment (not implemented)</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> &amp;<a class="code" href="classcasacore_1_1MCPosition.html#aa0b0cf60eb327d85cbad31640eaaada1">operator=</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> &amp;other);</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="comment">//# Member functions</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="comment">// Create conversion function pointer</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#ad6752d29ef9e113b80826a47b0161c3e">getConvert</a>(<a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc, </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;              <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;inref,</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;              <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;outref);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  <span class="comment">// Create help structures for Measure conversion routines</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#ae74aba43607d2cf7ad9b61f532abc283">initConvert</a>(<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> which, <a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc);</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="comment">// Delete the pointers used in the MeasConvert help structure cache</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a839ee1e979bca94e43f8838ab3fd9e83">clearConvert</a>();</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="comment">// Routine to do actual conversion</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a3765fa9c0f71e2b99af36c374ec67cc9">doConvert</a>(<a class="code" href="classcasacore_1_1MeasValue.html">MeasValue</a> &amp;in, </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;             <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;inref,</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;             <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;outref,</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;             <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="comment">// Conversion routine to cater for inheritance question</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a3765fa9c0f71e2b99af36c374ec67cc9">doConvert</a>(<a class="code" href="classcasacore_1_1MVPosition.html">MVPosition</a> &amp;in,</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;         <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;inref,</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;         <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;outref,</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;         <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc);</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="comment">// Fill the global state. Called using theirInitOnce.</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a44e3869ebf0f54879d6a3bae2b57b7ba">doFillState</a>();</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;};</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">//# Typedefs</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">// &lt;summary&gt; MPosition conversion routines &lt;/summary&gt;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">// &lt;use visibility=local&gt;</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">// &lt;reviewed reviewer=&quot;UNKNOWN&quot; date=&quot;before2004/08/25&quot; tests=&quot;tMeasure&quot; demos=&quot;&quot;&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">// &lt;/reviewed&gt;</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// &lt;prerequisite&gt;</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=Measure&gt;Measure&lt;/linkto&gt; class </span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=MCBase&gt;MCBase&lt;/linkto&gt; base class</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">//   &lt;li&gt; &lt;linkto class=MConvertBase&gt;overall conversion&lt;/linkto&gt;  class</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// &lt;/prerequisite&gt;</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// &lt;etymology&gt;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// Measure, Convert and Position</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// &lt;/etymology&gt;</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// &lt;synopsis&gt;</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// Contains state machinery and caching for actual conversions</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">// &lt;/synopsis&gt;</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// &lt;example&gt;</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// See &lt;linkto class=Measure&gt;Measure&lt;/linkto&gt; for conversion example.</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// &lt;/example&gt;</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">// &lt;motivation&gt;</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">// &lt;/motivation&gt;</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">// &lt;todo asof=&quot;1996/02/21&quot;&gt;</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">//  &lt;li&gt;</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">// &lt;/todo&gt;</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html">   81</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> : <span class="keyword">public</span> <a class="code" href="classcasacore_1_1MCBase.html">MCBase</a> {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="comment">//# Friends</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="comment">// Conversion of data</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a8692b0aa4ed0fcc4db10a71403a90411">   87</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcasacore_1_1MeasConvert.html">MeasConvert</a>&lt;<a class="code" href="classcasacore_1_1MPosition.html">MPosition</a>&gt;;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="comment">//# Constructors</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="comment">// Default constructor</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html#a3fb29ab534ab6eb49a19e905bb0c7fb2">MCPosition</a>();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="comment">//# Destructor</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html#aa8e7058f6d03ebed5952c3d8b86591e1">~MCPosition</a>();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="comment">//# Member functions</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="comment">// Show the state of the conversion engine (mainly for debugging purposes)</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="keyword">static</span> <a class="code" href="classcasacore_1_1String.html">String</a> <a class="code" href="classcasacore_1_1MCPosition.html#ae9c1b9dbdd57373109f691fc7d7d79d4">showState</a>();</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="comment">//# Enumerations</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="comment">// The list of actual routines provided.</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="comment">// &lt;note role=warning&gt; Each &lt;src&gt;AA_BB&lt;/src&gt; in the list points to routine</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="comment">// that can be used in the FromTo list in the getConvert routine.</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="comment">// In addition the type to which each is converted should be in the</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="comment">// ToRef array, again in the proper order. &lt;/note&gt;</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16">  107</a></span>&#160;  <span class="keyword">enum</span> <a class="code" href="classcasacore_1_1MCBase.html#a6571b5577233e7ca202e23fc17a30af5">Routes</a> {</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5">  108</a></span>&#160;    <a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5">ITRF_WGS84</a>,</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323">  109</a></span>&#160;    <a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323">WGS84_ITRF</a>,</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">  110</a></span>&#160;    <a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">N_Routes</a> };</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="comment">//# Typedefs</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <span class="comment">//# Operators</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="comment">//# General Member Functions</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <span class="comment">//# Enumerations</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="comment">//# Cached Data</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a358c9629ec1417b72ea6f6cae7550ba2">  121</a></span>&#160;  <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Double&gt;</a> *<a class="code" href="classcasacore_1_1MCPosition.html#a358c9629ec1417b72ea6f6cae7550ba2">DVEC1</a>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="comment">//# State machine data</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="comment">// Transition list</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a8bfa447eb688d2cea84e43b08ddbcbb5">  125</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="code" href="classcasacore_1_1MCPosition.html#a8bfa447eb688d2cea84e43b08ddbcbb5">ToRef_p</a>[<a class="code" href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">N_Routes</a>][3];</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="comment">// Transition matrix</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#a93600ca863cfc64c17410ba669c11037">  127</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="code" href="classcasacore_1_1MCPosition.html#a93600ca863cfc64c17410ba669c11037">FromTo_p</a>[<a class="code" href="classcasacore_1_1MPosition.html#a27a281e66a485ef884d5739fed06fc37aa9c4aae2baef9114ff2bf1588257cc43">MPosition::N_Types</a>][<a class="code" href="classcasacore_1_1MPosition.html#a27a281e66a485ef884d5739fed06fc37aa9c4aae2baef9114ff2bf1588257cc43">MPosition::N_Types</a>];</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="comment">// Object to ensure safe multi-threaded lazy single initialization</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="classcasacore_1_1MCPosition.html#acafdcc44318961356540d20b1be2b9a0">  129</a></span>&#160;  <span class="keyword">static</span> std::once_flag <a class="code" href="classcasacore_1_1MCPosition.html#acafdcc44318961356540d20b1be2b9a0">theirInitOnceFlag</a>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="comment">//# Constructors</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="comment">// Copy constructor (not implemented)</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html#a3fb29ab534ab6eb49a19e905bb0c7fb2">MCPosition</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> &amp;other);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="comment">// Assignment (not implemented)</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  <a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> &amp;<a class="code" href="classcasacore_1_1MCPosition.html#aa0b0cf60eb327d85cbad31640eaaada1">operator=</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1MCPosition.html">MCPosition</a> &amp;other);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  <span class="comment">//# Member functions</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="comment">// Create conversion function pointer</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#ad6752d29ef9e113b80826a47b0161c3e">getConvert</a>(<a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc, </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;              <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;inref,</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;              <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;outref);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <span class="comment">// Create help structures for Measure conversion routines</span></div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#ae74aba43607d2cf7ad9b61f532abc283">initConvert</a>(<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> which, <a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="comment">// Delete the pointers used in the MeasConvert help structure cache</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a839ee1e979bca94e43f8838ab3fd9e83">clearConvert</a>();</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  <span class="comment">// Routine to do actual conversion</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a3765fa9c0f71e2b99af36c374ec67cc9">doConvert</a>(<a class="code" href="classcasacore_1_1MeasValue.html">MeasValue</a> &amp;in, </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;             <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;inref,</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;             <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;outref,</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;             <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  <span class="comment">// Conversion routine to cater for inheritance question</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a3765fa9c0f71e2b99af36c374ec67cc9">doConvert</a>(<a class="code" href="classcasacore_1_1MVPosition.html">MVPosition</a> &amp;in,</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;         <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;inref,</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;         <a class="code" href="classcasacore_1_1MRBase.html">MRBase</a> &amp;outref,</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;         <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MConvertBase.html">MConvertBase</a> &amp;mc);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  </div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="comment">// Fill the global state. Called using theirInitOnce.</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MCPosition.html#a44e3869ebf0f54879d6a3bae2b57b7ba">doFillState</a>();</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;};</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classcasacore_1_1CallOnce0_html"><div class="ttname"><a href="classcasacore_1_1CallOnce0.html">casacore::CallOnce0</a></div><div class="ttdoc">Wrapper around std::call_once. </div><div class="ttdef"><b>Definition:</b> <a href="Mutex_8h_source.html#l00214">Mutex.h:214</a></div></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_a3765fa9c0f71e2b99af36c374ec67cc9"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a3765fa9c0f71e2b99af36c374ec67cc9">casacore::MCPosition::doConvert</a></div><div class="ttdeci">virtual void doConvert(MeasValue &amp;in, MRBase &amp;inref, MRBase &amp;outref, const MConvertBase &amp;mc)</div><div class="ttdoc">Routine to do actual conversion. </div></div>
 <div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector&lt; Double &gt;</a></div></div>
 <div class="ttc" id="classcasacore_1_1MPosition_html"><div class="ttname"><a href="classcasacore_1_1MPosition.html">casacore::MPosition</a></div><div class="ttdoc">A Measure: position on Earth. </div><div class="ttdef"><b>Definition:</b> <a href="MPosition_8h_source.html#l00079">MPosition.h:79</a></div></div>
 <div class="ttc" id="classcasacore_1_1MeasConvert_html"><div class="ttname"><a href="classcasacore_1_1MeasConvert.html">casacore::MeasConvert</a></div><div class="ttdoc">Conversion of Measures. </div><div class="ttdef"><b>Definition:</b> <a href="MBaseline_8h_source.html#l00044">MBaseline.h:44</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCBase_html_a6571b5577233e7ca202e23fc17a30af5"><div class="ttname"><a href="classcasacore_1_1MCBase.html#a6571b5577233e7ca202e23fc17a30af5">casacore::MCBase::Routes</a></div><div class="ttdeci">Routes</div><div class="ttdoc">Each derived class should have a list of routines to be called: </div><div class="ttdef"><b>Definition:</b> <a href="MCBase_8h_source.html#l00134">MCBase.h:134</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_acafdcc44318961356540d20b1be2b9a0"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#acafdcc44318961356540d20b1be2b9a0">casacore::MCPosition::theirInitOnceFlag</a></div><div class="ttdeci">static std::once_flag theirInitOnceFlag</div><div class="ttdoc">Object to ensure safe multi-threaded lazy single initialization. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00129">MCPosition.h:129</a></div></div>
+<div class="ttc" id="ArrayFwd_8h_html"><div class="ttname"><a href="ArrayFwd_8h.html">ArrayFwd.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1MRBase_html"><div class="ttname"><a href="classcasacore_1_1MRBase.html">casacore::MRBase</a></div><div class="ttdoc">Base for Reference frame for physical measures. </div><div class="ttdef"><b>Definition:</b> <a href="MRBase_8h_source.html#l00103">MRBase.h:103</a></div></div>
+<div class="ttc" id="MCBase_8h_html"><div class="ttname"><a href="MCBase_8h.html">MCBase.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1MPosition_html_a27a281e66a485ef884d5739fed06fc37aa9c4aae2baef9114ff2bf1588257cc43"><div class="ttname"><a href="classcasacore_1_1MPosition.html#a27a281e66a485ef884d5739fed06fc37aa9c4aae2baef9114ff2bf1588257cc43">casacore::MPosition::N_Types</a></div><div class="ttdef"><b>Definition:</b> <a href="MPosition_8h_source.html#l00097">MPosition.h:97</a></div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323">casacore::MCPosition::WGS84_ITRF</a></div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00110">MCPosition.h:110</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323">casacore::MCPosition::WGS84_ITRF</a></div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00109">MCPosition.h:109</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCBase_html"><div class="ttname"><a href="classcasacore_1_1MCBase.html">casacore::MCBase</a></div><div class="ttdoc">Base for specific measure conversions. </div><div class="ttdef"><b>Definition:</b> <a href="MCBase_8h_source.html#l00119">MCBase.h:119</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_aa0b0cf60eb327d85cbad31640eaaada1"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#aa0b0cf60eb327d85cbad31640eaaada1">casacore::MCPosition::operator=</a></div><div class="ttdeci">MCPosition &amp; operator=(const MCPosition &amp;other)</div><div class="ttdoc">Assignment (not implemented) </div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a8bfa447eb688d2cea84e43b08ddbcbb5"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a8bfa447eb688d2cea84e43b08ddbcbb5">casacore::MCPosition::ToRef_p</a></div><div class="ttdeci">static uInt ToRef_p[N_Routes][3]</div><div class="ttdoc">Transition list. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00126">MCPosition.h:126</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_a8bfa447eb688d2cea84e43b08ddbcbb5"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a8bfa447eb688d2cea84e43b08ddbcbb5">casacore::MCPosition::ToRef_p</a></div><div class="ttdeci">static uInt ToRef_p[N_Routes][3]</div><div class="ttdoc">Transition list. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00125">MCPosition.h:125</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_a839ee1e979bca94e43f8838ab3fd9e83"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a839ee1e979bca94e43f8838ab3fd9e83">casacore::MCPosition::clearConvert</a></div><div class="ttdeci">virtual void clearConvert()</div><div class="ttdoc">Delete the pointers used in the MeasConvert help structure cache. </div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a7dd230c52762513f1c43353af7927e1d"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a7dd230c52762513f1c43353af7927e1d">casacore::MCPosition::theirInitOnce</a></div><div class="ttdeci">static CallOnce0 theirInitOnce</div><div class="ttdoc">Object to ensure safe multi-threaded lazy single initialization. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00130">MCPosition.h:130</a></div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a93600ca863cfc64c17410ba669c11037"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a93600ca863cfc64c17410ba669c11037">casacore::MCPosition::FromTo_p</a></div><div class="ttdeci">static uInt FromTo_p[MPosition::N_Types][MPosition::N_Types]</div><div class="ttdoc">Transition matrix. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00128">MCPosition.h:128</a></div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a358c9629ec1417b72ea6f6cae7550ba2"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a358c9629ec1417b72ea6f6cae7550ba2">casacore::MCPosition::DVEC1</a></div><div class="ttdeci">Vector&lt; Double &gt; * DVEC1</div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00122">MCPosition.h:122</a></div></div>
+<div class="ttc" id="MeasBase_8h_html"><div class="ttname"><a href="MeasBase_8h.html">MeasBase.h</a></div></div>
+<div class="ttc" id="MPosition_8h_html"><div class="ttname"><a href="MPosition_8h.html">MPosition.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_a93600ca863cfc64c17410ba669c11037"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a93600ca863cfc64c17410ba669c11037">casacore::MCPosition::FromTo_p</a></div><div class="ttdeci">static uInt FromTo_p[MPosition::N_Types][MPosition::N_Types]</div><div class="ttdoc">Transition matrix. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00127">MCPosition.h:127</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_a358c9629ec1417b72ea6f6cae7550ba2"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a358c9629ec1417b72ea6f6cae7550ba2">casacore::MCPosition::DVEC1</a></div><div class="ttdeci">Vector&lt; Double &gt; * DVEC1</div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00121">MCPosition.h:121</a></div></div>
 <div class="ttc" id="classcasacore_1_1MeasValue_html"><div class="ttname"><a href="classcasacore_1_1MeasValue.html">casacore::MeasValue</a></div><div class="ttdoc">Base class for values in a Measure. </div><div class="ttdef"><b>Definition:</b> <a href="MeasValue_8h_source.html#l00107">MeasValue.h:107</a></div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5">casacore::MCPosition::ITRF_WGS84</a></div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00109">MCPosition.h:109</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a7c4ef1b4d8d318dbdda7f03b42e74bd5">casacore::MCPosition::ITRF_WGS84</a></div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00108">MCPosition.h:108</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_aa8e7058f6d03ebed5952c3d8b86591e1"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#aa8e7058f6d03ebed5952c3d8b86591e1">casacore::MCPosition::~MCPosition</a></div><div class="ttdeci">~MCPosition()</div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_a3fb29ab534ab6eb49a19e905bb0c7fb2"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a3fb29ab534ab6eb49a19e905bb0c7fb2">casacore::MCPosition::MCPosition</a></div><div class="ttdeci">MCPosition()</div><div class="ttdoc">Default constructor. </div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_ae9c1b9dbdd57373109f691fc7d7d79d4"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#ae9c1b9dbdd57373109f691fc7d7d79d4">casacore::MCPosition::showState</a></div><div class="ttdeci">static String showState()</div><div class="ttdoc">Show the state of the conversion engine (mainly for debugging purposes) </div></div>
+<div class="ttc" id="MConvertBase_8h_html"><div class="ttname"><a href="MConvertBase_8h.html">MConvertBase.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1MVPosition_html"><div class="ttname"><a href="classcasacore_1_1MVPosition.html">casacore::MVPosition</a></div><div class="ttdoc">A 3D vector in space. </div><div class="ttdef"><b>Definition:</b> <a href="MVPosition_8h_source.html#l00113">MVPosition.h:113</a></div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html"><div class="ttname"><a href="classcasacore_1_1MCPosition.html">casacore::MCPosition</a></div><div class="ttdoc">MPosition conversion routines. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00082">MCPosition.h:82</a></div></div>
-<div class="ttc" id="classcasacore_1_1MCPosition_html_a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">casacore::MCPosition::N_Routes</a></div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00111">MCPosition.h:111</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html"><div class="ttname"><a href="classcasacore_1_1MCPosition.html">casacore::MCPosition</a></div><div class="ttdoc">MPosition conversion routines. </div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00081">MCPosition.h:81</a></div></div>
+<div class="ttc" id="MeasRef_8h_html"><div class="ttname"><a href="MeasRef_8h.html">MeasRef.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1MCPosition_html_a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16a88ec78a81a6768a10bb6a6fb86700f23">casacore::MCPosition::N_Routes</a></div><div class="ttdef"><b>Definition:</b> <a href="MCPosition_8h_source.html#l00110">MCPosition.h:110</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_a44e3869ebf0f54879d6a3bae2b57b7ba"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#a44e3869ebf0f54879d6a3bae2b57b7ba">casacore::MCPosition::doFillState</a></div><div class="ttdeci">static void doFillState()</div><div class="ttdoc">Fill the global state. </div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_ad6752d29ef9e113b80826a47b0161c3e"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#ad6752d29ef9e113b80826a47b0161c3e">casacore::MCPosition::getConvert</a></div><div class="ttdeci">virtual void getConvert(MConvertBase &amp;mc, const MRBase &amp;inref, const MRBase &amp;outref)</div><div class="ttdoc">Create conversion function pointer. </div></div>
-<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00223">String.h:223</a></div></div>
+<div class="ttc" id="classcasacore_1_1String_html"><div class="ttname"><a href="classcasacore_1_1String.html">casacore::String</a></div><div class="ttdoc">String: the storage and methods of handling collections of characters. </div><div class="ttdef"><b>Definition:</b> <a href="String_8h_source.html#l00225">String.h:225</a></div></div>
 <div class="ttc" id="classcasacore_1_1MCPosition_html_ae74aba43607d2cf7ad9b61f532abc283"><div class="ttname"><a href="classcasacore_1_1MCPosition.html#ae74aba43607d2cf7ad9b61f532abc283">casacore::MCPosition::initConvert</a></div><div class="ttdeci">virtual void initConvert(uInt which, MConvertBase &amp;mc)</div><div class="ttdoc">Create help structures for Measure conversion routines. </div></div>
 <div class="ttc" id="namespacecasacore_html_a5c559d8d8bf2ae7f67b439955d6be88a"><div class="ttname"><a href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a></div><div class="ttdeci">unsigned int uInt</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00051">aipstype.h:51</a></div></div>
 <div class="ttc" id="classcasacore_1_1MConvertBase_html"><div class="ttname"><a href="classcasacore_1_1MConvertBase.html">casacore::MConvertBase</a></div><div class="ttdoc">Conversion of Measures Base. </div><div class="ttdef"><b>Definition:</b> <a href="MConvertBase_8h_source.html#l00147">MConvertBase.h:147</a></div></div>

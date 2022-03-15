@@ -13,6 +13,8 @@ var searchData=
   ['wcregion',['WCRegion',['../classcasacore_1_1WCRegion.html',1,'casacore']]],
   ['wcunion',['WCUnion',['../classcasacore_1_1WCUnion.html',1,'casacore']]],
   ['weibull',['Weibull',['../classcasacore_1_1Weibull.html',1,'casacore']]],
+  ['weightblockencoder',['WeightBlockEncoder',['../classWeightBlockEncoder.html',1,'']]],
+  ['weightencoder',['WeightEncoder',['../classdyscostman_1_1WeightEncoder.html',1,'dyscostman']]],
   ['wrapperbase',['WrapperBase',['../classcasacore_1_1WrapperBase.html',1,'casacore']]],
   ['wrapperdata',['WrapperData',['../classcasacore_1_1WrapperData.html',1,'casacore']]],
   ['wrapperdata_5fff_3c_20t_2c_20t_2c_20t_2c_20false_2c_20false_20_3e',['WrapperData_FF&lt; T, T, T, False, False &gt;',['../classcasacore_1_1WrapperData__FF_3_01T_00_01T_00_01T_00_01False_00_01False_01_4.html',1,'casacore']]],

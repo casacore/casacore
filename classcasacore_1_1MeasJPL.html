@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -215,12 +216,12 @@ Static Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
-<tr class="memitem:a8036fd026e57981d1a9b5cd1885fb52e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1CallOnce.html">CallOnce</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasJPL.html#a8036fd026e57981d1a9b5cd1885fb52e">theirCallOnce</a> [<a class="el" href="classcasacore_1_1MeasJPL.html#a90dea7df9db39488c44b60263716c4b7a68024389ef25053e3b4a118a908ae51f">N_Files</a>]</td></tr>
-<tr class="memdesc:a8036fd026e57981d1a9b5cd1885fb52e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#a8036fd026e57981d1a9b5cd1885fb52e">More...</a><br/></td></tr>
-<tr class="separator:a8036fd026e57981d1a9b5cd1885fb52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2441281f9166afe7ba1d27482ede46d5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Mutex.html">Mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasJPL.html#a2441281f9166afe7ba1d27482ede46d5">theirMutex</a></td></tr>
-<tr class="memdesc:a2441281f9166afe7ba1d27482ede46d5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcasacore_1_1Mutex.html" title="Wrapper around a pthreads mutex. ">Mutex</a> for thread-safety (other than initialization).  <a href="#a2441281f9166afe7ba1d27482ede46d5">More...</a><br/></td></tr>
-<tr class="separator:a2441281f9166afe7ba1d27482ede46d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7f563579da0b5cf8bb7cf4037b12e00"><td class="memItemLeft" align="right" valign="top">static std::once_flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasJPL.html#af7f563579da0b5cf8bb7cf4037b12e00">theirCallOnceFlags</a> [<a class="el" href="classcasacore_1_1MeasJPL.html#a90dea7df9db39488c44b60263716c4b7a68024389ef25053e3b4a118a908ae51f">N_Files</a>]</td></tr>
+<tr class="memdesc:af7f563579da0b5cf8bb7cf4037b12e00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object to ensure safe multi-threaded lazy single initialization.  <a href="#af7f563579da0b5cf8bb7cf4037b12e00">More...</a><br/></td></tr>
+<tr class="separator:af7f563579da0b5cf8bb7cf4037b12e00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49291d9848a8347316d67983c8d029d1"><td class="memItemLeft" align="right" valign="top">static std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasJPL.html#a49291d9848a8347316d67983c8d029d1">theirMutex</a></td></tr>
+<tr class="memdesc:a49291d9848a8347316d67983c8d029d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mutex for thread-safety (other than initialization).  <a href="#a49291d9848a8347316d67983c8d029d1">More...</a><br/></td></tr>
+<tr class="separator:a49291d9848a8347316d67983c8d029d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af60681b07c071905441b013296ea40a7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasJPL.html#af60681b07c071905441b013296ea40a7">t</a> [<a class="el" href="classcasacore_1_1MeasJPL.html#a90dea7df9db39488c44b60263716c4b7a68024389ef25053e3b4a118a908ae51f">N_Files</a>]</td></tr>
 <tr class="memdesc:af60681b07c071905441b013296ea40a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tables present.  <a href="#af60681b07c071905441b013296ea40a7">More...</a><br/></td></tr>
 <tr class="separator:af60681b07c071905441b013296ea40a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -294,10 +295,10 @@ Static Private Attributes</h2></td></tr>
 </ul>
 <h3>Example</h3>
 <p><a class="anchor" id="MeasJPL_example1"></a></p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Quanta/MVEpoch.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/measures/Measures/MeasJPL.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;casacore/casa/Arrays/Vector.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MVEpoch_8h.html">casacore/casa/Quanta/MVEpoch.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="MeasJPL_8h.html">casacore/measures/Measures/MeasJPL.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="Vector_8h.html">casacore/casa/Arrays/Vector.h</a>&gt;</span></div>
 <div class="line"><span class="keyword">const</span> MVEpoch dat = 51116; <span class="comment">// a date (1998/10/30) in TDB</span></div>
 <div class="line">Vector&lt;Double&gt; val(6), valE(6);        <span class="comment">// results</span></div>
 <div class="line"><span class="comment">// Get position and velocity of Venus (barycentric)</span></div>
@@ -312,7 +313,7 @@ Static Private Attributes</h2></td></tr>
 </div><!-- fragment --><h3>Motivation</h3>
 <p>To use the JPL data for planetary positions and high precision nutation </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00120">120</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00121">121</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="ac82f9e6b1b68604f92634d1b50ef7b01"></a>
 <div class="memitem">
@@ -343,7 +344,7 @@ Static Private Attributes</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00169">169</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00170">170</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -373,7 +374,7 @@ Static Private Attributes</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00158">158</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00159">159</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -438,7 +439,7 @@ Static Private Attributes</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00127">127</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00128">128</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -841,7 +842,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Data column descriptor. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00232">232</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00233">233</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -865,7 +866,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Some helper data read from the table keywords. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00249">249</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00250">250</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -887,7 +888,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00251">251</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00252">252</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -911,7 +912,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Dates of the data read in buffer. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00244">244</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00245">245</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -935,7 +936,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Interval in days (i.e., date step between subsequent rows) </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00238">238</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00239">239</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -959,7 +960,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Data read in. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00246">246</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00247">247</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -981,7 +982,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00250">250</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00251">251</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -1005,7 +1006,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Index in record. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00242">242</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00243">243</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -1029,7 +1030,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>First (-1) MJD in list. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00234">234</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00235">235</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -1053,7 +1054,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Last MJD in list. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00236">236</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00237">237</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -1077,11 +1078,11 @@ Static Private Attributes</h2></td></tr>
 
 <p>Tables present. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00230">230</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00231">231</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a8036fd026e57981d1a9b5cd1885fb52e"></a>
+<a class="anchor" id="af7f563579da0b5cf8bb7cf4037b12e00"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1089,7 +1090,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1CallOnce.html">CallOnce</a> casacore::MeasJPL::theirCallOnce[<a class="el" href="classcasacore_1_1MeasJPL.html#a90dea7df9db39488c44b60263716c4b7a68024389ef25053e3b4a118a908ae51f">N_Files</a>]</td>
+          <td class="memname">std::once_flag casacore::MeasJPL::theirCallOnceFlags[<a class="el" href="classcasacore_1_1MeasJPL.html#a90dea7df9db39488c44b60263716c4b7a68024389ef25053e3b4a118a908ae51f">N_Files</a>]</td>
         </tr>
       </table>
   </td>
@@ -1101,11 +1102,11 @@ Static Private Attributes</h2></td></tr>
 
 <p>Object to ensure safe multi-threaded lazy single initialization. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00226">226</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00227">227</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2441281f9166afe7ba1d27482ede46d5"></a>
+<a class="anchor" id="a49291d9848a8347316d67983c8d029d1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1113,7 +1114,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Mutex.html">Mutex</a> casacore::MeasJPL::theirMutex</td>
+          <td class="memname">std::mutex casacore::MeasJPL::theirMutex</td>
         </tr>
       </table>
   </td>
@@ -1123,9 +1124,9 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="classcasacore_1_1Mutex.html" title="Wrapper around a pthreads mutex. ">Mutex</a> for thread-safety (other than initialization). </p>
+<p>Mutex for thread-safety (other than initialization). </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00228">228</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00229">229</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>
@@ -1149,7 +1150,7 @@ Static Private Attributes</h2></td></tr>
 
 <p><a class="el" href="classcasacore_1_1File.html" title="Class to get file information and a base for other file classes. ">File</a> names. </p>
 
-<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00240">240</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
+<p>Definition at line <a class="el" href="MeasJPL_8h_source.html#l00241">241</a> of file <a class="el" href="MeasJPL_8h_source.html">MeasJPL.h</a>.</p>
 
 </div>
 </div>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -422,7 +423,7 @@ standard output is done in the following format: <code>hh:mm:ss.tt</code>. The n
  The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413ae1eb30fd1716772e86070ab2e3f47c65">MVTime::YMD</a></code> format implies TIME, and will precede the time with 'yyyy/mm/dd/' (or use <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a9dd67bb3eaa9870779f6019703224b5d">MVTime::YMD_ONLY</a></code> to include <code>NO_TIME</code> modifier).<br/>
  The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a40ca4b2fe5dee4ac0a6550b7d0b43b2a">MVTime::DMY</a></code> format implies TIME, and will precede the time with 'dd-Mon-yyyy/'.<br/>
  The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a963bbd6fc74aacc8a6fa8f9ab51fb794">MVTime::FITS</a></code> format implies TIME, and will precede the time with 'ccyy-mm-ddT'.<br/>
- The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a3dda899f36e572b6653e714c2e4d8d2c">MVTime::ISO</a></code> format implies <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> followed by a Z for the UTC time zone. The <code>BOOST</code> format implies DMY and USE_SPACE (space instead of slash between date and time). <br/>
+ The <code><a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413a3dda899f36e572b6653e714c2e4d8d2c">MVTime::ISO</a></code> format implies <a class="el" href="classcasacore_1_1FITS.html" title="static functions and enumerations ">FITS</a> followed by a Z for the UTC time zone. It uses a space instead of T as separator. It also implies CLEAN. The <code>BOOST</code> format implies DMY and USE_SPACE (space instead of slash between date and time). <br/>
  The output format can be modified with modifiers (specify as <a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413acd6273249fe49ad329fff54e35e693a0">MVTime::TIME</a> | MVTime::MOD (or + MVTime::MOD)). <br/>
 <b>Caution:</b><em> For overloading/casting problems with some compilers, the use of modifiers necessitates either the presence of a precision (i;e; <code>(A|B, prec)</code>), or an explicit cast: <code>((<a class="el" href="classcasacore_1_1MVTime.html#a0f8f55b984cf2d5ff1933b25ebdb1413" title="Format types. ">MVTime::formatTypes</a>)(A|B))</code>, or make use of the provided <code>TIME[_CLEAN][_NO_H[M]]</code> and <code>ANGLE[_CLEAN][_NO_D[M]]</code>; </em><br/>
 </p>
@@ -506,7 +507,7 @@ ccyy-mm-dd[Ttime[Z|+-hh[:mm]]] &ndash; new <a class="el" href="classcasacore_1_1
 Nothing I know of </li>
 </ul>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00269">269</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00270">270</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a0f8f55b984cf2d5ff1933b25ebdb1413"></a>
 <div class="memitem">
@@ -586,7 +587,7 @@ Nothing I know of </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00275">275</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00276">276</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1766,7 +1767,7 @@ Nothing I know of </li>
 
 <p>Default format. </p>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00443">443</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00442">442</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1790,7 +1791,7 @@ Nothing I know of </li>
 
 <p>Temporary format. </p>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00446">446</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00445">445</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1812,7 +1813,7 @@ Nothing I know of </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00447">447</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00446">446</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>
@@ -1836,7 +1837,7 @@ Nothing I know of </li>
 
 <p>Value. </p>
 
-<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00441">441</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
+<p>Definition at line <a class="el" href="MVTime_8h_source.html#l00440">440</a> of file <a class="el" href="MVTime_8h_source.html">MVTime.h</a>.</p>
 
 </div>
 </div>

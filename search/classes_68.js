@@ -22,6 +22,7 @@ var searchData=
   ['hdf5lattiter',['HDF5LattIter',['../classcasacore_1_1HDF5LattIter.html',1,'casacore']]],
   ['hdf5object',['HDF5Object',['../classcasacore_1_1HDF5Object.html',1,'casacore']]],
   ['hdf5record',['HDF5Record',['../classcasacore_1_1HDF5Record.html',1,'casacore']]],
+  ['header',['Header',['../structdyscostman_1_1ThreadedDyscoColumn_1_1Header.html',1,'dyscostman::ThreadedDyscoColumn']]],
   ['headerdataunit',['HeaderDataUnit',['../classcasacore_1_1HeaderDataUnit.html',1,'casacore']]],
   ['helpmeasudf',['HelpMeasUDF',['../classcasacore_1_1HelpMeasUDF.html',1,'casacore']]],
   ['helpmscaludf',['HelpMsCalUDF',['../classcasacore_1_1HelpMsCalUDF.html',1,'casacore']]],

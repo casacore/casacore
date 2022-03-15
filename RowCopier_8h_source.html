@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -121,14 +122,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define TABLES_ROWCOPIER_H</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">//# Includes</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/aips.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;casacore/casa/Utilities/CountedPtr.h&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">//# Forward Declarations</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">class </span>Table;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span>Vector;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="aips_8h.html">casacore/casa/aips.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ArrayFwd_8h.html">casacore/casa/Arrays/ArrayFwd.h</a>&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="CountedPtr_8h.html">casacore/casa/Utilities/CountedPtr.h</a>&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>casacore { <span class="comment">//# NAMESPACE CASACORE - BEGIN</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">//# Forward Declarations</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">class </span>Table;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">class </span>String;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">class </span>ColumnHolder; <span class="comment">//# Only in the .cc file</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
@@ -199,7 +200,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">//    RowCopier copier(full, singleRowTab);</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment">//    // loop over all remaining rows</span></div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">//    // since full was just created, we start filling it at row 0.</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment">//    for (uInt outRow = 0, fitsRow = currrow(); fitsRow &lt; nrows();</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment">//    for (rownr_t outRow = 0, fitsRow = currrow(); fitsRow &lt; nrows();</span></div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment">//         outRow++, fitsRow++) {</span></div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">//        // copy the only row from currRowTab (row 0) to the outRow of full</span></div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">//        copier.copy(outRow, 0);</span></div>
@@ -270,9 +271,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="comment">// The things that actually do the copying when requested.</span></div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="comment">// &lt;group&gt;</span></div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="comment">// Copy different row numbers.</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1RowCopier.html#a9433de814a65825eeda0db791a21852e">copy</a> (<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> toRow, <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> fromRow);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1RowCopier.html#a6e32de2665c9bc20052dd184c3bb946a">copy</a> (<a class="code" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> toRow, <a class="code" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> fromRow);</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="comment">// Copy to and from the same row number</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1RowCopier.html#a9433de814a65825eeda0db791a21852e">copy</a> (<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1RowCopier.html#a6e32de2665c9bc20052dd184c3bb946a">copy</a> (<a class="code" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr);</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="comment">// &lt;/group&gt;</span></div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <a class="code" href="classcasacore_1_1RowCopier.html#ac41594b0b19618a74f635cc2c9670aec">~RowCopier</a>();</div>
@@ -291,8 +292,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;};</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
-<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="classcasacore_1_1RowCopier.html#a978db2b92d384dedc6034008ed1ef917">  203</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1RowCopier.html#a9433de814a65825eeda0db791a21852e">RowCopier::copy</a> (<a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> rownr)</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    { <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1RowCopier.html#a9433de814a65825eeda0db791a21852e">copy</a> (rownr, rownr); }</div>
+<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="classcasacore_1_1RowCopier.html#a06b6fac0771799a94a45b4f1cb75e9ab">  203</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1RowCopier.html#a6e32de2665c9bc20052dd184c3bb946a">RowCopier::copy</a> (<a class="code" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> rownr)</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    { <span class="keywordflow">return</span> <a class="code" href="classcasacore_1_1RowCopier.html#a6e32de2665c9bc20052dd184c3bb946a">copy</a> (rownr, rownr); }</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;</div>
@@ -300,16 +301,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1RowCopier_html_ac41594b0b19618a74f635cc2c9670aec"><div class="ttname"><a href="classcasacore_1_1RowCopier.html#ac41594b0b19618a74f635cc2c9670aec">casacore::RowCopier::~RowCopier</a></div><div class="ttdeci">~RowCopier()</div></div>
-<div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector</a></div><div class="ttdoc">A 1-D Specialization of the Array class. </div><div class="ttdef"><b>Definition:</b> <a href="ArrayIO_8h_source.html#l00045">ArrayIO.h:45</a></div></div>
-<div class="ttc" id="classcasacore_1_1Table_html"><div class="ttname"><a href="classcasacore_1_1Table.html">casacore::Table</a></div><div class="ttdoc">Main interface class to a read/write table. </div><div class="ttdef"><b>Definition:</b> <a href="Table_8h_source.html#l00153">Table.h:153</a></div></div>
-<div class="ttc" id="classcasacore_1_1RowCopier_html_a9433de814a65825eeda0db791a21852e"><div class="ttname"><a href="classcasacore_1_1RowCopier.html#a9433de814a65825eeda0db791a21852e">casacore::RowCopier::copy</a></div><div class="ttdeci">Bool copy(uInt toRow, uInt fromRow)</div><div class="ttdoc">The things that actually do the copying when requested. </div></div>
+<div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector</a></div><div class="ttdoc">A 1-D Specialization of the Array class. </div><div class="ttdef"><b>Definition:</b> <a href="ArrayFwd_8h_source.html#l00009">ArrayFwd.h:9</a></div></div>
+<div class="ttc" id="CountedPtr_8h_html"><div class="ttname"><a href="CountedPtr_8h.html">CountedPtr.h</a></div></div>
+<div class="ttc" id="ArrayFwd_8h_html"><div class="ttname"><a href="ArrayFwd_8h.html">ArrayFwd.h</a></div></div>
+<div class="ttc" id="classcasacore_1_1Table_html"><div class="ttname"><a href="classcasacore_1_1Table.html">casacore::Table</a></div><div class="ttdoc">Main interface class to a read/write table. </div><div class="ttdef"><b>Definition:</b> <a href="Table_8h_source.html#l00155">Table.h:155</a></div></div>
+<div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="classcasacore_1_1RowCopier_html"><div class="ttname"><a href="classcasacore_1_1RowCopier.html">casacore::RowCopier</a></div><div class="ttdoc">RowCopier copies all or part of a row from one table to another. </div><div class="ttdef"><b>Definition:</b> <a href="RowCopier_8h_source.html#l00154">RowCopier.h:154</a></div></div>
 <div class="ttc" id="classcasacore_1_1RowCopier_html_acb784d1e1f4836aca4e7fd45097953a7"><div class="ttname"><a href="classcasacore_1_1RowCopier.html#acb784d1e1f4836aca4e7fd45097953a7">casacore::RowCopier::operator=</a></div><div class="ttdeci">RowCopier &amp; operator=(const RowCopier &amp;other)</div></div>
 <div class="ttc" id="classcasacore_1_1CountedPtr_html"><div class="ttname"><a href="classcasacore_1_1CountedPtr.html">casacore::CountedPtr&lt; ColumnHolder &gt;</a></div></div>
 <div class="ttc" id="classcasacore_1_1RowCopier_html_a0cce5bf2899cd22683132fdc44c57cfb"><div class="ttname"><a href="classcasacore_1_1RowCopier.html#a0cce5bf2899cd22683132fdc44c57cfb">casacore::RowCopier::columns_p</a></div><div class="ttdeci">CountedPtr&lt; ColumnHolder &gt; columns_p</div><div class="ttdoc">The ColumnHolder class exists only in the.cc file, it is what ultimately does the work...</div><div class="ttdef"><b>Definition:</b> <a href="RowCopier_8h_source.html#l00199">RowCopier.h:199</a></div></div>
 <div class="ttc" id="namespacecasacore_html_abd5691f9e13acc90d901e4007740ff98"><div class="ttname"><a href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a></div><div class="ttdeci">bool Bool</div><div class="ttdoc">Define the standard types used by Casacore. </div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00042">aipstype.h:42</a></div></div>
+<div class="ttc" id="classcasacore_1_1RowCopier_html_a6e32de2665c9bc20052dd184c3bb946a"><div class="ttname"><a href="classcasacore_1_1RowCopier.html#a6e32de2665c9bc20052dd184c3bb946a">casacore::RowCopier::copy</a></div><div class="ttdeci">Bool copy(rownr_t toRow, rownr_t fromRow)</div><div class="ttdoc">The things that actually do the copying when requested. </div></div>
+<div class="ttc" id="namespacecasacore_html_aee1c00a44176a614b010746741ae16a9"><div class="ttname"><a href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a></div><div class="ttdeci">uInt64 rownr_t</div><div class="ttdoc">Define the type of a row number in a table. </div><div class="ttdef"><b>Definition:</b> <a href="aipsxtype_8h_source.html#l00046">aipsxtype.h:46</a></div></div>
 <div class="ttc" id="classcasacore_1_1RowCopier_html_a5b75658404fe155fd2bce26044447308"><div class="ttname"><a href="classcasacore_1_1RowCopier.html#a5b75658404fe155fd2bce26044447308">casacore::RowCopier::RowCopier</a></div><div class="ttdeci">RowCopier()</div></div>
-<div class="ttc" id="namespacecasacore_html_a5c559d8d8bf2ae7f67b439955d6be88a"><div class="ttname"><a href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a></div><div class="ttdeci">unsigned int uInt</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00051">aipstype.h:51</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

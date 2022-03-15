@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -201,8 +202,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keyword">struct </span>host_basic_info basic_info;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> count = HOST_BASIC_INFO_COUNT;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="comment">/* get the page size with &quot;getpagesize&quot; and calculate pageshift from it */</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    pagesize_ = pagesize = getpagesize();</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="comment">/* get the page size with portable sysconf and calculate pageshift from it */</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    pagesize_ = pagesize = sysconf(_SC_PAGESIZE);</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    pageshift = 0;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">while</span> (pagesize &gt; 1)</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    {</div>

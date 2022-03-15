@@ -16,7 +16,7 @@ var searchData=
   ['zetta',['zetta',['../namespacecasacore_1_1C.html#a9b667a2b7ebe3afeccef021c3ce224a3',1,'casacore::C']]],
   ['zgetrf',['zgetrf',['../MatrixMathLA_8h.html#a729e5ef439cc828fcb34d0a2a026dbe2',1,'zgetrf():&#160;MatrixMathLA.h'],['../namespacecasacore.html#a512a39899dde1e7e445abcd23750f306',1,'casacore::zgetrf()']]],
   ['zgetri',['zgetri',['../MatrixMathLA_8h.html#a28613096afebefdf8e4f15300067e029',1,'zgetri():&#160;MatrixMathLA.h'],['../namespacecasacore.html#a2fea7aeea0b24473eaef37d19640f89e',1,'casacore::zgetri()']]],
-  ['zinc_5fp',['zinc_p',['../classcasacore_1_1Cube.html#a51b6a12afc0506b10857dcad946835c3',1,'casacore::Cube']]],
+  ['zinc',['zinc',['../classcasacore_1_1Cube.html#aad94e08dcc793faf97e5110bb2a20bd4',1,'casacore::Cube']]],
   ['zp_5fp',['zp_p',['../classcasacore_1_1UVWMachine.html#aa341121df60ca17dd11f018365994731',1,'casacore::UVWMachine']]],
   ['zpn',['ZPN',['../classcasacore_1_1Projection.html#a2b93abdf94fe07785161353ee2b5959ba5c7b85997c7ad24eeb99a35dbc6bcdaa',1,'casacore::Projection']]],
   ['zposv',['zposv',['../MatrixMathLA_8h.html#ab0330df22db8905c4de6933984e10854',1,'zposv():&#160;MatrixMathLA.h'],['../namespacecasacore.html#a6c0081991f7f5292980cc00e875c1e8c',1,'casacore::zposv()']]],

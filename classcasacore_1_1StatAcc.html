@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
@@ -210,7 +211,7 @@ module Arrays </li>
 </li>
 </ul>
 <h3>Synopsis</h3>
-<p>The (weighted) values are fed to <a class="el" href="classcasacore_1_1StatAcc.html" title="A statistics accumulator. ">StatAcc</a> via the member function `put'. They can be fed individually, or in the form of an <a class="el" href="classcasacore_1_1Array.html" title="template &lt;class T, class U&gt; class vector; ">Array</a>. The weights are optional (default = 1) and always have type Float.</p>
+<p>The (weighted) values are fed to <a class="el" href="classcasacore_1_1StatAcc.html" title="A statistics accumulator. ">StatAcc</a> via the member function `put'. They can be fed individually, or in the form of an <a class="el" href="classcasacore_1_1Array.html" title="A templated N-D Array class with zero origin. Array&lt;T, Alloc&gt; is a templated, N-dimensional, Array class. The origin is zero, but by default indices are zero-based. This Array class is the base class for the Vector, Matrix, and Cube subclasses. ">Array</a>. The weights are optional (default = 1) and always have type Float.</p>
 <p>Asking for a result does not change the internal state. The type of the returned results is always Fallible&lt;Double&gt;. A result is invalid if no input values with non-zero weight have been accumulated yet.</p>
 <p>The accumulator can be re-initialised with the function `reset'. Accumulators can be added to each other, which is as if their combined values had been accumulated in the same accumulator.</p>
 <p>Some functions have been provided to display a summary of the statistics results. One may choose between a one-line format (with an optional associated header line), and a list.</p>
