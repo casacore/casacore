@@ -142,7 +142,7 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
     if (freqMatch(row)) {
       for (uInt chan=0; chan<nChan; chan++) {
 	freqMatch(row) = (freqMatch(row) &&
-			  chanFreq(chan).getRefPtr()->getType() == rowChanFreq(chan).getRefPtr()->getType() &&
+			  chanFreq(chan).getRef().getType() == rowChanFreq(chan).getRef().getType() &&
 			  chanFreq(chan).getValue().
 			  nearAbs(rowChanFreq(chan).getValue(), tol) &&
 			  chanWidth(chan).nearAbs(rowChanWidth(chan), tol));

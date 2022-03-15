@@ -705,7 +705,7 @@ RecordNotice::RecordNotice (NoticeType changeType, uInt fieldNumber)
 bool RecordNotice::operator== (const Notice& that) const
 {
     if (typeid(*this) != typeid(that)) {
-	return 0;
+	return false;
     }
     return (changeType_p  == ((const RecordNotice&)that).changeType_p)
 	&& (fieldNumber_p == ((const RecordNotice&)that).fieldNumber_p);

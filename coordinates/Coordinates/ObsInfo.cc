@@ -356,7 +356,7 @@ Bool ObsInfo::toFITS(String & error, RecordInterface & outRecord) const
 
 // Very (but only) longwinded way to get at the MEpoch::Types
 
-        MEpoch::Types dtype(MEpoch::castType(obsDate().getRefPtr()->getType()));
+        MEpoch::Types dtype(MEpoch::castType(obsDate().getRef().getType()));
 	String date, timesys;
 	FITSDateUtil::toFITS(date, timesys, time, dtype);
 	outRecord.define(name, date);
