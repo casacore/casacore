@@ -173,7 +173,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dd> creates
 // a new, compound, function object from one or more other function objects
 // (including compounds...). The new function will have the sum of the 
-// parameters of the input functions as the new parameters (i.e the compound
+// parameters of the input functions as the new parameters (i.e. the compound
 // function created from a 1-dimensional Gaussian (with 3 parameters) and a 
 // third-order polynomial (with 4 parameters) will have 7 parameters).
 // <dt> <linkto class=CombiFunction>CombiFunction</linkto> 

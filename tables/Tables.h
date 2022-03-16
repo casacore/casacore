@@ -425,7 +425,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     Table tab(newtab, Table::Memory, 10);
 // </srcblock>
 //
-//  <LI> <A HREF="#Tables:write">writing</A> into a table,
 // Note that the function <src>TableUtil::createTable</src> can be used to create a table
 // in a simpler way. It can also be used to create a subtable using the :: notation
 // similar to the <A HREF="#Tables:openTable"><src>Tableutil::openTable</src></A>

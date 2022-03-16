@@ -182,6 +182,10 @@ TaQLNode TaQLNode::restoreNode (AipsIO& aio)
     return TaQLConcTabNodeRep::restore (aio);
   case TaQLNode_Show:
     return TaQLShowNodeRep::restore (aio);
+  case TaQLNode_CopyCol:
+    return TaQLCopyColNodeRep::restore (aio);
+  case TaQLNode_DropTab:
+    return TaQLDropTabNodeRep::restore (aio);
   default:
     throw AipsError ("TaQLNode::restoreNode - unknown node type");
   }
