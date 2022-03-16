@@ -105,21 +105,20 @@ void ThreadedDyscoColumn<DataType>::loadBlock(size_t blockIndex) {
 
 template <typename DataType>
 void ThreadedDyscoColumn<DataType>::getValues(
-    casacore::uInt rowNr, casacore::Array<DataType> *dataPtr) {
+    casacore::rownr_t rowNr, casacore::Array<DataType> *dataArr) {
+  // Make sure array storage is contiguous.
+  casacore::Bool deleteIt;
+  DataType* dataPtr = dataArr->getStorage (deleteIt);
   if (!areOffsetsInitialized()) {
     // Trying to read before first block was written -- return zero
     // TODO if a few rows were written of the first block, those are
     // incorrectly returned. This is a rare case but can be fixed.
-    for (typename casacore::Array<DataType>::contiter i = dataPtr->cbegin();
-         i != dataPtr->cend(); ++i)
-      *i = DataType();
+    *dataPtr = DataType();
   } else {
     size_t blockIndex = getBlockIndex(rowNr);
     if (blockIndex >= nBlocksInFile()) {
       // Trying to read a row that was not stored yet -- return zero
-      for (typename casacore::Array<DataType>::contiter i = dataPtr->cbegin();
-           i != dataPtr->cend(); ++i)
-        *i = DataType();
+      *dataPtr = DataType();
     } else {
       std::unique_lock<std::mutex> lock(_mutex);
       // Wait until the block to be read is not in the write cache
@@ -137,9 +136,10 @@ void ThreadedDyscoColumn<DataType>::getValues(
 
       // The time block encoder is now initialized and contains the unpacked
       // block.
-      _timeBlockBuffer->GetData(getRowWithinBlock(rowNr), dataPtr->data());
+      _timeBlockBuffer->GetData(getRowWithinBlock(rowNr), dataPtr);
     }
   }
+  dataArr->putStorage (dataPtr, deleteIt);
 }
 
 template <typename DataType>
@@ -168,7 +168,10 @@ void ThreadedDyscoColumn<DataType>::storeBlock() {
 
 template <typename DataType>
 void ThreadedDyscoColumn<DataType>::putValues(
-    casacore::uInt rowNr, const casacore::Array<DataType> *dataPtr) {
+    casacore::rownr_t rowNr, const casacore::Array<DataType> *dataArr) {
+  // Make sure array storage is contiguous.
+  casacore::Bool deleteIt;
+  const DataType* dataPtr = dataArr->getStorage (deleteIt);
   if (!areOffsetsInitialized()) {
     // If the manager did not initialize its offsets yet, then it is determined
     // from the first "time block" (a block with the same time, field and spw)
@@ -207,11 +210,12 @@ void ThreadedDyscoColumn<DataType>::putValues(
       // Load new block
       loadBlock(blockIndex);
     }
-    _timeBlockBuffer->SetData(blockRow, ant1, ant2, dataPtr->data());
+    _timeBlockBuffer->SetData(blockRow, ant1, ant2, dataPtr);
   } else {
-    _timeBlockBuffer->SetData(rowNr, ant1, ant2, dataPtr->data());
+    _timeBlockBuffer->SetData(rowNr, ant1, ant2, dataPtr);
   }
   _isCurrentBlockChanged = true;
+  dataArr->freeStorage (dataPtr, deleteIt);
 }
 
 template <typename DataType>
