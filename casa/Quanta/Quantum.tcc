@@ -40,7 +40,6 @@
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/MUString.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/sstream.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

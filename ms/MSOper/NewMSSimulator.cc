@@ -1835,7 +1835,7 @@ String NewMSSimulator::formatDirection(const MDirection& direction) {
   oss << mvRa(0.0).string(MVAngle::TIME,8);
   oss.width(14);
   oss << mvDec.string(MVAngle::DIG2,8);
-  oss << "     " << MDirection::showType(direction.getRefPtr()->getType());
+  oss << "     " << MDirection::showType(direction.getRef().getType());
   return String(oss);
 }
 

@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/MVDouble.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -115,12 +114,8 @@ Bool MVDouble::operator!=(const MVDouble &other) const {
 
 //# Member functions
 
-uInt MVDouble::type() const {
-  return Register(static_cast<MVDouble *>(0));
-}
-
 void MVDouble::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVDouble *>(0))) {
+  if (!dynamic_cast<const MVDouble *>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVDouble"));
   }
 }

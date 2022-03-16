@@ -142,7 +142,6 @@ public:
   
   // Tell me your type
   // <group>
-  virtual uInt type() const;
   static void assure(const MeasValue &in);
   // </group>
   
