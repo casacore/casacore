@@ -4977,6 +4977,8 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     const Table spwTable(spwTableName);
     Vector<String> scb;
     if (spwTable.tableDesc().isColumn("SDM_CORR_BIT")) {
+        // CAS-13749 SPECTRAL_WINDOW::SDM_CORR_BIT
+        // is an adhoc, ALMA-specific column
         ScalarColumn<String> scbCol(_ms->spectralWindow(), "SDM_CORR_BIT");
         scb = scbCol.getColumn();
     }

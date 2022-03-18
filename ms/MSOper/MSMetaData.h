@@ -709,7 +709,7 @@ private:
         QVD effbw;
         // RESOLUTION
         QVD resolution;
-        // CORR_BIT, CAS-13749
+        // CAS-13749 value for adhoc ALMA-specific SPECTRAL_WINDOW column
         String corrbit;
     };
 
