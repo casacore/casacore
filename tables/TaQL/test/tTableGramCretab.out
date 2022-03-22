@@ -89,11 +89,6 @@ Structure of table tTableGramCretab_tmp.tab4
   col1x Int      shape=[3,4]
   col2y Bool     scalar
 
-drop table tTableGramCretab_tmp.tab4
-    has been executed
-     result of 0 rows
-0 selected columns: 
-DROP TABLE tab4 succeeded
 
 with tTableGramCretab_tmp.tab3 t1 createtable t1::subtab1 [c1 i4]
     has been executed
