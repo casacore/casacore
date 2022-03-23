@@ -567,7 +567,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    && header[i][17]==' ' && header[i][18]==' '
 		) {
 	    	// change 'GLON    ' to 'GLON-CAR', etc.
-	    	strncpy(tmp,header[i].c_str(),hsize); tmp[hsize]='\0';
+	    	strncpy(tmp,header[i].c_str(),hsize);
 	    	tmp[15]='-'; tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
 	    	all = all.append(tmp);
 	    	os << LogIO::NORMAL
@@ -578,7 +578,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		       header[i][3]=='F' && header[i][4]=='R' &&
 		       header[i][5]=='E' && header[i][6]=='Q' &&
 		       header[i][7]==' ') {
-		strncpy(tmp,header[i].c_str(),hsize); tmp[hsize]='\0';
+		strncpy(tmp,header[i].c_str(),hsize);
 		tmp[0]='R'; tmp[1]='E'; tmp[2]='S'; tmp[3]='T';
 		tmp[4]='F'; tmp[5]='R'; tmp[6]='Q'; tmp[7]=' ';
 		all = all.append(tmp);
@@ -591,7 +591,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		       header[i][19]=='-' && header[i][20]=='S' && 
 		       header[i][21]=='I' && header[i][22]=='P' && 
 		       header[i][23]=='\'') {
-		strncpy(tmp,header[i].c_str(),hsize); tmp[hsize]='\0';
+		strncpy(tmp,header[i].c_str(),hsize);
 		tmp[19]='\'';tmp[20]=tmp[21]=tmp[22]=tmp[23]=' ';
 		all = all.append(tmp);
 		os << LogIO::NORMAL
