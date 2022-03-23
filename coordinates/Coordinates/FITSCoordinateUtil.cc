@@ -532,7 +532,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                 saveCards.push_back (header[i]);
             }
 	    int hsize = header[i].size();
-	    char *tmp = new char[hsize];
+	    char *tmp = new char[hsize+1];
 	    if (hsize >= 19 &&       // kludge changes 'RA--SIN ' to 'RA---SIN', etc.
 		header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
 		header[i][3]=='P' && header[i][4]=='E' &&
