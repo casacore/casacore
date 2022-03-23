@@ -43,9 +43,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/Notice.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
-#include <casacore/casa/Utilities/RegSequence.h>
 #include <casacore/casa/Utilities/Regex.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Sequence.h>
 #include <casacore/casa/Utilities/Sort.h>
 #include <casacore/casa/Utilities/SortError.h>
@@ -125,9 +123,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    of any datatype can be derived from the base class
 //    <linkto class=Sequence>Sequence</linkto>.
 //    One example is <linkto class=uIntSequence>uIntSequence</linkto>,
-//    provided for general use. Another is
-//    <linkto class=RegSequence>RegSequence</linkto>, exclusively used
-//    by the <linkto group="Register.h#register">Register</linkto> function.
+//    provided for general use. 
 //   <li> <linkto class=String>Strings</linkto>.
 //    for the C++ preprocessor
 //  </ul>
