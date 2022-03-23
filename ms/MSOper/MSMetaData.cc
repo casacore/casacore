@@ -2058,6 +2058,18 @@ vector<uInt> MSMetaData::getBBCNos() const {
     return out;
 }
 
+vector<String> MSMetaData::getCorrBits() const {
+    std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
+    vector<MSMetaData::SpwProperties> props = _getSpwInfo(
+        avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
+    );
+    vector<String> out;
+    for (const auto &element : props) {
+        out.push_back(element.corrbit);
+    }
+    return out;
+}
+
 std::map<uInt, std::set<uInt> > MSMetaData::getBBCNosToSpwMap(
     SQLDSwitch sqldSwitch
 ) {
@@ -2723,7 +2735,7 @@ Bool MSMetaData::hasBBCNo() const {
     return _ms->spectralWindow().isColumn(MSSpectralWindowEnums::BBC_NO);
 }
 
-std::map<String, std::set<Double> > MSMetaData::_getIntentsToTimesMap() const {
+std::map<String, std::set<Double>> MSMetaData::_getIntentsToTimesMap() const {
     if (! _intentToTimesMap.empty()) {
         return _intentToTimesMap;
     }
@@ -4920,7 +4932,7 @@ std::shared_ptr<Quantum<Vector<Double> > > MSMetaData::_getIntervals() const {
 }
 
 MSMetaData::ColumnStats MSMetaData::getIntervalStatistics() const {
-    std::shared_ptr<Quantum<Vector<Double> > > intervals = _getIntervals();
+    std::shared_ptr<Quantum<Vector<Double>>> intervals = _getIntervals();
     Vector<Double> intInSec = intervals->getValue("s");
     ColumnStats stats;
     ClassicalStatistics<Double, Vector<Double>::const_iterator> cs;
@@ -4957,10 +4969,19 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         _ms->spectralWindow(),
         MSSpectralWindow::columnName(MSSpectralWindowEnums::RESOLUTION)
     );
-    auto nss  = spwCols.netSideband().getColumn();
+    auto nss = spwCols.netSideband().getColumn();
     auto name = spwCols.name().getColumn();
     auto myHasBBCNo = hasBBCNo();
     auto bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
+    const auto spwTableName = _ms->spectralWindowTableName();
+    const Table spwTable(spwTableName);
+    Vector<String> scb;
+    if (spwTable.tableDesc().isColumn("SDM_CORR_BIT")) {
+        // CAS-13749 SPECTRAL_WINDOW::SDM_CORR_BIT
+        // is an adhoc, ALMA-specific column
+        ScalarColumn<String> scbCol(_ms->spectralWindow(), "SDM_CORR_BIT");
+        scb = scbCol.getColumn();
+    }
     vector<Double> freqLimits(2);
     Vector<Quantity> tmp;
     vector<SpwProperties> spwInfo(bws.size());
@@ -5005,6 +5026,7 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
                 sqldSpw.insert(i);
             }
         }
+        spwInfo[i].corrbit = scb.size() == 0 ? "UNKNOWN" : scb[i];
         spwInfo[i].reffreq = reffreqs(i);
         if (spwInfo[i].reffreq.getUnit() == emptyUnit) {
             spwInfo[i].reffreq.set(hz);

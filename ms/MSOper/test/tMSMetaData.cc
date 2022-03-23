@@ -1405,6 +1405,13 @@ void testIt(MSMetaData& md) {
             }
         }
         {
+            cout << "*** Test getCorrBits" << endl;
+            vector<String> cb = md.getCorrBits();
+            for ( const auto &el : cb) {
+                AlwaysAssert(el == "UNKNOWN", AipsError);
+            }
+        }
+        {
             cout << "*** Test getFieldsForSourceMap" << endl;
             std::map<Int, std::set<Int> > res = md.getFieldsForSourceMap();
             std::map<Int, std::set<String> > res2 = md.getFieldNamesForSourceMap();
