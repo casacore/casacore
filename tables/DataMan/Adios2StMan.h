@@ -57,6 +57,8 @@ public:
             std::vector<std::map<std::string, std::string>> operatorParams
                 = std::vector<std::map<std::string, std::string>>());
 
+    Adios2StMan(std::string xmlFile, MPI_Comm mpiComm = MPI_COMM_WORLD);
+
     virtual ~Adios2StMan();
 
     virtual DataManager *clone() const;

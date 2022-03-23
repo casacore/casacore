@@ -37,6 +37,7 @@ namespace casacore
 // Static objects in impl class
 MPI_Comm Adios2StMan::impl::itsMpiComm = MPI_COMM_WORLD;
 
+constexpr const char *Adios2StMan::impl::SPEC_FIELD_XML_FILE;
 constexpr const char *Adios2StMan::impl::SPEC_FIELD_ENGINE_TYPE;
 constexpr const char *Adios2StMan::impl::SPEC_FIELD_ENGINE_PARAMS;
 constexpr const char *Adios2StMan::impl::SPEC_FIELD_TRANSPORT_PARAMS;
@@ -52,6 +53,12 @@ Adios2StMan::Adios2StMan(MPI_Comm mpiComm, std::string engineType,
     std::vector<std::map<std::string, std::string>> operatorParams)
     : DataManager(),
     pimpl(std::unique_ptr<impl>(new impl(*this, mpiComm, engineType, engineParams, transportParams, operatorParams)))
+{
+}
+
+Adios2StMan::Adios2StMan(std::string xmlFile, MPI_Comm mpiComm)
+    : DataManager(),
+    pimpl(std::unique_ptr<impl>(new impl(*this, xmlFile, mpiComm)))
 {
 }
 
@@ -142,18 +149,8 @@ rownr_t Adios2StMan::getNrRows()
 // impl class implementation using ADIOS2
 //
 
-Adios2StMan::impl::impl(
-        Adios2StMan &parent, MPI_Comm mpiComm, std::string engineType,
-        std::map<std::string, std::string> engineParams,
-        std::vector<std::map<std::string, std::string>> transportParams,
-        std::vector<std::map<std::string, std::string>> operatorParams)
-    : parent(parent), itsAdiosEngineType(std::move(engineType)),
-      itsAdiosEngineParams(std::move(engineParams)),
-      itsAdiosTransportParamsVec(std::move(transportParams)),
-      itsAdiosOperatorParamsVec(std::move(operatorParams))
+void Adios2StMan::impl::checkMPI() const
 {
-    itsMpiComm = mpiComm;
-
     int mpi_finalized;
     MPI_Finalized(&mpi_finalized);
     if(mpi_finalized)
@@ -180,9 +177,37 @@ Adios2StMan::impl::impl(
 #endif
         }
     }
+}
 
-    itsAdios = std::make_shared<adios2::ADIOS>(itsMpiComm, true);
+Adios2StMan::impl::impl(
+        Adios2StMan &parent,
+        std::string xmlFile,
+        MPI_Comm mpiComm)
+    : parent(parent),
+      itsAdiosXmlFile(xmlFile)
+{
+    itsMpiComm = mpiComm;
+    checkMPI();
+    itsAdios = std::make_shared<adios2::ADIOS>(xmlFile, itsMpiComm);
+    itsAdiosIO = std::make_shared<adios2::IO>(itsAdios->DeclareIO("Adios2StMan"));
+}
 
+Adios2StMan::impl::impl(
+        Adios2StMan &parent,
+        MPI_Comm mpiComm,
+        std::string engineType,
+        std::map<std::string, std::string> engineParams,
+        std::vector<std::map<std::string, std::string>> transportParams,
+        std::vector<std::map<std::string, std::string>> operatorParams)
+    : parent(parent),
+      itsAdiosEngineType(std::move(engineType)),
+      itsAdiosEngineParams(std::move(engineParams)),
+      itsAdiosTransportParamsVec(std::move(transportParams)),
+      itsAdiosOperatorParamsVec(std::move(operatorParams))
+{
+    itsMpiComm = mpiComm;
+    checkMPI();
+    itsAdios = std::make_shared<adios2::ADIOS>(itsMpiComm);
     itsAdiosIO = std::make_shared<adios2::IO>(itsAdios->DeclareIO("Adios2StMan"));
 
     if (itsAdiosEngineType.empty() == false)
@@ -259,10 +284,14 @@ static Record to_record(const adios2::Params &params)
 DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
                                      const Record &spec)
 {
+    std::string xmlFile;
     std::string engine;
     adios2::Params engine_params;
     std::vector<adios2::Params> transport_params;
     std::vector<adios2::Params> operator_params;
+    if (spec.isDefined(SPEC_FIELD_XML_FILE)) {
+        xmlFile = spec.asString(SPEC_FIELD_XML_FILE);
+    }
     if (spec.isDefined(SPEC_FIELD_ENGINE_TYPE)) {
         engine = spec.asString(SPEC_FIELD_ENGINE_TYPE);
     }
@@ -287,12 +316,21 @@ DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
             operator_params.emplace_back(std::move(params));
         }
     }
-    return new Adios2StMan(itsMpiComm, engine, engine_params, transport_params, operator_params);
+    if(xmlFile.empty()) {
+        return new Adios2StMan(itsMpiComm, engine, engine_params,
+                transport_params, operator_params);
+    }
+    else{
+        return new Adios2StMan(xmlFile, itsMpiComm);
+    }
 }
 
 Record Adios2StMan::impl::dataManagerSpec() const
 {
     Record record;
+    if (!itsAdiosXmlFile.empty()) {
+        record.define(SPEC_FIELD_XML_FILE, itsAdiosXmlFile);
+    }
     if (!itsAdiosEngineType.empty()) {
         record.define(SPEC_FIELD_ENGINE_TYPE, itsAdiosEngineType);
     }
@@ -330,7 +368,16 @@ Record Adios2StMan::impl::dataManagerSpec() const
 
 DataManager *Adios2StMan::impl::clone() const
 {
-    return new Adios2StMan(itsMpiComm, itsAdiosEngineType, itsAdiosEngineParams, itsAdiosTransportParamsVec, itsAdiosOperatorParamsVec);
+    if(itsAdiosXmlFile.empty()){
+        return new Adios2StMan(itsMpiComm,
+                itsAdiosEngineType,
+                itsAdiosEngineParams,
+                itsAdiosTransportParamsVec,
+                itsAdiosOperatorParamsVec);
+    }
+    else{
+        return new Adios2StMan(itsAdiosXmlFile, itsMpiComm);
+    }
 }
 
 String Adios2StMan::impl::dataManagerType() const

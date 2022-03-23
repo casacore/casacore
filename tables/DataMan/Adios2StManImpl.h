@@ -43,17 +43,17 @@ class Adios2StMan::impl
 public:
 
     impl(Adios2StMan &parent,
-            MPI_Comm mpiComm = MPI_COMM_WORLD,
-            std::string engineType = std::string(),
-            std::map<std::string, std::string> engineParams
-                = std::map<std::string, std::string>(),
-            std::vector<std::map<std::string, std::string>> transportParams
-                = std::vector<std::map<std::string, std::string>>(),
-            std::vector<std::map<std::string, std::string>> operatorParams
-                = std::vector<std::map<std::string, std::string>>());
+         MPI_Comm mpiComm,
+         std::string engineType,
+         std::map<std::string, std::string> engineParams,
+         std::vector<std::map<std::string, std::string>> transportParams,
+         std::vector<std::map<std::string, std::string>> operatorParams);
+
+    impl(Adios2StMan &parent, std::string xmlFile, MPI_Comm mpiComm);
 
     ~impl();
 
+    void checkMPI() const;
     DataManager *clone() const;
     String dataManagerType() const;
     String dataManagerName() const;
@@ -61,7 +61,8 @@ public:
     rownr_t open64(rownr_t aRowNr, AipsIO &ios);
     rownr_t resync64(rownr_t aRowNr);
     Bool flush(AipsIO &ios, Bool doFsync);
-    DataManagerColumn *makeColumnCommon(const String &aName, int aDataType,
+    DataManagerColumn *makeColumnCommon(const String &aName,
+                                        int aDataType,
                                         const String &aDataTypeID);
     DataManagerColumn *makeScalarColumn(const String &aName,
                                         int aDataType,
@@ -89,27 +90,31 @@ private:
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
 
-    // The ADIOS2 I/O Engine type
-    std::string itsAdiosEngineType;
-    // Parameters for the ADIOS2 I/O engine
-    adios2::Params itsAdiosEngineParams;
-    // Parameters for the ADIOS2 I/O transports
-    std::vector<adios2::Params> itsAdiosTransportParamsVec;
-    // Parameters for the ADIOS2 I/O operators (compressors)
-    std::vector<adios2::Params> itsAdiosOperatorParamsVec;
-
     // MPI communicator to be used by all instances of this storage manager
     static MPI_Comm itsMpiComm;
 
+    // The ADIOS2 XML configuration file
+    std::string itsAdiosXmlFile;
+    // The ADIOS2 Engine type
+    std::string itsAdiosEngineType;
+    // Parameters for the ADIOS2 engine
+    adios2::Params itsAdiosEngineParams;
+    // Parameters for the ADIOS2 transports
+    std::vector<adios2::Params> itsAdiosTransportParamsVec;
+    // Parameters for the ADIOS2 operators (compressors)
+    std::vector<adios2::Params> itsAdiosOperatorParamsVec;
+
     // The type of this storage manager
     static constexpr const char *DATA_MANAGER_TYPE = "Adios2StMan";
-    // The name of the specification field for the I/O engine type
+    // The name of the specification field for the ADIOS2 XML configuration file
+    static constexpr const char *SPEC_FIELD_XML_FILE = "XMLFILE";
+    // The name of the specification field for the ADIOS2 engine type
     static constexpr const char *SPEC_FIELD_ENGINE_TYPE = "ENGINETYPE";
-    // The name of the specification field for the I/O engine parameters
+    // The name of the specification field for the ADIOS2 engine parameters
     static constexpr const char *SPEC_FIELD_ENGINE_PARAMS = "ENGINEPARAMS";
-    // The name of the specification field for the transport parameters
+    // The name of the specification field for the ADIOS2 transport parameters
     static constexpr const char *SPEC_FIELD_TRANSPORT_PARAMS = "TRANSPORTPARAMS";
-    // The name of the specification field for the operator parameters
+    // The name of the specification field for the ADIOS2 operator parameters
     static constexpr const char *SPEC_FIELD_OPERATOR_PARAMS = "OPERATORPARAMS";
 
     uInt ncolumn() const { return parent.ncolumn(); }
