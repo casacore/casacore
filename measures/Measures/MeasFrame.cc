@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures/MCFrame.h>
@@ -471,25 +470,25 @@ void MeasFrame::create() {
 void MeasFrame::fill(const Measure *in) {
   if (in) {
     uInt locker = 0;
-    if (in->type() == Register(static_cast<MEpoch *>(0))) {
+    if (dynamic_cast<const MEpoch*>(in)) {
       lock(locker);
       delete rep->epval;
       rep->epval = in->clone();
       unlock(locker);
       makeEpoch();
-    } else if (in->type() == Register(static_cast<MPosition *>(0))) {
+    } else if (dynamic_cast<const MPosition*>(in)) {
       lock(locker);
       delete rep->posval;
       rep->posval = in->clone();
       unlock(locker);
       makePosition();
-    } else if (in->type() == Register(static_cast<MDirection *>(0))) {
+    } else if (dynamic_cast<const MDirection*>(in)) {
       lock(locker);
       delete rep->dirval;
       rep->dirval = in->clone();
       unlock(locker);
       makeDirection();
-    } else if (in->type() == Register(static_cast<MRadialVelocity *>(0))) {
+    } else if (dynamic_cast<const MRadialVelocity*>(in)) {
       lock(locker);
       delete rep->radval;
       rep->radval = in->clone();

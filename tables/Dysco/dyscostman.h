@@ -335,11 +335,11 @@ class DyscoStMan : public casacore::DataManager {
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
-  virtual void create(casacore::uInt nRow) final override;
+  virtual void create64(casacore::rownr_t nRow) final override;
 
   // Open the storage manager file for an existing table.
   // Return the number of rows in the data file.
-  virtual void open(casacore::uInt nRow, casacore::AipsIO &) final override;
+  virtual casacore::rownr_t open64(casacore::rownr_t nRow, casacore::AipsIO &) final override;
 
   // Create a column in the storage manager on behalf of a table column.
   // The caller will NOT delete the newly created object.
@@ -358,7 +358,7 @@ class DyscoStMan : public casacore::DataManager {
       const casacore::String &name, int dataType,
       const casacore::String &dataTypeID) final override;
 
-  virtual void resync(casacore::uInt nRow) final override;
+  virtual casacore::rownr_t resync64(casacore::rownr_t nRow) final override;
 
   virtual void deleteManager() final override;
 
@@ -372,10 +372,10 @@ class DyscoStMan : public casacore::DataManager {
   virtual void reopenRW() final override;
 
   // Add rows to the storage manager.
-  virtual void addRow(casacore::uInt nrrow) final override;
+  virtual void addRow64(casacore::rownr_t nrrow) final override;
 
   // Delete a row from all columns.
-  virtual void removeRow(casacore::uInt rowNr) final override;
+  virtual void removeRow64(casacore::rownr_t rowNr) final override;
 
   // Do the final addition of a column.
   virtual void addColumn(casacore::DataManagerColumn *) final override;

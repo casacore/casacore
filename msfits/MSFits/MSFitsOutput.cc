@@ -2092,7 +2092,7 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                 }
             }
 
-            if (dir.type() == MDirection::B1950) {
+            if (dir.getRef().getType() == MDirection::B1950) {
                 *epoch = 1950.;
             }
 

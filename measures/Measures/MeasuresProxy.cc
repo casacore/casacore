@@ -717,9 +717,9 @@ Quantum<Vector<Double> > MeasuresProxy::posangle(const Record& lrec,
   y.getRefPtr()->set(frame_p);
   if (x.isModel()) x = MDirection::Convert(x, MDirection::DEFAULT)();
   if (y.isModel()) y = MDirection::Convert(y, MDirection::DEFAULT)();
-  if (x.getRefPtr()->getType() != y.getRefPtr()->getType()) {
+  if (x.getRef().getType() != y.getRef().getType()) {
     y = MDirection::Convert(y, MDirection::castType
-			    (x.getRefPtr()->getType()))();
+			    (x.getRef().getType()))();
   }
   return \
     Quantum<Vector<Double> >(
@@ -736,9 +736,9 @@ Quantum<Vector<Double> > MeasuresProxy::separation(const Record& lrec, const Rec
   y.getRefPtr()->set(frame_p);
   if (x.isModel()) x = MDirection::Convert(x, MDirection::DEFAULT)();
   if (y.isModel()) y = MDirection::Convert(y, MDirection::DEFAULT)();
-  if (x.getRefPtr()->getType() != y.getRefPtr()->getType()) {
+  if (x.getRef().getType() != y.getRef().getType()) {
 	y = MDirection::Convert(y, MDirection::castType
-				(x.getRefPtr()->getType()))();
+				(x.getRef().getType()))();
   }
   return \
     Quantum<Vector<Double> >(

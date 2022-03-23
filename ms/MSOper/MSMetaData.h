@@ -397,6 +397,8 @@ public:
 
     vector<uInt> getBBCNos() const;
 
+    vector<String> getCorrBits() const;
+
     std::map<uInt, std::set<uInt> > getBBCNosToSpwMap(SQLDSwitch sqldSwitch);
 
     vector<vector<Double> > getEdgeChans();
@@ -707,6 +709,8 @@ private:
         QVD effbw;
         // RESOLUTION
         QVD resolution;
+        // CAS-13749 value for adhoc ALMA-specific SPECTRAL_WINDOW column
+        String corrbit;
     };
 
     // represents non-primary key data for a SOURCE table row
@@ -744,7 +748,7 @@ private:
     mutable std::set<String> _uniqueIntents;
     mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs, _uniqueAntennaIDs;
     mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw, _uniqueDataDescIDs;
-  mutable std::shared_ptr<std::map<SubScanKey, rownr_t> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
+    mutable std::shared_ptr<std::map<SubScanKey, rownr_t> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
     mutable std::shared_ptr<std::map<Int, rownr_t> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
     mutable std::shared_ptr<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
@@ -1146,8 +1150,6 @@ private:
     ) const;
 
 };
-
-
 
 }
 

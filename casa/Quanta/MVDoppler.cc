@@ -28,7 +28,6 @@
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/MVDoppler.h>
 #include <casacore/casa/BasicMath/Math.h>
 
@@ -125,12 +124,8 @@ Bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
 
 // Member functions
 
-uInt MVDoppler::type() const {
-  return Register(static_cast<MVDoppler *>(0));
-}
-
 void MVDoppler::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVDoppler *>(0))) {
+  if (!dynamic_cast<const MVDoppler*>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVDoppler"));
   }
 }
