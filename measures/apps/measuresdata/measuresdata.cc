@@ -455,25 +455,25 @@ const tableProperties allProperties[] = {
 
   { "IERSpredict",		2.0,			3.0,
     False,			0.0,			1.0,
-    "geodetic/IERSpredict",  	"ftp",  		"ascii",
+    "geodetic/IERSpredict",  	"https",  		"ascii",
     &IERSpredict,		IERSpredictCol,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
     "IERS Earth Orientation Data predicted from NEOS",	"predict",
     False,			"",			vector<String>(),
     &IERSpredictFormat,		vector<formatDescr>(),
-    { "ftp.iers.org", "products/eop/rapid/daily", "finals.daily" } },
+    { "maia.usno.navy.mil", "ser7", "finals.daily" } },
 
   //**********************************************************************//
 
   { "IERSpredict2000",		2.0,			3.0,
     False,			0.0,			1.0,
-    "geodetic/IERSpredict2000",	"ftp",  		"ascii",
+    "geodetic/IERSpredict2000",	"https",  		"ascii",
     &IERSpredict2000,		IERSpredict2000Col,	0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
     "IERS EOP2000C04_05 Earth Orientation Data IAU2000","predict2000",
     False,			"",			vector<String>(),
     &IERSpredict2000Format,	vector<formatDescr>(),
-    { "ftp.iers.org", "products/eop/rapid/daily", "finals2000A.daily" } },
+    { "maia.usno.navy.mil", "ser7", "finals2000A.daily" } },
 
   //**********************************************************************//
 
