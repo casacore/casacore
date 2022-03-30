@@ -144,18 +144,18 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     // In our axesDesc the first axes are used for the region.
     for (uInt i=0; i<ndreg; i++) {
         regPixMap(i) = pixelAxesMap(i);
-	regOutOrd(i) = outOrder(i);
+        regOutOrd(i) = outOrder(i);
     }
     // The rest of the pixel/outOrder are for the extend box.
     for (uInt i=0; i<ndext; i++) {
         extPixMap(i) = pixelAxesMap(i+ndreg);
-	extOutOrd(i) = outOrder(i+ndreg);
+        extOutOrd(i) = outOrder(i+ndreg);
     }
     // The stretch box uses some axes in the region.
     for (uInt i=0; i<ndstr; i++) {
         uInt axis = stretchRegAxes(i);
-	strPixMap(i) = pixelAxesMap(axis);
-	strOutOrd(i) = outOrder(axis);
+        strPixMap(i) = pixelAxesMap(axis);
+        strOutOrd(i) = outOrder(axis);
     }
     // Determine the axes to be passed to LCStretch and LCExtension.
     // Note that outOrd already reorders the axes as needed, so we
@@ -170,53 +170,57 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     std::vector<Int> tmpreg(regOutOrd.begin(), regOutOrd.end());
     GenSortIndirect<Int,uInt>::sort (reginx, &(tmpreg[0]), ndreg);
     for (uInt i=0; i<ndreg; i++) {
-	regOutOrd(reginx(i)) = i;
+        regOutOrd(reginx(i)) = i;
     }
-    Vector<uInt> extinx(ndext);
-    std::vector<Int> tmpext(extOutOrd.begin(), extOutOrd.end());
-    GenSortIndirect<Int,uInt>::sort (extinx, &(tmpext[0]), ndext);
-    for (uInt i=0; i<ndext; i++) {
-        extendAxes(i) = extOutOrd(extinx(i));
-	extOutOrd(extinx(i)) = i;
+    if (ndext > 0) {
+        Vector<uInt> extinx(ndext);
+        std::vector<Int> tmpext(extOutOrd.begin(), extOutOrd.end());
+        GenSortIndirect<Int,uInt>::sort (extinx, &(tmpext[0]), ndext);
+        for (uInt i=0; i<ndext; i++) {
+            extendAxes(i) = extOutOrd(extinx(i));
+            extOutOrd(extinx(i)) = i;
+        }
     }
-    Vector<uInt> strinx(ndstr);
-    std::vector<Int> tmpstr(strOutOrd.begin(), strOutOrd.end());
-    GenSortIndirect<Int,uInt>::sort (strinx, &(tmpstr[0]), ndstr);
-    for (uInt i=0; i<ndstr; i++) {
-        stretchAxes(i) = regOutOrd(stretchRegAxes(i));
-	strOutOrd(strinx(i)) = i;
-    }
-    // The box axes get already reordered by its toLCRegion.
-    // So the stretched axis must be region axis in the new order.
-    std::vector<Int> tmpstretch(stretchAxes.begin(), stretchAxes.end());
-    GenSortIndirect<Int,uInt>::sort (strinx, &(tmpstretch[0]), ndstr);
-    for (uInt i=0; i<ndstr; i++) {
-        stretchRegAxes(i) = stretchAxes(strinx(i));
+    if (ndstr > 0) {
+        Vector<uInt> strinx(ndstr);
+        std::vector<Int> tmpstr(strOutOrd.begin(), strOutOrd.end());
+        GenSortIndirect<Int,uInt>::sort (strinx, &(tmpstr[0]), ndstr);
+        for (uInt i=0; i<ndstr; i++) {
+            stretchAxes(i) = regOutOrd(stretchRegAxes(i));
+            strOutOrd(strinx(i)) = i;
+        }
+        // The box axes get already reordered by its toLCRegion.
+        // So the stretched axis must be region axis in the new order.
+        std::vector<Int> tmpstretch(stretchAxes.begin(), stretchAxes.end());
+        GenSortIndirect<Int,uInt>::sort (strinx, &(tmpstretch[0]), ndstr);
+        for (uInt i=0; i<ndstr; i++) {
+            stretchRegAxes(i) = stretchAxes(strinx(i));
+        }
     }
     // Great, we're almost there.
     // Convert the region and the box and combine them into an
     // LCStretch and/or LCExtension.
     LCRegion* regptr = regions()[0]->toLCRegionAxes (cSys, shape, regPixMap,
-						     regOutOrd);
+                                                     regOutOrd);
     if (ndstr > 0) {
         LCRegion* boxptr = strbox.toLCRegionAxes (cSys, shape, strPixMap,
-						  strOutOrd);
-	LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
-	AlwaysAssert (dboxptr != 0, AipsError);
-	LCStretch* extptr = new LCStretch (True, regptr, stretchRegAxes,
-					   *dboxptr);
-	delete boxptr;
-	regptr = extptr;
+                                                  strOutOrd);
+        LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
+        AlwaysAssert (dboxptr != 0, AipsError);
+        LCStretch* extptr = new LCStretch (True, regptr, stretchRegAxes,
+                                           *dboxptr);
+        delete boxptr;
+        regptr = extptr;
     }
     if (ndext > 0) {
         LCRegion* boxptr = extbox.toLCRegionAxes (cSys, shape, extPixMap,
-						  extOutOrd);
-	LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
-	AlwaysAssert (dboxptr != 0, AipsError);
-	LCExtension* extptr = new LCExtension (True, regptr, extendAxes,
-					       *dboxptr);
-	delete boxptr;
-	regptr = extptr;
+                                                  extOutOrd);
+        LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
+        AlwaysAssert (dboxptr != 0, AipsError);
+        LCExtension* extptr = new LCExtension (True, regptr, extendAxes,
+                                               *dboxptr);
+        delete boxptr;
+        regptr = extptr;
     }
     return regptr;
 }
