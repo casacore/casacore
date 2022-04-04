@@ -1,6 +1,7 @@
-FROM kernsuite/base:7
-RUN docker-apt-upgrade
-RUN docker-apt-install \
+FROM ubuntu:20.04
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y \
     clang \
     casacore-data \
     cmake \
@@ -22,8 +23,8 @@ RUN docker-apt-install \
     python-is-python3 \
     python3-numpy
 ADD . /code
-RUN useradd -ms /bin/bash casacore
-RUN chown casacore.casacore /code
+RUN useradd -ms /bin/bash casacore \
+    && chown casacore.casacore /code
 USER casacore
 RUN mkdir /code/build
 WORKDIR /code/build
@@ -36,8 +37,8 @@ RUN cmake .. \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/share/casacore/data \
     -DCMAKE_C_COMPILER=/usr/bin/clang \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
-RUN make -j2
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+    && make -j`nproc`
 USER root
 RUN make install
 USER casacore
