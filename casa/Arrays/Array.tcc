@@ -1191,6 +1191,10 @@ void Array<T, Alloc>::tovector(std::vector<T, U> &out) const {
   const_cast<Array<T, Alloc>*>(this)->freeStorage(stor, deleteIt);
 }
 
+// Define static member
+template<typename T, typename Alloc>
+typename Array<T, Alloc>::uninitializedType Array<T, Alloc>::uninitialized;
+
 } //#End casa namespace
 
 #endif
