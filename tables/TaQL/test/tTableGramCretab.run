@@ -42,8 +42,8 @@ $casa_checktool ./tTableGramCretab 'select from tTableGramCretab_tmp.tab3 where 
 
 # Delete the last table.
 echo
-#$casa_checktool ./tTableGramCretab 'drop table tTableGramCretab_tmp.tab4'
-#ls -l tTableGramCretab_tmp.tab4 >& /dev/null || echo "DROP TABLE tab4 succeeded"
+$casa_checktool ./tTableGramCretab 'drop table tTableGramCretab_tmp.tab4'
+ls -l tTableGramCretab_tmp.tab4 > /dev/null 2>&1 || echo "DROP TABLE tab4 succeeded"
 
 # Create a subtable and a subtable in there.
 echo
