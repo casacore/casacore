@@ -189,7 +189,10 @@ private:
   // Handle the INSERT values.
   void handleInsVal (const TaQLNode&);
 
-  // Handle a column specification in a create table.
+  // Handle the possible LIKE table DROP COLUMN part.
+  void handleLikeDrop (const TaQLMultiNode& node);
+
+  // Handle a column specification in a create table or add column.
   void handleColSpecs (const TaQLMultiNode&);
 
   // Handle a Multi RecFld representing a Record.
