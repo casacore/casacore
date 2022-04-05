@@ -113,17 +113,11 @@ public:
   // Default constructor for container class.
   TableParse();
 
-  // Copy constructor (copy semantics).
-  TableParse (const TableParse&);
-
-  // Assignment (copy semantics).
-  TableParse& operator= (const TableParse&);
-
   // Associate the table and the shorthand.
   TableParse (const Table& table, Int tabnr, const String& name,
               const String& shorthand);
 
-  // Test if shorthand matches.
+  // Test if shorthand matches. If also matches if the given shorthand is empty.
   Bool test (const String& shortHand) const;
 
   // Get the given table number (of $i tables in TempTables)
@@ -428,7 +422,7 @@ public:
     { return node_p; }
 
   // Create a temporary table if no tables are given in FROM.
-  void makeTableNoFrom (const vector<TableParseSelect*>& stack);
+  void makeTableNoFrom (const std::vector<TableParseSelect*>& stack);
 
   // Execute the select command (select/sort/projection/groupby/having/giving).
   // The setInGiving flag tells if a set in the GIVING part is allowed.
@@ -439,8 +433,8 @@ public:
   // 0 = no maximum.
   void execute (Bool showTimings, Bool setInGiving,
                 Bool mustSelect, rownr_t maxRow, Bool doTracing=False,
-                const vector<const Table*>& tempTables = vector<const Table*>(),
-                const vector<TableParseSelect*>& stack = vector<TableParseSelect*>());
+                const std::vector<const Table*>& tempTables = std::vector<const Table*>(),
+                const std::vector<TableParseSelect*>& stack = std::vector<TableParseSelect*>());
 
   // Execute a query in a from clause resulting in a Table.
   Table doFromQuery (Bool showTimings);
@@ -461,7 +455,7 @@ public:
 
   // Keep the groupby expressions.
   // It checks if they are all scalar expressions.
-  void handleGroupby (const vector<TableExprNode>&, Bool rollup);
+  void handleGroupby (const std::vector<TableExprNode>&, Bool rollup);
 
   // Keep the having expression.
   void handleHaving (const TableExprNode&);
@@ -470,13 +464,13 @@ public:
   void handleCalcComm (const TableExprNode&);
 
   // Handle the DROP TABLE command.
-  void handleDropTab (const vector<const Table*>& tempTables,
-                      const vector<TableParseSelect*>& stack);
+  void handleDropTab (const std::vector<const Table*>& tempTables,
+                      const std::vector<TableParseSelect*>& stack);
   
   // Keep the create table command.
   void handleCreTab (const Record& dmInfo,
-                     const vector<const Table*>& tempTables,
-                     const vector<TableParseSelect*>& stack);
+                     const std::vector<const Table*>& tempTables,
+                     const std::vector<TableParseSelect*>& stack);
 
   // Keep the column specification in a create table command.
   void handleColSpec (const String& columnName, const String& likeColName,
@@ -572,8 +566,8 @@ public:
                   const Table& table,
                   const String& shorthand,
                   Bool addToFromList,
-                  const vector<const Table*>& tempTables,
-                  const vector<TableParseSelect*>& stack);
+                  const std::vector<const Table*>& tempTables,
+                  const std::vector<TableParseSelect*>& stack);
 
   // Make a Table object for given name, seqnr or so.
   // If <src>alwaysOpen=False</src> the table will only be looked up,
@@ -581,8 +575,8 @@ public:
   // in TaQLNodeHandler.
   Table getTable (Int tabnr, const String& name,
                   const Table& ftab,
-                  const vector<const Table*>& tempTables,
-                  const vector<TableParseSelect*>& stack,
+                  const std::vector<const Table*>& tempTables,
+                  const std::vector<TableParseSelect*>& stack,
                   Bool alwaysOpen=True);
 
   // Replace the first table (used by CALC command).
@@ -665,7 +659,7 @@ private:
   Int testGroupAggr (std::vector<TableExprNodeRep*>& aggr) const;
 
   // Get the aggregate functions used in SELECT and HAVING.
-  vector<TableExprNodeRep*> getAggrNodes() const;
+  std::vector<TableExprNodeRep*> getAggrNodes() const;
 
   // Try to make a UDF function node for the given function name and arguments.
   static TableExprNode makeUDFNode (TableParseSelect*,
@@ -713,19 +707,19 @@ private:
   // The variables set by handleGiven are used for name and type.
   Table createTable (const TableDesc& td,
                      Int64 nrow, const Record& dmInfo,
-                     const vector<const Table*>& tempTables,
-                     const vector<TableParseSelect*>& stack);
+                     const std::vector<const Table*>& tempTables,
+                     const std::vector<TableParseSelect*>& stack);
   Table createSubTable (const String& subtableName,
                         const TableDesc& td, Int64 nrow,
                         const Record& dmInfo,
-                        const vector<const Table*>& tempTables,
-                        const vector<TableParseSelect*>& stack);
+                        const std::vector<const Table*>& tempTables,
+                        const std::vector<TableParseSelect*>& stack);
 
   // Open the parent table of a subtable.
   Table openParentTable (const String& fullName,
                          const String& subTableName,
-                         const vector<const Table*>& tempTables,
-                         const vector<TableParseSelect*>& stack);
+                         const std::vector<const Table*>& tempTables,
+                         const std::vector<TableParseSelect*>& stack);
   
   // Make the (empty) table for the epxression in the SELECT clause.
   void makeProjectExprTable();
@@ -773,8 +767,8 @@ private:
 
   // Finish the table (rename, copy, and/or flush).
   Table doFinish (Bool showTimings, Table& table,
-                  const vector<const Table*>& tempTables,
-                  const vector<TableParseSelect*>& stack);
+                  const std::vector<const Table*>& tempTables,
+                  const std::vector<TableParseSelect*>& stack);
 
   // Update the values in the columns (helpers of doUpdate).
   // <group>
@@ -837,7 +831,7 @@ private:
   // If not found, a null Table object is returned.
   Table findTable (const String& shorthand, Bool doWith) const;
   Table findTable (const String& shorthand, Bool doWith,
-                   const vector<TableParseSelect*>& stack) const;
+                   const std::vector<TableParseSelect*>& stack) const;
 
   // Handle the selection of a wildcarded column name.
   void handleWildColumn (Int stringType, const String& name);
@@ -872,14 +866,14 @@ private:
   // This offers much faster map access then doGroupByAggrMultiple.
   template<typename T>
   std::vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrSingleKey
-  (const vector<TableExprNodeRep*>& aggrNodes)
+  (const std::vector<TableExprNodeRep*>& aggrNodes)
   {
     // We have to group the data according to the (possibly empty) groupby.
     // We step through the table in the normal order which may not be the
     // groupby order.
     // A map<key,int> is used to keep track of the results where the int
     // is the index in a vector of a set of aggregate function objects.
-    vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+    std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
     std::map<T, int> keyFuncMap;
     T lastKey = std::numeric_limits<T>::max();
     int groupnr = -1;
@@ -909,7 +903,7 @@ private:
   // Create the set of aggregate functions and groupby keys in case
   // multiple keys are given.
   std::vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrMultipleKeys
-  (const vector<TableExprNodeRep*>& aggrNodes);
+  (const std::vector<TableExprNodeRep*>& aggrNodes);
 
   //# Command type.
   CommandType commandType_p;
@@ -920,8 +914,8 @@ private:
   //# Vector of TableParse objects (from WITH and FROM clause).
   //# This is needed for the functions above, otherwise they have no
   //# way to communicate.
-  vector<TableParse> withTables_p;
-  vector<TableParse> fromTables_p;
+  std::vector<TableParse> withTables_p;
+  std::vector<TableParse> fromTables_p;
   //# Block of selected column names (new name in case of select).
   Block<String> columnNames_p;
   //# Block of selected mask column names (for masked arrays).
@@ -950,7 +944,7 @@ private:
   //# The WHERE expression tree.
   TableExprNode node_p;
   //# The GROUPBY expressions.
-  vector<TableExprNode> groupbyNodes_p;
+  std::vector<TableExprNode> groupbyNodes_p;
   Bool groupbyRollup_p;   //# use ROLLUP in GROUPBY?
   //# The HAVING expression.
   TableExprNode havingNode_p;
@@ -978,7 +972,7 @@ private:
   //# All nodes that need to be adjusted for a selection of rownrs.
   //# It can consist of column nodes and the rowid function node.
   //# Some nodes (in aggregate functions) can later be disabled for adjustment.
-  vector<TableExprNode> applySelNodes_p;
+  std::vector<TableExprNode> applySelNodes_p;
   //# The resulting table.
   Table table_p;
   //# The first table used when creating a column object.

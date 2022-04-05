@@ -70,8 +70,6 @@
 #include <casacore/casa/ostream.h>
 #include <algorithm>
 
-//#include <casacore/casa/Containers/BlockIO.h>
-
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -88,24 +86,6 @@ TableParse::TableParse (const Table& table, Int tabnr, const String& name,
     shorthand_p (shorthand),
     table_p     (table)
 {}
-
-TableParse::TableParse (const TableParse& that)
-  : tabnr_p     (that.tabnr_p),
-    name_p      (that.name_p),
-    shorthand_p (that.shorthand_p),
-    table_p     (that.table_p)
-{}
-
-TableParse& TableParse::operator= (const TableParse& that)
-{
-  if (this != &that) {
-    tabnr_p     = that.tabnr_p;
-    name_p      = that.name_p;
-    shorthand_p = that.shorthand_p;
-    table_p     = that.table_p;
-  }
-  return *this;
-}
 
 
 
@@ -256,8 +236,8 @@ Table TableParseSelect::addTable (Int tabnr, const String& name,
                                   const Table& ftab,
                                   const String& shorthand,
                                   Bool addToFromList,
-                                  const vector<const Table*>& tempTables,
-                                  const vector<TableParseSelect*>& stack)
+                                  const std::vector<const Table*>& tempTables,
+                                  const std::vector<TableParseSelect*>& stack)
 {
   Table table = getTable (tabnr, name, ftab, tempTables, stack);
   if (addToFromList) {
@@ -292,8 +272,8 @@ Table TableParseSelect::addTable (Int tabnr, const String& name,
 // so usually something like my.ms::ANTENNA is the only 'complicated' spec used.
 Table TableParseSelect::getTable (Int tabnr, const String& name,
                                   const Table& ftab,
-                                  const vector<const Table*>& tempTables,
-                                  const vector<TableParseSelect*>& stack,
+                                  const std::vector<const Table*>& tempTables,
+                                  const std::vector<TableParseSelect*>& stack,
                                   Bool alwaysOpen)
 {
   // A table from a nested query.
@@ -514,7 +494,7 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 }
 
 Table TableParseSelect::findTable (const String& shorthand, Bool doWith,
-                                   const vector<TableParseSelect*>& stack) const
+                                   const std::vector<TableParseSelect*>& stack) const
 {
   Table table;
   for (Int i=stack.size()-1; i>=0; i--) {
@@ -1584,8 +1564,8 @@ void TableParseSelect::handleColumnFinish (Bool distinct)
 
 Table TableParseSelect::createTable (const TableDesc& td,
                                      Int64 nrow, const Record& dmInfo,
-                                     const vector<const Table*>& tempTables,
-                                     const vector<TableParseSelect*>& stack)
+                                     const std::vector<const Table*>& tempTables,
+                                     const std::vector<TableParseSelect*>& stack)
 {
   // If the table name contains ::, a subtable has to be created.
   // Split the name at the last ::.
@@ -1616,8 +1596,8 @@ Table TableParseSelect::createTable (const TableDesc& td,
 
 Table TableParseSelect::openParentTable (const String& fullName,
                                          const String& subTableName,
-                                         const vector<const Table*>& tempTables,
-                                         const vector<TableParseSelect*>& stack)
+                                         const std::vector<const Table*>& tempTables,
+                                         const std::vector<TableParseSelect*>& stack)
 {
   // Remove ::subtableName from the full table name to get the parent's name.
   String tableName (fullName.substr(0,
@@ -1635,8 +1615,8 @@ Table TableParseSelect::openParentTable (const String& fullName,
 Table TableParseSelect::createSubTable (const String& subtableName,
                                         const TableDesc& td, Int64 nrow,
                                         const Record& dmInfo,
-                                        const vector<const Table*>& tempTables,
-                                        const vector<TableParseSelect*>& stack)
+                                        const std::vector<const Table*>& tempTables,
+                                        const std::vector<TableParseSelect*>& stack)
 {
   Table parent (openParentTable(resultName_p, subtableName, tempTables, stack));
   return TableUtil::createSubTable (parent, subtableName, td,
@@ -1688,8 +1668,8 @@ void TableParseSelect::makeProjectExprTable()
   }
   // Create the table.
   projectExprTable_p = createTable (td, 0, dminfo_p,
-                                    vector<const Table*>(),
-                                    vector<TableParseSelect*>());
+                                    std::vector<const Table*>(),
+                                    std::vector<TableParseSelect*>());
 }
 
 void TableParseSelect::makeProjectExprSel()
@@ -1807,7 +1787,7 @@ void TableParseSelect::handleColSpec (const String& colName,
   columnNames_p[nrcol] = colName;
 }
 
-void TableParseSelect::handleGroupby (const vector<TableExprNode>& nodes,
+void TableParseSelect::handleGroupby (const std::vector<TableExprNode>& nodes,
                                       Bool rollup)
 {
   groupbyNodes_p  = nodes;
@@ -1831,8 +1811,8 @@ void TableParseSelect::handleHaving (const TableExprNode& node)
   }
 }
 
-void TableParseSelect::handleDropTab(const vector<const Table*>& tempTables,
-                                     const vector<TableParseSelect*>& stack)
+void TableParseSelect::handleDropTab(const std::vector<const Table*>& tempTables,
+                                     const std::vector<TableParseSelect*>& stack)
 {
   // Delete all tables. It has already been checked they exist.
   for (TableParse& tab : fromTables_p) {
@@ -1855,8 +1835,8 @@ void TableParseSelect::handleDropTab(const vector<const Table*>& tempTables,
 }
 
 void TableParseSelect::handleCreTab (const Record& dmInfo,
-                                     const vector<const Table*>& tempTables,
-                                     const vector<TableParseSelect*>& stack)
+                                     const std::vector<const Table*>& tempTables,
+                                     const std::vector<TableParseSelect*>& stack)
 {
   DataManInfo::mergeInfo (dminfo_p, dmInfo);
   DataManInfo::finalizeMerge (*tableDesc_p, dminfo_p);
@@ -2354,7 +2334,7 @@ void TableParseSelect::handleOffset (const TableExprNode& expr)
   offset_p = evalIntScaExpr (expr);
 }
 
-void TableParseSelect::makeTableNoFrom (const vector<TableParseSelect*>& stack)
+void TableParseSelect::makeTableNoFrom (const std::vector<TableParseSelect*>& stack)
 {
   if (limit_p < 0  ||  offset_p < 0  ||  endrow_p < 0) {
     throw TableInvExpr("LIMIT and OFFSET values cannot be negative if no "
@@ -2945,7 +2925,7 @@ Table TableParseSelect::doInsert (Bool showTimings, Table& table)
     Vector<rownr_t> selRownrs(1, table.nrow() + nrow);
     // Add new rows to TableExprNodeRowid.
     // It works because NodeRowid does not obey disableApplySelection.
-    for (vector<TableExprNode>::iterator iter=applySelNodes_p.begin();
+    for (std::vector<TableExprNode>::iterator iter=applySelNodes_p.begin();
          iter!=applySelNodes_p.end(); ++iter) {
       iter->disableApplySelection();
       iter->applySelection (selRownrs);
@@ -3078,7 +3058,7 @@ Table TableParseSelect::doCount (Bool showTimings, const Table& table)
 
 //# Execute the groupby.
 CountedPtr<TableExprGroupResult> TableParseSelect::doGroupby
-(Bool showTimings, const vector<TableExprNodeRep*> aggrNodes, Int groupAggrUsed)
+(Bool showTimings, const std::vector<TableExprNodeRep*> aggrNodes, Int groupAggrUsed)
 {
   Timer timer;
   // If only 'select count(*)' was given, get the size of the WHERE,
@@ -3098,7 +3078,7 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doGroupby
 
 Table TableParseSelect::adjustApplySelNodes (const Table& table)
 {
-  for (vector<TableExprNode>::iterator iter=applySelNodes_p.begin();
+  for (std::vector<TableExprNode>::iterator iter=applySelNodes_p.begin();
        iter!=applySelNodes_p.end(); ++iter) {
     iter->applySelection (rownrs_p);
   }
@@ -3139,7 +3119,7 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doOnlyCountAll
   // some other columns can also be listed which will be those of the
   // last row.
   // Make a set containing the count(*) aggregate function object.
-  vector<CountedPtr<TableExprGroupFuncSet> > funcSets
+  std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets
     (1, new TableExprGroupFuncSet());
   CountedPtr<TableExprGroupFuncBase> funcb = aggrNode->makeGroupAggrFunc();
   TableExprGroupCountAll& func = dynamic_cast<TableExprGroupCountAll&>(*funcb);
@@ -3155,16 +3135,16 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doOnlyCountAll
   return CountedPtr<TableExprGroupResult>(new TableExprGroupResult(funcSets));
 }
 
-vector<CountedPtr<TableExprGroupFuncSet> >
+std::vector<CountedPtr<TableExprGroupFuncSet> >
 TableParseSelect::doGroupByAggrMultipleKeys
-(const vector<TableExprNodeRep*>& aggrNodes)
+(const std::vector<TableExprNodeRep*>& aggrNodes)
 {
   // We have to group the data according to the (maybe empty) groupby.
   // We step through the table in the normal order which may not be the
   // groupby order.
   // A map<key,int> is used to keep track of the results where the int
   // is the index in a vector of a set of aggregate function objects.
-  vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+  std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
   std::map<TableExprGroupKeySet, int> keyFuncMap;
   // Create the set of groupby key objects.
   TableExprGroupKeySet keySet(groupbyNodes_p);
@@ -3188,11 +3168,11 @@ TableParseSelect::doGroupByAggrMultipleKeys
 }
 
 CountedPtr<TableExprGroupResult> TableParseSelect::doGroupByAggr
-(const vector<TableExprNodeRep*>& aggrNodes)
+(const std::vector<TableExprNodeRep*>& aggrNodes)
 {
   // Get the aggregate functions to be evaluated lazily.
-  vector<TableExprNodeRep*> immediateNodes;
-  vector<TableExprNodeRep*> lazyNodes;
+  std::vector<TableExprNodeRep*> immediateNodes;
+  std::vector<TableExprNodeRep*> lazyNodes;
   for (uInt i=0; i<aggrNodes.size(); ++i) {
     aggrNodes[i]->makeGroupAggrFunc();
     if (aggrNodes[i]->isLazyAggregate()) {
@@ -3209,12 +3189,12 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doGroupByAggr
                                TableExprNodeRep::NTInt,
                                TableExprNodeRep::VTArray,
                                TableExprNodeSet(),
-                               vector<TENShPtr>(),
+                               std::vector<TENShPtr>(),
                                Block<Int>());
   if (! lazyNodes.empty()) {
     immediateNodes.push_back (&expridNode);
   }
-  vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+  std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
   // Use a faster way for a single groupby key.
   if (groupbyNodes_p.size() == 1  &&
       groupbyNodes_p[0].dataType() == TpDouble) {
@@ -3229,11 +3209,11 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doGroupByAggr
   // Form the rownr vector from the rows kept in the aggregate objects.
   // Similarly, form the TableExprId vector if there are lazy nodes.
   Vector<rownr_t> rownrs(funcSets.size());
-  vector<CountedPtr<vector<TableExprId> > > ids;
+  std::vector<CountedPtr<std::vector<TableExprId> > > ids;
   ids.reserve (funcSets.size());
   rownr_t n=0;
   for (uInt i=0; i<funcSets.size(); ++i) {
-    const vector<CountedPtr<TableExprGroupFuncBase> >& funcs
+    const std::vector<CountedPtr<TableExprGroupFuncBase> >& funcs
       = funcSets[i]->getFuncs();
     for (uInt j=0; j<funcs.size(); ++j) {
       funcs[j]->finish();
@@ -3250,7 +3230,7 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doGroupByAggr
   return result;
 }
 
-void replaceIds (vector<CountedPtr<vector<TableExprId> > >& ids)
+void replaceIds (std::vector<CountedPtr<std::vector<TableExprId> > >& ids)
 {
   // Combine all rowids in a single vector, so it can be sorted.
   Int64 nrow = 0;
@@ -3260,7 +3240,7 @@ void replaceIds (vector<CountedPtr<vector<TableExprId> > >& ids)
   Vector<Int64> rowids(nrow);
   Int64 inx = 0;
   for (size_t i=0; i<ids.size(); ++i) {
-    vector<TableExprId>& vec = *ids[i];
+    std::vector<TableExprId>& vec = *ids[i];
     for (size_t j=0; j<vec.size(); ++j) {
       rowids[inx++] = vec[j].rownr();
     }
@@ -3276,7 +3256,7 @@ void replaceIds (vector<CountedPtr<vector<TableExprId> > >& ids)
   // Now replace the TableExprIds by the new rowids.
   inx = 0;
   for (size_t i=0; i<ids.size(); ++i) {
-    vector<TableExprId>& vec = *ids[i];
+    std::vector<TableExprId>& vec = *ids[i];
     for (size_t j=0; j<vec.size(); ++j) {
       vec[j].setRownr (rowids[inx++]);
     }
@@ -3592,8 +3572,8 @@ Table TableParseSelect::doProjectExpr
 }
 
 Table TableParseSelect::doFinish (Bool showTimings, Table& table,
-                                  const vector<const Table*>& tempTables,
-                                  const vector<TableParseSelect*>& stack)
+                                  const std::vector<const Table*>& tempTables,
+                                  const std::vector<TableParseSelect*>& stack)
 {
   Timer timer;
   Table result(table);
@@ -4070,8 +4050,8 @@ void TableParseSelect::checkTableProjSizes() const
 void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
                                 Bool mustSelect, rownr_t maxRow,
                                 Bool doTracing,
-                                const vector<const Table*>& tempTables,
-                                const vector<TableParseSelect*>& stack)
+                                const std::vector<const Table*>& tempTables,
+                                const std::vector<TableParseSelect*>& stack)
 {
   //# A selection query consists of:
   //#  - SELECT to do projection
@@ -4126,7 +4106,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   makeProjectExprSel();
   //# Get nodes representing aggregate functions.
   //# Test if aggregate, groupby, or having is used.
-  vector<TableExprNodeRep*> aggrNodes;
+  std::vector<TableExprNodeRep*> aggrNodes;
   Int groupAggrUsed = testGroupAggr (aggrNodes);
   if (groupAggrUsed == 0) {
     // Check if tables used in projection have the same size.
@@ -4138,7 +4118,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   // Column nodes used in aggregate functions should not adhere applySelection.
   uInt ndis = 0;
   for (uInt i=0; i<aggrNodes.size(); ++i) {
-    vector<TableExprNodeRep*> colNodes;
+    std::vector<TableExprNodeRep*> colNodes;
     aggrNodes[i]->getColumnNodes (colNodes);
     for (uInt j=0; j<colNodes.size(); ++j) {
       colNodes[j]->disableApplySelection();
@@ -4315,7 +4295,7 @@ void TableParseSelect::checkAggrFuncs (const TableExprNode& node)
 }
 //# Get aggregate functions used and check if used at correct places.
 //# Also check that HAVING is not solely used.
-Int TableParseSelect::testGroupAggr (vector<TableExprNodeRep*>& aggr) const
+Int TableParseSelect::testGroupAggr (std::vector<TableExprNodeRep*>& aggr) const
 {
   // Make sure main (where) node does not have aggregate functions.
   // This has been checked before, but use defensive programming.
