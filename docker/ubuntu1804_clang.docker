@@ -1,8 +1,8 @@
-FROM kernsuite/base:6
-RUN docker-apt-upgrade
-RUN docker-apt-install \
+FROM ubuntu:18.04
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y \
     clang \
-    casacore-data \
     cmake \
     flex \
     bison \
@@ -20,10 +20,20 @@ RUN docker-apt-install \
     libboost-test-dev \
     libgsl-dev \
     python-numpy \
-    python3-numpy
+    python3-numpy \
+    wget \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+# Install WSRT Measures (extra casacore data, for tests)
+# Note: The file on the ftp site is updated daily. When warnings regarding leap
+# seconds appear, ignore them or regenerate the docker image.
+    && wget -nv -O /WSRT_Measures.ztar ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar \
+    && mkdir -p /usr/local/share/casacore/data \
+    && cd /usr/local/share/casacore/data \
+    && tar xfz /WSRT_Measures.ztar \
+    && rm /WSRT_Measures.ztar
 ADD . /code
-RUN useradd -ms /bin/bash casacore
-RUN chown casacore.casacore /code
+RUN useradd -ms /bin/bash casacore \
+    && chown casacore.casacore /code
 USER casacore
 RUN mkdir /code/build
 WORKDIR /code/build
@@ -34,10 +44,10 @@ RUN cmake .. \
     -DBUILD_PYTHON=ON \
     -DBUILD_PYTHON3=ON \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
-    -DDATA_DIR=/usr/share/casacore/data \
+    -DDATA_DIR=/usr/local/share/casacore/data \
     -DCMAKE_C_COMPILER=/usr/bin/clang \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
-RUN make -j2
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+    && make -j`nproc`
 USER root
 RUN make install
 USER casacore
