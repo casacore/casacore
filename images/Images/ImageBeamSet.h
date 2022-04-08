@@ -271,6 +271,7 @@ public:
     // it falls in the range -90 to 90 degrees before setting it.
     void rotate(const Quantity& angle, Bool unwrap=False);
 
+    // get all the beam areas in a single quantum matrix.
     const Quantum<Matrix<Double>> getAreas() const;
 
 private:
