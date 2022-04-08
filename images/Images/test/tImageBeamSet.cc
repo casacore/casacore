@@ -668,6 +668,26 @@ int main() {
             maxbeam = beams.getMaxAreaBeam();
             AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
         }
+        {
+            cout << "test getBeamAreas" << endl;
+            Matrix<GaussianBeam> mat(3, 2);
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[0][1] = GaussianBeam(four, four, four);
+            mat[0][2] = GaussianBeam(two, two, two);
+            mat[1][0] = GaussianBeam(two, two, four);
+            mat[1][1] = GaussianBeam(four, two, two);
+            mat[1][2] = GaussianBeam(four, two, four);
+            ImageBeamSet beams(mat);
+            const auto areas_as2 = beams.getAreas().getValue("arcsec2");
+            for (uint i=0; i<3; ++i) {
+                for (uint j=2; j<2; ++j) {
+                    AlwaysAssert(
+                        areas_as2(i, j) == beams.getBeam(i,j).getArea("arcsec2"),
+                        AipsError
+                    );
+                }
+            }
+        }
     }
     catch (const std::exception& x) {
         cout << x.what() << endl;

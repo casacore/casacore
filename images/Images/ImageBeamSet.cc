@@ -689,6 +689,10 @@ void ImageBeamSet::summarize(
     }
 }
 
+const Quantum<Matrix<Double>> ImageBeamSet::getAreas() const {
+    return Quantum<Matrix<Double>>(_areas, _areaUnit);
+}
+
 void ImageBeamSet::_chanInfoToStream(
     ostream& os, const SpectralCoordinate *spCoord,
     const uInt chan, const uInt chanWidth, const uInt freqPrec,

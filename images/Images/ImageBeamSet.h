@@ -271,6 +271,8 @@ public:
     // it falls in the range -90 to 90 degrees before setting it.
     void rotate(const Quantity& angle, Bool unwrap=False);
 
+    const Quantum<Matrix<Double>> getAreas() const;
+
 private:
 
     static const String _DEFAULT_AREA_UNIT;
