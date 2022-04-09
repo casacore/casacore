@@ -272,7 +272,13 @@ public:
     void rotate(const Quantity& angle, Bool unwrap=False);
 
     // get all the beam areas in a single quantum matrix.
-    const Quantum<Matrix<Double>> getAreas() const;
+    const Quantum<Matrix<double>> getAreas() const;
+
+    // get all the major axes, minor axes, and pas in quantum matrices.
+    // The returned map has keys "major", "minor", and "pa". 
+    const std::map<String, Quantum<Matrix<double>>> paramMatrices(
+        const Unit& majminUnit=Unit("arcsec"), const Unit& paUnit="deg"
+    ) const;
 
 private:
 

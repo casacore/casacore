@@ -606,7 +606,6 @@ Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
 	return rstat;
 }
 
-
 void ImageInfo::checkBeamSet(
 	const CoordinateSystem& coords,
 	const IPosition& shape,
