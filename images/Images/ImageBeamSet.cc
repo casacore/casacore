@@ -491,7 +491,7 @@ Record ImageBeamSet::toRecord() const {
     Record rec;
     uInt count = 0;
     const Array<GaussianBeam>& beams = getBeams();
-    for (const auto beam: beams) {
+    for (const auto& beam: beams) {
         ThrowIf(
             beam.isNull(),
             "Invalid per plane beam found"

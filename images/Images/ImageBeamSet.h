@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/scimath/Mathematics/GaussianBeam.h>
 //#include <casacore/measures/Measures/Stokes.h>
-//#include <map>
+#include <map>
 
 namespace casacore {
 
