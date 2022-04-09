@@ -701,7 +701,7 @@ const std::map<String, Quantum<Matrix<double>>> ImageBeamSet::paramMatrices(
     auto majIter = mymaj.begin();
     auto minIter = mymin.begin();
     auto paIter = pa.begin();
-    for (const auto beam: beams) {
+    for (const auto& beam: beams) {
         ThrowIf(
             beam.isNull(),
             "Invalid per plane beam found"
