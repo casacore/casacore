@@ -47,10 +47,17 @@ class Adios2StMan : public DataManager
     friend class Adios2StManColumn;
     template<typename T> friend class Adios2StManColumnT;
 public:
-    Adios2StMan(MPI_Comm mpiComm = MPI_COMM_WORLD);
-    Adios2StMan(MPI_Comm mpiComm, std::string engineType,
-            std::map<std::string, std::string> engineParams,
-            std::vector<std::map<std::string, std::string>> transportParams);
+
+    Adios2StMan(MPI_Comm mpiComm = MPI_COMM_WORLD,
+            std::string engineType = std::string(),
+            std::map<std::string, std::string> engineParams
+                = std::map<std::string, std::string>(),
+            std::vector<std::map<std::string, std::string>> transportParams
+                = std::vector<std::map<std::string, std::string>>(),
+            std::vector<std::map<std::string, std::string>> operatorParams
+                = std::vector<std::map<std::string, std::string>>());
+
+    Adios2StMan(std::string xmlFile, MPI_Comm mpiComm = MPI_COMM_WORLD);
 
     virtual ~Adios2StMan();
 
