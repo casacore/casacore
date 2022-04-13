@@ -361,7 +361,7 @@ Record Adios2StMan::impl::dataManagerSpec() const
             }
             operator_params_record.defineRecord(itVar->second, to_record(params));
         }
-        record.defineRecord(SPEC_FIELD_TRANSPORT_PARAMS, operator_params_record);
+        record.defineRecord(SPEC_FIELD_OPERATOR_PARAMS, operator_params_record);
     }
     return record;
 }
