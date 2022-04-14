@@ -597,10 +597,11 @@ private:
     String makeAbsoluteName (const String& name) const;
 
 #ifdef HAVE_MPI
-    // MPI communicator for parallel I/O
-    // Set the default to MPI_COMM_WORLD to keep the compatibility for
-    // non-MPI apps to work with the MPI-enabled casacore build.
-    MPI_Comm itsMpiComm = MPI_COMM_WORLD;
+    // MPI communicator for parallel I/O.
+    // When using an MPI-disabled casacore, MPI applications have always been
+    // able to create Tables from each rank independently. Defaulting this
+    // communicator to MPI_COMM_SELF preserves that expectation.
+    MPI_Comm itsMpiComm = MPI_COMM_SELF;
 #endif
 };
 
