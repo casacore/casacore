@@ -43,7 +43,7 @@ template <class M> class ScalarMeasColumn;
 
 
 // <summary>
-// Read only access to table array Measure columns.
+// Access table array Measure columns.
 // </summary>
 
 // <use visibility=export>
