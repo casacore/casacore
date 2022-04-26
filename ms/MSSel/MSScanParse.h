@@ -99,7 +99,7 @@ public:
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
   const TableExprNode *selectScanIds(const Vector<Int>& scanids);
-  inline const TableExprNode *selectScanIds() {return selectScanIds(Vector<int>(parsedIDList_p));}
+  inline const TableExprNode *selectScanIds() {return selectScanIds(Vector<Int>(parsedIDList_p));}
   const TableExprNode *selectScanIdsGT(const Vector<Int>& scanids);
   const TableExprNode *selectScanIdsLT(const Vector<Int>& scanids);
   const TableExprNode *selectScanIdsGTEQ(const Vector<Int>& scanids);
