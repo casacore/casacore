@@ -281,7 +281,7 @@ BOOST_AUTO_TEST_CASE( tovector )
   x[2] = -20;
   std::vector<int> tx;
   x.tovector(tx);
-  Vector<int> xx = x.tovector();
+  Vector<int> xx(x.tovector());
   BOOST_CHECK(tx.size() == x.size());
   BOOST_CHECK(tx.size() == xx.size());
 
