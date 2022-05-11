@@ -64,7 +64,9 @@ class TabPath;
 // This description is required for the creation of a new table.  
 // Descriptions are subsequently associated with every table and
 // embedded in them.
-//
+// <br> The TableDesc class structure is shown in this
+// <a href="TableDesc.drawio.svg.html">UML diagram</a>.
+ //
 // A table description consists of the following items:
 // <ul>
 //  <li> Name, which cannot be blank if the description is saved in a file.

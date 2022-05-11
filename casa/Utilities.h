@@ -109,8 +109,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    enumerates the possible data types in the table system.
 //   <li> <linkto class=ValType>ValType</linkto>
 //    describes the data types and their undefined values.
-//   <li> <linkto group="Register.h#register">Register</linkto>
-//    provides runtime typing information.
 //  </ul> 
 //  <li> Other utilities
 //  <ul>

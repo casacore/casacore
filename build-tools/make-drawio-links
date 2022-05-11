@@ -1,0 +1,125 @@
+#! /bin/sh
+
+# This script inserts clickable <a> tags in the drawio.svg files
+# to have links in the class diagrams created by drawio.
+
+# The script should be run in the casacore root directory.
+CURWD=`pwd`
+CURWD=`basename $CURWD`
+if [ "$CURWD" != "casacore" ]; then
+    echo "Error: run make-drawio-links in casacore root directory"
+    exit 1
+fi
+cd doc/html > /dev/null  ||  exit 1
+
+# Make a sed file to adapt the drawio.svg files.
+# In general a class entry in the diagram file looks like:
+# <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-weight="bold" pointer-events="none" text-anchor="middle" font-size="12px"><text x="79.5" y="17.5">Classname</text></g>
+
+# Fist remove all output drawio files, otherwise they are found as well.
+rm -f *.drawio.svg
+# Handle each input drawio file.
+for INFILE in `find ../.. -name "*.drawio.svg"`
+do
+    # Extract file name and class name from the input file name.
+    OUTFILE=`basename $INFILE`
+    echo "Processing $OUTFILE"
+    DIAGRAMNAME=`echo $OUTFILE | sed -e "s/\..*//"`
+    # Start with a clean slate by removing the sed file.
+    rm -f tmpsed
+    # Find the class names used in the diagram; they are enclosed in <text> tags.
+    # They might be followed by a template type which gets &lt;...&gt; in html.
+    # If preceded by a - or +, they are class members. Keep the template parameter,
+    # because it might be the relevant class (as in PtrBlock<TSMCube>). Note that
+    # a member can contain spaces and asterisks which are replaced by special strings.
+    # Thus find the <text> parts containing class names as described above.
+    # Tag them with <classname> and add a newline (because drawio is one long line).
+    # Remove the part before and including <classname>. Finally only take the
+    # lines containing no spaces because the class name is a single word.
+    # Interface classes are different; they are in boldface, thus check on <b>
+    CLASSES=`sed -e 's#<text[^>]*>\([a-zA-Z_][a-zA-Z_0-9]*\)\(&[^<]*\)*</text>#<classname>\1\n#g' $INFILE | grep '<classname>' | sed -e 's#.*<classname>##' | sort | uniq`
+    MEMBERS=`sed -e 's#<text[^>]*>[-+] *\([a-zA-Z_][a-zA-Z_0-9 \*,&;:]*\)</text>#<classname>\1\n#g' $INFILE | grep '<classname>' | sed -e 's#.*<classname>##' -e 's#\*#<asterisk>#g' -e 's# #<blank>#g' | sort | uniq`
+    INTERFACES=`sed -e 's#<b>\([a-zA-Z_][a-zA-Z_0-9]*\)\(&[^<]*\)*</b>#<classname>\1\n#g' $INFILE | grep '<classname>' | sed -e 's#.*<classname>##' | sort | uniq`
+    
+    # Try to find the html file belonging to each class name.
+    for CLASS in $CLASSES
+    do
+        FILENAME=`ls class*_[0-9]$CLASS.html 2>& 1`
+        FILENAMX=`echo "$FILENAME" | sed -e 's# ##'`
+        if [ "$FILENAME" != ""  -a  "$FILENAME" = "$FILENAMX" ]; then
+            # A single file name was found, so the class name can be linked to it.
+            # Note that an error also results in multiple words.
+            # Generate sed commands to insert an <a> tag to link to this class.
+            # Insert a <a href> tag around the <text> tag as described
+            # on https://www.w3.org/wiki/SVG_Links. Note that xlink:href is
+            # replaced by href in the newest standards and newer browsers.
+            # Also note that in the diagram a class name might be followed by
+            # template parameters such as <V,S> translating to &lt;V,S&gt; in html.
+            # Show the referenced file in a new tab (security requires the rel part). 
+            # Insert the placeholder xrgbx to change the color later.
+            echo 's#\(<g [^>]*rgb([0-9 ,]*)\)\([^>]*\)\(pointer-events="none"\)\([^>]*>\)\(<text[^>]*>'$CLASS'\(&[^<]*\)*</text>\)#\1xrgbbx\2pointer-events="auto"\4\5/#g' >> tmpsed
+            echo 's#\(<text[^>]*>'$CLASS'\(&[^<]*\)*</text>\)#<a href="'$FILENAME'" target="_blank" rel="noopener noreferrer">\1</a>#g' >> tmpsed
+        fi
+    done
+    # Do the same for the members (indicated by leading - or +). Make them less blue.
+    # Take care of possible template parameters. It's unfortunately impossible
+    # to insert a link for both templated class and template parameter due to the
+    # nature of the svg file. Therefore the last template parameter is preferred if
+    # an html file exists for it.
+    # Remove a possible field name followed by a colon.
+    # Restore the substituted space and asterisk (but escape the latter).
+    for CLASS in $MEMBERS
+    do
+        PARTS=`echo "$CLASS" | sed -e 's#.*:##' -e 's#&lt;# #' -e 's#&gt;##' -e 's#,# #g' -e 's#<asterisk>##' -e 's#<blank># #g'`
+        ESCNAME=`echo "$CLASS" | sed -e 's#<asterisk>#\\\\*#g' -e 's#<blank># #g'`
+        FILNAM=
+        for PART in $PARTS
+        do
+            FILENAME=`ls class*_[0-9]$PART.html 2>& 1`
+            FILENAMX=`echo "$FILENAME" | sed -e 's# ##'`
+            if [ "$FILENAME" != ""  -a  "$FILENAME" = "$FILENAMX" ]; then
+                FILNAM="$FILENAME"
+            fi
+        done
+        if [ "$FILNAM" != "" ]; then
+            echo 's#\(<g [^>]*rgb([0-9 ,]*)\)\([^>]*\)\(pointer-events="none"\)\([^>]*>\)\(<text[^>]*>[-+] *'"$ESCNAME"'</text>\)</g>#\1xrgbx\2pointer-events="auto"\4<a href="'$FILNAM'" target="_blank" rel="noopener noreferrer">\5</a></g>#g' >> tmpsed
+        fi
+    done
+    # Again, the same for the interfaces.
+    for CLASS in $INTERFACES
+    do
+        FILENAME=`ls class*_[0-9]$CLASS.html 2>& 1`
+        FILENAMX=`echo "$FILENAME" | sed -e 's# ##'`
+        if [ "$FILENAME" != ""  -a  "$FILENAME" = "$FILENAMX" ]; then
+            echo 's#\(<b>'$CLASS'\(&[^<]*\)*</b>\)#<a href="'$FILENAME'" target="_blank" rel="noopener noreferrer">\1</a>#g' >> tmpsed
+        fi
+    done
+
+    # Change the black <g> colors to blue where the placeholder was inserted.
+    # Remove the possible remaining placeholders.
+    echo 's#rgb(0, *0, *0)xrgbx#rgb(0, 0, 100)#g' >> tmpsed
+    echo 's#rgb(0, *0, *0)xrgbbx#rgb(0, 0, 200)#g' >> tmpsed
+    echo 's#xrgb*x##g' >> tmpsed
+    # Finally split the very long drawio line on the </g> tag.
+    echo 's#</g>#</g>\\n#g' >> tmpsed
+
+    # Apply the sed commands for the classes in the drawio file.
+    sed -f tmpsed $INFILE > $OUTFILE
+    # Enclose it in an html file. Use object (not img), otherwise links do not work.
+    # If there is a .drawio.svg.extrahtml file, add it before the <body> tag.
+    cat > $OUTFILE.html <<EOF
+<html>
+<h1 style="margin:0px 20px">Casacore $DIAGRAMNAME class diagram</h1>
+EOF
+    if [ -e "$INFILE.extrahtml" ]; then
+        cat $INFILE.extrahtml >> $OUTFILE.html
+    fi
+    cat >> $OUTFILE.html <<EOF
+<body>
+<object data="$OUTFILE" type="image/svg+xml" style="margin:10px 20px"></object>
+</body> </html>
+EOF
+done
+
+# Cleanup
+rm -f tmpsed

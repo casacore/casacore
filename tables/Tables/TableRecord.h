@@ -68,6 +68,9 @@ class TableLock;
 // the fundamental properties of records.
 // <br>
 // The TableRecord class is a particular type of a record class.
+// <br> The TableRecord class structure is shown in this
+// <a href="TableRecord.drawio.svg.html">UML diagram</a>.
+// <br>
 // The fields in TableRecord may be of scalar type, array type, a Table
 // or a TableRecord.
 // The types are chosen to be compatible with the native
