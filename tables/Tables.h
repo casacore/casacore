@@ -75,7 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <module>
 
 // <summary>
-// CTDS (Cascore Table Data System) is the data storage mechanism for Casacore
+// CTDS (Casacore Table Data System) is the data storage mechanism for Casacore
 // </summary>
 
 // <use visibility=export>
@@ -124,7 +124,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </UL>
 // A few <A HREF="Tables:applications">applications</A> exist to inspect
 // and manipulate a table.
-
+//
+// Several UML diagrams describe the class structure of the Tables module.
+// <ul>
+//  <li> <a href="TableOverview.drawio.svg.html">Global overview of Table access</a>.
+//  <li> <a href="TableDesc.drawio.svg.html">Table and column descriptions</a>.
+//  <li> <a href="TableRecord.drawio.svg.html">Table keywords</a>.
+//  <li> <a href="Table.drawio.svg.html">Table class structure</a>.
+//  <li> <a href="PlainTable.drawio.svg.html">Detailed PlainTable class structure</a>.
+//  <li> <a href="DataManager.drawio.svg.html">DataManagers for storage</a>.
+// </ul>
 
 // <ANCHOR NAME="Tables:motivation">
 // <motivation></ANCHOR>

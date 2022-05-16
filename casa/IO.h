@@ -75,7 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Both use the underlying IO framework which define where and how
 // the data are written. The how-part is defined by classes derived from
 // <linkto class=TypeIO:description>TypeIO</linkto> as shown
-// in the <a href=IO/IO_1.html>OMT diagram</a>.
+// in the <a href=IO-framework.drawio.svg.html>UML diagram</a>.
 // There are three such classes:
 // <ol>
 // <li> <linkto class=CanonicalIO:description>CanonicalIO</linkto> reads/writes
@@ -96,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ol>
 // The where-part is defined by classes derived from
 // <linkto class=ByteIO:description>ByteIO</linkto> as shown
-// in the <a href=IO/IO_2.html>OMT diagram</a>.
+// in the <a href=IO-framework.drawio.svg.html>UML diagram</a>.
 // There are a few such classes:
 // <ol>
 // <li> <linkto class=RegularFileIO:description>RegularFileIO</linkto> uses a

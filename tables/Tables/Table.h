@@ -88,6 +88,8 @@ template<class T> class CountedPtr;
 // via their constructors.
 // Furthermore the Table has a TableRecord object for holding keywords
 // which can be read or written using the appropriate functions.
+// <br> The Table class structure is shown in this
+// <a href="Table.drawio.svg.html">UML diagram</a>.
 //
 // To open an existing table, a simple Table constructor can be used.
 // The possible construct options are:

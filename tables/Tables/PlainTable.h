@@ -75,6 +75,8 @@ class MemoryIO;
 // filled and virtual columns. The table control information and the
 // keyword set is stored in an AipsIO file. The data in the filled columns
 // are stored separately by storage managers.
+// <br> The PlainTable class structure is shown in this
+// <a href="PlainTable.drawio.svg.html">UML diagram</a>.
 // </synopsis>
 
 // <todo asof="$DATE:$">
