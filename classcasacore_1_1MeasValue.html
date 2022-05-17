@@ -131,9 +131,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aaaf4b2e73c05f643d6c8ac70e2eee0c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasValue.html#aaaf4b2e73c05f643d6c8ac70e2eee0c0">dummy_operator</a> () const </td></tr>
 <tr class="memdesc:aaaf4b2e73c05f643d6c8ac70e2eee0c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The following operators should be present at least.  <a href="#aaaf4b2e73c05f643d6c8ac70e2eee0c0">More...</a><br/></td></tr>
 <tr class="separator:aaaf4b2e73c05f643d6c8ac70e2eee0c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abae59a3c26c56891d280e9a1b7a81067"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasValue.html#abae59a3c26c56891d280e9a1b7a81067">type</a> () const =0</td></tr>
-<tr class="memdesc:abae59a3c26c56891d280e9a1b7a81067"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assert that we are the correct <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> type.  <a href="#abae59a3c26c56891d280e9a1b7a81067">More...</a><br/></td></tr>
-<tr class="separator:abae59a3c26c56891d280e9a1b7a81067"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a716675982631833dc629df28d442b044"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MeasValue.html#a716675982631833dc629df28d442b044">print</a> (ostream &amp;os) const =0</td></tr>
 <tr class="memdesc:a716675982631833dc629df28d442b044"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a>.  <a href="#a716675982631833dc629df28d442b044">More...</a><br/></td></tr>
 <tr class="separator:a716675982631833dc629df28d442b044"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -617,39 +614,6 @@ Friends</h2></td></tr>
 <p>undo a previous adjust, with value </p>
 
 <p>Reimplemented in <a class="el" href="classcasacore_1_1MVPosition.html#a7f6f08504df319abc2b5aaa8c81968af">casacore::MVPosition</a>, <a class="el" href="classcasacore_1_1MVuvw.html#abc3d295e432b3ce5077f371e2565bf90">casacore::MVuvw</a>, <a class="el" href="classcasacore_1_1MVBaseline.html#adcf7b727f1ca0d62d371225890ef18cc">casacore::MVBaseline</a>, and <a class="el" href="classcasacore_1_1MVEarthMagnetic.html#a221124b0423220fbe04dcad5f46a0891">casacore::MVEarthMagnetic</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="abae59a3c26c56891d280e9a1b7a81067"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::MeasValue::type </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Assert that we are the correct <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> type. </p>
-<h3>Thrown Exceptions</h3>
-<ul>
-<li>
-<a class="el" href="classcasacore_1_1AipsError.html" title="Base class for all Casacore library errors. ">AipsError</a> if wrong <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> type </li>
-</ul>
-<p>Each <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> should have: <code> static void assure(const <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> &amp;in); </code> Get the type (== Register(M*)) of derived <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> </p>
-
-<p>Implemented in <a class="el" href="classcasacore_1_1MVPosition.html#a6522c096bca6d2ee242fab1168851442">casacore::MVPosition</a>, <a class="el" href="classcasacore_1_1MVuvw.html#ab4d1f28ea0f78d6b8e5f9f8008760b50">casacore::MVuvw</a>, <a class="el" href="classcasacore_1_1MVBaseline.html#a1b2209bc977e4ff8814b1caf45d67b19">casacore::MVBaseline</a>, <a class="el" href="classcasacore_1_1MVEarthMagnetic.html#a958eabc6d8d6db1d01c18d86f24a7e91">casacore::MVEarthMagnetic</a>, <a class="el" href="classcasacore_1_1MVDirection.html#a4516eca9079a48b3e76246c3b38a365d">casacore::MVDirection</a>, <a class="el" href="classcasacore_1_1MVFrequency.html#a1b083a974285233c53d715c2a417b8e7">casacore::MVFrequency</a>, <a class="el" href="classcasacore_1_1MVEpoch.html#aeb7a3454dacc1035c554b77f691d9f21">casacore::MVEpoch</a>, <a class="el" href="classcasacore_1_1MVRadialVelocity.html#a2d2eec214434c6c8c71b6e05354cadb6">casacore::MVRadialVelocity</a>, <a class="el" href="classcasacore_1_1MVDoppler.html#a8cc8babcc4d52bc36bd3ca79158c5ad5">casacore::MVDoppler</a>, and <a class="el" href="classcasacore_1_1MVDouble.html#abebec739a490b7cc091f688c55229bbf">casacore::MVDouble</a>.</p>
 
 </div>
 </div>

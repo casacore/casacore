@@ -125,6 +125,8 @@ Public Types</h2></td></tr>
 <br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1TableParseSelect.html#ade29722e6dd45618a4ad70c7c08a33bca98abce6b558e01d3f9c9dbe6afaffd40">PALTTAB</a>, 
 <br/>
+&#160;&#160;<a class="el" href="classcasacore_1_1TableParseSelect.html#ade29722e6dd45618a4ad70c7c08a33bca84a0fb133f59d35c6bbd0d3163f7a751">PDROPTAB</a>, 
+<br/>
 &#160;&#160;<a class="el" href="classcasacore_1_1TableParseSelect.html#ade29722e6dd45618a4ad70c7c08a33bca43936a6e200cb1a3e9f1607356f3c2e6">PSHOW</a>
 <br/>
  }</td></tr>
@@ -153,12 +155,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac2915a0cfcae2ad1d863ed517ab66bff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac2915a0cfcae2ad1d863ed517ab66bff">getNode</a> () const </td></tr>
 <tr class="memdesc:ac2915a0cfcae2ad1d863ed517ab66bff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the expression node.  <a href="#ac2915a0cfcae2ad1d863ed517ab66bff">More...</a><br/></td></tr>
 <tr class="separator:ac2915a0cfcae2ad1d863ed517ab66bff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe1214c62fa82116b0ddc511c458780c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#afe1214c62fa82116b0ddc511c458780c">makeTableNoFrom</a> (const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
-<tr class="memdesc:afe1214c62fa82116b0ddc511c458780c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a temporary table in no tables are given in FROM.  <a href="#afe1214c62fa82116b0ddc511c458780c">More...</a><br/></td></tr>
-<tr class="separator:afe1214c62fa82116b0ddc511c458780c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a150547695eb6a72659ad7d7a7471e5bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a150547695eb6a72659ad7d7a7471e5bf">execute</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> setInGiving, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> mustSelect, <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> maxRow, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> doTracing=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>)</td></tr>
-<tr class="memdesc:a150547695eb6a72659ad7d7a7471e5bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute the select command (select/sort/projection/groupby/having/giving).  <a href="#a150547695eb6a72659ad7d7a7471e5bf">More...</a><br/></td></tr>
-<tr class="separator:a150547695eb6a72659ad7d7a7471e5bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a781d53b27609d5562ac5171413d53cde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a781d53b27609d5562ac5171413d53cde">makeTableNoFrom</a> (const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:a781d53b27609d5562ac5171413d53cde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a temporary table if no tables are given in FROM.  <a href="#a781d53b27609d5562ac5171413d53cde">More...</a><br/></td></tr>
+<tr class="separator:a781d53b27609d5562ac5171413d53cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7a789cedb63b9ef1faba9faaaf3dbee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#af7a789cedb63b9ef1faba9faaaf3dbee">execute</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> setInGiving, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> mustSelect, <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> maxRow, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> doTracing=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables=std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt;(), const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack=std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt;())</td></tr>
+<tr class="memdesc:af7a789cedb63b9ef1faba9faaaf3dbee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute the select command (select/sort/projection/groupby/having/giving).  <a href="#af7a789cedb63b9ef1faba9faaaf3dbee">More...</a><br/></td></tr>
+<tr class="separator:af7a789cedb63b9ef1faba9faaaf3dbee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa41ff51e86918afbe031eadbb8149a80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#aa41ff51e86918afbe031eadbb8149a80">doFromQuery</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings)</td></tr>
 <tr class="memdesc:aa41ff51e86918afbe031eadbb8149a80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute a query in a from clause resulting in a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a>.  <a href="#aa41ff51e86918afbe031eadbb8149a80">More...</a><br/></td></tr>
 <tr class="separator:aa41ff51e86918afbe031eadbb8149a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,30 +176,39 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3462bdc4626fc005d72a0fc5b94eed83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a3462bdc4626fc005d72a0fc5b94eed83">handleWhere</a> (const <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &amp;)</td></tr>
 <tr class="memdesc:a3462bdc4626fc005d72a0fc5b94eed83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the selection expression.  <a href="#a3462bdc4626fc005d72a0fc5b94eed83">More...</a><br/></td></tr>
 <tr class="separator:a3462bdc4626fc005d72a0fc5b94eed83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a209b7605e40c02fa46a31ba6920f1f74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a209b7605e40c02fa46a31ba6920f1f74">handleGroupby</a> (const vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt; &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> rollup)</td></tr>
-<tr class="memdesc:a209b7605e40c02fa46a31ba6920f1f74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the groupby expressions.  <a href="#a209b7605e40c02fa46a31ba6920f1f74">More...</a><br/></td></tr>
-<tr class="separator:a209b7605e40c02fa46a31ba6920f1f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd4a7c9e09c71d2e34331b24cb01c03c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#abd4a7c9e09c71d2e34331b24cb01c03c">handleGroupby</a> (const std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt; &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> rollup)</td></tr>
+<tr class="memdesc:abd4a7c9e09c71d2e34331b24cb01c03c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the groupby expressions.  <a href="#abd4a7c9e09c71d2e34331b24cb01c03c">More...</a><br/></td></tr>
+<tr class="separator:abd4a7c9e09c71d2e34331b24cb01c03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28517044ca8b6de537f007a80733b294"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a28517044ca8b6de537f007a80733b294">handleHaving</a> (const <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &amp;)</td></tr>
 <tr class="memdesc:a28517044ca8b6de537f007a80733b294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the having expression.  <a href="#a28517044ca8b6de537f007a80733b294">More...</a><br/></td></tr>
 <tr class="separator:a28517044ca8b6de537f007a80733b294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a851198e26b6f9cc3e0f9df076ac474c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a851198e26b6f9cc3e0f9df076ac474c1">handleCalcComm</a> (const <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &amp;)</td></tr>
 <tr class="memdesc:a851198e26b6f9cc3e0f9df076ac474c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the expression of a calculate command.  <a href="#a851198e26b6f9cc3e0f9df076ac474c1">More...</a><br/></td></tr>
 <tr class="separator:a851198e26b6f9cc3e0f9df076ac474c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c46152b9a319f1d419ee82c7600acce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a5c46152b9a319f1d419ee82c7600acce">handleCreTab</a> (const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dmInfo)</td></tr>
-<tr class="memdesc:a5c46152b9a319f1d419ee82c7600acce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the create table command.  <a href="#a5c46152b9a319f1d419ee82c7600acce">More...</a><br/></td></tr>
-<tr class="separator:a5c46152b9a319f1d419ee82c7600acce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a359d24383d7880cb4d2a9fd1282094ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a359d24383d7880cb4d2a9fd1282094ec">handleColSpec</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataType, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;spec, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> isCOrder=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>)</td></tr>
-<tr class="memdesc:a359d24383d7880cb4d2a9fd1282094ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the column specification in a create table command.  <a href="#a359d24383d7880cb4d2a9fd1282094ec">More...</a><br/></td></tr>
-<tr class="separator:a359d24383d7880cb4d2a9fd1282094ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c261463ea35e7404a3fb73fc71a968"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ae6c261463ea35e7404a3fb73fc71a968">handleDropTab</a> (const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:ae6c261463ea35e7404a3fb73fc71a968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the DROP TABLE command.  <a href="#ae6c261463ea35e7404a3fb73fc71a968">More...</a><br/></td></tr>
+<tr class="separator:ae6c261463ea35e7404a3fb73fc71a968"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f2fe3eed241042c4c44df2cb65406d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4f2fe3eed241042c4c44df2cb65406d2">handleCreTab</a> (const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dmInfo, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:a4f2fe3eed241042c4c44df2cb65406d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the create table command.  <a href="#a4f2fe3eed241042c4c44df2cb65406d2">More...</a><br/></td></tr>
+<tr class="separator:a4f2fe3eed241042c4c44df2cb65406d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad40910eea231aa7747c6e02862c8eb17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad40910eea231aa7747c6e02862c8eb17">handleColSpec</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;likeColName, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dataType, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;spec, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> isCOrder=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>)</td></tr>
+<tr class="memdesc:ad40910eea231aa7747c6e02862c8eb17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the column specification in a create table command.  <a href="#ad40910eea231aa7747c6e02862c8eb17">More...</a><br/></td></tr>
+<tr class="separator:ad40910eea231aa7747c6e02862c8eb17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3460b93849d95f7fcde3321325e94c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#af3460b93849d95f7fcde3321325e94c5">handleAltTab</a> ()</td></tr>
 <tr class="memdesc:af3460b93849d95f7fcde3321325e94c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reopen the table (for update) used in the ALTER TABLE command.  <a href="#af3460b93849d95f7fcde3321325e94c5">More...</a><br/></td></tr>
 <tr class="separator:af3460b93849d95f7fcde3321325e94c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a128ce907e96065151901f8776299232f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a128ce907e96065151901f8776299232f">handleAddCol</a> (const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dmInfo)</td></tr>
 <tr class="memdesc:a128ce907e96065151901f8776299232f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add columns to the table of ALTER TABLE.  <a href="#a128ce907e96065151901f8776299232f">More...</a><br/></td></tr>
 <tr class="separator:a128ce907e96065151901f8776299232f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d0812e3641f0b2b292233587be766f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a0d0812e3641f0b2b292233587be766f4">initDescriptions</a> (const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dminfo)</td></tr>
+<tr class="memdesc:a0d0812e3641f0b2b292233587be766f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the table and data manager descriptions.  <a href="#a0d0812e3641f0b2b292233587be766f4">More...</a><br/></td></tr>
+<tr class="separator:a0d0812e3641f0b2b292233587be766f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71fe5d85038e451c1c36e8e35f50f9e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1ValueHolder.html">ValueHolder</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a71fe5d85038e451c1c36e8e35f50f9e0">getRecFld</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name)</td></tr>
 <tr class="memdesc:a71fe5d85038e451c1c36e8e35f50f9e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a keyword or replace a keyword with the value of another keyword.  <a href="#a71fe5d85038e451c1c36e8e35f50f9e0">More...</a><br/></td></tr>
 <tr class="separator:a71fe5d85038e451c1c36e8e35f50f9e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd789626ffcf73ebdd0ec936d38f1516"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#abd789626ffcf73ebdd0ec936d38f1516">handleCopyCol</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings)</td></tr>
+<tr class="memdesc:abd789626ffcf73ebdd0ec936d38f1516"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle copying of columns.  <a href="#abd789626ffcf73ebdd0ec936d38f1516">More...</a><br/></td></tr>
+<tr class="separator:abd789626ffcf73ebdd0ec936d38f1516"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46ed98e3914e67c21f5309882d27b4bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a46ed98e3914e67c21f5309882d27b4bc">handleSetKey</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dtype, const <a class="el" href="classcasacore_1_1ValueHolder.html">ValueHolder</a> &amp;<a class="el" href="namespacecasacore.html#ac188f9709620e307c2f721d6bc43607f">value</a>)</td></tr>
 <tr class="memdesc:a46ed98e3914e67c21f5309882d27b4bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a keyword or replace a keyword with a value.  <a href="#a46ed98e3914e67c21f5309882d27b4bc">More...</a><br/></td></tr>
 <tr class="separator:a46ed98e3914e67c21f5309882d27b4bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -207,9 +218,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac3da3bc88ecaddd8be9bc384501ee839"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac3da3bc88ecaddd8be9bc384501ee839">handleRemoveKey</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name)</td></tr>
 <tr class="memdesc:ac3da3bc88ecaddd8be9bc384501ee839"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a table or column keyword.  <a href="#ac3da3bc88ecaddd8be9bc384501ee839">More...</a><br/></td></tr>
 <tr class="separator:ac3da3bc88ecaddd8be9bc384501ee839"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1084c2e100facff8d6a720603b62a968"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a1084c2e100facff8d6a720603b62a968">findKeyword</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, <a class="el" href="classcasacore_1_1String.html">String</a> &amp;keyName)</td></tr>
-<tr class="memdesc:a1084c2e100facff8d6a720603b62a968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split the given name into optional shorthand, column and fields.  <a href="#a1084c2e100facff8d6a720603b62a968">More...</a><br/></td></tr>
-<tr class="separator:a1084c2e100facff8d6a720603b62a968"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6d67996fc07b4390ee7b77f7268563a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ae6d67996fc07b4390ee7b77f7268563a">findKeyword</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, <a class="el" href="classcasacore_1_1String.html">String</a> &amp;keyName, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> update=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>)</td></tr>
+<tr class="memdesc:ae6d67996fc07b4390ee7b77f7268563a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split the given name into optional shorthand, column and fields.  <a href="#ae6d67996fc07b4390ee7b77f7268563a">More...</a><br/></td></tr>
+<tr class="separator:ae6d67996fc07b4390ee7b77f7268563a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30162a51484ccd0cd656168e60bdfbcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a30162a51484ccd0cd656168e60bdfbcf">addUpdate</a> (const <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1TableParseUpdate.html">TableParseUpdate</a> &gt; &amp;upd)</td></tr>
 <tr class="memdesc:a30162a51484ccd0cd656168e60bdfbcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an update object.  <a href="#a30162a51484ccd0cd656168e60bdfbcf">More...</a><br/></td></tr>
 <tr class="separator:a30162a51484ccd0cd656168e60bdfbcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -242,12 +253,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9f9396b181fcbf617e77f750538bddd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a9f9396b181fcbf617e77f750538bddd2">handleAddRow</a> (const <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &amp;expr)</td></tr>
 <tr class="memdesc:a9f9396b181fcbf617e77f750538bddd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate and add the rows.  <a href="#a9f9396b181fcbf617e77f750538bddd2">More...</a><br/></td></tr>
 <tr class="separator:a9f9396b181fcbf617e77f750538bddd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59d6cd3bf1cd9aec52aa98ec201e989b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a59d6cd3bf1cd9aec52aa98ec201e989b">addTable</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> tabnr, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;shorthand, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> addToFromList, const vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; tempTables, const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
-<tr class="memdesc:a59d6cd3bf1cd9aec52aa98ec201e989b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a table nr, name, or object to the container.  <a href="#a59d6cd3bf1cd9aec52aa98ec201e989b">More...</a><br/></td></tr>
-<tr class="separator:a59d6cd3bf1cd9aec52aa98ec201e989b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbb1c9c986e16b7f580b591c6d368261"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#adbb1c9c986e16b7f580b591c6d368261">makeTable</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> tabnr, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;ftab, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;shorthand, const vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; tempTables, const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> alwaysOpen=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>)</td></tr>
-<tr class="memdesc:adbb1c9c986e16b7f580b591c6d368261"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object for given name, seqnr or so.  <a href="#adbb1c9c986e16b7f580b591c6d368261">More...</a><br/></td></tr>
-<tr class="separator:adbb1c9c986e16b7f580b591c6d368261"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae781f41450125c7c73925b6233ef9d97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ae781f41450125c7c73925b6233ef9d97">addTable</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> tabnr, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;shorthand, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> addToFromList, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:ae781f41450125c7c73925b6233ef9d97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a table nr, name, or object to the container.  <a href="#ae781f41450125c7c73925b6233ef9d97">More...</a><br/></td></tr>
+<tr class="separator:ae781f41450125c7c73925b6233ef9d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c47b9940f3f6121e4e16fe9d5f1f2be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a0c47b9940f3f6121e4e16fe9d5f1f2be">getTable</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> tabnr, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;ftab, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> alwaysOpen=<a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a>)</td></tr>
+<tr class="memdesc:a0c47b9940f3f6121e4e16fe9d5f1f2be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object for given name, seqnr or so.  <a href="#a0c47b9940f3f6121e4e16fe9d5f1f2be">More...</a><br/></td></tr>
+<tr class="separator:a0c47b9940f3f6121e4e16fe9d5f1f2be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad48c888766fc8ebbdb52577f57972558"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad48c888766fc8ebbdb52577f57972558">replaceTable</a> (const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table)</td></tr>
 <tr class="memdesc:ad48c888766fc8ebbdb52577f57972558"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the first table (used by CALC command).  <a href="#ad48c888766fc8ebbdb52577f57972558">More...</a><br/></td></tr>
 <tr class="separator:ad48c888766fc8ebbdb52577f57972558"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,9 +319,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a788444e2c2fcf66c3d8381c754dc49f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a788444e2c2fcf66c3d8381c754dc49f0">testGroupAggr</a> (std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;aggr) const </td></tr>
 <tr class="memdesc:a788444e2c2fcf66c3d8381c754dc49f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if groupby or aggregate functions are given.  <a href="#a788444e2c2fcf66c3d8381c754dc49f0">More...</a><br/></td></tr>
 <tr class="separator:a788444e2c2fcf66c3d8381c754dc49f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0842c600b5df400e7b536209da7f1595"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a0842c600b5df400e7b536209da7f1595">getAggrNodes</a> () const </td></tr>
-<tr class="memdesc:a0842c600b5df400e7b536209da7f1595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the aggregate functions used in SELECT and HAVING.  <a href="#a0842c600b5df400e7b536209da7f1595">More...</a><br/></td></tr>
-<tr class="separator:a0842c600b5df400e7b536209da7f1595"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25edffb3059047692242ae173d796475"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a25edffb3059047692242ae173d796475">getAggrNodes</a> () const </td></tr>
+<tr class="memdesc:a25edffb3059047692242ae173d796475"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the aggregate functions used in SELECT and HAVING.  <a href="#a25edffb3059047692242ae173d796475">More...</a><br/></td></tr>
+<tr class="separator:a25edffb3059047692242ae173d796475"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01c9311f8bde4cef2f288b12fb6e2f8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a01c9311f8bde4cef2f288b12fb6e2f8c">doUpdate</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;origTable, <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;updTable, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> &gt; &amp;rownrs, const <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1TableExprGroupResult.html">TableExprGroupResult</a> &gt; &amp;groups=<a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1TableExprGroupResult.html">TableExprGroupResult</a> &gt;())</td></tr>
 <tr class="memdesc:a01c9311f8bde4cef2f288b12fb6e2f8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do the update step.  <a href="#a01c9311f8bde4cef2f288b12fb6e2f8c">More...</a><br/></td></tr>
 <tr class="separator:a01c9311f8bde4cef2f288b12fb6e2f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,9 +340,14 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:ab4b2f2db00aca12ed9b6076952995164"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ab4b2f2db00aca12ed9b6076952995164">doProjectExpr</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> useSel, const <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt; <a class="el" href="classcasacore_1_1TableExprGroupResult.html">TableExprGroupResult</a> &gt; &amp;groups)</td></tr>
 <tr class="memdesc:ab4b2f2db00aca12ed9b6076952995164"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do the projection containing column expressions.  <a href="#ab4b2f2db00aca12ed9b6076952995164">More...</a><br/></td></tr>
 <tr class="separator:ab4b2f2db00aca12ed9b6076952995164"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf3bb3275954a89cb1937662b56e7323"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#adf3bb3275954a89cb1937662b56e7323">createTable</a> (const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;td, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> nrow, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dmInfo)</td></tr>
-<tr class="memdesc:adf3bb3275954a89cb1937662b56e7323"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a table using the given parameters.  <a href="#adf3bb3275954a89cb1937662b56e7323">More...</a><br/></td></tr>
-<tr class="separator:adf3bb3275954a89cb1937662b56e7323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2f34f87e7d3404edb26d9b8db43a3fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac2f34f87e7d3404edb26d9b8db43a3fd">createTable</a> (const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;td, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> nrow, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dmInfo, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:ac2f34f87e7d3404edb26d9b8db43a3fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a table using the given parameters.  <a href="#ac2f34f87e7d3404edb26d9b8db43a3fd">More...</a><br/></td></tr>
+<tr class="separator:ac2f34f87e7d3404edb26d9b8db43a3fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a710562a7d0c8895075991b4d2d808f9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a710562a7d0c8895075991b4d2d808f9b">createSubTable</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;subtableName, const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;td, <a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a> nrow, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;dmInfo, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="separator:a710562a7d0c8895075991b4d2d808f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fd3016056c132fa98f9a28d841bbfdb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a2fd3016056c132fa98f9a28d841bbfdb">openParentTable</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;fullName, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;subTableName, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:a2fd3016056c132fa98f9a28d841bbfdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the parent table of a subtable.  <a href="#a2fd3016056c132fa98f9a28d841bbfdb">More...</a><br/></td></tr>
+<tr class="separator:a2fd3016056c132fa98f9a28d841bbfdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c2dbe357c323aa93667de0147cf81c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a9c2dbe357c323aa93667de0147cf81c6">makeProjectExprTable</a> ()</td></tr>
 <tr class="memdesc:a9c2dbe357c323aa93667de0147cf81c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the (empty) table for the epxression in the SELECT clause.  <a href="#a9c2dbe357c323aa93667de0147cf81c6">More...</a><br/></td></tr>
 <tr class="separator:a9c2dbe357c323aa93667de0147cf81c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -367,9 +383,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a8f1f2693af7cf1076778675203c6bca9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a8f1f2693af7cf1076778675203c6bca9">doDistinct</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings, const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table)</td></tr>
 <tr class="memdesc:a8f1f2693af7cf1076778675203c6bca9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do the 'select distinct' step.  <a href="#a8f1f2693af7cf1076778675203c6bca9">More...</a><br/></td></tr>
 <tr class="separator:a8f1f2693af7cf1076778675203c6bca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3653f9e1cad1ea27adc9cc935740700"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#aa3653f9e1cad1ea27adc9cc935740700">doFinish</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings, <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table)</td></tr>
-<tr class="memdesc:aa3653f9e1cad1ea27adc9cc935740700"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finish the table (rename, copy, and/or flush).  <a href="#aa3653f9e1cad1ea27adc9cc935740700">More...</a><br/></td></tr>
-<tr class="separator:aa3653f9e1cad1ea27adc9cc935740700"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbe55a9ffb0726d6d4a6bba0bf7e484f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#adbe55a9ffb0726d6d4a6bba0bf7e484f">doFinish</a> (<a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> showTimings, <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table, const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;tempTables, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
+<tr class="memdesc:adbe55a9ffb0726d6d4a6bba0bf7e484f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finish the table (rename, copy, and/or flush).  <a href="#adbe55a9ffb0726d6d4a6bba0bf7e484f">More...</a><br/></td></tr>
+<tr class="separator:adbe55a9ffb0726d6d4a6bba0bf7e484f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac99bb180c3bc70b1a408ac0bf906aa4e"><td class="memTemplParams" colspan="2">template&lt;typename TCOL , typename TNODE &gt; </td></tr>
 <tr class="memitem:ac99bb180c3bc70b1a408ac0bf906aa4e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac99bb180c3bc70b1a408ac0bf906aa4e">updateValue</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">rownr_t</a> row, const <a class="el" href="classcasacore_1_1TableExprId.html">TableExprId</a> &amp;rowid, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> isScalarCol, const <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &amp;node, const <a class="el" href="classcasacore_1_1Array.html">Array</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt; &amp;<a class="el" href="namespacecasacore.html#a7546375a4910a76c4e40307b24fee91b">mask</a>, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> maskFirst, <a class="el" href="classcasacore_1_1TableColumn.html">TableColumn</a> &amp;col, const <a class="el" href="classcasacore_1_1Slicer.html">Slicer</a> *slicerPtr, <a class="el" href="classcasacore_1_1ArrayColumn.html">ArrayColumn</a>&lt; <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> &gt; &amp;maskCol)</td></tr>
 <tr class="memdesc:ac99bb180c3bc70b1a408ac0bf906aa4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the values in the columns (helpers of doUpdate).  <a href="#ac99bb180c3bc70b1a408ac0bf906aa4e">More...</a><br/></td></tr>
@@ -408,27 +424,32 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a09203f5614a76fdd59c8b50a56ee0acc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a09203f5614a76fdd59c8b50a56ee0acc">findTable</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;shorthand, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> doWith) const </td></tr>
 <tr class="memdesc:a09203f5614a76fdd59c8b50a56ee0acc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a table for the given shorthand.  <a href="#a09203f5614a76fdd59c8b50a56ee0acc">More...</a><br/></td></tr>
 <tr class="separator:a09203f5614a76fdd59c8b50a56ee0acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e197546bfaea39338a470c9a13dd7b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a7e197546bfaea39338a470c9a13dd7b1">findTable</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;shorthand, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> doWith, const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack) const </td></tr>
+<tr class="separator:a7e197546bfaea39338a470c9a13dd7b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a446576b2637dd1ef47c4e1ac66e8a49f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a446576b2637dd1ef47c4e1ac66e8a49f">handleWildColumn</a> (<a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> stringType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name)</td></tr>
 <tr class="memdesc:a446576b2637dd1ef47c4e1ac66e8a49f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the selection of a wildcarded column name.  <a href="#a446576b2637dd1ef47c4e1ac66e8a49f">More...</a><br/></td></tr>
 <tr class="separator:a446576b2637dd1ef47c4e1ac66e8a49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e07dc8abb20cf812872b5d1e913c5e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4e07dc8abb20cf812872b5d1e913c5e4">addColumnDesc</a> (<a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;td, DataType dtype, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;colName, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> options, <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> <a class="el" href="namespacecasacore.html#a2eb958ed449eb76058df916fa5e3d7e1">ndim</a>, const <a class="el" href="classcasacore_1_1IPosition.html">IPosition</a> &amp;<a class="el" href="namespacecasacore.html#a6c80d55c1617e8540e006c12e3dc990c">shape</a>, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dmType, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;dmGroup, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;comment, const <a class="el" href="classcasacore_1_1TableRecord.html">TableRecord</a> &amp;keywordSet, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;unitName, const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;attributes)</td></tr>
 <tr class="memdesc:a4e07dc8abb20cf812872b5d1e913c5e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the description of a column to the table description.  <a href="#a4e07dc8abb20cf812872b5d1e913c5e4">More...</a><br/></td></tr>
 <tr class="separator:a4e07dc8abb20cf812872b5d1e913c5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b43f28b97a104918afb547626e4f02b"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classcasacore_1_1ColumnDesc.html">ColumnDesc</a>, <a class="el" href="classcasacore_1_1Record.html">Record</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a0b43f28b97a104918afb547626e4f02b">findColumnInfo</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;colName, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;newColName) const </td></tr>
+<tr class="memdesc:a0b43f28b97a104918afb547626e4f02b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the <a class="el" href="classcasacore_1_1ColumnDesc.html" title="Envelope class for the description of a table column. ">ColumnDesc</a> and data manager info of another column (a LIKE column).  <a href="#a0b43f28b97a104918afb547626e4f02b">More...</a><br/></td></tr>
+<tr class="separator:a0b43f28b97a104918afb547626e4f02b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbceab680ab1bc76f1aef96c5c354533"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#afbceab680ab1bc76f1aef96c5c354533">getStoredColumns</a> (const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;tab) const </td></tr>
 <tr class="memdesc:afbceab680ab1bc76f1aef96c5c354533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the names of all stored columns in a table.  <a href="#afbceab680ab1bc76f1aef96c5c354533">More...</a><br/></td></tr>
 <tr class="separator:afbceab680ab1bc76f1aef96c5c354533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5c27b9e2a6f46a1e653f2b74627db5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac5c27b9e2a6f46a1e653f2b74627db5b">checkTableProjSizes</a> () const </td></tr>
 <tr class="memdesc:ac5c27b9e2a6f46a1e653f2b74627db5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the tables used in selection columns have the same size as the first table given in FROM.  <a href="#ac5c27b9e2a6f46a1e653f2b74627db5b">More...</a><br/></td></tr>
 <tr class="separator:ac5c27b9e2a6f46a1e653f2b74627db5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac258ee7516aa945378895eef3ce94223"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ac258ee7516aa945378895eef3ce94223"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a><br class="typebreak"/>
-&lt; <a class="el" href="classcasacore_1_1TableExprGroupFuncSet.html">TableExprGroupFuncSet</a> &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac258ee7516aa945378895eef3ce94223">doGroupByAggrSingleKey</a> (const vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;aggrNodes)</td></tr>
-<tr class="memdesc:ac258ee7516aa945378895eef3ce94223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the set of aggregate functions and groupby keys in case a single groupby key is given.  <a href="#ac258ee7516aa945378895eef3ce94223">More...</a><br/></td></tr>
-<tr class="separator:ac258ee7516aa945378895eef3ce94223"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8fa8028b3029d7f9d1e676a7e968acc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a><br class="typebreak"/>
-&lt; <a class="el" href="classcasacore_1_1TableExprGroupFuncSet.html">TableExprGroupFuncSet</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad8fa8028b3029d7f9d1e676a7e968acc">doGroupByAggrMultipleKeys</a> (const vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;aggrNodes)</td></tr>
-<tr class="memdesc:ad8fa8028b3029d7f9d1e676a7e968acc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the set of aggregate functions and groupby keys in case multiple keys are given.  <a href="#ad8fa8028b3029d7f9d1e676a7e968acc">More...</a><br/></td></tr>
-<tr class="separator:ad8fa8028b3029d7f9d1e676a7e968acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4149e297a9a9ee1f7e4986396b1e73e4"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4149e297a9a9ee1f7e4986396b1e73e4"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a><br class="typebreak"/>
+&lt; <a class="el" href="classcasacore_1_1TableExprGroupFuncSet.html">TableExprGroupFuncSet</a> &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4149e297a9a9ee1f7e4986396b1e73e4">doGroupByAggrSingleKey</a> (const std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;aggrNodes)</td></tr>
+<tr class="memdesc:a4149e297a9a9ee1f7e4986396b1e73e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the set of aggregate functions and groupby keys in case a single groupby key is given.  <a href="#a4149e297a9a9ee1f7e4986396b1e73e4">More...</a><br/></td></tr>
+<tr class="separator:a4149e297a9a9ee1f7e4986396b1e73e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acef0dc2e5c467026d4dc2d7b01255300"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a><br class="typebreak"/>
+&lt; <a class="el" href="classcasacore_1_1TableExprGroupFuncSet.html">TableExprGroupFuncSet</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#acef0dc2e5c467026d4dc2d7b01255300">doGroupByAggrMultipleKeys</a> (const std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;aggrNodes)</td></tr>
+<tr class="memdesc:acef0dc2e5c467026d4dc2d7b01255300"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the set of aggregate functions and groupby keys in case multiple keys are given.  <a href="#acef0dc2e5c467026d4dc2d7b01255300">More...</a><br/></td></tr>
+<tr class="separator:acef0dc2e5c467026d4dc2d7b01255300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -439,23 +460,19 @@ Static Private Member Functions</h2></td></tr>
 <a class="el" href="classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929c">TableExprFuncNode::FunctionType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#af1fb27ba76988601ec47e9abf8bbbe5b">findFunc</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;name, <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> narguments, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a> &gt; &amp;ignoreFuncs)</td></tr>
 <tr class="memdesc:af1fb27ba76988601ec47e9abf8bbbe5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the function code belonging to a function name.  <a href="#af1fb27ba76988601ec47e9abf8bbbe5b">More...</a><br/></td></tr>
 <tr class="separator:af1fb27ba76988601ec47e9abf8bbbe5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e5d0858f2ec350936b1508c4938958b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4e5d0858f2ec350936b1508c4938958b">tableKey</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;fullName, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;shorthand, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;fieldNames, const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;stack)</td></tr>
-<tr class="memdesc:a4e5d0858f2ec350936b1508c4938958b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to find the keyword representing a table in one of the tables in any select block (from inner to outer).  <a href="#a4e5d0858f2ec350936b1508c4938958b">More...</a><br/></td></tr>
-<tr class="separator:a4e5d0858f2ec350936b1508c4938958b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dc684ae3962b895bbcc46330b0c1080"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a3dc684ae3962b895bbcc46330b0c1080">findTableKey</a> (const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;table, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;columnName, const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;keyNames)</td></tr>
-<tr class="memdesc:a3dc684ae3962b895bbcc46330b0c1080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to find the keyword representing a table in the given table.  <a href="#a3dc684ae3962b895bbcc46330b0c1080">More...</a><br/></td></tr>
-<tr class="separator:a3dc684ae3962b895bbcc46330b0c1080"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a598a72ad2f1c7207d0982e5c93372cc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableParseSelect.html#ade29722e6dd45618a4ad70c7c08a33bc">CommandType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a598a72ad2f1c7207d0982e5c93372cc0">commandType_p</a></td></tr>
 <tr class="separator:a598a72ad2f1c7207d0982e5c93372cc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83518f953f15efb589f701c524bd9887"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a83518f953f15efb589f701c524bd9887">tableDesc_p</a></td></tr>
-<tr class="separator:a83518f953f15efb589f701c524bd9887"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a29117f4deb01bf4963ed5fdf217e1d"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classcasacore_1_1TableParse.html">TableParse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4a29117f4deb01bf4963ed5fdf217e1d">withTables_p</a></td></tr>
-<tr class="separator:a4a29117f4deb01bf4963ed5fdf217e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94ca5c6de561a4b43223bb5248acbc46"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classcasacore_1_1TableParse.html">TableParse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a94ca5c6de561a4b43223bb5248acbc46">fromTables_p</a></td></tr>
-<tr class="separator:a94ca5c6de561a4b43223bb5248acbc46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c341dbb4d3a9a323b4175ae96414e28"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a0c341dbb4d3a9a323b4175ae96414e28">tableDesc_p</a></td></tr>
+<tr class="separator:a0c341dbb4d3a9a323b4175ae96414e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d2ac434a8ea7a5192d5cfc7699697e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Record.html">Record</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a8d2ac434a8ea7a5192d5cfc7699697e8">dminfo_p</a></td></tr>
+<tr class="separator:a8d2ac434a8ea7a5192d5cfc7699697e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4055259868e6040162bc4cdcd4803aa4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1TableParse.html">TableParse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4055259868e6040162bc4cdcd4803aa4">withTables_p</a></td></tr>
+<tr class="separator:a4055259868e6040162bc4cdcd4803aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac590369174d76a6c1bdd0e11b14fb442"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1TableParse.html">TableParse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac590369174d76a6c1bdd0e11b14fb442">fromTables_p</a></td></tr>
+<tr class="separator:ac590369174d76a6c1bdd0e11b14fb442"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba46461d77be7b3b50d7ddf2b90893e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#aba46461d77be7b3b50d7ddf2b90893e8">columnNames_p</a></td></tr>
 <tr class="separator:aba46461d77be7b3b50d7ddf2b90893e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9e41ace6b1e14ac4f2c190f198b0edc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Block.html">Block</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ac9e41ace6b1e14ac4f2c190f198b0edc">columnNameMasks_p</a></td></tr>
@@ -484,14 +501,12 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a069f270bc207977d2bfd2586ddb7ca4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bd2dc3e062b8d2f91d81c83377a9b15"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a6bd2dc3e062b8d2f91d81c83377a9b15">overwrite_p</a></td></tr>
 <tr class="separator:a6bd2dc3e062b8d2f91d81c83377a9b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d2ac434a8ea7a5192d5cfc7699697e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Record.html">Record</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a8d2ac434a8ea7a5192d5cfc7699697e8">dminfo_p</a></td></tr>
-<tr class="separator:a8d2ac434a8ea7a5192d5cfc7699697e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb62259131be9f09adc96d6dce624517"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableExprNodeSet.html">TableExprNodeSet</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#aeb62259131be9f09adc96d6dce624517">resultSet_p</a></td></tr>
 <tr class="separator:aeb62259131be9f09adc96d6dce624517"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0281736fb423dc6aff2966313e06011"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ae0281736fb423dc6aff2966313e06011">node_p</a></td></tr>
 <tr class="separator:ae0281736fb423dc6aff2966313e06011"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cbc70ba65bfb506db531a523d15531f"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a4cbc70ba65bfb506db531a523d15531f">groupbyNodes_p</a></td></tr>
-<tr class="separator:a4cbc70ba65bfb506db531a523d15531f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7a1d87f6375d22c7c0ce151b72e3185"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#af7a1d87f6375d22c7c0ce151b72e3185">groupbyNodes_p</a></td></tr>
+<tr class="separator:af7a1d87f6375d22c7c0ce151b72e3185"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a382caad295403cd8c237ee950edbd3f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a382caad295403cd8c237ee950edbd3f0">groupbyRollup_p</a></td></tr>
 <tr class="separator:a382caad295403cd8c237ee950edbd3f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1655289e0b614fdfaa14c6ef5f4e3e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad1655289e0b614fdfaa14c6ef5f4e3e3">havingNode_p</a></td></tr>
@@ -517,8 +532,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a0c403d73d7d0cd30ce2ebcc189043d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3f391a95b478bca86d875b09e0d9f86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Sort.html#a8c6d6c1ed95e2848332f370b3acf9c8c">Sort::Order</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad3f391a95b478bca86d875b09e0d9f86">order_p</a></td></tr>
 <tr class="separator:ad3f391a95b478bca86d875b09e0d9f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34808fccece50feb7506d0a9f7cf6c9d"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#a34808fccece50feb7506d0a9f7cf6c9d">applySelNodes_p</a></td></tr>
-<tr class="separator:a34808fccece50feb7506d0a9f7cf6c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad23cefe9281a616777d2511068280ddf"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad23cefe9281a616777d2511068280ddf">applySelNodes_p</a></td></tr>
+<tr class="separator:ad23cefe9281a616777d2511068280ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5b46af95e35c643578064cfe28f9c5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#ad5b46af95e35c643578064cfe28f9c5e">table_p</a></td></tr>
 <tr class="separator:ad5b46af95e35c643578064cfe28f9c5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac4def039b1158e9c4fe4f2ba5c98916"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TableParseSelect.html#aac4def039b1158e9c4fe4f2ba5c98916">firstColTable_p</a></td></tr>
@@ -557,7 +572,7 @@ TableGram.l and.y (flex and bison grammar) </li>
 <h3>Motivation</h3>
 <p>It is necessary to be able to give a table select command in ASCII. This can be used in a CLI or in the table browser to get a subset of a table or to sort a table. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00381">381</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00388">388</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="ade29722e6dd45618a4ad70c7c08a33bc"></a>
 <div class="memitem">
@@ -585,11 +600,13 @@ TableGram.l and.y (flex and bison grammar) </li>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="ade29722e6dd45618a4ad70c7c08a33bca98abce6b558e01d3f9c9dbe6afaffd40"></a>PALTTAB</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="ade29722e6dd45618a4ad70c7c08a33bca84a0fb133f59d35c6bbd0d3163f7a751"></a>PDROPTAB</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="ade29722e6dd45618a4ad70c7c08a33bca43936a6e200cb1a3e9f1607356f3c2e6"></a>PSHOW</em>&nbsp;</td><td class="fielddoc">
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00384">384</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00391">391</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -611,7 +628,7 @@ TableGram.l and.y (flex and bison grammar) </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00396">396</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00404">404</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -676,9 +693,9 @@ TableGram.l and.y (flex and bison grammar) </li>
 
 <p>Add a column node to applySelNodes_p. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00694">694</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00732">732</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00939">applySelNodes_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00975">applySelNodes_p</a>.</p>
 
 </div>
 </div>
@@ -779,12 +796,12 @@ TableGram.l and.y (flex and bison grammar) </li>
 
 </div>
 </div>
-<a class="anchor" id="a59d6cd3bf1cd9aec52aa98ec201e989b"></a>
+<a class="anchor" id="ae781f41450125c7c73925b6233ef9d97"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void casacore::TableParseSelect::addTable </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::addTable </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
           <td class="paramname"><em>tabnr</em>, </td>
@@ -816,13 +833,13 @@ TableGram.l and.y (flex and bison grammar) </li>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>tempTables</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>stack</em>&#160;</td>
         </tr>
         <tr>
@@ -861,9 +878,9 @@ TableGram.l and.y (flex and bison grammar) </li>
 
 <p>Add an update object. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l01001">1001</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l01049">1049</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00925">update_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00961">update_p</a>.</p>
 
 </div>
 </div>
@@ -1008,9 +1025,9 @@ TableGram.l and.y (flex and bison grammar) </li>
 
 <p>Return the command type. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00409">409</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00417">417</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00874">commandType_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00909">commandType_p</a>.</p>
 
 </div>
 </div>
@@ -1074,7 +1091,65 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="adf3bb3275954a89cb1937662b56e7323"></a>
+<a class="anchor" id="a710562a7d0c8895075991b4d2d808f9b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::createSubTable </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>subtableName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;&#160;</td>
+          <td class="paramname"><em>td</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#a79c2dfec4363785472512dbf384675a1">Int64</a>&#160;</td>
+          <td class="paramname"><em>nrow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dmInfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac2f34f87e7d3404edb26d9b8db43a3fd"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1097,7 +1172,19 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
-          <td class="paramname"><em>dmInfo</em>&#160;</td>
+          <td class="paramname"><em>dmInfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1254,7 +1341,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aa3653f9e1cad1ea27adc9cc935740700"></a>
+<a class="anchor" id="adbe55a9ffb0726d6d4a6bba0bf7e484f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1271,7 +1358,19 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
-          <td class="paramname"><em>table</em>&#160;</td>
+          <td class="paramname"><em>table</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1376,7 +1475,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ad8fa8028b3029d7f9d1e676a7e968acc"></a>
+<a class="anchor" id="acef0dc2e5c467026d4dc2d7b01255300"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1386,7 +1485,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt;<a class="el" href="classcasacore_1_1TableExprGroupFuncSet.html">TableExprGroupFuncSet</a>&gt; &gt; casacore::TableParseSelect::doGroupByAggrMultipleKeys </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>aggrNodes</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1402,7 +1501,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ac258ee7516aa945378895eef3ce94223"></a>
+<a class="anchor" id="a4149e297a9a9ee1f7e4986396b1e73e4"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -1414,7 +1513,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1CountedPtr.html">CountedPtr</a>&lt;<a class="el" href="classcasacore_1_1TableExprGroupFuncSet.html">TableExprGroupFuncSet</a>&gt; &gt; casacore::TableParseSelect::doGroupByAggrSingleKey </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>aggrNodes</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1431,9 +1530,9 @@ template&lt;typename T &gt; </div>
 <p>We have to group the data according to the (possibly empty) groupby. We step through the table in the normal order which may not be the groupby order. A map&lt;key,int&gt; is used to keep track of the results where the int is the index in a vector of a set of aggregate function objects.</p>
 <p>Loop through all rows. For each row generate the key to get the right entry. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00834">834</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00869">869</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00911">groupbyNodes_p</a>, <a class="el" href="namespacecasacore.html#a39b81c583ddbbd77061d6c88d8f1a20f">casacore::max()</a>, <a class="el" href="TableParse_8h_source.html#l00952">rownrs_p</a>, <a class="el" href="TableExprId_8h_source.html#l00185">casacore::TableExprId::setRownr()</a>, and <a class="el" href="ArrayBase_8h_source.html#l00105">casacore::ArrayBase::size()</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00947">groupbyNodes_p</a>, <a class="el" href="namespacecasacore.html#a39b81c583ddbbd77061d6c88d8f1a20f">casacore::max()</a>, <a class="el" href="TableParse_8h_source.html#l00988">rownrs_p</a>, <a class="el" href="TableExprId_8h_source.html#l00185">casacore::TableExprId::setRownr()</a>, and <a class="el" href="ArrayBase_8h_source.html#l00105">casacore::ArrayBase::size()</a>.</p>
 
 </div>
 </div>
@@ -1799,7 +1898,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a150547695eb6a72659ad7d7a7471e5bf"></a>
+<a class="anchor" id="af7a789cedb63b9ef1faba9faaaf3dbee"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1831,7 +1930,19 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>doTracing</em> = <code><a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a></code>&#160;</td>
+          <td class="paramname"><em>doTracing</em> = <code><a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em> = <code>std::vector&lt;&#160;const&#160;<a class="el" href="classcasacore_1_1Table.html">Table</a>&#160;*&#160;&gt;()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em> = <code>std::vector&lt;&#160;<a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a>&#160;*&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1843,6 +1954,43 @@ template&lt;typename T &gt; </div>
 
 <p>Execute the select command (select/sort/projection/groupby/having/giving). </p>
 <p>The setInGiving flag tells if a set in the GIVING part is allowed. The mustSelect flag tells if a SELECT command must do something. Usually that is required, but not for a SELECT in an INSERT command. Optionally the maximum nr of rows to be selected can be given. It will be used as the default value for the LIMIT clause. 0 = no maximum. </p>
+
+</div>
+</div>
+<a class="anchor" id="a0b43f28b97a104918afb547626e4f02b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt;<a class="el" href="classcasacore_1_1ColumnDesc.html">ColumnDesc</a>,<a class="el" href="classcasacore_1_1Record.html">Record</a>&gt; casacore::TableParseSelect::findColumnInfo </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>colName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>newColName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Find the <a class="el" href="classcasacore_1_1ColumnDesc.html" title="Envelope class for the description of a table column. ">ColumnDesc</a> and data manager info of another column (a LIKE column). </p>
+<p>The LIKE column name can be qualified to use another table. It sets the new column name in the data manager info. An exception is thrown if colName is invalid or unknown. </p>
 
 </div>
 </div>
@@ -1889,7 +2037,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a1084c2e100facff8d6a720603b62a968"></a>
+<a class="anchor" id="ae6d67996fc07b4390ee7b77f7268563a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1903,7 +2051,13 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>keyName</em>&#160;</td>
+          <td class="paramname"><em>keyName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>update</em> = <code><a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1914,7 +2068,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Split the given name into optional shorthand, column and fields. </p>
-<p>Find the keywordset for it and fill in the final keyword name. It is a helper function for handleSetKey, etc. </p>
+<p>Find the keywordset for it and fill in the final keyword name. It is a helper function for handleSetKey, etc. If update=True, rwKeywordSet() is used to ensure the table is updated. </p>
 
 </div>
 </div>
@@ -1955,7 +2109,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a3dc684ae3962b895bbcc46330b0c1080"></a>
+<a class="anchor" id="a7e197546bfaea39338a470c9a13dd7b1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1963,42 +2117,39 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::findTableKey </td>
+          <td class="memname"><a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::findTable </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
-          <td class="paramname"><em>table</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>columnName</em>, </td>
+          <td class="paramname"><em>shorthand</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>keyNames</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>doWith</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Try to find the keyword representing a table in the given table. </p>
-<p>If the columnName is empty, the keyword is a table keyword. If not found, a null <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object is returned. </p>
-
 </div>
 </div>
-<a class="anchor" id="a0842c600b5df400e7b536209da7f1595"></a>
+<a class="anchor" id="a25edffb3059047692242ae173d796475"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2006,7 +2157,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a>*&gt; casacore::TableParseSelect::getAggrNodes </td>
+          <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1TableExprNodeRep.html">TableExprNodeRep</a>*&gt; casacore::TableParseSelect::getAggrNodes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -2071,9 +2222,9 @@ template&lt;typename T &gt; </div>
 
 <p>Get the projected column names. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00995">995</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l01043">1043</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00883">columnNames_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00920">columnNames_p</a>.</p>
 
 </div>
 </div>
@@ -2100,9 +2251,9 @@ template&lt;typename T &gt; </div>
 
 <p>Return the expression node. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00413">413</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00421">421</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00909">node_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00945">node_p</a>.</p>
 
 </div>
 </div>
@@ -2131,9 +2282,9 @@ template&lt;typename T &gt; </div>
 <p>Get the order for this key. </p>
 <p>Use the default order_p if not explicitly given with the key. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l01004">1004</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l01052">1052</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00991">casacore::TableParseSort::order()</a>, <a class="el" href="TableParse_8h_source.html#l00935">order_p</a>, and <a class="el" href="TableParse_8h_source.html#l00989">casacore::TableParseSort::orderGiven()</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l01039">casacore::TableParseSort::order()</a>, <a class="el" href="TableParse_8h_source.html#l00971">order_p</a>, and <a class="el" href="TableParse_8h_source.html#l01037">casacore::TableParseSort::orderGiven()</a>.</p>
 
 </div>
 </div>
@@ -2182,6 +2333,59 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a0c47b9940f3f6121e4e16fe9d5f1f2be"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::getTable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
+          <td class="paramname"><em>tabnr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
+          <td class="paramname"><em>ftab</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>alwaysOpen</em> = <code><a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Make a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object for given name, seqnr or so. </p>
+<p>If <code>alwaysOpen=False</code> the table will only be looked up, but not opened if not found. This is meant for concatenated tables in <a class="el" href="classcasacore_1_1TaQLNodeHandler.html" title="Class to handle the nodes in the raw TaQL parse tree. ">TaQLNodeHandler</a>. </p>
+
+</div>
+</div>
 <a class="anchor" id="a3f095c5f130544d126cec306d4f285c8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2205,9 +2409,9 @@ template&lt;typename T &gt; </div>
 
 <p>Get the resulting table. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00998">998</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l01046">1046</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00941">table_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00977">table_p</a>.</p>
 
 </div>
 </div>
@@ -2348,7 +2552,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a359d24383d7880cb4d2a9fd1282094ec"></a>
+<a class="anchor" id="ad40910eea231aa7747c6e02862c8eb17"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2357,6 +2561,12 @@ template&lt;typename T &gt; </div>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
           <td class="paramname"><em>columnName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>likeColName</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -2458,6 +2668,24 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="abd789626ffcf73ebdd0ec936d38f1516"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::TableParseSelect::handleCopyCol </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
+          <td class="paramname"><em>showTimings</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handle copying of columns. </p>
+
+</div>
+</div>
 <a class="anchor" id="aa52131d6cceb8f95b3f135e449ff6e61"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2476,7 +2704,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a5c46152b9a319f1d419ee82c7600acce"></a>
+<a class="anchor" id="a4f2fe3eed241042c4c44df2cb65406d2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2484,13 +2712,57 @@ template&lt;typename T &gt; </div>
           <td class="memname">void casacore::TableParseSelect::handleCreTab </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
-          <td class="paramname"><em>dmInfo</em></td><td>)</td>
+          <td class="paramname"><em>dmInfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Keep the create table command. </p>
+
+</div>
+</div>
+<a class="anchor" id="ae6c261463ea35e7404a3fb73fc71a968"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::TableParseSelect::handleDropTab </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handle the DROP TABLE command. </p>
 
 </div>
 </div>
@@ -2574,14 +2846,14 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a209b7605e40c02fa46a31ba6920f1f74"></a>
+<a class="anchor" id="abd4a7c9e09c71d2e34331b24cb01c03c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void casacore::TableParseSelect::handleGroupby </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a> &gt; &amp;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -2966,6 +3238,34 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a0d0812e3641f0b2b292233587be766f4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::TableParseSelect::initDescriptions </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Record.html">Record</a> &amp;&#160;</td>
+          <td class="paramname"><em>dminfo</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize the table and data manager descriptions. </p>
+
+</div>
+</div>
 <a class="anchor" id="a341bf5f94af67b97ce2f662207f70061"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3191,80 +3491,21 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="adbb1c9c986e16b7f580b591c6d368261"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::makeTable </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abb6e2c1bac472ca1ebadadf96cc8426f">Int</a>&#160;</td>
-          <td class="paramname"><em>tabnr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;&#160;</td>
-          <td class="paramname"><em>ftab</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>shorthand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt;&#160;</td>
-          <td class="paramname"><em>tempTables</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
-          <td class="paramname"><em>stack</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td>
-          <td class="paramname"><em>alwaysOpen</em> = <code><a class="el" href="namespacecasacore.html#ad5c850f9e177173e0f7d0ad57091501d">True</a></code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Make a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object for given name, seqnr or so. </p>
-<p>If <code>alwaysOpen=False</code> the table will only be looked up, but not opened if not found. This is meant for concatenated tables in <a class="el" href="classcasacore_1_1TaQLNodeHandler.html" title="Class to handle the nodes in the raw TaQL parse tree. ">TaQLNodeHandler</a>. </p>
-
-</div>
-</div>
-<a class="anchor" id="afe1214c62fa82116b0ddc511c458780c"></a>
+<a class="anchor" id="a781d53b27609d5562ac5171413d53cde"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void casacore::TableParseSelect::makeTableNoFrom </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>stack</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a temporary table in no tables are given in FROM. </p>
+<p>Create a temporary table if no tables are given in FROM. </p>
 
 </div>
 </div>
@@ -3322,6 +3563,54 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a2fd3016056c132fa98f9a28d841bbfdb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::openParentTable </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>fullName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
+          <td class="paramname"><em>subTableName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classcasacore_1_1Table.html">Table</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tempTables</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Open the parent table of a subtable. </p>
+
+</div>
+</div>
 <a class="anchor" id="ad48c888766fc8ebbdb52577f57972558"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3364,9 +3653,9 @@ template&lt;typename T &gt; </div>
 
 <p>Set the <a class="el" href="classcasacore_1_1DataManager.html" title="Abstract base class for a data manager. ">DataManager</a> info for a new table. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00594">594</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00618">618</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00905">dminfo_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00913">dminfo_p</a>.</p>
 
 </div>
 </div>
@@ -3394,9 +3683,9 @@ template&lt;typename T &gt; </div>
 
 <p>Set the insert expressions for all rows. </p>
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00505">505</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00530">530</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>References <a class="el" href="TableParse_8h_source.html#l00927">insertExprs_p</a>.</p>
+<p>References <a class="el" href="TableParse_8h_source.html#l00963">insertExprs_p</a>.</p>
 
 </div>
 </div>
@@ -3529,62 +3818,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Split a name into its parts (shorthand, column and field names). </p>
-<p>True is returned if the name contained a keyword part. In that case fieldNames contains the keyword name and the possible subfields. The possible shorthand and the column name are filled in if it is a column keyword. If the name represents a column, fieldNames contains the subfields of the column (for the case where the column contains records). If the name is invalid, an exception is thrown if checkError=True. Otherwise the name is treated as a normal name without keyword. If allowEmtpy is True, :: is allowed, otherwise an error is thrown. </p>
-
-</div>
-</div>
-<a class="anchor" id="a4e5d0858f2ec350936b1508c4938958b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="classcasacore_1_1Table.html">Table</a> casacore::TableParseSelect::tableKey </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>fullName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>shorthand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>columnName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcasacore_1_1Vector.html">Vector</a>&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>fieldNames</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const vector&lt; <a class="el" href="classcasacore_1_1TableParseSelect.html">TableParseSelect</a> * &gt; &amp;&#160;</td>
-          <td class="paramname"><em>stack</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Try to find the keyword representing a table in one of the tables in any select block (from inner to outer). </p>
-<p>If not found, an exception is thrown. </p>
+<p>If isKeyword is True, the first part of name is a keyword, even if no :: is given. True is returned if the name contains a keyword part. In that case fieldNames contains the keyword name and the possible subfields. The possible shorthand and the column name are filled in if it is a column keyword. If the name represents a column, fieldNames contains the subfields of the column (for the case where the column contains records). If allowNoKey is True, a single :: is allowed, otherwise the name is invalid. If the name is invalid, exceptions are only thrown if checkError=True. Otherwise the name is treated as a normal name without keyword. </p>
 
 </div>
 </div>
@@ -3861,7 +4095,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a34808fccece50feb7506d0a9f7cf6c9d"></a>
+<a class="anchor" id="ad23cefe9281a616777d2511068280ddf"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -3869,7 +4103,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&gt; casacore::TableParseSelect::applySelNodes_p</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&gt; casacore::TableParseSelect::applySelNodes_p</td>
         </tr>
       </table>
   </td>
@@ -3879,9 +4113,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00939">939</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00975">975</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00694">addApplySelNode()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00732">addApplySelNode()</a>.</p>
 
 </div>
 </div>
@@ -3903,7 +4137,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00891">891</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00928">928</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -3925,7 +4159,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00887">887</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00924">924</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -3947,7 +4181,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00893">893</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00930">930</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -3969,7 +4203,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00885">885</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00922">922</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -3991,9 +4225,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00883">883</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00920">920</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00995">getColumnNames()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l01043">getColumnNames()</a>.</p>
 
 </div>
 </div>
@@ -4015,7 +4249,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00889">889</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00926">926</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4037,9 +4271,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00874">874</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00909">909</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00409">commandType()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00417">commandType()</a>.</p>
 
 </div>
 </div>
@@ -4061,7 +4295,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00897">897</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00934">934</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4083,9 +4317,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00905">905</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00913">913</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00594">setDMInfo()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00618">setDMInfo()</a>.</p>
 
 </div>
 </div>
@@ -4107,7 +4341,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00903">903</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00940">940</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4129,7 +4363,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00919">919</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00955">955</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4151,7 +4385,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00945">945</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00981">981</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4173,11 +4407,11 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00944">944</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00980">980</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a94ca5c6de561a4b43223bb5248acbc46"></a>
+<a class="anchor" id="ac590369174d76a6c1bdd0e11b14fb442"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -4185,7 +4419,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="classcasacore_1_1TableParse.html">TableParse</a>&gt; casacore::TableParseSelect::fromTables_p</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1TableParse.html">TableParse</a>&gt; casacore::TableParseSelect::fromTables_p</td>
         </tr>
       </table>
   </td>
@@ -4195,11 +4429,11 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00881">881</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00918">918</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4cbc70ba65bfb506db531a523d15531f"></a>
+<a class="anchor" id="af7a1d87f6375d22c7c0ce151b72e3185"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -4207,7 +4441,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&gt; casacore::TableParseSelect::groupbyNodes_p</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1TableExprNode.html">TableExprNode</a>&gt; casacore::TableParseSelect::groupbyNodes_p</td>
         </tr>
       </table>
   </td>
@@ -4217,9 +4451,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00911">911</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00947">947</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00834">doGroupByAggrSingleKey()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00869">doGroupByAggrSingleKey()</a>.</p>
 
 </div>
 </div>
@@ -4241,7 +4475,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00912">912</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00948">948</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4263,7 +4497,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00914">914</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00950">950</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4285,9 +4519,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00927">927</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00963">963</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00505">setInsertExprs()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00530">setInsertExprs()</a>.</p>
 
 </div>
 </div>
@@ -4309,7 +4543,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00929">929</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00965">965</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4331,7 +4565,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00916">916</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00952">952</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4353,9 +4587,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00909">909</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00945">945</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00413">getNode()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00421">getNode()</a>.</p>
 
 </div>
 </div>
@@ -4377,7 +4611,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00933">933</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00969">969</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4399,7 +4633,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00895">895</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00932">932</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4421,7 +4655,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00921">921</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00957">957</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4443,9 +4677,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00935">935</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00971">971</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l01004">getOrder()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l01052">getOrder()</a>.</p>
 
 </div>
 </div>
@@ -4467,7 +4701,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00904">904</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00941">941</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4489,7 +4723,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00950">950</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00986">986</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4511,7 +4745,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00949">949</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00985">985</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4533,7 +4767,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00947">947</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00983">983</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4555,7 +4789,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00901">901</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00938">938</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4577,7 +4811,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00899">899</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00936">936</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4599,7 +4833,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00907">907</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00943">943</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4621,7 +4855,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00900">900</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00937">937</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4643,9 +4877,9 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00952">952</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00988">988</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00834">doGroupByAggrSingleKey()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00869">doGroupByAggrSingleKey()</a>.</p>
 
 </div>
 </div>
@@ -4667,7 +4901,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00931">931</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00967">967</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4689,7 +4923,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00902">902</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00939">939</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4711,7 +4945,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00923">923</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00959">959</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4733,13 +4967,13 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00941">941</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00977">977</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l00998">getTable()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l01046">getTable()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a83518f953f15efb589f701c524bd9887"></a>
+<a class="anchor" id="a0c341dbb4d3a9a323b4175ae96414e28"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -4747,7 +4981,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a> casacore::TableParseSelect::tableDesc_p</td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classcasacore_1_1TableDesc.html">TableDesc</a>&gt; casacore::TableParseSelect::tableDesc_p</td>
         </tr>
       </table>
   </td>
@@ -4757,7 +4991,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00876">876</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00912">912</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>
@@ -4779,13 +5013,13 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00925">925</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00961">961</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableParse_8h_source.html#l01001">addUpdate()</a>.</p>
+<p>Referenced by <a class="el" href="TableParse_8h_source.html#l01049">addUpdate()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4a29117f4deb01bf4963ed5fdf217e1d"></a>
+<a class="anchor" id="a4055259868e6040162bc4cdcd4803aa4"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -4793,7 +5027,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="classcasacore_1_1TableParse.html">TableParse</a>&gt; casacore::TableParseSelect::withTables_p</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classcasacore_1_1TableParse.html">TableParse</a>&gt; casacore::TableParseSelect::withTables_p</td>
         </tr>
       </table>
   </td>
@@ -4803,7 +5037,7 @@ template&lt;typename TCOL , typename TNODE &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00880">880</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
+<p>Definition at line <a class="el" href="TableParse_8h_source.html#l00917">917</a> of file <a class="el" href="TableParse_8h_source.html">TableParse.h</a>.</p>
 
 </div>
 </div>

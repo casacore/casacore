@@ -160,9 +160,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7c09b6b667faac2e271646702a8eb226"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a930b4606371693c460b2bd2ebab0e157"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MVEpoch.html#a930b4606371693c460b2bd2ebab0e157">nearAbs</a> (const <a class="el" href="classcasacore_1_1MVEpoch.html">MVEpoch</a> &amp;other, <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> tol=1e-13) const </td></tr>
 <tr class="separator:a930b4606371693c460b2bd2ebab0e157"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb7a3454dacc1035c554b77f691d9f21"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MVEpoch.html#aeb7a3454dacc1035c554b77f691d9f21">type</a> () const </td></tr>
-<tr class="memdesc:aeb7a3454dacc1035c554b77f691d9f21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tell me your type.  <a href="#aeb7a3454dacc1035c554b77f691d9f21">More...</a><br/></td></tr>
-<tr class="separator:aeb7a3454dacc1035c554b77f691d9f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b5139afe49a99cc5ee6d86d99d71f54"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MVEpoch.html#a4b5139afe49a99cc5ee6d86d99d71f54">adjust</a> ()</td></tr>
 <tr class="memdesc:a4b5139afe49a99cc5ee6d86d99d71f54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust the time to its constituent parts.  <a href="#a4b5139afe49a99cc5ee6d86d99d71f54">More...</a><br/></td></tr>
 <tr class="separator:a4b5139afe49a99cc5ee6d86d99d71f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,6 +219,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa8127de5b09f87c5ad2926a9402c74bc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MVEpoch.html#aa8127de5b09f87c5ad2926a9402c74bc">assure</a> (const <a class="el" href="classcasacore_1_1MeasValue.html">MeasValue</a> &amp;in)</td></tr>
+<tr class="memdesc:aa8127de5b09f87c5ad2926a9402c74bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tell me your type.  <a href="#aa8127de5b09f87c5ad2926a9402c74bc">More...</a><br/></td></tr>
 <tr class="separator:aa8127de5b09f87c5ad2926a9402c74bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
@@ -576,6 +574,8 @@ A proper high precision time, including multiplication etc should be considered.
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Tell me your type. </p>
 
 </div>
 </div>
@@ -1027,33 +1027,6 @@ A proper high precision time, including multiplication etc should be considered.
 
 </div>
 </div>
-<a class="anchor" id="aeb7a3454dacc1035c554b77f691d9f21"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::MVEpoch::type </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Tell me your type. </p>
-
-<p>Implements <a class="el" href="classcasacore_1_1MeasValue.html#abae59a3c26c56891d280e9a1b7a81067">casacore::MeasValue</a>.</p>
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="af4679120939f973eb9382455ad261157"></a>
 <div class="memitem">
@@ -1075,7 +1048,7 @@ A proper high precision time, including multiplication etc should be considered.
 
 <p>Fraction of days. </p>
 
-<p>Definition at line <a class="el" href="MVEpoch_8h_source.html#l00199">199</a> of file <a class="el" href="MVEpoch_8h_source.html">MVEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MVEpoch_8h_source.html#l00198">198</a> of file <a class="el" href="MVEpoch_8h_source.html">MVEpoch.h</a>.</p>
 
 </div>
 </div>
@@ -1145,7 +1118,7 @@ A proper high precision time, including multiplication etc should be considered.
 
 <p>Whole days Note that if higher precision is needed, the splitting could be in 0.001 days and fractions thereof. </p>
 
-<p>Definition at line <a class="el" href="MVEpoch_8h_source.html#l00197">197</a> of file <a class="el" href="MVEpoch_8h_source.html">MVEpoch.h</a>.</p>
+<p>Definition at line <a class="el" href="MVEpoch_8h_source.html#l00196">196</a> of file <a class="el" href="MVEpoch_8h_source.html">MVEpoch.h</a>.</p>
 
 </div>
 </div>

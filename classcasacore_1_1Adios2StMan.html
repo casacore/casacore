@@ -118,10 +118,10 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac64f1fea56e120913f38a88260e06295"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Adios2StMan.html#ac64f1fea56e120913f38a88260e06295">Adios2StMan</a> (MPI_Comm mpiComm=MPI_COMM_WORLD)</td></tr>
-<tr class="separator:ac64f1fea56e120913f38a88260e06295"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab46dc99e91fb9d20bfa7c129d2a7f148"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Adios2StMan.html#ab46dc99e91fb9d20bfa7c129d2a7f148">Adios2StMan</a> (MPI_Comm mpiComm, std::string engineType, std::map&lt; std::string, std::string &gt; engineParams, std::vector&lt; std::map&lt; std::string, std::string &gt;&gt; transportParams)</td></tr>
-<tr class="separator:ab46dc99e91fb9d20bfa7c129d2a7f148"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeff70cd1a19bece5799923df7fd4b759"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Adios2StMan.html#aeff70cd1a19bece5799923df7fd4b759">Adios2StMan</a> (MPI_Comm mpiComm=MPI_COMM_WORLD, std::string engineType=std::string(), std::map&lt; std::string, std::string &gt; engineParams=std::map&lt; std::string, std::string &gt;(), std::vector&lt; std::map&lt; std::string, std::string &gt;&gt; transportParams=std::vector&lt; std::map&lt; std::string, std::string &gt;&gt;(), std::vector&lt; std::map&lt; std::string, std::string &gt;&gt; operatorParams=std::vector&lt; std::map&lt; std::string, std::string &gt;&gt;())</td></tr>
+<tr class="separator:aeff70cd1a19bece5799923df7fd4b759"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25c6a3bf87fde3e51e83560aa65e9bce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Adios2StMan.html#a25c6a3bf87fde3e51e83560aa65e9bce">Adios2StMan</a> (std::string xmlFile, MPI_Comm mpiComm=MPI_COMM_WORLD)</td></tr>
+<tr class="separator:a25c6a3bf87fde3e51e83560aa65e9bce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d70a150d6026668dadb16dabddcb9ed"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Adios2StMan.html#a8d70a150d6026668dadb16dabddcb9ed">~Adios2StMan</a> ()</td></tr>
 <tr class="separator:a8d70a150d6026668dadb16dabddcb9ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a318101ae2a63780adeca8a0e73ad23e1"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcasacore_1_1DataManager.html">DataManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Adios2StMan.html#a318101ae2a63780adeca8a0e73ad23e1">clone</a> () const </td></tr>
@@ -320,7 +320,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock">
 <p>Definition at line <a class="el" href="Adios2StMan_8h_source.html#l00045">45</a> of file <a class="el" href="Adios2StMan_8h_source.html">Adios2StMan.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ac64f1fea56e120913f38a88260e06295"></a>
+<a class="anchor" id="aeff70cd1a19bece5799923df7fd4b759"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -328,41 +328,57 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">casacore::Adios2StMan::Adios2StMan </td>
           <td>(</td>
           <td class="paramtype">MPI_Comm&#160;</td>
-          <td class="paramname"><em>mpiComm</em> = <code>MPI_COMM_WORLD</code></td><td>)</td>
+          <td class="paramname"><em>mpiComm</em> = <code>MPI_COMM_WORLD</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>engineType</em> = <code>std::string()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; std::string, std::string &gt;&#160;</td>
+          <td class="paramname"><em>engineParams</em> = <code>std::map&lt;&#160;std::string,&#160;std::string&#160;&gt;()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::map&lt; std::string, std::string &gt;&gt;&#160;</td>
+          <td class="paramname"><em>transportParams</em> = <code>std::vector&lt;&#160;std::map&lt;&#160;std::string,&#160;std::string&#160;&gt;&gt;()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::map&lt; std::string, std::string &gt;&gt;&#160;</td>
+          <td class="paramname"><em>operatorParams</em> = <code>std::vector&lt;&#160;std::map&lt;&#160;std::string,&#160;std::string&#160;&gt;&gt;()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a class="anchor" id="ab46dc99e91fb9d20bfa7c129d2a7f148"></a>
+<a class="anchor" id="a25c6a3bf87fde3e51e83560aa65e9bce"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">casacore::Adios2StMan::Adios2StMan </td>
           <td>(</td>
-          <td class="paramtype">MPI_Comm&#160;</td>
-          <td class="paramname"><em>mpiComm</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>engineType</em>, </td>
+          <td class="paramname"><em>xmlFile</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::map&lt; std::string, std::string &gt;&#160;</td>
-          <td class="paramname"><em>engineParams</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; std::map&lt; std::string, std::string &gt;&gt;&#160;</td>
-          <td class="paramname"><em>transportParams</em>&#160;</td>
+          <td class="paramtype">MPI_Comm&#160;</td>
+          <td class="paramname"><em>mpiComm</em> = <code>MPI_COMM_WORLD</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -956,7 +972,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Adios2StMan_8h_source.html#l00081">81</a> of file <a class="el" href="Adios2StMan_8h_source.html">Adios2StMan.h</a>.</p>
+<p>Definition at line <a class="el" href="Adios2StMan_8h_source.html#l00088">88</a> of file <a class="el" href="Adios2StMan_8h_source.html">Adios2StMan.h</a>.</p>
 
 </div>
 </div>

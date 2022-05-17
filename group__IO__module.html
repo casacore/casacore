@@ -214,7 +214,7 @@ Class <a class="el" href="classcasacore_1_1AipsIO.html">AipsIO</a> provides the 
 <li>
 Class <a class="el" href="classcasacore_1_1ByteSinkSource.html">ByteSinkSource</a> and its ancestors provide a general IO mechanism. </li>
 </ol>
-<p>Both use the underlying IO framework which define where and how the data are written. The how-part is defined by classes derived from <a class="el" href="classcasacore_1_1TypeIO.html">TypeIO</a> as shown in the <a href="IO/IO_1.html">OMT diagram</a>. There are three such classes: </p>
+<p>Both use the underlying IO framework which define where and how the data are written. The how-part is defined by classes derived from <a class="el" href="classcasacore_1_1TypeIO.html">TypeIO</a> as shown in the <a href="IO-framework.drawio.svg.html">UML diagram</a>. There are three such classes: </p>
 <ol>
 <li>
 <p class="startli"><a class="el" href="classcasacore_1_1CanonicalIO.html">CanonicalIO</a> reads/writes data in canonical (machine-independent) format. This should be used when data are meant to be exportable. It uses the conversion functions in class</p>
@@ -225,7 +225,7 @@ Class <a class="el" href="classcasacore_1_1ByteSinkSource.html">ByteSinkSource</
 <li>
 <a class="el" href="classcasacore_1_1ConversionIO.html">ConversionIO</a> reads/writes in an external format as defined at construction time. This can be used when the external format can be one of several (e.g. VAX or IBM for a WSRT archive tape). In this way the format has to be defined only once and thereafter is it handled correctly by the polymorphism mechanism. </li>
 </ol>
-<p>The where-part is defined by classes derived from <a class="el" href="classcasacore_1_1ByteIO.html">ByteIO</a> as shown in the <a href="IO/IO_2.html">OMT diagram</a>. There are a few such classes: </p>
+<p>The where-part is defined by classes derived from <a class="el" href="classcasacore_1_1ByteIO.html">ByteIO</a> as shown in the <a href="IO-framework.drawio.svg.html">UML diagram</a>. There are a few such classes: </p>
 <ol>
 <li>
 <a class="el" href="classcasacore_1_1RegularFileIO.html">RegularFileIO</a> uses a regular file to hold the data. Internally it uses <a class="el" href="classcasacore_1_1FilebufIO.html" title="Class for buffered IO on a file. ">FilebufIO</a> (see below). It can handle files &gt; 2 GB. </li>

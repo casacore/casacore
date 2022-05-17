@@ -224,6 +224,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a06616d0fce32c6330835a091055f1ddb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ImageBeamSet.html#a06616d0fce32c6330835a091055f1ddb">rotate</a> (const <a class="el" href="namespacecasacore.html#ad5429fefc00b65ab7ddb394a0e3fa410">Quantity</a> &amp;angle, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> unwrap=<a class="el" href="namespacecasacore.html#a11ef6530f2dc946f54d220fe416bfd41">False</a>)</td></tr>
 <tr class="memdesc:a06616d0fce32c6330835a091055f1ddb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modify the beam set by rotating all beams counterclockwise through the specified angle.  <a href="#a06616d0fce32c6330835a091055f1ddb">More...</a><br/></td></tr>
 <tr class="separator:a06616d0fce32c6330835a091055f1ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f418439bed310e71e6760eec5adf3e6"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ImageBeamSet.html#a7f418439bed310e71e6760eec5adf3e6">getAreas</a> () const </td></tr>
+<tr class="memdesc:a7f418439bed310e71e6760eec5adf3e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">get all the beam areas in a single quantum matrix.  <a href="#a7f418439bed310e71e6760eec5adf3e6">More...</a><br/></td></tr>
+<tr class="separator:a7f418439bed310e71e6760eec5adf3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e02dbbf4b26864c9fad1910ade4c846"><td class="memItemLeft" align="right" valign="top">const std::map&lt; <a class="el" href="classcasacore_1_1String.html">String</a>, <br class="typebreak"/>
+<a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt; <a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt; double &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ImageBeamSet.html#a6e02dbbf4b26864c9fad1910ade4c846">paramMatrices</a> (const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;majminUnit=<a class="el" href="classcasacore_1_1Unit.html">Unit</a>(&quot;arcsec&quot;), const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;paUnit=&quot;deg&quot;) const </td></tr>
+<tr class="memdesc:a6e02dbbf4b26864c9fad1910ade4c846"><td class="mdescLeft">&#160;</td><td class="mdescRight">get all the major axes, minor axes, and pas in quantum matrices.  <a href="#a6e02dbbf4b26864c9fad1910ade4c846">More...</a><br/></td></tr>
+<tr class="separator:a6e02dbbf4b26864c9fad1910ade4c846"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -657,7 +664,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00147">147</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageInfo_8h_source.html#l00245">casacore::ImageInfo::hasBeam()</a>.</p>
 
@@ -705,6 +712,23 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>convert <a class="el" href="classcasacore_1_1ImageBeamSet.html" title="Represents a set of restoring beams associated with an image. ">ImageBeamSet</a> to and from record </p>
+
+</div>
+</div>
+<a class="anchor" id="a7f418439bed310e71e6760eec5adf3e6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt;<a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt;double&gt; &gt; casacore::ImageBeamSet::getAreas </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get all the beam areas in a single quantum matrix. </p>
 
 </div>
 </div>
@@ -782,7 +806,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00202">202</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 </div>
 </div>
@@ -812,7 +836,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00220">220</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00281">_maxBeam</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00290">_maxBeam</a>.</p>
 
 </div>
 </div>
@@ -867,7 +891,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00231">231</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00282">_maxBeamPos</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00291">_maxBeamPos</a>.</p>
 
 </div>
 </div>
@@ -939,7 +963,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00215">215</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00281">_minBeam</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00290">_minBeam</a>.</p>
 
 </div>
 </div>
@@ -997,7 +1021,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00227">227</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00282">_minBeamPos</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00291">_minBeamPos</a>.</p>
 
 </div>
 </div>
@@ -1044,7 +1068,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00143">143</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageInfo_8h_source.html#l00237">casacore::ImageInfo::hasMultipleBeams()</a>.</p>
 
@@ -1073,7 +1097,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00139">139</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageInfo_8h_source.html#l00241">casacore::ImageInfo::hasSingleBeam()</a>.</p>
 
@@ -1105,7 +1129,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00157">157</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageInfo_8h_source.html#l00250">casacore::ImageInfo::nChannels()</a>.</p>
 
@@ -1136,7 +1160,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00133">133</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 </div>
 </div>
@@ -1166,7 +1190,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00162">162</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageInfo_8h_source.html#l00252">casacore::ImageInfo::nStokes()</a>.</p>
 
@@ -1259,6 +1283,35 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Beam sets are equal if the shapes and all corresponding beams are equal. </p>
+
+</div>
+</div>
+<a class="anchor" id="a6e02dbbf4b26864c9fad1910ade4c846"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::map&lt;<a class="el" href="classcasacore_1_1String.html">String</a>, <a class="el" href="classcasacore_1_1Quantum.html">Quantum</a>&lt;<a class="el" href="classcasacore_1_1Matrix.html">Matrix</a>&lt;double&gt; &gt; &gt; casacore::ImageBeamSet::paramMatrices </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;&#160;</td>
+          <td class="paramname"><em>majminUnit</em> = <code><a class="el" href="classcasacore_1_1Unit.html">Unit</a>(&quot;arcsec&quot;)</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1Unit.html">Unit</a> &amp;&#160;</td>
+          <td class="paramname"><em>paUnit</em> = <code>&quot;deg&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get all the major axes, minor axes, and pas in quantum matrices. </p>
+<p>The returned map has keys "major", "minor", and "pa". </p>
 
 </div>
 </div>
@@ -1419,7 +1472,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00152">152</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 </div>
 </div>
@@ -1446,7 +1499,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00135">135</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
-<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00278">_beams</a>.</p>
+<p>References <a class="el" href="ImageBeamSet_8h_source.html#l00287">_beams</a>.</p>
 
 </div>
 </div>
@@ -1547,7 +1600,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00279">279</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00288">288</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 </div>
 </div>
@@ -1569,7 +1622,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00280">280</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00289">289</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 </div>
 </div>
@@ -1591,7 +1644,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00278">278</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00287">287</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageBeamSet_8h_source.html#l00147">empty()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00202">getBeams()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00143">hasMultiBeam()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00139">hasSingleBeam()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00157">nchan()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00133">nelements()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00162">nstokes()</a>, <a class="el" href="ImageBeamSet_8h_source.html#l00152">shape()</a>, and <a class="el" href="ImageBeamSet_8h_source.html#l00135">size()</a>.</p>
 
@@ -1615,7 +1668,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00276">276</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00285">285</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 </div>
 </div>
@@ -1637,7 +1690,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00281">281</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00290">290</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageBeamSet_8h_source.html#l00220">getMaxAreaBeam()</a>.</p>
 
@@ -1661,7 +1714,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00282">282</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00291">291</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageBeamSet_8h_source.html#l00231">getMaxAreaBeamPosition()</a>.</p>
 
@@ -1685,7 +1738,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00281">281</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00290">290</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageBeamSet_8h_source.html#l00215">getMinAreaBeam()</a>.</p>
 
@@ -1709,7 +1762,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00282">282</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
+<p>Definition at line <a class="el" href="ImageBeamSet_8h_source.html#l00291">291</a> of file <a class="el" href="ImageBeamSet_8h_source.html">ImageBeamSet.h</a>.</p>
 
 <p>Referenced by <a class="el" href="ImageBeamSet_8h_source.html#l00227">getMinAreaBeamPosition()</a>.</p>
 

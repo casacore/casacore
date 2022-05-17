@@ -66,8 +66,6 @@ var searchData=
   ['regionhandlertable',['RegionHandlerTable',['../classcasacore_1_1RegionHandlerTable.html',1,'casacore']]],
   ['regionmanager',['RegionManager',['../classcasacore_1_1RegionManager.html',1,'casacore']]],
   ['regiontype',['RegionType',['../classcasacore_1_1RegionType.html',1,'casacore']]],
-  ['register_5fglobal_5ffunctions_5fregister',['Register_global_functions_register',['../structcasacore_1_1Register__global__functions__register.html',1,'casacore']]],
-  ['regsequence',['RegSequence',['../classcasacore_1_1RegSequence.html',1,'casacore']]],
   ['regularfile',['RegularFile',['../classcasacore_1_1RegularFile.html',1,'casacore']]],
   ['regularfileio',['RegularFileIO',['../classcasacore_1_1RegularFileIO.html',1,'casacore']]],
   ['reservedfitskeyword',['ReservedFitsKeyword',['../classcasacore_1_1ReservedFitsKeyword.html',1,'casacore']]],

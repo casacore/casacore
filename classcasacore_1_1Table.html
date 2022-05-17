@@ -577,7 +577,8 @@ Friends</h2></td></tr>
 </ul>
 <h3>Synopsis</h3>
 <p>Class <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> can be used to create a new table or to access an existing table in read/write or readonly mode.</p>
-<p>To access the data in a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a>, objects have to be created to access the columns. These objects are <a class="el" href="classcasacore_1_1TableColumn.html" title="Read/write access to a table column. ">TableColumn</a>, ScalarColumn&lt;T&gt; and ArrayColumn&lt;T&gt;, which can be created via their constructors. Furthermore the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> has a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> object for holding keywords which can be read or written using the appropriate functions.</p>
+<p>To access the data in a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a>, objects have to be created to access the columns. These objects are <a class="el" href="classcasacore_1_1TableColumn.html" title="Read/write access to a table column. ">TableColumn</a>, ScalarColumn&lt;T&gt; and ArrayColumn&lt;T&gt;, which can be created via their constructors. Furthermore the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> has a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> object for holding keywords which can be read or written using the appropriate functions. <br/>
+ The <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> class structure is shown in this <a href="Table.drawio.svg.html">UML diagram</a>.</p>
 <p>To open an existing table, a simple <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> constructor can be used. The possible construct options are: </p>
 <ul>
 <li>
@@ -613,7 +614,7 @@ virtual concatenation of tables (if still necessary). </li>
 maybe an isAttached function. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00155">155</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00157">157</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a27cfc315ed794db0723ec4d12e4f86b1"></a>
 <div class="memitem">
@@ -630,7 +631,7 @@ maybe an isAttached function. </li>
 - <code>isScratch=True</code> indicates that a scratch table is created (<code>oldName</code> is empty) or renamed (<code>oldName</code> is not empty). <br/>
 - <code>isScratch=False</code> indicates that a scratch table with name <code>name</code> is not scratch anymore (because it is closed or because its state is set to non-scratch). </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00216">216</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00218">218</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -663,7 +664,7 @@ maybe an isAttached function. </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00194">194</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00196">196</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -699,7 +700,7 @@ maybe an isAttached function. </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00170">170</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00172">172</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -723,7 +724,7 @@ maybe an isAttached function. </li>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00186">186</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00188">188</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -1789,7 +1790,7 @@ It is virtual, so an object of a derived class like <a class="el" href="classcas
 If this table is a reference table (result of selection) and if <code>addToParent=True</code> the column is also added to the parent table.</p>
 <p>Use the first appropriate existing storage manager. If there is none, a data manager is created using the default data manager in the column description. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01207">1207</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01209">1209</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -1840,7 +1841,7 @@ If this table is a reference table (result of selection) and if <code>addToParen
 <p>Use an existing data manager with the given name or type. </p>
 <p>If the flag byName is True, a name is given, otherwise a type. If a name is given, an exception is thrown if the data manager is unknown or does not allow addition of columns. If a type is given, a storage manager of the given type will be created if there is no such data manager allowing addition of rows. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01209">1209</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01211">1211</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -1884,7 +1885,7 @@ If this table is a reference table (result of selection) and if <code>addToParen
 
 <p>Use the given data manager (which is a new one). </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01213">1213</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01215">1215</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -1931,7 +1932,7 @@ If this table is a reference table (result of selection) and if <code>addToParen
 The data manager can be given directly or by means of a record describing the data manager in the standard way with the fields TYPE, NAME, and SPEC. The record can contain those fields itself or it can contain a single subrecord with those fields. <br/>
 If this table is a reference table (result of selection) and if <code>addToParent=True</code> the columns are also added to the parent table. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01216">1216</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01218">1218</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -1973,7 +1974,7 @@ If this table is a reference table (result of selection) and if <code>addToParen
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01219">1219</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01221">1221</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2012,7 +2013,7 @@ If this table is a reference table (result of selection) and if <code>addToParen
 <p>Add one or more rows at the end of the table. </p>
 <p>This will fail for tables not supporting addition of rows. Optionally the rows can be initialized with the default values as defined in the column descriptions. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01201">1201</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01203">1203</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2040,7 +2041,7 @@ If this table is a reference table (result of selection) and if <code>addToParen
 <p>Test if it is possible to add a row to this table. </p>
 <p>It is possible if all storage managers used for the table support it. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01192">1192</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01194">1194</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2086,7 +2087,7 @@ You can always remove columns from a reference table. </p>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01196">1196</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01198">1198</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2114,7 +2115,7 @@ You can always remove columns from a reference table. </p>
 <p>Test if it is possible to remove a row from this table. </p>
 <p>It is possible if all storage managers used for the table support it. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01194">1194</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01196">1196</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2142,7 +2143,7 @@ You can always remove columns from a reference table. </p>
 
 <p>Test if a column can be renamed. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01198">1198</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01200">1200</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2411,7 +2412,7 @@ If <code>noRows=True</code> no rows are copied. Also no rows are copied in all s
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01143">1143</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01145">1145</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2477,7 +2478,7 @@ If <code>noRows=True</code> no rows are copied. Also no rows are copied in all s
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01152">1152</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01154">1154</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2558,7 +2559,7 @@ If <code>noRows=True</code> no rows are copied. Also no rows are copied in all s
 
 <p>Find the data manager with the given name or for the given column name. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01228">1228</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01230">1230</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2599,7 +2600,7 @@ If <code>noRows=True</code> no rows are copied. Also no rows are copied in all s
 If <code>fsync=True</code> the file contents are fsync-ed to disk, thus ensured that the system buffers are actually written to disk. <br/>
 If <code>recursive=True</code> all subtables are flushed too. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01099">1099</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01101">1101</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>Referenced by <a class="el" href="TempLatticeImpl_8h_source.html#l00103">casacore::TempLatticeImpl&lt; T &gt;::flush()</a>.</p>
 
@@ -2629,7 +2630,7 @@ If <code>recursive=True</code> all subtables are flushed too. </p>
 <p>Write the <a class="el" href="classcasacore_1_1TableInfo.html" title="Table type, subtype and further info. ">TableInfo</a> object. </p>
 <p>Usually this is not necessary, because it is done automatically when the table gets written (by table destructor or flush function). This function is only useful if the table info has to be written before the table gets written (e.g. when another process reads the table while it gets filled). </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01182">1182</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01184">1184</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2760,7 +2761,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 
 <p>Has this process the read or write lock, thus can the table be read or written safely? </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01119">1119</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01121">1121</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>Referenced by <a class="el" href="TableLocker_8h_source.html#l00142">casacore::TableLocker::hasLock()</a>.</p>
 
@@ -2788,7 +2789,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01121">1121</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01123">1123</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>References <a class="el" href="FileLocker_8h_source.html#l00097">casacore::FileLocker::Read</a>, and <a class="el" href="FileLocker_8h_source.html#l00099">casacore::FileLocker::Write</a>.</p>
 
@@ -2818,7 +2819,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 
 <p>Test if the given column is stored (otherwise it is virtual). </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01136">1136</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01138">1138</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2844,7 +2845,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01138">1138</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01140">1140</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2872,7 +2873,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 
 <p>Test if the given column is writable. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01131">1131</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01133">1133</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSTable_8h_source.html#l00161">casacore::MSTable&lt; MSSysCalEnums &gt;::isColumnWritable()</a>.</p>
 
@@ -2900,7 +2901,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01133">1133</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01135">1135</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2927,7 +2928,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 
 <p>Test if the table is marked for delete. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01166">1166</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01168">1168</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -2956,7 +2957,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 <p>Is the table used (i.e. </p>
 <p>open) in another process. If <code>checkSubTables</code> is set, it is also checked if a subtable is used in another process. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01106">1106</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01108">1108</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3012,7 +3013,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 <p>Test if the object is null, i.e. </p>
 <p>does not reference a proper table. This is the case if the default constructor is used. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00475">475</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00477">477</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>References <a class="el" href="aipstype_8h_source.html#l00043">casacore::True</a>.</p>
 
@@ -3108,7 +3109,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 <p>Test if this table is the root table (ie. </p>
 <p>if it is not the subset of another table). </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01126">1126</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01128">1128</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3136,7 +3137,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 
 <p>Is the root table of this table the same as that of the other one? </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01094">1094</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01096">1096</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3199,7 +3200,7 @@ Note that a part can be any type of table (e.g. a <a class="el" href="classcasac
 
 <p>Test if this table is opened as writable. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01129">1129</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01131">1131</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3290,7 +3291,7 @@ The functions taking the fieldNames vector are meant for the cases where the key
 <p>Get readonly access to the table keyword set. </p>
 <p>If UserLocking is used, it will automatically acquire and release a read lock if the table is not locked. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01175">1175</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01177">1177</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3329,7 +3330,7 @@ The functions taking the fieldNames vector are meant for the cases where the key
 <p>Try to lock the table for read or write access (default is write). </p>
 <p>The number of attempts (default = forever) can be specified when acquiring the lock does not succeed immediately. If nattempts&gt;1, the system waits 1 second between each attempt, so nattempts is more or less equal to a wait period in seconds. The return value is false if acquiring the lock failed. If <code>PermanentLocking</code> is in effect, a lock is already present, so nothing will be done. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01110">1110</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01112">1112</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3365,7 +3366,7 @@ The functions taking the fieldNames vector are meant for the cases where the key
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01112">1112</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01114">1114</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>References <a class="el" href="FileLocker_8h_source.html#l00097">casacore::FileLocker::Read</a>, and <a class="el" href="FileLocker_8h_source.html#l00099">casacore::FileLocker::Write</a>.</p>
 
@@ -3394,7 +3395,7 @@ The functions taking the fieldNames vector are meant for the cases where the key
 
 <p>Get the locking options. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01108">1108</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01110">1110</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3422,7 +3423,7 @@ The functions taking the fieldNames vector are meant for the cases where the key
 <p>Mark the table for delete. </p>
 <p>This means that the underlying table gets deleted when it is actually destructed. The scratchCallback function is called when needed. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01162">1162</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01164">1164</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>References <a class="el" href="aipstype_8h_source.html#l00043">casacore::True</a>.</p>
 
@@ -3539,7 +3540,7 @@ The functions taking the fieldNames vector are meant for the cases where the key
 <p>Get the number of rows. </p>
 <p>It is unsynchronized meaning that it will not check if another process updated the table, thus possible increased the number of rows. If one wants to take that into account, he should acquire a read-lock (using the lock function) before using <a class="el" href="classcasacore_1_1Table.html#a077db30b2f163fcb3fd668741749e144" title="Get the number of rows. ">nrow()</a>. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01169">1169</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01171">1171</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSValidIds_8h_source.html#l00131">casacore::MSValidIds::checkResult()</a>, <a class="el" href="MSValidIds_8h_source.html#l00134">casacore::MSValidIds::checkRow()</a>, <a class="el" href="TableCopy_8h_source.html#l00118">casacore::TableCopy::copyRows()</a>, <a class="el" href="MSSelector_8h_source.html#l00323">casacore::MSSelector::nrow()</a>, and <a class="el" href="TableIter_8h_source.html#l00232">casacore::TableIterator::pastEnd()</a>.</p>
 
@@ -3821,7 +3822,7 @@ When removing columns from a reference table, the columns are NOT removed from t
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01221">1221</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01223">1223</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3860,7 +3861,7 @@ It will fail for tables not supporting removal of rows. <br/>
 </div><!-- fragment --><p> because in the first fragment removing row 10 turns the former row 21 into row 20; </em><br/>
  </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01203">1203</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01205">1205</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3886,7 +3887,7 @@ It will fail for tables not supporting removal of rows. <br/>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01205">1205</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01207">1207</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3936,7 +3937,7 @@ It will fail for tables not supporting removal of rows. <br/>
 </dl>
 <p>The scratchCallback function is called when needed. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01141">1141</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01143">1143</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -3977,7 +3978,7 @@ It will fail for tables not supporting removal of rows. <br/>
 <b>Caution:</b><em> Renaming a column should be done with care, because other columns may be referring this column; Also a hypercolumn definition might be using the old name; Finally if may also invalidate persistent selections of a table, because the reference table cannot find the column anymore; </em><br/>
  </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01223">1223</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01225">1225</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4013,7 +4014,7 @@ It will fail for tables not supporting removal of rows. <br/>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01225">1225</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01227">1227</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4041,7 +4042,7 @@ It will fail for tables not supporting removal of rows. <br/>
 <p>Try to reopen the table for read/write access. </p>
 <p>An exception is thrown if the table is not writable. Nothing is done if the table is already open for read/write. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01097">1097</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01099">1099</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4069,7 +4070,7 @@ It will fail for tables not supporting removal of rows. <br/>
 <p>Resynchronize the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> object with the table file. </p>
 <p>This function is only useful if no read-locking is used, ie. if the table lock option is UserNoReadLocking or AutoNoReadLocking. In that cases the table system does not acquire a read-lock, thus does not synchronize itself automatically. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01101">1101</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01103">1103</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4321,7 +4322,7 @@ In the general case creating the row number vector can be slowish, because it ha
 <p>Show the structure of the table. </p>
 <p>It shows the columns (with types), the data managers, and the subtables. Optionally the columns can be sorted alphabetically. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01234">1234</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01236">1236</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4495,7 +4496,7 @@ In the general case creating the row number vector can be slowish, because it ha
 
 <p>Get the storage option used for the table. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01104">1104</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01106">1106</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4523,7 +4524,7 @@ In the general case creating the row number vector can be slowish, because it ha
 <p>Get the table description. </p>
 <p>This can be used to get nr of columns, etc.. <code><a class="el" href="classcasacore_1_1Table.html#ad38839988ad7ebe07c1440207f5a6a5b" title="Get the table description. ">tableDesc()</a></code> gives the table description used when constructing the table, while <code><a class="el" href="classcasacore_1_1Table.html#a9a8683e9657fe97d1aed94bb84b11e65">actualTableDesc()</a></code> gives the actual description, thus with the actual data managers used. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01173">1173</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01175">1175</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>Referenced by <a class="el" href="MSTable_8h_source.html#l00251">casacore::MSTable&lt; MSSysCalEnums &gt;::validate()</a>.</p>
 
@@ -4552,7 +4553,7 @@ In the general case creating the row number vector can be slowish, because it ha
 
 <p>Get access to the <a class="el" href="classcasacore_1_1TableInfo.html" title="Table type, subtype and further info. ">TableInfo</a> object. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01178">1178</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01180">1180</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4577,7 +4578,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01180">1180</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01182">1182</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4604,7 +4605,7 @@ In the general case creating the row number vector can be slowish, because it ha
 
 <p>Get the table name. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01185">1185</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01187">1187</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4631,7 +4632,7 @@ In the general case creating the row number vector can be slowish, because it ha
 
 <p>Get the table option. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01189">1189</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01191">1191</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4658,7 +4659,7 @@ In the general case creating the row number vector can be slowish, because it ha
 
 <p>Get the table type. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01187">1187</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01189">1189</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4704,7 +4705,7 @@ In the general case creating the row number vector can be slowish, because it ha
 <p>Unlock the table. </p>
 <p>This will also synchronize the table data, thus force the data to be written to disk. If <code>PermanentLocking</code> is in effect, nothing will be done. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01117">1117</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01119">1119</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4732,7 +4733,7 @@ In the general case creating the row number vector can be slowish, because it ha
 <p>Unmark the table for delete. </p>
 <p>This means the underlying table does not get deleted when destructed. The scratchCallback function is called when needed. </p>
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l01164">1164</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l01166">1166</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 <p>References <a class="el" href="aipstype_8h_source.html#l00043">casacore::True</a>.</p>
 
@@ -4757,7 +4758,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00158">158</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00160">160</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4779,7 +4780,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00162">162</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00164">164</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4801,7 +4802,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00160">160</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00162">162</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4934,7 +4935,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00159">159</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00161">161</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4956,7 +4957,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00161">161</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00163">163</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -4978,7 +4979,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00164">164</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00166">166</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -5000,7 +5001,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00157">157</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00159">159</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -5022,7 +5023,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00165">165</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00167">167</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -5044,7 +5045,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00166">166</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00168">168</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>
@@ -5066,7 +5067,7 @@ In the general case creating the row number vector can be slowish, because it ha
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="Table_8h_source.html#l00163">163</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
+<p>Definition at line <a class="el" href="Table_8h_source.html#l00165">165</a> of file <a class="el" href="Table_8h_source.html">Table.h</a>.</p>
 
 </div>
 </div>

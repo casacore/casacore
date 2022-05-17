@@ -622,7 +622,9 @@ Additional Inherited Members</h2></td></tr>
 <p><a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is a <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a> to be used in the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> system.</p>
 <h3>Synopsis</h3>
 <p>Class <a class="el" href="classcasacore_1_1RecordInterface.html">RecordInterface</a> describes the fundamental properties of records. <br/>
- The <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> class is a particular type of a record class. The fields in <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> may be of scalar type, array type, a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> or a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a>. The types are chosen to be compatible with the native types of the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> system, viz: Bool, uChar, Short, Int, uInt, Int64, Float, Double, Complex, DComplex, <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a>. Arrays of all these types are also available. Note that a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is not a space-efficient way of storing small objects. </p>
+ The <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> class is a particular type of a record class. <br/>
+ The <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> class structure is shown in this <a href="TableRecord.drawio.svg.html">UML diagram</a>. <br/>
+ The fields in <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> may be of scalar type, array type, a <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> or a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a>. The types are chosen to be compatible with the native types of the <a class="el" href="classcasacore_1_1Table.html" title="Main interface class to a read/write table. ">Table</a> system, viz: Bool, uChar, Short, Int, uInt, Int64, Float, Double, Complex, DComplex, <a class="el" href="classcasacore_1_1String.html" title="String: the storage and methods of handling collections of characters. ">String</a>. Arrays of all these types are also available. Note that a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is not a space-efficient way of storing small objects. </p>
 <p>The structure of a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is defined by the <a class="el" href="classcasacore_1_1RecordDesc.html">RecordDesc</a> class. The structure of the <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> can be defined at construction time. It can thereafter be restructured. This has the effect, however, that any existing <a class="el" href="classcasacore_1_1RecordFieldPtr.html" title="Access to an individual field in a record. ">RecordFieldPtr</a> objects become invalid (using the (see (file="Notice.h"))<a class="el" href="classcasacore_1_1Notice.html" title="abstract base class for notices ">Notice</a> classes). <br/>
  It is possible to add or remove fields once a <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is constructed. However, this is not possible when the <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is constructed with a fixed structure (i.e. with the fixedStructure flag set). </p>
 <p>A <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> is an hierarchical structure, because it can have fields containing <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a>'s (as layed out in the <a class="el" href="classcasacore_1_1RecordDesc.html" title="Description of the fields in a record object. ">RecordDesc</a>). A subrecord has a variable structure, when its <a class="el" href="classcasacore_1_1RecordDesc.html" title="Description of the fields in a record object. ">RecordDesc</a> is empty (i.e. contains no fields). It is fixed when its <a class="el" href="classcasacore_1_1RecordDesc.html" title="Description of the fields in a record object. ">RecordDesc</a> contains fields. </p>
@@ -675,7 +677,7 @@ Additional Inherited Members</h2></td></tr>
 A record reference class, which contains some fields from another record, would likely be useful. This would be analagous to a subarray sliced from an existing array. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00182">182</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00185">185</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a001bd9f8f629ea9f7a39e0edebb11c23"></a>
 <div class="memitem">
@@ -992,9 +994,9 @@ A record reference class, which contains some fields from another record, would 
 
 <p>Are subtables used in other processes. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00558">558</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00561">561</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#ae4c42f6b53cc28cced486e4c5857662c">casacore::TableRecordRep::areTablesMultiUsed()</a>, and <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#ae4c42f6b53cc28cced486e4c5857662c">casacore::TableRecordRep::areTablesMultiUsed()</a>, and <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>
@@ -1225,9 +1227,9 @@ A record reference class, which contains some fields from another record, would 
 <p>Close all open tables. </p>
 <p>When accessed again, it will be opened automatically. This can be useful to save memory usage. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00542">542</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00545">545</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#aad3d35fceb01933e0088a3251983b52e">casacore::TableRecordRep::closeTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#aad3d35fceb01933e0088a3251983b52e">casacore::TableRecordRep::closeTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>
@@ -1287,9 +1289,9 @@ A record reference class, which contains some fields from another record, would 
 <code>thatRecord;conform(thisRecord) == True</code>, because a variable record in one conforms a fixed record in that, but not vice-versa; </em><br/>
  </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00520">520</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00523">523</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a07bc3b31de943b302899b19bf5651017">casacore::TableRecordRep::conform()</a>, and <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a07bc3b31de943b302899b19bf5651017">casacore::TableRecordRep::conform()</a>, and <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>
@@ -1505,9 +1507,9 @@ A record reference class, which contains some fields from another record, would 
 
 <p>Describes the current structure of this <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a>. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00515">515</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00518">518</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="TableRecordRep_8h_source.html#l00278">casacore::TableRecordRep::description()</a>, and <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>References <a class="el" href="TableRecordRep_8h_source.html#l00278">casacore::TableRecordRep::description()</a>, and <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>
@@ -1564,9 +1566,9 @@ A record reference class, which contains some fields from another record, would 
 
 <p>Flush all open subtables. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00547">547</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00550">550</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a96eba4af799ac23cc9e45d5b6f74a54d">casacore::TableRecordRep::flushTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a96eba4af799ac23cc9e45d5b6f74a54d">casacore::TableRecordRep::flushTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>
@@ -1710,7 +1712,7 @@ A record reference class, which contains some fields from another record, would 
 <p>Read the data of a record. </p>
 <p>This is used to read a subrecord, whose description has already been read. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00531">531</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00534">534</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
 <p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a40d44b7f7e5ddbb3753a6e10f31892a0">casacore::TableRecordRep::getData()</a>, and <a class="el" href="classcasacore_1_1TableRecord.html#a7cd3dbe874131435fbf10dd3a83b5c28">rwRef()</a>.</p>
 
@@ -1998,9 +2000,9 @@ For fixed structured records the existing values are replaced by the new values.
 <p>Put the data of a record. </p>
 <p>This is used to write a subrecord, whose description has already been written. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00525">525</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00528">528</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#aa1c088d731f50ce75017a26238249afe">casacore::TableRecordRep::putData()</a>, and <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#aa1c088d731f50ce75017a26238249afe">casacore::TableRecordRep::putData()</a>, and <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>
@@ -2056,11 +2058,11 @@ For fixed structured records the existing values are replaced by the new values.
 
 <p>Return a const reference to the underlying <a class="el" href="classcasacore_1_1TableRecordRep.html" title="The representation of a TableRecord. ">TableRecordRep</a>. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00511">511</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00514">514</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>References <a class="el" href="TableRecord_8h_source.html#l00504">rep_p</a>.</p>
+<p>References <a class="el" href="TableRecord_8h_source.html#l00507">rep_p</a>.</p>
 
-<p>Referenced by <a class="el" href="TableRecord_8h_source.html#l00558">areTablesMultiUsed()</a>, <a class="el" href="TableRecord_8h_source.html#l00542">closeTables()</a>, <a class="el" href="TableRecord_8h_source.html#l00520">conform()</a>, <a class="el" href="TableRecord_8h_source.html#l00515">description()</a>, <a class="el" href="TableRecord_8h_source.html#l00547">flushTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00525">putData()</a>.</p>
+<p>Referenced by <a class="el" href="TableRecord_8h_source.html#l00561">areTablesMultiUsed()</a>, <a class="el" href="TableRecord_8h_source.html#l00545">closeTables()</a>, <a class="el" href="TableRecord_8h_source.html#l00523">conform()</a>, <a class="el" href="TableRecord_8h_source.html#l00518">description()</a>, <a class="el" href="TableRecord_8h_source.html#l00550">flushTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00528">putData()</a>.</p>
 
 </div>
 </div>
@@ -2157,7 +2159,7 @@ For fixed structured records the existing values are replaced by the new values.
 
 <p>Rename the subtables with a path containing the old parent table name. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00552">552</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00555">555</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
 <p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a521b57fa4674eef6aa8970d6e5591ce3">casacore::TableRecordRep::renameTables()</a>, and <a class="el" href="classcasacore_1_1TableRecord.html#a7cd3dbe874131435fbf10dd3a83b5c28">rwRef()</a>.</p>
 
@@ -2187,7 +2189,7 @@ For fixed structured records the existing values are replaced by the new values.
 <p>Reopen possible tables in keywords as read/write. </p>
 <p>Tables are not reopened if they are not writable. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00537">537</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00540">540</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
 <p>References <a class="el" href="classcasacore_1_1TableRecordRep.html#a1ba13084e5543ac6a23b4e59b1259775">casacore::TableRecordRep::reopenRW()</a>, and <a class="el" href="classcasacore_1_1TableRecord.html#a7cd3dbe874131435fbf10dd3a83b5c28">rwRef()</a>.</p>
 
@@ -2258,7 +2260,7 @@ Restructuring is not possible and an exception is thrown if the <a class="el" hr
 <p>Return a non-const reference to the underlying <a class="el" href="classcasacore_1_1TableRecordRep.html" title="The representation of a TableRecord. ">TableRecordRep</a>. </p>
 <p>When needed, the <a class="el" href="classcasacore_1_1TableRecordRep.html" title="The representation of a TableRecord. ">TableRecordRep</a> will be copied and all RecordField objects will be notified. </p>
 
-<p>Referenced by <a class="el" href="TableRecord_8h_source.html#l00531">getData()</a>, <a class="el" href="TableRecord_8h_source.html#l00552">renameTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00537">reopenRW()</a>.</p>
+<p>Referenced by <a class="el" href="TableRecord_8h_source.html#l00534">getData()</a>, <a class="el" href="TableRecord_8h_source.html#l00555">renameTables()</a>, and <a class="el" href="TableRecord_8h_source.html#l00540">reopenRW()</a>.</p>
 
 </div>
 </div>
@@ -2550,7 +2552,7 @@ However, it can also be used to achieve that all subtables of a read/write table
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00184">184</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00187">187</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
 </div>
 </div>
@@ -2575,7 +2577,7 @@ However, it can also be used to achieve that all subtables of a read/write table
 
 <p>The parent <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a>. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00506">506</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00509">509</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
 </div>
 </div>
@@ -2599,9 +2601,9 @@ However, it can also be used to achieve that all subtables of a read/write table
 
 <p>The <a class="el" href="classcasacore_1_1TableRecord.html" title="A hierarchical collection of named fields of various types. ">TableRecord</a> representation. </p>
 
-<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00504">504</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
+<p>Definition at line <a class="el" href="TableRecord_8h_source.html#l00507">507</a> of file <a class="el" href="TableRecord_8h_source.html">TableRecord.h</a>.</p>
 
-<p>Referenced by <a class="el" href="TableRecord_8h_source.html#l00511">ref()</a>.</p>
+<p>Referenced by <a class="el" href="TableRecord_8h_source.html#l00514">ref()</a>.</p>
 
 </div>
 </div>

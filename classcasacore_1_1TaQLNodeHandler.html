@@ -248,8 +248,11 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:adb0f0b78809e0d44de00687d74dec635"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#adb0f0b78809e0d44de00687d74dec635">handleInsVal</a> (const <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> &amp;)</td></tr>
 <tr class="memdesc:adb0f0b78809e0d44de00687d74dec635"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the INSERT values.  <a href="#adb0f0b78809e0d44de00687d74dec635">More...</a><br/></td></tr>
 <tr class="separator:adb0f0b78809e0d44de00687d74dec635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a796ab8f1d155bf44a79a436819e606ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a796ab8f1d155bf44a79a436819e606ae">handleLikeDrop</a> (const <a class="el" href="classcasacore_1_1TaQLMultiNode.html">TaQLMultiNode</a> &amp;node)</td></tr>
+<tr class="memdesc:a796ab8f1d155bf44a79a436819e606ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the possible LIKE table DROP COLUMN part.  <a href="#a796ab8f1d155bf44a79a436819e606ae">More...</a><br/></td></tr>
+<tr class="separator:a796ab8f1d155bf44a79a436819e606ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a481fd44ff0ebce4deca7b55382c500"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a3a481fd44ff0ebce4deca7b55382c500">handleColSpecs</a> (const <a class="el" href="classcasacore_1_1TaQLMultiNode.html">TaQLMultiNode</a> &amp;)</td></tr>
-<tr class="memdesc:a3a481fd44ff0ebce4deca7b55382c500"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a column specification in a create table.  <a href="#a3a481fd44ff0ebce4deca7b55382c500">More...</a><br/></td></tr>
+<tr class="memdesc:a3a481fd44ff0ebce4deca7b55382c500"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a column specification in a create table or add column.  <a href="#a3a481fd44ff0ebce4deca7b55382c500">More...</a><br/></td></tr>
 <tr class="separator:a3a481fd44ff0ebce4deca7b55382c500"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cc4132ebcb127e2a080716571c5ec9f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcasacore_1_1Record.html">Record</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1TaQLNodeHandler.html#a1cc4132ebcb127e2a080716571c5ec9f">handleMultiRecFld</a> (const <a class="el" href="classcasacore_1_1TaQLNode.html">TaQLNode</a> &amp;node)</td></tr>
 <tr class="memdesc:a1cc4132ebcb127e2a080716571c5ec9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a Multi RecFld representing a <a class="el" href="classcasacore_1_1Record.html" title="A hierarchical collection of named fields of various types. ">Record</a>.  <a href="#a1cc4132ebcb127e2a080716571c5ec9f">More...</a><br/></td></tr>
@@ -376,7 +379,7 @@ It is possible to use expressions in the column list. That could not be done bef
 
 <p>Get the actual result object from the result. </p>
 
-<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00321">321</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00324">324</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
 
 <p>References <a class="el" href="TaQLNodeResult_8h_source.html#l00161">casacore::TaQLNodeResult::getRep()</a>.</p>
 
@@ -404,7 +407,7 @@ It is possible to use expressions in the column list. That could not be done bef
 </table>
 </div><div class="memdoc">
 
-<p>Handle a column specification in a create table. </p>
+<p>Handle a column specification in a create table or add column. </p>
 
 </div>
 </div>
@@ -483,6 +486,32 @@ It is possible to use expressions in the column list. That could not be done bef
 </div><div class="memdoc">
 
 <p>Handle the INSERT values. </p>
+
+</div>
+</div>
+<a class="anchor" id="a796ab8f1d155bf44a79a436819e606ae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void casacore::TaQLNodeHandler::handleLikeDrop </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcasacore_1_1TaQLMultiNode.html">TaQLMultiNode</a> &amp;&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Handle the possible LIKE table DROP COLUMN part. </p>
 
 </div>
 </div>
@@ -1813,7 +1842,7 @@ It is possible to use expressions in the column list. That could not be done bef
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00201">201</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00204">204</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
 
 </div>
 </div>
@@ -1835,7 +1864,7 @@ It is possible to use expressions in the column list. That could not be done bef
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00203">203</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
+<p>Definition at line <a class="el" href="TaQLNodeHandler_8h_source.html#l00206">206</a> of file <a class="el" href="TaQLNodeHandler_8h_source.html">TaQLNodeHandler.h</a>.</p>
 
 </div>
 </div>

@@ -151,7 +151,7 @@ var searchData=
   ['_7edirectoryiterator',['~DirectoryIterator',['../classcasacore_1_1DirectoryIterator.html#adcb4b54b1cfada96427e7115bfb9ce01',1,'casacore::DirectoryIterator']]],
   ['_7ediscreteuniform',['~DiscreteUniform',['../classcasacore_1_1DiscreteUniform.html#ae58d17259dd7bd8f69bf56f7e09be152',1,'casacore::DiscreteUniform']]],
   ['_7edopplerengine',['~DopplerEngine',['../classcasacore_1_1DopplerEngine.html#a566de2c51ab9ee3ac34cee03dbde6b4f',1,'casacore::DopplerEngine']]],
-  ['_7eduplerror',['~duplError',['../classcasacore_1_1duplError.html#ad15f0349d227d80c1498e6d9391d4bbc',1,'casacore::duplError::~duplError()'],['../classcasacore_1_1DuplError.html#af20cb075d9f40c3768b874d59a348e4b',1,'casacore::DuplError::~DuplError()']]],
+  ['_7eduplerror',['~DuplError',['../classcasacore_1_1DuplError.html#af20cb075d9f40c3768b874d59a348e4b',1,'casacore::DuplError::~DuplError()'],['../classcasacore_1_1duplError.html#ad15f0349d227d80c1498e6d9391d4bbc',1,'casacore::duplError::~duplError()']]],
   ['_7edynbuffer',['~DynBuffer',['../classcasacore_1_1DynBuffer.html#a77b4fb678379436acba78ccd7f465dcd',1,'casacore::DynBuffer']]],
   ['_7edynlib',['~DynLib',['../classcasacore_1_1DynLib.html#ac64794b466915eb6f71dcf6cb09d5694',1,'casacore::DynLib']]],
   ['_7edyscodatacolumn',['~DyscoDataColumn',['../classdyscostman_1_1DyscoDataColumn.html#ab7d95e35cb1978eb24ff92c47a97de37',1,'dyscostman::DyscoDataColumn']]],

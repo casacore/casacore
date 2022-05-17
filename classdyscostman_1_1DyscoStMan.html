@@ -343,12 +343,12 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a4aae4af79d768cdb9138fbb3ab20dae7"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a4aae4af79d768cdb9138fbb3ab20dae7">flush</a> (<a class="el" href="classcasacore_1_1AipsIO.html">casacore::AipsIO</a> &amp;, <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">casacore::Bool</a> doFsync) finaloverride</td></tr>
 <tr class="memdesc:a4aae4af79d768cdb9138fbb3ab20dae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush and optionally fsync the data.  <a href="#a4aae4af79d768cdb9138fbb3ab20dae7">More...</a><br/></td></tr>
 <tr class="separator:a4aae4af79d768cdb9138fbb3ab20dae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3587a1715fb456b15844eb6b36d14618"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a3587a1715fb456b15844eb6b36d14618">create</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a> nRow) finaloverride</td></tr>
-<tr class="memdesc:a3587a1715fb456b15844eb6b36d14618"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the storage manager create files as needed for a new table.  <a href="#a3587a1715fb456b15844eb6b36d14618">More...</a><br/></td></tr>
-<tr class="separator:a3587a1715fb456b15844eb6b36d14618"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31c114a1bb4cae8de1c2cd20f0c60c88"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a31c114a1bb4cae8de1c2cd20f0c60c88">open</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a> nRow, <a class="el" href="classcasacore_1_1AipsIO.html">casacore::AipsIO</a> &amp;) finaloverride</td></tr>
-<tr class="memdesc:a31c114a1bb4cae8de1c2cd20f0c60c88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the storage manager file for an existing table.  <a href="#a31c114a1bb4cae8de1c2cd20f0c60c88">More...</a><br/></td></tr>
-<tr class="separator:a31c114a1bb4cae8de1c2cd20f0c60c88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ecb07acaf291a525689d858b1a2f956"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a7ecb07acaf291a525689d858b1a2f956">create64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> nRow) finaloverride</td></tr>
+<tr class="memdesc:a7ecb07acaf291a525689d858b1a2f956"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the storage manager create files as needed for a new table.  <a href="#a7ecb07acaf291a525689d858b1a2f956">More...</a><br/></td></tr>
+<tr class="separator:a7ecb07acaf291a525689d858b1a2f956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f590edf4ae483dec2d92a75302a6c92"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a5f590edf4ae483dec2d92a75302a6c92">open64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> nRow, <a class="el" href="classcasacore_1_1AipsIO.html">casacore::AipsIO</a> &amp;) finaloverride</td></tr>
+<tr class="memdesc:a5f590edf4ae483dec2d92a75302a6c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the storage manager file for an existing table.  <a href="#a5f590edf4ae483dec2d92a75302a6c92">More...</a><br/></td></tr>
+<tr class="separator:a5f590edf4ae483dec2d92a75302a6c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a865586da498ff70063382520ad76f581"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
 <a class="el" href="classcasacore_1_1DataManagerColumn.html">casacore::DataManagerColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a865586da498ff70063382520ad76f581">makeScalarColumn</a> (const <a class="el" href="classcasacore_1_1String.html">casacore::String</a> &amp;name, int dataType, const <a class="el" href="classcasacore_1_1String.html">casacore::String</a> &amp;dataTypeID) finaloverride</td></tr>
 <tr class="memdesc:a865586da498ff70063382520ad76f581"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a column in the storage manager on behalf of a table column.  <a href="#a865586da498ff70063382520ad76f581">More...</a><br/></td></tr>
@@ -361,8 +361,8 @@ Private Member Functions</h2></td></tr>
 <a class="el" href="classcasacore_1_1DataManagerColumn.html">casacore::DataManagerColumn</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a3435c3dd4a2817d4668c55e875acb58d">makeIndArrColumn</a> (const <a class="el" href="classcasacore_1_1String.html">casacore::String</a> &amp;name, int dataType, const <a class="el" href="classcasacore_1_1String.html">casacore::String</a> &amp;dataTypeID) finaloverride</td></tr>
 <tr class="memdesc:a3435c3dd4a2817d4668c55e875acb58d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an indirect array column.  <a href="#a3435c3dd4a2817d4668c55e875acb58d">More...</a><br/></td></tr>
 <tr class="separator:a3435c3dd4a2817d4668c55e875acb58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22979c433131017d98204066f01290f6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a22979c433131017d98204066f01290f6">resync</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a> nRow) finaloverride</td></tr>
-<tr class="separator:a22979c433131017d98204066f01290f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ee1d305e6c18b308c11c0bf093d39f1"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a7ee1d305e6c18b308c11c0bf093d39f1">resync64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> nRow) finaloverride</td></tr>
+<tr class="separator:a7ee1d305e6c18b308c11c0bf093d39f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94e21684599bacb5646fec85ac7eecaa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a94e21684599bacb5646fec85ac7eecaa">deleteManager</a> () finaloverride</td></tr>
 <tr class="memdesc:a94e21684599bacb5646fec85ac7eecaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">The data manager will be deleted (because all its columns are requested to be deleted).  <a href="#a94e21684599bacb5646fec85ac7eecaa">More...</a><br/></td></tr>
 <tr class="separator:a94e21684599bacb5646fec85ac7eecaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -372,12 +372,12 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a2ed367647231e68e3decd9f5a64a10ff"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a2ed367647231e68e3decd9f5a64a10ff">reopenRW</a> () finaloverride</td></tr>
 <tr class="memdesc:a2ed367647231e68e3decd9f5a64a10ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reopen the storage manager files for read/write.  <a href="#a2ed367647231e68e3decd9f5a64a10ff">More...</a><br/></td></tr>
 <tr class="separator:a2ed367647231e68e3decd9f5a64a10ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ffda8a46dff65e95f2a8b4f9a4e2898"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a7ffda8a46dff65e95f2a8b4f9a4e2898">addRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a> nrrow) finaloverride</td></tr>
-<tr class="memdesc:a7ffda8a46dff65e95f2a8b4f9a4e2898"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to the storage manager.  <a href="#a7ffda8a46dff65e95f2a8b4f9a4e2898">More...</a><br/></td></tr>
-<tr class="separator:a7ffda8a46dff65e95f2a8b4f9a4e2898"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a743bb132a666a4c8fe290a07f5bd5f98"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a743bb132a666a4c8fe290a07f5bd5f98">removeRow</a> (<a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a> rowNr) finaloverride</td></tr>
-<tr class="memdesc:a743bb132a666a4c8fe290a07f5bd5f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#a743bb132a666a4c8fe290a07f5bd5f98">More...</a><br/></td></tr>
-<tr class="separator:a743bb132a666a4c8fe290a07f5bd5f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18424b6a6d19a76f00ea664dd9a0bdeb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a18424b6a6d19a76f00ea664dd9a0bdeb">addRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> nrrow) finaloverride</td></tr>
+<tr class="memdesc:a18424b6a6d19a76f00ea664dd9a0bdeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rows to the storage manager.  <a href="#a18424b6a6d19a76f00ea664dd9a0bdeb">More...</a><br/></td></tr>
+<tr class="separator:a18424b6a6d19a76f00ea664dd9a0bdeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0f819815755de34974293d469272882"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#ac0f819815755de34974293d469272882">removeRow64</a> (<a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> rowNr) finaloverride</td></tr>
+<tr class="memdesc:ac0f819815755de34974293d469272882"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a row from all columns.  <a href="#ac0f819815755de34974293d469272882">More...</a><br/></td></tr>
+<tr class="separator:ac0f819815755de34974293d469272882"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d7258cab2cd3191f76550f8cc4af40c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdyscostman_1_1DyscoStMan.html#a2d7258cab2cd3191f76550f8cc4af40c">addColumn</a> (<a class="el" href="classcasacore_1_1DataManagerColumn.html">casacore::DataManagerColumn</a> *) finaloverride</td></tr>
 <tr class="memdesc:a2d7258cab2cd3191f76550f8cc4af40c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do the final addition of a column.  <a href="#a2d7258cab2cd3191f76550f8cc4af40c">More...</a><br/></td></tr>
 <tr class="separator:a2d7258cab2cd3191f76550f8cc4af40c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -593,7 +593,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7ffda8a46dff65e95f2a8b4f9a4e2898"></a>
+<a class="anchor" id="a18424b6a6d19a76f00ea664dd9a0bdeb"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -601,9 +601,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void dyscostman::DyscoStMan::addRow </td>
+          <td class="memname">virtual void dyscostman::DyscoStMan::addRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td>
           <td class="paramname"><em>nrrow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -616,8 +616,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Add rows to the storage manager. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a7bf4d388de87925f3da206a37060c548">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -807,7 +805,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3587a1715fb456b15844eb6b36d14618"></a>
+<a class="anchor" id="a7ecb07acaf291a525689d858b1a2f956"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -815,9 +813,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void dyscostman::DyscoStMan::create </td>
+          <td class="memname">virtual void dyscostman::DyscoStMan::create64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td>
           <td class="paramname"><em>nRow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -831,8 +829,6 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Let the storage manager create files as needed for a new table. </p>
 <p>This allows a column with an indirect array to create its file. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#adceb1b5a7fffd55144ba1e21095a2a98">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -1519,7 +1515,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a31c114a1bb4cae8de1c2cd20f0c60c88"></a>
+<a class="anchor" id="a5f590edf4ae483dec2d92a75302a6c92"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1527,9 +1523,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void dyscostman::DyscoStMan::open </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> dyscostman::DyscoStMan::open64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td>
           <td class="paramname"><em>nRow</em>, </td>
         </tr>
         <tr>
@@ -1553,8 +1549,6 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Open the storage manager file for an existing table. </p>
 <p>Return the number of rows in the data file. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#ad50950a88ab2e6ed4ea2abbd06687eb7">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -1743,7 +1737,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a743bb132a666a4c8fe290a07f5bd5f98"></a>
+<a class="anchor" id="ac0f819815755de34974293d469272882"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1751,9 +1745,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void dyscostman::DyscoStMan::removeRow </td>
+          <td class="memname">virtual void dyscostman::DyscoStMan::removeRow64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td>
           <td class="paramname"><em>rowNr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1766,8 +1760,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Delete a row from all columns. </p>
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a43ab87fc030fdf69ef193a1217c3226f">casacore::DataManager</a>.</p>
 
 </div>
 </div>
@@ -1798,7 +1790,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a22979c433131017d98204066f01290f6"></a>
+<a class="anchor" id="a7ee1d305e6c18b308c11c0bf093d39f1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1806,9 +1798,9 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void dyscostman::DyscoStMan::resync </td>
+          <td class="memname">virtual <a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a> dyscostman::DyscoStMan::resync64 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecasacore.html#aee1c00a44176a614b010746741ae16a9">casacore::rownr_t</a>&#160;</td>
           <td class="paramname"><em>nRow</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1819,8 +1811,6 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classcasacore_1_1DataManager.html#a06e2c22c4878adc1c69e2730af8a44e4">casacore::DataManager</a>.</p>
 
 </div>
 </div>

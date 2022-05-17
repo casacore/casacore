@@ -99,7 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Read only access to table array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> columns.  
+<p>Access table array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> columns.  
  <a href="classcasacore_1_1ArrayMeasColumn.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="MBaseline_8h_source.html">MBaseline.h</a>&gt;</code></p>
@@ -119,7 +119,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a27cdc08a9b38127d98cd79f5f0e4b394"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default constructor creates a null object.  <a href="#a27cdc08a9b38127d98cd79f5f0e4b394">More...</a><br/></td></tr>
 <tr class="separator:a27cdc08a9b38127d98cd79f5f0e4b394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92846d7c2723b75f9f67f45200c3f089"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayMeasColumn.html#a92846d7c2723b75f9f67f45200c3f089">ArrayMeasColumn</a> (const <a class="el" href="classcasacore_1_1Table.html">Table</a> &amp;tab, const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;<a class="el" href="classcasacore_1_1TableMeasColumn.html#a8f79689ec76b9150b500ac8a44e3635d">columnName</a>)</td></tr>
-<tr class="memdesc:a92846d7c2723b75f9f67f45200c3f089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> from the table and column Name.  <a href="#a92846d7c2723b75f9f67f45200c3f089">More...</a><br/></td></tr>
+<tr class="memdesc:a92846d7c2723b75f9f67f45200c3f089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> from the table and column Name.  <a href="#a92846d7c2723b75f9f67f45200c3f089">More...</a><br/></td></tr>
 <tr class="separator:a92846d7c2723b75f9f67f45200c3f089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a432de9dd2307caead60d12db6220c4d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1ArrayMeasColumn.html#a432de9dd2307caead60d12db6220c4d7">ArrayMeasColumn</a> (const <a class="el" href="classcasacore_1_1ArrayMeasColumn.html">ArrayMeasColumn</a>&lt; M &gt; &amp;that)</td></tr>
 <tr class="memdesc:a432de9dd2307caead60d12db6220c4d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor (copy semantics).  <a href="#a432de9dd2307caead60d12db6220c4d7">More...</a><br/></td></tr>
@@ -251,7 +251,7 @@ Private Attributes</h2></td></tr>
 <div class="textblock"><h3>template&lt;class M&gt;<br/>
 class casacore::ArrayMeasColumn&lt; M &gt;</h3>
 
-<p>Read only access to table array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> columns. </p>
+<p>Access table array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> columns. </p>
 <p><a class="anchor" id="ArrayMeasColumn_summary"></a> </p>
 <h3>Intended use:</h3>
 <p>Public interface</p>
@@ -274,9 +274,9 @@ class casacore::ArrayMeasColumn&lt; M &gt;</h3>
 <a class="el" href="classcasacore_1_1TableMeasDesc.html" title="Definition of a Measure column in a Table. ">TableMeasDesc</a> </li>
 </ul>
 <h3>Synopsis</h3>
-<p><a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> objects can be used to access array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> Columns in tables, both for reading and writing (if the table is writable).</p>
+<p><a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> objects can be used to access array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> Columns in tables, both for reading and writing (if the table is writable).</p>
 <p>Before a column can be accessed it must have previously been defined as a <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> column by use of the <a class="el" href="classcasacore_1_1TableMeasDesc.html">TableMeasDesc</a> object.</p>
-<p>The <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> class is templated on <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type and <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> type but typedefs exist for making declaration less long winded. The <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> classes (like <a class="el" href="classcasacore_1_1MEpoch.html" title="A Measure: instant in time. ">MEpoch</a>) have typedefs <code><a class="el" href="classcasacore_1_1ArrayColumn.html" title="Read and write access to an array table column with arbitrary data type. ">ArrayColumn</a></code> to assist in creating <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> objects.</p>
+<p>The <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> class is templated on <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type and <a class="el" href="classcasacore_1_1MeasValue.html" title="Base class for values in a Measure. ">MeasValue</a> type but typedefs exist for making declaration less long winded. The <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> classes (like <a class="el" href="classcasacore_1_1MEpoch.html" title="A Measure: instant in time. ">MEpoch</a>) have typedefs <code><a class="el" href="classcasacore_1_1ArrayColumn.html" title="Read and write access to an array table column with arbitrary data type. ">ArrayColumn</a></code> to assist in creating <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> objects.</p>
 <p>Constructing array <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> column objects using these typedefs looks like this: </p>
 <div class="fragment"><div class="line"><span class="comment">// Read/write MEpoch array column</span></div>
 <div class="line"><a class="code" href="classcasacore_1_1MEpoch.html#a0ef2ee3aa45a2a15d2619ebcaeb4dd4e">MEpoch::ArrayColumn</a> ec(table, <span class="stringliteral">&quot;ColumnName);</span></div>
@@ -355,7 +355,7 @@ template&lt;class M&gt; </div>
 </div><div class="memdoc">
 
 <p>The default constructor creates a null object. </p>
-<p>Useful for creating arrays of <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> objects. Attempting to use a null object will produce a segmentation fault so care needs to be taken to initialise the objects by using the <a class="el" href="classcasacore_1_1ArrayMeasColumn.html#a82a5828a0672eab2ef92e42527fe62d0" title="Attach a column to the object. ">attach()</a> member before any attempt is made to use the object. A <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> object can be tested if it is null by using the <a class="el" href="classcasacore_1_1TableMeasColumn.html#afb20671ebe3333000e24beddb8dcbaca" title="Test if the object is null. ">isNull()</a> member. </p>
+<p>Useful for creating arrays of <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> objects. Attempting to use a null object will produce a segmentation fault so care needs to be taken to initialise the objects by using the <a class="el" href="classcasacore_1_1ArrayMeasColumn.html#a82a5828a0672eab2ef92e42527fe62d0" title="Attach a column to the object. ">attach()</a> member before any attempt is made to use the object. A <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> object can be tested if it is null by using the <a class="el" href="classcasacore_1_1TableMeasColumn.html#afb20671ebe3333000e24beddb8dcbaca" title="Test if the object is null. ">isNull()</a> member. </p>
 
 </div>
 </div>
@@ -385,7 +385,7 @@ template&lt;class M&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Create the <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Read only access to table array Measure columns. ">ArrayMeasColumn</a> from the table and column Name. </p>
+<p>Create the <a class="el" href="classcasacore_1_1ArrayMeasColumn.html" title="Access table array Measure columns. ">ArrayMeasColumn</a> from the table and column Name. </p>
 
 </div>
 </div>

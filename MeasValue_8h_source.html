@@ -239,77 +239,66 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="classcasacore_1_1MeasValue.html#aaaf4b2e73c05f643d6c8ac70e2eee0c0">  147</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#aaaf4b2e73c05f643d6c8ac70e2eee0c0">dummy_operator</a>()<span class="keyword"> const </span>{;};</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  </div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="comment">//# General Member Functions</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  <span class="comment">// Assert that we are the correct MeasValue type</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="comment">// &lt;thrown&gt;</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <span class="comment">//   &lt;li&gt; AipsError if wrong MeasValue type</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  <span class="comment">// &lt;/thrown&gt;</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  <span class="comment">// Each Measure should have:</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  <span class="comment">// &lt;src&gt; static void assure(const MeasValue &amp;in); &lt;/src&gt;</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="comment">// Get the type (== Register(M*)) of derived MeasValue</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="comment">// &lt;group&gt;</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> <a class="code" href="classcasacore_1_1MeasValue.html#abae59a3c26c56891d280e9a1b7a81067">type</a>() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="comment">// &lt;/group&gt;</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  <span class="comment">// Print a MeasValue</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a716675982631833dc629df28d442b044">print</a>(ostream &amp;os) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="comment">// Clone a MeasValue</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1MeasValue.html">MeasValue</a> *<a class="code" href="classcasacore_1_1MeasValue.html#a5bba6fea0b17795f8653a130e0cfc224">clone</a>() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="comment">// Get the internal value as a &lt;src&gt;Vector&lt;Double&gt;&lt;/src&gt;.</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="comment">// Note that the vector could</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="comment">// be empty, or not be a true representation (different data sizes e.g.)</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Double&gt;</a> <a class="code" href="classcasacore_1_1MeasValue.html#aaca85a82a8f69baad3083dd105fc579f">getVector</a>() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="comment">// Get the internal value as a &lt;src&gt;Vector&lt;Quantity&gt;&lt;/src&gt;. Usable in</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="comment">// records. The getXRecordValue() gets additional information for records.</span></div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  <span class="comment">// The getTMRecordValue() gets the record values as deemed appropriate for </span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="comment">// the TableMeasures.</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  <span class="comment">// Note that the Vectors could be empty.</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="comment">// &lt;group&gt;</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Quantum&lt;Double&gt;</a> &gt; <a class="code" href="classcasacore_1_1MeasValue.html#ac7bacf620e474a54fd4184b83ad8c3b3">getRecordValue</a>() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Quantum&lt;Double&gt;</a> &gt; <a class="code" href="classcasacore_1_1MeasValue.html#affb487a52c39c7a108bb6b77a18777e2">getXRecordValue</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Quantum&lt;Double&gt;</a> &gt; <a class="code" href="classcasacore_1_1MeasValue.html#a30b5014b9c6a1ee0b61c5f6d05a397d7">getTMRecordValue</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <span class="comment">// &lt;/group&gt;</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="comment">// Set the internal value from a Vector of values (obtained in principle</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <span class="comment">// with a getVector()). It will be assumed that the Vector is correctly </span></div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="comment">// formatted. If Vector is too long, the remainder will be discarded.</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <span class="comment">// If Vector is too short, action will depend on the individual classes,</span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  <span class="comment">// but in general act the same way as a constructor with a short Vector. </span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a12d50c3e5db0e002f6575f4972b16eae">putVector</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Double&gt;</a> &amp;in) = 0;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;  <span class="comment">// Set the internal value if correct values and dimensions</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1MeasValue.html#abdc9f23a6f2583e686952d982812da69">putValue</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;Double&gt;</a> &gt; &amp;in) = 0;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <span class="comment">// Some of the Measure values used need the occasional adjustments to proper</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="comment">// values. Examples are MVDirection (direction cosines) which have to be</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="comment">// normalised to a length of 1 and MEpoch (time) which have to have its</span></div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  <span class="comment">// precision maintained. For others it is an effctive no-operation.</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="comment">// &lt;group&gt;</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="comment">// Adjust value</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a4d6964e771551cde94db7e4c920548eb">adjust</a>();</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="comment">// Adjust value and return a normalisation value</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a4d6964e771551cde94db7e4c920548eb">adjust</a>(<a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;val);</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  <span class="comment">// Re-adjust, i.e. undo a previous adjust, with value</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a24376ee5ce78bcadeb34e553e14d83ef">readjust</a>(<a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> val);</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="comment">// &lt;/group&gt;</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;};</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  <span class="comment">// Print a MeasValue</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a716675982631833dc629df28d442b044">print</a>(ostream &amp;os) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  <span class="comment">// Clone a MeasValue</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1MeasValue.html">MeasValue</a> *<a class="code" href="classcasacore_1_1MeasValue.html#a5bba6fea0b17795f8653a130e0cfc224">clone</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="comment">// Get the internal value as a &lt;src&gt;Vector&lt;Double&gt;&lt;/src&gt;.</span></div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="comment">// Note that the vector could</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <span class="comment">// be empty, or not be a true representation (different data sizes e.g.)</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Double&gt;</a> <a class="code" href="classcasacore_1_1MeasValue.html#aaca85a82a8f69baad3083dd105fc579f">getVector</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="comment">// Get the internal value as a &lt;src&gt;Vector&lt;Quantity&gt;&lt;/src&gt;. Usable in</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="comment">// records. The getXRecordValue() gets additional information for records.</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="comment">// The getTMRecordValue() gets the record values as deemed appropriate for </span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="comment">// the TableMeasures.</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  <span class="comment">// Note that the Vectors could be empty.</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="comment">// &lt;group&gt;</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Quantum&lt;Double&gt;</a> &gt; <a class="code" href="classcasacore_1_1MeasValue.html#ac7bacf620e474a54fd4184b83ad8c3b3">getRecordValue</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Quantum&lt;Double&gt;</a> &gt; <a class="code" href="classcasacore_1_1MeasValue.html#affb487a52c39c7a108bb6b77a18777e2">getXRecordValue</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Quantum&lt;Double&gt;</a> &gt; <a class="code" href="classcasacore_1_1MeasValue.html#a30b5014b9c6a1ee0b61c5f6d05a397d7">getTMRecordValue</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="comment">// &lt;/group&gt;</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="comment">// Set the internal value from a Vector of values (obtained in principle</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="comment">// with a getVector()). It will be assumed that the Vector is correctly </span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  <span class="comment">// formatted. If Vector is too long, the remainder will be discarded.</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="comment">// If Vector is too short, action will depend on the individual classes,</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  <span class="comment">// but in general act the same way as a constructor with a short Vector. </span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a12d50c3e5db0e002f6575f4972b16eae">putVector</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Vector.html">Vector&lt;Double&gt;</a> &amp;in) = 0;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="comment">// Set the internal value if correct values and dimensions</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> <a class="code" href="classcasacore_1_1MeasValue.html#abdc9f23a6f2583e686952d982812da69">putValue</a>(<span class="keyword">const</span> <a class="code" href="classcasacore_1_1Vector.html">Vector</a>&lt;<a class="code" href="classcasacore_1_1Quantum.html">Quantum&lt;Double&gt;</a> &gt; &amp;in) = 0;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="comment">// Some of the Measure values used need the occasional adjustments to proper</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <span class="comment">// values. Examples are MVDirection (direction cosines) which have to be</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="comment">// normalised to a length of 1 and MEpoch (time) which have to have its</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <span class="comment">// precision maintained. For others it is an effctive no-operation.</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  <span class="comment">// &lt;group&gt;</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="comment">// Adjust value</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a4d6964e771551cde94db7e4c920548eb">adjust</a>();</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;  <span class="comment">// Adjust value and return a normalisation value</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a4d6964e771551cde94db7e4c920548eb">adjust</a>(<a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &amp;val);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  <span class="comment">// Re-adjust, i.e. undo a previous adjust, with value</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcasacore_1_1MeasValue.html#a24376ee5ce78bcadeb34e553e14d83ef">readjust</a>(<a class="code" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> val);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="comment">// &lt;/group&gt;</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;};</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">//# Global functions</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment">// &lt;summary&gt; Global functions &lt;/summary&gt;</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="comment">// &lt;group name=Output&gt;</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment">// Output declaration</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="structcasacore_1_1MeasValue__global__functions__Output.html">  200</a></span>&#160;ostream &amp;<a class="code" href="namespacecasacore.html#ac1fe84712bc9288a5f0e361e92acc93d">operator&lt;&lt;</a>(ostream &amp;os, <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MeasValue.html">MeasValue</a> &amp;meas);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="comment">// &lt;/group&gt;</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment">//# Global functions</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="comment">// &lt;summary&gt; Global functions &lt;/summary&gt;</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment">// &lt;group name=Output&gt;</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment">// Output declaration</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno"><a class="line" href="structcasacore_1_1MeasValue__global__functions__Output.html">  210</a></span>&#160;ostream &amp;<a class="code" href="namespacecasacore.html#ac1fe84712bc9288a5f0e361e92acc93d">operator&lt;&lt;</a>(ostream &amp;os, <span class="keyword">const</span> <a class="code" href="classcasacore_1_1MeasValue.html">MeasValue</a> &amp;meas);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment">// &lt;/group&gt;</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;} <span class="comment">//# NAMESPACE CASACORE - END</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classcasacore_1_1Vector_html"><div class="ttname"><a href="classcasacore_1_1Vector.html">casacore::Vector&lt; Double &gt;</a></div></div>
 <div class="ttc" id="classcasacore_1_1MeasValue_html_a24376ee5ce78bcadeb34e553e14d83ef"><div class="ttname"><a href="classcasacore_1_1MeasValue.html#a24376ee5ce78bcadeb34e553e14d83ef">casacore::MeasValue::readjust</a></div><div class="ttdeci">virtual void readjust(Double val)</div><div class="ttdoc">Re-adjust, i.e. </div></div>
 <div class="ttc" id="ArrayFwd_8h_html"><div class="ttname"><a href="ArrayFwd_8h.html">ArrayFwd.h</a></div></div>
-<div class="ttc" id="classcasacore_1_1MeasValue_html_abae59a3c26c56891d280e9a1b7a81067"><div class="ttname"><a href="classcasacore_1_1MeasValue.html#abae59a3c26c56891d280e9a1b7a81067">casacore::MeasValue::type</a></div><div class="ttdeci">virtual uInt type() const =0</div><div class="ttdoc">Assert that we are the correct MeasValue type. </div></div>
 <div class="ttc" id="aips_8h_html"><div class="ttname"><a href="aips_8h.html">aips.h</a></div></div>
 <div class="ttc" id="namespacecasacore_html_ac1fe84712bc9288a5f0e361e92acc93d"><div class="ttname"><a href="namespacecasacore.html#ac1fe84712bc9288a5f0e361e92acc93d">casacore::operator&lt;&lt;</a></div><div class="ttdeci">ostream &amp; operator&lt;&lt;(ostream &amp;os, const IComplex &amp;)</div><div class="ttdoc">Show on ostream. </div></div>
 <div class="ttc" id="classcasacore_1_1MeasValue_html_aaca85a82a8f69baad3083dd105fc579f"><div class="ttname"><a href="classcasacore_1_1MeasValue.html#aaca85a82a8f69baad3083dd105fc579f">casacore::MeasValue::getVector</a></div><div class="ttdeci">virtual Vector&lt; Double &gt; getVector() const =0</div><div class="ttdoc">Get the internal value as a Vector&amp;lt;Double&amp;gt;. </div></div>
@@ -330,7 +319,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcasacore_1_1MeasValue_html_a716675982631833dc629df28d442b044"><div class="ttname"><a href="classcasacore_1_1MeasValue.html#a716675982631833dc629df28d442b044">casacore::MeasValue::print</a></div><div class="ttdeci">virtual void print(ostream &amp;os) const =0</div><div class="ttdoc">Print a MeasValue. </div></div>
 <div class="ttc" id="classcasacore_1_1MeasValue_html_a4d6964e771551cde94db7e4c920548eb"><div class="ttname"><a href="classcasacore_1_1MeasValue.html#a4d6964e771551cde94db7e4c920548eb">casacore::MeasValue::adjust</a></div><div class="ttdeci">virtual void adjust()</div><div class="ttdoc">Some of the Measure values used need the occasional adjustments to proper values. ...</div></div>
 <div class="ttc" id="classcasacore_1_1MeasValue_html_a28f339eacc5c849d47295903cb7ffabb"><div class="ttname"><a href="classcasacore_1_1MeasValue.html#a28f339eacc5c849d47295903cb7ffabb">casacore::MeasValue::operator&lt;&lt;</a></div><div class="ttdeci">friend ostream &amp; operator&lt;&lt;(ostream &amp;os, const MeasValue &amp;meas)</div><div class="ttdoc">Output a MeasValue. </div></div>
-<div class="ttc" id="namespacecasacore_html_a5c559d8d8bf2ae7f67b439955d6be88a"><div class="ttname"><a href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">casacore::uInt</a></div><div class="ttdeci">unsigned int uInt</div><div class="ttdef"><b>Definition:</b> <a href="aipstype_8h_source.html#l00051">aipstype.h:51</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -153,11 +153,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac991b3b0cc94e9c8c7e99a81149ac63f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Measure.html#ac991b3b0cc94e9c8c7e99a81149ac63f">areYou</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;tp) const =0</td></tr>
 <tr class="memdesc:ac991b3b0cc94e9c8c7e99a81149ac63f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the type of derived <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> entity (e.g.  <a href="#ac991b3b0cc94e9c8c7e99a81149ac63f">More...</a><br/></td></tr>
 <tr class="separator:ac991b3b0cc94e9c8c7e99a81149ac63f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7329a12c41b0f2f438951b57897578ec"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Measure.html#a7329a12c41b0f2f438951b57897578ec">type</a> () const =0</td></tr>
-<tr class="memdesc:a7329a12c41b0f2f438951b57897578ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the type (== Register() of derived <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> (faster than Strings) All should have: static uInt myType();.  <a href="#a7329a12c41b0f2f438951b57897578ec">More...</a><br/></td></tr>
-<tr class="separator:a7329a12c41b0f2f438951b57897578ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adff29ffa442e441b7283793bf263c6a4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Measure.html#adff29ffa442e441b7283793bf263c6a4">assured</a> (const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;tp) const =0</td></tr>
-<tr class="memdesc:adff29ffa442e441b7283793bf263c6a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assert that we are the correct <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type.  <a href="#adff29ffa442e441b7283793bf263c6a4">More...</a><br/></td></tr>
+<tr class="memdesc:adff29ffa442e441b7283793bf263c6a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">All should have: Assert that we are the correct <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type.  <a href="#adff29ffa442e441b7283793bf263c6a4">More...</a><br/></td></tr>
 <tr class="separator:adff29ffa442e441b7283793bf263c6a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c5e3fb1d1f26c3e5de0c2bafb20a965"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classcasacore_1_1String.html">String</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1Measure.html#a0c5e3fb1d1f26c3e5de0c2bafb20a965">tellMe</a> () const =0</td></tr>
 <tr class="memdesc:a0c5e3fb1d1f26c3e5de0c2bafb20a965"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tell me your <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type (e.g.  <a href="#a0c5e3fb1d1f26c3e5de0c2bafb20a965">More...</a><br/></td></tr>
@@ -537,7 +534,7 @@ operators on Measures (e.g. <a class="el" href="classcasacore_1_1MEpoch.html" ti
 </table>
 </div><div class="memdoc">
 
-<p>Assert that we are the correct <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type. </p>
+<p>All should have: Assert that we are the correct <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> type. </p>
 <h3>Thrown Exceptions</h3>
 <ul>
 <li>
@@ -670,7 +667,7 @@ operators on Measures (e.g. <a class="el" href="classcasacore_1_1MEpoch.html" ti
 <div class="fragment"><div class="line">MeasErr error;</div>
 </div><!-- fragment --><p>Dummy for cxx2html </p>
 
-<p>Definition at line <a class="el" href="Measure_8h_source.html#l00446">446</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
+<p>Definition at line <a class="el" href="Measure_8h_source.html#l00443">443</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
 
 </div>
 </div>
@@ -699,7 +696,7 @@ operators on Measures (e.g. <a class="el" href="classcasacore_1_1MEpoch.html" ti
 <div class="fragment"><div class="line">Measure::Ref getRef() <span class="keyword">const</span>;</div>
 </div><!-- fragment --><p>Dummy for cxx2html </p>
 
-<p>Definition at line <a class="el" href="Measure_8h_source.html#l00388">388</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
+<p>Definition at line <a class="el" href="Measure_8h_source.html#l00385">385</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
 
 </div>
 </div>
@@ -730,7 +727,7 @@ operators on Measures (e.g. <a class="el" href="classcasacore_1_1MEpoch.html" ti
 <div class="fragment"><div class="line">Quantity <span class="keyword">get</span>(<span class="keyword">const</span> Unit &amp;unit) <span class="keyword">const</span>;</div>
 <div class="line">Quantum&lt;Vector&lt;Double&gt; &gt; <span class="keyword">get</span>(<span class="keyword">const</span> Unit &amp;unit) <span class="keyword">const</span>;</div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="Measure_8h_source.html#l00402">402</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
+<p>Definition at line <a class="el" href="Measure_8h_source.html#l00399">399</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
 
 </div>
 </div>
@@ -761,7 +758,7 @@ operators on Measures (e.g. <a class="el" href="classcasacore_1_1MEpoch.html" ti
 <div class="line"><span class="keyword">static</span> <a class="code" href="namespacecasacore.html#abd5691f9e13acc90d901e4007740ff98">Bool</a> getType(<a class="code" href="classcasacore_1_1Measure.html#aa38c8e0632f36b7a4cc991bd2be57abf">Measure::Types</a> &amp;tp, <span class="keyword">const</span> String &amp;in);</div>
 </div><!-- fragment --><p>Dummy for cxx2html </p>
 
-<p>Definition at line <a class="el" href="Measure_8h_source.html#l00340">340</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
+<p>Definition at line <a class="el" href="Measure_8h_source.html#l00337">337</a> of file <a class="el" href="Measure_8h_source.html">Measure.h</a>.</p>
 
 </div>
 </div>
@@ -1148,33 +1145,6 @@ operators on Measures (e.g. <a class="el" href="classcasacore_1_1MEpoch.html" ti
 <p>"Epoch") </p>
 
 <p>Implemented in <a class="el" href="classcasacore_1_1MDirection.html#a5ac556467cf4e64db150f74a7d078900">casacore::MDirection</a>, <a class="el" href="classcasacore_1_1MFrequency.html#a0c7e502751beda96527669e858653e47">casacore::MFrequency</a>, <a class="el" href="classcasacore_1_1MEarthMagnetic.html#ace30f352aad08f604e9560a8abd7c515">casacore::MEarthMagnetic</a>, <a class="el" href="classcasacore_1_1MRadialVelocity.html#ac29935e64cded2c95af676e8f2ac7551">casacore::MRadialVelocity</a>, <a class="el" href="classcasacore_1_1Muvw.html#af1597dd7bac9ce4dcf6cc97bd622cf45">casacore::Muvw</a>, <a class="el" href="classcasacore_1_1MDoppler.html#a0e420af8083cdb88640f9778c489c84e">casacore::MDoppler</a>, <a class="el" href="classcasacore_1_1MEpoch.html#a22d49f5ea7a1eb491ca694d7f9020a97">casacore::MEpoch</a>, <a class="el" href="classcasacore_1_1MBaseline.html#af887b4330146dc25fbab899c2bc7f7d0">casacore::MBaseline</a>, and <a class="el" href="classcasacore_1_1MPosition.html#a8a4cb0ada0ce4fb184a4970b8aab6608">casacore::MPosition</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a7329a12c41b0f2f438951b57897578ec"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> casacore::Measure::type </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the type (== Register() of derived <a class="el" href="classcasacore_1_1Measure.html" title="Physical quantities within reference frame. ">Measure</a> (faster than Strings) All should have: static uInt myType();. </p>
-
-<p>Implemented in <a class="el" href="classcasacore_1_1MDirection.html#ac7405eaf7f0fa8c93b74dd236066eaf4">casacore::MDirection</a>, <a class="el" href="classcasacore_1_1MFrequency.html#af26d12b93878dfd9c6cb9b5a571e592c">casacore::MFrequency</a>, <a class="el" href="classcasacore_1_1MEarthMagnetic.html#ac5d6ae541b0cea2f30a165b44e8b8425">casacore::MEarthMagnetic</a>, <a class="el" href="classcasacore_1_1MRadialVelocity.html#a8450d198ca5c5247c223989263cf2ba1">casacore::MRadialVelocity</a>, <a class="el" href="classcasacore_1_1Muvw.html#a57a4858a95ef757413e7074b41da9062">casacore::Muvw</a>, <a class="el" href="classcasacore_1_1MDoppler.html#a1fc965d29e57a787df60607bc929f7ca">casacore::MDoppler</a>, <a class="el" href="classcasacore_1_1MEpoch.html#a4cfc1ac0905e3103af5c57db3eb1ddeb">casacore::MEpoch</a>, <a class="el" href="classcasacore_1_1MBaseline.html#a3aef7b72aae88e09e4f6108743d3391c">casacore::MBaseline</a>, and <a class="el" href="classcasacore_1_1MPosition.html#a8463b8011f3a00a5772e013b9a2a2457">casacore::MPosition</a>.</p>
 
 </div>
 </div>

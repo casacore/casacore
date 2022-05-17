@@ -415,7 +415,8 @@ Friends</h2></td></tr>
 <dd>94Nov17</dd>
 </dl>
 <h3>Synopsis</h3>
-<p><a class="el" href="classcasacore_1_1DataManager.html" title="Abstract base class for a data manager. ">DataManager</a> is the abstract base class for all kind of table data managers. There are currently 2 classes of data managers: </p>
+<p><a class="el" href="classcasacore_1_1DataManager.html" title="Abstract base class for a data manager. ">DataManager</a> is the abstract base class for all kind of table data managers. <br/>
+ The <a class="el" href="classcasacore_1_1DataManager.html" title="Abstract base class for a data manager. ">DataManager</a> class structure is shown in this <a href="DataManager.drawio.svg.html">UML diagram</a>. There are currently 2 classes of data managers: </p>
 <ul>
 <li>
 Storage managers handling the storage of data. These classes have to be derived from <a class="el" href="classcasacore_1_1DataManager.html" title="Abstract base class for a data manager. ">DataManager</a>. <a class="el" href="classcasacore_1_1StManAipsIO.html" title="AipsIO table storage manager class. ">StManAipsIO</a> is an example of a storage manager. </li>
@@ -465,7 +466,7 @@ Similar to a new table the flush functions gets called when the table gets writt
 Handle unregistered data managers in a better way. Instead of throwing an exception a subprocess could be started which represents the data manager. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00218">218</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00220">220</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a7d6511049dabf21d1db07b3019f5de52"></a>
 <div class="memitem">
@@ -589,8 +590,6 @@ Handle unregistered data managers in a better way. Instead of throwing an except
 <p>Backward compatibility function using uInt instead of rownr_t. </p>
 <p>The default implementations throw an exception. </p>
 
-<p>Reimplemented in <a class="el" href="classdyscostman_1_1DyscoStMan.html#a7ffda8a46dff65e95f2a8b4f9a4e2898">dyscostman::DyscoStMan</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a6d34cc1c3c0ba9423927a2ee1fa31df9"></a>
@@ -646,9 +645,9 @@ The default implementation calls the uInt version. </p>
 
 <p>Have the data to be stored in big or little endian canonical format? </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00287">287</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00289">289</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00406">asBigEndian_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00408">asBigEndian_p</a>.</p>
 
 </div>
 </div>
@@ -886,7 +885,7 @@ The default implementation calls the uInt version. </p>
 
 <p>Implemented in <a class="el" href="classcasacore_1_1RetypedArrayEngine.html#a2eefa885cbd6bca5c292c6d7b2a6b444">casacore::RetypedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1CompressComplexSD.html#a1794958e2e368db2abc45c5c5c342170">casacore::CompressComplexSD</a>, <a class="el" href="classcasacore_1_1ForwardColumnEngine.html#aafbcd54d8c6b84b858ece15b9512a354">casacore::ForwardColumnEngine</a>, <a class="el" href="classcasacore_1_1TiledDataStMan.html#ab42447f3f6479e3e5dfc5e4ddd3d9208">casacore::TiledDataStMan</a>, <a class="el" href="classcasacore_1_1ForwardColumnIndexedRowEngine.html#ac70525b5a51df9a059d9621ff896a184">casacore::ForwardColumnIndexedRowEngine</a>, <a class="el" href="classcasacore_1_1BitFlagsEngine.html#a175b7cceda9abd7301d6704fcf792f41">casacore::BitFlagsEngine&lt; StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledComplexData.html#a1f7946ddc343054efcdbdbb691693cc4">casacore::ScaledComplexData&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1ScaledArrayEngine.html#a97efe6aa95172fdf09ac2329d03b4076">casacore::ScaledArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classcasacore_1_1StManAipsIO.html#ab40f05045ea6b7b716bc17a7f86bfc64">casacore::StManAipsIO</a>, <a class="el" href="classcasacore_1_1TiledShapeStMan.html#ae931a188a53500df67d21570957de901">casacore::TiledShapeStMan</a>, <a class="el" href="classcasacore_1_1CompressComplex.html#a8c3554206f48386075a94eb832a322f1">casacore::CompressComplex</a>, <a class="el" href="classcasacore_1_1CompressFloat.html#acd9d6a9faf9ad729d832a67f1551faf1">casacore::CompressFloat</a>, <a class="el" href="classcasacore_1_1TiledCellStMan.html#adcccbb622f64b736e79b3770f5a0570d">casacore::TiledCellStMan</a>, <a class="el" href="classcasacore_1_1TiledColumnStMan.html#af3866034eccb818693b111252ffc1d43">casacore::TiledColumnStMan</a>, <a class="el" href="classcasacore_1_1SSMBase.html#a63b6f54f238ab0b255b73e6d55524b75">casacore::SSMBase</a>, <a class="el" href="classcasacore_1_1MappedArrayEngine.html#a08c3a926e062264381144de6b088bf73">casacore::MappedArrayEngine&lt; VirtualType, StoredType &gt;</a>, <a class="el" href="classdyscostman_1_1DyscoStMan.html#a45e6654077d14d9657d4b9b6f24a510b">dyscostman::DyscoStMan</a>, <a class="el" href="classcasacore_1_1DerivedMSCal.html#aa70bdb4b86b75149ebd021b40a35461d">casacore::DerivedMSCal</a>, <a class="el" href="classcasacore_1_1ISMBase.html#ac5d1eee11a1fa7a95b705c919402bbfc">casacore::ISMBase</a>, <a class="el" href="classcasacore_1_1VirtualTaQLColumn.html#ac085c25bb6c1882ee8c3858abc4fd688">casacore::VirtualTaQLColumn</a>, <a class="el" href="classcasacore_1_1TiledFileHelper.html#a3c24ca4a7ac9e47ea6e97095bda54250">casacore::TiledFileHelper</a>, <a class="el" href="classcasacore_1_1MSMBase.html#ae0eb6a820ab08e265098b1ef3d955d5e">casacore::MSMBase</a>, and <a class="el" href="classcasacore_1_1Adios2StMan.html#a318101ae2a63780adeca8a0e73ad23e1">casacore::Adios2StMan</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00530">setClone()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00532">setClone()</a>.</p>
 
 </div>
 </div>
@@ -911,8 +910,6 @@ The default implementation calls the uInt version. </p>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Reimplemented in <a class="el" href="classdyscostman_1_1DyscoStMan.html#a3587a1715fb456b15844eb6b36d14618">dyscostman::DyscoStMan</a>.</p>
 
 </div>
 </div>
@@ -1180,9 +1177,9 @@ Storage managers only handle standard data types and can readily ignore this arg
 
 <p>Decrement number of columns (in case a column is deleted). </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00377">377</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00379">379</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00404">nrcol_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00406">nrcol_p</a>.</p>
 
 </div>
 </div>
@@ -1229,7 +1226,7 @@ Storage managers only handle standard data types and can readily ignore this arg
 
 <p>Compose a unique filename from the table name and sequence number. </p>
 
-<p>Referenced by <a class="el" href="Adios2StManImpl_8h_source.html#l00106">casacore::Adios2StMan::impl::fileName()</a>.</p>
+<p>Referenced by <a class="el" href="Adios2StManImpl_8h_source.html#l00121">casacore::Adios2StMan::impl::fileName()</a>.</p>
 
 </div>
 </div>
@@ -1312,9 +1309,9 @@ Storage managers only handle standard data types and can readily ignore this arg
 
 <p>Has the object already been cloned? </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00526">526</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00528">528</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00410">clone_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00412">clone_p</a>.</p>
 
 </div>
 </div>
@@ -1706,9 +1703,9 @@ The default implementation returns True. </p>
 
 <p>Get the <a class="el" href="classcasacore_1_1MultiFile.html" title="Class to combine multiple files in a single one. ">MultiFile</a> pointer (can be 0). </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00295">295</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00297">297</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00408">multiFile_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00410">multiFile_p</a>.</p>
 
 </div>
 </div>
@@ -1735,11 +1732,11 @@ The default implementation returns True. </p>
 
 <p>Get the nr of columns in this data manager (can be zero). </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00283">283</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00285">285</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00404">nrcol_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00406">nrcol_p</a>.</p>
 
-<p>Referenced by <a class="el" href="Adios2StManImpl_8h_source.html#l00105">casacore::Adios2StMan::impl::ncolumn()</a>.</p>
+<p>Referenced by <a class="el" href="Adios2StManImpl_8h_source.html#l00120">casacore::Adios2StMan::impl::ncolumn()</a>.</p>
 
 </div>
 </div>
@@ -1774,8 +1771,6 @@ The default implementation returns True. </p>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Reimplemented in <a class="el" href="classdyscostman_1_1DyscoStMan.html#a31c114a1bb4cae8de1c2cd20f0c60c88">dyscostman::DyscoStMan</a>.</p>
 
 </div>
 </div>
@@ -2026,8 +2021,6 @@ The default implementation calls the uInt version of open and open1. </p>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classdyscostman_1_1DyscoStMan.html#a743bb132a666a4c8fe290a07f5bd5f98">dyscostman::DyscoStMan</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a42f418c608b8edfad8818177a4d48df4"></a>
@@ -2110,8 +2103,6 @@ The default implementation calls the uInt version. </p>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classdyscostman_1_1DyscoStMan.html#a22979c433131017d98204066f01290f6">dyscostman::DyscoStMan</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a874f614ee05eb6f46b1464cbff270dd6"></a>
@@ -2192,9 +2183,9 @@ The default implementation calls the uInt version of resync and resync1. </p>
 
 <p>Get the (unique) sequence nr of this data manager. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00279">279</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00281">281</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00405">seqnr_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00407">seqnr_p</a>.</p>
 
 <p>Referenced by <a class="el" href="DataManAccessor_8h_source.html#l00109">casacore::RODataManAccessor::dataManagerSeqNr()</a>.</p>
 
@@ -2224,9 +2215,9 @@ The default implementation calls the uInt version of resync and resync1. </p>
 
 <p>Set the pointer to the clone. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00530">530</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00532">532</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="classcasacore_1_1DataManager.html#ab8d98544ba7a3fdfb204fc69da324fda">clone()</a>, and <a class="el" href="DataManager_8h_source.html#l00410">clone_p</a>.</p>
+<p>References <a class="el" href="classcasacore_1_1DataManager.html#ab8d98544ba7a3fdfb204fc69da324fda">clone()</a>, and <a class="el" href="DataManager_8h_source.html#l00412">clone_p</a>.</p>
 
 </div>
 </div>
@@ -2254,9 +2245,9 @@ The default implementation calls the uInt version of resync and resync1. </p>
 
 <p>Tell the data manager if big or little endian format is needed. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00381">381</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00383">383</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00406">asBigEndian_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00408">asBigEndian_p</a>.</p>
 
 </div>
 </div>
@@ -2369,9 +2360,9 @@ The default implementation calls the uInt version of resync and resync1. </p>
 
 <p>Set the sequence number of this data manager. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00462">462</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00464">464</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00405">seqnr_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00407">seqnr_p</a>.</p>
 
 </div>
 </div>
@@ -2453,9 +2444,9 @@ The default implementation calls the uInt version of resync and resync1. </p>
 
 <p>Get the table this object is associated with. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00316">316</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00318">318</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00409">table_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00411">table_p</a>.</p>
 
 </div>
 </div>
@@ -2518,9 +2509,9 @@ The default implementation calls the uInt version of resync and resync1. </p>
 
 <p>Get the TSM option. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00291">291</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00293">293</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>References <a class="el" href="DataManager_8h_source.html#l00407">tsmOption_p</a>.</p>
+<p>References <a class="el" href="DataManager_8h_source.html#l00409">tsmOption_p</a>.</p>
 
 </div>
 </div>
@@ -2584,7 +2575,7 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00221">221</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00223">223</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
 </div>
 </div>
@@ -2606,7 +2597,7 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00220">220</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00222">222</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
 </div>
 </div>
@@ -2629,9 +2620,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00406">406</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00408">408</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00287">asBigEndian()</a>, and <a class="el" href="DataManager_8h_source.html#l00381">setEndian()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00289">asBigEndian()</a>, and <a class="el" href="DataManager_8h_source.html#l00383">setEndian()</a>.</p>
 
 </div>
 </div>
@@ -2653,9 +2644,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00410">410</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00412">412</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00526">getClone()</a>, and <a class="el" href="DataManager_8h_source.html#l00530">setClone()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00528">getClone()</a>, and <a class="el" href="DataManager_8h_source.html#l00532">setClone()</a>.</p>
 
 </div>
 </div>
@@ -2680,7 +2671,7 @@ TableUnknownDataManager </li>
 <p>Define the highest row number that can be represented as signed 32-bit. </p>
 <p>In principle it is the maximum uInt number, but for test purposes it can be reset (to a lower number). </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00554">554</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00556">556</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
 </div>
 </div>
@@ -2702,9 +2693,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00408">408</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00410">410</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00295">multiFile()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00297">multiFile()</a>.</p>
 
 </div>
 </div>
@@ -2726,9 +2717,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00404">404</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00406">406</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00377">decrementNcolumn()</a>, and <a class="el" href="DataManager_8h_source.html#l00283">ncolumn()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00379">decrementNcolumn()</a>, and <a class="el" href="DataManager_8h_source.html#l00285">ncolumn()</a>.</p>
 
 </div>
 </div>
@@ -2750,9 +2741,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00405">405</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00407">407</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00279">sequenceNr()</a>, and <a class="el" href="DataManager_8h_source.html#l00462">setSeqnr()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00281">sequenceNr()</a>, and <a class="el" href="DataManager_8h_source.html#l00464">setSeqnr()</a>.</p>
 
 </div>
 </div>
@@ -2774,9 +2765,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00409">409</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00411">411</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00316">table()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00318">table()</a>.</p>
 
 </div>
 </div>
@@ -2798,7 +2789,7 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00522">522</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00524">524</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
 </div>
 </div>
@@ -2822,7 +2813,7 @@ TableUnknownDataManager </li>
 
 <p>Declare the mapping of the data manager type name to a static "makeObject" function. </p>
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00521">521</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00523">523</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
 </div>
 </div>
@@ -2844,9 +2835,9 @@ TableUnknownDataManager </li>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00407">407</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
+<p>Definition at line <a class="el" href="DataManager_8h_source.html#l00409">409</a> of file <a class="el" href="DataManager_8h_source.html">DataManager.h</a>.</p>
 
-<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00291">tsmOption()</a>.</p>
+<p>Referenced by <a class="el" href="DataManager_8h_source.html#l00293">tsmOption()</a>.</p>
 
 </div>
 </div>

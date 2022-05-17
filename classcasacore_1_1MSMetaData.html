@@ -394,6 +394,8 @@ std::map&lt; <a class="el" href="structcasacore_1_1ScanKey.html">ScanKey</a>, st
 <tr class="separator:ac15cd92d6b5e165aa3db26fa74a28b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9dc7705d029eb5835989553a399fccd"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMetaData.html#ac9dc7705d029eb5835989553a399fccd">getBBCNos</a> () const </td></tr>
 <tr class="separator:ac9dc7705d029eb5835989553a399fccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52cb5709e424c2e0c8ca853beaf20ef4"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classcasacore_1_1String.html">String</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMetaData.html#a52cb5709e424c2e0c8ca853beaf20ef4">getCorrBits</a> () const </td></tr>
+<tr class="separator:a52cb5709e424c2e0c8ca853beaf20ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae443dad3ccc003ad1af37e18df96aa77"><td class="memItemLeft" align="right" valign="top">std::map&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a>, std::set&lt; <a class="el" href="namespacecasacore.html#a5c559d8d8bf2ae7f67b439955d6be88a">uInt</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMetaData.html#ae443dad3ccc003ad1af37e18df96aa77">getBBCNosToSpwMap</a> (<a class="el" href="classcasacore_1_1MSMetaData.html#adf0fbbd8a458a94ebd1989b04dfbdcf3">SQLDSwitch</a> sqldSwitch)</td></tr>
 <tr class="separator:ae443dad3ccc003ad1af37e18df96aa77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c38b1a662d548739c5aec242838f98d"><td class="memItemLeft" align="right" valign="top">vector&lt; vector&lt; <a class="el" href="namespacecasacore.html#ada1f75eb2b38067e3eb1af7f5d69ebb2">Double</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcasacore_1_1MSMetaData.html#a0c38b1a662d548739c5aec242838f98d">getEdgeChans</a> ()</td></tr>
@@ -4484,9 +4486,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00582">582</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00584">584</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>References <a class="el" href="MSMetaData_8h_source.html#l00725">_cacheMB</a>.</p>
+<p>References <a class="el" href="MSMetaData_8h_source.html#l00729">_cacheMB</a>.</p>
 
 </div>
 </div>
@@ -4582,6 +4584,21 @@ template&lt;class T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">vector&lt;<a class="el" href="namespacecasacore.html#a76017ac62ace773f15aef6b1bfa8d25d">QVD</a> &gt; casacore::MSMetaData::getChanWidths </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a52cb5709e424c2e0c8ca853beaf20ef4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="classcasacore_1_1String.html">String</a>&gt; casacore::MSMetaData::getCorrBits </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -5235,9 +5252,9 @@ template&lt;class T &gt; </div>
 
 <p>max cache size in MB </p>
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00453">453</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00455">455</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>References <a class="el" href="MSMetaData_8h_source.html#l00726">_maxCacheMB</a>.</p>
+<p>References <a class="el" href="MSMetaData_8h_source.html#l00730">_maxCacheMB</a>.</p>
 
 </div>
 </div>
@@ -5277,9 +5294,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00659">659</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00661">661</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>References <a class="el" href="MSMetaData_8h_source.html#l00723">_ms</a>.</p>
+<p>References <a class="el" href="MSMetaData_8h_source.html#l00727">_ms</a>.</p>
 
 </div>
 </div>
@@ -6626,7 +6643,7 @@ template&lt;class T &gt; </div>
 <p>DEPRECATED because of spelling error. </p>
 <p>Use <a class="el" href="classcasacore_1_1MSMetaData.html#a564602f0d60865efdf4e025810976743" title="get unique field IDs that exist in the main table. ">getUniqueFieldIDs()</a> instead. </p>
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00634">634</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00636">636</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 <p>References <a class="el" href="classcasacore_1_1MSMetaData.html#a564602f0d60865efdf4e025810976743">getUniqueFieldIDs()</a>.</p>
 
@@ -6647,7 +6664,7 @@ template&lt;class T &gt; </div>
 
 <p>get unique field IDs that exist in the main table. </p>
 
-<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00634">getUniqueFiedIDs()</a>.</p>
+<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00636">getUniqueFiedIDs()</a>.</p>
 
 </div>
 </div>
@@ -7195,9 +7212,9 @@ template&lt;class T &gt; </div>
 <p>If True, force the subscan properties structure to be cached regardless of the stipulations on the maximum cache. </p>
 <p>Normally, the subscan properties structure is small compared to the size of any one column that is necessary to create it, and since creating this structure can be very expensive, especially for large datasets, it is often a good idea to cache it if it will be accessed many times. </p>
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00516">516</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00518">518</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>References <a class="el" href="MSMetaData_8h_source.html#l00780">_forceSubScanPropsToCache</a>.</p>
+<p>References <a class="el" href="MSMetaData_8h_source.html#l00784">_forceSubScanPropsToCache</a>.</p>
 
 </div>
 </div>
@@ -7223,9 +7240,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00661">661</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00663">663</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>References <a class="el" href="MSMetaData_8h_source.html#l00724">_showProgress</a>.</p>
+<p>References <a class="el" href="MSMetaData_8h_source.html#l00728">_showProgress</a>.</p>
 
 </div>
 </div>
@@ -7248,7 +7265,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00771">771</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00775">775</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7270,7 +7287,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7292,7 +7309,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00736">736</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00740">740</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7314,7 +7331,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00770">770</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00774">774</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7336,7 +7353,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00769">769</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00773">773</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7358,7 +7375,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00784">784</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00788">788</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7380,7 +7397,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00788">788</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00792">792</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7402,7 +7419,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7424,9 +7441,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00725">725</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00729">729</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00582">getCache()</a>.</p>
+<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00584">getCache()</a>.</p>
 
 </div>
 </div>
@@ -7448,7 +7465,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00764">764</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7470,7 +7487,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00759">759</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00763">763</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7492,7 +7509,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00731">731</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00735">735</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7514,7 +7531,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00731">731</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00735">735</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7536,7 +7553,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00754">754</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00758">758</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7558,7 +7575,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00797">797</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00801">801</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7580,7 +7597,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00773">773</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00777">777</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7602,7 +7619,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7624,7 +7641,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00782">782</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00786">786</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7646,7 +7663,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7668,7 +7685,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7690,7 +7707,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00751">751</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00755">755</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7712,7 +7729,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00748">748</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00752">752</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7734,7 +7751,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00748">748</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00752">752</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7756,7 +7773,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00754">754</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00758">758</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7778,7 +7795,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00736">736</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7800,7 +7817,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00734">734</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00738">738</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7822,7 +7839,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00766">766</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00770">770</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7844,7 +7861,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00781">781</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00785">785</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7866,9 +7883,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00780">780</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00784">784</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00516">setForceSubScanPropsToCache()</a>.</p>
+<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00518">setForceSubScanPropsToCache()</a>.</p>
 
 </div>
 </div>
@@ -7890,7 +7907,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00740">740</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00744">744</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7912,7 +7929,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00741">741</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00745">745</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7934,7 +7951,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00763">763</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00767">767</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7956,7 +7973,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00742">742</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -7978,7 +7995,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00764">764</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00768">768</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8000,9 +8017,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00726">726</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00730">730</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00453">getMaxCacheSizeMB()</a>.</p>
+<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00455">getMaxCacheSizeMB()</a>.</p>
 
 </div>
 </div>
@@ -8027,9 +8044,9 @@ template&lt;class T &gt; </div>
 <p>The general pattern is that a mutable gets set only once, on demand, when its setter is called for the first time. </p>
 <p>If this pattern is broken, defective behavior will occur. </p>
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00723">723</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00727">727</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00659">getMS()</a>.</p>
+<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00661">getMS()</a>.</p>
 
 </div>
 </div>
@@ -8051,7 +8068,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00727">727</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00731">731</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8073,7 +8090,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8095,7 +8112,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8117,7 +8134,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8139,7 +8156,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8161,7 +8178,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8183,7 +8200,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8205,7 +8222,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8227,7 +8244,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8249,7 +8266,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8271,7 +8288,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00732">732</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8293,7 +8310,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00782">782</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00786">786</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8315,7 +8332,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00774">774</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00778">778</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8337,7 +8354,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00774">774</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00778">778</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8359,7 +8376,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00727">727</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00731">731</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8381,7 +8398,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8403,7 +8420,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00769">769</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00773">773</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8425,7 +8442,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8447,7 +8464,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00753">753</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00757">757</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8469,7 +8486,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00792">792</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00796">796</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8491,7 +8508,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8513,7 +8530,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00794">794</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00798">798</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8535,7 +8552,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00785">785</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00789">789</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8557,7 +8574,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00737">737</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00741">741</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8579,7 +8596,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00743">743</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00747">747</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8601,7 +8618,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00733">733</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00737">737</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8623,7 +8640,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00730">730</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00734">734</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8645,7 +8662,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00733">733</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00737">737</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8667,7 +8684,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00749">749</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00753">753</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8689,7 +8706,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00730">730</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00734">734</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8711,7 +8728,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00733">733</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00737">737</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8733,7 +8750,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00787">787</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00791">791</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8755,7 +8772,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00762">762</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00766">766</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8777,7 +8794,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00758">758</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00762">762</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8799,9 +8816,9 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00724">724</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00728">728</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
-<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00661">setShowProgress()</a>.</p>
+<p>Referenced by <a class="el" href="MSMetaData_8h_source.html#l00663">setShowProgress()</a>.</p>
 
 </div>
 </div>
@@ -8823,7 +8840,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00782">782</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00786">786</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8845,7 +8862,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00792">792</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00796">796</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8867,7 +8884,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00796">796</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00800">800</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8889,7 +8906,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8911,7 +8928,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00798">798</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00802">802</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8933,7 +8950,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00734">734</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00738">738</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8955,7 +8972,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00752">752</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8977,7 +8994,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00780">780</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00784">784</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -8999,7 +9016,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00735">735</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00739">739</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9021,7 +9038,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00753">753</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00757">757</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9043,7 +9060,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00751">751</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00755">755</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9065,7 +9082,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00754">754</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00758">758</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9087,7 +9104,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9109,7 +9126,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00734">734</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00738">738</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9131,7 +9148,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00751">751</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00755">755</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9153,7 +9170,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00756">756</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00760">760</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9175,7 +9192,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00738">738</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00742">742</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9197,7 +9214,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00786">786</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00790">790</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9219,7 +9236,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00754">754</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9241,7 +9258,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00747">747</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00751">751</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9263,7 +9280,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00747">747</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00751">751</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9285,7 +9302,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00777">777</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00781">781</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9307,7 +9324,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00778">778</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00782">782</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9329,7 +9346,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9351,7 +9368,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00790">790</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00794">794</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9373,7 +9390,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00767">767</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00771">771</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9395,7 +9412,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00775">775</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00779">779</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9417,7 +9434,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00775">775</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00779">779</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9439,7 +9456,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00776">776</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00780">780</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9461,7 +9478,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00776">776</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00780">780</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9483,7 +9500,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00745">745</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00749">749</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9505,7 +9522,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00772">772</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00776">776</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9527,7 +9544,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9549,7 +9566,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00745">745</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00749">749</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9571,7 +9588,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00744">744</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00748">748</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9593,7 +9610,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00745">745</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00749">749</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>
@@ -9615,7 +9632,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00746">746</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
+<p>Definition at line <a class="el" href="MSMetaData_8h_source.html#l00750">750</a> of file <a class="el" href="MSMetaData_8h_source.html">MSMetaData.h</a>.</p>
 
 </div>
 </div>

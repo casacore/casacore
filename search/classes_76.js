@@ -32,7 +32,7 @@ var searchData=
   ['vector_3c_20casacore_3a_3avector_3c_20typename_20casacore_3a_3alsqtraits_3c_20typename_20casacore_3a_3afunctiontraits_3c_20double_20_3e_3a_3abasetype_20_3e_3a_3abase_20_3e_20_3e',['Vector&lt; casacore::Vector&lt; typename casacore::LSQTraits&lt; typename casacore::FunctionTraits&lt; Double &gt;::BaseType &gt;::base &gt; &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20casacore_3a_3avector_3c_20typename_20casacore_3a_3alsqtraits_3c_20typename_20casacore_3a_3afunctiontraits_3c_20t_20_3e_3a_3abasetype_20_3e_3a_3abase_20_3e_20_3e',['Vector&lt; casacore::Vector&lt; typename casacore::LSQTraits&lt; typename casacore::FunctionTraits&lt; T &gt;::BaseType &gt;::base &gt; &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20domain_20_3e',['Vector&lt; Domain &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
-  ['vector_3c_20double_20_3e',['Vector&lt; double &gt;',['../classcasacore_1_1Vector.html',1,'casacore::Vector&lt; double &gt;'],['../classcasacore_1_1Vector.html',1,'casacore::Vector&lt; Double &gt;']]],
+  ['vector_3c_20double_20_3e',['Vector&lt; Double &gt;',['../classcasacore_1_1Vector.html',1,'casacore::Vector&lt; Double &gt;'],['../classcasacore_1_1Vector.html',1,'casacore::Vector&lt; double &gt;']]],
   ['vector_3c_20float_20_3e',['Vector&lt; Float &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20ftype_20_3e',['Vector&lt; FType &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
   ['vector_3c_20int_20_3e',['Vector&lt; Int &gt;',['../classcasacore_1_1Vector.html',1,'casacore']]],
