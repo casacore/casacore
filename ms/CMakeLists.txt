@@ -18,7 +18,12 @@ MSStateGram
 )
 
 foreach (src ${parser_inputs})
-    BISON_TARGET (${src} MSSel/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src} --output-file=${src}.ycc")
+    if (BISON_VERSION VERSION_LESS 3.0)
+        BISON_TARGET (${src} MSSel/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src} --output-file=${src}.ycc")
+    else()
+        BISON_TARGET (${src} MSSel/${src}.yy
+    ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -Dapi.prefix={${src}}  --output-file=${src}.ycc --warnings=no-yacc")
+    endif()
     FLEX_TARGET (${src} MSSel/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
