@@ -96,7 +96,8 @@ public:
     // iteration boundary. This improves performance in general but will
     // break existing applications that change the comparison objects
     // (cmpObjs) between iterations.
-    BaseTableIterator (BaseTable*, const Block<String>& columnNames,
+    BaseTableIterator (const std::shared_ptr<BaseTable>&,
+                       const Block<String>& columnNames,
                        const Block<CountedPtr<BaseCompare> >& cmpObjs,
                        const Block<Int>& orders,
                        int option,
@@ -111,7 +112,7 @@ public:
     virtual void reset();
 
     // Return the next group.
-    virtual BaseTable* next();
+    virtual std::shared_ptr<BaseTable> next();
 
     virtual void copyState(const BaseTableIterator &);
 
@@ -119,10 +120,11 @@ public:
     // comparison function) to terminate the most recent call to next()
     // Enables clients to sense iteration boundary properties
     // and organize associated iterations
-    inline const String& keyChangeAtLastNext() const { return keyChangeAtLastNext_p; };
+    inline const String& keyChangeAtLastNext() const
+      { return keyChangeAtLastNext_p; }
 
 protected:
-    BaseTable*             sortTab_p;     //# Table sorted in iteration order
+    std::shared_ptr<BaseTable> sortTab_p; //# Table sorted in iteration order
     rownr_t                lastRow_p;     //# last row used from reftab
     uInt                   nrkeys_p;      //# nr of columns in group
     String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
@@ -132,7 +134,7 @@ protected:
     // Copy constructor (to be used by clone)
     BaseTableIterator (const BaseTableIterator&);
 
-    BaseTable* noCachedIterBoundariesNext();
+    std::shared_ptr<BaseTable> noCachedIterBoundariesNext();
 
 private:
     // Assignment is not needed, because the assignment operator in
@@ -147,7 +149,8 @@ private:
     std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange_p;
     Vector<rownr_t>::iterator sortIterBoundariesIt_p;
     Vector<size_t>::iterator  sortIterKeyIdxChangeIt_p;
-    RefTable* aRefTable_p;
+    std::shared_ptr<BaseTable> aBaseTable_p;
+    RefTable* aRefTable_p;      //# Same as aBaseTable_p
 };
 
 

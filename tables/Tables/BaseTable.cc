@@ -78,10 +78,8 @@ BaseTable::BaseTable (MPI_Comm mpiComm, const String& name, int option, rownr_t 
 
 void BaseTable::BaseTableCommon (const String& name, int option, rownr_t nrrow)
 {
-    nrlink_p = 0;
     nrrow_p = nrrow;
     nrrowToAdd_p = 0;
-    tdescPtr_p = 0;
     name_p = name;
     option_p = option;
     noWrite_p = False;
@@ -123,34 +121,15 @@ BaseTable::~BaseTable()
     }
 }
 
-void BaseTable::link()
-{
-    nrlink_p++;
-#ifdef AIPS_TRACE
-    cout << "BaseTable::link:   " << nrlink_p << ' ' << name_p
-	 << ' ' << this << endl;
-#endif
-}
-
-void BaseTable::unlink (BaseTable* btp)
-{
-#ifdef AIPS_TRACE
-    cout << "BaseTable::unlink: " << btp->nrlink_p << ' ' << btp->name_p
-	 << ' ' << btp;
-    if (btp->nrlink_p == 1) {
-        cout << " gets destructed";
-    }
-    cout << endl;
-#endif
-    btp->nrlink_p--;
-    if (btp->nrlink_p == 0) {
-	delete btp;
-    }
-}
-
 Bool BaseTable::isNull() const
 {
   return False;
+}
+
+std::shared_ptr<BaseTable> BaseTable::getSharedPtr() const
+{
+  AlwaysAssert (!thisPtr_p.expired(), AipsError);
+  return thisPtr_p.lock();
 }
 
 
@@ -688,7 +667,7 @@ Bool BaseTable::rowOrder() const
     { return True; }
 
 //# By the default the table cannot return the storage of rownrs.
-Vector<rownr_t>* BaseTable::rowStorage()
+Vector<rownr_t>& BaseTable::rowStorage()
 {
     throw (TableInvOper ("rowStorage() not possible; table " + name_p +
                          " is no RefTable"));
@@ -696,11 +675,12 @@ Vector<rownr_t>* BaseTable::rowStorage()
 
 
 //# Sort a table.
-BaseTable* BaseTable::sort (const Block<String>& names,
-                            const Block<CountedPtr<BaseCompare> >& cmpObj,
-                            const Block<Int>& order, int option,
-                            std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
-                            std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
+std::shared_ptr<BaseTable> BaseTable::sort
+(const Block<String>& names,
+ const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<Int>& order, int option,
+ std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
+ std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
 
 {
     AlwaysAssert (!isNull(), AipsError);
@@ -727,11 +707,12 @@ BaseTable* BaseTable::sort (const Block<String>& names,
 }
 
 //# Do the actual sort.
-BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
-                              const Block<CountedPtr<BaseCompare> >& cmpObj,
-                              const Block<Int>& order, int option,
-                              std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
-                              std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
+std::shared_ptr<BaseTable> BaseTable::doSort
+(PtrBlock<BaseColumn*>& sortCol,
+ const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<Int>& order, int option,
+ std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
+ std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
 {
     uInt nrkey = sortCol.nelements();
     //# Create a sort object.
@@ -745,32 +726,42 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     //# Create a reference table.
     //# This table will NOT be in row order.
     rownr_t nrrow = nrow();
-    RefTable* resultTable = makeRefTable (False, nrrow);
+    std::shared_ptr<BaseTable> resultBaseTab = makeRefTable (False, nrrow);
+    RefTable* resultTable = resultBaseTab->asRefTable();
     //# Now sort the table storing the row-numbers in the RefTable.
     //# Adjust rownrs in case source table is already a RefTable.
     //# Then delete possible allocated data blocks.
-    Vector<rownr_t>& rows = *(resultTable->rowStorage());
+    Vector<rownr_t>& rows = resultTable->rowStorage();
     //# Note that nrrow can change in case Sort::NoDuplicates was given.
     nrrow = sortobj.sort (rows, nrrow, option);
-    if(sortIterBoundaries && sortIterKeyIdxChange)
+    if(sortIterBoundaries && sortIterKeyIdxChange) {
         sortobj.unique(*sortIterBoundaries, *sortIterKeyIdxChange, rows);
+    }
     adjustRownrs (nrrow, rows, False);
     resultTable->setNrrow (nrrow);
-    return resultTable;
+    return resultBaseTab;
 }
 
-RefTable* BaseTable::makeRefTable (Bool rowOrder, rownr_t initialNrrow)
+std::shared_ptr<BaseTable> BaseTable::makeRefTable (Bool rowOrder,
+                                                    rownr_t initialNrrow)
 {
-    RefTable* rtp = new RefTable(this, rowOrder, initialNrrow);
-    return rtp;
+  std::shared_ptr<BaseTable> rtp (new RefTable(this, rowOrder, initialNrrow));
+  rtp->setWeakPtr (rtp);
+  return rtp;
 }
 
+RefTable* BaseTable::asRefTable()
+{
+  RefTable* rtp = dynamic_cast<RefTable*>(this);
+  AlwaysAssert (rtp, AipsError);
+  return rtp;
+}
 
 //# No rownrs have to be adjusted and they are by default in ascending order.
 Bool BaseTable::adjustRownrs (rownr_t, Vector<rownr_t>&, Bool) const
     { return True; }
 
-BaseTable* BaseTable::select (rownr_t maxRow, rownr_t offset)
+std::shared_ptr<BaseTable> BaseTable::select (rownr_t maxRow, rownr_t offset)
 {
     if (offset > nrow()) {
         offset = nrow();
@@ -779,7 +770,7 @@ BaseTable* BaseTable::select (rownr_t maxRow, rownr_t offset)
         maxRow = nrow() - offset;
     }
     if (offset == 0  &&  maxRow == nrow()) {
-        return this;
+      return getSharedPtr();    // pointer to itself
     }
     Vector<rownr_t> rownrs(maxRow);
     indgen(rownrs, rownr_t(offset));
@@ -787,8 +778,8 @@ BaseTable* BaseTable::select (rownr_t maxRow, rownr_t offset)
 }
 
 // Do the row selection.
-BaseTable* BaseTable::select (const TableExprNode& node,
-                              rownr_t maxRow, rownr_t offset)
+std::shared_ptr<BaseTable> BaseTable::select (const TableExprNode& node,
+                                              rownr_t maxRow, rownr_t offset)
 {
     // Check we don't deal with a null table.
     AlwaysAssert (!isNull(), AipsError);
@@ -822,7 +813,8 @@ BaseTable* BaseTable::select (const TableExprNode& node,
     //# Loop through all rows and add to reference table if true.
     //# Add the rownr of the root table (one may search a reference table).
     //# Adjust the row numbers to reflect row numbers in the root table.
-    SPtrHolder<RefTable> resultTable (makeRefTable (True, 0));
+    std::shared_ptr<BaseTable> resultBaseTab = makeRefTable (True, 0);
+    RefTable* resultTable = resultBaseTab->asRefTable();
     Bool val;
     rownr_t nrrow = nrow();
     TableExprId id;
@@ -842,67 +834,59 @@ BaseTable* BaseTable::select (const TableExprNode& node,
         }
       }
     }
-    adjustRownrs (resultTable->nrow(), *(resultTable->rowStorage()), False);
-    return resultTable.transfer();
+    adjustRownrs (resultTable->nrow(), resultTable->rowStorage(), False);
+    return resultBaseTab;
 }
 
-BaseTable* BaseTable::select (const Vector<rownr_t>& rownrs)
+std::shared_ptr<BaseTable> BaseTable::select (const Vector<rownr_t>& rownrs)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, rownrs);
-    return rtp;
+    return std::shared_ptr<BaseTable> (rtp);
 }
 
-BaseTable* BaseTable::select (const Block<Bool>& mask)
+std::shared_ptr<BaseTable> BaseTable::select (const Block<Bool>& mask)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, Vector<Bool>(mask.begin(), mask.end()));
-    return rtp;
+    return std::shared_ptr<BaseTable> (rtp);
 }
 
-BaseTable* BaseTable::project (const Block<String>& names)
+std::shared_ptr<BaseTable> BaseTable::project (const Block<String>& names)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, Vector<String>(names.begin(), names.end()));
-    return rtp;
+    return std::shared_ptr<BaseTable> (rtp);
 }
 
 
 //# And (intersect) 2 tables and return a new table.
-BaseTable* BaseTable::tabAnd (BaseTable* that)
+std::shared_ptr<BaseTable> BaseTable::tabAnd (BaseTable* that)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
     logicCheck (that);
     //# Anding a table with the (possibly sorted) root table gives the table.
     if (this->nrow() == this->root()->nrow()) {
-	return that;                                  // this is root
+      return that->getSharedPtr();                    // this is root
     }
     if (that->nrow() == that->root()->nrow()) {
-	return this;                                  // that is root
+      return this->getSharedPtr();                    // that is root
     }
     //# There is no root table involved, so we have to deal with RefTables.
-    //# Get both rownr arrays and sort them if not in row order.
-    //# Sorting means that the array is allocated on the heap, which has
-    //# to be deleted afterwards.
-    Bool allsw1, allsw2;
-    rownr_t* inx1;
-    rownr_t* inx2;
-    rownr_t nr1 = this->logicRows (inx1, allsw1);
-    rownr_t nr2 = that->logicRows (inx2, allsw2);
-    RefTable* rtp = makeRefTable (True, 0);           // will be in row order
-    rtp->refAnd (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
-    if (allsw1) {
-	delete [] inx1;
-    }
-    if (allsw2) {
-	delete [] inx2;
-    }
-    return rtp;
+    //# Get both rownr arrays which are sorted if not in row order.
+    Vector<rownr_t> r1 = this->logicRows();
+    Vector<rownr_t> r2 = that->logicRows();
+    // Create RefTable which will be in row order.
+    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
+    RefTable* rtp = baseTabPtr->asRefTable();
+    // Store rownrs in new RefTable.
+    rtp->refAnd (r1.size(), r1.data(), r2.size(), r2.data());
+    return baseTabPtr;
 }
 
 //# Or (union) 2 tables and return a new table.
-BaseTable* BaseTable::tabOr (BaseTable* that)
+std::shared_ptr<BaseTable> BaseTable::tabOr (BaseTable* that)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
@@ -910,30 +894,22 @@ BaseTable* BaseTable::tabOr (BaseTable* that)
     //# Oring a table with the (possibly sorted) root table gives the root.
     if (this->nrow() == this->root()->nrow()
     ||  that->nrow() == that->root()->nrow()) {
-	return root();
+        return root()->getSharedPtr();
     }
     //# There is no root table involved, so we have to deal with RefTables.
-    //# Get both rownr arrays and sort them if not in row order.
-    //# Sorting means that the array is allocated on the heap, which has
-    //# to be deleted afterwards.
-    Bool allsw1, allsw2;
-    rownr_t* inx1;
-    rownr_t* inx2;
-    rownr_t nr1 = this->logicRows (inx1, allsw1);
-    rownr_t nr2 = that->logicRows (inx2, allsw2);
-    RefTable* rtp = makeRefTable (True, 0);           // will be in row order
-    rtp->refOr (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
-    if (allsw1) {
-	delete [] inx1;
-    }
-    if (allsw2) {
-	delete [] inx2;
-    }
-    return rtp;
+    //# Get both rownr arrays which are sorted if not in row order.
+    Vector<rownr_t> r1 = this->logicRows();
+    Vector<rownr_t> r2 = that->logicRows();
+    // Create RefTable which will be in row order.
+    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
+    RefTable* rtp = baseTabPtr->asRefTable();
+    // Store rownrs in new RefTable.
+    rtp->refOr (r1.size(), r1.data(), r2.size(), r2.data());
+    return baseTabPtr;
 }
 
 //# Subtract (difference) 2 tables and return a new table.
-BaseTable* BaseTable::tabSub (BaseTable* that)
+std::shared_ptr<BaseTable> BaseTable::tabSub (BaseTable* that)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
@@ -947,27 +923,19 @@ BaseTable* BaseTable::tabSub (BaseTable* that)
 	return that->tabNot();
     }
     //# There is no root table involved, so we have to deal with RefTables.
-    //# Get both rownr arrays and sort them if not in row order.
-    //# Sorting means that the array is allocated on the heap, which has
-    //# to be deleted afterwards.
-    Bool allsw1, allsw2;
-    rownr_t* inx1;
-    rownr_t* inx2;
-    rownr_t nr1 = this->logicRows (inx1, allsw1);
-    rownr_t nr2 = that->logicRows (inx2, allsw2);
-    RefTable* rtp = makeRefTable (True, 0);           // will be in row order
-    rtp->refSub (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
-    if (allsw1) {
-	delete [] inx1;
-    }
-    if (allsw2) {
-	delete [] inx2;
-    }
-    return rtp;
+    //# Get both rownr arrays which are sorted if not in row order.
+    Vector<rownr_t> r1 = this->logicRows();
+    Vector<rownr_t> r2 = that->logicRows();
+    // Create RefTable which will be in row order.
+    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
+    RefTable* rtp = baseTabPtr->asRefTable();
+    // Store rownrs in new RefTable.
+    rtp->refSub (r1.size(), r1.data(), r2.size(), r2.data());
+    return baseTabPtr;
 }
 
 //# Xor 2 tables and return a new table.
-BaseTable* BaseTable::tabXor (BaseTable* that)
+std::shared_ptr<BaseTable> BaseTable::tabXor (BaseTable* that)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
@@ -980,27 +948,19 @@ BaseTable* BaseTable::tabXor (BaseTable* that)
 	return tabNot();
     }
     //# There is no root table involved, so we have to deal with RefTables.
-    //# Get both rownr arrays and sort them if not in row order.
-    //# Sorting means that the array is allocated on the heap, which has
-    //# to be deleted afterwards.
-    Bool allsw1, allsw2;
-    rownr_t* inx1;
-    rownr_t* inx2;
-    rownr_t nr1 = this->logicRows (inx1, allsw1);
-    rownr_t nr2 = that->logicRows (inx2, allsw2);
-    RefTable* rtp = makeRefTable (True, 0);           // will be in row order
-    rtp->refXor (nr1, inx1, nr2, inx2);       // store rownrs in new RefTable
-    if (allsw1) {
-	delete [] inx1;
-    }
-    if (allsw2) {
-	delete [] inx2;
-    }
-    return rtp;
+    //# Get both rownr arrays which are sorted if not in row order.
+    Vector<rownr_t> r1 = this->logicRows();
+    Vector<rownr_t> r2 = that->logicRows();
+    // Create RefTable which will be in row order.
+    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
+    RefTable* rtp = baseTabPtr->asRefTable();
+    // Store rownrs in new RefTable.
+    rtp->refXor (r1.size(), r1.data(), r2.size(), r2.data());
+    return baseTabPtr;
 }
 
 //# Negate a table (i.e. take all rows from the root not in table).
-BaseTable* BaseTable::tabNot()
+std::shared_ptr<BaseTable> BaseTable::tabNot()
 {
     AlwaysAssert (!isNull(), AipsError);
     //# Negating the (possibly sorted) root results in an empty table,
@@ -1008,18 +968,14 @@ BaseTable* BaseTable::tabNot()
 	return makeRefTable (True, 0);
     }
     //# There is no root table involved, so we have to deal with RefTables.
-    //# Get both rownr arrays and sort them if not in row order.
-    //# Sorting means that the array is allocated on the heap, which has
-    //# to be deleted.
-    Bool allsw1;
-    rownr_t* inx1;
-    rownr_t nr1 = this->logicRows (inx1, allsw1);
-    RefTable* rtp = makeRefTable (True, 0);           // will be in row order
-    rtp->refNot (nr1, inx1, root()->nrow());    // store rownrs in new RefTable
-    if (allsw1) {
-	delete [] inx1;
-    }
-    return rtp;
+    //# Get rownr array which is sorted if not in row order.
+    Vector<rownr_t> r1 = this->logicRows();
+    // Create RefTable which will be in row order.
+    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
+    RefTable* rtp = baseTabPtr->asRefTable();
+    // Store rownrs in new RefTable.
+    rtp->refNot (r1.size(), r1.data(), root()->nrow());
+    return baseTabPtr;
 }
 
 //# Check if both tables have the same root.
@@ -1033,22 +989,18 @@ void BaseTable::logicCheck (BaseTable* that)
 //# Get the rownrs from the reference table.
 //# Note that rowStorage() throws an exception if it is not a RefTable.
 //# Sort them if not in row order.
-rownr_t BaseTable::logicRows (rownr_t*& inx, Bool& allsw)
+Vector<rownr_t> BaseTable::logicRows()
 {
     AlwaysAssert (!isNull(), AipsError);
-    allsw = False;
-    inx = RefTable::getStorage (*rowStorage());
-    rownr_t nr = nrow();
-    if (!rowOrder()) {
-	//# rows are not in order, so sort them.
-	//# They have to be copied, because the original should not be changed.
-	rownr_t* inxcp = new rownr_t[nr];
-	objcopy (inxcp, inx, nr);
-	GenSort<rownr_t>::sort (inxcp, nr);
-	inx = inxcp;
-	allsw = True;
+    Vector<rownr_t> rows (rowStorage());
+    if (rowOrder()) {
+      return rows;
     }
-    return nr;
+    //# rows are not in order, so sort them.
+    //# They have to be copied, because the original should not be changed.
+    Vector<rownr_t> rowscp (rows.copy());
+    GenSort<rownr_t>::sort (rowscp);
+    return rowscp;
 }
 
 
@@ -1063,7 +1015,7 @@ BaseTableIterator* BaseTable::makeIterator
     ||  names.nelements() != cmpObj.nelements()) {
 	throw (TableInvOper ("TableIterator: Unequal block lengths"));
     }
-    BaseTableIterator* bti = new BaseTableIterator (this, names,
+    BaseTableIterator* bti = new BaseTableIterator (getSharedPtr(), names,
                                                    cmpObj, order, option,
                                                    cacheIterationBoundaries);
     return bti;

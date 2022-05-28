@@ -271,7 +271,7 @@ void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 			     const DataManager& dataManager, Bool)
 {
-  Table tab(this, False);
+  Table tab(this, False);   // a temporary Table object
   // Make sure the MemoryStMan is used if no virtual engine is used.
   if (dataManager.isStorageManager()) {
     addColumn (columnDesc, False);

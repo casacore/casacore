@@ -465,11 +465,12 @@ void PlainTable::syncTable()
     // Something changed in the table file itself.
     // Reread it into a PlainTable object (don't add it to the cache).
     // Use a different locknr for it to preserve possible existing locks.
-    BaseTable* btab = Table::makeBaseTable
-                         (tableName(), "", Table::Old,
-			  TableLock(TableLock::PermanentLocking),
-			  TSMOption(TSMOption::Buffer,0,0), False, 1);
-    PlainTable* tab = (PlainTable*)btab;
+    std::shared_ptr<BaseTable> btab = Table::makeBaseTable
+      (tableName(), "", Table::Old,
+       TableLock(TableLock::PermanentLocking),
+       TSMOption(TSMOption::Buffer,0,0), False, 1);
+    PlainTable* tab = dynamic_cast<PlainTable*>(btab.get());
+    AlwaysAssert (tab, AipsError);
     TableAttr defaultAttr (tableName(), isWritable(), lockOptions());
     // Now check if all columns are the same.
     // Update the column keywords.
@@ -789,7 +790,6 @@ void PlainTable::setEndian (int endianFormat)
     if (endOpt == Table::AipsrcEndian) {
         String opt;
 	// Default "big" was used until version 10.1203.00.
-	////AipsrcValue<String>::find (opt, "table.endianformat", "big");
 	AipsrcValue<String>::find (opt, "table.endianformat", "local");
 	opt.downcase();
 	if (opt == "big") {

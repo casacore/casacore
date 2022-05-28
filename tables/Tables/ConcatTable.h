@@ -303,8 +303,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Block<BaseColumn*> getRefColumns (const String& columnName);
 
     // Create a (temporary) Table object from it.
-    Table asTable()
-      { return Table (this, False); }
+    //Table asTable()
+    ///  { return Table (this, False); }
 
   private:
     // Copy constructor is forbidden, because copying a table requires
