@@ -137,6 +137,7 @@ void ArrayLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
 	    where + (sourceBuffer.shape()-1)*stride, 
 	    stride) = sourceBuffer;
   } else {
+    AlwaysAssert(ldim > sdim, AipsError);
     Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
     itsData(where, 
 	    where + (allAxes.shape()-1)*stride, 
