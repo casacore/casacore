@@ -2,7 +2,12 @@
 # CASA Images
 #
 
-BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
+if (BISON_VERSION VERSION_LESS 3.0)
+    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
+else()
+    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy
+    ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-Dapi.prefix={ImageExprGram} --warnings=no-yacc")
+endif()
 FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
