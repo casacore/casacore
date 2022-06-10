@@ -551,7 +551,13 @@ foreach (module ${_modules})
             set_target_properties(casa_${module} PROPERTIES LINK_FLAGS -single_module)
         endif (${module} STREQUAL scimath_f OR ${module} STREQUAL fits OR ${module} STREQUAL mirlib OR ${module} STREQUAL coordinates)
     endif (APPLE)
+    set(PRIVATE_LIBS "${PRIVATE_LIBS} -lcasa_${module}")
 endforeach (module)
+
+# Install pkg-config support file
+CONFIGURE_FILE("casacore.pc.in" "casacore.pc" @ONLY)
+set(CASA_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/casacore.pc" DESTINATION "${CASA_PKGCONFIG_INSTALL_PREFIX}")
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
