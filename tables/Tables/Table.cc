@@ -296,26 +296,19 @@ Table::Table (const Block<String>& tableNames,
                                   option, lockOptions, tsmOpt));
 }
 
-Table::Table (BaseTable* btp, Bool countIt)
-: baseTabPtr_p     (0),
+Table::Table (BaseTable* btp)
+: baseTabPtr_p     (btp),
   lastModCounter_p (0)
-{
-  std::shared_ptr<BaseTable> shptr = btp->getSharedPtr();
-  baseTabPtr_p = shptr.get();
-  if (countIt) {
-    countedTabPtr_p = shptr;
-  }
-}
+{}
 
-Table::Table (const std::shared_ptr<BaseTable>& shptr, Bool countIt)
+Table::Table (const std::shared_ptr<BaseTable>& shptr)
 : baseTabPtr_p     (0),
   lastModCounter_p (0)
 {
   baseTabPtr_p = shptr.get();
+  AlwaysAssert (baseTabPtr_p, AipsError);
   baseTabPtr_p->setWeakPtr (shptr);
-  if (countIt) {
-    countedTabPtr_p = shptr;
-  }
+  countedTabPtr_p = shptr;
 }
 
 Table::Table (const Table& that)

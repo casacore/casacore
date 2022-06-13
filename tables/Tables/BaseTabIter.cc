@@ -30,6 +30,7 @@
 #include <casacore/tables/Tables/RefTable.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/tables/Tables/TableError.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

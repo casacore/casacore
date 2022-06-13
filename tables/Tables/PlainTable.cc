@@ -133,7 +133,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
     lockPtr_p->acquire (0, FileLocker::Write, 1);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     //# Initialize the data managers.
-    Table tab(this, False);
+    Table tab(this);
     nrrowToAdd_p = nrrow;
     colSetPtr_p->initDataManagers (nrrow, bigEndian_p, tsmOption_p, tab);
     //# Initialize the columns if needed.
@@ -263,7 +263,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
-    Table tab(this, False);
+    Table tab(this);
     nrrow_p = colSetPtr_p->getFile (ios, tab, nrrow_p, bigEndian_p,
                                     tsmOption_p);
     //# Read the TableInfo object.
@@ -703,7 +703,7 @@ void PlainTable::removeRow (rownr_t rownr)
 void PlainTable::addColumn (const ColumnDesc& columnDesc, Bool)
 {
     checkWritable("addColumn");
-    Table tab(this, False);
+    Table tab(this);
     colSetPtr_p->addColumn (columnDesc, bigEndian_p, tsmOption_p, tab);
     tableChanged_p = True;
 }
@@ -711,7 +711,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
 			    const String& dataManager, Bool byName, Bool)
 {
     checkWritable("addColumn");
-    Table tab(this, False);
+    Table tab(this);
     colSetPtr_p->addColumn (columnDesc, dataManager, byName, bigEndian_p,
                             tsmOption_p, tab);
     tableChanged_p = True;
@@ -720,7 +720,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
 			    const DataManager& dataManager, Bool)
 {
     checkWritable("addColumn");
-    Table tab(this, False);
+    Table tab(this);
     colSetPtr_p->addColumn (columnDesc, dataManager, bigEndian_p,
                             tsmOption_p, tab);
     tableChanged_p = True;
@@ -729,7 +729,7 @@ void PlainTable::addColumn (const TableDesc& tableDesc,
 			    const DataManager& dataManager, Bool)
 {
     checkWritable("addColumn");
-    Table tab(this, False);
+    Table tab(this);
     colSetPtr_p->addColumn (tableDesc, dataManager, bigEndian_p,
                             tsmOption_p, tab);
     tableChanged_p = True;

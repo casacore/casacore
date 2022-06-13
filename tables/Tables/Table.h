@@ -1040,8 +1040,10 @@ protected:
     // the Table object in the DataManager. Otherwise mutual referencing would occur.
     // Note that the BaseTable object contains a weak_ptr to itself which is the
     // basis for all shared pointer counting.
-    std::shared_ptr<BaseTable> countedTabPtr_p;   
-    BaseTable* baseTabPtr_p;            //# ptr to table representation
+    std::shared_ptr<BaseTable> countedTabPtr_p;
+    // Pointer to BaseTable object which is always filled and always used.
+    // The shared_ptr above is only for reference counting.
+    BaseTable* baseTabPtr_p;
     // Counter of last call to hasDataChanged.
     uInt        lastModCounter_p;
     // Pointer to the ScratchCallback function.
@@ -1049,10 +1051,12 @@ protected:
 
 
     // Construct a Table object from a pointer to BaseTable.
-    // By default the object gets counted.
-    // It uses BaseTable's weak_ptr object to create a shared_ptr to it.
-    Table (BaseTable*, Bool countIt = True);
-    Table (const std::shared_ptr<BaseTable>&, Bool countIt = True);
+    // It is meant for internal Table objects, so the BaseTable is not counted.
+    // Thus the internal shared_ptr is null.
+    Table (BaseTable*);
+
+    // Construct a Table object from a shared pointer to BaseTable.
+    Table (const std::shared_ptr<BaseTable>&);
 
     // Open an existing table.
     void open (const String& name, const String& type, int tableOption,

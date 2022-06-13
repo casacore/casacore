@@ -333,7 +333,6 @@ private:
     std::shared_ptr<BaseTable> baseTabPtr_p;//# pointer to parent table
     Bool            rowOrd_p;               //# True = table is in row order
     Vector<rownr_t> rowStorage_p;           //# row numbers in parent table
-    rownr_t*        rows_p;                 //# Pointer to data in rowStorage_p
     std::map<String,String> nameMap_p;      //# map to column name in parent
     std::map<String,RefColumn*> colMap_p;   //# map name to column
     Bool            changed_p;              //# True = changed since last write
@@ -391,7 +390,7 @@ private:
 
 
 inline rownr_t RefTable::rootRownr (rownr_t rnr) const
-    { return rows_p[rnr]; }
+    { return rowStorage_p[rnr]; }
 
 
 
