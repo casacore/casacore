@@ -203,6 +203,14 @@ TaQL/TableExprData.cc
 TaQL/TableExprId.cc
 TaQL/TableGram.cc
 TaQL/TableParse.cc
+TaQL/TableParseFunc.cc
+TaQL/TableParseGroupby.cc
+TaQL/TableParseProject.cc
+TaQL/TableParseQuery.cc
+TaQL/TableParseSortKey.cc
+TaQL/TableParseTableList.cc
+TaQL/TableParseUpdate.cc
+TaQL/TableParseUtil.cc
 TaQL/UDFBase.cc
 LogTables/TableLogSink.cc
 LogTables/NewFile.cc
@@ -454,6 +462,11 @@ TaQL/TableExprId.h
 TaQL/TableExprIdAggr.h
 TaQL/TableGram.h
 TaQL/TableParse.h
+TaQL/TableParseFunc.h
+TaQL/TableParseQuery.h
+TaQL/TableParseSort.h
+TaQL/TableParseUpdate.h
+TaQL/TableParseUtil.h
 TaQL/UDFBase.h
 DESTINATION include/casacore/tables/TaQL
 )

@@ -36,7 +36,8 @@
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/RecordGram.h>
 #include <casacore/tables/TaQL/RecordExpr.h>
-#include <casacore/tables/TaQL/TableParse.h>       // routines used by bison actions
+#include <casacore/tables/TaQL/TableParseQuery.h>
+#include <casacore/tables/TaQL/TableParseFunc.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/MUString.h>
 #include <casacore/casa/Quanta/MVTime.h>
@@ -443,13 +444,13 @@ TableExprNode RecordGram::handleFunc (const String& name,
   // The ROWNR function can only be used with tables.
   if (theirTabPtr == 0) {
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
-    return TableParseSelect::makeFuncNode (0, name, arguments,
-                                           ignoreFuncs, Table(),
-                                           theirTaQLStyle);
+    return TableParseFunc::makeFuncNode (0, name, arguments,
+                                          ignoreFuncs, Table(),
+                                          theirTaQLStyle);
   }
-  return TableParseSelect::makeFuncNode (0, name, arguments,
-                                         Vector<Int>(), *theirTabPtr,
-                                         theirTaQLStyle);
+  return TableParseFunc::makeFuncNode (0, name, arguments,
+                                        Vector<Int>(), *theirTabPtr,
+                                        theirTaQLStyle);
 }
 
 TableExprNode RecordGram::handleRegex (const TableExprNode& left,
