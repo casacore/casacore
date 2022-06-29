@@ -38,7 +38,6 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <algorithm>
 #include <vector>
-#include <iomanip>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
@@ -145,8 +144,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				       Vector<Int>& nchan){
     Int nspw=msSpwSubTable_p.nrow();
     Bool found=False;
-    ///Bool begIn=False;
-    ///Bool aftIn=False;
+
     spw.resize();
     start.resize();
     nchan.resize();
@@ -154,54 +152,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (Int k=0; k < nspw; ++k){
       Bool locfound=False;
       Bool dum;
-      ///Int chanpositive=1;
+
       Vector<Double> chanfreq=msSpwSubTable_p.chanFreq()(k);
-      ///if (chanfreq.nelements() >1){
-      ///chanpositive=((chanfreq[1]-chanfreq[0]) > 0.0) ? 1: -1;
-      ///}
+
       Sort sort( chanfreq.getStorage(dum),sizeof(Double) );
       sort.sortKey((uInt)0,TpDouble);
       Int nch=chanfreq.nelements();
       Vector<uInt> sortIndx;
       sort.sort(sortIndx, nch);
       Vector<Double>chanwidth=msSpwSubTable_p.chanWidth()(k);
-      ///begIn=False;
-      ///aftIn=False;
       if(f0 > chanfreq(sortIndx[0]) &&  f0 < chanfreq(sortIndx[nch-1])){
-	///begIn=True;
 	locfound=True;
       }
       if(f1 > chanfreq(sortIndx[0]) &&  f1 < chanfreq(sortIndx[nch-1])){
-	///aftIn=True;
 	locfound=True;
       }
       if(locfound){
         Vector<Int> chanIn(chanfreq.nelements());
 	chanIn=-1;
 	Int numMatched=0;
-	//cerr << "f0 " << f0 << " f1 " << f1 << endl;
 
 	for (uInt kk=0; kk < chanfreq.nelements(); ++kk){
-	  //cerr << std::setprecision(12) << kk << "  " << chanfreq[kk]+0.5*fabs(chanwidth[kk]) << "   " << (chanfreq[kk]-0.5*fabs(chanwidth[kk])) << "   " << chanfreq[kk] << "   "  <<   f0  << "     "    << f1   << endl;
-          //First condition of the OR is for channels that are smaller than freqrange f0-f1
-          //second is for case when f0 to f1 falls inside 1 channel
-	  if( (((chanfreq[kk]+0.5*fabs(chanwidth[kk])) > f0) && ((chanfreq[kk]-0.5*fabs(chanwidth[kk])) < f1)) ||   (((chanfreq[kk]-0.5*fabs(chanwidth[kk])) <  f0) && ((chanfreq[kk]+0.5*fabs(chanwidth[kk])) > f1))   ) {
+
+	  if( ((chanfreq[kk]+0.5*fabs(chanwidth[kk])) > f0) && ((chanfreq[kk]-0.5*fabs(chanwidth[kk])) < f1)   ) {
 	    chanIn[numMatched]=kk;
 	    ++ numMatched;
 	  }
         }
         if(numMatched >0){
-
-
-
-            ++nmatch;
-            spw.resize(nmatch, True);
-            spw(nmatch-1)=k;
-            start.resize(nmatch, True);
-            nchan.resize(nmatch, True);
-            found=True;
-
-          
+          ++nmatch;
+          spw.resize(nmatch, True);
+          spw(nmatch-1)=k;
+          start.resize(nmatch, True);
+          nchan.resize(nmatch, True);
+          found=True;
           chanIn.resize(numMatched, True);
           start(nmatch-1)=min(chanIn);
           nchan(nmatch-1)=max(chanIn)-start(nmatch-1)+1;
