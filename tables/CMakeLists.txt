@@ -463,8 +463,11 @@ TaQL/TableExprIdAggr.h
 TaQL/TableGram.h
 TaQL/TableParse.h
 TaQL/TableParseFunc.h
+TaQL/TableParseGroupby.h
+TaQL/TableParseProject.h
 TaQL/TableParseQuery.h
-TaQL/TableParseSort.h
+TaQL/TableParseSortKey.h
+TaQL/TableParseTableList.h
 TaQL/TableParseUpdate.h
 TaQL/TableParseUtil.h
 TaQL/UDFBase.h

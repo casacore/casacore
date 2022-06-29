@@ -807,39 +807,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return done;
   }
 
-  void replaceIds (std::vector<CountedPtr<std::vector<TableExprId> > >& ids)
-  {
-    // Combine all rowids in a single vector, so it can be sorted.
-    Int64 nrow = 0;
-    for (size_t i=0; i<ids.size(); ++i) {
-      nrow += ids[i]->size();
-    }
-    Vector<Int64> rowids(nrow);
-    Int64 inx = 0;
-    for (size_t i=0; i<ids.size(); ++i) {
-      std::vector<TableExprId>& vec = *ids[i];
-      for (size_t j=0; j<vec.size(); ++j) {
-        rowids[inx++] = vec[j].rownr();
-      }
-    }
-    Vector<rownr_t> inxVec;
-    GenSortIndirect<Int64,rownr_t>::sort (inxVec, rowids);
-    // We need to replace each rowid by its sequence nr because a table selection
-    // will map the selected rows to rowid 0..n.
-    // So store the index in the rowids.
-    for (rownr_t i=0; i<rowids.size(); ++i) {
-      rowids[inxVec[i]] = i;
-    }
-    // Now replace the TableExprIds by the new rowids.
-    inx = 0;
-    for (size_t i=0; i<ids.size(); ++i) {
-      std::vector<TableExprId>& vec = *ids[i];
-      for (size_t j=0; j<vec.size(); ++j) {
-        vec[j].setRownr (rowids[inx++]);
-      }
-    }
-  }
-
   //# Execute the sort.
   void TableParseQuery::doSort (Bool showTimings)
   {
