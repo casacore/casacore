@@ -52,7 +52,7 @@ static char fromEBCDIC[256] = {
     48 ,49 ,50 ,51 ,52 ,53 ,54 ,55 ,56 ,57 ,124,0 ,0 ,0 ,0 ,0
 };
 
-static char toEBCDIC[128] = {
+static signed char toEBCDIC[128] = {
        0,   1,   2,   3,  55,  45,  46,  47,
       22,   5,  37,  11,  12,  13,  14,  15,
       16,  17,  18,  59,  60,  61,  50,  38,
@@ -92,7 +92,7 @@ void IBMConversion::toLocal (char* to, const void* from,
 void IBMConversion::fromLocal (void* to, char from)
 {
     assert (sizeof(char) == 1);
-    if (from < 0) {
+    if (static_cast<signed char>(from) < 0) {
 	*(signed char*)to = 0;
     }else{
         *(signed char*)to = toEBCDIC[int(from)];
@@ -130,7 +130,7 @@ void IBMConversion::toLocal (Int64* to, const void* from,
 
 void IBMConversion::toLocal (uInt64* to, const void* from,
 			     size_t nr)
-{ 
+{
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(uInt64) == SIZE_IBM_UINT64) {
 	memcpy (to, from, nr*sizeof(uInt64));
@@ -158,7 +158,7 @@ void IBMConversion::fromLocal (void* to, const Int64* from,
 
 void IBMConversion::fromLocal (void* to, const uInt64* from,
 			       size_t nr)
-{ 
+{
     char* data = (char*)to;
     const uInt64* last = from + nr;
     while (from < last) {
@@ -294,7 +294,7 @@ void IBMConversion::toLocal (double* to, const void* from,
 		rest <<= 1;
 		exponent--;
 	    }
-	    
+
 	    // Over/underflow is not possible.
 	    // Shift fraction to the right (4 bits minus hidden bit).
 	    // Mask off first bit of fraction (is hidden bit).
@@ -378,4 +378,3 @@ void IBMConversion::fromLocal (void* to, const double* from,
 }
 
 } //# NAMESPACE CASACORE - END
-
