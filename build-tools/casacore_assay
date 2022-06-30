@@ -123,62 +123,17 @@
   # Remove possible old output files.
   rm -rf ${1}_tmp*
 
-  # If running on a Cray cluster, we have to use qsub and yod.
-  # If found, the result is a path, thus starts with a slash.
-  QSUBP=`which qsub 2>&1 | sed -e 's%^[^/].*%%'`
-  YODP=`which yod 2>&1 | sed -e 's%^[^/].*%%'`
-  if [ "$QSUBP" = ""  -o  "$YODP" = "" ]
+  eval "$COMMAND" > ${1}_tmp.out
+  STATUS=$?
+  if [ $STATUS != 0 ]
   then
-    # No Cray.
-    eval "$COMMAND" > ${1}_tmp.out
-    STATUS=$?
-    if [ $STATUS != 0 ]
+    if [ $STATUS = 3 ]
     then
-      if [ $STATUS = 3 ]
-      then
-        echo "UNTESTED: $*"
-      else
-        echo "FAIL (execution failure): $*"
-      fi
-      exit
+      echo "UNTESTED: $*"
+    else
+      echo "FAIL (execution failure): $*"
     fi
-  else
-    # .run files are not supported yet on the Cray.
-    if [ -f "$1.run" ]
-    then
-      echo "UNTESTED (no .run support): $*"
-      exit 3
-    fi
-    # Create a batch job which will use a single processor.
-    # Copy the AIPSPATH definition.
-    # Because the job does not wait, we do that by using a wait file.
-    # Note that yod does wait.
-    rm -f $1_tmp.wait
-    cat > $1_tmp.qsub <<EOF
-#PBS -l size=1
-#PBS -N $1_tmp_job
-#PBS -j oe
-#PBS -v AIPSPATH
-cd \$PBS_O_WORKDIR
-yod -sz 1 ./$1 > $1_tmp.out
-touch $1_tmp.wait
-EOF
-    # Submit the job and wait for it to be finished.
-    # Do not wait longer than 10 minutes.
-    qsub $1_tmp.qsub
-    NRTIMES=0
-    while [ ! -f $1_tmp.wait ]
-    do
-      if test $NRTIMES -gt 600
-      then
-        # Keep job file.
-        mv $1_tmp_job  $1_job
-        echo "FAIL (execution killed): $*"
-        exit 1
-      fi
-      sleep 1
-      NRTIMES=`expr $NRTIMES + 1`
-    done
+    exit
   fi
 
   if [ -f $1.out ]
