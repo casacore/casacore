@@ -46,6 +46,7 @@ RUN cmake .. \
     -DBUILD_PYTHON3=ON \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/local/share/casacore/data \
+    -DBUILD_FFTPACK_DEPRECATED=ON \
     && make -j`nproc`
 USER root
 RUN make install

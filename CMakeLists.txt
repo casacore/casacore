@@ -3,7 +3,7 @@
 #
 project(casacore)
 
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.3.0)
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
