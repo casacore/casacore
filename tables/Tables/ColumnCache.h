@@ -71,7 +71,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The <src>invalidate</src> function can be used to invalidate the
 // cache. This is for instance needed when a table lock is acquired
 // or released to be sure that the cache gets refreshed.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This class was developed to improve the performance for getting a scalar.
@@ -142,8 +142,8 @@ inline Int64 ColumnCache::offset (rownr_t rownr) const
     if (rownr < itsStart || rownr > itsEnd) {
         return -1;
     }
-    auto offset = (rownr - itsStart) * itsIncr;
-    assert(offset <= std::numeric_limits<Int64>::max());
+    const rownr_t offset = (rownr - itsStart) * itsIncr;
+    assert(offset <= static_cast<rownr_t>(std::numeric_limits<Int64>::max()));
     return Int64(offset);
 }
 
