@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //   <li> VirtualArrayColumn
   // </prerequisite>
 
-  // <synopsis> 
+  // <synopsis>
   // BitFlagsEngine is a virtual column engine which maps an integer column
   // containing flag bits to a Bool column. It can be used in a MeasurementSet
   // to have multiple flag categories, yet use all existing software that
@@ -122,7 +122,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   // BitFlagsEngine is known to the table system for data types uChar, Short,
   // and Int.
-  // </synopsis> 
+  // </synopsis>
 
   // <motivation>
   // The FLAG_CATEGORY defined the Measurement does not work because adding
@@ -218,7 +218,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the name given to the engine (is the virtual column name).
     virtual String dataManagerName() const;
-  
+
     // Record a record containing data manager specifications.
     virtual Record dataManagerSpec() const;
 
@@ -333,7 +333,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                    Array<StoredType>& stored);
 
     // Functor to and an array and mask and convert to Bool.
-    struct FlagsToBool : public std::unary_function<StoredType,Bool>
+    struct FlagsToBool
     {
       explicit FlagsToBool(StoredType readMask) : itsMask(readMask) {}
       Bool operator() (StoredType value) const
@@ -344,7 +344,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Functor to convert Bools to flags using a mask.
     // By default only bit 0 is set.
     // Flag bits not affected are kept.
-    struct BoolToFlags : public std::binary_function<Bool,StoredType,StoredType>
+    struct BoolToFlags
     {
       explicit BoolToFlags(StoredType writeMask) : itsMask(writeMask) {}
       StoredType operator() (Bool flag, StoredType value) const
@@ -358,7 +358,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // table is read back.
     // This "constructor" has to be registered by the user of the engine.
     // If the engine is commonly used, its registration can be added
-    // to the registerAllCtor function in DataManReg.cc. 
+    // to the registerAllCtor function in DataManReg.cc.
     // That function gets automatically invoked by the table system.
     static DataManager* makeObject (const String& dataManagerType,
 				    const Record& spec);
