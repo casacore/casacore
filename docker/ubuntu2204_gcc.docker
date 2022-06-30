@@ -42,8 +42,6 @@ RUN cmake .. \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
     -DUSE_HDF5=ON \
-    -DBUILD_PYTHON=OFF \
-    -DBUILD_PYTHON3=ON \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/local/share/casacore/data \
     -DBUILD_FFTPACK_DEPRECATED=ON \

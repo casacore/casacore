@@ -42,8 +42,8 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 # By default build only Python2 bindings
-option (BUILD_PYTHON "Build the python bindings" YES)
-option (BUILD_PYTHON3 "Build the python3 bindings" NO)
+option (BUILD_PYTHON "Build the python2 bindings" NO)
+option (BUILD_PYTHON3 "Build the python3 bindings" YES)
 
 option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 option (BUILD_FFTPACK_DEPRECATED "build FFTPack" NO)
