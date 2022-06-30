@@ -34,6 +34,15 @@ if (BUILD_FFTPACK_DEPRECATED)
          dfftpak.f
          fftpak.f
     )
+
+    # FFTPACK is getting so old that it needs deprecated behaviour of the compiler.
+    # This is why BUILD_FFTPACK_DEPRECATED is also deprecated in casacore.
+    include(CheckFortranCompilerFlag)
+    CHECK_Fortran_COMPILER_FLAG(--allow-argument-mismatch Fortran_HAS_ALLOW_ARGUMENT_MISMATCH)
+    if (Fortran_HAS_ALLOW_ARGUMENT_MISMATCH)
+        message("Update compiler flags here please")
+        set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} --allow-argument-mismatch")
+    endif()
 endif ()
 
 add_library (casa_scimath_f ${buildfiles})
