@@ -76,8 +76,6 @@ RUN cmake .. \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
-    -DBUILD_PYTHON3=ON \
-    -DBUILD_PYTHON=OFF \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
 RUN make install
