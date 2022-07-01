@@ -135,9 +135,9 @@
   };
   // This one is only used to convert numpy BYTE and SBYTE to casa short.
   // There is no back conversion, so an exception is thrown.
-  template <> struct TypeConvTraits<casacore::Char> {
-    typedef casacore::Char   casa_type;
-    typedef npy_int8     python_type;
+  template <> struct TypeConvTraits<signed char> {
+    typedef signed char casa_type;
+    typedef npy_int8 python_type;
     static NPY_TYPES pyType()
       { throw AipsError ("PycArray: unknown casa type"); }
   };
@@ -347,13 +347,13 @@
 	convertArray (res, arr);
 	return ValueHolder(res);
       } else if (PyArray_TYPE(po) == NPY_INT8) {
-	Array<Char> arr = ArrayCopy<Char>::toArray(shp, PyArray_DATA(po), False);
+	Array<signed char> arr = ArrayCopy<signed char>::toArray(shp, PyArray_DATA(po), False);
 	Array<Short> res(arr.shape());
 	convertArray (res, arr);
 	return ValueHolder(res);
       } else if (PyArray_TYPE(po) == NPY_UINT8) {
-	// Copy using Char, because uChar is mapped to Short in the Traits.
-	Array<Char> arr = ArrayCopy<Char>::toArray(shp, PyArray_DATA(po), False);
+	// Copy using signed char, because uChar is mapped to Short in the Traits.
+	Array<signed char> arr = ArrayCopy<signed char>::toArray(shp, PyArray_DATA(po), False);
 	Array<Short> res(arr.shape());
         void* varr = &arr;
         Array<uChar>* uarr = static_cast<Array<uChar>*>(varr);
@@ -375,12 +375,12 @@
       break;
     }
     throw AipsError ("PycArray: unknown python array data type");
-  } 
+  }
 
 
   // Instantiate the various templates.
   template struct ArrayCopy<Bool>;
-  template struct ArrayCopy<Char>;
+  template struct ArrayCopy<signed char>;
   template struct ArrayCopy<uChar>;
   template struct ArrayCopy<Short>;
   template struct ArrayCopy<uShort>;
