@@ -254,6 +254,8 @@ if (READLINE_FOUND)
     list (APPEND de_libraries ${READLINE_LIBRARIES})
 endif (READLINE_FOUND)
 
+find_library(libm m)
+
 target_link_libraries (
 casa_casa
 ${de_libraries}
