@@ -36,21 +36,21 @@ void UnitDim::init() {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
     }
-    unitDim = (Char *) unitLong;
+    unitDim = reinterpret_cast<signed char *>(unitLong);
 }
 
 UnitDim::UnitDim(const UnitDim &other) {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = other.unitLong[i];
     }
-    unitDim = (Char *) unitLong;
+    unitDim = reinterpret_cast<signed char *>(unitLong);
 }
 
 void UnitDim::init(Int pos) {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
     }
-    unitDim = (Char *) unitLong;
+    unitDim = reinterpret_cast<signed char *>(unitLong);
     unitDim[pos]=1;
 }
 
@@ -61,7 +61,7 @@ UnitDim &UnitDim::operator=(const UnitDim &other) {
 	for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	    unitLong[i] = other.unitLong[i];
 	}
-	unitDim = (Char *) unitLong;
+        unitDim = reinterpret_cast<signed char *>(unitLong);
     }
     return *this;
 }
@@ -128,7 +128,7 @@ const String& UnitDim::dimName(uInt which) {
     "_"
   };
   return Nlist[which];
-}  
+}
 
 const String& UnitDim::dimFull(uInt which) {
   static const String Flist[UnitDim::Dnumber] = {
@@ -144,7 +144,7 @@ const String& UnitDim::dimFull(uInt which) {
     "undimensioned"
   };
   return Flist[which];
-}  
+}
 
 ostream& operator<< (ostream &os, const UnitDim &du) {
     String chck(" ");
@@ -162,4 +162,3 @@ ostream& operator<< (ostream &os, const UnitDim &du) {
 }
 
 } //# NAMESPACE CASACORE - END
-
