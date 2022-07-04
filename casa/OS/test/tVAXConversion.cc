@@ -43,7 +43,7 @@ void checkConversion (int& error)
 	val[1] = -2;
 	char result;
 	VAXConversion::toLocal (&result, val+1, 1);
-	if (result != -2) {
+	if (result != char(-2)) {
 	    cout << "invalid char to conversion " << result << endl;
 	    error = 1;
 	}

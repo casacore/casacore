@@ -185,7 +185,6 @@ if (NOT CMAKE_CXX_FLAGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unneeded-internal-declaration")
     endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif (NOT CMAKE_CXX_FLAGS)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char")
 
 # Set build type if not given.
 if (NOT CMAKE_BUILD_TYPE)
@@ -643,4 +642,3 @@ endif (BUILD_PYTHON3)
 #  BOOST        python (Boost-Python only)
 #  PYTHON       python
 #  NUMPY        python
-

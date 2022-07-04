@@ -34,14 +34,10 @@
 int main()
 {
     {
-	// Make sure that Char is signed, uChar is unsigned.
-	Char c = 0;
-	c--;
-	Int C = c;
-	AlwaysAssertExit(C == -1);
+	// Make sure that uChar is unsigned.
 	uChar cc = 0;
 	cc--;
-	C = cc;
+	Int C = cc;
 	AlwaysAssertExit(C == 255);
     }
     {
