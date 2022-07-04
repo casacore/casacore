@@ -94,13 +94,15 @@ MSIter::MSIter(const MeasurementSet& ms,
   fieldInSort_p(false),
   curMS_p(0),
   lastMS_p(-1),
+  more_p(true),
   newMS_p(true),
   newArrayId_p(true),
   newFieldId_p(true),
   newSpectralWindowId_p(true),
   newPolarizationId_p(true),
+  newDataDescId_p(true),
   storeSorted_p(false),
-  interval_p(0), 
+  interval_p(0),
   prevFirstTimeStamp_p(-1.0),
   allBeamOffsetsZero_p(True),
   timeComp_p(0)
@@ -120,13 +122,15 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
   fieldInSort_p(false),
   curMS_p(0),
   lastMS_p(-1),
+  more_p(true),
   newMS_p(true),
   newArrayId_p(true),
   newFieldId_p(true),
   newSpectralWindowId_p(true),
   newPolarizationId_p(true),
+  newDataDescId_p(true),
   storeSorted_p(false),
-  interval_p(0), 
+  interval_p(0),
   prevFirstTimeStamp_p(-1.0),
   allBeamOffsetsZero_p(True),
   timeComp_p(0)
@@ -189,12 +193,15 @@ MSIter::MSIter(const MeasurementSet& ms,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns,
 	       Bool storeSorted)
-: curMS_p(0),lastMS_p(-1),
+: curMS_p(0),
+  lastMS_p(-1),
+  more_p(true),
   newMS_p(true),
   newArrayId_p(true),
   newFieldId_p(true),
   newSpectralWindowId_p(true),
   newPolarizationId_p(true),
+  newDataDescId_p(true),
   storeSorted_p(storeSorted),
   interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
   allBeamOffsetsZero_p(True)
@@ -209,12 +216,16 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns,
 	       Bool storeSorted)
-: bms_p(mss),curMS_p(0),lastMS_p(-1),
+: bms_p(mss),
+  curMS_p(0),
+  lastMS_p(-1),
+  more_p(true),
   newMS_p(true),
   newArrayId_p(true),
   newFieldId_p(true),
   newSpectralWindowId_p(true),
   newPolarizationId_p(true),
+  newDataDescId_p(true),
   storeSorted_p(storeSorted),
   interval_p(timeInterval), prevFirstTimeStamp_p(-1.0)
 {
@@ -586,7 +597,7 @@ void MSIter::setState()
   {
     // First we cache the current DD, SPW, Pol since we know it changed
     cacheCurrentDDInfo();
-    
+
     // In this case we know that the last* variables were computed and
     // we can know whether there was a changed in these keywords by
     // comparing the two.
@@ -949,7 +960,7 @@ const String& MSIter::sourceName()  const {
       }
     }
   }
-  
+
   return curSourceNameFirst_p;
 }
 const MDirection& MSIter::phaseCenter() const {
@@ -1021,4 +1032,3 @@ const String& MSIter::keyChange() const
 }
 
 } //# NAMESPACE CASACORE - END
-
