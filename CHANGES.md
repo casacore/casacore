@@ -1,3 +1,47 @@
+# 3.5.0
+
+## Highlights
+
+Apart from many bug fixes and modernizations, a few new features were introduced:
+
+ - TaQL now supports copying columns to new columns (e.g. to make a backup of the `FLAG` column)
+ - Non-zero coordinates in JPL frames, e.g. the `SUN` frame, are now interpreted as an offset in right ascension and declination. Previously, coordinates in a  JPL coordinate frame were ignored.
+ - The Dysco storage manager is now built by default as part of casacore.
+
+
+## General
+
+ - Improve continuous integration (#1180, #1182), move from Travis CI to Github Actions (#1086, #1097, #1098, #1161)
+ - Modernizations: remove Mutex (#1095, #1127, #1128), typing system (#1172, #1176)
+ - Allow building with newer compilers (#1134, #1137, #1145, #1206, #1208, #1210, #1211)
+ - Build python3 by default, not python2 (#1209)
+
+
+## MeasurementSet
+ - Improve reading of DataDescriptionId (#1103)
+ - Compute feed information (#1104) and field attributes (#1109) on demand
+ - UVFits improvements: support X-Y mounts (#1115), allow large antenna numbers (#1144), fix handling FITS-IDI `GAIN_CURVE` (#1151)
+ - Fix precision in `T+dT` syntax (#1118)
+
+
+## Measures
+ - Simplify MeasFrame, fixing a memory bug (#1084)
+ - Allow offsets to JPL coordinates (#1160)
+
+## Tables
+ - Cache iteration boundaries while sorting tables (#1106)
+ - Use RefTable for iteration (#1108)
+ - Adios2 related changes: #1110, #1116, #1121, #1148
+ - Make Dysco part of casacore (#1117, #1125, #1146, #1166)
+ - Add TaQL commands `LIKE`, `COPYCOLUMN` and `DROPTABLE` (#1154, #1169)
+ - Fix one bug in `rownr_t` migration for TiledDataStMan (#1156)
+ - Improve documentation (#1192)
+
+## Images
+ - Support CARTA opening images with a custom handler (#1158)
+ - Allow easier python handling of beams (#1184)
+
+
 # 3.4.0
 
 ## General
@@ -35,7 +79,7 @@
 
 
 # 3.2
- 
+
 ## General
  - Remove some unused functionality (#854, #947)
  - Prevent setting OpenMP num_threads to zero (#962)
@@ -75,7 +119,7 @@
  - Possible leak bug (#908)
  - Always use TpInt64 for PyLong (#916)
  - Improve CMake FindPython (#922)
- 
+
 ## Build system
  - Travis macOS fails on Python3 OSX build system (#778)
  - Switch travis to docker /xenial (#847)
@@ -130,7 +174,7 @@
 - A full list of changes can be found on the [issue tracker](https://github.com/casacore/casacore/milestone/8?closed=1).
 
 
- 
+
 # 2.4.1
 
 ## General
@@ -203,7 +247,7 @@
 ## Measures
 - The default search path for measures data is now smaller. The path can
   be set at cmake time by specifying `-DDATA_DIR=/path/to/data`. This path
-  can contain `%CASAROOT%` which is expanded at run time, to support 
+  can contain `%CASAROOT%` which is expanded at run time, to support
   relocatable installations. The measures path can also still be set in
   `.casarc`. (#277)
 - Inserted fix to leap second handling problem (#290)
@@ -241,9 +285,9 @@
 - Several new methods to MSMetaData (#138)
 
 ## Bug fixes
-- Fix a bug which caused an error with LOFAR measurement sets with 
+- Fix a bug which caused an error with LOFAR measurement sets with
   the LOFAR tool msoverview (#140)
-- Fix a bug where TaQL would not write output when an expression was 
+- Fix a bug where TaQL would not write output when an expression was
   used (#184)
 
 # 2.0.2
