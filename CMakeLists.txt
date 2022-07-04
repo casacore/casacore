@@ -1,17 +1,15 @@
-#
-# Casacore
-#
-project(casacore)
-
 cmake_minimum_required (VERSION 3.3.0)
+
+project(casacore VERSION 3.5.0)
+
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
 include(CheckCXXSourceCompiles)
 
-# fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
-if (POLICY CMP0048)
-    cmake_policy (SET CMP0048 OLD)
+# Fixes warnings on cmake 3.x+ about missing extensions
+if (POLICY CMP0115)
+    cmake_policy (SET CMP0115 NEW)
 endif()
 
 # Enable <packageName>_ROOT variables for recent versions of CMake
@@ -19,14 +17,8 @@ if (POLICY CMP0074)
     cmake_policy (SET CMP0074 NEW)
 endif()
 
-set(PROJECT_VERSION_MAJOR 3)
-set(PROJECT_VERSION_MINOR 4)
-set(PROJECT_VERSION_PATCH 0)
-set(PROJECT_VERSION
-  "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
-SET(PROJECT_SOVERSION 6)
+SET(PROJECT_SOVERSION 7)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
