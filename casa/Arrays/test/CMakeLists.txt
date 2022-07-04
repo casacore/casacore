@@ -1,5 +1,5 @@
 set (testfiles
-  tAllocator
+  tAllocator.cc
   tArray.cc
   tArrayAccessor.cc
   tArrayBase.cc
