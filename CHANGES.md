@@ -25,7 +25,6 @@ Apart from many bug fixes and modernizations, a few new features were introduced
 
 
 ## Measures
- - Simplify MeasFrame, fixing a memory bug (#1084)
  - Allow offsets to JPL coordinates (#1160)
 
 ## Tables
