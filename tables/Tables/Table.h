@@ -1069,12 +1069,11 @@ private:
      const TableLock& lockOptions, const TSMOption& tsmOpt,
      Bool addToCache, uInt locknr);
 
-
     // Get the pointer to the underlying BaseTable.
     // This is needed for some friend classes.
     BaseTable* baseTablePtr() const;
 
-    // Initialize the shared_ptr in the Table and BaseTable object.
+    // Initialize the BaseTable pointers in this Table object.
     void initBasePtr (BaseTable* ptr);
 
     // Look in the cache if the table is already open.

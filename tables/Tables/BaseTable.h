@@ -101,7 +101,7 @@ class AipsIO;
 // </todo>
 
 
-class BaseTable
+class BaseTable: public std::enable_shared_from_this<BaseTable>
 {
 public:
 
@@ -116,14 +116,6 @@ public:
     // Common code shared by the MPI constructor and non-MPI constructor
     void BaseTableCommon (const String& tableName, int tableOption, rownr_t nrrow);
 
-    // Set the weak_ptr to the object itself, so a shared_ptr can be made from it.
-    void setWeakPtr (const std::shared_ptr<BaseTable>& ptr)
-        { thisPtr_p = ptr; }
-
-    // Get a shared_ptr from the weak_ptr, so this BaseTable object can be shared.
-    // It can only be done if the weak_ptr is not expired.
-    std::shared_ptr<BaseTable> getSharedPtr() const;
-  
     virtual ~BaseTable();
 
     // Is the table a null table?
@@ -486,9 +478,6 @@ public:
     std::shared_ptr<BaseTable> makeRefTable (Bool rowOrder,
                                              rownr_t initialNrrow);
 
-    // Cast this BaseTable to a RefTable as checks it is fine.
-    RefTable* asRefTable();
-  
     // Check if the row number is valid.
     // It throws an exception if out of range.
     void checkRowNumber (rownr_t rownr) const

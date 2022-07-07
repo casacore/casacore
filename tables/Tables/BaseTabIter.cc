@@ -97,7 +97,8 @@ BaseTableIterator::BaseTableIterator (const std::shared_ptr<BaseTable>& btp,
         sortIterBoundariesIt_p   = sortIterBoundaries_p->begin();
         sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
         aBaseTable_p = sortTab_p->makeRefTable (False, 0);
-        aRefTable_p = aBaseTable_p->asRefTable();
+        aRefTable_p = dynamic_cast<RefTable*>(aBaseTable_p.get());
+        DebugAssert (aRefTable_p, AipsError);
     }
 }
 
@@ -134,7 +135,8 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
     }
     if (sortIterBoundaries_p && sortIterKeyIdxChange_p) {
         aBaseTable_p = sortTab_p->makeRefTable (False, 0);
-        aRefTable_p = aBaseTable_p->asRefTable();
+        aRefTable_p = dynamic_cast<RefTable*>(aBaseTable_p.get());
+        DebugAssert (aRefTable_p, AipsError);
     }
 }
 
@@ -160,7 +162,7 @@ void BaseTableIterator::reset()
 std::shared_ptr<BaseTable> BaseTableIterator::next()
 {
     // If there are no group boundaries precomputed do an expensive
-    // walk to check where a new boundary happens by calling the comparion
+    // walk to check where a new boundary happens by calling the comparison
     // functions
     if (!sortIterBoundaries_p || !sortIterKeyIdxChange_p) {
         return noCachedIterBoundariesNext();
@@ -209,7 +211,8 @@ std::shared_ptr<BaseTable> BaseTableIterator::noCachedIterBoundariesNext()
 
     // Allocate a RefTable to represent the rows in the iteration group.
     std::shared_ptr<BaseTable> baseTabPtr = sortTab_p->makeRefTable (False, 0);
-    RefTable* itp = baseTabPtr->asRefTable();
+    RefTable* itp = dynamic_cast<RefTable*>(baseTabPtr.get());
+    DebugAssert (itp, AipsError);
     if (lastRow_p >= sortTab_p->nrow()) {
 	return baseTabPtr;                         // the end of the table
     }

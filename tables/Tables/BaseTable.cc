@@ -126,13 +126,6 @@ Bool BaseTable::isNull() const
   return False;
 }
 
-std::shared_ptr<BaseTable> BaseTable::getSharedPtr() const
-{
-  AlwaysAssert (!thisPtr_p.expired(), AipsError);
-  return thisPtr_p.lock();
-}
-
-
 void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 {
     if (Table::scratchCallback_p != 0) {
@@ -727,7 +720,8 @@ std::shared_ptr<BaseTable> BaseTable::doSort
     //# This table will NOT be in row order.
     rownr_t nrrow = nrow();
     std::shared_ptr<BaseTable> resultBaseTab = makeRefTable (False, nrrow);
-    RefTable* resultTable = resultBaseTab->asRefTable();
+    RefTable* resultTable = dynamic_cast<RefTable*>(resultBaseTab.get());
+    DebugAssert (resultTable, AipsError);
     //# Now sort the table storing the row-numbers in the RefTable.
     //# Adjust rownrs in case source table is already a RefTable.
     //# Then delete possible allocated data blocks.
@@ -746,14 +740,6 @@ std::shared_ptr<BaseTable> BaseTable::makeRefTable (Bool rowOrder,
                                                     rownr_t initialNrrow)
 {
   std::shared_ptr<BaseTable> rtp (new RefTable(this, rowOrder, initialNrrow));
-  rtp->setWeakPtr (rtp);
-  return rtp;
-}
-
-RefTable* BaseTable::asRefTable()
-{
-  RefTable* rtp = dynamic_cast<RefTable*>(this);
-  AlwaysAssert (rtp, AipsError);
   return rtp;
 }
 
@@ -770,7 +756,7 @@ std::shared_ptr<BaseTable> BaseTable::select (rownr_t maxRow, rownr_t offset)
         maxRow = nrow() - offset;
     }
     if (offset == 0  &&  maxRow == nrow()) {
-      return getSharedPtr();    // pointer to itself
+      return shared_from_this();    // pointer to itself
     }
     Vector<rownr_t> rownrs(maxRow);
     indgen(rownrs, rownr_t(offset));
@@ -814,7 +800,8 @@ std::shared_ptr<BaseTable> BaseTable::select (const TableExprNode& node,
     //# Add the rownr of the root table (one may search a reference table).
     //# Adjust the row numbers to reflect row numbers in the root table.
     std::shared_ptr<BaseTable> resultBaseTab = makeRefTable (True, 0);
-    RefTable* resultTable = resultBaseTab->asRefTable();
+    RefTable* resultTable = dynamic_cast<RefTable*>(resultBaseTab.get());
+    DebugAssert (resultTable, AipsError);
     Bool val;
     rownr_t nrrow = nrow();
     TableExprId id;
@@ -868,10 +855,10 @@ std::shared_ptr<BaseTable> BaseTable::tabAnd (BaseTable* that)
     logicCheck (that);
     //# Anding a table with the (possibly sorted) root table gives the table.
     if (this->nrow() == this->root()->nrow()) {
-      return that->getSharedPtr();                    // this is root
+      return that->shared_from_this();                    // this is root
     }
     if (that->nrow() == that->root()->nrow()) {
-      return this->getSharedPtr();                    // that is root
+      return this->shared_from_this();                    // that is root
     }
     //# There is no root table involved, so we have to deal with RefTables.
     //# Get both rownr arrays which are sorted if not in row order.
@@ -879,7 +866,8 @@ std::shared_ptr<BaseTable> BaseTable::tabAnd (BaseTable* that)
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
     std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = baseTabPtr->asRefTable();
+    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
+    DebugAssert (rtp, AipsError);
     // Store rownrs in new RefTable.
     rtp->refAnd (r1.size(), r1.data(), r2.size(), r2.data());
     return baseTabPtr;
@@ -894,7 +882,7 @@ std::shared_ptr<BaseTable> BaseTable::tabOr (BaseTable* that)
     //# Oring a table with the (possibly sorted) root table gives the root.
     if (this->nrow() == this->root()->nrow()
     ||  that->nrow() == that->root()->nrow()) {
-        return root()->getSharedPtr();
+        return root()->shared_from_this();
     }
     //# There is no root table involved, so we have to deal with RefTables.
     //# Get both rownr arrays which are sorted if not in row order.
@@ -902,7 +890,8 @@ std::shared_ptr<BaseTable> BaseTable::tabOr (BaseTable* that)
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
     std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = baseTabPtr->asRefTable();
+    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
+    DebugAssert (rtp, AipsError);
     // Store rownrs in new RefTable.
     rtp->refOr (r1.size(), r1.data(), r2.size(), r2.data());
     return baseTabPtr;
@@ -928,7 +917,8 @@ std::shared_ptr<BaseTable> BaseTable::tabSub (BaseTable* that)
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
     std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = baseTabPtr->asRefTable();
+    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
+    DebugAssert (rtp, AipsError);
     // Store rownrs in new RefTable.
     rtp->refSub (r1.size(), r1.data(), r2.size(), r2.data());
     return baseTabPtr;
@@ -953,7 +943,8 @@ std::shared_ptr<BaseTable> BaseTable::tabXor (BaseTable* that)
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
     std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = baseTabPtr->asRefTable();
+    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
+    DebugAssert (rtp, AipsError);
     // Store rownrs in new RefTable.
     rtp->refXor (r1.size(), r1.data(), r2.size(), r2.data());
     return baseTabPtr;
@@ -972,7 +963,8 @@ std::shared_ptr<BaseTable> BaseTable::tabNot()
     Vector<rownr_t> r1 = this->logicRows();
     // Create RefTable which will be in row order.
     std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = baseTabPtr->asRefTable();
+    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
+    DebugAssert (rtp, AipsError);
     // Store rownrs in new RefTable.
     rtp->refNot (r1.size(), r1.data(), root()->nrow());
     return baseTabPtr;
@@ -1015,7 +1007,7 @@ BaseTableIterator* BaseTable::makeIterator
     ||  names.nelements() != cmpObj.nelements()) {
 	throw (TableInvOper ("TableIterator: Unequal block lengths"));
     }
-    BaseTableIterator* bti = new BaseTableIterator (getSharedPtr(), names,
+    BaseTableIterator* bti = new BaseTableIterator (shared_from_this(), names,
                                                    cmpObj, order, option,
                                                    cacheIterationBoundaries);
     return bti;

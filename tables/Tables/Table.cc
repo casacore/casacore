@@ -72,7 +72,6 @@ Table::Table()
 {
   countedTabPtr_p.reset (new NullTable());
   baseTabPtr_p = countedTabPtr_p.get();
-  baseTabPtr_p->setWeakPtr (countedTabPtr_p);
 }
 
   Table::Table (const String& name, TableOption option, const TSMOption& tsmOpt)
@@ -307,7 +306,6 @@ Table::Table (const std::shared_ptr<BaseTable>& shptr)
 {
   baseTabPtr_p = shptr.get();
   AlwaysAssert (baseTabPtr_p, AipsError);
-  baseTabPtr_p->setWeakPtr (shptr);
   countedTabPtr_p = shptr;
 }
 
@@ -340,7 +338,6 @@ void Table::initBasePtr (BaseTable* ptr)
   AlwaysAssert (!baseTabPtr_p, AipsError);
   baseTabPtr_p = ptr;
   countedTabPtr_p.reset (baseTabPtr_p);
-  baseTabPtr_p->setWeakPtr (countedTabPtr_p);
 }
 
 Block<String> Table::getPartNames (Bool recursive) const
@@ -438,7 +435,7 @@ void Table::open (const String& name, const String& type, int tableOption,
     //# If so, link to it.
     BaseTable* btp = lookCache (absName, tableOption, lockOptions);
     if (btp != 0) {
-        countedTabPtr_p = btp->getSharedPtr();
+        countedTabPtr_p = btp->shared_from_this();
     }else{
         //# Check if the table directory exists.
         File dir(absName);
@@ -520,7 +517,6 @@ std::shared_ptr<BaseTable> Table::makeBaseTable
     } else {
       throw (TableInternalError("Table::open: unknown table kind " + tp));
     }
-    baseTabPtr->setWeakPtr (baseTabPtr);
     return baseTabPtr;
 }
 

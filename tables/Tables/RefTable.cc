@@ -64,7 +64,7 @@ RefTable::RefTable (AipsIO& ios, const String& name, rownr_t nrrow, int opt,
 
 RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
 : BaseTable    ("", Table::Scratch, nrall),
-  baseTabPtr_p (btp->root()->getSharedPtr()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (order),
   rowStorage_p (nrall),       // allocate vector of rownrs
   changed_p    (True)
@@ -79,7 +79,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
 
 RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
 : BaseTable    ("", Table::Scratch, rownrs.nelements()),
-  baseTabPtr_p (btp->root()->getSharedPtr()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (True),
   rowStorage_p (0),
   changed_p    (True)
@@ -104,7 +104,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
 
 RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 : BaseTable    ("", Table::Scratch, 0),
-  baseTabPtr_p (btp->root()->getSharedPtr()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),              // initially empty vector of rownrs
   changed_p    (True)
@@ -126,7 +126,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 
 RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
 : BaseTable    ("", Table::Scratch, btp->nrow()),
-  baseTabPtr_p (btp->root()->getSharedPtr()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),
   changed_p    (True)
@@ -387,7 +387,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     }else{
         tab = Table(rootName, lockOptions, Table::Update, tsmOption);
     }
-    baseTabPtr_p = tab.baseTablePtr()->getSharedPtr();
+    baseTabPtr_p = tab.baseTablePtr()->shared_from_this();
     if (rootNrow > baseTabPtr_p->nrow()) {
 	throw (TableInvOper
 	           ("RefTable::getRef, #rows in referenced table decreased"));

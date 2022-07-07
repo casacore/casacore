@@ -149,8 +149,8 @@ private:
     std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange_p;
     Vector<rownr_t>::iterator sortIterBoundariesIt_p;
     Vector<size_t>::iterator  sortIterKeyIdxChangeIt_p;
-    std::shared_ptr<BaseTable> aBaseTable_p;
-    RefTable* aRefTable_p;      //# Same as aBaseTable_p
+    RefTable* aRefTable_p;      //# RefTable returned in each iteration
+    std::shared_ptr<BaseTable> aBaseTable_p; //# Same as above for automatic deletion
 };
 
 
