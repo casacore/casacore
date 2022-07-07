@@ -23,7 +23,7 @@ ENV CASACORE_VERSION 3.4.0
 ENV THREADS 4
 
 # install rpms
-RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel
+RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel gsl-devel
 
 # download other source code
 WORKDIR /tmp
@@ -78,4 +78,5 @@ RUN cmake .. \
     -DDATA_DIR=${CASACORE_DATA} \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
+USER root
 RUN make install
