@@ -415,6 +415,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       mssub.rename (itsMSOut+"/GAIN_CURVE",Table::New);
       msmain.rwKeywordSet().defineTable("GAIN_CURVE",mssub);
     }
+    if (subTableName(isub)=="PHASE-CAL") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/PHASE_CAL",Table::Update);
+      mssub.rename (itsMSOut+"/PHASE_CAL",Table::New);
+      msmain.rwKeywordSet().defineTable("PHASE_CAL",mssub);
+    }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);
     //  mssub.rename (itsMSOut+"/IDI_CORRELATOR_MODEL",Table::Update);
