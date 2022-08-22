@@ -43,11 +43,13 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/AipsrcValue.h>
 #include <time.h>    //# for nanosleep
+#include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Initialize the static TableCache object.
-TableCache PlainTable::theirTableCache;
+// static defines
+ManagedObjectPool<TableCacheKeyType, TableCache> PlainTable::theirTableCache;
+// global (processwide) cache behaviour to maintain backwards API compatibility
+bool PlainTable::usingProcesswideTabCache = true; 
 
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
@@ -131,6 +133,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
     lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
     lockPtr_p->makeLock (name_p, True, FileLocker::Write);
     lockPtr_p->acquire (0, FileLocker::Write, 1);
+    
     colSetPtr_p->linkToLockObject (lockPtr_p);
     //# Initialize the data managers.
     Table tab(this, False);
@@ -159,7 +162,7 @@ void PlainTable::PlainTableCommon (SetupNewTable& newtab, rownr_t nrrow,
     //# Trace if needed.
     itsTraceId = TableTrace::traceTable (name_p, 'n');
   } catch (std::exception&) {
-    delete lockPtr_p;
+    if (lockPtr_p != 0) delete lockPtr_p;
     lockPtr_p = 0;
     throw;
   }
@@ -176,110 +179,118 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
   lockPtr_p      (0),
   tsmOption_p    (tsmOption)
 {
-    // Replace default TSM option for existing table.
-    tsmOption_p.fillOption (False);
-    //# Set initially to no write in destructor.
-    //# At the end it is reset. In this way nothing is written if
-    //# an exception is thrown during initialization.
-    noWrite_p = True;
-    //# Create the lock object.
-    //# When needed, it sets a permanent (read or write) lock.
-    //# Otherwise acquire a read lock (when needed) to read in the table
-    //# or get the sync info.
-    lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
-    lockPtr_p->makeLock (name_p, False,
-		   opt == Table::Old  ?  FileLocker::Read : FileLocker::Write,
-			 locknr);
-    if (lockPtr_p->readLocking()) {
-        lockPtr_p->acquire (&(lockSync_p.memoryIO()), FileLocker::Read, 0);
-    } else {
-        lockPtr_p->getInfo (lockSync_p.memoryIO());
-    }
-    uInt ncolumn;
-    Bool tableChanged;
-    Block<Bool> dmChanged;
-    lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
-    tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
+    try {
+        // Replace default TSM option for existing table.
+        tsmOption_p.fillOption (False);
+        //# Set initially to no write in destructor.
+        //# At the end it is reset. In this way nothing is written if
+        //# an exception is thrown during initialization.
+        noWrite_p = True;
+        //# Create the lock object.
+        //# When needed, it sets a permanent (read or write) lock.
+        //# Otherwise acquire a read lock (when needed) to read in the table
+        //# or get the sync info.
+        
+        lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
+        lockPtr_p->makeLock (name_p, False,
+            opt == Table::Old  ?  FileLocker::Read : FileLocker::Write,
+                locknr);
+        if (lockPtr_p->readLocking()) {
+            lockPtr_p->acquire (&(lockSync_p.memoryIO()), FileLocker::Read, 0);
+        } else {
+            lockPtr_p->getInfo (lockSync_p.memoryIO());
+        }
+       
+        uInt ncolumn;
+        Bool tableChanged;
+        Block<Bool> dmChanged;
+        lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
+        tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
 
-    //# Reopen the file to be sure that the internal stdio buffer is not reused.
-    //# This is a terrible hack, but it works.
-    //# However, One time a better solution is needed.
-    //# Probably stdio should not be used, but class RegularFileIO or
-    //# FilebufIO should do its own buffering and have a sync function.
-    AipsIO ios (Table::fileName(tabname), ByteIO::Old);
-    String tp;
-    version = ios.getstart ("Table");
-    if (version > 3) {
-      throw TableError ("PlainTable version " + String::toString(version) +
-                        " not supported by this version of Casacore");
-    }
-    if (version > 2) {
-      ios >> nrrow;
-    } else {
-      uInt n;
-      ios >> n;
-      nrrow = n;
-    }
-    uInt format;
-    ios >> format;
-    bigEndian_p = (format==0);
-    ios >> tp;
-    // If locking is not used, nrrow_p might be 0. Use nrrow in that case.
-    if (nrrow_p == 0) {
-      nrrow_p = nrrow;
-    }
-#if defined(TABLEREPAIR)
-    cerr << "tableRepair: found " << nrrow << " rows; give new number: ";
-    cin >> nrrow_p;
-    if (nrrow != nrrow_p) {
-      cerr << "Number of rows set to " << nrrow_p << endl;
-      tableChanged_p = True;
-    }
-#endif
+        //# Reopen the file to be sure that the internal stdio buffer is not reused.
+        //# This is a terrible hack, but it works.
+        //# However, One time a better solution is needed.
+        //# Probably stdio should not be used, but class RegularFileIO or
+        //# FilebufIO should do its own buffering and have a sync function.
+        AipsIO ios (Table::fileName(tabname), ByteIO::Old);
+        String tp;
+        version = ios.getstart ("Table");
+        if (version > 3) {
+        throw TableError ("PlainTable version " + String::toString(version) +
+                            " not supported by this version of Casacore");
+        }
+        if (version > 2) {
+        ios >> nrrow;
+        } else {
+        uInt n;
+        ios >> n;
+        nrrow = n;
+        }
+        uInt format;
+        ios >> format;
+        bigEndian_p = (format==0);
+        ios >> tp;
+        // If locking is not used, nrrow_p might be 0. Use nrrow in that case.
+        if (nrrow_p == 0) {
+        nrrow_p = nrrow;
+        }
+    #if defined(TABLEREPAIR)
+        cerr << "tableRepair: found " << nrrow << " rows; give new number: ";
+        cin >> nrrow_p;
+        if (nrrow != nrrow_p) {
+        cerr << "Number of rows set to " << nrrow_p << endl;
+        tableChanged_p = True;
+        }
+    #endif
 
-    TableAttr attr (tableName(), isWritable(), lockOptions);
-    tdescPtr_p->getFile (ios, attr);            // read description
-    // Check if the given table type matches the type in the file.
-    if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
-        throw (TableInvType (tableName(), type, tdescPtr_p->getType()));
-	return;
+        TableAttr attr (tableName(), isWritable(), lockOptions);
+        tdescPtr_p->getFile (ios, attr);            // read description
+        // Check if the given table type matches the type in the file.
+        if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
+            throw (TableInvType (tableName(), type, tdescPtr_p->getType()));
+        return;
+        }
+        // In the older Table files the keyword set was written separately
+        // and was not part of the TableDesc.
+        // So read it for those and merge it into the TableDesc keywords.
+        // Merging is done after attaching the lock to the ColumnSet,
+        // because function keywordSet() uses the lock.
+        TableRecord tmp;
+        if (version == 1) {
+            tmp.getRecord (ios, attr);
+        }
+        //# Construct and read the ColumnSet object.
+        //# This will also construct the various DataManager objects.
+        colSetPtr_p = new ColumnSet (tdescPtr_p.get());
+        colSetPtr_p->linkToTable (this);
+        colSetPtr_p->linkToLockObject (lockPtr_p);
+        if (version == 1) {
+        keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
+        }
+        //# Create a Table object to be used internally by the data managers.
+        //# Do not count it, otherwise a mutual dependency exists.
+        Table tab(this, False);
+        nrrow_p = colSetPtr_p->getFile (ios, tab, nrrow_p, bigEndian_p,
+                                        tsmOption_p);
+        //# Read the TableInfo object.
+        getTableInfo();
+        //# Release the read lock if UserLocking is used.
+        if (lockPtr_p->option() == TableLock::UserLocking) {
+        lockPtr_p->release();
+        }
+        //# The destructor can (in principle) write.
+        noWrite_p = False;
+        //# Add it to the table cache.
+        if (addToCache) {
+        tableCache().define (name_p, this);
+        }
+        //# Trace if needed.
+        itsTraceId = TableTrace::traceTable (name_p, 'o');
+    } catch (std::exception&) {
+        if (lockPtr_p != 0) delete lockPtr_p;
+        lockPtr_p = 0;
+        throw;
     }
-    // In the older Table files the keyword set was written separately
-    // and was not part of the TableDesc.
-    // So read it for those and merge it into the TableDesc keywords.
-    // Merging is done after attaching the lock to the ColumnSet,
-    // because function keywordSet() uses the lock.
-    TableRecord tmp;
-    if (version == 1) {
-        tmp.getRecord (ios, attr);
-    }
-    //# Construct and read the ColumnSet object.
-    //# This will also construct the various DataManager objects.
-    colSetPtr_p = new ColumnSet (tdescPtr_p.get());
-    colSetPtr_p->linkToTable (this);
-    colSetPtr_p->linkToLockObject (lockPtr_p);
-    if (version == 1) {
-	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
-    }
-    //# Create a Table object to be used internally by the data managers.
-    //# Do not count it, otherwise a mutual dependency exists.
-    Table tab(this, False);
-    nrrow_p = colSetPtr_p->getFile (ios, tab, nrrow_p, bigEndian_p,
-                                    tsmOption_p);
-    //# Read the TableInfo object.
-    getTableInfo();
-    //# Release the read lock if UserLocking is used.
-    if (lockPtr_p->option() == TableLock::UserLocking) {
-	lockPtr_p->release();
-    }
-    //# The destructor can (in principle) write.
-    noWrite_p = False;
-    //# Add it to the table cache.
-    if (addToCache) {
-      tableCache().define (name_p, this);
-    }
-    //# Trace if needed.
-    itsTraceId = TableTrace::traceTable (name_p, 'o');
 }
 
 
@@ -307,7 +318,7 @@ void PlainTable::closeObject()
     //# When needed, write and sync the table files if not marked for delete
     if (!isMarkedForDelete()) {
 	if (openedForWrite()  &&  !shouldNotWrite()) {
-	    lockPtr_p->release (True);
+	    if (lockPtr_p != nullptr) lockPtr_p->release (True);
 	}
     }else{
 	//# Check if table can indeed be deleted.
@@ -337,7 +348,10 @@ void PlainTable::closeObject()
     //# Trace if needed.
     TableTrace::traceClose (name_p);
     //# Delete everything.
-    delete lockPtr_p;
+    if (lockPtr_p != nullptr) {
+        delete lockPtr_p;
+        lockPtr_p = nullptr;
+    }
 }
 
 //# Read description and #rows.
@@ -818,4 +832,65 @@ void PlainTable::checkWritable (const char* func) const
     }
 }
 
+TableCache& PlainTable::tableCache() { 
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    auto pid = getpid();
+    auto tid = pthread_self();
+    TableCacheKeyType key = PlainTable::usingProcesswideTabCache ? \
+                            TableCacheKeyType(true, 0, 0) :
+                            TableCacheKeyType(false, pid, tid);
+    
+    return PlainTable::theirTableCache.checkConstructObject(key);
+}
+
+void PlainTable::globalTableCacheReset() {
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    auto apply = [](TableCache& cache) -> void {
+        Vector<String> cachedTables = cache.getTableNames();
+        for (auto it = cachedTables.begin(); it != cachedTables.end(); ++it) {
+            // deletes files on disk if markedfordelete was previously set
+            // removes from global cache
+            cache(*it)->closeObject(); 
+        }
+    };
+    PlainTable::theirTableCache.applyOp(apply);
+}
+
+void PlainTable::useProcessWideTableCache() {
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    if (!PlainTable::usingProcesswideTabCache) {
+        PlainTable::globalTableCacheReset();
+        PlainTable::usingProcesswideTabCache = true;
+        LogIO os(LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"));
+        os.priority(casacore::LogMessage::WARN);
+        os << "Switching to process-wide Table cache system. "
+              "All tables have been flushed and closed";
+        os.post();
+        casacore::LogMessage("Switching to process-wide Table cache system. "
+                             "All tables have been flushed and closed",
+                             LogOrigin("casacore::tables::Tables::PlainTable::useProcessWideTableCache()"),
+                             casacore::LogMessage::WARN);
+    }
+}
+
+void PlainTable::useTableCachePerThread() {
+    LockAll<std::recursive_mutex> lg(PlainTable::theirTableCache);
+    if (PlainTable::usingProcesswideTabCache) {
+        PlainTable::globalTableCacheReset();
+        PlainTable::usingProcesswideTabCache = false;
+        LogIO os(LogOrigin("casacore::tables::Tables::PlainTable::useTableCachePerThread()"));
+        os.priority(casacore::LogMessage::WARN);
+        os << "Switching to thread-wide Table cache system. "
+              "All tables have been flushed and closed. New tables opened may only request read locking.";
+        os.post();        
+        casacore::LogMessage("Switching to thread-wide Table cache system. "
+                             "All tables have been flushed and closed. New tables opened may only request read locking.",
+                             LogOrigin("casacore::tables::Tables::PlainTable::useTableCachePerThread()"),
+                             casacore::LogMessage::WARN);
+    }
+}
+
+bool PlainTable::isUsingTableCachePerProcess() {
+    return PlainTable::usingProcesswideTabCache;
+}
 } //# NAMESPACE CASACORE - END

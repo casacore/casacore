@@ -56,18 +56,22 @@ TableLock::TableLock (LockOption option, double inspectionInterval,
   init();
 }
 
-TableLock::TableLock (const TableLock& that)
-: itsOption            (that.itsOption),
-  itsReadLocking       (that.itsReadLocking),
-  itsMaxWait           (that.itsMaxWait),
-  itsInterval          (that.itsInterval),
-  itsIsDefaultLocking  (that.itsIsDefaultLocking),
-  itsIsDefaultInterval (that.itsIsDefaultInterval)
-{}
+TableLock::TableLock (const TableLock& that) :
+  InterfaceThreadUnsafe() {
+  TableLockLockAllType lg(*this);
+  
+  itsOption            =that.itsOption;
+  itsReadLocking       =that.itsReadLocking;
+  itsMaxWait           =that.itsMaxWait;
+  itsInterval          =that.itsInterval;
+  itsIsDefaultLocking  =that.itsIsDefaultLocking;
+  itsIsDefaultInterval =that.itsIsDefaultInterval;
+}
 
 TableLock& TableLock::operator= (const TableLock& that)
 {
   if (this != &that) {
+    TableLockLockAllType lg(*this, that);
     itsOption            = that.itsOption;
     itsReadLocking       = that.itsReadLocking;
     itsMaxWait           = that.itsMaxWait;
@@ -81,6 +85,7 @@ TableLock& TableLock::operator= (const TableLock& that)
 
 void TableLock::init()
 {
+TableLockLockAllType lg(*this);
 #ifdef AIPS_TABLE_NOLOCKING
   itsOption = NoLocking;
 #else
@@ -109,20 +114,23 @@ void TableLock::init()
 
 void TableLock::merge (const TableLock& that)
 {
-  if (! that.itsIsDefaultLocking) {
-    if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
-      itsOption  = that.itsOption;
-      itsMaxWait = that.itsMaxWait;
-      itsIsDefaultLocking = that.itsIsDefaultLocking;
-    }
-    if (itsIsDefaultLocking) {
-      itsReadLocking = that.itsReadLocking;
-    } else if (that.itsReadLocking) {
-      itsReadLocking = True;
-    }
-    if (! that.itsIsDefaultInterval) {
-      if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
-	itsInterval = that.itsInterval;
+  if (this != &that) {
+    TableLockLockAllType lg(*this, that);
+    if (! that.itsIsDefaultLocking) {
+      if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
+        itsOption  = that.itsOption;
+        itsMaxWait = that.itsMaxWait;
+        itsIsDefaultLocking = that.itsIsDefaultLocking;
+      }
+      if (itsIsDefaultLocking) {
+        itsReadLocking = that.itsReadLocking;
+      } else if (that.itsReadLocking) {
+        itsReadLocking = True;
+      }
+      if (! that.itsIsDefaultInterval) {
+        if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
+    itsInterval = that.itsInterval;
+        }
       }
     }
   }
@@ -139,5 +147,6 @@ Bool TableLock::lockingDisabled()
 #endif
 }
 
+void TableLock::onMultithreadedAccess() const {}
 } //# NAMESPACE CASACORE - END
 

@@ -228,6 +228,8 @@ Utilities/Sort.cc
 Utilities/SortError.cc
 Utilities/StringDistance.cc
 Utilities/ValType.cc
+Utilities/InterfaceThreadUnsafe.cc
+Utilities/LockAll.cc
 aips.cc
 version.cc
 ${BISON_JsonGram_OUTPUTS}
@@ -383,6 +385,8 @@ Containers/RecordInterface.h
 Containers/RecordRep.h
 Containers/ValueHolder.h
 Containers/ValueHolderRep.h
+Containers/Multiton.h
+Containers/ManagedObjectPool.h
 DESTINATION include/casacore/casa/Containers
 )
 
@@ -649,6 +653,8 @@ Utilities/Template.h
 Utilities/Template.tcc
 Utilities/ValType.h
 Utilities/ValTypeId.h
+Utilities/InterfaceThreadUnsafe.h
+Utilities/LockAll.h
 DESTINATION include/casacore/casa/Utilities
 )
 

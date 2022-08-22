@@ -48,6 +48,7 @@ add_library (casa_python3
 ../python/Converters/PycImport.cc
 ../python/Converters/PycRecord.cc
 ../python/Converters/PycValueHolder.cc
+../python/Converters/PyNotThreadSafe.cc
 )
 
 
@@ -72,6 +73,7 @@ if (NOT BUILD_PYTHON)
     ../python/Converters/PycRecord.h
     ../python/Converters/PycValueHolder.h
     ../python/Converters/PycArray.tcc
+    ../python/Converters/PyNotThreadSafe.h
     DESTINATION include/casacore/python/Converters
     )
 

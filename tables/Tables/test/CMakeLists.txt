@@ -57,6 +57,7 @@ tTable_2
 tTable_3
 tTable_4
 tVeryBigTable
+tTableReadThreaded
 )
 
 # Some test sources include a test .h file.

@@ -35,7 +35,9 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <vector>
-
+#include <casacore/casa/Utilities/InterfaceThreadUnsafe.h>
+#include <casacore/casa/Utilities/LockAll.h>
+#include <mutex>
 
 //# Forward Declarations
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -46,7 +48,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class ColumnDesc;
   class TableExprNode;
   class Slicer;
-
+  using TableProxyMutexType=std::recursive_mutex;
+  using TableProxyLockAllType=LockAll<TableProxyMutexType>;
 
 // <summary>
 // High-level interface to tables
@@ -99,7 +102,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Different front-ends (e.g. GlishTableProxy) can be put on top of it.
 // </motivation>
 
-class TableProxy
+class TableProxy : InterfaceThreadUnsafe,
+                   LockableObject<TableProxyMutexType>
 {
 public:
   // Default constructor initializes to not open.
@@ -107,6 +111,7 @@ public:
   TableProxy();
 
   // Create the object from an existing table (used by some methods).
+  // WARNING:: Not guaranteed threadsafe 
   TableProxy (const Table& table)
     : table_p (table) {}
 
@@ -170,12 +175,16 @@ public:
 	      const Vector<String>& dataTypes = Vector<String>());
 
   // Copy constructor.
+  // Only Threadsafe if the TableProxy being copy constructed is owned
+  // by this thread / process. If not an exception is raised
   TableProxy (const TableProxy&);
 
   // Close the table.
   ~TableProxy();
 
   // Assignment.
+  // Only Threadsafe if the TableProxy being assigned is owned
+  // by this thread / process. If not an exception is raised
   TableProxy& operator= (const TableProxy&);
 
   // Select the given rows from the table and create a new (reference) table.
@@ -589,10 +598,14 @@ public:
 
   // Return the table object.
   // <group>
-  Table& table()
-    { return table_p; }
-  const Table& table() const
-    { return table_p; }
+  Table& table() { 
+    TableProxyLockAllType lg(*this);
+    return table_p; 
+  }
+  const Table& table() const { 
+    TableProxyLockAllType lg(*this);
+    return table_p; 
+  }
   // </group>
 
   // Get or put the values of all keywords.
@@ -685,6 +698,8 @@ public:
     }
     return arr;
   }
+protected:
+  virtual void onMultithreadedAccess() const;
 
 private:
 
@@ -699,18 +714,30 @@ private:
   template<typename T>
   void printArray (const Array<T>& arr, ostream& os,
                    const String& sep) const;
-  void printArrayValue (ostream& os, Bool v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, Int v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, Int64 v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, Double v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, const DComplex& v, const String&) const
-    {os << v;}
-  void printArrayValue (ostream& os, const String& v, const String&) const
-    {os << '"' << v << '"';}
+  void printArrayValue (ostream& os, Bool v, const String&) const {
+    TableProxyLockAllType lg(*this);
+    os << v;
+  }
+  void printArrayValue (ostream& os, Int v, const String&) const {
+    TableProxyLockAllType lg(*this);
+    os << v;
+  }
+  void printArrayValue (ostream& os, Int64 v, const String&) const {
+    TableProxyLockAllType lg(*this);
+    os << v;
+  }
+  void printArrayValue (ostream& os, Double v, const String&) const {
+    TableProxyLockAllType lg(*this);
+    os << v;
+  }
+  void printArrayValue (ostream& os, const DComplex& v, const String&) const {
+    TableProxyLockAllType lg(*this);
+    os << v;
+  }
+  void printArrayValue (ostream& os, const String& v, const String&) const {
+    TableProxyLockAllType lg(*this);
+    os << '"' << v << '"';
+  }
   // </group>
 
   // Sync table to get correct nr of rows and check the row number.

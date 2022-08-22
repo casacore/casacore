@@ -11,3 +11,5 @@ build/
 WSRT_Measures.ztar
 sofa.tgz
 sofa/
+*.table
+*.tbl

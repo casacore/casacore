@@ -32,6 +32,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -114,7 +116,6 @@ public:
     void getInfo (MemoryIO& info);
     void putInfo (const MemoryIO& info);
     // </group>
-
 private:
     // Copy constructor is forbidden.
     TableLockData (const TableLockData& that);
@@ -133,26 +134,37 @@ private:
 
 inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-    return (itsLock == 0  ?  True : itsLock->hasLock (type));
+    return (itsLock == nullptr  ?  True : itsLock->hasLock (type));
 }
 inline void TableLockData::autoRelease (Bool always)
 {
-    if (option() == AutoLocking  &&  itsLock->inspect(always)) {
+    if (option() == AutoLocking  &&  
+    itsLock != nullptr &&
+    itsLock->inspect(always)) {
 	release();
     }
 }
 inline Bool TableLockData::isMultiUsed() const
 {
+    if (itsLock == nullptr) {
+        throw (TableError ("Error -- No lock is held at this time"));
+    }
     return itsLock->isMultiUsed();
 }
 
 
 inline void TableLockData::getInfo (MemoryIO& info)
 {
+    if (itsLock == nullptr) {
+        throw (TableError ("Error -- No lock is held at this time"));
+    }
     itsLock->getInfo (info);
 }
 inline void TableLockData::putInfo (const MemoryIO& info)
 {
+    if (itsLock == nullptr) {
+        throw (TableError ("Error -- No lock is held at this time"));
+    }
     itsLock->putInfo (info);
 }
 
