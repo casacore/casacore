@@ -54,7 +54,7 @@ Lattice<T>::~Lattice()
 template <class T>
 DataType Lattice<T>::dataType() const
 {
-  return whatType ((T*)0);
+  return whatType<T>();
 }
 
 
