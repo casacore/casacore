@@ -9,4 +9,4 @@ Version: @PROJECT_VERSION@
 Requires: @pc_req_public@
 Requires.private: @pc_req_private@
 Libs: -L${libdir} @PRIVATE_LIBS@
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I@WCSLIB_INCLUDE_DIR@
