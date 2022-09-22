@@ -15,10 +15,6 @@ ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
 # where do we epect casacore data build time and runtime
 ENV CASACORE_DATA /usr/share/casacore/data
 
-# which casacore version to use
-
-ENV CASACORE_VERSION 3.4.0
-
 # how many threads to use for compiling
 ENV THREADS 4
 
