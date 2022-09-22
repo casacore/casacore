@@ -76,6 +76,7 @@ RUN cmake .. \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
+    -DPORTABLE=TRUE \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
 USER root

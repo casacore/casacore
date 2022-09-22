@@ -60,7 +60,7 @@ RUN ./b2 -j${THREADS} \
     link=static,shared install
 
 # casacore wants numpy
-RUN /opt/python/${TARGET}/bin/pip install numpy
+RUN /opt/python/${TARGET}/bin/pip install numpy==1.22.4
 
 # set up casacore
 ADD . /code
@@ -76,6 +76,7 @@ RUN cmake .. \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
+    -DPORTABLE=TRUE \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
 USER root
