@@ -44,8 +44,6 @@ RUN make -j${THREADS}
 WORKDIR /build
 RUN tar jxvf /tmp/boost.tar.bz2
 WORKDIR /build/boost_${BOOST_}
-# patch for python 3.10 (multiple digits)
-#sed -i 's/(\[0-9\])/([0-9][0-9]?)/' tools/boost_install/BoostConfig.cmake
 RUN ./bootstrap.sh --prefix=/opt/boost \
     --with-libraries=python \
     --with-python=/opt/python/${TARGET}/bin/python \
@@ -62,6 +60,7 @@ RUN /opt/python/${TARGET}/bin/pip install numpy==1.22.4
 ADD . /code
 RUN useradd -ms /bin/bash casacore
 RUN chown casacore.casacore /code
+USER casacore
 RUN mkdir /code/build
 WORKDIR /code/build
 RUN cmake .. \
