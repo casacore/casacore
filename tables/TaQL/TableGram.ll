@@ -174,6 +174,7 @@ DESC      [Dd][Ee][Ss][Cc]
 LIMIT     ([Ll][Ii][Mm][Ii][Tt])|([Tt][Oo][Pp])
 OFFSET    [Oo][Ff][Ff][Ss][Ee][Tt]
 BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
+AROUND    [Aa][Rr][Oo][Uu][Nn][Dd]
 EXISTS    [Ee][Xx][Ii][Ss][Tt][Ss]
 LIKE      [Ll][Ii][Kk][Ee]
 ILIKE     [Ii][Ll][Ii][Kk][Ee]
@@ -533,6 +534,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 
  /* operators */
+"<:>"     { tableGramPosition() += yyleng; return MIDWIDTH; }
 "<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
 "<:="     { tableGramPosition() += yyleng; return OPENCLOSED; }
 "=:<"     { tableGramPosition() += yyleng; return CLOSEDOPEN; }
@@ -553,6 +555,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 "~="      { tableGramPosition() += yyleng; return EQNEAR; }
 "!~="     { tableGramPosition() += yyleng; return NENEAR; }
 {BETWEEN} { tableGramPosition() += yyleng; return BETWEEN; }
+{AROUND}  { tableGramPosition() += yyleng; return AROUND; }
 {EXISTS}  { tableGramPosition() += yyleng; return EXISTS; }
 {LIKE}    { tableGramPosition() += yyleng; return LIKE; }
 {ILIKE}   { tableGramPosition() += yyleng; return ILIKE; }

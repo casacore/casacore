@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <casacore/tables/TaQL/ExprLogicNode.h>
+#include <casacore/tables/TaQL/ExprNodeSetOpt.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
@@ -286,31 +288,30 @@ TableExprNodeINInt::TableExprNodeINInt (const TableExprNodeRep& node,
                                         Bool)
 : TableExprNodeBinary (NTBool, node, OtIN)
 {}
-void TableExprNodeINInt::convertConstChild()
+TableExprNodeINInt::~TableExprNodeINInt()
+{}
+void TableExprNodeINInt::optimize()
 {
-  if (rnode_p->isConstant()  &&  rnode_p->valueType() == VTArray) {
-    // Convert array to a set for lookup
-    MArray<Int64> values = rnode_p->getArrayInt(0);
+  doOptimize (rnode_p);
+}
+void TableExprNodeINInt::doOptimize (TENShPtr& rnode)
+{
+  if (rnode->isConstant()  &&  rnode->valueType() == VTArray) {
+    // Convert a constant array for faster lookup.
+    MArray<Int64> values = rnode->getArrayInt(0);
     Array<Int64> arr(values.array());
     if (values.hasMask()) {
       // Remove masked elements.
       arr.reference (values.flatten());
     }
-    if (! arr.empty()) {
-      itsIndexSet.clear();
-      itsIndexSet.insert(arr.begin(), arr.end());
-    }
+    // Use an unordered_set for fast lookup.
+    rnode.reset (new TableExprNodeSetOptIntUSet (*rnode, arr));
   }
 }
-TableExprNodeINInt::~TableExprNodeINInt()
-{}
 Bool TableExprNodeINInt::getBool (const TableExprId& id)
 {
     Int64 val = lnode_p->getInt (id);
-    if (itsIndexSet.size() > 0) {
-      return itsIndexSet.find(val) != itsIndexSet.end();
-    }
-    return rnode_p->hasInt (id, val);
+    return rnode_p->contains (id, val);
 }
 
 TableExprNodeINDouble::TableExprNodeINDouble (const TableExprNodeRep& node)
@@ -318,9 +319,22 @@ TableExprNodeINDouble::TableExprNodeINDouble (const TableExprNodeRep& node)
 {}
 TableExprNodeINDouble::~TableExprNodeINDouble()
 {}
+void TableExprNodeINDouble::optimize()
+{
+  doOptimize (rnode_p);
+}
+void TableExprNodeINDouble::doOptimize (TENShPtr& rnode)
+{
+  if (rnode->isConstant()  &&  rnode->valueType() == VTSet) {
+    TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
+    if (!set.isSingle()  &&  !set.isDiscrete()) {
+      rnode = TableExprNodeSetOptContSet<Double>::transform (set);
+    }
+  }
+}
 Bool TableExprNodeINDouble::getBool (const TableExprId& id)
 {
-    return rnode_p->hasDouble (id, lnode_p->getDouble (id));
+    return rnode_p->contains (id, lnode_p->getDouble (id));
 }
 
 TableExprNodeINDComplex::TableExprNodeINDComplex (const TableExprNodeRep& node)
@@ -330,7 +344,7 @@ TableExprNodeINDComplex::~TableExprNodeINDComplex()
 {}
 Bool TableExprNodeINDComplex::getBool (const TableExprId& id)
 {
-    return rnode_p->hasDComplex (id, lnode_p->getDComplex (id));
+    return rnode_p->contains (id, lnode_p->getDComplex (id));
 }
 
 TableExprNodeINString::TableExprNodeINString (const TableExprNodeRep& node)
@@ -338,9 +352,34 @@ TableExprNodeINString::TableExprNodeINString (const TableExprNodeRep& node)
 {}
 TableExprNodeINString::~TableExprNodeINString()
 {}
+void TableExprNodeINString::optimize()
+{
+  doOptimize (rnode_p);
+}
+void TableExprNodeINString::doOptimize (TENShPtr& rnode)
+{
+  if (rnode->isConstant()) {
+    if (rnode->valueType() == VTSet) {
+      // A constant set with continuous intervals can be made faster.
+      TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
+      if (!set.isSingle()  &&  !set.isDiscrete()) {
+        rnode = TableExprNodeSetOptContSet<String>::transform (set);
+      }
+    } else if (rnode->valueType() == VTArray) {
+      // Convert a constant array to an unordered_set for faster lookup.
+      MArray<String> values = rnode->getArrayString(0);
+      Array<String> arr(values.array());
+      if (values.hasMask()) {
+        // Remove masked elements.
+        arr.reference (values.flatten());
+      }
+      rnode.reset (new TableExprNodeSetOptStringUSet (*rnode, arr));
+    }
+  }
+}
 Bool TableExprNodeINString::getBool (const TableExprId& id)
 {
-    return rnode_p->hasString (id, lnode_p->getString (id));
+    return rnode_p->contains (id, lnode_p->getString (id));
 }
 
 TableExprNodeINDate::TableExprNodeINDate (const TableExprNodeRep& node)
@@ -348,9 +387,22 @@ TableExprNodeINDate::TableExprNodeINDate (const TableExprNodeRep& node)
 {}
 TableExprNodeINDate::~TableExprNodeINDate()
 {}
+void TableExprNodeINDate::optimize()
+{
+  doOptimize (rnode_p);
+}
+void TableExprNodeINDate::doOptimize (TENShPtr& rnode)
+{
+  if (rnode->isConstant()  &&  rnode->valueType() == VTSet) {
+    TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
+    if (!set.isSingle()  &&  !set.isDiscrete()) {
+      rnode = TableExprNodeSetOptContSet<Double>::transform (set);
+    }
+  }
+}
 Bool TableExprNodeINDate::getBool (const TableExprId& id)
 {
-    return rnode_p->hasDate (id, lnode_p->getDate (id));
+    return rnode_p->contains (id, lnode_p->getDate (id));
 }
 
 

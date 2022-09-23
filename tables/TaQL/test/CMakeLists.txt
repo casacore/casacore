@@ -19,6 +19,8 @@ tExprGroup
 tExprGroupArray
 tExprNode
 tExprNodeSet
+tExprNodeSetElem
+tExprNodeSetOpt
 tExprUnitNode
 tExprNodeUDF
 tMArray

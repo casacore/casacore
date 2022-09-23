@@ -324,19 +324,22 @@ public:
 class TaQLRangeNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLRangeNodeRep (Bool leftClosed, TaQLNode start,
-                    const TaQLNode& end, Bool rightClosed);
+  TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start,
+                    const TaQLNode& end, Bool rightClosed,
+                    Bool asMidWidth=False);
   TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start);
   TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed);
+  TaQLRangeNodeRep (const TaQLNode& mid, const TaQLNode& width);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
   virtual void save (AipsIO& aio) const override;
   static TaQLNode restore (AipsIO& aio);
 
-  Bool     itsLeftClosed;
   TaQLNode itsStart;
   TaQLNode itsEnd;
+  Bool     itsLeftClosed;
   Bool     itsRightClosed;
+  Bool     itsAsMidWidth;
 };
 
 

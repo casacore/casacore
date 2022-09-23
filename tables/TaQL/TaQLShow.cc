@@ -494,7 +494,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    &",
     "    ^",
     "    |",
-    "    == != >  >= <  <=  ~= !~= IN INCONE BETWEEN EXISTS LIKE  ~  !~",
+    "    == != >  >= <  <=  ~= !~= IN INCONE BETWEEN AROUND EXISTS LIKE  ~  !~",
     "    &&",
     "    ||",
     "",
@@ -521,7 +521,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    ~ !~ (I)LIKE  pattern match",
     "    IN            is left hand an element in the right hand?",
     "    INCONE        cone searching",
-    "    EXISTS        does subquery have at least 1 match?"
+    "    EXISTS        does subquery have at least 1 match?",
+    "    x BETWEEN a AND b         is x in bounded interval <a,b>?",
+    "    x AROUND m IN w           is x in bounded interval <m-w/2,m+w/2>?"
   };
 
   const char* constHelp[] = {
@@ -658,13 +660,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "An interval is a continuous set of real values with optional bounds.",
     "If a bound is given, it can be open or closed.",
-    "An interval can be given in two ways:",
-    "  Using curly braces (closed bound) and angle brackets (open bound)",
+    "An interval can be given in various ways:",
+    "  as start-end using curly braces (closed side) and angle brackets (open side)",
     "    bounded:     {1,2}   <1,2>   {1,2>   <1,2}",
     "    unbounded:   {1,}    <1,>    {,2>    <,2}",
-    "  Using  a=:=b (closed bounds)  and  a<:<b (open bounds)",
+    "  as start-end using  a=:=b (closed sides)  and  a<:<b (open sides)",
     "    bounded:     1=:=2   1<:<2   1=:<2   1<:=2",
     "    unbounded:   1=:     1<:     :<2     :=2",
+    "  as start-end (closed sides) using  BETWEEN start AND end",
+    "  as mid-width (closed sides) using  mid<:>width  or  AROUND mid IN width",
     "",
     "A set consisting of values and/or bounded ranges is a 1-dim array.",
     "  For example:   [1,2,3,4,5]   [1:6]   [1,2:5,5]   are all the same",

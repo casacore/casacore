@@ -266,19 +266,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TaQLNodeResult start = visitNode (node.itsStart);
     TaQLNodeResult end   = visitNode (node.itsEnd);
     TableExprNodeSetElem* elem;
-    if (start.isValid()) {
-      if (end.isValid()) {
-        elem = new TableExprNodeSetElem (node.itsLeftClosed,
-                                         getHR(start).getExpr(),
-                                         getHR(end).getExpr(),
-                                         node.itsRightClosed);
-      } else {
-        elem = new TableExprNodeSetElem (node.itsLeftClosed,
-                                         getHR(start).getExpr());
-      }
+    if (node.itsAsMidWidth) {
+      elem = new TableExprNodeSetElem (getHR(start).getExpr(),
+                                       getHR(end).getExpr());
     } else {
-      elem = new TableExprNodeSetElem (getHR(end).getExpr(),
-                                       node.itsRightClosed);
+      if (start.isValid()) {
+        if (end.isValid()) {
+          elem = new TableExprNodeSetElem (node.itsLeftClosed,
+                                           getHR(start).getExpr(),
+                                           getHR(end).getExpr(),
+                                           node.itsRightClosed);
+        } else {
+          elem = new TableExprNodeSetElem (node.itsLeftClosed,
+                                           getHR(start).getExpr());
+        }
+      } else {
+        elem = new TableExprNodeSetElem (getHR(end).getExpr(),
+                                         node.itsRightClosed);
+      }
     }
     hrval->setElem (elem);
     hrval->setExpr (TableExprNode(elem));

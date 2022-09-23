@@ -257,6 +257,24 @@ select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.
  7 8
  8 9
  9 10
+select ab,ac from tTableGram_tmp.tab where ab AROUND 3 IN 2
+    has been executed
+    select result of 3 rows
+2 selected columns:  ab ac
+ 2 3
+ 3 4
+ 4 5
+select ab,ac from tTableGram_tmp.tab where ab NOT AROUND 3 IN 2
+    has been executed
+    select result of 7 rows
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
 select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4
     has been executed
     select result of 3 rows

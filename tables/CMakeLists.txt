@@ -183,6 +183,8 @@ TaQL/ExprNodeArray.cc
 TaQL/ExprNodeRecord.cc
 TaQL/ExprNodeRep.cc
 TaQL/ExprNodeSet.cc
+TaQL/ExprNodeSetElem.cc
+TaQL/ExprNodeSetOpt.cc
 TaQL/ExprRange.cc
 TaQL/ExprUDFNode.cc
 TaQL/ExprUDFNodeArray.cc
@@ -428,6 +430,8 @@ TaQL/ExprNodeArray.h
 TaQL/ExprNodeRecord.h
 TaQL/ExprNodeRep.h
 TaQL/ExprNodeSet.h
+TaQL/ExprNodeSetElem.h
+TaQL/ExprNodeSetOpt.h
 TaQL/ExprRange.h
 TaQL/ExprUDFNode.h
 TaQL/ExprUDFNodeArray.h

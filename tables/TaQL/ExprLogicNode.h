@@ -793,6 +793,8 @@ public:
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
+// The right hand side can be optimized if it contains a constant array which
+// can be replaced by an std::unordered_set<Int64> or a Block<Bool>.
 // </synopsis> 
 
 class TableExprNodeINInt : public TableExprNodeBinary
@@ -801,11 +803,10 @@ public:
     // <src>doTracing</src> is not used.
     TableExprNodeINInt (const TableExprNodeRep&, Bool doTracing=False);
     virtual ~TableExprNodeINInt();
-    virtual void convertConstChild();
-    virtual Bool getBool (const TableExprId& id);
+    virtual void optimize() override;
+    static void doOptimize (TENShPtr& rnode);
+    virtual Bool getBool (const TableExprId& id) override;
 private:
-    // If the right node is constant it is converted to a set
-    std::set<Int64> itsIndexSet;
 };
 
 
@@ -828,6 +829,8 @@ private:
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
+// The right hand side can be optimized if it contains a constant set with
+// bounded intervals.
 // </synopsis> 
 
 class TableExprNodeINDouble : public TableExprNodeBinary
@@ -835,7 +838,9 @@ class TableExprNodeINDouble : public TableExprNodeBinary
 public:
     TableExprNodeINDouble (const TableExprNodeRep&);
     ~TableExprNodeINDouble();
-    Bool getBool (const TableExprId& id);
+    virtual void optimize() override;
+    static void doOptimize (TENShPtr& rnode);
+    virtual Bool getBool (const TableExprId& id) override;
 };
 
 
@@ -888,6 +893,8 @@ public:
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
+// The right hand side can be optimized if it contains a constant array which
+// can be replaced by an std::unordered_set<String>
 // </synopsis> 
 
 class TableExprNodeINString : public TableExprNodeBinary
@@ -895,7 +902,9 @@ class TableExprNodeINString : public TableExprNodeBinary
 public:
     TableExprNodeINString (const TableExprNodeRep&);
     ~TableExprNodeINString();
-    Bool getBool (const TableExprId& id);
+    virtual void optimize() override;
+    static void doOptimize (TENShPtr& rnode);
+    virtual Bool getBool (const TableExprId& id) override;
 };
 
 
@@ -925,7 +934,9 @@ class TableExprNodeINDate : public TableExprNodeBinary
 public:
     TableExprNodeINDate (const TableExprNodeRep&);
     ~TableExprNodeINDate();
-    Bool getBool (const TableExprId& id);
+    virtual void optimize() override;
+    static void doOptimize (TENShPtr& rnode);
+    Bool getBool (const TableExprId& id) override;
 };
 
 

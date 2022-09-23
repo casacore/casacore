@@ -156,7 +156,7 @@ void TableParseUpdate::handleIndices (const TableExprNodeSet& indices,
     if (! indices.hasArrays()) {
       throw TableInvExpr ("A mask in an update must be an array");
     }
-    mask_p = TableExprNode(indices[0].start());
+    mask_p = TableExprNode(indices[0]->start());
   } else {
     if (indexPtr_p) {
       throw TableInvExpr ("A double indexed update array cannot contain "
@@ -613,7 +613,7 @@ TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
            indices.hasArrays())) {
       throw TableInvExpr ("Second argument of a masked array must be an array; maybe extra brackets are needed like [1,2][[T,F]]");
     }
-    return marray (array, TableExprNode(indices[0].start()));
+    return marray (array, TableExprNode(indices[0]->start()));
   }
   return TableExprNode::newArrayPartNode (array, indices, style);
 }
@@ -1263,10 +1263,10 @@ TableExprNode TableParseSelect::makeFuncNode
             parms.add (arg);
           }
         } else if (arguments.size() == axarg+1
-                   &&  arguments[axarg].isSingle()) {
+                   &&  arguments[axarg]->isSingle()) {
           // A single set given; see if it is an array.
-          const TableExprNodeSetElem& arg = arguments[axarg];
-          if (arg.start()->valueType() == TableExprNodeRep::VTArray) {
+          const TENSEBShPtr& arg = arguments[axarg];
+          if (arg->start()->valueType() == TableExprNodeRep::VTArray) {
             parms.add (arg);
             axesIsArray = True;
           }
@@ -1275,9 +1275,9 @@ TableExprNode TableParseSelect::makeFuncNode
           // Combine all axes in a single set and add to parms.
           TableExprNodeSet axes;
           for (uInt i=axarg; i<arguments.size(); i++) {
-            const TableExprNodeSetElem& arg = arguments[i];
-            const TENShPtr& rep = arg.start();
-            if (rep == 0  ||  !arg.isSingle()
+            const TENSEBShPtr& arg = arguments[i];
+            const TENShPtr& rep = arg->start();
+            if (rep == 0  ||  !arg->isSingle()
                 ||  rep->valueType() != TableExprNodeRep::VTScalar
                 ||  (rep->dataType() != TableExprNodeRep::NTInt
                      &&  rep->dataType() != TableExprNodeRep::NTDouble)) {

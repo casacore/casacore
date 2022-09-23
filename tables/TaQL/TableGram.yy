@@ -97,6 +97,7 @@ Expect them, so bison does not generate an error message.
 %token IN
 %token INCONE
 %token BETWEEN
+%token AROUND
 %token EXISTS
 %token LIKE
 %token ILIKE
@@ -109,6 +110,7 @@ Expect them, so bison does not generate an error message.
 %token RBRACE
 %token COLON
 %token SEMICOL
+%token MIDWIDTH
 %token OPENOPEN
 %token OPENCLOSED
 %token CLOSEDOPEN
@@ -1647,6 +1649,21 @@ relexpr:   arithexpr {
                     new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, p));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         | arithexpr AROUND arithexpr IN arithexpr {
+	       TaQLMultiNode pr(False);
+	       pr.add (new TaQLRangeNodeRep (*$3, *$5));
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_IN, *$1, pr));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | arithexpr NOT AROUND arithexpr IN arithexpr {
+	       TaQLMultiNode pr(False);
+	       pr.add (new TaQLRangeNodeRep (*$4, *$6));
+	       TaQLNode p (new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_IN, *$1, pr));
+	       $$ = new TaQLNode(
+                    new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, p));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
          | arithexpr INCONE arithexpr {
 	       TaQLMultiNode pr(False);
 	       pr.add (*$1);
@@ -1886,11 +1903,21 @@ singlerange: range {
 /* A range can be a discrete strt:end:step range or a continuous interval.
    The latter can be specified in two ways: using angle brackets
    and braces or using the =:= notation (where = can also be <).
-   Angle brackets indicate an open side, others a closed side.
+   Angle brackets indicate an open side, braces a closed side.
    It is possible to leave out the start or end value (meaning - or +infinity).
 */
 range:     colonrangeinterval {
                $$ = $1;
+           }
+         | BETWEEN arithexpr AND arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLRangeNodeRep (False, *$2, *$4, False));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | AROUND arithexpr IN arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLRangeNodeRep (*$2, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | LT arithexpr COMMA arithexpr GT {
 	       $$ = new TaQLNode(
@@ -1950,6 +1977,11 @@ range:     colonrangeinterval {
          | LBRACE arithexpr COMMA GT {
 	       $$ = new TaQLNode(
                     new TaQLRangeNodeRep (True, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | arithexpr MIDWIDTH arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLRangeNodeRep (*$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr OPENOPEN arithexpr {

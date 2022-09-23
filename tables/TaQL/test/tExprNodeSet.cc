@@ -27,6 +27,7 @@
 
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -44,723 +45,6 @@
 // </summary>
 
 
-void checkMatchBool (const TableExprNodeSetElem& tset, Bool val, Bool result)
-{
-  cout << "checkMatchBool " << val << ' ' << result << endl;
-  Bool res = False;
-  tset.matchBool (&res, &val, 1, 0);
-  AlwaysAssertExit (res == result);
-}
-
-void checkMatchInt (const TableExprNodeSetElem& tset, Int64 val, Bool result)
-{
-  cout << "checkMatchInt " << val << ' ' << result << endl;
-  Bool res = False;
-  tset.matchInt (&res, &val, 1, 0);
-  AlwaysAssertExit (res == result);
-}
-
-void checkMatchDouble (const TableExprNodeSetElem& tset, Double val, Bool result)
-{
-  cout << "checkMatchDouble " << val << ' ' << result << endl;
-  Bool res = False;
-  tset.matchDouble (&res, &val, 1, 0);
-  AlwaysAssertExit (res == result);
-}
-
-void checkMatchDComplex (const TableExprNodeSetElem& tset, const DComplex& val,
-                         Bool result)
-{
-  cout << "checkMatchDComplex " << val << ' ' << result << endl;
-  Bool res = False;
-  tset.matchDComplex (&res, &val, 1, 0);
-  AlwaysAssertExit (res == result);
-}
-
-void checkMatchString (const TableExprNodeSetElem& tset, const String& val,
-                       Bool result)
-{
-  cout << "checkMatchString " << val << ' ' << result << endl;
-  Bool res = False;
-  tset.matchString (&res, &val, 1, 0);
-  AlwaysAssertExit (res == result);
-}
-
-void checkMatchDate (const TableExprNodeSetElem& tset, MVTime val, Bool result)
-{
-  cout << "checkMatchDate " << Double(val) << ' ' << result << endl;
-  Bool res = False;
-  tset.matchDate (&res, &val, 1, 0);
-  AlwaysAssertExit (res == result);
-}
-
-
-void doDiscreteBool()
-{
-  TableExprNode st(True);
-  bool failed= False;
-  try {
-    TableExprNodeSetElem tset(&st, 0, 0, False);
-  } catch (std::exception& x) {
-    cout <<"Expected: " << x.what() << endl;
-    failed = True;
-  }
-  AlwaysAssertExit (failed);
-  {
-    TableExprNodeSetElem tset(st);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTBool);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Bool> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Bool>(1,True), vec));
-    checkMatchBool (tset, True, True);
-    checkMatchBool (tset, False, False);
-  }
-}
-
-void doDiscreteInt()
-{
-  TableExprNode st(1);
-  TableExprNode end(99);
-  TableExprNode incr(2);
-  TableExprNode stn(-1);
-  TableExprNode endn(-99);
-  TableExprNode incrn(-2);
-  {
-    TableExprNodeSetElem tset(&st, &end, &incr, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTInt);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(50);
-    indgen (exp, Int64(1), Int64(2));
-    AlwaysAssertExit (allEQ(exp, vec));
-    checkMatchInt (tset, 1, True);
-    checkMatchInt (tset, 2, False);
-  }
-  {
-    TableExprNodeSetElem tset(&stn, &endn, &incrn, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTInt);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(50);
-    indgen (exp, Int64(-1), Int64(-2));
-    AlwaysAssertExit (allEQ(exp, vec));
-    checkMatchInt (tset, -7, True);
-    checkMatchInt (tset, -10, False);
-  }
-  {
-    TableExprNodeSetElem tset(&stn, 0, &incrn, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTInt);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    AlwaysAssertExit (cnt == 1  &&  vec[0] == -1);
-    checkMatchInt (tset, -1, True);
-    checkMatchInt (tset, -2, False);
-  }
-  {
-    TableExprNodeSetElem tset(&st, &end, &incr, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Int64> vec(51);
-    vec[0] = -3;
-    vec[1] = -1;
-    Int64 cnt=2;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(51);
-    indgen (exp, Int64(-3), Int64(2));
-    AlwaysAssertExit (allEQ(exp, vec));
-  }
-  {
-    TableExprNodeSetElem tset(&st, &end, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Int64> vec(98);
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(98);
-    indgen (exp, Int64(1));
-    AlwaysAssertExit (allEQ(exp, vec));
-  }
-  {
-    TableExprNodeSetElem tset(&st, 0, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(), vec));
-  }
-  {
-    TableExprNodeSetElem tset(0, &end, 0, False);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() == 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(100);
-    indgen (exp);
-    AlwaysAssertExit (allEQ(exp, vec));
-  }
-  {
-    TableExprNodeSetElem tset(0, 0, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() == 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(), vec));
-  }
-  {
-    TableExprNodeSetElem tset(st);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Int64> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(1,1), vec));
-    checkMatchInt (tset, 1, True);
-    checkMatchInt (tset, 2, False);
-  }
-}
-
-void doDiscreteDouble()
-{
-  TableExprNode st(1);
-  st.useUnit ("dm");
-  TableExprNode end(1.001);
-  end.useUnit ("m");
-  TableExprNode incr(2);
-  incr.useUnit ("cm");
-  TableExprNode stn(100.);
-  TableExprNode endn(10.);
-  TableExprNode incrn(-2.5);
-  {
-    TableExprNodeSetElem tset(&st, &end, &incr, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (tset.unit() == "dm");
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Double> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(46);
-    indgen (exp, 1., 0.2);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-    checkMatchDouble (tset, 3., True);
-    checkMatchDouble (tset, 3.1, False);
-  }
-  {
-    TableExprNodeSetElem tset(&stn, &endn, &incrn, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Double> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(36);
-    indgen (exp, 100., -2.5);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-    checkMatchDouble (tset, 100., True);
-    checkMatchDouble (tset, 12.51, False);
-    checkMatchDouble (tset, 12.5, True);
-    checkMatchDouble (tset, 10., False);
-  }
-  {
-    TableExprNodeSetElem tset(&stn, 0, &incrn, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Double> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    AlwaysAssertExit (cnt == 0);
-    checkMatchDouble (tset, 100., True);
-    checkMatchDouble (tset, -100., True);
-    checkMatchDouble (tset, -102., False);
-    checkMatchDouble (tset, 102.5, False);
-  }
-  {
-    TableExprNodeSetElem tset(&st, &end, &incr, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<Double> vec(25);
-    vec[0] = 0.6;
-    vec[1] = 0.8;
-    Int64 cnt=2;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(48);
-    indgen (exp, 0.6, 0.2);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-  }
-  {
-    TableExprNodeSetElem tset(&st, &end, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Double> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(10);
-    indgen (exp, 1., 1.);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-  }
-  {
-    TableExprNodeSetElem tset(&st, 0, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Double> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allNear(Vector<Double>(), vec, 1e-13));
-  }
-  {
-    TableExprNodeSetElem tset(st);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<Double> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allNear(Vector<Double>(1, 1.), vec, 1e-13));
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, -2., False);
-  }
-}
-
-void doDiscreteDComplex()
-{
-  TableExprNode st(DComplex(1,2));
-  bool failed= False;
-  try {
-    TableExprNodeSetElem tset(&st, 0, 0, False);
-  } catch (std::exception& x) {
-    cout <<"Expected: " << x.what() << endl;
-    failed = True;
-  }
-  AlwaysAssertExit (failed);
-  {
-    TableExprNodeSetElem tset(st);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTComplex);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<DComplex> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<DComplex>(1,DComplex(1,2)), vec));
-    checkMatchDComplex (tset, DComplex(1,2), True);
-    checkMatchDComplex (tset, DComplex(1,2.1), False);
-  }
-}
-
-void doDiscreteString()
-{
-  TableExprNode st("abcd");
-  bool failed= False;
-  try {
-    TableExprNodeSetElem tset(&st, 0, 0, False);
-  } catch (std::exception& x) {
-    cout <<"Expected: " << x.what() << endl;
-    failed = True;
-  }
-  AlwaysAssertExit (failed);
-  {
-    TableExprNodeSetElem tset(st);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTString);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<String> vec;
-    Int64 cnt=0;
-    tset.fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<String>(1,"abcd"), vec));
-    checkMatchString (tset, "abcd", True);
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcde", False);
-  }
-}
-
-void doDiscreteDate()
-{
-  TableExprNode st(datetime("5Apr09/12:"));
-  TableExprNode end(datetime("7May09/12:"));
-  TableExprNode incr(7);
-  {
-    TableExprNodeSetElem tset(&st, &end, &incr, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDate);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<MVTime> vect;
-    Int64 cnt=0;
-    tset.fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
-    convertArray (vec, vect);
-    Vector<Double> exp(5);
-    indgen (exp, 54926.5, 7.);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 3.1, False);
-  }
-  {
-    TableExprNodeSetElem tset(&st, &end, &incr, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDate);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() != 0);
-    Vector<MVTime> vect;
-    Int64 cnt=0;
-    tset.fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
-    convertArray (vec, vect);
-    Vector<Double> exp(5);
-    indgen (exp, 54926.5, 7.);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-  }
-  {
-    TableExprNodeSetElem tset(&st, &end, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() != 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<MVTime> vect;
-    Int64 cnt=0;
-    tset.fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
-    convertArray (vec, vect);
-    Vector<Double> exp(32);
-    indgen (exp, 54926.5);
-    AlwaysAssertExit (allNear(exp, vec, 1e-13));
-  }
-  {
-    TableExprNodeSetElem tset(&st, 0, 0, True);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<MVTime> vect;
-    Int64 cnt=0;
-    tset.fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
-    convertArray (vec, vect);
-    AlwaysAssertExit (allNear(Vector<Double>(), vec, 1e-13));
-  }
-  {
-    TableExprNodeSetElem tset(st);
-    AlwaysAssertExit (tset.isDiscrete());
-    AlwaysAssertExit (tset.isSingle());
-    AlwaysAssertExit (tset.start() != 0);
-    AlwaysAssertExit (tset.end() == 0);
-    AlwaysAssertExit (tset.increment() == 0);
-    Vector<MVTime> vect;
-    Int64 cnt=0;
-    tset.fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
-    convertArray (vec, vect);
-    AlwaysAssertExit (allNear(Vector<Double>(1, 54926.5), vec, 1e-13));
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54926.6, False);
-  }
-}
-
-void doIntervalBool()
-{
-  TableExprNode st(True);
-  TableExprNode end(False);
-  bool failed= False;
-  try {
-    TableExprNodeSetElem tset(False, st, end, False);
-  } catch (std::exception& x) {
-    cout <<"Expected: " << x.what() << endl;
-    failed = True;
-  }
-  AlwaysAssertExit (failed);
-}
-
-void doIntervalInt()
-{
-  {
-    TableExprNode st(1);
-    TableExprNode end(99);
-    TableExprNodeSetElem tset(False, st, end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-  }
-  {
-    TableExprNode st(1);
-    TableExprNode end(99.);
-    TableExprNodeSetElem tset(False, st, end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-  }
-}
-
-void doIntervalDouble()
-{
-  TableExprNode st(1);
-  st.useUnit ("m");
-  TableExprNode end(989.5);
-  end.useUnit ("cm");
-  {
-    TableExprNodeSetElem tset(False, st, end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (!tset.isLeftClosed());
-    AlwaysAssertExit (!tset.isRightClosed());
-    checkMatchDouble (tset, -1., False);
-    checkMatchDouble (tset, 1., False);
-    checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, False);   // unit is m
-    checkMatchDouble (tset, 10., False);
-  }
-  {
-    TableExprNodeSetElem tset(True, st, end, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.isLeftClosed());
-    AlwaysAssertExit (tset.isRightClosed());
-    checkMatchDouble (tset, -1., False);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, False);
-    checkMatchDouble (tset, 10., False);
-  }
-  {
-    TableExprNodeSetElem tset(True, st);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (tset.isLeftClosed());
-    AlwaysAssertExit (!tset.isRightClosed());
-    checkMatchDouble (tset, -1., False);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, True);
-    checkMatchDouble (tset, 10., True);
-  }
-  {
-    TableExprNodeSetElem tset(end, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    AlwaysAssertExit (!tset.isLeftClosed());
-    AlwaysAssertExit (tset.isRightClosed());
-    checkMatchDouble (tset, -1., True);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 989., True);
-    checkMatchDouble (tset, 990, False);     // unit is cm
-    checkMatchDouble (tset, 1000., False);
-  }
-}
-
-void doIntervalDComplex()
-{
-  TableExprNode st(1);
-  TableExprNode end(DComplex(1,0));
-  bool failed= False;
-  try {
-    TableExprNodeSetElem tset(False, st, end, False);
-  } catch (std::exception& x) {
-    cout <<"Expected: " << x.what() << endl;
-    failed = True;
-  }
-  AlwaysAssertExit (failed);
-}
-
-void doIntervalString()
-{
-  TableExprNode st("abcd");
-  TableExprNode end("cde");
-  {
-    TableExprNodeSetElem tset(False, st, end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTString);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcd", False);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", False);
-    checkMatchString (tset, "cdef", False);
-  }
-  {
-    TableExprNodeSetElem tset(True, st, end, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTString);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcd", True);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", True);
-    checkMatchString (tset, "cdef", False);
-  }
-  {
-    TableExprNodeSetElem tset(False, st);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTString);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcd", False);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", True);
-    checkMatchString (tset, "cdef", True);
-  }
-  {
-    TableExprNodeSetElem tset(end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTString);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchString (tset, "abc", True);
-    checkMatchString (tset, "abcd", True);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", False);
-    checkMatchString (tset, "cdef", False);
-  }
-}
-
-void doIntervalDate()
-{
-  TableExprNode st(datetime("5Apr09/12:"));
-  TableExprNode end(datetime("7May09/12:"));
-  {
-    TableExprNodeSetElem tset(False, st, end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDate);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchDate (tset, 54926.0, False);
-    checkMatchDate (tset, 54926.5, False);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, False);
-    checkMatchDate (tset, 54959.0, False);
-  }
-  {
-    TableExprNodeSetElem tset(True, st, end, True);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDate);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchDate (tset, 54926.0, False);
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, True);
-    checkMatchDate (tset, 54959.0, False);
-  }
-  {
-    TableExprNodeSetElem tset(False, st);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDate);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchDate (tset, 54926.0, False);
-    checkMatchDate (tset, 54926.5, False);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, True);
-    checkMatchDate (tset, 54959.0, True);
-  }
-  {
-    TableExprNodeSetElem tset(end, False);
-    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDate);
-    AlwaysAssertExit (!tset.isDiscrete());
-    AlwaysAssertExit (!tset.isSingle());
-    checkMatchDate (tset, 54926.0, True);
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, False);
-    checkMatchDate (tset, 54959.0, False);
-  }
-}
-
 void doSetBool()
 {
   TableExprNodeSetElem elem((TableExprNode(True)));
@@ -772,8 +56,8 @@ void doSetBool()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 2);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasBool (0, True));
-  AlwaysAssertExit (!set.hasBool (0, False));
+  AlwaysAssertExit (set.contains (0, True));
+  AlwaysAssertExit (!set.contains (0, False));
 }
 
 void doSetInt()
@@ -786,8 +70,8 @@ void doSetInt()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 1);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasInt (0, 1));
-  AlwaysAssertExit (!set.hasInt (0, 2));
+  AlwaysAssertExit (set.contains (0, 1));
+  AlwaysAssertExit (!set.contains (0, 2));
   TableExprNode st(3);
   TableExprNode end(10);
   TableExprNode incr(3);
@@ -797,20 +81,20 @@ void doSetInt()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 2);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasInt (0, 1));
-  AlwaysAssertExit (!set.hasInt (0, 2));
-  AlwaysAssertExit (set.hasInt (0, 3));
-  AlwaysAssertExit (!set.hasInt (0, 4));
+  AlwaysAssertExit (set.contains (0, 1));
+  AlwaysAssertExit (!set.contains (0, 2));
+  AlwaysAssertExit (set.contains (0, 3));
+  AlwaysAssertExit (!set.contains (0, 4));
   set.add (TableExprNodeSetElem(&st, 0, 0, True));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
   AlwaysAssertExit (set.size() == 3);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasInt (0, 1));
-  AlwaysAssertExit (!set.hasInt (0, 2));
-  AlwaysAssertExit (set.hasInt (0, 3));
-  AlwaysAssertExit (set.hasInt (0, 4));
+  AlwaysAssertExit (set.contains (0, 1));
+  AlwaysAssertExit (!set.contains (0, 2));
+  AlwaysAssertExit (set.contains (0, 3));
+  AlwaysAssertExit (set.contains (0, 4));
 }
 
 void doSetDouble()
@@ -823,8 +107,8 @@ void doSetDouble()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 1);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDouble (0, 1));
-  AlwaysAssertExit (!set.hasDouble (0, 2));
+  AlwaysAssertExit (set.contains (0, 1.));
+  AlwaysAssertExit (!set.contains (0, 2.));
   TableExprNode st(3.);
   TableExprNode end(10);
   TableExprNode incr(3);
@@ -834,35 +118,55 @@ void doSetDouble()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 2);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDouble (0, 1));
-  AlwaysAssertExit (!set.hasDouble (0, 2));
-  AlwaysAssertExit (set.hasDouble (0, 3));
-  AlwaysAssertExit (!set.hasDouble (0, 4));
+  AlwaysAssertExit (set.contains (0, 1.));
+  AlwaysAssertExit (!set.contains (0, 2.));
+  AlwaysAssertExit (set.contains (0, 3.));
+  AlwaysAssertExit (!set.contains (0, 4.));
   set.add (TableExprNodeSetElem(&st, 0, 0, True));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
   AlwaysAssertExit (set.size() == 3);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDouble (0, 1));
-  AlwaysAssertExit (!set.hasDouble (0, 2));
-  AlwaysAssertExit (set.hasDouble (0, 3));
-  AlwaysAssertExit (set.hasDouble (0, 4));
+  AlwaysAssertExit (set.contains (0, 1.));
+  AlwaysAssertExit (!set.contains (0, 2.));
+  AlwaysAssertExit (set.contains (0, 3.));
+  AlwaysAssertExit (set.contains (0, 4.));
 }
 
 void doSetDComplex()
 {
-  TableExprNodeSetElem elem((TableExprNode(DComplex(1,2))));
-  TableExprNodeSet set;
-  set.add (elem);
-  set.add (elem);
-  AlwaysAssertExit (set.isSingle());
-  AlwaysAssertExit (set.isDiscrete());
-  AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
-  AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDComplex (0, DComplex(1,2)));
-  AlwaysAssertExit (!set.hasDComplex (0, DComplex(1,3)));
+  {
+    // Test using a scalar as a single element.
+    TableExprNodeSetElem elem((TableExprNode(DComplex(1,2))));
+    TableExprNodeSet set;
+    set.add (elem);
+    set.add (elem);
+    AlwaysAssertExit (set.isSingle());
+    AlwaysAssertExit (set.isDiscrete());
+    AlwaysAssertExit (set.isBounded());
+    AlwaysAssertExit (set.size() == 2);
+    AlwaysAssertExit (!set.hasArrays());
+    AlwaysAssertExit (set.contains (0, DComplex(1,2)));
+    AlwaysAssertExit (!set.contains (0, DComplex(1,3)));
+  }
+  {
+    // Test using an array as a single element.
+    // This can only be done by converting the set to an array.
+    Vector<DComplex> vec({DComplex(1,2), DComplex(3,4)});
+    TableExprNodeSetElem elem(vec);
+    TableExprNodeSet set;
+    set.add (elem);
+    set.add (TableExprNodeSetElem (TableExprNode(DComplex(1,4))));
+    AlwaysAssertExit (set.isDiscrete());
+    AlwaysAssertExit (set.isBounded());
+    AlwaysAssertExit (set.size() == 2);
+    AlwaysAssertExit (set.hasArrays());
+    AlwaysAssertExit (set.contains (0, DComplex(1,2)));
+    AlwaysAssertExit (!set.contains (0, DComplex(1,3)));
+    AlwaysAssertExit (set.contains (0, DComplex(3,4)));
+    AlwaysAssertExit (set.contains (0, DComplex(1,4)));
+  }
 }
 
 void doSetString()
@@ -875,8 +179,8 @@ void doSetString()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 1);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasString (0, "ger"));
-  AlwaysAssertExit (!set.hasString (0, "Ger"));
+  AlwaysAssertExit (set.contains (0, "ger"));
+  AlwaysAssertExit (!set.contains (0, "Ger"));
   TableExprNode st("ger1");
   TableExprNode end("ger9");
   set.add (TableExprNodeSetElem(True, st, end, True));
@@ -885,25 +189,25 @@ void doSetString()
   AlwaysAssertExit (!set.isBounded());
   AlwaysAssertExit (set.size() == 2);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasString (0, "ger"));
-  AlwaysAssertExit (!set.hasString (0, "Ger"));
-  AlwaysAssertExit (set.hasString (0, "ger1"));
-  AlwaysAssertExit (!set.hasString (0, "ger99"));
+  AlwaysAssertExit (set.contains (0, "ger"));
+  AlwaysAssertExit (!set.contains (0, "Ger"));
+  AlwaysAssertExit (set.contains (0, "ger1"));
+  AlwaysAssertExit (!set.contains (0, "ger99"));
   set.add (TableExprNodeSetElem(True, st));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (!set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
   AlwaysAssertExit (set.size() == 3);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasString (0, "ger"));
-  AlwaysAssertExit (!set.hasString (0, "Ger"));
-  AlwaysAssertExit (set.hasString (0, "ger1"));
-  AlwaysAssertExit (set.hasString (0, "ger99"));
+  AlwaysAssertExit (set.contains (0, "ger"));
+  AlwaysAssertExit (!set.contains (0, "Ger"));
+  AlwaysAssertExit (set.contains (0, "ger1"));
+  AlwaysAssertExit (set.contains (0, "ger99"));
 }
 
 void doSetDate()
 {
-  TableExprNodeSetElem elem((TableExprNode(1.)));
+  TableExprNodeSetElem elem(datetime("5Apr09/12:"));     // MJD 54926.5
   TableExprNodeSet set;
   set.add (elem);
   AlwaysAssertExit (set.isSingle());
@@ -911,10 +215,10 @@ void doSetDate()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 1);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDouble (0, 1));
-  AlwaysAssertExit (!set.hasDouble (0, 2));
-  TableExprNode st(3.);
-  TableExprNode end(10);
+  AlwaysAssertExit (set.contains (0, 54926.5));
+  AlwaysAssertExit (!set.contains (0, 2.));
+  TableExprNode st(datetime("5Apr09/12:"));    // MJD 54926.5
+  TableExprNode end(datetime("7May09/12:"));   // MJD 54958.5
   TableExprNode incr(3);
   set.add (TableExprNodeSetElem(&st, &end, &incr, True));
   AlwaysAssertExit (!set.isSingle());
@@ -922,20 +226,20 @@ void doSetDate()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 2);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDouble (0, 1));
-  AlwaysAssertExit (!set.hasDouble (0, 2));
-  AlwaysAssertExit (set.hasDouble (0, 3));
-  AlwaysAssertExit (!set.hasDouble (0, 4));
+  AlwaysAssertExit (set.contains (0, 54926.5));
+  AlwaysAssertExit (!set.contains (0, 54927.5));
+  AlwaysAssertExit (set.contains (0, 54929.5));
+  AlwaysAssertExit (!set.contains (0, 54957.5));
   set.add (TableExprNodeSetElem(&st, 0, 0, True));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
   AlwaysAssertExit (set.size() == 3);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasDouble (0, 1));
-  AlwaysAssertExit (!set.hasDouble (0, 2));
-  AlwaysAssertExit (set.hasDouble (0, 3));
-  AlwaysAssertExit (set.hasDouble (0, 4));
+  AlwaysAssertExit (set.contains (0, 54926.5));
+  AlwaysAssertExit (set.contains (0, 54927.5));
+  AlwaysAssertExit (set.contains (0, 54929.5));
+  AlwaysAssertExit (set.contains (0, 54957.5));
 }
 
 void doIPosition()
@@ -947,10 +251,10 @@ void doIPosition()
   AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTInt);
   AlwaysAssertExit (set.size() == 3);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.hasInt (0, 4));
-  AlwaysAssertExit (set.hasInt (0, 5));
-  AlwaysAssertExit (set.hasInt (0, 6));
-  AlwaysAssertExit (!set.hasInt (0, 3));
+  AlwaysAssertExit (set.contains (0, 4));
+  AlwaysAssertExit (set.contains (0, 5));
+  AlwaysAssertExit (set.contains (0, 6));
+  AlwaysAssertExit (!set.contains (0, 3));
   // Form an index node.
   TableExprNodeIndex inx(set);
   AlwaysAssertExit (inx.isSingle());
@@ -969,12 +273,12 @@ void doSlicer()
     AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTInt);
     AlwaysAssertExit (set.size() == 2);
     AlwaysAssertExit (!set.hasArrays());
-    AlwaysAssertExit (set[0].start()->getInt(0) == 1);
-    AlwaysAssertExit (set[0].end()->getInt(0) == 10);
-    AlwaysAssertExit (set[0].increment()->getInt(0) == 2);
-    AlwaysAssertExit (set[1].start()->getInt(0) == 2);
-    AlwaysAssertExit (set[1].end()->getInt(0) == 12);
-    AlwaysAssertExit (set[1].increment()->getInt(0) == 3);
+    AlwaysAssertExit (set[0]->start()->getInt(0) == 1);
+    AlwaysAssertExit (set[0]->end()->getInt(0) == 10);
+    AlwaysAssertExit (set[0]->increment()->getInt(0) == 2);
+    AlwaysAssertExit (set[1]->start()->getInt(0) == 2);
+    AlwaysAssertExit (set[1]->end()->getInt(0) == 12);
+    AlwaysAssertExit (set[1]->increment()->getInt(0) == 3);
     // Form an index node.
     TableExprNodeIndex inx(set);
     AlwaysAssertExit (!inx.isSingle());
@@ -994,13 +298,12 @@ void doSlicer()
     AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTInt);
     AlwaysAssertExit (set.size() == 2);
     AlwaysAssertExit (!set.hasArrays());
-    AlwaysAssertExit (set[0].start() == 0);
-    cout << set[0].end()->getInt(0) << endl;
-    AlwaysAssertExit (set[0].end()->getInt(0) == 10);
-    AlwaysAssertExit (set[0].increment()->getInt(0) == 1);
-    AlwaysAssertExit (set[1].start()->getInt(0) == 2);
-    AlwaysAssertExit (set[1].end() == 0);
-    AlwaysAssertExit (set[1].increment()->getInt(0) == 1);
+    AlwaysAssertExit (! set[0]->start());
+    AlwaysAssertExit (set[0]->end()->getInt(0) == 10);
+    AlwaysAssertExit (set[0]->increment()->getInt(0) == 1);
+    AlwaysAssertExit (set[1]->start()->getInt(0) == 2);
+    AlwaysAssertExit (! set[1]->end());
+    AlwaysAssertExit (set[1]->increment()->getInt(0) == 1);
   }
 }
 
@@ -1015,22 +318,55 @@ void doEmpty()
   AlwaysAssertExit (!set.hasArrays());
 }
 
+#define tryError(CMD) \
+  { \
+    Bool ok = True;                            \
+    try { \
+      CMD; \
+      ok = False; \
+    } catch (const std::exception& x) { \
+      cout << "Expected: " << x.what() << endl; \
+    } \
+    AlwaysAssertExit (ok); \
+  }
+
+void doErrors()
+{
+  TableExprNode intNode(1);
+  TableExprNode dblNode(1.);
+  dblNode.useUnit ("m");
+  TableExprNode db2Node(1.);
+  db2Node.useUnit ("Hz");
+  TableExprNode strNode("a");
+  TableExprNodeSetElem intElem(intNode);
+  TableExprNodeSetElem rangeElem(nullptr, &intNode, nullptr);
+  TableExprNodeSetElem dblElem(dblNode);
+  TableExprNodeSetElem db2Elem(db2Node);
+  TableExprNodeSetElem strElem(strNode);
+  TableExprNodeSet set;
+  set.add (intElem, True);
+  set.add (dblElem, True);
+  tryError (intNode.in (set));          // mismatching data types
+  TableExprNode setarr(set.setOrArray());
+  AlwaysAssertExit (setarr.getRep()->valueType() == TableExprNodeRep::VTArray);
+  intNode.in (setarr);
+  tryError (set.add (strElem, True));   // data type cannot be coerced
+  {
+    TableExprNodeSet set2(set);
+    set2.add (db2Elem, True);
+    TableExprNode setarr2(set2.setOrArray());
+    AlwaysAssertExit (setarr2.getRep()->valueType() == TableExprNodeRep::VTSet);
+  }
+  {
+    TableExprNodeSet set2(set);
+    set2.add (rangeElem, True);
+    tryError (set2.setOrArray());       // no start in rangeElem
+  }
+}
 
 int main()
 {
   try {
-    doDiscreteBool();
-    doDiscreteInt();
-    doDiscreteDouble();
-    doDiscreteDComplex();
-    doDiscreteString();
-    doDiscreteDate();
-    doIntervalBool();
-    doIntervalInt();
-    doIntervalDouble();
-    doIntervalDComplex();
-    doIntervalString();
-    doIntervalDate();
     doSetBool();
     doSetInt();
     doSetDouble();
@@ -1040,6 +376,7 @@ int main()
     doIPosition();
     doSlicer();
     doEmpty();
+    doErrors();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;

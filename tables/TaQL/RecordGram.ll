@@ -155,6 +155,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 
  /* operators */
+"<:>"     { recordGramPosition() += yyleng; return MIDWIDTH; }
 "<:<"     { recordGramPosition() += yyleng; return OPENOPEN; }
 "<:="     { recordGramPosition() += yyleng; return OPENCLOSED; }
 "=:<"     { recordGramPosition() += yyleng; return CLOSEDOPEN; }

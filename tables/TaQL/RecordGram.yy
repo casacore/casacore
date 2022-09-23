@@ -56,6 +56,7 @@ TableExprNodeSet* settp;
 %token IN
 %token INCONE
 %token BETWEEN
+%token AROUND
 %token LIKE
 %token LPAREN
 %token RPAREN
@@ -65,6 +66,7 @@ TableExprNodeSet* settp;
 %token LBRACE
 %token RBRACE
 %token COLON
+%token MIDWIDTH
 %token OPENOPEN
 %token OPENCLOSED
 %token CLOSEDOPEN
@@ -249,6 +251,25 @@ relexpr:   arithexpr
          | arithexpr NOT BETWEEN arithexpr AND arithexpr {
  	       TableExprNodeSet set;
 	       set.add (TableExprNodeSetElem(True, *$4, *$6, True));
+               TableExprNode node ($1->in (set));
+               $$ = new TableExprNode (!node);
+               RecordGram::addToken ($$);
+               RecordGram::deleteToken ($1);
+               RecordGram::deleteToken ($4);
+	       RecordGram::deleteToken ($6);
+           }
+         | arithexpr AROUND arithexpr IN arithexpr {
+ 	       TableExprNodeSet set;
+	       set.add (TableExprNodeSetElem(*$3, *$5));
+               $$ = new TableExprNode ($1->in (set));
+               RecordGram::addToken ($$);
+               RecordGram::deleteToken ($1);
+               RecordGram::deleteToken ($3);
+	       RecordGram::deleteToken ($5);
+           }
+         | arithexpr NOT AROUND arithexpr IN arithexpr {
+ 	       TableExprNodeSet set;
+	       set.add (TableExprNodeSetElem(*$4, *$6));
                TableExprNode node ($1->in (set));
                $$ = new TableExprNode (!node);
                RecordGram::addToken ($$);
@@ -474,25 +495,25 @@ range:     colonrange {
                $$ = $1;
            }
          | LT arithexpr COMMA arithexpr GT {
-               $$ = new TableExprNodeSetElem (False, *$2, *$4, False);
+           $$ = new TableExprNodeSetElem (False, *$2, *$4, False);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LT arithexpr COMMA arithexpr RBRACE {
-               $$ = new TableExprNodeSetElem (False, *$2, *$4, True);
+           $$ = new TableExprNodeSetElem (False, *$2, *$4, True);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LBRACE arithexpr COMMA arithexpr GT {
-               $$ = new TableExprNodeSetElem (True, *$2, *$4, False);
+           $$ = new TableExprNodeSetElem (True, *$2, *$4, False);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LBRACE arithexpr COMMA arithexpr RBRACE {
-               $$ = new TableExprNodeSetElem (True, *$2, *$4, True);
+           $$ = new TableExprNodeSetElem (True, *$2, *$4, True);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
@@ -537,26 +558,32 @@ range:     colonrange {
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
+         | arithexpr MIDWIDTH arithexpr {
+           $$ = new TableExprNodeSetElem (*$1, *$3);
+               RecordGram::addToken ($$);
+	       RecordGram::deleteToken ($1);
+	       RecordGram::deleteToken ($3);
+           }
          | arithexpr OPENOPEN arithexpr {
-               $$ = new TableExprNodeSetElem (False, *$1, *$3, False);
+           $$ = new TableExprNodeSetElem (False, *$1, *$3, False);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr OPENCLOSED arithexpr {
-               $$ = new TableExprNodeSetElem (False, *$1, *$3, True);
+           $$ = new TableExprNodeSetElem (False, *$1, *$3, True);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr CLOSEDOPEN arithexpr {
-               $$ = new TableExprNodeSetElem (True, *$1, *$3, False);
+           $$ = new TableExprNodeSetElem (True, *$1, *$3, False);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr CLOSEDCLOSED arithexpr {
-               $$ = new TableExprNodeSetElem (True, *$1, *$3, True);
+           $$ = new TableExprNodeSetElem (True, *$1, *$3, True);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
