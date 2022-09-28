@@ -220,7 +220,7 @@ endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
 # Since 2020, we need GCC 4.9 for regex support
 # Additionally we need cmake 2.8.10 for CMAKE_CXX_COMPILER_VERSION
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
-    message(FATAL_ERROR "Casacore requires at least gcc-4.9. You have ${CMAKE_CXX_COMPILER_VERSION}")
+    message(FATAL_ERROR "Casacore requires at least gcc-4.9")
 endif()
 
 # FindHDF5 uses environment variables, so set it if needed.
