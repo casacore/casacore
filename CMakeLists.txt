@@ -220,7 +220,7 @@ endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
 # Since 2020, we need GCC 4.9 for regex support
 # Additionally we need cmake 2.8.10 for CMAKE_CXX_COMPILER_VERSION
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
-    message(FATAL_ERROR "Casacore requires at least gcc-4.9")
+    message(FATAL_ERROR "Casacore requires at least gcc-4.9. You have ${CMAKE_CXX_COMPILER_VERSION}")
 endif()
 
 # FindHDF5 uses environment variables, so set it if needed.
@@ -544,6 +544,9 @@ foreach (module ${_modules})
     endif (APPLE)
     set(PRIVATE_LIBS "${PRIVATE_LIBS} -lcasa_${module}")
 endforeach (module)
+if (APPLE)
+    set(PRIVATE_LIBS "${PRIVATE_LIBS} -framework Accelerate -lm -ldl")
+endif (APPLE)
 
 # Install pkg-config support file
 CONFIGURE_FILE("casacore.pc.in" "casacore.pc" @ONLY)
