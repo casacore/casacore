@@ -544,9 +544,12 @@ foreach (module ${_modules})
     endif (APPLE)
     set(PRIVATE_LIBS "${PRIVATE_LIBS} -lcasa_${module}")
 endforeach (module)
-if (APPLE)
-    set(PRIVATE_LIBS "${PRIVATE_LIBS} -framework Accelerate -lm -ldl")
-endif (APPLE)
+
+if (CASA_BUILD)
+    if (APPLE)
+        set(PRIVATE_LIBS "${PRIVATE_LIBS} -framework Accelerate -lm -ldl -Wl,-rpath,/opt/local/lib/libgcc/")
+    endif (APPLE)
+endif (CASA_BUILD)
 
 # Install pkg-config support file
 CONFIGURE_FILE("casacore.pc.in" "casacore.pc" @ONLY)
