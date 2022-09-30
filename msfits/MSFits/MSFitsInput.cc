@@ -2096,7 +2096,13 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         arrnam = btKeywords.asString("ARRNAM");
         arrnam.trim();
     }
-    if (arrnam == "VLA" && ! btKeywords.isDefined("FRAME")) {
+    if (
+        arrnam == "VLA" 
+        && (
+            ! btKeywords.isDefined("FRAME")
+            || norm(arrayXYZ) > 1e6
+        )
+    ) {
         _log << LogOrigin("MSFitsInput", __FUNCTION__) << LogIO::NORMAL
             << "This looks like an old VLA archive UVFITS file"
             << LogIO::POST;
@@ -2105,7 +2111,13 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         //  are from on-line system and are relative to this)
         MPosition vlaCenter;
         AlwaysAssert(MeasTable::Observatory(vlaCenter, "VLA"), AipsError);
-        if (allNearAbs(arrayXYZ, vlaCenter.getValue().getValue(), 10)) {
+        const auto diff = abs(arrayXYZ - vlaCenter.getValue().getValue());
+        const auto diff2 = sqrt(sum(diff*diff));
+        _log << LogIO::NORMAL << "UVFITS file telescope position is " << diff2
+            << " meters from CASA Observatories table VLA position" << LogIO::POST;
+        // give a pretty large tolerance (10km) for uvftis files VLA position
+        // to differ from CASA Observatories VLA position
+        if (diff2 <= 10000.0) {
             arrayXYZ = vlaCenter.getValue().getValue();
             // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
             Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
