@@ -14,15 +14,11 @@ ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
 # where do we epect casacore data build time and runtime
 ENV CASACORE_DATA /usr/share/casacore/data
 
-# which casacore version to use
-
-ENV CASACORE_VERSION 3.4.0
-
 # how many threads to use for compiling
 ENV THREADS 4
 
 # install rpms
-RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel
+RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel gsl-devel
 
 # download other source code
 WORKDIR /tmp
@@ -75,6 +71,8 @@ RUN cmake .. \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
+    -DPORTABLE=TRUE \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
+USER root
 RUN make install

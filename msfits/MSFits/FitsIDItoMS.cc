@@ -159,6 +159,7 @@ Bool FITSIDItoMS1::firstMain = True; // initialize the class variable firstMain
 Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSyscal
 Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWeather
 Bool FITSIDItoMS1::firstGainCurve = True; // initialize the class variable firstGainCurve
+Bool FITSIDItoMS1::firstPhaseCal = True; // initialize the class variable firstPhaseCal
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 std::map<Int,Int> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
@@ -197,6 +198,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int&
       firstSyscal = True;
       firstWeather = True;
       firstGainCurve = True;
+      firstPhaseCal = True;
       weather_hasWater_p = False;
       weather_hasElectron_p = False;
       antIdFromNo.clear();
@@ -1577,7 +1579,7 @@ void FITSIDItoMS1::getAxisInfo()
 void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM, 
 				       Bool mainTbl, Bool addCorrMod,
 				       Bool addSyscal, Bool addWeather,
-				       Bool addGainCurve) {
+				       Bool addGainCurve, Bool addPhaseCal) {
   
   Int nCorr = 0;
   Int nChan = 0;
@@ -1794,6 +1796,35 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     sensTqd.write(td);
     SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
     ms.rwKeywordSet().defineTable("GAIN_CURVE", Table(tableSetup));
+  }
+
+  if(addPhaseCal){
+    TableDesc td;
+    String name = "PHASE_CAL";
+
+    td.comment() = "Phase calibration table";
+    td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
+    td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
+    td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+    td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<Int>("NUM_TONES", "Number of phase-cal tones"));
+    td.addColumn(ArrayColumnDesc<Double>("TONE_FREQUENCY", "Phase-cal tone frequency"));
+    td.addColumn(ArrayColumnDesc<Complex>("PHASE_CAL", "Phase-cal measurement"));
+    td.addColumn(ScalarColumnDesc<Double>("CABLE_CAL", "Cable calibration measurement"));
+    TableMeasValueDesc measVal(td, "TIME");
+    TableMeasDesc<MEpoch> measCol(measVal);
+    measCol.write(td);
+    TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+    timeTqd.write(td);
+    TableQuantumDesc intervalTqd(td, "INTERVAL", Unit("s"));
+    intervalTqd.write(td);
+    TableQuantumDesc toneFreqTqd(td, "TONE_FREQUENCY", Unit("Hz"));
+    toneFreqTqd.write(td);
+    TableQuantumDesc cableCalTqd(td, "CABLE_CAL", Unit("s"));
+    cableCalTqd.write(td);
+    SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
+    ms.rwKeywordSet().defineTable("PHASE_CAL", Table(tableSetup));
   }
 
   // update the references to the subtable keywords
@@ -3719,12 +3750,160 @@ Bool FITSIDItoMS1::handleGainCurve()
 
 Bool FITSIDItoMS1::handlePhaseCal()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "handlePhaseCal");
-  // convert the PHASE-CAL table to a calibration table
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int nIF = 1;
+  Int nTones = 0;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "NO_BAND") {
+      nIF = fkw->asInt();
+    }
+    if (kwname == "NO_TONES") {
+      nTones = fkw->asInt();
+    }
+  }
+
+  TableDesc td;
+  String name = "PHASE_CAL";
+
+  td.comment() = "Phase calibration table";
+  td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
+  td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
+  td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+  td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<Int>("NUM_TONES", "Number of phase-cal tones"));
+  td.addColumn(ArrayColumnDesc<Double>("TONE_FREQUENCY", "Phase-cal tone frequency"));
+  td.addColumn(ArrayColumnDesc<Complex>("PHASE_CAL", "Phase-cal measurement"));
+  td.addColumn(ScalarColumnDesc<Double>("CABLE_CAL", "Cable calibration measurement"));
+  TableMeasValueDesc measVal(td, "TIME");
+  TableMeasDesc<MEpoch> measCol(measVal);
+  measCol.write(td);
+  TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+  timeTqd.write(td);
+  TableQuantumDesc intervalTqd(td, "INTERVAL", Unit("s"));
+  intervalTqd.write(td);
+  TableQuantumDesc toneFreqTqd(td, "TONE_FREQUENCY", Unit("Hz"));
+  toneFreqTqd.write(td);
+  TableQuantumDesc cableCalTqd(td, "CABLE_CAL", Unit("s"));
+  cableCalTqd.write(td);
+  SetupNewTable tableSetup(ms_p.tableName() + "/" + name, td, Table::New);
+  ms_p.rwKeywordSet().defineTable("PHASE_CAL", Table(tableSetup));
+
+  Int nVal=nrows();
+  Bool dualPol=False;
+  Bool PCisScalar=False;
+
+  Table pcTab = oldfullTable("");
+  ScalarColumn<Double> time(pcTab, "TIME");
+  ScalarColumn<Float> timeint(pcTab, "TIME_INTERVAL");
+  ScalarColumn<Int> anNo(pcTab, "ANTENNA_NO");
+  ScalarColumn<Int> array(pcTab, "ARRAY");
+  ScalarColumn<Int> fqid(pcTab, "FREQID");
+  ScalarColumn<Double> cable_cal(pcTab, "CABLE_CAL");
+  ArrayColumn<Double> pc_freq_1;
+  ArrayColumn<Float> pc_real_1;
+  ArrayColumn<Float> pc_imag_1;
+  ArrayColumn<Double> pc_freq_2;
+  ArrayColumn<Float> pc_real_2;
+  ArrayColumn<Float> pc_imag_2;
+  ScalarColumn<Double> pc_freq_1S;
+  ScalarColumn<Float> pc_real_1S;
+  ScalarColumn<Float> pc_imag_1S;
+  ScalarColumn<Double> pc_freq_2S;
+  ScalarColumn<Float> pc_real_2S;
+  ScalarColumn<Float> pc_imag_2S;
+  try{
+    pc_freq_1.attach(pcTab, "PC_FREQ_1");
+    pc_real_1.attach(pcTab, "PC_REAL_1");
+    pc_imag_1.attach(pcTab, "PC_IMAG_1");
+    if(pcTab.tableDesc().isColumn("PC_FREQ_2")) {
+      pc_freq_2.attach(pcTab, "PC_FREQ_2"); // this column is optional
+      pc_real_2.attach(pcTab, "PC_REAL_2"); // this column is optional
+      pc_imag_2.attach(pcTab, "PC_IMAG_2"); // this column is optional
+      dualPol=True;
+    }
+  }
+  catch(std::exception&){
+    pc_freq_1S.attach(pcTab, "PC_FREQ_1");
+    pc_real_1S.attach(pcTab, "PC_REAL_1");
+    pc_imag_1S.attach(pcTab, "PC_IMAG_1");
+    if(pcTab.tableDesc().isColumn("PC_FREQ_2")) {
+      pc_freq_2S.attach(pcTab, "PC_FREQ_2"); // this column is optional
+      pc_real_2S.attach(pcTab, "PC_REAL_2"); // this column is optional
+      pc_imag_2S.attach(pcTab, "PC_IMAG_2"); // this column is optional
+      dualPol=True;
+    }
+    PCisScalar=True;
+  }
+
+  Table mspc = ms_p.rwKeywordSet().asTable("PHASE_CAL");
+
+  Int outRow=-1;
+  for (Int inRow=0; inRow<nVal; inRow++) {
+    for (Int inIF=0; inIF<nIF; inIF++) {
+      mspc.addRow(); outRow++;
+
+      ScalarColumn<Int> antennaIdCol(mspc, "ANTENNA_ID");
+      ScalarColumn<Int> feedIdCol(mspc, "FEED_ID");
+      ScalarColumn<Int> spwIdCol(mspc, "SPECTRAL_WINDOW_ID");
+      ScalarColumn<Double> timeCol(mspc, "TIME");
+      ScalarColumn<Double> intervalCol(mspc, "INTERVAL");
+      ScalarColumn<Int> ntonesCol(mspc, "NUM_TONES");
+      ArrayColumn<Double> freqCol(mspc, "TONE_FREQUENCY");
+      ArrayColumn<Complex> phaseCalCol(mspc, "PHASE_CAL");
+      ScalarColumn<Double> cableCalCol(mspc, "CABLE_CAL");
+
+      if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
+	antennaIdCol.put(outRow, antIdFromNo[anNo(inRow)]);
+      } else {
+    	*itsLog << LogIO::SEVERE << "Internal error: no mapping for ANTENNA_NO "
+		<< anNo(inRow) << LogIO::EXCEPTION;
+      }
+      feedIdCol.put(outRow,-1);
+      spwIdCol.put(outRow,inIF);
+      timeCol.put(outRow, time(inRow)*C::day + rdate);
+      intervalCol.put(outRow, timeint(inRow)*C::day);
+      ntonesCol.put(outRow, nTones);
+      Matrix<Double> freq(dualPol ? 2 : 1, nTones);
+      if (PCisScalar) {
+	freq.row(0)=pc_freq_1S(inRow);
+	if (dualPol)
+	  freq.row(1)=pc_freq_2S(inRow);
+      } else {
+	freq.row(0)=pc_freq_1(inRow)(Slice(inIF * nTones, nTones));
+	if (dualPol)
+	  freq.row(1)=pc_freq_2(inRow)(Slice(inIF * nTones, nTones));
+      }
+      freqCol.put(outRow, freq);
+      Matrix<Complex> phase_cal(dualPol ? 2 : 1, nTones);
+      if (PCisScalar) {
+	phase_cal.row(0)=Complex(pc_real_1S(inRow), pc_imag_1S(inRow));
+	if (dualPol)
+	  phase_cal.row(1)=Complex(pc_real_2S(inRow), pc_imag_2S(inRow));
+      } else {
+	for (Int i=0; i<nTones; i++) {
+	  IPosition thisTone=IPosition(1,inIF*nTones+i);
+	  phase_cal(0,i)=Complex(pc_real_1(inRow)(thisTone),
+				 pc_imag_1(inRow)(thisTone));
+	  if (dualPol)
+	    phase_cal(1,i)=Complex(pc_real_2(inRow)(thisTone),
+				   pc_imag_2(inRow)(thisTone));
+	}
+      }
+      phaseCalCol.put(outRow, phase_cal);
+      cableCalCol.put(outRow, cable_cal(inRow));
+    }
+  }
+
+  ms_p.rwKeywordSet().asTable("PHASE_CAL").flush();
+
+  return True;
 }
 
 Bool FITSIDItoMS1::handleModelComps()
@@ -3852,6 +4031,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     Bool addSyscal=False;
     Bool addWeather=False;
     Bool addGainCurve=False;
+    Bool addPhaseCal=False;
 
     if (firstSyscal && extname == "SYSTEM_TEMPERATURE") {
       addSyscal=True;
@@ -3868,8 +4048,13 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
       firstGainCurve=False;
     }
 
+    if (firstPhaseCal && extname == "PHASE-CAL") {
+      addPhaseCal=True;
+      firstPhaseCal=False;
+    }
+
     setupMeasurementSet(msFile, useTSM, mainTbl, addCorrMode, addSyscal,
-			addWeather, addGainCurve);
+			addWeather, addGainCurve, addPhaseCal);
     
     Bool success = True; // for the optional tables, we have a return value permitting us
                          // to skip them if they cannot be read

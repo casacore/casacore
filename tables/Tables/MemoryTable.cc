@@ -74,7 +74,7 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
 				 0, this);
   colSetPtr_p->linkToLockObject (lockPtr_p);
   //# Initialize the data managers.
-  Table tab(this, False);
+  Table tab(this);
   nrrowToAdd_p = nrrow;
   colSetPtr_p->initDataManagers (nrrow, False,
                                  TSMOption(TSMOption::Cache,0,0), tab);
@@ -245,7 +245,7 @@ void MemoryTable::removeRow (rownr_t rownr)
 
 void MemoryTable::addColumn (const ColumnDesc& columnDesc, Bool)
 {
-  Table tab(this, False);
+  Table tab(this);
   ColumnDesc cold(columnDesc);
   // Make sure the MemoryStMan is used.
   cold.dataManagerType() = "MemoryStMan";
@@ -256,7 +256,7 @@ void MemoryTable::addColumn (const ColumnDesc& columnDesc, Bool)
 void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 			     const String& dataManager, Bool byName, Bool)
 {
-  Table tab(this, False);
+  Table tab(this);
   if (byName) {
     colSetPtr_p->addColumn (columnDesc, dataManager, byName, False,
                             TSMOption(TSMOption::Cache,0,0), tab);
@@ -271,7 +271,7 @@ void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 			     const DataManager& dataManager, Bool)
 {
-  Table tab(this, False);
+  Table tab(this);   // a temporary Table object
   // Make sure the MemoryStMan is used if no virtual engine is used.
   if (dataManager.isStorageManager()) {
     addColumn (columnDesc, False);
@@ -283,7 +283,7 @@ void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 void MemoryTable::addColumn (const TableDesc& tableDesc,
 			     const DataManager& dataManager, Bool)
 {
-  Table tab(this, False);
+  Table tab(this);
   // Make sure the MemoryStMan is used if no virtual engine is used.
   if (dataManager.isStorageManager()) {
     MemoryStMan stman(dataManager.dataManagerName());
