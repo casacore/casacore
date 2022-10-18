@@ -129,7 +129,9 @@ public:
   // software correlator used by the EVN).
   //
 
-  FITSIDItoMS1(FitsInput& in, const String& correlat, const Int& obsType=0, const Bool& initFirstMain=True);
+  FITSIDItoMS1(FitsInput& in, const String& correlat,
+	       const Int& obsType=0, const Bool& initFirstMain=True,
+	       const Float& vanVleck=0.0);
 
   ~FITSIDItoMS1();
   
@@ -300,6 +302,7 @@ protected:
   Double lastTime_p;
   Int itsObsType;
   String itsCorrelat;
+  Float itsVanVleck;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static Bool firstMain;

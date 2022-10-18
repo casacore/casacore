@@ -169,7 +169,9 @@ Vector<Double> FITSIDItoMS1::effChBw;
 //	
 // Constructor
 //	
-FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int& obsType, const Bool& initFirstMain)
+FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
+			   const Int& obsType, const Bool& initFirstMain,
+			   const Float& vanVleck)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
@@ -179,6 +181,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int&
     ///infile_p(fitsin),
     itsObsType(obsType),
     itsCorrelat(correlat),
+    itsVanVleck(vanVleck),
     msc_p(0)
 {
 
@@ -2247,6 +2250,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  Rm = 1.0 / (A * H);
 	  alfa = 1.0;
 	  gamma = 1.0;
+	}
+
+	if (itsVanVleck != 0.0) {
+	  alfa = 1.0;
+	  rho = NULL;
 	}
 
 	bfactc = (gamma*gamma) / (A * Rm * alfa * H);
