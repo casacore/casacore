@@ -2096,6 +2096,16 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         arrnam = btKeywords.asString("ARRNAM");
         arrnam.trim();
     }
+    // For old VLA archive files, antenna positions are stored in a non-standard
+    // frame and so must be rotated. This is necessary for CASA VLA users, see
+    // eg CAS-11726
+    // The file is an old VLA archive file if either the FRAME keyword is not
+    // present, or if the array position is approximately the VLA location 
+    // (a smaller magnitude position vector indicates a third part db should
+    // be used for the array position, such as the Observatories table).
+    // Usually if it is not the VLA position it will be 0, but we allow
+    // some slop here by only considering position vectors with magnitudes
+    // in excess of 1000km of indicating an old VLA archive file
     if (
         arrnam == "VLA" 
         && (
@@ -2118,6 +2128,9 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         // give a pretty large tolerance (10km) for uvftis files VLA position
         // to differ from CASA Observatories VLA position
         if (diff2 <= 10000.0) {
+            // if the difference between the magnitudes of the array positions
+            // is less than or equal to 10km, we can be certain the file
+            // is an old VLA archive file.
             arrayXYZ = vlaCenter.getValue().getValue();
             // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
             Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
