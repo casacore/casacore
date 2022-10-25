@@ -166,8 +166,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the start or end value of a Double or DateTime interval.
     // <group>
-    Double getStart (const TableExprId& id) const;
-    Double getEnd (const TableExprId& id) const;
+    void getStart (const TableExprId& id, Double&) const;
+    void getEnd (const TableExprId& id, Double& ) const;
+    // </group>
+
+    // Get the start or end value of a String interval.
+    // <group>
+    void getStart (const TableExprId& id, String&) const;
+    void getEnd (const TableExprId& id, String&) const;
     // </group>
 
   protected:

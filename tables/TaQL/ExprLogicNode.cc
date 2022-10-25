@@ -305,7 +305,7 @@ void TableExprNodeINInt::doOptimize (TENShPtr& rnode)
       arr.reference (values.flatten());
     }
     // Use an unordered_set for fast lookup.
-    rnode.reset (new TableExprNodeSetOptIntUSet (*rnode, arr));
+    rnode.reset (new TableExprNodeSetOptUSet<Int64> (*rnode, arr));
   }
 }
 Bool TableExprNodeINInt::getBool (const TableExprId& id)
@@ -373,7 +373,7 @@ void TableExprNodeINString::doOptimize (TENShPtr& rnode)
         // Remove masked elements.
         arr.reference (values.flatten());
       }
-      rnode.reset (new TableExprNodeSetOptStringUSet (*rnode, arr));
+      rnode.reset (new TableExprNodeSetOptUSet<String> (*rnode, arr));
     }
   }
 }

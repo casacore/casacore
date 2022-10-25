@@ -48,35 +48,37 @@ void doDoubleContSet()
     TableExprNodeSetOptContSetCC<Double> set (TableExprNodeSet(), st, end);
     set.show(cout, 2);
     AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (set.contains (id, 1));
+    AlwaysAssertExit (set.contains (id, 1.));
     AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (set.contains (id, 2));
+    AlwaysAssertExit (set.contains (id, 2.));
     AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (set.contains (id, 13));
+    AlwaysAssertExit (set.contains (id, 13.));
     AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (set.contains (id, 14));
+    AlwaysAssertExit (set.contains (id, 14.));
     AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (set.contains (id, 21));
+    AlwaysAssertExit (set.contains (id, 21.));
     AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (set.contains (id, 22));
+    AlwaysAssertExit (set.contains (id, 22.));
     AlwaysAssertExit (! set.contains (id, 22.5));
+    AlwaysAssertExit (set.find(22.5) == -1);
+    AlwaysAssertExit (set.find(13.5) == 6);
   }
   {
     // Test open-closed intervals
     TableExprNodeSetOptContSetOC<Double> set (TableExprNodeSet(), st, end);
     set.show(cout, 2);
     AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (! set.contains (id, 1));
+    AlwaysAssertExit (! set.contains (id, 1.));
     AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (set.contains (id, 2));
+    AlwaysAssertExit (set.contains (id, 2.));
     AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (! set.contains (id, 13));
+    AlwaysAssertExit (! set.contains (id, 13.));
     AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (set.contains (id, 14));
+    AlwaysAssertExit (set.contains (id, 14.));
     AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (! set.contains (id, 21));
+    AlwaysAssertExit (! set.contains (id, 21.));
     AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (set.contains (id, 22));
+    AlwaysAssertExit (set.contains (id, 22.));
     AlwaysAssertExit (! set.contains (id, 22.5));
   }
   {
@@ -84,17 +86,17 @@ void doDoubleContSet()
     TableExprNodeSetOptContSetCO<Double> set (TableExprNodeSet(), st, end);
     set.show(cout, 2);
     AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (set.contains (id, 1));
+    AlwaysAssertExit (set.contains (id, 1.));
     AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (! set.contains (id, 2));
+    AlwaysAssertExit (! set.contains (id, 2.));
     AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (set.contains (id, 13));
+    AlwaysAssertExit (set.contains (id, 13.));
     AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (! set.contains (id, 14));
+    AlwaysAssertExit (! set.contains (id, 14.));
     AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (set.contains (id, 21));
+    AlwaysAssertExit (set.contains (id, 21.));
     AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (! set.contains (id, 22));
+    AlwaysAssertExit (! set.contains (id, 22.));
     AlwaysAssertExit (! set.contains (id, 22.5));
   }
   {
@@ -102,17 +104,17 @@ void doDoubleContSet()
     TableExprNodeSetOptContSetOO<Double> set (TableExprNodeSet(), st, end);
     set.show(cout, 2);
     AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (! set.contains (id, 1));
+    AlwaysAssertExit (! set.contains (id, 1.));
     AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (! set.contains (id, 2));
+    AlwaysAssertExit (! set.contains (id, 2.));
     AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (! set.contains (id, 13));
+    AlwaysAssertExit (! set.contains (id, 13.));
     AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (! set.contains (id, 14));
+    AlwaysAssertExit (! set.contains (id, 14.));
     AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (! set.contains (id, 21));
+    AlwaysAssertExit (! set.contains (id, 21.));
     AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (! set.contains (id, 22));
+    AlwaysAssertExit (! set.contains (id, 22.));
     AlwaysAssertExit (! set.contains (id, 22.5));
   }
   {
@@ -122,22 +124,22 @@ void doDoubleContSet()
     TableExprNodeSetOptContSet<Double> set (TableExprNodeSet(), st, end, leftC, rightC);
     set.show(cout, 2);
     AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (! set.contains (id, 1));
+    AlwaysAssertExit (! set.contains (id, 1.));
     AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (! set.contains (id, 2));
+    AlwaysAssertExit (! set.contains (id, 2.));
     AlwaysAssertExit (! set.contains (id, 2.5));
     AlwaysAssertExit (! set.contains (id, 4.5));
-    AlwaysAssertExit (set.contains (id, 5));
+    AlwaysAssertExit (set.contains (id, 5.));
     AlwaysAssertExit (set.contains (id, 5.5));
-    AlwaysAssertExit (set.contains (id, 6));
+    AlwaysAssertExit (set.contains (id, 6.));
     AlwaysAssertExit (! set.contains (id, 6.5));
-    AlwaysAssertExit (! set.contains (id, 13));
+    AlwaysAssertExit (! set.contains (id, 13.));
     AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (set.contains (id, 14));
+    AlwaysAssertExit (set.contains (id, 14.));
     AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (set.contains (id, 21));
+    AlwaysAssertExit (set.contains (id, 21.));
     AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (! set.contains (id, 22));
+    AlwaysAssertExit (! set.contains (id, 22.));
     AlwaysAssertExit (! set.contains (id, 22.5));
     Vector<double> vec({0.5,1,1.5,2,2.5,4.5,5,5.5,6,6.5,13,13.5,14,14.5,21,21.5,22,22.5});
     Vector<bool> exp({false,false,true,false,false,false,true,true,true,
@@ -198,28 +200,33 @@ void doIntSet()
 {
   TableExprId id(0);
   Vector<Int64> vec({1,3,5,8,10});
-  TableExprNodeSetOptIntUSet set(TableExprNodeSet(), vec);
+  TableExprNodeSetOptUSet<Int64> set(TableExprNodeSet(), vec);
   set.show(cout, 2);
-  AlwaysAssertExit (set.contains (id, 1));
-  AlwaysAssertExit (set.contains (id, 3));
-  AlwaysAssertExit (set.contains (id, 5));
-  AlwaysAssertExit (set.contains (id, 8));
-  AlwaysAssertExit (! set.contains (id, 0));
-  AlwaysAssertExit (! set.contains (id, 2));
-  AlwaysAssertExit (! set.contains (id, 11));
+  AlwaysAssertExit (set.contains (id, Int64(1)));
+  AlwaysAssertExit (set.contains (id, Int64(3)));
+  AlwaysAssertExit (set.contains (id, Int64(5)));
+  AlwaysAssertExit (set.contains (id, Int64(8)));
+  AlwaysAssertExit (! set.contains (id, Int64(0)));
+  AlwaysAssertExit (! set.contains (id, Int64(2)));
+  AlwaysAssertExit (! set.contains (id, Int64(11)));
+  AlwaysAssertExit (set.find(Int64(1)) == 0);
+  AlwaysAssertExit (set.find(Int64(8)) == 3);
+  AlwaysAssertExit (set.find(Int64(9)) == -1);
 }
 
 void doStringSet()
 {
   TableExprId id(0);
   Vector<String> vec({"a", "b", "d"});
-  TableExprNodeSetOptStringUSet set(TableExprNodeSet(), vec);
+  TableExprNodeSetOptUSet<String> set(TableExprNodeSet(), vec);
   set.show(cout, 2);
   AlwaysAssertExit (set.contains (id, "a"));
   AlwaysAssertExit (set.contains (id, "b"));
   AlwaysAssertExit (set.contains (id, "d"));
   AlwaysAssertExit (! set.contains (id, "c"));
   AlwaysAssertExit (! set.contains (id, "aa"));
+  AlwaysAssertExit (set.find("d") == 2);
+  AlwaysAssertExit (set.find("e") == -1);
 }
 
 void doDoubleTransform()
@@ -247,6 +254,10 @@ void doDoubleTransform()
     set.add (TableExprNodeSetElem(True, st1+1, end2+1, False));
     set.add (TableExprNodeSetElem(False, st4, end4, False));
     set.add (TableExprNodeSetElem(False, st5, end5, True));
+    {
+      TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set, False);
+      trSet->show (cout, 0);
+    }
     TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set);
     trSet->show (cout, 0);
     TableExprId id(0);

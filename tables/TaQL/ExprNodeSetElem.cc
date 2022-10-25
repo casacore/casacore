@@ -202,22 +202,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return res;
   }
 
-  Double TableExprNodeSetElemBase::getStart (const TableExprId& id) const
+  void TableExprNodeSetElemBase::getStart (const TableExprId& id, Double& v) const
   {
     if (itsStart->dataType() == NTDate) {
-      return itsStart->getDate (id);   // gets converted to days
+      v = itsStart->getDate (id);   // gets converted to days
     } else {
-      return itsStart->getDouble (id);
+      v = itsStart->getDouble (id);
     }
   }
 
-  Double TableExprNodeSetElemBase::getEnd (const TableExprId& id) const
+  void TableExprNodeSetElemBase::getEnd (const TableExprId& id, Double& v) const
   {
     if (itsEnd->dataType() == NTDate) {
-      return itsEnd->getDate (id);   // gets converted to days
+      v = itsEnd->getDate (id);   // gets converted to days
     } else {
-      return itsEnd->getDouble (id);
+      v = itsEnd->getDouble (id);
     }
+  }
+
+  void TableExprNodeSetElemBase::getStart (const TableExprId& id, String& v) const
+  {
+    v = itsStart->getString (id);
+  }
+
+  void TableExprNodeSetElemBase::getEnd (const TableExprId& id, String& v) const
+  {
+    v = itsEnd->getString (id);
   }
 
 
@@ -928,13 +938,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TENSEBShPtr TableExprNodeSetElemMidWidth::evaluate
   (const TableExprId& id) const
   {
-    Double start, end;
-    Double width = getEnd(id);
+    Double start, end, mid, width;
+    getEnd(id, width);
     if (width == 0) {
       start = std::numeric_limits<Double>::lowest();
       end   = std::numeric_limits<Double>::max();
     } else {
-      Double mid = getStart(id);
+      getStart(id, mid);
       start = mid - width*0.5;
       end   = mid + width*0.5;
     }

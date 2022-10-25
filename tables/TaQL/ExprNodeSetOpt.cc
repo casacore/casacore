@@ -33,75 +33,103 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  TableExprNodeSetOptIntUSet::TableExprNodeSetOptIntUSet (const TableExprNodeRep& orig,
-                                                          const Array<Int64>& arr)
+  TableExprNodeSetOptBase::TableExprNodeSetOptBase
+  (const TableExprNodeRep& orig)
     : TableExprNodeRep (orig)
-  {
-    itsSet.clear();
-    itsSet.insert(arr.begin(), arr.end());
-  }
-  
-  void TableExprNodeSetOptIntUSet::show (ostream& os, uInt indent) const
-  {
-    TableExprNodeRep::show (os, indent);
-    os << "Int set as std::unordered_set<Int64>" << endl;
-  }
-  
-  Bool TableExprNodeSetOptIntUSet::contains (const TableExprId&, Int64 value)
-  {
-    return itsSet.find(value) != itsSet.end();
-  }
-
-  MArray<Bool> TableExprNodeSetOptIntUSet::contains (const TableExprId&,
-                                                     const MArray<Int64>& value)
+  {}
+  Bool TableExprNodeSetOptBase::contains (const TableExprId&, Int64 value)
+    { return (find(value) >= 0); }
+  Bool TableExprNodeSetOptBase::contains (const TableExprId&, Double value)
+    { return (find(value) >= 0); }
+  Bool TableExprNodeSetOptBase::contains (const TableExprId&, String value)
+    { return (find(value) >= 0); }
+  MArray<Bool> TableExprNodeSetOptBase::contains (const TableExprId&,
+                                                  const MArray<Int64>& value)
   {
     Array<Bool> result(value.shape());
     Bool deleteIn, deleteOut;
     const Int64* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     for (size_t i=0; i<value.size(); ++i) {
-      out[i] = (itsSet.find(in[i]) != itsSet.end());
+      out[i] = (find(in[i]) >= 0);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
   }
-
-
-  TableExprNodeSetOptStringUSet::TableExprNodeSetOptStringUSet (const TableExprNodeRep& orig,
-                                                                const Array<String>& arr)
-    : TableExprNodeRep (orig)
+  MArray<Bool> TableExprNodeSetOptBase::contains (const TableExprId&,
+                                                  const MArray<Double>& value)
   {
-    itsSet.clear();
-    itsSet.insert(arr.begin(), arr.end());
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const Double* in = value.array().getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    for (size_t i=0; i<value.size(); ++i) {
+      out[i] = (find(in[i]) >= 0);
+    }
+    value.array().freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return MArray<Bool> (result, value.mask());
   }
-  
-  void TableExprNodeSetOptStringUSet::show (ostream& os, uInt indent) const
-  {
-    TableExprNodeRep::show (os, indent);
-    os << "String set as std::unordered_set<String>" << endl;
-  }
-  
-  Bool TableExprNodeSetOptStringUSet::contains (const TableExprId&,
-                                                String value)
-  {
-    return itsSet.find(value) != itsSet.end();
-  }
-
-  MArray<Bool> TableExprNodeSetOptStringUSet::contains (const TableExprId&,
-                                                        const MArray<String>& value)
+  MArray<Bool> TableExprNodeSetOptBase::contains (const TableExprId&,
+                                                  const MArray<String>& value)
   {
     Array<Bool> result(value.shape());
     Bool deleteIn, deleteOut;
     const String* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     for (size_t i=0; i<value.size(); ++i) {
-      out[i] = (itsSet.find(in[i]) != itsSet.end());
+      out[i] = (find(in[i]) >= 0);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
   }
+  Int64 TableExprNodeSetOptBase::find (Int64) const
+    { return -1; }
+  Int64 TableExprNodeSetOptBase::find (Double) const
+    { return -1; }
+  Int64 TableExprNodeSetOptBase::find (String) const
+    { return -1; }
+
+
+
+  template<typename T>
+  TableExprNodeSetOptUSet<T>::TableExprNodeSetOptUSet (const TableExprNodeRep& orig,
+                                                       const Array<T>& arr)
+    : TableExprNodeSetOptBase (orig)
+  {
+    itsMap.clear();
+    auto iter = arr.begin();
+    for (size_t i=0; i<arr.size(); ++i) {
+      itsMap.insert (std::make_pair (*iter, i));
+      ++iter;
+    }
+  }
+  
+  template<typename T>
+  void TableExprNodeSetOptUSet<T>::show (ostream& os, uInt indent) const
+  {
+    TableExprNodeRep::show (os, indent);
+    os << "Int set as std::unordered_map<T>" << endl;
+  }
+  
+  template<typename T>
+  Int64 TableExprNodeSetOptUSet<T>::find (T value) const
+  {
+    auto iter = itsMap.find(value);
+    if (iter == itsMap.end()) {
+      return -1;
+    }
+    return iter->second;
+  }
+
+
+
+  TableExprNodeSetOptContSetBase::TableExprNodeSetOptContSetBase
+  (const TableExprNodeSet& orig)
+    : TableExprNodeSetOptBase (orig)
+  {}
 
 
   template<typename T>
@@ -111,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
    const std::vector<T>& ends,
    const std::vector<Bool>& leftC,
    const std::vector<Bool>& rightC)
-    : TableExprNodeRep (orig),
+    : TableExprNodeSetOptContSetBase (orig),
       itsStarts (starts),
       itsEnds   (ends),
       itsLeftC  (leftC),
@@ -127,7 +155,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const TableExprNodeSet& orig,
    const std::vector<T>& starts,
    const std::vector<T>& ends)
-    : TableExprNodeRep (orig),
+    : TableExprNodeSetOptContSetBase (orig),
       itsStarts (starts),
       itsEnds   (ends)
   {
@@ -145,37 +173,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  Bool TableExprNodeSetOptContSet<T>::contains (const TableExprId&,
-                                                T value)
+  Int64 TableExprNodeSetOptContSet<T>::find (T value) const
   {
     for (size_t i=0; i<itsStarts.size(); ++i) {
       if ((value > itsStarts[i]  &&  value < itsEnds[i])  ||
           (value == itsStarts[i]  &&  itsLeftC[i])  ||
           (value == itsEnds[i]  &&  itsRightC[i])) {
-        return True;
+        return i;
       }
     }
-    return False;
+    return -1;
   }
 
   template<typename T>
-  MArray<Bool> TableExprNodeSetOptContSet<T>::contains (const TableExprId& id,
-                                                        const MArray<T>& value)
-  {
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const T* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
-    for (size_t i=0; i<value.size(); ++i) {
-      out[i] = contains(id, in[i]);
-    }
-    value.array().freeStorage (in, deleteIn);
-    result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
-  }
-
-  template<typename T>
-  TENShPtr TableExprNodeSetOptContSet<T>::transform (const TableExprNodeSet& set)
+  TENShPtr TableExprNodeSetOptContSet<T>::transform (const TableExprNodeSet& set,
+                                                     Bool combine)
   {
     DebugAssert (set.size() > 0, AipsError);
     // Get all start values and sort them (indirectly) in ascending order.
@@ -188,10 +200,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprId id(0);
     for (size_t i=0; i<set.size(); ++i) {
       if (set[i]->start()) {
-        stvals[i] = set[i]->getStart(id);
+        set[i]->getStart (id, stvals[i]);
       }
       if (set[i]->end()) {
-        endvals[i] = set[i]->getEnd(id);
+        set[i]->getEnd (id, endvals[i]);
       }
     }
     // Sort the start values indirectly.
@@ -201,74 +213,102 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     std::vector<T> newEnd;
     std::vector<Bool> newLeftC;
     std::vector<Bool> newRightC;
-    // Get the start and end value of first interval in sorted list.
-    T stval  = stvals[index[0]];
-    T endval = endvals[index[0]];
-    Bool leftC  = set[index[0]]->isLeftClosed();
-    Bool rightC = set[index[0]]->isRightClosed();
-    // Loop through the next intervals and combine if possible.
-    for (size_t i=1; i<index.size(); i++) {
-      Int64 inx = index[i];
-      T st2 = stvals[inx];
-      T end2 = endvals[inx];
-      // Combine intervals if they overlap.
-      // They do if the next interval starts before end of this one
-      // or if starting at the end and one side of the interval is closed.
-      if (st2 < endval  ||
-          (st2 == endval  &&
-           (set[index[i]]->isLeftClosed() || set[index[i-1]]->isRightClosed()))) {
-        // Overlap; update end if higher.
-        if (end2 > endval) {
-          endval = end2;
-          rightC = set[index[i]]->isRightClosed();
-        }
-      } else {
-        // No overlap, so create the interval found and start a new one.
-        newStart.push_back (stval);
-        newEnd.push_back (endval);
-        newLeftC.push_back (leftC);
-        newRightC.push_back (rightC);
-        stval  = st2;
-        endval = end2;
-        leftC  = set[index[i]]->isLeftClosed();
-        rightC = set[index[i]]->isRightClosed();
+    std::vector<rownr_t> rowNrs;
+    if (!combine) {
+      for (size_t i=0; i<index.size(); ++i) {
+        Int64 inx = index[i];
+        newStart.push_back (stvals[inx]);
+        newEnd.push_back (endvals[inx]);
+        newLeftC.push_back (set[inx]->isLeftClosed());
+        newRightC.push_back (set[inx]->isRightClosed());
+        rowNrs.push_back (inx);
       }
+    } else {
+      // Get the start and end value of first interval in sorted list.
+      T stval  = stvals[index[0]];
+      T endval = endvals[index[0]];
+      Bool leftC  = set[index[0]]->isLeftClosed();
+      Bool rightC = set[index[0]]->isRightClosed();
+      rownr_t rownr = index[0];
+      // Loop through the next intervals and combine if possible.
+      for (size_t i=1; i<index.size(); i++) {
+        Int64 inx = index[i];
+        T st2 = stvals[inx];
+        T end2 = endvals[inx];
+        // Combine intervals if they overlap.
+        // They do if the next interval starts before end of this one
+        // or if starting at the end and one side of the interval is closed.
+        if (st2 < endval  ||
+            (st2 == endval  &&
+             (set[inx]->isLeftClosed() || set[index[i-1]]->isRightClosed()))) {
+          // Overlap; update end if higher.
+          if (end2 > endval) {
+            endval = end2;
+            rightC = set[inx]->isRightClosed();
+          }
+        } else {
+          // No overlap, so create the interval found and start a new one.
+          newStart.push_back (stval);
+          newEnd.push_back (endval);
+          newLeftC.push_back (leftC);
+          newRightC.push_back (rightC);
+          rowNrs.push_back (rownr);
+          stval  = st2;
+          endval = end2;
+          leftC  = set[inx]->isLeftClosed();
+          rightC = set[inx]->isRightClosed();
+          rownr  = inx;
+        }
+      }
+      // Create the last interval.
+      newStart.push_back (stval);
+      newEnd.push_back (endval);
+      newLeftC.push_back (leftC);
+      newRightC.push_back (rightC);
+      rowNrs.push_back (rownr);
     }
-    // Create the last interval.
-    newStart.push_back (stval);
-    newEnd.push_back (endval);
-    newLeftC.push_back (leftC);
-    newRightC.push_back (rightC);
+    // Now create the correct object.
+    return createOptSet (set, newStart, newEnd, newLeftC, newRightC);
+  }
+
+  template<typename T>
+  TENShPtr TableExprNodeSetOptContSet<T>::createOptSet
+  (const TableExprNodeSet& set,
+   const std::vector<T>& start, const std::vector<T>& end, 
+   const std::vector<Bool>& leftC, const std::vector<Bool>& rightC)
+   {
     // See if all intervals have the same left and right closedness.
     // If so, a better version can be used that does not need to test on it
     // for each compare.
     Bool same = True;
-    for (size_t i=1; i<newLeftC.size(); ++i) {
-      if (newLeftC[i] != newLeftC[0]  ||  newRightC[i] != newRightC[0]) {
+    for (size_t i=1; i<leftC.size(); ++i) {
+      if (leftC[i] != leftC[0]  ||  rightC[i] != rightC[0]) {
         same = False;
         break;
       }
     }
-    // Now create the correct object.
-    TENShPtr ptr;
+    // Create the appropriate object.
+    TableExprNodeSetOptContSetBase* optSet;
     if (same) {
-      if (newLeftC[0]) {
-        if (newRightC[0]) {
-          ptr.reset (new TableExprNodeSetOptContSetCC<T> (set, newStart, newEnd));
+      if (leftC[0]) {
+        if (rightC[0]) {
+          optSet = new TableExprNodeSetOptContSetCC<T> (set, start, end);
         } else {
-          ptr.reset (new TableExprNodeSetOptContSetCO<T> (set, newStart, newEnd));
+          optSet = new TableExprNodeSetOptContSetCO<T> (set, start, end);
         }
       } else {
-        if (newRightC[0]) {
-          ptr.reset (new TableExprNodeSetOptContSetOC<T> (set, newStart, newEnd));
+        if (rightC[0]) {
+          optSet = new TableExprNodeSetOptContSetOC<T> (set, start, end);
         } else {
-          ptr.reset (new TableExprNodeSetOptContSetOO<T> (set, newStart, newEnd));
+          optSet = new TableExprNodeSetOptContSetOO<T> (set, start, end);
         }
       }
     } else {
-      ptr.reset (new TableExprNodeSetOptContSet<T> (set, newStart, newEnd,
-                                                    newLeftC, newRightC));
+      optSet = new TableExprNodeSetOptContSet<T> (set, start, end,
+                                                  leftC, rightC);
     }
+    TENShPtr ptr(optSet);
+    ///optSet->setRows (rowNrs);
     return ptr;
   }
 
@@ -289,19 +329,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  Bool TableExprNodeSetOptContSetCC<T>::contains (const TableExprId&,
-                                                  T value)
+  Int64 TableExprNodeSetOptContSetCC<T>::find (T value) const
   {
     // Use lambda function to use <= instead of <.
     auto iter = std::upper_bound (this->itsEnds.begin(), this->itsEnds.end(), value,
                                   [](T v1, T v2){return v1<=v2;});
     if (iter != this->itsEnds.end()) {
       size_t index = std::distance (this->itsEnds.begin(), iter);
-      return (value >= this->itsStarts[index]);
+      if (value >= this->itsStarts[index]) {
+        return index;
+      }
     }
-    return False;
+    return -1;
   }
-
+  
 
   template<typename T>
   TableExprNodeSetOptContSetCO<T>::TableExprNodeSetOptContSetCO
@@ -319,15 +360,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  Bool TableExprNodeSetOptContSetCO<T>::contains (const TableExprId&,
-                                                  T value)
+  Int64 TableExprNodeSetOptContSetCO<T>::find (T value) const
   {
     auto iter = std::upper_bound (this->itsEnds.begin(), this->itsEnds.end(), value);
     if (iter != this->itsEnds.end()) {
       size_t index = std::distance (this->itsEnds.begin(), iter);
-      return (value >= this->itsStarts[index]);
+      if (value >= this->itsStarts[index]) {
+        return index;
+      }
     }
-    return False;
+    return -1;
   }
 
 
@@ -347,17 +389,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  Bool TableExprNodeSetOptContSetOC<T>::contains (const TableExprId&,
-                                                  T value)
+  Int64 TableExprNodeSetOptContSetOC<T>::find (T value) const
   {
     // Use lambda function to use <= instead of <.
     auto iter = std::upper_bound (this->itsEnds.begin(), this->itsEnds.end(), value,
                                   [](T v1, T v2){return v1<=v2;});
     if (iter != this->itsEnds.end()) {
       size_t index = std::distance (this->itsEnds.begin(), iter);
-      return (value > this->itsStarts[index]);
+      if (value > this->itsStarts[index]) {
+        return index;
+      }
     }
-    return False;
+    return -1;
   }
 
 
@@ -377,19 +420,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  Bool TableExprNodeSetOptContSetOO<T>::contains (const TableExprId&,
-                                                  T value)
+  Int64 TableExprNodeSetOptContSetOO<T>::find (T value) const
   {
     auto iter = std::upper_bound (this->itsEnds.begin(), this->itsEnds.end(), value);
     if (iter != this->itsEnds.end()) {
       size_t index = std::distance (this->itsEnds.begin(), iter);
-      return (value > this->itsStarts[index]);
+      if (value > this->itsStarts[index]) {
+        return index;
+      }
     }
-    return False;
+    return -1;
   }
 
 
   // Instantiate for Double and String.
+  template class TableExprNodeSetOptUSet<Int64>;
+  template class TableExprNodeSetOptUSet<String>;
   template class TableExprNodeSetOptContSet<Double>;
   template class TableExprNodeSetOptContSetCC<Double>;
   template class TableExprNodeSetOptContSetCO<Double>;

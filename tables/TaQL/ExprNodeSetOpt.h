@@ -29,15 +29,16 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeRep.h>
-#include <unordered_set>
+#include <unordered_map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Forward Declarations
   class TableExprNodeSet;
+
   
   // <summary>
-  // An optimized representation of an integer selection set.
+  // Abstract base class for optimized set representations
   // </summary>
 
   // <use visibility=local>
@@ -51,38 +52,38 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </prerequisite>
 
   // <synopsis>
-  // This class is an optimized representation of an constnat integer array set
+  // This class is an optimized representation of an constant integer array set
   // with a large range of values used by the IN operator.
   // If applicable, TableExprLogicNode instantiates an object of this class
   // for sets with a value range of more than 16384.
-  // <br>The representation is a std::unordered_set containing the array values.
-  // <br>Note that a std::unordered_set is used instead of std::set because its
+  // <br>The representation is a std::unordered_map containing the array values.
+  // <br>Note that a std::unordered_map is used instead of std::set because its
   // hashing mechanism makes it faster.
   // </synopsis>
 
-  class TableExprNodeSetOptIntUSet: public TableExprNodeRep
+  class TableExprNodeSetOptBase : public TableExprNodeRep
   {
   public:
-    // Construct an empty set.
-    TableExprNodeSetOptIntUSet (const TableExprNodeRep& orig, const Array<Int64>&);
-
-    // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
-
-    // Does a value occur in the set?
-    // <group>
+    explicit TableExprNodeSetOptBase (const TableExprNodeRep& orig);
     virtual Bool contains (const TableExprId& id, Int64 value) override;
+    virtual Bool contains (const TableExprId& id, Double value) override;
+    virtual Bool contains (const TableExprId& id, String value) override;
     virtual MArray<Bool> contains (const TableExprId& id,
                                    const MArray<Int64>& value) override;
-    // </group>
-
-  private:
-    std::unordered_set<Int64> itsSet;
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Double>& value) override;
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<String>& value) override;
+    // Tell which key matches a value. -1 = no match.
+    // The default implementations throw an exception.
+    virtual Int64 find (Int64 value) const;
+    virtual Int64 find (Double value) const;
+    virtual Int64 find (String value) const;
   };
 
 
   // <summary>
-  // An optimized representation of an string selection set.
+  // An optimized representation of a discrete selection set.
   // </summary>
 
   // <use visibility=local>
@@ -96,32 +97,56 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </prerequisite>
 
   // <synopsis>
-  // This class is an optimized representation of a constant string array set
-  // used by the IN operator.
-  // If applicable, TableExprLogicNode instantiates an object of this class
-  // <br>The representation is a std::unordered_set containing the array values.
-  // <br>Note that a std::unordered_set is used instead of std::set because its
+  // This templated class is an optimized representation of an constant
+  // integer or string array set used by the IN operator.
+  // If applicable, TableExprLogicNode instantiates an object of this class.
+  // <br>The representation is a std::unordered_map containing the array values
+  // and the index in the array.
+  // <br>Note that a std::unordered_map is used instead of std::map because its
   // hashing mechanism makes it faster.
   // </synopsis>
 
-  class TableExprNodeSetOptStringUSet: public TableExprNodeRep
+  template <typename T>
+  class TableExprNodeSetOptUSet: public TableExprNodeSetOptBase
   {
   public:
     // Construct an empty set.
-    TableExprNodeSetOptStringUSet (const TableExprNodeRep& orig, const Array<String>&);
+    TableExprNodeSetOptUSet (const TableExprNodeRep& orig, const Array<T>&);
 
     // Show the node.
     virtual void show (ostream& os, uInt indent) const override;
 
-    // Does a value occur in the set?
-    // <group>
-    virtual Bool contains (const TableExprId& id, String value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
-                                   const MArray<String>& value) override;
-    // </group>
+    // Where does a value occur in the set? -1 is no match.
+    virtual Int64 find (T value) const override;
 
   private:
-    std::unordered_set<std::string> itsSet;
+    std::unordered_map<T,Int64> itsMap;
+  };
+
+
+  // <summary>
+  // An optimized representation of a selection set with continuous intervals.
+  // </summary>
+
+  // <use visibility=local>
+
+  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+  // </reviewed>
+
+  // <prerequisite>
+  //# Classes you should understand before using this one.
+  //   <li> TableExprNodeSet
+  // </prerequisite>
+
+  // <synopsis>
+  // This class is the base class for the optimized representation of a
+  // constant selection set with continuous intervals.
+  // </synopsis>
+
+  class TableExprNodeSetOptContSetBase: public TableExprNodeSetOptBase
+  {
+  public:
+    explicit TableExprNodeSetOptContSetBase (const TableExprNodeSet& orig);
   };
 
 
@@ -151,7 +176,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </synopsis>
 
   template <typename T>
-  class TableExprNodeSetOptContSet: public TableExprNodeRep
+  class TableExprNodeSetOptContSet: public TableExprNodeSetOptContSetBase
   {
   public:
     TableExprNodeSetOptContSet (const TableExprNodeSet& orig,
@@ -164,13 +189,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                 const std::vector<T>& ends);
     // Show the node.
     virtual void show (ostream& os, uInt indent) const override;
-    // Does a value occur in the set?
-    // <group>
-    virtual Bool contains (const TableExprId& id, T value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
-                                   const MArray<T>& value) override;
-    // </group>
-    static TENShPtr transform (const TableExprNodeSet& set);
+    // Tell which interval contains a value. -1 = no match.
+    virtual Int64 find (T value) const override;
+    // Transform a set into an optimized one by ordering the intervals
+    // and optionally combining adjacent intervals.
+    // If not possible, an empty TENShPtr is returned.
+    // It fill <src>rowNrs</src> with the row numbers of the intervals created.
+    static TENShPtr transform (const TableExprNodeSet& set,
+                               Bool combine=True);
+    // Create the appropriate optimized OptContSet object.
+    // Note that leftC and rightC do not need to have the same length as start/end.
+    // If it is known that all intervals have the same leftC/rightC,
+    // a single value suffices.
+    static TENShPtr createOptSet (const TableExprNodeSet& set,
+                                  const std::vector<T>& start,
+                                  const std::vector<T>& end, 
+                                  const std::vector<Bool>& leftC,
+                                  const std::vector<Bool>& rightC);
+    // Get the size (nr of intervals),
+    size_t size() const
+      { return itsStarts.size(); }
   protected:
     std::vector<T> itsStarts;
     std::vector<T> itsEnds;
@@ -208,8 +246,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const std::vector<T>& ends);
     // Show the node.
     virtual void show (ostream& os, uInt indent) const override;
-    // Does a value occur in the set?
-    virtual Bool contains (const TableExprId& id, T value) override;
+    // Tell which interval contains a value. -1 = no match.
+    virtual Int64 find (T value) const override;
   };
 
   
@@ -242,8 +280,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const std::vector<T>& ends);
     // Show the node.
     virtual void show (ostream& os, uInt indent) const override;
-    // Does a value occur in the set?
-    virtual Bool contains (const TableExprId& id, T value) override;
+    // Tell which interval contains a value. -1 = no match.
+    virtual Int64 find (T value) const override;
   };
 
 
@@ -276,8 +314,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const std::vector<T>& ends);
     // Show the node.
     virtual void show (ostream& os, uInt indent) const override;
-    // Does a value occur in the set?
-    virtual Bool contains (const TableExprId& id, T value) override;
+    // Tell which interval contains a value. -1 = no match.
+    virtual Int64 find (T value) const override;
   };
 
 
@@ -310,11 +348,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const std::vector<T>& ends);
     // Show the node.
     virtual void show (ostream& os, uInt indent) const override;
-    // Does a value occur in the set?
-    virtual Bool contains (const TableExprId& id, T value) override;
+    // Tell which interval contains a value. -1 = no match.
+    virtual Int64 find (T value) const override;
   };
 
 
 } //# NAMESPACE CASACORE - END
+
+template<>
+struct std::hash<casacore::String>
+{
+  std::size_t operator()(casacore::String const& k) const noexcept
+    { return std::hash<std::string>()(k); }
+};
+
 
 #endif
