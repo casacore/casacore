@@ -270,7 +270,7 @@ public:
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
     void restructure (const RecordDesc& newDescription,
-			      Bool recursive = True) override;
+                      Bool recursive = True) override;
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
@@ -301,7 +301,7 @@ public:
     // it will be decremented. Only the RecordFieldPtr's
     // pointing to the removed field will be invalidated.
     // </note>
-    void removeField (const RecordFieldId&);
+    void removeField (const RecordFieldId&) override;
 
     // Rename the given field.
     void renameField (const String& newName, const RecordFieldId&);
@@ -315,8 +315,8 @@ public:
     void defineRecord (const RecordFieldId&, const Record& value,
 		       RecordType type = Variable);
     void defineRecord (const RecordFieldId&,
-			       const RecordInterface& value,
-			       RecordType = Variable) override;
+                       const RecordInterface& value,
+                       RecordType = Variable) override;
     // </group>
 
     // Get the subrecord from the given field.
@@ -336,7 +336,7 @@ public:
     // <group>
     ValueHolder asValueHolder (const RecordFieldId&) const override;
     void defineFromValueHolder (const RecordFieldId&,
-                                        const ValueHolder&) override;
+                                const ValueHolder&) override;
     // </group>
 
     // Merge a field from another record into this record.
@@ -388,8 +388,8 @@ public:
     // Only the first <src>maxNrValues</src> of an array will be printed.
     // A value < 0 means the entire array.
     void print (std::ostream&,
-			Int maxNrValues = 25,
-			const String& indent="") const override;
+                Int maxNrValues = 25,
+                const String& indent="") const override;
 
 
 protected:
@@ -398,7 +398,7 @@ protected:
     // <group>
     void* get_pointer (Int whichField, DataType type) const override;
     void* get_pointer (Int whichField, DataType type,
-			       const String& recordType) const override;
+                       const String& recordType) const override;
     // </group>
 
     // Return a const reference to the underlying RecordRep.
@@ -411,12 +411,12 @@ protected:
 
     // Add a field to the record.
     void addDataField (const String& name, DataType type,
-			       const IPosition& shape, Bool fixedShape,
-			       const void* value) override;
+                       const IPosition& shape, Bool fixedShape,
+                       const void* value) override;
 
     // Define a value in the given field.
     void defineDataField (Int whichField, DataType type,
-				  const void* value) override;
+                          const void* value) override;
 
 private:
     // Get the description of this record.
