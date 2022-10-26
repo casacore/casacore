@@ -355,12 +355,4 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 } //# NAMESPACE CASACORE - END
 
-template<>
-struct std::hash<casacore::String>
-{
-  std::size_t operator()(casacore::String const& k) const noexcept
-    { return std::hash<std::string>()(k); }
-};
-
-
 #endif
