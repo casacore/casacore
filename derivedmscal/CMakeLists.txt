@@ -10,6 +10,12 @@ DerivedMC/Register.cc
 DerivedMC/UDFMSCal.cc
 )
 
+set(top_level_headers
+DerivedMC.h
+)
+
+init_pch_support(casa_derivedmscal ${top_level_headers})
+
 target_link_libraries (casa_derivedmscal casa_ms ${CASACORE_ARCH_LIBS})
 
 install (TARGETS casa_derivedmscal
@@ -28,8 +34,7 @@ DerivedMC/UDFMSCal.h
 DESTINATION include/casacore/derivedmscal/DerivedMC
 )
 
-install (FILES
-DerivedMC.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/derivedmscal
 )
 

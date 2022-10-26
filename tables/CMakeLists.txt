@@ -227,6 +227,15 @@ ${ADIOS2_SOURCES}
 ${DYSCOSTMAN_SOURCES}
 )
 
+set(top_level_headers
+DataMan.h
+LogTables.h
+Tables.h
+TaQL.h
+)
+
+init_pch_support(casa_tables ${top_level_headers})
+
 target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES})
 if(MPI_FOUND)
     target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
@@ -488,11 +497,7 @@ LogTables/NewFile.h
 DESTINATION include/casacore/tables/LogTables
 )
 
-install (FILES
-DataMan.h
-LogTables.h
-Tables.h
-TaQL.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/tables
 )
 

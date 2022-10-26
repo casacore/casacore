@@ -22,6 +22,12 @@ Coordinates/StokesCoordinate.cc
 Coordinates/TabularCoordinate.cc
 )
 
+set(top_level_headers
+Coordinates.h
+)
+
+init_pch_support(casa_coordinates ${top_level_headers})
+
 target_link_libraries (casa_coordinates casa_fits ${WCSLIB_LIBRARIES} ${CASACORE_ARCH_LIBS})
 
 install (TARGETS casa_coordinates
@@ -51,8 +57,7 @@ Coordinates/TabularCoordinate.h
 DESTINATION include/casacore/coordinates/Coordinates
 )
 
-install (FILES
-Coordinates.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/coordinates
 )
 

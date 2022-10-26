@@ -1,5 +1,6 @@
 foreach(prog findmeastable)
     add_executable (${prog}  ${prog}.cc)
+    add_pch_support(${prog})
     target_link_libraries (${prog} casa_measures ${CASACORE_ARCH_LIBS})
     install(TARGETS ${prog} DESTINATION bin)
 endforeach(prog findmeastable)
