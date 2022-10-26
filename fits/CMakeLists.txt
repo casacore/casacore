@@ -24,6 +24,12 @@ FITS/blockio.cc
 FITS/FITSReader.cc
 )
 
+set(top_level_headers
+FITS.h
+)
+
+init_pch_support(casa_fits ${top_level_headers})
+
 target_link_libraries (casa_fits casa_measures ${CFITSIO_LIBRARIES} ${CASACORE_ARCH_LIBS})
 
 add_subdirectory (apps)
@@ -63,8 +69,7 @@ FITS/FITSReader.h
 DESTINATION include/casacore/fits/FITS
 )
 
-install (FILES
-FITS.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/fits
 )
 

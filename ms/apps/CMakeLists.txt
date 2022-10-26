@@ -1,5 +1,6 @@
 foreach(prog msselect writems readms)
     add_executable (${prog}  ${prog}.cc)
+    add_pch_support(${prog})
     target_link_libraries (${prog} casa_ms ${CASACORE_ARCH_LIBS})
     if(MPI_FOUND)
         target_compile_definitions(${prog} PRIVATE HAVE_MPI)

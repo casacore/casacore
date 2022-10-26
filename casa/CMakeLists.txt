@@ -234,7 +234,51 @@ ${BISON_JsonGram_OUTPUTS}
 ${FLEX_JsonGram_OUTPUTS}
 )
 
+set(top_level_headers
+${PROJECT_BINARY_DIR}/casacore/casa/config.h
+aipsdef.h
+aipsenv.h
+aips.h
+aipstype.h
+aipsxtype.h
+Arrays.h
+BasicMath.h
+BasicSL.h
+complex.h
+Containers.h
+Exceptions.h
+fstream.h
+HDF5.h
+Inputs.h
+IO.h
+iomanip.h
+iosfwd.h
+iosstrfwd.h
+iostream.h
+istream.h
+Json.h
+Logging.h
+math.h
+namespace.h
+OS.h
+ostream.h
+Quanta.h
+sstream.h
+stdexcept.h
+stdio.h
+stdlib.h
+stdmap.h
+stdvector.h
+string.h
+System.h
+typeinfo.h
+Utilities.h
+vector.h
+${PROJECT_BINARY_DIR}/casacore/casa/version.h
+)
+
 add_library (casa_casa ${buildfiles})
+init_pch_support(casa_casa ${top_level_headers})
 
 
 if (HDF5_FOUND)
@@ -603,50 +647,9 @@ Utilities/ValTypeId.h
 DESTINATION include/casacore/casa/Utilities
 )
 
-install (FILES
-${PROJECT_BINARY_DIR}/casacore/casa/config.h
-aipsdef.h
-aipsenv.h
-aips.h
-aipstype.h
-aipsxtype.h
-Arrays.h
-BasicMath.h
-BasicSL.h
-complex.h
-Containers.h
-Exceptions.h
-fstream.h
-HDF5.h
-Inputs.h
-IO.h
-iomanip.h
-iosfwd.h
-iosstrfwd.h
-iostream.h
-istream.h
-Json.h
-Logging.h
-math.h
-namespace.h
-OS.h
-ostream.h
-Quanta.h
-sstream.h
-stdexcept.h
-stdio.h
-stdlib.h
-stdmap.h
-stdvector.h
-string.h
-System.h
-typeinfo.h
-Utilities.h
-vector.h
-${PROJECT_BINARY_DIR}/casacore/casa/version.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/casa
 )
-
 add_subdirectory (test ${EXCL_ALL})
 foreach (casa_module Arrays BasicMath BasicSL Containers
      Exceptions HDF5 Inputs IO Json Logging OS Quanta System Utilities)
