@@ -458,9 +458,19 @@ ostream &operator>>(ostream &is, MVTime &meas);
 ostream &operator<<(ostream &os, const MVTime::Format &form);
 // </group>
 
-// is equal operator, uses operator Double which returns days
+// equality and comparison operators, use operator Double which returns days
 inline Bool operator==(const MVTime &lh, const MVTime &rh) 
 { return (lh.operator Double() == rh.operator Double());}
+inline Bool operator!=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() != rh.operator Double());}
+inline Bool operator<(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() < rh.operator Double());}
+inline Bool operator<=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() <= rh.operator Double());}
+inline Bool operator>(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() > rh.operator Double());}
+inline Bool operator>=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() >= rh.operator Double());}
 
 
 
