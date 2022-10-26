@@ -302,6 +302,7 @@ Double roundDouble(Double val, Double ndigit) {
   // E.g. log10(0.1) gives -0.9999999, so add little number when truncating.
   Int i = Int(lgr >= 0  ?  lgr + 1.000001 : lgr - 0.000001);
   Double temp = val * pow(10.0, -i);
+  using std::round;
   return sign*round(temp)*pow(10.0, i);
 }
 
