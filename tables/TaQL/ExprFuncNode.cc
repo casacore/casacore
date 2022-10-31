@@ -929,9 +929,6 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
         return tan   (operands_p[0]->getDComplex(id));
     case tanhFUNC:
         return tanh  (operands_p[0]->getDComplex(id));
-    case atan2FUNC:
-        return atan2 (operands_p[0]->getDComplex(id),
-                      operands_p[1]->getDComplex(id));
     case complexFUNC:
         // A single argument is always a string.
         if (operands_p.size() == 1) {
