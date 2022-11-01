@@ -253,7 +253,7 @@ void LockFile::getInfo (MemoryIO& info)
     uChar buffer[2048];
     // Read the first part of the file.
     traceLSEEK (itsLocker.fd(), 0, SEEK_SET);
-    uInt leng = read (itsLocker.fd(), buffer, sizeof(buffer));
+    uInt leng = ::read (itsLocker.fd(), buffer, sizeof(buffer));
     // Extract the request list from it.
     convReqId (buffer, leng);
     // Get the length of the info.
@@ -275,7 +275,7 @@ void LockFile::getInfo (MemoryIO& info)
     if (infoLeng > leng) {
 	infoLeng -= leng;
 	uChar* buf = new uChar[infoLeng];
-	AlwaysAssert (read (itsLocker.fd(), buf, infoLeng) == Int(infoLeng),
+	AlwaysAssert (::read (itsLocker.fd(), buf, infoLeng) == Int(infoLeng),
                       AipsError);
 	info.write (infoLeng, buf);
 	delete [] buf;
