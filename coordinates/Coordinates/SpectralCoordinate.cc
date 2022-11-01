@@ -463,8 +463,8 @@ Bool SpectralCoordinate::toWorld (Vector<Double> &world,
 
 Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
 {
-    static Vector<Double> pixel_tmp1(1);
-    static Vector<Double> world_tmp1(1);
+    thread_local static Vector<Double> pixel_tmp1(1);
+    thread_local static Vector<Double> world_tmp1(1);
 //
     pixel_tmp1[0] = pixel;
     if (toWorld(world_tmp1, pixel_tmp1)) {
@@ -480,7 +480,7 @@ Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
 Bool SpectralCoordinate::toPixel (Vector<Double> &pixel,
                                   const Vector<Double> &world) const
 {
-    static Vector<Double> world_tmp1(1);
+    thread_local static Vector<Double> world_tmp1(1);
     DebugAssert(world.nelements()==1, AipsError);
     Bool ok = True;
 
