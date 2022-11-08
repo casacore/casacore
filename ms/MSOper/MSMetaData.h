@@ -491,6 +491,15 @@ public:
     // get a map of the spwIDs to spw names from the spw table
     vector<String> getSpwNames() const;
 
+    // ALMA specific CAS-13973 get receiver bands for each spw
+    // values of -1 indicate no info found for those spws.
+    vector<int> getSpwReceiverBands() const;
+
+    // ALMA specific CAS-13973 get subwindows for each spw
+    // values of -1 indicate no info found for those spws.
+    vector<int> getSpwSubwindows() const;
+
+
     // get all the spws associated with the data description IDs listed in the main table.
     // This will not correspond to a list of the row numbers in the SPECTRAL_WINDOW table
     // if there are data description IDs that are not in the main table.
@@ -684,14 +693,14 @@ private:
         // interval, which is not accounted for in the SubScanProperties times
         std::pair<Double, Double> timeRange;
         // times for each spectral window
-        std::map<uInt, std::set<Double> > times;
+        std::map<uInt, std::set<double> > times;
     };
 
     struct SpwProperties {
-        Double bandwidth;
+        double bandwidth;
         QVD chanfreqs;
         QVD chanwidths;
-        Int netsideband;
+        int netsideband;
         // The sum of all channel frequencies divided by the number of channels
         Quantity meanfreq;
         // The mean of the low frequency extent of the lowest frequency channel and
@@ -700,7 +709,7 @@ private:
         Quantity centerfreq;
         uInt nchans;
         // The center frequencies of the two channels at the edges of the window
-        vector<Double> edgechans;
+        vector<double> edgechans;
         uInt bbcno;
         // from the REF_FREQUENCY column
         MFrequency reffreq;
@@ -711,6 +720,9 @@ private:
         QVD resolution;
         // CAS-13749 value for adhoc ALMA-specific SPECTRAL_WINDOW column
         String corrbit;
+        // CAS-13973 ALMA specific quantities sw = subwindow, rb = receiver band
+        int rb;
+        int sw;
     };
 
     // represents non-primary key data for a SOURCE table row

@@ -29,8 +29,9 @@
 
 #include <casacore/casa/Arrays/MaskArrMath.h>
 #include <casacore/casa/Arrays/VectorSTLIterator.h>
-#include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/File.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 #include <casacore/ms/MSOper/MSKeys.h>
@@ -42,6 +43,7 @@
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 
+#include <regex>
 #include <utility>
 
 #define _ORIGIN "MSMetaData::" + String(__func__) + ": "
@@ -2124,6 +2126,30 @@ vector<String> MSMetaData::getSpwNames() const {
         iter!=end; ++iter
     ) {
         out.push_back(iter->name);
+    }
+    return out;
+}
+
+vector<int> MSMetaData::getSpwReceiverBands() const {
+    std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
+    const auto props = _getSpwInfo(
+        avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
+    );
+    vector<int> out;
+    for (const auto spw: props) {
+        out.push_back(spw.rb);
+    }
+    return out;
+}
+
+vector<int> MSMetaData::getSpwSubwindows() const {
+    std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
+    const auto props = _getSpwInfo(
+        avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
+    );
+    vector<int> out;
+    for (const auto spw: props) {
+        out.push_back(spw.sw);
     }
     return out;
 }
@@ -4947,6 +4973,9 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
 ) const {
     static const Regex rxSqld("BB_[0-9]#SQLD");
+    static const std::regex rb("RB_(\\d\\d)");
+    static const std::regex sw("SW-(\\d\\d)");
+    std::smatch match;
     MSSpWindowColumns spwCols(_ms->spectralWindow());
     Vector<Double> bws = spwCols.totalBandwidth().getColumn();
     ArrayQuantColumn<Double> cfCol(
@@ -4991,6 +5020,14 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     const static String wvr = "WVR";
     const static String wvrNominal = "WVR#NOMINAL";
     uInt nrows = bws.size();
+    // for ALMA specific RB info
+    const String asdm_rx = _ms->tableName() + "/ASDM_RECEIVER";
+    Vector<String> freqBand;
+    if (Directory(asdm_rx).exists()) {
+        freqBand = ScalarColumn<String>(
+            Table(asdm_rx), "frequencyBand"
+        ).getColumn();
+    }
     for (uInt i=0; i<nrows; ++i) {
         spwInfo[i].bandwidth = bws[i];
         tmp.resize(0);
@@ -5057,6 +5094,20 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         }
         else {
             tdmSpw.insert(i);
+        }
+        // CAS-13973 for ALMA get subwindow and receiver band
+        spwInfo[i].rb = -1;
+        if (regex_search(name[i], match, rb)) {
+            spwInfo[i].rb = stoi(match.str(1));
+        }
+        else if (
+            ! freqBand.empty() && regex_search(freqBand[i], match, rb)
+        ) {
+            spwInfo[i].rb = stoi(match.str(1));
+        }
+        spwInfo[i].sw = -1;
+        if (regex_search(name[i], match, sw)) {
+            spwInfo[i].sw = stoi(match.str(1));
         }
     }
     wvrSpw = wvrSecond.empty() ? wvrFirst : wvrSecond;
