@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef CASA_MULTIFILEBASE_H
 #define CASA_MULTIFILEBASE_H
@@ -32,8 +30,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/vector.h>
 #include <casacore/casa/ostream.h>
+#include <vector>
 #include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -80,9 +78,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     explicit MultiFileInfo();
     // Allocate the buffer.
     void allocBuffer (size_t bufSize, Bool useODirect)
-      { buffer.reset (new MultiFileBuffer(bufSize, useODirect)); }
+      { buffer = std::make_shared<MultiFileBuffer>(bufSize, useODirect); }
     //# Data members.
-    vector<Int64> blockNrs;     // physical blocknrs for this logical file
+    std::vector<Int64> blockNrs;     // physical blocknrs for this logical file
     Int64         curBlock;     // the data block held in buffer (<0 is none)
     Int64         fsize;        // file size (in bytes)
     String        name;         // the virtual file name
@@ -95,7 +93,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   ostream& operator<< (ostream&, const MultiFileInfo&);
   AipsIO& operator<< (AipsIO&, const MultiFileInfo&);
   AipsIO& operator>> (AipsIO&, MultiFileInfo&);
-  void getInfoVersion1 (AipsIO&, vector<MultiFileInfo>&);
+  void getInfoVersion1 (AipsIO&, std::vector<MultiFileInfo>&);
 
 
   // <summary> 
@@ -147,7 +145,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Make the correct MultiFileBase object for a nested file.
     virtual std::shared_ptr<MultiFileBase> makeNested
     (const std::shared_ptr<MultiFileBase>& parent, const String& name,
-     ByteIO::OpenOption = ByteIO::Old, Int blockSize=0) const = 0;
+     ByteIO::OpenOption, Int blockSize) const = 0;
 
     // Get the file name of the MultiFileBase container file.
     String fileName() const
@@ -201,9 +199,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void reopenRW() = 0;
 
     // Flush the file by writing all dirty data and all header info.
-    // In MultiFile test mode False can be returned indicating that
-    // writing the header has been ended prematurely (to mimic a crash).
-    Bool flush();
+    void flush();
 
     // Get the block size used.
     Int64 blockSize() const
@@ -217,11 +213,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsNrBlock; }
 
     // Get the info object (for test purposes mainly).
-    const vector<MultiFileInfo>& info() const
+    const std::vector<MultiFileInfo>& info() const
       { return itsInfo; }
 
     // Get the free blocks (for test purposes mainly).
-    const vector<Int64>& freeBlocks() const
+    const std::vector<Int64>& freeBlocks() const
       { return itsFreeBlocks; }
 
     // Return the file id of a file in the MultiFileBase object.
@@ -229,6 +225,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Otherwise it returns -1.
     Int fileId (const String& name, Bool throwExcp=True) const;
 
+    // Is O_DIRECT used?
+    Bool useODirect() const
+      { return itsUseODirect; }
+    
   protected:
     // Resync with another process by clearing the buffers and rereading
     // the header. The header is only read if its counter has changed.
@@ -237,10 +237,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Fsync the file (i.e., force the data to be physically written).
     virtual void fsync() = 0;
 
-    // Will O_DIRECT be used?
-    Bool useODirect() const
-      { return itsUseODirect; }
-    
   private:
     // Forbid copy constructor and assignment.
     MultiFileBase (const MultiFileBase&);
@@ -272,9 +268,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Flush and close the container file.
     virtual void close() = 0;
     // Write the header info.
-    // In MultiFile test mode False can be returned indicating that
-    // writing the header has been ended prematurely (to mimic a crash).
-    virtual Bool writeHeader() = 0;
+    virtual void writeHeader() = 0;
     // Read the header info. If always==False, the info is only read if the
     // header counter has changed.
     virtual void readHeader (Bool always=True) = 0;
@@ -296,12 +290,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int64  itsBlockSize;  // The blocksize used
     Int64  itsNrBlock;    // The total nr of blocks actually used
     Int64  itsHdrCounter; // Counter of header changes
-    vector<MultiFileInfo> itsInfo;
+    std::vector<MultiFileInfo> itsInfo;
     std::shared_ptr<MultiFileBuffer> itsBuffer;  
     Bool          itsUseODirect; // use O_DIRECT?
     Bool          itsWritable;   // Is the file writable?
     Bool          itsChanged;    // Has header info changed since last flush?
-    vector<Int64> itsFreeBlocks;
+    std::vector<Int64> itsFreeBlocks;
   };
 
 

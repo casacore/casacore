@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/IO/MultiFile.h>
@@ -39,21 +37,35 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <cstdlib>
 #include <memory>
+#include <array>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  /* Maybe header continuation always at beginning and move block 2 etc
-upward if more continuation is needed. Only header sizer needed.
-Still 2 sets needed? 
+  // This function creates the CRC lookup table.
+  // It is executed thread-safe on the first time called.
+  static const std::array<uInt, 256>& CRCTable() 
+  {
+    static std::array<uInt, 256> result = [] () -> std::array<uInt, 256> {
+      std::array<uInt, 256> res;
+      
+      const uInt polynom = 0x4c11db7;
+      const uInt highbit = (uInt)1<<(32-1);
+      // make CRC lookup table used by table algorithms
+      for (int i=0; i<256; i++) {
+        uInt crc = i;
+        crc<<= 32-8;
+        for (int j=0; j<8; j++) {
+          uInt bit = crc & highbit;
+          crc<<= 1;
+          if (bit) crc^= polynom;
+        }			
+        res[i]= crc;    
+      }
+      return res;
+    }();
+    return result;
+  }
 
-In current situation. What happens to cont block not needed anymore?
-Not added to free list? No, too expensive to update free list and the loss
-of a single block is not that bad. Possibly, create a free cont block list
-that is merged into free list when free list gets updated.
-
-Possibly check if truncate is just before cont block. If so, move back cont.block.
-  */
-  
 /*
   MultiFile keeps a map of blocks in each individual file to the
   blocks in the overall file.
@@ -63,28 +75,32 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
   blocks overwrite the remainder of the map if the blocks occupied
   by the remainder are not counted. This leads to file corruption
   in case the program or system crashes.
-  A possible solution is to count the blocks used by the remainder.
-  Those blocks can be reused if the map has to be rewritten. If the
-  new remainder is larger, it is the question whether it is better
-  to (i) use new blocks for the entire remainder and set the old blocks
-  to deleted or to (ii) reuse the blocks and add blocks for the part
-  that does not fit (and add a pointer in the old block). (i) is
-  probably the easiest, but might lead to more blocks being used.
-  Note that such cases can occur if many flushes are done, but usually
-  a block is so large that overflow will seldomly occur.
-
-  The current .hdrext behaviour cannot be used anymore because it
-  cannot handle the nested MultiFile case. But reading .hdrext has
-  to be supported forever.
+  In order to write the remainder in a robust way, the header keeps
+  two lists of continuation blocks which are used alternately. The
+  first header block (written at offset 0) tells which continuation
+  block is used. It is written after the continuation blocks, so
+  there is always a valid header.
+  In case the header shrinks, it is possible less continuation blocks
+  are needed. The superfluous blocks are kept and will be used when the
+  header grows again. If not growing, they are 'lost' which is no problem
+  as there are far less header blocks than data blocks.
+  A potential problem is that if data blocks get removed at the end, the
+  file cannot be truncated because a continuation block is stored after
+  those data blocks. In the future it might be wise to move such a block
+  upward. However, in practice this will hardly ever occur. Note that
+  the header size implicitly tells how many continuation blocks are
+  actually used.
+  Another small problem is that new continuation blocks are put at the end
+  of the file and are not taken from the free list to avoid that the free
+  list needs to be serialized again. Again, in practice this is hardly a
+  problem because data blocks will be removed very seldomly.
  */
 
   MultiFile::MultiFile (const String& name, ByteIO::OpenOption option,
-                        Int blockSize, Bool useODirect, Bool useCRC,
-                        int testMode)
+                        Int blockSize, Bool useODirect, Bool useCRC)
     : MultiFileBase (name, blockSize, useODirect),
       itsNrContUsed {0,0},
       itsHdrContInx (0),     // Start using the first continuation block
-      itsTestMode   (testMode),
       itsUseCRC     (useCRC)
   {
     itsIO.reset (new FileUnbufferedIO (name, option, useODirect));
@@ -95,11 +111,10 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
                         const std::shared_ptr<MultiFileBase>& parent,
                         ByteIO::OpenOption option, Int blockSize)
     // Use parent's block size if not specified.
-    // A child MultiFile does not use test mode nor CRC.
+    // A child MultiFile does not use CRC.
     : MultiFileBase (name, blockSize>0 ? blockSize:parent->blockSize(), False),
       itsNrContUsed {0,0},
       itsHdrContInx (0),     // Start using the first continuation block
-      itsTestMode   (0),
       itsUseCRC     (False)
   {
     itsIO.reset (new MFFileIO (parent, name, option));
@@ -116,7 +131,6 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
 
   void MultiFile::init (ByteIO::OpenOption option)
   {
-    fillCRCTable();
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
       // New file; first block is for administration.
       setNewFile();
@@ -161,12 +175,8 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     itsIO->fsync();
   }
 
-  Bool MultiFile::writeHeader()
+  void MultiFile::writeHeader()
   {
-    // Don't do anything at all if testmode already stopped writing.
-    if (itsTestMode < -1) {
-      return False;
-    }
     // Write all header info in canonical format into a memory buffer.
     // This buffer will be written into the file.
     // If too large, the remainder is written into continuation blocks.
@@ -178,18 +188,21 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     itsHdrCounter++;
     Int64 zero64 = 0;
     uInt  zero32 = 0;
-    Int  version = 2;
+    char  char8[8] = {0,0,0,0,0,0,0,0};
+    Int   version = 2;
     // Start with a zero to distinguish it from version 1.
     // The first value in version 1 is always > 0.
     cio.write (1, &zero64);
     cio.write (1, &zero64);        // room for first cont.block (writeRemainder)
+    cio.write (1, &itsHdrCounter);
     cio.write (1, &version);
     cio.write (1, &zero32);        // headerCRC
     cio.write (1, &zero64);        // header size
     cio.write (1, &itsBlockSize);
-    cio.write (1, &itsHdrCounter);
     cio.write (1, &itsNrBlock);
-    DebugAssert (mio.length() == 56, AipsError);
+    if (itsUseCRC) char8[0] = 1;
+    cio.write (8, char8);
+    AlwaysAssert (mio.length() == 64, AipsError);
     // First write general info and file names, etc.
     aio.putstart ("MultiFile", version);
     aio << itsInfo;
@@ -210,13 +223,13 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     Int64 totalSize = todo + 2*sizeof(uInt) + (2 + itsHdrCont[0].blockNrs.size() +
                               itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
     // Allocate a temp buffer if header too large or if O_DIRECT.
+    // This buffer is used by writeRemainder and 
     Bool hasRemainder = (totalSize > itsBlockSize);
     MultiFileBuffer mfbuf(itsUseODirect || hasRemainder  ?  itsBlockSize:0,
                           itsUseODirect);
-    char* iobuf = mfbuf.data();
     // First write the remainder and adjust the header as needed.
     if (hasRemainder) {
-      writeRemainder (mio, cio, iobuf);
+      writeRemainder (mio, cio, mfbuf);
     } else {
       // No remainder, so write the continuation blocknrs here.
       // None are used in the current set.
@@ -228,31 +241,26 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     // Writing the first part of the header is done as the last step.
     uChar* buf = const_cast<uChar*>(mio.getBuffer());
     todo = mio.length();
-    CanonicalConversion::fromLocal (buf+24, todo);  // header size
+    CanonicalConversion::fromLocal (buf+32, todo);  // header size
     if (itsUseCRC) {
       uInt crc = calcCRC (buf, todo);
       crc = calcCRC (buf, todo);
-      CanonicalConversion::fromLocal (buf+20, crc);
+      CanonicalConversion::fromLocal (buf+28, crc);
     }
-    if (itsTestMode > 0  &&  itsNrBlock > itsTestMode) {
-      // Mimic an abort by not writing the first header block.
-      cout << "MultiFile::writeHeader ended prematurely for nrBlock="
-           << itsNrBlock << endl;
-      itsTestMode = -2;    // indicate no more writing
-      return False;
-    }
+    writeHeaderTest();            // hook for tMultiFileLarge.cc
     if (itsUseODirect) {
+      char* iobuf = mfbuf.data();
       memcpy (iobuf, buf, itsBlockSize);
       itsIO->pwrite (itsBlockSize, 0, iobuf);
     } else {
       itsIO->pwrite (itsBlockSize, 0, buf);
     }
-    return True;
   }
 
   void MultiFile::writeRemainder (MemoryIO& mio, CanonicalIO& cio,
-                                  char* iobuf)
+                                  MultiFileBuffer& mfbuf)
   {
+    char* iobuf = mfbuf.data();
     // Get the size of the remainder.
     Int64 todo = mio.length() - itsBlockSize;
     // Use the other continuation set.
@@ -265,8 +273,6 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     // might require an extra block, etc.
     // To avoid that the free list is changed and needs to be rewritten,
     // new continuation blocks are created by adding a new block.
-    // Obsolete continuation blocks are lost.
-    // Maybe change this by storing actual nr of cont blocks used!!!!!
     Int64 contBlkSize = itsBlockSize - sizeof(Int64);
     Int64 ncontOther = itsHdrCont[itsHdrContInx].blockNrs.size();
     Int64 ncontOld   = itsHdrCont[newContInx].blockNrs.size();
@@ -281,39 +287,20 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
       }
       ncontNew = ncont;
     }
+    // Extend the virtual file.
     if (ncontNew > ncontOld) {
-      // itsNrBlock is always incremented, but in test mode only the headers are
-      // really written, so set itsNrBlock to only the header sizes.
-      // Otherwise they are written at a very high blocknr making the file too large.
-      Int64 nrb1 = 0;
-      Int64 nrb2 = 0;
-      if (itsTestMode != 0) {
-        nrb1 = itsNrBlock;
-        itsNrBlock = 1 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size();
-        nrb2 = itsNrBlock;
-      }
       extendVF (itsHdrCont[newContInx], ncontNew, False);
-      if (itsTestMode != 0) {
-        // Reset the real size. Blocks might have been added for the header.
-        itsNrBlock = nrb1 + itsNrBlock - nrb2;
-        cout << "test mode: " << itsNrBlock << ' '<<nrb1<<' '<<nrb2<<' '<<endl;
-      }
     }
     // Write the continuation blocknrs.
     writeVector (cio, itsHdrCont[0].blockNrs);
     writeVector (cio, itsHdrCont[1].blockNrs);
     itsNrContUsed[newContInx] = ncontNew;
     cio.write (2, itsNrContUsed);
-    // Maybe write here actually used ncont0/1 !!!!!  Count those 8 bytes above
-    /// cio.write (2, itsncont);
     // Write the continuation blocks.
-    const vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
+    const std::vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
     const uChar* remHdr = mio.getBuffer() + itsBlockSize;
     todo = mio.length() - itsBlockSize;
-    if (itsTestMode != 0) {
-      cout << ' ' << newContInx << itsHdrCont[0].blockNrs << itsHdrCont[1].blockNrs
-           << hdrContNrs[0] << ' ' << ncont << ' ' << todo <<endl;
-    }
+    writeHeaderShow (ncont, todo);
     for (Int64 i=0; i<ncont; ++i) {
       Int64 next = (i==ncont-1 ? Int64(0) : hdrContNrs[i+1]);
       CanonicalConversion::fromLocal (iobuf, next);
@@ -331,49 +318,53 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     CanonicalConversion::fromLocal (buf+48, itsNrBlock);
   }
 
-  void MultiFile::writeVector (CanonicalIO& cio, const vector<Int64>& index)
+  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<Int64>& index)
   {
     // Write in the same way as AipsIO is doing.
     Int64 sz = index.size();
     cio.write (1, &sz);
     if (sz > 0) {
-      cio.write (index.size(), &(index[0]));
+      cio.write (index.size(), index.data());
     }
   }
 
-  void MultiFile::writeVector (CanonicalIO& cio, const vector<uInt>& index)
+  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<uInt>& index)
   {
     // Write in the same way as AipsIO is doing.
     Int64 sz = index.size();
     cio.write (1, &sz);
     if (sz > 0) {
-      cio.write (index.size(), &(index[0]));
+      cio.write (index.size(), index.data());
     }
   }
 
-  void MultiFile::readVector (CanonicalIO& cio, vector<Int64>& index)
+  void MultiFile::readVector (CanonicalIO& cio, std::vector<Int64>& index)
   {
     Int64 sz;
     cio.read (1, &sz);
-    index.resize (sz);
     if (sz > 0) {
-      cio.read (sz, &(index[0]));
+      index.resize (sz);
+      cio.read (sz, index.data());
+    } else {
+      index.clear();
     }
   }
 
-  void MultiFile::readVector (CanonicalIO& cio, vector<uInt>& index)
+  void MultiFile::readVector (CanonicalIO& cio, std::vector<uInt>& index)
   {
     Int64 sz;
     cio.read (1, &sz);
-    index.resize (sz);
     if (sz > 0) {
-      cio.read (sz, &(index[0]));
+      index.resize (sz);
+      cio.read (sz, index.data());
+    } else {
+      index.clear();
     }
   }
 
   void MultiFile::readHeader (Bool always)
   {
-    /*  header layout
+    /*  header layout is described in note 260, but repeated here.
         version 1
           Int64  header size
           Int64  blockSize
@@ -388,11 +379,13 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
         version 2
           Int64  0
           Int64  first block of header continuation (<0=none)
+          Int64  hdrCounter
           Int32  version
-          uInt32 headerCRC   (0 = no CRCs used)
+          uInt32 headerCRC
           Int64  header size
           Int64  blockSize
-          Int64  hdrCounter
+          char   useCRC
+          char[7] spare
           AipsIO 'MultiFile' with same version as above
               Int64   nr of blocks used
               nfile*fileinfo
@@ -406,7 +399,6 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
           Int32[nblock]    CRC value of each block (only if useCRC=1)
           Int64[ncont0]    block numbers of header continuation buffer 0
           Int64[ncont1]    block numbers of header continuation buffer 1
-          uInt[2]          nr of continuation blocks actually used
               Note that 'first block of header' tells if cont.block 0 or 1
               is used by comparing it with the first entry.
 
@@ -417,46 +409,37 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
            take new blocks from EOF (otherwise free list changes)
     - Make CRC of entire header (with 0 in headerCRC)
     - First write cont.blocks and finally first block (reset cont.blocknr)
-    - Possibly write all header blocks (in reversed order) at EOF (extra copy)
-           Write seqnr in next blocknr to know if all blocks are there
     */
-    // Read the first part of the header.
-    vector<char> buf(56);
-    Int64 leadSize = 24;         // for version 1
-    Int64 contBlockNr = 0;
-    Int64 headerSize;
+    // Read the first 24 bytes (3x Int64) of the header.
+    std::vector<char> buf(3*sizeof(Int64));
+    itsIO->pread (buf.size(), 0, buf.data());
+    // First get the header change count.
     Int64 hdrCounter;
-    uInt  headerCRC = 0;
-    itsIO->pread (leadSize, 0, &(buf[0]));
-    // In version 1 the headerSize is in the first 8 bytes.
-    // For version 2 and higher it is 0.
-    CanonicalConversion::toLocal (headerSize, &(buf[0]));
-    Int version = 1;
-    if (headerSize > 0) {
-      CanonicalConversion::toLocal (itsBlockSize, &(buf[8]));
-      CanonicalConversion::toLocal (hdrCounter, &(buf[16]));
-    } else {
-      // For version 2 and higher the header contains more values.
-      // The next 32 bytes have to be read.
-      itsIO->pread (32, leadSize, &(buf[leadSize]));
-      leadSize += 32;            // for version 2
-      CanonicalConversion::toLocal (contBlockNr, &(buf[8]));
-      CanonicalConversion::toLocal (version, &(buf[16]));
-      // This version of MultiFile can only handle version 2.
-      // Future versions might use higher version numbers.
-      AlwaysAssert (version==2, AipsError);
-      CanonicalConversion::toLocal (headerCRC, &(buf[20]));
-      itsUseCRC = (headerCRC != 0);
-      CanonicalConversion::toLocal (headerSize, &(buf[24]));
-      CanonicalConversion::toLocal (itsBlockSize, &(buf[32]));
-      CanonicalConversion::toLocal (hdrCounter, &(buf[40]));
-      CanonicalConversion::toLocal (itsNrBlock, &(buf[48]));
-    }
+    CanonicalConversion::toLocal (hdrCounter, &(buf[16]));
     // Only if needed, read the rest of the header.
-    if (hdrCounter == itsHdrCounter  &&  !always) {
-      return;
+    if (always  ||  hdrCounter != itsHdrCounter) {
+      itsHdrCounter = hdrCounter;
+      // In version 1 the headerSize is in the first 8 bytes.
+      // For version 2 and higher it is 0.
+      Int64 headerSize;
+      CanonicalConversion::toLocal (headerSize, buf.data());
+      if (headerSize == 0) {
+        readHeaderVersion2 (buf);
+      } else {
+        readHeaderVersion1 (headerSize, buf);
+      }
+      // Initialize remaining info fields.
+      for (MultiFileInfo& info : itsInfo) {
+        info.curBlock = -1;
+        info.dirty    = False;
+      }
     }
-    itsHdrCounter = hdrCounter;
+  }
+
+  void MultiFile::readHeaderVersion1 (Int64 headerSize, std::vector<char>& buf)
+  {
+    Int64 leadSize = buf.size();
+    CanonicalConversion::toLocal (itsBlockSize, &(buf[8]));
     buf.resize (headerSize);
     if (headerSize <= itsBlockSize) {
       // Only one header block; read only the part that is needed.
@@ -464,20 +447,63 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     } else {
       // Read the first header block and the remainder.
       itsIO->pread (itsBlockSize - leadSize, leadSize, &(buf[leadSize]));
-      if (version == 1) {
-        // For version 1 the remaining header info is in the .hdrext file.
-        FileUnbufferedIO iohdr(itsName + "_hdrext", ByteIO::Old);
-        iohdr.read (headerSize - itsBlockSize, &(buf[itsBlockSize]));
-      } else {
-        readRemainder (headerSize, contBlockNr, buf);
-      }
+      // For version 1 the remaining header info is in the .hdrext file.
+      FileUnbufferedIO iohdr(itsName + "_hdrext", ByteIO::Old);
+      iohdr.read (headerSize - itsBlockSize, &(buf[itsBlockSize]));
+    }
+    // Read all header info from the memory buffer.
+    MemoryIO mio(&(buf[leadSize]), headerSize - leadSize);
+    CanonicalIO cio(&mio);
+    AipsIO aio(&cio);
+    Int version = aio.getstart ("MultiFile");
+    AlwaysAssert (version==1, AipsError);
+    aio >> itsNrBlock;
+    getInfoVersion1 (aio, itsInfo);
+    aio >> itsFreeBlocks;
+    aio.getend();
+  }
+
+  void MultiFile::readHeaderVersion2 (std::vector<char>& buf)
+  {
+    Int64 leadSize = buf.size();
+    Int64 contBlockNr = 0;
+    Int64 headerSize;
+    uInt  headerCRC = 0;
+    Int   version;
+    // For version 2 and higher the next 40 bytes have to be read.
+    buf.resize (leadSize + 40);
+    itsIO->pread (40, leadSize, &(buf[leadSize]));
+    leadSize += 40;
+    CanonicalConversion::toLocal (contBlockNr, &(buf[8]));
+    CanonicalConversion::toLocal (version, &(buf[24]));
+    // This version of MultiFile can only handle version 2.
+    // Future versions might use higher version numbers.
+    if (version != 2) {
+      throw AipsError("This version of Casacore supports up to MultiFile "
+                      "version 2, not version " + String::toString(version));
+    }
+    CanonicalConversion::toLocal (headerCRC, &(buf[28]));
+    CanonicalConversion::toLocal (headerSize, &(buf[32]));
+    CanonicalConversion::toLocal (itsBlockSize, &(buf[40]));
+    CanonicalConversion::toLocal (itsNrBlock, &(buf[48]));
+    char tmpc;
+    CanonicalConversion::toLocal (tmpc, &(buf[56]));
+    itsUseCRC = (tmpc!=0);
+    buf.resize (headerSize);
+    if (headerSize <= itsBlockSize) {
+      // Only one header block; read only the part that is needed.
+      itsIO->pread (headerSize - leadSize, leadSize, &(buf[leadSize]));
+    } else {
+      // Read the first header block and the remainder.
+      itsIO->pread (itsBlockSize - leadSize, leadSize, &(buf[leadSize]));
+      readRemainder (headerSize, contBlockNr, buf);
     }
     // Check the CRC if needed.
     if (itsUseCRC) {
       // Set headerCRC in buffer to 0 to calculate the correct CRC.
       uInt zero32 = 0;
-      CanonicalConversion::fromLocal (&(buf[20]), zero32);
-      uInt crc = calcCRC (&(buf[0]), headerSize);
+      CanonicalConversion::fromLocal (&(buf[28]), zero32);
+      uInt crc = calcCRC (buf.data(), headerSize);
       if (crc != headerCRC) {
         throw AipsError("MultiFile header CRC mismatch in " + fileName());
       }
@@ -488,28 +514,14 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     AipsIO aio(&cio);
     Int vers = aio.getstart ("MultiFile");
     AlwaysAssert (vers==version, AipsError);
-    if (version > 1) {
-      aio >> itsInfo;
-    } else {
-      aio >> itsNrBlock;
-      getInfoVersion1 (aio, itsInfo);
-      aio >> itsFreeBlocks;
-    }
+    aio >> itsInfo;
     aio.getend();
-    if (version > 1) {
-      getInfoVersion2 (contBlockNr, cio);
-    }
-    // Initialize remaining info fields.
-    for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
-         iter!=itsInfo.end(); ++iter) {
-      iter->curBlock = -1;
-      iter->dirty    = False;
-    }
+    getInfoVersion2 (contBlockNr, cio);
   }
 
   void MultiFile::getInfoVersion2 (Int64 contBlockNr, CanonicalIO& cio)
   {
-    vector<Int64> bl;
+    std::vector<Int64> bl;
     for (MultiFileInfo& fileInfo: itsInfo) {
       readVector (cio, bl);
       fileInfo.blockNrs = unpackIndex(bl);
@@ -517,6 +529,9 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     readVector (cio, bl);
     itsFreeBlocks = unpackIndex(bl);
     readVector (cio, itsCRC);
+    if (! itsUseCRC) {
+      AlwaysAssert (itsCRC.size() == 0, AipsError);
+    }
     // Read the header continuation info.
     // Determine which of them is in use.
     readVector (cio, itsHdrCont[0].blockNrs);
@@ -530,7 +545,7 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
   }
 
   void MultiFile::readRemainder (Int64 headerSize, Int64 blockNr,
-                                 vector<char>& buf)
+                                 std::vector<char>& buf)
   {
     MultiFileBuffer mfbuf(itsBlockSize, itsUseODirect);
     char* iobuf = mfbuf.data();
@@ -580,7 +595,7 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
         }
       }
       // Sort them in descending order, so free blocks can be taken from the tail.
-      genSort (&(itsFreeBlocks[0]), itsFreeBlocks.size(),
+      genSort (itsFreeBlocks.data(), itsFreeBlocks.size(),
                Sort::Descending, Sort::QuickSort);
       // The file can be truncated if blocks are freed at the end.
       truncateIfNeeded();
@@ -634,23 +649,24 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     }
   }
 
+  void MultiFile::writeHeaderShow(Int64, Int64) const
+  {}
+  void MultiFile::writeHeaderTest()
+  {}
+  
   void MultiFile::readBlock (MultiFileInfo& info, Int64 blknr,
                              void* buffer)
   {
-    if (! itsTestMode) {
-      itsIO->pread (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
-      if (itsUseCRC) {
-        checkCRC (buffer, info.blockNrs[blknr]);
-      }
+    itsIO->pread (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
+    if (itsUseCRC) {
+      checkCRC (buffer, info.blockNrs[blknr]);
     }
   }
 
   void MultiFile::writeBlock (MultiFileInfo& info, Int64 blknr,
                               const void* buffer)
   {
-    if (! itsTestMode) {
-      itsIO->pwrite (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
-    }
+    itsIO->pwrite (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
     if (itsUseCRC) {
       storeCRC (buffer, info.blockNrs[blknr]);
     }
@@ -693,33 +709,14 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     // Normal lookup table algorithm with augmented zero bytes.
     uInt crc = crcinit;
     for (Int64 i=0; i<size; ++i) {
-      crc = ((crc << 8) | buf[i]) ^ itsCRCTab[ (crc >> (32-8))  & 0xff];
+      crc = ((crc << 8) | buf[i]) ^ CRCTable()[ (crc >> (32-8))  & 0xff];
     }
     // Augment zero bytes.
     for (size_t i=0; i<32/8; ++i) {
-      crc = (crc << 8) ^ itsCRCTab[ (crc >> (32-8))  & 0xff];
+      crc = (crc << 8) ^ CRCTable()[ (crc >> (32-8))  & 0xff];
     }
     crc^= 0xffffffff;
     return crc;
-  }
-
-  void MultiFile::fillCRCTable()
-  {
-    // CRC-32 parameters
-    // 'polynom' is the standard CRC-32 polynom without leading '1' bit
-    const uInt polynom = 0x4c11db7;
-    const uInt highbit = (uInt)1<<(32-1);
-    // make CRC lookup table used by table algorithms
-    for (int i=0; i<256; i++) {
-      uInt crc = i;
-      crc<<= 32-8;
-      for (int j=0; j<8; j++) {
-        uInt bit = crc & highbit;
-        crc<<= 1;
-        if (bit) crc^= polynom;
-      }			
-      itsCRCTab[i]= crc;
-    }
   }
 
   void MultiFile::show (std::ostream& os) const
@@ -733,18 +730,18 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
        << "  free=" << freeBlocks() << endl;
   }
 
-  vector<Int64> MultiFile::packIndex (const vector<Int64>& blockNrs)
+  std::vector<Int64> MultiFile::packIndex (const std::vector<Int64>& blockNrs)
   {
     // See if subsequent block numbers are used, so the index can be
     // compressed.
     // Compression is done by counting the nr of subsequent blocknrs
     // and writing the negative count if > 0.
     // Note that the count does not include the first block number.
-    vector<Int64> buf;
-    buf.reserve (blockNrs.size());
+    std::vector<Int64> buf;
     if (blockNrs.empty()) {
-      return buf;
+      return std::vector<Int64>();
     }
+    buf.reserve (blockNrs.size());
     buf.push_back (blockNrs[0]);
     Int64 next = blockNrs[0] + 1;
     for (size_t j=1; j<blockNrs.size(); ++j) {
@@ -765,11 +762,11 @@ Possibly check if truncate is just before cont block. If so, move back cont.bloc
     return buf;
   }
 
-  vector<Int64> MultiFile::unpackIndex (const vector<Int64>& blockNrs)
+  std::vector<Int64> MultiFile::unpackIndex (const std::vector<Int64>& blockNrs)
   {
     // Expand if subsequent block numbers are used indicated by a
     // negative value.
-    vector<Int64> buf;
+    std::vector<Int64> buf;
     buf.reserve (blockNrs.size());
     for (auto bl : blockNrs) {
       if (bl < 0) {

@@ -80,10 +80,11 @@ void writeFiles1 (const std::shared_ptr<MultiFileBase>& mfile)
 void checkFiles1 (const std::shared_ptr<MultiFileBase>& mfile)
 {
   MFFileIO mff(mfile, "mff1", ByteIO::Update);
-  Vector<Int64> buf1(250), buf(250);
-  indgen(buf1);
+  Vector<Int64> bufcheck(250);
+  Vector<Int64> buf(250);
+  indgen(bufcheck);
   mff.read (2000, buf.data());
-  AlwaysAssertExit (allEQ(buf, buf1));
+  AlwaysAssertExit (allEQ(buf, bufcheck));
   showMFFile (mff);
 }
 
@@ -114,12 +115,12 @@ void testWriteNested (const std::shared_ptr<MultiFileBase>& parent)
 
 void testReadNested (const std::shared_ptr<MultiFileBase>& parent)
 {
-  cout<<"start read"<<endl;
+  cout<<"testReadNested ..."<<endl;
   std::shared_ptr<MultiFileBase> mfile1
-    (parent->makeNested (parent, "mfile1"));
-  cout<<"start read"<<endl;
+    (parent->makeNested (parent, "mfile1", ByteIO::Old, 0));
   MFFileIO mff11(mfile1, "mff11");
-  Vector<Int64> bufcheck(300), buf(300);
+  Vector<Int64> bufcheck(300);
+  Vector<Int64> buf(300);
   indgen(bufcheck);
   mff11.read (8*300, buf.data());
   AlwaysAssertExit (allEQ(buf, bufcheck));
@@ -128,7 +129,7 @@ void testReadNested (const std::shared_ptr<MultiFileBase>& parent)
   mff12.read (8*300, buf.data());
   AlwaysAssertExit (allEQ(buf, bufcheck));
   std::shared_ptr<MultiFileBase> mfile2
-    (parent->makeNested (parent, "mfile2"));
+    (parent->makeNested (parent, "mfile2", ByteIO::Old, 0));
   MFFileIO mff21(mfile2, "mff21");
   Int64 nread = mff21.read (8*300, buf.data(), False);  // only 250 were written
   AlwaysAssertExit (nread == 8*250);
@@ -139,11 +140,12 @@ void testTruncate (const std::shared_ptr<MultiFileBase>& parent)
 {
   cout << "testTruncate ..." << endl;
   std::shared_ptr<MultiFileBase> mfile1
-    (parent->makeNested (parent, "mfile1"));
+    (parent->makeNested (parent, "mfile1", ByteIO::Update, 0));
   MFFileIO mff11(mfile1, "mff11", ByteIO::Update);
   mff11.truncate (8*120);
   AlwaysAssertExit (mff11.length() == 8*120);
-  Vector<Int64> bufcheck(120), buf(300);
+  Vector<Int64> bufcheck(120);
+  Vector<Int64> buf(300);
   indgen(bufcheck);
   Int64 nread = mff11.read (8*300, buf.data(), False);  // only 120 are left
   AlwaysAssertExit (nread == 8*120);

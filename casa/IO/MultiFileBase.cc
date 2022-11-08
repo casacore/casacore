@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/IO/MultiFileBase.h>
@@ -56,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   AipsIO& operator>> (AipsIO& ios, MultiFileInfo& info)
     { ios >> info.name >> info.fsize >> info.nested;
       return ios; }
-  void getInfoVersion1 (AipsIO& ios, vector<MultiFileInfo>& info)
+  void getInfoVersion1 (AipsIO& ios, std::vector<MultiFileInfo>& info)
   {
     // Get the old MultiFileInfo not containing the 'nested' field.
     // The following code is a copy of STLIO.tcc.
@@ -114,7 +112,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MultiFileBase::~MultiFileBase()
   {
     // Note: do not call flush() here, otherwise the virtual function
-    // doFlushFile in the already destructed base class is called
+    // doFlushFile in the already destructed derived class is called
     // giving the error 'pure virtual function called'.
     itsInfo.clear();
   }
@@ -149,19 +147,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   uInt MultiFileBase::nfile() const
   {
     Int nf = 0;
-    for (vector<MultiFileInfo>::const_iterator iter=itsInfo.begin();
-         iter!=itsInfo.end(); ++iter) {
-      if (! iter->name.empty()) {
+    for (const MultiFileInfo& info : itsInfo) {
+      if (! info.name.empty()) {
         nf++;
       }
     }
     return nf;
   }
 
-  Bool MultiFileBase::flush()
+  void MultiFileBase::flush()
   {
     // Flush all buffers if needed.
-    for (auto info : itsInfo) {
+    for (MultiFileInfo& info : itsInfo) {
       if (info.dirty) {
         writeDirty (info);
       }
@@ -169,13 +166,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Header only needs to be written if blocks were added since last flush.
     // If it does not need to be written, no further flush is needed.
     if (itsChanged) {
-      if (!writeHeader()) {
-        return False;
-      }
+      writeHeader();
       itsChanged = False;
     }
     doFlushFile();
-    return True;
   }
 
   void MultiFileBase::flushFile (Int fileId)
@@ -339,10 +333,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     AlwaysAssert (!itsChanged, AipsError);
     // Clear all blocknrs.
-    for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
-         iter!=itsInfo.end(); ++iter) {
-      AlwaysAssert (!iter->dirty, AipsError);
-      iter->curBlock = -1;
+    for (MultiFileInfo& info : itsInfo) {
+      AlwaysAssert (!info.dirty, AipsError);
+      info.curBlock = -1;
     }
     readHeader();
   }
@@ -358,7 +351,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Also determine (last) free file slot.
     uInt inx = itsInfo.size();
     uInt i = 0;
-    for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
+    for (std::vector<MultiFileInfo>::iterator iter=itsInfo.begin();
          iter!=itsInfo.end(); ++iter, ++i) {
       if (iter->name.empty()) {
         inx = i;      // free file slot

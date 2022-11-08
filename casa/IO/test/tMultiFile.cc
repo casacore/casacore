@@ -259,15 +259,15 @@ void timePartly()
 
 void timePack (Int64 incr)
 {
-  vector<Int64> bl(1000000);
+  std::vector<Int64> bl(1000000);
   for (size_t i=0; i<bl.size(); ++i) {
     bl[i] = i*incr;
   }
   Timer timer;
-  vector<Int64> pck = MultiFile::packIndex (bl);
+  std::vector<Int64> pck = MultiFile::packIndex (bl);
   timer.show("pack  ");
   Timer timer2;
-  vector<Int64> orig = MultiFile::packIndex (pck);
+  std::vector<Int64> orig = MultiFile::packIndex (pck);
   timer2.show ("unpack");
 }
 
@@ -351,44 +351,6 @@ void testNested (Int64 blockSizeParent, Int64 blockSizeChild)
   cout << endl;
 }
 
-void testLarge (Bool oDirect, Bool useCRC, int testMode)
-{
-  cout << "Test a large MultiFile ..." << endl;
-  {
-    // Use 4 KB blocks, but optionally use test mode (do not write actual data).
-    MultiFile mfile("tMultiFile_tmp.large", ByteIO::New, 4096,
-                    oDirect, useCRC, testMode);
-    Int fid0 = mfile.createFile ("file0");
-    Int fid1 = mfile.createFile ("file1");
-    Vector<Int64> buf(4096/sizeof(Int64));
-    indgen(buf);
-    Int64 offs0 = 0;
-    Int64 offs1 = 0;
-    for (size_t i=0; i<1024; ++i) {
-      for (size_t j=0; j<128; ++j) {
-        mfile.write (fid0, buf.data(), 4096, offs0);
-        offs0 += 4096;
-      }
-      for (size_t j=0; j<32; ++j) {
-        mfile.write (fid1, buf.data(), 4096, offs1);
-        offs1 += 4096;
-      }
-      // Do an occasional flush.
-      if (i%200 == 5) {
-        if (! mfile.flush()) {
-          break;
-        }
-      }
-    }
-    mfile.closeFile (fid0);
-    mfile.closeFile (fid1);
-
-  }
-  cout << "read the large file" << endl;
-  readFile ("tMultiFile_tmp.large");
-  cout << endl;
-}
-
 void testTruncate()
 {
   cout << "Test truncation of MultiFile (also nested) ..." << endl;
@@ -414,15 +376,15 @@ void testTruncate()
   AlwaysAssertExit (mfile->freeBlocks().size() == 0);
 }
 
-void doPackTest (const vector<Int64>& bl, const vector<Int64>& exp)
+void doPackTest (const std::vector<Int64>& bl, const std::vector<Int64>& exp)
 {
-  vector<Int64> pck = MultiFile::packIndex (bl);
+  std::vector<Int64> pck = MultiFile::packIndex (bl);
   AlwaysAssertExit (pck.size() <= bl.size());
   AlwaysAssertExit (pck.size() == exp.size());
   for (size_t i=0; i<pck.size(); ++i) {
     AlwaysAssertExit (pck[i] == exp[i]);
   }
-  vector<Int64> orig = MultiFile::unpackIndex (pck);
+  std::vector<Int64> orig = MultiFile::unpackIndex (pck);
   AlwaysAssertExit (orig.size() == bl.size());
   for (size_t i=0; i<bl.size(); ++i) {
     AlwaysAssertExit (orig[i] == bl[i]);
@@ -434,10 +396,10 @@ int main()
 {
   try {
     // First test if packing/unpacking works correctly.
-    doPackTest (vector<Int64>(), vector<Int64>());
-    doPackTest (vector<Int64>({1,2,3,4,5}), vector<Int64>({1,-4}));
-    doPackTest (vector<Int64>({1,3,5,7,9}), vector<Int64>({1,3,5,7,9}));
-    doPackTest (vector<Int64>({1,3,4,7,8}), vector<Int64>({1,3,-1,7,-1}));
+    doPackTest (std::vector<Int64>(), std::vector<Int64>());
+    doPackTest (std::vector<Int64>({1,2,3,4,5}), std::vector<Int64>({1,-4}));
+    doPackTest (std::vector<Int64>({1,3,5,7,9}), std::vector<Int64>({1,3,5,7,9}));
+    doPackTest (std::vector<Int64>({1,3,4,7,8}), std::vector<Int64>({1,3,-1,7,-1}));
     // Do some MultiFile tests.
     doTest (1024);              // no extra header file
     doTest (128);               // requires extra header file
@@ -446,13 +408,6 @@ int main()
     testV1();
     // Test if nested MultiFiles work fine.
     testNested (512, 0);
-    // Test a large MultiFile without actually writing data.
-    testLarge (False, False, -1);
-    testLarge (False, True, -1);
-    testLarge (True, False, -1);
-    testLarge (True, True, -1);
-    // Test a large MultiFile forcing an exception when itsNrBlock > 10000
-    testLarge (False, False, 100000);
     // Test file truncation.
     testTruncate();
     // Do some timings.

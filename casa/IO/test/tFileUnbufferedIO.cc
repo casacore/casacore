@@ -30,6 +30,7 @@
 #include <casacore/casa/iostream.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <vector>
 
 
 #include <casacore/casa/namespace.h>
@@ -37,21 +38,18 @@ void check (int bufSize, const char* buf)
 {
   FileUnbufferedIO fio("tFileUnbufferedIO_tmp.dat", ByteIO::Old);
   fio.seek (0);
-  char* buf1 = new char[bufSize];
-  
+  std::vector<char> buf1(bufSize);
   for (int j=0; j<2000/bufSize; j++) {
-    AlwaysAssertExit (fio.read (bufSize, buf1, True) == bufSize);
+    AlwaysAssertExit (fio.read (bufSize, buf1.data(), True) == bufSize);
     for (int i=0; i<bufSize; i++) {
       AlwaysAssertExit (buf1[i] == *buf++);
     }
   }
   int rem = 2000%bufSize;
-  AlwaysAssertExit (fio.read(bufSize, buf1, False) == rem);
+  AlwaysAssertExit (fio.read(bufSize, buf1.data(), False) == rem);
   for (int i=0; i<rem; i++) {
     AlwaysAssertExit (buf1[i] == *buf++);
   }
-
-  delete [] buf1;
 }
 
 
@@ -79,8 +77,12 @@ void testTruncate()
 {
   FileUnbufferedIO file ("tFileUnbufferedIO_tmp.dat", ByteIO::Update);
   AlwaysAssertExit (file.length() == 2000);
+  file.truncate (2000);
+  AlwaysAssertExit (file.length() == 2000);
   file.truncate (1546);
   AlwaysAssertExit (file.length() == 1546);
+  file.truncate (2000);
+  AlwaysAssertExit (file.length() == 2000);
 }
 
 int main()

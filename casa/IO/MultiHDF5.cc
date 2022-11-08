@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
 #include <casacore/casa/IO/MultiHDF5.h>
@@ -59,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Create or open the file.
     // Note that creation (in doAddFile) also creates a dataset which is
     // not used, but it does not harm.
-    MFFileIO file(parent, name, option, True);
+    MFFileIO file(parent, name, option);
     itsGroup = file.getInfo().group;    // make sure HDF5Group object is kept
     itsHDF5  = itsGroup.get();
     init (option);
@@ -94,7 +92,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     info.group.reset (new HDF5Group (*itsHDF5, info.name, true, false));
     info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
                                          (const uChar*)0));
-    ///cout << "Opened " << info.name << " in " << itsName << endl;
   }
 
   void MultiHDF5::doCloseFile (MultiFileInfo& info)
@@ -102,7 +99,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     DebugAssert (info.group->isValid(), AipsError);
     info.dataSet.reset();
     info.group.reset();
-    ///cout << "Closed " << info.name << " in " << itsName << endl;
   }
 
   void MultiHDF5::doFlushFile()
@@ -130,7 +126,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiHDF5::fsync()
   {}
 
-  Bool MultiHDF5::writeHeader()
+  void MultiHDF5::writeHeader()
   {
     Record rec;
     itsHdrCounter++;
@@ -145,7 +141,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rec.define ("names", names);
     rec.define ("sizes", sizes);
     HDF5Record::writeRecord (*itsHDF5, "__MultiHDF5_Header__", rec);
-    return True;
   }
 
   void MultiHDF5::readHeader (Bool always)
@@ -178,7 +173,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                          IPosition(2, itsBlockSize, 0),
                                          IPosition(2, itsBlockSize, 1),
                                          (const uChar*)0));
-    ///cout << "Added  " << info.name << " in " << itsName << endl;
   }
 
   void MultiHDF5::doDeleteFile (MultiFileInfo& info)
@@ -186,7 +180,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Close the group and dataset.
     info.dataSet.reset();
     info.group.reset();
-    ///cout << "Delete " << info.name << " in " << itsName << endl;
     // Delete the group.
     HDF5Group::remove (*itsHDF5, info.name);
   }

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef CASA_MULTIFILE_H
 #define CASA_MULTIFILE_H
@@ -131,10 +129,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </srcblock>
   // </example>
 
-  // The class has a special test mode that can be used to simulate a very large
-  // file and to test the behaviour in case of a crash. It is only meant for
-  // test purposes and should not be used by the common user.
-
   // <todo>
   //  <li> MultiFile can be optimized how cont.blocks are used. In case of
   //       file truncation, it could check if only cont.blocks are present
@@ -149,7 +143,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //       blocks are allocated for a virtual file.
   // </todo>
 
-
   class MultiFile: public MultiFileBase
   {
   public:
@@ -161,118 +154,120 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // I/O behaviour.
     // <br>If useCRC=True, 32-bit CRC values are calculated and stored for
     // each data block. Note that useCRC is only used for new files.
-    // <br>If testMode!=0, a test mode will be used which means that
-    // the data blocks are not written. It can be used to test the index
-    // of very large files.
-    // testMode>0 mimics a crash. Function flush ends prematurely while writing
-    // the header when itsNrBlocks>testMode.
-    MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0,
-               Bool useODirect=False, Bool useCRC=False, int testMode=0);
+    explicit MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0,
+                        Bool useODirect=False, Bool useCRC=False);
 
     // Open or create a MultiFile with the given name which is nested in the
     // given parent. Thus data are read/written in the parent file.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the parent.
-    MultiFile (const String& name,
-               const std::shared_ptr<MultiFileBase>& parent,
-               ByteIO::OpenOption, Int blockSize=0);
+    explicit MultiFile (const String& name,
+                        const std::shared_ptr<MultiFileBase>& parent,
+                        ByteIO::OpenOption, Int blockSize=0);
 
     // The destructor flushes and closes the file.
-    virtual ~MultiFile();
+    ~MultiFile() override;
+
+    // Copy constructor and assignment not possible.
+    MultiFile (const MultiFile&) = delete;
+    MultiFile& operator= (const MultiFile&) = delete;
 
     // Make a nested MultiFile.
-    virtual std::shared_ptr<MultiFileBase> makeNested
+    std::shared_ptr<MultiFileBase> makeNested
     (const std::shared_ptr<MultiFileBase>& parent, const String& name,
-     ByteIO::OpenOption = ByteIO::Old, Int blockSize=0) const;
+     ByteIO::OpenOption, Int blockSize) const override;
 
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the file is writable already.
     // Otherwise it will be reopened and an exception will be thrown
     // if it is not possible to reopen it for read/write access.
-    virtual void reopenRW();
+    void reopenRW() override;
 
     // Fsync the file (i.e., force the data to be physically written).
-    virtual void fsync();
+    void fsync() override;
 
     // Show some info.
     void show (std::ostream&) const;
 
     // Compress a block index by looking for subsequent block numbers.
-    static vector<Int64> packIndex (const vector<Int64>& blockNrs);
+    static std::vector<Int64> packIndex (const std::vector<Int64>& blockNrs);
 
     // Decompress a block index by inserting subsequent block numbers.
-    static vector<Int64> unpackIndex (const vector<Int64>& blockNrs);
+    static std::vector<Int64> unpackIndex (const std::vector<Int64>& blockNrs);
 
   private:
-    // Copy constructor and assignment not possible.
-    MultiFile (const MultiFile&);
-    MultiFile& operator= (const MultiFile&);
-
     // Initialize the MultiFile object.
     void init (ByteIO::OpenOption option);
     // Read the file info for the new version 2.
     void getInfoVersion2 (Int64 contBlockNr, CanonicalIO& aio);
+    // Write a vector of Int64.
+    void writeVector (CanonicalIO& cio, const std::vector<Int64>& index);
+    void writeVector (CanonicalIO& cio, const std::vector<uInt>& index);
+    // Read a vector of Int64.
+    void readVector (CanonicalIO& cio, std::vector<Int64>& index);
+    void readVector (CanonicalIO& cio, std::vector<uInt>& index);
+    // Write the remainder of the header (in case exceeding 1 block).
+    // <src>iobuf</src> should be large enough
+    void writeRemainder (MemoryIO& mio, CanonicalIO&, MultiFileBuffer& mfbuf);
+    // Read the remainder of the header into the buffer.
+    void readRemainder (Int64 headerSize, Int64 blockNr, std::vector<char>& buf);
+    // Truncate the file if blocks are freed at the end.
+    void truncateIfNeeded();
+    // Header writing hooks (meant for derived test classes).
+    virtual void writeHeaderShow (Int64 ncont, Int64 todo) const;
+    virtual void writeHeaderTest();
+    // </group>
+    
+    // Do the class-specific actions on opening a file.
+    void doOpenFile (MultiFileInfo&) override;
+    // Do the class-specific actions on closing a file.
+    void doCloseFile (MultiFileInfo&) override;
+    // Do the class-specific actions on adding a file.
+    void doAddFile (MultiFileInfo&) override;
+    // Do the class-specific actions on deleting a file.
+    void doDeleteFile (MultiFileInfo&) override;
+    // Truncate the file to <src>nrblk</src> blocks.
+    void doTruncateFile (MultiFileInfo& info, uInt64 nrblk) override;
+    // Flush the file itself.
+    void doFlushFile() override;
+    // Flush and close the file.
+    void close() override;
+    // Write the header info.
+    void writeHeader() override;
+    // Read the header info. If always==False, the info is only read if the
+    // header counter has changed.
+    void readHeader (Bool always=True) override;
+    // Extend the virtual file to fit lastblk.
+    void extend (MultiFileInfo& info, Int64 lastblk) override;
+
+  protected:
     // Store the CRC of a data block in the index.
     void storeCRC (const void* buffer, Int64 blknr);
     // Check the CRC of a data block read.
     void checkCRC (const void* buffer, Int64 blknr) const;
     // Calculate the CRC of a data block.
     uInt calcCRC (const void* buffer, Int64 size) const;
-    // Fill the precalculated CRC byte table.
-    void fillCRCTable();
-    // Write a vector of Int64.
-    void writeVector (CanonicalIO& cio, const vector<Int64>& index);
-    void writeVector (CanonicalIO& cio, const vector<uInt>& index);
-    // Read a vector of Int64.
-    void readVector (CanonicalIO& cio, vector<Int64>& index);
-    void readVector (CanonicalIO& cio, vector<uInt>& index);
-    // Write the remainder of the header (in case exceeding 1 block).
-    void writeRemainder (MemoryIO& mio, CanonicalIO&, char* iobuf);
-    // Read the remainder of the header into the buffer.
-    void readRemainder (Int64 headerSize, Int64 blockNr, vector<char>& buf);
     // Extend the virtual file to fit lastblk.
     // Optionally the free blocks are not used.
-    void extendVF (MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks);
-    // Truncate the file if blocks are freed at the end.
-    void truncateIfNeeded();
-
-    // Do the class-specific actions on opening a file.
-    virtual void doOpenFile (MultiFileInfo&);
-    // Do the class-specific actions on closing a file.
-    virtual void doCloseFile (MultiFileInfo&);
-    // Do the class-specific actions on adding a file.
-    virtual void doAddFile (MultiFileInfo&);
-    // Do the class-specific actions on deleting a file.
-    virtual void doDeleteFile (MultiFileInfo&);
-    // Truncate the file to <src>nrblk</src> blocks.
-    virtual void doTruncateFile (MultiFileInfo& info, uInt64 nrblk);
-    // Flush the file itself.
-    virtual void doFlushFile();
-    // Flush and close the file.
-    virtual void close();
-    // Write the header info.
-    virtual Bool writeHeader();
-    // Read the header info. If always==False, the info is only read if the
-    // header counter has changed.
-    virtual void readHeader (Bool always=True);
-    // Extend the virtual file to fit lastblk.
-    virtual void extend (MultiFileInfo& info, Int64 lastblk);
+    virtual void extendVF (MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks);
     // Write a data block.
-    virtual void writeBlock (MultiFileInfo& info, Int64 blknr,
-                             const void* buffer);
+    void writeBlock (MultiFileInfo& info, Int64 blknr,
+                     const void* buffer) override;
     // Read a data block.
-    virtual void readBlock (MultiFileInfo& info, Int64 blknr,
-                            void* buffer);
+    void readBlock (MultiFileInfo& info, Int64 blknr,
+                    void* buffer) override;
+    // Read the version 1 header.
+    void readHeaderVersion1 (Int64 headerSize, std::vector<char>& buf);
+    // Read the version 2 and higher header.
+    void readHeaderVersion2 (std::vector<char>& buf);
 
     //# Data members
     // Define two continuation sets where the header overflow can be stored
     MultiFileInfo itsHdrCont[2];
     uInt  itsNrContUsed[2];     // nr of cont.blocks actually used
     uInt  itsHdrContInx;        // Continuation set last used (0 or 1)
-    int   itsTestMode;
     Bool  itsUseCRC;
     std::vector<uInt> itsCRC;   // CRC value per block (empty if useCRC=False)
-    uInt  itsCRCTab[256];       // Precalculated CRC byte values
     std::unique_ptr<ByteIO> itsIO;   // A regular file or nested MFFileIO
   };
 

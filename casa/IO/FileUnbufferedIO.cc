@@ -1,5 +1,5 @@
 //# FileUnbufferedIO.cc: Class for unbuffered IO on a file
-//# Copyright (C) 2019
+//# Copyright (C) 2022
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/IO/FileUnbufferedIO.h>

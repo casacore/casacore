@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_AIPSIO_H
 #define CASA_AIPSIO_H
@@ -179,7 +177,6 @@ public:
     explicit AipsIO (const String& fileName,
 		     ByteIO::OpenOption = ByteIO::Old,
 		     uInt filebufSize=65536,
-////		     uInt filebufSize=1048576,
                      const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Construct from a stream object derived from ByteIO.
@@ -195,6 +192,10 @@ public:
 
     // Close if not done yet
     ~AipsIO();
+
+    // Copy constructor and assignment are not allowed.
+    AipsIO (const AipsIO&) = delete;
+    AipsIO& operator= (const AipsIO&) = delete;
 
     // Open/create file (either a regular file or a MultiFileBase virtual file).
     // An exception is thrown if the object contains an already open file.
@@ -403,10 +404,6 @@ public:
     uInt getend();
 
 private:
-    // Copy constructor and assignment are not allowed.
-    AipsIO (const AipsIO&);
-    AipsIO& operator= (const AipsIO&);
-
     // Initialize everything for the open.
     // It checks if there is no outstanding open file.
     void openInit (ByteIO::OpenOption);

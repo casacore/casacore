@@ -1,5 +1,5 @@
 //# FileUnbufferedIO.h: Class for unbuffered IO on a file
-//# Copyright (C) 2019
+//# Copyright (C) 2022
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_FILEUNBUFFEREDIO_H
 #define CASA_FILEUNBUFFEREDIO_H
@@ -51,33 +49,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <synopsis> 
 // This class is a specialization of class
-// <linkto class=ByteIO>ByteIO</linkto>. It uses a file descriptor
-// to read/write data.
-// <p>
-// The file associated with the file descriptor has to be opened
-// before hand.
-// The constructor will determine automatically if the file is
-// readable, writable and seekable.
-// Note that on destruction the file descriptor is NOT closed.
+// <linkto class=ByteIO>FiledesIO</linkto> to make it easier to open a file.
+// It reads/writes the data directly instead of using a buffer to reduce the
+// number of IO-operations.
+// It is meant for file access using large reads and writes as done by MultiFile.
+//
+// Optionally the file can be used with O_DIRECT to bypass the system's file cache
+// for more predictable IO behaviour which can be of importance in
+// real-time applications.
 // </synopsis>
-
-// <example>
-// This example shows how FiledesIO can be used with an fd.
-// It uses the fd for a regular file, which could be done in an easier
-// way using class <linkto class=RegularFileIO>RegularFileIO</linkto>.
-// However, when using pipes or sockets, this would be the only way.
-// <srcblock>
-//    // Get a file descriptor for the file.
-//    int fd = open ("file.name");
-//    // Use that as the source of AipsIO (which will also use CanonicalIO).
-//    FiledesIO fio (fd);
-//    AipsIO stream (&fio);
-//    // Read the data.
-//    Int vali;
-//    Bool valb;
-//    stream >> vali >> valb;
-// </srcblock>
-// </example>
 
 // <motivation> 
 // Make it possible to use the Casacore IO functionality on any file.
@@ -94,25 +74,24 @@ public:
   // with O_DIRECT which bypasses the kernel's file cache for more predictable
   // I/O behaviour. It requires the size and the alignment of the data read
   // or written to be a multiple of the the disk's logical block size.
-  FileUnbufferedIO (const RegularFile& fileName, ByteIO::OpenOption option,
-                    Bool useODirect=False);
+  explicit FileUnbufferedIO (const RegularFile& fileName,
+                             ByteIO::OpenOption option,
+                             Bool useODirect=False);
 
   // The destructor closes the file.
-  virtual ~FileUnbufferedIO();
+  ~FileUnbufferedIO() override;
+
+  // Copy constructor and assignment cannot be used.
+  FileUnbufferedIO (const FileUnbufferedIO&) = delete;
+  FileUnbufferedIO& operator= (const FileUnbufferedIO&) = delete;
 
   // Reopen the file for read/write.
   // Nothing is done if already opened for read/write.
   // An exception is thrown if the file is readonly.
-  virtual void reopenRW();
+  void reopenRW() override;
 
 private:
   Bool itsUseODirect;
-
-  // Copy constructor, should not be used.
-  FileUnbufferedIO (const FileUnbufferedIO& that);
-
-  // Assignment, should not be used.
-  FileUnbufferedIO& operator= (const FileUnbufferedIO& that);
 };
 
 

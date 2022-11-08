@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
 #include <casacore/casa/IO/MFFileIO.h>
@@ -33,12 +31,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MFFileIO::MFFileIO (const std::shared_ptr<MultiFileBase>& file,
-                      const String& name,
-                      ByteIO::OpenOption opt, Bool isNested)
+                      const String& name, ByteIO::OpenOption opt)
     : itsFile      (file),
       itsPosition  (0),
       itsName      (name),
-      itsIsNested  (isNested),
       itsIsWritable(True)
   {
     if (opt == ByteIO::New  ||  opt == ByteIO::NewNoReplace) {
@@ -123,7 +119,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   Bool MFFileIO::isWritable() const
   {
-    return itsFile->isWritable();
+    return itsIsWritable && itsFile->isWritable();
   }
 
   Bool MFFileIO::isSeekable() const
