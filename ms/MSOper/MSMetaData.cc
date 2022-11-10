@@ -5021,11 +5021,11 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     const static String wvrNominal = "WVR#NOMINAL";
     uInt nrows = bws.size();
     // for ALMA specific RB info
-    const String asdm_rx = _ms->tableName() + "/ASDM_RECEIVER";
+    const File asdm_rx(_ms->tableName() + "/ASDM_RECEIVER");
     Vector<String> freqBand;
-    if (Directory(asdm_rx).exists()) {
+    if (asdm_rx.exists() && asdm_rx.isDirectory()) {
         freqBand = ScalarColumn<String>(
-            Table(asdm_rx), "frequencyBand"
+            Table(asdm_rx.path().originalName()), "frequencyBand"
         ).getColumn();
     }
     for (uInt i=0; i<nrows; ++i) {
