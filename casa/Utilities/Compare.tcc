@@ -53,7 +53,7 @@ int ObjCompare<T>::comp (const void* obj1, const void* obj2) const
 template<class T>
 DataType ObjCompare<T>::dataType() const
 {
-    return whatType ((T*)0);
+    return whatType<T>();
 }
 
 

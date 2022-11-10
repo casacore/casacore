@@ -26,7 +26,7 @@
 //# $Id: ExprFuncNode.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprFuncNode.h>
-#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/TaQL/TableParseUtil.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprDerNode.h>
@@ -424,8 +424,8 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
         String name = operands_p[0]->getString (id);
         String shand, columnName;
         Vector<String> fieldNames;
-        TableParseSelect::splitName (shand, columnName, fieldNames,
-                                     name, True, True, False);
+        TableParseUtil::splitName (shand, columnName, fieldNames,
+                                   name, True, True, False);
         if (! shand.empty()) {
           return False;
         }
@@ -929,9 +929,6 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
         return tan   (operands_p[0]->getDComplex(id));
     case tanhFUNC:
         return tanh  (operands_p[0]->getDComplex(id));
-    case atan2FUNC:
-        return atan2 (operands_p[0]->getDComplex(id),
-                      operands_p[1]->getDComplex(id));
     case complexFUNC:
         // A single argument is always a string.
         if (operands_p.size() == 1) {

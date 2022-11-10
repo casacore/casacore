@@ -2033,6 +2033,16 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
             return max (operands()[0]->getArrayDComplex(id),
                         operands()[1]->getArrayDComplex(id));
         }
+    case TableExprFuncNode::asinFUNC:
+        return asin  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::acosFUNC:
+        return acos  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::atanFUNC:
+        return atan  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::tanFUNC:
+        return tan   (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::tanhFUNC:
+        return tanh  (operands()[0]->getArrayDComplex(id));
     case TableExprFuncNode::arrsumsFUNC:
       {
         MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));

@@ -1,17 +1,15 @@
-#
-# Casacore
-#
-project(casacore)
+cmake_minimum_required (VERSION 3.3.0)
 
-cmake_minimum_required (VERSION 2.8.10)
+project(casacore VERSION 3.5.0)
+
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
 include(CheckCXXSourceCompiles)
 
-# fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
-if (POLICY CMP0048)
-    cmake_policy (SET CMP0048 OLD)
+# Fixes warnings on cmake 3.x+ about missing extensions
+if (POLICY CMP0115)
+    cmake_policy (SET CMP0115 NEW)
 endif()
 
 # Enable <packageName>_ROOT variables for recent versions of CMake
@@ -19,14 +17,8 @@ if (POLICY CMP0074)
     cmake_policy (SET CMP0074 NEW)
 endif()
 
-set(PROJECT_VERSION_MAJOR 3)
-set(PROJECT_VERSION_MINOR 4)
-set(PROJECT_VERSION_PATCH 0)
-set(PROJECT_VERSION
-  "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
-SET(PROJECT_SOVERSION 6)
+SET(PROJECT_SOVERSION 7)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -42,8 +34,8 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 # By default build only Python2 bindings
-option (BUILD_PYTHON "Build the python bindings" YES)
-option (BUILD_PYTHON3 "Build the python3 bindings" NO)
+option (BUILD_PYTHON "Build the python2 bindings" NO)
+option (BUILD_PYTHON3 "Build the python3 bindings" YES)
 
 option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 option (BUILD_FFTPACK_DEPRECATED "build FFTPack" NO)
@@ -185,7 +177,6 @@ if (NOT CMAKE_CXX_FLAGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unneeded-internal-declaration")
     endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif (NOT CMAKE_CXX_FLAGS)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char")
 
 # Set build type if not given.
 if (NOT CMAKE_BUILD_TYPE)
@@ -462,22 +453,22 @@ if(USE_THREADS)
     elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
     else()
-        if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
         else()
             message(FATAL_ERROR "${_errmsg} (${CMAKE_C_COMPILER_ID}): ${CMAKE_C_COMPILER}")
-        endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        endif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     endif(CMAKE_COMPILER_IS_GNUCC)
     if(CMAKE_COMPILER_IS_GNUCXX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
     else()
-        if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
         elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
         else()
             message(FATAL_ERROR "${_errmsg} (${CMAKE_C_COMPILER_ID}): ${CMAKE_CXX_COMPILER}")
-        endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        endif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     endif(CMAKE_COMPILER_IS_GNUCXX)
 else()
     # Compile with -fno-threadsafe-statics if supp to reduce some thread safety overhead.
@@ -551,7 +542,13 @@ foreach (module ${_modules})
             set_target_properties(casa_${module} PROPERTIES LINK_FLAGS -single_module)
         endif (${module} STREQUAL scimath_f OR ${module} STREQUAL fits OR ${module} STREQUAL mirlib OR ${module} STREQUAL coordinates)
     endif (APPLE)
+    set(PRIVATE_LIBS "${PRIVATE_LIBS} -lcasa_${module}")
 endforeach (module)
+
+# Install pkg-config support file
+CONFIGURE_FILE("casacore.pc.in" "casacore.pc" @ONLY)
+set(CASA_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/casacore.pc" DESTINATION "${CASA_PKGCONFIG_INSTALL_PREFIX}")
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
@@ -643,4 +640,3 @@ endif (BUILD_PYTHON3)
 #  BOOST        python (Boost-Python only)
 #  PYTHON       python
 #  NUMPY        python
-

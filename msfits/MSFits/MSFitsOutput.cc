@@ -11,7 +11,7 @@
 //# but WITHOUT ANY WARRANTY; without even the implied warranty of
 //# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //# GNU General Public License for more details.
-//# 
+//#
 //# You should have received a copy of the GNU General Public License
 //# along with this program; if not, write to the Free Software
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -324,7 +324,7 @@ Bool MSFitsOutput::writeFitsFile(
 	Bool overwrite
 ) {
     // A FITS table can handle only Int nrows.
-    if (ms.nrow() > std::numeric_limits<Int>::max()) {
+    if (ms.nrow() > static_cast<rownr_t>(std::numeric_limits<Int>::max())) {
       throw AipsError("MS " + ms.tableName() + " is too big (#rows exceeds MAX_INT)");
     }
     MSFitsOutput out(fitsfile, ms, column);
@@ -448,7 +448,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     }
     catch (const std::exception& x) {
         os << LogOrigin("MSFitsOutput", __func__)
-           << LogIO::WARN << "No source table in MS. " 
+           << LogIO::WARN << "No source table in MS. "
            << x.what() << LogIO::POST;
     }
     const uInt ndds = ddTable.nrow();
@@ -1178,7 +1178,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
                     //weight_spectrum may not exist but flag and data always will.
                     IPosition shp = indatatmp.shape();
                     Int nchan = shp(1); // either num of channels of num of lags
-                    //cout << "shp1=" << shp << " shp2=" << inflagtmp.shape() 
+                    //cout << "shp1=" << shp << " shp2=" << inflagtmp.shape()
                     //     << " nchan=" << nchan << endl;
                     if (nchan < 1) nchan = 1;
                     const Vector<Float> wght = inweightscalar(rownr);
@@ -1215,7 +1215,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
             Int chancounter = 0;
             Vector<Int> flagcounter(numcorr0);
             flagcounter.set(0);
-            //cout << "chanstart=" << chanstart << " nchan=" << nchan 
+            //cout << "chanstart=" << chanstart << " nchan=" << nchan
             //     << " chanstep=" << chanstep << " avgchan=" << avgchan << endl;
             for (Int k = chanstart; k < (nchan * chanstep + chanstart); k += chanstep) {
                 //cout << "row = " << tbfrownr << " "
@@ -1248,9 +1248,9 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
                             imagcorrf[j] += iptr[offset].imag() * wptr[offset];
                             wgtaverf[j] += wptr[offset];
                         }
-                        //cout << "j=" << j << " k=" << k 
-                        //     << " real=" << realcorr[j] << " image=" << imagcorr[j] 
-                        //     << " offset=" << offset << " chancounter=" << chancounter << endl; 
+                        //cout << "j=" << j << " k=" << k
+                        //     << " real=" << realcorr[j] << " image=" << imagcorr[j]
+                        //     << " offset=" << offset << " chancounter=" << chancounter << endl;
                     }
                     ++chancounter;
                 }
@@ -1260,7 +1260,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
                             outptr[0] = realcorr[j] / wgtaver[j];
                             outptr[1] = imagcorr[j] / wgtaver[j];
                             outptr[2] = wgtaver[j] / flagcounter * numcorr0;
-                        } 
+                        }
                         else if (wgtaverf[j] > 0) {
                             outptr[0] = realcorrf[j] / wgtaverf[j];
                             outptr[1] = imagcorrf[j] / wgtaverf[j];
@@ -1304,9 +1304,9 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
                             imagcorrf[j] += iptr[offset].imag();
                             wgtaverf[j] += wptr[offset];
                         }
-                        //cout << "j=" << j << " k=" << k 
-                        //     << " real=" << realcorr[j] << " image=" << imagcorr[j] 
-                        //     << " offset=" << offset << " chancounter=" << chancounter << endl; 
+                        //cout << "j=" << j << " k=" << k
+                        //     << " real=" << realcorr[j] << " image=" << imagcorr[j]
+                        //     << " offset=" << offset << " chancounter=" << chancounter << endl;
                     }
                     ++chancounter;
                 }
@@ -1316,7 +1316,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
                             outptr[0] = realcorr[j] / flagcounter[j];
                             outptr[1] = imagcorr[j] / flagcounter[j];
                             outptr[2] = wgtaver[j] / flagcounter[j];
-                        } 
+                        }
                         else if (wgtaverf[j] > 0) {
                             outptr[0] = realcorrf[j] / avgchan;
                             outptr[1] = imagcorrf[j] / avgchan;
@@ -1534,7 +1534,7 @@ Bool MSFitsOutput::_writeFQ(std::shared_ptr<FitsOutput> output, const Measuremen
                 (*iffreq)(inx) = 0.0;
             } else {
                 os << LogIO::DEBUG2 << "refPixelFreq=" << refPixelFreq << " refFreq=" << refFreq
-                   //<< "\nfreqs=" << freqs 
+                   //<< "\nfreqs=" << freqs
                    << LogIO::POST;
                 Int chancounter = 0;
                 Int nselectedchan = 0;
@@ -1554,13 +1554,13 @@ Bool MSFitsOutput::_writeFQ(std::shared_ptr<FitsOutput> output, const Measuremen
                     frq += freqs(k);
                     chancounter++;
                     if (chancounter == avgchan) {
-                       sfreq(nselectedchan) = frq / avgchan;   
+                       sfreq(nselectedchan) = frq / avgchan;
                        nselectedchan++;
                        chancounter = 0;
                        frq = 0;
                     }
                 }
-                os << LogIO::DEBUG2 << "\nsfreq=" << sfreq 
+                os << LogIO::DEBUG2 << "\nsfreq=" << sfreq
                    << LogIO::POST;
                 (*iffreq)(inx) = sfreq(refPixelFreq - 1) - refFreq;
             }
@@ -1810,7 +1810,7 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
             *stabxyz = corstabxyz;
             *nosta = id[antnum];
             String mount = upcase(inantmount(antnum));
-            // MS has "EQUATORIAL", "ALT-AZ", "X-Y",  "SPACE-HALCA" 
+            // MS has "EQUATORIAL", "ALT-AZ", "X-Y",  "SPACE-HALCA"
             if (mount.contains("ALT-AZ+NASMYTH-R")) {
                 *mntsta = 4;
             }
@@ -2676,7 +2676,7 @@ Bool MSFitsOutput::_writeSY(
     // be adding support to MSFitsInput.cc, and in fact the reason I'm not supporting writing multiple
     // IFs to the uvfits table currently is because the only way to test that is to read the uvfits file
     // back in which requires support for multiple IFs in MSFitsInput.cc. The current requirement is to
-    // write the SYSPOWER table to uvfits, not read it from uvfits, so the current implementation is 
+    // write the SYSPOWER table to uvfits, not read it from uvfits, so the current implementation is
     // sufficient CAS-11860 )
     Int nrif = 1;
     if (combineSpw) {
@@ -2812,7 +2812,7 @@ Bool MSFitsOutput::_writeSY(
                     os << LogIO::SEVERE << "Irregularities in time values "
                         << "in the SYSPOWER subtable, so spectral window "
                         << "data cannot be combined when writing UVFITS "
-                        << "SY table. Perhaps try combineSpw=False" 
+                        << "SY table. Perhaps try combineSpw=False"
                         << LogIO::POST;
                     return False;
                 }
@@ -2823,7 +2823,7 @@ Bool MSFitsOutput::_writeSY(
                         << "UVFITS SY table. Perhaps try combineSpw=False"
                         << LogIO::POST;
                     return False;
-                }                
+                }
             }
             switchedDiff.get(i + j, pdv);
             pd1[j] = pdv[0];
@@ -2849,7 +2849,7 @@ Bool MSFitsOutput::_writeSY(
     }
     return True;
 }
-    
+
 void MSFitsOutput::getStartHA(Double& startTime, Double& startHA,
         const MeasurementSet& ms, uInt rownr) {
     MSColumns mscol(ms);
@@ -3064,9 +3064,8 @@ void MSFitsOutput::_handleAntNumbers(const MeasurementSet& ms,
 
 }
 
-// Local Variables: 
+// Local Variables:
 // compile-command: "gmake MSFitsOutput"
-// End: 
+// End:
 
 } //# NAMESPACE CASACORE - END
-

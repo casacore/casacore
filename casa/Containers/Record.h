@@ -82,13 +82,13 @@ class AipsIO;
 // RecordDesc</linkto> class. The structure of the Record can be defined at
 // construction time. It can thereafter be restructured. This has the
 // effect, however, that any existing RecordFieldPtr objects become
-// invalid (using the <linkto file="Notice.h">Notice</linkto> classes).
+// invalid.
 // <br>
 // It is possible to add or remove fields once a Record is constructed.
 // However, this is not possible when the Record is constructed with a
 // fixed structure (i.e. with the fixedStructure flag set).
 // <p>
-// A Record is an hierarchical structure, because it can have fields
+// A Record is a hierarchical structure, because it can have fields
 // containing Record's (as layed out in the RecordDesc). A subrecord
 // has a variable structure, when its RecordDesc is empty (i.e. contains
 // no fields). It is fixed when its RecordDesc contains fields.
@@ -235,21 +235,21 @@ public:
     Record& operator= (const Record& other);
     
     // Release resources associated with this object.
-    virtual ~Record();
+    ~Record();
 
     // Make a copy of this object.
-    virtual RecordInterface* clone() const;
+    RecordInterface* clone() const override;
 
     // Assign that RecordInterface object to this one.
     // Unlike <src>operator=</src> it copies all data in the derived
     // class.
-    virtual void assign (const RecordInterface& that);
+    void assign (const RecordInterface& that) override;
 
     // Get the comment for this field.
-    virtual const String& comment (const RecordFieldId&) const;
+    const String& comment (const RecordFieldId&) const override;
 
     // Set the comment for this field.
-    virtual void setComment (const RecordFieldId&, const String& comment);
+    void setComment (const RecordFieldId&, const String& comment) override;
 
     // Describes the current structure of this Record.
     const RecordDesc& description() const;
@@ -269,8 +269,8 @@ public:
     // be given to this top record.
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
-    virtual void restructure (const RecordDesc& newDescription,
-			      Bool recursive = True);
+    void restructure (const RecordDesc& newDescription,
+                      Bool recursive = True) override;
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
@@ -286,14 +286,14 @@ public:
 
     // How many fields does this structure have? A convenient synonym for
     // <src>description().nfields()</src>.
-    virtual uInt nfields() const;
+    uInt nfields() const override;
 
     // Get the field number from the field name.
     // -1 is returned if the field name is unknown.
-    virtual Int fieldNumber (const String& fieldName) const;
+    Int fieldNumber (const String& fieldName) const override;
 
     // Get the data type of this field.
-    virtual DataType type (Int whichField) const;
+    DataType type (Int whichField) const override;
 
     // Remove a field from the record.
     // <note role=caution>
@@ -301,7 +301,7 @@ public:
     // it will be decremented. Only the RecordFieldPtr's
     // pointing to the removed field will be invalidated.
     // </note>
-    void removeField (const RecordFieldId&);
+    void removeField (const RecordFieldId&) override;
 
     // Rename the given field.
     void renameField (const String& newName, const RecordFieldId&);
@@ -314,9 +314,9 @@ public:
     // <group>
     void defineRecord (const RecordFieldId&, const Record& value,
 		       RecordType type = Variable);
-    virtual void defineRecord (const RecordFieldId&,
-			       const RecordInterface& value,
-			       RecordType = Variable);
+    void defineRecord (const RecordFieldId&,
+                       const RecordInterface& value,
+                       RecordType = Variable) override;
     // </group>
 
     // Get the subrecord from the given field.
@@ -327,16 +327,16 @@ public:
     // <group>
     const Record& subRecord (const RecordFieldId&) const;
     Record& rwSubRecord (const RecordFieldId&);
-    virtual const RecordInterface& asRecord (const RecordFieldId&) const;
-    virtual RecordInterface& asrwRecord (const RecordFieldId&);
+    const RecordInterface& asRecord (const RecordFieldId&) const override;
+    RecordInterface& asrwRecord (const RecordFieldId&) override;
     // </group>
 
     // Get or define the value as a ValueHolder.
     // This is useful to pass around a value of any supported type.
     // <group>
-    virtual ValueHolder asValueHolder (const RecordFieldId&) const;
-    virtual void defineFromValueHolder (const RecordFieldId&,
-                                        const ValueHolder&);
+    ValueHolder asValueHolder (const RecordFieldId&) const override;
+    void defineFromValueHolder (const RecordFieldId&,
+                                const ValueHolder&) override;
     // </group>
 
     // Merge a field from another record into this record.
@@ -382,23 +382,23 @@ public:
 
     // Make a unique record representation
     // (to do copy-on-write in RecordFieldPtr).
-    virtual void makeUnique();
+    void makeUnique() override;
 
     // Print the contents of the record.
     // Only the first <src>maxNrValues</src> of an array will be printed.
     // A value < 0 means the entire array.
-    virtual void print (std::ostream&,
-			Int maxNrValues = 25,
-			const String& indent="") const;
+    void print (std::ostream&,
+                Int maxNrValues = 25,
+                const String& indent="") const override;
 
 
 protected:
     // Used by the RecordField classes to attach in a type-safe way to the
     // correct field.
     // <group>
-    virtual void* get_pointer (Int whichField, DataType type) const;
-    virtual void* get_pointer (Int whichField, DataType type,
-			       const String& recordType) const;
+    void* get_pointer (Int whichField, DataType type) const override;
+    void* get_pointer (Int whichField, DataType type,
+                       const String& recordType) const override;
     // </group>
 
     // Return a const reference to the underlying RecordRep.
@@ -410,17 +410,17 @@ protected:
     RecordRep& rwRef();
 
     // Add a field to the record.
-    virtual void addDataField (const String& name, DataType type,
-			       const IPosition& shape, Bool fixedShape,
-			       const void* value);
+    void addDataField (const String& name, DataType type,
+                       const IPosition& shape, Bool fixedShape,
+                       const void* value) override;
 
     // Define a value in the given field.
-    virtual void defineDataField (Int whichField, DataType type,
-				  const void* value);
+    void defineDataField (Int whichField, DataType type,
+                          const void* value) override;
 
 private:
     // Get the description of this record.
-    virtual RecordDesc getDescription() const;
+    RecordDesc getDescription() const override;
 
     // Create Record as a subrecord.
     // When the description is empty, the record has a variable structure.

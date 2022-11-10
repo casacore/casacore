@@ -302,10 +302,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the column objects in the referenced tables.
     Block<BaseColumn*> getRefColumns (const String& columnName);
 
-    // Create a (temporary) Table object from it.
-    Table asTable()
-      { return Table (this, False); }
-
   private:
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).

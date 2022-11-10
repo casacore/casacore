@@ -41,7 +41,6 @@
 #include <casacore/casa/Utilities/DynBuffer.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/Utilities/Notice.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/Sequence.h>

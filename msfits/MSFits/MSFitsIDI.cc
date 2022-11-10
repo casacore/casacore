@@ -292,18 +292,23 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
   // Correlator
   String correlat;
+  Float vanVleck = 0.0;
 
   // Loop over all HDU in the FITS-IDI file
   Bool initFirstMain = True;
   while (infits.err() == FitsIO::OK && !infits.eof()) {
 
-    // Fetch correlator name from the primary HDU
+    // Fetch correlator info from the primary HDU
     if (infits.hdutype() == FITS::PrimaryArrayHDU) {
       BytePrimaryArray tab(infits);
       if (tab.kw("CORRELAT")) {
 	correlat = tab.kw("CORRELAT")->asString();
 	correlat.trim();
 	os << LogIO::NORMAL << "Correlator: " << correlat << LogIO::POST;
+      }
+      if (tab.kw("VANVLECK")) {
+	vanVleck = tab.kw("VANVLECK")->asFloat();
+	os << LogIO::NORMAL << "VanVleck: " << vanVleck << LogIO::POST;
       }
     }
 
@@ -318,7 +323,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
     } else {
       // Process the FITS-IDI input from the position of this binary table
-      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain);
+      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain, vanVleck);
       initFirstMain = False;
       String hduName = bintab.extname();
       hduName = hduName.before(trailing);
@@ -414,6 +419,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/GAIN_CURVE",Table::Update);
       mssub.rename (itsMSOut+"/GAIN_CURVE",Table::New);
       msmain.rwKeywordSet().defineTable("GAIN_CURVE",mssub);
+    }
+    if (subTableName(isub)=="PHASE-CAL") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/PHASE_CAL",Table::Update);
+      mssub.rename (itsMSOut+"/PHASE_CAL",Table::New);
+      msmain.rwKeywordSet().defineTable("PHASE_CAL",mssub);
     }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);

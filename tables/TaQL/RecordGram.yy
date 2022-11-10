@@ -374,7 +374,7 @@ arithexpr: inxexpr
 
 inxexpr:   simexpr
          | simexpr LBRACKET subscripts RBRACKET {
-               $$ = new TableExprNode (TableParseSelect::handleSlice
+               $$ = new TableExprNode (TableParseQuery::handleSlice
 				       (*$1, *$3, RecordGram::theirTaQLStyle));
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);

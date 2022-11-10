@@ -124,7 +124,7 @@ const ColumnDesc& TableColumn::columnDesc() const
     { return baseColPtr_p->columnDesc(); }
 
 Table TableColumn::table() const
-    { return Table (baseTabPtr_p, False); }
+    { return Table (baseTabPtr_p); }
 
 
 Bool TableColumn::asBool (rownr_t rownr) const

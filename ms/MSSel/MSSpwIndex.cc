@@ -144,8 +144,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				       Vector<Int>& nchan){
     Int nspw=msSpwSubTable_p.nrow();
     Bool found=False;
-    ///Bool begIn=False;
-    ///Bool aftIn=False;
+
     spw.resize();
     start.resize();
     nchan.resize();
@@ -153,83 +152,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (Int k=0; k < nspw; ++k){
       Bool locfound=False;
       Bool dum;
-      ///Int chanpositive=1;
+
       Vector<Double> chanfreq=msSpwSubTable_p.chanFreq()(k);
-      ///if (chanfreq.nelements() >1){
-      ///chanpositive=((chanfreq[1]-chanfreq[0]) > 0.0) ? 1: -1;
-      ///}
+
       Sort sort( chanfreq.getStorage(dum),sizeof(Double) );
       sort.sortKey((uInt)0,TpDouble);
       Int nch=chanfreq.nelements();
       Vector<uInt> sortIndx;
       sort.sort(sortIndx, nch);
       Vector<Double>chanwidth=msSpwSubTable_p.chanWidth()(k);
-      ///begIn=False;
-      ///aftIn=False;
       if(f0 > chanfreq(sortIndx[0]) &&  f0 < chanfreq(sortIndx[nch-1])){
-	///begIn=True;
 	locfound=True;
       }
       if(f1 > chanfreq(sortIndx[0]) &&  f1 < chanfreq(sortIndx[nch-1])){
-	///aftIn=True;
 	locfound=True;
       }
       if(locfound){
-	++nmatch;
-	spw.resize(nmatch, True);
-	spw(nmatch-1)=k;
-	start.resize(nmatch, True);
-	nchan.resize(nmatch, True);
-	found=True;
-	Vector<Int> chanIn(chanfreq.nelements());
+        Vector<Int> chanIn(chanfreq.nelements());
 	chanIn=-1;
 	Int numMatched=0;
-	//cerr << "f0 " << f0 << " f1 " << f1 << endl;
 
 	for (uInt kk=0; kk < chanfreq.nelements(); ++kk){
-	  //cerr << kk << "  " << chanfreq[kk]+0.5*fabs(chanwidth[kk]) << "   " << (chanfreq[kk]-0.5*fabs(chanwidth[kk])) << "   " << chanfreq[kk] << endl;
-	  if( ((chanfreq[kk]+0.5*fabs(chanwidth[kk])) > f0) && ((chanfreq[kk]-0.5*fabs(chanwidth[kk])) < f1)){
+
+	  if( ((chanfreq[kk]+0.5*fabs(chanwidth[kk])) > f0) && ((chanfreq[kk]-0.5*fabs(chanwidth[kk])) < f1)   ) {
 	    chanIn[numMatched]=kk;
 	    ++ numMatched;
 	  }
-
-	}
-	chanIn.resize(numMatched, True);
-	//cerr << "chanIn "<< chanIn  << endl;
-	start(nmatch-1)=min(chanIn);
-	nchan(nmatch-1)=max(chanIn)-start(nmatch-1)+1;
-	//cerr << "chanIn "<< chanIn << " start " << start << " nchan " << nchan << endl;
-	/*
-	if(begIn){
-	  Int counter=0;
-	  //Use abs as sometimes chanwidth is negative and sometimes not !
-	  while((chanfreq(sortIndx[counter])+0.5*fabs(chanwidth(sortIndx[counter]))) < f0)
-	    ++counter;
-	  start(nmatch-1)= counter > 0 ? (chanpositive ? counter-1 : counter+1): 0;
-	}
-	else{
-	  start(nmatch-1)=0;
-	}
-	if(aftIn){
-	  Int counter=nch-1;
-	  while((chanfreq(sortIndx[counter])-0.5*chanwidth(sortIndx[counter])) > f1)
-	    --counter;
-	  if(counter <= start(nmatch-1))
-	    nchan(nmatch-1)=1;
-	  else
-	    nchan(nmatch-1)=counter-start(nmatch-1)+1;
-	}
-	else{
-	  nchan(nmatch-1)=nch-start(nmatch-1);
-
-	}
-	//if it is reversed sort order reverse start
-	if(sortIndx[0] != 0){
-	  start[nmatch-1] = nch-start[nmatch-1]-nchan(nmatch-1);
-	  if(start[nmatch-1] < 0) start[nmatch-1]=0;
-	  if((start[nmatch-1]+nchan[nmatch-1]) >= nch) nchan[nmatch-1]=nch-start[nmatch-1];	  
-	}
-*/
+        }
+        if(numMatched >0){
+          ++nmatch;
+          spw.resize(nmatch, True);
+          spw(nmatch-1)=k;
+          start.resize(nmatch, True);
+          nchan.resize(nmatch, True);
+          found=True;
+          chanIn.resize(numMatched, True);
+          start(nmatch-1)=min(chanIn);
+          nchan(nmatch-1)=max(chanIn)-start(nmatch-1)+1;
+        
+        }
       }
       //spw is fully inside region between f0 and f1
       else if((f0 < chanfreq(sortIndx[0])) && (f1 > chanfreq(sortIndx[nch-1]))){
