@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <use visibility=local>
 
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+  // <reviewed reviewer="Mordante" date="2022/11/08" tests="tExprNodeSetOpt.cc">
   // </reviewed>
 
   // <prerequisite>
@@ -52,33 +52,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </prerequisite>
 
   // <synopsis>
-  // This class is an optimized representation of an constant integer array set
-  // with a large range of values used by the IN operator.
-  // If applicable, TableExprLogicNode instantiates an object of this class
-  // for sets with a value range of more than 16384.
-  // <br>The representation is a std::unordered_map containing the array values.
-  // <br>Note that a std::unordered_map is used instead of std::set because its
-  // hashing mechanism makes it faster.
+  // This class is the abstract base class for the optimized representation of
+  // constant value or interval sets used by the IN operator or join operator.
+  //
+  // The <src>find</src> function can operate on integer, double and string values.
+  // Note that datetimes are handled as doubles. It returns the index of the
+  // value or interval matching the value searched for.
   // </synopsis>
 
   class TableExprNodeSetOptBase : public TableExprNodeRep
   {
   public:
     explicit TableExprNodeSetOptBase (const TableExprNodeRep& orig);
-    virtual Bool contains (const TableExprId& id, Int64 value) override;
-    virtual Bool contains (const TableExprId& id, Double value) override;
-    virtual Bool contains (const TableExprId& id, String value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
-                                   const MArray<Int64>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
-                                   const MArray<Double>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
-                                   const MArray<String>& value) override;
+    // Does the set contain the given value?
+    // They call the <src>find</src> function.
+    // <group>
+    Bool contains (const TableExprId& id, Int64 value) override;
+    Bool contains (const TableExprId& id, Double value) override;
+    Bool contains (const TableExprId& id, String value) override;
+    // </group>
+    // Tell for each array value if the set contains that value.
+    // It calls the scalar <src>contains</src> function for each value.
+    // <group>
+    MArray<Bool> contains (const TableExprId& id,
+                           const MArray<Int64>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                           const MArray<Double>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                           const MArray<String>& value) override;
+    // </group>
     // Tell which key matches a value. -1 = no match.
-    // The default implementations throw an exception.
+    // The default implementations throw a 'not implemented' exception.
+    //# The String version is passed by value to use the same mechanism
+    //# as used for the other types to make templates possible.
+    // <group>
     virtual Int64 find (Int64 value) const;
     virtual Int64 find (Double value) const;
     virtual Int64 find (String value) const;
+    // </group>
   };
 
 
@@ -88,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <use visibility=local>
 
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+  // <reviewed reviewer="Mordante" date="2022/11/08" tests="tExprNodeSetOpt.cc">
   // </reviewed>
 
   // <prerequisite>
@@ -114,10 +125,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNodeSetOptUSet (const TableExprNodeRep& orig, const Array<T>&);
 
     // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
+    void show (ostream& os, uInt indent) const override;
 
     // Where does a value occur in the set? -1 is no match.
-    virtual Int64 find (T value) const override;
+    Int64 find (T value) const override;
 
   private:
     std::unordered_map<T,Int64> itsMap;
@@ -130,7 +141,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <use visibility=local>
 
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+  // <reviewed reviewer="Mordante" date="2022/11/08" tests="tExprNodeSetOpt.cc">
   // </reviewed>
 
   // <prerequisite>
@@ -139,14 +150,42 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </prerequisite>
 
   // <synopsis>
-  // This class is the base class for the optimized representation of a
+  // This class is the base class for the optimized representations of a
   // constant selection set with continuous intervals.
+  // It holds the start and end values of the intervals.
   // </synopsis>
 
+  template<typename T>
   class TableExprNodeSetOptContSetBase: public TableExprNodeSetOptBase
   {
   public:
-    explicit TableExprNodeSetOptContSetBase (const TableExprNodeSet& orig);
+    // Construct from the original set and the start and end values of the
+    // intervals. The vectors must have the same length.
+    explicit TableExprNodeSetOptContSetBase (const TableExprNodeSet& orig,
+                                             const std::vector<T>& starts,
+                                             const std::vector<T>& ends);
+    // Get the size (nr of intervals).
+    size_t size() const
+      { return itsStarts.size(); }
+    // Show the node.
+    void show (ostream& os, uInt indent) const override;
+    // Transform a set into an optimized one by ordering the intervals
+    // and optionally combining adjacent intervals.
+    // If not possible, an empty TENShPtr is returned.
+    static TENShPtr transform (const TableExprNodeSet& set,
+                               Bool combine=True);
+    // Create the appropriate optimized OptContSet object.
+    // Note that leftC and rightC do not need to have the same length as start/end.
+    // If it is known that all intervals have the same leftC/rightC,
+    // a single value suffices.
+    static TENShPtr createOptSet (const TableExprNodeSet& set,
+                                  const std::vector<T>& start,
+                                  const std::vector<T>& end, 
+                                  const std::vector<Bool>& leftC,
+                                  const std::vector<Bool>& rightC);
+  protected:
+    std::vector<T> itsStarts;
+    std::vector<T> itsEnds;
   };
 
 
@@ -156,7 +195,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <use visibility=local>
 
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+  // <reviewed reviewer="Mordante" date="2022/11/08" tests="tExprNodeSetOpt.cc">
   // </reviewed>
 
   // <prerequisite>
@@ -171,59 +210,35 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <br>The representation has std::vector objects containing the start
   // and end values. A lookup using std::upper_bound on the end values is done
   // to determine if a value is contained in one of the intervals.
-  // <br>This templated class (as well as its derived classes) are instatiated
-  // for Double and String.
+  // <br>This templated class is instantiated for Double and String.
   // </synopsis>
 
   template <typename T>
-  class TableExprNodeSetOptContSet: public TableExprNodeSetOptContSetBase
+  class TableExprNodeSetOptContSetMixOC: public TableExprNodeSetOptContSetBase<T>
   {
   public:
-    TableExprNodeSetOptContSet (const TableExprNodeSet& orig,
-                                const std::vector<T>& starts,
-                                const std::vector<T>& ends,
-                                const std::vector<Bool>& leftC,
-                                const std::vector<Bool>& rightC);
-    TableExprNodeSetOptContSet (const TableExprNodeSet& orig,
-                                const std::vector<T>& starts,
-                                const std::vector<T>& ends);
+    TableExprNodeSetOptContSetMixOC (const TableExprNodeSet& orig,
+                                     const std::vector<T>& starts,
+                                     const std::vector<T>& ends,
+                                     const std::vector<Bool>& leftC,
+                                     const std::vector<Bool>& rightC);
     // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
+    void show (ostream& os, uInt indent) const override;
     // Tell which interval contains a value. -1 = no match.
-    virtual Int64 find (T value) const override;
-    // Transform a set into an optimized one by ordering the intervals
-    // and optionally combining adjacent intervals.
-    // If not possible, an empty TENShPtr is returned.
-    // It fill <src>rowNrs</src> with the row numbers of the intervals created.
-    static TENShPtr transform (const TableExprNodeSet& set,
-                               Bool combine=True);
-    // Create the appropriate optimized OptContSet object.
-    // Note that leftC and rightC do not need to have the same length as start/end.
-    // If it is known that all intervals have the same leftC/rightC,
-    // a single value suffices.
-    static TENShPtr createOptSet (const TableExprNodeSet& set,
-                                  const std::vector<T>& start,
-                                  const std::vector<T>& end, 
-                                  const std::vector<Bool>& leftC,
-                                  const std::vector<Bool>& rightC);
-    // Get the size (nr of intervals),
-    size_t size() const
-      { return itsStarts.size(); }
+    Int64 find (T value) const override;
   protected:
-    std::vector<T> itsStarts;
-    std::vector<T> itsEnds;
     std::vector<Bool> itsLeftC;
     std::vector<Bool> itsRightC;
   };
 
 
   // <summary>
-  // An optimized representation of a selection set with closed-closed intervals.
+  // An optimized representation of a selection set with similar intervals.
   // </summary>
 
   // <use visibility=local>
 
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+  // <reviewed reviewer="Mordante" date="2022/11/08" tests="tExprNodeSetOpt.cc">
   // </reviewed>
 
   // <prerequisite>
@@ -233,123 +248,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <synopsis>
   // This class is a further optimized version of TableExprNodeSetOptContSet
-  // for continuous intervals all using a closed start and closed end.
+  // for continuous intervals all using the same open/closed interval types.
   // It reduces the number of comparisons required.
+  // The left and right comparison functors tell if an interval side is
+  // open (uses std::less) or closed (uses std::less_equal).
   // </synopsis>
 
-  template <typename T>
-  class TableExprNodeSetOptContSetCC: public TableExprNodeSetOptContSet<T>
+  template <typename T, typename LeftComp, typename RightComp>
+  class TableExprNodeSetOptContSet: public TableExprNodeSetOptContSetBase<T>
   {
   public:
-    TableExprNodeSetOptContSetCC (const TableExprNodeSet& orig,
-                                  const std::vector<T>& starts,
-                                  const std::vector<T>& ends);
+    TableExprNodeSetOptContSet (const TableExprNodeSet& orig,
+                                const std::vector<T>& starts,
+                                const std::vector<T>& ends,
+                                LeftComp leftCmp, RightComp rightCmp,
+                                const String& cmpType);
     // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
+    void show (ostream& os, uInt indent) const override;
     // Tell which interval contains a value. -1 = no match.
-    virtual Int64 find (T value) const override;
-  };
-
-  
-  // <summary>
-  // An optimized representation of a selection set with open-closed intervals.
-  // </summary>
-
-  // <use visibility=local>
-
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
-  // </reviewed>
-
-  // <prerequisite>
-  //# Classes you should understand before using this one.
-  //   <li> TableExprNodeSetOptContSet
-  // </prerequisite>
-
-  // <synopsis>
-  // This class is a further optimized version of TableExprNodeSetOptContSet
-  // for continuous intervals all using an open start and closed end.
-  // It reduces the number of comparisons required.
-  // </synopsis>
-
-  template <typename T>
-  class TableExprNodeSetOptContSetOC: public TableExprNodeSetOptContSet<T>
-  {
-  public:
-    TableExprNodeSetOptContSetOC (const TableExprNodeSet& orig,
-                                  const std::vector<T>& starts,
-                                  const std::vector<T>& ends);
-    // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
-    // Tell which interval contains a value. -1 = no match.
-    virtual Int64 find (T value) const override;
-  };
-
-
-  // <summary>
-  // An optimized representation of a selection set with closed-open intervals.
-  // </summary>
-
-  // <use visibility=local>
-
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
-  // </reviewed>
-
-  // <prerequisite>
-  //# Classes you should understand before using this one.
-  //   <li> TableExprNodeSetOptContSet
-  // </prerequisite>
-
-  // <synopsis>
-  // This class is a further optimized version of TableExprNodeSetOptContSet
-  // for continuous intervals all using a closed start and open end.
-  // It reduces the number of comparisons required.
-  // </synopsis>
-
-  template <typename T>
-  class TableExprNodeSetOptContSetCO: public TableExprNodeSetOptContSet<T>
-  {
-  public:
-    TableExprNodeSetOptContSetCO (const TableExprNodeSet& orig,
-                                  const std::vector<T>& starts,
-                                  const std::vector<T>& ends);
-    // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
-    // Tell which interval contains a value. -1 = no match.
-    virtual Int64 find (T value) const override;
-  };
-
-
-  // <summary>
-  // An optimized representation of a selection set with open-open intervals.
-  // </summary>
-
-  // <use visibility=local>
-
-  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
-  // </reviewed>
-
-  // <prerequisite>
-  //# Classes you should understand before using this one.
-  //   <li> TableExprNodeSetOptContSet
-  // </prerequisite>
-
-  // <synopsis>
-  // This class is a further optimized version of TableExprNodeSetOptContSet
-  // for continuous intervals all using an open  start and open end.
-  // It reduces the number of comparisons required.
-  // </synopsis>
-  
-  template <typename T>
-  class TableExprNodeSetOptContSetOO: public TableExprNodeSetOptContSet<T>
-  {
-  public:
-    TableExprNodeSetOptContSetOO (const TableExprNodeSet& orig,
-                                  const std::vector<T>& starts,
-                                  const std::vector<T>& ends);
-    // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
-    // Tell which interval contains a value. -1 = no match.
-    virtual Int64 find (T value) const override;
+    Int64 find (T value) const override;
+  private:
+    LeftComp  itsLeftCmp;
+    RightComp itsRightCmp;
+    String    itsCmpType;
   };
 
 

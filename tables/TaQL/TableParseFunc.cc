@@ -149,7 +149,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               parms.add (arg);
             }
           } else if (arguments.size() == axarg+1
-                     &&  arguments[axarg].isSingle()) {
+                     &&  arguments[axarg]->isSingle()) {
             // A single set given; see if it is an array.
             const TableExprNodeSetElem& arg = arguments[axarg];
             if (arg.start()->valueType() == TableExprNodeRep::VTArray) {

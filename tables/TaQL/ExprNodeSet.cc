@@ -325,6 +325,7 @@ Bool TableExprNodeSet::contains (const TableExprId& id, Bool value)
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchBool (&result, &value, 1, id);
+        if (result) break;
     }
     return result;
 }
@@ -334,6 +335,7 @@ Bool TableExprNodeSet::contains (const TableExprId& id, Int64 value)
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchInt (&result, &value, 1, id);
+        if (result) break;
     }
     return result;
 }
@@ -343,6 +345,7 @@ Bool TableExprNodeSet::contains (const TableExprId& id, Double value)
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchDouble (&result, &value, 1, id);
+        if (result) break;
     }
     return result;
 }
@@ -352,6 +355,7 @@ Bool TableExprNodeSet::contains (const TableExprId& id, DComplex value)
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchDComplex (&result, &value, 1, id);
+        if (result) break;
     }
     return result;
 }
@@ -361,6 +365,7 @@ Bool TableExprNodeSet::contains (const TableExprId& id, String value)
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchString (&result, &value, 1, id);
+        if (result) break;
     }
     return result;
 }
@@ -370,6 +375,7 @@ Bool TableExprNodeSet::contains (const TableExprId& id, MVTime value)
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchDate (&result, &value, 1, id);
+        if (result) break;
     }
     return result;
 }

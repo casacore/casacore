@@ -115,7 +115,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
              indices.hasArrays())) {
         throw TableInvExpr ("Second argument of a masked array must be an array; maybe extra brackets are needed like [1,2][[T,F]]");
       }
-      return marray (array, TableExprNode(indices[0].start()));
+      return marray (array, TableExprNode(indices[0]->start()));
     }
     return TableExprNode::newArrayPartNode (array, indices, style);
   }

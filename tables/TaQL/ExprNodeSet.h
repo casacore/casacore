@@ -125,13 +125,13 @@ public:
       { add (elem.getElem(), adaptType); }
 
     // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
+    void show (ostream& os, uInt indent) const override;
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr) override;
+    void getAggrNodes (std::vector<TableExprNodeRep*>& aggr) override;
   
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols) override;
+    void getColumnNodes (std::vector<TableExprNodeRep*>& cols) override;
   
     // Check if the data type of the set elements are the same.
     // If not, an exception is thrown.
@@ -171,33 +171,33 @@ public:
 
     // Get an array value for this bounded set in the given row.
     // <group>
-    virtual MArray<Bool> getArrayBool         (const TableExprId& id) override;
-    virtual MArray<Int64> getArrayInt         (const TableExprId& id) override;
-    virtual MArray<Double> getArrayDouble     (const TableExprId& id) override;
-    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id) override;
-    virtual MArray<String> getArrayString     (const TableExprId& id) override;
-    virtual MArray<MVTime> getArrayDate       (const TableExprId& id) override;
+    MArray<Bool> getArrayBool         (const TableExprId& id) override;
+    MArray<Int64> getArrayInt         (const TableExprId& id) override;
+    MArray<Double> getArrayDouble     (const TableExprId& id) override;
+    MArray<DComplex> getArrayDComplex (const TableExprId& id) override;
+    MArray<String> getArrayString     (const TableExprId& id) override;
+    MArray<MVTime> getArrayDate       (const TableExprId& id) override;
     // </group>
 
     // Does a value occur in the set?
     // <group>
-    virtual Bool contains (const TableExprId& id, Bool value) override;
-    virtual Bool contains (const TableExprId& id, Int64 value) override;
-    virtual Bool contains (const TableExprId& id, Double value) override;
-    virtual Bool contains (const TableExprId& id, DComplex value) override;
-    virtual Bool contains (const TableExprId& id, String value) override;
-    virtual Bool contains (const TableExprId& id, MVTime value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
+    Bool contains (const TableExprId& id, Bool value) override;
+    Bool contains (const TableExprId& id, Int64 value) override;
+    Bool contains (const TableExprId& id, Double value) override;
+    Bool contains (const TableExprId& id, DComplex value) override;
+    Bool contains (const TableExprId& id, String value) override;
+    Bool contains (const TableExprId& id, MVTime value) override;
+    MArray<Bool> contains (const TableExprId& id,
                                    const MArray<Bool>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
+    MArray<Bool> contains (const TableExprId& id,
                                    const MArray<Int64>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
+    MArray<Bool> contains (const TableExprId& id,
                                    const MArray<Double>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
+    MArray<Bool> contains (const TableExprId& id,
                                    const MArray<DComplex>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
+    MArray<Bool> contains (const TableExprId& id,
                                    const MArray<String>& value) override;
-    virtual MArray<Bool> contains (const TableExprId& id,
+    MArray<Bool> contains (const TableExprId& id,
                                    const MArray<MVTime>& value) override;
     // </group>
 
@@ -208,7 +208,7 @@ public:
       { return contains (id, String(value)); }
 
     // Let a set node convert itself to the given unit.
-    virtual void adaptSetUnits (const Unit&) override;
+    void adaptSetUnits (const Unit&) override;
 
 private:
     // A copy of a TableExprNodeSet cannot be made.

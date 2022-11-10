@@ -72,16 +72,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Constructor to initialize the parent.
     explicit TableExprNodeSetElemBase (NodeDataType = NTDouble);
     
-    virtual ~TableExprNodeSetElemBase();
+    virtual ~TableExprNodeSetElemBase() = default;
 
     // Show the node.
-    virtual void show (ostream& os, uInt indent) const override;
+    void show (ostream& os, uInt indent) const override;
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr) override;
+    void getAggrNodes (std::vector<TableExprNodeRep*>& aggr) override;
   
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols) override;
+    void getColumnNodes (std::vector<TableExprNodeRep*>& cols) override;
 
     // Is it a discrete set element.
     // Default implementation returns False.
@@ -162,7 +162,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void checkTable();
 
     // Let a set node convert itself to the given unit.
-    virtual void adaptSetUnits (const Unit&) override;
+    void adaptSetUnits (const Unit&) override;
 
     // Get the start or end value of a Double or DateTime interval.
     // <group>
@@ -224,31 +224,31 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Create the object for a single expression node.
     explicit TableExprNodeSetElemSingle (const TableExprNode& node);
 
-    ~TableExprNodeSetElemSingle();
+    ~TableExprNodeSetElemSingle() override = default;
 
     // It is a discrete set element.
-    virtual Bool isDiscrete() const override;
+    Bool isDiscrete() const override;
 
     // A single value is given (which can be an array).
-    virtual Bool isSingle() const override;
+    Bool isSingle() const override;
 
     // Fill a vector with the value(s) from this element by appending them
     // at the end of the vector; the end is given by argument <src>cnt</src>
     // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
-    virtual void fillVector (Vector<Bool>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<Int64>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<Double>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<DComplex>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<String>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<MVTime>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
+    void fillVector (Vector<Bool>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<Int64>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<Double>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<DComplex>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<String>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<MVTime>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
@@ -257,24 +257,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <br>Note that it does NOT set match values to False; it is assumed they
     // are initialized that way.
     // <group>
-    virtual void matchBool     (Bool* match, const Bool* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchInt      (Bool* match, const Int64* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchDouble   (Bool* match, const Double* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchDComplex (Bool* match, const DComplex* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchString   (Bool* match, const String* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchDate     (Bool* match, const MVTime* value, size_t nval,
-                                const TableExprId& id) const override;
+    void matchBool     (Bool* match, const Bool* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchInt      (Bool* match, const Int64* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchDouble   (Bool* match, const Double* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchDComplex (Bool* match, const DComplex* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchString   (Bool* match, const String* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchDate     (Bool* match, const MVTime* value, size_t nval,
+                        const TableExprId& id) const override;
     // </group>
 
     // Evaluate the element for the given row and construct a new
     // (constant) element from it.
     // This is used by the system to implement a set in a GIVING clause.
-    virtual TENSEBShPtr evaluate (const TableExprId& id) const override;
+    TENSEBShPtr evaluate (const TableExprId& id) const override;
 
   private:
     // Construct an element from the given parts and take over their pointers.
@@ -332,22 +332,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const TableExprNode& incr,
                                   Bool isEndExcl = False);
 
-    virtual ~TableExprNodeSetElemDiscrete() override;
+    ~TableExprNodeSetElemDiscrete() override = default;
 
     // It is a discrete set element.
-    virtual Bool isDiscrete() const override;
+    Bool isDiscrete() const override;
 
     // Fill a vector with the value(s) from this element by appending them
     // at the end of the vector; the end is given by argument <src>cnt</src>
     // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
-    virtual void fillVector (Vector<Int64>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<Double>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
-    virtual void fillVector (Vector<MVTime>& vec, Int64& cnt,
-                             const TableExprId& id) const override;
+    void fillVector (Vector<Int64>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<Double>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
+    void fillVector (Vector<MVTime>& vec, Int64& cnt,
+                     const TableExprId& id) const override;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
@@ -356,18 +356,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <br>Note that it does NOT set match values to False; it is assumed they
     // are initialized that way.
     // <group>
-    virtual void matchInt      (Bool* match, const Int64* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchDouble   (Bool* match, const Double* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchDate     (Bool* match, const MVTime* value, size_t nval,
-                                const TableExprId& id) const override;
+    void matchInt      (Bool* match, const Int64* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchDouble   (Bool* match, const Double* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchDate     (Bool* match, const MVTime* value, size_t nval,
+                        const TableExprId& id) const override;
     // </group>
 
     // Evaluate the element for the given row and construct a new
     // (constant) element from it.
     // This is used by the system to implement a set in a GIVING clause.
-    virtual TENSEBShPtr evaluate (const TableExprId& id) const override;
+    TENSEBShPtr evaluate (const TableExprId& id) const override;
 
   private:
     // Construct an element from the given parts and take over their pointers.
@@ -426,12 +426,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNodeSetElemCont (const TableExprNodeSetElemCont& that,
                               const TENShPtr& start, const TENShPtr& end);
 
-    virtual ~TableExprNodeSetElemCont() override;
+    ~TableExprNodeSetElemCont() override = default;
 
     // Is the interval left or right closed?
     // <group>
-    virtual Bool isLeftClosed() const override;
-    virtual Bool isRightClosed() const override;
+    Bool isLeftClosed() const override;
+    Bool isRightClosed() const override;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
@@ -440,18 +440,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <br>Note that it does NOT set match values to False; it is assumed they
     // are initialized that way.
     // <group>
-    virtual void matchDouble   (Bool* match, const Double* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchString   (Bool* match, const String* value, size_t nval,
-                                const TableExprId& id) const override;
-    virtual void matchDate     (Bool* match, const MVTime* value, size_t nval,
-                                const TableExprId& id) const override;
+    void matchDouble   (Bool* match, const Double* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchString   (Bool* match, const String* value, size_t nval,
+                        const TableExprId& id) const override;
+    void matchDate     (Bool* match, const MVTime* value, size_t nval,
+                        const TableExprId& id) const override;
     // </group>
 
     // Evaluate the element for the given row and construct a new
     // (constant) element from it.
     // This is used by the system to implement a set in a GIVING clause.
-    virtual TENSEBShPtr evaluate (const TableExprId& id) const override;
+    TENSEBShPtr evaluate (const TableExprId& id) const override;
 
   protected:
     // Constructor used by the derived class TableExprNodeSetElemMidWidth.
@@ -503,10 +503,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNodeSetElemMidWidth (const TableExprNode& mid,
                                   const TableExprNode& width);
 
-    virtual ~TableExprNodeSetElemMidWidth() override;
+    ~TableExprNodeSetElemMidWidth() override = default;
 
     // The interval is given as mid-width.
-    virtual Bool isMidWidth() const override;
+    Bool isMidWidth() const override;
 
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
@@ -514,16 +514,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <br>Note that it does NOT set match values to False; it is assumed they
     // are initialized that way.
     // <group>
-    virtual void matchDouble (Bool* match, const Double* value, size_t nval,
-                              const TableExprId& id) const override;
-    virtual void matchDate   (Bool* match, const MVTime* value, size_t nval,
-                              const TableExprId& id) const override;
+    void matchDouble (Bool* match, const Double* value, size_t nval,
+                      const TableExprId& id) const override;
+    void matchDate   (Bool* match, const MVTime* value, size_t nval,
+                      const TableExprId& id) const override;
     // </group>
 
     // Evaluate the set element for the given row and construct a new
     // (constant) TableExprNodeSetElemCont element from it.
     // This is used by the system to implement a set in a GIVING clause.
-    virtual TENSEBShPtr evaluate (const TableExprId& id) const override;
+    TENSEBShPtr evaluate (const TableExprId& id) const override;
   };
 
 

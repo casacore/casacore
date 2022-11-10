@@ -44,9 +44,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : TableExprNodeRep (dt, VTSetElem, OtUndef, Table())
   {}
 
-  TableExprNodeSetElemBase::~TableExprNodeSetElemBase()
-  {}
-
   Bool TableExprNodeSetElemBase::isDiscrete() const
     { return False; }
 
@@ -168,37 +165,38 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TENShPtr TableExprNodeSetElemBase::evalExpr (const TENShPtr& expr,
                                                const TableExprId& id) const
   {
-    TENShPtr res;
-    if (expr) {
-      switch (dataType()) {
-      case NTBool:
-        res = new TableExprNodeConstBool (expr->getBool (id));
-        break;
-      case NTInt:
-        res = new TableExprNodeConstInt (expr->getInt (id));
-        break;
-      case NTDouble:
-        res = new TableExprNodeConstDouble (expr->getDouble (id));
-        break;
-      case NTComplex:
-        res = new TableExprNodeConstDComplex (expr->getDComplex (id));
-        break;
-      case NTString:
-        res = new TableExprNodeConstString (expr->getString (id));
-        break;
-      case NTDate:
-        // Note that the increment or width for a DateTime is double.
-        if (expr->dataType() == NTDate) {
-          res = new TableExprNodeConstDate (expr->getDate (id));
-        } else {
-          res = new TableExprNodeConstDouble (expr->getDouble (id));
-        }
-        break;
-      default:
-        TableExprNode::throwInvDT ("TableExprNodeSetElem::evaluate");
-      }
-      res->setUnit (expr->unit());
+    if (!expr) {
+      return TENShPtr();
     }
+    TENShPtr res;
+    switch (dataType()) {
+    case NTBool:
+      res = new TableExprNodeConstBool (expr->getBool (id));
+      break;
+    case NTInt:
+      res = new TableExprNodeConstInt (expr->getInt (id));
+      break;
+    case NTDouble:
+      res = new TableExprNodeConstDouble (expr->getDouble (id));
+      break;
+    case NTComplex:
+      res = new TableExprNodeConstDComplex (expr->getDComplex (id));
+      break;
+    case NTString:
+      res = new TableExprNodeConstString (expr->getString (id));
+      break;
+    case NTDate:
+      // Note that the increment or width for a DateTime is double.
+      if (expr->dataType() == NTDate) {
+        res = new TableExprNodeConstDate (expr->getDate (id));
+      } else {
+        res = new TableExprNodeConstDouble (expr->getDouble (id));
+      }
+      break;
+    default:
+      TableExprNode::throwInvDT ("TableExprNodeSetElem::evaluate");
+    }
+    res->setUnit (expr->unit());
     return res;
   }
 
@@ -248,9 +246,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsStart = value;
     setUnit (itsStart->unit());
   }
-
-  TableExprNodeSetElemSingle::~TableExprNodeSetElemSingle()
-  {}
 
   TENSEBShPtr TableExprNodeSetElemSingle::evaluate
   (const TableExprId& id) const
@@ -530,9 +525,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setUnit (that.unit());
   }
 
-  TableExprNodeSetElemDiscrete::~TableExprNodeSetElemDiscrete()
-  {}
-
   TENSEBShPtr TableExprNodeSetElemDiscrete::evaluate
   (const TableExprId& id) const
   {
@@ -771,9 +763,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setUnit (that.unit());
   }
 
-  TableExprNodeSetElemCont::~TableExprNodeSetElemCont()
-  {}
-
   void TableExprNodeSetElemCont::setup (Bool isLeftClosed,
                                         const TableExprNode* start,
                                         const TableExprNode* end,
@@ -931,9 +920,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     checkTable();
   }
-
-  TableExprNodeSetElemMidWidth::~TableExprNodeSetElemMidWidth()
-  {}
 
   TENSEBShPtr TableExprNodeSetElemMidWidth::evaluate
   (const TableExprId& id) const

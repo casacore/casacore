@@ -37,115 +37,102 @@
 // </summary>
 
 
+// Execute the test for all values in the test vector.
+template<typename T>
+void doTest (TableExprNodeSetOptBase& set,
+             const Vector<T>& testVec, const Vector<Int64>& expFind)
+{
+  TableExprId id(0);
+  for (size_t i=0; i<testVec.size(); ++i) {
+    AlwaysAssertExit (set.find(testVec[i]) == expFind[i]);
+    AlwaysAssertExit (set.contains(id, testVec[i]) == (expFind[i] >= 0));
+  }
+  // Do the test for the full array.
+  MArray<bool> res = set.contains (id, MArray<T>(testVec));
+  AlwaysAssertExit (allEQ(res.array(), expFind>=Int64(0)));
+}
+
+// Original and transformed set should give the same results.
+template<typename T>
+void doTestOrig (TableExprNodeSet& orig, TableExprNodeSetOptBase& set,
+                 const Vector<T>& testVec)
+{
+  TableExprId id(0);
+  for (T v : testVec) {
+    AlwaysAssertExit (orig.contains(id,v) == set.contains(id,v));
+  }
+}
+
 
 void doDoubleContSet()
 {
-  std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
-  std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
-  TableExprId id(0);
   {
     // Test closed-closed intervals
-    TableExprNodeSetOptContSetCC<Double> set (TableExprNodeSet(), st, end);
+    std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
+    std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
+    TableExprNodeSetOptContSet<Double,std::less_equal<Double>,std::less_equal<Double>>
+      set (TableExprNodeSet(), st, end,
+           std::less_equal<Double>(), std::less_equal<Double>(), "CC");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (set.contains (id, 1.));
-    AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (set.contains (id, 2.));
-    AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (set.contains (id, 13.));
-    AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (set.contains (id, 14.));
-    AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (set.contains (id, 21.));
-    AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (set.contains (id, 22.));
-    AlwaysAssertExit (! set.contains (id, 22.5));
-    AlwaysAssertExit (set.find(22.5) == -1);
-    AlwaysAssertExit (set.find(13.5) == 6);
+    // Vectors of test values and expected index.
+    Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
+    Vector<Int64>  exp({-1,   0, 0,   0, -1,  6,  6,    6,  -1,   10, 10,   10, -1});
+    doTest (set, vec, exp);
   }
   {
     // Test open-closed intervals
-    TableExprNodeSetOptContSetOC<Double> set (TableExprNodeSet(), st, end);
+    std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
+    std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
+    TableExprNodeSetOptContSet<Double,std::less<Double>,std::less_equal<Double>>
+      set (TableExprNodeSet(), st, end,
+           std::less<Double>(), std::less_equal<Double>(), "OC");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (! set.contains (id, 1.));
-    AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (set.contains (id, 2.));
-    AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (! set.contains (id, 13.));
-    AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (set.contains (id, 14.));
-    AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (! set.contains (id, 21.));
-    AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (set.contains (id, 22.));
-    AlwaysAssertExit (! set.contains (id, 22.5));
+    // Vectors of test values and expected index.
+    Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
+    Vector<Int64>  exp({-1,  -1, 0,   0, -1,  -1, 6,    6,  -1,   -1, 10,   10, -1});
+    doTest (set, vec, exp);
   }
   {
     // Test closed-open intervals
-    TableExprNodeSetOptContSetCO<Double> set (TableExprNodeSet(), st, end);
+    std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
+    std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
+    TableExprNodeSetOptContSet<Double,std::less_equal<Double>,std::less<Double>>
+      set (TableExprNodeSet(), st, end,
+           std::less_equal<Double>(), std::less<Double>(), "CO");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (set.contains (id, 1.));
-    AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (! set.contains (id, 2.));
-    AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (set.contains (id, 13.));
-    AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (! set.contains (id, 14.));
-    AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (set.contains (id, 21.));
-    AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (! set.contains (id, 22.));
-    AlwaysAssertExit (! set.contains (id, 22.5));
+    // Vectors of test values and expected index.
+    Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
+    Vector<Int64>  exp({-1,   0, 0,  -1, -1,  6,  6,    -1, -1,   10, 10,   -1, -1});
+    doTest (set, vec, exp);
   }
   {
     // Test open-open intervals
-    TableExprNodeSetOptContSetOO<Double> set (TableExprNodeSet(), st, end);
+    std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
+    std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
+    TableExprNodeSetOptContSet<Double,std::less<Double>,std::less<Double>>
+      set (TableExprNodeSet(), st, end,
+           std::less<Double>(), std::less<Double>(), "OO");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (! set.contains (id, 1.));
-    AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (! set.contains (id, 2.));
-    AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (! set.contains (id, 13.));
-    AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (! set.contains (id, 14.));
-    AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (! set.contains (id, 21.));
-    AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (! set.contains (id, 22.));
-    AlwaysAssertExit (! set.contains (id, 22.5));
+    // Vectors of test values and expected index.
+    Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
+    Vector<Int64>  exp({-1,  -1, 0,  -1, -1,  -1, 6,    -1, -1,   -1, 10,   -1, -1});
+    doTest (set, vec, exp);
   }
   {
     // Test intervals with mix of open and closed
-    std::vector<bool> leftC ({false,true,true,true,true,true,false,true,true,true,true});
-    std::vector<bool> rightC({false,true,true,true,true,true,true ,true,true,true,false});
-    TableExprNodeSetOptContSet<Double> set (TableExprNodeSet(), st, end, leftC, rightC);
+    std::vector<double> st  ({1,    19,   3,   21});
+    std::vector<double> end ({2,    20,   5,   22});
+    std::vector<bool> leftC ({false,false,true,true});
+    std::vector<bool> rightC({false,true,true,false});
+    TableExprNodeSetOptContSetMixOC<Double> set (TableExprNodeSet(), st, end,
+                                                 leftC, rightC);
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, 0.5));
-    AlwaysAssertExit (! set.contains (id, 1.));
-    AlwaysAssertExit (set.contains (id, 1.5));
-    AlwaysAssertExit (! set.contains (id, 2.));
-    AlwaysAssertExit (! set.contains (id, 2.5));
-    AlwaysAssertExit (! set.contains (id, 4.5));
-    AlwaysAssertExit (set.contains (id, 5.));
-    AlwaysAssertExit (set.contains (id, 5.5));
-    AlwaysAssertExit (set.contains (id, 6.));
-    AlwaysAssertExit (! set.contains (id, 6.5));
-    AlwaysAssertExit (! set.contains (id, 13.));
-    AlwaysAssertExit (set.contains (id, 13.5));
-    AlwaysAssertExit (set.contains (id, 14.));
-    AlwaysAssertExit (! set.contains (id, 14.5));
-    AlwaysAssertExit (set.contains (id, 21.));
-    AlwaysAssertExit (set.contains (id, 21.5));
-    AlwaysAssertExit (! set.contains (id, 22.));
-    AlwaysAssertExit (! set.contains (id, 22.5));
-    Vector<double> vec({0.5,1,1.5,2,2.5,4.5,5,5.5,6,6.5,13,13.5,14,14.5,21,21.5,22,22.5});
-    Vector<bool> exp({false,false,true,false,false,false,true,true,true,
-                      false,false,true,true,false,true,true,false,false});
-    MArray<bool> res = set.contains (id, MArray<double>(vec));
-    AlwaysAssertExit (allEQ(res.array(), exp));
+    // Vectors of test values and expected index.
+    Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 5.5,
+                        19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5});
+    Vector<Int64> exp ({-1,  -1,  0, -1, -1,  2, 2, 2, -1,
+                        -1,  1,   1,  -1,   3,  3,    -1, -1});
+    doTest (set, vec, exp);
   }
 }
 
@@ -153,96 +140,78 @@ void doStringContSet()
 {
   std::vector<String> st ({"a1"});
   std::vector<String> end({"a5"});
-  TableExprId id(0);
   {
     // Test closed-closed intervals
-    TableExprNodeSetOptContSetCC<String> set (TableExprNodeSet(), st, end);
+    TableExprNodeSetOptContSet<String,std::less_equal<String>,std::less_equal<String>>
+      set (TableExprNodeSet(), st, end,
+           std::less_equal<String>(), std::less_equal<String>(), "CC");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, "a0"));
-    AlwaysAssertExit (set.contains (id, "a1"));
-    AlwaysAssertExit (set.contains (id, "a3"));
-    AlwaysAssertExit (set.contains (id, "a5"));
-    AlwaysAssertExit (! set.contains (id, "a6"));
+    // Vectors of test values and expected index.
+    Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
+    Vector<Int64>  exp({ -1,   0,    0,    0,    -1});
+    doTest (set, vec, exp);
   }
   {
     // Test closed-open intervals
-    TableExprNodeSetOptContSetCO<String> set (TableExprNodeSet(), st, end);
+    TableExprNodeSetOptContSet<String,std::less_equal<String>,std::less<String>>
+      set (TableExprNodeSet(), st, end,
+           std::less_equal<String>(), std::less<String>(), "CO");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, "a0"));
-    AlwaysAssertExit (set.contains (id, "a1"));
-    AlwaysAssertExit (set.contains (id, "a3"));
-    AlwaysAssertExit (! set.contains (id, "a5"));
-    AlwaysAssertExit (! set.contains (id, "a6"));
+    // Vectors of test values and expected index.
+    Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
+    Vector<Int64>  exp({ -1,   0,    0,    -1,   -1});
+    doTest (set, vec, exp);
   }
   {
     // Test open-closed intervals
-    TableExprNodeSetOptContSetOC<String> set (TableExprNodeSet(), st, end);
+    TableExprNodeSetOptContSet<String,std::less<String>,std::less_equal<String>>
+      set (TableExprNodeSet(), st, end,
+           std::less<String>(), std::less_equal<String>(), "OC");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, "a0"));
-    AlwaysAssertExit (! set.contains (id, "a1"));
-    AlwaysAssertExit (set.contains (id, "a3"));
-    AlwaysAssertExit (set.contains (id, "a5"));
-    AlwaysAssertExit (! set.contains (id, "a6"));
+    // Vectors of test values and expected index.
+    Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
+    Vector<Int64>  exp({ -1,   -1,   0,    0,    -1});
+    doTest (set, vec, exp);
   }
   {
     // Test open-open intervals
-    TableExprNodeSetOptContSetOO<String> set (TableExprNodeSet(), st, end);
+    TableExprNodeSetOptContSet<String,std::less<String>,std::less<String>>
+      set (TableExprNodeSet(), st, end,
+           std::less<String>(), std::less<String>(), "OO");
     set.show(cout, 2);
-    AlwaysAssertExit (! set.contains (id, "a0"));
-    AlwaysAssertExit (! set.contains (id, "a1"));
-    AlwaysAssertExit (set.contains (id, "a3"));
-    AlwaysAssertExit (! set.contains (id, "a5"));
-    AlwaysAssertExit (! set.contains (id, "a6"));
+    // Vectors of test values and expected index.
+    Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
+    Vector<Int64>  exp({ -1,   -1,   0,    -1,   -1});
+    doTest (set, vec, exp);
   }
 }
 
 void doIntSet()
 {
-  TableExprId id(0);
-  Vector<Int64> vec({1,3,5,8,10});
-  TableExprNodeSetOptUSet<Int64> set(TableExprNodeSet(), vec);
+  Vector<Int64> vecset({1,3,8,10,5});
+  TableExprNodeSetOptUSet<Int64> set(TableExprNodeSet(), vecset);
   set.show(cout, 2);
-  AlwaysAssertExit (set.contains (id, Int64(1)));
-  AlwaysAssertExit (set.contains (id, Int64(3)));
-  AlwaysAssertExit (set.contains (id, Int64(5)));
-  AlwaysAssertExit (set.contains (id, Int64(8)));
-  AlwaysAssertExit (! set.contains (id, Int64(0)));
-  AlwaysAssertExit (! set.contains (id, Int64(2)));
-  AlwaysAssertExit (! set.contains (id, Int64(11)));
-  AlwaysAssertExit (set.find(Int64(1)) == 0);
-  AlwaysAssertExit (set.find(Int64(8)) == 3);
-  AlwaysAssertExit (set.find(Int64(9)) == -1);
+  // Vectors of test values and expected index.
+  Vector<Int64> vec({1, 3, 5, 8, 10,  0, 2, 11});
+  Vector<Int64> exp({0, 1, 4, 2,  3, -1,-1, -1});
+  doTest (set, vec, exp);
 }
 
 void doStringSet()
 {
-  TableExprId id(0);
-  Vector<String> vec({"a", "b", "d"});
-  TableExprNodeSetOptUSet<String> set(TableExprNodeSet(), vec);
+  Vector<String> vecset({"a", "d", "b"});
+  TableExprNodeSetOptUSet<String> set(TableExprNodeSet(), vecset);
   set.show(cout, 2);
-  AlwaysAssertExit (set.contains (id, "a"));
-  AlwaysAssertExit (set.contains (id, "b"));
-  AlwaysAssertExit (set.contains (id, "d"));
-  AlwaysAssertExit (! set.contains (id, "c"));
-  AlwaysAssertExit (! set.contains (id, "aa"));
-  AlwaysAssertExit (set.find("d") == 2);
-  AlwaysAssertExit (set.find("e") == -1);
+  // Vectors of test values and expected index.
+  Vector<String> vec({"aa", "a", "b", "d", "bd", "e"});
+  Vector<Int64>  exp({ -1,   0,   2,   1,   -1,  -1});
+  doTest (set, vec, exp);
 }
 
 void doDoubleTransform()
 {
-  cout << " String std::lowest=" << std::numeric_limits<String>::lowest() << endl;
-  cout << " String std::max=" << std::numeric_limits<String>::max() << endl;
-  TableExprNode st1(1);
-  TableExprNode end1(8);
-  TableExprNode st2(6);
-  TableExprNode end2(20);
-  TableExprNode st3(25);
-  TableExprNode end3(30);
-  TableExprNode st4(30);
-  TableExprNode end4(33);
-  TableExprNode st5(33);
-  TableExprNode end5(34);
+  TableExprNode  st1(1),  st2(6),   st3(25),  st4(30),  st5(33);
+  TableExprNode end1(8), end2(20), end3(30), end4(33), end5(34);
   // Test with different leftC and rightC.
   // Also such that the 3rd interval is combined with the 4th,
   // but not 4th with 5th (because end4 and st5 are open).
@@ -254,24 +223,28 @@ void doDoubleTransform()
     set.add (TableExprNodeSetElem(True, st1+1, end2+1, False));
     set.add (TableExprNodeSetElem(False, st4, end4, False));
     set.add (TableExprNodeSetElem(False, st5, end5, True));
+    // Vectors of test values and expected index.
+    Vector<double> vec({ 0, 1, 2, 6, 19, 21, 23, 25, 26, 31, 33, 33.5, 34, 34.1});
+    Vector<Int64>  exp({-1,-1, 0, 0,  0, -1, -1,  1,  1,  1, -1,  2,    2, -1});
     {
-      TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set, False);
+      // No combine, thus 6 intervals with different leftC/rightC.
+      TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set, False);
+      TableExprNodeSetOptContSetMixOC<Double>* p =
+        dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
+      AlwaysAssertExit (p);
+      AlwaysAssertExit (p->size() == 6);
       trSet->show (cout, 0);
+      doTestOrig (set, *p, vec);
     }
-    TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set);
+    // Should result in (1,21) [25,33) (33,34]
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
+    TableExprNodeSetOptContSetMixOC<Double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
+    AlwaysAssertExit (p);
+    AlwaysAssertExit (p->size() == 3);
     trSet->show (cout, 0);
-    TableExprId id(0);
-    AlwaysAssertExit (set.contains(id,0.) == trSet->contains(id,0.));
-    AlwaysAssertExit (set.contains(id,1.) == trSet->contains(id,1.));
-    AlwaysAssertExit (set.contains(id,2.) == trSet->contains(id,2.));
-    AlwaysAssertExit (set.contains(id,6.) == trSet->contains(id,6.));
-    AlwaysAssertExit (set.contains(id,19.) == trSet->contains(id,19.));
-    AlwaysAssertExit (set.contains(id,25.) == trSet->contains(id,25.));
-    AlwaysAssertExit (set.contains(id,26.) == trSet->contains(id,26.));
-    AlwaysAssertExit (set.contains(id,30.) == trSet->contains(id,30.));
-    AlwaysAssertExit (set.contains(id,31.) == trSet->contains(id,31.));
-    AlwaysAssertExit (set.contains(id,33.) == trSet->contains(id,33.));
-    AlwaysAssertExit (set.contains(id,33.) == False);
+    doTest (*p, vec, exp);
+    doTestOrig (set, *p, vec);
   }
   // Test with equal leftC and rightC (all combinations).
   for (int i=0; i<4; ++i) {
@@ -279,23 +252,26 @@ void doDoubleTransform()
     set.add (TableExprNodeSetElem(i/2==0, st1, end1, i%2==0));
     set.add (TableExprNodeSetElem(i/2==0, st3, end3, i%2==0));
     set.add (TableExprNodeSetElem(i/2==0, st2, end2, i%2==0));
-    set.add (TableExprNodeSetElem(i/2==0, st1+1, end2+1, i%2==0));
     set.add (TableExprNodeSetElem(i/2==0, st4, end4, i%2==0));
     set.add (TableExprNodeSetElem(i/2==0, st5, end5, i%2==0));
-    TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set);
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
+    TableExprNodeSetOptContSetBase<Double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    // Results in 2 elements, but 4 when left and right side are open.
     trSet->show (cout, 0);
-    TableExprId id(0);
-    AlwaysAssertExit (set.contains(id,0.) == trSet->contains(id,0.));
-    AlwaysAssertExit (set.contains(id,1.) == trSet->contains(id,1.));
-    AlwaysAssertExit (set.contains(id,2.) == trSet->contains(id,2.));
-    AlwaysAssertExit (set.contains(id,6.) == trSet->contains(id,6.));
-    AlwaysAssertExit (set.contains(id,19.) == trSet->contains(id,19.));
-    AlwaysAssertExit (set.contains(id,25.) == trSet->contains(id,25.));
-    AlwaysAssertExit (set.contains(id,26.) == trSet->contains(id,26.));
-    AlwaysAssertExit (set.contains(id,30.) == trSet->contains(id,30.));
-    AlwaysAssertExit (set.contains(id,31.) == trSet->contains(id,31.));
-    AlwaysAssertExit (set.contains(id,33.) == trSet->contains(id,33.));
-    AlwaysAssertExit (set.contains(id,33.) == (i!=3));
+    AlwaysAssertExit (p->size() == (i==3 ? 4:2));
+    // Vectors of test values and expected index (depending on open/closed).
+    Int64 i3 = (i==3 ? 2 : 1);
+    Int64 i4 = (i==3 ? 3 : 1);
+    Int64 l1 = (i/2==0 ? 0 : -1);
+    Int64 l2 = (i/2==0 ? 1 : -1);
+    Int64 r1 = (i%2==0 ? 0 : -1);
+    Int64 r2 = (i!=3   ? 1 : -1);
+    Int64 r3 = (i%2==0 ? i3 : -1);
+    Vector<double> vec({ 0, 1, 2, 6, 19, 20, 23, 25, 26, 30, 31, 33, 33.5, 34, 34.1});
+    Vector<Int64>  exp({-1,l1, 0, 0,  0, r1, -1, l2,  1, r2, i3, r2, i4,   r3, -1});
+    doTest (*p, vec, exp);
+    doTestOrig (set, *p, vec);
   }
 }
 
@@ -307,35 +283,31 @@ void doDateTransform()
   {
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem(False, st, end, False));
-    TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set);
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
+    TableExprNodeSetOptContSetBase<Double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    AlwaysAssertExit (p);
+    AlwaysAssertExit (p->size() == 1);
     trSet->show (cout, 0);
-    TableExprId id(0);
-    AlwaysAssertExit (set.contains(id,54926.5) == trSet->contains(id,54926.5));
-    AlwaysAssertExit (set.contains(id,54926.51) == trSet->contains(id,54926.51));
-    AlwaysAssertExit (set.contains(id,54934.) == trSet->contains(id,54934.));
-    AlwaysAssertExit (set.contains(id,54958.49) == trSet->contains(id,54958.49));
-    AlwaysAssertExit (set.contains(id,54958.5) == trSet->contains(id,54958.5));
+    Vector<double> vec({54926.5, 54926.51, 54934, 54958.49,54958.5});
+    Vector<Int64>  exp({   -1,       0,        0,     0,      -1});
+    doTest (*p, vec, exp);
+    doTestOrig (set, *p, vec);
   }
   {
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem(st, width));
-    TENShPtr trSet = TableExprNodeSetOptContSet<Double>::transform (set);
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
+    TableExprNodeSetOptContSetBase<Double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    AlwaysAssertExit (p);
+    AlwaysAssertExit (p->size() == 1);
     trSet->show (cout, 0);
-    TableExprId id(0);
-    AlwaysAssertExit (set.contains(id,54924.5) == trSet->contains(id,54924.5));
-    AlwaysAssertExit (set.contains(id,54924.51) == trSet->contains(id,54924.51));
-    AlwaysAssertExit (set.contains(id,54926.) == trSet->contains(id,54926.));
-    AlwaysAssertExit (set.contains(id,54928.49) == trSet->contains(id,54928.49));
-    AlwaysAssertExit (set.contains(id,54928.5) == trSet->contains(id,54928.5));
+    Vector<double> vec({54924.49, 54924.5, 54926, 54928.5, 54928.51});
+    Vector<Int64>  exp({   -1,        0,       0,     0,      -1});
+    doTest (*p, vec, exp);
+    doTestOrig (set, *p, vec);
   }
-}
-
-void doDoubleMidWidth()
-{
-}
-
-void doDateMidWidth()
-{
 }
 
 int main()
@@ -347,8 +319,6 @@ int main()
     doStringSet();
     doDoubleTransform();
     doDateTransform();
-    doDoubleMidWidth();
-    doDateMidWidth();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
