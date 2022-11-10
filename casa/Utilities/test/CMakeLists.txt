@@ -1,6 +1,7 @@
 set (tests
 dCOWptr
 dMUString
+tAssert
 tBinarySearch
 tBitVector
 tCompare
