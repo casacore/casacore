@@ -38,6 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward declarations
   class TableParseQuery;
+  class TaQLStyle;
 
   
   // <summary>

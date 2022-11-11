@@ -593,27 +593,39 @@ TaQLNode TaQLFuncNodeRep::restore (AipsIO& aio)
   return new TaQLFuncNodeRep (name, TaQLNode::restoreMultiNode (aio));
 }
 
-TaQLRangeNodeRep::TaQLRangeNodeRep (Bool leftClosed, TaQLNode start,
-                                    const TaQLNode& end, Bool rightClosed)
+TaQLRangeNodeRep::TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start,
+                                    const TaQLNode& end, Bool rightClosed,
+                                    Bool asMidWidth)
   : TaQLNodeRep (TaQLNode_Range),
-    itsLeftClosed (leftClosed),
     itsStart      (start),
     itsEnd        (end),
-    itsRightClosed(rightClosed)
+    itsLeftClosed (leftClosed),
+    itsRightClosed(rightClosed),
+    itsAsMidWidth (asMidWidth)
 {}
 TaQLRangeNodeRep::TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start)
   : TaQLNodeRep (TaQLNode_Range),
-    itsLeftClosed (leftClosed),
     itsStart      (start),
     itsEnd        (),
-    itsRightClosed(False)
+    itsLeftClosed (leftClosed),
+    itsRightClosed(False),
+    itsAsMidWidth (False)
 {}
 TaQLRangeNodeRep::TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed)
   : TaQLNodeRep (TaQLNode_Range),
-    itsLeftClosed (False),
     itsStart      (),
     itsEnd        (end),
-    itsRightClosed(rightClosed)
+    itsLeftClosed (False),
+    itsRightClosed(rightClosed),
+    itsAsMidWidth (False)
+{}
+TaQLRangeNodeRep::TaQLRangeNodeRep (const TaQLNode& mid, const TaQLNode& width)
+  : TaQLNodeRep (TaQLNode_Range),
+    itsStart      (mid),
+    itsEnd        (width),
+    itsLeftClosed (True),
+    itsRightClosed(True),
+    itsAsMidWidth (True)
 {}
 TaQLNodeResult TaQLRangeNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -621,33 +633,41 @@ TaQLNodeResult TaQLRangeNodeRep::visit (TaQLNodeVisitor& visitor) const
 }
 void TaQLRangeNodeRep::show (std::ostream& os) const
 {
-  if (itsLeftClosed) {
-    os << '{';
+  if (itsAsMidWidth) {
+    os << '(';
+    itsStart.show (os);
+    os << ")<:>(";
+    itsEnd.show (os);
+    os << ')';
   } else {
-    os << '<';
-  }
-  itsStart.show (os);
-  os << ',';
-  itsEnd.show (os);
-  if (itsRightClosed) {
-    os << '}';
-  } else {
-    os << '>';
+    if (itsLeftClosed) {
+      os << '{';
+    } else {
+      os << '<';
+    }
+    itsStart.show (os);
+    os << ',';
+    itsEnd.show (os);
+    if (itsRightClosed) {
+      os << '}';
+    } else {
+      os << '>';
+    }
   }
 }
 void TaQLRangeNodeRep::save (AipsIO& aio) const
 {
-  aio << itsLeftClosed << itsRightClosed;
+  aio << itsLeftClosed << itsRightClosed << itsAsMidWidth;
   itsStart.saveNode (aio);
   itsEnd.saveNode (aio);
 }
 TaQLNode TaQLRangeNodeRep::restore (AipsIO& aio)
 {
-  Bool leftClosed, rightClosed;
-  aio >> leftClosed >> rightClosed;
+  Bool leftClosed, rightClosed, asMidWidth;
+  aio >> leftClosed >> rightClosed >> asMidWidth;
   TaQLNode start = TaQLNode::restoreNode (aio);
   TaQLNode end = TaQLNode::restoreNode (aio);
-  return new TaQLRangeNodeRep (leftClosed, start, end, rightClosed);
+  return new TaQLRangeNodeRep (leftClosed, start, end, rightClosed, asMidWidth);
 }
 
 TaQLIndexNodeRep::TaQLIndexNodeRep (const TaQLNode& start,

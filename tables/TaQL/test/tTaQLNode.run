@@ -69,7 +69,11 @@ $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN (se
 
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab BETWEEN 2 AND 4'
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab NOT BETWEEN 2 AND 4'
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab AROUND 2 IN 4'
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab NOT AROUND 2 IN 4'
 
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN [BETWEEN 2 AND 4]'
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN AROUND 2 IN 4'
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN [:=2,4=:<6,7<:]'
 
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN [2,(3)]'

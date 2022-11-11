@@ -791,6 +791,8 @@ public:
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
+// The right hand side can be optimized if it contains a constant array which
+// can be replaced by an std::unordered_set<Int64> or a Block<Bool>.
 // </synopsis> 
 
 class TableExprNodeArrayINInt : public TableExprNodeArray
@@ -798,7 +800,8 @@ class TableExprNodeArrayINInt : public TableExprNodeArray
 public:
     TableExprNodeArrayINInt (const TableExprNodeRep&);
     ~TableExprNodeArrayINInt();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+    virtual void optimize() override;
+    virtual MArray<Bool> getArrayBool (const TableExprId& id) override;
 };
 
 
@@ -828,7 +831,8 @@ class TableExprNodeArrayINDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayINDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayINDouble();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+    virtual void optimize() override;
+    MArray<Bool> getArrayBool (const TableExprId& id) override;
 };
 
 
@@ -881,6 +885,8 @@ public:
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
+// The right hand side can be optimized if it contains a constant array which
+// can be replaced by an std::unordered_set<String>
 // </synopsis> 
 
 class TableExprNodeArrayINString : public TableExprNodeArray
@@ -888,7 +894,8 @@ class TableExprNodeArrayINString : public TableExprNodeArray
 public:
     TableExprNodeArrayINString (const TableExprNodeRep&);
     ~TableExprNodeArrayINString();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+    virtual void optimize() override;
+    virtual MArray<Bool> getArrayBool (const TableExprId& id) override;
 };
 
 
@@ -918,7 +925,8 @@ class TableExprNodeArrayINDate : public TableExprNodeArray
 public:
     TableExprNodeArrayINDate (const TableExprNodeRep&);
     ~TableExprNodeArrayINDate();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+    virtual void optimize() override;
+    MArray<Bool> getArrayBool (const TableExprId& id) override;
 };
 
 

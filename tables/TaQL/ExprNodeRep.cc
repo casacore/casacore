@@ -88,6 +88,8 @@ TableExprNodeRep::TableExprNodeRep (const TableExprNodeRep& that)
 TableExprNodeRep::~TableExprNodeRep ()
 {}
 
+void TableExprNodeRep::optimize()
+{}
 
 void TableExprNodeRep::show (ostream& os, uInt indent) const
 {
@@ -149,11 +151,8 @@ rownr_t TableExprNodeRep::nrow() const
     return table_p.nrow();
 }
 
-void TableExprNodeRep::convertConstChild()
-{}
-
 void TableExprNodeRep::checkTablePtr (Table& table,
-                                      const TENShPtr& node)
+                                      const TableExprNodeRep* node)
 {
     if (node) {
         if (table.isNull()  ||  table.nrow() == 0) {
@@ -168,7 +167,7 @@ void TableExprNodeRep::checkTablePtr (Table& table,
     }
 }
 void TableExprNodeRep::fillExprType (ExprType& type,
-                                     const TENShPtr& node)
+                                     const TableExprNodeRep* node)
 {
     if (node != 0  &&  !node->isConstant()) {
         type = Variable;
@@ -345,60 +344,57 @@ MArray<MVTime> TableExprNodeRep::getDateAS (const TableExprId& id)
   return MArray<MVTime>(res);
 }
 
-Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
+Bool TableExprNodeRep::contains (const TableExprId& id, Bool value)
 {
     return (value == getBool(id));
 }
-Bool TableExprNodeRep::hasInt      (const TableExprId& id, Int64 value)
+Bool TableExprNodeRep::contains (const TableExprId& id, Int64 value)
 {
     return (value == getInt(id));
 }
-Bool TableExprNodeRep::hasDouble   (const TableExprId& id, Double value)
+Bool TableExprNodeRep::contains (const TableExprId& id, Double value)
 {
     return (value == getDouble(id));
 }
-Bool TableExprNodeRep::hasDComplex (const TableExprId& id,
-                                    const DComplex& value)
+Bool TableExprNodeRep::contains (const TableExprId& id, DComplex value)
 {
     return (value == getDComplex(id));
 }
-Bool TableExprNodeRep::hasString   (const TableExprId& id,
-                                    const String& value)
+Bool TableExprNodeRep::contains (const TableExprId& id, String value)
 {
     return (value == getString(id));
 }
-Bool TableExprNodeRep::hasDate     (const TableExprId& id,
-                                    const MVTime& value)
+Bool TableExprNodeRep::contains (const TableExprId& id, MVTime value)
 {
     return (value == getDate(id));
 }
-MArray<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
-                                             const MArray<Bool>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<Bool>& value)
 {
     return (getBool(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayInt (const TableExprId& id,
-                                            const MArray<Int64>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<Int64>& value)
 {
     return (getInt(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
-                                               const MArray<Double>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<Double>& value)
 {
     return (getDouble(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayDComplex (const TableExprId& id,
-                                                 const MArray<DComplex>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<DComplex>& value)
 {
     return (getDComplex(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayString (const TableExprId& id,
-                                               const MArray<String>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<String>& value)
 {
     return (getString(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
-                                             const MArray<MVTime>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<MVTime>& value)
 {
     return (getDate(id) == value);
 }
@@ -573,8 +569,10 @@ TENShPtr TableExprNodeBinary::shortcutOrAnd ()
 
 TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
 {
-  // If the expression is not constant, try to convert the type
-  // of a constant child to the other child's type.
+  // It might be possible to optimize a node by
+  // replacing a constant right hand by a faster implementation
+  // (in particular for the IN operator).
+  node->optimize();
   if (! node->isConstant()) {
     return node;
   }
@@ -842,7 +840,7 @@ TableExprNodeRep TableExprNodeBinary::getCommonTypes (const TENShPtr& left,
     // Determine from which table the expression is coming
     // and whether the tables match.
     Table table = left->table();
-    checkTablePtr (table, right);
+    checkTablePtr (table, right.get());
     return TableExprNodeRep (dtype, vtype, opt, atype, extype, ndim, shape,
                              table);
 }

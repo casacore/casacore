@@ -117,6 +117,18 @@ SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN {2,4}
 select ab,ac from tTaQLNode_tmp.tab where ab NOT BETWEEN 2 AND 4
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE NOT((ab) IN {2,4})
 
+select ab,ac from tTaQLNode_tmp.tab where ab AROUND 2 IN 4
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN (2)<:>(4)
+
+select ab,ac from tTaQLNode_tmp.tab where ab NOT AROUND 2 IN 4
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE NOT((ab) IN (2)<:>(4))
+
+select ab,ac from tTaQLNode_tmp.tab where ab IN [BETWEEN 2 AND 4]
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN [<2,4>]
+
+select ab,ac from tTaQLNode_tmp.tab where ab IN AROUND 2 IN 4
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN (2)<:>(4)
+
 select ab,ac from tTaQLNode_tmp.tab where ab IN [:=2,4=:<6,7<:]
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN [<,2},{4,6>,<7,>]
 

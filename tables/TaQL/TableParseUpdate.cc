@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/TableError.h>
 
@@ -107,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (! indices.hasArrays()) {
         throw TableInvExpr ("A mask in an update must be an array");
       }
-      mask_p = TableExprNode(indices[0].start());
+      mask_p = TableExprNode(indices[0]->start());
     } else {
       if (indexPtr_p) {
         throw TableInvExpr ("A double indexed update array cannot contain "

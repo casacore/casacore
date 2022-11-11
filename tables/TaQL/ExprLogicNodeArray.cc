@@ -26,6 +26,7 @@
 //# $Id: ExprLogicNodeArray.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprLogicNodeArray.h>
+#include <casacore/tables/TaQL/ExprLogicNode.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/tables/TaQL/MArray.h>
 #include <casacore/tables/TaQL/MArrayLogical.h>
@@ -504,9 +505,13 @@ TableExprNodeArrayINInt::TableExprNodeArrayINInt
 {}
 TableExprNodeArrayINInt::~TableExprNodeArrayINInt()
 {}
+void TableExprNodeArrayINInt::optimize()
+{
+  TableExprNodeINInt::doOptimize (rnode_p);
+}
 MArray<Bool> TableExprNodeArrayINInt::getArrayBool (const TableExprId& id)
 {
-    return rnode_p->hasArrayInt (id, lnode_p->getArrayInt (id));
+    return rnode_p->contains (id, lnode_p->getArrayInt (id));
 }
 
 TableExprNodeArrayINDouble::TableExprNodeArrayINDouble
@@ -515,9 +520,13 @@ TableExprNodeArrayINDouble::TableExprNodeArrayINDouble
 {}
 TableExprNodeArrayINDouble::~TableExprNodeArrayINDouble()
 {}
+void TableExprNodeArrayINDouble::optimize()
+{
+  TableExprNodeINDouble::doOptimize (rnode_p);
+}
 MArray<Bool> TableExprNodeArrayINDouble::getArrayBool (const TableExprId& id)
 {
-    return rnode_p->hasArrayDouble (id, lnode_p->getArrayDouble (id));
+    return rnode_p->contains (id, lnode_p->getArrayDouble (id));
 }
 
 TableExprNodeArrayINDComplex::TableExprNodeArrayINDComplex
@@ -528,7 +537,7 @@ TableExprNodeArrayINDComplex::~TableExprNodeArrayINDComplex()
 {}
 MArray<Bool> TableExprNodeArrayINDComplex::getArrayBool (const TableExprId& id)
 {
-    return rnode_p->hasArrayDComplex (id, lnode_p->getArrayDComplex (id));
+    return rnode_p->contains (id, lnode_p->getArrayDComplex (id));
 }
 
 TableExprNodeArrayINString::TableExprNodeArrayINString
@@ -537,9 +546,13 @@ TableExprNodeArrayINString::TableExprNodeArrayINString
 {}
 TableExprNodeArrayINString::~TableExprNodeArrayINString()
 {}
+void TableExprNodeArrayINString::optimize()
+{
+  TableExprNodeINString::doOptimize (rnode_p);
+}
 MArray<Bool> TableExprNodeArrayINString::getArrayBool (const TableExprId& id)
 {
-    return rnode_p->hasArrayString (id, lnode_p->getArrayString (id));
+    return rnode_p->contains (id, lnode_p->getArrayString (id));
 }
 
 TableExprNodeArrayINDate::TableExprNodeArrayINDate
@@ -548,9 +561,13 @@ TableExprNodeArrayINDate::TableExprNodeArrayINDate
 {}
 TableExprNodeArrayINDate::~TableExprNodeArrayINDate()
 {}
+void TableExprNodeArrayINDate::optimize()
+{
+  TableExprNodeINDate::doOptimize (rnode_p);
+}
 MArray<Bool> TableExprNodeArrayINDate::getArrayBool (const TableExprId& id)
 {
-    return rnode_p->hasArrayDate (id, lnode_p->getArrayDate (id));
+    return rnode_p->contains (id, lnode_p->getArrayDate (id));
 }
 
 

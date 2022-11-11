@@ -98,24 +98,24 @@ public:
 
     // Does a value occur in the set?
     // <group>
-    virtual Bool hasBool     (const TableExprId& id, Bool value);
-    virtual Bool hasInt      (const TableExprId& id, Int64 value);
-    virtual Bool hasDouble   (const TableExprId& id, Double value);
-    virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
-    virtual Bool hasString   (const TableExprId& id, const String& value);
-    virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
-                                           const MArray<Bool>& value);
-    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
-                                           const MArray<Int64>& value);
-    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
-                                           const MArray<Double>& value);
-    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
-                                           const MArray<DComplex>& value);
-    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
-                                           const MArray<String>& value);
-    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
-                                           const MArray<MVTime>& value);
+    virtual Bool contains (const TableExprId& id, Bool value);
+    virtual Bool contains (const TableExprId& id, Int64 value);
+    virtual Bool contains (const TableExprId& id, Double value);
+    virtual Bool contains (const TableExprId& id, DComplex value);
+    virtual Bool contains (const TableExprId& id, String value);
+    virtual Bool contains (const TableExprId& id, MVTime value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Bool>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Int64>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Double>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<DComplex>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<String>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<MVTime>& value);
     // </group>
 
     // Get a single element from the array in the given row.
