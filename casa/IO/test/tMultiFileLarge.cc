@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
 #include <casacore/casa/IO/MultiFile.h>
@@ -38,7 +36,7 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace std;
+using namespace casacore;
 
 namespace casacore {
   
@@ -122,7 +120,6 @@ namespace casacore {
 }
 
 
-using namespace casacore;
 
 void readFile (const String& name)
 {

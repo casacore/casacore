@@ -364,7 +364,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void MultiFile::readHeader (Bool always)
   {
-    /*  header layout is described in note 260, but repeated here.
+    /*  header layout is described in Casacore note 260, but repeated here.
         version 1
           Int64  header size
           Int64  blockSize
@@ -439,6 +439,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiFile::readHeaderVersion1 (Int64 headerSize, std::vector<char>& buf)
   {
     Int64 leadSize = buf.size();
+    AlwaysAssert (leadSize==24, AipsError);
     CanonicalConversion::toLocal (itsBlockSize, &(buf[8]));
     buf.resize (headerSize);
     if (headerSize <= itsBlockSize) {
@@ -466,6 +467,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiFile::readHeaderVersion2 (std::vector<char>& buf)
   {
     Int64 leadSize = buf.size();
+    AlwaysAssert (leadSize==24, AipsError);
     Int64 contBlockNr = 0;
     Int64 headerSize;
     uInt  headerCRC = 0;
