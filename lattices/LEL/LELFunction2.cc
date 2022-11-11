@@ -287,7 +287,7 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
 	    if (scalarTemp == 2) {
 	       result.value() *= result.value();
 	    } else {
-	       Array<Float> temp (pow (result.value(), Double(scalarTemp)));
+	       Array<Float> temp (pow (result.value(), scalarTemp));
 	       result.value().reference (temp);
 	    }
 	    break;
@@ -1241,7 +1241,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    arg_p[1].eval(scalarTemp);
 	    arg_p[0].eval(result, section);
 	    if (scalarTemp.imag() == 0) {
-	       Double exponent = scalarTemp.real();
+	       Float exponent = scalarTemp.real();
 	       if (exponent == 2) {
 		  result.value() *= result.value();
 	       } else {

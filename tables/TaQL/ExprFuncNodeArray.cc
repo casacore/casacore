@@ -2002,11 +2002,13 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
             return casacore::pow (operands()[0]->getDComplex(id),
                                   operands()[1]->getArrayDComplex(id));
         } else if (operands()[1]->valueType() == VTScalar) {
-            MArray<DComplex> arr1 (operands()[0]->getArrayDComplex(id));
-            Array<DComplex> arr2 (arr1.shape());
-            arr2 = operands()[1]->getDComplex(id);
-            /// Make pow of array,scalar possible
-            return MArray<DComplex> (pow(arr1.array(), arr2), arr1);
+          if (operands()[1]->dataType() == NTDouble) {
+            return casacore::pow (operands()[0]->getArrayDComplex(id),
+                                  operands()[1]->getDouble(id));
+          } else {
+            return casacore::pow (operands()[0]->getArrayDComplex(id),
+                                  operands()[1]->getDComplex(id));
+          }
         } else {
             return pow (operands()[0]->getArrayDComplex(id),
                         operands()[1]->getArrayDComplex(id));

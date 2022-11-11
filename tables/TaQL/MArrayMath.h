@@ -589,8 +589,12 @@ namespace casacore {
     { return MArray<T> (pow(a, exp.array()), exp); }
 
   template<typename T>
-  MArray<T> pow(const MArray<T>& a, const Double& exp)
+  MArray<T> pow(const MArray<T>& a, const T& exp)
     { return MArray<T> (pow(a.array(), exp), a); }
+
+  template<typename T>
+  MArray<std::complex<T>> pow(const MArray<std::complex<T>>& a, const T& exp)
+  { return MArray<std::complex<T>> (pow(a.array(), exp), a); }
 
   template<typename T>
   MArray<T> min(const MArray<T>& left, const MArray<T>& right)

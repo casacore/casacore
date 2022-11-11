@@ -795,7 +795,7 @@ void doIt()
   checkScaDouble ("norm sd", exprid, norm(esd1), sd1*sd1);
   checkArrDouble ("norm ad", exprid, norm(earrd1), arrd1*arrd1);
   checkScaDouble ("norm sz", exprid, norm(esz1), norm(sz1));
-  checkArrDouble ("norm az", exprid, norm(earrz1), pow(amplitude(arrz1),2));
+  checkArrDouble ("norm az", exprid, norm(earrz1), pow(amplitude(arrz1),2.));
   checkScaInt ("abs si", exprid, abs(esi1), abs(si1));
   checkArrInt ("abs ai", exprid, abs(earri1), abs(arri1));
   checkScaDouble ("abs sd", exprid, abs(esd1), abs(sd1));
