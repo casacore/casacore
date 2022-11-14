@@ -460,7 +460,7 @@ namespace casacore {
   }
   void DataColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
-    DebugAssert (dyype() == TpComplex, AipsError);
+    DebugAssert (dtype() == TpComplex, AipsError);
     Array<Complex>& arr = static_cast<Array<Complex>&>(dataPtr);
     indgen (arr, Complex(rownr, rownr+0.5));
   }
