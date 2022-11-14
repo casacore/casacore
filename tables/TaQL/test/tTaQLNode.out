@@ -419,3 +419,12 @@ WITH [SELECT abs((phase(t1.DATA))-(phase(t2.DATA))) AS D FROM a.ms AS t1,/home/g
 with ~a select 1+2 from [~b,[select 3+4 from [[select 5+6],~c]], ~d giving ~e] where 3+4 giving ~f
 WITH ~a SELECT (1)+(2) FROM [~b,[SELECT (3)+(4) FROM [[SELECT (5)+(6)],~c]],~d GIVING ~e] WHERE (3)+(4) GIVING ~f
 
+select from a join b on a.b == b.b join c on a.c BETWEEN c.m AND c.w
+SELECT FROM a AS a JOIN b AS b ON (a.b)=(b.b) JOIN c AS c ON (a.c) IN {c.m,c.w}
+
+SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w
+SELECT t1.rowid() AS r1,t2.pol,t3.ci FROM tTableGramJoin_tmp.tab AS t1 JOIN ::DD AS t2 ON (t1.cdd)=(t2.rowid()) JOIN ::SC AS t3 ON ((t2.spw)=(t3.spw))&&((t1.ct) IN (t3.tod)<:>(t3.w))
+
+SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w WHERE t3.ci%3!=0
+SELECT t1.rowid() AS r1,t2.pol,t3.ci FROM tTableGramJoin_tmp.tab AS t1 JOIN ::DD AS t2 ON (t1.cdd)=(t2.rowid()) JOIN ::SC AS t3 ON ((t2.spw)=(t3.spw))&&((t1.ct) IN (t3.tod)<:>(t3.w)) WHERE ((t3.ci)%(3))<>(0)
+

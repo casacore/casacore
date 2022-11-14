@@ -469,13 +469,15 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             BEGIN(EXPRstate);
             return HAVING;
           }
-{JOIN} {
+{JOIN}    {
             tableGramPosition() += yyleng;
-            throw (TableInvExpr ("JOIN ON is not supported yet"));
+	    BEGIN(TABLENAMEstate);
+	    return JOIN;
           }
-{ON}  {
+{ON}      {
             tableGramPosition() += yyleng;
-            throw (TableInvExpr ("JOIN ON is not supported yet"));
+	    BEGIN(EXPRstate);
+	    return ON;
           }
 
 {AS}      {

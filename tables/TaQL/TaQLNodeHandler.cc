@@ -388,8 +388,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep&)
   {
-    throw TableInvExpr ("join is not supported yet");
-    return TaQLNodeResult();
+    throw TableInvExpr("Joins are not implemented yet");
   }
 
   TaQLNodeResult TaQLNodeHandler::visitGroupNode (const TaQLGroupNodeRep& node)
@@ -529,7 +528,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Furthermore, handle GIVING first, because projection needs to know
     // the resulting table name.
     visitNode     (node.itsGiving);
-    visitNode     (node.itsJoin);
+    handleJoins   (node.itsJoins);
     handleWhere   (node.itsWhere);
     visitNode     (node.itsGroupby);
     visitNode     (node.itsColumns);
@@ -940,6 +939,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       topStack()->tableList().addTable (res.getInt(), res.getString(),
                                         res.getTable(), res.getAlias(),
                                         addToFromList, itsTempTables, itsStack);
+    }
+  }
+
+  void TaQLNodeHandler::handleJoins (const TaQLMultiNode& node)
+  {
+    if (! node.isValid()) {
+      return;     // no joins
+    }
+    const std::vector<TaQLNode>& nodes = node.getMultiRep()->itsNodes;
+    for (uInt i=0; i<nodes.size(); ++i) {
+      visitNode (nodes[i]);
     }
   }
 

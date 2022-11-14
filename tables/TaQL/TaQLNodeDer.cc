@@ -727,7 +727,7 @@ void TaQLJoinNodeRep::show (std::ostream& os) const
     itsTables.show (os);
     os << ' ';
   }
-  os << "ON CONDITION ";
+  os << "ON ";
   itsCondition.show (os);
 }
 void TaQLJoinNodeRep::save (AipsIO& aio) const
@@ -1161,7 +1161,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
 TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
                                       const TaQLMultiNode& with,
                                       const TaQLMultiNode& tables,
-                                      const TaQLNode& join,
+                                      const TaQLMultiNode& joins,
                                       const TaQLNode& where,
                                       const TaQLNode& groupby,
                                       const TaQLNode& having,
@@ -1171,7 +1171,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
                                       const TaQLMultiNode& dminfo)
   : TaQLQueryNodeRep (TaQLNode_Select),
     itsColumns(columns), itsWith(with), itsTables(tables),
-    itsJoin(join), itsWhere(where), itsGroupby(groupby), itsHaving(having),
+    itsJoins(joins), itsWhere(where), itsGroupby(groupby), itsHaving(having),
     itsSort(sort), itsLimitOff(limitoff), itsGiving(giving),
     itsDMInfo(dminfo)
 {}
@@ -1188,7 +1188,7 @@ void TaQLSelectNodeRep::showDerived (std::ostream& os) const
     os << " FROM ";
     itsTables.show (os);
   }
-  itsJoin.show (os);
+  itsJoins.show (os);
   if (itsWhere.isValid()) {
     os << " WHERE ";
     itsWhere.show (os);
@@ -1216,7 +1216,7 @@ void TaQLSelectNodeRep::save (AipsIO& aio) const
   itsColumns.saveNode (aio);
   itsWith.saveNode (aio);
   itsTables.saveNode (aio);
-  itsJoin.saveNode (aio);
+  itsJoins.saveNode (aio);
   itsWhere.saveNode (aio);
   itsGroupby.saveNode (aio);
   itsHaving.saveNode (aio);
@@ -1231,7 +1231,7 @@ TaQLNode TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode columns = TaQLNode::restoreNode (aio);
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
-  TaQLNode join = TaQLNode::restoreMultiNode (aio);
+  TaQLMultiNode joins = TaQLNode::restoreMultiNode (aio);
   TaQLNode where = TaQLNode::restoreNode (aio);
   TaQLNode groupby = TaQLNode::restoreNode (aio);
   TaQLNode having = TaQLNode::restoreNode (aio);
@@ -1240,7 +1240,7 @@ TaQLNode TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode giving = TaQLNode::restoreNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
   std::unique_ptr<TaQLSelectNodeRep> node
-    (new TaQLSelectNodeRep (columns, with, tables, join,
+    (new TaQLSelectNodeRep (columns, with, tables, joins,
                             where, groupby, having,
                             sort, limitoff, giving, dminfo));
   node->restoreSuper (aio);
