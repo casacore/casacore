@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 #ifndef SCIMATH_FITGAUSSIAN_H
 #define SCIMATH_FITGAUSSIAN_H
 

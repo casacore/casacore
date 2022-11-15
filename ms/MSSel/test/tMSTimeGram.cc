@@ -1,29 +1,27 @@
 //# tMSTimeGram.cc: Test program for MS Time selection parser
 //# Copyright (C) 2004
-//# Associated Universities, Inc. Washington Dc, Usa.
+//# Associated Universities, Inc. Washington DC, USA.
 //#
-//# This Library Is Free Software; You Can Redistribute It And/Or Modify It
-//# Under The Terms Of The Gnu Library General Public License As Published By
-//# The Free Software Foundation; Either Version 2 Of The License, Or (At Your
-//# Option) Any Later Version.
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
 //#
-//# This Library Is Distributed In The Hope That It Will Be Useful, But Without
-//# Any Warranty; Without Even The Implied Warranty Of Merchantability Or
-//# Fitness For A Particular Purpose.  See The Gnu Library General Public
-//# License For More Details.
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
 //#
-//# You Should Have Received A Copy Of The Gnu Library General Public License
-//# Along With This Library; If Not, Write To The Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, Ma 02139, Usa.
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
-//# Correspondence Concerning Aips++ Should Be Addressed As Follows:
-//#        Internet Email: Aips2-Request@Nrao.Edu.
-//#        Postal Address: Aips++ Project Office
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
-//#                        Charlottesville, Va 22903-2475 Usa
-//#
-//# $Id$
+//#                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>

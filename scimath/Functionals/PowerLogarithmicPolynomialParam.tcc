@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PolynomialParam.tcc 19879 2007-02-15 03:52:50Z Malte.Marquarding $
 
 #ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_TCC
 #define SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_TCC

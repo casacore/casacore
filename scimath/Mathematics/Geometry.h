@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Combinatorics.h 21116 2011-07-21 11:23:15Z gervandiepen $
 
 #ifndef SCIMATH_GEOMETRY_H
 #define SCIMATH_GEOMETRY_H

@@ -21,8 +21,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeUtilities.tcc 21531 2014-12-24 11:46:02Z gervandiepen $
 
 #ifndef LATTICES_LATTICEMATHUTIL_TCC
 #define LATTICES_LATTICEMATHUTIL_TCC

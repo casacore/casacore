@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Converters.h,v 1.1 2006/12/13 01:24:15 gvandiep Exp $
 
 #ifndef PYRAP_CONVERTERS_H
 #define PYRAP_CONVERTERS_H

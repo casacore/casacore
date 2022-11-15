@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MEAS_RADIALVELOCITYENGINE_H
 #define MEAS_RADIALVELOCITYENGINE_H

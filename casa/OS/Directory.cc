@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 // we NEED to include aips(env).h before using any AIPS_xyz defines
 #include <casacore/casa/OS/Directory.h>

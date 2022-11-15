@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tConvert.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
 #include <casacore/python/Converters/PycExcp.h>
 #include <casacore/python/Converters/PycBasicData.h>

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSFitsInput.h 21531 2014-12-24 11:46:02Z gervandiepen $
 
 #ifndef MS_MSFITSINPUT_H
 #define MS_MSFITSINPUT_H

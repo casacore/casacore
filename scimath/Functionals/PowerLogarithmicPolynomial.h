@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Polynomial.h 21024 2011-03-01 11:46:18Z gervandiepen $
 
 #ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIAL_H
 #define SCIMATH_POWERLOGARITHMICPOLYNOMIAL_H

@@ -22,7 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//# $Id$   
 
 #include <casacore/tables/DataMan/SSMIndex.h>
 #include <casacore/tables/DataMan/SSMBase.h>
