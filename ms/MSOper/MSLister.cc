@@ -542,7 +542,7 @@ void MSLister::selectvis(const String& timerange,
 /// Calculate the max number of digits needed to print the values in an array
 template <class T> uInt maxDigitsToPrint(const Array<T> &values)
 {
-    return (uInt)max(1,(Int)rint(abs(log10(abs(max(values))+0.5))));
+    return (uInt)max(1,(Int)rint(abs(log10(abs(max(values))))+0.5));
 }
 
 void MSLister::listData(const int pageRows,
