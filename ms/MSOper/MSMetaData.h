@@ -495,6 +495,8 @@ public:
     // values of -1 indicate no info found for those spws.
     vector<int> getSpwReceiverBands() const;
 
+    std::shared_ptr<vector<int>> _freqBands(uint nspw) const;
+
     // ALMA specific CAS-13973 get subwindows for each spw
     // values of -1 indicate no info found for those spws.
     vector<int> getSpwSubwindows() const;
