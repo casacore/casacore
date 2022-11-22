@@ -23,8 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
-//#
 
  
 #include <casacore/casa/Arrays/Vector.h>

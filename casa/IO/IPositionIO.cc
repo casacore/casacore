@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# This source file is not needed if you aren't interested in converting
 //# to and from Array<int>, i.e. if you don't want IPosition's to depend

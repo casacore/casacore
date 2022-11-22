@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Lattices.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef LATTICES_LREGIONS_H
 #define LATTICES_LREGIONS_H

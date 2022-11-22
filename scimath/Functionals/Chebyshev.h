@@ -24,7 +24,6 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#! ========================================================================
-//# $Id$
 
 #ifndef SCIMATH_CHEBYSHEV_H
 #define SCIMATH_CHEBYSHEV_H

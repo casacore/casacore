@@ -1,5 +1,4 @@
 //# HostInfo_osf1.h: DEC OSF/1 specific memory, swap, and CPU code.
-//# $Id$
 
  /*
  **  This is a greatly MODIFIED version of a "top" machine dependent file.

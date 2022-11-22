@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: FFTServer.tcc 20253 2008-02-23 15:15:00Z gervandiepen $
 
 #include <casacore/scimath/Mathematics/FFTServer.h>
 #include <casacore/casa/Arrays/Array.h>

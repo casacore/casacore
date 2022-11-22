@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/scimath/Functionals/Gaussian3D.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>

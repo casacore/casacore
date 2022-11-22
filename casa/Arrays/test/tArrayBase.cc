@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tArrayBase.cc 21335 2013-03-28 14:20:18Z gervandiepen $
 
 #define BOOST_TEST_MODULE array2
 #define BOOST_TEST_DYN_LINK

@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id: TempLatticeImpl.h 20739 2009-09-29 01:15:15Z Malte.Marquarding $
 
 #ifndef LATTICES_TEMPLATTICEIMPL_H
 #define LATTICES_TEMPLATTICEIMPL_H

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Interpolate1DArray.h,v 8.1 1997/05/21 22:59:29 rm
 
 #ifndef SCIMATH_INTERPOLATEARRAY1D_H
 #define SCIMATH_INTERPOLATEARRAY1D_H

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #define _POSIX_C_SOURCE 200809L //For mkdtemp(), stpcpy(), nftw()
 #include <casacore/casa/aips.h>

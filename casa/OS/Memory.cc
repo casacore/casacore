@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 //# MH 97/11/24 Stop attempt to use mallinfo from stdlib.h for HPUX
 #include <casacore/casa/aips.h>
