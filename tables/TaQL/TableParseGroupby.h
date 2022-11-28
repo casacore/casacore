@@ -167,13 +167,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return funcSets;
     }
 
-    // Get pointers to the possible aggregate nodes in the node expression.
-    //# Note that the const has to be casted away.
+    // Get pointers to the aggregate nodes in the node expression.
     void getAggrNodes (const TableExprNode& node,
-                       std::vector<TableExprNodeRep*>& aggrNodes) const
-    {
-      const_cast<TableExprNodeRep*>(node.getRep().get())->getAggrNodes (aggrNodes);
-    }
+                       std::vector<TableExprNodeRep*>& aggrNodes) const;
 
     
     //# Data members.

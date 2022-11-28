@@ -28,6 +28,7 @@
 #include <casacore/tables/TaQL/TableParseFunc.h>
 #include <casacore/tables/TaQL/TableParseQuery.h>
 #include <casacore/tables/TaQL/ExprConeNode.h>
+#include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -41,19 +42,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                               const String& fname,
                                               const TableExprNodeSet& arguments,
                                               const Vector<int>& ignoreFuncs,
-                                              const Table& tabin,
+                                              const TableExprInfo& tabin,
                                               const TaQLStyle& style)
   {
-    Table table(tabin);
+    TableExprInfo tabInfo(tabin);
     String name = fname;
     // See if something like xx.func is given.
     // xx can be a shorthand or a user defined function library.
     Vector<String> parts = stringToVector (name, '.');
     if (sel  &&  parts.size() == 2) {
       // See if xx is a shorthand. If so, use that table.
-      Table tab = sel->tableList().findTable (parts[0], False);
-      if (! tab.isNull()) {
-        table = tab;
+      TableParsePair tabPair = sel->tableList().findTable (parts[0], False);
+      if (! tabPair.table().isNull()) {
+        tabInfo = tabPair.getTableInfo();
         name = parts[1];
       }
     }
@@ -63,7 +64,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                                       ignoreFuncs);
     if (ftype == TableExprFuncNode::NRFUNC) {
       // The function can be a user defined one (or unknown).
-      return makeUDFNode (sel, name, arguments, table, style);
+      return makeUDFNode (sel, name, arguments, tabInfo, style);
     }
     try {
       // The axes of reduction functions such as SUMS can be given as a set or as
@@ -176,7 +177,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             }
             parms.add (TableExprNodeSetElem(axes.setOrArray()));
           }
-          return TableExprNode::newFunctionNode (ftype, parms, table, style);
+          return TableExprNode::newFunctionNode (ftype, parms, tabInfo, style);
         }
         break;
       case TableExprFuncNode::conesFUNC:
@@ -189,7 +190,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       default:
         break;
       }
-      return TableExprNode::newFunctionNode (ftype, arguments, table, style);
+      return TableExprNode::newFunctionNode (ftype, arguments, tabInfo, style);
     } catch (const std::exception& x) {
       String err (x.what());
       if (err.size() > 28  &&  err.before(28) == "Error in select expression: ") {
@@ -203,7 +204,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprNode TableParseFunc::makeUDFNode (TableParseQuery* sel,
                                              const String& name,
                                              const TableExprNodeSet& arguments,
-                                             const Table& table,
+                                             const TableExprInfo& tabInfo,
                                              const TaQLStyle& style)
   {
     Vector<String> parts = stringToVector (name, '.');
@@ -216,16 +217,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (sel) {
       if (parts.size() > 2) {
         // At least 3 parts; see if the first part is a table shorthand.
-        Table tab = sel->tableList().findTable (parts[0], False);
-        if (! tab.isNull()) {
+        TableParsePair tabPair = sel->tableList().findTable (parts[0], False);
+        if (! tabPair.table().isNull()) {
           udf = TableExprNode::newUDFNode (name.substr(parts[0].size() + 1),
-                                           arguments, tab, style);
+                                           arguments, tabPair.getTableInfo(),
+                                           style);
         }
       }
     }
     // If not created, use the full name and given (i.e. first) table.
     if (udf.isNull()) {
-      udf = TableExprNode::newUDFNode (name, arguments, table, style);
+      udf = TableExprNode::newUDFNode (name, arguments, tabInfo, style);
     }
     // A UDF might create table column nodes, so add it to applySelNodes_p.
     if (sel) {

@@ -40,8 +40,7 @@ TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
                                       const vector<TENShPtr>& nodes,
                                       const Block<Int>& dtypeOper,
                                       uInt origin)
-  : TableExprFuncNode (ftype, dtype, VTScalar, source,
-                       nodes, dtypeOper, Table()),
+  : TableExprFuncNode (ftype, dtype, VTScalar, source, nodes, dtypeOper),
     origin_p          (origin)
 {}
 

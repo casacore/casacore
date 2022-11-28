@@ -51,14 +51,14 @@ namespace casacore {
   {}
 
   void UDFBase::init (const vector<TENShPtr>& operands,
-                      const Table& table, const TaQLStyle& style)
+                      const TableExprInfo& tableInfo, const TaQLStyle& style)
   {
     // Link to the operands.
     itsOperands.resize (operands.size());
     for (uInt i=0; i<operands.size(); ++i) {
       itsOperands[i] = operands[i];
     }
-    setup (table, style);
+    setup (tableInfo.table(), style);
     if (itsDataType == TableExprNodeRep::NTAny) {
       throw TableInvExpr ("UDFBase: data type not set by derived UDF class");
     }
@@ -67,17 +67,10 @@ namespace casacore {
     }
   }
 
-  void UDFBase::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  void UDFBase::flattenTree (std::vector<TableExprNodeRep*>& nodes)
   {
     for (uInt i=0; i<itsOperands.size(); ++i) {
-      itsOperands[i]->getAggrNodes (aggr);
-    }
-  }
-
-  void UDFBase::getColumnNodes (vector<TableExprNodeRep*>& cols)
-  {
-    for (uInt i=0; i<itsOperands.size(); ++i) {
-      itsOperands[i]->getColumnNodes (cols);
+      itsOperands[i]->flattenTree (nodes);
     }
   }
 

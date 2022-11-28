@@ -202,8 +202,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { return True; }
   void TableExprGroupNull::apply (const TableExprId&)
   {
-    throw AipsError ("TableExprGroupFunc::apply should not be called for "
-                     " lazy aggregation");
+    throw TableInvExpr ("TableExprGroupFunc::apply should not be called for "
+                        " lazy aggregation");
   }
 
   TableExprGroupFirst::TableExprGroupFirst (TableExprNodeRep* node)

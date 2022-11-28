@@ -35,6 +35,7 @@
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 using namespace casacore;
@@ -103,12 +104,13 @@ int main()
     UDFBase::registerUDF ("Test.UDFAggr", TestUDFAggr::makeObject);
     makeTable();
     Table tab("tExprNodeUDF_tmp.tab");
+    TableExprInfo tabInfo(tab);
     {
       // Test a normal user defined function.
       TableExprNode node1(tab.col("ANTENNA1"));
       TableExprNodeSet set;
       set.add (TableExprNodeSetElem(node1));
-      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDF", set, tab));
+      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDF", set, tabInfo));
       Table seltab(tab(node2));
       cout << "selected " << seltab.nrow() << " rows" << endl; 
       AlwaysAssertExit (seltab.nrow() == 3);
@@ -123,10 +125,9 @@ int main()
       TableExprNode node1(tab.col("ANTENNA1"));
       TableExprNodeSet set;
       set.add (TableExprNodeSetElem(node1));
-      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tab));
+      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tabInfo));
       TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getRep().get());
-      vector<TableExprNodeRep*> aggrNodes;
-      rep->getAggrNodes (aggrNodes);
+      vector<TableExprNodeRep*> aggrNodes = TableExprNodeUtil::getAggrNodes (rep);
       AlwaysAssertExit (aggrNodes.size() == 1);
       AlwaysAssertExit (aggrNodes[0]->isLazyAggregate());
       CountedPtr<vector<TableExprId> > ids(new vector<TableExprId>());

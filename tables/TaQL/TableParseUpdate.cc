@@ -29,8 +29,8 @@
 #include <casacore/tables/TaQL/TableParseGroupby.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
-#include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/TableError.h>
 
@@ -297,7 +297,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (! slicerPtr  ||  maskFirst_p) {
       if (! mask.shape().isEqual (shapeCol)) {
-        throw AipsError ("Update mask must conform the column's array shape");
+        throw TableInvExpr ("Update mask must conform the column's array shape");
       }
     }
     if (slicerPtr) {
@@ -313,7 +313,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return mask(*slicerPtr);
       } else {
         if (! mask.shape().isEqual (length)) {
-          throw AipsError ("Update mask must conform the column's array section");
+          throw TableInvExpr ("Update mask must conform the column's array section");
         }
       }
     }
@@ -324,18 +324,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                           const ArrayColumn<Bool>& maskCol,
                                           const TableColumn& col)
   {
+    // If a mask column is given, the expression must have a mask.
+    // But if the expression has a mask, a mask column is not needed.
+    // In that case the mask is ignored. This is necessary for a mask in
+    // a select expression, otherwise function ARRAYDATA is always needed.
     if (! maskCol.isNull()) {
-      ///  if (maskCol.isNull()) {
-      ///    if (hasMask) {
-      ///      throw AipsError ("An update mask column must be given for a "
-      ///                       "masked array expression in update of column " +
-      ///                       col.columnDesc().name());
-      ///    }
-      ///  } else {
       if (! hasMask) {
-        throw AipsError ("No update mask column can be given for an "
-                         "unmasked expression in update of column " +
-                         col.columnDesc().name());
+        throw TableInvExpr ("No update mask column can be given for an "
+                            "unmasked expression in update of column " +
+                            col.columnDesc().name());
       }
     }
   }

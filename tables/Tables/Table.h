@@ -55,6 +55,7 @@ class Record;
 class TableExprNode;
 class DataManager;
 class IPosition;
+class TableExprInfo;
 template<class T> class Block;
 template<class T> class CountedPtr;
 
@@ -376,6 +377,10 @@ public:
     // The recursive switch tells how to deal with that.
     Block<String> getPartNames (Bool recursive=False) const;
 
+    // Is this table the same as the other?
+    Bool isSameTable (const Table& other) const
+      { return baseTabPtr_p == other.baseTabPtr_p; }
+  
     // Is the root table of this table the same as that of the other one?
     Bool isSameRoot (const Table& other) const;
 
@@ -747,8 +752,6 @@ public:
     TableExprNode col (const String& columnName) const;
     TableExprNode col (const String& columnName,
 		       const Vector<String>& fieldNames) const;
-    TableExprNode keyCol (const String& name,
-			  const Vector<String>& fieldNames) const;
     // </group>
 
     // Create a TableExprNode object for the rownumber function.

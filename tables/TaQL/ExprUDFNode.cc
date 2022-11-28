@@ -32,13 +32,13 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
-  TableExprUDFNode::TableExprUDFNode (UDFBase* udf, const Table& tab,
+  TableExprUDFNode::TableExprUDFNode (const std::shared_ptr<UDFBase>& udf,
+                                      const TableExprInfo& tabInfo,
                                       const TableExprNodeSet& source)
     : TableExprNodeMulti (udf->dataType(), VTScalar, OtFunc, source),
-      itsUDF (udf)
+      itsTableInfo (tabInfo),
+      itsUDF       (udf)
   {
-    // Set the table. This is needed for ExprNode::checkReplaceTable to work.
-    table_p = tab;
     // The source may be empty which causes the expression type
     // to be made constant. Force it to be variable if needed.
     if (udf->isConstant()) {
@@ -49,34 +49,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set the unit and attributes (is also fine if undefined).
     setUnit (Unit(udf->getUnit()));
     setAttributes (udf->getAttributes());
- }
-
-  TableExprUDFNode::~TableExprUDFNode()
-  {
-    delete itsUDF;
   }
 
-  void TableExprUDFNode::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  void TableExprUDFNode::flattenTree (vector<TableExprNodeRep*>& nodes)
   {
-    uInt naggr = aggr.size();
-    itsUDF->getAggrNodes (aggr);
-    if (itsUDF->isAggregate()) {
-      // If the UDF itself is an aggregate function, its operands should not
-      // contain aggregate functions.
-      if (naggr != aggr.size()) {
-        throw TableInvExpr ("The argument of an aggregate function cannot use "
-                            "an aggregate function");
-      }
-      aggr.push_back (this);
-    }
+    nodes.push_back (this);
+    itsUDF->flattenTree (nodes);
   }
 
-  void TableExprUDFNode::getColumnNodes (vector<TableExprNodeRep*>& cols)
-  {
-    itsUDF->getColumnNodes (cols);
-    cols.push_back (this);
-  }
-
+  TableExprInfo TableExprUDFNode::getTableInfo() const
+    { return itsTableInfo; }
+  
   void TableExprUDFNode::disableApplySelection()
     { itsUDF->disableApplySelection(); }
 
@@ -84,9 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { itsUDF->applySelection (rownrs); }
 
   CountedPtr<TableExprGroupFuncBase> TableExprUDFNode::makeGroupAggrFunc()
-  {
-    return new TableExprGroupNull(this);
-  }
+    { return new TableExprGroupNull(this); }
 
   Bool      TableExprUDFNode::getBool     (const TableExprId& id)
     { return itsUDF->getBool (id); }

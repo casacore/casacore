@@ -97,7 +97,7 @@ int main (int argc, char* argv[])
         command += " orderby " + selsort;
       }
       clog << "TaQL command = " << command << endl;
-      seltab = tableCommand (command);
+      seltab = tableCommand (command).table();
     }
     // Show the table structure.
     table.showStructure (cout, showdm, showcol, showsub, sortcol, cOrder);

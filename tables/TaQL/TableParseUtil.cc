@@ -92,7 +92,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       stPart = 1;          // indicate first part is handled.
       Vector<String> parts = stringToVector(subs[0], '.');
       if (parts.size() == 0  ||  parts[0].empty()) {
-        table = TableParseTableList::findTable (String(), True, stack);
+        table = TableParseTableList::findTable (String(), True, stack).table();
         if (table.isNull()) {
           throw TableInvExpr(":: or . is invalid in table name " + name +
                              ": no previous table available");
@@ -107,7 +107,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           table = *(tempTables[tabnr-1]);
         } else {
           // See if the first part is a shorthand.
-          table = TableParseTableList::findTable (parts[0], True, stack);
+          table = TableParseTableList::findTable (parts[0], True, stack).table();
           if (table.isNull()) {
             // It was not something like shorthand.column, thus try as a full name.
             // However, do not open if alwaysOpen=False.
@@ -293,7 +293,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Create the subtable and define the keyword in the parent referring it.
       String parentName = parent.tableName();
       if (parentName.empty()) {
-        throw TableError("Parent table in " + fullName + " seems to be transient");
+        throw TableInvExpr("Parent table in " + fullName + " seems to be transient");
       }
       return parent;
     }

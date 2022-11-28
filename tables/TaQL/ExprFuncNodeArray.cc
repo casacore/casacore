@@ -315,7 +315,6 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
   constAxes_p (False),
   constAlt_p  (False)
 {
-  table_p    = node_p.table();
   exprtype_p = node_p.exprType();
   unit_p     = node_p.unit();
   tryToConst();
@@ -324,14 +323,10 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
 TableExprFuncNodeArray::~TableExprFuncNodeArray()
 {}
 
-void TableExprFuncNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprFuncNodeArray::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
-    node_p.getAggrNodes (aggr);
-}
-
-void TableExprFuncNodeArray::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-    node_p.getColumnNodes (cols);
+  nodes.push_back (this);
+  node_p.flattenTree (nodes);
 }
 
 void TableExprFuncNodeArray::tryToConst()

@@ -36,14 +36,11 @@ TaQLResult::TaQLResult (const Table& table)
 : itsTable (table)
 {}
 
-// Also keep the table, otherwise the Table object is deleted and
-// the node contains a dangling BaseTable pointer.
 TaQLResult::TaQLResult (const TableExprNode& node)
-: itsTable (node.table()),
-  itsNode  (node)
+  : itsNode  (node)
 {}
 
-Table TaQLResult::table() const
+const Table& TaQLResult::table() const
 {
   AlwaysAssert (isTable(), AipsError);
   return itsTable;

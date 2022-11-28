@@ -76,8 +76,8 @@ class TableExprNodeConstBool : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstBool (const Bool& value);
-    ~TableExprNodeConstBool();
-    Bool getBool (const TableExprId& id);
+    ~TableExprNodeConstBool() override = default;
+    Bool getBool (const TableExprId& id) override;
 private:
     Bool value_p;
 };
@@ -107,10 +107,10 @@ class TableExprNodeConstInt : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstInt (const Int64& value);
-    ~TableExprNodeConstInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
-    DComplex getDComplex (const TableExprId& id);
+    ~TableExprNodeConstInt() override = default;
+    Int64    getInt      (const TableExprId& id) override;
+    Double   getDouble   (const TableExprId& id) override;
+    DComplex getDComplex (const TableExprId& id) override;
 private:
     Int64 value_p;
 };
@@ -140,9 +140,9 @@ class TableExprNodeConstDouble : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstDouble (const Double& value);
-    ~TableExprNodeConstDouble();
-    Double   getDouble   (const TableExprId& id);
-    DComplex getDComplex (const TableExprId& id);
+    ~TableExprNodeConstDouble() override = default;
+    Double   getDouble   (const TableExprId& id) override;
+    DComplex getDComplex (const TableExprId& id) override;
 private:
     Double value_p;
 };
@@ -172,8 +172,8 @@ class TableExprNodeConstDComplex : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstDComplex (const DComplex& value);
-    ~TableExprNodeConstDComplex();
-    DComplex getDComplex (const TableExprId& id);
+    ~TableExprNodeConstDComplex() override = default;
+    DComplex getDComplex (const TableExprId& id) override;
 private:
     DComplex value_p;
 };
@@ -203,8 +203,8 @@ class TableExprNodeConstString : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstString (const String& value);
-    ~TableExprNodeConstString();
-    String getString (const TableExprId& id);
+    ~TableExprNodeConstString() override = default;
+    String getString (const TableExprId& id) override;
 private:
     String value_p;
 };
@@ -234,8 +234,8 @@ class TableExprNodeConstRegex : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstRegex (const TaqlRegex& value);
-    ~TableExprNodeConstRegex();
-    TaqlRegex getRegex (const TableExprId& id);
+    ~TableExprNodeConstRegex() override = default;
+    TaqlRegex getRegex (const TableExprId& id) override;
 private:
     TaqlRegex      value_p;
     StringDistance dist_p;
@@ -266,9 +266,9 @@ class TableExprNodeConstDate : public TableExprNodeBinary
 {
 public:
     TableExprNodeConstDate (const MVTime& value);
-    ~TableExprNodeConstDate();
-    Double getDouble(const TableExprId& id);
-    MVTime getDate  (const TableExprId& id);
+    ~TableExprNodeConstDate() override = default;
+    Double getDouble(const TableExprId& id) override;
+    MVTime getDate  (const TableExprId& id) override;
 private:
     MVTime value_p;
 };
@@ -299,50 +299,50 @@ private:
 class TableExprNodeColumn : public TableExprNodeBinary
 {
 public:
-    TableExprNodeColumn (const Table&, const String& columnName);
-    ~TableExprNodeColumn();
+    TableExprNodeColumn (const TableExprInfo&, const String& columnName);
+    ~TableExprNodeColumn() override = default;
 
-    // This node represents a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
-  
+    // Get the table info for this column.
+    TableExprInfo getTableInfo() const override;
+
     // Do not apply the selection.
-    virtual void disableApplySelection();
+    void disableApplySelection() override;
 
     // Re-create the column object for a selection of rows.
-    virtual void applySelection (const Vector<rownr_t>& rownrs);
+    void applySelection (const Vector<rownr_t>& rownrs) override;
 
     // Get the data type of this scalar column.
-    Bool getColumnDataType (DataType&) const;
+    Bool getColumnDataType (DataType&) const override;
 
     // Get the data for the given id.
-    Bool     getBool     (const TableExprId& id);
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
-    DComplex getDComplex (const TableExprId& id);
-    String   getString   (const TableExprId& id);
+    Bool     getBool     (const TableExprId& id) override;
+    Int64    getInt      (const TableExprId& id) override;
+    Double   getDouble   (const TableExprId& id) override;
+    DComplex getDComplex (const TableExprId& id) override;
+    String   getString   (const TableExprId& id) override;
     const TableColumn& getColumn() const;
 
     // Get the data for the given rows.
-    Array<Bool>     getColumnBool (const Vector<rownr_t>& rownrs);
-    Array<uChar>    getColumnuChar (const Vector<rownr_t>& rownrs);
-    Array<Short>    getColumnShort (const Vector<rownr_t>& rownrs);
-    Array<uShort>   getColumnuShort (const Vector<rownr_t>& rownrs);
-    Array<Int>      getColumnInt (const Vector<rownr_t>& rownrs);
-    Array<uInt>     getColumnuInt (const Vector<rownr_t>& rownrs);
-    Array<Int64>    getColumnInt64 (const Vector<rownr_t>& rownrs);
-    Array<Float>    getColumnFloat (const Vector<rownr_t>& rownrs);
-    Array<Double>   getColumnDouble (const Vector<rownr_t>& rownrs);
-    Array<Complex>  getColumnComplex (const Vector<rownr_t>& rownrs);
-    Array<DComplex> getColumnDComplex (const Vector<rownr_t>& rownrs);
-    Array<String>   getColumnString (const Vector<rownr_t>& rownrs);
+    Array<Bool>     getColumnBool (const Vector<rownr_t>& rownrs) override;
+    Array<uChar>    getColumnuChar (const Vector<rownr_t>& rownrs) override;
+    Array<Short>    getColumnShort (const Vector<rownr_t>& rownrs) override;
+    Array<uShort>   getColumnuShort (const Vector<rownr_t>& rownrs) override;
+    Array<Int>      getColumnInt (const Vector<rownr_t>& rownrs) override;
+    Array<uInt>     getColumnuInt (const Vector<rownr_t>& rownrs) override;
+    Array<Int64>    getColumnInt64 (const Vector<rownr_t>& rownrs) override;
+    Array<Float>    getColumnFloat (const Vector<rownr_t>& rownrs) override;
+    Array<Double>   getColumnDouble (const Vector<rownr_t>& rownrs) override;
+    Array<Complex>  getColumnComplex (const Vector<rownr_t>& rownrs) override;
+    Array<DComplex> getColumnDComplex (const Vector<rownr_t>& rownrs) override;
+    Array<String>   getColumnString (const Vector<rownr_t>& rownrs) override;
 
     // Get the column unit (can be empty).
     static Unit getColumnUnit (const TableColumn&);
 
 protected:
-    Table       selTable_p;
-    TableColumn tabCol_p;
-    Bool        applySelection_p;
+    TableExprInfo tableInfo_p;
+    TableColumn   tabCol_p;
+    Bool          applySelection_p;
 };
 
 
@@ -371,11 +371,13 @@ protected:
 class TableExprNodeRownr : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRownr (const Table&, uInt origin);
-    ~TableExprNodeRownr();
-    Int64  getInt (const TableExprId& id);
+    TableExprNodeRownr (const TableExprInfo&, uInt origin);
+    ~TableExprNodeRownr() override = default;
+    TableExprInfo getTableInfo() const override;
+    Int64  getInt (const TableExprId& id) override;
 private:
-    uInt origin_p;
+    TableExprInfo tableInfo_p;
+    uInt          origin_p;
 };
 
 
@@ -405,11 +407,13 @@ private:
 class TableExprNodeRowid : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRowid (const Table&);
-    ~TableExprNodeRowid();
-    virtual void applySelection (const Vector<rownr_t>& rownrs);
-    Int64 getInt (const TableExprId& id);
+    TableExprNodeRowid (const TableExprInfo&);
+    ~TableExprNodeRowid() override = default;
+    TableExprInfo getTableInfo() const override;
+    void applySelection (const Vector<rownr_t>& rownrs) override;
+    Int64 getInt (const TableExprId& id) override;
 private:
+    TableExprInfo   tableInfo_p;
     Vector<rownr_t> rownrs_p;
 };
 
@@ -437,12 +441,14 @@ private:
 class TableExprNodeRandom : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRandom (const Table&);
-    ~TableExprNodeRandom();
-    Double getDouble (const TableExprId& id);
+    TableExprNodeRandom (const TableExprInfo&);
+    ~TableExprNodeRandom() override = default;
+    TableExprInfo getTableInfo() const override;
+    Double getDouble (const TableExprId& id) override;
 private:
-    MLCG    generator_p;
-    Uniform random_p;
+    TableExprInfo tableInfo_p;
+    MLCG          generator_p;
+    Uniform       random_p;
 };
 
 

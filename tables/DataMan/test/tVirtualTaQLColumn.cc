@@ -356,7 +356,7 @@ void testSelect()
 {
   // Select all rows.
   Table subset = tableCommand("select from tVirtualTaQLColumn_tmp.data0 "
-			      "where acalc > -1000");
+			      "where acalc > -1000").table();
   check (subset, False);
 }
 

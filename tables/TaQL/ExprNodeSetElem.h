@@ -77,11 +77,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Show the node.
     void show (ostream& os, uInt indent) const override;
 
-    // Get the nodes representing an aggregate function.
-    void getAggrNodes (std::vector<TableExprNodeRep*>& aggr) override;
-  
-    // Get the nodes representing a table column.
-    void getColumnNodes (std::vector<TableExprNodeRep*>& cols) override;
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&) override;
 
     // Is it a discrete set element.
     // Default implementation returns False.
@@ -158,8 +155,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // This is used by the system to implement a set in a GIVING clause.
     virtual TENSEBShPtr evaluate (const TableExprId& id) const = 0;
 
-    // Get the table of a node and check if the children use the same table.
-    void checkTable();
+    // Set the expression type (Variable or Constant) depending on the children.
+    void setExprType();
 
     // Let a set node convert itself to the given unit.
     void adaptSetUnits (const Unit&) override;

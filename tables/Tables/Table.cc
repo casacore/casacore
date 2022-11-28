@@ -754,37 +754,24 @@ TableExprNode Table::key (const Vector<String>& fieldNames) const
 TableExprNode Table::col (const String& columnName) const
 {
     Vector<String> fieldNames;
-    return TableExprNode::newColumnNode (*this, columnName, fieldNames);
+    return TableExprNode::newColumnNode (TableExprInfo(*this),
+                                         columnName, fieldNames);
 }
 TableExprNode Table::col (const String& columnName,
 			  const Vector<String>& fieldNames) const
 {
-    return TableExprNode::newColumnNode (*this, columnName, fieldNames);
+    return TableExprNode::newColumnNode (TableExprInfo(*this),
+                                         columnName, fieldNames);
 }
 
-//# Create an expression node for either a keyword or column.
-TableExprNode Table::keyCol (const String& name,
-			     const Vector<String>& fieldNames) const
+TableExprNode Table::nodeRownr (rownr_t origin) const
 {
-    if (tableDesc().isColumn (name)) {
-	return col (name, fieldNames);
-    }else{
-	uInt nr = fieldNames.nelements();
-	Vector<String> names (nr + 1);
-	names (Slice(1,nr)) = fieldNames;
-	names(0) = name;
-	return key (names);
-    }
+    return TableExprNode::newRownrNode (TableExprInfo(*this), origin);
 }
 
-TableExprNode Table::nodeRownr(rownr_t origin) const
+TableExprNode Table::nodeRandom() const
 {
-    return TableExprNode::newRownrNode (*this, origin);
-}
-
-TableExprNode Table::nodeRandom () const
-{
-    return TableExprNode::newRandomNode (*this);
+    return TableExprNode::newRandomNode (TableExprInfo(*this));
 }
 
 

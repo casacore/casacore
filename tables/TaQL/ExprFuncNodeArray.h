@@ -81,11 +81,8 @@ public:
     // Destructor
     ~TableExprFuncNodeArray();
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&);
   
     // 'get' Functions to get the desired result of a function
     // <group>

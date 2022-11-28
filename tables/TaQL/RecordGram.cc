@@ -435,7 +435,8 @@ TableExprNode RecordGram::handleField (const String& name)
   if (theirTabPtr == 0) {
     return makeRecordExpr (*theirRecPtr, name);
   }
-  return theirTabPtr->keyCol (name, Vector<String>());
+  return TableExprNode::keyCol (TableExprInfo(*theirTabPtr),
+                                name, Vector<String>());
 }
 
 TableExprNode RecordGram::handleFunc (const String& name,
@@ -445,12 +446,13 @@ TableExprNode RecordGram::handleFunc (const String& name,
   if (theirTabPtr == 0) {
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
     return TableParseFunc::makeFuncNode (0, name, arguments,
-                                          ignoreFuncs, Table(),
+                                          ignoreFuncs, TableExprInfo(),
                                           theirTaQLStyle);
   }
   return TableParseFunc::makeFuncNode (0, name, arguments,
-                                        Vector<Int>(), *theirTabPtr,
-                                        theirTaQLStyle);
+                                       Vector<Int>(),
+                                       TableExprInfo(*theirTabPtr),
+                                       theirTaQLStyle);
 }
 
 TableExprNode RecordGram::handleRegex (const TableExprNode& left,

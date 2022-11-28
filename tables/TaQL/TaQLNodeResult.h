@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -62,36 +63,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TaQLNodeResultRep
 {
 public:
-  // Default constructor clears the reference count.
-  // The count is updated by functions link and unlink.
+  // Default constructor.
   TaQLNodeResultRep()
-    : itsCount(0) {}
+  {}
 
   // Destructor.
-  virtual ~TaQLNodeResultRep();
+  virtual ~TaQLNodeResultRep() = default;
 
-  // Increment the reference count.
-  static TaQLNodeResultRep* link (TaQLNodeResultRep* rep)
-  {
-    if (rep) ++rep->itsCount;
-    return rep;
-  }
-
-  // Decrement the reference count.
-  // Delete the letter if no more references.
-  static void unlink (TaQLNodeResultRep* rep)
-  {
-    if (rep  &&  --rep->itsCount == 0) delete rep;
-  }
-
-private:
   // Letter objects cannot be copied.
   // <group>
-  TaQLNodeResultRep (const TaQLNodeResultRep&);
-  TaQLNodeResultRep& operator= (const TaQLNodeResultRep&);
+  TaQLNodeResultRep (const TaQLNodeResultRep&) = delete;
+  TaQLNodeResultRep& operator= (const TaQLNodeResultRep&) = delete;
   // </group>
-
-  int itsCount;
 };
 
 
@@ -125,41 +108,23 @@ class TaQLNodeResult
 public:
   // Default constructor has no letter.
   TaQLNodeResult()
-    : itsRep(0) {}
+  {}
 
-  // Take the given letter and increment its reference count.
+  // Wrap the given pointer in a shared_ptr.
   TaQLNodeResult (TaQLNodeResultRep* rep)
-    { itsRep = TaQLNodeResultRep::link (rep); }
-
-  // Copy constructor (reference semantics).
-  TaQLNodeResult (const TaQLNodeResult& that)
-    { itsRep = TaQLNodeResultRep::link (that.itsRep); }
-
-  // Assignment (reference semantics).
-  TaQLNodeResult& operator= (const TaQLNodeResult& that)
-    { if (this != &that) {
-        TaQLNodeResultRep::unlink (itsRep);
-        itsRep = TaQLNodeResultRep::link (that.itsRep);
-      }
-    return *this;
-    }
-
-  // Destructor decrements the reference count.
-  // The letter is deleted if no more references.
-  ~TaQLNodeResult()
-    { TaQLNodeResultRep::unlink (itsRep); }
+    : itsRep (rep)
+  {}
 
   // Does the envelope hold a letter?
   Bool isValid() const
-    { return itsRep; }
+    { return itsRep.get(); }
+
+  // Get the actual underlying object.
+  const TaQLNodeResultRep& getRep() const
+    { return *(itsRep.get()); }
 
 private:
-  TaQLNodeResultRep* itsRep;
-
-public:
-  // Get the actual underlying object.
-  const TaQLNodeResultRep* getRep() const
-    { return itsRep; }
+  std::shared_ptr<TaQLNodeResultRep> itsRep;
 };
 
 } //# NAMESPACE CASACORE - END

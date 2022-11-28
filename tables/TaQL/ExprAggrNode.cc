@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/ExprGroupAggrFunc.h>
 #include <casacore/tables/TaQL/ExprGroupAggrFuncArray.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 
 
@@ -42,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                         const TableExprNodeSet& source,
                                         const vector<TENShPtr>& nodes,
                                         const Block<Int>& dtypeOper)
-    : TableExprFuncNode (ftype, dtype, vtype, source, nodes, dtypeOper, Table())
+    : TableExprFuncNode (ftype, dtype, vtype, source, nodes, dtypeOper)
   {
     // Always treat an aggregate as a variable expression.
     // Otherwise it might be treated as constant and evaluated immediately
@@ -50,6 +51,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     exprtype_p = Variable;
   }
 
+  Bool TableExprAggrNode::isAggregate() const
+  {
+    return True;
+  }
+  
   TableExprFuncNode::NodeDataType TableExprAggrNode::checkOperands
   (Block<Int>& dtypeOper, ValueType& resVT, FunctionType ftype,
    vector<TENShPtr>& nodes)
@@ -57,6 +63,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (ftype >= FirstAggrArrayFunc  &&  ftype < LastAggrArrayFunc  &&
         nodes.size() > 0  &&  nodes[0]->valueType() != VTArray) {
       throw TableInvExpr ("Argument of GxxxS functions has to be an array");
+    }
+    for (const TENShPtr& n : nodes) {
+      if (! TableExprNodeUtil::getAggrNodes(n.get()).empty()) {
+        throw TableInvExpr ("The argument of an aggregate function cannot use "
+                            "an aggregate function");
+      }
     }
     resVT = VTScalar;
     switch (ftype) {
@@ -167,19 +179,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     default:
         throw TableInvExpr ("Unhandled aggregate function " +
                             String::toString(ftype));
-    }
-  }
-
-  void TableExprAggrNode::getAggrNodes (vector<TableExprNodeRep*>& aggr)
-  {
-    aggr.push_back (this);
-    uInt naggr = aggr.size();
-    for (uInt i=0; i<operands_p.size(); ++i) {
-      operands()[i]->getAggrNodes (aggr);
-    }
-    if (naggr != aggr.size()) {
-      throw TableInvExpr ("The argument of an aggregate function cannot use "
-                          "an aggregate function");
     }
   }
 

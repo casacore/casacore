@@ -37,6 +37,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/BaseTabIter.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -790,10 +791,14 @@ std::shared_ptr<BaseTable> BaseTable::select (const TableExprNode& node,
     // Now check if this table has been used for all columns.
     // Accept that the expression has no table, which can be the case for
     // UDFs in derivedmscal (since they have no function arguments).
-    if (!node.table().isNull()  &&  node.table().nrow() != this->nrow()) {
-      throw (TableInvExpr ("select expression for table " +
-                           node.table().tableName() +
-                           " is used on a differently sized table " + name_p));
+    std::vector<Table> tables
+      (TableExprNodeUtil::getNodeTables (node.getRep().get(), True));
+    if (! tables.empty()) {
+      if (TableExprNodeUtil::getCheckNRow(tables) != this->nrow()) {
+        throw (TableInvExpr ("select expression for table " +
+                             tables[0].tableName() +
+                             " is used on a differently sized table " + name_p));
+      }
     }
     //# Create a reference table, which will be in row order.
     //# Loop through all rows and add to reference table if true.

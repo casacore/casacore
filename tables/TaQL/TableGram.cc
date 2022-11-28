@@ -195,7 +195,7 @@ String tableGramRemoveQuotes (const String& in)
         //# Find next occurrence of leading ' or ""
         int inx = str.index (str[pos], pos+1);
         if (inx < 0) {
-            throw (TableError ("ill-formed quoted string: " + str));
+            throw TableInvExpr ("ill-formed quoted string: " + str);
         }
         out += str.at (pos+1, inx-pos-1);             // add substring
         pos = inx+1;
@@ -212,7 +212,7 @@ Double tableGramParseTime (const String& in)
         val = val.after(0);
     }
     if (! MVAngle::read (res, val)) {
-        throw (TableError ("invalid time/pos string " + val));
+        throw TableInvExpr ("invalid time/pos string " + val);
     }
     return MVAngle(res).radian();
 }
@@ -222,7 +222,7 @@ MVTime tableGramParseDateTime (const String& in)
     MUString str (in);
     Quantity res;
     if (! MVTime::read (res, str)) {
-        throw (TableError ("invalid date string " + in));
+        throw TableInvExpr ("invalid date string " + in);
     }
     return MVTime(res);
 }

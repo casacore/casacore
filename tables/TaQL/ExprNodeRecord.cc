@@ -27,6 +27,7 @@
 
 
 #include <casacore/tables/TaQL/ExprNodeRecord.h>
+#include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/TableExprData.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Containers/RecordDesc.h>
@@ -40,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TableExprNodeRecordField::TableExprNodeRecordField
                                             (DataType dtype,
                                              const Block<Int>& fieldNumbers)
-: TableExprNodeBinary (NTNumeric, VTScalar, OtField, Table()),
+: TableExprNodeBinary (NTNumeric, VTScalar, OtField, Constant),
   fieldNrs_p  (fieldNumbers),
   lastEntry_p (fieldNumbers.nelements() - 1)
 {
@@ -70,7 +71,7 @@ TableExprNodeRecordField::TableExprNodeRecordField
     dtype_p = NTDouble;
     break;
   default:
-    throw (AipsError ("TableExprNodeRecordField: invalid data type"));
+    TableExprNode::throwInvDT ("TableExprNodeRecordField: invalid data type");
   }
   exprtype_p = Variable;
   // Make sure the variable is not a constant for isDefined.
@@ -209,7 +210,7 @@ TableExprNodeRecordFieldArray::TableExprNodeRecordFieldArray
     dtype_p = NTDouble;
     break;
   default:
-    throw (AipsError ("TableExprNodeRecordFieldArray: invalid data type"));
+    TableExprNode::throwInvDT ("TableExprNodeRecordFieldArray: invalid data type");
   }
   exprtype_p = Variable;
 }

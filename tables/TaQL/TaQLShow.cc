@@ -1129,7 +1129,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (cmd == "unit"  ||  cmd == "units") {
       return showUnits (origType);
     }
-    throw AipsError (cmd + " is an unknown SHOW command");
+    throw TableInvExpr (cmd + " is an unknown SHOW command");
   }
 
   String TaQLShow::showTable (const Vector<String>& parts)
@@ -1159,10 +1159,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (cmd == "count") {
       return getHelp (countHelp);
     }
-    throw AipsError (cmd +
-                     " is an unknown command for 'show command <command>'\n"
-                     "   use select, calc, update, insert, delete, create,"
-                     " alter or count\n");
+    throw TableInvExpr (cmd +
+                        " is an unknown command for 'show command <command>'\n"
+                        "   use select, calc, update, insert, delete, create,"
+                        " alter or count\n");
   }
 
   String TaQLShow::showFuncs (const String& type,
@@ -1201,7 +1201,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // It takes an argument (which can be empty).
       TableExprNode node = TableExprNode::newUDFNode (type+".help",
                                                       operands,
-                                                      Table(), style);
+                                                      TableExprInfo(), style);
       return node.getString(0);   // get the UDF help info as a string
     } catch (const std::exception&) {
       return type + " is an unknown type in 'show functions <type>'\n"
@@ -1253,9 +1253,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           Unit unit(type);
           kind = unit.getValue();
         } catch (const AipsError&) {
-          throw AipsError ("Unknown kind or unit given in command "
-                           "'show units " + type + "'\nUse 'show' to "
-                           "show the valid kinds");
+          throw TableInvExpr ("Unknown kind or unit given in command "
+                              "'show units " + type + "'\nUse 'show' to "
+                              "show the valid kinds");
         }
       }
       showUnitKind (os, kind, UnitMap::giveDef());
@@ -1295,9 +1295,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (type == "doppler") {
       return getHelp (dopplerHelp);
     }
-    throw AipsError (type +
-                     " is an unknown type for command "
-                     "'show meastypes <type>'");
+    throw TableInvExpr (type +
+                        " is an unknown type for command "
+                        "'show meastypes <type>'");
   }
 
 } //# NAMESPACE CASACORE - END

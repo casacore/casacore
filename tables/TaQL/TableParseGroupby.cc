@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/ExprGroupAggrFunc.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 
 using namespace std;
@@ -109,8 +110,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Column nodes used in aggregate functions should not adhere applySelection.
     uInt ndis = 0;
     for (uInt i=0; i<itsAggrNodes.size(); ++i) {
-      std::vector<TableExprNodeRep*> colNodes;
-      itsAggrNodes[i]->getColumnNodes (colNodes);
+      std::vector<TableExprNodeRep*> colNodes =
+        TableExprNodeUtil::getColumnNodes (itsAggrNodes[i]);
       for (uInt j=0; j<colNodes.size(); ++j) {
         colNodes[j]->disableApplySelection();
         ndis++;
@@ -119,10 +120,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return ndis;
   }
 
+  void TableParseGroupby::getAggrNodes (const TableExprNode& node,
+                                        std::vector<TableExprNodeRep*>& aggrNodes) const
+  {
+    std::vector<TableExprNodeRep*> aggr =
+      TableExprNodeUtil::getAggrNodes (node.getRep().get());
+    aggrNodes.insert (aggrNodes.end(), aggr.begin(), aggr.end());
+  }
+
   void TableParseGroupby::checkAggrFuncs (const TableExprNode& node)
   {
     if (! node.isNull()) {
-      node.getRep()->checkAggrFuncs();
+      TableExprNodeUtil::checkAggrFuncs (node.getRep().get());
     }
   }
 

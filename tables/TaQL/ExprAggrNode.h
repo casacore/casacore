@@ -89,14 +89,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                        const vector<TENShPtr>& nodes,
                        const Block<Int>& dtypeOper);
 
+    // This node does aggregation.
+    virtual Bool isAggregate() const;
+    
     // Check the operands of the aggregate function and return the
     // result's data type.
     static NodeDataType checkOperands (Block<Int>& dtypeOper,
                                        ValueType& resVT, FunctionType ftype,
                                        std::vector<TENShPtr>& nodes);
-
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
 
     // Get the operand node.
     TENShPtr operand()

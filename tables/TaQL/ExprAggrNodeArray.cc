@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/ExprGroupAggrFunc.h>
 #include <casacore/tables/TaQL/ExprGroupAggrFuncArray.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 
 
@@ -52,19 +53,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     exprtype_p = Variable;
   }
 
-  void TableExprAggrNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
-  {
-    aggr.push_back (this);
-    uInt naggr = aggr.size();
-    for (uInt i=0; i<operands().size(); ++i) {
-      operands()[i]->getAggrNodes (aggr);
-    }
-    if (naggr != aggr.size()) {
-      throw TableInvExpr ("The argument of an aggregate function cannot use "
-                          "an aggregate function");
-    }
-  }
-
   CountedPtr<TableExprGroupFuncBase> TableExprAggrNodeArray::makeGroupAggrFunc()
   {
     // Create a new function object because each FuncSet needs its own one.
@@ -72,6 +60,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return itsFunc;
   }
 
+  Bool TableExprAggrNodeArray::isAggregate() const
+  {
+    return True;
+  }
+  
   Bool TableExprAggrNodeArray::isLazyAggregate() const
   {
     return itsFunc->isLazy();

@@ -31,7 +31,6 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 
 namespace casacore {
@@ -68,7 +67,7 @@ class TaQLResult
 {
 public:
   // Construct from a Table.
-  TaQLResult (const Table& = Table());
+  explicit TaQLResult (const Table& = Table());
 
   // Construct from a TableExprNode.
   explicit TaQLResult (const TableExprNode&);
@@ -77,21 +76,16 @@ public:
   Bool isTable() const
     { return itsNode.isNull(); }
 
-  // Return the result as a Table.
-  // It throws an exception if it is not a Table.
-  Table table() const;
-
-  // Make it possible to convert automatically to a Table
-  //# (for backwards compatibility).
-  operator Table() const
-    { return table(); }
+  // Return the result as a TableExprInfo.
+  // It throws an exception if it is not a table.
+  const Table& table() const;
 
   // Return the result as a TableExprNode.
   // It throws an exception if it is not a TableExprNode.
   TableExprNode node() const;
 
 private:
-  Table itsTable;
+  Table         itsTable;
   TableExprNode itsNode;
 };
 

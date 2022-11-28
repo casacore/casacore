@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/TableParseGroupby.h>
 #include <casacore/tables/TaQL/TableParseUpdate.h>
 #include <casacore/tables/TaQL/TableParseUtil.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
@@ -89,7 +90,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         }
         // Make an expression of the column or keyword name.
         columnExpr_p[nrcol] = handleKeyCol (str, True, tpq);
-        if (columnExpr_p[nrcol].table().isNull()) {
+        if (columnExpr_p[nrcol].getTableInfo().table().isNull()) {
           // A keyword was given which is returned as a constant.
           nrSelExprUsed_p++;
         } else {
@@ -109,7 +110,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             }
           }
           // Get the keywords for this column (to copy unit, etc.)
-          TableColumn tabcol(columnExpr_p[nrcol].table(), oldName);
+          TableColumn tabcol(columnExpr_p[nrcol].getTableInfo().table(), oldName);
           columnKeywords_p[nrcol] = tabcol.keywordSet();
         }
       } else {
@@ -170,7 +171,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (!negate) {
       // Find all matching columns.
-      Table tab = tableList_p.findTable(shorthand, False);
+      Table tab = tableList_p.findTable(shorthand, False).table();
       if (tab.isNull()) {
         throw TableInvExpr("Shorthand " + shorthand + " in wildcarded column " +
                            name + " not defined in FROM clause");
@@ -234,16 +235,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Finish the additions to the block of column names
   //# by removing the deleted empty names and creating Expr objects as needed.
   Table TableParseProject::handleColumnFinish (Bool distinct,
+                                               Bool hasResultSet,
                                                TableParseQuery& tpq)
   {
     // Remove the deleted column names.
     // Create Expr objects for the wildcarded names.
     Int nrcol = columnNames_p.size();
     if (nrcol > 0) {
-      ///if (resultSet_p != 0) {
-      ///  throw TableInvExpr("Expressions can be given in SELECT or GIVING, "
-      ///                     "not both");
-      ///}
+      if (hasResultSet) {
+        throw TableInvExpr("Expressions can be given in SELECT or GIVING, "
+                           "not both");
+      }
       Block<String> names(nrcol);
       Block<String> nameMasks(nrcol);
       Block<String> oldNames(nrcol);
@@ -273,7 +275,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             names[nr]    = name;
             oldNames[nr] = name;
             // Get the keywords for this column (to copy unit, etc.)
-            TableColumn tabcol(exprs[nr].table(), name);
+            TableColumn tabcol(exprs[nr].getTableInfo().table(), name);
             keywords[nr] = tabcol.keywordSet();
           }
           ++nr;
@@ -383,9 +385,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           unit.reference (spec.asArrayString(i));
         }
       } else {
-        throw TableError ("TableParseProject::handleColSpec - "
-                          "column specification field name " + name +
-                          " is unknown");
+        throw TableInvExpr ("TableParseProject::handleColSpec - "
+                            "column specification field name " + name +
+                            " is unknown");
       }
     }
     // Now add the scalar or array column description.
@@ -691,6 +693,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     keys.merge (TableRecord(attributes),
                 RecordInterface::OverwriteDuplicates);
     // If no keys defined for this column, define Epoch measure for dates.
+    // This is done in the same way as the TableMeasures do.
     if (dtype == TpQuantity  &&  keys.empty()) {
       TableRecord r;
       r.define ("type", "epoch");
@@ -701,8 +704,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Write unit in column keywords (in TableMeasures compatible way).
     // Check if it is valid by constructing the Unit object.
     Vector<String> unit(unitName);
-    if (dtype == TpQuantity  &&  unit.empty()) {
-      unit = Vector<String>(1, "d");
+    if (dtype == TpQuantity  &&  (unit.empty()  ||  unit[0].empty())) {
+      unit.reference (Vector<String>(1, "d"));
     }
     if (! unit.empty()  &&  ! unit[0].empty()) {
       if (! shape.empty()) {
@@ -723,7 +726,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                    colName, True, False, True)) {
       throw TableInvExpr ("Column name " + colName + " is a keyword, no column");
     }
-    Table tab = tableList_p.findTable (shorthand, True);
+    Table tab = tableList_p.findTable (shorthand, True).table();
     if (tab.isNull()) {
       throw TableInvExpr("Shorthand " + shorthand + " has not been defined");
     }
@@ -748,14 +751,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableParseProject::checkTableProjSizes() const
   {
-    // Check if all tables used in non-constant select expressions
+    // Check if all main tables used in non-constant select expressions
     // have the same size as the first table.
-    rownr_t nrow = tableList_p.first().nrow();
+    // Note: the first table is a main table (not a join table).
+    rownr_t nrow = tableList_p.firstTable().nrow();
     for (uInt i=0; i<columnExpr_p.size(); i++) {
       if (! columnExpr_p[i].getRep()->isConstant()) {
-        if (columnExpr_p[i].getRep()->nrow() != nrow) {
-          throw TableInvExpr("Nr of rows of tables used in select "
-                             "expressions must be equal to first table");
+        std::vector<Table> tabs =
+          TableExprNodeUtil::getNodeTables (columnExpr_p[i].getRep().get(), True);
+        for (const Table& tab : tabs) {
+          if (tab.nrow() != nrow) {
+            throw TableInvExpr("Nr of rows of tables used in select "
+                               "expressions must be equal to first table");
+          }
         }
       }
     }
@@ -774,7 +782,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                              name, True, False, False);
     //# Use first table if there is no shorthand given.
     //# Otherwise find the table at the current level (no WITH tables).
-    Table tab = tableList_p.findTable (shand, False);
+    TableParsePair tabPair = tableList_p.findTable (shand, False);
+    Table tab = tabPair.table();
     if (tab.isNull()) {
       throw (TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
       return 0;
@@ -811,7 +820,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // If it is a column, check if all tables used have the same size.
       // Note: the projected table (used above) should not be checked.
-      if (tab.tableDesc().isColumn (columnName)) {
+      if (tab.tableDesc().isColumn (columnName)  &&  tabPair.joinIndex() < 0) {
         if (firstColTable_p.isNull()) {
           firstColTable_p = tab;
           firstColName_p  = name;
@@ -826,7 +835,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // Create column or keyword node.
       try {
-        TableExprNode node(tab.keyCol (columnName, fieldNames));
+        TableExprNode node(TableExprNode::keyCol (tabPair.getTableInfo(),
+                                                  columnName, fieldNames));
         tpq.addApplySelNode (node);
         return node;
       } catch (const TableError&) {
@@ -872,7 +882,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseProject::getAggrNodes (std::vector<TableExprNodeRep*>& aggr) const
   {
     for (uInt i=0; i<columnExpr_p.size(); ++i) {
-      const_cast<TableExprNodeRep*>(columnExpr_p[i].getRep().get())->getAggrNodes (aggr);
+      std::vector<TableExprNodeRep*> nodes =
+        TableExprNodeUtil::getAggrNodes (columnExpr_p[i].getRep().get());
+      aggr.insert (aggr.end(), nodes.begin(), nodes.end());
     }
   }
 
@@ -897,7 +909,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableParseProject::setStoredColumns()
   {
-    columnNames_p = TableParseUtil::getStoredColumns (tableList_p.first());
+    columnNames_p = TableParseUtil::getStoredColumns (tableList_p.firstTable());
     columnNameMasks_p.resize (columnNames_p.size());
   }
 

@@ -31,6 +31,7 @@
 #include <casacore/tables/TaQL/ExprDerNodeArray.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/tables/TaQL/ExprRange.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/tables/TaQL/MArray.h>
@@ -41,53 +42,54 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+TableExprInfo::TableExprInfo (const Table& table, const String& alias,
+                              Bool isJoinTable)
+  : itsTable       (table),
+    itsAlias       (alias),
+    itsIsJoinTable (isJoinTable)
+{}
+
+void TableExprInfo::apply (const Vector<rownr_t>& rownrs)
+{
+  itsTable = itsTable(rownrs);
+}
+
+
+  
 // The constructor to be used by the derived classes.
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
-                                    OperType optype,
-                                    const Table& table)
-: table_p    (table),
-  dtype_p    (dtype),
-  vtype_p    (vtype),
-  optype_p   (optype),
-  argtype_p  (NoArr),
-  exprtype_p (Variable),
-  ndim_p     (0)
-{
-    if (table.isNull()) {
-        exprtype_p = Constant;
-    }
-}
+                                    OperType optype, ExprType exprtype)
+: dtype_p       (dtype),
+  vtype_p       (vtype),
+  optype_p      (optype),
+  argtype_p     (NoArr),
+  exprtype_p    (exprtype),
+  ndim_p        (0)
+{}
 
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
                                     OperType optype, ArgType argtype,
                                     ExprType exprtype,
-                                    Int ndim, const IPosition& shape,
-                                    const Table& table)
-: table_p    (table),
-  dtype_p    (dtype),
-  vtype_p    (vtype),
-  optype_p   (optype),
-  argtype_p  (argtype),
-  exprtype_p (exprtype),
-  ndim_p     (ndim),
-  shape_p    (shape)
+                                    Int ndim, const IPosition& shape)
+: dtype_p       (dtype),
+  vtype_p       (vtype),
+  optype_p      (optype),
+  argtype_p     (argtype),
+  exprtype_p    (exprtype),
+  ndim_p        (ndim),
+  shape_p       (shape)
 {}
-
-TableExprNodeRep::TableExprNodeRep (const TableExprNodeRep& that)
- : table_p    (that.table_p),
-  dtype_p    (that.dtype_p),
-  vtype_p    (that.vtype_p),
-  optype_p   (that.optype_p),
-  argtype_p  (that.argtype_p),
-  exprtype_p (that.exprtype_p),
-  ndim_p     (that.ndim_p),
-  shape_p    (that.shape_p),
-  unit_p     (that.unit_p)
-{}
-
-TableExprNodeRep::~TableExprNodeRep ()
-{}
-
+  
+TableExprInfo TableExprNodeRep::getTableInfo() const
+{
+    return TableExprInfo();
+}
+  
+Bool TableExprNodeRep::isAggregate() const
+{
+    return False;
+}
+  
 void TableExprNodeRep::optimize()
 {}
 
@@ -98,7 +100,7 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
     }
     os << Int(dtype_p) << ' ' << Int(vtype_p) << ' ' << Int(optype_p)
        << ' ' << Int(exprtype_p) << ' '<< Int(argtype_p) << ' '
-       << ndim_p << ' ' << shape_p << ' ' << table_p.baseTablePtr() << endl;
+       << ndim_p << ' ' << shape_p << endl;
 }
 
 void TableExprNodeRep::disableApplySelection()
@@ -107,20 +109,9 @@ void TableExprNodeRep::disableApplySelection()
 void TableExprNodeRep::applySelection (const Vector<rownr_t>&)
 {}
 
-void TableExprNodeRep::getAggrNodes (vector<TableExprNodeRep*>&)
-{}
-
-void TableExprNodeRep::getColumnNodes (vector<TableExprNodeRep*>&)
-{}
-
-void TableExprNodeRep::checkAggrFuncs()
+  void TableExprNodeRep::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
-  vector<TableExprNodeRep*> aggr;
-  getAggrNodes (aggr);
-  if (! aggr.empty()) {
-    throw TableInvExpr("Invalid use of an aggregate function "
-                       "(only use in SELECT or HAVING clause)");
-  }
+  nodes.push_back (this);
 }
 
 void TableExprNodeRep::setUnit (const Unit& unit)
@@ -139,38 +130,23 @@ Double TableExprNodeRep::getUnitFactor() const
 void TableExprNodeRep::adaptSetUnits (const Unit&)
 {}
 
-//# Determine the number of rows in the table used in the expression.
-rownr_t TableExprNodeRep::nrow() const
+//# Determine the number of rows in the main table used in the expression.
+rownr_t TableExprNodeRep::nrow()
 {
     if (exprtype_p == Constant) {
         return 1;
     }
-    if (table_p.isNull()) {
-      return 1;                  // for calc expressions
+    vector<Table> tables = TableExprNodeUtil::getNodeTables (this, True);
+    if (tables.empty()) {
+        return 1;                  // for calc expressions
     }
-    return table_p.nrow();
+    return tables[0].nrow();
 }
 
-void TableExprNodeRep::checkTablePtr (Table& table,
-                                      const TableExprNodeRep* node)
-{
-    if (node) {
-        if (table.isNull()  ||  table.nrow() == 0) {
-            table = node->table();
-        } else {
-        if (!(node->table().isNull()  ||  node->table().nrow() == 0)
-            &&  node->table().nrow() != table.nrow()) {
-                throw (TableInvExpr
-                       ("expression uses differently sized tables"));
-            }
-        }
-    }
-}
-void TableExprNodeRep::fillExprType (ExprType& type,
-                                     const TableExprNodeRep* node)
+void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
 {
     if (node != 0  &&  !node->isConstant()) {
-        type = Variable;
+        exprtype_p = Variable;
     }
 }
 
@@ -641,26 +617,19 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
 
 TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
                                           ValueType vtype,
-                                          OperType oper,
-                                          const Table& table)
-: TableExprNodeRep (tp, vtype, oper, table),
-  lnode_p          (0),
-  rnode_p          (0)
+                                          OperType optype,
+                                          ExprType exprtype)
+: TableExprNodeRep (tp, vtype, optype, exprtype)
 {}
 
 TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
                                           const TableExprNodeRep& that,
                                           OperType oper)
-: TableExprNodeRep (that),
-  lnode_p          (0),
-  rnode_p          (0)
+: TableExprNodeRep (that)
 {
     dtype_p  = tp;
     optype_p = oper;
 }
-
-TableExprNodeBinary::~TableExprNodeBinary()
-{}
 
 void TableExprNodeBinary::show (ostream& os, uInt indent) const
 {
@@ -673,23 +642,14 @@ void TableExprNodeBinary::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeBinary::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprNodeBinary::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
+  nodes.push_back (this);
   if (lnode_p) {
-    lnode_p->getAggrNodes (aggr);
+    lnode_p->flattenTree (nodes);
   }
   if (rnode_p) {
-    rnode_p->getAggrNodes (aggr);
-  }
-}
-
-void TableExprNodeBinary::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-  if (lnode_p) {
-    lnode_p->getColumnNodes (cols);
-  }
-  if (rnode_p) {
-    rnode_p->getColumnNodes (cols);
+    rnode_p->flattenTree (nodes);
   }
 }
 
@@ -839,10 +799,7 @@ TableExprNodeRep TableExprNodeBinary::getCommonTypes (const TENShPtr& left,
     }
     // Determine from which table the expression is coming
     // and whether the tables match.
-    Table table = left->table();
-    checkTablePtr (table, right.get());
-    return TableExprNodeRep (dtype, vtype, opt, atype, extype, ndim, shape,
-                             table);
+    return TableExprNodeRep (dtype, vtype, opt, atype, extype, ndim, shape);
 }
 
 void TableExprNodeBinary::setChildren (const TENShPtr& left,
@@ -996,13 +953,7 @@ void TableExprNodeBinary::adaptDataTypes()
 TableExprNodeMulti::TableExprNodeMulti (NodeDataType tp, ValueType vtype,
                                         OperType oper,
                                         const TableExprNodeRep& source)
-: TableExprNodeRep (tp, vtype, oper, source.table()),
-  operands_p       (0)
-{
-    exprtype_p = source.exprType();
-}
-
-TableExprNodeMulti::~TableExprNodeMulti()
+: TableExprNodeRep (tp, vtype, oper, source.exprType())
 {}
 
 void TableExprNodeMulti::show (ostream& os, uInt indent) const
@@ -1015,22 +966,14 @@ void TableExprNodeMulti::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeMulti::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprNodeMulti::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
-    for (uInt j=0; j<operands_p.size(); j++) {
-        if (operands_p[j] != 0) {
-            operands_p[j]->getAggrNodes (aggr);
-        }
+  nodes.push_back (this);
+  for (uInt j=0; j<operands_p.size(); j++) {
+    if (operands_p[j] != 0) {
+      operands_p[j]->flattenTree (nodes);
     }
-}
-
-void TableExprNodeMulti::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-    for (uInt j=0; j<operands_p.size(); j++) {
-        if (operands_p[j] != 0) {
-            operands_p[j]->getColumnNodes (cols);
-        }
-    }
+  }
 }
 
 CountedPtr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc()

@@ -76,40 +76,42 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
 
     // Constructor
-    TableExprUDFNodeArray (UDFBase* udf, const Table&,
+    TableExprUDFNodeArray (const std::shared_ptr<UDFBase>& udf,
+                           const TableExprInfo&,
                            const TableExprNodeSet& source);
 
     // Destructor
-    virtual ~TableExprUDFNodeArray();
+    ~TableExprUDFNodeArray() override = default;
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    void flattenTree (std::vector<TableExprNodeRep*>&) override;
+  
+    // Get the table info.
+    TableExprInfo getTableInfo() const override;
   
     // Do not apply the selection.
-    virtual void disableApplySelection();
+    void disableApplySelection() override;
 
     // If needed, let the UDF re-create column objects for a selection of rows.
     // It calls the function recreateColumnObjects.
-    virtual void applySelection (const Vector<rownr_t>& rownrs);
+    void applySelection (const Vector<rownr_t>& rownrs) override;
 
     // UDFs do not need a TableExprGroupFuncBase, so null is returned.
-    CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
+    CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc() override;
 
     // Functions to get the desired result of a function
     // <group>
-    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
-    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
-    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
-    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual MArray<String>   getArrayString   (const TableExprId& id);
-    virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);
+    MArray<Bool>     getArrayBool     (const TableExprId& id) override;
+    MArray<Int64>    getArrayInt      (const TableExprId& id) override;
+    MArray<Double>   getArrayDouble   (const TableExprId& id) override;
+    MArray<DComplex> getArrayDComplex (const TableExprId& id) override;
+    MArray<String>   getArrayString   (const TableExprId& id) override;
+    MArray<MVTime>   getArrayDate     (const TableExprId& id) override;
     // </group>
 
   private:
-    UDFBase* itsUDF;
+    TableExprInfo            itsTableInfo;
+    std::shared_ptr<UDFBase> itsUDF;
   };
 
 

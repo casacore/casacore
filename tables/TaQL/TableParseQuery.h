@@ -304,8 +304,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const Table& getTable() const
       { return table_p; }
 
-    // Show the structure of fromTables_p[0] using the options given in parts[2:].
-    String getTableInfo (const Vector<String>& parts, const TaQLStyle& style);
+    // Get the structure of fromTables_p[0] using the options given in parts[2:].
+    String getTableStructure (const Vector<String>& parts, const TaQLStyle& style);
 
     // Add a column node to applySelNodes_p.
     void addApplySelNode (const TableExprNode& node)
