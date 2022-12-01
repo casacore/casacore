@@ -796,7 +796,7 @@ public:
                      const TaQLNode& giving, const TaQLMultiNode& dminfo);
   TaQLSelectNodeRep (const TaQLNode& columns,
                      const TaQLMultiNode& withTables, const TaQLMultiNode& fromTables,
-                     const TaQLNode& join, const TaQLNode& where,
+                     const TaQLMultiNode& joins, const TaQLNode& where,
                      const TaQLNode& groupby, const TaQLNode& having,
                      const TaQLNode& sort, const TaQLNode& limitoff,
                      const TaQLNode& giving, const TaQLMultiNode& dminfo);
@@ -808,7 +808,7 @@ public:
   TaQLNode      itsColumns;
   TaQLMultiNode itsWith;
   TaQLMultiNode itsTables;
-  TaQLNode      itsJoin;
+  TaQLMultiNode itsJoins;
   TaQLNode      itsWhere;
   TaQLNode      itsGroupby;
   TaQLNode      itsHaving;

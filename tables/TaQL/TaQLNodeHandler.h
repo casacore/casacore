@@ -169,6 +169,9 @@ private:
   // Handle a MultiNode containing table info.
   void handleTables (const TaQLMultiNode&, Bool addToFromList=True);
 
+  // Handle a MultiNoide containing joins.
+  void handleJoins (const TaQLMultiNode& node);
+
   // Make a ConcatTable from a nested set of tables.
   Table makeConcatTable (const TaQLMultiNodeRep& node);
 

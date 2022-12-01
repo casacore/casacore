@@ -58,6 +58,8 @@ Expect them, so bison does not generate an error message.
 %token DROPTAB
 %token WITH
 %token FROM
+%token JOIN
+%token ON
 %token WHERE
 %token GROUPBY
 %token GROUPROLL
@@ -152,6 +154,9 @@ Expect them, so bison does not generate an error message.
 %type <nodelist> concsub
 %type <nodelist> concslist
 %type <nodename> concinto
+%type <nodelist> joins
+%type <nodelist> joinlist
+%type <node> join
 %type <node> whexpr
 %type <node> groupby
 %type <nodelist> exprlist
@@ -406,17 +411,17 @@ withpart:  {   /* no WITH part */
 
 /* The SELECT command; note that many parts are optional which is handled
    in the rule of that part. The FROM part being optional is handled here
-   because later a join might be added. */
-selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limitoff given dminfo {
+   because a join might be used. */
+selcomm:   withpart SELECT selcol FROM tables joins whexpr groupby having order limitoff given dminfo {
                $$ = new TaQLQueryNode(
-                    new TaQLSelectNodeRep (*$3, *$1, *$5, 0, *$6, *$7, *$8,
-					   *$9, *$10, *$11, *$12));
+                    new TaQLSelectNodeRep (*$3, *$1, *$5, *$6, *$7, *$8, *$9,
+					   *$10, *$11, *$12, *$13));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | withpart SELECT selcol into FROM tables whexpr groupby having order limitoff dminfo {
+         | withpart SELECT selcol into FROM tables joins whexpr groupby having order limitoff dminfo {
                $$ = new TaQLQueryNode(
-		    new TaQLSelectNodeRep (*$3, *$1, *$6, 0, *$7, *$8, *$9,
-					   *$10, *$11, *$4, *$12));
+		    new TaQLSelectNodeRep (*$3, *$1, *$6, *$7, *$8, *$9, *$10,
+					   *$11, *$12, *$4, *$13));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | withpart SELECT selcol whexpr groupby having order limitoff given dminfo {
@@ -1457,6 +1462,34 @@ tabname:   NAME {
            }
          | stabname {
                $$ = $1;
+           }
+         ;
+
+/* JOIN ON is optional */
+joins:     {   /* no joins */
+	       $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | joinlist {
+               $$ = $1;
+           }
+         ;
+
+joinlist:  joinlist join {
+               $$ = $1;
+               $$->add (*$2);
+           }
+         | join {
+	       $$ = new TaQLMultiNode(False);
+               $$->setSeparator (String());
+	       TaQLNode::theirNodesCreated.push_back ($$);
+               $$->add (*$1);
+           }
+         ;
+
+join:      JOIN tablist ON orexpr {
+               $$ = new TaQLNode (new TaQLJoinNodeRep (*$2, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
