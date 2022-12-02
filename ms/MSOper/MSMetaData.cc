@@ -4968,7 +4968,7 @@ MSMetaData::ColumnStats MSMetaData::getIntervalStatistics() const {
     return stats;
 }
 
-std::shared_ptr<vector<int>> MSMetaData::_freqBands(uint nspw) const {
+std::shared_ptr<vector<int>> MSMetaData::_almaReceiverBands(uint nspw) const {
     // for ALMA specific receiver band (RB) info
     static const std::regex rb("RB_(\\d\\d)");
     static const std::regex id("SpectralWindow_(\\d+)");
@@ -4979,31 +4979,33 @@ std::shared_ptr<vector<int>> MSMetaData::_freqBands(uint nspw) const {
         auto spwid = ScalarColumn<String>(
             Table(asdm_rx.path().originalName()), "spectralWindowId"
         ).getColumn().tovector();
-        auto fb = ScalarColumn<String>(
-            Table(asdm_rx.path().originalName()), "frequencyBand"
-        ).getColumn().tovector();
-        // reverse order so that if the spw is defined multiple times,
-        // the first value for the rx band is used
-        reverse(spwid.begin(), spwid.end());
-        reverse(fb.begin(), fb.end());
-        const auto n = fb.size();
-        // to get type of i
-        auto i = n;
-        std::smatch match;
-        for (i=0; i<n; ++i) {
-            if (regex_search(fb[i], match, rb)) {
-                auto myrb = stoi(match.str(1));
-                // the receiver band is encoded, so we must get the spwid
-                // it is associated with
-                if (regex_search(spwid[i], match, id)) {
-                    auto myid = stoi(match.str(1));
-                    (*freqBands)[myid] = myrb;               
-                }
-                else {
-                    ostringstream os;
-                    os << "Unable to find spw id for row " << i
-                        << " in table " << asdm_rx.path().absoluteName();
-                    throw AipsError(os.str());
+        if (spwid.size() <= nspw) {
+            auto fb = ScalarColumn<String>(
+                Table(asdm_rx.path().originalName()), "frequencyBand"
+            ).getColumn().tovector();
+            // reverse order so that if the spw is defined multiple times,
+            // the first value for the rx band is used
+            reverse(spwid.begin(), spwid.end());
+            reverse(fb.begin(), fb.end());
+            const auto n = fb.size();
+            // to get type of i
+            auto i = n;
+            std::smatch match;
+            for (i=0; i<n; ++i) {
+                if (regex_search(fb[i], match, rb)) {
+                    auto myrb = stoi(match.str(1));
+                    // the receiver band is encoded, so we must get the spwid
+                    // it is associated with
+                    if (regex_search(spwid[i], match, id)) {
+                        auto myid = stoi(match.str(1));
+                        (*freqBands)[myid] = myrb;               
+                    }
+                    else {
+                        ostringstream os;
+                        os << "Unable to find spw id for row " << i
+                            << " in table " << asdm_rx.path().absoluteName();
+                        throw AipsError(os.str());
+                    }
                 }
             }
         }
@@ -5138,7 +5140,7 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         }
         else {
             if (! freqBands) {
-                freqBands = _freqBands(nrows);
+                freqBands = _almaReceiverBands(nrows);
             }
             spwInfo[i].rb = (*freqBands)[i];
         }
