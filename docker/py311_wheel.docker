@@ -2,12 +2,11 @@ FROM quay.io/pypa/manylinux2014_x86_64
 
 # set python version
 ENV PYMAJOR 3
-ENV PYMINOR 6
-ENV PYUNICODE m
+ENV PYMINOR 11
 ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}${PYUNICODE}
 
 # boost version
-ENV BOOSTMAJOR 75
+ENV BOOSTMAJOR 79
 ENV BOOSTMINOR 0
 ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
 ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
@@ -55,7 +54,7 @@ RUN ./b2 -j${THREADS} \
     link=static,shared install
 
 # casacore wants numpy
-RUN /opt/python/${TARGET}/bin/pip install numpy==1.19.5
+RUN /opt/python/${TARGET}/bin/pip install numpy==1.23.5
 
 # set up casacore
 ADD . /code
