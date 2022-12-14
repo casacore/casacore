@@ -129,7 +129,7 @@ public:
 
   FITSIDItoMS1(FitsInput& in, const String& correlat,
 	       const Int& obsType=0, const Bool& initFirstMain=True,
-	       const Float& vanVleck=0.0);
+	       const Float& vanVleck=0.0, const Int& zeroPad=0);
 
   ~FITSIDItoMS1();
   
@@ -301,6 +301,7 @@ protected:
   Int itsObsType;
   String itsCorrelat;
   Float itsVanVleck;
+  Int itsZeroPad;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static Bool firstMain;
