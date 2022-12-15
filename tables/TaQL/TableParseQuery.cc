@@ -92,6 +92,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     delete resultSet_p;
   }
 
+  TableParseJoin& TableParseQuery::addJoin()
+  {
+    // Add a TableParseJoin object.
+    joins_p.emplace (joins_p.end(), this);
+    return joins_p.back();
+  }
+
   void TableParseQuery::replaceTable (const Table& table)
   {
     AlwaysAssert (! tableList_p.empty(), AipsError);

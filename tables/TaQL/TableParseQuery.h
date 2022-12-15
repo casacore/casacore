@@ -31,6 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TableParseTableList.h>
+#include <casacore/tables/TaQL/TableParseJoin.h>
 #include <casacore/tables/TaQL/TableParseProject.h>
 #include <casacore/tables/TaQL/TableParseUpdate.h>
 #include <casacore/tables/TaQL/TableParseSortKey.h>
@@ -238,8 +239,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Evaluate and add the rows.
     void handleAddRow (const TableExprNode& expr);
 
+    // Add a join object.
+    TableParseJoin& addJoin();
+  
     // Find the keyword or column name and create a TableExprNode from it.
-    // If <src>tryProj=True</src> it is first tried if the column is a coluymn
+    // If <src>tryProj=True</src> it is first tried if the column is a column
     // in the projected table (i.e., result from the SELECT part).
     TableExprNode handleKeyCol (const String& name, Bool tryProj);
 
@@ -267,6 +271,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Handle the set given in a GIVING clause.
     void handleGiving (const TableExprNodeSet&);
 
+    // Get the TableParseJoin objects.
+    const std::vector<TableParseJoin>& joins() const
+      { return joins_p; }
+  
     // Initialize the table and data manager descriptions.
     void initDescriptions (const TableDesc&, const Record& dminfo);
 
@@ -304,7 +312,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const Table& getTable() const
       { return table_p; }
 
-    // Get the structure of fromTables_p[0] using the options given in parts[2:].
+    // Show the structure of fromTables_p[0] using the options given in parts[2:].
     String getTableStructure (const Vector<String>& parts, const TaQLStyle& style);
 
     // Add a column node to applySelNodes_p.
@@ -397,6 +405,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     CommandType commandType_p;
     //# List of TableParsePair objects (from WITH and FROM clause).
     TableParseTableList tableList_p;
+    //# A join object per join clause.
+    std::vector<TableParseJoin> joins_p;
     //# Object holding the info of table projection (i.e., column selection).
     TableParseProject   tableProject_p;
     //# Name and type of the resulting table (from GIVING part).

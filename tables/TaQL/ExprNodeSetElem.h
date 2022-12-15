@@ -559,14 +559,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // The continuous intervals consists of all values between 3 and 11.
   // </synopsis>
 
-  class TableExprNodeSetElem
+  class TableExprNodeSetElem: public TableExprNodeRep
   {
   public:
     // Create from a Base element.
-    TableExprNodeSetElem (const TENSEBShPtr& elem)
-      : itsElem (elem)
-    {}
-    
+    explicit TableExprNodeSetElem (const TENSEBShPtr& elem);
+
+    ~TableExprNodeSetElem() override = default;
+
     // Create the object for a single expression node.
     explicit TableExprNodeSetElem (const TableExprNode& node);
 
@@ -599,7 +599,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsElem; }
     
     // Show the node.
-    void show (ostream& os, uInt indent) const
+    void show (ostream& os, uInt indent) const override
       { itsElem->show (os, indent); }
 
     // Is it a discrete set element.
@@ -635,6 +635,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // </group>
 
   private:
+    // Set the data and expression type in the superclass.
+    void init();
+    
     //# Data members
     TENSEBShPtr itsElem;
   };

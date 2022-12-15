@@ -244,15 +244,69 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitFuncNode (const TaQLFuncNodeRep& node)
   {
-    TaQLNodeResult result = visitNode (node.itsArgs);
+    // The MSID function is handled immediately, because its column might not exist.
+    // If not existing, the rowid function is used instead. In this way an MSv2,
+    // which uses rowid as an implicit id, can easily be used in a join.
+    // It can be preceded by a table shorthand.
+    TableExprNode funcRes;
+    String funcName (downcase(node.itsName));
+    Vector<String> fncParts = stringToVector (funcName, '.');
+    if (fncParts[fncParts.size()-1] == "msid") {
+      funcRes = handleIdFunc(node);
+    } else {
+      TaQLNodeResult result = visitNode (node.itsArgs);
+      funcRes = topStack()->handleFunc (node.itsName,
+                                        getHR(result).getExprSet(),
+                                        node.style());
+    }
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
-    hrval->setExpr (topStack()->handleFunc (node.itsName,
-                                            getHR(result).getExprSet(),
-                                            node.style()));
+    hrval->setExpr (funcRes);
     return res;
   }
 
+  TableExprNode TaQLNodeHandler::handleIdFunc (const TaQLFuncNodeRep& node)
+  {
+    // Get the column name from the function argument.
+    const std::vector<TaQLNode>& nodes = node.itsArgs.getMultiRep()->itsNodes;
+    if (nodes.size() != 1  ||  !nodes[0].isValid()) {
+      throw TableInvExpr("The MSID function should have 1 argument (column name)");
+    }
+    const TaQLKeyColNodeRep* colRep =
+      dynamic_cast<const TaQLKeyColNodeRep*>(nodes[0].getRep());
+    if (! colRep) {
+      throw TableInvExpr("The MSID function requires an unquoted column name");
+    }
+    // See if the function or column name is prefixed with a shorthand.
+    Vector<String> fncParts = stringToVector (node.itsName, '.');
+    Vector<String> colParts = stringToVector (colRep->itsName, '.');
+    if (fncParts.size() + colParts.size() > 3) {
+      throw TableInvExpr ("The MSID function or its column name can only "
+                          "be prefixed by the shorthand of a table");
+    }
+    String colName = colParts[colParts.size() - 1];
+    String shand;
+    if (fncParts.size() == 2) {
+      shand = fncParts[0];
+    } else if (colParts.size() == 2) {
+      shand = colParts[0];
+    }
+    TableExprInfo tabInfo =
+      topStack()->tableList().findTable (shand, False).getTableInfo();
+    // Check that a table is given.
+    if (tabInfo.table().isNull()) {
+      throw TableInvExpr ("No table found for the shorthand in the MSID function");
+    }
+    // Use the column if it exists. Otherwise use rowid().
+    if (tabInfo.table().tableDesc().isColumn(colName)) {
+      if (! shand.empty()) {
+        colName = shand + '.' + colName;
+      }
+      return topStack()->handleKeyCol (colName, False);
+    }
+    return TableExprNode::newRowidNode (tabInfo);
+  }
+  
   TaQLNodeResult TaQLNodeHandler::visitRangeNode (const TaQLRangeNodeRep& node)
   {
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
@@ -377,9 +431,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return TaQLNodeResult();
   }
 
-  TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep&)
+  TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep& node)
   {
-    throw TableInvExpr("Joins are not implemented yet");
+    //# Add a TableParseJoin object.
+    TableParseJoin& joinObj = topStack()->addJoin();
+    AlwaysAssert (node.itsTables.isValid(), AipsError);
+    const std::vector<TaQLNode>& nodes = node.itsTables.getMultiRep()->itsNodes;
+    for (uInt i=0; i<nodes.size(); ++i) {
+      TaQLNodeResult result = visitNode (nodes[i]);
+      const TaQLNodeHRValue& res = getHR(result);
+      joinObj.addTable (res.getInt(), res.getString(), res.getTable(),
+                        res.getAlias(), itsTempTables, itsStack);
+    }
+    // Handle the join expression.
+    TaQLNodeResult result = visitNode(node.itsCondition);
+    joinObj.handleCondition (getHR(result).getExpr());
+    return TaQLNodeResult();
   }
 
   TaQLNodeResult TaQLNodeHandler::visitGroupNode (const TaQLGroupNodeRep& node)
