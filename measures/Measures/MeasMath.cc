@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/measures/Measures/MeasMath.h>
@@ -37,6 +35,22 @@
 #include <casacore/measures/Measures/Nutation.h>
 #include <casacore/measures/Measures/Precession.h>
 #include <casacore/measures/Measures/SolarPos.h>
+
+namespace {
+  inline void updatePosition(casacore::Double const angle0, casacore::Double const angle1,
+                             casacore::MVPosition &pos) {
+      if (angle1 == 0) {
+        pos(0) = std::cos(angle0);
+        pos(1) = std::sin(angle0);
+        pos(2) = 0;
+      } else {
+        auto const loc = std::cos(angle1);
+        pos(0) = std::cos(angle0) * loc;
+        pos(1) = std::sin(angle0) * loc;
+        pos(2) = std::sin(angle1);
+      }
+  }
+}
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -101,7 +115,7 @@ void MeasMath::getFrame(FrameType i) {
     &MeasFrame::position,
     &MeasFrame::direction,
     &MeasFrame::radialVelocity };
-  
+
   // Get correct frame
   if (!frameOK_p[i]) {
     frameOK_p[i] = True;
@@ -310,12 +324,12 @@ void MeasMath::deapplyAberration(MVPosition &in, Bool doin) {
   // Solve for aberration solution
   do {
     g2 = MVPOS2 * MVPOS1;
-    MVPOS3 = ((g1 * MVPOS2 + 
+    MVPOS3 = ((g1 * MVPOS2 +
 		(1+g2/(1+g1)) * MVPOS1)*(1.0/(1.0+g2)));
     MVPOS3.adjust();
     for (Int j=0; j<3; j++) {
       g3 = MVPOS1(j);
-      MVPOS2(j) -= 
+      MVPOS2(j) -=
 	(MVPOS3(j) - MVPOS4(j))/
 	(((g1+g3*g3/(1+g1))-
 	  g3 * MVPOS3(j))/(1+g2));
@@ -362,7 +376,7 @@ void MeasMath::applySolarPos(MVPosition &in, Bool doin) {
   else {
     getInfo(J2000DIR);
     MVPOS2 = infomvd_p[J2000DIR-N_FrameDInfo];
-  } 
+  }
   g2 = MVPOS2 * MVPOS1;
   // Check if near sun
   if (!nearAbs(g2, 1.0,
@@ -396,8 +410,8 @@ void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
       MVPOS3.adjust();
       for (Int j=0; j<3; j++) {
 	g3 = MVPOS1(j);
-	MVPOS2(j) -= 
-	  (MVPOS3(j) + 
+	MVPOS2(j) -=
+	  (MVPOS3(j) +
 	   MVPOS2(j) - MVPOS4(j))/
 	  (1 + (g3 * MVPOS3(j) -
 		g1 * (g2 + g3 *
@@ -437,18 +451,18 @@ void MeasMath::deapplyHADECtoAZEL(MVPosition &in) {
 }
 
 void MeasMath::applyHADECtoAZELGEO(MVPosition &in) {
-  getInfo(LATGEO);   
+  getInfo(LATGEO);
   in *= RotMatrix(Euler(C::pi_2 - info_p[LATGEO] , 2u, C::pi, 3u));
 }
 
 void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
-  getInfo(LATGEO); 
+  getInfo(LATGEO);
   in = RotMatrix(Euler(C::pi_2 - info_p[LATGEO] , 2u, C::pi, 3u)) * in;
 }
 
 void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
   if (!MeasMath::b1950_reg_p) {
-    b1950_reg_p = 
+    b1950_reg_p =
       AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
 				      Unit("a"), Unit("a"), 2000.0);
   }
@@ -483,7 +497,7 @@ void MeasMath::applyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
 
 void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
   if (!MeasMath::b1950_reg_p) {
-    b1950_reg_p = 
+    b1950_reg_p =
       AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
 				      Unit("a"), Unit("a"), 2000.0);
   }
@@ -517,7 +531,7 @@ void MeasMath::applyETerms(MVPosition &in, Bool doin, Double epo) {
   else {
     getInfo(B1950DIR);
     MVPOS2 = infomvd_p[B1950DIR-N_FrameDInfo];
-  } 
+  }
   g1 = MVPOS2 * MVPOS1;
   MVPOS1 = g1 * MVPOS2 - MVPOS1;
   rotateShift(in, MVPOS1, B1950LONG, B1950LAT, doin);
@@ -584,7 +598,8 @@ void MeasMath::applyTOPOtoHADEC(MVPosition &in, Bool doin) {
   getInfo(RADIUS);
   getInfo(LAT);
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
-  MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
+  // MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
+  updatePosition(info_p[LASTR], info_p[LAT], MVPOS1);
   MVPOS1.readjust(g2);
   /// Really should use topo for planets
   rotateShift(in, MVPOS1, APPLONG, APPLAT, doin);
@@ -597,9 +612,10 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, Bool doin) {
   getInfo(RADIUS);
   getInfo(LAT);
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
-  MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
+  // MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
+  updatePosition(info_p[LASTR], info_p[LAT], MVPOS1);
   MVPOS1.readjust(g2);
-  applyPolarMotion(in);  
+  applyPolarMotion(in);
   /// Really use topo for planets
   rotateShift(in, -MVPOS1, APPLONG, APPLAT, doin);
 }
@@ -637,14 +653,14 @@ void MeasMath::deapplyECLIPtoJ2000(MVPosition &in) {
 
 void MeasMath::applyMECLIPtoJMEAN(MVPosition &in) {
   getInfo(TDB);
-  in = RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
+  in = RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] -
 					      MeasData::MJD2000)/
 					     MeasData::JDCEN), 1, 0, 0)) * in;
 }
 
 void MeasMath::deapplyMECLIPtoJMEAN(MVPosition &in) {
   getInfo(TDB);
-  in *= RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
+  in *= RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] -
 					       MeasData::MJD2000)/
 					      MeasData::JDCEN), 1, 0, 0));
 }

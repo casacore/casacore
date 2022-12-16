@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef MEASURES_MDIRECTION_H
 #define MEASURES_MDIRECTION_H
@@ -294,10 +291,6 @@ public:
     virtual const String &tellMe() const;
     static const String &showMe();
 // </group>
-// Tell me your reference type (as Register())
-  // N.B. as defined in MDirection.cc, it does NOT return the type of an
-  // instance, i.e. it just returns Register(static_cast<MDirection *>(0)).
-    virtual uInt type() const;
 // Assert you are a direction
     static void assure(const Measure &in);
 // Tell me the global type (like GRADEC) for tp (tp like MDirection::J2000)
@@ -345,10 +338,6 @@ public:
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  // Get my type (as Register)
-  // N.B. Being static, it does NOT return the type of an instance, i.e. use it
-  // as MDirection::myType(), not md.myType().
-  static uInt myType();
   // Tell me if you are a pure model (e.g. a planet)
   virtual Bool isModel() const;
 

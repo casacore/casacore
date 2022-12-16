@@ -16,10 +16,12 @@ jobs:
           - ubuntu1804_gcc
           - ubuntu2004_clang
           - ubuntu2004_gcc
+          - ubuntu2204_clang
+          - ubuntu2204_gcc
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Build container
         run: docker build . -t ${{ matrix.dist }} -f docker/${{ matrix.dist }}.docker
 

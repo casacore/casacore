@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Quantum.tcc 20993 2010-11-08 13:36:32Z gervandiepen $
 
 #ifndef CASA_QUANTUM_TCC
 #define CASA_QUANTUM_TCC
@@ -40,7 +38,6 @@
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/MUString.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/sstream.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

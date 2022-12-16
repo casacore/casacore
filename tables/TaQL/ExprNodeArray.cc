@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNodeArray.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
@@ -181,36 +179,33 @@ MArray<DComplex> TableExprNodeArray::getArrayDComplex (const TableExprId& id)
     return MArray<DComplex> (result, arr.mask());
 }
 
-Bool TableExprNodeArray::hasBool     (const TableExprId& id, Bool value)
+Bool TableExprNodeArray::contains (const TableExprId& id, Bool value)
 {
     return anyEQ (value, getArrayBool (id));
 }
-Bool TableExprNodeArray::hasInt      (const TableExprId& id, Int64 value)
+Bool TableExprNodeArray::contains (const TableExprId& id, Int64 value)
 {
     return anyEQ (value, getArrayInt (id));
 }
-Bool TableExprNodeArray::hasDouble   (const TableExprId& id, Double value)
+Bool TableExprNodeArray::contains (const TableExprId& id, Double value)
 {
     return anyEQ (value, getArrayDouble (id));
 }
-Bool TableExprNodeArray::hasDComplex (const TableExprId& id,
-                                      const DComplex& value)
+Bool TableExprNodeArray::contains (const TableExprId& id, DComplex value)
 {
     return anyEQ (value, getArrayDComplex (id));
 }
-Bool TableExprNodeArray::hasString   (const TableExprId& id,
-                                      const String& value)
+Bool TableExprNodeArray::contains (const TableExprId& id, String value)
 {
     return anyEQ (value, getArrayString (id));
 }
-Bool TableExprNodeArray::hasDate     (const TableExprId& id,
-                                      const MVTime& value)
+Bool TableExprNodeArray::contains (const TableExprId& id, MVTime value)
 {
     return anyEQ (value, getArrayDate (id));
 }
 
-MArray<Bool> TableExprNodeArray::hasArrayBool (const TableExprId& id,
-                                               const MArray<Bool>& value)
+MArray<Bool> TableExprNodeArray::contains (const TableExprId& id,
+                                           const MArray<Bool>& value)
 {
     MArray<Bool> set = getArrayBool (id);
     Array<Bool> result(value.shape());
@@ -225,8 +220,8 @@ MArray<Bool> TableExprNodeArray::hasArrayBool (const TableExprId& id,
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeArray::hasArrayInt (const TableExprId& id,
-                                              const MArray<Int64>& value)
+MArray<Bool> TableExprNodeArray::contains (const TableExprId& id,
+                                           const MArray<Int64>& value)
 {
     MArray<Int64> set = getArrayInt (id);
     Array<Bool> result(value.shape());
@@ -241,8 +236,8 @@ MArray<Bool> TableExprNodeArray::hasArrayInt (const TableExprId& id,
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeArray::hasArrayDouble (const TableExprId& id,
-                                                 const MArray<Double>& value)
+MArray<Bool> TableExprNodeArray::contains (const TableExprId& id,
+                                           const MArray<Double>& value)
 {
     MArray<Double> set = getArrayDouble (id);
     Array<Bool> result(value.shape());
@@ -257,8 +252,8 @@ MArray<Bool> TableExprNodeArray::hasArrayDouble (const TableExprId& id,
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeArray::hasArrayDComplex (const TableExprId& id,
-                                                   const MArray<DComplex>& value)
+MArray<Bool> TableExprNodeArray::contains (const TableExprId& id,
+                                           const MArray<DComplex>& value)
 {
     MArray<DComplex> set = getArrayDComplex (id);
     Array<Bool> result(value.shape());
@@ -273,8 +268,8 @@ MArray<Bool> TableExprNodeArray::hasArrayDComplex (const TableExprId& id,
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeArray::hasArrayString (const TableExprId& id,
-                                                 const MArray<String>& value)
+MArray<Bool> TableExprNodeArray::contains (const TableExprId& id,
+                                           const MArray<String>& value)
 {
     MArray<String> set = getArrayString (id);
     Array<Bool> result(value.shape());
@@ -289,8 +284,8 @@ MArray<Bool> TableExprNodeArray::hasArrayString (const TableExprId& id,
     result.putStorage (out, deleteOut);
     return MArray<Bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeArray::hasArrayDate (const TableExprId& id,
-                                               const MArray<MVTime>& value)
+MArray<Bool> TableExprNodeArray::contains (const TableExprId& id,
+                                           const MArray<MVTime>& value)
 {
     MArray<MVTime> set = getArrayDate (id);
     Array<Bool> result(value.shape());
@@ -1304,20 +1299,20 @@ void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
     uInt j = 0;
     for (uInt i=0; i<n; i++) {
         uInt inx = (isCOrder_p  ?  n-i-1 : i);
-        rep = indices[inx].start();
+        rep = indices[inx]->start();
         if (rep) {
             operands_p[j] = rep;
         }else{
             isSingle_p = False;
         }
         j++;
-        rep = indices[inx].end();
+        rep = indices[inx]->end();
         if (rep) {
             operands_p[j] = rep;
             isSingle_p = False;
         }
         j++;
-        rep = indices[inx].increment();
+        rep = indices[inx]->increment();
         if (rep) {
             operands_p[j] = rep;
             isSingle_p = False;
@@ -1428,10 +1423,10 @@ TableExprNodeArrayPart::TableExprNodeArrayPart (const TENShPtr& arrayNode,
     AlwaysAssert (inxNode_p, AipsError);
     // Check the index bounds as far as possible.
     inxNode_p->checkIndexValues (arrayNode);
-    checkTablePtr (indexNode);
-    checkTablePtr (arrayNode);
-    fillExprType  (indexNode);
-    fillExprType  (arrayNode);
+    checkTablePtr (indexNode.get());
+    checkTablePtr (arrayNode.get());
+    fillExprType  (indexNode.get());
+    fillExprType  (arrayNode.get());
     // If indexing a single element, the result is a scalar.
     if (inxNode_p->isSingle()) {
         vtype_p = VTScalar;

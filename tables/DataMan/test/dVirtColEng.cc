@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Define a main program to allow compalition and linking by the make system.
 //# The variable is set in tVirtColEng.cc to skip it.

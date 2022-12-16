@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_FUNCTORS_H
 #define CASA_FUNCTORS_H
@@ -48,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       *first1 = op(*first1, *first2);
     }
   }
-  
+
   // Define a function to do a unary transform in place.
   // It is functionally equivalent to std::transform where the first and result
   // iterator are the same, but it is faster for non-trivial iterators.
@@ -74,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     return acc;
   }
-  
+
   // Define a function (similar to std::accumulate) to do accumulation of
   // elements for which the corresponding mask value is false.
   // The default accumulation is addition.
@@ -88,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     return acc;
   }
-  
+
   // Define a function to compare all elements of two sequences.
   // It returns true if all elements compare true.
   // An example compare operator is <src>std::equal_to</src>.
@@ -166,13 +164,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return false;
   }
   // </group>
-  
+
 
 
   // Functor to add variables of possibly different types.
   // This is unlike std::plus which requires equal types.
   template <typename L, typename R=L, typename RES=L>
-  struct Plus : public std::binary_function<L,R,RES>
+  struct Plus
   {
     RES operator() (const L& x, const R& y) const
       { return RES(x)+y; }
@@ -181,7 +179,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to subtract variables of possibly different types.
   // This is unlike std::minus which requires equal types.
   template <typename L, typename R=L, typename RES=L>
-  struct Minus : public std::binary_function<L,R,RES>
+  struct Minus
   {
     RES operator() (const L& x, const R& y) const
       { return RES(x)-y; }
@@ -190,7 +188,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to multiply variables of possibly different types.
   // This is unlike std::multiplies which requires equal types.
   template <typename L, typename R=L, typename RES=L>
-  struct Multiplies : public std::binary_function<L,R,RES>
+  struct Multiplies
   {
     RES operator() (const L& x, const R& y) const
       { return RES(x)*y; }
@@ -199,7 +197,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to divide variables of possibly different types.
   // This is unlike std::divides which requires equal types.
   template <typename L, typename R=L, typename RES=L>
-  struct Divides : public std::binary_function<L,R,RES>
+  struct Divides
   {
     RES operator() (const L& x, const R& y) const
       { return RES(x)/y; }
@@ -209,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // in the C way.
   // This is unlike std::modulo which requires equal types.
   template <typename L, typename R=L, typename RES=L>
-  struct Modulo : public std::binary_function<L,R,RES>
+  struct Modulo
   {
     RES operator() (const L& x, const R& y) const
       { return RES(x)%y; }
@@ -218,7 +216,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to take modulo of variables of possibly different types
   // using the floor modulo (% as used in Python).
   template <typename L, typename R=L, typename RES=L>
-  struct FloorMod : public std::binary_function<L,R,RES>
+  struct FloorMod
   {
     RES operator() (const L& x, const R& y) const
     { return floormod (RES(x), RES(y)); }
@@ -226,7 +224,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor for bitwise and of (integer) values.
   template <typename T>
-  struct BitAnd : public std::binary_function<T,T,T>
+  struct BitAnd
   {
     T operator() (const T& x, const T& y) const
       { return x&y; }
@@ -234,7 +232,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor for bitwise or of (integer) values.
   template <typename T>
-  struct BitOr : public std::binary_function<T,T,T>
+  struct BitOr
   {
     T operator() (const T& x, const T& y) const
       { return x|y; }
@@ -242,7 +240,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor for bitwise xor of (integer) values.
   template <typename T>
-  struct BitXor : public std::binary_function<T,T,T>
+  struct BitXor
   {
     T operator() (const T& x, const T& y) const
       { return x^y; }
@@ -250,7 +248,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor for bitwise negate of (integer) values.
   template <typename T>
-  struct BitNegate : public std::unary_function<T,T>
+  struct BitNegate
   {
     T operator() (const T& x) const
       { return ~x; }
@@ -263,7 +261,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //                   result.begin(), IsNaN<T>());
   // </srcblock>
   template<typename T>
-  struct IsNaN : public std::unary_function<T,bool>
+  struct IsNaN
   {
     bool operator() (T value) const
       { return isNaN (value); }
@@ -271,7 +269,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to test for infinity.
   template<typename T>
-  struct IsInf : public std::unary_function<T,bool>
+  struct IsInf
   {
     bool operator() (T value) const
       { return isInf (value); }
@@ -279,7 +277,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to test for finiteness.
   template<typename T>
-  struct IsFinite : public std::unary_function<T,bool>
+  struct IsFinite
   {
     bool operator() (T value) const
       { return isFinite (value); }
@@ -292,7 +290,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //                   result.cbegin(), Near<T>(tolerance));
   // </srcblock>
   template<typename L, typename R=L>
-  struct Near : public std::binary_function<L,R,bool>
+  struct Near
   {
     explicit Near (double tolerance=1e-5)
       : itsTolerance (tolerance)
@@ -305,7 +303,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to test for if two values are absolutely near each other.
   template<typename L, typename R=L>
-  struct NearAbs : public std::binary_function<L,R,bool>
+  struct NearAbs
   {
     explicit NearAbs (double tolerance=1e-13)
       : itsTolerance (tolerance)
@@ -319,7 +317,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply sin.
   template<typename T, typename RES=T>
-  struct Sin : public std::unary_function<T,RES>
+  struct Sin
   {
     RES operator() (T value) const
       { return RES(sin (value)); }
@@ -327,7 +325,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply sinh.
   template<typename T, typename RES=T>
-  struct Sinh : public std::unary_function<T,RES>
+  struct Sinh
   {
     RES operator() (T value) const
       { return RES(sinh (value)); }
@@ -335,7 +333,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply asin.
   template<typename T, typename RES=T>
-  struct Asin : public std::unary_function<T,RES>
+  struct Asin
   {
     RES operator() (T value) const
       { return RES(asin (value)); }
@@ -343,7 +341,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply cos.
   template<typename T, typename RES=T>
-  struct Cos : public std::unary_function<T,RES>
+  struct Cos
   {
     RES operator() (T value) const
       { return RES(cos (value)); }
@@ -351,7 +349,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply cosh.
   template<typename T, typename RES=T>
-  struct Cosh : public std::unary_function<T,RES>
+  struct Cosh
   {
     RES operator() (T value) const
       { return RES(cosh (value)); }
@@ -359,7 +357,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply acos.
   template<typename T, typename RES=T>
-  struct Acos : public std::unary_function<T,RES>
+  struct Acos
   {
     RES operator() (T value) const
       { return RES(acos (value)); }
@@ -367,7 +365,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply tan.
   template<typename T, typename RES=T>
-  struct Tan : public std::unary_function<T,RES>
+  struct Tan
   {
     RES operator() (T value) const
       { return RES(tan (value)); }
@@ -375,7 +373,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply tanh.
   template<typename T, typename RES=T>
-  struct Tanh : public std::unary_function<T,RES>
+  struct Tanh
   {
     RES operator() (T value) const
       { return RES(tanh (value)); }
@@ -383,7 +381,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply atan.
   template<typename T, typename RES=T>
-  struct Atan : public std::unary_function<T,RES>
+  struct Atan
   {
     RES operator() (T value) const
       { return RES(atan (value)); }
@@ -391,7 +389,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply atan2.
   template<typename L, typename R=L, typename RES=L>
-  struct Atan2 : public std::binary_function<L,R,RES>
+  struct Atan2
   {
     RES operator() (L left, R right) const
       { return RES(atan2 (left, L(right))); }
@@ -399,7 +397,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply sqr (power of 2).
   template<typename T, typename RES=T>
-  struct Sqr : public std::unary_function<T,RES>
+  struct Sqr
   {
     RES operator() (T value) const
       { return RES(value*value); }
@@ -407,7 +405,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply a power of 3.
   template<typename T, typename RES=T>
-  struct Pow3 : public std::unary_function<T,RES>
+  struct Pow3
   {
     RES operator() (T value) const
       { return RES(value*value*value); }
@@ -415,7 +413,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply sqrt.
   template<typename T, typename RES=T>
-  struct Sqrt : public std::unary_function<T,RES>
+  struct Sqrt
   {
     RES operator() (T value) const
       { return RES(sqrt (value)); }
@@ -423,7 +421,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply exp.
   template<typename T, typename RES=T>
-  struct Exp : public std::unary_function<T,RES>
+  struct Exp
   {
     RES operator() (T value) const
       { return RES(exp (value)); }
@@ -431,7 +429,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply log.
   template<typename T, typename RES=T>
-  struct Log : public std::unary_function<T,RES>
+  struct Log
   {
     RES operator() (T value) const
       { return RES(log (value)); }
@@ -439,7 +437,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply log10.
   template<typename T, typename RES=T>
-  struct Log10 : public std::unary_function<T,RES>
+  struct Log10
   {
     RES operator() (T value) const
       { return RES(log10 (value)); }
@@ -447,7 +445,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply abs.
   template<typename T, typename RES=T>
-  struct Abs : public std::unary_function<T,RES>
+  struct Abs
   {
     RES operator() (T value) const
       { return RES(abs (value)); }
@@ -455,7 +453,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply floor.
   template<typename T, typename RES=T>
-  struct Floor : public std::unary_function<T,RES>
+  struct Floor
   {
     RES operator() (T value) const
       { return RES(floor (value)); }
@@ -463,7 +461,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply ceil.
   template<typename T, typename RES=T>
-  struct Ceil : public std::unary_function<T,RES>
+  struct Ceil
   {
     RES operator() (T value) const
       { return RES(ceil (value)); }
@@ -471,7 +469,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply round (e.g. -3.7 gets -4).
   template<typename T, typename RES=T>
-  struct Round : public std::unary_function<T,RES>
+  struct Round
   {
     RES operator() (T value) const
       { return RES(value<0 ? ceil(value-0.5) : floor(value+0.5)); }
@@ -479,7 +477,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply sign (result is -1, 0, or 1).
   template<typename T, typename RES=T>
-  struct Sign : public std::unary_function<T,RES>
+  struct Sign
   {
     RES operator() (T value) const
       { return (value<0 ? -1 : (value>0 ? 1:0)); }
@@ -487,7 +485,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to form a complex number from the left and right value.
   template<typename L, typename R, typename RES>
-  struct MakeComplex : public std::binary_function<L,R,RES>
+  struct MakeComplex
   {
     RES operator() (L l, R r) const
       { return RES(l, r); }
@@ -496,7 +494,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to form a complex number from the real part of the
   // left value and the right value.
   template<typename L, typename R, typename RES>
-  struct MakeComplexReal : public std::binary_function<L,R,RES>
+  struct MakeComplexReal
   {
     RES operator() (L l, R r) const
       { return RES(real(l), r); }
@@ -505,7 +503,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to form a complex number from the left value and the
   // imaginary part of the right value.
   template<typename L, typename R, typename RES>
-  struct MakeComplexImag : public std::binary_function<L,R,RES>
+  struct MakeComplexImag
   {
     RES operator() (L l, R r) const
       { return RES(l, imag(r)); }
@@ -514,7 +512,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to form a complex number from the real part of the
   // left value and the imaginary part of the right value.
   template<typename L, typename R, typename RES>
-  struct MakeComplexRealImag : public std::binary_function<L,R,RES>
+  struct MakeComplexRealImag
   {
     RES operator() (L l, R r) const
       { return RES(real(l), imag(r)); }
@@ -522,7 +520,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply complex function conj.
   template<typename T, typename RES=T>
-  struct Conj : public std::unary_function<T,RES>
+  struct Conj
   {
     RES operator() (T value) const
       { return RES(conj (value)); }
@@ -530,7 +528,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply complex function real.
   template<typename T, typename RES>
-  struct Real : public std::unary_function<T,RES>
+  struct Real
   {
     RES operator() (T value) const
       { return RES(real (value)); }
@@ -538,7 +536,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply complex function imag.
   template<typename T, typename RES>
-  struct Imag : public std::unary_function<T,RES>
+  struct Imag
   {
     RES operator() (T value) const
       { return RES(imag (value)); }
@@ -546,7 +544,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply complex function arg.
   template<typename T, typename RES>
-  struct CArg : public std::unary_function<T,RES>
+  struct CArg
   {
     RES operator() (T value) const
       { return RES(arg (value)); }
@@ -554,7 +552,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply complex function fabs.
   template<typename T, typename RES>
-  struct CAbs : public std::unary_function<T,RES>
+  struct CAbs
   {
     RES operator() (T value) const
       { return RES(fabs (value)); }
@@ -562,7 +560,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply pow.
   template<typename T, typename E=T, typename RES=T>
-  struct Pow : public std::binary_function<T,E,RES>
+  struct Pow
   {
     RES operator() (T left, E exponent) const
       { return RES(pow (left, exponent)); }
@@ -570,7 +568,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to apply fmod.
   template<typename L, typename R=L, typename RES=L>
-  struct Fmod : public std::binary_function<L,R,RES>
+  struct Fmod
   {
     RES operator() (R left, L right) const
       { return RES(fmod (left, L(right))); }
@@ -578,7 +576,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to get minimum of two values.
   template<typename L, typename R=L, typename RES=L>
-  struct Min : public std::binary_function<L,R,RES>
+  struct Min
   {
     RES operator() (L left, R right) const
       { return RES(left<right  ?  left : right); }
@@ -586,7 +584,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to get maximum of two values.
   template<typename L, typename R=L, typename RES=L>
-  struct Max : public std::binary_function<L,R,RES>
+  struct Max
   {
     RES operator() (L left, R right) const
       { return RES(left<right  ?  right : left); }
@@ -594,7 +592,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to add square of right to left.
   template<typename T, typename Accum=T>
-  struct SumSqr : public std::binary_function<Accum,T,Accum>
+  struct SumSqr
   {
     Accum operator() (Accum left, T right) const
       { return left + Accum(right)*Accum(right); }
@@ -604,7 +602,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // It can be used to calculate the variance.
   // Note: it is specialized for complex values to handle real and imag separately.
   template<typename T, typename Accum=T>
-  struct SumSqrDiff : public std::binary_function<Accum,T,Accum>
+  struct SumSqrDiff
   {
     explicit SumSqrDiff(T base) : itsBase(base) {}
     Accum operator() (Accum left, T right) const
@@ -619,7 +617,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // See also https://en.wikipedia.org/wiki/Complex_random_variable#Variance
   // Note that although the sum is real, a complex value is used to have equal template types.
   template<typename T>
-  struct SumSqrDiff<std::complex<T>> : public std::binary_function<std::complex<T>,std::complex<T>,std::complex<T>>
+  struct SumSqrDiff<std::complex<T>>
   {
     explicit SumSqrDiff(std::complex<T> base) : itsBase(base) {}
     std::complex<T> operator() (std::complex<T> left, std::complex<T> right) const
@@ -632,7 +630,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Functor to add absolute diff of right and base value to left.
   // It can be used to calculate the average deviation.
   template<typename T, typename Accum=T>
-  struct SumAbsDiff : public std::binary_function<Accum,T,Accum>
+  struct SumAbsDiff
   {
     explicit SumAbsDiff(T base) : itsBase(base) {}
     Accum operator() (Accum left, T right) const
@@ -642,21 +640,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   // Functor to downcase a std::string. The result is a casacore::String.
-  struct Downcase : public std::unary_function<std::string,String>
+  struct Downcase
   {
     String operator() (const std::string& value) const
       { return downcase(value); }
   };
 
   // Functor to upcase a std::string. The result is a casacore::String.
-  struct Upcase : public std::unary_function<std::string,String>
+  struct Upcase
   {
     String operator() (const std::string& value) const
       { return upcase(value); }
   };
 
   // Functor to capitalize a std::string. The result is a casacore::String.
-  struct Capitalize : public std::unary_function<std::string,String>
+  struct Capitalize
   {
     String operator() (const std::string& value) const
       { return capitalize(value); }
@@ -664,7 +662,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Functor to trim a std::string. The result is a casacore::String.
   // Leading and trailing whitespace is removed.
-  struct Trim : public std::unary_function<std::string,String>
+  struct Trim
   {
     String operator() (const std::string& value) const
       { return trim(value); }

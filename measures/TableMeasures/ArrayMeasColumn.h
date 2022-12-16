@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MEASURES_ARRAYMEASCOLUMN_H
 #define MEASURES_ARRAYMEASCOLUMN_H
@@ -43,7 +41,7 @@ template <class M> class ScalarMeasColumn;
 
 
 // <summary>
-// Read only access to table array Measure columns.
+// Access table array Measure columns.
 // </summary>
 
 // <use visibility=export>

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 // Param.C: implementation of a parameter (key,value,help,type,range,....)
 //          users typically do not use this class, it is merely

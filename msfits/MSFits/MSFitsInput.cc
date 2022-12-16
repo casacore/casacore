@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSFitsInput.cc 21580 2015-03-24 08:37:00Z gervandiepen $
 //
 
 #include <casacore/msfits/MSFits/MSFitsInput.h>
@@ -2096,7 +2094,23 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         arrnam = btKeywords.asString("ARRNAM");
         arrnam.trim();
     }
-    if (arrnam == "VLA" && ! btKeywords.isDefined("FRAME")) {
+    // For old VLA archive files, antenna positions are stored in a non-standard
+    // frame and so must be rotated. This is necessary for CASA VLA users, see
+    // eg CAS-11726
+    // The file is an old VLA archive file if either the FRAME keyword is not
+    // present, or if the array position is approximately the VLA location 
+    // (a smaller magnitude position vector indicates a third part db should
+    // be used for the array position, such as the Observatories table).
+    // Usually if it is not the VLA position it will be 0, but we allow
+    // some slop here by only considering position vectors with magnitudes
+    // in excess of 1000km of indicating an old VLA archive file
+    if (
+        arrnam == "VLA" 
+        && (
+            ! btKeywords.isDefined("FRAME")
+            || norm(arrayXYZ) > 1e6
+        )
+    ) {
         _log << LogOrigin("MSFitsInput", __FUNCTION__) << LogIO::NORMAL
             << "This looks like an old VLA archive UVFITS file"
             << LogIO::POST;
@@ -2105,7 +2119,16 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         //  are from on-line system and are relative to this)
         MPosition vlaCenter;
         AlwaysAssert(MeasTable::Observatory(vlaCenter, "VLA"), AipsError);
-        if (allNearAbs(arrayXYZ, vlaCenter.getValue().getValue(), 10)) {
+        const auto diff = abs(arrayXYZ - vlaCenter.getValue().getValue());
+        const auto diff2 = sqrt(sum(diff*diff));
+        _log << LogIO::NORMAL << "UVFITS file telescope position is " << diff2
+            << " meters from CASA Observatories table VLA position" << LogIO::POST;
+        // give a pretty large tolerance (10km) for uvftis files VLA position
+        // to differ from CASA Observatories VLA position
+        if (diff2 <= 10000.0) {
+            // if the difference between the magnitudes of the array positions
+            // is less than or equal to 10km, we can be certain the file
+            // is an old VLA archive file.
             arrayXYZ = vlaCenter.getValue().getValue();
             // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
             Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));

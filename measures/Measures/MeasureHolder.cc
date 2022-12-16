@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/measures/Measures/MeasureHolder.h>
@@ -102,39 +100,39 @@ Bool MeasureHolder::isMeasure() const {
 }
 
 Bool MeasureHolder::isMDirection() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MDirection::myType());
+  return (hold_p.ptr() && dynamic_cast<const MDirection*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMDoppler() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MDoppler::myType());
+  return (hold_p.ptr() && dynamic_cast<const MDoppler*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMEpoch() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MEpoch::myType());
+  return (hold_p.ptr() && dynamic_cast<const MEpoch*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMFrequency() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MFrequency::myType());
+  return (hold_p.ptr() && dynamic_cast<const MFrequency*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMPosition() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MPosition::myType());
+  return (hold_p.ptr() && dynamic_cast<const MPosition*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMRadialVelocity() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MRadialVelocity::myType());
+  return (hold_p.ptr() && dynamic_cast<const MRadialVelocity*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMBaseline() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MBaseline::myType());
+  return (hold_p.ptr() && dynamic_cast<const MBaseline*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMuvw() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == Muvw::myType());
+  return (hold_p.ptr() && dynamic_cast<const Muvw*>(hold_p.ptr()));
 }
 
 Bool MeasureHolder::isMEarthMagnetic() const {
-  return (hold_p.ptr() && hold_p.ptr()->type() == MEarthMagnetic::myType());
+  return (hold_p.ptr() && dynamic_cast<const MEarthMagnetic*>(hold_p.ptr()));
 }
 
 const Measure &MeasureHolder::asMeasure() const {

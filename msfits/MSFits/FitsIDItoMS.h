@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 //# Mod 2010: DP
 
 #ifndef MS_FITSIDITOMS_H
@@ -129,7 +127,9 @@ public:
   // software correlator used by the EVN).
   //
 
-  FITSIDItoMS1(FitsInput& in, const String& correlat, const Int& obsType=0, const Bool& initFirstMain=True);
+  FITSIDItoMS1(FitsInput& in, const String& correlat,
+	       const Int& obsType=0, const Bool& initFirstMain=True,
+	       const Float& vanVleck=0.0, const Int& zeroPad=0);
 
   ~FITSIDItoMS1();
   
@@ -237,7 +237,7 @@ protected:
   void setupMeasurementSet(const String& MSFileName, Bool useTSM=True, 
 			   Bool mainTbl=False, Bool addCorrMod=False,
 			   Bool addSyscal=False, Bool addWeather=False,
-			   Bool addGainCurve=False);
+			   Bool addGainCurve=False, Bool addPhaseCal=False);
   
   // Fill the main table from the Primary group data
   void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
@@ -300,12 +300,15 @@ protected:
   Double lastTime_p;
   Int itsObsType;
   String itsCorrelat;
+  Float itsVanVleck;
+  Int itsZeroPad;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static Bool firstMain;
   static Bool firstSyscal;
   static Bool firstWeather;
   static Bool firstGainCurve;
+  static Bool firstPhaseCal;
   Bool weather_hasWater_p;
   Bool weather_hasElectron_p;
   Bool uv_data_hasWeights_p;

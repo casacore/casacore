@@ -18,6 +18,7 @@ while grep -qe "^status:\\Wcont" measuresdata.rc ; do
     data=$(grep "^data:" measuresdata.rc | cut -d\  -f2-)
     ftp=$(grep "^ftp:" measuresdata.rc | cut -d\  -f2-)
     http=$(grep "^http:" measuresdata.rc | cut -d\  -f2-)
+    https=$(grep "^https:" measuresdata.rc | cut -d\  -f2-)
     dir=$(grep "^dir:" measuresdata.rc | cut -d\  -f2-)
     file=$(grep "^file:" measuresdata.rc | cut -d\  -f2-)
     arg=$(grep "^arg:" measuresdata.rc | cut -d\  -f2-)
@@ -32,10 +33,12 @@ while grep -qe "^status:\\Wcont" measuresdata.rc ; do
 
     if [ -n "$http" ] ; then
 	url="http://$http/$dir/$file"
+    elif [ -n "$https" ] ; then
+	url="https://$https/$dir/$file"
     elif [ -n "$ftp" ] ; then
 	url="ftp://$ftp/$dir/$file"
     else
-	echo Severe: missing ftp/http
+	echo Severe: missing ftp/http/https
         exit 1
     fi
     

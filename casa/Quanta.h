@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_QUANTA_H
 #define CASA_QUANTA_H
@@ -114,8 +112,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // an '_'. Possible legal names are e.g. Jy, R0, R_1, "_2.
 // <note role=tip>
 // <ul>
-//   <li> ' is used for arcmin
-//   <li> '' or " for arcsec 
+//   <li> <src>'</src> is used for arcmin
+//   <li> <src>''</src> or <src>"</src> for arcsec 
 //   <li> : :: and ::: are used for h, min, s respectively.
 // </ul>
 // </note>

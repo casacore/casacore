@@ -23,8 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
-//# $Id$
-
 #ifndef SCIMATH_PRIMES_H
 #define SCIMATH_PRIMES_H
 

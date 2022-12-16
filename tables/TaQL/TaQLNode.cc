@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/TaQL/TaQLNode.h>
@@ -182,6 +180,10 @@ TaQLNode TaQLNode::restoreNode (AipsIO& aio)
     return TaQLConcTabNodeRep::restore (aio);
   case TaQLNode_Show:
     return TaQLShowNodeRep::restore (aio);
+  case TaQLNode_CopyCol:
+    return TaQLCopyColNodeRep::restore (aio);
+  case TaQLNode_DropTab:
+    return TaQLDropTabNodeRep::restore (aio);
   default:
     throw AipsError ("TaQLNode::restoreNode - unknown node type");
   }

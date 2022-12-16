@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/aips.h>
@@ -189,7 +187,6 @@ int main()
 	  cout << "nearAbs:        " << x.nearAbs(x2) << endl;
 	  cout << "!=:             " << (x != x2) << endl;
 	  cout << "==:             " << (x == x2) << endl;
-	  cout << "type:           " << x.type() << endl;
 	  cout << "Original:       " << x << endl;
 	  Double xa;
 	  x.adjust(xa);
@@ -223,9 +220,7 @@ int main()
 	  cout << "getAngle:       " << mb.getAngle("deg") << endl;
 	  cout << "getDefaultType: " << mb.getDefaultType() << endl;
 	  cout << "getRefString:   " << mb.getRefString() << endl;
-	  cout << "myType:         " << mb.myType() << endl;
 	  cout << "Original:       " << mb << endl;
-	  cout << "type:           " << mb.type() << endl;
 	  Muvw cpc(mb);
 	  cout << "Ctor copy:      " << cpc << endl;
 	  Muvw cpas;

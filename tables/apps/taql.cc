@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/tables/Tables/Table.h>
@@ -267,7 +265,7 @@ Bool readLine (String& line, const String& prompt)
 }
 #endif
 
-// Read a line until a non-empty line is read. 
+// Read a line until a non-empty line or ^D or quit is read. 
 Bool readLineSkip (String& line, const String& prompt)
 {
   Bool fnd = False;
@@ -713,7 +711,8 @@ Table taqlCommand (const Options& options, const String& varName,
     addComm = !(s=="with" || s=="select" || s=="update" || s=="insert" ||
                 s=="calc" || s=="delete" || s=="count"  || 
                 s=="create" || s=="createtable" ||
-                s=="alter" || s=="altertable" ||
+                s=="drop"   || s=="droptable"   ||
+                s=="alter"  || s=="altertable"  ||
                 s=="using"  || s=="usingstyle"  || s=="time" ||
                 showHelp);
   }

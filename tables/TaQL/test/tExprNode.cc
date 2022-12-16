@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -812,14 +810,20 @@ void doIt()
   checkArrDouble ("asin ai", exprid, asin(earri1/300), asin(arrid1/300.));
   checkScaDouble ("asin sd", exprid, asin(esd1/300.), asin(sd1/300.));
   checkArrDouble ("asin ad", exprid, asin(earrd1/300.), asin(arrd1/300.));
+  checkScaDComplex ("asin sz", exprid, asin(esz1/300.), asin(sz1/300.));
+  checkArrDComplex ("asin az", exprid, asin(earrz1/300.), asin(arrz1/300.));
   checkScaDouble ("acos si", exprid, acos(esi1/300), acos(sid1/300.));
   checkArrDouble ("acos ai", exprid, acos(earri1/300), acos(arrid1/300.));
   checkScaDouble ("acos sd", exprid, acos(esd1/300.), acos(sd1/300.));
   checkArrDouble ("acos ad", exprid, acos(earrd1/300.), acos(arrd1/300.));
+  checkScaDComplex ("acos sz", exprid, acos(esz1/300.), acos(sz1/300.));
+  checkArrDComplex ("acos az", exprid, acos(earrz1/300.), acos(arrz1/300.));
   checkScaDouble ("atan si", exprid, atan(esi1), atan(sid1));
   checkArrDouble ("atan ai", exprid, atan(earri1), atan(arrid1));
   checkScaDouble ("atan sd", exprid, atan(esd1), atan(sd1));
   checkArrDouble ("atan ad", exprid, atan(earrd1), atan(arrd1));
+  checkScaDComplex ("atan sz", exprid, atan(esz1), atan(sz1));
+  checkArrDComplex ("atan az", exprid, atan(earrz1), atan(arrz1));
   checkScaDouble ("atan2 si-si", exprid, atan2(esi1,esi2), atan2(sid1,sid2));
   checkScaDouble ("atan2 sd-si", exprid, atan2(esd1,esi2), atan2(sd1,sid2));
   checkScaDouble ("atan2 sd-sd", exprid, atan2(esd1,esd2), atan2(sd1,sd2));
@@ -835,10 +839,14 @@ void doIt()
   checkArrDouble ("tan ai", exprid, tan(earri1), tan(arrid1));
   checkScaDouble ("tan sd", exprid, tan(esd1), tan(sd1));
   checkArrDouble ("tan ad", exprid, tan(earrd1), tan(arrd1));
+  checkScaDComplex ("tan sz", exprid, tan(esz1), tan(sz1));
+  checkArrDComplex ("tan az", exprid, tan(earrz1), tan(arrz1));
   checkScaDouble ("tanh si", exprid, tanh(esi1), tanh(sid1));
   checkArrDouble ("tanh ai", exprid, tanh(earri1), tanh(arrid1));
   checkScaDouble ("tanh sd", exprid, tanh(esd1), tanh(sd1));
   checkArrDouble ("tanh ad", exprid, tanh(earrd1), tanh(arrd1));
+  checkScaDComplex ("tanh sz", exprid, tanh(esz1), tanh(sz1));
+  checkArrDComplex ("tanh az", exprid, tanh(earrz1), tanh(arrz1));
   checkScaInt ("floor si", exprid, floor(esi1), si1);
   checkArrInt ("floor ai", exprid, floor(earri1), arri1);
   checkScaDouble ("floor sd", exprid, floor(esd1), floor(sd1));
@@ -927,9 +935,8 @@ void doIt()
   // Test the iif functions in various ways.
   checkScaDouble ("iif sb-sd-sd", exprid, iif(True,esd1,esd2), sd1);
   checkScaDouble ("iif sb-sd-si", exprid, iif(False,esd1,esi2), sid2);
-  checkScaDouble ("iif sb-sd-si", exprid, iif(False,esd1,esi2), sid2);
   checkArrDouble ("iif sb-ad-si", exprid, iif(False,earrd1,0), arrdzero);
-  checkArrInt ("iif ab-si-si", exprid, iif(earrb1,0,1), arrbi);
+  checkArrInt    ("iif ab-si-si", exprid, iif(earrb1,0,1), arrbi);
   checkArrDouble ("iif ab-si-sd", exprid, iif(earrb1,1,0.), arrbd);
 
   // Check the array->scalar functions (they also operate on scalars).
@@ -1080,8 +1087,8 @@ void doIt()
   checkFailure ("sin ss", sin(ess1));
   checkFailure ("sin ss", sin(earrb1));
   checkFailure ("integer sz", integer(esz1));
-  checkFailure ("asin sz", asin(esz1));
-  checkFailure ("tan sz", tan(esz1));
+  checkFailure ("asin ss", asin(ess1));
+  checkFailure ("tan ss", tan(ess1));
   checkFailure ("ceil sz", ceil(esz1));
   checkFailure ("sign sz", sign(esz1));
   checkFailure ("round sz", round(esz1));

@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 
 #ifndef TABLES_TABLERECORD_H
@@ -68,6 +65,9 @@ class TableLock;
 // the fundamental properties of records.
 // <br>
 // The TableRecord class is a particular type of a record class.
+// <br> The TableRecord class structure is shown in this
+// <a href="TableRecord.drawio.svg.html">UML diagram</a>.
+// <br>
 // The fields in TableRecord may be of scalar type, array type, a Table
 // or a TableRecord.
 // The types are chosen to be compatible with the native
@@ -82,7 +82,7 @@ class TableLock;
 // The structure of the TableRecord can be defined at
 // construction time. It can thereafter be restructured. This has the
 // effect, however, that any existing RecordFieldPtr objects become
-// invalid (using the <linkto file="Notice.h">Notice</linkto> classes).
+// invalid.
 // <br>
 // It is possible to add or remove fields once a TableRecord is constructed.
 // However, this is not possible when the TableRecord is constructed with a

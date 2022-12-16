@@ -8,9 +8,16 @@ RecordGram
 TableGram
 )
 
-
+# Note that in the future -Dapi.pure might need be added to the else branch,
+# while %pure_parser should be removed from the .yy file.
 foreach (src ${parser_inputs})
-    BISON_TARGET (${src} TaQL/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+    if (BISON_VERSION VERSION_LESS 3.0)
+        BISON_TARGET (${src} TaQL/${src}.yy
+        ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+    else()
+        BISON_TARGET (${src} TaQL/${src}.yy
+        ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -Dapi.prefix={${src}} --warnings=no-yacc")
+    endif()
     FLEX_TARGET (${src} TaQL/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
@@ -176,6 +183,8 @@ TaQL/ExprNodeArray.cc
 TaQL/ExprNodeRecord.cc
 TaQL/ExprNodeRep.cc
 TaQL/ExprNodeSet.cc
+TaQL/ExprNodeSetElem.cc
+TaQL/ExprNodeSetOpt.cc
 TaQL/ExprRange.cc
 TaQL/ExprUDFNode.cc
 TaQL/ExprUDFNodeArray.cc
@@ -196,6 +205,14 @@ TaQL/TableExprData.cc
 TaQL/TableExprId.cc
 TaQL/TableGram.cc
 TaQL/TableParse.cc
+TaQL/TableParseFunc.cc
+TaQL/TableParseGroupby.cc
+TaQL/TableParseProject.cc
+TaQL/TableParseQuery.cc
+TaQL/TableParseSortKey.cc
+TaQL/TableParseTableList.cc
+TaQL/TableParseUpdate.cc
+TaQL/TableParseUtil.cc
 TaQL/UDFBase.cc
 LogTables/TableLogSink.cc
 LogTables/NewFile.cc
@@ -421,6 +438,8 @@ TaQL/ExprNodeArray.h
 TaQL/ExprNodeRecord.h
 TaQL/ExprNodeRep.h
 TaQL/ExprNodeSet.h
+TaQL/ExprNodeSetElem.h
+TaQL/ExprNodeSetOpt.h
 TaQL/ExprRange.h
 TaQL/ExprUDFNode.h
 TaQL/ExprUDFNodeArray.h
@@ -447,6 +466,14 @@ TaQL/TableExprId.h
 TaQL/TableExprIdAggr.h
 TaQL/TableGram.h
 TaQL/TableParse.h
+TaQL/TableParseFunc.h
+TaQL/TableParseGroupby.h
+TaQL/TableParseProject.h
+TaQL/TableParseQuery.h
+TaQL/TableParseSortKey.h
+TaQL/TableParseTableList.h
+TaQL/TableParseUpdate.h
+TaQL/TableParseUtil.h
 TaQL/UDFBase.h
 DESTINATION include/casacore/tables/TaQL
 )

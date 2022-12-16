@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/ms/MSOper/MSConcat.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -356,6 +354,9 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 
   // GAIN_CURVE
   copyGainCurve(otherMS, newAntIndices);
+
+  // PHASE_CAL
+  copyPhaseCal(otherMS, newAntIndices);
 
   /////////////////////////////////////////////////////
 
@@ -1240,6 +1241,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   // GAIN_CURVE
   if(!copyGainCurve(otherMS, newAntIndices)){
     log << LogIO::WARN << "Could not merge GainCurve subtables " << LogIO::POST ;
+  }
+
+  // PHASE_CAL
+  if(!copyPhaseCal(otherMS, newAntIndices)){
+    log << LogIO::WARN << "Could not merge PhaseCal subtables " << LogIO::POST ;
   }
 
   //////////////////////////////////////////////////////
@@ -2290,6 +2296,86 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS,
 
   if(doSPW_p && rowToBeAdded > 0){
     ScalarColumn<Int> spwCol(gainCurve, "SPECTRAL_WINDOW_ID");
+    // check SPW IDs
+    Vector<Int> spwIDs=spwCol.getColumn();
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
+	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
+    }
+  }
+
+  return True;
+}
+
+Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS,
+			     const Block<uInt>& newAntIndices){
+  // uses newSPWIndex_p; to be called after copySpwAndPol
+
+  LogIO os(LogOrigin("MSConcat", "copyPhaseCal"));
+
+  Bool itsPhaseCalNull = (!itsMS.rwKeywordSet().isDefined("PHASE_CAL") || (itsMS.rwKeywordSet().asTable("PHASE_CAL").nrow() == 0));
+  Bool otherPhaseCalNull = (!otherMS.keywordSet().isDefined("PHASE_CAL") || (otherMS.keywordSet().asTable("PHASE_CAL").nrow() == 0));
+
+  if(itsPhaseCalNull && otherPhaseCalNull){ // neither of the two MSs do have valid gain curve tables
+    os << LogIO::NORMAL << "No valid gain curve tables present. Result won't have one either." << LogIO::POST;
+    return True;
+  }
+  else if(itsPhaseCalNull && !otherPhaseCalNull){
+    os << LogIO::WARN << itsMS.tableName() << " does not have a valid gain curve table," << endl
+       << "  the MS to be appended, however, has one. Result won't have one."
+       << LogIO::POST;
+    return False;
+  }
+
+  if (otherPhaseCalNull)
+    return True;
+
+  Table phaseCal = itsMS.rwKeywordSet().asTable("PHASE_CAL");
+  Table otherPhaseCal = otherMS.keywordSet().asTable("PHASE_CAL");
+  Int actualRow=phaseCal.nrow()-1;
+  Int origNRow=actualRow+1;
+  Int rowToBeAdded=otherPhaseCal.nrow();
+  TableRow phaseCalRow(phaseCal);
+  const ROTableRow otherPhaseCalRow(otherPhaseCal);
+  for (Int k=0; k < rowToBeAdded; ++k){
+    ++actualRow;
+    phaseCal.addRow();
+    phaseCalRow.put(actualRow, otherPhaseCalRow.get(k, True));
+  }
+
+  //Now reassigning antennas to the new indices of the ANTENNA table
+
+  if(rowToBeAdded > 0){
+    ScalarColumn<Int> antCol(phaseCal, "ANTENNA_ID");
+    // check antenna IDs
+    Vector<Int> antennaIDs=antCol.getColumn();
+    Bool idsOK = True;
+    Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN
+	 << "Found invalid antenna ids in the PHASE_CAL table; the PHASE_CAL table will be emptied as it is inconsistent"
+	 << LogIO::POST;
+      RowNumbers rowtodel(phaseCal.nrow());
+      indgen(rowtodel);
+      phaseCal.removeRow(RowNumbers(rowtodel));
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      antCol.put(k, newAntIndices[antennaIDs[k]]);
+    }
+  }
+
+  //Now reassigning SPWs to the new indices of the SPECTRAL_WINDOW table
+
+  if(doSPW_p && rowToBeAdded > 0){
+    ScalarColumn<Int> spwCol(phaseCal, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs=spwCol.getColumn();
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){

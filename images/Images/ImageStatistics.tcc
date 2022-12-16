@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGESTATISTICS_TCC
 #define IMAGES_IMAGESTATISTICS_TCC
@@ -268,8 +266,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // Set up the manipulators. We list the number of points as an integer so find
 // out how big the field width needs to be.  Min of 6 so label fits.
 
-   T* dummy(0);
-   DataType type = whatType(dummy);
+   DataType type = whatType<T>();
    Int oDWidth = 14;
    if (type==TpComplex) {
       oDWidth = 2*oDWidth + 3;    // (x,y)

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_NULLTABLE_H
 #define TABLES_NULLTABLE_H
@@ -127,15 +125,15 @@ public:
   virtual Vector<rownr_t> rowNumbers() const override;
   virtual BaseTable* root() override;
   virtual Bool rowOrder() const override;
-  virtual Vector<rownr_t>* rowStorage() override;
+  virtual Vector<rownr_t>& rowStorage() override;
   virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
 			     Bool determineOrder) const override;
-  virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
-                             const Block<CountedPtr<BaseCompare> >&,
-                             const Block<Int>& sortOrder,
-                             int sortOption,
-                             std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
-                             std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange) override;
+  virtual std::shared_ptr<BaseTable> doSort (PtrBlock<BaseColumn*>&,
+                                             const Block<CountedPtr<BaseCompare> >&,
+                                             const Block<Int>&,
+                                             int,
+                                             std::shared_ptr<Vector<rownr_t>>,
+                                             std::shared_ptr<Vector<size_t>>) override;
   virtual void renameSubTables (const String& newName,
 				const String& oldName) override;
   // </group>

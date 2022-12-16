@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprFuncNodeArray.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprFuncNodeArray.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -2033,6 +2031,16 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
             return max (operands()[0]->getArrayDComplex(id),
                         operands()[1]->getArrayDComplex(id));
         }
+    case TableExprFuncNode::asinFUNC:
+        return asin  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::acosFUNC:
+        return acos  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::atanFUNC:
+        return atan  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::tanFUNC:
+        return tan   (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::tanhFUNC:
+        return tanh  (operands()[0]->getArrayDComplex(id));
     case TableExprFuncNode::arrsumsFUNC:
       {
         MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordDesc.h>
@@ -102,7 +100,6 @@ Record& Record::operator= (const Record& other)
     // to replace the pointers in RecordFieldPtr's).
     if (this != &other) {
 	if (! isFixed()  ||  nfields() == 0) {
-	    notify (RecordNotice (RecordNotice::DETACH, 0));
 	    rep_p = other.rep_p;
 	}else{
 	    AlwaysAssert (conform (other), AipsError);
@@ -137,12 +134,7 @@ void Record::makeUnique()
 
 RecordRep& Record::rwRef()
 {
-    const RecordRep& oldRep = rep_p.ref();
-    RecordRep& newRep = rep_p.rwRef();
-    if (&oldRep != &newRep) {
-	notify (RecordNotice (RecordNotice::ACQUIRE, 0));
-    }
-    return newRep;
+    return rep_p.rwRef();
 }
 
 const String& Record::comment (const RecordFieldId& id) const
@@ -166,7 +158,6 @@ void Record::restructure (const RecordDesc& newDescription, Bool recursive)
     // Restructure is not possible for fixed records.
     throwIfFixed();
     // Restructuring means that all RecordFieldPtr's get invalid.
-    notify (RecordNotice (RecordNotice::DETACH, 0));
     rwRef().restructure (newDescription, recursive);
 }
 
@@ -188,7 +179,6 @@ void Record::removeField (const RecordFieldId& id)
     throwIfFixed();
     Int whichField = idToNumber (id);
     rwRef().removeField (whichField);
-    notify (RecordNotice (RecordNotice::REMOVE, whichField));
 }
 
 void Record::renameField (const String& newName, const RecordFieldId& id)
@@ -293,8 +283,6 @@ void Record::getRecord (AipsIO& os)
     // Get is only possible when the Record is empty or when
     // the Record is non-fixed.
     AlwaysAssert ((! isFixed()  ||  nfields() == 0), AipsError);
-    // Possible RecordFieldPtr pointers have to be removed.
-    notify (RecordNotice (RecordNotice::DETACH, 0));
     // Reading the record type back means casting it from an int
     // to the correct type.
     Int type;

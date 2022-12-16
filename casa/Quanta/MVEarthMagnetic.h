@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MVEARTHMAGNETIC_H
 #define CASA_MVEARTHMAGNETIC_H
@@ -172,7 +170,6 @@ public:
   
   // Tell me your type
   // <group>
-  virtual uInt type() const;
   static void assure(const MeasValue &in);
   // </group>
   

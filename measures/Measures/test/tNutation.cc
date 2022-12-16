@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Nutation.cc 21420 2014-03-19 09:18:51Z gervandiepen $
 
 //# Includes
 #include <casacore/measures/Measures/Nutation.h>

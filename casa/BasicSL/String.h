@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_STRING_H
 #define CASA_STRING_H
@@ -1034,5 +1032,15 @@ inline ostream &operator<<(ostream &s, const String &x) {
 
 
 } //# NAMESPACE CASACORE - END
+
+
+// Define the hash function for String, so unordered_set<String> can be used.
+template<>
+struct std::hash<casacore::String>
+{
+  std::size_t operator()(casacore::String const& k) const noexcept
+    { return std::hash<std::string>()(k); }
+};
+
 
 #endif

@@ -22,12 +22,14 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/TaQL/TaQLNodeHandler.h>
 #include <casacore/tables/TaQL/TaQLNode.h>
+#include <casacore/tables/TaQL/TableParseSortKey.h>
+#include <casacore/tables/TaQL/TableParseUpdate.h>
+#include <casacore/tables/TaQL/TableParseUtil.h>
 #include <casacore/tables/TaQL/TaQLShow.h>
+#include <casacore/tables/DataMan/DataManInfo.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/Utilities/Regex.h>
@@ -60,14 +62,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
     
 
-  TableParseSelect* TaQLNodeHandler::pushStack
-                                    (TableParseSelect::CommandType type)
+  TableParseQuery* TaQLNodeHandler::pushStack
+                                    (TableParseQuery::CommandType type)
   {
-    TableParseSelect* sel = new TableParseSelect(type);
+    TableParseQuery* sel = new TableParseQuery(type);
     itsStack.push_back (sel);
     return sel;
   }
-  TableParseSelect* TaQLNodeHandler::topStack() const
+  TableParseQuery* TaQLNodeHandler::topStack() const
   {
     AlwaysAssert (itsStack.size() > 0, AipsError);
     return itsStack[itsStack.size()-1];
@@ -169,7 +171,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (node.itsType == TaQLBinaryNodeRep::B_INDEX) {
       const TableExprNodeSet& right = getHR(resr).getExprSet();
       return new TaQLNodeHRValue
-        (TableParseSelect::handleSlice(left, right, node.itsRight.style()));
+        (TableParseQuery::handleSlice(left, right, node.itsRight.style()));
     }
     TableExprNode right = getHR(resr).getExpr();
     switch (node.itsType) {
@@ -224,7 +226,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitMultiNode (const TaQLMultiNodeRep& node)
   {
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
-    TaQLNodeResult res(hrval);
+    TaQLNodeResult res(hrval);                 // takes care of deletion
     TableExprNodeSet* set = new TableExprNodeSet();
     hrval->setExprSet (set);
     hrval->setExpr (TableExprNode(set));       // takes care of deletion
@@ -265,19 +267,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TaQLNodeResult start = visitNode (node.itsStart);
     TaQLNodeResult end   = visitNode (node.itsEnd);
     TableExprNodeSetElem* elem;
-    if (start.isValid()) {
-      if (end.isValid()) {
-        elem = new TableExprNodeSetElem (node.itsLeftClosed,
-                                         getHR(start).getExpr(),
-                                         getHR(end).getExpr(),
-                                         node.itsRightClosed);
-      } else {
-        elem = new TableExprNodeSetElem (node.itsLeftClosed,
-                                         getHR(start).getExpr());
-      }
+    if (node.itsAsMidWidth) {
+      elem = new TableExprNodeSetElem (getHR(start).getExpr(),
+                                       getHR(end).getExpr());
     } else {
-      elem = new TableExprNodeSetElem (getHR(end).getExpr(),
-                                       node.itsRightClosed);
+      if (start.isValid()) {
+        if (end.isValid()) {
+          elem = new TableExprNodeSetElem (node.itsLeftClosed,
+                                           getHR(start).getExpr(),
+                                           getHR(end).getExpr(),
+                                           node.itsRightClosed);
+        } else {
+          elem = new TableExprNodeSetElem (node.itsLeftClosed,
+                                           getHR(start).getExpr());
+        }
+      } else {
+        elem = new TableExprNodeSetElem (getHR(end).getExpr(),
+                                         node.itsRightClosed);
+      }
     }
     hrval->setElem (elem);
     hrval->setExpr (TableExprNode(elem));
@@ -379,8 +386,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep&)
   {
-    throw TableInvExpr ("join is not supported yet");
-    return TaQLNodeResult();
+    throw TableInvExpr("Joins are not implemented yet");
   }
 
   TaQLNodeResult TaQLNodeHandler::visitGroupNode (const TaQLGroupNodeRep& node)
@@ -408,20 +414,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     const TaQLMultiNodeRep* keys = node.itsKeys.getMultiRep();
     const std::vector<TaQLNode>& nodes = keys->itsNodes;
-    std::vector<TableParseSort> outkeys(nodes.size());
+    std::vector<TableParseSortKey> outkeys(nodes.size());
     for (uInt i=0; i<nodes.size(); ++i) {
       AlwaysAssert (nodes[i].nodeType() == TaQLNode_SortKey, AipsError);
       TaQLSortKeyNodeRep* keyNode = (TaQLSortKeyNodeRep*)(nodes[i].getRep());
       TaQLNodeResult result = visitNode (keyNode->itsChild);
       const TaQLNodeHRValue& res = getHR(result);
       if (keyNode->itsType == TaQLSortKeyNodeRep::None) {
-        outkeys[i] = TableParseSort (res.getExpr());
+        outkeys[i] = TableParseSortKey (res.getExpr());
       } else {
         Sort::Order sortOrder = Sort::Ascending;
         if (keyNode->itsType == TaQLSortKeyNodeRep::Descending) {
           sortOrder = Sort::Descending;
         }
-        outkeys[i] = TableParseSort (res.getExpr(), sortOrder);
+        outkeys[i] = TableParseSortKey (res.getExpr(), sortOrder);
       }
     }
     Sort::Order defaultSortOrder = Sort::Ascending;
@@ -501,7 +507,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Add an entry to the stack.
     Bool outer = itsStack.empty();
-    TableParseSelect* curSel = pushStack (TableParseSelect::PSELECT);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PSELECT);
     // First handle LIMIT/OFFSET, because limit is needed when creating
     // a temp table for a select without a FROM.
     // In its turn limit/offset might use WITH tables, so do them very first.
@@ -511,7 +517,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       handleTables (node.itsTables);
     } else {
       // A select without a FROM means that a temp table must be created.
-      topStack()->makeTableNoFrom (itsStack);
+      topStack()->handleTableNoFrom();
     }
     curSel->setDMInfo (handleMultiRecFld (node.itsDMInfo));
     // Handle WHERE before SELECT because WHERE cannot use columns in a
@@ -520,7 +526,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Furthermore, handle GIVING first, because projection needs to know
     // the resulting table name.
     visitNode     (node.itsGiving);
-    visitNode     (node.itsJoin);
+    handleJoins   (node.itsJoins);
     handleWhere   (node.itsWhere);
     visitNode     (node.itsGroupby);
     visitNode     (node.itsColumns);
@@ -531,7 +537,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (! node.getNoExecute()) {
       if (outer) {
         curSel->execute (node.style().doTiming(), False, False, 0,
-                         node.style().doTracing());
+                         node.style().doTracing(), itsTempTables, itsStack);
         hrval->setTable (curSel->getTable());
 				Block<String> block = curSel->getColumnNames();
         hrval->setNames (new Vector<String>(block.begin(), block.end()));
@@ -550,7 +556,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitUpdateNode (const TaQLUpdateNodeRep& node)
   {
-    TableParseSelect* curSel = pushStack (TableParseSelect::PUPDATE);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PUPDATE);
     // First handle LIMIT/OFFSET, because limit is needed when creating
     // a temp table for a select without a FROM.
     // In its turn limit/offset might use WITH tables, so do them very first.
@@ -565,7 +571,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     hrval->setTable (curSel->getTable());
-		Block<String> block = curSel->getColumnNames();
+    Block<String> block = curSel->getColumnNames();
     hrval->setNames (new Vector<String>(block.begin(), block.end()));
     hrval->setString ("update");
     popStack();
@@ -574,7 +580,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitInsertNode (const TaQLInsertNodeRep& node)
   {
-    TableParseSelect* curSel = pushStack (TableParseSelect::PINSERT);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PINSERT);
     handleTables  (node.itsWith, False);
     handleTables  (node.itsTables);
     handleInsCol  (node.itsColumns);
@@ -610,7 +616,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitDeleteNode (const TaQLDeleteNodeRep& node)
   {
-    TableParseSelect* curSel = pushStack (TableParseSelect::PDELETE);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PDELETE);
     handleTables  (node.itsWith, False);
     handleTables  (node.itsTables);
     handleWhere   (node.itsWhere);
@@ -628,7 +634,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitCountNode (const TaQLCountNodeRep& node)
   {
     Bool outer = itsStack.empty();
-    TableParseSelect* curSel = pushStack (TableParseSelect::PCOUNT);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PCOUNT);
     handleTables  (node.itsWith, False);
     handleTables  (node.itsTables);
     visitNode     (node.itsColumns);
@@ -653,7 +659,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitCalcNode (const TaQLCalcNodeRep& node)
   {
-    TableParseSelect* curSel = pushStack (TableParseSelect::PCALC);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PCALC);
     handleTables (node.itsWith, False);
     handleTables (node.itsTables);
     // If where, orderby, limit and/or offset is given, handle as FROM query.
@@ -678,20 +684,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitCreTabNode (const TaQLCreTabNodeRep& node)
   {
-    TableParseSelect* curSel = pushStack (TableParseSelect::PCRETAB);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PCRETAB);
     handleTables (node.itsWith, False);
     visitNode (node.itsGiving);
+    topStack()->initDescriptions (TableDesc(), Record());
+    handleLikeDrop (node.itsLikeDrop);
     handleColSpecs (node.itsColumns);
     Record dminfo = handleMultiRecFld (node.itsDMInfo);
     if (node.itsLimit.isValid()) {
       TaQLNodeResult res = visitNode (node.itsLimit);
       curSel->handleLimit (getHR(res).getExpr());
     }
-    curSel->handleCreTab (dminfo);
+    curSel->handleCreTab (dminfo, itsTempTables, itsStack);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     hrval->setTable (curSel->getTable());
-		Block<String> block = curSel->getColumnNames();
+    Block<String> block = curSel->getColumnNames();
     hrval->setNames (new Vector<String>(block.begin(), block.end()));
     hrval->setString ("cretab");
     popStack();
@@ -701,8 +709,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitColSpecNode (const TaQLColSpecNodeRep& node)
   {
     Record spec = handleMultiRecFld (node.itsSpec);
-    topStack()->handleColSpec (node.itsName, node.itsDtype, spec,
-                               node.style().isCOrder());
+    topStack()->handleColSpec (node.itsName, node.itsLikeCol, node.itsDtype,
+                               spec, node.style().isCOrder());
     return TaQLNodeResult();
   }
 
@@ -797,8 +805,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (res.getValueHolder().dataType() == TpRecord) {
         rec.defineRecord (res.getString(), res.getValueHolder().asRecord());
       } else {
-        TableParseSelect::setRecFld (rec, res.getString(), res.getDtype(),
-                                     res.getValueHolder());
+        TableParseUtil::setRecFld (rec, res.getString(), res.getDtype(),
+                                   res.getValueHolder());
       }
     }
     return rec;
@@ -813,13 +821,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitAltTabNode (const TaQLAltTabNodeRep& node)
   {
-    TableParseSelect* curSel = pushStack (TableParseSelect::PALTTAB);
+    TableParseQuery* curSel = pushStack (TableParseQuery::PALTTAB);
     handleTables (node.itsWith, False);
     TaQLMultiNode tmnode(False);
     tmnode.add (node.itsTable);
-    handleTables (tmnode);
-    curSel->handleAltTab();
+    handleTables (tmnode);     // must be the first table
     handleTables (node.itsFrom);
+    curSel->handleAltTab();
     const TaQLMultiNodeRep& clist = *(node.itsCommands.getMultiRep());
     const std::vector<TaQLNode>& commands = clist.itsNodes;
     for (uInt i=0; i<commands.size(); ++i) {
@@ -835,6 +843,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitAddColNode (const TaQLAddColNodeRep& node)
   {
+    topStack()->initDescriptions (TableDesc(), Record());
     handleColSpecs (node.itsColumns);
     Record dminfo = handleMultiRecFld (node.itsDMInfo);
     topStack()->handleAddCol (dminfo);
@@ -908,9 +917,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     AlwaysAssert (node.nodeType() == TaQLNode_Const, AipsError);
     TaQLConstNodeRep* tabnm = (TaQLConstNodeRep*)(node.getRep());
     if (tabnm->itsType == TaQLConstNodeRep::CTInt) {
+      // A temptable has type Int, but the string can contain a subtable name.
       hrval->setInt (tabnm->itsIValue);
-      // Do not use getString, because for a temptable the type is Int,
-      // but the string can contain a subtable name.
       hrval->setString (tabnm->itsSValue);
     } else {
       hrval->setString (tabnm->getString());
@@ -926,8 +934,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (uInt i=0; i<nodes.size(); ++i) {
       TaQLNodeResult result = visitNode (nodes[i]);
       const TaQLNodeHRValue& res = getHR(result);
-      topStack()->addTable (res.getInt(), res.getString(), res.getTable(),
-                            res.getAlias(), addToFromList, itsTempTables, itsStack);
+      topStack()->tableList().addTable (res.getInt(), res.getString(),
+                                        res.getTable(), res.getAlias(),
+                                        addToFromList, itsTempTables, itsStack);
+    }
+  }
+
+  void TaQLNodeHandler::handleJoins (const TaQLMultiNode& node)
+  {
+    if (! node.isValid()) {
+      return;     // no joins
+    }
+    const std::vector<TaQLNode>& nodes = node.getMultiRep()->itsNodes;
+    for (uInt i=0; i<nodes.size(); ++i) {
+      visitNode (nodes[i]);
     }
   }
 
@@ -940,10 +960,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       TaQLNodeResult result = visitNode (nodes[i]);
       const TaQLNodeHRValue& res = getHR(result);
       const String& name = res.getString();
-      Table tab(topStack()->makeTable
-                (res.getInt(), name,
-                 res.getTable(), res.getAlias(),
-                 itsTempTables, itsStack, False));
+      Table tab(TableParseUtil::getTable (res.getInt(), name,
+                                          res.getTable(),
+                                          itsTempTables, itsStack, False));
       if (!tab.isNull()) {
         tables.push_back (tab);
       } else if (name.empty()) {
@@ -955,10 +974,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           throw AipsError ("No matching tables found for " + name);
         }
         for (uInt j=0; j<nms.size(); ++j) {
-          tables.push_back (topStack()->makeTable
-                            (res.getInt(), nms[j],
-                             res.getTable(), res.getAlias(),
-                             itsTempTables, itsStack));
+          tables.push_back (TableParseUtil::getTable (res.getInt(), nms[j],
+                                                      res.getTable(),
+                                                      itsTempTables, itsStack));
         }
       }
     }
@@ -999,11 +1017,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       parts[0] = res.getExpr().getString(0);
       parts[0].downcase();
       if (parts[0] == "table"  &&  nodes.size() > 1) {
-        TableParseSelect* curSel = pushStack (TableParseSelect::PSHOW);
+        TableParseQuery* curSel = pushStack (TableParseQuery::PSHOW);
         TaQLNodeHRValue res;
         handleTableName (&res, nodes[1]);
-        curSel->addTable (res.getInt(), res.getString(), res.getTable(),
-                          res.getAlias(), True, itsTempTables, itsStack);
+        curSel->tableList().addTable (res.getInt(), res.getString(),
+                                      res.getTable(), res.getAlias(),
+                                      True, itsTempTables, itsStack);
         parts[1] = res.getString();
         for (uInt i=2; i<nodes.size(); ++i) {
           TaQLNodeResult result = visitNode (nodes[i]);
@@ -1030,6 +1049,46 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return hr;
   }
 
+  TaQLNodeResult TaQLNodeHandler::visitCopyColNode
+  (const TaQLCopyColNodeRep& node)
+  {
+    Record dminfo = handleMultiRecFld (node.itsDMInfo);
+    topStack()->initDescriptions (TableDesc(), dminfo);
+    const TaQLMultiNodeRep& nodelist = *(node.itsNames.getMultiRep());
+    const std::vector<TaQLNode>& nodes = nodelist.itsNodes;
+    std::vector<String> names(nodes.size());
+    // Get the names of the new and old columns.
+    for (uInt i=0; i<nodes.size(); ++i) {
+      AlwaysAssert (nodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
+      TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(nodes[i].getRep());
+      names[i] = colNode->itsName;
+    }
+    // Get the table to operate on.
+    Table tab (topStack()->getTable());
+    // Add entries for each column copy.
+    AlwaysAssert (names.size() % 2 == 0, AipsError);
+    for (uInt i=0; i<names.size(); i+=2) {
+      // Take the description for the new column from the old one.
+      topStack()->handleColSpec (names[i], names[i+1], String(), Record());
+      // Add an update command.
+      topStack()->addUpdate (new TableParseUpdate (names[i], String(),
+                                                   tab.col(names[i+1])));
+    }
+    // Execute it all.
+    topStack()->handleCopyCol (node.style().doTiming());
+    return TaQLNodeResult();
+  }
+  
+  TaQLNodeResult TaQLNodeHandler::visitDropTabNode
+  (const TaQLDropTabNodeRep& node)
+  {
+    TableParseQuery* curSel = pushStack (TableParseQuery::PDROPTAB);
+    handleTables (node.itsWith, False);
+    handleTables (node.itsTables);
+    curSel->handleDropTab (itsTempTables, itsStack);
+    return TaQLNodeResult (new TaQLNodeHRValue());
+  }
+  
   void TaQLNodeHandler::handleWhere (const TaQLNode& node)
   {
     if (node.isValid()) {
@@ -1108,6 +1167,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     topStack()->setInsertExprs (exprs);
   }
 
+  void TaQLNodeHandler::handleLikeDrop (const TaQLMultiNode& node)
+  {
+    if (! node.isValid()) {
+      return;
+    }
+    const TaQLMultiNodeRep& mrep = *(node.getMultiRep());
+    const std::vector<TaQLNode>& nodes = mrep.itsNodes;
+    AlwaysAssert (nodes.size() > 0, AipsError);
+    // Handle the LIKE table; add it to the FROM list.
+    TaQLNodeResult result = visitNode (nodes[0]);
+    const TaQLNodeHRValue& res = getHR(result);
+    Table tab(topStack()->tableList().addTable (res.getInt(), res.getString(),
+                                                res.getTable(), res.getAlias(),
+                                                True, itsTempTables, itsStack));
+    // An exception should be thrown if the table does not exist, but be defensive.
+    AlwaysAssert (! tab.isNull(), AipsError);
+    TableDesc desc(tab.tableDesc());
+    if (nodes.size() == 2) {
+      // Handle the columns to remove.
+      AlwaysAssert (nodes[1].nodeType() == TaQLNode_Multi, AipsError);
+      const TaQLMultiNodeRep& nodeList = *(const TaQLMultiNodeRep*)(nodes[1].getRep());
+      const std::vector<TaQLNode>& colNodes = nodeList.itsNodes;
+      for (uInt i=0; i<colNodes.size(); ++i) {
+        AlwaysAssert (colNodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
+        TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(colNodes[i].getRep());
+        if (desc.isColumn (colNode->itsName)) {
+          desc.removeColumn (colNode->itsName);
+        } else {
+          throw TableInvExpr("Column " + colNode->itsName +
+                             " to be dropped does not exist in the LIKE table");
+        }
+      }
+    }
+    // Ensure no dropped columns are present in the dminfo.
+    Record dminfo (DataManInfo::finalizeMerge (desc, tab.dataManagerInfo()));
+    topStack()->initDescriptions (desc, dminfo);
+  }
+  
   void TaQLNodeHandler::handleColSpecs (const TaQLMultiNode& node)
   {
     if (! node.isValid()) {
@@ -1116,7 +1213,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const TaQLMultiNodeRep& cols = *(node.getMultiRep());
     const std::vector<TaQLNode>& nodes = cols.itsNodes;
     for (uInt i=0; i<nodes.size(); ++i) {
-      // Handle each column name.
+      // Handle each column specification.
       AlwaysAssert (nodes[i].nodeType() == TaQLNode_ColSpec, AipsError);
       visitNode (nodes[i]);
     }

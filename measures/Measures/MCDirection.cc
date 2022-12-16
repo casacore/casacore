@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/Exceptions.h>
@@ -527,7 +525,21 @@ void MCDirection::doConvert(MVDirection &in,
 	  log((g2+lengthE+g1)/(g2-lengthE+g1));
 	lengthE /= MeasTable::Planetary(MeasTable::CAU);
       } while (abs(g3-lengthE) > 1e-9*lengthE);
+
+      // MVDirections have default 0,0,1, we do not want to apply
+      // a shift with 90 degrees in latitude (shifts should be
+      // smaller than a few degrees).
+      bool doShift = (in(2)!=1.);
+      Quantity shift_long;
+      Quantity shift_lat;
+      if (doShift) {
+        shift_long = in.getLong();
+        shift_lat = in.getLat();
+      }
       in = *MVPOS1; in.adjust();
+      if (doShift) {
+        in.shift(shift_long, shift_lat);
+      }
       // Correct for light deflection
       // Check if near sun
       if (planID != MeasTable::SUN &&

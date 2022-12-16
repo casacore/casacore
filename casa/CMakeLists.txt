@@ -17,7 +17,11 @@ JsonGram
 )
  
 foreach (src ${parser_inputs})
-    BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+    if (BISON_VERSION VERSION_LESS 3.0)
+        BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+    else()
+        BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -Dapi.prefix={${src}} --warnings=no-yacc")
+    endif()
     FLEX_TARGET (${src} Json/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
@@ -216,11 +220,9 @@ Utilities/DataType.cc
 Utilities/DynBuffer.cc
 Utilities/Fallible2.cc
 Utilities/MUString.cc
-Utilities/Notice.cc
 Utilities/Precision.cc
 Utilities/RecordTransformable.cc
 Utilities/Regex.cc
-Utilities/RegSequence.cc
 Utilities/Sequence2.cc
 Utilities/Sort.cc
 Utilities/SortError.cc
@@ -232,16 +234,6 @@ ${BISON_JsonGram_OUTPUTS}
 ${FLEX_JsonGram_OUTPUTS}
 )
 
-if (BUILD_DEPRECATED)
-    list (APPEND buildfiles
-         Containers/HashMap2.cc
-         Containers/List2.cc
-         Containers/Map2.cc
-         Containers/Stack2.cc
-         Containers/StackError.cc
-    )
-endif ()
-
 add_library (casa_casa ${buildfiles})
 
 
@@ -251,6 +243,8 @@ endif (HDF5_FOUND)
 if (READLINE_FOUND)
     list (APPEND de_libraries ${READLINE_LIBRARIES})
 endif (READLINE_FOUND)
+
+find_library(libm m)
 
 target_link_libraries (
 casa_casa
@@ -363,8 +357,6 @@ Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
 Containers/IterError.h
-Containers/Link.h
-Containers/Link.tcc
 Containers/ObjectStack.h
 Containers/ObjectStack.tcc
 Containers/RecordDesc.h
@@ -381,43 +373,6 @@ Containers/ValueHolder.h
 Containers/ValueHolderRep.h
 DESTINATION include/casacore/casa/Containers
 )
-
-if (BUILD_DEPRECATED)
-    install (FILES
-         Containers/HashMap.h
-         Containers/HashMap.tcc
-         Containers/HashMapIO.h
-         Containers/HashMapIO.tcc
-         Containers/HashMapIter.h
-         Containers/HashMapIter.tcc
-         Containers/List.h
-         Containers/List.tcc
-         Containers/ListIO.h
-         Containers/ListIO.tcc
-         Containers/Map.h
-         Containers/Map.tcc
-         Containers/MapIO.h
-         Containers/MapIO.tcc
-         Containers/OrderedMap.h
-         Containers/OrderedMap.tcc
-         Containers/OrdMapIO.h
-         Containers/OrdMapIO.tcc
-         Containers/OrderedPair.h
-         Containers/OrderedPair.tcc
-         Containers/OrdPairIO.h
-         Containers/OrdPairIO.tcc
-         Containers/Queue.h
-         Containers/Queue.tcc
-         Containers/SimOrdMap.h
-         Containers/SimOrdMap.tcc
-         Containers/SimOrdMapIO.h
-         Containers/SimOrdMapIO.tcc
-         Containers/Stack.h
-         Containers/Stack.tcc
-         Containers/StackError.h
-    DESTINATION include/casacore/casa/Containers
-    )
-endif ()
 
 install (FILES
 Exceptions/CasaErrorTools.h
@@ -631,15 +586,11 @@ Utilities/GenSort.tcc
 Utilities/LinearSearch.h
 Utilities/LinearSearch.tcc
 Utilities/MUString.h
-Utilities/Notice.h
 Utilities/Precision.h
 Utilities/PtrHolder.h
 Utilities/PtrHolder.tcc
 Utilities/RecordTransformable.h
 Utilities/Regex.h
-Utilities/Register.h
-Utilities/Register.tcc
-Utilities/RegSequence.h
 Utilities/Sequence.h
 Utilities/Sequence.tcc
 Utilities/SortError.h

@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef MEASURES_MEASURE_H
 #define MEASURES_MEASURE_H
@@ -294,10 +291,7 @@ public:
   //
   // Check the type of derived Measure entity (e.g. "Epoch")
   virtual Bool areYou(const String &tp) const = 0;
-  // Get the type (== Register() of derived Measure (faster than Strings)
   // All should have:
-  // static uInt myType();
-  virtual uInt type() const = 0;
   // Assert that we are the correct Measure type
   // <thrown>
   //   <li> AipsError if wrong Measure type

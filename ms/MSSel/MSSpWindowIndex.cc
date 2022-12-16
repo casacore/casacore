@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/ms/MSSel/MSSpWindowIndex.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
@@ -142,7 +140,7 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
     if (freqMatch(row)) {
       for (uInt chan=0; chan<nChan; chan++) {
 	freqMatch(row) = (freqMatch(row) &&
-			  chanFreq(chan).type() == rowChanFreq(chan).type() &&
+			  chanFreq(chan).getRef().getType() == rowChanFreq(chan).getRef().getType() &&
 			  chanFreq(chan).getValue().
 			  nearAbs(rowChanFreq(chan).getValue(), tol) &&
 			  chanWidth(chan).nearAbs(rowChanWidth(chan), tol));

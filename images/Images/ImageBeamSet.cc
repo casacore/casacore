@@ -21,8 +21,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/images/Images/ImageBeamSet.h>
 
@@ -491,17 +489,14 @@ Record ImageBeamSet::toRecord() const {
     Record rec;
     uInt count = 0;
     const Array<GaussianBeam>& beams = getBeams();
-    Array<GaussianBeam>::const_iterator iterEnd = beams.end();
-    for (
-        Array<GaussianBeam>::const_iterator iter=beams.begin();
-        iter!=iterEnd; ++iter, ++count
-    ) {
+    for (const auto& beam: beams) {
         ThrowIf(
-            iter->isNull(),
+            beam.isNull(),
             "Invalid per plane beam found"
         );
-        Record rec = iter->toRecord();
+        Record rec = beam.toRecord();
         perPlaneBeams.defineRecord("*" + String::toString(count), rec);
+        ++count;
     }
     return perPlaneBeams;
 }
@@ -687,6 +682,40 @@ void ImageBeamSet::summarize(
             }
         }
     }
+}
+
+const Quantum<Matrix<Double>> ImageBeamSet::getAreas() const {
+    return Quantum<Matrix<Double>>(_areas, _areaUnit);
+}
+
+const std::map<String, Quantum<Matrix<double>>> ImageBeamSet::paramMatrices(
+    const Unit& majminUnit, const Unit& paUnit
+) const {
+    const auto& beams = getBeams();
+    IPosition shape(beams.shape());
+    Matrix<double> mymaj(shape);
+    Matrix<double> mymin(shape);
+    Matrix<double> pa(shape);
+    auto majIter = mymaj.begin();
+    auto minIter = mymin.begin();
+    auto paIter = pa.begin();
+    for (const auto& beam: beams) {
+        ThrowIf(
+            beam.isNull(),
+            "Invalid per plane beam found"
+        );
+        *majIter = beam.getMajor(majminUnit);
+        *minIter = beam.getMinor(majminUnit);
+        *paIter = beam.getPA(paUnit, false);
+        ++majIter;
+        ++minIter;
+        ++paIter;
+    }
+    std::map<String, Quantum<Matrix<double>>> mymap;
+    mymap["major"] = Quantum<Matrix<double>>(mymaj, majminUnit);
+    mymap["minor"] = Quantum<Matrix<double>>(mymin, majminUnit);
+    mymap["pa"] = Quantum<Matrix<double>>(pa, paUnit);
+    return mymap;
 }
 
 void ImageBeamSet::_chanInfoToStream(

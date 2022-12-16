@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_UNITDIM_H
 #define CASA_UNITDIM_H
@@ -40,7 +38,7 @@ class String;
 class UnitVal;
 class UnitMap;
 
-// 
+//
 // <summary>
 // describes a unit in basic SI unit dimensions
 // </summary>
@@ -58,10 +56,10 @@ class UnitMap;
 // Based on Unit and the Dimension of a unit in SI defining units
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Physical units are strings consisting of one or more names of known
 // basic units, separated by '.' or ' ' (for multiplication) or '/' (for
-// division). Each name can optionally be preceded by a standard decimal 
+// division). Each name can optionally be preceded by a standard decimal
 // prefix, and/or followed by an (optionally signed) exponent.
 // Example:
 //	km/s/(Mpc.s)2  is identical to km.s-1.Mpc-2.s-2
@@ -70,7 +68,7 @@ class UnitMap;
 //
 // The UnitDim class is a private class for use by the Unit classes. It
 // contains the dimensions in the 9 basic defining SI units of a unit.
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // </example>
@@ -154,7 +152,7 @@ private:
 // 1-byte vector to contain the dimensions of the defining SI units
 // (using same storage as Long vector for speed reasons)
     Long unitLong[UNITDIM_DLNUMBER];
-    Char *unitDim;
+    signed char *unitDim;
 
 };
 

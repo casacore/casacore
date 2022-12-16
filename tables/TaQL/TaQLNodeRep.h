@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TAQLNODEREP_H
 #define TABLES_TAQLNODEREP_H
@@ -117,6 +115,8 @@ public:
   #define TaQLNode_AddRow   char(34)
   #define TaQLNode_ConcTab  char(35)
   #define TaQLNode_Show     char(36)
+  #define TaQLNode_CopyCol  char(37)
+  #define TaQLNode_DropTab  char(38)
   // </group>
 
   // Constructor for derived classes specifying the type.

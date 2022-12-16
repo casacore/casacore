@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEUTILITIES2_TCC
 #define IMAGES_IMAGEUTILITIES2_TCC
@@ -270,8 +268,7 @@ template <typename T> void ImageUtilities::openImage(
         ! lattPtr,
         "Image " + fileName + " cannot be opened; its type is unknown"
     );
-    T x = 0;
-    if (lattPtr->dataType() != whatType(&x)) {
+    if (lattPtr->dataType() != whatType<T>()) {
         delete lattPtr;
         ThrowCc(
             "Logic Error: " + fileName

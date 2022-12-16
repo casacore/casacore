@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_CONCATTABLE_H
 #define TABLES_CONCATTABLE_H
@@ -301,10 +299,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the column objects in the referenced tables.
     Block<BaseColumn*> getRefColumns (const String& columnName);
-
-    // Create a (temporary) Table object from it.
-    Table asTable()
-      { return Table (this, False); }
 
   private:
     // Copy constructor is forbidden, because copying a table requires

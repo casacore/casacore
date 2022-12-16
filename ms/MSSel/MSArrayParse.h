@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MS_MSARRAYPARSE_H
 #define MS_MSARRAYPARSE_H
@@ -99,7 +97,7 @@ public:
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
   const TableExprNode *selectArrayIds(const Vector<Int>& arrayids);
-  inline const TableExprNode *selectArrayIds() {return selectArrayIds(parsedIDList_p);}
+  inline const TableExprNode *selectArrayIds() {return selectArrayIds(Vector<Int>(parsedIDList_p));}
   const TableExprNode *selectArrayIdsGT(const Vector<Int>& arrayids);
   const TableExprNode *selectArrayIdsLT(const Vector<Int>& arrayids);
   const TableExprNode *selectArrayIdsGTEQ(const Vector<Int>& arrayids);

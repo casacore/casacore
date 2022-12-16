@@ -117,6 +117,18 @@ SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN {2,4}
 select ab,ac from tTaQLNode_tmp.tab where ab NOT BETWEEN 2 AND 4
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE NOT((ab) IN {2,4})
 
+select ab,ac from tTaQLNode_tmp.tab where ab AROUND 2 IN 4
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN (2)<:>(4)
+
+select ab,ac from tTaQLNode_tmp.tab where ab NOT AROUND 2 IN 4
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE NOT((ab) IN (2)<:>(4))
+
+select ab,ac from tTaQLNode_tmp.tab where ab IN [BETWEEN 2 AND 4]
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN [<2,4>]
+
+select ab,ac from tTaQLNode_tmp.tab where ab IN AROUND 2 IN 4
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN (2)<:>(4)
+
 select ab,ac from tTaQLNode_tmp.tab where ab IN [:=2,4=:<6,7<:]
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN [<,2},{4,6>,<7,>]
 
@@ -327,13 +339,40 @@ create table tTaQLNode_tmp.tab col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,
 CREATE TABLE tTaQLNode_tmp.tab col1 I4,col2 R4 ndim=1,c3 R8 [ndim=2,shape=[3,4]] DMINFO [name='ISM1',type='IncrementalStMan'],[name='SSM1',type='StandardStMan',bucketsize=1000]
 
 with s.t create table tTaQLNode_tmp.tab limit 10*10
-WITH s.t CREATE TABLE tTaQLNode_tmp.tab  LIMIT (10)*(10)
+WITH s.t CREATE TABLE tTaQLNode_tmp.tab LIMIT (10)*(10)
+
+create table a.b like a.c
+CREATE TABLE a.b LIKE a.c
+
+create table a.b like a.c as a
+CREATE TABLE a.b LIKE a.c AS a
+
+create table a.b as plain_big like a.c drop column col1,col2 add column []
+CREATE TABLE a.b AS [plain_big=T] LIKE a.c DROP COLUMN col1,col2
+
+create table a.b as plain_big like a.c drop column col1,col2 add column (col1 i4, col2 float [unit="s", ndim=3])
+CREATE TABLE a.b AS [plain_big=T] LIKE a.c DROP COLUMN col1,col2 ADD COLUMN (col1 I4,col2 R4 [unit='s',ndim=3])
+
+with a.1,a.2 create table a.b (col1 I4)
+WITH a.1,a.2 CREATE TABLE a.b (col1 I4)
 
 select gcount() from [tTableGram_tmp.tst as t1,tTableGram_tmp.tst as t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] as t3] as t4] as t5
 SELECT COUNTALL() FROM [tTableGram_tmp.tst AS t1,tTableGram_tmp.tst AS t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] AS t3] AS t4] AS t5
 
 select from [t_tmp.tst1,t_tmp.tst2 subtables a,b giving a.tab]
 SELECT FROM [t_tmp.tst1,t_tmp.tst2 SUBTABLES a,b GIVING a.tab]
+
+alter table a.b add column col1 like t.col2
+ALTER TABLE a.b ADD COLUMN col1 LIKE t.col2
+
+with tab1 t, tab2 alter table a.b add column col1 like t.col2 i4 [ndim=2, shape=[3,4]]
+WITH tab1 AS t,tab2 AS tab2 ALTER TABLE a.b ADD COLUMN col1 LIKE t.col2 I4 [ndim=2,shape=[3,4]]
+
+alter table a.b add column col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]
+ALTER TABLE a.b ADD COLUMN col1 I4,col2 R4 ndim=1,c3 R8 [ndim=2,shape=[3,4]] DMINFO [name='ISM1',type='IncrementalStMan'],[name='SSM1',type='StandardStMan',bucketsize=1000]
+
+alter table a.b from a.c, a.d copy column col1=t.col2
+ALTER TABLE a.b FROM a.c,a.d COPY COLUMN col1=t.col2
 
 with [$1,$2] alter table a.b rename column old to new
 WITH [$1,$2] ALTER TABLE a.b RENAME COLUMN old TO new
@@ -365,6 +404,9 @@ ALTER TABLE x.y SET KEYWORD xyz=[f1=14 AS U4,f2=[f2a=4]]
 alter table x.y set keyword x=[] as bool, y=[y1=2,y2=[3+4/2, a+b/c], y3=[] as s, y4=[=]]
 ALTER TABLE x.y SET KEYWORD x=[] AS B,y=[y1=2,y2=[(3)+((4)/(2)),(a)+((b)/(c))],y3=[] AS S,y4=[=]]
 
+drop table a.b, a.c
+DROP TABLE a.b,a.c
+
 show
 SHOW 
 
@@ -376,4 +418,13 @@ WITH [SELECT abs((phase(t1.DATA))-(phase(t2.DATA))) AS D FROM a.ms AS t1,/home/g
 
 with ~a select 1+2 from [~b,[select 3+4 from [[select 5+6],~c]], ~d giving ~e] where 3+4 giving ~f
 WITH ~a SELECT (1)+(2) FROM [~b,[SELECT (3)+(4) FROM [[SELECT (5)+(6)],~c]],~d GIVING ~e] WHERE (3)+(4) GIVING ~f
+
+select from a join b on a.b == b.b join c on a.c BETWEEN c.m AND c.w
+SELECT FROM a AS a JOIN b AS b ON (a.b)=(b.b) JOIN c AS c ON (a.c) IN {c.m,c.w}
+
+SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w
+SELECT t1.rowid() AS r1,t2.pol,t3.ci FROM tTableGramJoin_tmp.tab AS t1 JOIN ::DD AS t2 ON (t1.cdd)=(t2.rowid()) JOIN ::SC AS t3 ON ((t2.spw)=(t3.spw))&&((t1.ct) IN (t3.tod)<:>(t3.w))
+
+SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w WHERE t3.ci%3!=0
+SELECT t1.rowid() AS r1,t2.pol,t3.ci FROM tTableGramJoin_tmp.tab AS t1 JOIN ::DD AS t2 ON (t1.cdd)=(t2.rowid()) JOIN ::SC AS t3 ON ((t2.spw)=(t3.spw))&&((t1.ct) IN (t3.tod)<:>(t3.w)) WHERE ((t3.ci)%(3))<>(0)
 

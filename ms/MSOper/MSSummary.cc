@@ -23,8 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: MSSummary.cc 21578 2015-03-18 15:01:43Z gervandiepen $
-//#
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays.h>
@@ -821,7 +819,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os << "z";
         os << endl;
         vector<MPosition> antPos = _msmd->getAntennaPositions();
-        Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
+        Bool posIsITRF = antPos[0].getRef().getType() != MPosition::ITRF;
         vector<QVD> offsets = _msmd->getAntennaOffsets();
         QVD diameters = _msmd->getAntennaDiameters();
         std::set<Int>::const_iterator iter = antIds.begin();
@@ -1029,7 +1027,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                 os.output().width(widthRA);    os << mvRa(0.0).string(MVAngle::TIME,12);
                 os.output().width(widthDec);    os << mvDec.string(MVAngle::DIG2,11);
                 os.output().width(widthType);
-                os << MDirection::showType(mRaDec.getRefPtr()->getType());
+                os << MDirection::showType(mRaDec.getRef().getType());
                 if (srcok) {
                     os.output().width(widthSrc);
                     os << sourceIDs[fld];

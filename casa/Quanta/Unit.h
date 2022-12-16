@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_UNIT_H
 #define CASA_UNIT_H
@@ -98,11 +96,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // ('0' not as first character). Digits 1-9 are allowed if preceded with
 // an '_'.
 //
-// Possible legal names are e.g. Jy, R0, R_1, "_2.
+// Possible legal names are e.g. <src>Jy, R0, R_1, "_2</src>.
 // <note role=tip>
 // <ul>
-//   <li> ' is used for arcmin
-//   <li> '' or " for arcsec
+//   <li> <src>'</src> is used for arcmin
+//   <li> <src>''</src> or <src>"</src> for arcsec
 //   <li> : :: and ::: are used for h, min, s respectively
 //   <li> _ is used for an undimensioned value (like beam or pixel)
 // </ul>
@@ -164,7 +162,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // #include <casacore/casa/Quanta.h>
 // // check if a string is a valid unit
-// if ( !UnitVal::check("Km") ) { cout << "Invalid unit string " << "Km" << endl;
+// if ( !UnitVal::check("Km") ) { cout << "Invalid unit string " << "Km" << endl; }
 // // define some units
 // String unit1="km/Mpc";
 // Unit unit2="uJy/Mpc";
@@ -173,7 +171,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // use the units in model calculations
 // Quantity observed( 8.97, "Mmy_univ/a");
 // Quantity theory (3.8e-9, "mmy_univ/s");
-// if ( ( observed / theory) < 1.) { cout << "Eureka" << endl;
+// if ( ( observed / theory) < 1.) { cout << "Eureka" << endl; }
 // </srcblock>
 // </example>
 //

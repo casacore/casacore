@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TAQLNODEVISITOR_H
 #define TABLES_TAQLNODEVISITOR_H
@@ -113,6 +111,8 @@ public:
   virtual TaQLNodeResult visitAddRowNode   (const TaQLAddRowNodeRep& node) = 0;
   virtual TaQLNodeResult visitConcTabNode  (const TaQLConcTabNodeRep& node) = 0;
   virtual TaQLNodeResult visitShowNode     (const TaQLShowNodeRep& node) = 0;
+  virtual TaQLNodeResult visitCopyColNode  (const TaQLCopyColNodeRep& node) = 0;
+  virtual TaQLNodeResult visitDropTabNode  (const TaQLDropTabNodeRep& node) = 0;
   // </group>
 
 protected:

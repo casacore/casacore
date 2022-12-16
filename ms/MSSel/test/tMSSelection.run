@@ -4,8 +4,6 @@
 # -----------------------------------------------------------------------------
 # This script executes the program tMSSelection to test the
 # MSSelection module.
-#
-# $Id$
 #-----------------------------------------------------------------------------
 
   MS=$CASADEMO"mssel_test_small.ms"

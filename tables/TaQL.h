@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Tables.h 21434 2014-05-07 13:07:20Z gervandiepen $
 
 #ifndef TABLES_TAQL_H
 #define TABLES_TAQL_H
@@ -38,34 +36,75 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// <module>
+  // <module>
 
-// <summary>
-// TaQL is the query language for Casacore tables
-// </summary>
+  // <summary>
+  // TaQL is the query language for Casacore tables
+  // </summary>
 
-// <use visibility=export>
+  // <use visibility=export>
 
-// <reviewed reviewer="jhorstko" date="1994/08/30" tests="" demos="">
-// </reviewed>
+  // <reviewed reviewer="jhorstko" date="1994/08/30" tests="" demos="">
+  // </reviewed>
 
-// <prerequisite>
-//    <li> <linkto module="Tables:description">Tables</linkto> module
-// </prerequisite>
+  // <prerequisite>
+  //    <li> <linkto module="Tables:description">Tables</linkto> module
+  // </prerequisite>
 
-// <etymology>
-// "TaQL" is the Table Query Language. Its pronounciation rhymes with bagel.
-// </etymology>
+  // <etymology>
+  // "TaQL" is the Table Query Language. Its pronounciation rhymes with bagel.
+  // </etymology>
 
-// <synopsis> 
-// TaQL is an SQL-like language to query a Casacore table.
-// Amongst its options are row select, sort, update, and delete.
-// <br>Some more information is given in the description of the
-// <linkto module="Tables:select and sort">Tables module</linkto>.
-// A detailed description is given in <A HREF="../notes/199.html">note 199</A>.
-// </synopsis>
-// </module>
-
+  // <synopsis>
+  // TaQL is an SQL-like language to query a Casacore table.
+  // Amongst its options are row select, sort, update, and delete.
+  // <br>Some more information is given in the description of the
+  // <linkto module="Tables:select and sort">Tables module</linkto>.
+  // A detailed description is given in <A HREF="../notes/199.html">note 199</A>.
+  //
+  // The high-level interface is using a TaQL command as described in
+  // <A HREF="../notes/199.html">note 199</A>. Such a command can be given
+  // in C++ (using TableParse.h), Python or the shell program 'taql'.
+  // The code for parsing and executing TaQL commands is quite complex.
+  // Processing a command consists of two steps.
+  // <ol>
+  //  <li>
+  //  First a command is parsed using 'flex' and 'bison'. The file TableGram.ll
+  //  is used by 'flex' to recognize the tokens in the command. The file
+  //  TableGram.yy defines the grammar which is used by bison to invoke
+  //  actions on the recognized parts of the command. These actions
+  //  consist of building a parse tree by means of class TaQLNode and
+  //  associated classes. In this way the command is syntactically checked.
+  //  <li>
+  //  If the parsing is done successfully, the command is executed
+  //  by walking through the parse tree using class TaQLNodeHandler.
+  //  In its turn that class invokes functions in class TableParseQuery
+  //  to check (semantically) and execute commands such as SELECT, UPDATE, etc..
+  //  Note that subqueries are executed before the entire parse tree has
+  //  been walked through, thus before possible later semantic errors are
+  //  detected.
+  //  <br>Expressions in the parse tree are converted to expression trees
+  //  using the various TableExprNode classes. Expression trees are evaluated
+  //  for each row in a table. Note that expressions can be used in many
+  //  parts of a TaQL command.
+  //  Functions in a command are handled by TableParseFunc.
+  // </ol>
+  //
+  // Expression trees can also be generated directly in C++ using class
+  // TableExprNode which is overloaded for many operators and functions
+  // (such as sin, max, etc.). In fact, TaQLNodeHandler uses this code.
+  // For example:
+  // <example>
+  // <srcblock>
+  //    Table tab("my.ms");
+  //    Table selection (tab(tab.col("ANTENNA1") == tab.col("ANTENNA2")  &&
+  //                         tab.col("SPECTRAL_WINDOW_ID") == 0));
+  // </srcblock>
+  //  creates a (reference) table containing the autocorrelations of the
+  //  first spectral window in "my.ms".
+  // </example>
+  // </synopsis>
+  // </module>
 
 } //# NAMESPACE CASACORE - END
 

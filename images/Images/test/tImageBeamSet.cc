@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/aips.h>
@@ -325,7 +323,7 @@ int main() {
             }
         }
         {
-            cout << "Test get max, min, median for polarizations" << endl;
+            cout << "*** Test get max, min, median for polarizations" << endl;
             ImageBeamSet beamSet;
             IPosition pos;
             AlwaysAssert(
@@ -555,7 +553,6 @@ int main() {
                 && gotSet.equivalent(beamSet),
                 AipsError
             );
-
         }
         {
             cout << "*** Test getMedianAreaBeam()" << endl;
@@ -643,7 +640,7 @@ int main() {
         const Quantity four(4, "arcsec");
         const Quantity two(2, "arcsec");
         {
-            cout << "check replacing largest beam works when chan specified "
+            cout << "*** check replacing largest beam works when chan specified "
                 << "and stokes negative" << endl;
             Matrix<GaussianBeam> mat(1, 2);
             mat[0][0] = GaussianBeam(five, five, five);
@@ -656,7 +653,7 @@ int main() {
             AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
         }
         {
-            cout << "check replacing largest beam works when stokes specified "
+            cout << "*** check replacing largest beam works when stokes specified "
                 << "and chan negative" << endl;
             Matrix<GaussianBeam> mat(2, 1);
             mat[0][0] = GaussianBeam(five, five, five);
@@ -667,6 +664,58 @@ int main() {
             beams.setBeam(-1, 0, GaussianBeam(four, four, four));
             maxbeam = beams.getMaxAreaBeam();
             AlwaysAssert(maxbeam.getMajor().getValue() == 4, AipsError);
+        }
+        {
+            cout << "*** test getBeamAreas" << endl;
+            Matrix<GaussianBeam> mat(3, 2);
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[0][1] = GaussianBeam(four, four, four);
+            mat[0][2] = GaussianBeam(two, two, two);
+            mat[1][0] = GaussianBeam(two, two, four);
+            mat[1][1] = GaussianBeam(four, two, two);
+            mat[1][2] = GaussianBeam(four, two, four);
+            ImageBeamSet beams(mat);
+            const auto areas_as2 = beams.getAreas().getValue("arcsec2");
+            for (uint i=0; i<3; ++i) {
+                for (uint j=0; j<2; ++j) {
+                    AlwaysAssert(
+                        areas_as2(i, j) == beams.getBeam(i,j).getArea("arcsec2"),
+                        AipsError
+                    );
+                }
+            }
+        }
+        {
+            cout << "*** test paramMatrices" << endl;
+            Matrix<GaussianBeam> mat(3, 2);
+            mat[0][0] = GaussianBeam(five, five, five);
+            mat[0][1] = GaussianBeam(four, four, four);
+            mat[0][2] = GaussianBeam(two, two, two);
+            mat[1][0] = GaussianBeam(two, two, four);
+            mat[1][1] = GaussianBeam(four, two, two);
+            mat[1][2] = GaussianBeam(four, two, four);
+            ImageBeamSet beams(mat);
+            auto matrices = beams.paramMatrices();
+            const auto majors = matrices["major"].getValue();
+            const auto minors = matrices["minor"].getValue();
+            const auto pas = matrices["pa"].getValue();
+            const auto mUnit = matrices["major"].getUnit();
+            AlwaysAssert(mUnit == matrices["minor"].getUnit(), AipsError);
+            const auto paUnit = matrices["pa"].getUnit();
+            for (uint i=0; i<3; ++i) {
+                for (uint j=0; j<2; ++j) {
+                    const auto beam = beams.getBeam(i, j);
+                    AlwaysAssert(
+                        majors(i, j) == beam.getMajor(mUnit), AipsError
+                    );
+                    AlwaysAssert(
+                        minors(i, j) == beam.getMinor(mUnit), AipsError
+                    );
+                    AlwaysAssert(
+                        pas(i, j) == beam.getPA(paUnit),  AipsError
+                    );
+                }
+            }
         }
     }
     catch (const std::exception& x) {

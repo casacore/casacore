@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLES_H
 #define TABLES_TABLES_H
@@ -75,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <module>
 
 // <summary>
-// CTDS (Cascore Table Data System) is the data storage mechanism for Casacore
+// CTDS (Casacore Table Data System) is the data storage mechanism for Casacore
 // </summary>
 
 // <use visibility=export>
@@ -124,7 +122,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </UL>
 // A few <A HREF="Tables:applications">applications</A> exist to inspect
 // and manipulate a table.
-
+//
+// Several UML diagrams describe the class structure of the Tables module.
+// <ul>
+//  <li> <a href="TableOverview.drawio.svg.html">Global overview of Table access</a>.
+//  <li> <a href="TableDesc.drawio.svg.html">Table and column descriptions</a>.
+//  <li> <a href="TableRecord.drawio.svg.html">Table keywords</a>.
+//  <li> <a href="Table.drawio.svg.html">Table class structure</a>.
+//  <li> <a href="PlainTable.drawio.svg.html">Detailed PlainTable class structure</a>.
+//  <li> <a href="DataManager.drawio.svg.html">DataManagers for storage</a>.
+// </ul>
 
 // <ANCHOR NAME="Tables:motivation">
 // <motivation></ANCHOR>
@@ -425,7 +432,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     Table tab(newtab, Table::Memory, 10);
 // </srcblock>
 //
-//  <LI> <A HREF="#Tables:write">writing</A> into a table,
 // Note that the function <src>TableUtil::createTable</src> can be used to create a table
 // in a simpler way. It can also be used to create a subtable using the :: notation
 // similar to the <A HREF="#Tables:openTable"><src>Tableutil::openTable</src></A>

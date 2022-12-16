@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeHistograms.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef LATTICES_LATTICEHISTOGRAMS_TCC
 #define LATTICES_LATTICEHISTOGRAMS_TCC
@@ -456,8 +454,7 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
       return False;
    }
 
-   T* dummy = 0;
-   DataType latticeType = whatType(dummy);
+   DataType latticeType = whatType<T>();
    if (latticeType !=TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
       ostringstream oss;
       oss << "Lattices of type " << latticeType << " are not currently supported" << endl;

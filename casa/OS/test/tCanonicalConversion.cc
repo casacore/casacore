@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/OS/CanonicalConversion.h>
@@ -200,7 +198,7 @@ void checkConversion (int& error)
 	val[1] = -1;
 	char result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
-	if (result != -1) {
+	if (result != char(-1)) {
 	    cout << "invalid char to conversion " << result << endl;
 	    error = 1;
 	}

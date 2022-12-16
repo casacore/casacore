@@ -1,5 +1,4 @@
 //# HostInfo_solaris.h: Solaris specific memory, swap, and CPU code.
-//# $Id$
 
  /*
  **  This is a greatly MODIFIED version of a "top" machine dependent file.

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNode.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
@@ -818,10 +816,12 @@ TENShPtr TableExprNode::newGE (const TENShPtr& right) const
     return setBinaryNodeInfo (tsnptr, right);
 }
 
-
 TENShPtr TableExprNode::newIN (const TENShPtr& right,
                                const TaQLStyle& style) const
 {
+    // Is the right operand a scalar or an array with a single element?
+    // If so, the IN operator can be replaced by the EQ operator.
+    // Note that an array can also be represented by a set with single values.
     TableExprNodeRep::ValueType vtRight = right->valueType();
     if (vtRight == TableExprNodeRep::VTScalar) {
       return newEQ (right);
@@ -831,7 +831,7 @@ TENShPtr TableExprNode::newIN (const TENShPtr& right,
       if (set) {
         if (set->isSingle()  &&  set->size() == 1  &&
             ! set->hasArrays()) {
-          TENShPtr snode = (*set)[0].start();
+          TENShPtr snode = (*set)[0]->start();
           return newEQ (snode);
         }
       } else {
@@ -848,6 +848,8 @@ TENShPtr TableExprNode::newIN (const TENShPtr& right,
       throw (TableInvExpr
              ("Right operand of IN has to be a scalar, array or set"));
     }
+    // A mix of Int and Double operands means Double.
+    // Otherwise the operands should have equal data types.
     TableExprNodeRep::NodeDataType dtype = node_p->dataType();
     TableExprNodeRep::NodeDataType rdtype = right->dataType();
     if (dtype != rdtype) {
@@ -860,8 +862,9 @@ TENShPtr TableExprNode::newIN (const TENShPtr& right,
           throwInvDT ("mismatching operand types for IN-operator");
         }
     }
+    // If both operands are constant, the result is constant as well.
     TableExprNodeRep::ExprType extype = TableExprNodeRep::Variable;
-    if (node_p->isConstant()  &&  right->isConstant()) {
+    if (right->isConstant()  &&  node_p->isConstant()) {
         extype = TableExprNodeRep::Constant;
     }
     TableExprNodeRep node (dtype, node_p->valueType(),
@@ -869,6 +872,8 @@ TENShPtr TableExprNode::newIN (const TENShPtr& right,
                            TableExprNodeRep::NoArr, extype,
                            node_p->ndim(), node_p->shape(),
                            node_p->table());
+    // Create the correct IN object depending on data type
+    // and if the left hand operand is scalar or array.
     TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
         switch (node.dataType()) {
@@ -1299,7 +1304,7 @@ TableExprNode TableExprNode::newFunctionNode
     uInt npar = set.size();
     vector<TENShPtr> par(npar);
     for (uInt i=0; i<npar; i++) {
-        par[i] = set[i].start();
+        par[i] = set[i]->start();
     }
     // rownrFUNC, rowidFUNC and randomFUNC are special, because they
     // need their own objects and the table.
@@ -1363,7 +1368,7 @@ TableExprNode TableExprNode::newUDFNode (const String& name,
     uInt npar = set.size();
     vector<TENShPtr> par(npar);
     for (uInt i=0; i<npar; i++) {
-        par[i] = set[i].start();
+        par[i] = set[i]->start();
     }
     udf->init (par, table, style);
     if (udf->ndim() == 0) {
@@ -1407,7 +1412,7 @@ TableExprNode TableExprNode::newConeNode
     uInt npar = set.size();
     vector<TENShPtr> par(npar);
     for (uInt i=0; i<npar; i++) {
-        par[i] = set[i].start();
+        par[i] = set[i]->start();
     }
     // Check all the operands and get the resulting data type and value type
     // of the function.

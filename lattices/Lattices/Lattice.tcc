@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTICE_TCC
 #define LATTICES_LATTICE_TCC
@@ -54,7 +52,7 @@ Lattice<T>::~Lattice()
 template <class T>
 DataType Lattice<T>::dataType() const
 {
-  return whatType ((T*)0);
+  return whatType<T>();
 }
 
 

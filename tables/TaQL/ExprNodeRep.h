@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNodeRep.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRNODEREP_H
 #define TABLES_EXPRNODEREP_H
@@ -223,6 +221,10 @@ public:
     // The destructor deletes all the underlying TableExprNode objects.
     virtual ~TableExprNodeRep();
 
+    // Try to optimize the node (meant for the right hand of the IN operator).
+    // The default implementation does nothing.
+    virtual void optimize();
+  
     // Do not apply the selection.
     virtual void disableApplySelection();
 
@@ -320,27 +322,28 @@ public:
     MArray<MVTime> getDateAS       (const TableExprId& id);
     // </group>
 
-    // Does a value occur in an array or set?
-    // The default implementation tests if it is in an array.
+    // Does a set or array contain the value?
+    // The default implementation assumes the set is a single scalar,
+    // thus tests if it is equal to the given value.
     // <group>
-    virtual Bool hasBool     (const TableExprId& id, Bool value);
-    virtual Bool hasInt      (const TableExprId& id, Int64 value);
-    virtual Bool hasDouble   (const TableExprId& id, Double value);
-    virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
-    virtual Bool hasString   (const TableExprId& id, const String& value);
-    virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
-                                           const MArray<Bool>& value);
-    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
-                                           const MArray<Int64>& value);
-    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
-                                           const MArray<Double>& value);
-    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
-                                           const MArray<DComplex>& value);
-    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
-                                           const MArray<String>& value);
-    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
-                                           const MArray<MVTime>& value);
+    virtual Bool contains (const TableExprId& id, Bool value);
+    virtual Bool contains (const TableExprId& id, Int64 value);
+    virtual Bool contains (const TableExprId& id, Double value);
+    virtual Bool contains (const TableExprId& id, DComplex value);
+    virtual Bool contains (const TableExprId& id, String value);
+    virtual Bool contains (const TableExprId& id, MVTime value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Bool>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Int64>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Double>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<DComplex>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<String>& value);
+    virtual MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<MVTime>& value);
     // </group>
 
     // Get the number of rows in the table associated with this expression.
@@ -483,23 +486,17 @@ protected:
     // Get the shape for the given row.
     virtual const IPosition& getShape (const TableExprId& id);
 
-    // If one of the children is a constant, convert its data type
-    // to that of the other operand (if appropriate).
-    // This avoids that conversions are done for each get.
-    // The default implementation does nothing.
-    virtual void convertConstChild();
-
     // Check if this node uses the same table pointer.
     // Fill the Table object if it is still null.
     // <group>
-    void checkTablePtr (const TENShPtr& node);
-    static void checkTablePtr (Table& table, const TENShPtr& node);
+    void checkTablePtr (const TableExprNodeRep* node);
+    static void checkTablePtr (Table& table, const TableExprNodeRep* node);
     // </group>
 
     // Set expression type to Variable if node is Variable.
     // <group>
-    void fillExprType (const TENShPtr& node);
-    static void fillExprType (ExprType&, const TENShPtr& node);
+    void fillExprType (const TableExprNodeRep* node);
+    static void fillExprType (ExprType&, const TableExprNodeRep* node);
     // </group>
 
     // If the node is constant, it is evaluated and replaced by
@@ -751,9 +748,9 @@ inline Table& TableExprNodeRep::table()
 inline const Table& TableExprNodeRep::table() const
     { return table_p; }
 
-inline void TableExprNodeRep::checkTablePtr (const TENShPtr& node)
+inline void TableExprNodeRep::checkTablePtr (const TableExprNodeRep* node)
     { checkTablePtr (table_p, node); }
-inline void TableExprNodeRep::fillExprType (const TENShPtr& node)
+inline void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
     { fillExprType (exprtype_p, node); }
 
 

@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #include <casacore/coordinates/Coordinates/ObsInfo.h>
 #include <casacore/measures/Measures/MeasureHolder.h>
@@ -356,7 +353,7 @@ Bool ObsInfo::toFITS(String & error, RecordInterface & outRecord) const
 
 // Very (but only) longwinded way to get at the MEpoch::Types
 
-        MEpoch::Types dtype(MEpoch::castType(obsDate().getRefPtr()->getType()));
+        MEpoch::Types dtype(MEpoch::castType(obsDate().getRef().getType()));
 	String date, timesys;
 	FITSDateUtil::toFITS(date, timesys, time, dtype);
 	outRecord.define(name, date);

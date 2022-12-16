@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #include <casacore/images/Images/ImageInfo.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -605,7 +602,6 @@ Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
 	rstat.defineRecord("beams", beamRec);
 	return rstat;
 }
-
 
 void ImageInfo::checkBeamSet(
 	const CoordinateSystem& coords,

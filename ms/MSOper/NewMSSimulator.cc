@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/ms/MSOper/NewMSSimulator.h>
@@ -1835,7 +1833,7 @@ String NewMSSimulator::formatDirection(const MDirection& direction) {
   oss << mvRa(0.0).string(MVAngle::TIME,8);
   oss.width(14);
   oss << mvDec.string(MVAngle::DIG2,8);
-  oss << "     " << MDirection::showType(direction.getRefPtr()->getType());
+  oss << "     " << MDirection::showType(direction.getRef().getType());
   return String(oss);
 }
 

@@ -22,15 +22,13 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Utilities/Sequence.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #if defined(USE_THREADS)
-std::atomic<uInt> uIntSequence::next(1); // start at 1 to stay in sync with RegSequence
+std::atomic<uInt> uIntSequence::next(1); // start at 1 to stay in sync with RegSequence, FIXME fix comment, RegSequnce no longer exists
 #else
 uInt uIntSequence::next = 1;
 #endif

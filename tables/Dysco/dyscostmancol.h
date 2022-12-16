@@ -4,7 +4,7 @@
 #include "dyscodistribution.h"
 #include "dysconormalization.h"
 
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 
 #include <casa/Arrays/IPosition.h>
 
@@ -19,7 +19,7 @@ class DyscoStMan;
  * Base class for columns of the DyscoStMan.
  * @author André Dysco
  */
-class DyscoStManColumn : public casacore::StManColumn {
+class DyscoStManColumn : public casacore::StManColumnBase {
  public:
   /**
    * Constructor, to be overloaded by subclass.
@@ -27,7 +27,7 @@ class DyscoStManColumn : public casacore::StManColumn {
    * @param dtype The column's type as defined by Casacore.
    */
   explicit DyscoStManColumn(DyscoStMan *parent, int dtype)
-      : casacore::StManColumn(dtype),
+      : casacore::StManColumnBase(dtype),
         _offsetInBlock(0),
         _storageManager(parent) {}
 
@@ -75,15 +75,17 @@ class DyscoStManColumn : public casacore::StManColumn {
 
   /**
    * Read a row of compressed data from the stman file.
-   * @param rowIndex The index of the row to read.
+   * @param blockIndex The block index of the row to read.
    * @param dest The destination buffer, should be at least of size Stride().
+   * @param size The nr of bytes to be read.
    */
   void readCompressedData(size_t blockIndex, unsigned char *dest, size_t size);
 
   /**
    * Write a row of compressed data to the stman file.
-   * @param rowIndex The index of the row to write.
+   * @param blockIndex The block index of the row to write.
    * @param data The data buffer containing Stride() bytes.
+   * @param size The nr of bytes to be written.
    */
   void writeCompressedData(size_t blockIndex, const unsigned char *data,
                            size_t size);

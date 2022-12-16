@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycArrayComH.h,v 1.2 2006/11/07 00:17:23 gvandiep Exp $
 
   // Check if the PyObject is an array object.
   Bool PycArrayCheck (PyObject* obj_ptr);

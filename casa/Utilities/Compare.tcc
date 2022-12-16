@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_COMPARE_TCC
 #define CASA_COMPARE_TCC
@@ -53,7 +51,7 @@ int ObjCompare<T>::comp (const void* obj1, const void* obj2) const
 template<class T>
 DataType ObjCompare<T>::dataType() const
 {
-    return whatType ((T*)0);
+    return whatType<T>();
 }
 
 

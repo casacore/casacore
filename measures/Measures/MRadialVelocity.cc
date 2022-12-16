@@ -22,15 +22,12 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Quanta/QMath.h>
 #include <casacore/measures/Measures/MRadialVelocity.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/measures/Measures/MCDoppler.h>
 #include <casacore/measures/Measures/MeasConvert.h>
@@ -89,12 +86,8 @@ const String &MRadialVelocity::showMe() {
     return name;
 }
 
-uInt MRadialVelocity::type() const {
-  return Register(static_cast<MRadialVelocity *>(0));
-}
-
 void MRadialVelocity::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MRadialVelocity *>(0))) {
+  if (!dynamic_cast<const MRadialVelocity*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MRadialVelocity::showMe()));
   }
@@ -212,7 +205,7 @@ Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
 }
 
 Bool MRadialVelocity::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MRadialVelocity *>(0))) return False;
+  if (!dynamic_cast<const MRadialVelocity*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -233,10 +226,6 @@ const String &MRadialVelocity::getDefaultType() const {
 
 String MRadialVelocity::getRefString() const {
   return MRadialVelocity::showType(ref.getType());
-}
-
-uInt MRadialVelocity::myType() {
-  return Register(static_cast<MRadialVelocity *>(0));
 }
 
 Quantity MRadialVelocity::get(const Unit &un) const {

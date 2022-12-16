@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeAddNoise.cc 21549 2015-01-28 10:01:12Z gervandiepen $
 
 #include <casacore/lattices/LatticeMath/LatticeAddNoise.h>
 

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/measures/Measures/MEarthMagnetic.h>
@@ -31,7 +29,6 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 #include <casacore/casa/Quanta/Euler.h>
@@ -94,12 +91,8 @@ const String &MEarthMagnetic::showMe() {
     return name;
 }
 
-uInt MEarthMagnetic::type() const {
-  return Register(static_cast<MEarthMagnetic *>(0));
-}
-
 void MEarthMagnetic::assure(const Measure &in) {
-  if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) {
+  if (!dynamic_cast<const MEarthMagnetic*>(&in)) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEarthMagnetic::showMe()));
   }
@@ -274,7 +267,7 @@ Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
 }
 
 Bool MEarthMagnetic::setOffset(const Measure &in) {
-  if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) return False;
+  if (!dynamic_cast<const MEarthMagnetic*>(&in)) return False;
   ref.set(in);
   return True;
 }
@@ -295,10 +288,6 @@ const String &MEarthMagnetic::getDefaultType() const {
 
 String MEarthMagnetic::getRefString() const {
   return MEarthMagnetic::showType(ref.getType());
-}
-
-uInt MEarthMagnetic::myType() {
-  return Register(static_cast<MEarthMagnetic *>(0));
 }
 
 Bool MEarthMagnetic::isModel() const {

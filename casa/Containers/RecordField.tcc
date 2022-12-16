@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef CASA_RECORDFIELD_TCC
 #define CASA_RECORDFIELD_TCC
@@ -37,8 +34,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr()
-: fieldPtr_p   (0),
-  parent_p     (0),
+: parent_p     (nullptr),
   fieldNumber_p(-1)
 {
     // Nothing
@@ -58,34 +54,6 @@ RecordFieldPtr<T>::RecordFieldPtr (RecordInterface& record,
 }
 
 template<class T>
-RecordFieldPtr<T>::~RecordFieldPtr()
-{
-    // I assume ~NoticeTarget() takes this object out of the list
-}
-
-template<class T>
-RecordFieldPtr<T>::RecordFieldPtr (const RecordFieldPtr<T>& other)
-: NoticeTarget  (),
-  fieldPtr_p    (other.fieldPtr_p),
-  parent_p      (other.parent_p),
-  fieldNumber_p (other.fieldNumber_p)
-{
-    link (other);
-}
-
-template<class T>
-RecordFieldPtr<T>& RecordFieldPtr<T>::operator=(const RecordFieldPtr<T>& other)
-{
-    if (this != &other) {
-	fieldPtr_p    = other.fieldPtr_p;
-	parent_p      = other.parent_p;
-	fieldNumber_p = other.fieldNumber_p;
-	link(other);
-    }
-    return *this;
-}
-
-template<class T>
 void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
 					const RecordFieldId& id)
 {
@@ -97,33 +65,57 @@ void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
 {
     parent_p      = &record;
     fieldNumber_p = whichField;
-    // Cast to correct type, because a void* is returned.
-    // This cast is fully safe.
-    fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, whichField, 
-					    whatType(static_cast<T*>(nullptr)), static_cast<T*>(nullptr)));
-    attach (record);
+    get(); // check type
 }
 
 template<class T>
 void RecordFieldPtr<T>::detach()
 {
-    fieldPtr_p    = 0;
-    parent_p      = 0;
+    parent_p      = nullptr;
     fieldNumber_p = -1;
-    unlink();
 }
 
 template<class T>
 T& RecordFieldPtr<T>::operator*()
 {
     parent_p->makeUnique();
-    return *fieldPtr_p;
+    return const_cast<T&>(get());
+}
+
+template<>
+inline const Table* RecordFieldPtr<Table>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+{
+  return static_cast<const Table*>(record->get_pointer(fieldNumber, TpOther));
+}
+
+template<>
+inline const Record* RecordFieldPtr<Record>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+{
+  return static_cast<const Record*>(record->get_pointer(fieldNumber, TpRecord, "Record"));
+}
+
+template<>
+inline const TableRecord* RecordFieldPtr<TableRecord>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+{
+  return static_cast<const TableRecord*>(record->get_pointer(fieldNumber, TpRecord, "TableRecord"));
 }
 
 template<class T>
-void RecordFieldPtr<T>::define (const T& value)
+inline const T* RecordFieldPtr<T>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
 {
-    defineRecordFieldPtr (parent_p, fieldNumber_p, whatType(static_cast<T*>(0)), &value);
+  return static_cast<const T*>(record->get_pointer(fieldNumber, whatType<T>()));
+}
+
+template<class T>
+inline void RecordFieldPtr<T>::define (const T& value)
+{
+    parent_p->defineDataField (fieldNumber_p, whatType<T>(), &value);
+}
+
+template<>
+inline void RecordFieldPtr<TableRecord>::define (const TableRecord& value)
+{
+    parent_p->defineDataField (fieldNumber_p, TpRecord, &value);
 }
 
 template<class T>
@@ -136,37 +128,6 @@ template<class T>
 void RecordFieldPtr<T>::setComment (const String& comment)
 {
     parent_p->setComment (fieldNumber_p, comment);
-}
-
-
-template<class T>
-void RecordFieldPtr<T>::notify (const Notice& notice)
-{
-    const RecordNotice& note = (const RecordNotice&) notice;
-    switch (note.changeType()) {
-    case RecordNotice::DETACH:
-	// The record has been deleted; detach.
-	detach();
-	break;
-    case RecordNotice::ACQUIRE:
-	// The RecordRep has been copied; re-acquire the pointer.
-	fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, fieldNumber_p,
-						whatType(static_cast<T*>(0)), static_cast<T*>(0)));
-	break;
-    case RecordNotice::REMOVE:
-	// A field has been removed.
-	if (note.fieldNumber() == fieldNumber_p) {
-	    // This field has been removed; detach.
-	    detach();
-	}else if (note.fieldNumber() < fieldNumber_p) {
-	    // A previous field has been removed; decrement field number.
-	    fieldNumber_p--;
-	}
-	break;
-    default:
-	// Should not occur.
-	AlwaysAssert (0, AipsError);
-    }
 }
 
 } //# NAMESPACE CASACORE - END

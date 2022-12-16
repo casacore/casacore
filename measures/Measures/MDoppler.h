@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef MEASURES_MDOPPLER_H
 #define MEASURES_MDOPPLER_H
@@ -198,7 +195,6 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   // <group>
   virtual const String &tellMe() const;
   static const String &showMe();
-  virtual uInt type() const;
   static void assure(const Measure &in);
   // </group>
   // Translate reference code. The uInt version has a check for valid codes
@@ -244,8 +240,6 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  // Get my type (as Register)
-  static uInt myType();
 
   // Get in specified units
   Quantity get(const Unit &un) const;

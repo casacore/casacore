@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/Utilities/Assert.h>
@@ -31,7 +29,6 @@
 #include <casacore/casa/Quanta/Euler.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/Quanta/QMath.h>
@@ -131,12 +128,8 @@ MVDirection MVDirection::operator-(const MVDirection &right) const{
 
 //# Member functions
 
-uInt MVDirection::type() const {
-  return Register(static_cast<MVDirection *>(0));
-}
-
 void MVDirection::assure(const MeasValue &in) {
-  if (in.type() != Register(static_cast<MVDirection *>(0))) {
+  if (!dynamic_cast<const MVDirection*>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVDirection"));
   }
 }

@@ -23,8 +23,6 @@
                            National Radio Astronomy Observatory
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
-
-    $Id$
 */
 
 /* yy_unput is not used, so let flex not generate it, otherwise picky
@@ -155,6 +153,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 
  /* operators */
+"<:>"     { recordGramPosition() += yyleng; return MIDWIDTH; }
 "<:<"     { recordGramPosition() += yyleng; return OPENOPEN; }
 "<:="     { recordGramPosition() += yyleng; return OPENCLOSED; }
 "=:<"     { recordGramPosition() += yyleng; return CLOSEDOPEN; }

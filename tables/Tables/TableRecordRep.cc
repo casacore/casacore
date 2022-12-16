@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/TableRecordRep.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -276,7 +274,7 @@ void* TableRecordRep::get_pointer (Int whichField, DataType type) const
 			  "incorrect data type used for field " +
 			  desc_p.name(whichField)));
     }
-    if (datavec_p[whichField] == 0) {
+    if (datavec_p[whichField] == nullptr) {
         const_cast<TableRecordRep*>(this)->makeDataVec (whichField, descDtype);
     }
     return datavec_p[whichField];

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -121,12 +119,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]",
     "",
     "Create a new table, possibly adding rows.",
-    "  CREATE TABLE table [AS options]",
-    "    [column_specs] [LIMIT ...] [DMINFO datamanagers]",
+    "  CREATE TABLE table [AS options] [LIKE table [DROP COLUMN col, col, ...]]",
+    "    [ADD COLUMN] [(column_specs)] [LIMIT ...] [DMINFO datamanagers]",
     "",
     "Alter a table (add/copy/rename/remove columns/keywords; add rows).",
-    "  ALTER TABLE table",
+    "  ALTER TABLE table [FROM table_list]",
     "    [ADD COLUMN [column_specs] [DMINFO datamanagers]]",
+    "    [COPY COLUMN newcol=col, newcol=col, ... [DMINFO datamanagers]]",
     "    [RENAME COLUMN old TO new, old TO new, ...]",
     "    [DROP COLUMN col, col, ...]",
     "    [SET KEYWORD key=value, key=value, ...]",
@@ -138,14 +137,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "Count number of rows per group (subset of SELECT/GROUPBY).",
     "  COUNT [column_list] FROM table_list [WHERE ...]",
     "",
-    "All commands can be preceeded by 'WITH table-list' having temporary tables.",
+    "All commands can be preceded by 'WITH table-list' having temporary tables.",
     "Use 'show command <command>' for more information about a command.",
     "    'show expr(essions)'     for more information about forming expressions.",
     "See http://casacore.github.io/casacore-notes/199.html for full info.",
   };
 
   const char* selectHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "SELECT",
     "  [[DISTINCT] expression_list]",
     "  [INTO table [AS options]]",
@@ -208,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "GROUPBY expression_list",
     "  It can be used to group rows with equal values for the given",
     "  expressions (which must result in scalar values).",
-    "  Often aggregate functions (like gsum) are used in the SELECT and/or",
+    "  Often aggregate functions (such as GSUM) are used in the SELECT and/or",
     "  HAVING clause to calculate an aggregate value, but in something like",
     "      select from my.ms groupby ANTENNA1,ANTENNA2",
     "  GROUPBY is used to get the number of unique baselines in the MS.",
@@ -246,7 +245,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* calcHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "CALC expression [FROM table_list]",
     "",
     "This command evaluates the given expression, which can contain columns from",
@@ -256,7 +255,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* updateHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "UPDATE",
     "  table_list",
     "  SET update_list",
@@ -297,7 +296,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* insertHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "INSERT INTO table_list SET column=expr, column=expr, ...",
     "  Add one row.",
     "INSERT INTO table_list [(column_list)] VALUES (expr_list),(expr_list),... [LIMIT n]",
@@ -332,7 +331,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* deleteHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "DELETE FROM table_list",
     "  [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]",
     "",
@@ -346,15 +345,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* createHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "CREATE TABLE table [AS options]",
-    "  [column_specs]",
+    "  [LIKE other_table [DROP COLUMN column_list]]",
+    "  [[ADD COLUMN] (column_specs)]",
     "  [LIMIT expression]",
     "  [DMINFO datamanagers]",
     "",
     "table [AS options]",
-    "  The name of the table to create followed by optional table options",
-    "  controlling how the table is created.",
+    "  The name of the table to create followed by optional table options (enclosed in",
+    "  square brackets) controlling how the table is created.",
     "  Possible options:",
     "    ENDIAN    = BIG,LITTLE,LOCAL,AIPSRC                     default AIPSRC",
     "    STORAGE   = SEPFILE,MULTIFILE,MULTIHDF5,DEFAULT,AIPSRC  default AIPSRC",
@@ -362,12 +362,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    OVERWRITE = T|F                                         default T",
     "  Use 'show tableoptions' to get more information about the possible options.",
     "",
-    "column_specs",
-    "  A list of column specifications separated by commas. Each one looks like:",
-    "      name datatype [prop_list]",
+    "LIKE other_table DROP COLUMN column_list",
+    "  The new table is created with the same description and dminfo as other_table.",
+    "  other_table can be followed by a shorthand to be used in other command parts.",
+    "  Optionally DROP COLUMN column_list can be given to omit the given columns.",
+    "  It is possible to add columns in the column_specs.",
+    "",
+    "[ADD COLUMN] (column_specs)",
+    "  A list of column specifications separated by commas and enclosed in parentheses (or",
+    "  square brackets) and preceded by ADD COLUMN. Both can be left out if LIKE",
+    "  is not used. Each spec looks like:",
+    "      name [LIKE other_name] [datatype] [prop_list]",
     "  name       Name of the column.",
+    "  other_name Name of the column whose description is used for the new column.",
+    "             It can be from another table using the 't.column' syntax.",
+    "             The description can be modified using the datatype and prop_list arguments.",
     "  datatype   Data type (B, U1, I2, U2, I4, U4, I8, R4, R8, C4, C8, S, EPOCH).",
     "             Use 'show datatypes' for more information about data types.",
+    "             It must be given if 'LIKE other_name' is not given.",
     "  prop_list  Optional key=value list of other properties. Enclose in square",
     "             brackets if multiple key=value pairs are given.",
     "      NDIM=n              dimensionality",
@@ -384,58 +396,55 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* alterHelp[] = {
-    "  [WITH table_list]",
-    "ALTER TABLE table subcommand1 subcommand2 ...",
+    " [WITH table_list]",
+    "ALTER TABLE table [FROM table_list] subcommand1 subcommand2 ...",
     "  Alter the table with the given name.",
+    "  The FROM part can be given to use other tables in the subcommands.",
     "  One or more of the following subcommands can be given.",
     "",
-    "ADD COLUMN [column_specs] [DMINFO datamanagers]",
+    " ADD COLUMN [column_specs] [DMINFO datamanagers]",
     "  Add one or more columns to the table.",
     "  Use 'show command create' to see the syntax for the arguments.",
     "",
-    "COPY COLUMN old TO new [AS dtype] [SET [expr]], old TO new ...",
-    "  Copy a column to another column getting the same description and data manager.",
-    "  AS dtype can be given to change the data type (See 'show datatypes' for types).",
-    "  SET tells that the column has to be filled. If no expression is given, the",
-    "  column is filled with a copy of the source column. Otherwise each cell in",
-    "  the column is filled with the expression. If the column contains arrays and",
-    "  the expression is a scalar, the source column arrays are used and filled",
-    "  with the scalar value.",
+    " COPY COLUMN newcol=other, newcol=other, ... [DMINFO datamanagers]",
+    "  Copy the data of a column to a new column, which gets the same description.",
+    "  By default it gets the same data manager, but can be overwritten using DMINFO.",
+    "  Use 'show dminfo' for the syntax of the DMINFO argument.",
     "",
-    "RENAME COLUMN old TO new, old TO new, ...",
+    " RENAME COLUMN old TO new, old TO new, ...",
     "  Rename one or more columns.",
     "",
-    "DROP COLUMN col, col, ...",
+    " DROP COLUMN col, col, ...",
     "  Remove one or more columns.",
     "",
-    "SET KEYWORD key=value [AS dtype], key=value [AS dtype], ...",
+    " SET KEYWORD key=value [AS dtype], key=value [AS dtype], ...",
     "  Add or reset one or more table and/or column keyword values.",
-    "  A column keyword name must be preceeded by the column name like col::key.",
+    "  A column keyword name must be preceded by the column name like col::key.",
     "  Nested keyword names can be used (e.g., col::key.subkey.fld)",
     "  The value can be any expression, also an empty array given as [].",
     "  A data type can be given, which defaults to the expression data type.",
     "  Use 'show datatypes' to see the possible data types.",
     "  The value cannot be a record, but an empty record can be given as [=].",
     "",
-    "COPY KEYWORD key=other, key=other, ...",
+    " COPY KEYWORD key=other, key=other, ...",
     "  Copy the value of a table and/or column keyword to a new keyword.",
     "  The keyword can be a nested one, thus a field in a record value.",
     "  The value can be anything, also a record.",
     "",
-    "RENAME KEYWORD old TO new, old TO new, ...",
+    " RENAME KEYWORD old TO new, old TO new, ...",
     "  Rename one or more table and/or column keywords, possibly nested ones.",
     "  The new name cannot be qualified with a column or nested keyword name,",
     "  thus renaming cannot be done across columns or so.",
     "",
-    "DROP KEYWORD key, key, ...",
+    " DROP KEYWORD key, key, ...",
     "  Remove one or more table and/or column keywords, possibly nested ones.",
     "",
-    "ADD ROW expression",
+    " ADD ROW expression",
     "  The expression gives the number of rows to be added to the table."
   };
 
   const char* countHelp[] = {
-    "  [WITH table_list]",
+    " [WITH table_list]",
     "COUNT [column_list] FROM table_list [WHERE expression]",
     "",
     "After having done the WHERE selection, it counts the number of rows",
@@ -452,7 +461,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* exprHelp[] = {
-    "A TaQL expression can use scalar and/or arrays (like numpy).",
+    "A TaQL expression can use scalar and/or arrays (as in numpy).",
     "The following elements can be used:",
     "  operators         see 'show oper(ators)'",
     "  functions         see 'show func(tions)'",
@@ -483,7 +492,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    &",
     "    ^",
     "    |",
-    "    == != >  >= <  <=  ~= !~= IN INCONE BETWEEN EXISTS LIKE  ~  !~",
+    "    == != >  >= <  <=  ~= !~= IN INCONE BETWEEN AROUND EXISTS LIKE  ~  !~",
     "    &&",
     "    ||",
     "",
@@ -510,7 +519,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    ~ !~ (I)LIKE  pattern match",
     "    IN            is left hand an element in the right hand?",
     "    INCONE        cone searching",
-    "    EXISTS        does subquery have at least 1 match?"
+    "    EXISTS        does subquery have at least 1 match?",
+    "    x BETWEEN a AND b         is x in bounded interval <a,b>?",
+    "    x AROUND m IN w           is x in bounded interval <m-w/2,m+w/2>?"
   };
 
   const char* constHelp[] = {
@@ -534,7 +545,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "          or using function ARRAY",
     "",
     "Masked array (True value means bad (as in numpy)):",
-    "             array[mask]  like  [1,2,3][[T,F,T]]",
+    "             array[mask]  such as  [1,2,3][[T,F,T]]",
     "          or using function MARRAY"
   };
 
@@ -623,6 +634,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "         or ReadMaskKeys       vector with flag names to use on read",
     "            WriteMask          integer defining flags to use on write",
     "         or WriteMaskKeys      vector with flag names to use on write",
+    "  There are several more data managers, also external ones such as LofarStMan.",
     "  For example:",
     "    dminfo [NAME='ISM1',TYPE='IncrementalStMan',COLUMNS=['col1']],",
     "           [NAME='SSM1',TYPE='StandardStMan',",
@@ -646,13 +658,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "An interval is a continuous set of real values with optional bounds.",
     "If a bound is given, it can be open or closed.",
-    "An interval can be given in two ways:",
-    "  Using curly braces (closed bound) and angle brackets (open bound)",
+    "An interval can be given in various ways:",
+    "  as start-end using curly braces (closed side) and angle brackets (open side)",
     "    bounded:     {1,2}   <1,2>   {1,2>   <1,2}",
     "    unbounded:   {1,}    <1,>    {,2>    <,2}",
-    "  Using  a=:=b (closed bounds)  and  a<:<b (open bounds)",
+    "  as start-end using  a=:=b (closed sides)  and  a<:<b (open sides)",
     "    bounded:     1=:=2   1<:<2   1=:<2   1<:=2",
     "    unbounded:   1=:     1<:     :<2     :=2",
+    "  as start-end (closed sides) using  BETWEEN start AND end",
+    "  as mid-width (closed sides) using  mid<:>width  or  AROUND mid IN width",
     "",
     "A set consisting of values and/or bounded ranges is a 1-dim array.",
     "  For example:   [1,2,3,4,5]   [1:6]   [1,2:5,5]   are all the same",

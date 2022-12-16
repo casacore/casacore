@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLE_H
 #define TABLES_TABLE_H
@@ -88,6 +86,8 @@ template<class T> class CountedPtr;
 // via their constructors.
 // Furthermore the Table has a TableRecord object for holding keywords
 // which can be read or written using the appropriate functions.
+// <br> The Table class structure is shown in this
+// <a href="Table.drawio.svg.html">UML diagram</a>.
 //
 // To open an existing table, a simple Table constructor can be used.
 // The possible construct options are:
@@ -1035,25 +1035,28 @@ public:
     // </group>
 
 protected:
-    BaseTable*  baseTabPtr_p;                 //# ptr to table representation
-    //# The isCounted_p flag is normally true.
-    //# Only for internally used Table objects (i.e. in the DataManager)
-    //# this flag is False, otherwise a mutual dependency would exist.
-    //# The DataManager has a Table object, which gets deleted by the
-    //# DataManager destructor. The DataManager gets deleted by the
-    //# PlainTable destructor, which gets called when the last Table
-    //# object gets destructed. That would never be the case if this
-    //# internally used Table object was counted.
-    Bool        isCounted_p;
-    //# Counter of last call to hasDataChanged.
+    // Shared pointer to count the references to the BaseTable object.
+    // The shared pointer can be null, so it is not counted which is necessary for
+    // the Table object in the DataManager. Otherwise mutual referencing would occur.
+    // Note that the BaseTable object contains a weak_ptr to itself which is the
+    // basis for all shared pointer counting.
+    std::shared_ptr<BaseTable> countedTabPtr_p;
+    // Pointer to BaseTable object which is always filled and always used.
+    // The shared_ptr above is only for reference counting.
+    BaseTable* baseTabPtr_p;
+    // Counter of last call to hasDataChanged.
     uInt        lastModCounter_p;
-    //# Pointer to the ScratchCallback function.
+    // Pointer to the ScratchCallback function.
     static ScratchCallback* scratchCallback_p;
 
 
-    // Construct a Table object from a BaseTable*.
-    // By default the object gets counted.
-    Table (BaseTable*, Bool countIt = True);
+    // Construct a Table object from a pointer to BaseTable.
+    // It is meant for internal Table objects, so the BaseTable is not counted.
+    // Thus the internal shared_ptr is null.
+    Table (BaseTable*);
+
+    // Construct a Table object from a shared pointer to BaseTable.
+    Table (const std::shared_ptr<BaseTable>&);
 
     // Open an existing table.
     void open (const String& name, const String& type, int tableOption,
@@ -1061,19 +1064,20 @@ protected:
 
 private:
     // Construct a BaseTable object from the table file.
-    static BaseTable* makeBaseTable (const String& name, const String& type,
-				     int tableOption,
-				     const TableLock& lockOptions,
-                                     const TSMOption& tsmOpt,
-				     Bool addToCache, uInt locknr);
-
+    static std::shared_ptr<BaseTable> makeBaseTable
+    (const String& name, const String& type, int tableOption,
+     const TableLock& lockOptions, const TSMOption& tsmOpt,
+     Bool addToCache, uInt locknr);
 
     // Get the pointer to the underlying BaseTable.
     // This is needed for some friend classes.
     BaseTable* baseTablePtr() const;
 
+    // Initialize the BaseTable pointers in this Table object.
+    void initBasePtr (BaseTable* ptr);
+
     // Look in the cache if the table is already open.
-    // If so, check if table option matches.
+    // If so, check if the table option matches.
     // If needed reopen the table for read/write and merge the lock options.
     BaseTable* lookCache (const String& name, int tableOption,
 			  const TableLock& tableInfo);

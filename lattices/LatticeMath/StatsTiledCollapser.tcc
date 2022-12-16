@@ -21,8 +21,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeStatistics.tcc 20652 2009-07-06 05:04:32Z Malte.Marquarding $
 
 #include <casacore/lattices/LatticeMath/StatsTiledCollapser.h>
 
@@ -38,7 +36,7 @@ StatsTiledCollapser<T,U>::StatsTiledCollapser(
     Bool fixedMinMax
 ) : _range(pixelRange), _include(! noInclude),
     _exclude(! noExclude), _fixedMinMax(fixedMinMax),
-    _isReal(isReal(whatType(&*(CountedPtr<T>(new T(0)))))),
+    _isReal(isReal(whatType<T>())),
     _minpos(0), _maxpos(0) {}
 
 template <class T, class U>
@@ -221,7 +219,7 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     U* sumPtr = _sum->storage();
     U* sumSqPtr = _sumSq->storage();
     CountedPtr<Block<DComplex> > nptsComplex;
-    if (! isReal(whatType(resptr))) {
+    if (! isReal(whatType<U>())) {
         nptsComplex = new Block<DComplex>(_n1*_n3);
     }
     U* nPtsPtr;

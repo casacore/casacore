@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MVDOUBLE_H
 #define CASA_MVDOUBLE_H
@@ -131,7 +129,6 @@ public:
   //# General member functions
   // Tell me your type
   // <group>
-  virtual uInt type() const;
   static void assure(const MeasValue &in);
   // </group>
   // Print data

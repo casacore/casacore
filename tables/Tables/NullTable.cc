@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/NullTable.h>
 #include <casacore/tables/Tables/Table.h>
@@ -240,7 +238,7 @@ Bool NullTable::rowOrder() const
   throw makeError ("rowOrder");
 }
 
-Vector<rownr_t>* NullTable::rowStorage()
+Vector<rownr_t>& NullTable::rowStorage()
 {
   throw makeError ("rowStorage");
 }
@@ -251,12 +249,12 @@ Bool NullTable::adjustRownrs (rownr_t, Vector<rownr_t>&,
   throw makeError ("adjustRownrs");
 }
 
-BaseTable* NullTable::doSort (PtrBlock<BaseColumn*>&,
-                             const Block<CountedPtr<BaseCompare> >&,
-                             const Block<Int>&,
-                             int,
-                             std::shared_ptr<Vector<rownr_t>>,
-                             std::shared_ptr<Vector<size_t>>)
+  std::shared_ptr<BaseTable> NullTable::doSort (PtrBlock<BaseColumn*>&,
+                                                const Block<CountedPtr<BaseCompare> >&,
+                                                const Block<Int>&,
+                                                int,
+                                                std::shared_ptr<Vector<rownr_t>>,
+                                                std::shared_ptr<Vector<size_t>>)
 {
   throw makeError ("doSort");
 }

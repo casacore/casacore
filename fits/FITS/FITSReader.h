@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: FITSReader.h 2012-01-31$
 
 #ifndef FITS_Reader_H
 #define FITS_Reader_H

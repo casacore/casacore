@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tMSMetaData.cc 21578 2015-03-18 15:01:43Z gervandiepen $
 
 #include <casacore/casa/aips.h>
 
@@ -1402,6 +1400,13 @@ void testIt(MSMetaData& md) {
             vector<Double> expec(mine, mine + 39);
             for (uInt i=0; i<40; ++i) {
                 AlwaysAssert(abs(centers[i].getValue("Hz")/mine[i] - 1) < 1e-8, AipsError);
+            }
+        }
+        {
+            cout << "*** Test getCorrBits" << endl;
+            vector<String> cb = md.getCorrBits();
+            for ( const auto &el : cb) {
+                AlwaysAssert(el == "UNKNOWN", AipsError);
             }
         }
         {

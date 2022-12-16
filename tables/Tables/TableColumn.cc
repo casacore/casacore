@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/Table.h>
@@ -124,7 +122,7 @@ const ColumnDesc& TableColumn::columnDesc() const
     { return baseColPtr_p->columnDesc(); }
 
 Table TableColumn::table() const
-    { return Table (baseTabPtr_p, False); }
+    { return Table (baseTabPtr_p); }
 
 
 Bool TableColumn::asBool (rownr_t rownr) const

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Exceptions/CasaErrorTools.h>
@@ -213,19 +211,19 @@ SystemCallError::SystemCallError (int error, const String &msg,
 {}
 SystemCallError::~SystemCallError() noexcept
 {}
+String strerror_overload(int err)
+{
+  return "errno " + String::toString(err);
+}
+String strerror_overload(char *err)
+{
+  return err;
+}
 String SystemCallError::errorMessage(int error)
 {
   // Use strerror_r for thread-safety.
   char buffer[128];
-  // There are two incompatible versions of versions of strerror_r()
-#if !__linux__ || (!_GNU_SOURCE && (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600))
-  if (strerror_r(error, buffer, sizeof buffer) == 0) {
-    return String(buffer);
-  }
-  return "errno " + String::toString(error);
-#else
-  return strerror_r(error, buffer, sizeof buffer);
-#endif
+  return strerror_overload(strerror_r(error, buffer, sizeof buffer));
 }
 
 

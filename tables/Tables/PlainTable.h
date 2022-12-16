@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_PLAINTABLE_H
 #define TABLES_PLAINTABLE_H
@@ -75,6 +73,8 @@ class MemoryIO;
 // filled and virtual columns. The table control information and the
 // keyword set is stored in an AipsIO file. The data in the filled columns
 // are stored separately by storage managers.
+// <br> The PlainTable class structure is shown in this
+// <a href="PlainTable.drawio.svg.html">UML diagram</a>.
 // </synopsis>
 
 // <todo asof="$DATE:$">

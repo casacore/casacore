@@ -22,9 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 
 #ifndef CASA_RECORDFIELD_H
@@ -33,7 +30,6 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Utilities/Notice.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -70,6 +66,11 @@ class Table;
 // TableKeyword object. Table fields have to be accessed directly
 // through the <linkto class=TableRecord>TableRecord</linkto> interface.
 // <p>
+// Internally, a RecordFieldPtr stores a Record pointer and
+// field number. Therefore, if the order of fields in a Record is modified,
+// or if the Record is restructured, a RecordFieldPtr is invalidated and should
+// no longer be used.
+// <p>
 // The RecordFieldPtr is pointer-like in the sense that it points to an
 // object that is physically inside of another object (the enclosing
 // record object).
@@ -96,11 +97,6 @@ class Table;
 // However, note that if the field is defined with a non-fixed shape in
 // the record description, a value must always conform that shape (in
 // case of assignment as well as in case of define).
-// <p>
-// RecordFieldPtr is derived from NoticeTarget to get messages from
-// the mother record class when it changes. For example, when the
-// record is destructed, all RecordFieldPtr's pointing to that record
-// will automatically be detached.
 // </synopsis>
 
 // <example>
@@ -111,11 +107,7 @@ class Table;
 // RecordFieldPtr provides a fast way to access the data in a record.
 // </motivation>
 
-//# <todo asof="1995/06/15">
-//# </todo>
-
-
-template<class T> class RecordFieldPtr : public NoticeTarget
+template<class T> class RecordFieldPtr
 {
 public:
     // This object does not point to any field, i.e. 
@@ -128,15 +120,6 @@ public:
     RecordFieldPtr (RecordInterface& record, Int whichField);
     RecordFieldPtr (RecordInterface& record, const RecordFieldId&);
     // </group>
-
-    // After calling, this and other point to the same field, i.e. it
-    // uses reference semantics.
-    // <group>
-    RecordFieldPtr (const RecordFieldPtr<T>& other);
-    RecordFieldPtr<T>& operator= (const RecordFieldPtr<T>& other);
-    // </group>
-
-    ~RecordFieldPtr();
 
     // Change our pointer to the supplied field. If it doesn't exist an
     // exception is thrown.
@@ -156,8 +139,8 @@ public:
     // </note>
     // <group>
     T& operator*();
-    const T& operator*() const {return *fieldPtr_p;}
-    const T& get() const {return *fieldPtr_p;}
+    const T& operator*() const { return get(); }
+    const T& get() const { return *get_typed_ptr(parent_p, fieldNumber_p); }
     // </group>
 
     // Store a value in the field using redefinition.
@@ -189,16 +172,13 @@ public:
     // </ol>
     //# This inherited function is shown for documentation purposes.
     Bool isAttached() const
-	{return NoticeTarget::isAttached();}
+	{return parent_p;}
 
 private:
-    T*               fieldPtr_p;
+    static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
+  
     RecordInterface* parent_p;
     Int              fieldNumber_p;
-
-    // Not important for users - the mechanism by which field pointers are
-    // notified when there is a change in the record.
-    virtual void notify (const Notice& message);
 };
 
 
@@ -261,50 +241,6 @@ public:
 private:
     RecordFieldPtr<T> fieldPtr_p;
 };
-
-
-
-//# Define some global functions to specialize some FieldRecordPtr functions.
-//# Some compilers have problems with normal specializations.
-inline void defineRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
-				  DataType type, const void* value)
-{
-    parent->defineDataField (fieldNumber, type, value);
-}
-inline void defineRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
-				  DataType, const TableRecord* value)
-{
-    parent->defineDataField (fieldNumber, TpRecord, value);
-}
-
-// This function attaches a RecordFieldPtr object.
-// It is checked if the field type is correct.
-inline void* attachRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
-				   DataType type, const void*)
-{
-    return parent->get_pointer (fieldNumber, type);
-}
-// Specialization for a Table field (which cannot be used).
-inline void* attachRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
-				   DataType, const Table*)
-{
-    return parent->get_pointer (fieldNumber, TpOther);
-}
-// Specialization for a Record field.
-inline void* attachRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
-				   DataType, const Record*)
-{
-    return parent->get_pointer (fieldNumber, TpRecord, "Record");
-}
-// Specialization for a TableRecord field.
-inline void* attachRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
-				   DataType, const TableRecord*)
-{
-    return parent->get_pointer (fieldNumber, TpRecord, "TableRecord");
-}
-
-
-
 
 } //# NAMESPACE CASACORE - END
 

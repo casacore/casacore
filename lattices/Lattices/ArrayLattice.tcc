@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_ARRAYLATTICE_TCC
 #define LATTICES_ARRAYLATTICE_TCC
@@ -137,6 +135,7 @@ void ArrayLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
 	    where + (sourceBuffer.shape()-1)*stride, 
 	    stride) = sourceBuffer;
   } else {
+    AlwaysAssert(ldim > sdim, AipsError);
     Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
     itsData(where, 
 	    where + (allAxes.shape()-1)*stride, 

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# This is Fallible2.cc not Fallible.cc because it's a non-templated function
 //# and template instantiators normally do not like them in the same .cc file

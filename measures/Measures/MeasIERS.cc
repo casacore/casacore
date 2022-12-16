@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/measures/Measures/MeasIERS.h>
@@ -40,6 +38,8 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/System/AppState.h>
+
+#include <atomic>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

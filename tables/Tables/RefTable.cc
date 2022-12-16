@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/RefTable.h>
 #include <casacore/tables/Tables/RefColumn.h>
@@ -64,24 +62,22 @@ RefTable::RefTable (AipsIO& ios, const String& name, rownr_t nrrow, int opt,
 
 RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
 : BaseTable    ("", Table::Scratch, nrall),
-  baseTabPtr_p (btp->root()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (order),
   rowStorage_p (nrall),       // allocate vector of rownrs
   changed_p    (True)
 {
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     //# Get root table (will be parent if btp is an reference table).
-    //# Link to root table (ie. increase its reference count).
-    baseTabPtr_p->link();
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
 : BaseTable    ("", Table::Scratch, rownrs.nelements()),
-  baseTabPtr_p (btp->root()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (True),
   rowStorage_p (0),
   changed_p    (True)
@@ -90,24 +86,23 @@ RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     rowStorage_p = rownrs;
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    const rownr_t* rows = rowStorage_p.data();
     //# Check if the row numbers do not exceed #rows.
     rownr_t nmax = btp->nrow();
     for (rownr_t i=0; i<nrrow_p; i++) {
-	if (rows_p[i] >= nmax) {
-            throw (indexError<rownr_t> (rows_p[i], "RefTable Row vector"));
+	if (rows[i] >= nmax) {
+            throw (indexError<rownr_t> (rows[i], "RefTable Row vector"));
 	}
     }
     //# Adjust rownrs in case input table is a reference table.
-    //# Link to the root table.
     rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
-    baseTabPtr_p->link();
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 : BaseTable    ("", Table::Scratch, 0),
-  baseTabPtr_p (btp->root()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),              // initially empty vector of rownrs
   changed_p    (True)
@@ -123,15 +118,13 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 	}
     }
     //# Adjust rownrs in case input table is a reference table.
-    //# Link to the root table.
     rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
-    baseTabPtr_p->link();
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
 : BaseTable    ("", Table::Scratch, btp->nrow()),
-  baseTabPtr_p (btp->root()),
+  baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),
   changed_p    (True)
@@ -148,9 +141,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
     //# Get the row numbers from the input table.
     //# Copy them to this table.
     rowStorage_p = btp->rowNumbers();
-    rows_p = getStorage (rowStorage_p);
-    //# Link to the root table.
-    baseTabPtr_p->link();
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'p');
 }
 
@@ -168,8 +159,6 @@ RefTable::~RefTable()
     for (auto& x : colMap_p) {
         delete x.second;
     }
-    //# Unlink from root.
-    BaseTable::unlink (baseTabPtr_p);
 }
 
 
@@ -182,14 +171,6 @@ void RefTable::getPartNames (Block<String>& names, Bool recursive) const
     names.resize (inx + 1);
     names[inx] = baseTabPtr_p->tableName();
   }
-}
-
-rownr_t* RefTable::getStorage (Vector<rownr_t>& rownrs)
-{
-    Bool deleteIt;
-    rownr_t* p = rownrs.getStorage (deleteIt);
-    AlwaysAssert (deleteIt == False, AipsError);
-    return p;
 }
 
 void RefTable::reopenRW()
@@ -260,10 +241,15 @@ uInt RefTable::getModifyCounter() const
 Bool RefTable::adjustRownrs (rownr_t nr, Vector<rownr_t>& rowStorage,
 			     Bool determineOrder) const
 {
-    rownr_t* rownrs = getStorage (rowStorage);
+    // Note that rowStorage can be the same as rowStorage_p.
+    AlwaysAssert (nr <= rowStorage.size(), AipsError);
+    rowStorage.resize (nr, True);
+    AlwaysAssert (rowStorage.contiguousStorage(), AipsError);
+    const rownr_t* rows = rowStorage_p.data();
+    rownr_t* rownrs = rowStorage.data();
     Bool rowOrder = True;
     for (rownr_t i=0; i<nr; i++) {
-	rownrs[i] = rows_p[rownrs[i]];
+	rownrs[i] = rows[rownrs[i]];
     }
     if (determineOrder) {
 	for (rownr_t i=1; i<nr; i++) {
@@ -327,7 +313,7 @@ void RefTable::writeRefTable (Bool)
           if (version == 2) {
             ios.put (todo, rows32p+done, False);
           } else {
-            ios.put (todo, rows_p+done, False);
+            ios.put (todo, rowStorage_p.data()+done, False);
           }
           done += todo;
         }
@@ -369,13 +355,14 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     DebugAssert (nrrow == nrrow_p, AipsError);
     //# Resize the block of rownrs and read them in.
     rowStorage_p.resize (nrrow);
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    rownr_t* rows = rowStorage_p.data();
     rownr_t done = 0;
     // Do not read more than 2**20 rows at once (CAS-7020).
     if (version > 2) {
       while (done < nrrow) {
         rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
-        ios.get (todo, rows_p+done);
+        ios.get (todo, rows+done);
         done += todo;
       }
     } else {
@@ -398,7 +385,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     }else{
         tab = Table(rootName, lockOptions, Table::Update, tsmOption);
     }
-    baseTabPtr_p = tab.baseTablePtr();
+    baseTabPtr_p = tab.baseTablePtr()->shared_from_this();
     if (rootNrow > baseTabPtr_p->nrow()) {
 	throw (TableInvOper
 	           ("RefTable::getRef, #rows in referenced table decreased"));
@@ -414,8 +401,6 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     //# Read the TableInfo object.
     getTableInfo();
     //# Great, everything is done.
-    //# Now link to the root table.
-    baseTabPtr_p->link();
 }
 
 
@@ -543,9 +528,9 @@ void RefTable::addRownr (rownr_t rnr)
     if (nrrow_p >= nrow) {
         nrow = max ( nrow + 1024, rownr_t(1.2f * nrow));
 	rowStorage_p.resize (nrow, True);
-	rows_p = getStorage (rowStorage_p);
+        AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     }
-    rows_p[nrrow_p++] = rnr;
+    rowStorage_p[nrrow_p++] = rnr;
     changed_p = True;
 }
 
@@ -555,12 +540,12 @@ void RefTable::addRownrRange (rownr_t startRownr, rownr_t endRownr)
     rownr_t nrow = rowStorage_p.nelements();
     rownr_t new_nrrow_p = nrrow_p + endRownr - startRownr + 1;
     if (new_nrrow_p > nrow) {
-        rowStorage_p.resize (nrow + endRownr - startRownr + 1, True);
-        rows_p = getStorage (rowStorage_p);
+        rowStorage_p.resize (new_nrrow_p, True);
+        AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     }
-    std::iota(rows_p + nrrow_p, rows_p + new_nrrow_p, startRownr);
-    //for(rownr_t irow = startRownr; irow <= endRownr; ++irow)
-    //    rows_p[nrrow_p++] = irow;
+    rownr_t* rows = rowStorage_p.data();
+    // Fill with increasing rownr
+    std::iota(rows + nrrow_p, rows + new_nrrow_p, startRownr);
     nrrow_p = new_nrrow_p;
     changed_p = True;
 }
@@ -571,7 +556,7 @@ void RefTable::setNrrow (rownr_t nrrow)
     if (nrrow > nrrow_p) {
 	throw (TableError ("RefTable::setNrrow: exceeds current nrrow"));
     }
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     nrrow_p = nrrow;
     changed_p = True;
 }
@@ -723,23 +708,24 @@ BaseColumn* RefTable::getColumn (uInt columnIndex) const
 }
     
 
-Vector<rownr_t>* RefTable::rowStorage()
-    { return &rowStorage_p; }
+Vector<rownr_t>& RefTable::rowStorage()
+    { return rowStorage_p; }
 
 //# Convert a vector of row numbers to row numbers in this table.
 Vector<rownr_t> RefTable::rootRownr (const Vector<rownr_t>& rownrs) const
 {
+    const rownr_t* rows = rowStorage_p.data();
     rownr_t nrow = rownrs.nelements();
     Vector<rownr_t> rnr(nrow);
     for (rownr_t i=0; i<nrow; i++) {
-	rnr(i) = rows_p[rownrs(i)];
+	rnr(i) = rows[rownrs(i)];
     }
     return rnr;
 }
 	
 
 BaseTable* RefTable::root()
-    { return baseTabPtr_p; }
+    { return baseTabPtr_p.get(); }
 Bool RefTable::rowOrder() const
     { return rowOrd_p; }
 
@@ -831,8 +817,9 @@ void RefTable::removeRow (rownr_t rownr)
     if (rownr >= nrrow_p) {
 	throw (TableInvOper ("removeRow: rownr out of bounds"));
     }
+    rownr_t* rows = rowStorage_p.data();
     if (rownr < nrrow_p - 1) {
-	objmove (rows_p+rownr, rows_p+rownr+1, nrrow_p-rownr-1);
+	objmove (rows+rownr, rows+rownr+1, nrrow_p-rownr-1);
     }
     nrrow_p--;
     changed_p = True;
@@ -893,23 +880,24 @@ void RefTable::refAnd (rownr_t nr1, const rownr_t* inx1,
 {
     rownr_t allrow = (nr1 < nr2  ?  nr1 : nr2);  // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
-	    row1 = 0xffffffff;                // end of inx1
+            row1 = std::numeric_limits<rownr_t>::max();   // end of inx1
 	}else{
 	    row1 = inx1[i1];                  // next element in inx1
 	}
 	if (i2 >= nr2) {
-	    row2 = 0xffffffff;                // end of inx2
+            row2 = std::numeric_limits<rownr_t>::max();   // end of inx2
 	}else{
 	    row2 = inx2[i2];                  // next element in inx2
 	}
 	if (row1 == row2) {
-	    if (row1 == 0xffffffff) break;    // end of both inx
-	    rows_p[nrrow_p++] = row1;
+	    if (row1 == std::numeric_limits<rownr_t>::max()) break; // end of both inx
+	    rows[nrrow_p++] = row1;
 	    i1++;
 	    i2++;
 	}else{
@@ -929,31 +917,32 @@ void RefTable::refOr (rownr_t nr1, const rownr_t* inx1,
 {
     rownr_t allrow = nr1 + nr2;                  // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
-	    row1 = 0xffffffff;                // end of inx1
+            row1 = std::numeric_limits<rownr_t>::max();   // end of inx1
 	}else{
 	    row1 = inx1[i1];                  // next element in inx1
 	}
 	if (i2 >= nr2) {
-	    row2 = 0xffffffff;                // end of inx2
+	    row2 = std::numeric_limits<rownr_t>::max();   // end of inx2
 	}else{
 	    row2 = inx2[i2];                  // next element in inx2
 	}
 	if (row1 == row2) {
-	    if (row1 == 0xffffffff) break;    // end of both inx
-	    rows_p[nrrow_p++] = row1;
+	    if (row1 == std::numeric_limits<rownr_t>::max()) break; // end of both inx
+	    rows[nrrow_p++] = row1;
 	    i1++;
 	    i2++;
 	}else{
 	    if (row1 < row2) {
-		rows_p[nrrow_p++] = row1;
+		rows[nrrow_p++] = row1;
 		i1++;                         // next inx1
 	    }else{
-		rows_p[nrrow_p++] = row2;
+		rows[nrrow_p++] = row2;
 		i2++;                         // next inx2
 	    }
 	}
@@ -967,27 +956,28 @@ void RefTable::refSub (rownr_t nr1, const rownr_t* inx1,
 {
     rownr_t allrow = nr1;                        // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
-	    row1 = 0xffffffff;                // end of inx1
+	    row1 = std::numeric_limits<rownr_t>::max();  // end of inx1
 	}else{
 	    row1 = inx1[i1];                  // next element in inx1
 	}
 	if (i2 >= nr2) {
-	    row2 = 0xffffffff;                // end of inx2
+	    row2 = std::numeric_limits<rownr_t>::max();  // end of inx2
 	}else{
 	    row2 = inx2[i2];                  // next element in inx2
 	}
 	if (row1 == row2) {
-	    if (row1 == 0xffffffff) break;    // end of both inx
+	    if (row1 == std::numeric_limits<rownr_t>::max()) break; // end of both inx
 	    i1++;
 	    i2++;
 	}else{
 	    if (row1 < row2) {
-		rows_p[nrrow_p++] = row1;
+		rows[nrrow_p++] = row1;
 		i1++;                         // next inx1
 	    }else{
 		i2++;                         // next inx2
@@ -1003,30 +993,31 @@ void RefTable::refXor (rownr_t nr1, const rownr_t* inx1,
 {
     rownr_t allrow = nr1 + nr2;                  // max #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
 	if (i1 >= nr1) {
-	    row1 = 0xffffffff;                // end of inx1
+	    row1 = std::numeric_limits<rownr_t>::max();  // end of inx1
 	}else{
 	    row1 = inx1[i1];                  // next element in inx1
 	}
 	if (i2 >= nr2) {
-	    row2 = 0xffffffff;                // end of inx2
+	    row2 = std::numeric_limits<rownr_t>::max();  // end of inx2
 	}else{
 	    row2 = inx2[i2];                  // next element in inx2
 	}
 	if (row1 == row2) {
-	    if (row1 == 0xffffffff) break;    // end of both inx
+	    if (row1 == std::numeric_limits<rownr_t>::max()) break; // end of both inx
 	    i1++;
 	    i2++;
 	}else{
 	    if (row1 < row2) {
-		rows_p[nrrow_p++] = row1;
+		rows[nrrow_p++] = row1;
 		i1++;                         // next inx1
 	    }else{
-		rows_p[nrrow_p++] = row2;
+		rows[nrrow_p++] = row2;
 		i2++;                         // next inx2
 	    }
 	}
@@ -1042,17 +1033,18 @@ void RefTable::refNot (rownr_t nr, const rownr_t* inx, rownr_t nrtot)
     // So loop through the inx-array and store all rownrs not in the array.
     rownr_t allrow = nrtot - nr;                 // #output rows
     rowStorage_p.resize (allrow);             // allocate output storage
-    rows_p = getStorage (rowStorage_p);
+    AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
+    rownr_t* rows = rowStorage_p.data();
     rownr_t start = 0;
     rownr_t i, j;
     for (i=0; i<nr; i++) {                    // loop through inx-array
 	for (j=start; j<inx[i]; j++) {
-	    rows_p[nrrow_p++] = j;            // not in inx-array
+	    rows[nrrow_p++] = j;            // not in inx-array
 	}
 	start = inx[i] + 1;
     }
     for (j=start; j<nrtot; j++) {             // handle last interval
-	rows_p[nrrow_p++] = j;
+	rows[nrrow_p++] = j;
     }
     changed_p = True;
 }

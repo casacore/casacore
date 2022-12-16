@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeStatistics.tcc 21586 2015-03-25 13:46:25Z gervandiepen $
 
 #ifndef LATTICES_LATTICESTATISTICS_TCC
 #define LATTICES_LATTICESTATISTICS_TCC
@@ -391,8 +389,7 @@ Bool LatticeStatistics<T>::setNewLattice(
    if (!goodParameterStatus_p) {
       return False;
    }
-   T* dummy = 0;
-   DataType latticeType = whatType(dummy);
+   DataType latticeType = whatType<T>();
    if (latticeType != TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
       ostringstream oss;
       oss << "Statistics cannot yet be evaluated from lattices of type : " << latticeType << endl;
@@ -1085,7 +1082,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
 ) {
     T overallMax = 0;
     T overallMin = 0;
-    Bool isReal = whatType(&overallMax);
+    Bool isReal = whatType<T>();
     const uInt nMaxThreads = OMP::nMaxThreads();
     IPosition displayAxes(displayAxes_p);
     uInt nArraysMax = cursorShape.keepAxes(displayAxes).product();
@@ -1323,7 +1320,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     T currentMax = fixedCurMinMax ? range_p[1] : 0;
     T overallMax = 0;
     T overallMin = 0;
-    Bool isReal = whatType(&currentMax);
+    Bool isReal = whatType<T>();
     IPosition curPos;
     LatticeStatsDataProvider<T> lattDP;
     MaskedLatticeStatsDataProvider<T> maskedLattDP;
@@ -1699,8 +1696,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // out how big the field width needs to be.  Min of 6 so label fits.
 
    Int oDWidth = 15;
-   T* dummy = 0;
-   DataType type = whatType(dummy);
+   DataType type = whatType<T>();
    if (type==TpComplex) {
       oDWidth = 2*oDWidth + 3;    // (x,y)
    }
@@ -1871,8 +1867,7 @@ Bool LatticeStatistics<T>::getLayerStats(
       stringstream os;
       const Int oPrec = 6;
       Int oDWidth = 15;
-      T* dummy = 0;
-      DataType type = whatType(dummy);
+      DataType type = whatType<T>();
       if (type==TpComplex) {
          oDWidth = 2*oDWidth + 3; 
       }
@@ -2068,8 +2063,7 @@ Bool LatticeStatistics<T>::getLayerStats(
 
     //const Int oPrec = 6;
     Int oDWidth = 15;
-    T* dummy = 0;
-    DataType type = whatType(dummy);
+    DataType type = whatType<T>();
     if (type==TpComplex) {
         oDWidth = 2*oDWidth + 3;
     }
@@ -2180,8 +2174,7 @@ Bool LatticeStatistics<T>::getLayerStats(
     const uInt n1 = ord.shape()(0);
 
     Int oDWidth = 15;
-    T* dummy = 0;
-    DataType type = whatType(dummy);
+    DataType type = whatType<T>();
     if (type==TpComplex) {
         oDWidth = 2*oDWidth + 3;
     }
@@ -2248,8 +2241,7 @@ Bool LatticeStatistics<T>::listLayerStats (
    const uInt n1 = stats.shape()(0);
 
    Int oDWidth = 15;
-   T* dummy = 0;
-   DataType type = whatType(dummy);
+   DataType type = whatType<T>();
    if (type==TpComplex) {
       oDWidth = 2*oDWidth + 3; 
    }
@@ -2779,8 +2771,7 @@ void LatticeStatistics<T>::displayStats (
 
    const Int oPrec = 6;
    Int oWidth = 14;
-   T* dummy = 0;
-   DataType type = whatType(dummy);
+   DataType type = whatType<T>();
    if (type==TpComplex) {
       oWidth = 32;
    }

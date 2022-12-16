@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprFuncNode.h 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #ifndef TABLES_EXPRFUNCNODE_H
 #define TABLES_EXPRFUNCNODE_H

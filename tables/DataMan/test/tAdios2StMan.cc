@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/Adios2StMan.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
@@ -273,7 +271,7 @@ void doCopyTable(std::string inTable, std::string outTable, std::string column)
 void doReadCopiedTable(std::string filename, std::string column, uInt rows, IPosition array_pos)
 {
     Table tab(filename);
-    VerifyArrayColumn<Complex>(tab, "array_Complex", rows, array_pos);
+    VerifyArrayColumn<Complex>(tab, column, rows, array_pos);
 }
 
 int main(int argc, char **argv){

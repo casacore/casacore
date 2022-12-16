@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_GENSORT_H
 #define CASA_GENSORT_H
@@ -201,7 +199,10 @@ private:
 // comparison. However, this sort allows to sort const data.
 // Another advantage is that this sort is always stable (i.e. equal
 // values are kept in their original order).
-
+//
+// The class is templated on the type T of the sort key and the type
+// INX of the index vector. In principle INX can be any type, but
+// it should be a sufficiently large integer type (say uInt or uInt64).
 template<class T, class INX=uInt> class GenSortIndirect
 {
 public:

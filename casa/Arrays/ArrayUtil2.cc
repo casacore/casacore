@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# The include of Array.h before ArrayUtil.h is needed, otherwise
 //# gcc-4 complains (rightfully) about partialFuncHelper not being declared.

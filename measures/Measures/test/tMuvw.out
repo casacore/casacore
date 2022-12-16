@@ -114,7 +114,6 @@ near:           0
 nearAbs:        0
 !=:             1
 ==:             0
-type:           4
 Original:       [30, 40, 0]
 adjust:         [0.6, 0.8, 0]
 readjust:       [30, 40, 0]
@@ -130,9 +129,7 @@ get:            [10000, 1000, 0] cm
 getAngle:       [5.71059, 0] deg
 getDefaultType: ITRF
 getRefString:   HADEC
-myType:         5
 Original:       uvw: [100, 10, 0]
-type:           5
 Ctor copy:      uvw: [100, 10, 0]
 Assign:         uvw: [100, 10, 0]
 tellMe:         uvw

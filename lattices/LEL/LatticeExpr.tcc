@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTICEEXPR_TCC
 #define LATTICES_LATTICEEXPR_TCC
@@ -80,7 +78,7 @@ LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr,
 template <class T>
 void LatticeExpr<T>::init (const LatticeExprNode& expr)
 {
-    DataType thisDT = whatType (static_cast<T*>(0));
+    DataType thisDT = whatType<T>();
     if (expr.dataType() == thisDT) {
 	expr_p = expr;
     } else {

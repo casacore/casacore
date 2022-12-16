@@ -1,4 +1,4 @@
-//# MCFrequency.cc: MFrequency conversion routines 
+//# MCFrequency.cc: MFrequency conversion routines
 //# Copyright (C) 1995-1998,2000-2003,2007,2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/BasicSL/Constants.h>
@@ -32,6 +30,22 @@
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/measures/Measures/Aberration.h>
 #include <casacore/measures/Measures/MeasTable.h>
+
+namespace {
+  inline void updatePosition(casacore::Double const angle0, casacore::Double const angle1,
+                             casacore::MVPosition &pos) {
+      if (angle1 == 0) {
+        pos(0) = std::cos(angle0);
+        pos(1) = std::sin(angle0);
+        pos(2) = 0;
+      } else {
+        auto const loc = std::cos(angle1);
+        pos(0) = std::cos(angle0) * loc;
+        pos(1) = std::sin(angle0) * loc;
+        pos(2) = std::sin(angle1);
+      }
+  }
+}
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -73,7 +87,7 @@ MCFrequency::~MCFrequency() {
 //# Member functions
 
 void MCFrequency::getConvert(MConvertBase &mc,
-			     const MRBase &inref, 
+			     const MRBase &inref,
 			     const MRBase &outref) {
 
   Int iin  = inref.getType();
@@ -106,14 +120,14 @@ void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
   if (!MVDIR1) MVDIR1 = new MVDirection();
 
   switch (which) {
-      
+
   case BARY_GEO:
     if (ABERFROM) delete ABERFROM;
     ABERFROM = new Aberration(Aberration::STANDARD);
     mc.addFrameType(MeasFrame::EPOCH);
     mc.addFrameType(MeasFrame::DIRECTION);
     break;
-      
+
   case GEO_BARY:
     if (ABERTO) delete ABERTO;
     ABERTO = new Aberration(Aberration::STANDARD);
@@ -142,7 +156,7 @@ void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
     break;
 
   case REST_LSRK:
-  case LSRK_REST:      
+  case LSRK_REST:
     mc.addFrameType(MeasFrame::DIRECTION);
     mc.addFrameType(MeasFrame::VELOCITY);
     break;
@@ -171,7 +185,12 @@ void MCFrequency::doConvert(MVFrequency &in,
     switch (mc.getMethod(i)) {
 
     case LSRD_BARY: {
-      *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
+      auto const vel = MeasTable::velocityLSR(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
@@ -181,7 +200,12 @@ void MCFrequency::doConvert(MVFrequency &in,
     break;
 
     case BARY_LSRD: {
-      *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
+      auto const vel = MeasTable::velocityLSR(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
@@ -199,7 +223,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
-    }	
+    }
     break;
 
     case GEO_TOPO: {
@@ -212,7 +236,8 @@ void MCFrequency::doConvert(MVFrequency &in,
       MFrequency::Ref::framePosition(outref, inref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
-      *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
+      // *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
+      updatePosition(C::pi_2 + g1, 0.0, *MVPOS1);
       MVPOS1->readjust(g2 * cos(g3));
       MFrequency::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
@@ -231,7 +256,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
-    }	
+    }
     break;
 
     case TOPO_GEO: {
@@ -244,7 +269,8 @@ void MCFrequency::doConvert(MVFrequency &in,
       MFrequency::Ref::framePosition(inref, outref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
-      *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
+      // *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
+      updatePosition(C::pi_2 + g1, 0.0, *MVPOS1);
       MVPOS1->readjust(g2*cos(g3));
       MFrequency::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
@@ -254,77 +280,125 @@ void MCFrequency::doConvert(MVFrequency &in,
     }
     break;
 
-    case LSRD_GALACTO:
-      *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
+    case LSRD_GALACTO: {
+      auto const &vel = MeasTable::velocityLSRGal(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
-      break;
-      
-    case GALACTO_LSRD:
-      *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
+    }
+    break;
+
+    case GALACTO_LSRD: {
+      auto const &vel = MeasTable::velocityLSRGal(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
-      break;
+    }
+    break;
 
-    case LSRK_BARY:
-      *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
+    case LSRK_BARY: {
+      auto const &vel = MeasTable::velocityLSRK(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
-      break;
+    }
+    break;
 
-    case BARY_LSRK:
-      *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
+    case BARY_LSRK: {
+      auto const &vel = MeasTable::velocityLSRK(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
-      break;
+    }
+    break;
 
-    case LGROUP_BARY:
-      *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
+    case LGROUP_BARY: {
+      auto const &vel = MeasTable::velocityLGROUP(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
-      break;
+    }
+    break;
 
-    case BARY_LGROUP:
-      *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
+    case BARY_LGROUP: {
+      auto const &vel = MeasTable::velocityLGROUP(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
-      break;
+    }
+    break;
 
-    case CMB_BARY:
-      *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
+    case CMB_BARY: {
+      auto const &vel = MeasTable::velocityCMB(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
-      break;
+    }
+    break;
 
-    case BARY_CMB:
-      *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
+    case BARY_CMB: {
+      auto const &vel = MeasTable::velocityCMB(0);
+      if (vel.nelements() == 3) {
+        MVPOS1->putVector(vel);
+      } else {
+        *MVPOS1 = MVPosition(vel);
+      }
       MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
-      break;
+    }
+    break;
 
     case REST_LSRK:
       MFrequency::Ref::frameRadialVelocity(inref, outref).

@@ -11,7 +11,7 @@
 //# but WITHOUT ANY WARRANTY; without even the implied warranty of
 //# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //# GNU General Public License for more details.
-//# 
+//#
 //# You should have received a copy of the GNU General Public License
 //# along with this program; if not, write to the Free Software
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/msfits/MSFits/MSFitsOutputAstron.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
@@ -86,17 +84,17 @@ void MSFitsOutputAstron::timeToDay(Int &day, Double &dayFraction, Double time)
 
 Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
 				 const MeasurementSet& ms,
-				 const String& column, 
+				 const String& column,
 				 Int startchan, Int nchan, Int stepchan,
 				 Bool writeSysCal,
 				 Bool asMultiSource,
-				 Bool combineSpw,			       
+				 Bool combineSpw,
 				 Bool writeStation,
                                  Double sensitivity)
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFitsFile"));
   // A FITS table can handle only Int nrows.
-  if (ms.nrow() > std::numeric_limits<Int>::max()) {
+  if (ms.nrow() > static_cast<rownr_t>(std::numeric_limits<Int>::max())) {
     throw AipsError("MS " + ms.tableName() + " is too big (#rows exceeds MAX_INT)");
   }
   const uInt nrow = ms.nrow();
@@ -113,7 +111,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   } else {
     outfile = fitsfile; // Use the supplied name
   }
-  
+
   String errmsg;
   NewFile fileOK(True);
   if (!fileOK.valueOK(outfile, errmsg)) {
@@ -131,7 +129,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
     os << LogIO::NORMAL << "MS " << ms.tableName()
        << " is a subset of another MS" << LogIO::POST;
   }
-    
+
   // Find the number of IF's (spectral-windows).
   Block<Int> spwidMap;
   Vector<Int> spwids;
@@ -156,10 +154,10 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
     }
     Vector<Int> fieldids;
     nrfield = makeIdMap (fieldidMap, fieldids, fldid, isSubset);
-  }  
+  }
 
   // Write main table. Get freqs and channel-width back.
-  // For non-WSRT, refFreq and refFreq1 are the same, for WSRT they may 
+  // For non-WSRT, refFreq and refFreq1 are the same, for WSRT they may
   // be different (line observations). refFreq1 will be handed to the AN
   // table, so this is consistent with the Main table (WSRT and non-WSRT).
 
@@ -167,7 +165,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   Double refFreq, refFreq1, chanbw;
   FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, refFreq1, chanbw,
 				     outfile, ms, column,
-				     spwidMap, nrspw, startchan, nchan, 
+				     spwidMap, nrspw, startchan, nchan,
 				     stepchan, fieldidMap,
 				     asMultiSource, combineSpw);
 
@@ -178,14 +176,14 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
     os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
     // Note: handing over refFreq otherwise this goes wrong...The FQ table
     // lists the offset frequencies wrt a single reference.
-    ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq, 
+    ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq,
 		 chanbw, combineSpw);
   }
   if (!ok) {
     os << LogIO::SEVERE << "Could not write FQ table\n" << LogIO::POST;
   } else {
     os << LogIO::NORMAL << "Writing AIPS AN table" << LogIO::POST;
-    // Note: handing over refFreq1 instead of refFreq; see above. Only the 
+    // Note: handing over refFreq1 instead of refFreq; see above. Only the
     // refreq1 of the first IF is needed.
     ok = writeAN(fitsOutput, ms, refFreq1, writeStation);
   }
@@ -201,7 +199,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
       os << LogIO::SEVERE << "Could not write SU table\n" << LogIO::POST;
     }
   }
-  
+
   // If needed, create tables from the SYSCAL table.
   // Determine if we have to skip the first SYSCAL time.
   // This is needed for WSRT MS's, where the first time in the SYSCAL
@@ -232,11 +230,11 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
 }
 
 
-FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq, 
+FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 				    Double& refFreq,
 				    Double& refFreq1,
 				    Double& chanbw,
-				    const String &outFITSFile, 
+				    const String &outFITSFile,
 				    const MeasurementSet &rawms,
 				    const String &column,
 				    const Block<Int>& spwidMap,
@@ -295,13 +293,13 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     os << LogIO::SEVERE << "No polarization table in MS" << LogIO::POST;
     return 0;
   }
-  ScalarColumn<Int> spwId(ddTable, 
+  ScalarColumn<Int> spwId(ddTable,
 	 MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
-  ScalarColumn<Int> polId(ddTable, 
+  ScalarColumn<Int> polId(ddTable,
 	 MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
-  ScalarColumn<Int> numcorr(polTable, 
+  ScalarColumn<Int> numcorr(polTable,
 	      MSPolarization::columnName(MSPolarization::NUM_CORR));
-  ScalarColumn<Int> numchan(spectralTable, 
+  ScalarColumn<Int> numchan(spectralTable,
 	      MSSpectralWindow::columnName(MSSpectralWindow::NUM_CHAN));
   ArrayColumn<Double> frequencies(spectralTable,
 	    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
@@ -309,7 +307,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 				 MSPolarization::columnName(MSPolarization::CORR_TYPE));
   ScalarColumn<Double> totalbw(spectralTable,
 	      MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  ScalarColumn<Int> meas_freq_ref(spectralTable, 
+  ScalarColumn<Int> meas_freq_ref(spectralTable,
 	      MSSpectralWindow::columnName(MSSpectralWindow::MEAS_FREQ_REF));
 
   // Also find out what the Stokes are and make sure that they are the same
@@ -320,7 +318,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   Double delta = 0;
 
   // Must be a vector<Double>
-  Double f0 = 0; 
+  Double f0 = 0;
   Double f0_org = 0 ; // Needed for WSRT, to remember the frequency of chan0
   Double bw0 = 0;
   Vector<Int> stokes;
@@ -346,27 +344,27 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
  	     << "Number of correlations or channels is zero" << LogIO::POST;
  	  return 0;
  	}
-	f0 = freqs(0); 
+	f0 = freqs(0);
 	bw0 = delta;
 	chanbw = abs(delta);
 	stokes = stokesTypes(p);
-	
-	if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0) 
+
+	if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0)
 	&& ((nchan*chanstep+chanstart) <= numchan0) ){
 
 	  f0 = freqs(chanstart);
 	  bw0= delta*chanstep;
 	} else {
 	  nchan=numchan0;
-	  chanstep=1; 
+	  chanstep=1;
 	  chanstart=0;
 	}
       }
- 
+
       // If WSRT line, we need to take the central frequency from the NFRA_
       // table and calculate the frequency of the first channel based on
       // the fact that this frequency corresponds to that of channel n/2 + 1.
-      // Note that for WSRT the channel frequencies go from high to low, so 
+      // Note that for WSRT the channel frequencies go from high to low, so
       // delta is negative. f0_org is set to the frequency of channel 0 as
       // it is in the MS
       // Do this for the first IVC-band only!
@@ -381,7 +379,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 	  tc.getScalar(0, tmp);
 
 	  //
-	  // Get FW1.GeoSkyFreq 
+	  // Get FW1.GeoSkyFreq
 	  //
 	  Double fw1_geoskyfreq;
 	  sel = tmsParm (tmsParm.col("NAME") == "FW1.GeoSkyFreq");
@@ -459,7 +457,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     refFreq=f0 + bw0/2.0 -delta/2.0;
   }
   refPixelFreq = f0RefPix;
- 
+
 
   // OK, turn the stokes into FITS values.
   for (Int j=0; j<numcorr0; j++) {
@@ -564,7 +562,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   String bunit = "UNCALIB";
   {
     TableColumn indata (rawms, columnName);
-    if (indata.keywordSet().isDefined("QuantumUnit") && 
+    if (indata.keywordSet().isDefined("QuantumUnit") &&
 	indata.keywordSet().dataType("QuantumUnit") == TpString) {
       indata.keywordSet().get("QuantumUnit", bunit);
       bunit.upcase();
@@ -573,16 +571,16 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ek.define("bunit", bunit);
 
   // CTYPE CRVAL CDELT CRPIX  CROTA
-  ek.define("ctype2", "COMPLEX"); 
+  ek.define("ctype2", "COMPLEX");
   ek.define("crval2", 1.0);
   ek.define("cdelt2", 1.0);
   ek.define("crpix2", 1.0);
   ek.define("crota2", 0.0);
 
-  ek.define("ctype3", "STOKES"); 
+  ek.define("ctype3", "STOKES");
   ek.define("crval3", stokes(stokesIndex(0))*1.0);
   if (stokes.nelements() > 1) {
-    ek.define("cdelt3", (stokes(stokesIndex(1)) - 
+    ek.define("cdelt3", (stokes(stokesIndex(1)) -
 			 stokes(stokesIndex(0)))*1.0);
   } else {
     ek.define("cdelt3", 1.0);
@@ -590,7 +588,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ek.define("crpix3", 1.0);
   ek.define("crota3", 0.0);
 
-  ek.define("ctype4", "FREQ"); 
+  ek.define("ctype4", "FREQ");
   ek.define("crval4", refFreq);
   ek.define("cdelt4", bw0);
   if (doWsrt) {
@@ -604,55 +602,55 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   }
   ek.define("crota4", 0.0);
 
-  ek.define("ctype5", "IF"); 
+  ek.define("ctype5", "IF");
   ek.define("crval5", 1.0);
   ek.define("cdelt5", 1.0);
   ek.define("crpix5", 1.0);
   ek.define("crota5", 0.0);
 
-  ek.define("ctype6", "RA"); 
+  ek.define("ctype6", "RA");
   ek.define("crval6", radec(0));
   ek.define("cdelt6", 1.0);
   ek.define("crpix6", 1.0);
   ek.define("crota6", 0.0);
 
-  ek.define("ctype7", "DEC"); 
+  ek.define("ctype7", "DEC");
   ek.define("crval7", radec(1));
   ek.define("cdelt7", 1.0);
   ek.define("crpix7", 1.0);
   ek.define("crota7", 0.0);
-  
+
 
   // PTYPE PSCALE PZERO
   ek.define("ptype1", "UU");
-  ek.define("pscal1", 1.0); 
+  ek.define("pscal1", 1.0);
   ek.define("pzero1", 0.0);
   ek.define("ptype2", "VV");
-  ek.define("pscal2", 1.0); 
+  ek.define("pscal2", 1.0);
   ek.define("pzero2", 0.0);
   ek.define("ptype3", "WW");
-  ek.define("pscal3", 1.0); 
+  ek.define("pscal3", 1.0);
   ek.define("pzero3", 0.0);
   ek.define("ptype4", "DATE");
-  ek.define("pscal4", 1.0); 
+  ek.define("pscal4", 1.0);
   ek.define("pzero4", 0.0);
   ek.setComment("ptype4", "Day number");
   ek.define("ptype5", "DATE");
-  ek.define("pscal5", 1.0); 
+  ek.define("pscal5", 1.0);
   ek.define("pzero5", 0.0);
   ek.setComment("ptype5", "Day fraction");
   ek.define("ptype6", "BASELINE");
-  ek.define("pscal6", 1.0); 
+  ek.define("pscal6", 1.0);
   ek.define("pzero6", 0.0);
   ek.define("ptype7", "FREQSEL");
-  ek.define("pscal7", 1.0); 
+  ek.define("pscal7", 1.0);
   ek.define("pzero7", 0.0);
   if (asMultiSource) {
     ek.define("ptype8", "SOURCE");
-    ek.define("pscal8", 1.0); 
+    ek.define("pscal8", 1.0);
     ek.define("pzero8", 0.0);
     ek.define("ptype9", "INTTIM");
-    ek.define("pscal9", 1.0); 
+    ek.define("pscal9", 1.0);
     ek.define("pzero9", 0.0);
   }
 
@@ -779,7 +777,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 
   // Make objects for the various columns.
   ArrayColumn<Complex> indata(sortTable, columnName);
-  ArrayColumn<Float> inweightscalar(sortTable, 
+  ArrayColumn<Float> inweightscalar(sortTable,
 				      MS::columnName(MS::WEIGHT));
   ArrayColumn<Float> inweightarray;
   if (hasWeightArray) {
@@ -856,8 +854,8 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 	}
 	++chancounter;
 	for (Int j=0; j<numcorr0; j++) {
-	  
-	  
+
+
 	  Int offset = indptr[j] + k*numcorr0;
 	  if(!fptr[offset]){
 	    realcorr[j] += iptr[offset].real()*wptr[k];
@@ -928,20 +926,20 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // original channelfreqs as in the MS to determine a 1-channel offset)
   // refFreq1 is WSRT specific; must also be handed over to the AN table
   // and the GC table for consequent values in the UVFits file and tables.
-  // For non-line-WSRT and non-WSRT, reqFreq1 and refFreq are the same, so 
+  // For non-line-WSRT and non-WSRT, reqFreq1 and refFreq are the same, so
   // all goes well.
 
-  refFreq1 = refFreq; 
+  refFreq1 = refFreq;
   if (doWsrt && f0_org > 0) {
     refFreq = f0_org + f0RefPix * bw0;
-  }     
+  }
   return outfile;
 }
 
 
-Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms, 
+Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& spwidMap, Int nrspw,
-			   Double refFreq, Int refPixelFreq, 
+			   Double refFreq, Int refPixelFreq,
 			   Double chanbw, Bool combineSpw)
 {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFQ"));
@@ -1003,7 +1001,7 @@ Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
   units.define ("TOTAL BANDWIDTH", "HZ");
   desc.addField("SIDEBAND", TpArrayInt, shape);           // SIDEBAND
 
-  FITSTableWriter writer(output, 
+  FITSTableWriter writer(output,
 			 desc, stringLengths, nentr, header, units, False);
   RecordFieldPtr<Int> freqsel(writer.row(), "FRQSEL");
   RecordFieldPtr< Array<Double> > iffreq(writer.row(), "IF FREQ");
@@ -1158,7 +1156,7 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     // header.define("DATUTC", 0.0);
     // header.define("P_REFANT", 15);
     // header.define("P_DIFF01", 0.0);
-     
+
 
     // #### Row description
     RecordDesc desc;
@@ -1194,7 +1192,7 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
     // SELECT antennas for the current sub-array
     //    MSAntenna antennaTable = ms.antenna()
-    //(ms.antenna().col(MSAntenna::columnName(MSAntenna::ARRAY_ID)) == 
+    //(ms.antenna().col(MSAntenna::columnName(MSAntenna::ARRAY_ID)) ==
     //				  Int(arraynum));
 
     ScalarColumn<String> inantname(antennaCols.station());
@@ -1211,7 +1209,7 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     ArrayColumn<String> inpoltype(feedCols.polarizationType());
     ScalarColumn<Int> inantid(feedCols.antennaId());
 
-    FITSTableWriter writer(output, desc, strlengths, nant, 
+    FITSTableWriter writer(output, desc, strlengths, nant,
 			   header, units, False);
 
     RecordFieldPtr<String> anname(writer.row(), "ANNAME");
@@ -1295,7 +1293,7 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
       *staxof = inantoffset(antnum)(IPosition(1,0));
       // OK, try to find if we're L/R or X/Y
       // This probably breaks down when we have more than one
-      // polarization type on different feeds (unlikely) or 
+      // polarization type on different feeds (unlikely) or
       // different spectral windows (more likely).
       const uInt nmax = feedTable.nrow();
       Bool found = False;
@@ -1359,7 +1357,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
     srcInx=new ColumnsIndex(*sourceTable, "SOURCE_ID");
     srcInxFld= new RecordFieldPtr<Int>(srcInx->accessKey(), "SOURCE_ID");
   }
-  
+
   MSSpectralWindow spectralTable(ms.spectralWindow());
 
   const uInt nrow = fieldTable.nrow();
@@ -1389,7 +1387,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // and VELDEF = radio or optical. The NFRA keywords in the Spectral Window
   // table are NFRA_VELOCDEFINITION and NFRA_CONVERSIONTYPE , respectively!
   // Note that datasets with mixed vel.frames or mixed line/continuum cannot
-  // be handled. 
+  // be handled.
   if (spectralTable.tableDesc().isColumn ("NFRA_VELOCDEFINITION")) {
     ScalarColumn<String> velTypeCol (spectralTable, "NFRA_VELOCDEFINITION");
     velType = velTypeCol(0);
@@ -1404,7 +1402,7 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   } else {
     os << LogIO::NORMAL << "Not setting velocity types" << LogIO::POST;
   }
-    
+
   // #### Row description
   RecordDesc desc;
   Record strlengths, units;
@@ -1444,10 +1442,10 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   units.define ("PMRA", "DEG/DAY");
   desc.addField("PMDEC", TpDouble);
   units.define ("PMDEC", "DEG/DAY");
-    
+
   FITSTableWriter writer(output, desc, strlengths, nrfield,
 			 header, units, False);
-    
+
   RecordFieldPtr<Int> idno(writer.row(), "ID. NO.");
   RecordFieldPtr<String> source(writer.row(), "SOURCE");
   RecordFieldPtr<Int> qual(writer.row(), "QUAL");
@@ -1499,16 +1497,16 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
       *idno = 1 + fieldidMap[fieldnum];
       dir=msfc.phaseDirMeas(fieldnum);
       *source = inname(fieldnum) + "                ";
-      if (dir.type()==MDirection::B1950) {
+      if (dir.getRef().getType()==MDirection::B1950) {
 	*epoch = 1950.;
       }
-      
+
       // Use info from SOURCE table if available.
       // Try to find the SOURCE_ID in the SOURCE table.
       // If multiple rows found, use the first one.
       // Use the first spectral line.
 
-      //  Optional access to SOURCE table 
+      //  Optional access to SOURCE table
       if (sourceTable) {
       	**srcInxFld = insrcid(fieldnum);
       	Vector<rownr_t> rownrs = srcInx->getRowNumbers();
@@ -1535,12 +1533,12 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
       	  }
       	  *qual = sourceColumns->calibrationGroup()(rownr);
       	  *calcode = sourceColumns->code()(rownr) + "    ";
-      	  
+
       	  // Directions have to be converted from radians to degrees.
       	  if (sourceColumns->direction().isDefined(rownr)) {
       	    dir = sourceColumns->directionMeas()(rownr);
       	  }
-      	  if (dir.type()==MDirection::B1950) {
+      	  if (dir.getRef().getType()==MDirection::B1950) {
       	    *epoch = 1950.;
       	  }
       	}
@@ -1792,7 +1790,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   header.define("REF_PIXL", Double(1+refPixelFreq)); // REF_PIXL (==CRPIX4)
   header.define("NO_TABS", Int(shape(0)));         // NO_TABS
   header.define("TABREV", 2);                      // TABREV
-    
+
   // Table description
   RecordDesc desc;
   Record stringLengths; // no strings
@@ -1865,7 +1863,7 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
     //    *arrayId = sysCalColumns.arrayId()(0) + 1;
     *arrayId = 1;
     if (tableChunk.nrow() != havec.nelements()) {
-      os << LogIO::SEVERE << "SysCal table is irregular!" 
+      os << LogIO::SEVERE << "SysCal table is irregular!"
 	 << " Mismatching #rows for antenna " << *antenna << LogIO::POST;
       return False;
     }
@@ -2069,4 +2067,3 @@ Int MSFitsOutputAstron::makeIdMap (Block<Int>& map, Vector<Int>& selids,
 }
 
 } //# NAMESPACE CASACORE - END
-

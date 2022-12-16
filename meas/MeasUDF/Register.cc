@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/meas/MeasUDF/Register.h>
 #include <casacore/meas/MeasUDF/PositionUDF.h>
@@ -205,6 +203,13 @@ namespace casacore {
       os << "  All sources in the Measures Sources table" << endl;
       os << "  SUN   MOON  MERCURY  VENUS  MARS  JUPITER  SATURN  URANUS  NEPTUNE  PLUTO" << endl;
       os << "  CasA  CygA  HerA     HydA   PerA  TauA     VirA" << endl;
+      os << " In function RISET type SUN can have a suffix -XX where XX can be (default -UR):" << endl;
+      os << "   C    center touches horizon             CR  center with refraction" << endl;
+      os << "   U    upper edge touches horizon         UR  upper edge with refraction" << endl;
+      os << "   L    lower edge touches horizon         LR  lower edge with refraction" << endl;
+      os << "   CT   civil twilight darkness (-6 deg)   NT  nautical twilight darkness (-12)" << endl;
+      os << "   AT   amateur astronomy twilight (-15)   ST  scientific astronomy twilight (-18)" << endl;
+      os << " The first 6 suffices can also be used with MOON." << endl;
       os << endl;
       os << TaQLShow::showMeasTypes ("direction");
     }

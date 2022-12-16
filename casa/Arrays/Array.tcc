@@ -24,8 +24,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Array.tcc 21561 2015-02-16 06:57:35Z gervandiepen $
 
 #ifndef CASA_ARRAY_2_TCC
 #define CASA_ARRAY_2_TCC
@@ -1190,6 +1188,10 @@ void Array<T, Alloc>::tovector(std::vector<T, U> &out) const {
   /// See note above for @ref tovector()
   const_cast<Array<T, Alloc>*>(this)->freeStorage(stor, deleteIt);
 }
+
+// Define static member
+template<typename T, typename Alloc>
+typename Array<T, Alloc>::uninitializedType Array<T, Alloc>::uninitialized;
 
 } //#End casa namespace
 

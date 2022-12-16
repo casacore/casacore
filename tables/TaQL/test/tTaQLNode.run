@@ -70,6 +70,12 @@ $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN (se
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab BETWEEN 2 AND 4'
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab NOT BETWEEN 2 AND 4'
 
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab AROUND 2 IN 4'
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab NOT AROUND 2 IN 4'
+
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN [BETWEEN 2 AND 4]'
+$casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN AROUND 2 IN 4'
+
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN [:=2,4=:<6,7<:]'
 
 $casa_checktool ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab IN [2,(3)]'
@@ -176,10 +182,19 @@ $casa_checktool ./tTaQLNode 'update a.tab set (c1,cm)[1:5]=arr'
 
 $casa_checktool ./tTaQLNode 'create table tTaQLNode_tmp.tab col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]'
 $casa_checktool ./tTaQLNode 'with s.t create table tTaQLNode_tmp.tab limit 10*10'
+$casa_checktool ./tTaQLNode 'create table a.b like a.c'
+$casa_checktool ./tTaQLNode 'create table a.b like a.c as a'
+$casa_checktool ./tTaQLNode 'create table a.b as plain_big like a.c drop column col1,col2 add column []'
+$casa_checktool ./tTaQLNode 'create table a.b as plain_big like a.c drop column col1,col2 add column (col1 i4, col2 float [unit="s", ndim=3])'
+$casa_checktool ./tTaQLNode 'with a.1,a.2 create table a.b (col1 I4)'
 
 $casa_checktool ./tTaQLNode 'select gcount() from [tTableGram_tmp.tst as t1,tTableGram_tmp.tst as t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] as t3] as t4] as t5'
 $casa_checktool ./tTaQLNode 'select from [t_tmp.tst1,t_tmp.tst2 subtables a,b giving a.tab]'
 
+$casa_checktool ./tTaQLNode 'alter table a.b add column col1 like t.col2'
+$casa_checktool ./tTaQLNode 'with tab1 t, tab2 alter table a.b add column col1 like t.col2 i4 [ndim=2, shape=[3,4]]'
+$casa_checktool ./tTaQLNode 'alter table a.b add column col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]'
+$casa_checktool ./tTaQLNode 'alter table a.b from a.c, a.d copy column col1=t.col2'
 $casa_checktool ./tTaQLNode 'with [$1,$2] alter table a.b rename column old to new'
 $casa_checktool ./tTaQLNode 'alter table a.b rename column old to new, old1 to new1, old2 to new2'
 $casa_checktool ./tTaQLNode 'alter table x.y drop column col'
@@ -191,9 +206,15 @@ $casa_checktool ./tTaQLNode 'alter table x.y set keyword xyz=[14,15,16] as float
 $casa_checktool ./tTaQLNode 'alter table x.y set keyword xyz=[f1=14 as uint, f2=[f2a=4]]'
 $casa_checktool ./tTaQLNode 'alter table x.y set keyword x=[] as bool, y=[y1=2,y2=[3+4/2, a+b/c], y3=[] as s, y4=[=]]'
 
+$casa_checktool ./tTaQLNode 'drop table a.b, a.c'
+
 $casa_checktool ./tTaQLNode 'show'
 $casa_checktool ./tTaQLNode 'show a b c d e'
 
 $casa_checktool ./tTaQLNode 'with [select abs(phase(t1.DATA) - phase(t2.DATA)) as D from a.ms t1, /home/ger/WSRTA190521040_B001_original.MS t2] t select gmax(iif(D>pi(),D-3.14,D)) from t'
 
 $casa_checktool ./tTaQLNode "with ~a select 1+2 from [~b,[select 3+4 from [[select 5+6],~c]], ~d giving ~e] where 3+4 giving ~f"
+
+$casa_checktool ./tTaQLNode "select from a join b on a.b == b.b join c on a.c BETWEEN c.m AND c.w"
+$casa_checktool ./tTaQLNode "SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w"
+$casa_checktool ./tTaQLNode "SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w WHERE t3.ci%3!=0"

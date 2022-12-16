@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_GENSORT_TCC
 #define CASA_GENSORT_TCC
@@ -504,7 +502,8 @@ template<class T, class INX>
 INX GenSortIndirect<T,INX>::sort (Vector<INX>& indexVector, const Block<T>& data,
                                   INX nr, Sort::Order ord, int opt)
 {
-    return sort (indexVector, data.storage(), min(nr, data.nelements()),
+    return sort (indexVector, data.storage(),
+                 std::min(nr, static_cast<INX>(data.nelements())),
 		 ord, opt);
 }
 

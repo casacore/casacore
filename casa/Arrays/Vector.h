@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_VECTOR_2_H
 #define CASA_VECTOR_2_H
@@ -146,7 +144,7 @@ public:
     // defined in <src>Vector2.cc</src>. </note>
     // It does implicit promotion/demotion of the type U if different from T.
     template <typename U, typename V>
-    Vector(const std::vector<U, V> &other);
+    explicit Vector(const std::vector<U, V> &other);
 
     // Create a Vector from a container iterator and its length.
     // <note> The length is used instead of last, because the distance

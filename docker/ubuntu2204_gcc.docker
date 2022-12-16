@@ -1,0 +1,51 @@
+FROM ubuntu:22.04
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y \
+    gcc \
+    g++ \
+    cmake \
+    flex \
+    bison \
+    libblas-dev \
+    liblapack-dev \
+    libcfitsio-dev \
+    wcslib-dev \
+    libfftw3-dev \
+    gfortran \
+    libncurses5-dev \
+    libreadline6-dev \
+    libhdf5-serial-dev \
+    libboost-dev \
+    libboost-python-dev \
+    libboost-test-dev \
+    libgsl-dev \
+    python-is-python3 \
+    python3-numpy \
+    wget \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+# Install WSRT Measures (extra casacore data, for tests)
+# Note: The file on the ftp site is updated daily. When warnings regarding leap
+# seconds appear, ignore them or regenerate the docker image.
+    && wget -nv -O /WSRT_Measures.ztar ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar \
+    && mkdir -p /usr/local/share/casacore/data \
+    && cd /usr/local/share/casacore/data \
+    && tar xfz /WSRT_Measures.ztar \
+    && rm /WSRT_Measures.ztar
+ADD . /code
+RUN useradd -ms /bin/bash casacore \
+    && chown casacore.casacore /code
+USER casacore
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN cmake .. \
+    -DBUILD_TESTING=ON \
+    -DUSE_OPENMP=OFF \
+    -DUSE_HDF5=ON \
+    -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
+    -DDATA_DIR=/usr/local/share/casacore/data \
+    -DBUILD_FFTPACK_DEPRECATED=ON \
+    && make -j`nproc`
+USER root
+RUN make install
+USER casacore

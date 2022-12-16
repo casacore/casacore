@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELFUNCTION_TCC
 #define LATTICES_LELFUNCTION_TCC
@@ -657,8 +655,8 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
 
       Block<Int> argType(3);
       argType[0] = TpBool;
-      argType[1] = whatType(static_cast<T*>(0));
-      argType[2] = whatType(static_cast<T*>(0));
+      argType[1] = whatType<T>();
+      argType[2] = whatType<T>();
       setAttr (LatticeExprNode::checkArg (exp, argType, False));
       break;
    }
@@ -677,8 +675,8 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
 			   " a scalar"));
       }
       Block<Int> argType(2);
-      argType[0] = whatType(static_cast<T*>(0));
-      argType[1] = whatType(static_cast<T*>(0));
+      argType[0] = whatType<T>();
+      argType[1] = whatType<T>();
       LatticeExprNode::checkArg (exp, argType, False);
       setAttr (exp[0].getAttribute());
       break;

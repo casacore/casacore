@@ -21,8 +21,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEBEAMSET_H
 #define IMAGES_IMAGEBEAMSET_H
@@ -31,7 +29,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/scimath/Mathematics/GaussianBeam.h>
 //#include <casacore/measures/Measures/Stokes.h>
-//#include <map>
+#include <map>
 
 namespace casacore {
 
@@ -270,6 +268,15 @@ public:
     // specified angle. If unwrap=True, unwrap the new position angle(s) so that
     // it falls in the range -90 to 90 degrees before setting it.
     void rotate(const Quantity& angle, Bool unwrap=False);
+
+    // get all the beam areas in a single quantum matrix.
+    const Quantum<Matrix<double>> getAreas() const;
+
+    // get all the major axes, minor axes, and pas in quantum matrices.
+    // The returned map has keys "major", "minor", and "pa". 
+    const std::map<String, Quantum<Matrix<double>>> paramMatrices(
+        const Unit& majminUnit=Unit("arcsec"), const Unit& paUnit="deg"
+    ) const;
 
 private:
 

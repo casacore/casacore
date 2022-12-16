@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: JsonParser.cc 25266 2013-06-11 08:09:03Z diepen $
 
 #include <casacore/casa/Json/JsonKVMap.h>
 #include <casacore/casa/Json/JsonParser.h>

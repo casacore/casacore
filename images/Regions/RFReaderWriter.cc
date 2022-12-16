@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 #include <casacore/images/Regions/RFReaderWriter.h>
 #include <casacore/images/Regions/AipsIOReaderWriter.h>
     //#include <casacore/images/Regions/DS9ReaderWriter.h>
@@ -104,7 +102,7 @@ String RFReaderWriter::extensionForType(SupportedType type) {
 }
 
 Vector<RFReaderWriter::SupportedType> RFReaderWriter::supportedTypes(){
-    vector<SupportedType> v(2);
+    Vector<SupportedType> v(4);
     v[0] = AIPS_BOX; v[1] = DS9; v[2] = CASA_XML; v[3] = AIPS_IO;
 
     return v;

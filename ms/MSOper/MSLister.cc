@@ -23,8 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
-//#
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/measures/Measures/Stokes.h>
