@@ -144,6 +144,12 @@ void FilebufIO::flush()
   }
 }
 
+void FilebufIO::truncate (Int64 size)
+{
+  ::ftruncate (itsFile, size);
+}
+  
+
 void FilebufIO::resync()
 {
   AlwaysAssert (!itsDirty, AipsError);

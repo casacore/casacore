@@ -35,17 +35,17 @@
 // Test program for the BucketFile class
 // </summary>
 
-void a(MultiFile*);
-void b(MultiFile*);
-void c(MultiFile*);
+void a(const std::shared_ptr<MultiFileBase>&);
+void b(const std::shared_ptr<MultiFileBase>&);
+void c(const std::shared_ptr<MultiFileBase>&);
 
 int main (int argc, const char*[])
 {
     try {
       for (int i=0; i<2; ++i) {
-        MultiFile* mfile=0;
+        std::shared_ptr<MultiFileBase> mfile;
         if (i == 1) {
-          mfile = new MultiFile("tBucketFile_tmp.mf", ByteIO::New, 512);
+          mfile.reset (new MultiFile("tBucketFile_tmp.mf", ByteIO::New, 512));
         }
 	a(mfile);
 	b(mfile);
@@ -55,7 +55,6 @@ int main (int argc, const char*[])
 	    c(mfile);
 	    cout << "<<<" << endl;
 	}
-        delete mfile;
       }
     } catch (const std::exception& x) {
 	cout << "Caught an exception: " << x.what() << endl;
@@ -68,7 +67,7 @@ int main (int argc, const char*[])
 
 
 // Build a file.
-void a(MultiFile* mfile)
+void a(const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Create the file.
     BucketFile file ("tBucketFile_tmp.data", 0, False, mfile);
@@ -87,7 +86,7 @@ void a(MultiFile* mfile)
     AlwaysAssertExit (fval2 == fval);
 }
 
-void b(MultiFile* mfile)
+void b(const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Open the file.
     BucketFile file ("tBucketFile_tmp.data", False, 0, False, mfile);
@@ -123,7 +122,7 @@ void b(MultiFile* mfile)
     AlwaysAssertExit (fval2 == fval);
 }
 
-void c(MultiFile* mfile)
+void c(const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Do some erroneous calls.
     Bool flag = False;

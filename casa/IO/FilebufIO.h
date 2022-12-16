@@ -126,6 +126,9 @@ public:
     // Resync the file (i.e. empty the current buffer).
     virtual void resync();
   
+    // Truncate the file to the given size.
+    virtual void truncate (Int64 size);
+  
     // Get the length of the byte stream.
     virtual Int64 length();
        

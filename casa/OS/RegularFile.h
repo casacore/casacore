@@ -104,7 +104,8 @@ public:
     // instead.
     // <group>
     RegularFile (const Path& path);
-    RegularFile (const String& string);
+    RegularFile (const String& path);
+    RegularFile (const char* path);
     RegularFile (const File& file);
     // </group>
 

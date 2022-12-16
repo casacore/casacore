@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Test large MultiFiles ..."
+./tMultiFileLarge 0
+
+echo
+echo "Test premature ending ..."
+./tMultiFileLarge 1
+
+echo
+echo "Read back prematurely ended data set ..."
+./tMultiFileLarge -1
+
