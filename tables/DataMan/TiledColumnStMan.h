@@ -87,7 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       90 baselines by defining the row shape as [90,0]. Setting the
 //       tile shape to e.g. [4,64,10,40] has the effect that a single
 //       tile will contain only 10 baselines instead of 90. It will speed
-//       up reading in baseline order because lesser tiles have to be read.
+//       up reading in baseline order because fewer tiles have to be read.
 //       Note that the zero in the row shape mean that the value is not
 //       important to know how to divide the rows (the last axis is not
 //       needed to know the division).
@@ -174,7 +174,7 @@ public:
     // with the given name. The columns used should have the FixedShape
     // attribute set.
     // The hypercolumn name is also the name of the storage manager.
-    // The cube shaope can be given to know how to divide the rows over the
+    // The cube shape can be given to know how to divide the rows over the
     // tiles as discussed in the synopsis.
     // The given tile shape will be used.
     // The given maximum cache size in bytes (default is unlimited) is

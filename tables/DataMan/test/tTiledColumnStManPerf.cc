@@ -126,7 +126,7 @@ void createTable (const IPosition& dataShape, const IPosition& tileShape,
   }
 }
 
-void readSequential (Bool useMMap)
+void readSequential (uInt maxCacheSize, Bool useMMap)
 {
   cout << "Read in sequential order";
   if (useMMap) cout << " using memory-mapped files";
@@ -134,6 +134,8 @@ void readSequential (Bool useMMap)
   Timer timer;
   TSMOption tsmOpt (useMMap ? TSMOption::MMap : TSMOption::Cache);
   Table tab("tTiledColumnStManPerf_tmp.tab", Table::Old, tsmOpt);
+  ROTiledStManAccessor acc(tab, "TSM");
+  acc.setMaximumCacheSize (maxCacheSize);
   ArrayColumn<Complex> dataCol(tab, "DATA");
   Matrix<Complex> data(dataCol.shape(0));
   indgen(data);
@@ -153,7 +155,7 @@ void readSequential (Bool useMMap)
   }
 }
 
-void readBaseline (Bool useMMap)
+void readBaseline (uInt maxCacheSize, Bool useMMap)
 {
   cout << "Read in baseline order";
   if (useMMap) cout << " using memory-mapped files";
@@ -161,6 +163,8 @@ void readBaseline (Bool useMMap)
   Timer timer;
   TSMOption tsmOpt (useMMap ? TSMOption::MMap : TSMOption::Cache);
   Table tab("tTiledColumnStManPerf_tmp.tab", Table::Old, tsmOpt);
+  ROTiledStManAccessor acc(tab, "TSM");
+  acc.setMaximumCacheSize (maxCacheSize);
   // Iterate on baseline
   Block<String> columns(2);
   columns[0] = "ANT2";
@@ -195,6 +199,7 @@ void readBaseline (Bool useMMap)
       }
       tabIter.next();
     }
+    cout << "done all of ant2 " << a2 << endl;
   }
   AlwaysAssertExit (tabIter.pastEnd());
   timer.show ("Read in bl order ");
@@ -224,16 +229,17 @@ void showHelp()
   cerr << "      If 'ssm' is given, StandardStMan instead of TiledColumnStMan is used."
        << endl;
   cerr << "      If 'mf' is given the MultiFile option is used. 'mfssm' is both." <<endl;
-  cerr << "or as:    tTiledColumnStManPerf type [mmap]              ";
+  cerr << "or as:    tTiledColumnStManPerf type maxcs [mmap]              ";
   cerr << "      to read back" << endl;
   cerr << "      type = bl     read in order of baseline" << endl;
   cerr << "             else   read sequentially" << endl;
+  cerr << "      maxcs gives the maximum TSM cache size in Mb; 0 = unlimited" << endl;
   cerr << "      mmap=1  means use mmap instead of normal reading" << endl;
 }
 
 int main (int argc, char* argv[])
 {
-  if (argc <= 1  ||  (argc > 3  &&  argc <= 8)) {
+  if (argc <= 2  ||  (argc > 4  &&  argc <= 8)) {
     showHelp();
     exit(0);
   }
@@ -257,11 +263,11 @@ int main (int argc, char* argv[])
                      (String(argv[9]) == "mf"  || String(argv[9]) == "mfssm"));
       createTable (dataShape, tileShape, rowShape, nant, ntime, useSSM, useMF);
     } else {
-      Bool useMMap = (argc > 2  &&  argv[2][0] == '1');
+      Bool useMMap = (argc > 3  &&  argv[3][0] == '1');
       if (argc > 1  &&  String(argv[1]) == "bl") {
-        readBaseline (useMMap);
+        readBaseline (atoi(argv[2]), useMMap);
       } else {
-        readSequential (useMMap);
+        readSequential (atoi(argv[2]), useMMap);
       }
     }
   } catch (const std::exception& x) {

@@ -111,6 +111,8 @@ String TiledColumnStMan::dataManagerType() const
 Bool TiledColumnStMan::canAccessColumn() const
 {
     // This is only possible if an integral nr of rows fit the hypercube.
+    // Note that rowMap_p always contains at least 1 element.
+    DebugAssert (rowMap_p.size() > 0, AipsError);
     return nrrow_p % rowMap_p[rowMap_p.size() - 1] == 0;
 }
 
