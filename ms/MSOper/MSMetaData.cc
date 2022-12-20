@@ -3519,7 +3519,7 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
     Double totalExposure = 0;
     String taql = "select FLAG, DATA_DESC_ID, EXPOSURE, TIME from "
         + _ms->tableName() + " where ANTENNA1 != ANTENNA2";
-    Table result(tableCommand(taql));
+    Table result(tableCommand(taql).table());
     Vector<Int> ddIDs = ScalarColumn<Int>(result, "DATA_DESC_ID").getColumn();
     Vector<Double> exposures = ScalarColumn<Double>(result, "EXPOSURE").getColumn();
     Vector<Double> times = ScalarColumn<Double>(result, "TIME").getColumn();
