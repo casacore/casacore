@@ -161,7 +161,6 @@ void TableRecord::makeUnique()
 
 TableRecordRep& TableRecord::rwRef()
 {
-    const TableRecordRep& oldRep = rep_p.ref();
     TableRecordRep& newRep = rep_p.rwRef();
     return newRep;
 }
