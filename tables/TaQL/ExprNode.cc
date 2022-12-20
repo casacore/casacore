@@ -24,6 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/TaQL/ExprMathNode.h>
@@ -48,7 +49,6 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/DataType.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -310,10 +310,11 @@ Bool TableExprNode::checkTableSize (const Table& table, Bool canBeConst) const
     if (table.isNull()) {
         return True;
     }
-    if (node_p->table().isNull()) {
+    std::vector<Table> tables(TableExprNodeUtil::getNodeTables (node_p.get(), True));
+    if (tables.empty()) {
         return canBeConst;
     }
-    return (table.nrow() == node_p->nrow());
+    return (table.nrow() == TableExprNodeUtil::getCheckNRow (tables));
 }
 
 void TableExprNode::throwInvDT (const String& message)
@@ -870,8 +871,7 @@ TENShPtr TableExprNode::newIN (const TENShPtr& right,
     TableExprNodeRep node (dtype, node_p->valueType(),
                            TableExprNodeRep::OtIN,
                            TableExprNodeRep::NoArr, extype,
-                           node_p->ndim(), node_p->shape(),
-                           node_p->table());
+                           node_p->ndim(), node_p->shape());
     // Create the correct IN object depending on data type
     // and if the left hand operand is scalar or array.
     TableExprNodeBinary* tsnptr = 0;
@@ -1018,15 +1018,32 @@ TableExprNode TableExprNode::operator~ () const
 }
 
 
+//# Create an expression node for either a keyword or column.
+TableExprNode TableExprNode::keyCol (const TableExprInfo& tabInfo,
+                                     const String& name,
+                                     const Vector<String>& fieldNames)
+{
+    if (tabInfo.table().tableDesc().isColumn (name)) {
+        return newColumnNode (tabInfo, name, fieldNames);
+    } else {
+	uInt nr = fieldNames.nelements();
+	Vector<String> names (nr + 1);
+	names (Slice(1,nr)) = fieldNames;
+	names(0) = name;
+	return newKeyConst (tabInfo.table().keywordSet(), names);
+    }
+}
+
 //# Create a column node on behalf of the Table class.
 //# For builtin data types another type of node is created than
 //# for other data types.
-TableExprNode TableExprNode::newColumnNode (const Table& table,
+TableExprNode TableExprNode::newColumnNode (const TableExprInfo& tableInfo,
                                             const String& name,
                                             const Vector<String>& fieldNames)
 {
     //# Get the column description. This throws an exception if
     //# the name is not a column.
+    const Table& table = tableInfo.table();
     TENShPtr tsnptr = 0;
     const ColumnDesc& coldes = table.tableDesc().columnDesc (name);
     TableColumn col(table, name);
@@ -1037,40 +1054,40 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
     if (coldes.isArray()) {
         switch(coldes.dataType()) {
         case TpBool:
-            tsnptr = new TableExprNodeArrayColumnBool (col, table);
+            tsnptr = new TableExprNodeArrayColumnBool (col, tableInfo);
             break;
         case TpUChar:
-            tsnptr = new TableExprNodeArrayColumnuChar (col, table);
+            tsnptr = new TableExprNodeArrayColumnuChar (col, tableInfo);
             break;
         case TpShort:
-            tsnptr = new TableExprNodeArrayColumnShort(col, table);
+            tsnptr = new TableExprNodeArrayColumnShort(col, tableInfo);
             break;
         case TpUShort:
-            tsnptr = new TableExprNodeArrayColumnuShort (col, table);
+            tsnptr = new TableExprNodeArrayColumnuShort (col, tableInfo);
             break;
         case TpInt:
-            tsnptr = new TableExprNodeArrayColumnInt (col, table);
+            tsnptr = new TableExprNodeArrayColumnInt (col, tableInfo);
             break;
         case TpUInt:
-            tsnptr = new TableExprNodeArrayColumnuInt (col, table);
+            tsnptr = new TableExprNodeArrayColumnuInt (col, tableInfo);
             break;
         case TpInt64:
-            tsnptr = new TableExprNodeArrayColumnInt64 (col, table);
+            tsnptr = new TableExprNodeArrayColumnInt64 (col, tableInfo);
             break;
         case TpFloat:
-            tsnptr = new TableExprNodeArrayColumnFloat (col, table);
+            tsnptr = new TableExprNodeArrayColumnFloat (col, tableInfo);
             break;
         case TpDouble:
-            tsnptr = new TableExprNodeArrayColumnDouble (col, table);
+            tsnptr = new TableExprNodeArrayColumnDouble (col, tableInfo);
             break;
         case TpComplex:
-            tsnptr = new TableExprNodeArrayColumnComplex (col, table);
+            tsnptr = new TableExprNodeArrayColumnComplex (col, tableInfo);
             break;
         case TpDComplex:
-            tsnptr = new TableExprNodeArrayColumnDComplex (col, table);
+            tsnptr = new TableExprNodeArrayColumnDComplex (col, tableInfo);
             break;
         case TpString:
-            tsnptr = new TableExprNodeArrayColumnString (col, table);
+            tsnptr = new TableExprNodeArrayColumnString (col, tableInfo);
             break;
         default:
             throw (TableInvExpr (name, "unknown data type"));
@@ -1084,7 +1101,7 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
             throw (TableInvExpr ("Sorry, column " + name + " contains records, "
                                  "which is not supported yet"));
         }
-        tsnptr = new TableExprNodeColumn (table, name);
+        tsnptr = new TableExprNodeColumn (tableInfo, name);
     } else {
         throw (TableInvExpr (name, " must be a Scalar or Array column"));
     }
@@ -1239,7 +1256,7 @@ TableExprNode TableExprNode::newFunctionNode
 {
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem(node));
-    return newFunctionNode (ftype, set, Table());
+    return newFunctionNode (ftype, set, TableExprInfo());
 }
 TableExprNode TableExprNode::newFunctionNode
                                  (TableExprFuncNode::FunctionType ftype,
@@ -1249,7 +1266,7 @@ TableExprNode TableExprNode::newFunctionNode
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem(node1));
     set.add (TableExprNodeSetElem(node2));
-    return newFunctionNode (ftype, set, Table());
+    return newFunctionNode (ftype, set, TableExprInfo());
 }
 TableExprNode TableExprNode::newFunctionNode
                                  (TableExprFuncNode::FunctionType ftype,
@@ -1261,7 +1278,7 @@ TableExprNode TableExprNode::newFunctionNode
     set.add (TableExprNodeSetElem(node1));
     set.add (TableExprNodeSetElem(node2));
     set.add (TableExprNodeSetElem(node3));
-    return newFunctionNode (ftype, set, Table());
+    return newFunctionNode (ftype, set, TableExprInfo());
 }
 
 TableExprNode TableExprNode::newFunctionNode
@@ -1273,7 +1290,7 @@ TableExprNode TableExprNode::newFunctionNode
     set.add (TableExprNodeSetElem(array));
     // Turn the axes set into an array.
     set.add (TableExprNodeSetElem(axes.setOrArray()));
-    return newFunctionNode (ftype, set, Table());
+    return newFunctionNode (ftype, set, TableExprInfo());
 }
 
 TableExprNode TableExprNode::newFunctionNode
@@ -1287,13 +1304,13 @@ TableExprNode TableExprNode::newFunctionNode
     set.add (TableExprNodeSetElem(node));
     // Turn the axes set into an array.
     set.add (TableExprNodeSetElem(axes.setOrArray()));
-    return newFunctionNode (ftype, set, Table());
+    return newFunctionNode (ftype, set, TableExprInfo());
 }
 
 TableExprNode TableExprNode::newFunctionNode
                                  (TableExprFuncNode::FunctionType ftype,
                                   const TableExprNodeSet& set,
-                                  const Table& table,
+                                  const TableExprInfo& tabInfo,
                                   const TaQLStyle& style)
 {
     // Convert the set to a vector of the values in the set elements.
@@ -1310,15 +1327,16 @@ TableExprNode TableExprNode::newFunctionNode
     // need their own objects and the table.
     if (ftype == TableExprFuncNode::rownrFUNC) {
         TableExprNodeMulti::checkNumOfArg (0, 0, par);
-        return newRownrNode (table, style.origin());  // first rownr is 0 or 1
+        // First rownr is 0 or 1.
+        return newRownrNode (tabInfo, style.origin());
     }
     if (ftype == TableExprFuncNode::rowidFUNC) {
         TableExprNodeMulti::checkNumOfArg (0, 0, par);
-        return newRowidNode (table);
+        return newRowidNode (tabInfo);
     }
     if (ftype == TableExprFuncNode::randFUNC) {
         TableExprNodeMulti::checkNumOfArg (0, 0, par);
-        return newRandomNode (table);
+        return newRandomNode (tabInfo);
     }
     // Check all the operands and get the resulting data type and value type
     // of the function.
@@ -1344,7 +1362,7 @@ TableExprNode TableExprNode::newFunctionNode
                                                 ftype, par);
       if (resVT == TableExprNodeRep::VTScalar) {
         fnode = new TableExprFuncNode (ftype, resDT, resVT, set,
-                                       par, dtypeOper, table);
+                                       par, dtypeOper, tabInfo);
       } else {
         fnode = new TableExprFuncNodeArray (ftype, resDT, resVT, set,
                                             par, dtypeOper, style);
@@ -1355,11 +1373,11 @@ TableExprNode TableExprNode::newFunctionNode
 
 TableExprNode TableExprNode::newUDFNode (const String& name,
                                          const TableExprNodeSet& set,
-                                         const Table& table,
+                                         const TableExprInfo& tableInfo,
                                          const TaQLStyle& style)
 {
     // Create the correct UDF object. An exception is thrown if unknown.
-    SPtrHolder<UDFBase> udf(UDFBase::createUDF (name, style));
+    std::shared_ptr<UDFBase> udf(UDFBase::createUDF (name, style));
     // Convert the set to a vector of the values in the set elements.
     // This requires that the set has single values.
     if (! set.isSingle()) {
@@ -1370,11 +1388,11 @@ TableExprNode TableExprNode::newUDFNode (const String& name,
     for (uInt i=0; i<npar; i++) {
         par[i] = set[i]->start();
     }
-    udf->init (par, table, style);
+    udf->init (par, tableInfo, style);
     if (udf->ndim() == 0) {
-        return new TableExprUDFNode (udf.transfer(), table, set);
+        return new TableExprUDFNode (udf, tableInfo, set);
     }
-    return new TableExprUDFNodeArray (udf.transfer(), table, set);
+    return new TableExprUDFNodeArray (udf, tableInfo, set);
 }
 
 TableExprNode TableExprNode::newConeNode
@@ -1454,22 +1472,22 @@ void TableExprNode::adaptUnit (const Unit& unit)
     TableExprNodeUnit::adaptUnit (node_p, unit);
 }
 
-TableExprNode TableExprNode::newRownrNode (const Table& table,
+TableExprNode TableExprNode::newRownrNode (const TableExprInfo& tableInfo,
                                            uInt origin)
 {
-    TENShPtr tsnptr = new TableExprNodeRownr (table, origin);
+    TENShPtr tsnptr = new TableExprNodeRownr (tableInfo, origin);
     return tsnptr;
 }
 
-TableExprNode TableExprNode::newRowidNode (const Table& table)
+TableExprNode TableExprNode::newRowidNode (const TableExprInfo& tableInfo)
 {
-    TENShPtr tsnptr = new TableExprNodeRowid (table);
+    TENShPtr tsnptr = new TableExprNodeRowid (tableInfo);
     return tsnptr;
 }
 
-TableExprNode TableExprNode::newRandomNode (const Table& table)
+TableExprNode TableExprNode::newRandomNode (const TableExprInfo& tableInfo)
 {
-    TENShPtr tsnptr = new TableExprNodeRandom (table);
+    TENShPtr tsnptr = new TableExprNodeRandom (tableInfo);
     return tsnptr;
 }
 

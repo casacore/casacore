@@ -28,6 +28,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/Tables/Table.h>
 #include <vector>
 
@@ -55,13 +56,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
 
   public:
-    // Default constructor for container class.
-    TableParsePair();
-
+    TableParsePair()
+    {}
+    
     // Associate the table and the shorthand.
     // The full name and the table number (from $i) can also be given.
     TableParsePair (const Table& table, Int tabnr,
-                    const String& name, const String& shorthand);
+                    const String& name, const String& shorthand,
+                    Int joinIndex=-1);
 
     // Test if shorthand matches. If also matches if the given shorthand is empty.
     Bool test (const String& str) const
@@ -85,12 +87,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Table& table()
       { return table_p; }
 
+    // Get it as a TableExprInfo object.
+    TableExprInfo getTableInfo() const;
+    
+    // Get the index of the table in the list of join objects.
+    // <0 means that it is no join table.
+    Int joinIndex() const
+      { return joinIndex_p; }
+
     // Replace the Table object.
     void replaceTable (const Table& table)
       { table_p = table; }
 
   private:
-    Int     tabnr_p;
+    Int     tabnr_p = -1;
+    Int     joinIndex_p = -1;
     String  name_p;
     String  shorthand_p;
     Table   table_p;
@@ -123,11 +134,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsFromTables.empty(); }
 
     // Get the FROM tables.
-    std::vector<TableParsePair>& fromTables()
+    const std::vector<TableParsePair>& fromTables() const
+      { return itsFromTables; }
+    std::vector<TableParsePair>& fromTablesNC()
       { return itsFromTables; }
     
     // Return the first FROM table (which is usually the table to operate on).
-    const Table& first() const
+    TableExprInfo first() const
+      { return itsFromTables.at(0).getTableInfo(); }
+    
+    // Return the first FROM table (which is usually the table to operate on).
+    const Table& firstTable() const
       { return itsFromTables.at(0).table(); }
     
     // Add a table to the list of tables with the given shorthand name.
@@ -144,7 +161,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                     const String& shorthand,
                     Bool addToFromList,
                     const std::vector<const Table*>& tempTables,
-                    const std::vector<TableParseQuery*>& stack);
+                    const std::vector<TableParseQuery*>& stack,
+                    Int joinsIndex = -1);
 
 
     // Replace the first Table object in the FROM list with the given one.
@@ -153,12 +171,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Find a table for the given shorthand.
     // Optionally the WITH tables are searched as well.
     // If no shorthand is given, the first FROM table is returned (if there).
-    // If not found, a null Table object is returned.
-    static Table findTable (const String& shorthand, Bool doWith,
-                            const std::vector<TableParseQuery*>& stack);
+    // If not found, a TableParsePair with a null Table object is returned.
+    static TableParsePair findTable (const String& shorthand, Bool doWith,
+                                     const std::vector<TableParseQuery*>& stack);
 
     // Try to find the Table for the given shorthand in the table list.
-    Table findTable (const String& shorthand, Bool doWith) const;
+    TableParsePair findTable (const String& shorthand, Bool doWith) const;
 
     // Find the keyword given in the <src>name</src> parameter which is
     // split into its shorthand, column and/or keyword parts.

@@ -258,8 +258,8 @@ void showParms()
                      TableIterator::NoSort);
   Table tab1 = iter.table();
   Int64 ntime  = ms.nrow() / tab1.nrow();
-  Int64 nspw   = Table(tableCommand("select unique DATA_DESC_ID from $1", tab1)).nrow();
-  Int64 nbl    = Table(tableCommand("select unique ANTENNA1,ANTENNA2 from $1", tab1)).nrow();
+  Int64 nspw   = tableCommand("select unique DATA_DESC_ID from $1", tab1).table().nrow();
+  Int64 nbl    = tableCommand("select unique ANTENNA1,ANTENNA2 from $1", tab1).table().nrow();
   Int64 nant   = ms.antenna().nrow();
   Int64 nfield = ms.field().nrow();
   Int64 ntimefield = 0;

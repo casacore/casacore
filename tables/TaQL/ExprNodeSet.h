@@ -125,11 +125,8 @@ public:
     // Show the node.
     void show (ostream& os, uInt indent) const override;
 
-    // Get the nodes representing an aggregate function.
-    void getAggrNodes (std::vector<TableExprNodeRep*>& aggr) override;
-  
-    // Get the nodes representing a table column.
-    void getColumnNodes (std::vector<TableExprNodeRep*>& cols) override;
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&) override;
   
     // Check if the data type of the set elements are the same.
     // If not, an exception is thrown.

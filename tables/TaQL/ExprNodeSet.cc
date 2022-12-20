@@ -37,7 +37,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeSet::TableExprNodeSet()
-: TableExprNodeRep (NTNumeric, VTSet, OtUndef, Table()),
+: TableExprNodeRep (NTNumeric, VTSet, OtUndef, Constant),
   itsSingle        (True),
   itsDiscrete      (True),
   itsBounded       (True),
@@ -45,7 +45,7 @@ TableExprNodeSet::TableExprNodeSet()
 {}
 
 TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
-: TableExprNodeRep (NTInt, VTSet, OtUndef, Table()),
+: TableExprNodeRep (NTInt, VTSet, OtUndef, Constant),
   itsSingle        (True),
   itsDiscrete      (True),
   itsBounded       (True),
@@ -60,7 +60,7 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
 }
 
 TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
-: TableExprNodeRep (NTInt, VTSet, OtUndef, Table()),
+: TableExprNodeRep (NTInt, VTSet, OtUndef, Constant),
   itsSingle        (False),
   itsDiscrete      (True),
   itsBounded       (True),
@@ -84,7 +84,7 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
 
 TableExprNodeSet::TableExprNodeSet (const Vector<rownr_t>& rownrs,
                                     const TableExprNodeSet& set)
-: TableExprNodeRep (set.dataType(), VTSet, OtUndef, Table()),
+: TableExprNodeRep (set.dataType(), VTSet, OtUndef, Constant),
   itsElems         (rownrs.size() * set.size()),
   itsSingle        (set.isSingle()),
   itsDiscrete      (set.isDiscrete()),
@@ -148,7 +148,6 @@ void TableExprNodeSet::add (const TENSEBShPtr& elemIn, Bool adaptType)
         dtype_p = TableExprNodeBinary::getDT (dtype_p, elem->dataType(),
                                               OtEQ);
     }
-    checkTablePtr (itsElems[n].get());
     fillExprType  (itsElems[n].get());
 }
 
@@ -181,17 +180,11 @@ void TableExprNodeSet::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeSet::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprNodeSet::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
+    nodes.push_back (this);
     for (size_t j=0; j<itsElems.size(); j++) {
-        itsElems[j]->getAggrNodes (aggr);
-    }
-}
-
-void TableExprNodeSet::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-    for (size_t j=0; j<itsElems.size(); j++) {
-        itsElems[j]->getColumnNodes (cols);
+        itsElems[j]->flattenTree (nodes);
     }
 }
 

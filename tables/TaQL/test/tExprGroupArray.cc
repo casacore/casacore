@@ -270,7 +270,7 @@ void doDoubleArr()
   set.add (TableExprNodeSetElem(12.));
   set.add (TableExprNodeSetElem(36.));
   checkHist (TableExprNode::newFunctionNode(TableExprFuncNode::ghistFUNC,
-                                            set, Table()),
+                                            set, TableExprInfo()),
              recs, hist);
 }
 

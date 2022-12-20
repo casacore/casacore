@@ -38,12 +38,19 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   TableParsePair::TableParsePair (const Table& table, Int tabnr,
-                                  const String& name, const String& shorthand)
+                                  const String& name, const String& shorthand,
+                                  Int joinIndex)
     : tabnr_p     (tabnr),
+      joinIndex_p (joinIndex),
       name_p      (name),
       shorthand_p (shorthand),
       table_p     (table)
   {}
+
+  TableExprInfo TableParsePair::getTableInfo() const
+  {
+    return TableExprInfo (table_p, shorthand_p, joinIndex_p>=0);
+  }
 
   
   //# Construct a TableParse object and add it to the container.
@@ -52,12 +59,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                        const String& shorthand,
                                        Bool addToFromList,
                                        const std::vector<const Table*>& tempTables,
-                                       const std::vector<TableParseQuery*>& stack)
+                                       const std::vector<TableParseQuery*>& stack,
+                                       Int joinIndex)
   {
     Table table = TableParseUtil::getTable (tabnr, name, ftab,
                                             tempTables, stack);
+    // Check that a shorthand is used only once, except for an empty one.
+    // Don't take the WITH tables into account, otherwise it will complain
+    // about a WITH shorthand used in a FROM.
+    if (! shorthand.empty()) {
+      TableParsePair tablePair = findTable (shorthand, False);
+      if (! tablePair.table().isNull()) {
+        throw TableInvExpr("Shorthand '" + shorthand + "' has already been used");
+      }
+    }
     if (addToFromList) {
-      itsFromTables.push_back (TableParsePair(table, tabnr, name, shorthand));
+      itsFromTables.push_back (TableParsePair(table, tabnr, name, shorthand, joinIndex));
     } else {
       itsWithTables.push_back (TableParsePair(table, tabnr, name, shorthand));
     }
@@ -70,35 +87,36 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsFromTables[0].replaceTable (table);
   }
 
-  Table TableParseTableList::findTable (const String& shorthand, Bool doWith,
-                                        const std::vector<TableParseQuery*>& stack)
+  TableParsePair TableParseTableList::findTable (const String& shorthand, Bool doWith,
+                                                 const std::vector<TableParseQuery*>& stack)
   {
-    Table table;
+    TableParsePair tab;
     for (Int i=stack.size()-1; i>=0; i--) {
-      table = stack[i]->tableList().findTable (shorthand, doWith);
-      if (! table.isNull()) {
+      tab = stack[i]->tableList().findTable (shorthand, doWith);
+      if (! tab.table().isNull()) {
         break;
       }
     }
-    return table;
+    return tab;
   }
 
-  Table TableParseTableList::findTable (const String& shorthand, Bool doWith) const
+  TableParsePair TableParseTableList::findTable (const String& shorthand,
+                                                 Bool doWith) const
   {
     //# If no shorthand given, first table is taken (if there).
     for (uInt i=0; i<itsFromTables.size(); i++) {
       if (itsFromTables[i].test (shorthand)) {
-        return itsFromTables[i].table();
+        return itsFromTables[i];
       }
     }
     if (doWith) {
       for (uInt i=0; i<itsWithTables.size(); i++) {
         if (itsWithTables[i].test (shorthand)) {
-          return itsWithTables[i].table();
+          return itsWithTables[i];
         }
       }
     }
-    return Table();
+    return TableParsePair();
   }
 
   

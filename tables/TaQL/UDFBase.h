@@ -269,11 +269,8 @@ namespace casacore {
     const Record& getAttributes() const
       { return itsAttributes; }
 
-    // Get the nodes in the function operands representing an aggregate function.
-    void getAggrNodes (vector<TableExprNodeRep*>& aggr);
-
-    // Get the nodes in the function operands representing a table column.
-    void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&);
   
   private:
     // Set up the function object.
@@ -330,7 +327,7 @@ namespace casacore {
 
     // Initialize the function object.
     void init (const std::vector<TENShPtr>& arg,
-               const Table& table, const TaQLStyle&);
+               const TableExprInfo& tableInfo, const TaQLStyle&);
 
     // Get the data type.
     TableExprNodeRep::NodeDataType dataType() const

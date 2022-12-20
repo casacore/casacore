@@ -100,13 +100,8 @@ TaQLResult tableCommand (const String& str,
       return TaQLResult(expr);                 // result of CALC command
     }
     //# Copy the possibly selected column names.
-    if (hrval.getNames()) {
-      Vector<String> tmp(*(hrval.getNames()));
-      cols.reference (tmp);
-    } else {
-      cols.resize (0);
-    }
-    return hrval.getTable();
+    cols.reference (hrval.getNames());
+    return TaQLResult(hrval.getTable());
   } catch (std::exception& x) {
     throw TableParseError ("'" + str + "'\n  " + x.what());
   }

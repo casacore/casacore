@@ -41,7 +41,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprNodeSetElemBase::TableExprNodeSetElemBase (NodeDataType dt)
-    : TableExprNodeRep (dt, VTSetElem, OtUndef, Table())
+    : TableExprNodeRep (dt, VTSetElem, OtUndef, Constant)
   {}
 
   Bool TableExprNodeSetElemBase::isDiscrete() const
@@ -86,29 +86,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void TableExprNodeSetElemBase::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  void TableExprNodeSetElemBase::flattenTree (std::vector<TableExprNodeRep*>& nodes)
   {
+    nodes.push_back (this);
     if (itsStart) {
-      itsStart->getAggrNodes (aggr);
+      itsStart->flattenTree (nodes);
     }
     if (itsEnd) {
-      itsEnd->getAggrNodes (aggr);
+      itsEnd->flattenTree (nodes);
     }
     if (itsIncr) {
-      itsIncr->getAggrNodes (aggr);
-    }
-  }
-  
-  void TableExprNodeSetElemBase::getColumnNodes (vector<TableExprNodeRep*>& cols)
-  {
-    if (itsStart) {
-      itsStart->getColumnNodes (cols);
-    }
-    if (itsEnd) {
-      itsEnd->getColumnNodes (cols);
-    }
-    if (itsIncr) {
-      itsIncr->getColumnNodes (cols);
+      itsIncr->flattenTree (nodes);
     }
   }
   
@@ -150,12 +138,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchDate"); }
 
-  void TableExprNodeSetElemBase::checkTable()
+  void TableExprNodeSetElemBase::setExprType()
   {
-    table_p = Table();
-    checkTablePtr (itsStart.get());
-    checkTablePtr (itsEnd.get());
-    checkTablePtr (itsIncr.get());
     exprtype_p = Constant;
     fillExprType (itsStart.get());
     fillExprType (itsEnd.get());
@@ -236,7 +220,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsStart = value.getRep();
     dtype_p = itsStart->dataType();
     setUnit (itsStart->unit());
-    checkTable();
+    setExprType();
   }
 
   TableExprNodeSetElemSingle::TableExprNodeSetElemSingle
@@ -510,7 +494,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Find unit and adapt units if needed.
     setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
     dtype_p = dts;
-    checkTable();
+    setExprType();
   }
 
   TableExprNodeSetElemDiscrete::TableExprNodeSetElemDiscrete
@@ -805,7 +789,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Find unit and adapt units if needed.
     setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
-    checkTable();
+    setExprType();
   }
 
   TENSEBShPtr TableExprNodeSetElemCont::evaluate
@@ -918,7 +902,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else {
       throw TableInvExpr ("mid<:>width only valid for Int, Double or Date");
     }
-    checkTable();
+    setExprType();
   }
 
   TENSEBShPtr TableExprNodeSetElemMidWidth::evaluate

@@ -27,6 +27,7 @@
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprDerNode.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/tables/TaQL/MArrayMath.h>
 #include <casacore/tables/TaQL/MArrayLogical.h>
@@ -38,7 +39,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype)
-: TableExprNodeBinary (dtype, VTArray, otype, Table())
+: TableExprNodeBinary (dtype, VTArray, otype, Constant)
 {
     ndim_p = -1;
 }
@@ -48,7 +49,7 @@ TableExprNodeArray::TableExprNodeArray (const TableExprNodeRep& node,
 {}
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype,
                                         const IPosition& shape)
-: TableExprNodeBinary (dtype, VTArray, otype, Table())
+: TableExprNodeBinary (dtype, VTArray, otype, Constant)
 {
     shape_p = shape;
     ndim_p  = shape.size();
@@ -56,9 +57,6 @@ TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype,
         ndim_p = -1;
     }
 }
-
-TableExprNodeArray::~TableExprNodeArray()
-{}
 
 TENShPtr TableExprNodeArray::makeConstantScalar()
 {
@@ -520,9 +518,9 @@ MArray<DComplex> TableExprNodeArray::makeArray (const IPosition& shape,
 
 TableExprNodeArrayColumn::TableExprNodeArrayColumn
                                            (const TableColumn& tablecol,
-                                            const Table& table)
+                                            const TableExprInfo& tableInfo)
 : TableExprNodeArray (NTNumeric, OtColumn),
-  selTable_p         (table),
+  tableInfo_p        (tableInfo),
   tabCol_p           (tablecol),
   applySelection_p   (True)
 {
@@ -555,7 +553,6 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
         throw (TableInvExpr (tabCol_p.columnDesc().name(),
                              "unknown data type"));
     }
-    table_p = table;
     exprtype_p = Variable;
     // Set the fixed shape and dimensionality (if known).
     ndim_p = tabCol_p.ndimColumn();
@@ -566,12 +563,9 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
     setUnit (TableExprNodeColumn::getColumnUnit(tabCol_p));
 }
 
-TableExprNodeArrayColumn::~TableExprNodeArrayColumn()
-{}
-
-void TableExprNodeArrayColumn::getColumnNodes (vector<TableExprNodeRep*>& cols)
+TableExprInfo TableExprNodeArrayColumn::getTableInfo() const
 {
-    cols.push_back (this);
+    return tableInfo_p;
 }
 
 void TableExprNodeArrayColumn::disableApplySelection()
@@ -585,8 +579,8 @@ void TableExprNodeArrayColumn::applySelection (const Vector<rownr_t>& rownrs)
         // Attach the column to the selection of the table.
         // Get column name before doing selection!!!!
         String name = tabCol_p.columnDesc().name();
-        selTable_p = selTable_p(rownrs);
-        tabCol_p = TableColumn(selTable_p, name);
+        tableInfo_p.apply (rownrs);
+        tabCol_p = TableColumn(tableInfo_p.table(), name);
         // Reset switch, because the column object can be used multiple times.
         // when a select expression is used as e.g. sort key.
         applySelection_p = False;
@@ -617,11 +611,9 @@ Bool TableExprNodeArrayColumn::getColumnDataType (DataType& dt) const
 
 TableExprNodeArrayColumnBool::TableExprNodeArrayColumnBool
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnBool::~TableExprNodeArrayColumnBool()
 {}
 
 void TableExprNodeArrayColumnBool::applySelection (const Vector<rownr_t>& rownrs)
@@ -659,11 +651,9 @@ Array<Bool> TableExprNodeArrayColumnBool::getElemColumnBool
 
 TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnuChar::~TableExprNodeArrayColumnuChar()
 {}
 
 void TableExprNodeArrayColumnuChar::applySelection (const Vector<rownr_t>& rownrs)
@@ -709,11 +699,9 @@ Array<uChar> TableExprNodeArrayColumnuChar::getElemColumnuChar
 
 TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnShort::~TableExprNodeArrayColumnShort()
 {}
 
 void TableExprNodeArrayColumnShort::applySelection (const Vector<rownr_t>& rownrs)
@@ -759,11 +747,9 @@ Array<Short> TableExprNodeArrayColumnShort::getElemColumnShort
 
 TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnuShort::~TableExprNodeArrayColumnuShort()
 {}
 
 void TableExprNodeArrayColumnuShort::applySelection (const Vector<rownr_t>& rownrs)
@@ -809,11 +795,9 @@ Array<uShort> TableExprNodeArrayColumnuShort::getElemColumnuShort
 
 TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnInt::~TableExprNodeArrayColumnInt()
 {}
 
 void TableExprNodeArrayColumnInt::applySelection (const Vector<rownr_t>& rownrs)
@@ -859,11 +843,9 @@ Array<Int> TableExprNodeArrayColumnInt::getElemColumnInt
 
 TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnuInt::~TableExprNodeArrayColumnuInt()
 {}
 
 void TableExprNodeArrayColumnuInt::applySelection (const Vector<rownr_t>& rownrs)
@@ -909,11 +891,9 @@ Array<uInt> TableExprNodeArrayColumnuInt::getElemColumnuInt
 
 TableExprNodeArrayColumnInt64::TableExprNodeArrayColumnInt64
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnInt64::~TableExprNodeArrayColumnInt64()
 {}
 
 void TableExprNodeArrayColumnInt64::applySelection (const Vector<rownr_t>& rownrs)
@@ -953,11 +933,9 @@ Array<Int64> TableExprNodeArrayColumnInt64::getElemColumnInt64
 
 TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnFloat::~TableExprNodeArrayColumnFloat()
 {}
 
 void TableExprNodeArrayColumnFloat::applySelection (const Vector<rownr_t>& rownrs)
@@ -1003,11 +981,9 @@ Array<Float> TableExprNodeArrayColumnFloat::getElemColumnFloat
 
 TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnDouble::~TableExprNodeArrayColumnDouble()
 {}
 
 void TableExprNodeArrayColumnDouble::applySelection (const Vector<rownr_t>& rownrs)
@@ -1047,11 +1023,9 @@ Array<Double> TableExprNodeArrayColumnDouble::getElemColumnDouble
 
 TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnComplex::~TableExprNodeArrayColumnComplex()
 {}
 
 void TableExprNodeArrayColumnComplex::applySelection (const Vector<rownr_t>& rownrs)
@@ -1098,11 +1072,9 @@ Array<Complex> TableExprNodeArrayColumnComplex::getElemColumnComplex
 
 TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnDComplex::~TableExprNodeArrayColumnDComplex()
 {}
 
 void TableExprNodeArrayColumnDComplex::applySelection (const Vector<rownr_t>& rownrs)
@@ -1143,11 +1115,9 @@ Array<DComplex> TableExprNodeArrayColumnDComplex::getElemColumnDComplex
 
 TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
                                            (const TableColumn& col,
-                                            const Table& table)
-: TableExprNodeArrayColumn (col, table),
+                                            const TableExprInfo& tableInfo)
+: TableExprNodeArrayColumn (col, tableInfo),
   col_p                    (col)
-{}
-TableExprNodeArrayColumnString::~TableExprNodeArrayColumnString()
 {}
 
 void TableExprNodeArrayColumnString::applySelection (const Vector<rownr_t>& rownrs)
@@ -1203,9 +1173,6 @@ TableExprNodeIndex::TableExprNodeIndex (const TableExprNodeSet& indices,
     if (style.isEndExcl()) endMinus_p = 1;
     fillIndex (indices);
 }
-
-TableExprNodeIndex::~TableExprNodeIndex()
-{}
 
 void TableExprNodeIndex::checkIndexValues (const TENShPtr& arrayNode)
 {
@@ -1327,7 +1294,7 @@ void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
             ||  operands_p[i]->valueType() != VTScalar) {
                 throw (TableInvExpr ("Index value must be an integer scalar"));
             }
-            operands_p[i]->TableExprNodeRep::checkAggrFuncs();
+            TableExprNodeUtil::checkAggrFuncs (operands_p[i].get());
         }
     }
     convertConstIndex();
@@ -1423,8 +1390,6 @@ TableExprNodeArrayPart::TableExprNodeArrayPart (const TENShPtr& arrayNode,
     AlwaysAssert (inxNode_p, AipsError);
     // Check the index bounds as far as possible.
     inxNode_p->checkIndexValues (arrayNode);
-    checkTablePtr (indexNode.get());
-    checkTablePtr (arrayNode.get());
     fillExprType  (indexNode.get());
     fillExprType  (arrayNode.get());
     // If indexing a single element, the result is a scalar.
@@ -1458,8 +1423,6 @@ TableExprNodeArrayPart::TableExprNodeArrayPart (const TENShPtr& arrayNode,
     setUnit (arrayNode->unit());
 }
 
-TableExprNodeArrayPart::~TableExprNodeArrayPart()
-{}
 
 
 void TableExprNodeArrayPart::show (ostream& os, uInt indent) const

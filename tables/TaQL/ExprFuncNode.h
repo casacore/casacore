@@ -349,7 +349,7 @@ public:
                        const TableExprNodeSet& source,
                        const vector<TENShPtr>& nodes,
                        const Block<Int>& dtypeOper,
-                       const Table& = Table());
+                       const TableExprInfo& = TableExprInfo());
 
     // Destructor
     ~TableExprFuncNode ();
