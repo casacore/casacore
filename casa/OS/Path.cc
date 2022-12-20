@@ -399,7 +399,7 @@ String Path::makeAbsoluteName (const String& inString) const
     String workString (inString);
     if (workString == ".") {
         workString = "";
-    } else if (workString.before(2) == "./") {
+    } else if (workString.startsWith("./")) {
         workString = workString.from(2);
     }
     // Get the working directory and prepend it.
