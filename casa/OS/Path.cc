@@ -395,7 +395,6 @@ String Path::makeAbsoluteName (const String& inString) const
 	return inString;
     }
     // Otherwise we have a relative pathname.
-    // Remove a possible leading ./
     String workString (inString);
     if (workString == ".") {
         workString = "";
