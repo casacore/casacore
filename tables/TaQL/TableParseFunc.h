@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                        const String& name,
                                        const TableExprNodeSet& arguments,
                                        const Vector<int>& ignoreFuncs,
-                                       const Table& table,
+                                       const TableExprInfo& tabInfo,
                                        const TaQLStyle&);
 
     // Try to make a UDF function node for the given function name and arguments.
@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     static TableExprNode makeUDFNode (TableParseQuery*,
                                       const String& name,
                                       const TableExprNodeSet& arguments,
-                                      const Table& table,
+                                      const TableExprInfo& tabInfo,
                                       const TaQLStyle&);
 
     // Find the function code belonging to a function name.

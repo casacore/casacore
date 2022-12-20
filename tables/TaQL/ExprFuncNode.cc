@@ -51,12 +51,12 @@ TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
                                       const TableExprNodeSet& source,
                                       const vector<TENShPtr>& nodes,
                                       const Block<Int>& dtypeOper,
-                                      const Table& table)
+                                      const TableExprInfo& tabInfo)
 : TableExprNodeMulti (dtype, vtype, OtFunc, source),
   funcType_p         (ftype),
   argDataType_p      (dtype),
   scale_p            (1),
-  table_p            (table)
+  table_p            (tabInfo.table())
 {
   // Fill child nodes as needed. It also fills operands_p.
   fillChildNodes (nodes, dtypeOper);

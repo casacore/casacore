@@ -106,6 +106,52 @@ private:
 
 
 
+  // <summary>
+// Class to connect a Table and its alias name
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <synopsis> 
+// This class connects a Table object to its alias name used in a TaQL command.
+// If no alias is given, the table name is used as such.
+// It also tells if the Table is used as a join table.
+// </synopsis> 
+
+class TableExprInfo
+{
+public:
+    // Construct from a table and its alias.
+  explicit TableExprInfo (const Table& table = Table(),
+                          const String& alias = String(),
+                          Bool isJoinTable = False);
+
+  // Get the Table object.
+  const Table& table() const
+    { return itsTable; }
+
+  // Get the alias.
+  const String& alias() const
+    { return itsAlias; }
+
+  // Is the table a join table?
+  Bool isJoinTable() const
+    { return itsIsJoinTable; }
+
+  // Apply a selection of row numbers to the Table.
+  void apply (const Vector<rownr_t>& rownrs);
+  
+private:
+  Table  itsTable;
+  String itsAlias;
+  Bool   itsIsJoinTable;
+};
+
+
+
 // <summary>
 // Abstract base class for a node in a table column expression tree
 // </summary>
@@ -209,18 +255,28 @@ public:
 
     // Construct a node.
     TableExprNodeRep (NodeDataType, ValueType, OperType, ArgType, ExprType,
-                      Int ndim, const IPosition& shape,
-                      const Table& table);
+                      Int ndim, const IPosition& shape);
 
     // This constructor is called from the derived TableExprNodeRep.
-    TableExprNodeRep (NodeDataType, ValueType, OperType, const Table&);
+    TableExprNodeRep (NodeDataType, ValueType, OperType, ExprType);
 
     // Copy constructor.
-    TableExprNodeRep (const TableExprNodeRep&);
+    TableExprNodeRep (const TableExprNodeRep&) = default;
+
+    // Assign to a TableExprNodeRep cannot be done.
+    TableExprNodeRep& operator= (const TableExprNodeRep&) = delete;
 
     // The destructor deletes all the underlying TableExprNode objects.
-    virtual ~TableExprNodeRep();
+    virtual ~TableExprNodeRep() = default;
 
+    // Is the node an aggegation node.
+    // The default implementation returns False.
+    virtual Bool isAggregate() const;
+
+    // Get the table info.
+    // The default implementation returns an info object with a null table.
+    virtual TableExprInfo getTableInfo() const;
+  
     // Try to optimize the node (meant for the right hand of the IN operator).
     // The default implementation does nothing.
     virtual void optimize();
@@ -236,15 +292,8 @@ public:
     // Default 1 is returned.
     virtual Double getUnitFactor() const;
 
-    // Throw an exception if an aggregate function is used in
-    // the expression node or its children.
-    void checkAggrFuncs();
-
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-  
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&);
   
     // Create the correct immediate aggregate function object.
     // The default implementation throws an exception, because it should
@@ -347,9 +396,9 @@ public:
     // </group>
 
     // Get the number of rows in the table associated with this expression.
-    // One is returned if the expression is a constant.
-    // Zero is returned if no table is associated with it.
-    rownr_t nrow() const;
+    // One is returned if the expression is a constant or no table is
+    // associated with it.
+    rownr_t nrow();
 
     // Get the data type of the column.
     // It returns True when it could set the data type (which it can
@@ -442,14 +491,6 @@ public:
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
 
-    // Get table. This gets the Table object to which a
-    // TableExprNode belongs. A TableExprNode belongs to the Table to
-    // which the first column used in an expression belongs.
-    // <group>
-    Table& table();
-    const Table& table() const;
-    // </group>
-
     // Replace a node with a constant expression by node with its value.
     static TENShPtr replaceConstNode (const TENShPtr& node);
 
@@ -471,7 +512,6 @@ public:
     static String typeString (ValueType);
 
 protected:
-    Table             table_p;       //# Table from which node is "derived"
     NodeDataType      dtype_p;       //# data type of the operation
     ValueType         vtype_p;       //# value type of the result
     OperType          optype_p;      //# operator type
@@ -486,18 +526,8 @@ protected:
     // Get the shape for the given row.
     virtual const IPosition& getShape (const TableExprId& id);
 
-    // Check if this node uses the same table pointer.
-    // Fill the Table object if it is still null.
-    // <group>
-    void checkTablePtr (const TableExprNodeRep* node);
-    static void checkTablePtr (Table& table, const TableExprNodeRep* node);
-    // </group>
-
     // Set expression type to Variable if node is Variable.
-    // <group>
     void fillExprType (const TableExprNodeRep* node);
-    static void fillExprType (ExprType&, const TableExprNodeRep* node);
-    // </group>
 
     // If the node is constant, it is evaluated and replaced by
     // the appropriate TableExprNodeConst object.
@@ -505,10 +535,6 @@ protected:
     // which can convert a constant child if appropriate.
     static TENShPtr convertNode (const TENShPtr& thisNode,
                                  Bool convertConstType);
-
-private:
-    // A copy of a TableExprNodeRep cannot be made.
-    TableExprNodeRep& operator= (const TableExprNodeRep&);
 };
 
 
@@ -556,20 +582,17 @@ class TableExprNodeBinary : public TableExprNodeRep
 {
 public:
     // Constructor
-    TableExprNodeBinary (NodeDataType, ValueType, OperType, const Table&);
+    TableExprNodeBinary (NodeDataType, ValueType, OperType, ExprType);
     TableExprNodeBinary (NodeDataType, const TableExprNodeRep&, OperType);
 
     // Destructor
-    virtual ~TableExprNodeBinary();
+    ~TableExprNodeBinary() override = default;
     
     // Show the expression tree.
-    virtual void show (ostream&, uInt indent) const;
+    void show (ostream&, uInt indent) const override;
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-  
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    void flattenTree (std::vector<TableExprNodeRep*>&) override;
   
     // Check the data types and get the common one.
     static NodeDataType getDT (NodeDataType leftDtype,
@@ -662,16 +685,13 @@ public:
                         const TableExprNodeRep& source);
 
     // Destructor
-    virtual ~TableExprNodeMulti();
+    ~TableExprNodeMulti() override = default;
 
     // Show the expression tree.
-    virtual void show (ostream&, uInt indent) const;
+    void show (ostream&, uInt indent) const override;
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    void flattenTree (std::vector<TableExprNodeRep*>&) override;
   
     // Check number of arguments
     // low <= number_of_args <= high
@@ -741,17 +761,6 @@ inline Int TableExprNodeRep::ndim() const
 //# Get the fixed shape of the node.
 inline const IPosition& TableExprNodeRep::shape() const
     { return shape_p; }
-
-//# Get the table from which the node is derived.
-inline Table& TableExprNodeRep::table()
-    { return table_p; }
-inline const Table& TableExprNodeRep::table() const
-    { return table_p; }
-
-inline void TableExprNodeRep::checkTablePtr (const TableExprNodeRep* node)
-    { checkTablePtr (table_p, node); }
-inline void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
-    { fillExprType (exprtype_p, node); }
 
 
 } //# NAMESPACE CASACORE - END

@@ -31,6 +31,7 @@
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/TaQL/ExprDerNodeArray.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/TaQL/ExprRange.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
 #include <casacore/tables/Tables/TableColumn.h>
@@ -128,7 +129,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Use a default table if no one available.
     if (tableList_p.empty()) {
       return TableParseFunc::makeFuncNode (this, name, arguments, ignoreFuncs,
-                                           Table(), style);
+                                           TableExprInfo(), style);
     }
     TableExprNode node = TableParseFunc::makeFuncNode (this, name, arguments,
                                                        ignoreFuncs,
@@ -161,7 +162,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseQuery::handleColumnFinish (Bool distinct)
   {
     distinct_p = distinct;
-    projectExprTable_p = tableProject_p.handleColumnFinish (distinct, *this);
+    projectExprTable_p = tableProject_p.handleColumnFinish
+      (distinct, resultSet_p, *this);
   }
 
   Table TableParseQuery::createTable (const TableDesc& td,
@@ -235,7 +237,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                       const std::vector<TableParseQuery*>& stack)
   {
     // Delete all tables. It has already been checked they exist.
-    for (TableParsePair& tab : tableList_p.fromTables()) {
+    for (TableParsePair& tab : tableList_p.fromTablesNC()) {
       // Split the name on :: to see if a subtable has to be deleted.
       Vector<String> parts = stringToVector(tab.name(), std::regex("::"));
       if (parts.size() > 1) {
@@ -270,7 +272,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // The first table has to be altered.
     AlwaysAssert (! tableList_p.empty(), AipsError);
-    table_p = tableList_p.first();
+    table_p = tableList_p.firstTable();
     table_p.reopenRW();
     if (! table_p.isWritable()) {
       throw TableInvExpr ("Table " + table_p.tableName() + " is not writable");
@@ -308,7 +310,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<String> fieldNames;
     TableParseUtil::splitName (shand, columnName, fieldNames,
                                name, True, True, False);
-    Table tab = tableList_p.findTable (shand, False);
+    Table tab = tableList_p.findTable (shand, False).table();
     if (tab.isNull()) {
       throw (TableInvExpr("Shorthand " + shand + " not defined in FROM clause"));
     }
@@ -513,7 +515,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Int64 TableParseQuery::evalIntScaExpr (const TableExprNode& expr) const
   {
     TableParseGroupby::checkAggrFuncs (expr);
-    if (!expr.table().isNull()) {
+    if (! TableExprNodeUtil::getNodeTables (expr.getRep().get(), False).empty()) {
       throw TableInvExpr ("LIMIT or OFFSET expression cannot contain columns");
     }
     // Get the value as a double, because some expressions result in double.
@@ -818,7 +820,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The data are kept in vector Arrays and are automatically deleted at the end.
     std::vector<std::shared_ptr<ArrayBase>> arrays;
     Sort sort;
-    for (auto sortKey : sort_p) {
+    for (auto& sortKey : sort_p) {
       arrays.push_back (sortKey.addSortValues (sort, order_p, rownrs_p));
     }
     rownr_t nrrow = rownrs_p.size();
@@ -1126,7 +1128,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                          "not both");
     }
     resultSet_p = new TableExprNodeSet (set);
-    resultSet_p->checkAggrFuncs();
+    TableExprNodeUtil::checkAggrFuncs (resultSet_p);
   }
 
   //# Execute all parts of a TaQL command doing some selection.
@@ -1212,7 +1214,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       distinct_p = False;
     }
     //# The first table in the list is the source table.
-    Table table = tableList_p.first();
+    Table table = tableList_p.firstTable();
     //# Set endrow_p if positive limit and positive or no offset.
     if (offset_p >= 0  &&  limit_p > 0) {
       endrow_p = offset_p + limit_p * stride_p;
@@ -1365,8 +1367,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     table_p = resultTable;
   }
 
-  String TableParseQuery::getTableInfo (const Vector<String>& parts,
-                                        const TaQLStyle& style)
+  String TableParseQuery::getTableStructure (const Vector<String>& parts,
+                                             const TaQLStyle& style)
   {
     Bool showdm = False;
     Bool showcol = True;
@@ -1398,14 +1400,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       } else if (opt == "recur") {
         showsub = fop;
       } else {
-        throw AipsError (parts[i] + " is an unknown show table option; use: "
-                         "dm col sort key colkey recur");
+        throw TableInvExpr (parts[i] + " is an unknown show table option; use: "
+                            "dm col sort key tabkey colkey recur");
       }
     }
     std::ostringstream os;
-    tableList_p.first().showStructure (os, showdm, showcol, showsub,
-                                     sortcol, style.isCOrder());
-    tableList_p.first().showKeywords (os, showsub, tabkey, colkey);
+    tableList_p.firstTable().showStructure (os, showdm, showcol, showsub,
+                                            sortcol, style.isCOrder());
+    tableList_p.firstTable().showKeywords (os, showsub, tabkey, colkey);
     return os.str();
   }
 

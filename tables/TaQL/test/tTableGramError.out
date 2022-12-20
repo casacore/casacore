@@ -1,0 +1,173 @@
+select from
+  Error in TaQL command: select from
+  parse error at or near position 12 ''
+select from tTableGramError_tmp.tab1 where
+  Error in TaQL command: select from tTableGramError_tmp.tab1 where
+  parse error at or near position 43 ''
+select from tTableGramError_tmp.tab1 where ci>1 groupby
+  Error in TaQL command: select from tTableGramError_tmp.tab1 where ci>1 groupby
+  parse error at or near position 56 ''
+select from tTableGramError_tmp.tab1 where ci>1 orderby
+  Error in TaQL command: select from tTableGramError_tmp.tab1 where ci>1 orderby
+  parse error at or near position 56 ''
+select from tTableGramError_tmp.tab1 where ci>1 group ci
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where ci>1 group ci'
+  Unit::check Illegal unit string 'group'
+select from tTableGramError_tmp.tab1 where ci>1 order ci
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where ci>1 order ci'
+  Unit::check Illegal unit string 'order'
+select from tTableGramError_tmp.tab1 where ci>1 order ci groupby ci
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where ci>1 order ci groupby ci'
+  Unit::check Illegal unit string 'order'
+select from tTableGramError_tmp.tab1 t1, tTableGramError_tmp.tab2 t1
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 t1, tTableGramError_tmp.tab2 t1'
+  Error in select expression: Shorthand 't1' has already been used
+select t2.ci from tTableGramError_tmp.tab1 t1
+  Error in TaQL command: 'select t2.ci from tTableGramError_tmp.tab1 t1'
+  Error in select expression: Shorthand t2 has not been defined in FROM clause
+select from tTableGramError_tmp.tabx
+  Error in TaQL command: 'select from tTableGramError_tmp.tabx'
+  Table tTableGramError_tmp.tabx does not exist
+select from tTableGramError_tmp.tabx::SUBTAB
+  Error in TaQL command: 'select from tTableGramError_tmp.tabx::SUBTAB'
+  Table tTableGramError_tmp.tabx does not exist
+select from tTableGramError_tmp.tab1::SUBTAB
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1::SUBTAB'
+  Error in select expression: SUBTAB is an unknown keyword/subtable in tTableGramError_tmp.tab1::SUBTAB
+select from ['tTableGramError_tmp.tabx*']
+  Error in TaQL command: 'select from ['tTableGramError_tmp.tabx*']'
+  Error in select expression: No matching tables found for tTableGramError_tmp.tabx*
+select from $1
+  Error in TaQL command: 'select from $1'
+  Error in select expression: Invalid temporary table number given in $1
+select cx from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select cx from tTableGramError_tmp.tab1'
+  Error in select expression: cx is an unknown column (or keyword) in table tTableGramError_tmp.tab1
+select from tTableGramError_tmp.tab1 where cx>1
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where cx>1'
+  Error in select expression: cx is an unknown column (or keyword) in table tTableGramError_tmp.tab1
+select from tTableGramError_tmp.tab1 orderby cx
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 orderby cx'
+  Error in select expression: cx is an unknown column (or keyword) in table tTableGramError_tmp.tab1
+select from tTableGramError_tmp.tab1 groupby cx
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 groupby cx'
+  Error in select expression: cx is an unknown column (or keyword) in table tTableGramError_tmp.tab1
+create table a.b like tTableGramError_tmp.tab1 drop column cx
+  Error in TaQL command: 'create table a.b like tTableGramError_tmp.tab1 drop column cx'
+  Error in select expression: Column cx to be dropped does not exist in the LIKE table
+select cd kg from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select cd kg from tTableGramError_tmp.tab1'
+  Error in select expression: Units kg and Hz do not conform
+select from tTableGramError_tmp.tab1 where cd>1kg
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where cd>1kg'
+  Error in select expression: Units Hz and kg do not conform
+select from tTableGramError_tmp.tab1 orderby cd kg
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 orderby cd kg'
+  Error in select expression: Units kg and Hz do not conform
+select from tTableGramError_tmp.tab1 groupby cd kg
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 groupby cd kg'
+  Error in select expression: Units kg and Hz do not conform
+select t1.cb, t2.ci from tTableGramError_tmp.tab1 t1, tTableGramError_tmp.tab2 t2
+  Error in TaQL command: 'select t1.cb, t2.ci from tTableGramError_tmp.tab1 t1, tTableGramError_tmp.tab2 t2'
+  Error in select expression: Nr of rows (2) in table column t2.ci differs from column t1.cb (1)
+select from tTableGramError_tmp.tab1 t1, tTableGramError_tmp.tab2 t2 where t1.ci!=t2.ci
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 t1, tTableGramError_tmp.tab2 t2 where t1.ci!=t2.ci'
+  Error in select expression: Nr of rows (2) in table column t2.ci differs from column t1.ci (1)
+select from tTableGramError_tmp.tab1 t1 where t2.ci=0
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 t1 where t2.ci=0'
+  Error in select expression: Shorthand t2 has not been defined in FROM clause
+select from tTableGramError_tmp.tab1 t1 where t1.cx=0
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 t1 where t1.cx=0'
+  Error in select expression: t1.cx is an unknown column (or keyword) in table tTableGramError_tmp.tab1
+select means(cai,0,[1]) from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select means(cai,0,[1]) from tTableGramError_tmp.tab1'
+  Error in select expression: Erroneous use of function means - Axes/shape arguments 3 are not one or more scalars or a single bounded range
+select sqrtt(cai) from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select sqrtt(cai) from tTableGramError_tmp.tab1'
+  Error in select expression: TaQL function sqrtt is unknown; use 'show func' to see all functions
+>>>
+select m.sqrtt(cai) from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select m.sqrtt(cai) from tTableGramError_tmp.tab1'
+  Found dynamic library libm.dylib, but not its register_m function
+  dlsym(0x1179b8f00, register_m): symbol not found
+select mxy.sqrtt(cai) from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select mxy.sqrtt(cai) from tTableGramError_tmp.tab1'
+  Shared library mxy not found in CASACORE_LDPATH or (DY)LD_LIBRARY_PATH
+dlopen(/Users/diepen/lib/libcasa_mxy.7.dylib, 10): image not found
+dlopen(/Users/diepen/lib/libcasa_mxy.dylib, 10): image not found
+dlopen(/Users/diepen/lib/libmxy.7.dylib, 10): image not found
+dlopen(/Users/diepen/lib/libmxy.dylib, 10): image not found
+dlopen(/Users/diepen/sim/build/clang_opt/installed/lib/libcasa_mxy.7.dylib, 10): image not found
+dlopen(/Users/diepen/sim/build/clang_opt/installed/lib/libcasa_mxy.dylib, 10): image not found
+dlopen(/Users/diepen/sim/build/clang_opt/installed/lib/libmxy.7.dylib, 10): image not found
+dlopen(/Users/diepen/sim/build/clang_opt/installed/lib/libmxy.dylib, 10): image not found
+dlopen(libcasa_mxy.7.dylib, 10): image not found
+dlopen(libcasa_mxy.dylib, 10): image not found
+dlopen(libmxy.7.dylib, 10): image not found
+dlopen(libmxy.dylib, 10): image not found
+<<<
+select gsum(gmin(ci)) from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select gsum(gmin(ci)) from tTableGramError_tmp.tab1'
+  Error in select expression: Erroneous use of function gsum - The argument of an aggregate function cannot use an aggregate function
+select from tTableGramError_tmp.tab1 groupby ci having gsum(gmin(ci)>0
+  Error in TaQL command: select from tTableGramError_tmp.tab1 groupby ci having gsum(gmin(ci)>0
+  parse error at or near position 71 ''
+select from tTableGramError_tmp.tab1 where gsum(ci) > 0
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where gsum(ci) > 0'
+  Error in select expression: Invalid use of an aggregate function (only use in SELECT or HAVING clause)
+select from tTableGramError_tmp.tab1 orderby gsum(ci)
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 orderby gsum(ci)'
+  Error in select expression: Invalid use of an aggregate function (only use in SELECT or HAVING clause)
+select from tTableGramError_tmp.tab1 groupby gsum(ci)
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 groupby gsum(ci)'
+  Error in select expression: Invalid use of an aggregate function (only use in SELECT or HAVING clause)
+select from tTableGramError_tmp.tab1 where ci>cb
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where ci>cb'
+  Error in select expression: invalid operand data type; TableExprNodeBinary::getDT cannot combine arguments with data type Double and Bool
+select from tTableGramError_tmp.tab1 where ci+cs>0
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where ci+cs>0'
+  Error in select expression: invalid operand data type; TableExprNodeBinary::getDT cannot combine arguments with data type Double and String
+select from tTableGramError_tmp.tab1 where cc+cs>0
+  Error in TaQL command: 'select from tTableGramError_tmp.tab1 where cc+cs>0'
+  Error in select expression: invalid operand data type; TableExprNodeBinary::getDT cannot combine arguments with data type Complex and String
+select ct+cs from tTableGramError_tmp.tab1
+  Error in TaQL command: 'select ct+cs from tTableGramError_tmp.tab1'
+  Error in select expression: invalid operand data type; TableExprNodeBinary::getDT cannot combine arguments with data type Double and String
+calc date() + date()
+  Error in TaQL command: 'calc date() + date()'
+  Error in select expression: invalid operand data type; TableExprNodeBinary::getDT cannot combine arguments with data type DateTime and DateTime
+INSERT INTO tTableGramError_tmp.tab1 (ci,cd) VALUES (1,2),(1,2,3)
+  Error in TaQL command: 'INSERT INTO tTableGramError_tmp.tab1 (ci,cd) VALUES (1,2),(1,2,3)'
+  Error in select expression: Different nr of values given in INSERT
+INSERT INTO tTableGramError_tmp.tab1 (ci,cd) VALUES (1,2,3)
+  Error in TaQL command: 'INSERT INTO tTableGramError_tmp.tab1 (ci,cd) VALUES (1,2,3)'
+  Error in select expression: Error in INSERT command; nr of columns (=2) mismatches number of VALUES expressions (=3)
+INSERT INTO tTableGramError_tmp.tab1 (ci,cs) VALUES (1,2)
+  Error in TaQL command: 'INSERT INTO tTableGramError_tmp.tab1 (ci,cs) VALUES (1,2)'
+  Error in select expression: Column cs has an invalid data type for an UPDATE with an integer value
+calc sum([[1,2],[3,4,5]])
+  Error in TaQL command: 'calc sum([[1,2],[3,4,5]])'
+  Error in select expression: Shapes of nested arrays do not match
+calc sum([1,2][T,F])
+  Error in TaQL command: 'calc sum([1,2][T,F])'
+  Error in select expression: Second argument of a masked array must be an array; maybe extra brackets are needed like [1,2][[T,F]]
+>>>
+calc sum([1,2][[T,F,F]])
+  Error in TaQL command: 'calc sum([1,2][[T,F,F]])'>>>
+  (/Users/diepen/casa/github/casacore/tables/TaQL/MArrayBase.cc : 113) Failed AlwaysAssert itsShape.isEqual (mask.shape())
+<<<
+select ci from tTableGramError_tmp.tab1 limit ::0
+  Error in TaQL command: 'select ci from tTableGramError_tmp.tab1 limit ::0'
+  Error in select expression: in the LIMIT clause stride 0 must be positive
+select ci from tTableGramError_tmp.tab1 limit ci
+  Error in TaQL command: 'select ci from tTableGramError_tmp.tab1 limit ci'
+  Error in select expression: Shorthand  has not been defined in FROM clause
+select ci limit -1
+  Error in TaQL command: 'select ci limit -1'
+  Error in select expression: LIMIT and OFFSET values cannot be negative if no tables are given in the FROM clause
+select ci offset -1
+  Error in TaQL command: 'select ci offset -1'
+  Error in select expression: LIMIT and OFFSET values cannot be negative if no tables are given in the FROM clause
+select ci from tTableGramError_tmp.tab1 where ci>max([select from tTableGramError_tmp.tab1 giving [cai]])
+  Error in TaQL command: 'select ci from tTableGramError_tmp.tab1 where ci>max([select from tTableGramError_tmp.tab1 giving [cai]])'
+  Error in select expression: Set in GIVING clause should contain scalar elements

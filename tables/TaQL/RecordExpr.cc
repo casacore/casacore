@@ -40,7 +40,7 @@ TableExprNode makeRecordExpr (const RecordDesc& desc,
                               Int fieldNumber)
 {
   if (fieldNumber < 0  ||  fieldNumber >= Int(desc.nfields())) {
-    throw (AipsError ("makeRecordExpr: invalid field number given"));
+    throw TableInvExpr ("makeRecordExpr: invalid field number given");
   }
   Block<Int> fieldNrs (1, fieldNumber);
   if (desc.isArray (fieldNumber)) {
@@ -57,8 +57,8 @@ TableExprNode makeRecordExpr (const RecordDesc& desc,
 {
   Int fld = desc.fieldNumber (fieldName);
   if (fld < 0) {
-    throw (AipsError ("makeRecordExpr: field name " + fieldName +
-                      " is unknown"));
+    throw TableInvExpr ("makeRecordExpr: field name " + fieldName +
+                        " is unknown");
   }
   return makeRecordExpr (desc, fld);
 }
@@ -69,8 +69,8 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
 {
   Vector<String> names (stringToVector (fieldName, '.'));
   if (names.nelements() == 0) {
-    throw (AipsError ("makeRecordExpr: empty field name given"));
-  }
+    throw TableInvExpr ("makeRecordExpr: empty field name given");
+}
   Block<Int> fieldNrs (names.nelements());
   String name;
   Int fld=0;
@@ -83,13 +83,13 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
     name += names(i);
     fld = desc.fieldNumber (names(i));
     if (fld < 0) {
-      throw (AipsError ("makeRecordExpr: field name " + name + " is unknown"));
+      throw TableInvExpr ("makeRecordExpr: field name " + name + " is unknown");
     }
     
     if (i < names.nelements()-1) {
       if (! desc.isSubRecord(fld)) {
-        throw (AipsError ("makeRecordExpr: field name " + name +
-                          " is not a subrecord"));
+        throw TableInvExpr ("makeRecordExpr: field name " + name +
+                            " is not a subrecord");
       } else {
         recPtr = &(recPtr->asRecord(fld));
         desc = recPtr->description();

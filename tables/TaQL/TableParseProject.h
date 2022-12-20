@@ -120,7 +120,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Finish the additions to the block of column names
     // by removing the deleted empty names and creating Expr objects as needed.
-    Table handleColumnFinish (Bool distinct, TableParseQuery&);
+    // An exception is thrown if there is a resultset and if columns are selected.
+    Table handleColumnFinish (Bool distinct, Bool hasResultSet, TableParseQuery&);
 
     // Keep the column specification in a create table command.
     void handleColSpec (const String& columnName, const String& likeColName,

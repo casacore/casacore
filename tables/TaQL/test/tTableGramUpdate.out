@@ -768,7 +768,7 @@ Testing erroneous commands ...
 update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])
 
 Caught an exception: Error in TaQL command: 'update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
-  Update mask must conform the column's array section
+  Error in select expression: Update mask must conform the column's array section
 update tTableGramUpdate_tmp.tab1 set cola[,1:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])
 
 Caught an exception: Error in TaQL command: 'update tTableGramUpdate_tmp.tab1 set cola[,1:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'

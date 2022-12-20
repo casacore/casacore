@@ -68,12 +68,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             const Block<Int>& dtypeOper,
                             const TaQLStyle& style);
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-
+    // This node does aggregation.
+    virtual Bool isAggregate() const;
+    
     // Get the operand node.
     TENShPtr operand()
-    { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
+      { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
 
     // Create the correct aggregate function object.
     virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();

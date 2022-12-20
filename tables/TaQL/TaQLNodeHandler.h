@@ -246,7 +246,7 @@ public:
     : itsInt(-1), itsElem(0), itsSet(0), itsNames(0) {}
   TaQLNodeHRValue (const TableExprNode& expr)
     : itsInt(-1), itsExpr(expr), itsElem(0), itsSet(0), itsNames(0) {}
-  virtual ~TaQLNodeHRValue();
+  ~TaQLNodeHRValue() override = default;
 
   // Get the values.
   // <group>
@@ -272,7 +272,7 @@ public:
     { return itsElem; }
   const TableExprNodeSet& getExprSet() const
     { return *itsSet; }
-  const Vector<String>* getNames() const
+  const Vector<String>& getNames() const
     { return itsNames; }
   // </group>
 
@@ -301,7 +301,7 @@ public:
     { itsElem = elem; }
   void setExprSet (TableExprNodeSet* set)
     { itsSet = set; }
-  void setNames (Vector<String>* names)
+  void setNames (const Vector<String>& names)
     { itsNames = names; }
   // </group>
 
@@ -313,18 +313,18 @@ private:
   String itsDtype;
   Record itsRecord;
   ValueHolder itsVH;
-  Table  itsTable;
+  Table       itsTable;
   TableExprNode         itsExpr;
-  TableExprNodeSetElem* itsElem;
-  TableExprNodeSet*     itsSet;
-  Vector<String>*       itsNames;
+  TableExprNodeSetElem* itsElem;      //# is counted in itsExpr
+  TableExprNodeSet*     itsSet;       //# is counted in itsExpr
+  Vector<String>        itsNames;
 };
 
 
-//# This function can only be implemented after TaQLNodeHRBase is declared.
+//# This function can only be implemented after TaQLNodeHRValue is declared.
 inline const TaQLNodeHRValue& TaQLNodeHandler::getHR (const TaQLNodeResult& res)
 {
-  return *(TaQLNodeHRValue*)(res.getRep());
+  return dynamic_cast<const TaQLNodeHRValue&>(res.getRep());
 }
 
   
