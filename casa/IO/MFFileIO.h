@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef CASA_MFFILEIO_H
 #define CASA_MFFILEIO_H
@@ -57,7 +55,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <example>
   // <srcblock>
   //    // Create a new MultiFile using a block size of 1 MB.
-  //    MultiFile mfile("file.mf', ByteIO::New, 1048576);
+  //    shared_ptr<MultiFileBase> mfile
+  //          (new MultiFile("file.mf', ByteIO::New, 1048576));
   //    // Create a virtual file in it.
   //    MFFileIO mf1(mfile, "mf1", ByteIO::New);
   //    // Use it (for example) as the sink of AipsIO.
@@ -80,62 +79,69 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a virtual file with the given name. Note that only the
     // basename of the file name is actually used.
     // It is created in the given MultiFileBase.
-    MFFileIO (MultiFileBase&, const String& name,
+    MFFileIO (const std::shared_ptr<MultiFileBase>&, const String& name,
               ByteIO::OpenOption = ByteIO::Old);
 
     // The destructor flushes and closes the file.
-    virtual ~MFFileIO();
+    ~MFFileIO() override;
 
     // Read <src>size</src> bytes from the byte stream. Returns the number of
     // bytes actually read, or a negative number if an error occurred. Will also
     // throw an Exception (AipsError) if the requested number of bytes could
     // not be read unless throwException is set to False.
-    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);
+    Int64 read (Int64 size, void* buf, Bool throwException=True) override;
 
-    // Write a block at the given offset.
-    virtual void write (Int64 size, const void* buffer);
+    // Write a block at the current offset.
+    void write (Int64 size, const void* buffer) override;
 
     // Reopen the file (and possibly underlying MultiFileBase) for read/write access.
     // Nothing will be done if the stream is writable already.
     // An exception will be thrown if it is not possible to reopen it for
     // read/write access.
-    virtual void reopenRW();
+    void reopenRW() override;
 
     // Remove the file from the MultiFileBase object.
     // It makes the object invalid by setting the fileId to -1.
     void remove();
 
     // Flush the file by writing all dirty data and all header info.
-    virtual void flush();
+    void flush() override;
 
     // Get the length of the file.
-    virtual Int64 length();
+    Int64 length() override;
        
     // The file is always readable.
-    virtual Bool isReadable() const;
+    Bool isReadable() const override;
 
     // Is the file writable?
-    virtual Bool isWritable() const;
+    Bool isWritable() const override;
 
     // The file is always seekable.
-    virtual Bool isSeekable() const;
+    Bool isSeekable() const override;
 
     // Get the file name of the file attached.
-    virtual String fileName() const;
+    String fileName() const override;
 
     // Fsync the file (i.e. force the data to be physically written).
-    virtual void fsync();
+    void fsync() override;
 
+    // Truncate the file to the given size.
+    void truncate (Int64 size) override;
+  
     // Reset the position pointer to the given value. It returns the
     // new position.
-    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+    Int64 doSeek (Int64 offset, ByteIO::SeekOption) override;
+
+    // Get the MultiFileInfo object for this file.
+    const MultiFileInfo& getInfo() const;
 
   private:
     //# Data members
-    MultiFileBase& itsFile;
+    std::shared_ptr<MultiFileBase> itsFile;
     Int64          itsPosition;
     String         itsName;
     Int            itsId;
+    Bool           itsIsWritable;
   };
 
 

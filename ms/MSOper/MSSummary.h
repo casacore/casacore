@@ -23,8 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
-//#
 #ifndef MS_MSSUMMARY_H
 #define MS_MSSUMMARY_H
 

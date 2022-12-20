@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_REGULARFILE_H
 #define CASA_REGULARFILE_H
@@ -106,7 +104,8 @@ public:
     // instead.
     // <group>
     RegularFile (const Path& path);
-    RegularFile (const String& string);
+    RegularFile (const String& path);
+    RegularFile (const char* path);
     RegularFile (const File& file);
     // </group>
 

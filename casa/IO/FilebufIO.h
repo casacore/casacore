@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_FILEBUFIO_H
 #define CASA_FILEBUFIO_H
@@ -127,6 +125,9 @@ public:
 
     // Resync the file (i.e. empty the current buffer).
     virtual void resync();
+  
+    // Truncate the file to the given size.
+    virtual void truncate (Int64 size);
   
     // Get the length of the byte stream.
     virtual Int64 length();

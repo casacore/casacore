@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/LargeIOFuncDef.h>
@@ -145,6 +143,12 @@ void FilebufIO::flush()
     itsDirty = False;
   }
 }
+
+void FilebufIO::truncate (Int64 size)
+{
+  ::ftruncate (itsFile, size);
+}
+  
 
 void FilebufIO::resync()
 {

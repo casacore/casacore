@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Block.h 21120 2011-09-01 13:51:56Z gervandiepen $
 
 //# Comment out for time being because __malloc_hook is deprecated.
 //# Do so by #ifdef on AIPS_LINUX_DEPR instead of AIPS_LINUX.

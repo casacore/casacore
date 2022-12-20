@@ -23,8 +23,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: JsonGram.ll 30919 2015-02-05 15:26:22Z amesfoort $
 */
 
 /* yy_unput is not used, so let flex not generate it, otherwise picky

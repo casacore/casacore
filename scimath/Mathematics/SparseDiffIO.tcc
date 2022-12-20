@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: SparseDiffIO.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
 #ifndef SCIMATH_SPARSEDIFFIO_TCC
 #define SCIMATH_SPARSEDIFFIO_TCC

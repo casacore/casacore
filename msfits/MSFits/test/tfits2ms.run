@@ -7,8 +7,6 @@
 
 # The script supplies the names of all test tables found in the system.
 # It is meant to be run from assay, but can also be used standalone.
-#
-# $Id$
 #-----------------------------------------------------------------------------
 
   if [ ${#AIPSPATH} = 0 ]

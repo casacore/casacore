@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/Exceptions.h>
@@ -54,6 +52,12 @@ RegularFile::RegularFile (const Path& path)
 
 RegularFile::RegularFile (const String& path)
 : File(path)
+{
+    checkPath();
+}
+
+RegularFile::RegularFile (const char* path)
+: File(String(path))
 {
     checkPath();
 }

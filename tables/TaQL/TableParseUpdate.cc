@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: TableParse.cc 21399 2013-11-12 07:55:35Z gervandiepen $
 
 #include <casacore/tables/TaQL/TableParseUpdate.h>
 #include <casacore/tables/TaQL/TableParseGroupby.h>

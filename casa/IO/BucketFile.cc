@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -56,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketFile::BucketFile (const String& fileName,
                         uInt bufSizeFile, Bool mappedFile,
-                        MultiFileBase* mfile)
+                        const std::shared_ptr<MultiFileBase>& mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (True),
   isMapped_p     (mappedFile),
@@ -69,7 +67,7 @@ BucketFile::BucketFile (const String& fileName,
 {
     // Create the file.
     if (mfile_p) {
-      file_p = new MFFileIO (*mfile_p, name_p, ByteIO::New);
+      file_p = new MFFileIO (mfile_p, name_p, ByteIO::New);
       isMapped_p = False;
       bufSize_p  = 0;
     } else {
@@ -81,7 +79,7 @@ BucketFile::BucketFile (const String& fileName,
 
 BucketFile::BucketFile (const String& fileName, Bool isWritable,
                         uInt bufSizeFile, Bool mappedFile,
-                        MultiFileBase* mfile)
+                        const std::shared_ptr<MultiFileBase>& mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (isWritable),
   isMapped_p     (mappedFile),
@@ -127,7 +125,7 @@ void BucketFile::open()
 {
     if (! file_p) {
       if (mfile_p) {
-        file_p = new MFFileIO (*mfile_p, name_p,
+        file_p = new MFFileIO (mfile_p, name_p,
                                isWritable_p ? ByteIO::Update : ByteIO::Old);
       } else {
         fd_p   = FiledesIO::open (name_p.chars(), isWritable_p);

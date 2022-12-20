@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: 
 //----------------------------------------------------------------------------
 
 #include <casacore/msfits/MSFits/MSFitsIDI.h>
@@ -293,6 +291,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   // Correlator
   String correlat;
   Float vanVleck = 0.0;
+  Int zeroPad = 0;
 
   // Loop over all HDU in the FITS-IDI file
   Bool initFirstMain = True;
@@ -323,12 +322,19 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
     } else {
       // Process the FITS-IDI input from the position of this binary table
-      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain, vanVleck);
+      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain, vanVleck, zeroPad);
       initFirstMain = False;
       String hduName = bintab.extname();
       hduName = hduName.before(trailing);
       String tableName = itsMSOut;
       if (hduName != "") {
+	if (hduName == "MODEL_COMPS") {
+	  // Zero padding "factor"; a value of 0 implies no zero padding
+	  if (bintab.kw("ZERO_PAD")) {
+	    zeroPad = bintab.kw("ZERO_PAD")->asInt();
+	    os << LogIO::NORMAL << "ZeroPad: " << zeroPad << LogIO::POST;
+	  }
+	}
 	if (hduName != "UV_DATA") {
 	  tableName = tableName + "_tmp/" + hduName;
 	}

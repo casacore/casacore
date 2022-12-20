@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSMetaData.h 21586 2015-03-25 13:46:25Z gervandiepen $
 
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H

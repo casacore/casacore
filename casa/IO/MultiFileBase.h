@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef CASA_MULTIFILEBASE_H
 #define CASA_MULTIFILEBASE_H
@@ -32,10 +30,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/casa/vector.h>
 #include <casacore/casa/ostream.h>
-
+#include <vector>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -53,50 +50,54 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Hence the memory must be freed using free, which makes it impossible
   // to use a shared_ptr to that memory. Hence it is encapsulated in this class.
   // </synopsis>
-  struct MultiFileBuffer {
+  class MultiFileBuffer {
+  public:
     MultiFileBuffer (size_t bufSize, Bool useODirect);
     ~MultiFileBuffer()
-      { if (data) free (data); }
-    // Data member
-    char* data;
+      { if (itsData) free(itsData); }
+    char* data()
+      { return itsData; }
   private:
+    // Forbid copy constructor and assignment.
     MultiFileBuffer (const MultiFileBuffer&);
     MultiFileBuffer& operator= (const MultiFileBuffer&);
+    // Data members
+    char* itsData;
   };
 
   // <summary>
-  // Helper class for MultiFileBase containing info per internal file.
+  // Helper class for MultiFileBase containing info per logical file.
   // </summary>
   // <synopsis>
-  // This struct defines the various fields describing a logical file in a
+  // This struct defines the basic fields describing a logical file in a
   // class derived from MultiFileBase (such as MultiFile or MultiHDF5).
   // </synopsis>
   // <use visibility=local>
   struct MultiFileInfo {
-    // Initialize the object and create the buffer with the proper size.
-    // If align>1 (for use of O_DIRECT), the buffer is properly aligned and it
-    // is ensured that its size is a multiple of the alignment.
-    explicit MultiFileInfo (Int64 bufSize=0, Bool useODirect=False);
+    // Initialize the object. The buffer is created when the file is opened.
+    explicit MultiFileInfo();
     // Allocate the buffer.
-    void allocBuffer (Int64 bufSize, Bool useODirect=False)
-      { buffer = std::shared_ptr<MultiFileBuffer> (new MultiFileBuffer(bufSize, useODirect)); }
+    void allocBuffer (size_t bufSize, Bool useODirect)
+      { buffer = std::make_shared<MultiFileBuffer>(bufSize, useODirect); }
     //# Data members.
-    vector<Int64> blockNrs;     // physical blocknrs for this logical file
+    std::vector<Int64> blockNrs;     // physical blocknrs for this logical file
     Int64         curBlock;     // the data block held in buffer (<0 is none)
     Int64         fsize;        // file size (in bytes)
     String        name;         // the virtual file name
+    Bool          nested;       // is the file a nested MultiFile?
     Bool          dirty;        // has data in buffer been changed?
-    std::shared_ptr<MultiFileBuffer> buffer;       // buffer holding a data block
-    CountedPtr<HDF5Group> group;
-    CountedPtr<HDF5DataSet> dataSet;
+    std::shared_ptr<MultiFileBuffer> buffer; // buffer holding a data block
+    std::shared_ptr<HDF5Group> group;
+    std::shared_ptr<HDF5DataSet> dataSet;
   };
-  void operator<< (ostream&, const MultiFileInfo&);
-  void operator<< (AipsIO&, const MultiFileInfo&);
-  void operator>> (AipsIO&, MultiFileInfo&);
+  ostream& operator<< (ostream&, const MultiFileInfo&);
+  AipsIO& operator<< (AipsIO&, const MultiFileInfo&);
+  AipsIO& operator>> (AipsIO&, MultiFileInfo&);
+  void getInfoVersion1 (AipsIO&, std::vector<MultiFileInfo>&);
 
 
   // <summary> 
-  // Abstract base class to combine multiple files in a single one.
+  // Abstract base class to combine multiple logical files in a single one.
   // </summary>
 
   // <use visibility=export>
@@ -105,101 +106,91 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </reviewed>
 
   // <synopsis> 
-  // This class is a container file holding multiple virtual files. It is
-  // primarily meant as a container file for the storage manager files of a
-  // table to reduce the number of files used (especially for Lustre) and to
-  // reduce the number of open files (especially when concatenating tables).
-  // <br>A secondary goal is offering the ability to use an IO buffer size
-  // that matches the file system well (large buffer size for e.g. ZFS).
+  // This class is the abstract base class for classes defining a container
+  // file holding multiple logical files. These classes are meant as a
+  // container files for the storage manager files of a table to reduce the
+  // number of files used (especially for Lustre) and to reduce the number
+  // of open files (especially when concatenating tables).
+  // The derived classes MultiFile and MultiHDF5 implement such container
+  // files using a regular file and HDF5, resp.
   //
-  // The SetupNewTable constructor has a StorageOption argument to define
-  // if a MultiFile has to be used and if so, the buffer size to use.
-  // It is also possible to specify that through aipsrc variables.
+  // MultiFileBase implements several functions with common functionality
+  // for the derived classes.
   //
-  // A virtual file is spread over multiple (fixed size) data blocks in the
-  // MultiFile. A data block is never shared by multiple files.
-  // For each virtual file MultiFile keeps a MultiFileInfo object telling
-  // the file size and the blocks numbers used for the file. When flushing
-  // the MultiFile, this meta info is written into a header block and,
-  // if needed, continuation blocks. On open and resync, it is read back.
-  // <br>
-  //
-  // A virtual file is represented by an MFFileIO object, which is derived
+  // A logical file is represented by an MFFileIO object, which is derived
   // from ByteIO and as such part of the casacore IO framework. It makes it
-  // possible for applications to access a virtual file in the same way as
+  // possible for applications to access a logical file in the same way as
   // a regular file.
-  //
-  // It is possible to delete a virtual file. Its blocks will be added to
-  // the free block list (which is also stored in the meta info).
   // </synopsis>
-
-  // <example>
-  // In principle it is possible to use the MultiFile functions directly.
-  // However, in general it is much easier to use an MFFileIO object
-  // per virtual file as shown below.
-  // <srcblock>
-  //    // Create a new MultiFile using a block size of 1 MB.
-  //    MultiFile mfile("file.mf', ByteIO::New, 1048576);
-  //    // Create a virtual file in it.
-  //    MFFileIO mf1(mfile, "mf1", ByteIO::New);
-  //    // Use it (for example) as the sink of AipsIO.
-  //    AipsIO stream (&mf1);
-  //    // Write values.
-  //    stream << (Int)10;
-  //    stream << True;
-  //    // Seek to beginning of file and read data in.
-  //    stream.setpos (0);
-  //    Int vali;
-  //    Bool valb;
-  //    stream >> vali >> valb;
-  // </srcblock>
-  // </example>
-
-  // <todo>
-  //  <li> write headers at alternating file positions (for robustness)
-  //  <li> possibly write headers entirely at the end if larger than blocksize
-  // </todo>
-
 
   class MultiFileBase
   {
   public:
-    // Open or create a MultiFileBase with the given name.
-    // Upon creation the block size can be given. If 0, it uses the block size
-    // of the file system the file is on.
-    // If useODIrect=True, it means that O_DIRECT is used. If the OS does not
-    // support it, the flag will always be False. If True, the data buffers will
-    // have a proper alignment and size (as needed by O_DIRECT).
+    // Create a MultiFileBase object with the given name.
+    // <br>Upon creation of the container file the block size can be given.
+    // If <=0, it uses the block size of the file system the file is on,
+    // but it will not be less than the absolute value of the given block size.
+    // <br>If useODIrect=True, it means that O_DIRECT is used. If the OS does not
+    // support it (as determined at configure time), the flag will always be
+    // set to False. If True, the data buffers will have a proper alignment
+    // and size (as needed by O_DIRECT).
     MultiFileBase (const String& name, Int blockSize, Bool useODirect);
 
-    // The destructor flushes and closes the file.
+    // The destructor flushes dirty blocks and closes the container file.
     virtual ~MultiFileBase();
 
-    // Return the file id of a file in the MultiFileBase object.
-    // If the name is unknown, an exception is thrown if throwExcp is set.
-    // Otherwise it returns -1.
-    Int fileId (const String& name, Bool throwExcp=True) const;
+    // Open the correct MultiFileBase (as plain or HDF5).
+    static std::shared_ptr<MultiFileBase> openMF (const String& fileName);
 
-    // Add a file to the MultiFileBase object. It returns the file id.
+    // Make the correct MultiFileBase object for a nested file.
+    virtual std::shared_ptr<MultiFileBase> makeNested
+    (const std::shared_ptr<MultiFileBase>& parent, const String& name,
+     ByteIO::OpenOption, Int blockSize) const = 0;
+
+    // Get the file name of the MultiFileBase container file.
+    String fileName() const
+      { return itsName; }
+
+    // Is the container file writable?
+    Bool isWritable() const
+      { return itsWritable; }
+
+    // Open the given logical file and return its file id.
+    // If the name is unknown, an exception is thrown.
+    // It allocates the internal buffer of the logical file.
+    Int openFile (const String& name);
+
+    // Create a new logical file and return its file id.
     // Only the base name of the given file name is used. In this way the
     // MultiFileBase container file can be moved.
-    Int addFile (const String& name);
+    // If the logical file already exists, it is deleted if ByteIO::New is
+    // given. Otherwise an exception is thrown.
+    // It allocates the internal buffer of the logical file.
+    Int createFile (const String& name, ByteIO::OpenOption = ByteIO::New);
 
-    // Delete a file. It adds its blocks to the free block list.
+    // Flush the possible dirty buffer of the given logical file.
+    void flushFile (Int fileId);
+    
+    // Close a logical file.
+    // It flushes and deallocates its buffer.
+    void closeFile (Int fileId);
+    
+    // Delete a logical file. It adds its blocks to the free block list.
     void deleteFile (Int fileId);
 
-    // Read a block at the given offset. It returns the actual size read.
+    // Get the size of a logical file.
+    Int64 fileSize (Int fileId) const;
+
+    // Read a block at the given offset in the logical file.
+    // It returns the actual size read.
     Int64 read (Int fileId, void* buffer, Int64 size, Int64 offset);
 
-    // Write a block at the given offset. It returns the actual size written.
+    // Write a block at the given offset in the logical file.
+    // It returns the actual size written.
     Int64 write (Int fileId, const void* buffer, Int64 size, Int64 offset);
 
-    // Flush the file by writing all dirty data and all header info.
-    void flush();
-
-    // Resync with another process by clearing the buffers and rereading
-    // the header. The header is only read if its counter has changed.
-    void resync();
+    // Truncate the logical file to the given size.
+    void truncate (Int fileId, Int64 size);
 
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the file is writable already.
@@ -207,66 +198,86 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // if it is not possible to reopen it for read/write access.
     virtual void reopenRW() = 0;
 
-    // Fsync the file (i.e., force the data to be physically written).
-    virtual void fsync() = 0;
+    // Flush the file by writing all dirty data and all header info.
+    void flush();
 
-    // Get the file name of the MultiFileBase.
-    String fileName() const
-      { return itsName; }
-
-    // Is the file writable?
-    Bool isWritable() const
-      { return itsWritable; }
-
-    // Will O_DIRECT be used?
-    Bool useODirect() const
-      { return itsUseODirect; }
-    
     // Get the block size used.
     Int64 blockSize() const
       { return itsBlockSize; }
 
-    // Get the nr of virtual files.
+    // Get the nr of logical files.
     uInt nfile() const;
 
     // Get the total nr of data blocks used.
-    Int64 size() const
+    Int64 nblock() const
       { return itsNrBlock; }
 
     // Get the info object (for test purposes mainly).
-    const vector<MultiFileInfo>& info() const
+    const std::vector<MultiFileInfo>& info() const
       { return itsInfo; }
 
     // Get the free blocks (for test purposes mainly).
-    const vector<Int64>& freeBlocks() const
+    const std::vector<Int64>& freeBlocks() const
       { return itsFreeBlocks; }
 
+    // Return the file id of a file in the MultiFileBase object.
+    // If the name is unknown, an exception is thrown if throwExcp is set.
+    // Otherwise it returns -1.
+    Int fileId (const String& name, Bool throwExcp=True) const;
+
+    // Is O_DIRECT used?
+    Bool useODirect() const
+      { return itsUseODirect; }
+    
+  protected:
+    // Resync with another process by clearing the buffers and rereading
+    // the header. The header is only read if its counter has changed.
+    void resync();
+
+    // Fsync the file (i.e., force the data to be physically written).
+    virtual void fsync() = 0;
+
   private:
+    // Forbid copy constructor and assignment.
+    MultiFileBase (const MultiFileBase&);
+    MultiFileBase& operator= (const MultiFileBase&);
+    // Write the dirty block and clear dirty flag.
     void writeDirty (MultiFileInfo& info)
     {
-      writeBlock (info, info.curBlock, info.buffer->data);
+      writeBlock (info, info.curBlock, info.buffer->data());
       info.dirty = False;
     }
 
-    // Do the class-specific actions on adding a file.
+    // Add a file to the MultiFileBase object. It returns the file id.
+    // Only the base name of the given file name is used. In this way the
+    // MultiFileBase container file can be moved.
+    Int addFile (const String& name);
+
+    // Do the class-specific actions on opening a logical file.
+    virtual void doOpenFile (MultiFileInfo&) = 0;
+    // Do the class-specific actions on closing a logical file.
+    virtual void doCloseFile (MultiFileInfo&) = 0;
+    // Do the class-specific actions on adding a logical file.
     virtual void doAddFile (MultiFileInfo&) = 0;
-    // Do the class-specific actions on deleting a file.
+    // Do the class-specific actions on deleting a logical file.
     virtual void doDeleteFile (MultiFileInfo&) = 0;
-    // Flush the file itself.
-    virtual void flushFile() = 0;
-    // Flush and close the file.
+    // Truncate the container file to <src>nrblk</src> blocks.
+    virtual void doTruncateFile (MultiFileInfo& info, uInt64 nrblk) = 0;
+    // Flush the container file.
+    virtual void doFlushFile() = 0;
+    // Flush and close the container file.
     virtual void close() = 0;
     // Write the header info.
     virtual void writeHeader() = 0;
     // Read the header info. If always==False, the info is only read if the
     // header counter has changed.
     virtual void readHeader (Bool always=True) = 0;
-    // Extend the virtual file to fit lastblk.
+    // Extend a logical file to fit lastblk.
     virtual void extend (MultiFileInfo& info, Int64 lastblk) = 0;
-    // Write a data block.
+    // Write a data block of a logical file into the container file.
     virtual void writeBlock (MultiFileInfo& info, Int64 blknr,
                              const void* buffer) = 0;
-    // Read a data block.
+    // Read a data block of a logical file from the container file.
     virtual void readBlock (MultiFileInfo& info, Int64 blknr,
                             void* buffer) = 0;
 
@@ -279,12 +290,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int64  itsBlockSize;  // The blocksize used
     Int64  itsNrBlock;    // The total nr of blocks actually used
     Int64  itsHdrCounter; // Counter of header changes
-    vector<MultiFileInfo> itsInfo;
+    std::vector<MultiFileInfo> itsInfo;
     std::shared_ptr<MultiFileBuffer> itsBuffer;  
-    Bool                  itsUseODirect; // use O_DIRECT?
-    Bool                  itsWritable;   // Is the file writable?
-    Bool                  itsChanged;    // Has header info changed since last flush?
-    vector<Int64>         itsFreeBlocks;
+    Bool          itsUseODirect; // use O_DIRECT?
+    Bool          itsWritable;   // Is the file writable?
+    Bool          itsChanged;    // Has header info changed since last flush?
+    std::vector<Int64> itsFreeBlocks;
   };
 
 

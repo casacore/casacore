@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/StArrayFile.h>
 #include <casacore/casa/OS/RegularFile.h>
@@ -46,7 +44,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 				uInt version, Bool bigEndian,
-				uInt bufferSize, MultiFileBase* mfile)
+				uInt bufferSize,
+                                const std::shared_ptr<MultiFileBase>& mfile)
 : leng_p    (16),
   version_p (version),
   hasPut_p  (False)
@@ -60,7 +59,7 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     }
     //# Open file name as input and/or output; throw exception if it fails.
     if (mfile) {
-      file_p = new MFFileIO (*mfile, fname, fop);
+      file_p = new MFFileIO (mfile, fname, fop);
     } else {
       file_p = new RegularFileIO (RegularFile(fname), fop, bufferSize);
     }

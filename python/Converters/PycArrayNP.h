@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycArrayNP.h,v 1.1 2006/11/06 00:14:44 gvandiep Exp $
 
 
 #ifndef PYRAP_PYCARRAYNP_H

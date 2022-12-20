@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -80,6 +78,9 @@ void ByteIO::fsync()
 {}
 
 void ByteIO::resync()
+{}
+
+void ByteIO::truncate (Int64)
 {}
 
 String ByteIO::fileName() const

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_REGULARFILEIO_H
 #define CASA_REGULARFILEIO_H
@@ -108,7 +106,7 @@ public:
     // If useODirect=True and if supported by the OS, the file will be opened
     // with O_DIRECT which bypasses the kernel's file cache for more predictable
     // I/O behaviour. It requires the size and the alignment of the data to be
-    // read/written to be a multiple of the the disk's logival block size.
+    // read/written to be a multiple of the the disk's logical block size.
     // It returns the file descriptor.
     static int openCreate (const RegularFile& file, ByteIO::OpenOption,
                            Bool useODirect=False);

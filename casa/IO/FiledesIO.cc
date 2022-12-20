@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/LargeIOFuncDef.h>
@@ -232,6 +230,11 @@ void FiledesIO::fsync()
     ::fsync (itsFile);
 }
 
+void FiledesIO::truncate (Int64 size)
+{
+    ::ftruncate (itsFile, size);
+}
+  
 int FiledesIO::create (const Char* name, int mode)
 {
     int fd = ::trace3OPEN ((Char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
@@ -262,10 +265,10 @@ int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
 void FiledesIO::close (int fd)
 {
   if (fd >= 0) {
-    if (::traceCLOSE (fd)  == -1) {
+    if (::traceCLOSE(fd) == -1) {
       int error = errno;
-      throw AipsError (String("FiledesIO: file could not be closed: ")
-                       + strerror(error));
+      throw AipsError (String("FiledesIO: file could not be closed: ") +
+                       strerror(error));
     }
   }
 }

@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: STLMath.h 21331 2013-03-26 15:08:06Z gervandiepen $
 
 //# Includes
 #include <casacore/casa/BasicSL/STLMath.h>

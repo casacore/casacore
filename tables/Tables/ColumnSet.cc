@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/ColumnSet.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -51,7 +49,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
 : tdescPtr_p      (tdesc),
   storageOpt_p    (opt),
-  multiFile_p     (0),
   baseTablePtr_p  (0),
   lockPtr_p       (0),
   seqCount_p      (0),
@@ -74,7 +71,6 @@ ColumnSet::~ColumnSet()
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	delete BLOCKDATAMANVAL(i);
     }
-    delete multiFile_p;
 }
 
 
@@ -183,12 +179,12 @@ void ColumnSet::openMultiFile (uInt from, const Table& tab,
     // Create the object if not created yet.
     if (! multiFile_p) {
       if (storageOpt_p.option() == StorageOption::MultiFile) {
-        multiFile_p = new MultiFile (tab.tableName() + "/table.mf",
-                                     opt, storageOpt_p.blockSize(),
-                                     storageOpt_p.useODirect());
+        multiFile_p.reset (new MultiFile (tab.tableName() + "/table.mf",
+                                          opt, storageOpt_p.blockSize(),
+                                          storageOpt_p.useODirect()));
       } else {
-        multiFile_p = new MultiHDF5 (tab.tableName() + "/table.mfh5",
-                                     opt, storageOpt_p.blockSize());
+        multiFile_p.reset (new MultiHDF5 (tab.tableName() + "/table.mfh5",
+                                          opt, storageOpt_p.blockSize()));
       }
     }
     // Pass it to the data managers.

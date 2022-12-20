@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycBasicData.cc,v 1.4 2007/01/29 04:23:01 mmarquar Exp $
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 

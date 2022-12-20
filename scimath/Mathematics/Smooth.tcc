@@ -23,8 +23,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef SCIMATH_SMOOTH_TCC
 #define SCIMATH_SMOOTH_TCC

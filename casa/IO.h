@@ -22,8 +22,6 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_IO_H
 #define CASA_IO_H
@@ -123,10 +121,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      Be careful to use this on 32-bit machines, because its address space is
 //      too small to handle a file of a few GBytes.
 // <li> <linkto class=MFFileIO:description>MFFileIO</linkto> uses a virtual
-//      file in a <linkto class=MultiFile:description>MultiFile</linkto>
-//      container file. MultiFile is meant to combine multiple files in
-//      a single physical file to reduce the number of files used by
-//      the Casacore table system.
+//      file in a <linkto class=MultiFileBase:description>MultiFileBase</linkto>
+//      container file. The derived classes MultiFile and MultiHDF5 combine
+//      multiple files in a single physical file to reduce the number of
+//      files used by CTDS (the Casacore table data system).
 // </ol>
 //
 // The IO framework is easily expandable. One can for instance think of a

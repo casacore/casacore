@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//#! ========================================================================
 
 #ifndef SCIMATH_CHEBYSHEVPARAM_TCC
 #define SCIMATH_CHEBYSHEVPARAM_TCC
