@@ -253,7 +253,7 @@ public:
 	{ getInt64 (rownr, dataPtr); }
     void get (rownr_t rownr, float* dataPtr)
 	{ getfloat (rownr, dataPtr); } 
-   void get (rownr_t rownr, double* dataPtr)
+    void get (rownr_t rownr, double* dataPtr)
 	{ getdouble (rownr, dataPtr); }
     void get (rownr_t rownr, Complex* dataPtr)
 	{ getComplex (rownr, dataPtr); }

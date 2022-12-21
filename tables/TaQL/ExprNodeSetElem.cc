@@ -523,7 +523,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprNodeSetElemDiscrete::fillVector (Vector<Int64>& vec, Int64& cnt,
                                                  const TableExprId& id) const
   {
-    DebugAssert (itsDiscrete, AipsError);
     Int64 start = !itsStart  ?  0 : itsStart->getInt (id);
     Int64 end   = !itsEnd  ?  start : itsEnd->getInt (id);
     Int64 incr  = !itsIncr  ?  1 : itsIncr->getInt (id);
@@ -549,7 +548,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprNodeSetElemDiscrete::fillVector (Vector<Double>& vec, Int64& cnt,
                                                  const TableExprId& id) const
   {
-    DebugAssert (itsDiscrete, AipsError);
     Double start = !itsStart  ?  0 : itsStart->getDouble (id);
     Double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
     Double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
@@ -575,7 +573,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprNodeSetElemDiscrete::fillVector (Vector<MVTime>& vec, Int64& cnt,
                                                  const TableExprId& id) const
   {
-    DebugAssert (itsDiscrete, AipsError);
     Double start = !itsStart  ?  0 : Double(itsStart->getDate (id));
     Double end   = !itsEnd  ?  start : Double(itsEnd->getDate (id));
     Double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);

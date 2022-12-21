@@ -1043,7 +1043,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   void TableExprGroupVariancesArrayDouble::finish()
   {
-    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.array().contiguousStorage(),
                  AipsError);
     Array<Double>::contiter itv = itsValue.array().cbegin();
     Array<Bool>::contiter itm = itsValue.wmask().cbegin();
@@ -1106,7 +1106,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   void TableExprGroupRmssArrayDouble::finish()
   {
-    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.array().contiguousStorage(),
                  AipsError);
     Array<Double>::contiter itv = itsValue.array().cbegin();
     Array<Bool>::contiter itm = itsValue.wmask().cbegin();
@@ -1245,7 +1245,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   void TableExprGroupVariancesArrayDComplex::finish()
   {
-    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.array().contiguousStorage(),
                  AipsError);
     Array<Double>::contiter itv = itsValue.array().cbegin();
     Array<Bool>::contiter itm = itsValue.wmask().cbegin();
