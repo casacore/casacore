@@ -124,6 +124,10 @@ void doIt (Bool doExcp, Bool& success)
            "/aa"+home+"bb"+home+"cc/test", success);
     check ("/testx", "/testx", "/testx", success);
     check ("testx", "testx", curr + "/testx", success);
+    check ("/testx.", "/testx.", "/testx.", success);
+    check ("testx.", "testx.", curr + "/testx.", success);
+    check ("/.dotfile", "/.dotfile", "/.dotfile", success);
+    check (".dotfile", ".dotfile", curr + "/.dotfile", success);
     check (user, user, curr + "/" + user, success);
     check ("$tPath_Env_Test1/$HOME", home + "/" +  home,
 	   home + home, success);
