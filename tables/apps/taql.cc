@@ -1084,6 +1084,7 @@ void execFileCommands (TableMap& tableMap, const Options& options)
 {
   // Reads all commands from the file and split them at ;.
   // A command can be continued on the next line.
+  // An error in a command file is severe, so it exits on error.
   vector<String> commands;
   Bool appendLast = False;
   std::ifstream ifs(options.fname.c_str());
@@ -1132,12 +1133,17 @@ void askCommands (TableMap& tableMap, Options& options)
   }
 #endif
   while (True) {
-    String str;
-    // Read and execute until ^D or quit is given.
-    if (! (readLineSkip (str, "TaQL> ")  &&
-           executeArgs (splitWS(str), False, tableMap, options))) {
-      cerr << endl;
-      break;
+    // Catch errors, so the user can retry.
+    try {
+      String str;
+      // Read and execute until ^D or quit is given.
+      if (! (readLineSkip (str, "TaQL> ")  &&
+             executeArgs (splitWS(str), False, tableMap, options))) {
+        cerr << endl;
+        break;
+      }
+    } catch (const std::exception& x) {
+      cout << x.what() << endl;
     }
   }
 #ifdef HAVE_READLINE

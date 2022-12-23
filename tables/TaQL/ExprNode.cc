@@ -1361,8 +1361,27 @@ TableExprNode TableExprNode::newFunctionNode
       resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
                                                 ftype, par);
       if (resVT == TableExprNodeRep::VTScalar) {
-        fnode = new TableExprFuncNode (ftype, resDT, resVT, set,
-                                       par, dtypeOper, tabInfo);
+        TableExprFuncNode* node = new TableExprFuncNode (ftype, resDT, resVT, set,
+                                                         par, dtypeOper, tabInfo);
+        fnode.reset (node);
+        // If the condition of IIF is a constant scalar, evaluate and replace.
+        // Do it only if the data type matches.
+        // Take the operands from the function node created,
+        // because the units might be adapted.
+        if (ftype == TableExprFuncNode::iifFUNC) {
+          const std::vector<TENShPtr>& oper = node->operands();
+          if (oper[0]->isConstant()) {
+            if (oper[0]->getBool(TableExprId(0))) {
+              if (resDT == oper[1]->dataType()) {
+                fnode = oper[1];
+              }
+            } else {
+              if (resDT == oper[2]->dataType()) {
+                fnode = oper[2];
+              }
+            }
+          }
+        }
       } else {
         fnode = new TableExprFuncNodeArray (ftype, resDT, resVT, set,
                                             par, dtypeOper, style);
