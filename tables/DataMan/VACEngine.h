@@ -151,6 +151,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      virtual ~AVACEngine()
 //      {}
 //
+//      // Assignment is not needed and therefore forbidden.
+//      AVACEngine& operator= (const AVACEngine&) = delete;
+//
 //      // Clone the object.
 //      virtual DataManager* clone() const
 //      {
@@ -211,10 +214,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        xTargetName_p (that.xTargetName_p),
 //        yTargetName_p (that.yTargetName_p)
 //      {}
-//
-//      // Assignment is not needed and therefore forbidden
-//      // (so it is made private and is not implemented).
-//      AVACEngine& operator= (const AVACEngine&);
 //
 //
 //      // The target column names.
@@ -304,6 +303,9 @@ public:
     // Destructor is mandatory.
     ~VACEngine();
 
+    // Assignment is not needed and therefore forbidden.
+    VACEngine<T>& operator= (const VACEngine<T>&) = delete;
+
     // Return the data manager type name.
     // This defaults to the data type ID followed by VACEngine
     // (meaning Virtual Array Column Engine).
@@ -314,16 +316,11 @@ public:
 	{ return sourceName_p; }
 
 protected:
-
     // Copy constructor is only used by clone().
     // (so it is made protected).
     VACEngine (const VACEngine<T>&);
 
 private:
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private).
-    VACEngine<T>& operator= (const VACEngine<T>&);
-
     // The column is in principle writable.
     // This does not mean it is actually writable, because that
     // depends on the fact if the table is writable.

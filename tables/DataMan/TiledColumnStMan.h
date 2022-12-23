@@ -176,6 +176,12 @@ public:
 
     ~TiledColumnStMan();
 
+    // Forbid copy constructor.
+    TiledColumnStMan (const TiledColumnStMan&) = delete;
+
+    // Forbid assignment.
+    TiledColumnStMan& operator= (const TiledColumnStMan&) = delete;
+
     // Clone this object.
     // It does not clone TSMColumn objects possibly used.
     virtual DataManager* clone() const;
@@ -196,12 +202,6 @@ private:
     // This constructor is private, because it should only be used
     // by makeObject.
     TiledColumnStMan();
-
-    // Forbid copy constructor.
-    TiledColumnStMan (const TiledColumnStMan&);
-
-    // Forbid assignment.
-    TiledColumnStMan& operator= (const TiledColumnStMan&);
 
     // Get the (default) tile shape.
     virtual IPosition defaultTileShape() const;

@@ -117,6 +117,14 @@ public:
     // for output and not marked for delete.
     virtual ~PlainTable();
 
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    PlainTable (const PlainTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    PlainTable& operator= (const PlainTable&) = delete;
+
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
     // information required is read from the table, thus it is much
@@ -261,16 +269,6 @@ public:
       { return theirTableCache; }
 
 private:
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    PlainTable (const PlainTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    PlainTable& operator= (const PlainTable&);
-
     // Close the object which is called by the destructor.
     void closeObject();
 

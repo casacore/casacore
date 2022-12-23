@@ -77,6 +77,9 @@ public:
 
   ~TableIndexProxy();
 
+  // Assignment is forbidden.
+  TableIndexProxy& operator= (const TableIndexProxy&) = delete;
+
   // Are all keys in the index unique?
   Bool isUnique() const;
 
@@ -103,10 +106,6 @@ public:
                                     Bool lowerInclusive, Bool upperInclusive);
 
 private:
-  // Assignment is forbidden.
-  TableIndexProxy& operator= (const TableIndexProxy&);
-
-
   ColumnsIndex*      scaIndex_p;
   ColumnsIndexArray* arrIndex_p;
 };

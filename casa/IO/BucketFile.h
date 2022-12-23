@@ -128,6 +128,12 @@ public:
     // The destructor closes the file (if open).
     virtual ~BucketFile();
 
+    // Forbid copy constructor.
+    BucketFile (const BucketFile&) = delete;
+
+    // Forbid assignment.
+    BucketFile& operator= (const BucketFile&) = delete;
+
     // Make a (temporary) buffered IO object for this file.
     // That object should not close the file.
     virtual CountedPtr<ByteIO> makeFilebufIO (uInt bufferSize);
@@ -202,12 +208,6 @@ private:
     // The possibly used MultiFileBase.
     std::shared_ptr<MultiFileBase> mfile_p;
 	    
-
-    // Forbid copy constructor.
-    BucketFile (const BucketFile&);
-
-    // Forbid assignment.
-    BucketFile& operator= (const BucketFile&);
 
     // Create the mapped or buffered file object.
     void createMapBuf();

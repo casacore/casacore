@@ -123,6 +123,12 @@ public:
 
   ~SSMStringHandler();
 
+  // Forbid copy constructor.
+  SSMStringHandler (const SSMStringHandler&) = delete;
+
+  // Forbid assignment.
+  SSMStringHandler& operator= (const SSMStringHandler&) = delete;
+
   // Set or get last string bucketnr.
   // Setting is needed when an existing table is opened.
   // <group>
@@ -188,12 +194,6 @@ public:
   void resync();
   
 private:
-  // Forbid copy constructor and assignment.
-  // <group>
-  SSMStringHandler (const SSMStringHandler&);
-  SSMStringHandler& operator= (const SSMStringHandler&);
-  // </group>
-
   // Get the given bucket and make it current.
   // It first writes the current bucket if it has changed.
   // <br>

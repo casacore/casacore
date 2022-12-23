@@ -80,6 +80,12 @@ public:
 
     ~TableSyncData();
 
+    // Copy constructor is forbidden.
+    TableSyncData (const TableSyncData& that) = delete;
+
+    // Assignment is forbidden.
+    TableSyncData& operator= (const TableSyncData& that) = delete;
+
     // Update the synchronization data and write it into the MemoryIO object.
     // This function is called when a table flush is done to reflect
     // if anything has changed compared to the previous flush.
@@ -108,13 +114,6 @@ public:
 
 
 private:
-    // Copy constructor is forbidden.
-    TableSyncData (const TableSyncData& that);
-
-    // Assignment is forbidden.
-    TableSyncData& operator= (const TableSyncData& that);
-
-
     //# Member variables.
     rownr_t     itsNrrow;
     Int         itsNrcolumn;

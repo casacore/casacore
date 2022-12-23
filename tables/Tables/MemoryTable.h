@@ -88,6 +88,14 @@ public:
   // The destructor deletes all data.
   virtual ~MemoryTable();
 
+  // Copy constructor is forbidden, because copying a table requires
+  // some more knowledge (like table name of result).
+  MemoryTable (const MemoryTable&) = delete;
+
+  // Assignment is forbidden, because copying a table requires
+  // some more knowledge (like table name of result).
+  MemoryTable& operator= (const MemoryTable&) = delete;
+
   // Try to reopen the table (the underlying one) for read/write access.
   // It does nothing.
   virtual void reopenRW();
@@ -225,16 +233,6 @@ public:
 private:
   CountedPtr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
   TableLockData* lockPtr_p;          //# pointer to lock object
-
-  // Copy constructor is forbidden, because copying a table requires
-  // some more knowledge (like table name of result).
-  // Declaring it private, makes it unusable.
-  MemoryTable (const MemoryTable&);
-
-  // Assignment is forbidden, because copying a table requires
-  // some more knowledge (like table name of result).
-  // Declaring it private, makes it unusable.
-  MemoryTable& operator= (const MemoryTable&);
 
   // Setup the main parts of the object.
   // <br>Create the initial name map from the table description.

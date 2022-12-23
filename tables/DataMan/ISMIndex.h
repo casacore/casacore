@@ -84,6 +84,12 @@ public:
     // The destructor closes the file (if opened).
     ~ISMIndex();
 
+    // Forbid copy constructor.
+    ISMIndex (const ISMIndex&) = delete;
+
+    // Forbid assignment.
+    ISMIndex& operator= (const ISMIndex&) = delete;
+
     // Add a row.
     void addRow (rownr_t nrrow);
 
@@ -126,12 +132,6 @@ public:
     void show (std::ostream&) const;
 
 private:
-    // Forbid copy constructor.
-    ISMIndex (const ISMIndex&);
-
-    // Forbid assignment.
-    ISMIndex& operator= (const ISMIndex&);
-
     // Get the index of the bucket containing the given row.
     uInt getIndex (rownr_t rownr) const;
 

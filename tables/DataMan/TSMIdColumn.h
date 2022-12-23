@@ -95,6 +95,12 @@ public:
     // Frees up the storage.
     virtual ~TSMIdColumn();
 
+    // Forbid copy constructor.
+    TSMIdColumn (const TSMIdColumn&) = delete;
+
+    // Forbid assignment.
+    TSMIdColumn& operator= (const TSMIdColumn&) = delete;
+  
     // Get a scalar value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn get function).
@@ -127,13 +133,6 @@ public:
     virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
     virtual void putString   (rownr_t rownr, const String* dataPtr);
     // </group>
-
-private:
-    // Forbid copy constructor.
-    TSMIdColumn (const TSMIdColumn&);
-
-    // Forbid assignment.
-    TSMIdColumn& operator= (const TSMIdColumn&);
 };
 
 

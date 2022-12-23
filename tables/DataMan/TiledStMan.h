@@ -118,6 +118,12 @@ public:
 
     virtual ~TiledStMan();
 
+    // Forbid copy constructor.
+    TiledStMan (const TiledStMan&) = delete;
+
+    // Forbid assignment.
+    TiledStMan& operator= (const TiledStMan&) = delete;
+  
     // Get the name given to the storage manager.
     // This is the name of the hypercolumn.
     virtual String dataManagerName() const;
@@ -517,13 +523,6 @@ protected:
     IPosition fixedCellShape_p;
     // Has any data changed since the last flush?
     Bool      dataChanged_p;
-
-private:
-    // Forbid copy constructor.
-    TiledStMan (const TiledStMan&);
-
-    // Forbid assignment.
-    TiledStMan& operator= (const TiledStMan&);
 };
 
 

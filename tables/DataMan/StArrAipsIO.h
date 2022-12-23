@@ -94,6 +94,12 @@ public:
   // Frees up the storage.
   virtual ~StManColumnArrayAipsIO();
 
+  // Forbid copy constructor.
+  StManColumnArrayAipsIO (const StManColumnArrayAipsIO&) = delete;
+
+  // Forbid assignment.
+  StManColumnArrayAipsIO& operator= (const StManColumnArrayAipsIO&) = delete;
+
   // Set the (fixed) shape of the arrays in the entire column.
   virtual void setShapeColumn (const IPosition& shape);
 
@@ -155,12 +161,6 @@ private:
   // be allocated and read starting at datap[index].
   virtual void getData (void* datap, uInt index, uInt nrval,
                         AipsIO&, uInt version);
-
-  // Forbid copy constructor.
-  StManColumnArrayAipsIO (const StManColumnArrayAipsIO&);
-
-  // Forbid assignment.
-  StManColumnArrayAipsIO& operator= (const StManColumnArrayAipsIO&);
 };
 
 

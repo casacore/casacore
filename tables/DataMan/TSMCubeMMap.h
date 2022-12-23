@@ -113,6 +113,12 @@ public:
 
     virtual ~TSMCubeMMap();
 
+    // Forbid copy constructor.
+    TSMCubeMMap (const TSMCubeMMap&) = delete;
+
+    // Forbid assignment.
+    TSMCubeMMap& operator= (const TSMCubeMMap&) = delete;
+
     // Flush the data in the cache.
     virtual void flushCache();
 
@@ -161,12 +167,6 @@ public:
     virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
 
 private:
-    // Forbid copy constructor.
-    TSMCubeMMap (const TSMCubeMMap&);
-
-    // Forbid assignment.
-    TSMCubeMMap& operator= (const TSMCubeMMap&);
-
     // Get the cache object.
     // This will construct the cache object if not present yet.
     BucketMapped* getCache();

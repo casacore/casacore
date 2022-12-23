@@ -106,6 +106,10 @@ public:
 
     virtual ~BaseTableIterator();
 
+    // Assignment is not needed, because the assignment operator in
+    // the envelope class TableIterator has reference semantics.
+    BaseTableIterator& operator= (const BaseTableIterator&) = delete;
+
     // Reset the iterator (i.e. restart iteration).
     virtual void reset();
 
@@ -135,11 +139,6 @@ protected:
     std::shared_ptr<BaseTable> noCachedIterBoundariesNext();
 
 private:
-    // Assignment is not needed, because the assignment operator in
-    // the envelope class TableIterator has reference semantics.
-    // Declaring it private, makes it unusable.
-    BaseTableIterator& operator= (const BaseTableIterator&);
-
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column
 

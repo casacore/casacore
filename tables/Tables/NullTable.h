@@ -71,6 +71,12 @@ public:
 
   virtual ~NullTable();
 
+  // Copy constructor is forbidden.
+  NullTable (const NullTable&) = delete;
+
+  // Assignment is forbidden.
+  NullTable& operator= (const NullTable&) = delete;
+
   // The table is a null table.
   virtual Bool isNull() const override;
 
@@ -139,16 +145,6 @@ public:
   // </group>
 
 private:
-  // Copy constructor is forbidden, because copying a table requires
-  // some more knowledge (like table name of result).
-  // Declaring it private, makes it unusable.
-  NullTable (const NullTable&);
-
-  // Assignment is forbidden, because copying a table requires
-  // some more knowledge (like table name of result).
-  // Declaring it private, makes it unusable.
-  NullTable& operator= (const NullTable&);
-
   // Make an exception message with the name of the function.
   TableError makeError (const String& name) const;
 };

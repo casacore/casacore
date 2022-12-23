@@ -69,6 +69,12 @@ public:
   // Frees up the storage.
   virtual ~MSMDirColumn();
 
+  // Forbid copy constructor.
+  MSMDirColumn (const MSMDirColumn&) = delete;
+
+  // Forbid assignment.
+  MSMDirColumn& operator= (const MSMDirColumn&) = delete;
+
   // Set the (fixed) shape of the arrays in the entire column.
   virtual void setShapeColumn (const IPosition& shape);
 
@@ -128,13 +134,7 @@ private:
   // Delete the array in the given row.
   void deleteArray (rownr_t rownr);
 
-  // Forbid copy constructor.
-  MSMDirColumn (const MSMDirColumn&);
-
-  // Forbid assignment.
-  MSMDirColumn& operator= (const MSMDirColumn&);
-
-
+  //# Data members
   // The (unique) sequence number of the column.
   uInt seqnr_p;
   // The shape of the array.

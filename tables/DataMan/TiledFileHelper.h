@@ -79,6 +79,12 @@ public:
 
   ~TiledFileHelper();
 
+  // Forbid copy constructor.
+  TiledFileHelper (const TiledFileHelper&) = delete;
+
+  // Forbid assignment.
+  TiledFileHelper& operator= (const TiledFileHelper&) = delete;
+
   virtual const TableDesc& getDesc() const;
 
   TSMFile* file()
@@ -99,13 +105,6 @@ public:
   // </group>
 
 private:
-  // Forbid copy constructor and assignment.
-  // <group>
-  TiledFileHelper (const TiledFileHelper&);
-  TiledFileHelper& operator= (const TiledFileHelper&);
-  // </group>
-
-
   TableDesc itsDesc;
 };
 

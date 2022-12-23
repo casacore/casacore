@@ -477,6 +477,10 @@ public:
     // Destructor is mandatory.
     ~RetypedArrayEngine();
 
+    // Assignment is not needed and therefore forbidden.
+    RetypedArrayEngine<VirtualType,StoredType>& operator=
+                        (const RetypedArrayEngine<VirtualType,StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
@@ -502,11 +506,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     RetypedArrayEngine (const RetypedArrayEngine<VirtualType,StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    RetypedArrayEngine<VirtualType,StoredType>& operator=
-                        (const RetypedArrayEngine<VirtualType,StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;

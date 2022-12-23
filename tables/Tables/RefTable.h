@@ -141,6 +141,14 @@ public:
     // for output and not marked for delete.
     virtual ~RefTable();
 
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    RefTable (const RefTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    RefTable& operator= (const RefTable&) = delete;
+
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
     // information required is read from the table, thus it is much
@@ -334,16 +342,6 @@ private:
     std::map<String,String> nameMap_p;      //# map to column name in parent
     std::map<String,RefColumn*> colMap_p;   //# map name to column
     Bool            changed_p;              //# True = changed since last write
-
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    RefTable (const RefTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    RefTable& operator= (const RefTable&);
 
     // Get the names of the tables this table consists of.
     virtual void getPartNames (Block<String>& names, Bool recursive) const;

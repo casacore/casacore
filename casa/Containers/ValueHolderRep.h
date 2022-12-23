@@ -98,6 +98,15 @@ public:
   // Destructor.
   ~ValueHolderRep();
 
+  // Forbid copy ctor and assignment.
+  //# There is no fundamental reason to forbid them, but it saves
+  //# implementation work as long as they are not needed.
+  // <group>
+  ValueHolderRep (const ValueHolderRep&) = delete;
+  ValueHolderRep& operator= (const ValueHolderRep&) = delete;
+  // </group>
+
+
   // Get the data type (as defined in DataType.h).
   DataType dataType() const;
     
@@ -151,15 +160,6 @@ public:
   */
 
 private:
-  // Forbid copy ctor and assignment.
-  //# There is no fundamental reason to forbid them, but it saves
-  //# implementation work as long as they are not needed.
-  // <group>
-  ValueHolderRep (const ValueHolderRep&);
-  ValueHolderRep& operator= (const ValueHolderRep&);
-  // </group>
-
-
   uInt     itsNdim;
   DataType itsType;
   union {

@@ -70,11 +70,10 @@ public:
   // It will flush and unmap the file.
   ~MMapIO();
 
-private:
   // Forbid copy constructor and assignment
   // <group>
-  MMapIO (const MMapIO&);
-  MMapIO& operator= (const MMapIO&);
+  MMapIO (const MMapIO&) = delete;
+  MMapIO& operator= (const MMapIO&) = delete;
   // </group>
 };
 

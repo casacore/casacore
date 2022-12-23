@@ -101,6 +101,12 @@ public:
     // Frees up the storage.
     virtual ~TSMDataColumn();
 
+    // Forbid copy constructor.
+    TSMDataColumn (const TSMDataColumn&) = delete;
+
+    // Forbid assignment.
+    TSMDataColumn& operator= (const TSMDataColumn&) = delete;
+
     // Return the size of a pixel in the tile in external format.
     uInt tilePixelSize() const;
 
@@ -280,12 +286,6 @@ private:
     // The conversion function needed when writing.
     Conversion::ValueFunction* writeFunc_p;
 
-
-    // Forbid copy constructor.
-    TSMDataColumn (const TSMDataColumn&);
-
-    // Forbid assignment.
-    TSMDataColumn& operator= (const TSMDataColumn&);
 
     // Read or write a data cell in the cube.
     // A cell can contain a scalar or an array (depending on the

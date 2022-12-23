@@ -102,6 +102,12 @@ public:
 
     // Frees up the storage and delete the StManArrayFile object.
     virtual ~StManColumnIndArrayAipsIO();
+	
+    // Forbid copy constructor.
+    StManColumnIndArrayAipsIO (const StManColumnIndArrayAipsIO&) = delete;
+
+    // Forbid assignment.
+    StManColumnIndArrayAipsIO& operator= (const StManColumnIndArrayAipsIO&) = delete;
 
     // Set the (fixed) shape of the arrays in the entire column.
     virtual void setShapeColumn (const IPosition& shape);
@@ -210,12 +216,6 @@ private:
     // nrval blocks will be allocated and read starting at datap[index].
     // The actual shape and array data will be read when needed.
     void getData (void* datap, uInt index, uInt nrval, AipsIO&, uInt version);
-	
-    // Forbid copy constructor.
-    StManColumnIndArrayAipsIO (const StManColumnIndArrayAipsIO&);
-
-    // Forbid assignment.
-    StManColumnIndArrayAipsIO& operator= (const StManColumnIndArrayAipsIO&);
 };
 
 

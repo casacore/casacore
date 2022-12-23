@@ -55,12 +55,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MultiFileBuffer (size_t bufSize, Bool useODirect);
     ~MultiFileBuffer()
       { if (itsData) free(itsData); }
+    // Forbid copy constructor.
+    MultiFileBuffer (const MultiFileBuffer&) = delete;
+    // Forbid assignment.
+    MultiFileBuffer& operator= (const MultiFileBuffer&) = delete;
     char* data()
       { return itsData; }
   private:
-    // Forbid copy constructor and assignment.
-    MultiFileBuffer (const MultiFileBuffer&);
-    MultiFileBuffer& operator= (const MultiFileBuffer&);
     // Data members
     char* itsData;
   };
@@ -138,6 +139,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // The destructor flushes dirty blocks and closes the container file.
     virtual ~MultiFileBase();
+
+    // Forbid copy constructor.
+    MultiFileBase (const MultiFileBase&) = delete;
+
+    // Forbid assignment.
+    MultiFileBase& operator= (const MultiFileBase&) = delete;
 
     // Open the correct MultiFileBase (as plain or HDF5).
     static std::shared_ptr<MultiFileBase> openMF (const String& fileName);
@@ -238,9 +245,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void fsync() = 0;
 
   private:
-    // Forbid copy constructor and assignment.
-    MultiFileBase (const MultiFileBase&);
-    MultiFileBase& operator= (const MultiFileBase&);
     // Write the dirty block and clear dirty flag.
     void writeDirty (MultiFileInfo& info)
     {

@@ -74,6 +74,12 @@ public:
   // If needed, it will flush and unmap the file, but not close it.
   ~MMapfdIO();
 
+  // Forbid copy constructor and assignment
+  // <group>
+  MMapfdIO (const MMapfdIO&) = delete;
+  MMapfdIO& operator= (const MMapfdIO&) = delete;
+  // </group>
+
   // Map the given file descriptor entirely into memory with read access.
   // The map has also write access if the file is opened for write.
   // An exception is thrown if a file descriptor was already attached.
@@ -126,12 +132,6 @@ protected:
   void unmapFile();
 
 private:
-  // Forbid copy constructor and assignment
-  // <group>
-  MMapfdIO (const MMapfdIO&);
-  MMapfdIO& operator= (const MMapfdIO&);
-  // </group>
-
   Int64  itsFileSize;       //# File size
   Int64  itsPosition;       //# Current seek position
   char*  itsPtr;            //# Pointer to memory map

@@ -108,6 +108,12 @@ public:
   // Frees up the storage.
   virtual ~MSMColumn();
 
+  // Forbid copy constructor.
+  MSMColumn (const MSMColumn&) = delete;
+
+  // Forbid assignment.
+  MSMColumn& operator= (const MSMColumn&) = delete;
+  
   // Get a scalar value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn get function).
@@ -226,13 +232,6 @@ protected:
   // Put the pointer for the given row.
   // This is for the derived classes like StManArrayColumnMemory.
   void putArrayPtr (rownr_t rownr, void* dataPtr);
-
-private:
-  // Forbid copy constructor.
-  MSMColumn (const MSMColumn&);
-
-  // Forbid assignment.
-  MSMColumn& operator= (const MSMColumn&);
 };
 
 

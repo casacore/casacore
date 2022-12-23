@@ -100,6 +100,12 @@ public:
     // The destructor closes the file.
     ~TSMFile();
 
+    // Forbid copy constructor.
+    TSMFile (const TSMFile&) = delete;
+
+    // Forbid assignment.
+    TSMFile& operator= (const TSMFile&) = delete;
+
     // Write the object.
     void putObject (AipsIO& ios) const;
 
@@ -129,13 +135,6 @@ private:
     BucketFile* file_p;
     // The (logical) length of the file.
     Int64 length_p;
-	    
-
-    // Forbid copy constructor.
-    TSMFile (const TSMFile&);
-
-    // Forbid assignment.
-    TSMFile& operator= (const TSMFile&);
 };
 
 

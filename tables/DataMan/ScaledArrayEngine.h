@@ -187,6 +187,10 @@ public:
     // Destructor is mandatory.
     ~ScaledArrayEngine();
 
+    // Assignment is not needed and therefore forbidden.
+    ScaledArrayEngine<VirtualType,StoredType>& operator=
+                           (const ScaledArrayEngine<VirtualType,StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
@@ -212,11 +216,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     ScaledArrayEngine (const ScaledArrayEngine<VirtualType,StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    ScaledArrayEngine<VirtualType,StoredType>& operator=
-                           (const ScaledArrayEngine<VirtualType,StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;

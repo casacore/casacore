@@ -295,6 +295,11 @@ protected:
     BaseMappedArrayEngine
 	              (const BaseMappedArrayEngine<VirtualType, StoredType>&);
 
+    // Assignment is not needed and therefore forbidden
+    // (so it is made private and not implemented).
+    BaseMappedArrayEngine<VirtualType, StoredType>& operator=
+	             (const BaseMappedArrayEngine<VirtualType, StoredType>&) = delete;
+
     // Set if the column is writable or not.
     void setWritable (Bool isWritable);
 
@@ -462,12 +467,6 @@ protected:
 
 
 private:
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    BaseMappedArrayEngine<VirtualType, StoredType>& operator=
-	             (const BaseMappedArrayEngine<VirtualType, StoredType>&);
-
-
     //# Now define the data members.
     String         virtualName_p;        //# virtual column name
     String         storedName_p;         //# stored column name

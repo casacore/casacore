@@ -139,6 +139,12 @@ public:
 
     ~ISMBucket();
 
+    // Forbid copy constructor.
+    ISMBucket (const ISMBucket&) = delete;
+
+    // Forbid assignment.
+    ISMBucket& operator= (const ISMBucket&) = delete;
+
     // Get the row-interval for given column and row.
     // It sets the start and end of the interval to which the row belongs
     // and the offset of its current value.
@@ -261,12 +267,6 @@ public:
                 rownr_t& offendingRow, rownr_t& offendingPrevRow) const;
 
 private:
-    // Forbid copy constructor.
-    ISMBucket (const ISMBucket&);
-
-    // Forbid assignment.
-    ISMBucket& operator= (const ISMBucket&);
-
     // Remove a data item with the given length.
     // If the length is zero, its variable length is read first.
     void removeData (uInt offset, uInt leng);

@@ -83,6 +83,12 @@ public:
   
   virtual ~SSMDirColumn();
 
+  // Forbid copy constructor.
+  SSMDirColumn (const SSMDirColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMDirColumn& operator= (const SSMDirColumn&) = delete;
+
   // An array of 'fixed length' strings is not handled specially,
   // thus this function is ignored.
   // It is needed to override the bahviour of the base class.
@@ -101,13 +107,6 @@ public:
 protected:
   // Read the array data for the given row into the data buffer.
   void getValue (rownr_t aRowNr, void* data);
-  
-private:
-  // Forbid copy constructor.
-  SSMDirColumn (const SSMDirColumn&);
-  
-  // Forbid assignment.
-  SSMDirColumn& operator= (const SSMDirColumn&);
 };
 
 

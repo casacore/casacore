@@ -142,6 +142,10 @@ public:
   // Destructor is mandatory.
   ~MappedArrayEngine();
 
+  // Assignment is not needed and therefore forbidden.
+  MappedArrayEngine<VirtualType,StoredType>& operator=
+                       (const MappedArrayEngine<VirtualType,StoredType>&) = delete;
+
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
@@ -167,11 +171,6 @@ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
   MappedArrayEngine (const MappedArrayEngine<VirtualType,StoredType>&);
-
-  // Assignment is not needed and therefore forbidden
-  // (so it is made private and not implemented).
-  MappedArrayEngine<VirtualType,StoredType>& operator=
-                       (const MappedArrayEngine<VirtualType,StoredType>&);
 
   // Clone the engine object.
   DataManager* clone() const;

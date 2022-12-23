@@ -242,6 +242,11 @@ public:
     // The destructor writes the table description if changed.
     ~TableDesc();
 
+    // Assignment is not supported, because it is impossible to define
+    // its semantics. Does the data need to be written into a file
+    // before being overwritten?
+    TableDesc& operator= (const TableDesc&) = delete;
+
     // Test if a description file exists (i.e. isReadable).
     static Bool isReadable (const String& tableDescName);
 
@@ -493,12 +498,6 @@ private:
     Bool               swwrite_p;       //# True = description can be written
     TDOption           option_p;        //# Table desc. open option
     AipsIO             iofil_p;         //# File
-
-    // Assignment is not supported, because it is impossible to define
-    // its semantics. Does the data need to be written into a file
-    // before being overwritten?
-    // Declaring it private, makes it unusable.
-    TableDesc& operator= (const TableDesc&);
 
     // Initialize the table description.
     void init (const TabPath&);
