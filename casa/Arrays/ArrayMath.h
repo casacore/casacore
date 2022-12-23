@@ -500,7 +500,8 @@ template<typename T, typename Alloc> Array<T, Alloc> fmod(const Array<T, Alloc> 
 template<typename T, typename Alloc> Array<T, Alloc> floormod(const Array<T, Alloc> &a, const Array<T, Alloc> &b);
 template<typename T, typename Alloc> Array<T, Alloc> floormod(const T &a, const Array<T, Alloc> &b);
 template<typename T, typename Alloc> Array<T, Alloc> floormod(const Array<T, Alloc> &a, const T &b);
-template<typename T, typename Alloc> Array<T, Alloc> pow(const Array<T, Alloc> &a, const double &b);
+template<typename T, typename Alloc> Array<T, Alloc> pow(const Array<T, Alloc> &a, const T &b);
+template<typename T, typename Alloc> Array<std::complex<T>, Alloc> pow(const Array<std::complex<T>, Alloc> &a, const T &b);
 template<typename T, typename Alloc> Array<T, Alloc> tan(const Array<T, Alloc> &a);
 template<typename T, typename Alloc> Array<T, Alloc> tanh(const Array<T, Alloc> &a);
 // N.B. fabs is deprecated. Use abs.
