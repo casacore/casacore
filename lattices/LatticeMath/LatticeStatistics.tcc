@@ -1428,10 +1428,10 @@ void LatticeStatistics<T>::_updateMinMaxPos(
     // it has been.
     if (atStart) {
         if (! minPos.empty()) {
-            minPos_p = subLat.positionInParent(minPos);
+            minPos_p = minPos;
         }
         if (! maxPos.empty()) {
-            maxPos_p = subLat.positionInParent(maxPos);
+            maxPos_p = maxPos;
         }
         overallMin = currentMin;
         overallMax = currentMax;
@@ -1441,13 +1441,13 @@ void LatticeStatistics<T>::_updateMinMaxPos(
     ) {
         if (currentMin < overallMin) {
             if (! minPos.empty()) {
-                minPos_p = subLat.positionInParent(minPos);
+                minPos_p = minPos;
             }
             overallMin = currentMin;
         }
         if (currentMax > overallMax) {
             if (! maxPos.empty()) {
-                maxPos_p = subLat.positionInParent(maxPos);
+                maxPos_p = maxPos;
             }
             overallMax = currentMax;
         }

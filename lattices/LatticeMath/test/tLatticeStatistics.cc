@@ -838,8 +838,6 @@ int main()
                 AlwaysAssert(maxPos == shape-1, AipsError);
                 stats.setAxes(Vector<Int>(1, 1));
                 IPosition loc(2, 50, 50);
-#ifndef AIPS_DEBUG
-//**** The following is unused in debug mode until issue1242 has been resolved ****
                 stats.getStatistic(stat, LatticeStatsBase::SUM);
                 AlwaysAssert(stat(loc) == 50500000, AipsError);
                 stats.getStatistic(stat, LatticeStatsBase::SUMSQ);
@@ -869,7 +867,6 @@ int main()
                 stats.getMinMaxPos(minPos, maxPos);
                 AlwaysAssert(minPos.empty(), AipsError);
                 AlwaysAssert(maxPos.empty(), AipsError);
-#endif
             }
         }
     }
