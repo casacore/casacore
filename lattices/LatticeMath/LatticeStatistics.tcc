@@ -192,9 +192,9 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       pInLattice_p = _inLatPtrMgr.get();
 // Delete storage lattice 
 
-      if (! pStoreLattice_p.null()) {
+      if (pStoreLattice_p) {
         // delete pStoreLattice_p;
-         pStoreLattice_p = 0;
+         pStoreLattice_p.reset();
       }
 
       needStorageLattice_p = True;
@@ -876,13 +876,17 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
        os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
-    pStoreLattice_p = new TempLattice<AccumType>(
-        TiledShape(storeLatticeShape,
-        tileShape), useMemory
+    pStoreLattice_p.reset(
+        new TempLattice<AccumType>(
+            TiledShape(storeLatticeShape,
+            tileShape), useMemory
+        )
     );
     // Set up min/max location variables
-    CountedPtr<LattStatsProgress> pProgressMeter = showProgress_p
-        ? new LattStatsProgress() : NULL;
+    std::shared_ptr<LattStatsProgress> pProgressMeter;
+    if (showProgress_p) {
+        pProgressMeter.reset(new LattStatsProgress());
+    }
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
@@ -925,7 +929,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
                 outLatt, *pInLattice_p,
                 collapser, IPosition(cursorAxes_p),
                 newOutAxis,
-                pProgressMeter.null() ? NULL : &*pProgressMeter
+                pProgressMeter ? &*pProgressMeter : NULL
             );
             collapser.minMaxPos(minPos_p, maxPos_p);
             ranOldMethod = True;
@@ -961,7 +965,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
 
 template <class T>
 void LatticeStatistics<T>::_doStatsLoop(
-    uInt nsets, CountedPtr<LattStatsProgress> progressMeter
+    uInt nsets, std::shared_ptr<LattStatsProgress> progressMeter
 ) {
     maxPos_p.resize(0);
     minPos_p.resize(0);
@@ -1077,7 +1081,7 @@ IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const
 
 template <class T>
 void LatticeStatistics<T>::_computeStatsUsingArrays(
-    CountedPtr<LattStatsProgress> progressMeter,
+    std::shared_ptr<LattStatsProgress> progressMeter,
     const IPosition& cursorShape
 ) {
     T overallMax = 0;
@@ -1102,7 +1106,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     for (uInt i=0; i<nSA; ++i) {
         sa[i] = saf2.createStatsAlgorithm();
     }
-    CountedPtr<DataRanges> range;
+    std::shared_ptr<DataRanges> range;
     if (! noInclude_p || ! noExclude_p) {
         range.reset(new DataRanges());
         range->push_back(std::pair<T, T>(range_p[0], range_p[1]));
@@ -1130,7 +1134,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     for (uInt i=0; i<ndim; ++i) {
         nIter *= ceil((Float)latShape[i]/(Float)cursorShape[i]);
     }
-    if (! progressMeter.null()) {
+    if (progressMeter) {
         progressMeter->init(nIter);
     }
     RO_MaskedLatticeIterator<T> latIter(*pInLattice_p, myStepper);
@@ -1184,7 +1188,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
             maskArray, curPos, nthreads,
             isChauv, isMasked, isReal, range
         );
-        if(! progressMeter.null()) {
+        if(progressMeter) {
             (*progressMeter)++;
         }
     }
@@ -1207,7 +1211,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
          nthreads
 #endif
                  , bool isChauv,
-    Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
+    Bool isMasked, Bool isReal, std::shared_ptr<const DataRanges> range
 ) {
     uInt nArrays = dataArray.size();
     Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
@@ -1313,7 +1317,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
 template <class T>
 void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
-    CountedPtr<LattStatsProgress> progressMeter, uInt nsets
+    std::shared_ptr<LattStatsProgress> progressMeter, uInt nsets
 ) {
     Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
     T currentMin = fixedCurMinMax ? range_p[0] : 0;
@@ -1327,7 +1331,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStatsDataProviderBase<T> *dataProvider;
     _configureDataProviders(lattDP, maskedLattDP);
     Bool nsetsIsLarge = nsets > 50;
-    if (! progressMeter.null()) {
+    if (progressMeter) {
         if (nsetsIsLarge) {
             progressMeter->init(nsets);
         }
@@ -1357,7 +1361,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             dataProvider = &lattDP;
         }
         if (
-            stepper.atStart() && ! progressMeter.null()
+            stepper.atStart() && progressMeter
             && ! nsetsIsLarge
         ) {
             // if _doRobust_p = True, one scan for accumulated stats
@@ -1408,7 +1412,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             );
         }
         _fillStorageLattice(currentMin, currentMax, curPos, stats, doRobust_p, q1, q3);
-        if(! progressMeter.null() && nsetsIsLarge) {
+        if(progressMeter && nsetsIsLarge) {
             (*progressMeter)++;
         }
     }
