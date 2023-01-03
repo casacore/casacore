@@ -625,7 +625,7 @@ private:
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 
    void _computeStatsUsingArrays(
-       SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter, 
+       CountedPtr<LattStatsProgress> progressMeter, 
        const IPosition& cursorShape
    );
 
@@ -647,7 +647,7 @@ private:
        >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
        std::vector<Array<T> >& dataArray,
        std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
-       uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+       uInt nthreads, Bool isChauv,
        Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
    );
 
@@ -667,8 +667,7 @@ private:
 
    void _updateMinMaxPos(
        T& overallMin, T& overallMax, T currentMin, T currentMax,
-       const IPosition& minPos, const IPosition& maxPos,
-       Bool atStart, const SubLattice<T>& subLat
+       const IPosition& minPos, const IPosition& maxPos, Bool atStart
    );
 
 };
