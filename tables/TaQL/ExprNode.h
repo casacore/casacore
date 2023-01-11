@@ -284,7 +284,9 @@ public:
       { return node_p->getTableInfo(); }
 
     // Get the table to which the expression node belongs.
+    //# [[deprecated ("Use getTableInfo().table() instead")]]
     const Table& table() const
+      __attribute__ ((deprecated ("Use getTableInfo().table() instead")))
       { return getTableInfo().table(); }
 
     // Get the unit of the expression.
