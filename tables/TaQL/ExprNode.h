@@ -285,7 +285,7 @@ public:
 
     // Get the table to which the expression node belongs.
     //# [[deprecated ("Use getTableInfo().table() instead")]]
-    const Table& table() const
+    Table table() const
       __attribute__ ((deprecated ("Use getTableInfo().table() instead")))
       { return getTableInfo().table(); }
 
