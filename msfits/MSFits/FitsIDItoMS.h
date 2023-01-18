@@ -318,6 +318,7 @@ protected:
   static std::map<Int,Int> antIdFromNo;
   static std::map<Int,Int> digiLevels;
   static Vector<Double> effChBw;
+  Int nFreqid_p;
 
   //
   //# Member Functions

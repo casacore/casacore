@@ -2917,6 +2917,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
 
   Int nSpW = nIF_p * nRow;
   effChBw.resize(nSpW);
+  nFreqid_p = nRow;
 
   // The type of the column changes according to the number of entries
   if (nIF_p==1) {
@@ -3310,6 +3311,7 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
   kwl.first();
   Int noSTKD = 0;
   Int firstSTK = -1;
+  Int nIF = 1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_STKD") {
@@ -3319,6 +3321,10 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     if (kwname == "STK_1") {
       firstSTK = fkw->asInt();
       //cout << kwname << "=" << firstSTK << endl;
+    }
+    if (kwname == "NO_BAND") {
+      nIF = fkw->asInt();
+      //cout << kwname << "=" << nIF << endl;
     }
   }
 
@@ -3357,11 +3363,6 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     // Check whether flag specification is supported; skip row if it isn't.
     if (array(inRow) != 0) {
       *itsLog << LogIO::SEVERE << "Flagging by array number not supported"
-	      << LogIO::POST;
-      continue;
-    }
-    if (fqid(inRow) != -1 && fqid(inRow) != 0) {
-      *itsLog << LogIO::SEVERE << "Flagging by frequency setup not supported"
 	      << LogIO::POST;
       continue;
     }
@@ -3421,17 +3422,25 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     ostringstream spw;
     Vector<Int> bandsV;
     Bool needSpw = False;
+    Int startFreqid = 0;
+    Int endFreqid = 0;
+    if (fqid(inRow) > 0)
+      startFreqid = endFreqid = fqid(inRow) - 1;
+    else if (nFreqid_p > 0)
+      endFreqid = nFreqid_p - 1;
     if (BANDSisScalar)
       bandsV = Vector<Int>(1, bandsS(inRow));
     else
       bandsV = bands(inRow);
-    for (int band = 0; band < bandsV.shape()(0); band++) {
-      if (bandsV[band]) {
-	if (spw.str().size() > 0)
-	  spw << ",";
-	spw << band;
-      } else {
-	needSpw = True;
+    for (int freqid = startFreqid; freqid <= endFreqid; freqid++) {
+      for (int band = 0; band < bandsV.shape()(0); band++) {
+	if (bandsV[band]) {
+	  if (spw.str().size() > 0)
+	    spw << ",";
+	  spw << (freqid * nIF) + band;
+	} else {
+	  needSpw = True;
+	}
       }
     }
     if (!needSpw)
