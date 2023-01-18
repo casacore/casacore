@@ -2915,7 +2915,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   //cout << "nRow=" << nRow << endl;
 
 
-  Int nSpW = nIF_p;
+  Int nSpW = nIF_p * nRow;
   effChBw.resize(nSpW);
 
   // The type of the column changes according to the number of entries
